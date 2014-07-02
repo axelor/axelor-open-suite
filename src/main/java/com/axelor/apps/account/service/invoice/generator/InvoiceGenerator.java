@@ -210,7 +210,7 @@ public abstract class InvoiceGenerator {
 		
 		invoice.setJournal(journalService.getJournal(invoice)); 
 		
-		invoice.setStatus(Status.all().filter("code = 'dra'").fetchOne());
+		invoice.setStatus(Status.findByCode("dra"));
 		
 		invoice.setPriceList(priceList);
 		

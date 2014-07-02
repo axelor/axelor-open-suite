@@ -136,7 +136,7 @@ public class VentilateState extends WorkflowInvoice {
 	 * @throws AxelorException 
 	 */
 	protected void setStatus( ) {
-		invoice.setStatus(Status.all().filter("self.code = ?1", "dis").fetchOne());
+		invoice.setStatus(Status.findByCode("dis"));
 	}
 	
 	/**

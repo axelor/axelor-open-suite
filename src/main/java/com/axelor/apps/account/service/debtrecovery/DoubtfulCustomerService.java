@@ -388,7 +388,7 @@ public class DoubtfulCustomerService {
 			//Créance de + 6 mois			
 			case 0 :
 				date = this.today.minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
-				moveLineList = MoveLine.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
+				moveLineList = MoveLine.filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
 						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
 						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
 				break;
@@ -396,7 +396,7 @@ public class DoubtfulCustomerService {
 			//Créance de + 3 mois
 			case 1 : 
 				date = this.today.minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
-				moveLineList = MoveLine.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
+				moveLineList = MoveLine.filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
 						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
 						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
 				break;

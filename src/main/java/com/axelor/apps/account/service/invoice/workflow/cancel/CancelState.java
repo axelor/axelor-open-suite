@@ -34,7 +34,7 @@ public class CancelState extends WorkflowInvoice {
 	}
 	
 	protected void setStatus( Invoice invoice ){
-		invoice.setStatus(Status.all().filter("self.code = 'can'").fetchOne());
+		invoice.setStatus(Status.findByCode("can"));
 	}
 	
 }

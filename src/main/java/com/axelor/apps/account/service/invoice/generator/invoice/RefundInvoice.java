@@ -62,7 +62,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		
 		refund.setJournal(journalService.getJournal(invoice)); 
 		
-		refund.setStatus(Status.all().filter("self.code = 'dra'").fetchOne());
+		refund.setStatus(Status.findByCode("dra"));
 		
 		refund.setInvoiceId(null);
 		

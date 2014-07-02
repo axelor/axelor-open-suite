@@ -35,7 +35,7 @@ public class ReimbursementController {
 		rs.updatePartnerCurrentRIB(reimbursement);
 		
 		if (reimbursement.getBankDetails() != null) {
-			response.setValue("status", Status.all().filter("self.code = 'val'").fetchOne());
+			response.setValue("status", Status.findByCode("val"));
 		}
 		else {
 			response.setFlash("Vous devez configurer un RIB");

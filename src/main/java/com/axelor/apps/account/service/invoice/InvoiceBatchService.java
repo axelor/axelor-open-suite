@@ -55,7 +55,7 @@ public class InvoiceBatchService {
 	public Batch run(String batchCode) throws AxelorException {
 				
 		Batch batch;
-		InvoiceBatch invoiceBatch = InvoiceBatch.all().filter("code = ?1", batchCode).fetchOne();
+		InvoiceBatch invoiceBatch = InvoiceBatch.findByCode(batchCode);
 		
 		if (invoiceBatch != null){
 			switch (invoiceBatch.getActionSelect()) {

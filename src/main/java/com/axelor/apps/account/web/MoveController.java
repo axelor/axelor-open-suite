@@ -17,17 +17,14 @@
  */
 package com.axelor.apps.account.web;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Provider;

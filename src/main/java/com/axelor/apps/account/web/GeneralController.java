@@ -17,15 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Query;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -37,15 +29,9 @@ import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.CaseFormat;
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 

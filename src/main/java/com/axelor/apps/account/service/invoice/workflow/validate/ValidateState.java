@@ -38,7 +38,7 @@ public class ValidateState extends WorkflowInvoice {
 	@Override
 	public void process( ) throws AxelorException {
 		
-		invoice.setStatus( Status.all().filter("self.code = 'val'").fetchOne() );
+		invoice.setStatus( Status.findByCode("val") );
 		invoice.setValidatedByUserInfo( UserInfo.find( user.getId() ) );
 		
 	}

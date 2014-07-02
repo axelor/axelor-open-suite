@@ -97,7 +97,7 @@ public class ReminderService {
 				
 	
 	public BigDecimal getSubstractBalanceDue( Partner partner)  {
-		List<MoveLine> moveLineQuery = MoveLine.all().filter("self.partner = ?1", partner).fetch();
+		List<MoveLine> moveLineQuery = MoveLine.filter("self.partner = ?1", partner).fetch();
 		BigDecimal balance = BigDecimal.ZERO;
 		for(MoveLine moveLine : moveLineQuery)  {
 			if(moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
@@ -283,7 +283,7 @@ public class ReminderService {
 	 */
 	public List<MoveLine> getMoveLine(Partner partner, Company company)  {
 		
-		return MoveLine.all().filter("self.partner = ?1 and self.move.company = ?2", partner, company).fetch();
+		return MoveLine.filter("self.partner = ?1 and self.move.company = ?2", partner, company).fetch();
 
 	}
 	
@@ -296,7 +296,7 @@ public class ReminderService {
 	 * @return
 	 */
 	public PaymentScheduleLine getPaymentScheduleFromMoveLine(Partner partner, MoveLine moveLine)  {
-		return PaymentScheduleLine.all().filter("self.rejectMoveLine = ?1", moveLine).fetchOne();
+		return PaymentScheduleLine.filter("self.rejectMoveLine = ?1", moveLine).fetchOne();
 	}
 	
 
@@ -321,7 +321,7 @@ public class ReminderService {
 	
 	
 	public Reminder getReminder(Partner partner, Company company) throws AxelorException  {
-		AccountingSituation accountingSituation = AccountingSituation.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
+		AccountingSituation accountingSituation = AccountingSituation.filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
 		if(accountingSituation != null)  {
 			if(accountingSituation.getReminder() != null)  {
 				return accountingSituation.getReminder();

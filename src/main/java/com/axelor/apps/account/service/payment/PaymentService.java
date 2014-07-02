@@ -130,7 +130,6 @@ public class PaymentService {
 		 Company company = invoice.getCompany();
 		
 		 List<MoveLine> creditMoveLines =  MoveLine
-		 .all()
 		 .filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 		 " AND self.account.reconcileOk = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
 		 " AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
@@ -154,14 +153,14 @@ public class PaymentService {
 		if(useOthersInvoiceDue)  {
 			if(debitMoveLines != null && debitMoveLines.size() != 0)  {
 				othersDebitMoveLines = MoveLine
-						 .all().filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
+						 .filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 AND self NOT IN ?5 ORDER BY self.date ASC ",
 						 company, "validated", true, partner, debitMoveLines).fetch();
 			}
 			else  {
 				othersDebitMoveLines = MoveLine
-						 .all().filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
+						 .filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 ORDER BY self.date ASC ",
 						 company, "validated", true, partner).fetch();

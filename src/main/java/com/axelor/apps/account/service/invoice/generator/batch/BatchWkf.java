@@ -68,7 +68,7 @@ public abstract class BatchWkf extends BatchStrategy {
 	
 			LOG.debug("Query: {}", query);
 			
-			return Invoice.all().filter(query, params.toArray()).fetch();
+			return Invoice.filter(query, params.toArray()).fetch();
 			
 		} else { return new ArrayList<Invoice>(); }
 

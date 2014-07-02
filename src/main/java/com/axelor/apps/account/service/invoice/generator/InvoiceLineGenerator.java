@@ -347,7 +347,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	 */
 	protected BigDecimal convertCoef(Unit startUnit, Unit endUnit){
 		
-		UnitConversion unitConversion = UnitConversion.all().filter("self.startUnit = ?1 AND self.endUnit = ?2", startUnit, endUnit).fetchOne();
+		UnitConversion unitConversion = UnitConversion.filter("self.startUnit = ?1 AND self.endUnit = ?2", startUnit, endUnit).fetchOne();
 		
 		if (unitConversion != null){ return unitConversion.getCoef(); }
 		else { return BigDecimal.ONE; }

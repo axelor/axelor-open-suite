@@ -18,9 +18,7 @@
 package com.axelor.apps.account.web;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountChart;
