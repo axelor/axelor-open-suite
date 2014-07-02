@@ -22,7 +22,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
@@ -90,40 +89,27 @@ public class SequenceService {
 	 * @return
 	 */
 	public String getSequence(String code, Company company, boolean check) {
-		return getSequence(code, company, null, check);
-	}
-	
-	
-	/**
-	 * Retourne une sequence en fonction du code, de la sté et du journal 
-	 * Le paramètre check permet de faire une vérification sans que la séquence ne soit incrémentée
-	 * 
-	 * @return
-	 */
-	public String getSequence(String code, Company company, Journal journal, boolean check) {
 	
 		if (code == null)  {
 			LOG.debug("End getSequence : : : : NO code");	
 			return null;
 		}	
 			
-		Sequence seq = null;
+		Sequence sequence = null;
 		if (company == null){
-			seq = Sequence.findByCode("code");
+			sequence = Sequence.findByCode("code");
 		}
-		else if (journal == null){
-			seq = Sequence.filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
+		else {
+			sequence = Sequence.filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
 		}
-		else{
-			 seq = Sequence.filter("self.company = ?1 and self.code = ?2 and self.journal = ?3", company, code, journal).fetchOne();
-		}
-		if (seq == null)  {
+	
+		if (sequence == null)  {
 			LOG.debug("End getSequence : : : : NO SEQUENCE.");	
 			return null;
 		}
 		
 		if (!check)  {
-			return getSequence(seq, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
+			return getSequence(sequence, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
 		}
 		else  {
 			return "true";
@@ -143,28 +129,36 @@ public class SequenceService {
 			return null;
 		}	
 		
-		Sequence seq = null;
+		Sequence sequence = null;
 		if (company == null){
-			seq = Sequence.findByCode("code");
+			sequence = Sequence.findByCode("code");
 		}
 		else if (product == null){
-			seq = Sequence.filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
+			sequence = Sequence.filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
 		}
 		else{
-			 seq = Sequence.filter("self.company = ?1 and self.code = ?2 and self.product = ?3", company, code, product).fetchOne();
+			sequence = Sequence.filter("self.company = ?1 and self.code = ?2 and self.product = ?3", company, code, product).fetchOne();
 		}
-		if (seq != null)  {
+		if (sequence != null)  {
 			LOG.debug("End getSequence : : : : NO SEQUENCE.");	
 			return null;
 		}
 		if (!check)  {
-			return getSequence(seq, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
+			return getSequence(sequence, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
 		}
 		else  {
 			return "true";
 		}
 			
 	}
+	
+	
+	public String getSequenceNumber(Sequence sequence, boolean check)  {
+		
+		return this.getSequence(sequence, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
+		
+	}
+	
 	
 	/**
 	 * Fonction retournant une numéro de séquence depuis une séquence générique, et une date

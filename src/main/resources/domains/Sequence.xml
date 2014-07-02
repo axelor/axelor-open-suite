@@ -15,7 +15,6 @@
     <integer name="padding" title="Padding" required="true"/>
     <integer name="toBeAdded" title="Increment" required="true"/>
     <integer name="nextNum" title="Next N°" required="true"/>
-    <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <boolean name="yearlyResetOk" title="Yearly reset"/>
     
