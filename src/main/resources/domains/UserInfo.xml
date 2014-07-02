@@ -44,6 +44,8 @@
     	}
     	]]>
    	</string>
+   	
+   	<finder-method name="findByUser" using="internalUser"/>
     
   </entity>
 

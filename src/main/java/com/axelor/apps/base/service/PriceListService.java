@@ -39,10 +39,10 @@ public class PriceListService {
 		PriceListLine priceListLine = null;
 		
 		if(product != null && priceList != null)  {
-			priceListLine = PriceListLine.all().filter("self.product = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product, qty).fetchOne();
+			priceListLine = PriceListLine.filter("self.product = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product, qty).fetchOne();
 			
 			if(priceListLine == null && product.getProductCategory() != null)  {
-				priceListLine = PriceListLine.all().filter("self.productCategory = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product.getProductCategory(), qty).fetchOne();
+				priceListLine = PriceListLine.filter("self.productCategory = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product.getProductCategory(), qty).fetchOne();
 			}
 		}
 		

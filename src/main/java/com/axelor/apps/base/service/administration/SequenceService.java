@@ -101,33 +101,32 @@ public class SequenceService {
 	 * @return
 	 */
 	public String getSequence(String code, Company company, Journal journal, boolean check) {
-		if (code != null){
-			Sequence seq = null;
-			if (company == null){
-				seq = Sequence.all().filter("self.code = ?1",code).fetchOne();
-			}
-			else if (journal == null){
-				seq = Sequence.all().filter("self.company = ?1 and self.code = ?2",company,code).fetchOne();
-			}
-			else{
-				 seq = Sequence.all().filter("self.company = ?1 and self.code = ?2 and self.journal = ?3",company,code,journal).fetchOne();
-			}
-			if (seq != null)  {
-				if (!check)  {
-					return getSequence(seq, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
-				}
-				else  {
-					return "true";
-				}
-			}
-			else{
-				LOG.debug("End getSequence : : : : NO SEQUENCE.");	
-				return null;
-			}
-		}
-		else{
+	
+		if (code == null)  {
 			LOG.debug("End getSequence : : : : NO code");	
 			return null;
+		}	
+			
+		Sequence seq = null;
+		if (company == null){
+			seq = Sequence.findByCode("code");
+		}
+		else if (journal == null){
+			seq = Sequence.filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
+		}
+		else{
+			 seq = Sequence.filter("self.company = ?1 and self.code = ?2 and self.journal = ?3", company, code, journal).fetchOne();
+		}
+		if (seq == null)  {
+			LOG.debug("End getSequence : : : : NO SEQUENCE.");	
+			return null;
+		}
+		
+		if (!check)  {
+			return getSequence(seq, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
+		}
+		else  {
+			return "true";
 		}
 			
 	}
@@ -139,33 +138,30 @@ public class SequenceService {
 	 * @return
 	 */
 	public String getSequence(String code, Product product, Company company, boolean check) {
-		if (code != null){
-			Sequence seq = null;
-			if (company == null){
-				seq = Sequence.all().filter("self.code = ?1",code).fetchOne();
-			}
-			else if (product == null){
-				seq = Sequence.all().filter("self.company = ?1 and self.code = ?2",company,code).fetchOne();
-			}
-			else{
-				 seq = Sequence.all().filter("self.company = ?1 and self.code = ?2 and self.product = ?3",company,code,product).fetchOne();
-			}
-			if (seq != null)  {
-				if (!check)  {
-					return getSequence(seq, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
-				}
-				else  {
-					return "true";
-				}
-			}
-			else{
-				LOG.debug("End getSequence : : : : NO SEQUENCE.");	
-				return null;
-			}
-		}
-		else{
+		if (code == null)  {
 			LOG.debug("End getSequence : : : : NO code");	
 			return null;
+		}	
+		
+		Sequence seq = null;
+		if (company == null){
+			seq = Sequence.findByCode("code");
+		}
+		else if (product == null){
+			seq = Sequence.filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
+		}
+		else{
+			 seq = Sequence.filter("self.company = ?1 and self.code = ?2 and self.product = ?3", company, code, product).fetchOne();
+		}
+		if (seq != null)  {
+			LOG.debug("End getSequence : : : : NO SEQUENCE.");	
+			return null;
+		}
+		if (!check)  {
+			return getSequence(seq, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
+		}
+		else  {
+			return "true";
 		}
 			
 	}

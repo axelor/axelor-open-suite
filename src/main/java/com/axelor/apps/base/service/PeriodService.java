@@ -39,7 +39,7 @@ public class PeriodService {
 	 */
 	public Period rightPeriod(LocalDate date, Company company) throws AxelorException {
 	
-		Period period = Period.all().filter("company = ?1 and fromDate <= ?2 and toDate >= ?3",company,date,date).fetchOne();
+		Period period = Period.filter("company = ?1 and fromDate <= ?2 and toDate >= ?3",company,date,date).fetchOne();
 		if (period == null || period.getStatus().getCode().equals("clo"))  {
 			throw new AxelorException(String.format("Aucune période trouvée ou celle-ci clôturée pour la société %s", company.getName()), IException.CONFIGURATION_ERROR);
 		}

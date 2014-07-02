@@ -569,7 +569,7 @@ public class MailService {
 	 * @return
 	 */
 	public List<Mail> getMailList(Partner partner)  {
-		return Mail.all().filter("self.partner = ?1", partner).fetch();
+		return Mail.filter("self.partner = ?1", partner).fetch();
 	}
 	
 }

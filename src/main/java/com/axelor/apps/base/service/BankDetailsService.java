@@ -48,7 +48,7 @@ public class BankDetailsService {
 			bankDetails.setAccountNbr(StringTool.extractStringFromRight(bankDetails.getIban(),13,11));
 			bankDetails.setBbanKey(StringTool.extractStringFromRight(bankDetails.getIban(),2,2));
 			bankDetails.setCountryCode(StringTool.extractStringFromRight(bankDetails.getIban(),27,2));
-			Bic bic = Bic.all().filter(
+			Bic bic = Bic.filter(
 					"self.countryCode = ?1 " +
 					"AND self.sortCode = ?2 " +
 					"AND self.bankCode = ?3", bankDetails.getCountryCode(), bankDetails.getSortCode(), bankDetails.getBankCode()).fetchOne();

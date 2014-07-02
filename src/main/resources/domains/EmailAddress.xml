@@ -20,6 +20,8 @@
 	    ]]>
 	</string>
 	
+	<finder-method name="findByAddress" using="address"/>
+	
   </entity>
   
 </domain-models>

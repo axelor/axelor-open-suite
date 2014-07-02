@@ -18,5 +18,8 @@
     <one-to-many name="detailsLocationLineList" ref="com.axelor.apps.supplychain.db.LocationLine" mappedBy="detailsLocation" title="Details Location lines"/>
     <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
     
+    <finder-method name="findByCompany" using="company"/>
+    <finder-method name="findByPartner" using="partner"/>
+    
   </entity>
 </domain-models>

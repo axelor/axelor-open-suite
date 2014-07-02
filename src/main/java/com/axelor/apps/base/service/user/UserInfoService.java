@@ -45,9 +45,9 @@ public class UserInfoService {
 		}
 		catch(Exception ex){}
 		if(user == null)
-			user = User.all().filter("self.code = 'admin'").fetchOne();
+			user = User.findByCode("admin");
 		if (user != null){
-			UserInfo userInfo = UserInfo.all().filter("internalUser = ?1", user).fetchOne();
+			UserInfo userInfo = UserInfo.findByUser(user);
 			if (userInfo != null) { return userInfo; }
 		}
 	
@@ -55,18 +55,12 @@ public class UserInfoService {
 	}
 	
 	public Long getUserInfoId() {
-		User user = null;
-		try{
-			user = AuthUtils.getUser();
-		}
-		catch(Exception ex){}
-		if(user == null)
-			user = User.all().filter("self.code = 'admin'").fetchOne();
-		if (user != null){
-			UserInfo userInfo = UserInfo.all().filter("internalUser = ?1", user).fetchOne();
-			if (userInfo != null) { return userInfo.getId(); }
-		}
+		UserInfo userInfo = this.getUserInfo();
 	
+		if(userInfo != null)  {
+			return userInfo.getId();
+		}
+		
 		return null;
 	}
 	

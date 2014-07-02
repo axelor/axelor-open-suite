@@ -131,7 +131,7 @@ public class CurrencyConversionService {
 		if(currencyFrom != null && currencyTo != null && rateDate != null){
 			currencyFrom = Currency.find(currencyFrom.getId());
 			currencyTo = Currency.find(currencyTo.getId());
-			CurrencyConversionLine ccl = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
+			CurrencyConversionLine ccl = CurrencyConversionLine.filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
 			if(ccl != null)
 				rate =  ccl.getExchangeRate();
 		}

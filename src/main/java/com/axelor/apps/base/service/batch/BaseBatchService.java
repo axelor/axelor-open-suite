@@ -46,7 +46,7 @@ public class BaseBatchService {
 	public Batch run(String batchCode) throws AxelorException {
 				
 		Batch batch;
-		BaseBatch baseBatch = BaseBatch.all().filter("code = ?1", batchCode).fetchOne();
+		BaseBatch baseBatch = BaseBatch.findByCode(batchCode);
 		
 		if (baseBatch != null){
 			switch (baseBatch.getActionSelect()) {

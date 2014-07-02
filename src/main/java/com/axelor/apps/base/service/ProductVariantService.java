@@ -126,7 +126,7 @@ public class ProductVariantService {
 			ProductVariantAttr productVariantAttr3, ProductVariantAttr productVariantAttr4,	ProductVariantValue productVariantValue1, 
 			ProductVariantValue productVariantValue2, ProductVariantValue productVariantValue3, ProductVariantValue productVariantValue4, boolean usedForStock)  {
 		
-		return  ProductVariant.all().filter("self.productVariantAttr1 = ?1 AND self.productVariantAttr2 = ?2 AND self.productVariantAttr3 = ?3 AND " +
+		return  ProductVariant.filter("self.productVariantAttr1 = ?1 AND self.productVariantAttr2 = ?2 AND self.productVariantAttr3 = ?3 AND " +
 				"self.productVariantAttr4 = ?4 AND self.productVariantValue1 = ?5 AND self.productVariantValue2 = ?6 AND self.productVariantValue3 = ?7 AND " +
 				"self.productVariantValue4 = ?8 AND self.usedForStock = 'true'", productVariantAttr1, productVariantAttr2, productVariantAttr3, 
 				productVariantAttr4, productVariantValue1, productVariantValue2, productVariantValue3, productVariantValue4, usedForStock).fetchOne();

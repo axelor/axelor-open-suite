@@ -17,14 +17,11 @@
  */
 package com.axelor.apps.base.service.alarm;
 
-import groovy.lang.Binding;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -67,7 +64,7 @@ public class AlarmEngineService <T extends Model>  {
 	
 	public Alarm get(String alarmEngineCode, T t, boolean isExternal){
 		
-		AlarmEngine alarmEngine = AlarmEngine.all().filter("self.code = ?1 AND externalOk = ?2 AND activeOk = true", alarmEngineCode, isExternal).fetchOne();
+		AlarmEngine alarmEngine = AlarmEngine.filter("self.code = ?1 AND externalOk = ?2 AND activeOk = true", alarmEngineCode, isExternal).fetchOne();
 		
 		if (alarmEngine != null) { return createAlarm(alarmEngine, t); }
 		else return null;
@@ -89,7 +86,7 @@ public class AlarmEngineService <T extends Model>  {
 	 */
 	public Map<T, List<Alarm>> get(Class<T> klass, T... params) {
 		
-		List<AlarmEngine> alarmEngines = AlarmEngine.all().filter("metaModel = ?1 AND activeOk = true AND externalOk = false", MetaModelService.getMetaModel(klass)).fetch(); 
+		List<AlarmEngine> alarmEngines = AlarmEngine.filter("metaModel = ?1 AND activeOk = true AND externalOk = false", MetaModelService.getMetaModel(klass)).fetch(); 
 		
 		LOG.debug("Lancement des moteurs de type {} : {} moteurs à lancer", klass, alarmEngines.size());
 				

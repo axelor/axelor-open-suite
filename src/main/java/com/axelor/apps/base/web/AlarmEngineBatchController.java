@@ -45,7 +45,7 @@ public class AlarmEngineBatchController {
 	// WS
 	public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 		
-		AlarmEngineBatch alarmEngineBatch = AlarmEngineBatch.all().filter("self.code = ?1", request.getContext().get("code")).fetchOne();
+		AlarmEngineBatch alarmEngineBatch = AlarmEngineBatch.findByCode("code");
 		
 		if (alarmEngineBatch == null) {
 			TraceBackService.trace(new AxelorException("Batch d'alarme "+request.getContext().get("code"), 3));
