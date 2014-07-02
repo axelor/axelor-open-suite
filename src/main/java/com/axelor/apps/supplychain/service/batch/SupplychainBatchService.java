@@ -45,7 +45,7 @@ public class SupplychainBatchService {
 	 */
 	public Batch run(String batchCode) throws AxelorException {
 				
-		SupplychainBatch supplychainBatch = SupplychainBatch.all().filter("code = ?1", batchCode).fetchOne();
+		SupplychainBatch supplychainBatch = SupplychainBatch.findByCode(batchCode);
 		
 		if (supplychainBatch != null){
 			switch (supplychainBatch.getActionSelect()) {

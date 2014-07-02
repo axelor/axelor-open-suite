@@ -56,7 +56,7 @@ public class TrackingNumberService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public TrackingNumber getTrackingNumber(Product product, BigDecimal sizeOfLot, Company company, LocalDate date) throws AxelorException  {
 		
-		TrackingNumber trackingNumber = TrackingNumber.all().filter("self.product = ?1 AND self.counter < ?2", product, sizeOfLot).fetchOne();
+		TrackingNumber trackingNumber = TrackingNumber.filter("self.product = ?1 AND self.counter < ?2", product, sizeOfLot).fetchOne();
 	
 		if(trackingNumber == null)  {
 			trackingNumber = this.createTrackingNumber(product, company, date).save();

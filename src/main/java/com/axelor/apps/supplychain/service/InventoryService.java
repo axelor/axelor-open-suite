@@ -225,7 +225,7 @@ public class InventoryService {
 	public TrackingNumber getTrackingNumber(String sequence)  {
 
 		if(sequence != null && !sequence.isEmpty())  {
-			return TrackingNumber.all().filter("self.trackingNumberSeq = ?1", sequence).fetchOne();
+			return TrackingNumber.findBySeq(sequence);
 		}
 
 		return null;
@@ -337,7 +337,7 @@ public class InventoryService {
 			params.add(inventory.getProductCategory());
 		}
 		
-		return LocationLine.all().filter(query, params.toArray()).fetch();
+		return LocationLine.filter(query, params.toArray()).fetch();
 		
 	}
 	

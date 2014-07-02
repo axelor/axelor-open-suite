@@ -44,8 +44,6 @@ import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.db.PurchaseOrderLineTax;
-import com.axelor.apps.supplychain.db.SalesOrder;
-import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.SupplychainConfig;
@@ -226,7 +224,7 @@ public class PurchaseOrderService {
 			
 			SupplychainConfig supplychainConfig = supplychainConfigService.getSupplychainConfig(company);
 			
-			Location startLocation = Location.filter("self.partner = ?1", purchaseOrder.getSupplierPartner()).fetchOne();
+			Location startLocation = Location.findByPartner(purchaseOrder.getSupplierPartner());
 			
 			if(startLocation == null)  {
 				startLocation = supplychainConfigService.getSupplierVirtualLocation(supplychainConfig);

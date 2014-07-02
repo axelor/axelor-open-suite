@@ -122,7 +122,7 @@ public class SalesOrderPurchaseService {
 				IPurchaseOrder.INVOICING_FREE, 
 				purchaseOrderService.getLocation(salesOrder.getCompany()), 
 				today, 
-				PriceList.all().filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
+				PriceList.filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
 				supplierPartner);
 		
 		

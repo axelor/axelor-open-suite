@@ -87,7 +87,7 @@ public class SalesOrderStockMoveService {
 	
 	public StockMove createStockMove(SalesOrder salesOrder, Company company) throws AxelorException  {
 		
-		Location toLocation = Location.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.EXTERNAL).fetchOne();
+		Location toLocation = Location.filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.EXTERNAL).fetchOne();
 		
 		if(toLocation == null)  {
 			
