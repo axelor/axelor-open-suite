@@ -298,7 +298,7 @@ public class TaskSalesOrderService {
 				planningLine.getFromDateTime().plusMinutes(
 						unitConversionService.convert(
 								salesOrderSubLine.getUnit(), 
-								Unit.all().filter("self.code = 'MIN'").fetchOne(), 
+								Unit.findByCode("MIN"),
 								salesOrderSubLine.getQty()).intValue()));
 		return planningLine;
 		
