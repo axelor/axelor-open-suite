@@ -12,7 +12,7 @@
         <field name="nbrTerm"/>
         <field name="bankDetails"/>
         <field name="paymentMode"/>
-        <field name="state"/>
+        <field name="stateSelect"/>
     </grid>
     
     <form name="payment-schedule-form" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule" cols="4"
@@ -40,7 +40,7 @@
         <group colSpan="4" cols="6">
             <button name="validate" title="Validate" colSpan="2" onClick="save,action-payment-schedule-payment-schedule-id,action-payment-schedule-method-validate,save" showIf="state == 1"/>
             <button name="cancel" title="Cancel" colSpan="2" onClick="action-payment-schedule-method-cancel,save" hideIf="state = 4" />
-            <field name="state"/>
+            <field name="stateSelect"/>
         </group>
         <group name="irrecoverable" title="Irrecoverable" colSpan="4" canCollapse="true" >
         	<field name="irrecoverableStateSelect"/>
@@ -55,7 +55,7 @@
    		<field name="creationDate" expr="eval:__date__"/>
    		<field name="startDate" expr="eval:__date__"/>
    		<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-   		<field name="state" expr="eval: 1"/>
+   		<field name="stateSelect" expr="eval: 1"/>
 	</action-record>
 
 	<action-record name="action-payment-schedule-record-partner" model="com.axelor.apps.account.db.PaymentSchedule" >

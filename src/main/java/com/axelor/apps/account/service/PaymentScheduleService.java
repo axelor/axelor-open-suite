@@ -27,6 +27,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.IPaymentSchedule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -280,7 +281,7 @@ public class PaymentScheduleService {
 		PaymentSchedule paymentSchedule = this.createPaymentSchedule(partner, invoice, company, date, firstTermDate, nbrTerm, bankDetails, paymentMode);
 			
 		paymentSchedule.setPaymentScheduleLineList(new ArrayList<PaymentScheduleLine>());
-		Status status = Status.all().filter("code = 'upr'").fetchOne();
+		Status status = Status.findByCode("upr");
 		for (int term = 1; term < nbrTerm + 1; term++){
 			paymentSchedule.getPaymentScheduleLineList().add(psls.createPaymentScheduleLine(paymentSchedule, initialInTaxAmount, term, firstTermDate.plusMonths(term-1), status));
 		}
@@ -330,7 +331,7 @@ public class PaymentScheduleService {
 			
 //		this.updateInvoices(paymentSchedule); //TODO
 
-		paymentSchedule.setState("2");
+		paymentSchedule.setStateSelect(IPaymentSchedule.STATUS_CONFIRMED);
 		
 		paymentSchedule.save();
 	}
@@ -366,10 +367,10 @@ public class PaymentScheduleService {
 	 * @param paymentSchedule
 	 */
 	public void cancelPaymentSchedule(PaymentSchedule paymentSchedule){
-		Status closedStatus = Status.all().filter("self.code = 'clo'").fetchOne();
+		Status closedStatus = Status.findByCode("clo");
 		
 		// L'échéancier est passé à annulé
-		paymentSchedule.setState("4");
+		paymentSchedule.setStateSelect(IPaymentSchedule.STATUS_CANCELED);
 		
 		for(PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList())  {
 		
@@ -400,7 +401,7 @@ public class PaymentScheduleService {
 	 */
 	public boolean isLastSchedule(PaymentScheduleLine paymentScheduleLine)  {
 		if(paymentScheduleLine != null)  {
-			if(PaymentScheduleLine.all().filter("paymentSchedule = ?1 and scheduleDate > ?2 and status.code ='upr'", paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleDate()).fetchOne() == null)  {
+			if(PaymentScheduleLine.filter("paymentSchedule = ?1 and scheduleDate > ?2 and status.code ='upr'", paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleDate()).fetchOne() == null)  {
 				LOG.debug("Dernière échéance");
 				return true;
 			}
@@ -425,12 +426,12 @@ public class PaymentScheduleService {
 		LOG.debug("Cloture de l'échéancier");
 		
 		//On récupère un statut cloturé, afin de pouvoir changer l'état des lignes d'échéanciers
-		Status statusClo = Status.all().filter("code = 'clo'").fetchOne();
+		Status statusClo = Status.findByCode("clo");
 		
 		for(PaymentScheduleLine psl : paymentSchedule.getPaymentScheduleLineList())  {
 			psl.setStatus(statusClo);
 		}
-		paymentSchedule.setState("3");
+		paymentSchedule.setStateSelect(IPaymentSchedule.STATUS_CLOSED);
 		
 	}
   	

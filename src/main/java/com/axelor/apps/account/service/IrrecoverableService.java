@@ -164,7 +164,7 @@ public class IrrecoverableService {
 	 * @return
 	 */
 	public List<Invoice> getInvoiceList(Company company)   {
-		return Invoice.all().filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.status.code = 'dis' AND self.inTaxTotalRemaining > 0 AND self.rejectMoveLine IS NULL ORDER BY self.dueDate ASC", IInvoice.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
+		return Invoice.filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.status.code = 'dis' AND self.inTaxTotalRemaining > 0 AND self.rejectMoveLine IS NULL ORDER BY self.dueDate ASC", IInvoice.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
 	}
 	
 	/**
@@ -174,7 +174,7 @@ public class IrrecoverableService {
 	 * @return
 	 */
 	public List<Invoice> getRejectInvoiceList(Company company)   {
-		return Invoice.all().filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.status.code = 'dis' AND self.inTaxTotalRemaining = 0 AND self.rejectMoveLine IS NOT NULL ORDER BY self.dueDate ASC", IInvoice.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
+		return Invoice.filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.status.code = 'dis' AND self.inTaxTotalRemaining = 0 AND self.rejectMoveLine IS NOT NULL ORDER BY self.dueDate ASC", IInvoice.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
 	}
 	
 	
@@ -185,7 +185,7 @@ public class IrrecoverableService {
 	 * @return
 	 */
 	public List<PaymentScheduleLine> getPaymentScheduleLineList(Company company)   {
-		return PaymentScheduleLine.all()
+		return PaymentScheduleLine
 				.filter("self.paymentSchedule.irrecoverableStateSelect = ?1 AND self.paymentSchedule.company = ?2 AND self.paymentSchedule.state = '4' AND self.rejectMoveLine.amountRemaining > 0 ORDER BY self.scheduleDate ASC", IAccount.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
 	}
 	
@@ -418,7 +418,7 @@ public class IrrecoverableService {
 		if (!transaction.isActive())  {
 			transaction.begin();			
 		}
-		irrecoverable.setStatus(Status.all().filter("self.code = 'val'").fetchOne());
+		irrecoverable.setStatus(Status.findByCode("val"));
 		irrecoverable.save();
 		transaction.commit();
 		
@@ -865,7 +865,7 @@ public class IrrecoverableService {
 	 * @return
 	 */
 	public ManagementObject createManagementObject(String code, String message)  {
-		ManagementObject managementObject = ManagementObject.all().filter("self.code = ?1 AND self.name = ?2", code, message).fetchOne();
+		ManagementObject managementObject = ManagementObject.filter("self.code = ?1 AND self.name = ?2", code, message).fetchOne();
 		if(managementObject != null)  { return managementObject;  }
 		
 		managementObject = new ManagementObject();

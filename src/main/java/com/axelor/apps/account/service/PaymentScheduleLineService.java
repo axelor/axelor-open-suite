@@ -98,7 +98,7 @@ public class PaymentScheduleLineService {
 				
 				paymentScheduleLines.add(
 						this.createPaymentScheduleLine(
-								paymentSchedule, termAmount, i, paymentSchedule.getStartDate().plusMonths(i-1), Status.all().filter("code = 'upr'").fetchOne()));
+								paymentSchedule, termAmount, i, paymentSchedule.getStartDate().plusMonths(i-1), Status.findByCode("upr")));
 				
 			}
 		}		

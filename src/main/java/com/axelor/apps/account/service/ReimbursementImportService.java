@@ -99,7 +99,7 @@ public class ReimbursementImportService {
 	//	String amountReject = reject[2];
 		InterbankCodeLine causeReject = ris.getInterbankCodeLine(reject[3], 0);
 		
-		Reimbursement reimbursement = Reimbursement.all().filter("UPPER(self.ref) = ?1 AND self.company = ?2", refReject, company).fetchOne();
+		Reimbursement reimbursement = Reimbursement.filter("UPPER(self.ref) = ?1 AND self.company = ?2", refReject, company).fetchOne();
 		if(reimbursement == null)  {
 			throw new AxelorException(String.format("Aucun remboursement trouvé pour la ref %s et la société %s",
 					refReject, company.getName()), IException.INCONSISTENCY);

@@ -209,7 +209,7 @@ public class AccountCustomerService {
 	 */
 	public List<MoveLine> getMoveLine(Partner partner, Company company)  {
 		
-		return MoveLine.all().filter("self.partner = ?1 AND self.move.company = ?2", partner, company).fetch();
+		return MoveLine.filter("self.partner = ?1 AND self.move.company = ?2", partner, company).fetch();
 
 	}
 	

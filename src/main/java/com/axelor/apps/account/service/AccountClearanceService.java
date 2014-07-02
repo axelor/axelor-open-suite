@@ -92,7 +92,7 @@ public class AccountClearanceService {
 		
 		this.testCompanyField(company);
 		
-		List<MoveLine> moveLineList = MoveLine.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+		List<MoveLine> moveLineList = MoveLine.filter("self.company = ?1 AND self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.state = ?2 AND self.amountRemaining > 0 AND self.amountRemaining <= ?3 AND self.credit > 0 AND self.account in ?4 AND self.date <= ?5",
 				company, IAccount.VALIDATED_MOVE , accountClearance.getAmountThreshold(), 
 				company.getAccountConfig().getClearanceAccountSet(), accountClearance.getDateThreshold()).fetch();
@@ -133,7 +133,7 @@ public class AccountClearanceService {
 			ms.validateMove(move);
 		}
 		
-		accountClearance.setStatus(Status.all().filter("self.code ='val'").fetchOne());
+		accountClearance.setStatus(Status.findByCode("val"));
 		accountClearance.setDateTime(this.todayTime);
 		accountClearance.setName(sgs.getSequence(IAdministration.ACCOUNT_CLEARANCE, company, false));
 		accountClearance.save();
@@ -183,7 +183,7 @@ public class AccountClearanceService {
 		accountClearance.setName(name);
 		accountClearance.setDateTime(this.todayTime);
 		accountClearance.setUserInfo(this.user);
-		accountClearance.setStatus(Status.all().filter("self.code = 'val'").fetchOne());
+		accountClearance.setStatus(Status.findByCode("val"));
 		return accountClearance;
 		
 	}

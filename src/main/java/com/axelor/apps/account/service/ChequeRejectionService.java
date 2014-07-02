@@ -72,7 +72,7 @@ public class ChequeRejectionService {
 		
 		chequeRejection.setMove(move);
 	
-		chequeRejection.setStatus(Status.all().filter("self.code = 'val'").fetchOne());
+		chequeRejection.setStatus(Status.findByCode("val"));
 		
 		chequeRejection.save();
 	}

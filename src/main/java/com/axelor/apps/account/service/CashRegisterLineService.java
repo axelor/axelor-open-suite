@@ -65,7 +65,7 @@ public class CashRegisterLineService {
 		LOG.debug("In closeCashRegister");
 
 		CashRegisterLine cashRegisterLineFound = CashRegisterLine
-				.all().filter("self.cashRegister = ?1 and self.cashRegisterDate = ?2 and self.stateSelect = '1'", 
+				.filter("self.cashRegister = ?1 and self.cashRegisterDate = ?2 and self.stateSelect = '1'", 
 						cashRegisterLine.getCashRegister(), cashRegisterLine.getCashRegisterDate()).fetchOne();
 		
 		if(cashRegisterLineFound != null)  {
@@ -93,7 +93,7 @@ public class CashRegisterLineService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void openCashRegister(CashRegisterLine cashRegisterLine)  {
-		 Mail.all().filter("cashRegisterLine = ?1", cashRegisterLine).remove();
+		 Mail.filter("cashRegisterLine = ?1", cashRegisterLine).remove();
 		 cashRegisterLine.setStateSelect(IAccount.DRAFT_CASHREGISTERLINE);
 		 cashRegisterLine.save();
 	}
