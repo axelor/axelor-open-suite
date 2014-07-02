@@ -79,7 +79,7 @@ public class AccountingBatchService {
 	public Batch run(String batchCode) throws AxelorException {
 				
 		Batch batch;
-		AccountingBatch accountingBatch = AccountingBatch.all().filter("code = ?1", batchCode).fetchOne();
+		AccountingBatch accountingBatch = AccountingBatch.findByCode(batchCode);
 		
 		if (accountingBatch != null){
 			switch (accountingBatch.getActionSelect()) {

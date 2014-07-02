@@ -81,7 +81,7 @@
 	</action-record>
     
     <action-record name="action-accounting-batch-record-default-currency" model="com.axelor.apps.account.db.AccountingBatch">
-    	<field name="currency" expr="eval: com.axelor.apps.base.db.Currency.all().filter(&quot;self.code = 'EUR'&quot;).fetchOne()" if="actionSelect == 11 || actionSelect == 12 || actionSelect == 15 "/>
+    	<field name="currency" expr="eval: com.axelor.apps.base.db.Currency.findByCode(&quot;EUR&quot;)" if="actionSelect == 11 || actionSelect == 12 || actionSelect == 15 "/>
     
     </action-record>
     

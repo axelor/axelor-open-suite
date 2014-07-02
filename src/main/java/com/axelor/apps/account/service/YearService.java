@@ -65,7 +65,7 @@ public class YearService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void closeYear(Year year) throws AxelorException  {
 		year = Year.find(year.getId());
-		Status status = Status.all().filter("self.code = 'clo'").fetchOne();
+		Status status = Status.findByCode("clo");
 		for (Period period : year.getPeriodList())  {
 			period.setStatus(status);
 		}
