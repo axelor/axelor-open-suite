@@ -17,7 +17,8 @@
   	<string name="descriptionModel" title="Label for automatic moveline generation"/>
   	<boolean name="descriptionIdentificationOk" title="Add Move line N° in the description" default="false"/>
   	<boolean name="notExportOk" title="Do not export ?" default="false"/>
-  	<boolean name="inactiveOk" title="Inactive ?" default="false"/>
+  	<integer name="statusSelect" title="Status" selection="account.journal.status.select"/>
+  	<boolean name="isObsolete" title="Obsolete ?" default="false"/>
   	
   	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
