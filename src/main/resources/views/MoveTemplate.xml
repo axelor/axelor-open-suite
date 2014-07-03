@@ -20,7 +20,7 @@
           <button name="checkValidity" onClick="save,action-move-template-method-check-validity" title="Check validity" readonlyIf="isValid"/>
         </group>
         <field name="company"/>
-        <field name="journal"/>
+        <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"/>
         <field name="moveTemplateLineList" colSpan="4">
         	<grid title="Move template line" >
         		<field name="name" />

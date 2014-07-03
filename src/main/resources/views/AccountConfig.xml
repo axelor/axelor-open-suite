@@ -27,17 +27,17 @@
     				<field name="purchaseJournalType"/>
     				<field name="cashJournalType"/>
     				<field name="creditNoteJournalType"/>
-	                <field name="customerSalesJournal" domain="self.inactiveOk != true"/>
-	                <field name="customerCreditNoteJournal" domain="self.inactiveOk != true"/>
-	                <field name="supplierPurchaseJournal" domain="self.inactiveOk != true"/>
-	                <field name="supplierCreditNoteJournal" domain="self.inactiveOk != true"/>
-	                <field name="scheduleDirectDebitJournal" domain="self.inactiveOk != true"/>
-	                <field name="invoiceDirectDebitJournal" domain="self.inactiveOk != true"/>
-	                <field name="rejectJournal" domain="self.inactiveOk != true"/>
-	                <field name="reimbursementJournal" domain="self.inactiveOk != true"/>
-	                <field name="accountClearanceJournal" domain="self.inactiveOk != true"/>
-	                <field name="irrecoverableJournal" domain="self.inactiveOk != true"/>
-	                <field name="miscOperationJournal" domain="self.inactiveOk != true"/>
+	                <field name="customerSalesJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="customerCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="supplierPurchaseJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="supplierCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="scheduleDirectDebitJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="invoiceDirectDebitJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="rejectJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="reimbursementJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 	                <break/>
 	            <separator title="Accounts" colSpan="4"/>
 	                <field name="customerAccount" domain="self.company = :company"/>

@@ -46,6 +46,12 @@
 		<option value='3'>Canceled</option>
 	</selection>
 	
+	<selection name='account.journal.status.select'>
+		<option value="0">Inactive</option>
+		<option value="1">Active</option>
+		<option value="2">Archived</option>
+	</selection>
+
 	<selection name='payment.schedule.state.select'>
 		<option value='1'>Draft</option>
 		<option value='2'>Confirmed</option>

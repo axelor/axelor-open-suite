@@ -48,7 +48,7 @@
 				<break/>
 		        <field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" requiredIf="typeSelect == 12"/>
 		        <field name="dateTo" requiredIf="typeSelect == 12"/>
-		        <field name="journal" hideIf="!typeSelect || [0,2,3,4,5,10,12,13].indexOf(typeSelect) != -1"/>
+		        <field name="journal" hideIf="!typeSelect || [0,2,3,4,5,10,12,13].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company"/>
 		        <field name="account" hideIf="!typeSelect || [0,5,10,12].indexOf(typeSelect) != -1" requiredIf="typeSelect == 13"/>
 		        <field name="paymentMode" hideIf="!typeSelect || [2,3,4,5,10,12,13].indexOf(typeSelect) != -1"/>
 		        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" hideIf="!typeSelect || [0,5,10,12,13].indexOf(typeSelect) != -1"/>

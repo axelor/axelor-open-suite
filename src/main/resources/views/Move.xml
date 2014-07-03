@@ -32,7 +32,7 @@
 	            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 	            <field name="cashRegister"/>
 	            <field name="invoice" domain="self.company = :company" grid-view="invoice-grid" form-view="invoice-form"/>
-	            <field name="journal" domain="self.inactiveOk != true"/>
+	            <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"/>
 	            <field name="paymentMode"/>
 	            <field name="paymentVoucher"/>
 	            <field name="getInfoFromFirstMoveLineOk"/>

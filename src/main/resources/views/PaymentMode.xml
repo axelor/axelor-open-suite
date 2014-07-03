@@ -12,7 +12,7 @@
     <form name="payment-mode-form-2" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode" cols="4">
         <field name="name"/>
         <field name="code"/>
-        <field name="bankJournal"/>
+        <field name="bankJournal" domain="self.statusSelect = 1"/>
         <field name="invoiceLabel" />
         <field name="typeSelect"/>
 		<field name="inOutSelect"/>
