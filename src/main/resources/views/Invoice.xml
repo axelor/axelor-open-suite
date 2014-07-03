@@ -67,7 +67,7 @@
             </page>
             <page title="Accounting" cols="6" >
 				<group name="accountGroup" title="Accounting details" colSpan="6" cols="4" canCollapse="true">
-					<field name="journal" domain="self.inactiveOk != true" readonlyIf="status.code == 'dis'"/>
+					<field name="journal" domain="self.statusSelect = 1 AND self.company = :company" readonlyIf="status.code == 'dis'"/>
 					<field name="partnerAccount" domain="self.company = :company" onSelect="action-invoice-partner-account-domain" readonlyIf="status.code == 'dis'"/>
 					<field name="move" readonlyIf="status.code != 'dis'"/>
 				</group>

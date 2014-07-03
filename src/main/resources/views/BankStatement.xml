@@ -23,7 +23,7 @@
 			<field name="currency" />
 			<field name="fromDate" />
 			<field name="toDate" />
-			<field name="journal" />
+			<field name="journal" domain="self.statusSelect = 1 AND self.company = :company"/>
 			<field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect='cash'"/>
 		</group>
 		<group title="Status" colSpan="1" cols="1">

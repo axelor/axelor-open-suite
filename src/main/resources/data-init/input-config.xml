@@ -3,6 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_2.0.xsd">
   
-    <input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" />
+    <input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" search="self.code = :code" />
 
 </csv-inputs>

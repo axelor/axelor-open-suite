@@ -10,10 +10,12 @@
         <field name="excessPaymentOk"/>
         <field name="editReceiptOk"/>
         <field name="notExportOk"/>
-        <field name="inactiveOk"/>
+        <field name="isObsolete"/>
+        <field name="statusSelect"/>
         <field name="company"/>
     </grid>
-    <form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal" cols="4">
+    <form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal" 
+    	cols="4" onNew="account-journal-record-default">
         <field name="code"/>
         <field name="name"/>
         <field name="type"/>
@@ -21,11 +23,33 @@
         <field name="excessPaymentOk"/>
         <field name="editReceiptOk"/>
         <field name="notExportOk"/>
-        <field name="inactiveOk"/>
         <field name="descriptionModel"/>
         <field name="descriptionIdentificationOk"/>
         <field name="sequence" domain="self.code = 'move' and self.company = :company"/>
         <field name="company"/>
         
+		<break/>		
+		<group colSpan="2" cols="2">    
+		  <spacer colSpan="1"/>
+		  <button name="activeStatus" title="Active" onClick="account-journal-record-status-active,save"/>    
+		  <spacer colSpan="1"/>
+		  <field name="statusSelect" readonly="true" widget="NavSelect" showTitle="false"/>  
+		</group>
+		<group>
+		  <field name="isObsolete" onChange="account-journal-record-status-archived"/>      
+		</group>        
     </form>
+    
+    <action-record name="account-journal-record-default" model="com.axelor.apps.account.db.Journal">
+        <field name="statusSelect" expr="eval: 0"/>
+    </action-record>
+    
+    <action-record name="account-journal-record-status-active" model="com.axelor.apps.account.db.Journal">
+        <field name="statusSelect" expr="eval: 1"/>
+        <field name="isObsolete" expr="false"/>
+    </action-record>
+    
+    <action-record name="account-journal-record-status-archived" model="com.axelor.apps.account.db.Journal">
+        <field name="statusSelect" expr="eval: 2" if="isObsolete == true"/>        
+    </action-record>
 </object-views>

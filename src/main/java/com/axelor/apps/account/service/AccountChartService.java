@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,9 +51,10 @@ public class AccountChartService {
 	public Boolean installAccountChart(AccountChart act, Company company, AccountConfig accountConfig){
 		try {
 			
-			File tempDir = new File(System.getProperty("java.io.tmpdir"));
+			File tempDir = new File(System.getProperty("java.io.tmpdir")+"/chartImport");
+			if(!tempDir.exists())
+				tempDir.mkdir();
 			String chartPath = "/l10n/l10n_"+act.getCountryCode()+"/"+act.getCode()+"/";
-			List<File> fileList = new ArrayList<File>();
 			String[] files = new String[]{"chart-config.xml",
 										  "account_account.csv",
 										  "account_accountEquiv.csv",
@@ -70,6 +72,8 @@ public class AccountChartService {
 					resource = "/l10n/chart-config.xml";
 				LOG.debug("Resource file path: {}",resource);
 				InputStream inputStream = this.getClass().getResourceAsStream(resource);
+				if(inputStream  == null)
+					continue;
 				FileOutputStream outputStream;
 				outputStream = new FileOutputStream(resourceFile);
 				int read = 0;
@@ -77,13 +81,12 @@ public class AccountChartService {
 				while ((read = inputStream.read(bytes)) != -1) 
 					outputStream.write(bytes, 0, read);
 				outputStream.close();
-				fileList.add(resourceFile);
 			}
-			
 			HashMap<String,Object> context = new HashMap<String,Object>();
 			context.put("_companyId", company.getId());
 			importAccountChartData(tempDir.getAbsolutePath()+"/"+"chart-config.xml",tempDir.getAbsolutePath(), context);
 			updateChartCompany(act,company,accountConfig);
+			FileUtils.deleteDirectory(tempDir);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
