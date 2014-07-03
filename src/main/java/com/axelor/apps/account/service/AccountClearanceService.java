@@ -55,25 +55,25 @@ public class AccountClearanceService {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountClearanceService.class);
 	
 	@Inject
-	private MoveService ms;
+	private MoveService moveService;
 	
 	@Inject
-	private MoveLineService mls;
+	private MoveLineService moveLineService;
 	
 	@Inject
-	private SequenceService sgs;
+	private SequenceService sequenceService;
 	
 	@Inject
-	private ReconcileService rs;
+	private ReconcileService reconcileService;
 	
 	@Inject
-	private TaxService vs;
+	private TaxService taxService;
 	
 	@Inject
-	private TaxAccountService vas;
+	private TaxAccountService taxAccountService;
 	
 	@Inject
-	private AccountManagementService ams;
+	private AccountManagementService accountManagementService;
 	
 	private DateTime todayTime;
 	private UserInfo user;
@@ -121,8 +121,8 @@ public class AccountClearanceService {
 		
 		Tax tax = accountConfig.getStandardRateTax();
 		
-		BigDecimal taxRate = vs.getTaxRate(tax, todayTime.toLocalDate());
-		Account taxAccount = vas.getAccount(tax, company);
+		BigDecimal taxRate = taxService.getTaxRate(tax, todayTime.toLocalDate());
+		Account taxAccount = taxAccountService.getAccount(tax, company);
 		Account profitAccount = accountConfig.getProfitAccount();
 		Journal journal = accountConfig.getAccountClearanceJournal();
 		
@@ -130,12 +130,12 @@ public class AccountClearanceService {
 		
 		for(MoveLine moveLine : moveLineList)  {
 			Move move = this.createAccountClearanceMove(moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
-			ms.validateMove(move);
+			moveService.validateMove(move);
 		}
 		
 		accountClearance.setStatus(Status.findByCode("val"));
 		accountClearance.setDateTime(this.todayTime);
-		accountClearance.setName(sgs.getSequence(IAdministration.ACCOUNT_CLEARANCE, company, false));
+		accountClearance.setName(sequenceService.getSequenceNumber(IAdministration.ACCOUNT_CLEARANCE, company));
 		accountClearance.save();
 	}
 	
@@ -144,26 +144,26 @@ public class AccountClearanceService {
 		Partner partner = moveLine.getPartner();
 		
 		// Move
-		Move move = ms.createMove(journal, company, null, partner, null);
+		Move move = moveService.createMove(journal, company, null, partner, null);
 
 		// Debit MoveLine 411
 		BigDecimal amount = moveLine.getAmountRemaining();
-		MoveLine debitMoveLine = mls.createMoveLine(move, partner, moveLine.getAccount(), amount, true, false, todayTime.toLocalDate(), 1, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), amount, true, false, todayTime.toLocalDate(), 1, null);
 		move.getMoveLineList().add(debitMoveLine);
 		
 		// Credit MoveLine 77. (profit account)
 		BigDecimal divid = taxRate.add(BigDecimal.ONE);
 		BigDecimal profitAmount = amount.divide(divid, 2, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN);
-		MoveLine creditMoveLine1 = mls.createMoveLine(move, partner, profitAccount, profitAmount, false, false, todayTime.toLocalDate(), 2, null);
+		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, partner, profitAccount, profitAmount, false, false, todayTime.toLocalDate(), 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 
 		// Credit MoveLine 445 (Tax account)
 		BigDecimal taxAmount = amount.subtract(profitAmount);
-		MoveLine creditMoveLine2 = mls.createMoveLine(move, partner, taxAccount, taxAmount, false, false, todayTime.toLocalDate(), 3, null);
+		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, partner, taxAccount, taxAmount, false, false, todayTime.toLocalDate(), 3, null);
 		move.getMoveLineList().add(creditMoveLine2);
 		
-		Reconcile reconcile = rs.createReconcile(debitMoveLine, moveLine, amount);
-		rs.confirmReconcile(reconcile);
+		Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount);
+		reconcileService.confirmReconcile(reconcile);
 		
 		debitMoveLine.setAccountClearance(accountClearance);
 		creditMoveLine1.setAccountClearance(accountClearance);
@@ -219,8 +219,7 @@ public class AccountClearanceService {
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 			
-		String seq = sgs.getSequence(IAdministration.ACCOUNT_CLEARANCE, company, true);
-		if(seq == null) {
+		if(!sequenceService.hasSequence(IAdministration.ACCOUNT_CLEARANCE, company)) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Apurement des trop-perçus pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}

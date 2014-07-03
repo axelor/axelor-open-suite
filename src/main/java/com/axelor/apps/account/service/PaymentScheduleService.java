@@ -62,7 +62,7 @@ public class PaymentScheduleService {
 	private MoveLineService mls;
 	
 	@Inject
-	private SequenceService sgs;
+	private SequenceService sequenceService;
 	
 	@Inject
 	private AlarmEngineService<Partner> aes;
@@ -183,7 +183,7 @@ public class PaymentScheduleService {
 	 * @throws AxelorException
 	 */
 	public String getPaymentScheduleSequence(Company company) throws AxelorException  {
-		String seq = sgs.getSequence(IAdministration.PAYMENT_SCHEDULE, company, false);
+		String seq = sequenceService.getSequenceNumber(IAdministration.PAYMENT_SCHEDULE, company);
 		if(seq == null)  {
 			throw new AxelorException(String.format(
 							"%s :\n Veuillez configurer une séquence Echéancier pour la société %s ",

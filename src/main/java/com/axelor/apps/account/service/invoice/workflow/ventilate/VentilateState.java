@@ -153,22 +153,22 @@ public class VentilateState extends WorkflowInvoice {
 				
 		case IInvoice.SUPPLIER_PURCHASE:
 			
-			invoice.setInvoiceId(SequenceService.getSequence(IAdministration.SUPPLIER_INVOICE, invoice.getCompany(), false));
+			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.SUPPLIER_INVOICE, invoice.getCompany()));
 			break;
 			
 		case IInvoice.SUPPLIER_REFUND:
 			
-			invoice.setInvoiceId(SequenceService.getSequence(IAdministration.SUPPLIER_REFUND, invoice.getCompany(), false));
+			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.SUPPLIER_REFUND, invoice.getCompany()));
 			break;
 
 		case IInvoice.CLIENT_SALE:
 			
-			invoice.setInvoiceId(SequenceService.getSequence(IAdministration.CUSTOMER_INVOICE, invoice.getCompany(), false));
+			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.CUSTOMER_INVOICE, invoice.getCompany()));
 			break;
 			
 		case IInvoice.CLIENT_REFUND:
 				
-			invoice.setInvoiceId(SequenceService.getSequence(IAdministration.CUSTOMER_REFUND, invoice.getCompany(), false));
+			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.CUSTOMER_REFUND, invoice.getCompany()));
 			break;
 			
 		default:

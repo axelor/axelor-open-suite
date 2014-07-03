@@ -81,7 +81,7 @@ public class PaymentVoucherSequenceService  {
 	
 	public String getReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal)  {
 		
-		return sequenceService.getSequence(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company, false);
+		return sequenceService.getSequenceNumber(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company);
 	
 	}
 	
@@ -90,9 +90,7 @@ public class PaymentVoucherSequenceService  {
 		
 		Company company = paymentVoucher.getCompany();
 		
-		String seq = sequenceService.getSequence(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company, true);
-		
-		if(seq == null)  {
+		if(!sequenceService.hasSequence(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company))  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Numéro de reçu (Saisie paiement) pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}

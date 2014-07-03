@@ -259,8 +259,7 @@ public class ReimbursementExportService {
 		accountConfigService.getReimbursementJournal(accountConfig);
 		accountConfigService.getReimbursementExportFolderPath(accountConfig);
 		
-		String seq = sequenceService.getSequence(IAdministration.REIMBOURSEMENT, company, true);
-		if(seq == null) {
+		if(!sequenceService.hasSequence(IAdministration.REIMBOURSEMENT, company)) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Remboursement pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
@@ -297,9 +296,7 @@ public class ReimbursementExportService {
 		
 		reimbursement.setBankDetails(bankDetails);
 		
-		String seq = sequenceService.getSequence(IAdministration.REIMBOURSEMENT, company, false);
-
-		reimbursement.setRef(seq);
+		reimbursement.setRef(sequenceService.getSequenceNumber(IAdministration.REIMBOURSEMENT, company));
 		
 		return reimbursement;
 	}

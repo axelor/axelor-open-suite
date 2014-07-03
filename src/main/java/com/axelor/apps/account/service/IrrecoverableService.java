@@ -893,7 +893,7 @@ public class IrrecoverableService {
 	
 	public String getSequence(Company company) throws AxelorException  {
 		
-		String seq = sequenceService.getSequence(IAdministration.IRRECOVERABLE, company, false);
+		String seq = sequenceService.getSequenceNumber(IAdministration.IRRECOVERABLE, company);
 		if(seq == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de Passage en irrécouvrable pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);

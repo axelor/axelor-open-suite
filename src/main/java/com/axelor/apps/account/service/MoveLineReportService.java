@@ -51,6 +51,8 @@ public class MoveLineReportService {
 	private Injector injector;
 
 	private DateTime dateTime;
+	
+	private String query;
 
 	@Inject
 	public MoveLineReportService() {
@@ -58,137 +60,150 @@ public class MoveLineReportService {
 		dateTime = GeneralService.getTodayDateTime();
 
 	}
+	
 
 	public String getMoveLineList(MoveLineReport moveLineReport) throws AxelorException  {
+		
+		this.initQuery();
 
-		String query = "";
-		String and = " AND ";
+		this.buildQuery(moveLineReport);
+		
+		LOG.debug("Requete : {}", this.query);
 
-		if(moveLineReport.getCompany() != null)  {  query += String.format("self.move.company = %s", moveLineReport.getCompany().getId());  } 
+		return this.query;
+
+	}
+	
+	
+	public void initQuery()  {
+		
+		this.query = "";
+		
+	}
+	
+	
+	public String buildQuery(MoveLineReport moveLineReport) throws AxelorException  {
+		
+		if(moveLineReport.getCompany() != null)  {  
+			this.addParams("self.move.company = %s", moveLineReport.getCompany().getId().toString());
+		}
 
 		if(moveLineReport.getCashRegister() != null)	{
-			if(!query.equals(""))  {  query += and;  }
-			query += String.format("self.move.agency = %s", moveLineReport.getCashRegister().getId());  
+			this.addParams("self.move.agency = %s", moveLineReport.getCashRegister().getId().toString());
 		}
 		
 		if(moveLineReport.getDateFrom() != null)  {
-			if(!query.equals(""))  { query += and;  }
-			query += String.format("self.date >='%s'", moveLineReport.getDateFrom().toString());  
+			this.addParams("self.date >='%s'", moveLineReport.getDateFrom().toString());
 		}
 
 		if(moveLineReport.getDateTo() != null)  {
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.date <= '%s'", moveLineReport.getDateTo().toString());  
+			this.addParams("self.date <= '%s'", moveLineReport.getDateTo().toString());
 		}
 
 		if(moveLineReport.getDate() != null)  {
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.date <= '%s'", moveLineReport.getDate().toString());  
+			this.addParams("self.date <= '%s'", moveLineReport.getDate().toString());
 		}
 
 		if(moveLineReport.getJournal() != null)	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.move.journal = %s", moveLineReport.getJournal().getId());  
+			this.addParams("self.move.journal = %s", moveLineReport.getJournal().getId().toString());
 		}
 
 		if(moveLineReport.getPeriod() != null)	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.move.period = %s", moveLineReport.getPeriod().getId());  
+			this.addParams("self.move.period = %s", moveLineReport.getPeriod().getId().toString());
 		}
 
 		if(moveLineReport.getAccount() != null)	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.account = %s", moveLineReport.getAccount().getId());  
+			this.addParams("self.account = %s", moveLineReport.getAccount().getId().toString());
 		}
 
 		if(moveLineReport.getFromPartner() != null)	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.partner.name >= '%s'", moveLineReport.getFromPartner().getName().replace("'", " "));  
+			this.addParams("self.partner.name >= '%s'", moveLineReport.getFromPartner().getName().replace("'", " "));
 		}
 
 		if(moveLineReport.getToPartner() != null)	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.partner.name <= '%s'", moveLineReport.getToPartner().getName().replace("'", " "));  
+			this.addParams("self.partner.name <= '%s'", moveLineReport.getToPartner().getName().replace("'", " "));
 		}
 
 		if(moveLineReport.getPartner() != null)	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.partner = %s", moveLineReport.getPartner().getId());  
+			this.addParams("self.partner = %s", moveLineReport.getPartner().getId().toString());
 		}
 
 		if(moveLineReport.getYear() != null)  {
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.move.period.year = %s", moveLineReport.getYear().getId()); 
+			this.addParams("self.move.period.year = %s", moveLineReport.getYear().getId().toString());
 		}
 
 		if(moveLineReport.getPaymentMode() != null)	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.move.paymentMode = %s", moveLineReport.getPaymentMode().getId());  
+			this.addParams("self.move.paymentMode = %s", moveLineReport.getPaymentMode().getId().toString());
 		}
 
 		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.move.journal.type = %s", this.getJournalType(moveLineReport).getId());  
+			this.addParams("self.move.journal.type = %s", this.getJournalType(moveLineReport).getId().toString());
 		}
 
 		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.moveLineReport = %s)) ", moveLineReport.getId());  
+			this.addParams("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.moveLineReport = %s))", moveLineReport.getId().toString());
 		}
 		
 		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.move.journal.notExportOk = false ");  
+			this.addParams("self.move.journal.notExportOk = false ");
 		}
 		
-		if(moveLineReport.getTypeSelect() != null && moveLineReport.getTypeSelect() == 5)	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.move.paymentMode.code = 'CHQ'");  
+		if(moveLineReport.getTypeSelect() == 5)	{
+			this.addParams("self.move.paymentMode.code = 'CHQ'");
 		}
 
-		if(moveLineReport.getTypeSelect() != null && moveLineReport.getTypeSelect() == 10)	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.move.paymentMode.code = 'ESP'");  
+		if(moveLineReport.getTypeSelect() == 10)	{
+			this.addParams("self.move.paymentMode.code = 'ESP'");
 		}
 
-		if(moveLineReport.getTypeSelect() != null &&( moveLineReport.getTypeSelect() == 5 ))	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.amountPaid > 0 AND self.credit > 0");  
+		if(moveLineReport.getTypeSelect() == 5)	{
+			this.addParams("self.amountPaid > 0 AND self.credit > 0");
 		}
 
-		if(moveLineReport.getTypeSelect() != null &&( moveLineReport.getTypeSelect() == 10 ))	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.credit > 0");  
+		if(moveLineReport.getTypeSelect() == 10)	{
+			this.addParams("self.credit > 0");
 		}
 
-		if(moveLineReport.getTypeSelect() != null && ( moveLineReport.getTypeSelect() <= 5 || moveLineReport.getTypeSelect() == 10 ))	{
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.account.reconcileOk = 'true'");  
+		if(moveLineReport.getTypeSelect() <= 5 || moveLineReport.getTypeSelect() == 10)	{
+			this.addParams("self.account.reconcileOk = 'true'");
 		}
 
-		if(moveLineReport.getTypeSelect() != null && moveLineReport.getTypeSelect() == 1)  {
-			if(!query.equals("")) {  query += and;  }
-			query += String.format("self.credit > 0");
+		if(moveLineReport.getTypeSelect() == 1)  {
+			this.addParams("self.credit > 0");
 		}
 
-		if(moveLineReport.getTypeSelect() != null && moveLineReport.getTypeSelect() == 12)  {
-			if(!query.equals("")) {  query += and;  }
-			query += "self.account.code LIKE '7%'";
+		if(moveLineReport.getTypeSelect() == 12)  {
+			this.addParams("self.account.code LIKE '7%'");
 		}
 
-		if(moveLineReport.getTypeSelect() != null && moveLineReport.getTypeSelect() == 4)  {
-			if(!query.equals("")) {  query += and;  }
-			query += "self.amountRemaining > 0 AND self.debit > 0";
+		if(moveLineReport.getTypeSelect() == 4)  {
+			this.addParams("self.amountRemaining > 0 AND self.debit > 0");
 		}
 
-		if(!query.equals("")) {  query += and;  }
-		query += String.format("self.move.ignoreInAccountingOk = 'false'");  
-
-		LOG.debug("Requete : {}", query);
-
-		return query;
-
+		this.addParams("self.move.ignoreInAccountingOk = 'false'");
+		
+		return this.query;
+		
 	}
+	
+	
+	
+	public String addParams(String paramQuery, String param)  {
+		
+		this.addParams(String.format(paramQuery, param));
+		return this.query;
+		
+	}
+	
+	public String addParams(String paramQuery)  {
+		
+		if(!this.query.equals("")) {  this.query += " AND ";  }
+		
+		this.query += paramQuery;
+		return this.query;
+		
+	}
+	
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setSequence(MoveLineReport moveLineReport, String sequence)  {
@@ -197,32 +212,28 @@ public class MoveLineReportService {
 	}
 
 	public String getSequence(MoveLineReport moveLineReport) throws AxelorException  {
-		if(moveLineReport.getTypeSelect() > 0)  {
+		if(moveLineReport.getTypeSelect() <= 0)  { 	return null;  }
+			
+		SequenceService sequenceService = injector.getInstance(SequenceService.class);
+		if(moveLineReport.getTypeSelect() <= 5 || moveLineReport.getTypeSelect() >= 10 )  {
 
-			SequenceService sgs = injector.getInstance(SequenceService.class);
-			if(moveLineReport.getTypeSelect() <= 5 || moveLineReport.getTypeSelect() >= 10 )  {
-
-				String seq = sgs.getSequence(IAdministration.MOVE_LINE_REPORT, moveLineReport.getCompany(), false);
-				if(seq != null)  {  
-					return seq;
-				}
-				else  {  
-					throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Reporting comptable pour la société %s",
-							GeneralService.getExceptionAccountingMsg(), moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
-				}
+			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_REPORT, moveLineReport.getCompany());
+			if(seq == null)  {  
+				throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Reporting comptable pour la société %s",
+						GeneralService.getExceptionAccountingMsg(), moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
-			else  {
-				String seq = sgs.getSequence(IAdministration.MOVE_LINE_EXPORT, moveLineReport.getCompany(), false);
-				if(seq != null)  {  
-					return seq;
-				}
-				else  {  
-					throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Export comptable pour la société %s",
-							GeneralService.getExceptionAccountingMsg(), moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
-				}
-			}
+			
+			return seq;
 		}
-		else  return "";
+		else  {
+			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_EXPORT, moveLineReport.getCompany());
+			if(seq == null)  {  
+				throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Export comptable pour la société %s",
+						GeneralService.getExceptionAccountingMsg(), moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
+			}
+			
+			return seq;
+		}
 	}
 
 

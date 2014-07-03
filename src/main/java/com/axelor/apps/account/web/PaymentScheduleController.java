@@ -26,12 +26,19 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
+import com.google.inject.Provider;
 
 public class PaymentScheduleController {
 	
 	@Inject
-	private Injector injector;
+	private Provider<PaymentScheduleService> paymentScheduleProvider;
+	
+	@Inject
+	private Provider<SequenceService> sequenceProvider;
+	
+	@Inject
+	private Provider<IrrecoverableService> irrecoverableProvider;
+	
 	
 	// Validation button
 	public void validate(ActionRequest request, ActionResponse response) {
@@ -39,10 +46,8 @@ public class PaymentScheduleController {
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
 		paymentSchedule = PaymentSchedule.find(paymentSchedule.getId());
 		
-		PaymentScheduleService pss = injector.getInstance(PaymentScheduleService.class);
-		
 		try {
-			pss.validatePaymentSchedule(paymentSchedule);
+			paymentScheduleProvider.get().validatePaymentSchedule(paymentSchedule);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -54,10 +59,8 @@ public class PaymentScheduleController {
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
 		paymentSchedule = PaymentSchedule.find(paymentSchedule.getId());
 		
-		PaymentScheduleService pss = injector.getInstance(PaymentScheduleService.class);
-		
 		try {
-			pss.toCancelPaymentSchedule(paymentSchedule);
+			paymentScheduleProvider.get().toCancelPaymentSchedule(paymentSchedule);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -68,11 +71,9 @@ public class PaymentScheduleController {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
 		
-		SequenceService sgs = injector.getInstance(SequenceService.class);
-		
 		if (paymentSchedule.getScheduleId() == null) {
 		
-			String num = sgs.getSequence(IAdministration.PAYMENT_SCHEDULE, paymentSchedule.getCompany(), false);
+			String num = sequenceProvider.get().getSequenceNumber(IAdministration.PAYMENT_SCHEDULE, paymentSchedule.getCompany());
 		
 			if(num == null || num.isEmpty()) {
 				
@@ -90,9 +91,7 @@ public class PaymentScheduleController {
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
 		paymentSchedule = PaymentSchedule.find(paymentSchedule.getId());
 		
-		PaymentScheduleService pss = injector.getInstance(PaymentScheduleService.class);
-		
-		pss.createPaymentScheduleLines(paymentSchedule);
+		paymentScheduleProvider.get().createPaymentScheduleLines(paymentSchedule);
 		response.setReload(true);
 	}
 	
@@ -101,10 +100,8 @@ public class PaymentScheduleController {
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
 		paymentSchedule = PaymentSchedule.find(paymentSchedule.getId());
 		
-		IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
-		
 		try  {
-			is.passInIrrecoverable(paymentSchedule);
+			irrecoverableProvider.get().passInIrrecoverable(paymentSchedule);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }		
@@ -115,10 +112,8 @@ public class PaymentScheduleController {
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
 		paymentSchedule = PaymentSchedule.find(paymentSchedule.getId());
 		
-		IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
-		
 		try  {
-			is.notPassInIrrecoverable(paymentSchedule);
+			irrecoverableProvider.get().notPassInIrrecoverable(paymentSchedule);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

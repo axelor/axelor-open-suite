@@ -165,7 +165,7 @@ public class MoveLineExportService {
 	
 	public String getSaleExportNumber(Company company) throws AxelorException  {
 		
-		String exportNumber = sequenceService.getSequence(IAdministration.SALES_INTERFACE, company, false);
+		String exportNumber = sequenceService.getSequenceNumber(IAdministration.SALES_INTERFACE, company);
 		if(exportNumber == null)  {  
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Vente pour la société %s",
 					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
@@ -178,7 +178,7 @@ public class MoveLineExportService {
 	
 	public String getRefundExportNumber(Company company) throws AxelorException  {
 		
-		String exportNumber = sequenceService.getSequence(IAdministration.REFUND_INTERFACE, company, false);
+		String exportNumber = sequenceService.getSequenceNumber(IAdministration.REFUND_INTERFACE, company);
 		if(exportNumber == null)  {  
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Avoir pour la société %s",
 					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
@@ -191,7 +191,7 @@ public class MoveLineExportService {
 	
 	public String getTreasuryExportNumber(Company company) throws AxelorException  {
 		
-		String exportNumber = sequenceService.getSequence(IAdministration.TREASURY_INTERFACE, company, false);
+		String exportNumber = sequenceService.getSequenceNumber(IAdministration.TREASURY_INTERFACE, company);
 		if(exportNumber == null)  {  
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Trésorerie pour la société %s",
 					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
@@ -204,7 +204,7 @@ public class MoveLineExportService {
 	
 	public String getPurchaseExportNumber(Company company) throws AxelorException  {
 	
-		String exportNumber = sequenceService.getSequence(IAdministration.PURCHASE_INTERFACE, company, false);
+		String exportNumber = sequenceService.getSequenceNumber(IAdministration.PURCHASE_INTERFACE, company);
 		if(exportNumber == null)  {  
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Achat pour la société %s",
 					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
