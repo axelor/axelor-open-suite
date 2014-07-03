@@ -216,7 +216,7 @@ public class ManufOrderService {
 	
 	public String getManufOrderSeq() throws AxelorException  {
 		
-		String seq = sequenceService.getSequence(IAdministration.MANUF_ORDER, false);
+		String seq = sequenceService.getSequenceNumber(IAdministration.MANUF_ORDER);
 		
 		if(seq == null)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.MANUF_ORDER_SEQ), IException.CONFIGURATION_ERROR);
