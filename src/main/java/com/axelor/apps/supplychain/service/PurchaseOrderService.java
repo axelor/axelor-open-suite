@@ -202,9 +202,9 @@ public class PurchaseOrderService {
 	
 	
 	public String getSequence(Company company) throws AxelorException  {
-		String seq = sequenceService.getSequence(IAdministration.PURCHASE_ORDER,company,false);
+		String seq = sequenceService.getSequenceNumber(IAdministration.PURCHASE_ORDER, company);
 		if (seq == null)  {
-			throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les commandes fournisseur",company.getName()),
+			throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les commandes fournisseur", company.getName()),
 							IException.CONFIGURATION_ERROR);
 		}
 		return seq;

@@ -99,11 +99,14 @@ public class TrackingNumberService {
 		trackingNumber.setProduct(product);
 		trackingNumber.setCounter(BigDecimal.ZERO);
 		
-		String seq = sequenceService.getSequence(IAdministration.PRODUCT_TRACKING_NUMBER, product, company, false);
-		if (seq == null)  {
-			throw new AxelorException(String.format("%s Aucune séquence configurée pour les Numéros de suivi pour la société %s et le produit %s ",
+		TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
+		
+		if (trackingNumberConfiguration.getSequence() == null)  {
+			throw new AxelorException(String.format("%s Aucune séquence configurée pour les Numéros de suivi pour le produit %s ",
 					exceptionMsg, company.getName(), product.getCode()), IException.CONFIGURATION_ERROR);
 		}
+		
+		String seq = sequenceService.getSequenceNumber(trackingNumberConfiguration.getSequence(), false);
 		
 		trackingNumber.setTrackingNumberSeq(seq);
 		

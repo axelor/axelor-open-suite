@@ -118,7 +118,7 @@ public class InventoryService {
 	
 	public String getInventorySequence(Company company) throws AxelorException   {
 		
-		String ref = sequenceService.getSequence(IAdministration.INVENTORY, company,false);
+		String ref = sequenceService.getSequenceNumber(IAdministration.INVENTORY, company);
 		if (ref == null)
 			throw new AxelorException("Aucune séquence configurée pour les inventaires pour la société "+company.getName(),
 							IException.CONFIGURATION_ERROR);

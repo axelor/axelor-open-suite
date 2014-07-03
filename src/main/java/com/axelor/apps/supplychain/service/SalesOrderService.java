@@ -173,7 +173,7 @@ public class SalesOrderService {
 	
 	
 	public String getSequence(Company company) throws AxelorException  {
-		String seq = sequenceService.getSequence(IAdministration.SALES_ORDER, company, false);
+		String seq = sequenceService.getSequenceNumber(IAdministration.SALES_ORDER, company);
 		if (seq == null)  {
 			throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les devis clients",company.getName()),
 							IException.CONFIGURATION_ERROR);
