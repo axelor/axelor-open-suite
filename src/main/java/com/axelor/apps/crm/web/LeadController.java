@@ -37,12 +37,13 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 
 public class LeadController {
 
 	@Inject
-	AddressService addressService;
+	private Provider<AddressService> addressProvider;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(LeadController.class);
 	
@@ -130,7 +131,7 @@ public class LeadController {
 			response.setFlash("Can not open map, Please Configure Application Home First.");
 			return;
 		}
-		if (!addressService.isInternetAvailable()) {
+		if (!addressProvider.get().isInternetAvailable()) {
 			response.setFlash("Can not open map, Please Check your Internet connection.");
 			return;			
 		}		

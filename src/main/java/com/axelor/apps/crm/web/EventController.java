@@ -39,6 +39,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 
 public class EventController {
@@ -46,16 +47,17 @@ public class EventController {
 	private static final Logger LOG = LoggerFactory.getLogger(EventController.class);
 	
 	@Inject
-	private EventService eventService;
+	private Provider<EventService> eventProvider;
 	
 	@Inject
-	SequenceService sequenceService;
+	private Provider<SequenceService> sequenceProvider;
 	
 	@Inject
-	AddressService ads;
+	private Provider<AddressService> addressProvider;
 	
 	@Inject
-	UserInfoService  uis;
+	private Provider<UserInfoService> userInfoProvider;
+	
 	
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 		
@@ -65,11 +67,13 @@ public class EventController {
 		
 		if(event.getStartDateTime() != null) {
 			if(event.getEndDateTime() != null) {
+				EventService eventService = eventProvider.get();
+				
 				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
 				response.setValue("duration", eventService.getDuration(duration));
 			}
 			else if(event.getDuration() != null) {
-				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
+				response.setValue("endDateTime", eventProvider.get().computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
 		}
 	}
@@ -82,11 +86,13 @@ public class EventController {
 		
 		if(event.getEndDateTime() != null) {
 			if(event.getStartDateTime() != null) {
+				EventService eventService = eventProvider.get();
+				
 				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
 				response.setValue("duration", eventService.getDuration(duration));
 			}
 			else if(event.getDuration() != null)  {
-				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
+				response.setValue("startDateTime", eventProvider.get().computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
 			}
 		}
 	}
@@ -99,10 +105,10 @@ public class EventController {
 		
 		if(event.getDuration() != null)  {
 			if(event.getStartDateTime() != null)  {
-				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
+				response.setValue("endDateTime", eventProvider.get().computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
 			else if(event.getEndDateTime() != null)  {
-				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
+				response.setValue("startDateTime", eventProvider.get().computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
 			}
 		}
 	}
@@ -115,6 +121,8 @@ public class EventController {
 		LOG.debug("event : {}", event);
 		
 		if(event.getStartDateTime() != null && event.getEndDateTime() != null) {
+			EventService eventService = eventProvider.get();
+			
 			Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
 			response.setValue("duration", eventService.getDuration(duration));
 		}
@@ -126,40 +134,43 @@ public class EventController {
 		Event event = request.getContext().asType(Event.class);
 		
 		if(event.getTicketNumberSeq() ==  null && event.getTypeSelect() == IEvent.TICKET){
-			String ref = sequenceService.getSequence(IAdministration.EVENT_TICKET,false);
-			if (ref == null)
+			String seq = sequenceProvider.get().getSequenceNumber(IAdministration.EVENT_TICKET);
+			if (seq == null)
 				throw new AxelorException("Aucune séquence configurée pour les tickets",
 								IException.CONFIGURATION_ERROR);
 			else
-				response.setValue("ticketNumberSeq", ref);
+				response.setValue("ticketNumberSeq", seq);
 		}
 	}
 	
+	//TODO : replace by XML action
 	public void saveEventStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 		Event event = request.getContext().asType(Event.class);
 		Event persistEvent = Event.find(event.getId());
 		persistEvent.setStatusSelect(event.getStatusSelect());
-		eventService.saveEvent(persistEvent);
+		eventProvider.get().saveEvent(persistEvent);
 	}
 	
+	//TODO : replace by XML action
 	public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 		Event event = request.getContext().asType(Event.class);
 		Event persistEvent = Event.find(event.getId());
 		persistEvent.setTaskStatusSelect(event.getTaskStatusSelect());
-		eventService.saveEvent(persistEvent);
+		eventProvider.get().saveEvent(persistEvent);
 	}
 	
+	//TODO : replace by XML action
 	public void saveEventTicketStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 		Event event = request.getContext().asType(Event.class);
 		Event persistEvent = Event.find(event.getId());
 		persistEvent.setTicketStatusSelect(event.getTicketStatusSelect());
-		eventService.saveEvent(persistEvent);
+		eventProvider.get().saveEvent(persistEvent);
 	}
 	
 	public void viewMap(ActionRequest request, ActionResponse response)  {
 		Event event = request.getContext().asType(Event.class);
 		if(event.getLocation() != null){
-			Map<String,Object> result = ads.getMap(event.getLocation(), BigDecimal.ZERO, BigDecimal.ZERO);
+			Map<String,Object> result = addressProvider.get().getMap(event.getLocation(), BigDecimal.ZERO, BigDecimal.ZERO);
 			if(result != null){
 				Map<String,Object> mapView = new HashMap<String,Object>();
 				mapView.put("title", "Map");
@@ -183,7 +194,7 @@ public class EventController {
 			
 			if(event != null)  {
 				
-				eventService.addLeadAttendee(event, lead, null);
+				eventProvider.get().addLeadAttendee(event, lead, null);
 				response.setReload(true);
 				
 			}
@@ -195,17 +206,17 @@ public class EventController {
 	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
 		if(request.getContext().get("id") != null){
 			Lead lead = Lead.find((Long)request.getContext().get("id"));
-			lead.setUserInfo(uis.getUserInfo());
+			lead.setUserInfo(userInfoProvider.get().getUserInfo());
 			if(lead.getStatusSelect() == 1)
 				lead.setStatusSelect(2);
-			eventService.saveLead(lead);
+			eventProvider.get().saveLead(lead);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
 			for(Lead lead : Lead.filter("id in ?1",request.getContext().get("_ids")).fetch()){
-				lead.setUserInfo(uis.getUserInfo());
+				lead.setUserInfo(userInfoProvider.get().getUserInfo());
 				if(lead.getStatusSelect() == 1)
 					lead.setStatusSelect(2);
-				eventService.saveLead(lead);
+				eventProvider.get().saveLead(lead);
 			}
 		}
 		response.setReload(true);
@@ -215,13 +226,13 @@ public class EventController {
 	public void assignToMeEvent(ActionRequest request, ActionResponse response)  {
 		if(request.getContext().get("id") != null){
 			Event event = Event.find((Long)request.getContext().get("id"));
-			event.setUserInfo(uis.getUserInfo());
-			eventService.saveEvent(event);
+			event.setUserInfo(userInfoProvider.get().getUserInfo());
+			eventProvider.get().saveEvent(event);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
 			for(Event event : Event.filter("id in ?1",request.getContext().get("_ids")).fetch()){
-				event.setUserInfo(uis.getUserInfo());
-				eventService.saveEvent(event);
+				event.setUserInfo(userInfoProvider.get().getUserInfo());
+				eventProvider.get().saveEvent(event);
 			}
 		}
 		response.setReload(true);

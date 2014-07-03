@@ -100,12 +100,12 @@ public class LeadService {
 	 */
 	public String getSequence() throws AxelorException  {
 		
-		String ref = sequenceService.getSequence(IAdministration.PARTNER,false);
-		if (ref == null)  {
+		String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
+		if (seq == null)  {
 			throw new AxelorException("Aucune séquence configurée pour les tiers",
 							IException.CONFIGURATION_ERROR);
 		}
-		return ref;
+		return seq;
 	}
 	
 	
