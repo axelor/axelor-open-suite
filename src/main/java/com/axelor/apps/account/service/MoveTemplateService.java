@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -34,7 +36,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MoveTemplateService {
-   
+	
+	private static final Logger LOG = LoggerFactory.getLogger(MoveTemplateService.class);
+	
 	@Inject
 	MoveService moveService;
 	
@@ -70,22 +74,21 @@ public class MoveTemplateService {
 					partner = creditPartner;
 				}
 				Move move = moveService.createMove(moveTemplate.getJournal(), moveTemplate.getCompany(), null, partner,moveDate, null);
-				List<MoveLine> moveLineList = new ArrayList<MoveLine>();  
 				for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
 					partner = null;
 					if(line.getDebitCreditSelect().equals("0")){
 						if(line.getPartnerToDebit())
 							partner = debitPartner;
-						moveLineList.add(moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), true, true, moveDate, moveDate, 0, line.getName()));
+						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), true, true, moveDate, moveDate, 0, line.getName());
+						move.getMoveLineList().add(moveLine);
 					}
 					else{
 						if(line.getPartnerToDebit())
 							partner = creditPartner;
-						moveLineList.add(moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), false, false, moveDate, moveDate, 0, line.getName()));
+						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), false, false, moveDate, moveDate, 0, line.getName());
+						move.getMoveLineList().add(moveLine);
 					}
-					
 				}
-				move.setMoveLineList(moveLineList);
 				move.save();
 				moveList.add(move.getId());
 			}
