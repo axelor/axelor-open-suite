@@ -75,7 +75,7 @@ public class AddressService {
 	}
 	
 	public int export(String path) throws IOException {
-		List<Address> addresses = (List<Address>) Address.all().filter("self.certifiedOk IS FALSE").fetch();
+		List<Address> addresses = (List<Address>) Address.filter("self.certifiedOk IS FALSE").fetch();
 		
 		CSVWriter csv = new CSVWriter(new java.io.FileWriter(path), "|".charAt(0), CSVWriter.NO_QUOTE_CHARACTER);
 		List<String> header = new ArrayList<String>();

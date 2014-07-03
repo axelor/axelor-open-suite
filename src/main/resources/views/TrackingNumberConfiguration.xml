@@ -44,6 +44,7 @@
 	        <break/>
 	        <field name="saleQtyByTracking" help="0 --&gt; infinite" colSpan="2" readonlyIf="hasSaleAutoSelectTrackingNbr"/>
 	    </group>
+	    <field name="sequence" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr"/>
     </form>
     
     <action-record name="action-tracking-number-config-record-default" model="com.axelor.apps.base.db.TrackingNumberConfiguration">

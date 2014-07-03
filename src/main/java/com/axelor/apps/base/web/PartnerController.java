@@ -59,12 +59,12 @@ public class PartnerController {
 		Partner partner = request.getContext().asType(Partner.class);
 		partner = Partner.find(partner.getId());
 		if(partner.getPartnerSeq() ==  null) {
-			String ref = sequenceService.getSequence(IAdministration.PARTNER,false);
-			if (ref == null)  
+			String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
+			if (seq == null)  
 				throw new AxelorException("Aucune séquence configurée pour les tiers",
 						IException.CONFIGURATION_ERROR);
 			else
-				response.setValue("partnerSeq", ref);
+				response.setValue("partnerSeq", seq);
 		}
 	}
 

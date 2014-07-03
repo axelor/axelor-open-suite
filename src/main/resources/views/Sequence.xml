@@ -48,11 +48,6 @@ xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelo
 			<label title="%M : Month" colSpan="4"/>
 			<label title="%D : Day" colSpan="4"/>
 			<label title="%WY : Week number" colSpan="4"/>
-			<label title="%PC : Product code" showIf="code == 'productTrackingNumber'" colSpan="4"/>
-		</group>
-		<group title="Specific attributes">
-			<field name="journal"/>
-			<field name="product" showIf="code == 'productTrackingNumber'" requiredIf="code == 'productTrackingNumber'"/>
 		</group>
 	</form>
     

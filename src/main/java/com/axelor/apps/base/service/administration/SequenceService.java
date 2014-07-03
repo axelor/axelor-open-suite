@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -78,8 +77,8 @@ public class SequenceService {
 	 * Retourne une sequence en fonction du code
 	 * @return
 	 */
-	public String getSequence(String code, boolean check) {
-		return getSequence(code, null, check);
+	public Sequence getSequence(String code) {
+		return getSequence(code, null);
 	}	
 	
 	
@@ -88,74 +87,70 @@ public class SequenceService {
 	 * 
 	 * @return
 	 */
-	public String getSequence(String code, Company company, boolean check) {
+	public Sequence getSequence(String code, Company company) {
 	
 		if (code == null)  {
-			LOG.debug("End getSequence : : : : NO code");	
 			return null;
 		}	
 			
-		Sequence sequence = null;
-		if (company == null){
-			sequence = Sequence.findByCode("code");
+		if (company == null)  {
+			return Sequence.findByCode("code");
 		}
 		else {
-			sequence = Sequence.filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
+			return Sequence.filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
 		}
 	
-		if (sequence == null)  {
-			LOG.debug("End getSequence : : : : NO SEQUENCE.");	
-			return null;
-		}
-		
-		if (!check)  {
-			return getSequence(sequence, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
-		}
-		else  {
-			return "true";
-		}
-			
 	}
 	
 	/**
-	 * Retourne une sequence en fonction du code, de la sté et du produit 
-	 * Le paramètre check permet de faire une vérification sans que la séquence ne soit incrémentée
+	 * Retourne une sequence en fonction du code, de la sté 
 	 * 
 	 * @return
 	 */
-	public String getSequence(String code, Product product, Company company, boolean check) {
-		if (code == null)  {
-			LOG.debug("End getSequence : : : : NO code");	
-			return null;
-		}	
-		
-		Sequence sequence = null;
-		if (company == null){
-			sequence = Sequence.findByCode("code");
-		}
-		else if (product == null){
-			sequence = Sequence.filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
-		}
-		else{
-			sequence = Sequence.filter("self.company = ?1 and self.code = ?2 and self.product = ?3", company, code, product).fetchOne();
-		}
-		if (sequence != null)  {
-			LOG.debug("End getSequence : : : : NO SEQUENCE.");	
-			return null;
-		}
-		if (!check)  {
-			return getSequence(sequence, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
-		}
-		else  {
-			return "true";
-		}
+	public String getSequenceNumber(String code) {
+	
+		return this.getSequenceNumber(code, null);
 			
 	}
+	
+	
+	/**
+	 * Retourne une sequence en fonction du code, de la sté 
+	 * 
+	 * @return
+	 */
+	public String getSequenceNumber(String code, Company company) {
+	
+		Sequence sequence = this.getSequence(code, company);
+		
+		if(sequence == null)  {  return null;  }
+		
+		return this.getSequenceNumber(sequence, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
+			
+	}
+	
+	
+	
+	/**
+	 * Retourne une sequence en fonction du code, de la sté 
+	 * 
+	 * @return
+	 */
+	public boolean hasSequence(String code, Company company) {
+	
+		if (this.getSequence(code, company) != null)  {
+			return true;
+		}
+		
+		return false;
+			
+	}
+	
 	
 	
 	public String getSequenceNumber(Sequence sequence, boolean check)  {
 		
-		return this.getSequence(sequence, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
+		return this.getSequenceNumber(sequence, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
 		
 	}
 	
@@ -171,7 +166,7 @@ public class SequenceService {
 	 * @return
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String getSequence(Sequence seq, int todayYear, int todayMoy, int todayDom, int todayWoy)  {
+	public String getSequenceNumber(Sequence seq, int todayYear, int todayMoy, int todayDom, int todayWoy)  {
 		String seqPrefixe = "";
 		String seqSuffixe = "";
 		if (seq.getPrefixe() != null)  {
@@ -180,8 +175,6 @@ public class SequenceService {
 					.replaceAll("%M",String.format("%s",todayMoy)))
 					.replaceAll("%D",String.format("%s",todayDom)))
 					.replaceAll("%WY",String.format("%s",todayWoy)));
-			if (seq.getProduct() != null)
-				seqPrefixe = seqPrefixe.replaceAll("%PC", seq.getProduct().getCode());
 		}	
 		if (seq.getSuffixe() != null){
 			seqSuffixe = ((((seq.getSuffixe()
@@ -189,8 +182,6 @@ public class SequenceService {
 					.replaceAll("%M",String.format("%s",todayMoy)))
 					.replaceAll("%D",String.format("%s",todayDom)))
 					.replaceAll("%WY",String.format("%s",todayWoy)));
-			if (seq.getProduct() != null)
-				seqSuffixe = seqSuffixe.replaceAll("%PC", seq.getProduct().getCode());
 		}
 		
 		String padLeft = StringUtils.leftPad(seq.getNextNum().toString(), seq.getPadding(), "0");
