@@ -44,6 +44,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -967,5 +968,18 @@ public class MoveService {
 		}
 		newMove.setMoveLineList(moveLines);
 		return newMove.save();
+	}
+	
+	public boolean validateMultiple(List<? extends Move> moveList){
+		boolean error = false;
+		for(Move move: moveList){
+			try{
+				validate(move);
+			}catch (Exception e){ 
+				TraceBackService.trace(e);
+				error = true;
+			}
+		}
+		return error;
 	}
 }

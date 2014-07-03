@@ -17,12 +17,15 @@
  */
 package com.axelor.apps.account.web;
 
+import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Maps;
@@ -78,5 +81,24 @@ public class MoveController {
 			response.setView(viewMap);
 		}
 		catch (Exception e){ TraceBackService.trace(response, e); }
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void validateMultipleMoves(ActionRequest request, ActionResponse response){
+		List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+		if(!moveIds.isEmpty()){
+			List<? extends Move> moveList = Move.all_().filter("self.id in ?1 AND self.state NOT IN ('validated','canceled')", moveIds).fetch();
+			if(!moveList.isEmpty()){
+				boolean error = moveService.get().validateMultiple(moveList);
+				if(error)
+					response.setFlash(I18n.get(IMove.MOVE_VALIDATION_NOT_OK));
+				else{
+					response.setFlash(I18n.get(IMove.MOVE_VALIDATION_OK));
+					response.setReload(true);
+				}
+			}
+			else response.setFlash(I18n.get(IMove.NO_MOVES_SELECTED));
+		}
+		else response.setFlash(I18n.get(IMove.NO_MOVES_SELECTED));
 	}
 }
