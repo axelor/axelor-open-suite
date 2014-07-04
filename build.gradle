@@ -1,0 +1,14 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-supplier-management"
+	title "Axelor :: Supplier management"
+	
+	removable true
+
+	module "modules:axelor-exception"
+	module "modules:axelor-tool"
+	module "modules:axelor-base"
+	module "modules:axelor-supplychain"
+}
+
