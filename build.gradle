@@ -1,0 +1,15 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-account-organisation"
+	title "Axelor :: Account-Organisation"
+
+	removable true
+
+	module "modules:axelor-exception"
+	module "modules:axelor-tool"
+	module "modules:axelor-base"
+	module "modules:axelor-account"
+	module "modules:axelor-organisation"
+}
+
