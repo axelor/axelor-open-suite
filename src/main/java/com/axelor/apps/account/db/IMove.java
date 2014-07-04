@@ -19,7 +19,12 @@ package com.axelor.apps.account.db;
 
 public interface  IMove {
 	
-	public final String NO_MOVES_SELECTED = /*$$(*/ "Please select 'Draft' or 'Simulated' moves" /*)*/ ; 
-	public final String MOVE_VALIDATION_NOT_OK = /*$$(*/ "Error in move validation, please check the log" /*)*/ ;
-	public final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
+	/**
+	 * State select
+	 */
+	static final String DRAFT_MOVE = "draft";
+	static final String SIMULATED_MOVE = "simulated";
+	static final String VALIDATED_MOVE = "validated";
+	static final String CANCELED_MOVE = "canceled";
+
 }

@@ -51,15 +51,7 @@ public interface IAccount {
 	static final int TO_PASS_IN_IRRECOUVRABLE = 1;
 	static final int PASSED_IN_IRRECOUVRABLE = 2;
 
-	/**
-	 * Static select in Move
-	 */
-	// STATE
-	static final String DRAFT_MOVE = "draft";
-	static final String SIMULATED_MOVE = "simulated";
-	static final String VALIDATED_MOVE = "validated";
-	static final String CANCELED_MOVE = "canceled";
-
+	
 	/**
 	 * Static select in MoveLine
 	 */
