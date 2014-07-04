@@ -1,0 +1,18 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-base"
+	title "Axelor :: Base"
+	
+	removable false
+
+	module "modules:axelor-exception"
+	module "modules:axelor-tool"
+}
+
+dependencies {
+	compile "commons-validator:commons-validator:1.4.0"
+	compile "org.apache.commons:commons-lang3:3.1"
+	compile "org.bouncycastle:bcprov-jdk15on:1.47"
+	compile "javax.ws.rs:jsr311-api:1.1.1"
+}
