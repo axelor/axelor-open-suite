@@ -1,0 +1,8 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-exception"
+	title "Axelor :: Exception"
+	
+	removable false
+}
