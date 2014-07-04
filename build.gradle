@@ -1,0 +1,17 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-message"
+	title "Axelor :: Message"
+	
+	removable true
+
+	module "modules:axelor-exception"
+	module "modules:axelor-tool"
+	module "modules:axelor-base"
+}
+
+dependencies {
+	compile 	libs.javax_mail
+	testCompile libs.subetha_smtp
+}
