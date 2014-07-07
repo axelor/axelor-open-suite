@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.service.MoveTemplateService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -46,16 +45,30 @@ public class MoveTemplateController {
 		moveTemplate = MoveTemplate.find(moveTemplate.getId());
 		BigDecimal creditPercent = BigDecimal.ZERO;
 		BigDecimal debitPercent = BigDecimal.ZERO;
+		Boolean partnerDebit = false;
+		Boolean partnerCredit = false;
 		for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
 			LOG.debug("Adding percent: {}",line.getPercentage());
 			if(line.getDebitCreditSelect().equals("0"))
 				debitPercent = debitPercent.add(line.getPercentage());
 			else	
 				creditPercent = creditPercent.add(line.getPercentage());
+			
+			if(line.getHasPartnerToDebit())
+				partnerDebit = true;
+			else if(line.getHasPartnerToCredit())
+				partnerCredit = true;
+			
 		}
 		
 		LOG.debug("Credit percent: {}, Debit percent: {}",new Object[]{creditPercent,debitPercent});
 		if(creditPercent.compareTo(BigDecimal.ZERO) != 0 && debitPercent.compareTo(BigDecimal.ZERO) != 0 && creditPercent.compareTo(debitPercent) == 0){
+			if(partnerCredit && partnerDebit)
+				moveTemplate.setPartnerInputSelect(3);
+			else if(partnerCredit)
+				moveTemplate.setPartnerInputSelect(2);
+			else if(partnerDebit)
+				moveTemplate.setPartnerInputSelect(1);
 			mts.validateMoveTemplateLine(moveTemplate);
 			response.setReload(true);
 		}
@@ -82,5 +95,16 @@ public class MoveTemplateController {
 		            .domain("self.id in ("+Joiner.on(",").join(moveList)+")")
 		            .map());
 		
+	}
+	
+	public void setIsValid(ActionRequest request, ActionResponse response){
+		MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
+		if(moveTemplate.getIsValid())
+			return;
+//		List<MoveTemplateLine> moveTemplateLines = new ArrayList<MoveTemplateLine>(); 
+		for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
+			line.setIsValid(moveTemplate.getIsValid());
+		}
+		response.setValue("moveTemplateLineList", moveTemplate.getMoveTemplateLineList());
 	}
 }

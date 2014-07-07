@@ -817,41 +817,56 @@
 	
 	<!-- Move template -->
 	
-	<menuitem name="move-template" title="Move templates" parent="account-root-move" action="move.template" groups="admins,erp" top="true" />
+	<menuitem name="account-root-move-from-template" parent="account-root-move"
+		title="Move from Template" action="account.root.move.from.template" />
+
+	<action-view name="account.root.move.from.template" title="Move from Template"
+		model="com.axelor.apps.account.db.Move">
+		<view type="grid" name="move-grid" />
+		<view type="form" name="move-form" />
+		<view-param name="search-filters" value="move-filters"/>
+		<domain>self.isFromTemplate = true</domain>
+	</action-view>
+	
+	<menuitem name="move-template-root" title="Move Templates" parent="account-conf" groups="admins,erp" />
+	
+	<menuitem name="move-template" title="Move Templates" parent="move-template-root" action="move.template" groups="admins,erp" top="true" />
 	
 	<action-view name="move.template"
-		title="Move templates" model="com.axelor.apps.account.db.MoveTemplate">
+		title="Move Templates" model="com.axelor.apps.account.db.MoveTemplate">
 		<view type="grid" name="move-template-grid" />
 		<view type="form" name="move-template-form"  />
+		<context name="_activeCompanyId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompanyId()" />
 	</action-view>
 
 
-	<menuitem name="move-template-line" title="Move template lines" parent="account-root-move" action="move.template.line" groups="admins,erp" top="true" />
+	<menuitem name="move-template-line" title="Move Templates Lines" parent="move-template-root" action="move.template.line" groups="admins,erp" top="true" />
 	
 	<action-view name="move.template.line"
-		title="Move template lines" model="com.axelor.apps.account.db.MoveTemplateLine">
+		title="Move Templates Lines" model="com.axelor.apps.account.db.MoveTemplateLine">
 		<view type="grid" name="move-template-line-grid" />
 		<view type="form" name="move-template-line-form"  />
 	</action-view>
 	
-	<menuitem name="move-template-type" title="Move template types" parent="account-root-move" action="move.template.type" groups="admins,erp" top="true" />
+	<menuitem name="move-template-type" title="Move Template Types" parent="move-template-root" action="move.template.type" groups="admins,erp" top="true" />
 	
 	<action-view name="move.template.type"
-		title="Move template types" model="com.axelor.apps.account.db.MoveTemplateType">
+		title="Move Template Types" model="com.axelor.apps.account.db.MoveTemplateType">
 		<view type="grid" name="move-template-type-grid" />
 		<view type="form" name="move-template-type-form"  />
 	</action-view>
 	
-	<menuitem name="move-template-wizard" title="Generate move from template" parent="account-root-move" action="move.template.wizard" groups="admins,erp" top="true" />
+	<menuitem name="move-template-wizard" title="Generate Move From Template" parent="move-template-root" action="move.template.wizard" groups="admins,erp" top="true" />
 	
 	<action-view name="move.template.wizard"
-		title="Generate move from template" model="com.axelor.apps.base.db.Wizard">
+		title="Generate Move From Template" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="move-template-wizard-form"  />
 		<view-param name="popup" value="reload"/>
 	    <view-param name="forceEdit" value="true"/> 
 	    <view-param name="width" value="800" />
 	    <view-param name="show-confirm" value="false" />
 	    <view-param name="show-toolbar" value="false" />
+	    <context name="_activeCompanyId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompanyId()" />
 	</action-view>
 	
 	
