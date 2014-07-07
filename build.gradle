@@ -22,16 +22,10 @@ dependencies {
 	compile libs.ST4
 }
 
-sourceSets {
-	main {
-		java.srcDirs += ["${buildDir.name}/src-gen"]
-	}
-}
-
 task "xjc" << {
 
 	def source = "${projectDir}/src/main/resources/xsd"
-	def target = "${buildDir}/src-gen"
+	def target = "${rootProject.buildDir}/src-gen"
 
 	file(target).mkdirs()
 
