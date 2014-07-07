@@ -866,7 +866,6 @@
 	    <view-param name="width" value="800" />
 	    <view-param name="show-confirm" value="false" />
 	    <view-param name="show-toolbar" value="false" />
-	    <context name="_activeCompanyId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompanyId()" />
 	</action-view>
 	
 	

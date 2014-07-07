@@ -83,17 +83,21 @@ public class MoveTemplateController {
 		List<HashMap<String,Object>> dataList = (List<HashMap<String, Object>>) request.getContext().get("dataInputList");
 		LOG.debug("MoveTemplate : {}",moveTemplate);
 		LOG.debug("Data inputlist : {}",dataList);
-		List<Long> moveList = mts.generateMove(moveTemplate, dataList);
-		if(moveList == null)
-			response.setFlash("Error in move generation");
-		else
-			response.setView(ActionView
-		            .define("Generated moves")
-		            .model(Move.class.getName())
-		            .add("grid", "move-grid")
-		            .add("form", "move-form")
-		            .domain("self.id in ("+Joiner.on(",").join(moveList)+")")
-		            .map());
+		if(dataList != null && !dataList.isEmpty()){
+			List<Long> moveList = mts.generateMove(moveTemplate, dataList);
+			if(moveList == null)
+				response.setFlash("Error in move generation");
+			else
+				response.setView(ActionView
+			            .define("Generated moves")
+			            .model(Move.class.getName())
+			            .add("grid", "move-grid")
+			            .add("form", "move-form")
+			            .domain("self.id in ("+Joiner.on(",").join(moveList)+")")
+			            .map());
+		}
+		else 
+			response.setFlash("Please fill input lines");
 		
 	}
 	

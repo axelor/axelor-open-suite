@@ -42,24 +42,26 @@
         </field>
     </form>
     
-     <form name="move-template-wizard-form" title="Generate move from template" model="com.axelor.apps.base.db.Wizard" onNew="action-move-template-wizard-set-domain" onLoad="action-move-template-wizard-set-domain" >
+     <form name="move-template-wizard-form" title="Generate move from template" model="com.axelor.apps.base.db.Wizard" onNew="action-move-template-wizard-set-active-company" onLoad="action-move-template-wizard-set-active-company" >
         <field name="moveTemplateType" title="Type" widget="MANY_TO_ONE" x-target="com.axelor.apps.account.db.MoveTemplateType" />
-        <field name="moveTemplate" required="true" widget="MANY_TO_ONE" x-target="com.axelor.apps.account.db.MoveTemplate" readonlyIf="moveTemplateType == null" title="Template" />
+        <field name="moveTemplate" required="true" widget="MANY_TO_ONE" x-target="com.axelor.apps.account.db.MoveTemplate" readonlyIf="moveTemplateType == null" title="Template" domain="self.moveTemplateType = :moveTemplateType AND self.isValid = true AND self.journal.company = :company AND self.journal.statusSelect = 1"/>
+        <field name="company" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Company" title="Company" hidden="true" />
         <field name="dataInputList" widget="ONE_TO_MANY" readonlyIf="moveTemplate == null || moveTemplateType == null" x-target="com.axelor.apps.base.db.Wizard" title="Saisie des données d'écriture" colSpan="4">
-        	<grid title="Saisie des données d'écriture" editable="true">
+        	<grid title="Saisie des données d'écriture" >
         		<field name="date" widget="DATE" required="true" title="Date" onChange="action-move-template-wizard-check-value"/>
         		<field name="moveBalance" widget="DECIMAL" required="true" title="Montant Ecriture" onChange="action-move-template-wizard-check-value" />
-        		<field name="debitPartner" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" title="Tiers à Débiter"  domain="self.isContact = false" readonlyIf="_parent.moveTemplate.partnerInputSelect != 1 || _parent.moveTemplate.partnerInputSelect != 3"/>
-        		<field name="creditPartner" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" title="Tiers à Créditer" domain="self.isContact = false" readonlyIf="_parent.moveTemplate.partnerInputSelect != 2 || _parent.moveTemplate.partnerInputSelect != 3"/>
+        		<field name="debitPartner" title="Tiers à Débiter"   widget="MANY_TO_ONE" domain="self.isContact = false" readonlyIf="moveTemplate.partnerInputSelect == 2 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
+      			<field name="creditPartner" title="Tiers à Créditer" widget="MANY_TO_ONE" domain="self.isContact = false"  readonlyIf="moveTemplate.partnerInputSelect == 1 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
         	</grid>
-        	<form title="Saisie des données d'écriture" onLoad="action-move-template-wizard-line-set-attrs" onNew="action-move-template-wizard-line-set-attrs">
+        	<form title="Saisie des données d'écriture" onLoad="action-move-template-wizard-line-set-move-template" onNew="action-move-template-wizard-line-set-move-template">
+        		<field name="moveTemplate"  widget="MANY_TO_ONE" x-target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
         		<field name="date" widget="DATE" title="Date" required="true" onChange="action-move-template-wizard-check-value"/>
-        		<field name="moveBalance" widget="DECIMAL" required="true" title="Montant Ecriture" onChange="action-move-template-wizard-check-value"  />
-        		<field name="debitPartner" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" title="Tiers à Débiter"  domain="self.isContact = false" />
-        		<field name="creditPartner" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" title="Tiers à Créditer" domain="self.isContact = false" />
+        		<field name="moveBalance" widget="DECIMAL" precision="20" scale="2"  min="0" required="true" title="Montant Ecriture" onChange="action-move-template-wizard-check-value"  />
+        		<field name="debitPartner" title="Tiers à Débiter"   widget="MANY_TO_ONE" domain="self.isContact = false" readonlyIf="moveTemplate.partnerInputSelect == 2 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
+			    <field name="creditPartner" title="Tiers à Créditer" widget="MANY_TO_ONE" domain="self.isContact = false"  readonlyIf="moveTemplate.partnerInputSelect == 1 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
         	</form>
         </field>
-        <button name="generateMoves" readonlyIf="date == null" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" />
+        <button name="generateMoves" readonlyIf="dataInputList == null || dataInputList.isEmpty()" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" />
     </form>
     
     <action-validate name="action-move-template-wizard-check-value">
@@ -70,6 +72,10 @@
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-reset-value">
     	<field name="date" expr="eval:null" if="date &gt; __date__" />
     	<field name="moveBalance" expr="eval:0" if="moveBalance != null &amp;&amp; moveBalance &lt; 0" />
+    </action-record>
+    
+    <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-set-active-company">
+    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
     </action-record>
     
     <action-method name="action-move-template-method-check-validity">
@@ -88,13 +94,9 @@
     	<attribute name="domain" for="journal" expr="eval:'self.statusSelect = 1 AND self.company = '+_activeCompanyId" />
     </action-attrs>
     
-    <action-attrs name="action-move-template-wizard-set-domain">
-    	<attribute name="domain" for="moveTemplate" expr="eval:'self.moveTemplateType.id = '+moveTemplateType.id+' AND self.isValid = true AND self.journal.company.id = '+_activeCompanyId+' AND self.journal.statusSelect = 1'" />
-    </action-attrs>
+	<action-record name="action-move-template-wizard-line-set-move-template" model="com.axelor.apps.base.db.Wizard">
+	  <field name="moveTemplate" expr="eval:com.axelor.apps.account.db.MoveTemplate.find(_parent.moveTemplate.id)" />
+	</action-record>
     
-    <action-attrs name="action-move-template-wizard-line-set-attrs">
-    	<attribute name="readonly" for="debitPartner" expr="eval:true" if="_parent.moveTemplate.partnerInputSelect != 1 || _parent.moveTemplate.partnerInputSelect != 3" />
-    	<attribute name="readonly" for="creditPartner" expr="eval:true" if="_parent.moveTemplate.partnerInputSelect != 2 || _parent.moveTemplate.partnerInputSelect != 3" />
-    </action-attrs>
     
 </object-views>

@@ -94,7 +94,7 @@ public class MoveTemplateService {
 				moveList.add(move.getId());
 			}
 			return moveList;
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
