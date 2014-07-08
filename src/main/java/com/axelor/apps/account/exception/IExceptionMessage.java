@@ -35,7 +35,13 @@ public interface IExceptionMessage {
 	static final String BANK_STATEMENT_2 = /*$$(*/ "%s :\n MoveLine amount is not equals with bank statement line %s" /*)*/ ;
 	static final String BANK_STATEMENT_3 = /*$$(*/ "%s :\n Bank statement line %s amount can't be null" /*)*/ ;
 	
-	
+	/**
+	 * Move service
+	 */
 
+	public final String NO_MOVES_SELECTED = /*$$(*/ "Please select 'Draft' or 'Simulated' moves" /*)*/ ; 
+	public final String MOVE_VALIDATION_NOT_OK = /*$$(*/ "Error in move validation, please check the log" /*)*/ ;
+	public final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
+	
 	
 }

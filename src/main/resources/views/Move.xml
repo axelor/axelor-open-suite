@@ -6,6 +6,7 @@
         <toolbar>
             <button name="validateMove" title="Validate" prompt="Validation of moves is irrevocable" onClick="action-move-method-validate-multiple-moves"/>
         </toolbar>
+        <hilite color="danger" if="state == 'draft'"/>
         <field name="reference"/>
         <field name="journal"/>
         <field name="period"/>
@@ -43,12 +44,13 @@
 			        <field name="date"/>
 			        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 			        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
-			        <field name="move.company"/>
 			        <field name="debit"/>
 			        <field name="credit"/>
 			        <field name="amountRemaining"/>
 			    </grid>
-            	<form title="Move line" onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
+            	<form title="Move line"
+            	 onLoad="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-readonly"
+            	 onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
 				    <notebook colSpan="4">
 				    	<page title="Informations" colSpan="4">
 					        <field name="name"/>
@@ -84,7 +86,7 @@
 	        <group title="Actions" colSpan="4" cols="6">
 	            <field name="state" readonly="true"/>
 	            <field name="validationDate" readonly="true"/>
-	            <button name="validate" title="Validate" colSpan="2" onClick="save,action-move-method-validate,action-move-attrs-status,save"/>
+	            <button name="validate" title="Validate" colSpan="2" onClick="save,action-move-record-draft-sequence,save,action-move-method-validate,action-move-attrs-status,save"/>
 	        </group>
         
         </page>

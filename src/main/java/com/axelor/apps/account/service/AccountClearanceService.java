@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountClearance;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.IAccount;
+import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.Reconcile;
@@ -94,7 +95,7 @@ public class AccountClearanceService {
 		
 		List<MoveLine> moveLineList = MoveLine.filter("self.company = ?1 AND self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.state = ?2 AND self.amountRemaining > 0 AND self.amountRemaining <= ?3 AND self.credit > 0 AND self.account in ?4 AND self.date <= ?5",
-				company, IAccount.VALIDATED_MOVE , accountClearance.getAmountThreshold(), 
+				company, IMove.VALIDATED_MOVE , accountClearance.getAmountThreshold(), 
 				company.getAccountConfig().getClearanceAccountSet(), accountClearance.getDateThreshold()).fetch();
 		
 		LOG.debug("Liste des trop perçus récupérés : {}", moveLineList);

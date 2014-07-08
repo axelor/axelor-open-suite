@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.service.TraceBackService;
@@ -91,14 +92,14 @@ public class MoveController {
 			if(!moveList.isEmpty()){
 				boolean error = moveService.get().validateMultiple(moveList);
 				if(error)
-					response.setFlash(I18n.get(IMove.MOVE_VALIDATION_NOT_OK));
+					response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
 				else{
-					response.setFlash(I18n.get(IMove.MOVE_VALIDATION_OK));
+					response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
 					response.setReload(true);
 				}
 			}
-			else response.setFlash(I18n.get(IMove.NO_MOVES_SELECTED));
+			else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
 		}
-		else response.setFlash(I18n.get(IMove.NO_MOVES_SELECTED));
+		else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
 	}
 }

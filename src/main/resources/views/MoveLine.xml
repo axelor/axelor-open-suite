@@ -4,6 +4,8 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
     <grid name="move-line-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false">
+    	<hilite color="danger" if="$get('move.state') == 'draft'"/>
+      	<field name="move.state" hidden="true"/>
         <field name="name"/>
         <field name="date"/>
         <field name="partner"/>
@@ -14,7 +16,23 @@
         <field name="amountRemaining"/>
     </grid>
     
+    <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false"
+    groupBy="account" expandable="true"  >
+    	<hilite color="danger" if="$get('move.state') == 'draft'"/>
+      	<field name="move.state" hidden="true"/>
+        <field name="name"/>
+        <field name="date"/>
+        <field name="partner"/>
+        <field name="account"/>
+        <field name="move.company"/>
+        <field name="debit" aggregate="sum"/>
+        <field name="credit" aggregate="sum"/>
+        <field name="amountRemaining" aggregate="sum"/>
+    </grid>
+    
     <grid name="move-line-accounting-situation-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false">
+    	<hilite color="danger" if="$get('move.state') == 'draft'"/>
+      	<field name="move.state" hidden="true"/>
         <field name="name"/>
         <field name="date"/>
         <field name="description"/>
@@ -71,11 +89,11 @@
         </notebook>
     </form>
     
-    <form name="move-line-accounting-situation-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false"
-    onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
+    <form name="move-line-accounting-situation-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false" canNew="false"
+    onLoad="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-readonly" 
     onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-contractLine-readonly,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
     	<notebook colSpan="4">
-    	<page title="Informations" colSpan="4">
+    	<page name="informations" title="Informations" colSpan="4">
 	    	<group readonly="true">
 		        <field name="name"/>
 		        <field name="move"/>
@@ -121,6 +139,10 @@
 		<attribute name="collapse" for="irrecoverable" expr="eval: irrecoverableStateSelect == null || irrecoverableStateSelect == 0"/>
 	</action-attrs>
 	
+	<action-attrs name="action-move-line-attrs-readonly">
+		<attribute name="readonly" for="informations" expr="eval: move.state != 'draft'"/>
+	</action-attrs>
+	
 	<action-record name="action-move-line-record-get-move-informations" model="com.axelor.apps.account.db.MoveLine">
 		<field name="partner" expr="eval: _parent?.partner"/>
 		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
@@ -143,7 +165,7 @@
 	</action-attrs>
 	
 	<action-validate name="action-move-line-debit-credit-validate">
-		<alert message="An accounting moveline must have higher a credit value or a debit value." if="(debit &gt; 0 &amp;&amp; credit == 0) || (credit &gt; 0 &amp;&amp; debit == 0)"/>
+		<alert message="An accounting moveline must have higher a credit value or a debit value." if="debit &gt; 0 &amp;&amp; credit &gt; 0"/>
 		<alert message="Debit and credit value cannot be negative." if="(debit != null &amp;&amp; debit &lt; 0)||(credit != null &amp;&amp; credit &lt; 0)"/>
 	</action-validate> 
 

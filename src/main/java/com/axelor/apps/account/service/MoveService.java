@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CashRegister;
+import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -750,26 +751,7 @@ public class MoveService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Move move) throws AxelorException  {
-		Journal journal = move.getJournal();
-		Company company = move.getCompany();
-		if(journal == null)  {
-			throw new AxelorException(String.format("Veuillez selectionner un journal pour l'écriture"),IException.CONFIGURATION_ERROR);
-		}
-		if(company == null)  {
-			throw new AxelorException(String.format("Veuillez selectionner une société pour l'écriture"),IException.CONFIGURATION_ERROR);
-		}
-		
-		if(move.getPeriod() == null)  {
-			throw new AxelorException(String.format("Veuillez selectionner une période pour l'écriture"),IException.CONFIGURATION_ERROR);
-		}
-		
-		if (journal.getSequence() == null)  {
-			throw new AxelorException(String.format("Le journal %s n'a pas de séquence d'écriture comptable configurée", 
-					journal.getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		move.setReference(sequenceService.getSequenceNumber(journal.getSequence(), false));
-		
+
 		LocalDate date = move.getDate();
 		Partner partner = move.getPartner();
 	
@@ -817,6 +799,26 @@ public class MoveService {
 
 		LOG.debug("Validation de l'écriture comptable {}", move.getReference());
 
+		Journal journal = move.getJournal();
+		Company company = move.getCompany();
+		if(journal == null)  {
+			throw new AxelorException(String.format("Veuillez selectionner un journal pour l'écriture"),IException.CONFIGURATION_ERROR);
+		}
+		if(company == null)  {
+			throw new AxelorException(String.format("Veuillez selectionner une société pour l'écriture"),IException.CONFIGURATION_ERROR);
+		}
+		
+		if(move.getPeriod() == null)  {
+			throw new AxelorException(String.format("Veuillez selectionner une période pour l'écriture"),IException.CONFIGURATION_ERROR);
+		}
+		
+		if (journal.getSequence() == null)  {
+			throw new AxelorException(String.format("Le journal %s n'a pas de séquence d'écriture comptable configurée", 
+					journal.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		move.setReference(sequenceService.getSequenceNumber(journal.getSequence(), false));
+		
 		this.validateEquiponderanteMove(move);
 		
 		move.save();
@@ -873,17 +875,21 @@ public class MoveService {
 			BigDecimal totalCredit = BigDecimal.ZERO;
 			
 			for (MoveLine moveLine : move.getMoveLineList()){
+				
+				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) == 1 && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 1)  {
+					throw new AxelorException(String.format("Le sens de l'écriture comptable %s ne peut être déterminé",
+							moveLine.getName()), IException.INCONSISTENCY);
+				}
+				
 				totalDebit = totalDebit.add(moveLine.getDebit());
 				totalCredit = totalCredit.add(moveLine.getCredit());
 			}
 			
-			if (totalDebit.compareTo(totalCredit) == 0){
-				move.setState("validated");
+			if (totalDebit.compareTo(totalCredit) != 0){
+				throw new AxelorException(String.format("L'écriture comptable %s comporte un total débit différent du total crédit : %s <> %s", 
+						move.getReference(), totalDebit, totalCredit), IException.INCONSISTENCY);
 			}
-			else  {
-				throw new AxelorException(String.format("L'écriture comptable %s comporte un total débit différent du total crédit : %s <> %s", move.getReference(), totalDebit, totalCredit),
-						IException.INCONSISTENCY);
-			}
+			move.setState(IMove.VALIDATED_MOVE);
 		}
 	}
 	

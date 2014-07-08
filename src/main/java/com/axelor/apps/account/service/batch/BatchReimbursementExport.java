@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.IAccount;
+import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.service.ReimbursementExportService;
@@ -153,7 +154,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 					List<MoveLine> moveLineList = MoveLine.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 							"AND self.move.state = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND " +
 							"self.reimbursementStateSelect = ?4 "
-							,IAccount.VALIDATED_MOVE ,Partner.find(partner.getId()), Company.find(company.getId()), IAccount.NULL).fetch();
+							,IMove.VALIDATED_MOVE ,Partner.find(partner.getId()), Company.find(company.getId()), IAccount.NULL).fetch();
 					
 					LOG.debug("Liste des trop perçus : {}", moveLineList);
 					
