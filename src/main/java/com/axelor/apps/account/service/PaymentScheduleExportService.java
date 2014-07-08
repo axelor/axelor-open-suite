@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.DirectDebitManagement;
 import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.IInvoice;
+import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -321,7 +322,7 @@ public class PaymentScheduleExportService {
 						"AND self.move.invoice.operationTypeSelect = ?3 " +
 						"AND self.move.invoice.schedulePaymentOk = 'true' " +
 						"AND self.move.invoice.paymentSchedule = ?4 "+
-						"ORDER BY self.date", IAccount.VALIDATED_MOVE, true, IInvoice.CLIENT_SALE, paymentSchedule).fetch();
+						"ORDER BY self.date", IMove.VALIDATED_MOVE, true, IInvoice.CLIENT_SALE, paymentSchedule).fetch();
 	}
 	
 	
@@ -656,7 +657,7 @@ public class PaymentScheduleExportService {
 						"AND self.move.invoice.paymentMode = ?4 " +
 						"AND self.move.invoice.schedulePaymentOk = 'false' " +
 						"AND self.move.invoice.currency = ?5"
-						, IAccount.VALIDATED_MOVE, company, true, paymentMode, currency).fetch(); 
+						, IMove.VALIDATED_MOVE, company, true, paymentMode, currency).fetch(); 
 		
 		
 		// Ajout des factures
@@ -674,7 +675,7 @@ public class PaymentScheduleExportService {
 						" AND self.rejectMoveLine.account.reconcileOk = 'true' " +
 						" AND self.rejectMoveLine.invoiceReject IS NOT NULL" +
 						" AND self.currency = ?4"
-						, paymentMode, company, IAccount.VALIDATED_MOVE, currency).fetch();
+						, paymentMode, company, IMove.VALIDATED_MOVE, currency).fetch();
 		
 		// Ajout des factures rejetées
 		for(Invoice invoice : invoiceRejectList)  {

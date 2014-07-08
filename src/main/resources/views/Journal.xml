@@ -14,31 +14,43 @@
         <field name="statusSelect"/>
         <field name="company"/>
     </grid>
+    
     <form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal" 
     	cols="4" onNew="account-journal-record-default">
-        <field name="code"/>
+    	
+    	<field name="code"/>
         <field name="name"/>
-        <field name="type"/>
-        <field name="exportCode"/>
-        <field name="excessPaymentOk"/>
-        <field name="editReceiptOk"/>
-        <field name="notExportOk"/>
-        <field name="descriptionModel"/>
-        <field name="descriptionIdentificationOk"/>
-        <field name="sequence" domain="self.code = 'move' and self.company = :company"/>
         <field name="company"/>
-        
-		<break/>		
-		<group colSpan="2" cols="2">    
-		  <spacer colSpan="1"/>
-		  <button name="activeStatus" title="Active" onClick="account-journal-record-status-active,save"/>    
-		  <spacer colSpan="1"/>
-		  <field name="statusSelect" readonly="true" widget="NavSelect" showTitle="false"/>  
+        <field name="type"/>
+    	<notebook colSpan="4">
+    		<page title="General" colSpan="4">
+    			<portlet action="action-journal-view-move-line" colSpan="4"/>
+    		</page>
+    		<page title="Configurations" colSpan="4" colWidths="25%,25%,25%,25%">
+		        <field name="exportCode"/>
+		        <field name="excessPaymentOk"/>
+		        <field name="editReceiptOk"/>
+		        <field name="notExportOk"/>
+		        <field name="descriptionModel"/>
+		        <field name="descriptionIdentificationOk"/>
+		        <field name="sequence" domain="self.code = 'move' and self.company = :company"/>
+    		</page>
+    	</notebook>
+		<group colSpan="4" cols="4">    
+		  	<field name="statusSelect" readonly="true" widget="NavSelect" showTitle="false" colSpan="2"/>  
+		  	<field name="isObsolete" onChange="account-journal-record-status-archived"/>      
+		  	<button name="activeStatus" title="Active" onClick="account-journal-record-status-active,save" hideIf="statusSelect == 1"/>    
 		</group>
-		<group>
-		  <field name="isObsolete" onChange="account-journal-record-status-archived"/>      
-		</group>        
     </form>
+    
+    
+    <action-view name="action-journal-view-move-line" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
+    	<view type="grid" name="move-line-journal-grid"/>
+    	<view type="form" name="move-line-form"/>
+    	<domain>self.move.journal.id = :id and self.move.ignoreInAccountingOk IN ('false', null) and self.move.period.year.fromDate &lt; :todayDate and self.move.period.year.toDate &gt; :todayDate </domain>	
+    	<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+    </action-view>
+    
     
     <action-record name="account-journal-record-default" model="com.axelor.apps.account.db.Journal">
         <field name="statusSelect" expr="eval: 0"/>

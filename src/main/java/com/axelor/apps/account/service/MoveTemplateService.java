@@ -73,17 +73,17 @@ public class MoveTemplateService {
 					creditPartner = Partner.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
 					partner = creditPartner;
 				}
-				Move move = moveService.createMove(moveTemplate.getJournal(), moveTemplate.getCompany(), null, partner,moveDate, null);
+				Move move = moveService.createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null);
 				for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
 					partner = null;
 					if(line.getDebitCreditSelect().equals("0")){
-						if(line.getPartnerToDebit())
+						if(line.getHasPartnerToDebit())
 							partner = debitPartner;
-						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), true, true, moveDate, moveDate, 0, line.getName());
+						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), true, false, moveDate, moveDate, 0, line.getName());
 						move.getMoveLineList().add(moveLine);
 					}
 					else{
-						if(line.getPartnerToDebit())
+						if(line.getHasPartnerToDebit())
 							partner = creditPartner;
 						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), false, false, moveDate, moveDate, 0, line.getName());
 						move.getMoveLineList().add(moveLine);
@@ -93,7 +93,7 @@ public class MoveTemplateService {
 				moveList.add(move.getId());
 			}
 			return moveList;
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

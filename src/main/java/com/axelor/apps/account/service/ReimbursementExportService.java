@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.IAccount;
+import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -544,7 +545,7 @@ public class ReimbursementExportService {
 		// récupération des trop-perçus du tiers
 		List<MoveLine> moveLineList = MoveLine.filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.state = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStateSelect = ?3 "
-				,IAccount.VALIDATED_MOVE , partner, IAccount.NULL).fetch();
+				,IMove.VALIDATED_MOVE , partner, IAccount.NULL).fetch();
 		
 		this.createReimbursementInvoice(partner, company, moveLineList);
 		
