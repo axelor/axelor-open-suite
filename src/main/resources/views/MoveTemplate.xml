@@ -65,12 +65,12 @@
     </form>
     
     <action-validate name="action-move-template-wizard-check-value">
-    	<error if="date &gt; __date__" message="Date can't be ahead of today" action="action-move-template-wizard-reset-value" />
+    	<error if="date != null &amp;&amp; org.joda.time.LocalDate.parse(date).isAfter(__date__)"  message="Date can't be ahead of today" action="action-move-template-wizard-reset-value" />
     	<error if="moveBalance != null &amp;&amp; moveBalance &lt; 0" message="The Move Balance must be positive" action="action-move-template-wizard-reset-value" />
     </action-validate>
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-reset-value">
-    	<field name="date" expr="eval:null" if="date &gt; __date__" />
+    	<field if="date != null &amp;&amp; org.joda.time.LocalDate.parse(date).isAfter(__date__)" name="date" expr="eval:null"/>
     	<field name="moveBalance" expr="eval:0" if="moveBalance != null &amp;&amp; moveBalance &lt; 0" />
     </action-record>
     

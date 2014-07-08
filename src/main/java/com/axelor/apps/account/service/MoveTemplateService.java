@@ -89,7 +89,6 @@ public class MoveTemplateService {
 						move.getMoveLineList().add(moveLine);
 					}
 				}
-				move.setIsFromTemplate(true);
 				move.save();
 				moveList.add(move.getId());
 			}

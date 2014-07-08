@@ -817,15 +817,16 @@
 	
 	<!-- Move template -->
 	
-	<menuitem name="account-root-move-from-template" parent="account-root-move"
-		title="Move from Template" action="account.root.move.from.template" />
-
-	<action-view name="account.root.move.from.template" title="Move from Template"
-		model="com.axelor.apps.account.db.Move">
-		<view type="grid" name="move-grid" />
-		<view type="form" name="move-form" />
-		<view-param name="search-filters" value="move-filters"/>
-		<domain>self.isFromTemplate = true</domain>
+	<menuitem name="move-template-wizard" title="Move From Template" parent="account-root-move" action="move.template.wizard" groups="admins,erp" top="true" icon="img/16px/wizard_16px.png"/>
+	
+	<action-view name="move.template.wizard"
+		title="Move From Template" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="move-template-wizard-form"  />
+		<view-param name="popup" value="reload"/>
+	    <view-param name="forceEdit" value="true"/> 
+	    <view-param name="width" value="800" />
+	    <view-param name="show-confirm" value="false" />
+	    <view-param name="show-toolbar" value="false" />
 	</action-view>
 	
 	<menuitem name="move-template-root" title="Move Templates" parent="account-conf" groups="admins,erp" />
@@ -855,18 +856,5 @@
 		<view type="grid" name="move-template-type-grid" />
 		<view type="form" name="move-template-type-form"  />
 	</action-view>
-	
-	<menuitem name="move-template-wizard" title="Generate Move From Template" parent="move-template-root" action="move.template.wizard" groups="admins,erp" top="true" />
-	
-	<action-view name="move.template.wizard"
-		title="Generate Move From Template" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="move-template-wizard-form"  />
-		<view-param name="popup" value="reload"/>
-	    <view-param name="forceEdit" value="true"/> 
-	    <view-param name="width" value="800" />
-	    <view-param name="show-confirm" value="false" />
-	    <view-param name="show-toolbar" value="false" />
-	</action-view>
-	
 	
 </object-views>
