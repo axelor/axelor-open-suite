@@ -42,11 +42,11 @@
     onLoad="action-partner-attrs-change-name" 
     onSave="save,action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
-	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
+	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
-	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null"/>
+	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null" if-module="axelor-account"/>
 	    </toolbar>
-	    <menubar>
+	     <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
 	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null"/>
 	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null"/>
@@ -54,6 +54,7 @@
 	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null"/>
 	        </menu>
 	    </menubar>
+<!-- 		<include view="incl-event-actions-partner-form" from="axelor-crm" if-module="axelor-crm" /> -->
 	    <group colSpan="6" cols="6">
 	        <group colSpan="1" cols="1">
 	            <group colSpan="1">
@@ -115,18 +116,36 @@
 	                <field name="webSite"/>
 	            </group>
 	        </page>
-	        <page title="Notes">
+	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" colSpan="4" cols="4">
+	            <include view="incl-invoice-payment-partner-form" from="axelor-account"/>
+	        </page>
+	        <page name="compteClient" title="Customer balance" hideIf="isContact" if-module="axelor-account">
+	    		<include view="incl-customer-balance-partner-form" from="axelor-account" />
+	    	</page>
+	    	<page name="blocking" title="Blockings" hideIf="isContact" if-module="axelor-account">
+	    	    <include view="incl-blocking-partner-form" from="axelor-account" />
+	    	</page>
+	    	<page name="reportedBalance" title="Reported balance" hideIf="isContact || id == null" if-module="axelor-account">
+	    	   	<include view="incl-reported-balance-partner-form" from="axelor-account" />
+	    	</page>
+	    	<page title="SEPA Direct Debit" cols="4" showIf="paymentMode.typeSelect == 2" if-module="axelor-account">
+	    	    <include view="incl-sepa-direct-debit-partner-form" from="axelor-account" />
+	    	</page>
+	        <page name="activities" title="Activities" showIf="id != null" if-module="axelor-crm">
+	            <include view="incl-show-project-partner-form" from="axelor-organisation" if-module="axelor-organisation" />
+	        	<include view="incl-activities-partner-form" from="axelor-crm" />
+	        	<include view="incl-sales-order-portal-form" from="axelor-supplychain" if-module="axelor-supplychain" />
+	        </page>
+			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain">
+				<include view="incl-sales-partner-form" from="axelor-supplychain" />
+			</page>
+			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm">
+     			<include view="incl-events-partner-form" from="axelor-crm" />
+			</page>
+			<page title="Notes">
 	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
 	        </page>
-	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2" colSpan="4" cols="4">
-	            <field name="invoiceSendingFormatSelect"/>
-	            <field name="paymentMode"/>
-	            <field name="paymentCondition"/>
-	            <field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2"/>
-	            <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
-	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
-	        </page>
-	        <page title="Settings" cols="4">
+			<page title="Settings" cols="4">
 	            <field name="partnerSeq"/>
 	            <field name="languageSelect"/>
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
@@ -136,20 +155,6 @@
 	                <field name="team"/>
 	            </group>
 	        </page>
-	        <page name="activities" title="Activities" showIf="id != null">
-	        	<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
-			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
-			    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
-			    <portlet colSpan="6" action="action-partner-view-opportunities"/>
-			    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
-			    <portlet colSpan="6" action="action-partner-view-tickets"/>
-	        </page>
-			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain">
-				<portlet colSpan="6" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
-			</page>
-			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm">
-     			 <portlet colSpan="6" action="portal.customer.crm.activities" height="350"/>
-			</page>
 	    </notebook>
 	</form>
 	
@@ -214,9 +219,9 @@
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
-	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"  readonlyIf="id == null"/>
+	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"  readonlyIf="id == null" if-module="axelor-account"/>
 	    </toolbar>
-	    <menubar>
+	     <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
 	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null"/>
 	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null"/>
@@ -224,6 +229,7 @@
 	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null"/>
 	        </menu>
 	    </menubar>
+<!-- 	    <include view="incl-event-actions-partner-form" from="axelor-crm" if-module="axelor-crm" /> -->
 	    <group colSpan="6" cols="6">
 	        <group colSpan="1" cols="1">
 	            <group colSpan="1">
@@ -272,13 +278,10 @@
 	                <field name="team"/>
 	            </group>
 	        </page>
-		    <page name="activities" title="Activities" showIf="id != null">
-	        	<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
-			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
-			    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
-			    <portlet colSpan="6" action="action-partner-view-opportunities"/>
-			    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
-			    <portlet colSpan="6" action="action-partner-view-tickets"/>
+		    <page name="activities" title="Activities" showIf="id != null" if-module="axelor-crm">
+	        	<include view="incl-show-project-partner-form" from="axelor-organisation" />
+	        	<include view="incl-activities-partner-form" from="axelor-crm" />
+	        	<include view="incl-sales-order-portal-form" from="axelor-supplychain" />
 	        </page>
 	    </notebook>
 	</form>
@@ -292,85 +295,10 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>
     
-	<action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
-		<view type="grid" name="sales-order-grid"/>
-		<view type="form" name="sales-order-form"/>
-		<domain>self.clientPartner.id = :id OR self.contactPartner.id = :id</domain>
-		<context name="id" expr="eval: id"/>
-	</action-view>
-	
 	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.socialnetwork.db.SnProfile">
 		<view type="form" name="sn-profile-form"/>
 		<context name="id" expr="eval: id"/>
 	</action-view>
-    
-<!--     CREATE CRM OBJECT FROM PARTNER -->
-    
-    <action-view name="action-partner-view-create-call" title="Create call" model="com.axelor.apps.crm.db.Event">
-    	<view type="form" name="call-form"/>
-    	<context name="_partner" expr="eval: __self__"/>
-    	<context name="_typeSelect" expr="1"/>
-    </action-view>
-    
-    <action-view name="action-partner-view-create-meeting" title="Create meeting" model="com.axelor.apps.crm.db.Event">
-    	<view type="form" name="meeting-form"/>
-    	<context name="_partner" expr="eval: __self__"/>
-    	<context name="_typeSelect" expr="2"/>
-    </action-view>
-    
-    <action-view name="action-partner-view-create-task" title="Create task" model="com.axelor.apps.crm.db.Event">
-    	<view type="form" name="crm-task-form"/>
-    	<context name="_partner" expr="eval: __self__"/>
-    	<context name="_typeSelect" expr="3"/>
-    </action-view>
-    
-    <action-view name="action-partner-view-create-opportunity" title="Create opportunity" model="com.axelor.apps.crm.db.Opportunity">
-    	<view type="form" name="opportunity-form"/>
-    	<context name="_partner" expr="eval: __self__"/>
-    </action-view>
-    
-<!--     PORTLET -->
-    
-    <action-view name="action-partner-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
-		<view type="form" name="event-form"/>
-		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.startDateTime > :_todayTime and self.typeSelect != 5</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_todayTime" expr="eval: __datetime__"/>
-	</action-view>
-	
-	<action-view name="action-partner-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
-		<view type="form" name="event-form"/>
-		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_todayTime" expr="eval: __datetime__"/>
-	</action-view>
-   	
-   	<action-view name="action-partner-view-opportunities" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid"/>
-		<view type="form" name="opportunity-form"/>
-		<domain>self.partner.id = :id</domain>
-		<context name="id" expr="eval: id"/>
-	</action-view>
-    
-    <action-view name="action-partner-view-sales-orders" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
-		<view type="grid" name="sales-order-grid"/>
-		<view type="form" name="sales-order-form"/>
-		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id)</domain>
-		<context name="id" expr="eval: id"/>
-	</action-view>
-	
-	<action-view name="action-partner-view-tickets" title="Tickets" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="ticket-grid"/>
-		<view type="form" name="ticket-form"/>
-		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) AND self.typeSelect = 5</domain>
-		<context name="id" expr="eval: id"/>
-	</action-view>
-    
-    <action-record name="action-partner-record-main-invoicing-address" model="com.axelor.apps.base.db.Partner">
-    	<field name="mainInvoicingAddress" expr="eval: deliveryAddress" if="mainInvoicingAddress == null"/>
-    </action-record>
     
  	<action-attrs name="action-partner-attrs-change-name">
 		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
@@ -396,7 +324,7 @@
     
     <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
     	<field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency" if="!isContact"/>
-    	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact"/>
+    	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact" />
     	<field name="userInfo"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
     	<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
@@ -428,10 +356,6 @@
 	
 	<action-method name="action-print-phonebook" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printContactPhonebook"/>
-	</action-method>
-	
-	<action-method name="action-partner-method-show-client-situation" >
-		<call class="com.axelor.apps.base.web.PartnerController" method="printClientSituation"/>
 	</action-method>
 	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">

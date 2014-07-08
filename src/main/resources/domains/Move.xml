@@ -27,7 +27,6 @@
     <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
     <boolean name="ignoreInReminderOk" title="Ignore in remind process" default="false"/>
     <date name="validationDate" title="Validation date"/>
-    <boolean name="isFromTemplate" />
     
   </entity>
 </domain-models>
