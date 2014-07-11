@@ -11,14 +11,14 @@
 	<form name="wizard-supplier-form" title="My space" model="com.axelor.apps.base.db.Wizard">
 		<field name="id" hidden="true"/>
 	    <break/>
-		<button name="myPurchaseOrder" colSpan="1" title="My purchases orders" onClick="wizard-supplier-form-open-my-purchase-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/>
+		<button name="myPurchaseOrder" colSpan="1" title="My purchase orders" onClick="wizard-supplier-form-open-my-purchase-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/>
 	    <button name="myRFQToComplete" colSpan="1" title="My R.F.Q. to complete" onClick="wizard-supplier-form-open-my-rfq-to-complete" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg"/>
 		<button name="myRFQ" colSpan="1" title="My R.F.Q." onClick="wizard-supplier-form-open-my-rfq" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
 		<button name="myStockMove" colSpan="1" title="My deliveries" onClick="wizard-supplier-form-open-stock-move" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
 	</form>
 	
-	<action-view name="wizard-supplier-form-open-my-purchase-order" title="My purchases orders"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder">
+	<action-view name="wizard-supplier-form-open-my-purchase-order" title="My purchase orders"
+		model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<view type="grid" name="purchase-order-grid"/>
 		<view type="form" name="purchase-order-form"/>
 		<domain>self.supplierPartner = :_myPartner AND self.statusSelect in (2,3,4,5)</domain>

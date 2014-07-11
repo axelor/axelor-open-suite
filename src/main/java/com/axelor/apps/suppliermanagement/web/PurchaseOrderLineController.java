@@ -18,7 +18,7 @@
 package com.axelor.apps.suppliermanagement.web;
 
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
-import com.axelor.apps.supplychain.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

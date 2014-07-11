@@ -23,10 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.suppliermanagement.db.IPurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
-import com.axelor.apps.supplychain.db.PurchaseOrderLine;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 

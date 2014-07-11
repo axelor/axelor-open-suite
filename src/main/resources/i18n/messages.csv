@@ -6,14 +6,14 @@ resources/views/PurchaseOrderSupplierLine.xml:25"
 resources/views/PurchaseOrderLine.xml:27"
 "Canceled","","","resources/views/Selects.xml:14"
 "Generate all suppliers requests","","","resources/views/PurchaseOrder.xml:12"
-"Generate suppliers purchases orders","","","resources/views/PurchaseOrder.xml:10"
+"Generate suppliers purchase orders","","","resources/views/PurchaseOrder.xml:10"
 "My R.F.Q.","","","resources/views/SupplierView.xml:16
 resources/views/SupplierView.xml:37"
 "My R.F.Q. to complete","","","resources/views/SupplierView.xml:29
 resources/views/SupplierView.xml:15"
 "My deliveries","","","resources/views/SupplierView.xml:45
 resources/views/SupplierView.xml:17"
-"My purchases orders","","","resources/views/SupplierView.xml:21
+"My purchase orders","","","resources/views/SupplierView.xml:21
 resources/views/SupplierView.xml:14"
 "My space","","","resources/views/SupplierView.xml:6
 resources/views/SupplierView.xml:11"
@@ -24,7 +24,7 @@ resources/views/PurchaseOrderSupplierLine.xml:26"
 "Request","","","resources/views/PurchaseOrderLine.xml:28
 resources/views/PurchaseOrderSupplierLine.xml:28"
 "Requested","","","resources/views/Selects.xml:10"
-"Show suppliers purchases orders","","","resources/views/PurchaseOrder.xml:11"
+"Show suppliers purchase orders","","","resources/views/PurchaseOrder.xml:11"
 "Stock move","","","resources/views/SupplierView.xml:63"
 "Stock move informations","","","resources/views/SupplierView.xml:72"
 "Stock move line","","","resources/views/SupplierView.xml:88"
@@ -45,7 +45,7 @@ resources/views/menu.xml:8"
 resources/views/menu.xml:18"
 "Supplier requests historical","","","resources/views/menu.xml:31
 resources/views/menu.xml:28"
-"Suppliers purchases","","","resources/views/PurchaseOrder.xml:24"
+"Suppliers purchase","","","resources/views/PurchaseOrder.xml:24"
 "Write to the supplier","","","resources/views/PurchaseOrderSupplierLine.xml:29"
 "suppliers requests","","","resources/views/PurchaseOrderSupplierLine.xml:33
 resources/views/PurchaseOrderSupplierLine.xml:6
