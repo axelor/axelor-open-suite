@@ -15,15 +15,15 @@ $Partner.mainInvoicingAddress.fullName$<br/></p>
 <p>Cordialement<br/>
 L'équipe Axelor</p>
 ";"$Partner.emailAddress.address$";;;2
-"Envoi Devis Client";"SalesOrder";"fr";;;;"true";;"Votre Devis N° $SalesOrder.salesOrderSeq$";"<p>Bonjour,</p> 
+"Envoi Devis Client";"SaleOrder";"fr";;;;"true";;"Votre Devis N° $SaleOrder.saleOrderSeq$";"<p>Bonjour,</p> 
 
-<p>Suite à nos précédents échanges, je vous prie de bien vouloir trouver ci-joint le devis $SalesOrder.salesOrderSeq$.</p>
+<p>Suite à nos précédents échanges, je vous prie de bien vouloir trouver ci-joint le devis $SaleOrder.saleOrderSeq$.</p>
 
 <p>Je reste à votre disposition pour des informations complémentaires sur ce devis.</p>
-";"$SalesOrder.clientPartner.emailAddress.address$";;;2
-"Envoi BL Client";"StockMove";"fr";;;;"true";;"Commande $StockMove.SalesOrder.SalesOrderSeq$ expédiée";"<p>Bonjour,</p>
+";"$SaleOrder.clientPartner.emailAddress.address$";;;2
+"Envoi BL Client";"StockMove";"fr";;;;"true";;"Commande $StockMove.SaleOrder.SaleOrderSeq$ expédiée";"<p>Bonjour,</p>
 
-<p>Nous tenons à vous informer que votre commande $StockMove.salesOrder.salesOrderSeq$ a été expédiée.<br/>
+<p>Nous tenons à vous informer que votre commande $StockMove.saleOrder.saleOrderSeq$ a été expédiée.<br/>
 Vous trouverez en pièce jointe le Bon de Livraison associé. Si des articles sont manquants, le reste de votre commande sera expédiée dans les prochains jours.</p>";"$StockMove.partner.emailAddress.address$";;;2
 "Réception BL Fournisseur";"StockMove";"fr";;;;"false";;"Commande $StockMove.PurchaseOrder.PurchaseOrderSeq$ expédiée";"<p>Bonjour,</p>
 
@@ -63,18 +63,18 @@ $Partner.mainInvoicingAddress.fullName$</p>
 
 <p>Best regards<br/>
 Axelor Team</p>";"$Partner.emailAddress.address$";;;2
-"Sale order";"SalesOrder";"en";;;;"true";;"Quote N° $SalesOrder.salesOrderSeq$";"<p>Good morning,</p> 
+"Sale order";"SaleOrder";"en";;;;"true";;"Quote N° $SaleOrder.saleOrderSeq$";"<p>Good morning,</p> 
 
-<p>Following our conversations, please find attached our quote $SalesOrder.salesOrderSeq$.</p>
+<p>Following our conversations, please find attached our quote $SaleOrder.saleOrderSeq$.</p>
 
 <p>Please do not hesitate to contact me for any further explanation regarding the quote.</p>
 
 <p>Best regards<br/>
-$SalesOrder.userInfo.partner.firstName$ $SalesOrder.userInfo.partner.name$</p>
-";"$SalesOrder.clientPartner.emailAddress.address$";;;2
-"Delivery Order";"StockMove";"en";;;;"true";;"Order $StockMove.SalesOrder.SalesOrderSeq$ shipped";"<p>Good morning,</p>
+$SaleOrder.userInfo.partner.firstName$ $SaleOrder.userInfo.partner.name$</p>
+";"$SaleOrder.clientPartner.emailAddress.address$";;;2
+"Delivery Order";"StockMove";"en";;;;"true";;"Order $StockMove.SaleOrder.SaleOrderSeq$ shipped";"<p>Good morning,</p>
 
-<p>We are pleased to inform you that your order $StockMove.salesOrder.salesOrderSeq$ has been shipped.<br/>
+<p>We are pleased to inform you that your order $StockMove.saleOrder.saleOrderSeq$ has been shipped.<br/>
 Please find attached to this mail the delivery order associated. If goods are missing, the remaining goods will be shipped in the next coming days.</p>
 
 <p>Best regards<br/>
