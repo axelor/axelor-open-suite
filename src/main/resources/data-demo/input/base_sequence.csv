@@ -59,10 +59,10 @@
 "purchaseInterface";"Interface achat";1;10;"INTACH_%Y_";;1;1;1;
 "refundInterface";"Interface avoir";1;10;"INTAVO_%Y_";;1;1;1;
 "reimbursement";"Proposition remboursement";1;10;"REMB_%Y_";;1;1;1;
-"salesInterface";"Interface vente";1;10;"INTVEN_%Y_";;1;1;1;
+"saleInterface";"Interface vente";1;10;"INTVEN_%Y_";;1;1;1;
 "treasuryInterface";"Interface trésorerie";1;10;"INTTRESO_%Y_";;1;1;1;
 "partner";"Numéro identifiant tiers";100;10;"T";;1;0;1;
-"salesOrder";"Devis/Cmde client";12;5;"VTE";;1;0;1;
+"saleOrder";"Devis/Cmde client";12;5;"VTE";;1;0;1;
 "purchaseOrder";"Cotations/Cmde fournisseur";10;5;"ACH";;1;0;1;
 "eventTicket";"N° de ticket";7;4;"TKT";;1;0;1;
 "intStockMove";"N° de bon de transfert de marchandise";1;4;"BT";;1;0;1;
