@@ -35,7 +35,7 @@ public interface IExceptionMessage {
 	
 	
 	/**
-	 * Production order sales order service
+	 * Production order sale order service
 	 */
 	
 	static final String PRODUCTION_ORDER_SALES_ORDER_NO_BOM = "Aucune nomenclature définie pour le produit %s (%s)";

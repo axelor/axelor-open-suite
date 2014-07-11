@@ -19,22 +19,22 @@ package com.axelor.apps.production.web;
 
 import javax.inject.Inject;
 
-import com.axelor.apps.production.service.ProductionOrderSalesOrderService;
-import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
-public class ProductionOrderSalesOrderController {
+public class ProductionOrderSaleOrderController {
 
 	@Inject
-	ProductionOrderSalesOrderService productionOrderSalesOrderService;
+	ProductionOrderSaleOrderService productionOrderSaleOrderService;
 	
 	public void createProductionOrders(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		SalesOrder salesOrder = request.getContext().asType( SalesOrder.class );
+		SaleOrder saleOrder = request.getContext().asType( SaleOrder.class );
 		
-		productionOrderSalesOrderService.generateProductionOrder(salesOrder);
+		productionOrderSaleOrderService.generateProductionOrder(saleOrder);
 			
 	}
 	

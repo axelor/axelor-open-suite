@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.production.service.ProductionOrderSalesOrderService;
+import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
 import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
@@ -38,7 +38,7 @@ public class ProductionOrderController {
 	ProductionOrderService productionOrderService;
 	
 	@Inject
-	ProductionOrderSalesOrderService productionOrderSalesOrderService;
+	ProductionOrderSaleOrderService productionOrderSaleOrderService;
 	
 	public void propagateIsToInvoice (ActionRequest request, ActionResponse response) {
 
@@ -50,11 +50,11 @@ public class ProductionOrderController {
 		
 	}
 	
-	public void generateSalesOrder (ActionRequest request, ActionResponse response) throws AxelorException {
+	public void generateSaleOrder (ActionRequest request, ActionResponse response) throws AxelorException {
 
 		ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
 
-		productionOrderSalesOrderService.createSalesOrder(ProductionOrder.find(productionOrder.getId()));
+		productionOrderSaleOrderService.createSaleOrder(ProductionOrder.find(productionOrder.getId()));
 		
 		response.setReload(true);
 		

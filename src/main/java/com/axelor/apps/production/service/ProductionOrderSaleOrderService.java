@@ -32,17 +32,17 @@ import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.supplychain.db.IPurchaseOrder;
-import com.axelor.apps.supplychain.db.SalesOrder;
-import com.axelor.apps.supplychain.db.SalesOrderLine;
-import com.axelor.apps.supplychain.service.SalesOrderService;
+import com.axelor.apps.purchase.db.IPurchaseOrder;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ProductionOrderSalesOrderService {
+public class ProductionOrderSaleOrderService {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -50,27 +50,27 @@ public class ProductionOrderSalesOrderService {
 	private ProductionOrderService productionOrderService;
 	
 	@Inject
-	private SalesOrderService salesOrderService;
+	private SaleOrderService saleOrderService;
 	
 	private LocalDate today;
 	
 	private UserInfo user;
 	
 	@Inject
-	public ProductionOrderSalesOrderService(UserInfoService userInfoService) {
+	public ProductionOrderSaleOrderService(UserInfoService userInfoService) {
 
 		this.today = GeneralService.getTodayDate();
 		this.user = userInfoService.getUserInfo();
 	}
 	
 	
-	public void generateProductionOrder(SalesOrder salesOrder) throws AxelorException  {
+	public void generateProductionOrder(SaleOrder saleOrder) throws AxelorException  {
 		
-		if(salesOrder.getSalesOrderLineList() != null)  {
+		if(saleOrder.getSaleOrderLineList() != null)  {
 			
-			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
+			for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList())  {
 				
-				this.generateProductionOrder(salesOrderLine);
+				this.generateProductionOrder(saleOrderLine);
 				
 			}
 			
@@ -80,13 +80,13 @@ public class ProductionOrderSalesOrderService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(SalesOrderLine salesOrderLine) throws AxelorException  {
+	public ProductionOrder generateProductionOrder(SaleOrderLine saleOrderLine) throws AxelorException  {
 		
-		Product product = salesOrderLine.getProduct();
+		Product product = saleOrderLine.getProduct();
 		
-		if(salesOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_PRODUCE && product != null && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE) )  {
+		if(saleOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_PRODUCE && product != null && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE) )  {
 			
-			BillOfMaterial billOfMaterial = salesOrderLine.getBillOfMaterial();
+			BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
 			
 			if(billOfMaterial == null)  {
 				
@@ -108,7 +108,7 @@ public class ProductionOrderSalesOrderService {
 				
 			}
 			
-			return productionOrderService.generateProductionOrder(product, billOfMaterial, salesOrderLine.getQty(), salesOrderLine.getSalesOrder().getProject()).save();
+			return productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject()).save();
 		
 		}
 		
@@ -118,7 +118,7 @@ public class ProductionOrderSalesOrderService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createSalesOrder(ProductionOrder productionOrder) throws AxelorException  {
+	public void createSaleOrder(ProductionOrder productionOrder) throws AxelorException  {
 		
 		logger.debug("Création d'un devis client pour l'ordre de production : {}",
 				new Object[] { productionOrder.getProductionOrderSeq() });
@@ -129,7 +129,7 @@ public class ProductionOrderSalesOrderService {
 		
 		if(businessProject.getCompany() != null)  {
 		
-			SalesOrder salesOrder = salesOrderService.createSalesOrder(
+			SaleOrder saleOrder = saleOrderService.createSaleOrder(
 					businessProject, 
 					user, 
 					businessProject.getCompany(), 
@@ -139,20 +139,20 @@ public class ProductionOrderSalesOrderService {
 					null,
 					null, 
 					IPurchaseOrder.INVOICING_FREE, 
-					salesOrderService.getLocation(businessProject.getCompany()), 
+					saleOrderService.getLocation(businessProject.getCompany()), 
 					today, 
 					PriceList.filter("self.partner = ?1 AND self.typeSelect = 1", partner).fetchOne(), 
 					partner);
 			
-			salesOrder.save();
+			saleOrder.save();
 			
 		}
 		
 		//TODO 
 		
-//		for(SalesOrderLine salesOrderLine : salesOrderLineList)  {
+//		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 //			
-//			purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLineService.createPurchaseOrderLine(purchaseOrder, salesOrderLine));
+//			purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLineService.createPurchaseOrderLine(purchaseOrder, saleOrderLine));
 //			
 //		}
 //		

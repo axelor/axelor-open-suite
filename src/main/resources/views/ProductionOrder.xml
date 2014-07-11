@@ -21,7 +21,7 @@
 			<field name="qty" widget="decimal" title="Quantity"/>
 	        <button name="AddManufOrder" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-method-add-manuf-order"/>
         </group>
-<!--         <button name="generateSalesOrder" title="Generate sales order" colSpan="2" onClick="action-production-order-method-generate-sales-order" showIf="businessProject"/> -->
+<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
         <field name="manufOrderList" colSpan="4"/>
         <portlet colSpan="4" action="action-production-order-view-operation-order"/>
     </form>
@@ -31,8 +31,8 @@
     	<call class="com.axelor.apps.production.web.ProductionOrderController" method="propagateIsToInvoice"/>
     </action-method>
     
-    <action-method name="action-production-order-method-generate-sales-order">
-    	<call class="com.axelor.apps.production.web.ProductionOrderController" method="generateSalesOrder"/>
+    <action-method name="action-production-order-method-generate-sale-order">
+    	<call class="com.axelor.apps.production.web.ProductionOrderController" method="generateSaleOrder"/>
     </action-method>
     
    	<action-method name="action-production-order-method-add-manuf-order">
