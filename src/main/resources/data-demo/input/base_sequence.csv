@@ -59,10 +59,10 @@
 "purchaseInterface";"Purchase interface";1;10;"PURINT_%Y_";;1;1;1;
 "refundInterface";"Refund interface";1;10;"REFINT_%Y_";;1;1;1;
 "reimbursement";"Reimbursement proposals";1;10;"REIMB_%Y_";;1;1;1;
-"salesInterface";"Sale interface";1;10;"SALINT_%Y_";;1;1;1;
+"saleInterface";"Sale interface";1;10;"SALINT_%Y_";;1;1;1;
 "treasuryInterface";"Cash flow interface";1;10;"CSHFLWINT_%Y_";;1;1;1;
 "partner";"Identifier for accounts and contacts";100;10;"P";;1;0;1;
-"salesOrder";"Sale Order / Customer Order";12;5;"SO";;1;0;1;
+"saleOrder";"Sale Order / Customer Order";12;5;"SO";;1;0;1;
 "purchaseOrder";"RFQ/Quotes for Suppliers";10;5;"PO";;1;0;1;
 "eventTicket";"Ticket N°";7;4;"TKT";;1;0;1;
 "intStockMove";"Internal stock move N°";1;4;"ISM";;1;0;1;
