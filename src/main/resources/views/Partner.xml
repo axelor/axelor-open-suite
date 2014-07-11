@@ -61,7 +61,7 @@
 	                    <field name="department"/>
 	                </group>
 	                <group colSpan="2" cols="2">
-	                    <field name="salesTurnover"/>
+	                    <field name="saleTurnover"/>
 	                    <field name="nbrEmployees"/>
 	                    <field name="registrationCode"/>
 	                    <field name="taxNbr"/>
@@ -147,11 +147,11 @@
 			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
 			    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
 			    <portlet colSpan="6" action="action-partner-view-opportunities"/>
-			    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
+			    <portlet colSpan="6" action="action-partner-view-sale-orders"/>
 			    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	        </page>
 			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain">
-				<portlet colSpan="6" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
+				<portlet colSpan="6" action="portal.customer.sale.lastYear.vs.ytd.by.family" height="350"/>
 			</page>
 			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm">
      			 <portlet colSpan="6" action="portal.customer.crm.activities" height="350"/>

@@ -72,10 +72,10 @@
 	</selection>
 	
 	<selection name='move.line.report.type.select.export'>
-		<option value="6">Export sales -> Acc. Soft.</option>
+		<option value="6">Export sale -> Acc. Soft.</option>
 		<option value="7">Export refunds -> Acc. Soft.</option>
 		<option value="8">Export tresury -> Acc. Soft.</option>
-		<option value="9">Export purchases -> Acc. Soft.</option>
+		<option value="9">Export purchase -> Acc. Soft.</option>
 	</selection>
 	
 	<selection name='move.state.select'>

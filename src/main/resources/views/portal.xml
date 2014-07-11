@@ -33,7 +33,7 @@
 	</portal>    
 
 	
-	<portal title="Invoice Dashboard" name="account.sales.invoice.dashboard.1.portal" cols="2">
+	<portal title="Invoice Dashboard" name="account.sale.invoice.dashboard.1.portal" cols="2">
 		<portlet action="portal.customer.invoices.to.collect" colSpan="1" height="350" canSearch="true" />
 		<portlet action="portal.invoice.turnover.cust.history" colSpan="1" height="350" canSearch="true" />
 		<portlet action="portal.invoice.prod.qty.sold.history" colSpan="1" height="350" canSearch="true" />
@@ -46,11 +46,11 @@
 		<portlet action="portal.invoice.sale.amount.by.currency" colSpan="1" height="350" canSearch="true" />
 	</portal>    
 	
-	<portal title="Invoice Dashboard" name="account.sales.invoice.dashboard.2.portal" cols="2">
+	<portal title="Invoice Dashboard" name="account.sale.invoice.dashboard.2.portal" cols="2">
 		 <portlet action="portal.invoice.sale.paymentCondition.distribution" colSpan="1" height="350" canSearch="true"/>
 	</portal> 
 	
-	<portal title="Invoice Dashboard" name="account.purchases.invoice.dashboard.1.portal" cols="2">
+	<portal title="Invoice Dashboard" name="account.purchase.invoice.dashboard.1.portal" cols="2">
 	   	<portlet action="portal.supplier.invoices.unpaid" colSpan="1" height="350" canSearch="true" />
 		<portlet action="portal.supplier.invoices.due" colSpan="1" height="350" canSearch="true" />
 		<portlet action="portal.prod.qty.suppl.invoices.last.12m" colSpan="1" height="350" canSearch="true" />

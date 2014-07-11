@@ -32,13 +32,13 @@
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>	
 
-	<menuitem name="invoice-root-sales" parent="invoice-root"
+	<menuitem name="invoice-root-sale" parent="invoice-root"
 		title="Sales" />
 		
-	<menuitem name="invoice-root-sales-custinvoices" parent="invoice-root-sales"
-		title="Cust. Invoices" action="invoice.root.sales.custinvoices" />
+	<menuitem name="invoice-root-sale-custinvoices" parent="invoice-root-sale"
+		title="Cust. Invoices" action="invoice.root.sale.custinvoices" />
 
-	<action-view name="invoice.root.sales.custinvoices" title="Cust. Invoices"
+	<action-view name="invoice.root.sale.custinvoices" title="Cust. Invoices"
 		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -48,10 +48,10 @@
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 
-	<menuitem name="invoice-root-sales-custrefunds" parent="invoice-root-sales"
-		title="Cust. Refunds" action="invoice.root.sales.custrefunds" />
+	<menuitem name="invoice-root-sale-custrefunds" parent="invoice-root-sale"
+		title="Cust. Refunds" action="invoice.root.sale.custrefunds" />
 
-	<action-view name="invoice.root.sales.custrefunds" title="Cust. Refunds"
+	<action-view name="invoice.root.sale.custrefunds" title="Cust. Refunds"
 		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -62,13 +62,13 @@
 	</action-view>
 			
 		
-	<menuitem name="invoice-root-purchases" parent="invoice-root"
+	<menuitem name="invoice-root-purchase" parent="invoice-root"
 		title="Purchases" />	
 		
-	<menuitem name="invoice-root-purchases-supinvoices" parent="invoice-root-purchases"
-		title="Suppl. Invoices" action="invoice.root.purchases.supinvoices" />
+	<menuitem name="invoice-root-purchase-supinvoices" parent="invoice-root-purchase"
+		title="Suppl. Invoices" action="invoice.root.purchase.supinvoices" />
 
-	<action-view name="invoice.root.purchases.supinvoices" title="Suppl. Invoices"
+	<action-view name="invoice.root.purchase.supinvoices" title="Suppl. Invoices"
 		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -78,10 +78,10 @@
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 
-	<menuitem name="invoice-root-purchases-suprefunds" parent="invoice-root-purchases"
-		title="Suppl. Refunds" action="invoice.root.purchases.suprefunds" />
+	<menuitem name="invoice-root-purchase-suprefunds" parent="invoice-root-purchase"
+		title="Suppl. Refunds" action="invoice.root.purchase.suprefunds" />
 
-	<action-view name="invoice.root.purchases.suprefunds" title="Suppl. Refunds"
+	<action-view name="invoice.root.purchase.suprefunds" title="Suppl. Refunds"
 		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -739,34 +739,34 @@
 	<menuitem name="menu-account-invoice-dashboard" parent="menu-dashboards" 
     title="Invoice" priority="100"/>    
 	
-			<menuitem name="menu-account-sales-invoice-dashboard" parent="menu-account-invoice-dashboard" 
+			<menuitem name="menu-account-sale-invoice-dashboard" parent="menu-account-invoice-dashboard" 
 		    title="Sales Invoice" priority="15" /> 
 		    
-			<menuitem name="menu-account-sales-invoice-dashboard-1" parent="menu-account-sales-invoice-dashboard" 
-		    title="Sales Invoice Db 1" icon="img/16px/chart_16px.png" action="portal.account.sales.invoice.dashboard.1.view" />    
+			<menuitem name="menu-account-sale-invoice-dashboard-1" parent="menu-account-sale-invoice-dashboard" 
+		    title="Sales Invoice Db 1" icon="img/16px/chart_16px.png" action="portal.account.sale.invoice.dashboard.1.view" />    
 			
-		    <action-view name="portal.account.sales.invoice.dashboard.1.view" title="Sales Invoice Db 1"
+		    <action-view name="portal.account.sale.invoice.dashboard.1.view" title="Sales Invoice Db 1"
 		        icon="img/16px/crmSmall_16px.png">
-		        <view type="portal" name="account.sales.invoice.dashboard.1.portal" />        
+		        <view type="portal" name="account.sale.invoice.dashboard.1.portal" />        
 		    </action-view>
 		    
-		    <menuitem name="menu-account-sales-invoice-dashboard-2" parent="menu-account-sales-invoice-dashboard" 
-		    title="Sales Invoice Db 2" icon="img/16px/chart_16px.png" action="portal.account.sales.invoice.dashboard.2.view" />    
+		    <menuitem name="menu-account-sale-invoice-dashboard-2" parent="menu-account-sale-invoice-dashboard" 
+		    title="Sales Invoice Db 2" icon="img/16px/chart_16px.png" action="portal.account.sale.invoice.dashboard.2.view" />    
 			
-		    <action-view name="portal.account.sales.invoice.dashboard.2.view" title="Sales Invoice Db 2"
+		    <action-view name="portal.account.sale.invoice.dashboard.2.view" title="Sales Invoice Db 2"
 		        icon="img/16px/crmSmall_16px.png">
-		        <view type="portal" name="account.sales.invoice.dashboard.2.portal" />        
+		        <view type="portal" name="account.sale.invoice.dashboard.2.portal" />        
 		    </action-view>
 		    
-		    <menuitem name="menu-account-purchases-invoice-dashboard" parent="menu-account-invoice-dashboard"
+		    <menuitem name="menu-account-purchase-invoice-dashboard" parent="menu-account-invoice-dashboard"
 		    title="Purchase Invoice" priority="10" />    
 			
-		    <menuitem name="menu-account-purchases-invoice-dashboard-1" parent="menu-account-purchases-invoice-dashboard"
-		    title="Purchase Invoice Db" icon="img/16px/chart_16px.png" action="portal.account.purchases.invoice.dashboard.2.view"/>    
+		    <menuitem name="menu-account-purchase-invoice-dashboard-1" parent="menu-account-purchase-invoice-dashboard"
+		    title="Purchase Invoice Db" icon="img/16px/chart_16px.png" action="portal.account.purchase.invoice.dashboard.2.view"/>    
 			
-		    <action-view name="portal.account.purchases.invoice.dashboard.2.view" title="Purchase Invoice Db"
+		    <action-view name="portal.account.purchase.invoice.dashboard.2.view" title="Purchase Invoice Db"
 		        icon="img/16px/crmSmall_16px.png">
-		        <view type="portal" name="account.purchases.invoice.dashboard.1.portal" />        
+		        <view type="portal" name="account.purchase.invoice.dashboard.1.portal" />        
 		    </action-view>
 		    
 		    <menuitem name="menu-account-mix-invoice-dashboard" parent="menu-account-invoice-dashboard" 

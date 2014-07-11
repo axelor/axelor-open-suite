@@ -33,7 +33,7 @@ public interface IPaymentMode {
 	static final int TYPE_WEB = 8;
 	static final int TYPE_TRANSFER = 9;
 
-	// Sales or purchases
+	// Sales or purchase
 	static final int SALES = 1;
 	static final int PURCHASES = 2;
 

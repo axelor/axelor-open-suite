@@ -67,7 +67,7 @@
 		<field name="taxLine.value"/>
     </form>
     
-    <action-record name="action-invoice-line-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+    <action-record name="action-invoice-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
     </action-record>
