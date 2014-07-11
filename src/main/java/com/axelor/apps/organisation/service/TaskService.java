@@ -169,16 +169,16 @@ public class TaskService {
 		
 		/**  REVENUE  **/
 		
-		Query q = JPA.em().createQuery("select SUM(sol.companyExTaxTotal) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
+		Query q = JPA.em().createQuery("select SUM(sol.companyExTaxTotal) FROM SaleOrderLine as sol WHERE sol.task = ?1 AND sol.saleOrder.statusSelect = 3");
 		q.setParameter(1, task);
 				
-		BigDecimal salesOrderTurnover = (BigDecimal) q.getSingleResult();
+		BigDecimal saleOrderTurnover = (BigDecimal) q.getSingleResult();
 		
 		BigDecimal financialInformationUpdateTurnover = this.getFinancialInformationUpdateAmount(task, ITaskUpdateLine.TYPE_REVENUE, ITaskUpdateLine.APPLICATION_INITIAL_ESTIMATED);
 		
 		BigDecimal turnover = BigDecimal.ZERO;
-		if(salesOrderTurnover != null)  {
-			turnover = turnover.add(salesOrderTurnover);
+		if(saleOrderTurnover != null)  {
+			turnover = turnover.add(saleOrderTurnover);
 		}
 		if(financialInformationUpdateTurnover != null)  {
 			turnover = turnover.add(financialInformationUpdateTurnover);
@@ -191,7 +191,7 @@ public class TaskService {
 				
 		BigDecimal purchaseOrderCost = (BigDecimal) q.getSingleResult();
 		
-		BigDecimal salesOrderCost = this.getSalesOrderInitialEstimatedCost(task);
+		BigDecimal saleOrderCost = this.getSaleOrderInitialEstimatedCost(task);
 		
 		BigDecimal financialInformationUpdateCost = this.getFinancialInformationUpdateAmount(task, ITaskUpdateLine.TYPE_COST, ITaskUpdateLine.APPLICATION_INITIAL_ESTIMATED);
 		
@@ -199,8 +199,8 @@ public class TaskService {
 		if(purchaseOrderCost != null)  {
 			cost = cost.add(purchaseOrderCost);
 		}
-		if(salesOrderCost != null)  {
-			cost = cost.add(salesOrderCost);
+		if(saleOrderCost != null)  {
+			cost = cost.add(saleOrderCost);
 		}
 		if(financialInformationUpdateCost != null)  {
 			cost = cost.add(financialInformationUpdateCost);
@@ -384,25 +384,25 @@ public class TaskService {
 	}
 
 
-	public BigDecimal getSalesOrderInitialEstimatedCost(Task task) throws AxelorException  {
-		BigDecimal salesOrderEstimatedCost = BigDecimal.ZERO;
+	public BigDecimal getSaleOrderInitialEstimatedCost(Task task) throws AxelorException  {
+		BigDecimal saleOrderEstimatedCost = BigDecimal.ZERO;
 		
 		if(task.getPlanningLineList() != null && !task.getPlanningLineList().isEmpty())  {
-			salesOrderEstimatedCost = this.getPlanningLinesAmount(task, null);
+			saleOrderEstimatedCost = this.getPlanningLinesAmount(task, null);
 			
-			Query q = JPA.em().createQuery("select SUM(sol.companyCostPrice * sol.qty) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3 AND sol.product.applicationTypeSelect = 1");
+			Query q = JPA.em().createQuery("select SUM(sol.companyCostPrice * sol.qty) FROM SaleOrderLine as sol WHERE sol.task = ?1 AND sol.saleOrder.statusSelect = 3 AND sol.product.applicationTypeSelect = 1");
 			q.setParameter(1, task);
 					
-			salesOrderEstimatedCost = (BigDecimal) q.getSingleResult();
+			saleOrderEstimatedCost = (BigDecimal) q.getSingleResult();
 		}
 		else  {
-			Query q = JPA.em().createQuery("select SUM(sol.companyCostPrice * sol.qty) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
+			Query q = JPA.em().createQuery("select SUM(sol.companyCostPrice * sol.qty) FROM SaleOrderLine as sol WHERE sol.task = ?1 AND sol.saleOrder.statusSelect = 3");
 			q.setParameter(1, task);
 					
-			salesOrderEstimatedCost = (BigDecimal) q.getSingleResult();
+			saleOrderEstimatedCost = (BigDecimal) q.getSingleResult();
 		}
 		
-		return salesOrderEstimatedCost;
+		return saleOrderEstimatedCost;
 	}
 	
 	

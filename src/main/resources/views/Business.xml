@@ -35,16 +35,16 @@
 	        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
  		</group>
     	<group title="Actions" showTitle="false" colSpan="2" cols="1">
-<!-- 	        <button name="createSalesOrder" title="Create quote" colSpan="1"/> -->
+<!-- 	        <button name="createSaleOrder" title="Create quote" colSpan="1"/> -->
 <!-- 	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/> -->
 	        <button name="transformToProject" title="Transform to project" showIf="isProject == false" colSpan="1" onClick="action-business-project-record-transform-in-project,save"/>
-	        <button name="createPreSalesTask" title="Create pre-sales task" colSpan="1" onClick="save,action-business-project-method-create-pre-sales-task"/>
+	        <button name="createPreSalesTask" title="Create pre-sale task" colSpan="1" onClick="save,action-business-project-method-create-pre-sale-task"/>
 	        <button name="updateTaskProgression" title="Update task progress" colSpan="1" onClick="action-project-method-update-task-progress"/>
 	        <button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
 	        
 <!-- 	        MUST BE DELETED -->
-	        <button name="generateSalesOrder" title="Create quote" colSpan="2" onClick="action-business-project-view-generate-sales-order"/>
-	        <button name="updateSalesOrder" title="Update quote" colSpan="2" onClick="action-business-project-view-update-sales-order"/>
+	        <button name="generateSaleOrder" title="Create quote" colSpan="2" onClick="action-business-project-view-generate-sale-order"/>
+	        <button name="updateSaleOrder" title="Update quote" colSpan="2" onClick="action-business-project-view-update-sale-order"/>
 	    </group>
 	    <group showTitle="false" colSpan="6">
         	<group title="Times" colSpan="6" cols="6">
@@ -104,7 +104,7 @@
 	        <page title="Links" colSpan="4" >
 	        	<notebook>
 	        		<page title="Initial estimated" hideIf="realEstimatedMethodSelect == 1">
-	        			<portlet colSpan="4" action="action-business-project-view-validated-sales-order-line"/>
+	        			<portlet colSpan="4" action="action-business-project-view-validated-sale-order-line"/>
 	     				<portlet colSpan="4" action="action-business-project-view-validated-purchase-order-line"/>
 	     				<portlet colSpan="4" action="action-business-project-view-initial-estimated-financial-information-update"/>
 	        		</page>
@@ -174,7 +174,7 @@
 		<field name="isProject" expr="true"/>
 	</action-record>
 			
-	<action-method name="action-business-project-method-create-pre-sales-task">
+	<action-method name="action-business-project-method-create-pre-sale-task">
 		<call class="com.axelor.apps.organisation.web.ProjectController" method="createPreSalesTask"/>
 	</action-method>	
 		
@@ -201,14 +201,14 @@
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
-  	<action-view name="action-business-project-view-validated-sales-order-line" title="Validated Customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
-  		<view type="grid" name="sales-order-line-grid"/>
-		<view type="form" name="sales-order-line-form"/>
-  		<domain>self.salesOrder.statusSelect = 3 and self.task.project.id = :id</domain>
+  	<action-view name="action-business-project-view-validated-sale-order-line" title="Validated Customer order lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+  		<view type="grid" name="sale-order-line-grid"/>
+		<view type="form" name="sale-order-line-form"/>
+  		<domain>self.saleOrder.statusSelect = 3 and self.task.project.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
-  	<action-view name="action-business-project-view-validated-purchase-order-line" title="Validated supplier order lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+  	<action-view name="action-business-project-view-validated-purchase-order-line" title="Validated supplier order lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
   		<view type="grid" name="purchase-order-line-grid"/>
 		<view type="form" name="purchase-order-line-form"/>
   		<domain>self.purchaseOrder.statusSelect = 3 and self.task.project.id = :id</domain>
@@ -270,15 +270,15 @@
 	
 <!-- 	MUST BE DELETED -->
     
-    <action-view name="action-business-project-view-generate-sales-order" title="Sales order" model="com.axelor.apps.supplychain.db.SalesOrder">
-  		<view type="grid" name="sales-order-grid"/>
-		<view type="form" name="sales-order-form"/>
+    <action-view name="action-business-project-view-generate-sale-order" title="Sales order" model="com.axelor.apps.sale.db.SaleOrder">
+  		<view type="grid" name="sale-order-grid"/>
+		<view type="form" name="sale-order-form"/>
 		<domain>self.id = 12</domain>
   	</action-view>
   	
-  	 <action-view name="action-business-project-view-update-sales-order" title="Sales order" model="com.axelor.apps.supplychain.db.SalesOrder">
-  		<view type="grid" name="sales-order-grid"/>
-		<view type="form" name="sales-order-form"/>
+  	 <action-view name="action-business-project-view-update-sale-order" title="Sales order" model="com.axelor.apps.sale.db.SaleOrder">
+  		<view type="grid" name="sale-order-grid"/>
+		<view type="form" name="sale-order-form"/>
 		<domain>self.id = 13</domain>
   	</action-view>
   	

@@ -113,7 +113,7 @@ public interface ITranslation {
 	public static final String PROJECT_SUPPLIER = /*$$(*/ "Project.supplier"; /*)*/
 	public static final String PROJECT_PURCHASER = /*$$(*/ "Project.purchaser"; /*)*/
 	public static final String PROJECT_COST = /*$$(*/ "Project.cost"; /*)*/
-	public static final String PROJECT_PURCHASES = /*$$(*/ "Project.purchases"; /*)*/
+	public static final String PROJECT_PURCHASES = /*$$(*/ "Project.purchase"; /*)*/
 	public static final String PROJECT_TOTAL_TURNOVER = /*$$(*/ "Project.totalTurnover"; /*)*/
 	public static final String PROJECT_TOTAL_COST = /*$$(*/ "Project.totalCost"; /*)*/
 	public static final String PROJECT_TOTAL_MARGIN = /*$$(*/ "Project.totalMargin"; /*)*/
@@ -128,7 +128,7 @@ public interface ITranslation {
 	public static final String TASK_SUPPLIER = /*$$(*/ "Task.supplier"; /*)*/
 	public static final String TASK_PURCHASER = /*$$(*/ "Task.purchaser"; /*)*/
 	public static final String TASK_COST = /*$$(*/ "Task.cost"; /*)*/
-	public static final String TASK_PURCHASES = /*$$(*/ "Task.purchases"; /*)*/
+	public static final String TASK_PURCHASES = /*$$(*/ "Task.purchase"; /*)*/
 	public static final String TASK_TOTAL_TURNOVER = /*$$(*/ "Task.totalTurnover"; /*)*/
 	public static final String TASK_TOTAL_COST = /*$$(*/ "Task.totalCost"; /*)*/
 	public static final String TASK_TOTAL_MARGIN = /*$$(*/ "Task.totalMargin"; /*)*/

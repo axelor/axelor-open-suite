@@ -127,16 +127,16 @@ public class ProjectService {
 		
 		/**  REVENUE  **/
 		
-		Query q = JPA.em().createQuery("select SUM(sol.companyExTaxTotal) FROM SalesOrderLine as sol WHERE sol.task.project = ?1 AND sol.salesOrder.statusSelect = 3");
+		Query q = JPA.em().createQuery("select SUM(sol.companyExTaxTotal) FROM SaleOrderLine as sol WHERE sol.task.project = ?1 AND sol.saleOrder.statusSelect = 3");
 		q.setParameter(1, project);
 				
-		BigDecimal salesOrderTurnover = (BigDecimal) q.getSingleResult();
+		BigDecimal saleOrderTurnover = (BigDecimal) q.getSingleResult();
 		
 		BigDecimal financialInformationUpdateTurnover = this.getFinancialInformationUpdateAmount(project, ITaskUpdateLine.TYPE_REVENUE, ITaskUpdateLine.APPLICATION_INITIAL_ESTIMATED);
 		
 		BigDecimal turnover = BigDecimal.ZERO;
-		if(salesOrderTurnover != null)  {
-			turnover = turnover.add(salesOrderTurnover);
+		if(saleOrderTurnover != null)  {
+			turnover = turnover.add(saleOrderTurnover);
 		}
 		if(financialInformationUpdateTurnover != null)  {
 			turnover = turnover.add(financialInformationUpdateTurnover);
@@ -149,7 +149,7 @@ public class ProjectService {
 				
 		BigDecimal purchaseOrderCost = (BigDecimal) q.getSingleResult();
 		
-		BigDecimal salesOrderCost = this.getSalesOrderInitialEstimatedCost(project);
+		BigDecimal saleOrderCost = this.getSaleOrderInitialEstimatedCost(project);
 		
 		BigDecimal financialInformationUpdateCost = this.getFinancialInformationUpdateAmount(project, ITaskUpdateLine.TYPE_COST, ITaskUpdateLine.APPLICATION_INITIAL_ESTIMATED);
 		
@@ -157,8 +157,8 @@ public class ProjectService {
 		if(purchaseOrderCost != null)  {
 			cost = cost.add(purchaseOrderCost);
 		}
-		if(salesOrderCost != null)  {
-			cost = cost.add(salesOrderCost);
+		if(saleOrderCost != null)  {
+			cost = cost.add(saleOrderCost);
 		}
 		if(financialInformationUpdateCost != null)  {
 			cost = cost.add(financialInformationUpdateCost);
@@ -336,21 +336,21 @@ public class ProjectService {
 	}
 	
 	
-	public BigDecimal getSalesOrderInitialEstimatedCost(Project project) throws AxelorException  {
+	public BigDecimal getSaleOrderInitialEstimatedCost(Project project) throws AxelorException  {
 		
-		BigDecimal salesOrderConfirmedCost = BigDecimal.ZERO;
+		BigDecimal saleOrderConfirmedCost = BigDecimal.ZERO;
 		
 		if(project.getTaskList() != null)  {
 			for(Task task : project.getTaskList())   {
 				
-				BigDecimal salesOrderInitialEstimatedCost = injector.getInstance(TaskService.class).getSalesOrderInitialEstimatedCost(task);
-				if(salesOrderInitialEstimatedCost != null)  {
-					salesOrderConfirmedCost = salesOrderConfirmedCost.add(salesOrderInitialEstimatedCost);
+				BigDecimal saleOrderInitialEstimatedCost = injector.getInstance(TaskService.class).getSaleOrderInitialEstimatedCost(task);
+				if(saleOrderInitialEstimatedCost != null)  {
+					saleOrderConfirmedCost = saleOrderConfirmedCost.add(saleOrderInitialEstimatedCost);
 				}
 			}
 		}
 		
-		return salesOrderConfirmedCost;
+		return saleOrderConfirmedCost;
 	}
 
 	

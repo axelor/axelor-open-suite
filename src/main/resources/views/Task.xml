@@ -57,7 +57,7 @@
 	            <field name="planningLineList" onChange="action-task-method-get-planned-time" colSpan="4" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
 	        </page>
 	        <page title="Invoicing follow-up">
-	            <field name="salesOrderLine" onChange="action-task-salesOrderLine-on-change"/>
+	            <field name="saleOrderLine" onChange="action-task-saleOrderLine-on-change"/>
 	            <field name="product"/>
 	            <field name="qty"/>
 	            <field name="price"/> 
@@ -101,7 +101,7 @@
 	        	</group>
 	        	<notebook>
 	        		<page title="Initial estimated" hideIf="realEstimatedMethodSelect == 1">
-	        			<portlet colSpan="4" action="action-task-view-validated-sales-order-line"/>
+	        			<portlet colSpan="4" action="action-task-view-validated-sale-order-line"/>
 	     				<portlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
 	     				<portlet colSpan="4" action="action-task-view-initial-estimated-financial-information-update"/>
 	        		</page>
@@ -219,10 +219,10 @@
 		<call class="com.axelor.apps.organisation.web.TaskController" method="updateFinancialInformationInitialEstimated"/>
 	</action-method>
     
-    <action-record name="action-task-salesOrderLine-on-change" model="com.axelor.apps.organisation.db.Task">
-    	<field name="product" expr="eval:salesOrderLine?.product" if="salesOrderLine"/>
-    	<field name="qty" expr="eval:salesOrderLine?.qty" if="salesOrderLine"/>
-    	<field name="price" expr="eval:salesOrderLine?.price" if="salesOrderLine"/>
+    <action-record name="action-task-saleOrderLine-on-change" model="com.axelor.apps.organisation.db.Task">
+    	<field name="product" expr="eval:saleOrderLine?.product" if="saleOrderLine"/>
+    	<field name="qty" expr="eval:saleOrderLine?.qty" if="saleOrderLine"/>
+    	<field name="price" expr="eval:saleOrderLine?.price" if="saleOrderLine"/>
     </action-record>
     
     <action-record name="action-task-record-real-estimated-method" model="com.axelor.apps.organisation.db.Task">
@@ -260,10 +260,10 @@
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
-  	<action-view name="action-task-view-validated-sales-order-line" title="Validated Customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
-  		<view type="grid" name="sales-order-line-grid"/>
-		<view type="form" name="sales-order-line-form"/>
-  		<domain>self.salesOrder.statusSelect = 3 and self.task.id = :id</domain>
+  	<action-view name="action-task-view-validated-sale-order-line" title="Validated Customer order lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+  		<view type="grid" name="sale-order-line-grid"/>
+		<view type="form" name="sale-order-line-form"/>
+  		<domain>self.saleOrder.statusSelect = 3 and self.task.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
@@ -274,7 +274,7 @@
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
-  	<action-view name="action-task-view-validated-purchase-order-line" title="Validated supplier order lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+  	<action-view name="action-task-view-validated-purchase-order-line" title="Validated supplier order lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
   		<view type="grid" name="purchase-order-line-grid"/>
 		<view type="form" name="purchase-order-line-form"/>
   		<domain>self.purchaseOrder.statusSelect = 3 and self.task.id = :id</domain>

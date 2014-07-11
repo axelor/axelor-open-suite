@@ -121,7 +121,7 @@
 	
 	<action-validate name="action-project-validate-generate-invoice">
 		<error message="Generating invoice is impossible, the fields clientPartner and contactPartner must be filled." if="clientPartner == null || contactPartner == null"/>
-   		<error message="Generating invoice is impossible, please link the task to a saleOrderLine to do so." if="eval: taskList?.collect(){ it?.salesOrderLine }?.contains(null) == true"/>
+   		<error message="Generating invoice is impossible, please link the task to a saleOrderLine to do so." if="eval: taskList?.collect(){ it?.saleOrderLine }?.contains(null) == true"/>
    		<error message="There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in." if="eval: taskList?.collect(){ it?.isToInvoice }?.contains(true) == false"/>
 	</action-validate> 
 	

@@ -135,7 +135,7 @@
         </oda-data-source>
     </data-sources>
     <data-sets>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SalesOrderLineDB" id="3420">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SaleOrderLineDB" id="3420">
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">id</property>
@@ -265,14 +265,14 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select SalesOrderLine.id, SalesOrder.order_date, ClientPartner.full_name as "client_name", SalesOrderLine.ex_tax_total,
-UserInfo.full_name as "user_name", SalesOrderLine.product_name
+            <xml-property name="queryText"><![CDATA[select SaleOrderLine.id, SaleOrder.order_date, ClientPartner.full_name as "client_name", SaleOrderLine.ex_tax_total,
+UserInfo.full_name as "user_name", SaleOrderLine.product_name
 from organisation_task as Task 
-left outer join supplychain_sales_order_line as SalesOrderLine on (SalesOrderLine.task = Task.id)
-left outer join supplychain_sales_order as SalesOrder on (SalesOrder.id = SalesOrderLine.sales_order)
-left outer join base_partner as ClientPartner on (SalesOrder.client_partner = ClientPartner.id)
-left outer join base_user_info as UserInfo on (SalesOrder.salesman_user_info = UserInfo.id)
-where Task.id = ? and SalesOrder.status_select = 3]]></xml-property>
+left outer join supplychain_sale_order_line as SaleOrderLine on (SaleOrderLine.task = Task.id)
+left outer join supplychain_sale_order as SaleOrder on (SaleOrder.id = SaleOrderLine.sale_order)
+left outer join base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
+left outer join base_user_info as UserInfo on (SaleOrder.saleman_user_info = UserInfo.id)
+where Task.id = ? and SaleOrder.status_select = 3]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1929,7 +1929,7 @@ where Task.id = ? and SalesOrder.status_select = 3]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>customer_sales_journal</design:name>
+              <design:name>customer_sale_journal</design:name>
               <design:position>79</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
@@ -1937,11 +1937,11 @@ where Task.id = ? and SalesOrder.status_select = 3]]></xml-property>
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>customer_sales_journal</design:displayName>
+              <design:displayName>customer_sale_journal</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>customer_sales_journal</design:label>
+            <design:label>customer_sale_journal</design:label>
             <design:formattingHints>
               <design:displaySize>20</design:displaySize>
             </design:formattingHints>
@@ -4167,7 +4167,7 @@ where Task.id = ? and PurchaseOrder.status_select = 3]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>customer_sales_journal</design:name>
+              <design:name>customer_sale_journal</design:name>
               <design:position>79</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
@@ -4175,11 +4175,11 @@ where Task.id = ? and PurchaseOrder.status_select = 3]]></xml-property>
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>customer_sales_journal</design:displayName>
+              <design:displayName>customer_sale_journal</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>customer_sales_journal</design:label>
+            <design:label>customer_sale_journal</design:label>
             <design:formattingHints>
               <design:displaySize>20</design:displaySize>
             </design:formattingHints>
@@ -5223,7 +5223,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="rowSpan">1</property>
                     <table id="3698">
                         <property name="width">7.458333333333333in</property>
-                        <property name="dataSet">SalesOrderLineDB</property>
+                        <property name="dataSet">SaleOrderLineDB</property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">id</property>
