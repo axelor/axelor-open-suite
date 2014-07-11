@@ -469,8 +469,8 @@
 468;445820;445800;"Installments - Package Plan";"tax";;1
 469;445830;445800;"Reimbursement of taxes on turnover requested";"tax";;1
 470;445840;445800;"VAT recovered in advance";"tax";;1
-471;445860;445800;"Taxes on sales invoices not received";"tax";;1
-472;445870;445800;"Taxes on sales invoices to determine";"tax";;1
+471;445860;445800;"Taxes on sale invoices not received";"tax";;1
+472;445870;445800;"Taxes on sale invoices to determine";"tax";;1
 473;446000;44;"Secured bonds";"tax";;1
 474;447000;44;"Other taxes, fees and similar payments";"tax";;1
 475;448000;44;"State - Accrued expenses and accrued income";"tax";;1
@@ -501,7 +501,7 @@
 500;46;"CL4";"Sundry debtors and sundry creditors";"view";;1
 501;462000;46;"Receivables from sale of property";"receivable";;1
 502;464000;46;"Debt related to acquisition of investment securities";"debt";;1
-503;465000;46;"Receivables from sales of marketable securities";"receivable";;1
+503;465000;46;"Receivables from sale of marketable securities";"receivable";;1
 504;467000;46;"Other accounts receivable or payable";"view";;1
 505;468000;46;"Miscellaneous - Accrued expenses and accrued income";"receivable";;1
 506;468600;468000;"Accruals";"debt";;1
@@ -538,7 +538,7 @@
 537;495800;495000;"Joint ventures and GIE";"debt";;1
 538;496000;49;"Impairment of sundry debtors";"receivable";;1
 539;496200;496000;"Receivables from sale of property";"receivable";;1
-540;496500;496000;"Receivables from sales of marketable securities";"receivable";;1
+540;496500;496000;"Receivables from sale of marketable securities";"receivable";;1
 541;496700;496000;"Other accounts receivable";"receivable";;1
 542;50;"CL5";"Marketable securities";"view";;1
 543;501000;50;"Shares in affiliated companies";"cash";;1
@@ -597,11 +597,11 @@
 596;590600;59;"Bonds";"cash";;1
 597;590800;59;"Other investment securities and related receivables (provisions)";"cash";;1
 598;60;"CL6";"Purchases (except 603)";"view";;1
-599;601000;60;"Stored purchases - Raw (and supplies)";"expense";;1
+599;601000;60;"Stored purchase - Raw (and supplies)";"expense";;1
 600;601100;601000;"Subjects (or group) A";"expense";;1
 601;601200;601000;"Material (or group) B";"expense";;1
 602;601700;601000;"Supplies A, B, C, ..";"expense";;1
-603;602000;60;"Stored purchases - Other supplies";"expense";;1
+603;602000;60;"Stored purchase - Other supplies";"expense";;1
 604;602100;602000;"Consumables";"expense";;1
 605;602110;602100;"Material (or group) C";"expense";;1
 606;602120;602100;"Material (or group) D";"expense";;1
@@ -621,7 +621,7 @@
 620;603700;603000;"Changes in inventories of goods";"expense";;1
 621;604000;60;"Purchases of studies and services";"expense";;1
 622;605000;60;"Purchases of equipment and work equipment";"expense";;1
-623;606000;60;"Non stored purchases of materials and supplies";"expense";;1
+623;606000;60;"Non stored purchase of materials and supplies";"expense";;1
 624;606100;606000;"Non-storable supplies (water, energy ...)";"expense";;1
 625;606300;606000;"Maintenance supplies and small equipment";"expense";;1
 626;606400;606000;"Administrative supplies";"expense";;1
@@ -629,8 +629,8 @@
 628;607000;60;"Purchases of goods";"expense";;1
 629;607100;607000;"Commodity (or group) A";"expense";;1
 630;607200;607000;"Commodity (or group) B";"expense";;1
-631;608000;60;"Incidentals included purchases";"expense";;1
-632;609000;60;"Discounts, rebates and discounts available on purchases";"expense";;1
+631;608000;60;"Incidentals included purchase";"expense";;1
+632;609000;60;"Discounts, rebates and discounts available on purchase";"expense";;1
 633;609100;609000;"- raw materials (supplies)";"expense";;1
 634;609200;609000;"- other supplies stored";"expense";;1
 635;609400;609000;"- studies and services";"expense";;1
@@ -656,8 +656,8 @@
 655;616100;616000;"Casualty";"expense";;1
 656;616200;616000;"Compulsory insurance building damage";"expense";;1
 657;616300;616000;"Transportation Insurance";"expense";;1
-658;616360;616300;"Transport insurance on purchases";"expense";;1
-659;616370;616300;"Transportsur insurance sales";"expense";;1
+658;616360;616300;"Transport insurance on purchase";"expense";;1
+659;616370;616300;"Transportsur insurance sale";"expense";;1
 660;616380;616300;"Transport insurance on other property";"expense";;1
 661;616400;616000;"Operating Risks";"expense";;1
 662;616500;616000;"Insolvent customers";"expense";;1
@@ -672,8 +672,8 @@
 671;621100;621000;"Temporary Staff";"expense";;1
 672;621400;621000;"Staff seconded or loaned to the company";"expense";;1
 673;622000;62;"Intermediary fees and fees";"expense";;1
-674;622100;622000;"And brokerage commissions on purchases";"expense";;1
-675;622200;622000;"Commission and brokerage on sales";"expense";;1
+674;622100;622000;"And brokerage commissions on purchase";"expense";;1
+675;622200;622000;"Commission and brokerage on sale";"expense";;1
 676;622400;622000;"Remuneration Freight";"expense";;1
 677;622500;622000;"Factoring Compensation";"expense";;1
 678;622600;622000;"Fees";"expense";;1
@@ -689,8 +689,8 @@
 688;623700;623000;"Publications";"expense";;1
 689;623800;623000;"Miscellaneous (tips, current grants ...)";"expense";;1
 690;624000;62;"Transport of goods and transport staff";"expense";;1
-691;624100;624000;"Transport on purchases";"expense";;1
-692;624200;624000;"Transport on sales";"expense";;1
+691;624100;624000;"Transport on purchase";"expense";;1
+692;624200;624000;"Transport on sale";"expense";;1
 693;624300;624000;"Transport between facilities or sites";"expense";;1
 694;624400;624000;"Transportation Administrative";"expense";;1
 695;624700;624000;"Transport staff";"expense";;1
@@ -790,11 +790,11 @@
 789;664000;66;"Credit losses associated with investments";"expense";;1
 790;665000;66;"Discounts granted";"expense";;1
 791;666000;66;"Exchange losses";"expense";;1
-792;667000;66;"Net losses on sales of marketable securities";"expense";;1
+792;667000;66;"Net losses on sale of marketable securities";"expense";;1
 793;668000;66;"Other financial charges";"expense";;1
 794;67;"CL6";"Extraordinary expenses";"view";;1
 795;671000;67;"Extraordinary expenses on management operations";"expense";;1
-796;671100;671000;"Penalties on markets (and forfeits paid on purchases and sales)";"expense";;1
+796;671100;671000;"Penalties on markets (and forfeits paid on purchase and sale)";"expense";;1
 797;671200;671000;"Penalties, fines and criminal tax";"expense";;1
 798;671300;671000;"Donations,gifts";"expense";;1
 799;671400;671000;"Receivables become uncollectible in the year";"expense";;1
@@ -852,7 +852,7 @@
 851;698100;698000;"Tax consolidation - Expenses";"expense";;1
 852;698900;698000;"Tax consolidation - Products";"expense";;1
 853;699000;69;"Products, carry back losses";"expense";;1
-854;70;"CL7";"Produced sales - Services - Merchandise";"view";;1
+854;70;"CL7";"Produced sale - Services - Merchandise";"view";;1
 855;701000;70;"Sales of finished products";"income";;1
 856;701200;701000;"Finished goods (or group) B";"income";;1
 857;702000;70;"Sales of intermediate products";"income";;1
@@ -874,15 +874,15 @@
 873;708400;708000;"Provision of staff charged";"income";;1
 874;708500;708000;"Transportation and incidental costs charged";"income";;1
 875;708600;708000;"Bonus on occasions of returnable packaging";"income";;1
-876;708700;708000;"Bonuses and premiums obtained from customers on sales";"income";;1
-877;708800;708000;"Other products activities (sales of supplies ...)";"income";;1
+876;708700;708000;"Bonuses and premiums obtained from customers on sale";"income";;1
+877;708800;708000;"Other products activities (sale of supplies ...)";"income";;1
 878;709000;70;"Discounts, rebates and discounts granted by the company";"income";;1
-879;709100;709000;"- On sales of finished products";"income";;1
-880;709200;709000;"- On sales of intermediate products";"income";;1
+879;709100;709000;"- On sale of finished products";"income";;1
+880;709200;709000;"- On sale of intermediate products";"income";;1
 881;709400;709000;"- Work on";"income";;1
 882;709500;709000;"- Studies on";"income";;1
 883;709600;709000;"- On services";"income";;1
-884;709700;709000;"- On sales of goods";"income";;1
+884;709700;709000;"- On sale of goods";"income";;1
 885;709800;709000;"- Revenue from ancillary activities on";"income";;1
 886;71;"CL7";"Stored production (or stocking)";"view";;1
 887;713000;71;"Changes in inventories (in-progress, products)";"income";;1
@@ -927,11 +927,11 @@
 926;764000;76;"Income from securities investment";"income";;1
 927;765000;76;"Discounts obtained";"income";;1
 928;766000;76;"Foreign exchange gains";"income";;1
-929;767000;76;"Net gains on sales of marketable securities";"income";;1
+929;767000;76;"Net gains on sale of marketable securities";"income";;1
 930;768000;76;"Other financial";"income";;1
 931;77;"CL7";"Exceptional items";"view";;1
 932;771000;77;"Extraordinary income on management operations";"income";;1
-933;771100;771000;"Forfeits and penalties levied on purchases and sales";"income";;1
+933;771100;771000;"Forfeits and penalties levied on purchase and sale";"income";;1
 934;771300;771000;"Donations received";"income";;1
 935;771400;771000;"Bad debt written off";"income";;1
 936;771500;771000;"Matching grants";"income";;1

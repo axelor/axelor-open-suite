@@ -15,15 +15,15 @@ Si parmi les coordonnées ci-dessus, certaines sont erronées ou manquantes, mer
 Cordialement
 L'équipe Axelor
 ";"$Partner.emailAddress.address$";;
-"Envoi Devis Client";"SalesOrder";;;;"true";;"Votre Devis N° $SalesOrder.salesOrderSeq$";"Bonjour, 
+"Envoi Devis Client";"SaleOrder";;;;"true";;"Votre Devis N° $SaleOrder.saleOrderSeq$";"Bonjour, 
 
-Suite à nos précédents échanges, je vous prie de bien vouloir trouver ci-joint le devis $SalesOrder.salesOrderSeq$.
+Suite à nos précédents échanges, je vous prie de bien vouloir trouver ci-joint le devis $SaleOrder.saleOrderSeq$.
 
 Je reste à votre disposition pour des informations complémentaires sur ce devis.
-";"$SalesOrder.clientPartner.emailAddress.address$";;
-"Envoi BL Client";"StockMove";;;;"true";;"Commande $StockMove.SalesOrder.SalesOrderSeq$ expédiée";"Bonjour,
+";"$SaleOrder.clientPartner.emailAddress.address$";;
+"Envoi BL Client";"StockMove";;;;"true";;"Commande $StockMove.SaleOrder.SaleOrderSeq$ expédiée";"Bonjour,
 
-Nous tenons à vous informer que votre commande $StockMove.salesOrder.salesOrderSeq$ a été expédiée. 
+Nous tenons à vous informer que votre commande $StockMove.saleOrder.saleOrderSeq$ a été expédiée. 
 Vous trouverez en pièce jointe le Bon de Livraison associé. Si des articles sont manquants, le reste de votre commande sera expédiée dans les prochains jours.";"$StockMove.partner.emailAddress.address$";;
 "Réception BL Fournisseur";"StockMove";;;;"false";;"Commande $StockMove.PurchaseOrder.PurchaseOrderSeq$ expédiée";"Bonjour,
 
