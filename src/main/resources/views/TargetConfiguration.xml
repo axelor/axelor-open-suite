@@ -46,9 +46,9 @@
 	            <field name="meetingNumber"/>
 	        </group>
 	        <!--         <group title="Sales order" colSpan="2"> -->
-<!--         	<field name="salesOrderAmountWon"/> -->
-<!--         	<field name="salesOrderCreatedNumber"/> -->
-<!--         	<field name="salesOrderCreatedWon"/> -->
+<!--         	<field name="saleOrderAmountWon"/> -->
+<!--         	<field name="saleOrderCreatedNumber"/> -->
+<!--         	<field name="saleOrderCreatedWon"/> -->
 <!--         </group> -->
 	    </group>
 	</form>

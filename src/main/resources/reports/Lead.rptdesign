@@ -2368,7 +2368,7 @@ left join meta_select_item as SelectItem on (SelectItem.select_id = MetaSelect.i
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>customer_sales_journal</design:name>
+              <design:name>customer_sale_journal</design:name>
               <design:position>79</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
@@ -2376,11 +2376,11 @@ left join meta_select_item as SelectItem on (SelectItem.select_id = MetaSelect.i
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>customer_sales_journal</design:displayName>
+              <design:displayName>customer_sale_journal</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>customer_sales_journal</design:label>
+            <design:label>customer_sale_journal</design:label>
             <design:formattingHints>
               <design:displaySize>20</design:displaySize>
             </design:formattingHints>

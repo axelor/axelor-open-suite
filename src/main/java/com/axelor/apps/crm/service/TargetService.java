@@ -105,9 +105,9 @@ public class TargetService {
 		target.setOpportunityAmountWonTarget(targetConfiguration.getOpportunityAmountWon());
 		target.setOpportunityCreatedNumberTarget(target.getOpportunityCreatedNumberTarget());
 		target.setOpportunityCreatedWonTarget(target.getOpportunityCreatedWonTarget());
-//		target.setSalesOrderAmountWonTarget(targetConfiguration.getSalesOrderAmountWon());
-//		target.setSalesOrderCreatedNumberTarget(targetConfiguration.getSalesOrderCreatedNumber());
-//		target.setSalesOrderCreatedWonTarget(targetConfiguration.getSalesOrderCreatedWon());
+//		target.setSaleOrderAmountWonTarget(targetConfiguration.getSaleOrderAmountWon());
+//		target.setSaleOrderCreatedNumberTarget(targetConfiguration.getSaleOrderCreatedNumber());
+//		target.setSaleOrderCreatedWonTarget(targetConfiguration.getSaleOrderCreatedWon());
 		target.setPeriodTypeSelect(targetConfiguration.getPeriodTypeSelect());
 		target.setFromDate(fromDate);
 		target.setToDate(toDate);
@@ -130,7 +130,7 @@ public class TargetService {
 		LocalDateTime toDateTime = new LocalDateTime(toDate.getYear(), toDate.getMonthOfYear(), toDate.getDayOfMonth(), 23, 59);
 		
 		if(userInfo != null)  {
-			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.userInfo = ?1 AND op.salesStageSelect = 9 AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
+			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.userInfo = ?1 AND op.saleStageSelect = 9 AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
 			q.setParameter(1, userInfo);
 			q.setParameter(2, fromDateTime);
 			q.setParameter(3, toDateTime);
@@ -155,14 +155,14 @@ public class TargetService {
 			
 			target.setOpportunityCreatedNumber(opportunityCreatedNumber.intValue());
 			
-			Long opportunityCreatedWon = Opportunity.filter("self.userInfo = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
+			Long opportunityCreatedWon = Opportunity.filter("self.userInfo = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.saleStageSelect = 9",
 					userInfo, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());
 		}
 		else if(team != null)  {
 			
-			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.team = ?1 AND op.salesStageSelect = 9  AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
+			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.team = ?1 AND op.saleStageSelect = 9  AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
 			q.setParameter(1, team);
 			q.setParameter(2, fromDateTime);
 			q.setParameter(3, toDateTime);
@@ -187,7 +187,7 @@ public class TargetService {
 			
 			target.setOpportunityCreatedNumber(opportunityCreatedNumber.intValue());
 			
-			Long opportunityCreatedWon = Opportunity.filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
+			Long opportunityCreatedWon = Opportunity.filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.saleStageSelect = 9",
 					userInfo, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());

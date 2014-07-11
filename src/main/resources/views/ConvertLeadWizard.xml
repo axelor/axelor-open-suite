@@ -167,7 +167,7 @@
 	                    <field name="department"/>
 	                </group>
 	                <group colSpan="2" cols="2">
-	                    <field name="salesTurnover"/>
+	                    <field name="saleTurnover"/>
 	                    <field name="nbrEmployees"/>
 	                    <field name="registrationCode"/>
 	                    <field name="taxNbr"/>
@@ -320,7 +320,7 @@
 		        <field name="opportunityType" widget="SuggestBox"/>
 	        </group>
 	        <group title="Follow-up" colSpan="4" cols="6">
-				<field name="salesStageSelect"/>
+				<field name="saleStageSelect"/>
 				<field name="source"/>
 				<field name="expectedCloseDate"/>
 				<field name="nextStep"/>

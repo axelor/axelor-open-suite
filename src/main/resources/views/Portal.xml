@@ -11,7 +11,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9, 10)</domain>
+		<domain>self.saleStageSelect in (9, 10)</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
@@ -20,14 +20,14 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect not in (9, 10)</domain>
+		<domain>self.saleStageSelect not in (9, 10)</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	<action-view name="portal.unassigned.opportunities" title="Unassigned Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.userInfo is null and self.salesStageSelect = 1</domain>
+		<domain>self.userInfo is null and self.saleStageSelect = 1</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
@@ -36,7 +36,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9,10)  AND self.team = :active_team</domain>
+		<domain>self.saleStageSelect in (9,10)  AND self.team = :active_team</domain>
 		<context name="active_team"
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
@@ -46,7 +46,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect not in (9,10)  AND self.team = :active_team</domain>
+		<domain>self.saleStageSelect not in (9,10)  AND self.team = :active_team</domain>
 		<context name="active_team"
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
@@ -58,7 +58,7 @@
 		title="Opportunities Won By Partner" model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid-group" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect = 9</domain>
+		<domain>self.saleStageSelect = 9</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
@@ -66,7 +66,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-top-deal-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect not in (9, 10)</domain>
+		<domain>self.saleStageSelect not in (9, 10)</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
@@ -74,7 +74,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-top-deal-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect not in (9, 10) and self.userInfo =:user_info</domain>
+		<domain>self.saleStageSelect not in (9, 10) and self.userInfo =:user_info</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-view>
@@ -83,7 +83,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-top-deal-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect not in (9, 10) and self.team =:active_team</domain>
+		<domain>self.saleStageSelect not in (9, 10) and self.team =:active_team</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 		<context name="active_team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>
@@ -92,7 +92,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-key-account-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9, 10)</domain>
+		<domain>self.saleStageSelect in (9, 10)</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
@@ -100,7 +100,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-key-account-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9, 10) and self.userInfo =:user_info</domain>
+		<domain>self.saleStageSelect in (9, 10) and self.userInfo =:user_info</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-view>
@@ -109,7 +109,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-key-account-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9, 10) and self.team =:active_team</domain>
+		<domain>self.saleStageSelect in (9, 10) and self.team =:active_team</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 		<context name="active_team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>
@@ -126,14 +126,14 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.updatedOn &gt; date(now())-30 and self.salesStageSelect = 10</domain>
+		<domain>self.updatedOn &gt; date(now())-30 and self.saleStageSelect = 10</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	<action-view title="My Closed Opportunities" model="com.axelor.apps.crm.db.Opportunity"
 		name="portal.my.closed.opportunities">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9, 10) AND self.userInfo =:user_info</domain>
+		<domain>self.saleStageSelect in (9, 10) AND self.userInfo =:user_info</domain>
 		<context name="user_info"
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
@@ -143,7 +143,7 @@
 		name="portal.my.open.opportunities">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect NOT in (9, 10) AND self.userInfo =:user_info</domain>
+		<domain>self.saleStageSelect NOT in (9, 10) AND self.userInfo =:user_info</domain>
 		<context name="user_info"
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
@@ -151,7 +151,7 @@
 
 
 	<portal title="Dashboard" name="crm.opportunities.dashboard.1.portal" cols="2">
-		<portlet action="portal.salesman.dashboard.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.saleman.dashboard.opportunities" height="350" canSearch="true"/>
 		<portlet action="portal.closed.opportunities" height="350" canSearch="true"/>
 		<portlet action="portal.open.opportunities" height="350" canSearch="true"/>
 		<portlet action="portal.my.closed.opportunities" height="350" canSearch="true"/>
@@ -160,7 +160,7 @@
 		<portlet action="portal.team.closed.opportunities" height="350" canSearch="true"/>
 		<portlet action="portal.team.open.opportunities" height="350" canSearch="true"/>
 		<portlet action="portal.opportunities.by.source" height="350" canSearch="true"/>
-		<portlet action="portal.opportunities.by.salestage" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.by.saletage" height="350" canSearch="true"/>
 	</portal>
 	
 	<portal title="Dashboard" name="crm.opportunities.dashboard.2.portal" cols="2">
@@ -168,7 +168,7 @@
 		<portlet action="portal.opportunities.byStage.byType" height="350" />
 		<portlet action="portal.opportunities.won.by.partner" height="350" canSearch="true"/>
 		<portlet action="portal.opportunities.won.by.leadsource" height="350" />
-		<portlet action="portal.opportunities.won.by.salesman" height="350" />
+		<portlet action="portal.opportunities.won.by.saleman" height="350" />
 		<portlet action="portal.opportunities.by.origin.by.stage" height="350" />
 		<portlet action="portal.opportunities.recent.opps" height="350" canSearch="true"/>
 		<portlet action="portal.opportunities.top.deals" height="350" canSearch="true"/>
@@ -188,9 +188,9 @@
 		<view type="chart" name="chart.dashboard.opportunities.source.amount.bar" />
 	</action-view>
 
-	<action-view name="portal.opportunities.by.salestage"
+	<action-view name="portal.opportunities.by.saletage"
 		title="Opportunities By Sale Stage">
-		<view type="chart" name="chart.dashboard.opportunities.sales.stage.amount.bar" />
+		<view type="chart" name="chart.dashboard.opportunities.sale.stage.amount.bar" />
 	</action-view>
 
 
@@ -210,9 +210,9 @@
 		<view type="chart" name="chart.dashboard.opportunities.won.by.leadsource.bar" />
 	</action-view>
 
-	<action-view name="portal.opportunities.won.by.salesman"
+	<action-view name="portal.opportunities.won.by.saleman"
 		title="Opportunities Won By Salesman">
-		<view type="chart" name="chart.dashboard.opportunities.won.by.salesman.bar" />
+		<view type="chart" name="chart.dashboard.opportunities.won.by.saleman.bar" />
 	</action-view>
 
 	<action-view name="portal.opportunities.by.origin.by.stage"
@@ -231,11 +231,11 @@
 	<!-- Lead Dashboard 1 -->
 
 	<portal title="Lead Dashboard 1" name="crm.lead.dashboard.portal.one" cols="2">
-		<portlet action="portal.salesman.dashboard.leads" height="350" canSearch="true"/>
+		<portlet action="portal.saleman.dashboard.leads" height="350" canSearch="true"/>
 		<portlet action="portal.leads.by.source" height="350" />
 		<portlet action="portal.leads.by.country" height="350" />
 		<portlet action="portal.leads.by.team.by.status" height="350" />
-		<portlet action="portal.leads.by.salesman.by.status" height="350" />
+		<portlet action="portal.leads.by.saleman.by.status" height="350" />
 		<portlet action="portal.my.leads" height="350" />
 		<portlet action="portal.unassigned.leads" height="350" />		
 		<portlet action="portal.team.leads" height="350" />		
@@ -257,9 +257,9 @@
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 
-	<action-view name="portal.leads.by.salesman.by.status"
+	<action-view name="portal.leads.by.saleman.by.status"
 		title="Leads by Salesman by Status">
-		<view type="chart" name="chart.leads.by.salesman.by.status.bar" />
+		<view type="chart" name="chart.leads.by.saleman.by.status.bar" />
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
@@ -335,7 +335,7 @@
 
 
 	<portal title="Event Dashboard 1" name="crm.event.dashboard.portal.one" cols="2">
-		<portlet action="portal.salesman.dashboard.activities" height="350" canSearch="true" />
+		<portlet action="portal.saleman.dashboard.activities" height="350" canSearch="true" />
 		<portlet action="portal.my.today.support.activities" height="350" canSearch="true" />
 	</portal>
 
@@ -498,12 +498,12 @@
 		<portlet action="portal.user.opportunity.created.number.target.bar" height="350"/>
 		<portlet action="portal.user.opportunity.created.won.target.gauge" height="350"/>
 		<portlet action="portal.user.opportunity.created.won.target.bar" height="350"/>
-<!-- 		<portlet action="chart:chart.user.sales.order.amount.won.target.gauge" height="350"/> -->
-<!-- 		<portlet action="chart:chart.user.sales.order.amount.won.target.bar" height="350"/> -->
-<!-- 		<portlet action="chart:chart.user.sales.order.created.number.target.gauge" height="350"/> -->
-<!-- 		<portlet action="chart:chart.user.sales.order.created.number.target.bar" height="350"/> -->
-<!-- 		<portlet action="chart:chart.user.sales.order.created.won.target.gauge" height="350"/> -->
-<!-- 		<portlet action="chart:chart.user.sales.order.created.won.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sale.order.amount.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sale.order.amount.won.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sale.order.created.number.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sale.order.created.number.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sale.order.created.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sale.order.created.won.target.bar" height="350"/> -->
 	</portal>
 
 	<action-view name="portal.user.call.target.gauge" title="Calls emitted target completed (%)" model="com.axelor.apps.crm.db.Target">
@@ -559,12 +559,12 @@
 		<portlet action="portal.team.opportunity.created.number.target.bar" height="350"/>
 		<portlet action="portal.team.opportunity.created.won.target.gauge" height="350"/>
 		<portlet action="portal.team.opportunity.created.won.target.bar" height="350"/>
-<!-- 		<portlet action="chart:chart.team.sales.order.amount.won.target.gauge" height="350"/> -->
-<!-- 		<portlet action="chart:chart.team.sales.order.amount.won.target.bar" height="350"/> -->
-<!-- 		<portlet action="chart:chart.team.sales.order.created.number.target.gauge" height="350"/> -->
-<!-- 		<portlet action="chart:chart.team.sales.order.created.number.target.bar" height="350"/> -->
-<!-- 		<portlet action="chart:chart.team.sales.order.created.won.target.gauge" height="350"/> -->
-<!-- 		<portlet action="chart:chart.team.sales.order.created.won.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sale.order.amount.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sale.order.amount.won.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sale.order.created.number.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sale.order.created.number.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sale.order.created.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sale.order.created.won.target.bar" height="350"/> -->
 	</portal>
 
 
