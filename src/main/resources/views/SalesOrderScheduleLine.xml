@@ -3,38 +3,38 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
-    <grid name="sales-order-schedule-line-grid" title="SO schedule lines" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine">
+    <grid name="sale-order-schedule-line-grid" title="SO schedule lines" model="com.axelor.apps.sale.db.SaleOrderScheduleLine">
         <field name="sequence"/>
         <field name="amountToBeInvoiced"/>
         <field name="invoicingPercentage"/>
-        <field name="salesOrderLine"/>
+        <field name="saleOrderLine"/>
     	<field name="accumulatedInvoicingPercentage"/>
     	<field name="nbOfDay"/>
 		<field name="invoice"/>    	
     </grid>
     
-    <form name="sales-order-schedule-line-form" title="SO schedule line" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine" cols="4"
-    onNew="action-sales-order-schedule-line-record-sequence,action-sales-order-schedule-line-attrs-hide-nb-of-day">
+    <form name="sale-order-schedule-line-form" title="SO schedule line" model="com.axelor.apps.sale.db.SaleOrderScheduleLine" cols="4"
+    onNew="action-sale-order-schedule-line-record-sequence,action-sale-order-schedule-line-attrs-hide-nb-of-day">
     	<field name="sequence"/>
         <field name="amountToBeInvoiced"/>
         <field name="invoicingPercentage"/>
-        <field name="salesOrderLine" domain="self.salesOrder = :salesOrder"/>
+        <field name="saleOrderLine" domain="self.saleOrder = :saleOrder"/>
     	<field name="accumulatedInvoicingPercentage"/>
     	<field name="nbOfDay"/>
 		<field name="invoice"/> 
     </form>
     
-    <action-attrs name="action-sales-order-schedule-line-attrs-sales-order-line-domain">
-    	<attribute name="domain" for="salesorderLine" expr="eval: self.salesOrder = :salesOrder "/>
+    <action-attrs name="action-sale-order-schedule-line-attrs-sale-order-line-domain">
+    	<attribute name="domain" for="saleorderLine" expr="eval: self.saleOrder = :saleOrder "/>
     </action-attrs>
     
-    <action-attrs name="action-sales-order-schedule-line-attrs-hide-nb-of-day">
+    <action-attrs name="action-sale-order-schedule-line-attrs-hide-nb-of-day">
     	<attribute name="hidden" for="nbOfDay" expr="eval: _parent?.invoicingMomentSelect == 1"/>
     </action-attrs>
     
-    <action-record name="action-sales-order-schedule-line-record-sequence" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine">
-    	<field name="sequence" expr="eval: _parent.salesOrderScheduleLineList.size()+1" if="_parent.salesOrderScheduleLineList != null" />
-    	<field name="sequence" expr="eval: 1" if="_parent.salesOrderScheduleLineList == null" />
+    <action-record name="action-sale-order-schedule-line-record-sequence" model="com.axelor.apps.sale.db.SaleOrderScheduleLine">
+    	<field name="sequence" expr="eval: _parent.saleOrderScheduleLineList.size()+1" if="_parent.saleOrderScheduleLineList != null" />
+    	<field name="sequence" expr="eval: 1" if="_parent.saleOrderScheduleLineList == null" />
     </action-record>
     
 </object-views>

@@ -164,54 +164,54 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="sc-root-sales" title="Sales" priority="150"
+	<menuitem name="sc-root-sale" title="Sales" priority="150"
 		icon="img/32px/order_32px.png" groups="admins,erp,crm"/>
 			
-	<menuitem name="sc-root-sales-new-so" title="New Sale order" priority="2" icon="img/16px/create_16px.png"
-		 groups="admins,erp" action="sc.root.sales.new.so" parent="sc-root-sales"/>
+	<menuitem name="sc-root-sale-new-so" title="New Sale order" priority="2" icon="img/16px/create_16px.png"
+		 groups="admins,erp" action="sc.root.sale.new.so" parent="sc-root-sale"/>
 		
-	<action-view name="sc.root.sales.new.so" title="New Sale order"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/16px/create_16px.png">
-		<view type="form" name="sales-order-form"/>
-		<view type="grid" name="sales-order-grid"/>
-		<view-param name="search-filters" value="sales-order-filters"/>
+	<action-view name="sc.root.sale.new.so" title="New Sale order"
+		model="com.axelor.apps.sale.db.SaleOrder" icon="img/16px/create_16px.png">
+		<view type="form" name="sale-order-form"/>
+		<view type="grid" name="sale-order-grid"/>
+		<view-param name="search-filters" value="sale-order-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>	
 	
-	<menuitem name="sc-root-sales-orders" parent="sc-root-sales" priority="1"
-		groups="admins,erp" title="Sale orders" action="sc.root.sales.orders" />
+	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" priority="1"
+		groups="admins,erp" title="Sale orders" action="sc.root.sale.orders" />
 	
-	<action-view name="sc.root.sales.orders" title="Sale orders"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/16px/orderSmall_16px.png">
-		<view type="grid" name="sales-order-grid" />
-		<view type="form" name="sales-order-form" />
-		<view-param name="search-filters" value="sales-order-filters"/>
+	<action-view name="sc.root.sale.orders" title="Sale orders"
+		model="com.axelor.apps.sale.db.SaleOrder" icon="img/16px/orderSmall_16px.png">
+		<view type="grid" name="sale-order-grid" />
+		<view type="form" name="sale-order-form" />
+		<view-param name="search-filters" value="sale-order-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>	
 	
 	
-	<menuitem name="sc-root-purchases" title="Purchases" priority="150" 
+	<menuitem name="sc-root-purchase" title="Purchases" priority="150" 
 		icon="img/32px/order_32px.png" groups="admins,erp"/>
 		
 	<menuitem name="sc-root-purchase-order-new" title="New Purchase order" priority="2" icon="img/16px/create_16px.png"
-		groups="admins,erp" action="sc.root.purchase.order.new" parent="sc-root-purchases"/>
+		groups="admins,erp" action="sc.root.purchase.order.new" parent="sc-root-purchase"/>
 		
 	<action-view name="sc.root.purchase.order.new" title="New Purchase order"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/16px/create_16px.png">
+		model="com.axelor.apps.purchase.db.PurchaseOrder" icon="img/16px/create_16px.png">
 		<view type="form" name="purchase-order-form" />
 		<view type="grid" name="purchase-order-grid" />
 	</action-view>	
 	
 	<menuitem name="sc-root-purchase-orders" title="Purchase orders" priority="1" 
-		groups="admins,erp" action="sc.root.purchase.orders" parent="sc-root-purchases"/>
+		groups="admins,erp" action="sc.root.purchase.orders" parent="sc-root-purchase"/>
 
 	<action-view name="sc.root.purchase.orders" title="Purchase orders"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/16px/orderSmall_16px.png">
+		model="com.axelor.apps.purchase.db.PurchaseOrder" icon="img/16px/orderSmall_16px.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<view-param name="search-filters" value="purchases-order-filters"/>
+		<view-param name="search-filters" value="purchase-order-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 
@@ -243,39 +243,39 @@
 
 <!-- TOP MENU -->
 
-	<menuitem name="top-menu-create-so" parent="top-menu-utility" title="Create SO" action="supply.chain.root.sales.order" icon="img/16px/create_16px.png"/>
+	<menuitem name="top-menu-create-so" parent="top-menu-utility" title="Create SO" action="supply.chain.root.sale.order" icon="img/16px/create_16px.png"/>
 	
-	<action-view name="supply.chain.root.sales.order" title="Sales order"
-		model="com.axelor.apps.supplychain.db.SalesOrder" >
-		<view type="form" name="sales-order-form" />
-		<view type="grid" name="sales-order-grid" />
+	<action-view name="supply.chain.root.sale.order" title="Sales order"
+		model="com.axelor.apps.sale.db.SaleOrder" >
+		<view type="form" name="sale-order-form" />
+		<view type="grid" name="sale-order-grid" />
 	</action-view>	
 	
 
-	<menuitem name="top-sales" title="Sales" groups="admins,erp,crm" top="true" left="false" priority="160"/>
+	<menuitem name="top-sale" title="Sales" groups="admins,erp,crm" top="true" left="false" priority="160"/>
 	
-	<menuitem name="top-sales-orders-all" title="All Sales Docs" action="sc.root.sales.orders" parent="top-sales" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-sale-orders-all" title="All Sales Docs" action="sc.root.sale.orders" parent="top-sale" groups="admins,erp" top="true" left="false"/>
 	
 	
-	<menuitem name="top-sales-offers" title="Quotes" action="top.sales.offers" parent="top-sales" groups="admins,erp" top="true" left="false"/>
-	<action-view name="top.sales.offers" title="Quotes"
-		model="com.axelor.apps.supplychain.db.SalesOrder" >
-		<view type="grid" name="sales-order-grid" />
-		<view type="form" name="sales-order-form" />
-		<view-param name="search-filters" value="sales-order-filters"/>
+	<menuitem name="top-sale-offers" title="Quotes" action="top.sale.offers" parent="top-sale" groups="admins,erp" top="true" left="false"/>
+	<action-view name="top.sale.offers" title="Quotes"
+		model="com.axelor.apps.sale.db.SaleOrder" >
+		<view type="grid" name="sale-order-grid" />
+		<view type="form" name="sale-order-form" />
+		<view-param name="search-filters" value="sale-order-filters"/>
 		<domain>self.statusSelect = 2</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>	
 	
 	
-	<menuitem name="top-sales-orders" title="Orders" action="top.sales.orders" parent="top-sales" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-sale-orders" title="Orders" action="top.sale.orders" parent="top-sale" groups="admins,erp" top="true" left="false"/>		
 	
-	<action-view name="top.sales.orders" title="Orders"
-		model="com.axelor.apps.supplychain.db.SalesOrder" >
-		<view type="grid" name="sales-order-grid" />
-		<view type="form" name="sales-order-form" />
-		<view-param name="search-filters" value="sales-order-filters"/>
+	<action-view name="top.sale.orders" title="Orders"
+		model="com.axelor.apps.sale.db.SaleOrder" >
+		<view type="grid" name="sale-order-grid" />
+		<view type="form" name="sale-order-form" />
+		<view-param name="search-filters" value="sale-order-filters"/>
 		<domain>self.statusSelect = 3</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
@@ -288,20 +288,20 @@
 	<menuitem name="top-purchase-quotes" title="RFQ" action="top.purchase.quotes" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.purchase.quotes" title="RFQ"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" >
+		model="com.axelor.apps.purchase.db.PurchaseOrder" >
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<view-param name="search-filters" value="purchases-order-filters"/>
+		<view-param name="search-filters" value="purchase-order-filters"/>
 		<domain>self.statusSelect in (2,3) </domain>
 	</action-view>	
 	
 	<menuitem name="top-purchase-orders" title="Orders" action="top.purchase.orders" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.purchase.orders" title="Orders"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" >
+		model="com.axelor.apps.purchase.db.PurchaseOrder" >
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<view-param name="search-filters" value="purchases-order-filters"/>
+		<view-param name="search-filters" value="purchase-order-filters"/>
 		<domain>self.statusSelect in (4,5) </domain>
 	</action-view>		
 	
@@ -350,23 +350,23 @@
 	</action-view>	
 
 	
-	<menuitem name="menu-salesman-dashboard-sample" parent="menu-dashboards-sample" priority="205"
-		title="Salesman Db" icon="img/16px/chart_16px.png" action="portal.salesman.dashboard.view.sample" />
+	<menuitem name="menu-saleman-dashboard-sample" parent="menu-dashboards-sample" priority="205"
+		title="Salesman Db" icon="img/16px/chart_16px.png" action="portal.saleman.dashboard.view.sample" />
 		
-	<action-view name="portal.salesman.dashboard.view.sample" title="Salesman Dashboard" 
+	<action-view name="portal.saleman.dashboard.view.sample" title="Salesman Dashboard" 
 	icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.salesman.dashboard.portal.sample" />
+		<view type="portal" name="supplychain.saleman.dashboard.portal.sample" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
 	</action-view>
 		
-	<menuitem name="menu-sales-manager-dashboard-sample" parent="menu-dashboards-sample" priority="200"
-		title="Sales Manager Db" icon="img/16px/chart_16px.png" action="portal.sales.manager.dashboard.view.sample" />	
+	<menuitem name="menu-sale-manager-dashboard-sample" parent="menu-dashboards-sample" priority="200"
+		title="Sales Manager Db" icon="img/16px/chart_16px.png" action="portal.sale.manager.dashboard.view.sample" />	
 
-	<action-view name="portal.sales.manager.dashboard.view.sample" title="Sales Manager Dashboard"
+	<action-view name="portal.sale.manager.dashboard.view.sample" title="Sales Manager Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.sales.manager.dashboard.portal.sample" />
+		<view type="portal" name="supplychain.sale.manager.dashboard.portal.sample" />
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
 	</action-view>
 		
@@ -426,55 +426,55 @@
 		<view type="portal" name="stock.dashboard.portal.two" />	    
 	</action-view>
 	
-	<menuitem name="menu-sales-dashboard" parent="menu-dashboards"  
+	<menuitem name="menu-sale-dashboard" parent="menu-dashboards"  
 		title="Sales" priority="50" />	
 	
-	<menuitem name="menu-sales-dashboard-1" parent="menu-sales-dashboard"  
-		title="Sales Db 1" icon="img/16px/chart_16px.png" action="supplychain.sales.dashboard.1.portal" />	
+	<menuitem name="menu-sale-dashboard-1" parent="menu-sale-dashboard"  
+		title="Sales Db 1" icon="img/16px/chart_16px.png" action="supplychain.sale.dashboard.1.portal" />	
 		
-	<action-view name="supplychain.sales.dashboard.1.portal" title="Sales Db 1"
+	<action-view name="supplychain.sale.dashboard.1.portal" title="Sales Db 1"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.sales.dashboard.1.portal.view" />	 
+		<view type="portal" name="supplychain.sale.dashboard.1.portal.view" />	 
 		<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>  
 	</action-view>
 	
-	<menuitem name="menu-sales-dashboard-2" parent="menu-sales-dashboard"  
-		title="Sales Db 2" icon="img/16px/chart_16px.png" action="supplychain.sales.dashboard.2.portal" />	
+	<menuitem name="menu-sale-dashboard-2" parent="menu-sale-dashboard"  
+		title="Sales Db 2" icon="img/16px/chart_16px.png" action="supplychain.sale.dashboard.2.portal" />	
 		
-	<action-view name="supplychain.sales.dashboard.2.portal" title="Sales Db 2"
+	<action-view name="supplychain.sale.dashboard.2.portal" title="Sales Db 2"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.sales.dashboard.2.portal.view" />	 
+		<view type="portal" name="supplychain.sale.dashboard.2.portal.view" />	 
 		<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> 
 	</action-view>
 	
-	<menuitem name="menu-purchases-dashboard" parent="menu-dashboards"  
+	<menuitem name="menu-purchase-dashboard" parent="menu-dashboards"  
 		title="Purchases" priority="60" />	
 	
-	<menuitem name="menu-purchases-dashboard-1" parent="menu-purchases-dashboard"  
-		title="Purchases Db 1" icon="img/16px/chart_16px.png" action="supplychain.purchases.dashboard.1.portal" />	
+	<menuitem name="menu-purchase-dashboard-1" parent="menu-purchase-dashboard"  
+		title="Purchases Db 1" icon="img/16px/chart_16px.png" action="supplychain.purchase.dashboard.1.portal" />	
 		
-	<action-view name="supplychain.purchases.dashboard.1.portal" title="Purchases Db 1"
+	<action-view name="supplychain.purchase.dashboard.1.portal" title="Purchases Db 1"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.purchases.dashboard.1.portal" />	 
+		<view type="portal" name="supplychain.purchase.dashboard.1.portal" />	 
 		<context name="_user_id" expr="eval:__user__.id"/>   
 	</action-view>
 	
-	<menuitem name="menu-purchases-dashboard-2" parent="menu-purchases-dashboard"  
-		title="Purchases Db 2" icon="img/16px/chart_16px.png" action="supplychain.purchases.dashboard.2.portal" />	
+	<menuitem name="menu-purchase-dashboard-2" parent="menu-purchase-dashboard"  
+		title="Purchases Db 2" icon="img/16px/chart_16px.png" action="supplychain.purchase.dashboard.2.portal" />	
 		
-	<action-view name="supplychain.purchases.dashboard.2.portal" title="Purchases Db 2"
+	<action-view name="supplychain.purchase.dashboard.2.portal" title="Purchases Db 2"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.purchases.dashboard.2.portal" />	    
+		<view type="portal" name="supplychain.purchase.dashboard.2.portal" />	    
 	</action-view>
 	
-	<menuitem name="menu-purchases-dashboard-3" parent="menu-purchases-dashboard"  
-		title="Purchases Db 3" icon="img/16px/chart_16px.png" action="supplychain.purchases.dashboard.3.portal" />	
+	<menuitem name="menu-purchase-dashboard-3" parent="menu-purchase-dashboard"  
+		title="Purchases Db 3" icon="img/16px/chart_16px.png" action="supplychain.purchase.dashboard.3.portal" />	
 		
-	<action-view name="supplychain.purchases.dashboard.3.portal" title="Purchases Db 3"
+	<action-view name="supplychain.purchase.dashboard.3.portal" title="Purchases Db 3"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.purchases.dashboard.3.portal" />	    
+		<view type="portal" name="supplychain.purchase.dashboard.3.portal" />	    
 	</action-view>
 	
 	<menuitem name="menu-products-dashboard" parent="menu-dashboards-products-goods"  

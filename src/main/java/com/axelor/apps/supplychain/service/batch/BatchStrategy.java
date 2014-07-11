@@ -19,24 +19,24 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.supplychain.db.SalesOrder;
-import com.axelor.apps.supplychain.service.SalesOrderInvoiceService;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.SaleOrderInvoiceService;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
 	protected BatchInvoicing batchInvoicing;
 	
-	protected SalesOrderInvoiceService salesOrderInvoiceService;
+	protected SaleOrderInvoiceService saleOrderInvoiceService;
 	
-	protected BatchStrategy(SalesOrderInvoiceService salesOrderInvoiceService)  {
+	protected BatchStrategy(SaleOrderInvoiceService saleOrderInvoiceService)  {
 		super();
-		this.salesOrderInvoiceService = salesOrderInvoiceService;
+		this.saleOrderInvoiceService = saleOrderInvoiceService;
 	}
 	
 	
-	protected void updateSalesOrder( SalesOrder salesOrder ){
+	protected void updateSaleOrder( SaleOrder saleOrder ){
 		
-		salesOrder.addBatchSetItem( Batch.find( batch.getId() ) );
+		saleOrder.addBatchSetItem( Batch.find( batch.getId() ) );
 			
 		incrementDone();
 	}

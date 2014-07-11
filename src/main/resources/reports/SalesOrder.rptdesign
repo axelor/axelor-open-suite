@@ -47,7 +47,7 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="SalesOrderId" id="3265">
+        <scalar-parameter name="SaleOrderId" id="3265">
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
@@ -135,7 +135,7 @@
         </oda-data-source>
     </data-sources>
     <data-sets>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SalesOrderDS" id="3669">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SaleOrderDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
@@ -145,10 +145,10 @@
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">salesOrderSeq</property>
+                    <property name="columnName">saleOrderSeq</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">salesOrderSeq</text-property>
-                    <text-property name="heading">salesOrderSeq</text-property>
+                    <text-property name="displayName">saleOrderSeq</text-property>
+                    <text-property name="heading">saleOrderSeq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">CopmanyName</property>
@@ -370,7 +370,7 @@
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">SalesOrderId</property>
+                    <property name="paramName">SaleOrderId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -393,7 +393,7 @@
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">salesOrderSeq</property>
+                        <property name="name">saleOrderSeq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -596,8 +596,8 @@
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">salesOrderSeq</property>
-                    <property name="nativeName">salesOrderSeq</property>
+                    <property name="name">saleOrderSeq</property>
+                    <property name="nativeName">saleOrderSeq</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -854,11 +854,11 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Partner.id, SalesOrder.id, SalesOrder.sales_order_seq as "salesOrderSeq", Company.name as "CopmanyName", Company.logo_path,
+            <xml-property name="queryText"><![CDATA[select Partner.id, SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", Company.name as "CopmanyName", Company.logo_path,
 PartnerAddress.addressl2 as "Address2", PartnerAddress.addressl3 as "Address3", 
 PartnerAddress.addressl4 as "Address4", PartnerAddress.addressl5 as "Address5", 
 PartnerAddress.addressl6 as "Address6", Country.name as "partnercountry",
-SalesOrder.creation_date, ClientPartner.partner_type_select, ClientPartner.name as "ClientPartName",
+SaleOrder.creation_date, ClientPartner.partner_type_select, ClientPartner.name as "ClientPartName",
 ClientPartner.first_name as "ClientPartFirstName", ClientPartner.title_select as "ClientTitle", 
 ContactPartner.name as "ContactName", ContactPartner.first_name as "ContactFirstName",
 InvoicingAddress.addressl2 as "invAddress2", InvoicingAddress.addressl3 as "invAddress3", 
@@ -868,24 +868,24 @@ PaymentCondition.name as "PaymentCondName", PaymentMode.name as "PaymentMode",
 DeliveryAddress.addressl2 as "delAddress2", DeliveryAddress.addressl3 as "delAddress3", 
 DeliveryAddress.addressl4 as "delAddress4", DeliveryAddress.addressl5 as "delAddress5", 
 DeliveryAddress.addressl6 as "delAddress6", DeliveryCountry.name as "DeliveryCountry",
-SalesOrder.ex_tax_total, SalesOrder.tax_total, SalesOrder.in_tax_total,
-DefBankDetail.iban, DefBankDetail.bic, Currency.code as "CurrencyCode", SalesOrder.external_reference
-from public.supplychain_sales_order as SalesOrder
-left outer join public.base_company as Company on (SalesOrder.company = Company.id)
+SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total,
+DefBankDetail.iban, DefBankDetail.bic, Currency.code as "CurrencyCode", SaleOrder.external_reference
+from public.supplychain_sale_order as SaleOrder
+left outer join public.base_company as Company on (SaleOrder.company = Company.id)
 left outer join public.base_partner as Partner on (Company.partner = Partner.id)
 left outer join public.base_address as PartnerAddress on (Partner.main_invoicing_address = PartnerAddress.id)
 left outer join public.base_country as Country on (PartnerAddress.addressl7country = Country.id)
-left outer join public.base_partner as ClientPartner on (SalesOrder.client_partner = ClientPartner.id)
-left outer join public.base_partner as ContactPartner on (SalesOrder.contact_partner = ContactPartner.id)
-left outer join public.base_address as InvoicingAddress on (SalesOrder.main_invoicing_address = InvoicingAddress.id)
+left outer join public.base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
+left outer join public.base_partner as ContactPartner on (SaleOrder.contact_partner = ContactPartner.id)
+left outer join public.base_address as InvoicingAddress on (SaleOrder.main_invoicing_address = InvoicingAddress.id)
 left outer join public.base_country as InvoicingCountry on (PartnerAddress.addressl7country = InvoicingCountry.id)
-left outer join public.account_payment_condition as PaymentCondition on (SalesOrder.payment_condition = PaymentCondition.id)
-left outer join public.account_payment_mode as PaymentMode on (SalesOrder.payment_mode = PaymentMode.id)
-left outer join public.base_address as DeliveryAddress on (SalesOrder.delivery_address = DeliveryAddress.id)
+left outer join public.account_payment_condition as PaymentCondition on (SaleOrder.payment_condition = PaymentCondition.id)
+left outer join public.account_payment_mode as PaymentMode on (SaleOrder.payment_mode = PaymentMode.id)
+left outer join public.base_address as DeliveryAddress on (SaleOrder.delivery_address = DeliveryAddress.id)
 left outer join public.base_country as DeliveryCountry on (DeliveryAddress.addressl7country = DeliveryCountry.id)
 left outer join public.base_bank_details as DefBankDetail on (Company.default_bank_details = DefBankDetail.id)
-left outer join public.base_currency as Currency on (SalesOrder.currency = Currency.id)
-where SalesOrder.id = ?
+left outer join public.base_currency as Currency on (SaleOrder.currency = Currency.id)
+where SaleOrder.id = ?
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1012,7 +1012,7 @@ where SalesOrder.id = ?
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">SalesOrderId</property>
+                    <property name="paramName">SaleOrderId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1226,16 +1226,16 @@ SOSubLine.qty as "subQty", SubUnit.code as "subUnitCode", SOSubLine.price as "su
 SOSubLine.ex_tax_total as "subExTaxTotal", SOLine.description, SOLine.qty as "quantity", Unit.code as "UnitCode", 
 SOLine.product_name as "ProductName", SOLine.price as "unit_price", SOLine.ex_tax_total, Currency.code as "CurrencyCode",
  TaxLine.value as "tax_line",  SubTaxLine.value as "sub_tax_line"
-from public.supplychain_sales_order as SalesOrder
-left outer join public.supplychain_sales_order_line as SOLine on (SOLine.sales_order = SalesOrder.id)
-left outer join public.supplychain_sales_order_sub_line as SOSubLine on (SOSubLine.sales_order_line = SOLine.id)
+from public.supplychain_sale_order as SaleOrder
+left outer join public.supplychain_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
+left outer join public.supplychain_sale_order_sub_line as SOSubLine on (SOSubLine.sale_order_line = SOLine.id)
 left outer join public.base_product as Product on (SOLine.product = Product.id)
 left outer join public.base_unit as Unit on (Product.unit = Unit.id)
-left outer join public.base_currency as Currency on (SalesOrder.currency = Currency.id)
+left outer join public.base_currency as Currency on (SaleOrder.currency = Currency.id)
 left outer join public.account_tax_line as TaxLine on (SOLine.tax_line = TaxLine.id)
 left outer join public.base_unit as SubUnit on (SOSubLine.unit = SubUnit.id)
 left outer join public.account_tax_line as SubTaxLine on (SOSubLine.tax_line = SubTaxLine.id)
-where SalesOrder.id = ?]]></xml-property>
+where SaleOrder.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1258,7 +1258,7 @@ where SalesOrder.id = ?]]></xml-property>
   </DataSetParameters>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SalesOrderLineTaxDS" id="3422">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SaleOrderLineTaxDS" id="3422">
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">value</property>
@@ -1282,7 +1282,7 @@ where SalesOrder.id = ?]]></xml-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">SalesOrderId</property>
+                    <property name="paramName">SaleOrderId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1336,8 +1336,8 @@ where SalesOrder.id = ?]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select TaxLine.value, SOLineTax.ex_tax_base, SOLineTax.tax_total
-from public.supplychain_sales_order_line_tax as SOLineTax
-inner join public.supplychain_sales_order as SOrder on (SOLineTax.sales_order = SOrder.id)
+from public.supplychain_sale_order_line_tax as SOLineTax
+inner join public.supplychain_sale_order as SOrder on (SOLineTax.sale_order = SOrder.id)
 left outer join public.account_tax_line as TaxLine on (SOLineTax.tax_line = TaxLine.id)
 where SOrder.id = ?
 ]]></xml-property>
@@ -1500,7 +1500,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             <property name="marginLeft">2pt</property>
             <property name="height">6.614583333333333cm</property>
             <property name="width">19.420416666666664cm</property>
-            <property name="dataSet">SalesOrderDS</property>
+            <property name="dataSet">SaleOrderDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">id</property>
@@ -1515,9 +1515,9 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">salesOrderSeq</property>
-                    <text-property name="displayName">salesOrderSeq</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["salesOrderSeq"]</expression>
+                    <property name="name">saleOrderSeq</property>
+                    <text-property name="displayName">saleOrderSeq</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["saleOrderSeq"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -1830,7 +1830,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SalesOrder.no'</value>
+                                    <value type="javascript">'SaleOrder.no'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1849,7 +1849,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row._outer["salesOrderSeq"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row._outer["saleOrderSeq"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3366"/>
@@ -1879,7 +1879,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SalesOrder.customer'</value>
+                                    <value type="javascript">'SaleOrder.customer'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1930,7 +1930,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'SalesOrder.date'</value>
+                                                <value type="javascript">'SaleOrder.date'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -1962,7 +1962,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'SalesOrder.paymentCondition'</value>
+                                                <value type="javascript">'SaleOrder.paymentCondition'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -1994,7 +1994,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'SalesOrder.paymentMode'</value>
+                                                <value type="javascript">'SaleOrder.paymentMode'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -2026,7 +2026,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'SalesOrder.customerRef'</value>
+                                                <value type="javascript">'SaleOrder.customerRef'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -2093,7 +2093,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SalesOrder.invoicingAddrs'</value>
+                                    <value type="javascript">'SaleOrder.invoicingAddrs'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2161,7 +2161,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SalesOrder.deliveryAddress'</value>
+                                    <value type="javascript">'SaleOrder.deliveryAddress'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2345,7 +2345,7 @@ row["ClientPartFirstName"]
                     <property name="name">SubLineCount</property>
                     <property name="dataType">integer</property>
                     <simple-property-list name="aggregateOn">
-                        <value>SalesOrderLine</value>
+                        <value>SaleOrderLine</value>
                     </simple-property-list>
                     <property name="aggregateFunction">COUNT</property>
                     <list-property name="arguments">
@@ -2433,7 +2433,7 @@ row["ClientPartFirstName"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'SalesOrder.productDescription'</value>
+                                        <value type="javascript">'SaleOrder.productDescription'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2479,7 +2479,7 @@ row["ClientPartFirstName"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'SalesOrder.tax'</value>
+                                        <value type="javascript">'SaleOrder.tax'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2525,7 +2525,7 @@ row["ClientPartFirstName"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'SalesOrder.qtyUnit'</value>
+                                        <value type="javascript">'SaleOrder.qtyUnit'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2571,7 +2571,7 @@ row["ClientPartFirstName"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'SalesOrder.unitPrice'</value>
+                                        <value type="javascript">'SaleOrder.unitPrice'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2619,7 +2619,7 @@ row["ClientPartFirstName"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'SalesOrder.priceExclTax'</value>
+                                        <value type="javascript">'SaleOrder.priceExclTax'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2644,7 +2644,7 @@ row["ClientPartFirstName"]
                 </row>
             </header>
             <group id="3692">
-                <property name="groupName">SalesOrderLine</property>
+                <property name="groupName">SaleOrderLine</property>
                 <expression name="keyExpr" type="javascript">row["id"]</expression>
                 <structure name="toc">
                     <expression name="expressionValue" type="javascript">row["description"]</expression>
@@ -2777,7 +2777,7 @@ row["ClientPartFirstName"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'SalesOrder.productDescription'</value>
+                                            <value type="javascript">'SaleOrder.productDescription'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2836,7 +2836,7 @@ row["ClientPartFirstName"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'SalesOrder.tax'</value>
+                                            <value type="javascript">'SaleOrder.tax'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2895,7 +2895,7 @@ row["ClientPartFirstName"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'SalesOrder.qtyUnit'</value>
+                                            <value type="javascript">'SaleOrder.qtyUnit'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2954,7 +2954,7 @@ row["ClientPartFirstName"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'SalesOrder.unitPrice'</value>
+                                            <value type="javascript">'SaleOrder.unitPrice'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -3015,7 +3015,7 @@ row["ClientPartFirstName"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'SalesOrder.priceExclVat'</value>
+                                            <value type="javascript">'SaleOrder.priceExclVat'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -3285,7 +3285,7 @@ row["ClientPartFirstName"]
         <grid id="3473">
             <property name="height">8.493125000000001cm</property>
             <property name="width">19.605625cm</property>
-            <property name="dataSet">SalesOrderDS</property>
+            <property name="dataSet">SaleOrderDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">id</property>
@@ -3300,9 +3300,9 @@ row["ClientPartFirstName"]
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">salesOrderSeq</property>
-                    <text-property name="displayName">salesOrderSeq</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["salesOrderSeq"]</expression>
+                    <property name="name">saleOrderSeq</property>
+                    <text-property name="displayName">saleOrderSeq</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["saleOrderSeq"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -3541,7 +3541,7 @@ row["ClientPartFirstName"]
                     <property name="rowSpan">1</property>
                     <table id="3493">
                         <property name="width">3.3020833333333335in</property>
-                        <property name="dataSet">SalesOrderLineTaxDS</property>
+                        <property name="dataSet">SaleOrderLineTaxDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">value</property>
@@ -3597,7 +3597,7 @@ row["ClientPartFirstName"]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'SalesOrder.tax'</value>
+                                                    <value type="javascript">'SaleOrder.tax'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3641,7 +3641,7 @@ row["ClientPartFirstName"]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'SalesOrder.base'</value>
+                                                    <value type="javascript">'SaleOrder.base'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3685,7 +3685,7 @@ row["ClientPartFirstName"]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'SalesOrder.taxAmount'</value>
+                                                    <value type="javascript">'SaleOrder.taxAmount'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3807,7 +3807,7 @@ row["ClientPartFirstName"]
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'SalesOrder.totalExclTax'</value>
+                                                <value type="javascript">'SaleOrder.totalExclTax'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -3880,7 +3880,7 @@ row["ClientPartFirstName"]
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'SalesOrder.totalTax'</value>
+                                                <value type="javascript">'SaleOrder.totalTax'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -3965,7 +3965,7 @@ row["ClientPartFirstName"]
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'SalesOrder.totalInclTax'</value>
+                                                <value type="javascript">'SaleOrder.totalInclTax'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -4049,7 +4049,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SalesOrder.note'</value>
+                                    <value type="javascript">'SaleOrder.note'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4113,7 +4113,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SalesOrder.bankingInfo'</value>
+                                    <value type="javascript">'SaleOrder.bankingInfo'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4157,7 +4157,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SalesOrder.cheque'</value>
+                                    <value type="javascript">'SaleOrder.cheque'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4194,7 +4194,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SalesOrder.bankDetails'</value>
+                                    <value type="javascript">'SaleOrder.bankDetails'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>

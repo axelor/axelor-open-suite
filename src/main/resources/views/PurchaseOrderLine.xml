@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
     
-    <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+    <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<hilite background="danger" if="salePrice &gt; saleMinPrice"/>
     	<field name="purchaseOrder"/>
     	<field name="supplierPartner"/>
@@ -21,7 +21,7 @@
         <field name="salePrice" hidden="true"/>
     </grid>
     
-    <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+    <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<hilite background="danger" if="salePrice &gt; saleMinPrice"/>
     	<field name="productName"/>
     	<field name="desiredDelivDate"/>
@@ -34,7 +34,7 @@
         <field name="salePrice" hidden="true"/>
     </grid>
     
-    <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.supplychain.db.PurchaseOrderLine" cols="4" colWidths="400,*"
+    <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" cols="4" colWidths="400,*"
     onNew="action-purchase-order-line-record-new,action-purchase-order-line-attrs-hide-product-variant"
     onLoad="action-purchase-order-line-attrs-task-readonly,action-purchase-order-line-attrs-hide-product-variant,action-purchase-order-line-record-dummy-sale-price">
 	    <field name="product" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-record-product-variant,action-purchase-order-line-attrs-hide-product-variant" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
@@ -77,7 +77,7 @@
 	
 	<!-- ACTION RECORD -->
 	
-    <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+    <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
     </action-record>

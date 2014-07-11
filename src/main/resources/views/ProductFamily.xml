@@ -7,13 +7,13 @@
 	    <include view="product-family-form" from="axelor-base" />
 		<notebook colSpan="4" hideIf="fromMenu == null">
 			<page title="Sales Turnover" cols="2" colWidths="20%,30%,20%,30%">
-				<portlet action="portal.family.sales.turnover.per.month" colSpan="3" height="350" />
+				<portlet action="portal.family.sale.turnover.per.month" colSpan="3" height="350" />
 			</page>
 		</notebook>
     </form>
     
-	<action-view title="Family sales turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="portal.family.sales.turnover.per.month">
-		  <view type="chart" name="chart.family.sales.turnover.per.month"/>
+	<action-view title="Family sale turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="portal.family.sale.turnover.per.month">
+		  <view type="chart" name="chart.family.sale.turnover.per.month"/>
 		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>

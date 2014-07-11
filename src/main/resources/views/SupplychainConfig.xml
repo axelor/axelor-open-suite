@@ -27,7 +27,7 @@
 			<field name="hasInSmForNonStorableProduct" />
 		</group>
 		<group title="Invoicing informations" colWidths="30%,30%,30%,30%" colSpan="4">	
-			<field name="salesOrderInvoicingTypeSelect" />
+			<field name="saleOrderInvoicingTypeSelect" />
 			<field name="purchaseOrderInvoicingTypeSelect" />
 		</group>
     </form>

@@ -25,9 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.supplychain.db.ISalesOrder;
-import com.axelor.apps.supplychain.db.SalesOrder;
-import com.axelor.apps.supplychain.service.SalesOrderInvoiceService;
+import com.axelor.apps.sale.db.ISaleOrder;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.SaleOrderInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -39,9 +39,9 @@ public class BatchInvoicing extends BatchStrategy {
 
 	
 	@Inject
-	public BatchInvoicing(SalesOrderInvoiceService salesOrderInvoiceService) {
+	public BatchInvoicing(SaleOrderInvoiceService saleOrderInvoiceService) {
 		
-		super(salesOrderInvoiceService);
+		super(saleOrderInvoiceService);
 	}
 
 
@@ -49,37 +49,37 @@ public class BatchInvoicing extends BatchStrategy {
 	protected void process() {
 		
 		int i = 0;
-		List<SalesOrder> salesOrderList = SalesOrder.all().filter("self.invoicingTypeSelect = ?1 AND self.statusSelect = ?2 AND self.company = ?3", 
-				ISalesOrder.INVOICING_TYPE_SUBSCRIPTION, ISalesOrder.STATUS_VALIDATED, batch.getSupplychainBatch().getCompany()).fetch();
+		List<SaleOrder> saleOrderList = SaleOrder.all().filter("self.invoicingTypeSelect = ?1 AND self.statusSelect = ?2 AND self.company = ?3", 
+				ISaleOrder.INVOICING_TYPE_SUBSCRIPTION, ISaleOrder.STATUS_VALIDATED, batch.getSupplychainBatch().getCompany()).fetch();
 
-		for (SalesOrder salesOrder : salesOrderList) {
+		for (SaleOrder saleOrder : saleOrderList) {
 
 			try {
 				
-				salesOrderInvoiceService.checkSubscriptionSalesOrder(SalesOrder.find(salesOrder.getId()));
+				saleOrderInvoiceService.checkSubscriptionSaleOrder(SaleOrder.find(saleOrder.getId()));
 				
-				Invoice invoice = salesOrderInvoiceService.runSubscriptionInvoicing(SalesOrder.find(salesOrder.getId()));
+				Invoice invoice = saleOrderInvoiceService.runSubscriptionInvoicing(SaleOrder.find(saleOrder.getId()));
 				
 				if(invoice != null)  {  
 					
-					updateSalesOrder(salesOrder); 
-					LOG.debug("Facture créée ({}) pour le devis {}", invoice.getInvoiceId(), salesOrder.getSalesOrderSeq());	
+					updateSaleOrder(saleOrder); 
+					LOG.debug("Facture créée ({}) pour le devis {}", invoice.getInvoiceId(), saleOrder.getSaleOrderSeq());	
 					i++; 
 					
 				}
 
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Devis %s", SalesOrder.find(salesOrder.getId()).getSalesOrderSeq()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format("Devis %s", SaleOrder.find(saleOrder.getId()).getSaleOrderSeq()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Devis %s", SalesOrder.find(salesOrder.getId()).getSalesOrderSeq()), e), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new Exception(String.format("Devis %s", SaleOrder.find(saleOrder.getId()).getSaleOrderSeq()), e), IException.INVOICE_ORIGIN, batch.getId());
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le devis {}", SalesOrder.find(salesOrder.getId()).getSalesOrderSeq());
+				LOG.error("Bug(Anomalie) généré(e) pour le devis {}", SaleOrder.find(saleOrder.getId()).getSaleOrderSeq());
 				
 			} finally {
 				
