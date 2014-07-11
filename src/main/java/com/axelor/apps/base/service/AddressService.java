@@ -48,7 +48,7 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
@@ -329,7 +329,7 @@ public class AddressService {
 		if(addressId != null){
 			if(Partner.all_().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
-			if(SalesOrder.all_().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+			if(SaleOrder.all_().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
 			if(Invoice.all_().filter("self.address.id = ?1",addressId).fetchOne() != null)
 				return true;

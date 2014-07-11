@@ -10,7 +10,7 @@
 	    <portlet action="portal.customers.by.industrySector" height="350" colSpan="1" canSearch="true"/>
 	    <portlet action="portal.suppliers.by.country" colSpan="1" height="350"/>
 		<portlet action="portal.my.recent.customers" height="350" colSpan="1" canSearch="true"/> 
-	    <portlet action="portal.partner.by.salesman" height="350" colSpan="1" canSearch="true"/>
+	    <portlet action="portal.partner.by.saleman" height="350" colSpan="1" canSearch="true"/>
 		<portlet action="portal.partner.recent.partners" height="350" colSpan="1" canSearch="true"/>	
 		<portlet action="portal.my.customers" height="350" colSpan="1" canSearch="true"/>	
 		<portlet colSpan="1" height="350" action="portal.prospects.by.country" canSearch="true"/> 
@@ -25,7 +25,7 @@
 	 	<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-view>
 	
-	<action-view name="portal.partner.by.salesman" title="Customers by salesman" model="com.axelor.apps.base.db.Partner">
+	<action-view name="portal.partner.by.saleman" title="Customers by saleman" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid-group"/>
 		<view type="form" name="partner-form"/>
 		<domain>self.customerTypeSelect=3</domain>

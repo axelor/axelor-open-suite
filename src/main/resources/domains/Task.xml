@@ -9,7 +9,7 @@
   
   	<string name="importId"/>
   	
-  	<many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Sale order line (origin)"/>
+  	<many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order line (origin)"/>
   	<string name="name" title="Task name" required="true"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project" required="true"/>
   	<decimal name="totalTime" title="Total time"/>

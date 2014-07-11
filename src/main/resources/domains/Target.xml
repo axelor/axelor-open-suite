@@ -21,12 +21,12 @@
     <integer name="opportunityCreatedWonTarget" title="Created Won"/>
     
 <!-- Sales order -->
-<!-- 	<decimal name="salesOrderAmountWon" title="Amount won"/> -->
-<!--     <integer name="salesOrderCreatedNumber" title="Created number"/> -->
-<!--     <integer name="salesOrderCreatedWon" title="Created won"/> -->
-<!--     <decimal name="salesOrderAmountWonTarget" title="Amount won"/> -->
-<!--     <integer name="salesOrderCreatedNumberTarget" title="Created number"/> -->
-<!--     <integer name="salesOrderCreatedWonTarget" title="Created won"/> -->
+<!-- 	<decimal name="saleOrderAmountWon" title="Amount won"/> -->
+<!--     <integer name="saleOrderCreatedNumber" title="Created number"/> -->
+<!--     <integer name="saleOrderCreatedWon" title="Created won"/> -->
+<!--     <decimal name="saleOrderAmountWonTarget" title="Amount won"/> -->
+<!--     <integer name="saleOrderCreatedNumberTarget" title="Created number"/> -->
+<!--     <integer name="saleOrderCreatedWonTarget" title="Created won"/> -->
 
 <!-- Call -->
     <integer name="callEmittedNumber" title="Call emitted Nbr." readonly="true"/>

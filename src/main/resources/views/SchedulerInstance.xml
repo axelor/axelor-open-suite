@@ -29,7 +29,7 @@
 	</action-validate>
 	
 	<action-record name="action-scheduler-instance-record-first-execution-date" model="com.axelor.apps.base.db.SchedulerInstance">
-		<field name="firstExecutionDate" expr="eval: _parent?.invoicedFirstDate" if="_parent._model == 'com.axelor.apps.supplychain.db.SalesOrder"/>
+		<field name="firstExecutionDate" expr="eval: _parent?.invoicedFirstDate" if="_parent._model == 'com.axelor.apps.sale.db.SaleOrder"/>
 	</action-record>
 	
 </object-views>

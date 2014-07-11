@@ -1,5 +1,5 @@
 "key","message","comment","context"
-"%","%",,"resources/domains/SalesOrderScheduleLine.xml:13"
+"%","%",,"resources/domains/SaleOrderScheduleLine.xml:13"
 "%D : Day","%D : Pour le jour",,"resources/views/Sequence.xml:49"
 "%M : Month","%M : Pour le mois",,"resources/views/Sequence.xml:48"
 "%PC : Product code","%PC : Code Produit",,"resources/views/Sequence.xml:51"
@@ -380,13 +380,13 @@ resources/domains/Advance.xml:11
 resources/domains/InvoiceLineEvent.xml:17
 resources/domains/ReportedBalanceLine.xml:12
 resources/domains/Opportunity.xml:14"
-"Amount A.T.I.","Montant T.T.C.",,"resources/domains/SalesOrderLineTax.xml:12
+"Amount A.T.I.","Montant T.T.C.",,"resources/domains/SaleOrderLineTax.xml:12
 resources/domains/PaymentScheduleLine.xml:12
 resources/domains/PurchaseOrderLineTax.xml:12
 resources/domains/InvoiceLineTax.xml:13"
 "Amount A.T.I. in Acc. Currency","Montant T.T.C. (Devise société)",,"resources/domains/InvoiceLineTax.xml:16"
 "Amount Remaining to allocate","Montant restant à affecter",,"resources/domains/PaymentVoucher.xml:18"
-"Amount Tax","Montant T.V.A.",,"resources/domains/SalesOrderLineTax.xml:11
+"Amount Tax","Montant T.V.A.",,"resources/domains/SaleOrderLineTax.xml:11
 resources/domains/InvoiceLineTax.xml:12"
 "Amount Tax in Acc. Currency","Montant taxe en compte devise",,"resources/domains/InvoiceLineTax.xml:15"
 "Amount Won","Montant gagné",,"resources/domains/Target.xml:19
@@ -396,7 +396,7 @@ resources/domains/TargetConfiguration.xml:16"
 "Amount exported for direct debit","Montant exporté en prélèvement",,"resources/domains/MoveLine.xml:41"
 "Amount in Currency","Montant en devise",,"resources/domains/MoveLine.xml:34"
 "Amount invoiced","Montant facturé",,"resources/domains/PurchaseOrderLine.xml:27
-resources/domains/SalesOrderLine.xml:35"
+resources/domains/SaleOrderLine.xml:35"
 "Amount paid","Montant payé",,"resources/domains/Invoice.xml:100
 resources/domains/PaymentVoucher.xml:14"
 "Amount paid A.T.I.","Montant payé (TTC)",,"resources/domains/PaymentScheduleLine.xml:13"
@@ -406,9 +406,9 @@ resources/domains/PaymentVoucher.xml:14"
 "Amount rejected","Montant rejeté",,"resources/domains/PaymentScheduleLine.xml:26"
 "Amount remaining before cashing","Restant à payer avant l'encaissement",,"resources/domains/PaymentInvoiceToPay.xml:13"
 "Amount remaining to allocate","Montant restant à utiliser",,"resources/domains/PaymentVoucher.xml:42"
-"Amount remaining to invoice","Solde restant à facturer",,"resources/domains/SalesOrder.xml:43
+"Amount remaining to invoice","Solde restant à facturer",,"resources/domains/SaleOrder.xml:43
 resources/domains/PurchaseOrder.xml:44"
-"Amount to invoice","Montant à facturer",,"resources/domains/SalesOrderScheduleLine.xml:12
+"Amount to invoice","Montant à facturer",,"resources/domains/SaleOrderScheduleLine.xml:12
 resources/domains/Task.xml:29"
 "Amount to reimburse","Montant à rembourser",,"resources/domains/Reimbursement.xml:25"
 "Amount won","Montant Opp. Gagnées",,"resources/domains/Target.xml:16"
@@ -452,7 +452,7 @@ resources/domains/Event.xml:29
 resources/views/Partner.xml:268"
 "Associated Invoice lines","Lignes de Factures associées",,"resources/domains/PurchaseOrderLine.xml:35"
 "Associated Profile","Produit profil associé",,"resources/domains/Employee.xml:52"
-"Associated invoice lines","Lignes factures associées",,"resources/domains/SalesOrderLine.xml:44"
+"Associated invoice lines","Lignes factures associées",,"resources/domains/SaleOrderLine.xml:44"
 "Attach specification","Documents de spécifications",,"resources/domains/Project.xml:72"
 "Attached files","Fichiers attachés",,"resources/views/Template.xml:23"
 "Attendee","Nom",,"resources/domains/EventAttendee.xml:16"
@@ -501,7 +501,7 @@ resources/views/menu.xml:111"
 "Base Batch","Traitement de masse module Base",,"resources/views/BaseBatch.xml:16"
 "Base W.T.","Base H.T.",,"resources/domains/PurchaseOrderLineTax.xml:10
 resources/domains/InvoiceLineTax.xml:11
-resources/domains/SalesOrderLineTax.xml:10"
+resources/domains/SaleOrderLineTax.xml:10"
 "Base W.T. in Acc. Currency.","Base H.T. (Devise société)",,"resources/domains/InvoiceLineTax.xml:14"
 "Base batch","Traitements par lots Base",,"resources/domains/Batch.xml:15"
 "Base batches","Traitements de masse module Base",,"resources/views/menu.xml:602
@@ -514,7 +514,7 @@ resources/views/BaseBatch.xml:6"
 resources/views/menu.xml:599
 resources/views/AlarmEngineBatch.xml:19
 resources/views/Batch.xml:6"
-"Batchs","Traitements de masse associés",,"resources/domains/SalesOrder.xml:20
+"Batchs","Traitements de masse associés",,"resources/domains/SaleOrder.xml:20
 resources/domains/Reimbursement.xml:23
 resources/domains/AccountingSituation.xml:27
 resources/domains/AccountingBatch.xml:49
@@ -573,14 +573,14 @@ resources/domains/Invoice.xml:65"
 "Blockings","Blocages",,"resources/views/Blocking.xml:6"
 "BoM","Nomenclature",,"resources/domains/ProdRemains.xml:12
 resources/domains/ManufOrder.xml:39
-resources/domains/SalesOrderLine.xml:61"
+resources/domains/SaleOrderLine.xml:61"
 "Branch","Etablissement",,"resources/domains/JobOffer.xml:31"
 "Branch Name","Nom établissement bancaire",,"resources/domains/Bic.xml:12"
 "Browser","Navigateur",,"resources/domains/TrackerInfo.xml:15"
 "Burden (weight)","Poids",,"resources/domains/PayerQualityConfigLine.xml:21"
 "Business","Affaire",,"resources/domains/ProductionOrder.xml:14
 resources/domains/Expense.xml:22
-resources/domains/SalesOrder.xml:13
+resources/domains/SaleOrder.xml:13
 resources/domains/OvertimeLine.xml:11
 resources/domains/MissionOrder.xml:14
 resources/domains/Timesheet.xml:19
@@ -627,7 +627,7 @@ resources/domains/Competence.xml:34
 resources/domains/Position.xml:9
 resources/domains/PersonalInfo.xml:10"
 "Candidate (job application)","Candidature associée",,"resources/domains/Employee.xml:38"
-"Candidates","Candidats",,"resources/domains/SalesOrderLine.xml:24"
+"Candidates","Candidats",,"resources/domains/SaleOrderLine.xml:24"
 "Candidates other position proposals","Autres pistes",,"resources/domains/Candidate.xml:70"
 "Canton","Canton",,"resources/views/Canton.xml:12"
 "Canton Code","Code Canton",,"resources/domains/Commune.xml:12"
@@ -661,7 +661,7 @@ resources/domains/Partner.xml:11
 resources/domains/Employee.xml:22
 resources/domains/Event.xml:21
 resources/domains/AccountCategoryLine.xml:12"
-"Category sales turnover (Excl. Tax) per month","CA par Catégorie (HT) par mois",,"resources/views/Charts.xml:396
+"Category sale turnover (Excl. Tax) per month","CA par Catégorie (HT) par mois",,"resources/views/Charts.xml:396
 resources/views/ProductCategory.xml:29"
 "Cc","Cci",,"resources/domains/Template.xml:14"
 "Center","Centre",,"resources/domains/TrainingCenter.xml:10"
@@ -850,7 +850,7 @@ resources/domains/SupplychainBatch.xml:13
 resources/domains/Reimbursement.xml:13
 resources/domains/ChequeRejection.xml:10
 resources/domains/AnalyticJournal.xml:12
-resources/domains/SalesOrder.xml:10
+resources/domains/SaleOrder.xml:10
 resources/views/Partner.xml:246
 resources/views/Company.xml:16
 resources/domains/CashRegister.xml:14
@@ -924,7 +924,7 @@ resources/views/menu.xml:467"
 resources/domains/ManufOrder.xml:28"
 "Contact","Coordonnées",,"resources/views/Partner.xml:198
 resources/domains/EventAttendee.xml:13
-resources/domains/SalesOrder.xml:24
+resources/domains/SaleOrder.xml:24
 resources/views/Selects.xml:465
 resources/views/Partner.xml:249
 resources/domains/EmailAddress.xml:11
@@ -1047,7 +1047,7 @@ resources/views/RoutingActionCreateLine.xml:11"
 resources/domains/MoveLineReport.xml:23
 resources/domains/CashRegisterLine.xml:17"
 "Creation date","Date création",,"resources/domains/Rum.xml:13
-resources/domains/SalesOrder.xml:16"
+resources/domains/SaleOrder.xml:16"
 "Creations","Les Créations",,"resources/views/RoutingActionCreateLine.xml:6
 resources/views/RoutingActionCreate.xml:6"
 "Creator user","Créé par",,"resources/domains/TemplateSpreadSheet.xml:9"
@@ -1059,7 +1059,7 @@ resources/views/RoutingActionCreate.xml:6"
 "Criteria evaluated","Libellé",,"resources/domains/EvaluationLine.xml:10"
 "Crm batch","Batch CRM",,"resources/domains/Batch.xml:14"
 "Cumulate ?","Cumuler ?",,"resources/domains/Task.xml:67"
-"Cumulated invoiced %","% facturation cumulé",,"resources/domains/SalesOrderScheduleLine.xml:15"
+"Cumulated invoiced %","% facturation cumulé",,"resources/domains/SaleOrderScheduleLine.xml:15"
 "Cumulation","Qté cumulée",,"resources/domains/EmployeeLeave.xml:13"
 "Currencies","Devises",,"resources/views/menu.xml:488
 resources/views/menu.xml:491
@@ -1067,7 +1067,7 @@ resources/views/Currency.xml:6"
 "Currency","Devise",,"resources/domains/Invoice.xml:45
 resources/domains/PurchaseOrder.xml:20
 resources/domains/PaymentSchedule.xml:22
-resources/domains/SalesOrder.xml:14
+resources/domains/SaleOrder.xml:14
 resources/domains/PaymentInvoice.xml:16
 resources/domains/Move.xml:26
 resources/domains/BankStatement.xml:13
@@ -1093,7 +1093,7 @@ resources/domains/LocationLine.xml:13"
 "Cust. Credit note Journal","Journal note de crédit client",,"resources/domains/AccountConfig.xml:17"
 "Customer","Client",,"resources/domains/Event.xml:39
 resources/domains/IrrecoverableInvoiceLine.xml:10
-resources/domains/SalesOrder.xml:23
+resources/domains/SaleOrder.xml:23
 resources/domains/Irrecoverable.xml:11
 resources/domains/ChequeRejection.xml:12
 resources/domains/IrrecoverableCustomerLine.xml:10
@@ -1105,7 +1105,7 @@ resources/domains/Opportunity.xml:11"
 resources/domains/Invoice.xml:23
 resources/domains/AccountingSituation.xml:14"
 "Customer invoice","Facture client",,"resources/views/Selects.xml:366"
-"Customer reference","Réf. client",,"resources/domains/SalesOrder.xml:15"
+"Customer reference","Réf. client",,"resources/domains/SaleOrder.xml:15"
 "Customer virtual location","Emplacement Virt. Client",,"resources/domains/SupplychainConfig.xml:15"
 "Customers","Clients",,"resources/views/menu.xml:72
 resources/views/Charts.xml:346
@@ -1114,7 +1114,7 @@ resources/views/Charts.xml:371"
 "Customers by Industry Sector","Clients par secteur d'activité",,"resources/views/Charts.xml:349"
 "Customers by country","Clients par pays",,"resources/views/Portal.xml:51
 resources/views/Charts.xml:327"
-"Customers by salesman","Clients par Commercial",,"resources/views/Portal.xml:28"
+"Customers by saleman","Clients par Commercial",,"resources/views/Portal.xml:28"
 "DD Payment Smoothing Journal","Journal Echéanciers",,"resources/domains/AccountConfig.xml:21"
 "DEPT","N°",,"resources/domains/Department.xml:12"
 "Daily","Journalier",,"resources/domains/Scheduler.xml:13"
@@ -1146,7 +1146,7 @@ resources/domains/Overtime.xml:10"
 "Date from","De",,"resources/domains/TargetConfiguration.xml:31
 resources/domains/Target.xml:39"
 "Date of Birth","Date de Naissance",,"resources/domains/PersonalInfo.xml:12"
-"Date of shipment","Date expédition",,"resources/domains/SalesOrder.xml:19"
+"Date of shipment","Date expédition",,"resources/domains/SaleOrder.xml:19"
 "Date to","A",,"resources/domains/Target.xml:40
 resources/domains/TargetConfiguration.xml:32"
 "Date type select","Type Date",,"resources/domains/MissionOrder.xml:23"
@@ -1186,7 +1186,7 @@ resources/views/Selects.xml:186"
 "Default task","Tâche modèle",,"resources/domains/Timesheet.xml:37
 resources/domains/Project.xml:21
 resources/domains/Planning.xml:19"
-"Default value for sublines","Valeur par défaut des sous-lignes",,"resources/domains/SalesOrder.xml:30"
+"Default value for sublines","Valeur par défaut des sous-lignes",,"resources/domains/SaleOrder.xml:30"
 "Default zoom","Zoom",,"resources/domains/Address.xml:20"
 "Delays","Retard / tps prévu",,"resources/domains/Task.xml:19"
 "Delete","Supprimer",,"resources/views/General.xml:10
@@ -1194,8 +1194,8 @@ resources/views/General.xml:21"
 "Delete menu entrie","Supprimer entrée menu",,"resources/views/CalendarConfiguration.xml:18"
 "Delivery Address","Adresse de livraison",,"resources/domains/Partner.xml:31"
 "Delivery Date","Date de livraison",,"resources/domains/PurchaseOrder.xml:21"
-"Delivery address","Adresse livraison",,"resources/domains/SalesOrder.xml:27"
-"Delivery date","Date de livraison",,"resources/domains/SalesOrderLine.xml:48"
+"Delivery address","Adresse livraison",,"resources/domains/SaleOrder.xml:27"
+"Delivery date","Date de livraison",,"resources/domains/SaleOrderLine.xml:48"
 "Delivery delay (day)","Délai livraison",,"resources/domains/Partner.xml:33"
 "Delivery stock move","Mvt Stock Livraison",,"resources/views/Selects.xml:390"
 "Dep./Div.","Dép/Div.",,"resources/domains/Partner.xml:50
@@ -1245,7 +1245,7 @@ resources/domains/InvoiceBatch.xml:24
 resources/domains/ChequeRejection.xml:20
 resources/domains/ManufOrder.xml:56
 resources/views/SupplierCatalog.xml:23
-resources/domains/SalesOrderLine.xml:25
+resources/domains/SaleOrderLine.xml:25
 resources/domains/JpqlQuery.xml:12
 resources/domains/OvertimeLine.xml:10
 resources/domains/AlarmEngine.xml:21
@@ -1253,9 +1253,9 @@ resources/domains/Inventory.xml:14
 resources/domains/AlarmEngineBatch.xml:14
 resources/domains/Lead.xml:43
 resources/domains/CrmBatch.xml:16
-resources/domains/SalesOrder.xml:62
+resources/domains/SaleOrder.xml:62
 resources/domains/InterbankCode.xml:13
-resources/domains/SalesOrderSubLine.xml:16
+resources/domains/SaleOrderSubLine.xml:16
 resources/domains/PublicHolidaysLine.xml:13
 resources/domains/IndicatorGenerator.xml:9
 resources/domains/Opportunity.xml:22"
@@ -1294,8 +1294,8 @@ resources/views/Blocking.xml:23"
 "Discount","Remise",,"resources/views/Selects.xml:507"
 "Discount %","Remise %",,"resources/domains/OfferLine.xml:10"
 "Discount amount","Montant remise",,"resources/domains/InvoiceLine.xml:23
-resources/domains/SalesOrderSubLine.xml:23
-resources/domains/SalesOrderLine.xml:30
+resources/domains/SaleOrderSubLine.xml:23
+resources/domains/SaleOrderLine.xml:30
 resources/domains/PurchaseOrderLine.xml:22"
 "Discount/Additionnal/Replace","Remise/Surcharge/Remplace",,"resources/domains/PriceListLine.xml:12"
 "Display discount?","Afficher réduction ?",,"resources/domains/PriceList.xml:16"
@@ -1388,14 +1388,14 @@ resources/domains/Bonus.xml:9
 resources/domains/OvertimeLine.xml:9
 resources/domains/Advance.xml:9
 resources/domains/LeaveRequest.xml:10
-resources/domains/SalesOrderSubLine.xml:15
+resources/domains/SaleOrderSubLine.xml:15
 resources/domains/Expense.xml:9
 resources/domains/EmployeeLeave.xml:9
 resources/domains/PersonalInfo.xml:11"
 "Employee Bonuses","Primes/Bonus",,"resources/domains/Employee.xml:40"
 "Employee Daily Cost","Coût salarié / jour",,"resources/domains/Employee.xml:20"
 "Employee leaves","Congés / Absences",,"resources/domains/Employee.xml:56"
-"Employees","Employés",,"resources/domains/SalesOrderLine.xml:23"
+"Employees","Employés",,"resources/domains/SaleOrderLine.xml:23"
 "Employer","Employeur",,"resources/domains/Position.xml:15"
 "End Date","Date de fin",,"resources/domains/InvoiceLineEvent.xml:14
 resources/domains/Event.xml:16
@@ -1423,7 +1423,7 @@ resources/domains/PurchaseOrderLine.xml:37"
 resources/views/Charts.xml:135"
 "Estimated amount","Montant estimé",,"resources/domains/Task.xml:32"
 "Estimated date","Date estimée",,"resources/domains/StockMove.xml:17"
-"Estimated delivery date","Date Livr. Estimée",,"resources/domains/SalesOrderLine.xml:38"
+"Estimated delivery date","Date Livr. Estimée",,"resources/domains/SaleOrderLine.xml:38"
 "Estimated profitability","Rentabilité estimé",,"resources/domains/Resource.xml:13"
 "Evaluation/Appraisal form","Grille d'évaluation",,"resources/domains/Candidate.xml:61"
 "Event","Evènement",,"resources/domains/EventAttendee.xml:10
@@ -1482,7 +1482,7 @@ resources/domains/AccountingBatch.xml:43"
 "Fait par","Fait par",,"resources/domains/Planning.xml:11"
 "Family Code","Code famille",,"resources/domains/ProductFamily.xml:9"
 "Family Name","Nom famille",,"resources/domains/ProductFamily.xml:10"
-"Family sales turnover (Excl. Tax) per month","CA HT par famille par mois",,"resources/views/Charts.xml:420
+"Family sale turnover (Excl. Tax) per month","CA HT par famille par mois",,"resources/views/Charts.xml:420
 resources/views/ProductFamily.xml:28"
 "Famly","Famille",,"resources/domains/Product.xml:18"
 "Fax","Fax",,"resources/domains/Lead.xml:21
@@ -1633,7 +1633,7 @@ resources/views/GeographicalArea.xml:7"
 "Global","Global",,"resources/domains/MoveLineReport.xml:25"
 "Global grade","Evaluation Globale",,"resources/domains/Candidate.xml:40"
 "Global grade / 20","Evaluation Globale / 20",,"resources/domains/Candidate.xml:62"
-"Global task ?","Utiliser Tâche globale ?",,"resources/domains/SalesOrder.xml:34"
+"Global task ?","Utiliser Tâche globale ?",,"resources/domains/SaleOrder.xml:34"
 "Google",,,"resources/views/Selects.xml:485"
 "Google File","Fichier google",,"resources/domains/TemplateFile.xml:8"
 "Google directory","Répertoire Google",,"resources/domains/GoogleFile.xml:24"
@@ -1666,7 +1666,7 @@ resources/domains/OperationOrder.xml:27"
 "Import","Import",,"resources/domains/ProdHumanResource.xml:10
 resources/domains/PurchaseOrder.xml:10
 resources/domains/AnalyticAxis.xml:10
-resources/domains/SalesOrder.xml:11
+resources/domains/SaleOrder.xml:11
 resources/domains/StockMoveLine.xml:12
 resources/domains/CashRegister.xml:10
 resources/domains/MeetingType.xml:10
@@ -1716,7 +1716,7 @@ resources/domains/Blocking.xml:10
 resources/domains/Invoice.xml:8
 resources/domains/Unit.xml:10
 resources/domains/Department.xml:10
-resources/domains/SalesOrderLine.xml:12
+resources/domains/SaleOrderLine.xml:12
 resources/domains/Employee.xml:9
 resources/domains/Machine.xml:10
 resources/domains/OperationOrder.xml:10
@@ -1763,8 +1763,8 @@ resources/views/ImportPermission.xml:12"
 resources/views/menu.xml:571"
 "In %","En %",,"resources/views/Selects.xml:513"
 "In % / fixed","Type remise",,"resources/domains/PurchaseOrderLine.xml:23
-resources/domains/SalesOrderLine.xml:31
-resources/domains/SalesOrderSubLine.xml:24"
+resources/domains/SaleOrderLine.xml:31
+resources/domains/SaleOrderSubLine.xml:24"
 "In % / fixed amount","En % / montant fixe",,"resources/domains/InvoiceLine.xml:24"
 "In / Out ?","Reçu / Emis",,"resources/domains/PaymentMode.xml:17"
 "Inactive ?","Journal obsolète ?",,"resources/domains/Journal.xml:20"
@@ -1816,7 +1816,7 @@ resources/domains/PaymentSchedule.xml:11
 resources/domains/InvoiceLineTax.xml:10
 resources/domains/IrrecoverableInvoiceLine.xml:12
 resources/domains/IrrecoverableReportLine.xml:10
-resources/domains/SalesOrderScheduleLine.xml:17
+resources/domains/SaleOrderScheduleLine.xml:17
 resources/domains/Alarm.xml:16
 resources/domains/Move.xml:17
 resources/views/Selects.xml:267
@@ -1829,7 +1829,7 @@ resources/domains/PurchaseOrder.xml:26"
 "Invoice N°","N° de facture",,"resources/domains/Invoice.xml:13"
 "Invoice batch","Batch de facturation",,"resources/domains/Batch.xml:11"
 "Invoice concerned by the reminder","Factures concernées à relancer",,"resources/domains/Reminder.xml:21"
-"Invoice controlled","Facture contrôlée",,"resources/domains/SalesOrderLine.xml:51"
+"Invoice controlled","Facture contrôlée",,"resources/domains/SaleOrderLine.xml:51"
 "Invoice final status","Statut final à obtenir",,"resources/domains/InvoiceBatch.xml:17"
 "Invoice immediately","Facturation immédiate",,"resources/views/Selects.xml:339"
 "Invoice initial status","Statut initial à traiter",,"resources/domains/InvoiceBatch.xml:16"
@@ -1845,22 +1845,22 @@ resources/views/Selects.xml:412"
 "Invoiced","Facturée",,"resources/domains/ExpenseLine.xml:25"
 "Invoiced ?","A été facturée ?",,"resources/domains/TimesheetLine.xml:18
 resources/domains/PurchaseOrderLine.xml:26
-resources/domains/SalesOrderLine.xml:34"
-"Invoiced first date","Date 1ère Facture",,"resources/domains/SalesOrder.xml:72"
+resources/domains/SaleOrderLine.xml:34"
+"Invoiced first date","Date 1ère Facture",,"resources/domains/SaleOrder.xml:72"
 "Invoices","Factures",,"resources/domains/IrrecoverableCustomerLine.xml:13
 resources/views/Batch.xml:58
 resources/domains/IrrecoverableCustomerLine.xml:12
 resources/views/Batch.xml:26"
 "Invoices selection","Les factures",,"resources/domains/InvoiceBatch.xml:19"
 "Invoicing Address","Adresse de facturation",,"resources/domains/Partner.xml:30"
-"Invoicing Date","Date de la facturation",,"resources/domains/SalesOrderLine.xml:27
+"Invoicing Date","Date de la facturation",,"resources/domains/SaleOrderLine.xml:27
 resources/domains/Task.xml:28"
 "Invoicing Management","Gestionnaire facturation",,"resources/views/AlarmEngine.xml:8"
-"Invoicing address","Adresse facturation",,"resources/domains/SalesOrder.xml:25"
+"Invoicing address","Adresse facturation",,"resources/domains/SaleOrder.xml:25"
 "Invoicing blocking","Blocage facturation",,"resources/views/Blocking.xml:18"
 "Invoicing message","Message pour facturation",,"resources/domains/General.xml:24"
-"Invoicing trigger","Déclenchement échéance facturation",,"resources/domains/SalesOrder.xml:54"
-"Invoicing type","Mode de facturation",,"resources/domains/SalesOrder.xml:31
+"Invoicing trigger","Déclenchement échéance facturation",,"resources/domains/SaleOrder.xml:54"
+"Invoicing type","Mode de facturation",,"resources/domains/SaleOrder.xml:31
 resources/domains/PurchaseOrder.xml:25"
 "Invoicing/Payment","Facturation/Paiement",,"resources/views/Partner.xml:121"
 "Irrecouvrable status","Etat Irrecouvrable",,"resources/domains/Invoice.xml:57"
@@ -1930,7 +1930,7 @@ resources/domains/IrrecoverableReportLine.xml:13
 resources/domains/Bonus.xml:11
 resources/domains/BankStatementLine.xml:8
 resources/domains/ProdProcess.xml:13
-resources/domains/SalesOrderSubLine.xml:14
+resources/domains/SaleOrderSubLine.xml:14
 resources/domains/AlarmMessage.xml:8
 resources/domains/PaymentMode.xml:11
 resources/domains/BankStatement.xml:8
@@ -1980,13 +1980,13 @@ resources/domains/Campaign.xml:21"
 "Les lignes de plannification","Lignes de planification",,"resources/domains/Planning.xml:14"
 "Level","Niveau",,"resources/domains/ReminderLevel.xml:11
 resources/domains/ReminderMethodLine.xml:11"
-"Ligne de devis","Ligne de devis",,"resources/domains/SalesOrderSubLine.xml:10"
+"Ligne de devis","Ligne de devis",,"resources/domains/SaleOrderSubLine.xml:10"
 "Limit Date","Date limite",,"resources/domains/Event.xml:17"
 "Line Nbr.","Référence ligne",,"resources/domains/MoveLine.xml:14"
 "Link","Lien",,"resources/domains/MailModelTag.xml:9
 resources/domains/SnPage.xml:20
 resources/domains/SnSearchResult.xml:18"
-"Linked invoices","Les factures associées",,"resources/domains/SalesOrder.xml:59"
+"Linked invoices","Les factures associées",,"resources/domains/SaleOrder.xml:59"
 "LinkedIn Personal Credential","Identifiants Personnels LinkedIn",,"resources/domains/UserInfo.xml:23"
 "LinkedIn User/Company ID","Référence LIN",,"resources/domains/SnProfile.xml:14"
 "LinkedIn profile link","Lien profil LinkedIn",,"resources/domains/SnProfile.xml:22"
@@ -2009,7 +2009,7 @@ resources/domains/Machine.xml:15
 resources/domains/TrackerInfo.xml:14
 resources/domains/MinStockRules.xml:12
 resources/domains/SnSearchResult.xml:20
-resources/domains/SalesOrder.xml:18
+resources/domains/SaleOrder.xml:18
 resources/domains/SnProfile.xml:24
 resources/domains/PurchaseOrder.xml:27"
 "Location Details","Produits présents dans l'emplacement (vue non-consolidée)",,"resources/domains/LocationLine.xml:18"
@@ -2177,7 +2177,7 @@ resources/views/MenuConsultant.xml:148"
 "My invoices","Mes factures",,"resources/views/ClientView.xml:28
 resources/views/ClientView.xml:15"
 "My leave requests","Mes demandes de congé",,"resources/views/MenuConsultant.xml:48"
-"My sales orders","Mes devis clients",,"resources/views/ClientView.xml:14
+"My sale orders","Mes devis clients",,"resources/views/ClientView.xml:14
 resources/views/ClientView.xml:20"
 "My space","Mon espace",,"resources/views/ClientView.xml:11
 resources/views/ClientView.xml:6"
@@ -2289,7 +2289,7 @@ resources/domains/Commune.xml:13"
 "Nbr of Positions","Nbr de Postes",,"resources/domains/JobOffer.xml:14"
 "Nbr of children","Nbre d'enfants",,"resources/domains/PersonalInfo.xml:16"
 "Nbr of days","Nbr de jours",,"resources/domains/OfferLine.xml:8
-resources/domains/SalesOrderScheduleLine.xml:16"
+resources/domains/SaleOrderScheduleLine.xml:16"
 "Nbr. of days","Nbr de jours",,"resources/domains/TimesheetPeriodConfig.xml:21
 resources/domains/TimesheetPeriodConfig.xml:24"
 "Nbr. of hours","Nbr d'heures",,"resources/domains/TimesheetPeriodConfig.xml:20
@@ -2302,7 +2302,7 @@ resources/domains/ApplicationCredentials.xml:18"
 resources/views/General.xml:20"
 "New exchange rate","Nouveau taux",,"resources/views/CurrencyConversionLine.xml:42"
 "Next N°","No. suivant",,"resources/domains/Sequence.xml:17"
-"Next invoiced period start date","Date déb. prochaine période Fact.",,"resources/domains/SalesOrder.xml:73"
+"Next invoiced period start date","Date déb. prochaine période Fact.",,"resources/domains/SaleOrder.xml:73"
 "Next step","Etape suivante",,"resources/domains/Opportunity.xml:21"
 "Next theoretical execution date","Date théo. dernière exécution",,"resources/domains/SchedulerInstanceHistory.xml:11"
 "No","Non",,"resources/views/Selects.xml:194
@@ -2363,9 +2363,9 @@ resources/views/welcome.xml:19"
 "Opportunity amount","Montant opportunité",,"resources/domains/Lead.xml:49"
 "Or","Ou",,"resources/views/PriceListLine.xml:20
 resources/views/PriceList.xml:31"
-"Order Date","Date de Cmde",,"resources/domains/SalesOrder.xml:65
+"Order Date","Date de Cmde",,"resources/domains/SaleOrder.xml:65
 resources/domains/PurchaseOrder.xml:22"
-"Order Number","N° Cmde client",,"resources/domains/SalesOrder.xml:66"
+"Order Number","N° Cmde client",,"resources/domains/SaleOrder.xml:66"
 "Ordered ?","Cmde confirmée ?",,"resources/domains/PurchaseOrderLine.xml:25"
 "Organisation",,,"resources/views/Company.xml:46"
 "Organization","Organisation",,"resources/views/menu.xml:318"
@@ -2496,7 +2496,7 @@ resources/domains/PaymentScheduleLine.xml:10"
 "Payment Schedule line","Echéance",,"resources/domains/MoveLine.xml:38"
 "Payment account","Compte comptable paiement",,"resources/domains/AccountManagement.xml:15"
 "Payment by IPO and IPO Cheque","Paiement par TIP et TIP chèque",,"resources/views/Selects.xml:320"
-"Payment condition","Condition de paiement",,"resources/domains/SalesOrder.xml:50
+"Payment condition","Condition de paiement",,"resources/domains/SaleOrder.xml:50
 resources/domains/Partner.xml:64
 resources/domains/PurchaseOrder.xml:31
 resources/domains/Invoice.xml:21"
@@ -2504,7 +2504,7 @@ resources/domains/Invoice.xml:21"
 resources/domains/PaySheet.xml:11"
 "Payment mode","Mode de paiement",,"resources/domains/PaymentVoucher.xml:12
 resources/domains/PurchaseOrder.xml:30
-resources/domains/SalesOrder.xml:49
+resources/domains/SaleOrder.xml:49
 resources/domains/AccountManagement.xml:20"
 "Payment mode after rejection","Mode de paiement après rejet",,"resources/domains/AccountConfig.xml:76"
 "Payment mode for direct debit","Mode de paiement Prélèvements",,"resources/domains/AccountConfig.xml:75"
@@ -2596,7 +2596,7 @@ resources/domains/Lead.xml:28"
 "Previous invoice","Facture précédente",,"resources/domains/Invoice.xml:54"
 "Price Extra","Surcoût variante",,"resources/domains/ProductVariantValue.xml:12"
 "Price lines","Ligne de la Liste",,"resources/domains/PriceList.xml:15"
-"Price list","Liste de tarifs",,"resources/domains/SalesOrder.xml:26
+"Price list","Liste de tarifs",,"resources/domains/SaleOrder.xml:26
 resources/domains/Invoice.xml:30
 resources/domains/PriceListLine.xml:9
 resources/domains/PurchaseOrder.xml:16
@@ -2612,8 +2612,8 @@ resources/views/menu.xml:147"
 "Print","Imprimer",,"resources/views/Mail.xml:46"
 "Print Informations","Imprimer informations",,"resources/views/Partner.xml:46
 resources/views/Partner.xml:216"
-"Print subtotal / line","Imprimer ss-total / ligne",,"resources/domains/SalesOrderLine.xml:15"
-"Print subtotal per line","Imprimer ss-total / ligne",,"resources/domains/SalesOrder.xml:29"
+"Print subtotal / line","Imprimer ss-total / ligne",,"resources/domains/SaleOrderLine.xml:15"
+"Print subtotal per line","Imprimer ss-total / ligne",,"resources/domains/SaleOrder.xml:29"
 "Printing","Impressions",,"resources/views/Company.xml:49"
 "Printing Setting","Paramètre impression",,"resources/views/PrintingSetting.xml:6"
 "Printing Settings","Impressions",,"resources/domains/Company.xml:37"
@@ -2636,7 +2636,7 @@ resources/domains/Sequence.xml:19
 resources/domains/Price.xml:8
 resources/domains/ProdRemains.xml:13
 resources/domains/InventoryLine.xml:11
-resources/domains/SalesOrderLine.xml:13
+resources/domains/SaleOrderLine.xml:13
 resources/domains/SupplierCatalog.xml:10
 resources/domains/BillOfMaterial.xml:12
 resources/views/Selects.xml:254
@@ -2654,7 +2654,7 @@ resources/domains/LocationLine.xml:12
 resources/domains/InvoiceLineEvent.xml:11
 resources/domains/FinancialInformationUpdate.xml:13
 resources/domains/MinStockRules.xml:13
-resources/domains/SalesOrderSubLine.xml:13
+resources/domains/SaleOrderSubLine.xml:13
 resources/domains/ExpenseLine.xml:13"
 "Product Family","Famille produit",,"resources/domains/ProductCategory.xml:12"
 "Product Name","Nom du Produit",,"resources/domains/InvoiceLine.xml:14"
@@ -2673,7 +2673,7 @@ resources/views/ProductFamily.xml:11
 resources/domains/Inventory.xml:19"
 "Product launch Date","Date de mise en application du produit",,"resources/domains/Product.xml:37"
 "Product model","Modèle de produit",,"resources/domains/StockMoveLine.xml:37"
-"Product name","Libellé",,"resources/domains/SalesOrderLine.xml:16"
+"Product name","Libellé",,"resources/domains/SaleOrderLine.xml:16"
 "Product pulled off market Date","Date de fin d'application du produit",,"resources/domains/Product.xml:38"
 "Product sheet","Fiche produit",,"resources/views/Product.xml:31"
 "Product specific attributes","Typologie spécifique associée au produit",,"resources/views/Product.xml:55"
@@ -2682,9 +2682,9 @@ resources/domains/Inventory.xml:19"
 "Product typology","Typologie Produit",,"resources/views/Product.xml:43"
 "Product variant","Variante produit",,"resources/views/ProductVariant.xml:18
 resources/domains/PurchaseOrderLine.xml:40
-resources/domains/SalesOrderSubLine.xml:26
+resources/domains/SaleOrderSubLine.xml:26
 resources/domains/Product.xml:59
-resources/domains/SalesOrderLine.xml:53"
+resources/domains/SaleOrderLine.xml:53"
 "Product variant attr","Attributs Variantes Produits",,"resources/domains/ProductVariantValue.xml:14"
 "Product variant attr1","Attribut 1",,"resources/domains/ProductVariantConfig.xml:10
 resources/domains/ProductVariant.xml:11"
@@ -2821,14 +2821,14 @@ resources/views/Selects.xml:387"
 "Qty","Quantité",,"resources/domains/StockMoveLine.xml:15
 resources/views/Selects.xml:355
 resources/domains/PurchaseOrderLine.xml:13
-resources/domains/SalesOrderSubLine.xml:18
+resources/domains/SaleOrderSubLine.xml:18
 resources/domains/ProdProduct.xml:13
 resources/domains/OvertimeLine.xml:12
 resources/domains/ProdRemains.xml:14
 resources/domains/Task.xml:59
 resources/domains/BillOfMaterial.xml:13
 resources/domains/InvoiceLineEvent.xml:15
-resources/domains/SalesOrderLine.xml:14
+resources/domains/SaleOrderLine.xml:14
 resources/domains/InvoiceLine.xml:18
 resources/domains/ManufOrder.xml:18"
 "Qty Unit","Unité de la quantité",,"resources/domains/InvoiceLineEvent.xml:19"
@@ -2911,7 +2911,7 @@ resources/domains/Partner.xml:12
 resources/domains/IrrecoverableReportLine.xml:12
 resources/domains/AccountClearance.xml:10
 resources/domains/MissionOrder.xml:10
-resources/domains/SalesOrder.xml:12
+resources/domains/SaleOrder.xml:12
 resources/domains/Move.xml:11
 resources/domains/ChequeRejection.xml:9
 resources/domains/Blocking.xml:36
@@ -2998,7 +2998,7 @@ resources/domains/RoutingAction.xml:12"
 "Remaining days for the period","Reste à prendre sur la période",,"resources/domains/LeaveRequest.xml:25"
 "Remaining time","Temps restant",,"resources/domains/Task.xml:18
 resources/domains/Project.xml:43"
-"Remaining to invoice","Reste à facturer",,"resources/domains/SalesOrderLine.xml:36
+"Remaining to invoice","Reste à facturer",,"resources/domains/SaleOrderLine.xml:36
 resources/domains/PurchaseOrderLine.xml:28"
 "Remaining to pay","Restant à payer",,"resources/domains/Invoice.xml:94"
 "Remaining to pay after cashing","Restant à payer après l'encaissement",,"resources/domains/PaymentInvoiceToPay.xml:22"
@@ -3093,13 +3093,13 @@ resources/views/Product.xml:57"
 "Sale account","Compte comptable à la vente",,"resources/domains/AccountManagement.xml:12"
 "Sale currency","Devise de vente",,"resources/domains/Product.xml:29"
 "Sale interface","Interface vente",,"resources/views/Selects.xml:380"
-"Sale order","Devis",,"resources/domains/SalesOrderLine.xml:10
+"Sale order","Devis",,"resources/domains/SaleOrderLine.xml:10
 resources/domains/StockMove.xml:36
-resources/domains/SalesOrderScheduleLine.xml:10
-resources/domains/SalesOrderLineTax.xml:8"
+resources/domains/SaleOrderScheduleLine.xml:10
+resources/domains/SaleOrderLineTax.xml:8"
 "Sale order line (origin)","Ligne de Cmde initiale",,"resources/domains/Task.xml:12"
-"Sale order lines","Lignes de devis",,"resources/domains/SalesOrder.xml:35"
-"Sale order sub-lines","Sous-lignes de devis",,"resources/domains/SalesOrderLine.xml:41"
+"Sale order lines","Lignes de devis",,"resources/domains/SaleOrder.xml:35"
+"Sale order sub-lines","Sous-lignes de devis",,"resources/domains/SaleOrderLine.xml:41"
 "Sale price","Prix Vente H.T.",,"resources/domains/Price.xml:10
 resources/domains/PurchaseOrderLine.xml:46
 resources/views/Selects.xml:589"
@@ -3126,7 +3126,7 @@ resources/views/Partner.xml:295"
 "Sales stage","Etape vente",,"resources/domains/Opportunity.xml:18"
 "Sales turnover comparison per month this year vs past years by family","Comparatif CA mensuel année N/N-1",,"resources/views/Charts.xml:274
 resources/views/Portal.xml:77"
-"Salesman","Commercial",,"resources/domains/SalesOrder.xml:47"
+"Salesman","Commercial",,"resources/domains/SaleOrder.xml:47"
 "Sample","Tb démonstration",,"resources/views/menu.xml:11"
 "Saturday","Samedi",,"resources/domains/Scheduler.xml:25
 resources/views/Selects.xml:584"
@@ -3138,7 +3138,7 @@ resources/views/Partner.xml:17"
 "Schedule line","Échéance",,"resources/views/Selects.xml:415"
 "Schedule line N°","N° échéance",,"resources/domains/PaymentScheduleLine.xml:11"
 "Schedule line concerned by the reminder","Echéances concernées à relancer",,"resources/domains/Reminder.xml:22"
-"Schedule line list","Les échéances",,"resources/domains/SalesOrder.xml:56"
+"Schedule line list","Les échéances",,"resources/domains/SaleOrder.xml:56"
 "Schedule lines","Échéances",,"resources/views/Batch.xml:74
 resources/domains/PaymentSchedule.xml:15
 resources/views/Batch.xml:28"
@@ -3151,7 +3151,7 @@ resources/domains/SchedulerInstanceHistory.xml:12
 resources/views/Scheduler.xml:10"
 "Scheduler history","Historique planificateurs",,"resources/views/SchedulerInstanceHistory.xml:5
 resources/views/SchedulerInstanceHistory.xml:10"
-"Scheduler instance","Instance d'échéancier",,"resources/domains/SalesOrder.xml:70"
+"Scheduler instance","Instance d'échéancier",,"resources/domains/SaleOrder.xml:70"
 "Schedulers","Planificateurs",,"resources/views/Scheduler.xml:5
 resources/views/SchedulerInstance.xml:5"
 "Search","Recherche",,"resources/views/General.xml:13
@@ -3180,11 +3180,11 @@ resources/views/Partner.xml:170"
 "Sending dates","Dates d'envoi",,"resources/views/Mail.xml:33"
 "Sent Date","Date d'envoi réelle",,"resources/domains/Mail.xml:19"
 "September","Septembre",,"resources/views/Selects.xml:294"
-"Seq.","Séq.",,"resources/domains/SalesOrderLine.xml:11
+"Seq.","Séq.",,"resources/domains/SaleOrderLine.xml:11
 resources/domains/PurchaseOrderLine.xml:11
 resources/domains/PaymentInvoiceToPay.xml:10
-resources/domains/SalesOrderSubLine.xml:12
-resources/domains/SalesOrderScheduleLine.xml:11"
+resources/domains/SaleOrderSubLine.xml:12
+resources/domains/SaleOrderScheduleLine.xml:11"
 "Sequence","Séquence",,"resources/domains/TemplateRuleLine.xml:10
 resources/views/Sequence.xml:22"
 "Sequence Definition","Configuration Séquences",,"resources/views/Sequence.xml:34"
@@ -3220,7 +3220,7 @@ resources/domains/ReminderHistory.xml:15"
 "Short description","Description courte",,"resources/domains/ExpenseLine.xml:15"
 "Short term debt duration (month)","Nbre de mois (créance + 3 mois)",,"resources/domains/AccountConfig.xml:53"
 "Show all stock move","Mouvements de stock",,"resources/views/Product.xml:103"
-"Show details in invoice","Voir détails sur facture",,"resources/domains/SalesOrder.xml:53
+"Show details in invoice","Voir détails sur facture",,"resources/domains/SaleOrder.xml:53
 resources/domains/AccountConfig.xml:102"
 "Show projects","Voir Projets",,"resources/views/Partner.xml:276
 resources/views/Partner.xml:140"
@@ -3259,7 +3259,7 @@ resources/domains/SnStatusUpdates.xml:31"
 "Source","Source",,"resources/domains/Lead.xml:47
 resources/domains/Candidate.xml:66
 resources/views/Source.xml:6
-resources/domains/SalesOrder.xml:51
+resources/domains/SaleOrder.xml:51
 resources/domains/Partner.xml:37
 resources/views/Source.xml:11
 resources/domains/Opportunity.xml:23"
@@ -3332,7 +3332,7 @@ resources/domains/Invoice.xml:102
 resources/domains/CashRegisterLine.xml:21
 resources/domains/OperationOrder.xml:33
 resources/domains/PaymentVoucher.xml:22
-resources/domains/SalesOrder.xml:44
+resources/domains/SaleOrder.xml:44
 resources/domains/Expense.xml:18
 resources/domains/PurchaseOrder.xml:24
 resources/domains/Project.xml:24
@@ -3367,8 +3367,8 @@ resources/domains/Event.xml:13
 resources/domains/Mail.xml:16"
 "Subscription","Abonnement",,"resources/views/Selects.xml:448"
 "Subscription ?","Abonnement ?",,"resources/domains/Invoice.xml:26"
-"Subscription end date","Date fin Abo.",,"resources/domains/SalesOrder.xml:74"
-"Subscription start date","Date début Abo.",,"resources/domains/SalesOrder.xml:71"
+"Subscription end date","Date fin Abo.",,"resources/domains/SaleOrder.xml:74"
+"Subscription start date","Date début Abo.",,"resources/domains/SaleOrder.xml:71"
 "Subtotal W.T.","Sous-total HT",,"resources/domains/PurchaseOrderLine.xml:17"
 "Subtotal by cash register","Sous total par poste de saisie",,"resources/domains/MoveLineReport.xml:27"
 "Subtotal by date","Sous total par date",,"resources/domains/MoveLineReport.xml:28"
@@ -3382,7 +3382,7 @@ resources/domains/Scheduler.xml:26"
 "Supervised by","Supervisé par",,"resources/domains/Employee.xml:49"
 "Suppl. Credit Note Journal","Journal Avoirs Frn.",,"resources/domains/AccountConfig.xml:19"
 "Supplier","Fournisseur",,"resources/domains/PurchaseOrderSupplierLine.xml:22
-resources/domains/SalesOrderLine.xml:29
+resources/domains/SaleOrderLine.xml:29
 resources/domains/PurchaseOrderLine.xml:51
 resources/domains/SupplierCatalog.xml:11
 resources/domains/PurchaseOrder.xml:14"
@@ -3409,7 +3409,7 @@ resources/views/Portal.xml:55"
 "Suppliers requests","Demandes fournisseurs",,"resources/domains/PurchaseOrderLine.xml:50"
 "Supply chain configuration","Config. Supply Chain",,"resources/views/Company.xml:43"
 "Supply chain message","Message pour les exception supply chain",,"resources/domains/General.xml:28"
-"Supply method","Méthode d'appro",,"resources/domains/SalesOrderLine.xml:17"
+"Supply method","Méthode d'appro",,"resources/domains/SaleOrderLine.xml:17"
 "Supplychain batch","Traitements par lots Supply Chain",,"resources/domains/Batch.xml:16"
 "Supplychain config","Config. Supply Chain",,"resources/domains/Company.xml:23"
 "Surname","Nom",,"resources/domains/Employee.xml:11"
@@ -3432,29 +3432,29 @@ resources/domains/FinancialInformationHistoryLine.xml:10
 resources/domains/Project.xml:55
 resources/domains/ExpenseLine.xml:11
 resources/domains/SpentTime.xml:13
-resources/domains/SalesOrderScheduleLine.xml:14
+resources/domains/SaleOrderScheduleLine.xml:14
 resources/domains/TimesheetLine.xml:12
 resources/domains/PurchaseOrderLine.xml:30
 resources/domains/Event.xml:61
-resources/domains/SalesOrderLine.xml:22
+resources/domains/SaleOrderLine.xml:22
 resources/domains/PlanningLine.xml:14"
 "Task Progress","Avancement réel",,"resources/domains/Task.xml:21"
 "Task name","Nom tâche",,"resources/domains/Task.xml:13"
 "Task product","Produit tâche",,"resources/domains/Company.xml:40"
 "Tasks","Tâches",,"resources/views/welcome.xml:31
 resources/domains/Project.xml:49"
-"Tax","TVA",,"resources/domains/SalesOrderLine.xml:19
+"Tax","TVA",,"resources/domains/SaleOrderLine.xml:19
 resources/domains/ExpenseLine.xml:20
 resources/domains/InvoiceLine.xml:21
 resources/domains/MoveLine.xml:31
 resources/domains/TaxAccount.xml:10
-resources/domains/SalesOrderLineTax.xml:9
+resources/domains/SaleOrderLineTax.xml:9
 resources/domains/PurchaseOrderLine.xml:16
-resources/domains/SalesOrderSubLine.xml:20
+resources/domains/SaleOrderSubLine.xml:20
 resources/domains/TaxLine.xml:11
 resources/domains/InvoiceLineTax.xml:17"
 "Tax 0%","T.V.A. 0%",,"resources/domains/General.xml:31"
-"Tax Lines","Les lignes de TVA",,"resources/domains/SalesOrder.xml:38
+"Tax Lines","Les lignes de TVA",,"resources/domains/SaleOrder.xml:38
 resources/domains/Invoice.xml:50
 resources/domains/PurchaseOrder.xml:36"
 "Tax N°","N° TVA",,"resources/domains/Partner.xml:83"
@@ -3467,7 +3467,7 @@ resources/domains/PurchaseOrder.xml:36"
 "Tax for management fee","TVA pour frais de gestion",,"resources/domains/AccountConfig.xml:44"
 "Tax versions","Versions de TVA",,"resources/domains/Tax.xml:15"
 "Team","Equipe",,"resources/views/Team.xml:9
-resources/domains/SalesOrder.xml:48
+resources/domains/SaleOrder.xml:48
 resources/domains/Opportunity.xml:30
 resources/domains/Campaign.xml:34
 resources/domains/Partner.xml:76
@@ -3583,7 +3583,7 @@ resources/domains/ManufOrder.xml:12
 resources/domains/ExpenseLine.xml:24
 resources/domains/OperationOrder.xml:18
 resources/domains/TimesheetLine.xml:17"
-"To invoice?","A facturer ?",,"resources/domains/SalesOrderLine.xml:33"
+"To invoice?","A facturer ?",,"resources/domains/SaleOrderLine.xml:33"
 "To location","A l'emplacement",,"resources/domains/StockMove.xml:15"
 "To pay / To use","A payer / A utiliser",,"resources/domains/MoveLine.xml:59"
 "To produce manuf order","Ordre de production (à fabriquer)",,"resources/domains/ProdProduct.xml:25"
@@ -3601,24 +3601,24 @@ resources/views/Keyword.xml:17"
 "Total (TTC)","Total T.T.C.",,"resources/domains/ExpenseLine.xml:19"
 "Total A.T.I.","Total T.T.C.",,"resources/domains/Invoice.xml:99
 resources/domains/PurchaseOrder.xml:43
-resources/domains/SalesOrder.xml:42
+resources/domains/SaleOrder.xml:42
 resources/domains/Invoice.xml:93"
 "Total Credit","Total crédit",,"resources/domains/MoveLineReport.xml:33"
 "Total Debit","Total débit",,"resources/domains/MoveLineReport.xml:32"
 "Total Tax","Total T.V.A.",,"resources/domains/Invoice.xml:92
 resources/domains/PurchaseOrder.xml:42
 resources/domains/Invoice.xml:98"
-"Total V.A.T.","Total T.V.A.",,"resources/domains/SalesOrder.xml:41"
-"Total W.T.","Sous-total HT",,"resources/domains/SalesOrderLine.xml:20
+"Total V.A.T.","Total T.V.A.",,"resources/domains/SaleOrder.xml:41"
+"Total W.T.","Sous-total HT",,"resources/domains/SaleOrderLine.xml:20
 resources/domains/InvoiceLine.xml:19
-resources/domains/SalesOrderSubLine.xml:21
+resources/domains/SaleOrderSubLine.xml:21
 resources/domains/PurchaseOrder.xml:41
-resources/domains/SalesOrder.xml:40"
+resources/domains/SaleOrder.xml:40"
 "Total W.T. in accounting currency","Total H.T. (Devise Sté)",,"resources/domains/InvoiceLine.xml:20"
 "Total W.T. in company currency","Total H.T. Devise Sté",,"resources/domains/ExpenseLine.xml:28
 resources/domains/PurchaseOrderLine.xml:44
-resources/domains/SalesOrderSubLine.xml:29
-resources/domains/SalesOrderLine.xml:56
+resources/domains/SaleOrderSubLine.xml:29
+resources/domains/SaleOrderLine.xml:56
 resources/domains/InvoiceLine.xml:32"
 "Total W.V.","Total H.T.",,"resources/domains/Invoice.xml:91
 resources/domains/Invoice.xml:97"
@@ -3716,25 +3716,25 @@ resources/domains/ProdProduct.xml:14
 resources/domains/Timesheet.xml:17
 resources/domains/Unit.xml:11
 resources/domains/PurchaseOrderLine.xml:20
-resources/domains/SalesOrderSubLine.xml:17
+resources/domains/SaleOrderSubLine.xml:17
 resources/domains/BillOfMaterial.xml:16
 resources/views/Unit.xml:9
 resources/domains/ProdRemains.xml:15
-resources/domains/SalesOrderLine.xml:26
+resources/domains/SaleOrderLine.xml:26
 resources/domains/PlanningLine.xml:18"
 "Unit conversion","Conversion d'unités",,"resources/views/UnitConversion.xml:10"
 "Unit conversions","Conversions d'unités",,"resources/views/menu.xml:499
 resources/views/UnitConversion.xml:5
 resources/views/menu.xml:502"
-"Unit cost price in company currency","Coût de revient",,"resources/domains/SalesOrderSubLine.xml:30
-resources/domains/SalesOrderLine.xml:57"
-"Unit price","Prix à l'unité",,"resources/domains/SalesOrderLine.xml:18
+"Unit cost price in company currency","Coût de revient",,"resources/domains/SaleOrderSubLine.xml:30
+resources/domains/SaleOrderLine.xml:57"
+"Unit price","Prix à l'unité",,"resources/domains/SaleOrderLine.xml:18
 resources/domains/Task.xml:60
 resources/domains/StockMoveLine.xml:18
 resources/domains/SupplierCatalog.xml:14
 resources/domains/InvoiceLine.xml:15
 resources/domains/PurchaseOrderLine.xml:15
-resources/domains/SalesOrderSubLine.xml:19
+resources/domains/SaleOrderSubLine.xml:19
 resources/domains/PurchaseOrderSupplierLine.xml:14
 resources/domains/ExpenseLine.xml:18
 resources/domains/InvoiceLineEvent.xml:16
@@ -3798,7 +3798,7 @@ resources/views/Selects.xml:325
 resources/views/Selects.xml:314
 resources/views/Selects.xml:454"
 "Validated by","Validée par",,"resources/domains/Overtime.xml:16
-resources/domains/SalesOrder.xml:76
+resources/domains/SaleOrder.xml:76
 resources/domains/Expense.xml:19
 resources/domains/Invoice.xml:103
 resources/domains/Timesheet.xml:28
@@ -3808,7 +3808,7 @@ resources/domains/PurchaseOrder.xml:39"
 "Validation date","Date validation",,"resources/domains/Timesheet.xml:29
 resources/domains/PurchaseOrder.xml:40
 resources/domains/Expense.xml:20
-resources/domains/SalesOrder.xml:17
+resources/domains/SaleOrder.xml:17
 resources/domains/Move.xml:29
 resources/domains/OvertimeLine.xml:16"
 "Value","Valeur",,"resources/domains/RoutingActionCreateLine.xml:14
@@ -3977,8 +3977,8 @@ java/com/axelor/web/MapRest.java:291"
 "help:PurchaseOrder.internalReference","Refers to an internal document like a SO, PO, Stock Picking reference...",,"resources/domains/PurchaseOrder.xml:29"
 "help:PurchaseOrderLine.estimatedDelivDate","Estimated by supplier",,"resources/domains/PurchaseOrderLine.xml:37"
 "help:PurchaseOrderSupplierLine.estimatedDelivDate","Estimated by supplier",,"resources/domains/PurchaseOrderSupplierLine.xml:18"
-"help:SalesOrderScheduleLine.nbOfDay","Si facturation en fonction de nb de jours",,"resources/domains/SalesOrderScheduleLine.xml:16"
-"help:SalesOrderScheduleLine.salesOrderLine","Si facturation à la tâche",,"resources/domains/SalesOrderScheduleLine.xml:14"
+"help:SaleOrderScheduleLine.nbOfDay","Si facturation en fonction de nb de jours",,"resources/domains/SaleOrderScheduleLine.xml:16"
+"help:SaleOrderScheduleLine.saleOrderLine","Si facturation à la tâche",,"resources/domains/SaleOrderScheduleLine.xml:14"
 "help:SnSearchResult.companyName","Nom Société",,"resources/domains/SnSearchResult.xml:19"
 "help:SnSearchResult.firstName","First Name of Person",,"resources/domains/SnSearchResult.xml:15"
 "help:SnSearchResult.lastName","Last Name of Person",,"resources/domains/SnSearchResult.xml:16"

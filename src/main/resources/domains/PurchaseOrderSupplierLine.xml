@@ -7,7 +7,7 @@
 
   <entity name="PurchaseOrderSupplierLine" lang="java">
   
-  	<many-to-one name="purchaseOrderLine" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Purchase order"/>
+  	<many-to-one name="purchaseOrderLine" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order"/>
   	
   	<decimal name="availableQty" title="Available qty" default="0"/>
   	

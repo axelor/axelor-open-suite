@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
 
-  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+  <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SalesOrder" lang="java">
+  <entity name="SaleOrder" lang="java">
   	
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
   	<integer name="importId" />
-  	<string name="salesOrderSeq" namecolumn="true" title="Reference" readonly="true"/>
+  	<string name="saleOrderSeq" namecolumn="true" title="Reference" readonly="true"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Business"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>
   	<string name="externalReference" title="Customer reference"/>
@@ -28,14 +28,14 @@
   
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
   	<boolean name="hasSubLineDefaultValue" title="Default value for sublines"/>
-  	<integer name="invoicingTypeSelect" title="Invoicing type" selection="sales.order.invoicing.type.select"/>
+  	<integer name="invoicingTypeSelect" title="Invoicing type" selection="sale.order.invoicing.type.select"/>
   	
 <!--   	Ligne de devis -->
 	<boolean name="hasGlobalTask" title="Global task ?"/>
-	<one-to-many name="salesOrderLineList" ref="com.axelor.apps.supplychain.db.SalesOrderLine" mappedBy="salesOrder" title="Sale order lines"/>
+	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="saleOrder" title="Sale order lines"/>
 
 <!--   	Ligne de Taxe -->	
-	<one-to-many name="salesOrderLineTaxList" ref="com.axelor.apps.supplychain.db.SalesOrderLineTax" mappedBy="salesOrder" title="Tax Lines"/>
+	<one-to-many name="saleOrderLineTaxList" ref="com.axelor.apps.sale.db.SaleOrderLineTax" mappedBy="saleOrder" title="Tax Lines"/>
   	
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total V.A.T." scale="2" precision="20" readonly="true"/>
@@ -44,7 +44,7 @@
     <integer name="statusSelect" title="Status" selection="default.status.select" readonly="true"/>
   	
 <!--   	Onglet Autres informations -->
-	<many-to-one name="salesmanUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Salesman" massUpdate="true"/>
+	<many-to-one name="salemanUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Salesman" massUpdate="true"/>
 	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team" massUpdate="true"/>
 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
@@ -53,7 +53,7 @@
 	<boolean name="showDetailsInInvoice" title="Show details in invoice"/>
 	<integer name="invoicingMomentSelect" title="Invoicing trigger" selection="supplychain.invoicing.moment.select"/>
 <!-- 	Onglet échéancier -->
-	<one-to-many name="salesOrderScheduleLineList" ref="com.axelor.apps.supplychain.db.SalesOrderScheduleLine" mappedBy="salesOrder" title="Schedule line list"/>
+	<one-to-many name="saleOrderScheduleLineList" ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder" title="Schedule line list"/>
     
 <!--    Onglet historique -->
 	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Linked invoices"/>

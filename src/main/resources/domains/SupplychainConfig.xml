@@ -21,7 +21,7 @@
   	<boolean name="hasInSmForStorableProduct" title="Generate inc. moves for storable products ?"/>
   	<boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for non storable products ?"/>
   	
-  	<integer name="salesOrderInvoicingTypeSelect" title="Sales order invoicing type" selection="sales.order.invoicing.type.select"/>
+  	<integer name="saleOrderInvoicingTypeSelect" title="Sales order invoicing type" selection="sale.order.invoicing.type.select"/>
   	<integer name="purchaseOrderInvoicingTypeSelect" title="Purchases order invoicing type" selection="supplychain.purchase.order.invoicing.type.select"/>
   	
   </entity>

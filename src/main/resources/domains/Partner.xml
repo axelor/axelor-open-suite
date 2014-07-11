@@ -78,7 +78,7 @@
     <string name="description" title="Description"  large="true"/>
    	<integer name="industrySectorSelect" title="Industry" selection="partner.industry.sectory.select"/> 
 	<integer name="nbrEmployees" title="N° of Employees"/>
-	<integer name="salesTurnover" title="Turnover"/>
+	<integer name="saleTurnover" title="Turnover"/>
 	<string name="registrationCode" title="Registration code"/>
 	<string name="taxNbr" title="Tax N°"/>
 	

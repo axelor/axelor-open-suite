@@ -377,13 +377,13 @@
 		<option value="accountClearance">Overpayment clearance</option>
 		<option value="irrecoverable">Shift to irrecoverable</option>
 		<option value="chequeReject">Cheque reject</option>
-		<option value="salesInterface">Sale interface</option>
+		<option value="saleInterface">Sale interface</option>
 		<option value="refundInterface">Refund interface</option>
 		<option value="treasuryInterface">Treasury interface</option>
 		<option value="purchaseInterface">Purchase interface</option>
 		<option value="moveLineExport">Accounting export</option>
 		<option value="doubtfulCustomer">Shift to doubtful receivables</option>
-		<option value="salesOrder">Sales order</option>
+		<option value="saleOrder">Sales order</option>
 		<option value="purchaseOrder">Purchase order</option>
 		<option value="eventTicket">Ticket</option>
 		<option value="intStockMove">Internal stock move</option>
@@ -415,7 +415,7 @@
 		<option value="5">Schedule line</option>
 	</selection>
 
-	<selection name="isale.sales.rule.action.select">
+	<selection name="isale.sale.rule.action.select">
 		<option value="1">Appointment setup</option>
 		<option value="2">Create personalized offer</option>
 		<option value="3">Email</option>
@@ -439,7 +439,7 @@
 	</selection>
 	
 
-	<selection name="sales.order.invoicing.type.select">
+	<selection name="sale.order.invoicing.type.select">
 		<option value="1">Per order</option>
 		<option value="2">With payment schedule</option>
 		<option value="3">Per task</option>

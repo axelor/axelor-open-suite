@@ -95,7 +95,7 @@
 	                    <field name="department"/>
 	                </group>
 	                <group colSpan="2" cols="2">
-	                    <field name="salesTurnover"/>
+	                    <field name="saleTurnover"/>
 	                    <field name="nbrEmployees"/>
 	                    <field name="registrationCode"/>
 	                    <field name="taxNbr"/>
@@ -141,11 +141,11 @@
 			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
 			    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
 			    <portlet colSpan="6" action="action-partner-view-opportunities"/>
-			    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
+			    <portlet colSpan="6" action="action-partner-view-sale-orders"/>
 			    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	        </page>
 			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain">
-				<portlet colSpan="6" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
+				<portlet colSpan="6" action="portal.customer.sale.lastYear.vs.ytd.by.family" height="350"/>
 			</page>
 			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm">
      			 <portlet colSpan="6" action="portal.customer.crm.activities" height="350"/>
@@ -277,7 +277,7 @@
 			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
 			    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
 			    <portlet colSpan="6" action="action-partner-view-opportunities"/>
-			    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
+			    <portlet colSpan="6" action="action-partner-view-sale-orders"/>
 			    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	        </page>
 	    </notebook>
@@ -292,9 +292,9 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>
     
-	<action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
-		<view type="grid" name="sales-order-grid"/>
-		<view type="form" name="sales-order-form"/>
+	<action-view name="action-partner-view-partner-sale-order" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="grid" name="sale-order-grid"/>
+		<view type="form" name="sale-order-form"/>
 		<domain>self.clientPartner.id = :id OR self.contactPartner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
@@ -354,9 +354,9 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
     
-    <action-view name="action-partner-view-sales-orders" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
-		<view type="grid" name="sales-order-grid"/>
-		<view type="form" name="sales-order-form"/>
+    <action-view name="action-partner-view-sale-orders" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="grid" name="sale-order-grid"/>
+		<view type="form" name="sale-order-form"/>
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id)</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>

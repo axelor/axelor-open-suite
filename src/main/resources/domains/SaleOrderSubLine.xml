@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
 
-  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+  <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SalesOrderSubLine" lang="java">
+  <entity name="SaleOrderSubLine" lang="java">
   
-  	<many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Ligne de devis"/>
+  	<many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order lines"/>
   
   	<integer name="sequence" title="Seq."/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>

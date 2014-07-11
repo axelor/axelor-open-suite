@@ -78,13 +78,13 @@ public interface IAdministration {
 	static final String ACCOUNT_CLEARANCE = "accountClearance";
 	static final String IRRECOVERABLE = "irrecoverable";
 	static final String CHEQUE_REJECT = "chequeReject";
-	static final String SALES_INTERFACE = "salesInterface";
+	static final String SALES_INTERFACE = "saleInterface";
 	static final String REFUND_INTERFACE = "refundInterface";
 	static final String TREASURY_INTERFACE = "treasuryInterface";
 	static final String PURCHASE_INTERFACE = "purchaseInterface";
 	static final String MOVE_LINE_EXPORT = "moveLineExport";
 	static final String DOUBTFUL_CUSTOMER = "doubtfulCustomer";
-	static final String SALES_ORDER = "salesOrder";
+	static final String SALES_ORDER = "saleOrder";
 	static final String PURCHASE_ORDER = "purchaseOrder";
 	static final String EVENT_TICKET = "eventTicket";
 	static final String INTERNAL = "intStockMove";

@@ -34,7 +34,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -362,7 +362,7 @@ public class MapRest {
 	public JsonNode getGeoMapData() {
 		
 		Map<String, BigDecimal> data = new HashMap<String, BigDecimal>();		
-		List<? extends SalesOrder> orders = SalesOrder.all_().filter("self.statusSelect=?", 3).fetch();
+		List<? extends SaleOrder> orders = SaleOrder.all_().filter("self.statusSelect=?", 3).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -372,7 +372,7 @@ public class MapRest {
 		labelNode.add("Turnover");
 		arrayNode.add(labelNode);
 		
-		for (SalesOrder so : orders) {
+		for (SaleOrder so : orders) {
 			
 			Country country = so.getMainInvoicingAddress().getAddressL7Country();
 			BigDecimal value = so.getExTaxTotal();		

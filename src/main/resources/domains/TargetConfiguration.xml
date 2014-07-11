@@ -18,9 +18,9 @@
     <integer name="opportunityCreatedWon" title="Created Won"/>
     
 <!-- Sales order -->
-<!-- 	<decimal name="salesOrderAmountWon" title="Amount won"/> -->
-<!--     <integer name="salesOrderCreatedNumber" title="Created number"/> -->
-<!--     <integer name="salesOrderCreatedWon" title="Created won"/> -->
+<!-- 	<decimal name="saleOrderAmountWon" title="Amount won"/> -->
+<!--     <integer name="saleOrderCreatedNumber" title="Created number"/> -->
+<!--     <integer name="saleOrderCreatedWon" title="Created won"/> -->
 
 <!-- Call -->
     <integer name="callEmittedNumber" title="Call emitted Nbr"/>
