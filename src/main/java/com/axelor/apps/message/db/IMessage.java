@@ -80,7 +80,7 @@ public interface IMessage {
 	static final String RELATED_TO_OPPORTUNITY = "com.axelor.apps.crm.db.Opportunity";
 	static final String RELATED_TO_PRODUCT = "com.axelor.apps.base.db.Product";
 	static final String RELATED_TO_EVENT = "com.axelor.apps.crm.db.Event";
-	static final String RELATED_TO_SALESORDER = "com.axelor.apps.supplychain.db.SalesOrder";
+	static final String RELATED_TO_SALESORDER = "com.axelor.apps.sale.db.SaleOrder";
 	static final String RELATED_TO_PROJECT = "com.axelor.apps.organisation.db.Project";
 	static final String RELATED_TO_TASK = "com.axelor.apps.organisation.db.Task";
 	
