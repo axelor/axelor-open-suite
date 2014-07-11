@@ -1,0 +1,17 @@
+target
+src-gen
+*.log
+*.rptconfig
+.pydevproject
+.project
+.classpath
+.settings
+.externalToolBuilders
+.~*
+*.sw[nop]
+*~
+.#*
+[#]*#
+/target
+/target
+/target
