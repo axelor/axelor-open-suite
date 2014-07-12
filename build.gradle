@@ -25,7 +25,7 @@ dependencies {
 task "xjc" << {
 
 	def source = "${projectDir}/src/main/resources/xsd"
-	def target = "${rootProject.buildDir}/src-gen"
+	def target = "${buildDir}/src-gen"
 
 	file(target).mkdirs()
 
