@@ -25,25 +25,25 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.accountorganisation.service.TaskSaleOrderService;
 import com.axelor.apps.base.service.user.UserInfoService;
-import com.axelor.apps.purchase.service.PurchaseOrderInvoiceService;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
-import com.axelor.apps.stock.service.InventoryService;
-import com.axelor.apps.stock.service.StockMoveInvoiceService;
-import com.axelor.apps.stock.service.StockMoveService;
-//import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
-import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.SaleOrderInvoiceService;
 import com.axelor.apps.sale.service.SaleOrderLineService;
-import com.axelor.apps.sale.service.SaleOrderPurchaseService;
-import com.axelor.apps.sale.service.SaleOrderStockMoveService;
-import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.supplychain.db.Inventory;
+import com.axelor.apps.supplychain.db.StockMove;
+import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
+import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
+import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+//import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
 
 public class ValidateSupplyChain {
 	
@@ -51,7 +51,7 @@ public class ValidateSupplyChain {
 	InventoryService inventoryService;
 	
 	@Inject
-	PurchaseOrderService purchaseOrderService;
+	PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 	
 	@Inject
 	StockMoveService stockMoveSerivce;
@@ -69,7 +69,7 @@ public class ValidateSupplyChain {
 	SaleOrderService saleOrderService;
 	
 	@Inject
-	SaleOrderStockMoveService saleOrderStockMoveService;
+	SaleOrderServiceStockImpl saleOrderServiceStockImpl;
 	
 	@Inject
 	SaleOrderInvoiceService saleOrderInvoiceService;
@@ -128,9 +128,9 @@ public class ValidateSupplyChain {
 	void validatePurchaseOrder(Long poId){
 		try{
 			PurchaseOrder purchaseOrder = PurchaseOrder.find(poId);
-			purchaseOrderService.computePurchaseOrder(purchaseOrder);
+			purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 			if(purchaseOrder.getStatusSelect() == 4 || purchaseOrder.getStatusSelect() == 5 && purchaseOrder.getLocation() == null){
-				purchaseOrderService.createStocksMoves(purchaseOrder);
+				purchaseOrderServiceSupplychainImpl.createStocksMoves(purchaseOrder);
 				StockMove stockMove = StockMove.all_().filter("purchaseOrder.id = ?1",purchaseOrder.getId()).fetchOne();
 				if(stockMove != null){
 					stockMoveService.copyQtyToRealQty(stockMove);
@@ -139,7 +139,7 @@ public class ValidateSupplyChain {
 				}
 				purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
 				purchaseOrder.setValidatedByUserInfo(userInfoSerivce.getUserInfo());
-				purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));
+				purchaseOrder.setSupplierPartner(purchaseOrderServiceSupplychainImpl.validateSupplier(purchaseOrder));
 				Invoice invoice = purchaseOrderInvoiceService.generateInvoice(purchaseOrder);
 				invoice.setInvoiceDate(purchaseOrder.getValidationDate());
 				invoiceService.compute(invoice);
@@ -161,7 +161,7 @@ public class ValidateSupplyChain {
 			saleOrderService.computeSaleOrder(saleOrder);
 			if(saleOrder.getStatusSelect() == 3){
 				taskSaleOrderService.createTasks(saleOrder);
-				saleOrderStockMoveService.createStocksMovesFromSaleOrder(saleOrder);
+				saleOrderServiceStockImpl.createStocksMovesFromSaleOrder(saleOrder);
 				saleOrderPurchaseService.createPurchaseOrders(saleOrder);
 //				productionOrderSaleOrderService.generateProductionOrder(saleOrder);
 				saleOrder.setClientPartner(saleOrderService.validateCustomer(saleOrder));

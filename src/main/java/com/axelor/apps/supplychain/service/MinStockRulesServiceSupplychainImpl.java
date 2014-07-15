@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.service;
+package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
 
@@ -28,46 +28,44 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.UserInfo;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.organisation.db.Project;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
-import com.axelor.apps.supplychain.db.IMinStockRules;
+import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.stock.db.IMinStockRules;
+import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.LocationLine;
 import com.axelor.apps.supplychain.db.MinStockRules;
-import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.supplychain.service.config.SupplychainConfigService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MinStockRulesService {
+public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImpl  {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(MinStockRulesService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(MinStockRulesServiceImpl.class); 
 
 	@Inject
-	private PurchaseOrderService purchaseOrderService;
+	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 	
 	@Inject
 	private PurchaseOrderLineService purchaseOrderLineService;
 	
 	@Inject
-	private SupplychainConfigService supplychainConfigService;
+	private SaleConfigService saleConfigService;
 	
 	private LocalDate today;
 	
 	private UserInfo user;
 	
-	@Inject
-	public MinStockRulesService(UserInfoService userInfoService) {
+	public MinStockRulesServiceSupplychainImpl(UserInfoService userInfoService) {
 
-		this.today = GeneralService.getTodayDate();
-		this.user = userInfoService.getUserInfo();
+		super(userInfoService);
 	}
 	
 	
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, Project project, int type) throws AxelorException  {
 		
@@ -86,7 +84,16 @@ public class MinStockRulesService {
 		
 		if(this.useMinStockRules(locationLine, minStockRules, qty, type))  {
 			
-			if(minStockRules.getOrderAlertSelect() == IMinStockRules.ORDER_ALERT_PURCHASE_ORDER)  {
+			if(minStockRules.getOrderAlertSelect() == IMinStockRules.ORDER_ALERT_ALERT)  {
+				
+				//TODO
+				
+			}
+			else if(minStockRules.getOrderAlertSelect() == IMinStockRules.ORDER_ALERT_PRODUCTION_ORDER)  {
+				
+				
+			}
+			else if(minStockRules.getOrderAlertSelect() == IMinStockRules.ORDER_ALERT_PURCHASE_ORDER)  {
 				
 				Partner supplierPartner = product.getDefaultSupplierPartner();
 				
@@ -94,7 +101,7 @@ public class MinStockRulesService {
 					
 					Company company = location.getCompany();
 					
-					PurchaseOrder purchaseOrder = purchaseOrderService.createPurchaseOrder(
+					PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
 							project, 
 							this.user, 
 							company, 
@@ -103,7 +110,7 @@ public class MinStockRulesService {
 							this.today.plusDays(supplierPartner.getDeliveryDelay()), 
 							minStockRules.getName(),
 							null, 
-							supplychainConfigService.getSupplychainConfig(company).getSaleOrderInvoicingTypeSelect(), 
+							saleConfigService.getSaleConfig(company).getSaleOrderInvoicingTypeSelect(), 
 							location, 
 							this.today, 
 							PriceList.filter("self.partner = ?1", supplierPartner).fetchOne(), 
@@ -119,62 +126,19 @@ public class MinStockRulesService {
 									product.getUnit(), 
 									null));
 						
-					purchaseOrderService.computePurchaseOrder(purchaseOrder);
+					purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 					
 					purchaseOrder.save();
 					
 				}
 				
 				
-				
-			}
-			else if(minStockRules.getOrderAlertSelect() == IMinStockRules.ORDER_ALERT_PRODUCTION_ORDER)  {
-				
-				//TODO
-			}
-			else if(minStockRules.getOrderAlertSelect() == IMinStockRules.ORDER_ALERT_ALERT)  {
-				
-				//TODO
 			}
 			
 			
 			
 			
 		}
-		
-	}
-	
-	
-	public boolean useMinStockRules(LocationLine locationLine, MinStockRules minStockRules, BigDecimal qty, int type)  {
-		
-		BigDecimal currentQty = locationLine.getCurrentQty();
-		BigDecimal futureQty = locationLine.getFutureQty();
-		
-		BigDecimal minQty = minStockRules.getMinQty();
-		
-		if(type == IMinStockRules.TYPE_CURRENT)  {
-			
-			if(currentQty.compareTo(minQty) >= 0 && (currentQty.subtract(qty)).compareTo(minQty) == -1)  {
-				return true;
-			}
-			
-		}
-		else  if(type == IMinStockRules.TYPE_FUTURE){
-			
-			if(futureQty.compareTo(minQty) >= 0 && (futureQty.subtract(qty)).compareTo(minQty) == -1)  {
-				return true;
-			}
-			
-		}
-		return false;
-		
-	}
-	
-	public MinStockRules getMinStockRules(Product product, Location location, int type)  {
-		
-		return MinStockRules.filter("self.product = ?1 AND self.location = ?2 AND self.typeSelect = ?3", product, location, type).fetchOne();
-		
-		//TODO , plusieurs régles min de stock par produit (achat a 500 et production a 100)...
 		
 	}
 	

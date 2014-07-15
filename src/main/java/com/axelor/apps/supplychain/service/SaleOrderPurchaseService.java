@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.supplychain.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,9 +33,8 @@ import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -48,7 +47,7 @@ public class SaleOrderPurchaseService {
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderPurchaseService.class); 
 
 	@Inject
-	private PurchaseOrderService purchaseOrderService;
+	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 	
 	@Inject
 	private PurchaseOrderLineService purchaseOrderLineService;
@@ -112,7 +111,7 @@ public class SaleOrderPurchaseService {
 		LOG.debug("Création d'une commande fournisseur pour le devis client : {}",
 				new Object[] { saleOrder.getSaleOrderSeq() });
 		
-		PurchaseOrder purchaseOrder = purchaseOrderService.createPurchaseOrder(
+		PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
 				saleOrder.getProject(), 
 				user, 
 				saleOrder.getCompany(), 
@@ -122,7 +121,7 @@ public class SaleOrderPurchaseService {
 				saleOrder.getSaleOrderSeq(),
 				saleOrder.getExternalReference(), 
 				IPurchaseOrder.INVOICING_FREE, 
-				purchaseOrderService.getLocation(saleOrder.getCompany()), 
+				purchaseOrderServiceSupplychainImpl.getLocation(saleOrder.getCompany()), 
 				today, 
 				PriceList.filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
 				supplierPartner);
@@ -134,7 +133,7 @@ public class SaleOrderPurchaseService {
 			
 		}
 		
-		purchaseOrderService.computePurchaseOrder(purchaseOrder);
+		purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 		
 		purchaseOrder.save();
 	}

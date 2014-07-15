@@ -15,28 +15,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.web;
+package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.db.StockMove;
+import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class SaleOrderInvoiceController {
+public class StockMoveInvoiceController {
 
 	@Inject
-	private SaleOrderInvoiceService saleOrdeInvoicerService;
+	private StockMoveInvoiceService stockMoveInvoiceService;
 	
 	public void generateInvoice(ActionRequest request, ActionResponse response)  {
 		
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		Invoice invoice = null;
 		try {
-			saleOrder = SaleOrder.find(saleOrder.getId());
-			Invoice invoice = saleOrdeInvoicerService.generateInvoice(saleOrder);
+			stockMove = StockMove.find(stockMove.getId());
+			
+			if(stockMove.getSaleOrder() != null) {
+				invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());
+			}
+			
+			if(stockMove.getPurchaseOrder() != null) {
+				invoice = stockMoveInvoiceService.createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder());
+			}
 			
 			if(invoice != null)  {
 				response.setReload(true);

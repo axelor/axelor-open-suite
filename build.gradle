@@ -11,5 +11,8 @@ module {
 	module "modules:axelor-base"
 	module "modules:axelor-account"
 	module "modules:axelor-account-organisation"
+	module "modules:axelor-purchase"
+	module "modules:axelor-sale"
+	module "modules:axelor-stock"
 }
 

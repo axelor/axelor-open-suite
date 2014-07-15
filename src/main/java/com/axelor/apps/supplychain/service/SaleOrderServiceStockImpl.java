@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.supplychain.service;
 
 import java.util.ArrayList;
 
@@ -25,26 +25,30 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.supplychain.db.ILocation;
-import com.axelor.apps.supplychain.db.Location;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.service.SaleOrderLineService;
+import com.axelor.apps.sale.service.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.SaleOrderServiceImpl;
+import com.axelor.apps.stock.db.ILocation;
+import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
-import com.axelor.apps.supplychain.db.SupplychainConfig;
-import com.axelor.apps.supplychain.service.config.SupplychainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class SaleOrderStockMoveService {
+public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderStockMoveService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceStockImpl.class); 
 
 	@Inject
 	private SaleOrderLineService saleOrderLineService;
@@ -56,8 +60,16 @@ public class SaleOrderStockMoveService {
 	private StockMoveLineService stockMoveLineService;
 
 	@Inject
-	private SupplychainConfigService supplychainConfigService;
+	private StockConfigService stockConfigService;
 
+
+
+	public Location getLocation(Company company)  {
+		
+		return Location.filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
+				company, true, ILocation.INTERNAL).fetchOne();
+	}
+	
 
 	/**
 	 * Méthode permettant de créer un StockMove à partir d'un SaleOrder.
@@ -93,7 +105,7 @@ public class SaleOrderStockMoveService {
 		
 		if(toLocation == null)  {
 			
-			toLocation = supplychainConfigService.getCustomerVirtualLocation(supplychainConfigService.getSupplychainConfig(company));
+			toLocation = stockConfigService.getCustomerVirtualLocation(stockConfigService.getStockConfig(company));
 		}
 		
 		StockMove stockMove = stockMoveService.createStockMove(
@@ -167,7 +179,7 @@ public class SaleOrderStockMoveService {
 		
 		Company company = saleOrderLine.getSaleOrder().getCompany();
 		
-		SupplychainConfig supplychainConfig = supplychainConfigService.getSupplychainConfig(company);
+		StockConfig stockConfig = stockConfigService.getStockConfig(company);
 		
 		Product product = saleOrderLine.getProduct();
 		
@@ -177,14 +189,15 @@ public class SaleOrderStockMoveService {
 //				&& saleOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_FROM_STOCK)  {
 			
 		if(product != null
-				&& ((product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_SERVICE) && supplychainConfig.getHasOutSmForNonStorableProduct())
-						|| (product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE) && supplychainConfig.getHasOutSmForStorableProduct())) )  {
+				&& ((product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_SERVICE) && stockConfig.getHasOutSmForNonStorableProduct())
+						|| (product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE) && stockConfig.getHasOutSmForStorableProduct())) )  {
 			
 			return true;
 		}
 		
 		return false;
 	}
-	
 }
+
+
 
