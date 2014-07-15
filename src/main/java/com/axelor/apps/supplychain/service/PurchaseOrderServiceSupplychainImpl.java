@@ -20,14 +20,20 @@ package com.axelor.apps.supplychain.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.organisation.db.Project;
+import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -59,6 +65,24 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	
 	@Inject
 	private StockConfigService stockConfigService;
+	
+	
+	public PurchaseOrder createPurchaseOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
+			PriceList priceList, Partner supplierPartner) throws AxelorException  {
+		
+		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
+				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
+		
+		PurchaseOrder purchaseOrder = super.createPurchaseOrder(project, buyerUserInfo, company, contactPartner, currency, deliveryDate, 
+				internalReference, externalReference, invoicingTypeSelect, orderDate, priceList, supplierPartner);
+				
+		purchaseOrder.setLocation(location);
+		purchaseOrder.setSupplierPartner(supplierPartner);
+		
+		return purchaseOrder;
+	}
+	
 	
 	
 	/**
