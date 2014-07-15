@@ -34,10 +34,10 @@ import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -51,7 +51,7 @@ public class PurchaseOrderSupplierService {
 	private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
 	
 	@Inject
-	private PurchaseOrderService purchaseOrderService;
+	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 	
 	@Inject
 	private PurchaseOrderLineService purchaseOrderLineService;
@@ -147,7 +147,7 @@ public class PurchaseOrderSupplierService {
 		LOG.debug("Création d'une commande fournisseur depuis le devis fournisseur : {} et le fournisseur : {}", 
 				new Object[] { parentPurchaseOrder.getPurchaseOrderSeq(), supplierPartner.getFullName() });
 		
-		PurchaseOrder purchaseOrder = purchaseOrderService.createPurchaseOrder(
+		PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
 				parentPurchaseOrder.getProject(), 
 				user, 
 				parentPurchaseOrder.getCompany(), 
@@ -157,7 +157,7 @@ public class PurchaseOrderSupplierService {
 				parentPurchaseOrder.getPurchaseOrderSeq(),
 				parentPurchaseOrder.getExternalReference(), 
 				parentPurchaseOrder.getInvoicingTypeSelect(), 
-				purchaseOrderService.getLocation(parentPurchaseOrder.getCompany()), 
+				purchaseOrderServiceSupplychainImpl.getLocation(parentPurchaseOrder.getCompany()), 
 				today, 
 				PriceList.filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
 				supplierPartner);
@@ -171,7 +171,7 @@ public class PurchaseOrderSupplierService {
 			
 		}
 		
-		purchaseOrderService.computePurchaseOrder(purchaseOrder);
+		purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 		
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_RECEIVED);
 		
