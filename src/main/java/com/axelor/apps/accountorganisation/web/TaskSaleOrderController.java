@@ -17,24 +17,24 @@
  */
 package com.axelor.apps.accountorganisation.web;
 
-import com.axelor.apps.accountorganisation.service.TaskSalesOrderService;
-import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.accountorganisation.service.TaskSaleOrderService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class TaskSalesOrderController {
+public class TaskSaleOrderController {
 
 	@Inject
-	private TaskSalesOrderService taskSalesOrderService;
+	private TaskSaleOrderService taskSaleOrderService;
 	
 	
 	public void createTasks(ActionRequest request, ActionResponse response) throws AxelorException {
 		
-		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		
-		taskSalesOrderService.createTasks(SalesOrder.find(salesOrder.getId()));
+		taskSaleOrderService.createTasks(SaleOrder.find(saleOrder.getId()));
 	
 	}
 }

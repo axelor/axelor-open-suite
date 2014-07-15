@@ -48,7 +48,7 @@ package com.axelor.apps.accountorganisation.db;
  */
 
 
-public interface ISalesOrder {
+public interface ISaleOrder {
 
 	
 	/**
