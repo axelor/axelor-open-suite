@@ -35,7 +35,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -50,7 +50,7 @@ public class ProductionOrderSaleOrderService {
 	private ProductionOrderService productionOrderService;
 	
 	@Inject
-	private SaleOrderService saleOrderService;
+	private SaleOrderServiceStockImpl saleOrderServiceStockImpl;
 	
 	private LocalDate today;
 	
@@ -129,7 +129,7 @@ public class ProductionOrderSaleOrderService {
 		
 		if(businessProject.getCompany() != null)  {
 		
-			SaleOrder saleOrder = saleOrderService.createSaleOrder(
+			SaleOrder saleOrder = saleOrderServiceStockImpl.createSaleOrder(
 					businessProject, 
 					user, 
 					businessProject.getCompany(), 
@@ -139,7 +139,7 @@ public class ProductionOrderSaleOrderService {
 					null,
 					null, 
 					IPurchaseOrder.INVOICING_FREE, 
-					saleOrderService.getLocation(businessProject.getCompany()), 
+					saleOrderServiceStockImpl.getLocation(businessProject.getCompany()), 
 					today, 
 					PriceList.filter("self.partner = ?1 AND self.typeSelect = 1", partner).fetchOne(), 
 					partner);

@@ -26,12 +26,12 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.supplychain.db.ILocation;
-import com.axelor.apps.supplychain.db.IStockMove;
+import com.axelor.apps.stock.db.ILocation;
+import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
-import com.axelor.apps.supplychain.service.config.SupplychainConfigService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
