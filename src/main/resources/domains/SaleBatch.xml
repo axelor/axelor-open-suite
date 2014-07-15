@@ -3,9 +3,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
 
-  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+  <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SupplychainBatch" lang="java">
+  <entity name="SaleBatch" lang="java">
   	
   	<!-- HEADER -->
   	<string name="code" title="Code" namecolumn="true"/>
@@ -14,7 +14,7 @@
     
     <!-- OTHERS INFORMATIONS -->
     <string name="description" title="Description" large="true" />
-    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="supplychainBatch" title="Batchs" />
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="saleBatch" title="Batchs" />
   
   </entity>
 

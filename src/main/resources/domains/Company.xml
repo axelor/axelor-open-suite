@@ -20,7 +20,9 @@
 
 
 	<one-to-one name="accountConfig" ref="com.axelor.apps.account.db.AccountConfig" title="Account config" mappedBy="company"/>
-	<one-to-one name="supplychainConfig" ref="com.axelor.apps.supplychain.db.SupplychainConfig" title="Supplychain config" mappedBy="company"/>
+	<one-to-one name="purchaseConfig" ref="com.axelor.apps.purchase.db.PurchaseConfig" title="Purchase config" mappedBy="company"/>
+	<one-to-one name="saleConfig" ref="com.axelor.apps.sale.db.SaleConfig" title="Sale config" mappedBy="company"/>
+	<one-to-one name="stockConfig" ref="com.axelor.apps.stock.db.StockConfig" title="Stock config" mappedBy="company"/>
 
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
