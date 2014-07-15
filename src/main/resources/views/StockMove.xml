@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove" orderBy="-estimatedDate">
+    	<toolbar>
+			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
+    	</toolbar>
+        <field name="stockMoveSeq"/>
+        <field name="fromLocation"/>
+        <field name="toLocation"/>
+        <field name="estimatedDate"/>
+        <field name="realDate"/>
+        <field name="company"/>
+        <field name="statusSelect"/>
+        <field name="typeSelect" hidden="true" />
+        <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move"/>
+<!--         <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/> -->
+    </grid>
+    
+     <grid name="stock-move-out-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove" orderBy="-estimatedDate">
+    	<toolbar>
+			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
+    	</toolbar>
+        <field name="stockMoveSeq"/>
+        <field name="fromLocation"/>
+        <field name="estimatedDate"/>
+        <field name="realDate"/>
+        <field name="fromAddress" hidden="true"/>
+        <field name="toAddress"/>
+        <field name="company"/>
+        <field name="partner"/>
+        <field name="statusSelect"/>
+        <field name="typeSelect" hidden="true" />
+        <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
+    </grid>
+    
+    <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove" orderBy="-estimatedDate">
+    	<toolbar>
+			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
+    	</toolbar>
+        <field name="stockMoveSeq"/>
+        <field name="toLocation"/>
+        <field name="estimatedDate"/>
+        <field name="realDate"/>
+        <field name="fromAddress"/>
+        <field name="toAddress" hidden="true"/>
+        <field name="company"/>
+        <field name="partner"/>
+        <field name="statusSelect"/>
+        <field name="typeSelect" hidden="true" />
+        <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
+    </grid>
+    
+    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4"
+    	onNew="action-stock-move-record-new,action-stock-move-attrs-hide-button-generate-invoice"
+    	onLoad="action-stock-move-attrs-hide-button-generate-invoice,action-stock-move-attrs-canceled-read-only,action-stock-move-group-read-only">
+        <field name="typeSelect"/>
+        <field name="statusSelect" widget="NavSelect"/>
+        <group colSpan="4" cols="6">
+      		<group title="Stock move reference" colSpan="2" cols="2">
+        		<field name="stockMoveSeq"/>
+        		<field name="name"/>
+        		<field name="company" form-view="company-lite-form" widget="SuggestBox"/>
+        		<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+    		</group>
+    		<group title="Stock move informations"  colSpan="2" cols="2" colWidths="40%,70%">
+        		<field name="fromLocation" onChange="action-stock-move-set-from-address"/>
+        		<field name="toLocation" onChange="action-stock-move-set-to-address"/>
+        		<field name="estimatedDate"/>
+        		<field name="realDate"/>
+        		<field name="fromAddress" showIf="typeSelect == 3"/>
+        		<field name="toAddress" showIf="typeSelect == 2"/>
+        		<field name="isWithReturnSurplus" showIf="typeSelect &gt;= 2"/>
+        		<field name="isWithBackorder" />
+    		</group>
+    		<group title="Action(s)" colSpan="2" cols="2">
+            	<button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="save,action-stock-move-method-plan,action-stock-move-group-read-only,save"/>
+				<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-check-stock-move-line-real-qty,action-stock-move-method-realize,action-stock-move-group-read-only,action-stock-move-attrs-hide-button-generate-invoice,save"/>
+				<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-method-cancel,action-stock-move-attrs-canceled-read-only,save"/>
+	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
+            	<button name="generateInvoice" title="Generate invoice" onClick="save,action-stock-move-method-generate-invoice"/>
+            	<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion"/>
+            	<button name="printStockMove" title=" Print" onClick="save,action-print-stock-move" icon="fa-print"/>
+            	<button name="viewDirection" title="View Direction" colSpan="1" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" showIf="typeSelect == 2"/>
+        	</group>
+    	</group>
+    	<break/>
+    	<notebook colSpan="4">
+        	<page title="Stock move details">
+        	    <button name="splitByUnit" title="Split by unit" onClick="save,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect == 1 || statusSelect == 2" />
+        	    <button name="specialSplit" title="Special split" onClick="save,action-stock-move-wizard-special-split" showIf="statusSelect == 1 || statusSelect == 2" />
+        	    <button name="shipReciveAllProducts" title="Ship/Receive all products" onClick="save,action-stock-move-ship-recieve-all-products" showIf="statusSelect == 1 || statusSelect == 2" />
+            	<field name="stockMoveLineList" colSpan="4" form-view="stock-move-line-form" grid-view="stock-move-line-grid" readonlyIf="statusSelect == 3"/>
+        	</page>
+        	<page title="Configuration">
+           		<field name="saleOrder"/>
+           		<field name="purchaseOrder"/>
+            	<field name="invoice"/>
+        	</page>
+    	</notebook>
+    </form>
+    
+    <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard" cols="2">
+        <field name="splitQty" widget="INTEGER" title="Split in Qty of"/>
+        <button name="split" title="Split" onClick="action-stock-move-method-split-stock-move-lines-speical" colSpan="2"/>
+    </form>
+    
+    
+    <action-view title="Special split" model="com.axelor.apps.base.db.Wizard" name="action-stock-move-wizard-special-split">
+	    <view type="form" name="stock-move-wizard-special-split-form"/>
+	    <view-param name="popup" value="reload"/>
+	    <view-param name="forceEdit" value="true"/> 
+	    <view-param name="show-confirm" value="false" />
+	    <view-param name="width" value="200" />
+	    <context name="stockMoveLineList" expr="eval:stockMoveLineList" if="stockMoveLineList != null" />
+	</action-view>
+	
+    <!-- <action-attrs name="action-stock-move-attrs-title-realize-button">
+    	<attribute name="title" for="realize" expr="eval: (fromLocation) ? ((fromLocation?.typeSelect != 1 &amp;&amp; toLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
+    </action-attrs> -->
+    
+    <action-group name="action-stock-move-group-read-only">
+    	<action name="action-stock-move-attrs-planned-read-only" if="statusSelect == 2 || statusSelect == 3"/>
+    	<action name="action-stock-move-attrs-validated-read-only" if="statusSelect == 3"/>
+    </action-group>
+    
+    <action-attrs name="action-stock-move-attrs-planned-read-only">
+    	<attribute name="readonly" for="typeSelect" expr="true"/>
+    	<attribute name="readonly" for="company" expr="true"/>
+    	<attribute name="readonly" for="partner" expr="true"/>
+    	<attribute name="readonly" for="fromLocation" expr="true"/>
+    	<attribute name="readonly" for="toLocation" expr="true"/>
+    	<attribute name="readonly" for="estimatedDate" expr="true"/>
+    </action-attrs>
+    
+    <action-attrs name="action-stock-move-attrs-validated-read-only">
+    	<attribute name="readonly" for="toAddress" expr="true"/>
+    	<attribute name="readonly" for="saleOrder" expr="true"/>
+    	<attribute name="readonly" for="purchaseOrder" expr="true"/>
+    	<attribute name="readonly" for="invoice" expr="true"/>
+    </action-attrs>
+    
+    <action-attrs name="action-stock-move-attrs-canceled-read-only">
+    	<attribute name="readonly" for="typeSelect" expr="false"/>
+    	<attribute name="readonly" for="company" expr="false"/>
+    	<attribute name="readonly" for="partner" expr="false"/>
+    	<attribute name="readonly" for="fromLocation" expr="false"/>
+    	<attribute name="readonly" for="toLocation" expr="false"/>
+    	<attribute name="readonly" for="estimatedDate" expr="false"/>
+    	<attribute name="readonly" for="toAddress" expr="false"/>
+    	<attribute name="readonly" for="saleOrder" expr="false"/>
+    	<attribute name="readonly" for="purchaseOrder" expr="false"/>
+    	<attribute name="readonly" for="invoice" expr="false"/>
+    </action-attrs>
+    
+    <action-record name="action-stock-move-record-draft" model="com.axelor.apps.supplychain.db.StockMove">
+    	<field name="statusSelect" expr="eval: 1"/>
+    </action-record>
+    
+    <action-record name="action-stock-move-record-new" model="com.axelor.apps.supplychain.db.StockMove">
+    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	    <field name="statusSelect" expr="eval: 1"/>
+	    <field name="isWithBackorder" expr="eval:true" />
+	    <field name="estimatedDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	    <field name="typeSelect" expr="eval: _typeSelect"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.supplychain.db.StockMove">
+		<field name="fromAddress" expr="eval:fromLocation?.address" />
+	</action-record>
+	
+	<action-record name="action-stock-move-set-to-address" model="com.axelor.apps.supplychain.db.StockMove">
+		<field name="toAddress" expr="eval:toLocation?.address" />
+	</action-record>
+	
+	<action-method name="action-stock-move-method-plan">
+		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="plan"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-method-realize">
+		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="realize"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-method-cancel">
+		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="cancel"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-method-generate-invoice">
+		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoice"/>
+	</action-method>
+	
+	<action-method name="action-print-stock-move">
+		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="printStockMove"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-method-split-stock-move-lines-speical">
+		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="splitStockMoveLinesSpecial"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-method-split-stock-move-lines-unit">
+		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="splitStockMoveLinesUnit"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-ship-recieve-all-products">
+	    <call class="com.axelor.apps.supplychain.web.StockMoveController" method="shipReciveAllProducts"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-method-generate-reversion">
+	    <call class="com.axelor.apps.supplychain.web.StockMoveController" method="generateReversion"/>
+	</action-method>
+	
+	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">
+		<attribute name="hidden" for="generateInvoice" expr="eval: (saleOrder == null &amp;&amp; purchaseOrder == null) || (saleOrder != null &amp;&amp; saleOrder?.invoicingTypeSelect != 4 &amp;&amp; saleOrder?.invoicingTypeSelect != 5) || (purchaseOrder != null &amp;&amp; purchaseOrder.invoicingTypeSelect != 2) || invoice != null || statusSelect != 3"/>
+	</action-attrs>
+	
+	<action-validate name="action-stock-move-check-stock-move-line-real-qty">
+		<alert message="The move doesn't contain any product, do you wish to continue ?" if="stockMoveLineList != null &amp;&amp; stockMoveLineList.sum{it->it.realQty} == 0"/>
+	</action-validate>
+	
+	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.supplychain.db.StockMove" title="Customer deliveries filters">
+		<filter title="Deliveries to prepare">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="Late Deliveries">
+			<domain>self.estimatedDate &lt; CURRENT_DATE</domain>
+		</filter>
+		<filter title="Deliveries History">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="Deliveries Cancelled">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+	</search-filters>
+	
+	<search-filters name="supplier-arrivals-filters" model="com.axelor.apps.supplychain.db.StockMove" title="Supplier arrivals filters">
+		<filter title="Today Arrivals">
+			<domain>self.estimatedDate = CURRENT_DATE</domain>
+		</filter>
+		<filter title="Upcoming arrivals">
+			<domain>self.estimatedDate &lt; :_newDate</domain>
+		</filter>
+		<filter title="Arrivals History">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="Cancelled Arrivals">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+	</search-filters>
+	
+	<search-filters name="internal-stock-move-filters" model="com.axelor.apps.supplychain.db.StockMove" title="Internal Stock Move filters">
+		<filter title="Moves To Prepare">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="Moves History">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="Moves Cancelled">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+	</search-filters>
+		
+</object-views>

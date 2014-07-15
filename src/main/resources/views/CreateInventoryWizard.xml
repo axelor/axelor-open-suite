@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    
+    <form cols="6" onNew="action-create-inventory-wizard-record-default" name="create-inventory-wizard-form" title="Create inventory" model="com.axelor.apps.base.db.Wizard">
+    	<group colSpan="6" cols="6">
+        	<group colSpan="1">
+        	</group>
+        	<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
+            	<group colSpan="4">
+                	<field name="location" title="Location" widget="ManyToOne" x-target="com.axelor.apps.supplychain.db.Location"/>
+                	<field name="inventoryDate" title="Inventory date" widget="Date"/>
+                	<spacer/>
+                	<field name="description" title="Description" max="600" colSpan="4"/>
+            	</group>
+            	<spacer/>
+            	<group title="Fill inventory with" colSpan="4">
+                	<field name="productFamily" title="Product family" widget="ManyToOne" x-target="com.axelor.apps.base.db.ProductFamily"/>
+                	<field name="productCategory" title="Product category" widget="ManyToOne" x-target="com.axelor.apps.base.db.ProductCategory"/>
+                	<field name="excludeOutOfStock" title="Exclude out of stock products ?" widget="Boolean"/>
+                	<field name="includeObsolete" title="Include obsolete products ?" widget="Boolean"/>
+            	</group>
+        	</group>
+        	<group colSpan="1">
+        	</group>
+        	<spacer/>
+        	<break/>
+        	<group colSpan="1">
+        	</group>
+        	<button name="validate" title="Validate" onClick="action-location-method-create-inventory,action-location-view-inventory" colSpan="4"/>
+    	</group>
+	</form>
+    
+    <action-record name="action-create-inventory-wizard-record-default" model="com.axelor.apps.base.db.Wizard">
+    	<field name="inventoryDate" expr="eval: __date__"/>
+    	<field name="excludeOutOfStock" expr="eval: false"/>
+    	<field name="includeObsolete" expr="eval: false"/>
+    	<field name="location" expr="action: action-create-inventory-wizard-record-location"/>
+    </action-record>
+    
+    <action-record name="action-create-inventory-wizard-record-location"
+    	model="com.axelor.apps.supplychain.db.Location"
+    	search="('self.id = ?1', _location.id)">
+    	<field name="id" expr="eval: _location.id"/>
+    </action-record>
+    
+    <action-method name="action-location-method-create-inventory">
+    	<call class="com.axelor.apps.supplychain.web.LocationController" method="createInventory"/>
+    </action-method>
+    
+    <action-view name="action-location-view-inventory" title="Inventory generated" model="com.axelor.apps.supplychain.db.Inventory">
+    	<view type="form" name="inventory-form"/>
+    	<context name="_showRecord" expr="eval: inventoryId"/>
+    </action-view>
+    
+</object-views>

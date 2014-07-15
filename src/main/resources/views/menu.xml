@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	
+	<menuitem name="stock-root" title="Stock management"  priority="85"
+	icon="img/16px/baggageCartBox_16px.png" groups="admins,erp"/>
+		
+	<menuitem name="stock-root-custdeliveries" parent="stock-root"
+		title="Customer Deliveries" action="stock.root.custdeliveries" />
+
+	<action-view name="stock.root.custdeliveries" title="Customer Deliveries"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-out-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
+		<domain>self.toLocation.typeSelect = 2</domain>
+		<context name="_typeSelect" expr="2"/>
+	</action-view>
+					
+	<menuitem name="stock-root-suparrivals" parent="stock-root"
+		title="Supplier Arrivals" action="stock.root.suparrivals" />
+
+	<action-view name="stock.root.suparrivals" title="Supplier Arrivals"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-in-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="supplier-arrivals-filters"/>
+		<domain>self.fromLocation.typeSelect = 2</domain>
+		<context name="_typeSelect" expr="3"/>
+		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+	</action-view>	
+	
+			
+	<menuitem name="stock-root-internal" parent="stock-root"
+		title="Internal Stock Moves" action="stock.root.internal" />
+
+	<action-view name="stock.root.internal" title="Internal Stock Moves"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="internal-stock-move-filters"/>
+		<domain>self.fromLocation.typeSelect = 1 OR self.toLocation.typeSelect = 1</domain>
+		<context name="_typeSelect" expr="1"/>
+	</action-view>		
+	
+<!-- 	MUST BE DELETED -->
+	
+	<menuitem name="stock-root-planned" parent="stock-root"
+		title="Forecasts"  />
+	
+	<menuitem name="stock-root-incoming-production" parent="stock-root-planned"
+		title="Production needs" action="stock.root.incoming.production" />
+
+	<action-view name="stock.root.incoming.production" title="Production needs"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.toLocation.id = 5</domain>
+	</action-view>	
+	
+	<menuitem name="stock-root-outcoming-production" parent="stock-root-planned"
+		title="Production forecasts" action="stock.root.outcoming.production" />
+
+	<action-view name="stock.root.outcoming.production" title="Production forecasts"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.fromLocation.id = 5</domain>
+	</action-view>	
+	
+	<menuitem name="stock-root-incoming-supplier" parent="stock-root-planned"
+		title="Receptions fournisseurs" action="stock.root.incoming.supplier" />
+
+	<action-view name="stock.root.incoming.supplier" title="Receptions fournisseurs"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.fromLocation.id = 3</domain>
+	</action-view>	
+	
+	<menuitem name="stock-root-outcoming-supplier" parent="stock-root-planned"
+		title="Retours fournisseurs" action="stock.root.outcoming.supplier" />
+
+	<action-view name="stock.root.outcoming.supplier" title="Retours fournisseurs"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.toLocation.id = 3</domain>
+	</action-view>	
+	
+	<menuitem name="stock-root-outcoming-client" parent="stock-root-planned"
+		title="Expéditions clients" action="stock.root.outcoming.client" />
+
+	<action-view name="stock.root.outcoming.client" title="Expéditions clients"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.toLocation.id = 2</domain>
+	</action-view>	
+	
+	<menuitem name="stock-root-incoming-client" parent="stock-root-planned"
+		title="Retours clients" action="stock.root.incoming.client" />
+
+	<action-view name="stock.root.incoming.client" title="Retours clients"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.fromLocation.id = 2</domain>
+	</action-view>	
+	
+<!-- END MUST BE DELETED -->
+		
+		
+	<menuitem name="stock-root-inventories" parent="stock-root"
+		title="Periodical processing"/>		
+		
+	<menuitem name="stock-root-inventories-draft" parent="stock-root-inventories"
+		title="Inventories" action="stock.root.inventories.draft" icon="img/16px/inventory_16px.png"/>
+	
+	<action-view name="stock.root.inventories.draft" title="Inventories"
+		model="com.axelor.apps.supplychain.db.Inventory" icon="img/16px/inventory_16px.png">
+		<view type="grid" />
+		<view type="form" />
+		<view-param name="search-filters" value="inventories-filters"/>
+	</action-view>
+	
+	<menuitem name="stock-root-all-line" parent="stock-root"
+		title="Stock Moves Lines" action="stock.root.all.line" />
+
+	<action-view name="stock.root.all.line" title="Stock Moves Lines"
+		model="com.axelor.apps.supplychain.db.StockMoveLine" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
+	</action-view>		
+		
+	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration"
+		icon="img/Other/parameter_59px.png" />
+		
+	<menuitem name="stock-root-location" parent="stock-root-conf"
+		title="Stock Locations" action="stock.root.location" />
+	
+	<action-view name="stock.root.location" title="Stock Locations"
+		model="com.axelor.apps.supplychain.db.Location" icon="img/16px/addressBook_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="stock-root-conf-min-stock-rules" parent="stock-root-conf"
+		title="Minimum stock rules" action="stock.root.conf.min.Stock.rules" />
+	
+	<action-view name="stock.root.conf.min.Stock.rules" title="Minimum stock rules"
+		model="com.axelor.apps.supplychain.db.MinStockRules" icon="img/16px/addressBook_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="stock-root-conf-stock-tracking-numbers" parent="stock-root-conf"
+		title="Tracking Numbers" action="stock.root.conf.stock.tracking.numbers" />
+	
+	<action-view name="stock.root.conf.stock.tracking.numbers" title="Tracking Numbers"
+		model="com.axelor.apps.base.db.TrackingNumber" icon="img/16px/addressBook_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+<!-- ADMINISTRATION -->
+
+
+	<menuitem name="admin-root-batch-stock" parent="admin-root-batch"
+		title="Stock batches" action="admin.root.batch.stock" />
+
+	<action-view name="admin.root.batch.stock" title="Stock batches"
+		model="com.axelor.apps.stock.db.StockBatch" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	
+	<menuitem name="admin-root-conf-stock-config" parent="admin-root-conf"
+		title="Stock configurations" action="admin.root.conf.stock.config" icon="img/Other/parameter_59px.png"/>
+		
+	<action-view name="admin.root.conf.stock.config" title="Stock configurations"
+		model="com.axelor.apps.stock.db.StockConfig" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
+
+
+<!-- TOP MENU -->
+
+	<menuitem name="top-stock" title="Stock" groups="admins,erp" top="true" left="false" priority="140"/>
+	
+	<menuitem name="top-stock-moves-all" title="Stock moves" action="top.stock.moves.all" parent="top-stock" groups="admins,erp" top="true" left="false"/>	
+	
+	<action-view name="top.stock.moves.all" title="Stock moves"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" />
+		<view-param name="search-filters" value="internal-stock-move-filters"/>
+	</action-view>	
+	
+	<menuitem name="top-stock-cust-deliveries" title="Customer deliveries" action="top.stock.cust.deliveries" parent="top-stock" groups="admins,erp" top="true" left="false"/>		
+	
+	<action-view name="top.stock.cust.deliveries" title="Customer deliveries"
+		model="com.axelor.apps.supplychain.db.StockMove" >
+		<view type="grid" name="stock-move-grid" />
+		<view type="form" name="stock-move-form" />
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
+		<domain>self.typeSelect = 2 </domain>
+		<context name="_typeSelect" expr="eval: 2" />
+	</action-view>	
+	
+	<menuitem name="top-stock-internal-moves" title="Internal moves" action="top.stock.internal.moves" parent="top-stock" groups="admins,erp" top="true" left="false"/>		
+	
+	<action-view name="top.stock.internal.moves" title="Internal moves"
+		model="com.axelor.apps.supplychain.db.StockMove" >
+		<view type="grid" name="stock-move-grid" />
+		<view type="form" name="stock-move-form" />
+		<view-param name="search-filters" value="internal-stock-move-filters"/>
+		<domain>self.typeSelect = 1 </domain>
+		<context name="_typeSelect" expr="eval: 1" />
+	</action-view>	
+	
+	<menuitem name="top-stock-suppl-deliveries" title="Supplier deliveries" action="top.stock.suppl.deliveries" parent="top-stock" groups="admins,erp" top="true" left="false"/>		
+	
+	<action-view name="top.stock.suppl.deliveries" title="Supplier deliveries"
+		model="com.axelor.apps.supplychain.db.StockMove" >
+		<view type="grid" name="stock-move-grid" />
+		<view type="form" name="stock-move-form" />
+		<view-param name="search-filters" value="supplier-arrivals-filters"/>
+		<domain>self.typeSelect = 3 </domain>
+		<context name="_typeSelect" expr="eval: 3" />
+	</action-view>	
+
+	<menuitem name="menu-stock-dashboard-sample" parent="menu-dashboards-sample" priority="150" 
+		title="Stock Db" icon="img/16px/chart_16px.png"  action="portal.stock.dashboard.view.sample"/>	
+
+	<action-view name="portal.stock.dashboard.view.sample" title="Stock Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="stock.dashboard.portal.sample" />
+	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
+	</action-view>
+	
+	
+	<menuitem name="menu-stock-dashboard" parent="menu-dashboards" 
+		title="Stock"  priority="80" />	
+		
+	<menuitem name="menu-stock-dashboard-1" parent="menu-stock-dashboard" 
+		title="Stock Db 1" icon="img/16px/chart_16px.png" action="portal.stock.dashboard.one.view" />	
+
+	<action-view name="portal.stock.dashboard.one.view" title="Stock Dashboard 1"
+		icon="img/16px/crmSmall_16px.png"  >
+		<view type="portal" name="stock.dashboard.portal.one" />
+	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
+	</action-view>
+	
+	<menuitem name="menu-stock-dashboard-2" parent="menu-stock-dashboard" 
+		title="Stock Db 2" icon="img/16px/chart_16px.png" action="portal.stock.dashboard.two.view" />	
+
+	<action-view name="portal.stock.dashboard.two.view" title="Stock Dashboard 2"
+		icon="img/16px/crmSmall_16px.png"  >
+		<view type="portal" name="stock.dashboard.portal.two" />	    
+	</action-view>
+	
+	
+</object-views>
