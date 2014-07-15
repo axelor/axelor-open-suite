@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    
+    <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    	<hilite background="danger" if="salePrice &gt; saleMinPrice"/>
+    	<field name="purchaseOrder"/>
+    	<field name="supplierPartner"/>
+    	<field name="productName"/>
+    	<field name="desiredDelivDate"/>
+    	<field name="estimatedDelivDate"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="price"/>
+        <field name="exTaxTotal"/>
+        <field name="saleMinPrice"/>
+        <field name="createdBy"/>
+        <field name="createdOn"/>
+        <field name="salePrice" hidden="true"/>
+    </grid>
+    
+    <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    	<hilite background="danger" if="salePrice &gt; saleMinPrice"/>
+    	<field name="productName"/>
+    	<field name="desiredDelivDate"/>
+    	<field name="estimatedDelivDate"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="price"/>
+        <field name="exTaxTotal"/>
+        <field name="saleMinPrice"/>
+        <field name="salePrice" hidden="true"/>
+    </grid>
+    
+    <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" cols="4" colWidths="400,*"
+    onNew="action-purchase-order-line-record-new,action-purchase-order-line-attrs-hide-product-variant"
+    onLoad="action-purchase-order-line-attrs-task-readonly,action-purchase-order-line-attrs-hide-product-variant,action-purchase-order-line-record-dummy-sale-price">
+	    <field name="product" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-record-product-variant,action-purchase-order-line-attrs-hide-product-variant" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
+	    <field name="productName"/>
+	    <field name="qty" onChange="action-purchase-order-line-method-get-discount,action-purchase-order-line-method-compute"/>
+	    <field name="unit"/>
+	    <field name="price" onChange="action-purchase-order-line-method-compute,save">
+	    	<hilite color="danger" if="salePrice &lt; saleMinPrice"/>
+	    </field>
+	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="exTaxTotal"/>
+	    <field name="taxLine.value"/>
+	    <field name="saleMinPrice" readonly="true"/>
+	    <field name="salePrice" hidden="true"/>
+	    <group name="discount" title="Discount" colSpan="4" cols="4" canCollapse="true">
+	        <field name="discountTypeSelect" onChange="action-purchase-order-line-method-compute"/>
+	        <field name="discountAmount" onChange="action-purchase-order-line-method-compute"/>
+	    </group>
+	    <notebook colSpan="4">
+	        <page title="Details" colSpan="4" cols="4">
+	        	<field name="createdBy"/>
+        		<field name="createdOn"/>
+	        </page>
+	        <page title="Delivery" colSpan="4" cols="4">
+	        	<field name="desiredDelivDate"/>
+    			<field name="estimatedDelivDate"/>
+	        	<portlet action="action-purchase-order-line-view-stock-move-line" colSpan="4"/>
+	        </page>
+	        <page title="Links" colSpan="4" cols="4">
+	            <field name="task"/>    
+	        </page>
+	        <page title="Suppliers requests" colSpan="4" cols="4" if-module="axelor-suppliermanagement">
+	        	<button name="generateSuppliersRequests" title="Generate suppliers requests" colSpan="2" onClick="save,action-purchase-order-line-method-generate-suppliers-requests,save"/>
+	        	<field name="supplierPartner"/>
+	        	<field name="purchaseOrderSupplierLineList" colSpan="4" grid-view="purchase-order-supplier-line-grid" form-view="purchase-order-supplier-line-form" />
+	        </page>
+	    </notebook>       
+	</form>
+	
+	
+	<!-- ACTION RECORD -->
+	
+    <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    	<field name="qty" expr="eval: 1"/>
+    	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
+    </action-record>
+    
+    
+   	<!-- ACTION METHOD -->
+	
+	<action-method name="action-purchase-order-line-method-compute">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-purchase-order-line-method-get-product-information">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="getProductInformation"/>
+	</action-method>
+	
+	<action-method name="action-purchase-order-line-method-get-discount">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="getDiscount"/>
+	</action-method>
+	
+	<action-method name="action-purchase-order-line-method-generate-suppliers-requests">
+		<call class="com.axelor.apps.suppliermanagement.web.PurchaseOrderLineController" method="generateSuppliersRequests"/>
+	</action-method>
+	
+	<!-- ACTION ATTRS -->
+	
+	<action-attrs name="action-purchase-order-line-attrs-task-readonly">
+		<attribute name="readonly" for="task" expr="eval: (_parent.statusSelect = 2 || _parent.statusSelect = 3 || _parent.statusSelect = 4) &amp;&amp; task != null"/>
+	</action-attrs>
+	
+	<action-attrs name="action-purchase-order-line-attrs-hide-product-variant">
+    	<attribute name="hidden" for="productVariant" expr="eval: product?.productVariantConfiguration == null"/>
+    </action-attrs>
+    
+<!--     ACTION VIEW -->
+    <action-view name="action-purchase-order-line-view-stock-move-line" title="" model="com.axelor.apps.supplychain.db.StockMoveLine">
+  		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
+  		<domain>self.purchaseOrderLine.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+	
+</object-views>
