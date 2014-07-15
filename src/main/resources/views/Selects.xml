@@ -79,7 +79,7 @@
 		<option value="2">New business</option>
 	</selection>
 	
-	<selection name="crm.opportunity.sale.stage.select">
+	<selection name="crm.opportunity.sales.stage.select">
 		<option value="1">Prospection</option>
 		<option value="2">Qualification</option>
 		<option value="3">Needs analysis</option>

@@ -3,48 +3,48 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
-    <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="saleStageSelect,expectedCloseDate">
+    <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
     	<toolbar>
     		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
 <!--     		<button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/> -->
     	</toolbar>
-    	<hilite color="danger" if="saleStageSelect != 9 &amp;&amp; saleStageSelect != 10 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
-  		<hilite color="warning" if="saleStageSelect != 9 &amp;&amp; saleStageSelect != 10 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
-  		<hilite color="primary" if="saleStageSelect != 9 &amp;&amp; saleStageSelect != 10 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
-  		<hilite background="success" if="saleStageSelect == 9"/>
-  		<hilite background="danger" if="saleStageSelect == 10"/>
+    	<hilite color="danger" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
+  		<hilite color="warning" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
+  		<hilite color="primary" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
+  		<hilite background="success" if="salesStageSelect == 9"/>
+  		<hilite background="danger" if="salesStageSelect == 10"/>
 		<field name="name" width="300"/>
 		<field name="createdOn" hidden="true"/>
         <field name="partner"/>
 		<field name="lead"/>
-		<field name="saleStageSelect"/>
+		<field name="salesStageSelect"/>
 		<field name="amount"/>
 		<field name="probability" width="45"/>
         <field name="expectedCloseDate" width="70"/>
         <field name="userInfo"/>
         <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" readonlyIf="userInfo != null" />
-        <button name="next-stage" icon="fa-chevron-circle-right" help="Next Stage" onClick="action-opportunity-set-next-stage,action-opportunity-save-sale-stage-select" readonlyIf="saleStageSelect &gt; 7" />
-        <button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-opportunity-set-closed-won,action-opportunity-save-sale-stage-select" readonlyIf="saleStageSelect &gt; 8" />
-        <button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sale-stage-select" readonlyIf="saleStageSelect &gt; 8" />
+        <button name="next-stage" icon="fa-chevron-circle-right" help="Next Stage" onClick="action-opportunity-set-next-stage,action-opportunity-save-sale-stage-select" readonlyIf="salesStageSelect &gt; 7" />
+        <button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-opportunity-set-closed-won,action-opportunity-save-sale-stage-select" readonlyIf="salesStageSelect &gt; 8" />
+        <button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sale-stage-select" readonlyIf="salesStageSelect &gt; 8" />
     </grid>
 
-   <grid orderBy="saleStageSelect,expectedCloseDate" edit-icon="true" name="my-opportunity-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity">
-		<hilite color="danger" if="saleStageSelect != 9 &amp;&amp; saleStageSelect != 10 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
-  		<hilite color="warning" if="saleStageSelect != 9 &amp;&amp; saleStageSelect != 10 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
-  		<hilite color="primary" if="saleStageSelect != 9 &amp;&amp; saleStageSelect != 10 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
-  		<hilite background="success" if="saleStageSelect == 9"/>
-  		<hilite background="danger" if="saleStageSelect == 10"/>
+   <grid orderBy="salesStageSelect,expectedCloseDate" edit-icon="true" name="my-opportunity-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+		<hilite color="danger" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
+  		<hilite color="warning" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
+  		<hilite color="primary" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
+  		<hilite background="success" if="salesStageSelect == 9"/>
+  		<hilite background="danger" if="salesStageSelect == 10"/>
 		<field name="name" width="300"/>
 		<field name="createdOn" hidden="true"/>
 		<field name="partner"/>
 		<field name="lead"/>
-		<field name="saleStageSelect"/>
+		<field name="salesStageSelect"/>
 		<field name="amount"/>
 		<field name="probability" width="45"/>
 		<field name="expectedCloseDate" width="70"/>
-		<button name="next-stage" help="Next Stage" readonlyIf="saleStageSelect > 7" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,action-opportunity-save-sale-stage-select"/>
-		<button name="closed-won" help="Closed won" readonlyIf="saleStageSelect > 8" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,action-opportunity-save-sale-stage-select"/>
-		<button name="closed-lost" help="Closed lost" readonlyIf="saleStageSelect > 8" icon="fa-minus-circle" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sale-stage-select"/>
+		<button name="next-stage" help="Next Stage" readonlyIf="salesStageSelect > 7" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,action-opportunity-save-sale-stage-select"/>
+		<button name="closed-won" help="Closed won" readonlyIf="salesStageSelect > 8" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,action-opportunity-save-sale-stage-select"/>
+		<button name="closed-lost" help="Closed lost" readonlyIf="salesStageSelect > 8" icon="fa-minus-circle" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sale-stage-select"/>
 	</grid>
 
     
@@ -72,31 +72,31 @@
 	 
     <form cols="6" onNew="action-opportunity-group-new" name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
     	<toolbar>
-    		<button name="previous-stage" icon="fa-chevron-circle-left" help="Previous Stage" onClick="action-opportunity-set-previous-stage,save" readonlyIf="saleStageSelect &lt; 2" />
-        	<button name="next-stage" icon="fa-chevron-circle-right" help="Next Stage" onClick="action-opportunity-set-next-stage,save" readonlyIf="saleStageSelect &gt; 7" />
-        	<button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-opportunity-set-closed-won,save" readonlyIf="saleStageSelect &gt; 8" />
-        	<button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-opportunity-set-closed-lost,save" readonlyIf="saleStageSelect &gt; 8" />
+    		<button name="previous-stage" icon="fa-chevron-circle-left" help="Previous Stage" onClick="action-opportunity-set-previous-stage,save" readonlyIf="salesStageSelect &lt; 2" />
+        	<button name="next-stage" icon="fa-chevron-circle-right" help="Next Stage" onClick="action-opportunity-set-next-stage,save" readonlyIf="salesStageSelect &gt; 7" />
+        	<button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-opportunity-set-closed-won,save" readonlyIf="salesStageSelect &gt; 8" />
+        	<button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-opportunity-set-closed-lost,save" readonlyIf="salesStageSelect &gt; 8" />
     	</toolbar>
 		<group colSpan="4" cols="4">
-			<group title="Context" colSpan="4" cols="4" readonlyIf="saleStageSelect == 9 || saleStageSelect == 10">
+			<group title="Context" colSpan="4" cols="4" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
 				<field name="name"/>
 				<field name="opportunityType" widget="SuggestBox"/>
 			</group>
 			<group title="Follow-up" colSpan="4" cols="4">
-				<field name="saleStageSelect"/>
-				<field name="source" readonlyIf="saleStageSelect == 9 || saleStageSelect == 10" />
-				<field name="nextStep" readonlyIf="saleStageSelect == 9 || saleStageSelect == 10" />
-				<field name="expectedCloseDate" readonlyIf="saleStageSelect == 9 || saleStageSelect == 10" />
-				<field name="probability" readonlyIf="saleStageSelect == 9 || saleStageSelect == 10"/>   
+				<field name="salesStageSelect"/>
+				<field name="source" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" />
+				<field name="nextStep" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" />
+				<field name="expectedCloseDate" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" />
+				<field name="probability" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>   
 			</group>
-			<group title="Financial terms" colSpan="2" cols="4" readonlyIf="saleStageSelect == 9 || saleStageSelect == 10">
+			<group title="Financial terms" colSpan="2" cols="4" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
 				<field name="amount"/>
 				<field name="currency"/>
 				<field name="bestCase"/>
 				<field name="worstCase"/>
 			</group>
 		</group>
-		<group colSpan="2" cols="2" readonlyIf="saleStageSelect == 9 || saleStageSelect == 10">
+		<group colSpan="2" cols="2" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
 			<group title="Linked to" colSpan="2" cols="2">
 					<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					<field name="lead"/>
@@ -111,7 +111,7 @@
 			</group>
 		</group>
 		<separator title="Description" colSpan="6"/>
-		<field name="description" colSpan="6" showTitle="false" readonlyIf="saleStageSelect == 9 || saleStageSelect == 10"/>
+		<field name="description" colSpan="6" showTitle="false" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
 	</form>
     
     <action-group name="action-opportunity-group-new">
@@ -125,7 +125,7 @@
     <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    	<field name="saleStageSelect" expr="1"/>
+    	<field name="salesStageSelect" expr="1"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
     </action-record>
     
@@ -146,7 +146,7 @@
     	<field name="campaign" expr="eval: _lead.campaign"/>
     	<field name="userInfo" expr="eval: _lead.userInfo"/>
     	<field name="team" expr="eval: _lead.team"/>
-    	<field name="saleStageSelect" expr="1"/>
+    	<field name="salesStageSelect" expr="1"/>
     	<field name="currency" expr="eval: _lead.currency"/>
     	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     </action-record>
@@ -158,7 +158,7 @@
     	<field name="source" expr="eval: _partner.source"/>
     	<field name="userInfo" expr="eval: _partner.userInfo"/>
     	<field name="team" expr="eval: _partner.team"/>
-    	<field name="saleStageSelect" expr="1"/>
+    	<field name="salesStageSelect" expr="1"/>
     	<field name="currency" expr="eval: _partner.currency"/>
     	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     </action-record>
@@ -176,19 +176,19 @@
 	</search-filters>
 	
 	<action-record name="action-opportunity-set-previous-stage" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="saleStageSelect" expr="eval: saleStageSelect > 8 ? 8 : saleStageSelect-1 "/>
+		<field name="salesStageSelect" expr="eval: salesStageSelect > 8 ? 8 : salesStageSelect-1 "/>
 	</action-record>
 	
 	<action-record name="action-opportunity-set-next-stage" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="saleStageSelect" expr="eval: saleStageSelect+1"/>
+		<field name="salesStageSelect" expr="eval: salesStageSelect+1"/>
 	</action-record>
 	
 	<action-record name="action-opportunity-set-closed-won" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="saleStageSelect" expr="eval:9"/>
+		<field name="salesStageSelect" expr="eval:9"/>
 	</action-record>
 	
 	<action-record name="action-opportunity-set-closed-lost" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="saleStageSelect" expr="eval:10"/>
+		<field name="salesStageSelect" expr="eval:10"/>
 	</action-record>
 	
 	<action-method name="action-opportunity-save-sale-stage-select">

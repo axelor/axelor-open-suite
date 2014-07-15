@@ -25,7 +25,6 @@ import java.util.Map;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.user.UserInfoService;
-import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.exception.AxelorException;
@@ -58,7 +57,7 @@ public class OpportunityController {
 			ose.saveOpportunity(opportunity);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Opportunity opportunity : Opportunity.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+			for(Opportunity opportunity : Opportunity.filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				opportunity.setUserInfo(uis.getUserInfo());
 				ose.saveOpportunity(opportunity);
 			}
