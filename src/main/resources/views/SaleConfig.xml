@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="sale-config-grid" title="Sale configurations" model="com.axelor.apps.sale.db.SaleConfig">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="address"/>
+    </grid>
+
+    <form name="sale-config-form" title="Sale configuration" model="com.axelor.apps.sale.db.SaleConfig" cols="4">
+	    
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company" form-view="company-lite-form"/>
+
+		<group title="Invoicing informations" colWidths="30%,30%,30%,30%" colSpan="4">	
+			<field name="saleOrderInvoicingTypeSelect" />
+		</group>
+    </form>
+	
+	
+</object-views>
