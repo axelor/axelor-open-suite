@@ -93,7 +93,7 @@ public interface PurchaseOrderService {
 	
 	
 	PurchaseOrder createPurchaseOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
-			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
+			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, LocalDate orderDate, 
 			PriceList priceList, Partner supplierPartner) throws AxelorException ;
 		
 	

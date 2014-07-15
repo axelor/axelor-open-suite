@@ -19,7 +19,6 @@ package com.axelor.apps.purchase.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -29,14 +28,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPartner;
-import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.UserInfo;
-import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -162,7 +157,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	
 	@Override
 	public PurchaseOrder createPurchaseOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
-			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
+			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, LocalDate orderDate, 
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
 		
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
@@ -178,7 +173,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setInternalReference(internalReference);
 		purchaseOrder.setExternalReference(externalReference);
 		purchaseOrder.setInvoicingTypeSelect(invoicingTypeSelect);
-		purchaseOrder.setLocation(location);
 		purchaseOrder.setOrderDate(orderDate);
 		purchaseOrder.setPriceList(priceList);
 		purchaseOrder.setPurchaseOrderLineList(new ArrayList<PurchaseOrderLine>());
