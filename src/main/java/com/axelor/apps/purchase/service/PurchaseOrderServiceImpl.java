@@ -33,7 +33,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -132,8 +131,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 			
 		}
 		
-		purchaseOrder.setAmountRemainingToBeInvoiced(purchaseOrder.getInTaxTotal());
-		
 		LOG.debug("Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
 			new Object[] { purchaseOrder.getExTaxTotal(), purchaseOrder.getTaxTotal(), purchaseOrder.getInTaxTotal() });
 		
@@ -156,7 +153,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	
 	
 	@Override
-	public PurchaseOrder createPurchaseOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+	public PurchaseOrder createPurchaseOrder(UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, LocalDate orderDate, 
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
 		
@@ -164,7 +161,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
 		
 		PurchaseOrder purchaseOrder = new PurchaseOrder();
-		purchaseOrder.setProject(project);
 		purchaseOrder.setBuyerUserInfo(buyerUserInfo);
 		purchaseOrder.setCompany(company);
 		purchaseOrder.setContactPartner(contactPartner);
@@ -172,7 +168,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setDeliveryDate(deliveryDate);
 		purchaseOrder.setInternalReference(internalReference);
 		purchaseOrder.setExternalReference(externalReference);
-		purchaseOrder.setInvoicingTypeSelect(invoicingTypeSelect);
 		purchaseOrder.setOrderDate(orderDate);
 		purchaseOrder.setPriceList(priceList);
 		purchaseOrder.setPurchaseOrderLineList(new ArrayList<PurchaseOrderLine>());

@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseConfig;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -37,7 +36,7 @@ public class PurchaseConfigService {
 		
 		if(purchaseConfig == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer le module Achat pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+					company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return purchaseConfig;

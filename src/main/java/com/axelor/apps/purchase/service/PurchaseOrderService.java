@@ -17,35 +17,15 @@
  */
 package com.axelor.apps.purchase.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.IPartner;
-import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.UserInfo;
-import com.axelor.apps.supplychain.db.Location;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.organisation.db.Project;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public interface PurchaseOrderService {
@@ -92,7 +72,7 @@ public interface PurchaseOrderService {
 	
 	
 	
-	PurchaseOrder createPurchaseOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+	PurchaseOrder createPurchaseOrder(UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, LocalDate orderDate, 
 			PriceList priceList, Partner supplierPartner) throws AxelorException ;
 		

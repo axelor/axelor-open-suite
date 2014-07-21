@@ -6,10 +6,8 @@ module {
 	
 	removable true
 
-	module "modules:axelor-exception"
-	module "modules:axelor-tool"
 	module "modules:axelor-base"
-	module "modules:axelor-account"
-	module "modules:axelor-account-organisation"
+//	module "modules:axelor-account"
+//	module "modules:axelor-account-organisation"
 }
 
