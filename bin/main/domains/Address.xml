@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db"/>
+
+  	<entity name="Address" lang="java">
+
+    <string name="importId"/>
+    <string name="addressL2" title="Recipient details"/>
+    <string name="addressL3" title="Spatial information" />
+    <string name="addressL4" title="N° and Street label"/>
+    <string name="addressL5" title="Specific information"/>
+    <string name="addressL6" title="Zip/City"/>
+    <many-to-one name="addressL7Country" ref="com.axelor.apps.base.db.Country" title="Country"/>
+    <many-to-one name="commune" ref="Commune" title="Commune"/>
+    <decimal name="latit" title="Latitude" precision="38" scale="18" />
+    <decimal name="longit" title="Longitude" precision="38" scale="18" />
+    <integer name="zoom" title="Default zoom"/>
+    <string name="inseeCode" title="National Code" readonly="true"/>
+    <boolean name="certifiedOk" title="Address certified by QAS engine" default="false" readonly="true"/>
+    <one-to-many name="pickList" ref="com.axelor.apps.base.db.PickListEntry" title="QAS Proposal lists" mappedBy="address"/>
+    
+    
+    <string name="fullName" namecolumn="true" search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address">
+	    <![CDATA[
+	    	String l2 = null;
+	    	String l3 = null;
+	    	String l4 = null;
+	    	String l5 = null;
+	    	String l6 = null;
+	    	if(addressL2 != null && addressL2 != "")
+	    		l2 = addressL2;
+	    	if(addressL3 != null && addressL3 != "")
+	    		l3 = addressL3;
+	    	if(addressL4 != null && addressL4 != "")
+	    		l4 = addressL4;
+	    	if(addressL5 != null && addressL5 != "")
+	    		l5 = addressL5;
+	    	if(addressL6 != null && addressL6 != "")
+	    		l6 = addressL6;
+	    	return (l2 != null ? l2 : "") + (l3 != null ? " "+l3 : "") + (l4 != null ? " "+l4 : "") + (l5 != null ? " "+l5 : "") + (l6 != null ? " "+l6 : "");
+	    ]]>
+    </string>
+    
+  </entity>
+
+  <!--
+  streetNum: String title="Numéro"
+  -->
+</domain-models>

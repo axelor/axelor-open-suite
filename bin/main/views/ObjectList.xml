@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    <grid name="object-list-grid" title="Application Objects" model="com.axelor.apps.base.db.ObjectList">
+        <field name="name"/>
+    </grid>
+    <form name="object-list-form" title="Application Object" model="com.axelor.apps.base.db.ObjectList" cols="4">
+        <field name="name"/>
+    </form>
+</object-views>

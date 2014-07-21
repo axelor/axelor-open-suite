@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    <grid name="mail-model-tag-grid" title="Email model tags" model="com.axelor.apps.base.db.MailModelTag">
+        <field name="tag"/>
+        <field name="link"/>
+        <field name="description"/>
+    </grid>
+    <form name="mail-model-tag-form" title="Email model tag" model="com.axelor.apps.base.db.MailModelTag" cols="3">
+        <field name="tag"/>
+        <field name="link"/>
+        <field name="description"/>
+    </form>
+    
+
+</object-views>

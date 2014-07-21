@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<searchresults timestamp='Thu, 20 Jun 13 08:42:13 +0000'
+	attribution='Data © OpenStreetMap contributors, ODbL 1.0. http://www.openstreetmap.org/copyright'
+	querystring='12 AVENUE DES CHAMPS-ELYSEES ,75008 PARIS' polygon='true'
+	exclude_place_ids='20978623,20207886,21496806'
+	more_url='http://nominatim.openstreetmap.org/search?format=xml&amp;exclude_place_ids=20978623,20207886,21496806&amp;polygon=1&amp;addressdetails=1&amp;q=12+AVENUE+DES+CHAMPS-ELYSEES+%2C75008+PARIS'>
+	<place place_id='20978623' osm_type='way' osm_id='4082021'
+		place_rank='26'
+		boundingbox="48.8730773925781,48.8731918334961,2.29705238342285,2.29711604118347"
+		lat='48.8730794' lon='2.2970525'
+		display_name='Avenue des Champs-Élysées, Champs-Élysées, 8e Arrondissement, Paris, Île-de-France, 75008 Paris, France métropolitaine, European Union'
+		class='highway' type='unclassified' importance='1.1'>
+		<road>Avenue des Champs-Élysées</road>
+		<suburb>Champs-Élysées</suburb>
+		<city_district>8e Arrondissement</city_district>
+		<city>Paris</city>
+		<county>Paris</county>
+		<state>Île-de-France</state>
+		<postcode>75008 Paris</postcode>
+		<country>France métropolitaine</country>
+		<country_code>fr</country_code>
+		<continent>European Union</continent>
+	</place>
+	<place place_id='20207886' osm_type='way' osm_id='3599144'
+		place_rank='26'
+		boundingbox="48.8704795837402,48.8734703063965,2.29583716392517,2.3052077293396"
+		lat='48.8720013' lon='2.3004355'
+		display_name='Avenue des Champs-Élysées, Champs-Élysées, 8e Arrondissement, Paris, Île-de-France, 75008 Paris, France métropolitaine, European Union'
+		class='highway' type='primary' importance='1.1'>
+		<road>Avenue des Champs-Élysées</road>
+		<suburb>Champs-Élysées</suburb>
+		<city_district>8e Arrondissement</city_district>
+		<city>Paris</city>
+		<county>Paris</county>
+		<state>Île-de-France</state>
+		<postcode>75008 Paris</postcode>
+		<country>France métropolitaine</country>
+		<country_code>fr</country_code>
+		<continent>European Union</continent>
+	</place>
+	<place place_id='21496806' osm_type='way' osm_id='5098489'
+		place_rank='26'
+		boundingbox="48.8690948486328,48.8735733032227,2.29591131210327,2.30994176864624"
+		lat='48.8713811' lon='2.3027827'
+		display_name='Avenue des Champs-Élysées, Quartier du Faubourg du Roule, 8e Arrondissement, Paris, Île-de-France, 75008 Paris, France métropolitaine, European Union'
+		class='highway' type='primary' importance='1.1'>
+		<road>Avenue des Champs-Élysées</road>
+		<suburb>Quartier du Faubourg du Roule</suburb>
+		<city_district>8e Arrondissement</city_district>
+		<city>Paris</city>
+		<county>Paris</county>
+		<state>Île-de-France</state>
+		<postcode>75008 Paris</postcode>
+		<country>France métropolitaine</country>
+		<country_code>fr</country_code>
+		<continent>European Union</continent>
+	</place>
+</searchresults>

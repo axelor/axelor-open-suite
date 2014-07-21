@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+    <grid name="supplier-catalog-grid" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog">
+        <field name="supplierPartner"/>
+        <field name="productSupplierName"/>
+        <field name="productSupplierCode"/>
+        <field name="updateDate"/>
+        <field name="minQty"/>
+        <field name="price"/>
+    </grid>
+    
+    <form name="supplier-catalog-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog" cols="4">
+		<field name="supplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
+		<field name="updateDate"/>
+        <field name="productSupplierName"/>
+        <field name="productSupplierCode"/>
+        <field name="minQty"/>
+        <field name="price"/>
+		<break/>
+		<separator title="Description" colSpan="4"/>
+		<field name="description" showTitle="false" colSpan="4" />
+    </form>
+        
+</object-views>

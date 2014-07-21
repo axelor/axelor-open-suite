@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="address"/>
+    </grid>
+
+<!--     <tree name="company-tree" title="Companies" model="com.axelor.apps.base.db.Company"> -->
+<!--         <field name="name"/> -->
+<!--     </tree> -->
+    
+    <form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" cols="4" colWidths="20%,30%,20%,30%">
+	    
+        <field name="administration"/>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="parent"/>
+        <field name="logoPath" />
+        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="address" colSpan="4"/>
+        <field name="currency"/>
+        <notebook colSpan="4">
+            <page title="Notes" cols="1">
+                <field name="notes" showTitle="false"/>
+            </page>
+            <page title="Account configuration" cols="4">
+                <field name="accountConfig" showTitle="false" widget="NestedEditor" canSelect="false" form-view="account-config-form" summary-view="true" colSpan="4"/>
+            </page>
+            <page title="Bank details" cols="4">
+             	<field name="defaultBankDetails" colSpan="2"/>
+                <field name="bankDetailsSet" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="4" showTitle="false"/>
+            </page>
+            <page title="Mails / Emails" cols="4" colWidths="20%,30%,20%,30%">
+            	<field name="generatedMailFilePath" />
+            	<field name="generatedEmailFilePath" />
+            	<field name="generatedMailFileName" />
+            	<field name="generatedEmailFileName" />
+            </page>
+            <page title="Supply chain configuration" cols="2">
+				<field name="supplychainConfig" showTitle="false" widget="NestedEditor" canSelect="false" form-view="supplychain-config-form" summary-view="true" colSpan="4"/>
+        	</page>
+            <page title="Organisation">
+            	<field name="taskProduct"/>
+            </page>
+            <page title="Printing">
+            	<field name="printingSettings" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="printing-setting-form"  summary-view="true"/>
+            </page>
+        </notebook>
+    </form>
+    
+    
+    <form name="company-lite-form" title="Company" model="com.axelor.apps.base.db.Company" cols="4"  colWidths="20%,30%,20%,30%">
+	    
+	    <group readonly="true">
+	    	<field name="administration" />
+	        <field name="name"/>
+	        <field name="code"/>
+	        <field name="parent"/>
+	        <field name="logoPath" />
+	        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+	        <field name="address" colSpan="4"/>
+	        <field name="currency"/>
+	        <group title="Notes" colSpan="4">
+	        	<field name="notes" showTitle="false" colSpan="4"/>
+	        </group>
+	    </group>
+        
+    </form>
+	
+	
+</object-views>

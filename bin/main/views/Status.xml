@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+   
+    <grid name="status-grid" title="All status" model="com.axelor.apps.base.db.Status">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="invoiceStatusOK"/>
+    </grid>
+    
+    <form name="status-form" title="Status" model="com.axelor.apps.base.db.Status" cols="4"
+    	onLoad="action-status-attrs-default">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="invoiceStatusOK"/>
+    </form>
+    
+    <!-- ACTION ATTRS -->
+    
+    <action-attrs name="action-status-attrs-default">
+    	<attribute name="readonly" for="code" expr="eval: code"/>
+    </action-attrs>
+    
+    <!-- ACTION RECORD -->
+    
+    <action-record name="action-status-record-ope"
+        model="com.axelor.apps.base.db.Status"
+        search="('self.code = ?1', 'ope')">
+        <field name="code" expr="ope"/>
+        <field name="name" expr="Ouvert"/>
+    </action-record>
+    
+    <action-record name="action-status-record-dra"
+    	model="com.axelor.apps.base.db.Status" 
+    	search="('self.code = ?1', 'dra')">
+    	<field name="code" expr="dra"/>
+    	<field name="name" expr="Brouillon"/>
+	</action-record>
+    
+    <action-record name="action-status-record-val"
+    	model="com.axelor.apps.base.db.Status" 
+    	search="('self.code = ?1', 'val')">
+    	<field name="code" expr="val"/>
+    	<field name="name" expr="Valider"/>
+	</action-record>
+    
+    <action-record name="action-status-record-ala"
+    	model="com.axelor.apps.base.db.Status"
+    	search="('self.code = ?1', 'ala')">
+    	<field name="code" expr="ala"/>
+    	<field name="name" expr="En alarme"/>
+    </action-record>
+    
+    <action-record name="action-status-record-tov"
+    	model="com.axelor.apps.base.db.Status"
+    	search="('self.code = ?1', 'tov')">
+    	<field name="code" expr="tov"/>
+    	<field name="name" expr="A valider"/>
+    </action-record>
+    
+    <action-record name="action-status-record-clo"
+        model="com.axelor.apps.base.db.Status"
+        search="('self.code = ?1', 'clo')">
+        <field name="code" expr="clo"/>
+        <field name="name" expr="Clôturé"/>
+    </action-record>
+
+    <action-record name="action-status-record-can"
+        model="com.axelor.apps.base.db.Status"
+        search="('self.code = ?1', 'can')">
+        <field name="code" expr="can"/>
+        <field name="name" expr="Annulé"/>
+    </action-record>
+    
+    <action-record name="action-status-record-upr"
+        model="com.axelor.apps.base.db.Status"
+        search="('self.code = ?1', 'upr')">
+        <field name="code" expr="upr"/>
+        <field name="name" expr="En cours"/>
+    </action-record>
+
+</object-views>

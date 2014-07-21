@@ -22,23 +22,21 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressExport;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Import;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerList;
 import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.data.Importer;
@@ -48,7 +46,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.persist.Transactional;
+import com.google.inject.Provider;
 import com.qas.web_2005_02.AddressLineType;
 import com.qas.web_2005_02.PicklistEntryType;
 import com.qas.web_2005_02.QAAddressType;
@@ -58,13 +56,17 @@ import com.qas.web_2005_02.VerifyLevelType;
 public class AddressController {
 
 	@Inject
-	private Injector injector;
-
+	private Provider<Injector> injectorProvider;
+	
 	@Inject
-	private AddressService ads;
-
-	@Inject 
-	private UserInfoService uis;
+	private Provider<AddressService> addressProvider;
+	
+	@Inject
+	private Provider<MapService> mapProvider;
+	
+	@Inject
+	private Provider<UserInfoService> UserInfoProvider;
+	
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
 
@@ -74,7 +76,7 @@ public class AddressController {
 		LOG.debug("validate g = {}", g);
 		LOG.debug("validate g.qasWsdlUrl = {}", g.getQasWsdlUrl());
 
-		String msg = ads.check(g.getQasWsdlUrl())? g.getQasWsdlUrl()+" Ok":"Service indisponible, veuillez contacter votre adminstrateur";
+		String msg = addressProvider.get().check(g.getQasWsdlUrl())? g.getQasWsdlUrl()+" Ok":"Service indisponible, veuillez contacter votre adminstrateur";
 		response.setFlash(msg);		
 	}
 
@@ -83,7 +85,7 @@ public class AddressController {
 		Address a = request.getContext().asType(Address.class);
 		LOG.debug("validate a = {}", a);
 		String search = a.getAddressL4()+" "+a.getAddressL6();
-		Map<String,Object> retDict = (Map<String, Object>) ads.validate(GeneralService.getGeneral().getQasWsdlUrl(), search);
+		Map<String,Object> retDict = (Map<String, Object>) addressProvider.get().validate(GeneralService.getGeneral().getQasWsdlUrl(), search);
 		LOG.debug("validate retDict = {}", retDict);
 
 		VerifyLevelType verifyLevel = (VerifyLevelType) retDict.get("verifyLevel");
@@ -157,7 +159,7 @@ public class AddressController {
 			LOG.debug("select pickedEntry = {}", pickedEntry);
 			String moniker = pickedEntry.getMoniker();
 			if (moniker != null) {
-				com.qas.web_2005_02.Address address = ads.select(GeneralService.getGeneral().getQasWsdlUrl(), moniker);
+				com.qas.web_2005_02.Address address = addressProvider.get().select(GeneralService.getGeneral().getQasWsdlUrl(), moniker);
 				LOG.debug("select address = {}", address);
 				//addressL4: title="N° et Libellé de la voie"
 				//addressL6: title="Code Postal - Commune"/>
@@ -191,7 +193,7 @@ public class AddressController {
 
 		AddressExport addressExport = request.getContext().asType(AddressExport.class);
 
-		int size = (Integer) ads.export(addressExport.getPath());
+		int size = (Integer) addressProvider.get().export(addressExport.getPath());
 
 		response.setValue("log", size+" adresses exportées");
 	}
@@ -218,11 +220,11 @@ public class AddressController {
 
 			if (type.equals("xml")) {
 				LOG.debug("using XMLImporter");
-				importer = new XMLImporter(injector, configPath, path);
+				importer = new XMLImporter(injectorProvider.get(), configPath, path);
 			}
 			else {
 				LOG.debug("using CSVImporter");
-				importer = new CSVImporter(injector, configPath, path);
+				importer = new CSVImporter(injectorProvider.get(), configPath, path);
 			}
 			Map<String,String[]> mappings = new HashMap<String,String[]>();
 			String[] array = new String[1];
@@ -245,7 +247,7 @@ public class AddressController {
 		BigDecimal longitude = address.getLongit();
 		LOG.debug("latitude...."+latitude);
 		LOG.debug("longitude...."+longitude);
-		Map<String,Object> result = ads.getMap(qString, latitude, longitude);
+		Map<String,Object> result = mapProvider.get().getMap(qString, latitude, longitude);
 		if(result != null){
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", "Map");
@@ -262,7 +264,7 @@ public class AddressController {
 	}
 
 	public void directionsMap(ActionRequest request, ActionResponse response)  {
-		Partner currPartner = uis.getUserPartner();
+		Partner currPartner = UserInfoProvider.get().getUserPartner();
 		Address departureAddress = currPartner.getDeliveryAddress();
 		if (departureAddress != null) {
 			Address arrivalAddress = request.getContext().asType(Address.class);
@@ -275,7 +277,7 @@ public class AddressController {
 				BigDecimal dLon = departureAddress.getLongit();
 				BigDecimal aLat = arrivalAddress.getLatit();
 				BigDecimal aLon =  arrivalAddress.getLongit();
-				Map<String, Object> result = ads.getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
+				Map<String, Object> result = mapProvider.get().getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
 				if(result != null){
 					Map<String,Object> mapView = new HashMap<String,Object>();
 					mapView.put("title", "Map");
@@ -299,65 +301,4 @@ public class AddressController {
 		response.setFlash("Not implemented yet!");
 	}
 
-	@SuppressWarnings("unchecked")
-	@Transactional
-	public void viewSalesMap(ActionRequest request, ActionResponse response)  {
-		// Only allowed for google maps to prevent overloading OSM
-		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
-			PartnerList partnerList = request.getContext().asType(PartnerList.class);
-
-			File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");
-			//file.write("latitude,longitude,fullName,turnover\n");
-
-			Iterator<Partner> it = (Iterator<Partner>) partnerList.getPartnerSet().iterator();
-
-			while(it.hasNext()) {
-
-				Partner partner = it.next();
-				//def address = partner.mainInvoicingAddress
-				if (partner.getMainInvoicingAddress() != null) {
-					partner.getMainInvoicingAddress().getId();
-					Address address = Address.find(partner.getMainInvoicingAddress().getId());
-					if (!(address.getLatit() != null && address.getLongit() != null)) {
-						String qString = address.getAddressL4()+" ,"+address.getAddressL6();
-						LOG.debug("qString = {}", qString);
-
-						Map<String,Object> googleResponse = ads.geocodeGoogle(qString);
-						address.setLatit((BigDecimal) googleResponse.get("lat"));
-						address.setLongit((BigDecimal) googleResponse.get("lng"));
-						address.save();
-					}
-					if (address.getLatit() != null && address.getLongit() != null) {
-						//def turnover = Invoice.all().filter("self.partner.id = ? AND self.status.code = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
-						List<Invoice> listInvoice = (List<Invoice>) Invoice.all().filter("self.partner.id = ?", partner.getId()).fetch();
-						BigDecimal turnover = BigDecimal.ZERO;
-						for(Invoice invoice: listInvoice) {
-							turnover.add(invoice.getInTaxTotal());
-						}
-						/*
-						file.withWriterAppend('UTF-8') {
-							it.write("${address.latit},${address?.longit},${partner.fullName},${turnover?:0.0}\n")
-						}
-						 */
-					}
-				}
-			}
-			//response.values = [partnerList : partnerList]
-			String url = "";
-			if (partnerList.getIsCluster())
-				url = "http://localhost/HTML/cluster_gmaps_xhr.html?file=latlng_"+partnerList.getId()+".csv";
-			else
-				url = "http://localhost/HTML/gmaps_xhr.html?file=latlng_"+partnerList.getId()+".csv";
-
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Sales map");
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-			//response.reload = true
-
-		} else {
-			response.setFlash("Not implemented for OSM");
-		}
-	}
 }

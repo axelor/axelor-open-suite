@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	
+	<action-view name="wizard-client-view" title="My space" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="wizard-client-form"/>
+		<view-param name="show-toolbar" value="false"/>
+	</action-view>
+	
+	<form name="wizard-client-form" title="My space" model="com.axelor.apps.base.db.Wizard">
+		<field name="id" hidden="true"/>
+	    <break/>
+		<button name="mySaleOrder" colSpan="1" title="My sale orders" onClick="wizard-client-form-open-my-sale-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/>
+	    <button name="myInvoices" colSpan="1" title="My invoices" onClick="wizard-client-form-open-my-invoices" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg"/>
+		<button name="myTickets" colSpan="1" title="My tickets" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
+	</form>
+	
+	<action-view name="wizard-client-form-open-my-sale-order" title="My sale orders"
+		model="com.axelor.apps.sale.db.SaleOrder" icon="img/16px/orderSmall_16px.png">
+		<view type="grid" name="sale-order-grid-client"/>
+		<view type="form" name="sale-order-form-client" />
+		<domain>self.clientPartner = :_myPartner</domain>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+	</action-view>
+	
+	<action-view name="wizard-client-form-open-my-invoices" title="My invoices"
+		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
+		<view type="grid" name="invoice-client-grid"/>
+    	<view type="form" name="invoice-client-form"/>
+		<domain>self.partner = :_myPartner</domain>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+	</action-view>
+	
+	<action-view title="My tickets" icon="img/16px/crmSmall_16px.png" model="com.axelor.apps.crm.db.Event" name="wizard-client-form-open-my-tickets">
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form"/>
+		<domain>(self.clientPartner = :_myPartner or self.createdBy =:_user) and (self.typeSelect =:_typeSelect)</domain>
+		<context name="_typeSelect" expr="5"/>
+		<context name="_prioritySelect" expr="2"/>
+		<context name="_internalUser" expr="eval: user.id"/>
+		<context name="_user" expr="eval:__user__"/>
+		<context name="_clientView" expr="eval: true"/>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+	</action-view>
+	
+</object-views>

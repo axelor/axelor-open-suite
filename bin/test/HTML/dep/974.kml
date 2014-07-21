@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+<ExtendedData>
+<Data name="COPYRIGHT">
+<displayName>http://www.karamelise.fr</displayName>
+</Data>
+</ExtendedData>
+<name><![CDATA[La Réunion (974)]]></name>
+<Style id="karamelise.fr">
+<LineStyle>
+<color>cc2d3939</color>
+<width>3</width>
+</LineStyle>
+<PolyStyle>
+<color>804d4def</color>
+</PolyStyle>
+</Style>
+<Placemark id="la-reunion">
+<name><![CDATA[La Réunion (974)]]></name>
+<styleUrl>#karamelise.fr</styleUrl>
+<Polygon>
+<outerBoundaryIs>
+<LinearRing>
+<tessellate>1</tessellate>
+<coordinates>
+55.53116235184164,-21.14983292127051,0
+</coordinates>
+</LinearRing>
+</outerBoundaryIs>
+</Polygon>
+</Placemark>
+</Document>
+</kml>

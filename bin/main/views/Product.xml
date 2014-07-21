@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="name">
+   		<toolbar>
+        	<button name="catalog" title="Catalog" onClick="action-print-product-catalog"/>
+	    </toolbar>
+	    <field name="code"/>
+	    <field name="name" width="400"/>
+	    <field name="productCategory"/>
+	    <field name="productFamily"/>
+	    <field name="productTypeSelect" width="100"/>
+	    <field name="saleSupplySelect"/>
+	    <field name="unit" width="70"/>
+	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    </grid>
+    
+    <grid name="product-product-variant-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="name">
+	    <field name="code" width="120"/>
+	    <field name="name"/>
+	    <field name="productVariant" width="200"/>
+	    <field name="costPrice" width="120"/>
+	    <field name="salePrice" width="120"/>
+    </grid>
+
+   <form cols="2" name="product-form" onNew="action-product-record-default-new,action-product-record-sale-supply-select" title="Product" model="com.axelor.apps.base.db.Product" >
+    <toolbar>
+    		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
+    	</toolbar>
+	    <group colWidths="15%,85%" colSpan="6" cols="2">
+	            <group colSpan="1">
+	                <field name="picture" showTitle="false" widget="Image"/>
+	            </group>
+	            <group colSpan="1" cols="6">
+					<field name="name" showTitle="false" colSpan="3" css="highlight" placeholder="Name"/>
+					<spacer/>
+					<field name="code" showTitle="false" css="highlight" placeholder="Code"/>
+					<field name="versionSelect"/>
+					<break/>
+					<group title="Product typology" colSpan="3" cols="2" colWidths="30%,70%">
+						<field name="productTypeSelect" onChange="action-product-record-sale-supply-select,action-product-validate-sale-supply-select"/>
+						<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select"/>
+						<field name="invoiceLineType"/>
+					</group>
+					<group title="Categorization" colSpan="3" cols="2" colWidths="30%,70%">
+						<field name="applicationTypeSelect" onChange="action-set-product-type-select"/>
+						<field name="productFamily"/>
+						<field name="productCategory" domain="self.productFamily = :productFamily"/>
+					</group>
+				</group>
+	    </group>
+	    <separator title="Product specific attributes" colSpan="2"/>
+	    <notebook colSpan="2">
+			<page title="Sale" colSpan="2" cols="4">	
+				<group colSpan="4" colWidths="20%,30%,20%,30%">
+					<separator title="Sales" colSpan="2"/>
+					<separator title="Product dates" colSpan="2"/>
+					<field name="salePrice"/>
+					<field name="startDate"/>
+					<field name="saleCurrency"/>
+					<field name="endDate" onChange="action-product-validate-end-date,action-product-method-reset-end-date"/>
+					<field name="unit"/>
+				</group>
+				<group colSpan="4">
+					<group colSpan="2">
+						<separator title="Description" colSpan="2"/>
+						<break/>
+						<field name="description" showTitle="false" colSpan="2" widget="html"/>
+					</group>
+					<group colSpan="2">
+						<separator title="Internal description" colSpan="2"/>
+						<break/>
+						<field name="internalDescription" showTitle="false" colSpan="2" widget="html"/>
+					</group>
+				</group>
+			</page>
+			<page title="Purchase/Costs" colSpan="2" cols="4">
+				<separator title="Purchases" colSpan="2"/>
+				<separator title="Costs" colSpan="2"/>
+				<field name="purchasePrice"/>
+				<field name="costPrice" onChange="action-product-record-compute-sale-price"/>
+				<field name="purchaseCurrency"/>
+				<field name="managPriceCoef" onChange="action-product-record-compute-sale-price"/>
+				<break/>
+				<field name="defaultSupplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
+				<separator title="Suppliers catalog" colSpan="4"/>
+				<field name="supplierCatalogList" colSpan="4"/>        
+			</page>
+	        <page title="Accounting" colSpan="2" cols="4">
+	            <field name="accountManagementList" colSpan="4" domain="self.typeSelect = 1" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
+	        </page>
+	<!--             <page title="Related BOMs"> -->
+	<!--             	<button name="showBillsOfMaterial" title="Show bills of material"/> -->
+	<!--             	 <portlet action="chart:chart.planned.qty.by.location" height="200" colSpan="2"/> -->
+	<!--             </page> -->
+	        <page title="Stock" showIf="productTypeSelect == 'storable'" colSpan="2" cols="4" >
+            <separator title="Procurement settings" colSpan="4"/>
+				<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'"/>
+				<field name="isRawMaterial" showIf="productTypeSelect != 'service'"/>
+				<break/>
+				<spacer/>
+				<group colSpan="4" if-module="axelor-supplychain">
+					<button name="showAllStockMoveLine" title="Show all stock move" colSpan="2" onClick="action-product-view-stock-move-line"/>
+					<spacer/>
+					<portlet action="action-product-view-stock" colSpan="4"/>
+					<portlet action="action-stock-report-for-product" height="200" colSpan="4"/>
+					<portlet action="action-stock-history-report-for-product" height="200" colSpan="4"/>
+				</group>
+<!-- 				<group showIf="true" colSpan="4"> -->
+<!-- 					<portlet action="action-product-view-stock" colSpan="4"/> -->
+<!-- 					<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/> -->
+<!-- 					<portlet action="chart:chart.stock.history.report.for.product" height="200" colSpan="4"/> -->
+<!-- 				</group> -->
+<!-- 				<group showIf="false" colSpan="4"> -->
+<!-- 					<portlet action="action-product-view-stock-product-variant" colSpan="4"/> -->
+<!-- 					<portlet action="chart:chart.stock.report.for.product.variant" height="200" colSpan="4"/> -->
+<!-- 					<portlet action="chart:chart.stock.history.report.for.product.variant" height="200" colSpan="4"/> -->
+<!-- 				</group> -->
+			</page>
+			<page title="Production informations" showIf="productTypeSelect != 'service'">
+				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>
+				<field name="lastProductionPrice" readonly="true"/>
+				<group if-module="axelor-production" colSpan="4" cols="4" colWidths="20%,30%,20%,30%">
+					<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/><break/>
+					<portlet action="action-product-view-show-bill-of-material" colSpan="4"/>
+				</group>
+			</page>
+	        <page title="Tracking number" colSpan="2" cols="4" showIf="productTypeSelect != 'service'"  colWidths="20%,30%,20%,30%">
+	        	<group colSpan="4" cols="4" colWidths="20%,30%,20%,30%">
+	        		<group colSpan="4" cols="4">
+	        			<field name="hasWarranty" colSpan="2"/>
+		            	<field name="warrantyNbrOfMonths" colSpan="2" showIf="hasWarranty"/>
+	        	 		<field name="isPerishable" colSpan="2"/>
+		            	<field name="perishableNbrOfMonths" colSpan="2" showIf="isPerishable"/>
+	        	 	</group>
+	        	 	<group colSpan="2" cols="2">
+			            <field name="trackingNumberConfiguration" colSpan="2"/>
+		            </group>
+	        	</group>
+	        </page>
+	        <page title="Variants">
+	        	<group name="parentVariant" showIf="!parentProduct" colSpan="4">
+	        		<field name="productVariantConfig" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-config-form" summary-view="true" colSpan="4"/>
+	            	<button name="generateProductVariant" title="Generate product variants" colSpan="2" onClick="save,action-product-method-generate-product-variant"/>
+	        		<portlet action="action-product-view-product-variant" colSpan="4"/>
+	        	</group>
+	            <group name="childVariant" showIf="parentProduct" colSpan="4">
+	            	<field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true"/>
+	        		<field name="parentProduct"/>
+	        		<portlet action="action-product-view-other-product-variant" colSpan="4"/>
+	            </group>
+            	<button name="updateProductsPrices" title="Update products prices" colSpan="2" onClick="save,action-product-method-update-products-prices" help="Update current product prices and variants"/>
+	        </page>
+<!-- 	        <page title="Turnover"> -->
+<!--   				<portlet action="portal.product.sale.turnover.per.month" height="350" colSpan="4" />       -->
+<!-- 			</page>	         -->
+ 			<page title="Links" if-module="axelor-supplychain">
+ 				<portlet action="action-product-view-stock-move-line-incoming-planned" colSpan="4"/>
+ 				<portlet action="action-product-view-stock-move-line-consumption-planned" colSpan="4"/>
+ 				<portlet action="action-product-view-stock-move-line" colSpan="4"/>
+ 				<portlet action="action-product-view-supplier-requests-historical" colSpan="4"/>
+ 				<portlet action="action-product-view-purchase-order-line-in-progress" colSpan="4"/>
+ 				<portlet action="action-product-view-purchase-order-line-historical" colSpan="4"/>
+ 				<portlet action="action-product-view-stock-move-line-consumption-historical" colSpan="4"/>
+	        </page>
+	    </notebook>
+	</form>    
+    
+   <action-view name="action-product-view-stock-product-variant" title="Stock" model="com.axelor.apps.supplychain.db.LocationLine">
+    	<view type="grid" name="location-line-product-group-by-variant-grid"/>
+    	<view type="form" name="location-line-product-form"/>
+    	<domain>self.product.parentProduct.id = :id and self.location.typeSelect = 1</domain>
+    </action-view>
+    
+    <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
+    	<field name="applicationTypeSelect" expr="1"/>
+    	<field name="productTypeSelect" expr="storable"/>
+    	<field name="procurementMethodSelect" expr="buy"/>
+    	<field name="startDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
+    	<field name="salePrice" expr="1"/>
+    	<field name="purchasePrice" expr="1"/>
+    	<field name="saleCurrency" expr="eval: _activeCompany.currency"/>
+    	<field name="purchaseCurrency" expr="eval: _activeCompany.currency"/>
+    	<field name="managPriceCoef" expr="1"/>
+    	<field name="isModel" expr="eval: _isModel"/>
+    </action-record>
+    
+    <action-record name="action-product-record-sale-supply-select" model="com.axelor.apps.base.db.Product">
+    	<field name="saleSupplySelect" expr="1" if="productTypeSelect == 'storable'"/>
+    	<field name="saleSupplySelect" expr="3" if="productTypeSelect == 'service'"/>
+    </action-record>
+    
+    <action-record name="action-set-product-type-select" model="com.axelor.apps.base.db.Product">
+    	<field name="productTypeSelect" expr="eval:(applicationTypeSelect == 2 || applicationTypeSelect == 3)?'service':null" />
+    </action-record>
+    
+    <action-record name="action-product-record-compute-sale-price" model="com.axelor.apps.base.db.Product">
+    	<field name="salePrice" expr="eval: managPriceCoef*costPrice" if="costPrice != null &amp;&amp; managPriceCoef != null"/>
+    
+    </action-record>
+    
+    <action-attrs name="action-hide-product-field">
+    	<attribute name="hidden" for="productTypeSelect" expr="eval:applicationTypeSelect == 2 || applicationTypeSelect == 3"  />
+    	<attribute name="hidden" for="isRawMaterial" expr="eval:productTypeSelect == 'service'"  />
+    	<attribute name="hidden" for="tab-stock" expr="eval:productTypeSelect == 'service'"  />
+    	<attribute name="hidden" for="tab-tracking-number" expr="eval:productTypeSelect == 'service'"  />
+    </action-attrs>
+    
+    <action-validate name="action-product-validate-sale-supply-select">
+   		<alert message="A product of type service can't be procured from stock." if="saleSupplySelect == 1 &amp;&amp; productTypeSelect == 'service'"/>
+	</action-validate> 
+	
+	<action-method name="action-print-product-catalog" >
+		<call class="com.axelor.apps.base.web.ProductController" method="printProductCatelog"/>
+	</action-method>
+	
+	<action-method name="action-product-method-show-product-sheet" >
+		<call class="com.axelor.apps.base.web.ProductController" method="printProductSheet"/>
+	</action-method>
+	
+	<action-method name="action-product-method-generate-product-variant" >
+		<call class="com.axelor.apps.base.web.ProductController" method="generateProductVariants"/>
+	</action-method>
+	
+	<action-method name="action-product-method-update-products-prices" >
+		<call class="com.axelor.apps.base.web.ProductController" method="updateProductsPrices"/>
+	</action-method>
+	
+    <action-validate name="action-product-validate-end-date">
+    	<alert message="The product pulled-off date must be greater than the launch date." if="endDate &lt; startDate"/>
+    </action-validate>
+    
+    <action-record name="action-product-method-reset-end-date" model="com.axelor.apps.base.db.Product">
+    	<field name="endDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="endDate &lt; startDate"/>
+    </action-record>
+    
+    <action-view name="action-product-view-product-variant" title="Products variants"
+		model="com.axelor.apps.base.db.Product">
+		<view type="grid" name="product-product-variant-grid"/>
+		<view type="form" name="product-form"/>
+		<domain>self.parentProduct.id = :id</domain>
+	</action-view>	
+	
+	<action-view name="action-product-view-other-product-variant" title="Other variants"
+		model="com.axelor.apps.base.db.Product">
+		<view type="grid" name="product-product-variant-grid"/>
+		<view type="form" name="product-form"/>
+		<domain>self.parentProduct.id = :parentId</domain>
+		<context name="parentId" expr="eval: parentProduct?.id"/>
+	</action-view>	
+	
+	<action-attrs name="action-product-attrs-bill-of-material-domain">
+		<attribute name="domain" for="defaultBillOfMaterial" expr="eval: &quot;(self.product.id = ${parentProduct?.id} OR self.product.id = ${id}) AND self.isRawMaterial = 'false'&quot;"/>
+	</action-attrs>
+	
+    <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
+		<filter title="Current Products">
+			<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
+		</filter>
+		<filter title="Storable Products">
+			<domain>(self.endDate IS NULL or CURRENT_DATE &lt; self.endDate) and self.productTypeSelect = 'storable'</domain>
+		</filter>
+		<filter title="Service Products">
+			<domain>(self.endDate IS NULL or CURRENT_DATE &lt; self.endDate) and self.productTypeSelect = 'service'</domain>
+		</filter>
+		<filter title="Products With Variant">
+			<domain>self.productVariantConfig != null</domain>
+		</filter>
+		<filter title="Raw Materials">
+			<domain>self.isRawMaterial = true</domain>
+		</filter>
+		<filter title="Profiles">
+			<domain>self.applicationTypeSelect = 2</domain>
+		</filter>
+		<filter title="Expenses">
+			<domain>self.applicationTypeSelect = 3</domain>
+		</filter>
+		<filter title="Obsolete Products">
+			<domain>CURRENT_DATE &gt; self.endDate</domain>
+		</filter>
+	</search-filters>
+	
+	
+	<!-- 	PRODUCTION -->
+
+	<action-view name="action-product-view-create-production-order" title="Create production order" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="production-order-wizard-form"/>
+		<view-param name="popup" value="reload"/>
+  		<view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+  		<context name="_productId" expr="eval: __self__"/>
+	</action-view>
+	
+	<action-view name="action-product-view-show-bill-of-material" title="Bill of materials" model="com.axelor.apps.production.db.BillOfMaterial">
+		<view type="grid" name="bill-of-material-grid"/>
+		<view type="form" name="bill-of-material-form"/>
+		<domain>self.product.id = :productId</domain>
+		<context name="productId" expr="eval: id"/>
+	</action-view>
+	
+</object-views>

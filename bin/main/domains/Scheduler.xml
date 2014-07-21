@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Scheduler" lang="java">
+  
+  	<string name="importId" hashKey="false" unique="true"/>
+    <string name="name" namecolumn="true" title="Label" />
+    <boolean name="annually" title="Annually" default="false"/>
+    <boolean name="daily" title="Daily" default="false"/>
+    <boolean name="monthly" title="Monthly" default="false"/>
+    <boolean name="weekly" title="Weekly" default="false"/>
+    <!-- Daily -->
+    <integer name="dayDaily" title="Rhythm" default="1"/>
+    <!-- Weekly -->
+    <integer name="weekWeekly" title="Rhythm" default="1"/>
+    <boolean name="monday" title="Monday" default="false"/>
+    <boolean name="tuesday" title="Tuesday" default="false"/>
+    <boolean name="wednesday" title="Wednesday" default="false"/>
+    <boolean name="thursday" title="Thursday" default="false"/>
+    <boolean name="friday" title="Friday" default="false"/>
+    <boolean name="saturday" title="Saturday" default="false"/>
+    <boolean name="sunday" title="Sunday" default="false"/>
+    <!-- Monthly -->
+    <integer name="monthMonthly" title="Rhythm" default="1" />
+    <integer name="dayMonthly" title="Day of month" default="1" />
+    <!-- Annually -->
+    <integer name="yearAnnually" title="Rhythm" default="1" />
+    <integer name="monthAnnuallySelect" title="Month" default="1" selection="iadministration.month.select"/>
+    <integer name="dayAnnually" title="Day of month" default="1"/>
+    
+  </entity>
+
+</domain-models>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Sequence" lang="java">
+  
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="false"/>
+    <string name="name" title="Name" required="true" namecolumn="true"/>
+    <string name="code" title="Document concerned" required="true" selection="sequence.generic.code.select"/> 
+    <string name="prefixe" title="Prefix"/>
+    <string name="suffixe" title="Suffix"/>
+    <integer name="padding" title="Padding" required="true"/>
+    <integer name="toBeAdded" title="Increment" required="true"/>
+    <integer name="nextNum" title="Next N°" required="true"/>
+    <boolean name="yearlyResetOk" title="Yearly reset"/>
+    
+  </entity>
+
+</domain-models>

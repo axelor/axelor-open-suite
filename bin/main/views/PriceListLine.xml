@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	
+	
+    <grid name="price-list-line-grid" title="Price list lines" model="com.axelor.apps.base.db.PriceListLine"> 
+       	<field name="product"/> 
+    	<field name="productCategory"/>
+   	 	<field name="typeSelect"/>
+    	<field name="amountTypeSelect"/>
+    	<field name="amount"/>
+    	<field name="minQty"/>
+	</grid>
+    
+	<form name="price-list-line-form" title="Price list line" model="com.axelor.apps.base.db.PriceListLine"
+	onNew="action-price-list-line-record-default,action-price-list-line-record-type-select">
+		<group name="application" title="Apply on" colSpan="4">
+			<field name="product" onChange="action-price-list-line-record-product"/> 
+			<label title="Or"/>
+			<field name="productCategory"/>
+		</group>
+		<field name="typeSelect" onChange="action-price-list-line-record-type-select"/>
+		<field name="amountTypeSelect" hideIf="typeSelect == 3"/>
+		<field name="amount"/>
+		<field name="minQty"/>
+	</form>
+	
+	<action-record name="action-price-list-line-record-default" model="com.axelor.apps.base.db.PriceListLine">
+		<field name="typeSelect" expr="3"/>
+	</action-record>
+   
+   <action-record name="action-price-list-line-record-product" model="com.axelor.apps.base.db.PriceListLine">
+ 		<field name="amount" expr="eval: product?.salePrice" if="product &amp;&amp; _parent?.typeSelect == 1 &amp;&amp; typeSelect == 3"/>
+ 		<field name="amount" expr="eval: product?.purchasePrice" if="product &amp;&amp; _parent?.typeSelect == 2 &amp;&amp; typeSelect == 3"/>
+    </action-record>
+    
+    <action-record name="action-price-list-line-record-type-select" model="com.axelor.apps.base.db.PriceListLine">
+    	<field name="amountTypeSelect" expr="2" if="typeSelect == 3"/>
+    </action-record>
+    
+</object-views>
+

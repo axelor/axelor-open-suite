@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+    	
+  <portal title="Dashboard" name="welcome.portal" cols="2">
+    <portlet action="portal.opportunity" height="350"/>
+    <portlet action="demo.chart1" height="350"/>
+    <portlet action="portal.meeting" colSpan="2" canSearch="true"/>
+    <portlet action="portal.task" colSpan="2" canSearch="true"/>
+  </portal>
+
+  <action-view name="demo.chart1" title="Chart">
+    <view type="html" name="samples/chart1.html" />
+  </action-view>
+  
+ <action-view name="portal.opportunity" title="Opportunities"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid"/>
+		<view type="form" name="opportunity-form" />
+	</action-view>
+
+	<action-view name="portal.meeting" title="Meetings"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="meeting-grid" />
+		<view type="form" name="meeting-form" />
+	</action-view>
+
+	<action-view name="portal.task" title="Tasks"
+		model="com.axelor.apps.organisation.db.Project">
+		<view type="grid" name="task-grid" />
+		<view type="form" name="task-form" />
+	</action-view>
+
+
+	</object-views>

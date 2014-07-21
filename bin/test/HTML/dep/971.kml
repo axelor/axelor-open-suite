@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+<ExtendedData>
+<Data name="COPYRIGHT">
+<displayName>http://www.karamelise.fr</displayName>
+</Data>
+</ExtendedData>
+<name><![CDATA[Guadeloupe (971)]]></name>
+<Style id="karamelise.fr">
+<LineStyle>
+<color>cc2d3939</color>
+<width>3</width>
+</LineStyle>
+<PolyStyle>
+<color>804d4def</color>
+</PolyStyle>
+</Style>
+<Placemark id="guadeloupe">
+<name><![CDATA[Guadeloupe (971)]]></name>
+<styleUrl>#karamelise.fr</styleUrl>
+<Polygon>
+<outerBoundaryIs>
+<LinearRing>
+<tessellate>1</tessellate>
+<coordinates>
+-61.49936459513426,16.22960860889362,0
+</coordinates>
+</LinearRing>
+</outerBoundaryIs>
+</Polygon>
+</Placemark>
+</Document>
+</kml>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	
+	<form name="import-address-form" title="Import address" model="com.axelor.apps.base.db.Import"
+		onNew="action-default-import-address-record">
+		<field name="typeSelect"/>
+		<field name="date" />
+		<field name="path" colSpan="4" />
+		<field name="configPath" colSpan="4" />
+		<button name="import" title="Importer" colSpan="4"
+			onClick="save,com.axelor.apps.base.web.AddressController:importAddress" />
+		<field name="log" colSpan="4" />
+	</form>
+	
+	<action-record name="action-default-import-address-record"
+		model="com.axelor.apps.base.db.Import">
+		<field name="typeSelect" expr="csv" />
+		<field name="date" expr="eval: __time__" />
+		<field name="path" expr="/tmp/ADRESSES" />
+		<field name="configPath" expr="/tmp/ADRESSES/csv-config-address.xml" />	
+	
+	</action-record>
+
+
+</object-views>

@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+
+	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+
+	<selection name="grade.0.up.to.5.select">
+		<option value="0">0</option>
+		<option value="20">1</option>
+		<option value="40">2</option>
+		<option value="60">3</option>
+		<option value="80">4</option>
+		<option value="100">5</option>
+	</selection>
+	
+	<selection name="grade.0.up.to.10.select">
+		<option value="0">0</option>
+		<option value="10">1</option>
+		<option value="20">2</option>
+		<option value="30">3</option>
+		<option value="40">4</option>
+		<option value="50">5</option>
+		<option value="60">6</option>
+		<option value="70">7</option>
+		<option value="80">8</option>
+		<option value="90">9</option>
+		<option value="100">10</option>
+	</selection>
+	
+	<selection name="grade.0.up.to.20.select">
+		<option value="0">0</option>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+	</selection>
+	
+	<selection name="grade.0.up.to.100.select">
+		<option value="0">0</option>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option value="59">59</option>
+		<option value="60">60</option>
+		<option value="61">61</option>
+		<option value="62">62</option>
+		<option value="63">63</option>
+		<option value="64">64</option>
+		<option value="65">65</option>
+		<option value="66">66</option>
+		<option value="67">67</option>
+		<option value="68">68</option>
+		<option value="69">69</option>
+		<option value="70">70</option>
+		<option value="71">71</option>
+		<option value="72">72</option>
+		<option value="73">73</option>
+		<option value="74">74</option>
+		<option value="75">75</option>
+		<option value="76">76</option>
+		<option value="77">77</option>
+		<option value="78">78</option>
+		<option value="79">79</option>
+		<option value="80">80</option>
+		<option value="81">81</option>
+		<option value="82">82</option>
+		<option value="83">83</option>
+		<option value="84">84</option>
+		<option value="85">85</option>
+		<option value="86">86</option>
+		<option value="87">87</option>
+		<option value="88">88</option>
+		<option value="89">89</option>
+		<option value="90">90</option>
+		<option value="91">91</option>
+		<option value="92">92</option>
+		<option value="93">93</option>
+		<option value="94">94</option>
+		<option value="95">95</option>
+		<option value="96">96</option>
+		<option value="97">97</option>
+		<option value="98">98</option>
+		<option value="99">99</option>
+		<option value="100">100</option>
+	</selection>
+
+	<selection name="partner.title.type.select">
+		<option value="1">M.</option>
+		<option value="2">Ms.</option>
+		<option value="3">Mss.</option>
+		<option value="4">Dr</option>
+		<option value="5">Prof.</option>
+	</selection>
+
+	<selection name="partner.customer.type.select">
+		<option value="1">No</option>
+		<option value="2">Prospect</option>
+		<option value="3">Yes</option>
+	</selection>
+	
+	<selection name="partner.supplier.type.select">
+		<option value="1">No</option>
+		<option value="2">Yes</option>
+		<option value="3">Yes (Approved)</option>
+	</selection>
+	
+	<selection name="partner.partner.type.select">
+		<option value="1">Company</option>
+		<option value="2">Individual</option>
+	</selection>
+
+	<selection name='mail.model.object.concerned.select'>
+		<option value='1'>Debt Recovery</option>
+		<option value='2'>Reimbursement</option>
+		<option value='3'>Reject import</option>
+		<option value='4'>Cashier</option>
+	</selection>
+
+	<selection name='iadministration.yes.no.select'>
+		<option value='1'>Yes</option>
+		<option value='0'>No</option>
+	</selection>
+
+	<selection name='iterritory.artmin.select'>
+		<option value='(AUX)'>(AUX)</option>
+		<option value='(L)'>(L')</option>
+		<option value='(LA)'>(LA)</option>
+		<option value='(LE)'>(LE)</option>
+		<option value='(LES)'>(LES)</option>
+		<option value='(LOS)'>(LOS)</option>
+	</selection>
+
+	<selection name='partner.person.category.select'>
+		<option value='legalPerson'>Company</option>
+		<option value='naturalPerson'>Individual</option>
+	</selection>
+
+	<selection name='partner.assignor.type.select'>
+		<option value='syndicate'>Syndicat</option>
+		<option value='authority'>Collectivité</option>
+	</selection>
+
+	<selection name="partner.industry.sectory.select">
+		<option value="1">Agriculture</option>
+		<option value="2">Banking &amp; Insurance</option>
+		<option value="3">Biotechnologies</option>
+		<option value="4">Chemistry</option>
+		<option value="5">Communication</option>
+		<option value="6">Real Estate</option>
+		<option value="7">Services</option>
+		<option value="8">Education</option>
+		<option value="9">Electronics</option>
+		<option value="10">Energy &amp; Utilities</option>
+		<option value="11">Entertainment</option>
+		<option value="12">Media</option>
+		<option value="13">Finance</option>
+		<option value="14">Food &amp; Beverage</option>
+		<option value="15">Government</option>
+		<option value="16">Healthcare</option>
+		<option value="17">Machinery</option>
+		<option value="18">Manufacturing</option>
+		<option value="19">Non-profit</option>
+		<option value="20">Retaile</option>
+		<option value="21">Transport &amp; Logistics</option>
+		<option value="22">Telecom</option>
+		<option value="23">Apparel</option>
+		<option value="24">Other</option>
+	</selection>
+	
+	<selection name='product.product.type.select'>
+		<option value='service'>Service</option>
+		<option value='storable'>Storable</option>
+	</selection>
+
+	<selection name='product.procurement.method.select'>
+		<option value='buy'>Buy</option>
+		<option value='produce'>Produce</option>
+	</selection>
+
+	<selection name="product.application.type.select">
+		<option value="1">Product</option>
+		<option value="2">Profile</option>
+		<option value="3">Expense</option>
+	</selection>
+
+	<selection name="product.sale.supply.select">
+		<option value="0">None</option>
+		<option value="1">FromStock</option>
+		<option value="2">Purchase</option>
+		<option value="3">Produce</option>
+	</selection>
+	
+	<selection name='ialarm.type.select'>
+		<option value='invoice'>Invoice</option>
+		<option value='payment'>Payment Schedule</option>
+		<option value='reject'>Reject</option>
+	</selection>
+
+	<selection name='invoice.account.condition.invoice.sending.format.select'>
+		<option value='email'>Email</option>
+		<option value='paper'>Paper</option>
+		<option value='emailpaper'>Email and paper</option>
+		<option value='xml'>XML</option>
+	</selection>
+
+	<selection name='iimport.type.select'>
+		<option value='csv'>CSV File</option>
+		<option value='xml'>XML File</option>
+		<option value='bdd'>Database</option>
+	</selection>
+
+	<selection name='iadministration.month.select'>
+		<option value='1'>January</option>
+		<option value='2'>February</option>
+		<option value='3'>March</option>
+		<option value='4'>April</option>
+		<option value='5'>May</option>
+		<option value='6'>June</option>
+		<option value='7'>July</option>
+		<option value='8'>August</option>
+		<option value='9'>September</option>
+		<option value='10'>October</option>
+		<option value='11'>November</option>
+		<option value='12'>December</option>
+	</selection>
+
+	<selection name='mail.type.select'>
+		<option value='0'>Email</option>
+		<option value='1'>Mail</option>
+	</selection>
+
+	<selection name='mail.object.concerned.select'>
+		<option value='1'>Debt Recovery</option>
+		<option value='2'>Reimbursement</option>
+		<option value='3'>Reject import</option>
+		<option value='4'>Cashier</option>
+	</selection>
+
+	<selection name='iaccount.reject.import.state.select'>
+		<option value='0'>Draft</option>
+		<option value='1'>Validated</option>
+	</selection>
+
+	<selection name='iaccount.reject.import.type.select'>
+		<option value='0'>Direct debit</option>
+		<option value='1'>Reimbursement</option>
+		<option value='2'>Payment by IPO and IPO Cheque</option>
+	</selection>
+
+	<selection name='iaccount.interbank.account.order.import.state.select'>
+		<option value='0'>Draft</option>
+		<option value='1'>Validated</option>
+	</selection>
+	
+	<selection name='title.type.select'>
+		<option value='1'>Civility</option>
+		<option value='2'>Legal form</option>
+	</selection>
+
+	<selection name='reimbursement.export.state.select'>
+		<option value='1'>To reimburse</option>
+		<option value='2'>Reimbursed</option>
+	</selection>
+
+	<selection name='provision.service.processing.way.select'>
+		<option value='immediate'>Invoice immediately</option>
+		<option value='intoAccount'>To include in next invoice batch</option>
+	</selection>
+
+	<selection name='reminder.method.base.concerned.select'>
+		<option value='0'>Owner</option>
+		<option value='1'>Payer</option>
+	</selection>
+
+	<selection name='iaccount.account.schedule.export.state.select'>
+		<option value='0'>Draft</option>
+		<option value='1'>Validated</option>
+	</selection>
+
+	<selection name='base.base.on.select'>
+		<option value='amount'>Amount</option>
+		<option value='quantity'>Qty</option>
+	</selection>
+	
+	<selection name='iadministration.export.type.select'>
+		<option value="pdf">PDF</option>
+		<option value="xls">XLS</option>
+	</selection>
+
+	<selection name="sequence.generic.code.select">
+		<option value="partner">Partner (Cust/Suppl)</option>
+		<option value="move">Move</option>
+		<option value="customerInvoice">Customer invoice</option>
+		<option value="supplierInvoice">Supplier invoice</option>
+		<option value="customerRefund">Customer Refund</option>
+		<option value="supplierRefund">Supplier Refund</option>
+		<option value="paymentSchedule">Payment schedule</option>
+		<option value="paymentVoucher">Payment voucher</option>
+		<option value="debit">Direct debit</option>
+		<option value="debitReject">Direct debit reject</option>
+		<option value="moveLineReport">Accounting reports</option>
+		<option value="reimbursement">Reimbursements</option>
+		<option value="paymentVoucherReceiptNo">Receipt N°(Payment voucher)</option>
+		<option value="accountClearance">Overpayment clearance</option>
+		<option value="irrecoverable">Shift to irrecoverable</option>
+		<option value="chequeReject">Cheque reject</option>
+		<option value="saleInterface">Sale interface</option>
+		<option value="refundInterface">Refund interface</option>
+		<option value="treasuryInterface">Treasury interface</option>
+		<option value="purchaseInterface">Purchase interface</option>
+		<option value="moveLineExport">Accounting export</option>
+		<option value="doubtfulCustomer">Shift to doubtful receivables</option>
+		<option value="saleOrder">Sales order</option>
+		<option value="purchaseOrder">Purchase order</option>
+		<option value="eventTicket">Ticket</option>
+		<option value="intStockMove">Internal stock move</option>
+		<option value="outStockMove">Delivery stock move</option>
+		<option value="inStockMove">Receipt stock move</option>
+		<option value="inventory">Inventory</option>
+		<option value="productTrackingNumber">Product tracking number</option>
+		<option value="proTraining">Professional training</option>
+		<option value="productionOrder">Production order</option>
+		<option value="manufOrder">Manufacturing order</option>
+	</selection>
+
+	<selection name="company.paybox.hash.select">
+		<option value="SHA512">SHA512</option>
+		<option value="SHA256">SHA256</option>
+		<option value="RIPEMD160">RIPEMD160</option>
+		<option value="SHA384">SHA384</option>
+		<option value="SHA224">SHA224</option>
+		<option value="MDC2">MDC2</option>
+	</selection>
+
+	<!-- TODO à modifier, produit, taxe, paiement dans le code java ou les vues -->
+	<selection name='journal.description.type.select'>
+		<option value="0">Free</option>
+		<option value="1">Payment</option>
+		<option value="2">Invoice/Refund</option>
+		<option value="3">Only label</option>
+		<option value="4">Reject</option>
+		<option value="5">Schedule line</option>
+	</selection>
+
+	<selection name="isale.sale.rule.action.select">
+		<option value="1">Appointment setup</option>
+		<option value="2">Create personalized offer</option>
+		<option value="3">Email</option>
+		<option value="4">Mail</option>
+		<option value="5">Alarm</option>
+	</selection>
+
+	<selection name="iadministration.indicator.generator.request.type.select">
+		<option value="0">SQL</option>
+		<option value="1">JPQL</option>
+	</selection>
+
+	<selection name='iialarm.batch.action.select'>
+		<option value='0'>Anniversary date</option>
+		<option value='1'>Notification</option>
+		<option value='3'>Block while invoicing</option>
+	</selection>
+	
+	<selection name='ibase.batch.action.select'>
+		<option value='1'>Target</option>
+	</selection>
+	
+
+	<selection name="sale.order.invoicing.type.select">
+		<option value="1">Per order</option>
+		<option value="2">With payment schedule</option>
+		<option value="3">Per task</option>
+		<option value="4">Per shipment</option>
+		<option value="5">Free / Business</option>
+		<option value="6">Subscription</option>
+	</selection>
+
+	<selection name="default.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Confirmed</option>
+		<option value="3">Validated</option>
+		<option value="4">Canceled</option>
+	</selection>
+												
+	<selection name="supplychain.purchase.order.invoicing.type.select">
+		<option value="1">Free</option>
+		<option value="2">By delivery</option>
+		<option value="3">Per order</option>
+	</selection>
+		
+	<selection name="base.html.template.type.select">
+		<option value="1">Contact</option>
+		<option value="2">Campaign</option>
+		<option value="3">Purchase order</option>
+		<option value="4">Sales order</option>
+		<option value="5">Client invoice</option>
+	</selection>
+	
+	<selection name="base.keyword.type.select">
+		<option value="1">Tools</option>
+		<option value="2">Sector</option>
+		<option value="3">Work</option>
+	</selection>
+	
+	<selection name="base.routing.rule.type.select">
+		<option value="1">Contains</option>
+		<option value="2">Not contains</option>
+		<option value="3">Equal</option>
+	</selection>
+
+	<selection name="base.general.map.api.select">
+		<option value="1">Google</option>
+		<option value="2">OSM</option>
+	</selection>
+	
+	<selection name="base.tracking.number.configuration.sale.tracking.order.select">
+		<option value="1">FIFO</option>
+		<option value="2">LIFO</option>
+	</selection>
+	
+	<selection name="socialnetwork.facebook.post.privacy.select">
+		<option value="EVERYONE">Public</option>
+		<option value="FRIENDS_OF_FRIENDS">Friends of friends</option>
+		<option value="ALL_FRIENDS">All friends</option>
+		<option value="SELF">Only Me</option>
+	</selection>
+	
+	<selection name="base.price.list.type.select">
+		<option value="1">Sale</option>
+		<option value="2">Purchase</option>
+	</selection>
+	
+	<selection name="base.price.list.line.type.select">
+		<option value="1">Discount</option>
+		<option value="2">Additionnal</option>
+		<option value="3">Replace</option>
+	</selection>
+	
+	<selection name="base.price.list.line.amount.type.select">
+		<option value="1">In %</option>
+		<option value="2">Fixed</option>
+	</selection>
+	
+	
+	<selection name="day.month.select">
+		<option value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="28">28</option>
+	</selection>
+	
+	<selection name="hour.day.select">
+		<option value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+	</selection>
+	
+	<selection name="day.week.select">
+		<option value="1">Monday</option>
+		<option value="2">Tuesday</option>
+		<option value="3">Wednesday</option>
+		<option value="4">Thursday</option>
+		<option value="5">Friday</option>
+		<option value="6">Saturday</option>
+		<option value="7">Sunday</option>
+	</selection>
+	
+	<selection name="ibase.product.variant.value.application.price.select">
+		<option value="0">Sale price</option>
+		<option value="1">cost price</option>
+	</selection>
+
+
+	<selection name="base.product.version.select">
+		<option value="1">v1</option>
+		<option value="2">v2</option>
+		<option value="3">v3</option>
+		<option value="4">v4</option>
+		<option value="5">v5</option>
+	</selection>
+
+</object-views>

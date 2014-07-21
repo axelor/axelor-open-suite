@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="querie-grid" title="Queries" model="com.axelor.apps.base.db.Querie">
+    	<field name="name"/>
+        <field name="type"/>
+        <field name="metaModel"/>
+    </grid>
+    
+    <form name="querie-form" title="Querie" model="com.axelor.apps.base.db.Querie" cols="4"
+    	onNew="action-querie-record-new">
+        <field name="name"/>
+        <field name="metaModel"/>
+        <field name="type"/>
+        <field name="query" widget="CodeEditor" x-syntax="sql" hideIf="type == 3" colSpan="4"/>
+        <button name="checkQuery" title="Check query" colSpan="4" onClick="action-querie-check-query"/>
+    </form>
+    
+    <action-record name="action-querie-record-new" model="com.axelor.apps.base.db.Querie">
+    	<field name="metaModel" expr="eval: _parent?.metaModel" if="_parent?.metaModel"/>
+    	<field name="metaModel" expr="eval: _parent?.targetSelect == 1 ? com.axelor.meta.db.MetaModel.all().filter('self.name = \'Partner\'').fetchOne() : (_parent?.targetSelect == 2 ? com.axelor.meta.db.MetaModel.all().filter('self.name = \'Lead\'').fetchOne() : null)" if="_parent?.targetSelect"/>
+    </action-record>
+    
+    <action-method name="action-querie-check-query">
+    	<call class="com.axelor.apps.base.web.QuerieController" method="checkQuerie"/>
+    </action-method>
+    
+</object-views>

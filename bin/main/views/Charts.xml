@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+
+	<chart name="chart.planned.qty.by.location" title="Forecasted Stock">
+		<dataset type="jpql">
+	    <![CDATA[
+		SELECT
+	    SUM(_stockMoveLine.qty) AS qty,
+	    MONTH(_stockMove.estimatedDate) as month,
+	    _to_location.name AS location
+		FROM
+		    StockMoveLine _stockMoveLine
+		LEFT JOIN
+		    _stockMoveLine.product AS _product
+		LEFT JOIN
+		    _stockMoveLine.stockMove as _stockMove
+		LEFT JOIN
+		    _stockMove.fromLocation AS _from_location
+		LEFT JOIN
+		    _stockMove.toLocation AS _to_location
+		WHERE
+		    _product.id = :id AND _stockMoveLine.product.id = _product.id AND (_from_location.typeSelect = 1 OR _to_location.typeSelect = 1 ) AND _stockMove.estimatedDate > current_date
+		GROUP BY
+		    _from_location.id,
+		    _to_location.id,
+		    MONTH(_stockMove.estimatedDate)
+		ORDER BY
+		    MONTH(_stockMove.estimatedDate)
+	    ]]>
+	    </dataset>
+		<category key="month" type="month" title="Month"/>
+		<series key="qty" groupBy="location" type="bar" aggregate="sum" title="Quantity"/>
+	</chart>
+
+
+
+	
+	
+	
+	<chart name="chart.stock.report.for.product.variant" title="Stock" onInit="action-product-set-today-date">
+	    <search-fields>
+		    <field name="todayDate" type="date" title="Today"/>
+	  	</search-fields>
+		<dataset type="sql">
+	    <![CDATA[
+  			SELECT estimatedate,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,estimatedate) AS qty 
+					FROM (
+						(SELECT DATE(:todayDate) AS estimatedate,location.name AS locat,
+			               		(SELECT SUM(CASE WHEN move.from_location = loc.id THEN -1*qty
+			                           WHEN move.to_location = loc.id THEN qty
+			                           END) AS qty                                                                 
+		               			FROM 	supplychain_stock_move_line line,
+			                    		supplychain_stock_move move,
+			                    		supplychain_location loc,
+			                    		base_product prod 
+			               		WHERE line.stock_move = move.id 
+									AND move.real_date <= DATE(:todayDate)
+									AND move.status_select in (2,3)
+									AND line.product = prod.id
+									AND prod.parent_product = :id
+									AND loc.id = location.id
+									AND (move.from_location = loc.id OR move.to_location = loc.id)
+									AND loc.type_select = 1) AS qty
+						FROM supplychain_location_line loc_line, 
+							 supplychain_location location,
+							 base_product prod 
+						WHERE loc_line.location = location.id 
+							AND location.type_select = 1 
+							AND loc_line.product = prod.id 
+							AND prod.parent_product = :id 
+						GROUP BY location.id) 
+				   		UNION ALL
+				   		(SELECT estimated_date AS dt,locat,sum(qty)
+				                FROM (SELECT location.name AS locat,move.estimated_date AS estimated_date,
+				         	           	CASE WHEN move.from_location = location.id THEN -1*line.qty
+				                        WHEN move.to_location = location.id THEN line.qty
+				                        END AS qty
+				                     FROM supplychain_stock_move_line line 
+				                     LEFT JOIN supplychain_stock_move move ON (line.stock_move = move.id)
+				                     LEFT JOIN supplychain_location location ON (move.from_location = location.id OR move.to_location = location.id)
+				                     LEFT JOIN base_product prod ON (line.product = prod.id)
+		      	             		 WHERE prod.parent_product = :id 
+					                     AND move.estimated_date > DATE(:todayDate)
+					                     AND location.type_select = 1) location
+              						 GROUP BY estimated_date,locat) ORDER BY locat,estimatedate) location_stock;  
+	    ]]>
+	    </dataset>
+		<category key="estimatedate" type="date" title="Estimated Date"/>
+		<series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
+	</chart>
+	
+
+	 <action-record name="action-product-set-today-date" model="com.axelor.apps.base.db.Product">
+    	<field name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+    	<field name="fromDate" expr="call:com.axelor.csv.script.ImportDateTime:importDate('TODAY[-6M]')"/>
+    	<field name="toDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+    </action-record>
+    
+	
+	 <chart name="chart.stock.history.report.for.product.variant" title="Stock History" onInit="action-product-set-today-date">
+	     <search-fields>
+		    <field name="fromDate" type="date" title="From" widget="[required=true]"/>
+		    <field name="toDate" type="date" title="To" widget="[required=true]"/>
+	  	</search-fields>
+		<dataset type="sql">
+		 <![CDATA[
+		    SELECT 
+		         real_date,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,real_date) AS qty 
+			FROM 
+				 ((SELECT DATE(:fromDate) AS real_date,location.name AS locat,
+			     (SELECT SUM(CASE WHEN move.from_location = loc.id THEN -1*qty WHEN move.to_location = loc.id THEN qty END) AS qty                                                                 
+       		FROM  
+       			supplychain_stock_move_line line,
+       			supplychain_stock_move move,	        
+       			supplychain_location loc,
+       			base_product prod 
+      		WHERE 
+      		    line.stock_move = move.id 
+			    AND move.real_date <= DATE(:fromDate)
+				AND move.status_select in (2,3)
+				AND line.product = prod.id
+				AND prod.parent_product = :id
+				AND loc.id = location.id
+				AND (move.from_location = loc.id OR move.to_location = loc.id)
+				AND loc.type_select = 1) AS qty
+		    FROM 
+		   		supplychain_location_line loc_line, 
+		   		supplychain_location location,
+		   		base_product prod 
+		    WHERE 
+		        loc_line.location = location.id 
+				AND location.type_select = 1 
+				AND loc_line.product = prod.id
+				AND prod.parent_product = :id
+		    GROUP BY 
+		   		location.id) 
+		    UNION ALL
+		   	    (SELECT real_date AS dt,locat,sum(qty)
+		    FROM 
+		        (SELECT location.name AS locat,move.real_date AS real_date,
+     	           	CASE WHEN move.from_location = location.id THEN -1*line.qty
+                    	 WHEN move.to_location = location.id THEN line.qty
+                    END AS qty
+		    FROM 
+		     	supplychain_stock_move_line line 
+            LEFT JOIN 
+             	supplychain_stock_move move ON (line.stock_move = move.id)
+            LEFT JOIN 
+             	supplychain_location location ON (move.from_location = location.id OR move.to_location = location.id)
+		    WHERE  
+		    	line.product = :id
+	            AND move.real_date > DATE(:fromDate)
+			    AND move.real_date <= DATE(:toDate)
+	            AND location.type_select = 1) location
+      	     GROUP BY 
+      	          real_date,locat) 
+      	     ORDER BY 
+      	          locat,real_date) location_stock;
+      	    ]]>  
+		</dataset>
+	    <category key="real_date" type="date" title="Date"/>
+		<series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
+	 </chart>
+	 
+	 
+	
+	<chart name="chart.customers.by.country.bar" title="Customers by country">
+		<dataset type="sql">
+		    <![CDATA[
+			SELECT
+			    count(_partner.id) AS partners,
+			    _country.name AS country_name
+			FROM
+				base_partner AS _partner
+			JOIN
+				base_address AS _address ON _address.id = _partner.main_invoicing_address
+			JOIN
+				base_country AS _country ON _country.id = _address.addressL7country
+			WHERE
+				_partner.customer_type_select = 3				
+			GROUP BY
+				_country.name
+		    ]]>
+	    </dataset>
+	    <category key="country_name" type="text" title="Country"/>
+	    <series key="partners"  type="donut" title="Customers"/>
+	 </chart>
+	  	
+	<chart name="chart.customers.by.industrySector.bar" title="Customers by Industry Sector">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+          COUNT(self.id) AS _total_partner,
+	      selection_item.title as _industry_sector
+	    FROM
+	        base_partner as self
+	    LEFT JOIN
+	        meta_select as selection ON selection.name = 'partner.industry.sectory.select'
+	    LEFT JOIN 
+	    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+		WHERE
+			cast(selection_item.value as decimal) = self.industry_sector_select	
+			and self.is_contact != true and self.customer_type_select = 3		
+	    GROUP BY
+		   _industry_sector
+		ORDER BY
+		   _industry_sector
+	    ]]>
+	    </dataset>
+	    <category key="_industry_sector" type="text" title="Industry Sector"/>
+    	<series key="_total_partner" type="donut" title="Customers"/>
+	 </chart>
+
+	<chart name="chart.suppliers.by.country.bar" title="Suppliers by country">
+	  <dataset type="sql">
+	    
+	    SELECT
+	      count(_partner.id) AS partners,
+	      _country.name AS country_name
+	    FROM
+	      base_partner AS _partner
+	    JOIN
+	      base_address AS _address ON _address.id = _partner.main_invoicing_address
+	    JOIN
+	      base_country AS _country ON _country.id = _address.addressL7country
+	    WHERE
+	      _partner.supplier_type_select = 3        
+	    GROUP BY
+	      _country.name
+	    
+	  </dataset>
+	  <category key="country_name" type="text" title="Country"/>
+	  <series key="partners" type="donut" title="Suppliers"/>
+	</chart>
+	
+	<chart name="chart.partner.prospects.by.country" title="Prospects by country">
+	  <dataset type="sql">
+	  SELECT
+	    COUNT(self.id) AS _total_partner,
+	    addressCountry.name as _address_country
+	  FROM
+	    base_partner as self
+	  LEFT JOIN
+	    base_address as baseAddress ON baseAddress.id=self.main_invoicing_address
+	  LEFT JOIN  
+	    base_country AS addressCountry ON addressCountry.id=baseAddress.addressl7country
+	  WHERE
+	    self.customer_type_select=2 AND is_contact=false
+	  GROUP BY
+	   _address_country	
+	  ORDER BY
+	   _address_country
+	  </dataset>
+	  <category key="_address_country" type="text" title="Country"/>
+	  <series key="_total_partner" type="donut" title="Partners"/>
+	</chart>
+	
+	<chart name="chart.partner.prospects.by.industrySector" title="Prospects by Industry Sector">
+	  <dataset type="sql">
+		  SELECT
+		    COUNT(self.id) AS _total_partner,
+		    selection_item.title as _industry_sector
+		  FROM
+		    base_partner as self
+		  LEFT JOIN
+		    meta_select as selection ON selection.name = 'partner.industry.sectory.select'
+		  LEFT JOIN 
+		    meta_select_item as selection_item ON selection_item.select_id = selection.id
+		  JOIN
+			base_user_info _user
+			ON _user.id = :_user_id
+		  JOIN
+			base_partner_company_set m2m_companySet
+			ON m2m_companySet.base_partner=self.id
+			AND m2m_companySet.company_set=_user.active_company	
+		  WHERE
+		    cast(selection_item.value as decimal) = self.industry_sector_select AND self.customer_type_select=2 AND is_contact=true
+		  GROUP BY
+		   _industry_sector	
+		  ORDER BY
+		   _industry_sector
+	  </dataset>
+	  <category key="_industry_sector" type="text" title="Industry Sector"/>
+	  <series key="_total_partner" type="donut" title="Partners"/>
+	</chart>
+
+	
+</object-views>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	
+	<grid name="resource-grid2" title="Resources" model="com.axelor.apps.consulting.db.Resource">
+        <field name="employee"/>
+        <field name="dateOfAvailability"/>
+        <field name="stepSelect"/>
+        <field name="estimatedProfitability"/>
+        <field name="priceTargetForReturn"/>
+        <field name="statusSelect"/>
+        <field name="project"/>
+        <field name="lostReasonSelect"/>
+        <field name="lostReasonNote"/>
+        <field name="product"/>
+        <field name="candidate"/>
+    </grid>
+    <form name="resource-form2" title="Resource" cols="6" model="com.axelor.apps.consulting.db.Resource">
+        <group colSpan="6" cols="6">
+	        <field name="employee"/>
+	        <field name="dateOfAvailability"/>
+	        <field name="stepSelect"/>
+	        <break/>
+	        <field name="estimatedProfitability"/>
+	        <field name="priceTargetForReturn"/>
+	        <field name="statusSelect"/>
+        <break/>
+	        <field name="project"/>
+	        <field name="lostReasonSelect"/>
+	        <break/>
+	        <field name="lostReasonNote"/>
+	        <field name="product"/>
+	        <field name="candidate"/>
+       		<break/>
+        </group>
+        <group title="Action" colSpan="3" cols="3">
+	        <button name="sendCvByMail" title="Send cv by mail"/>
+	        <button name="createMeeting" title="Create meeting"/>
+	        <button name="createProposition" title="Create proposition"/>
+	        <break/>
+	        <button name="ok" title="Ok"/>
+	        <button name="ko" title="Ko"/>
+        </group>       
+    </form>
+</object-views>

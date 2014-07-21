@@ -22,19 +22,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
-
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.Year;
-import com.axelor.apps.base.db.General;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Status;
-import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.Permission;
-import com.axelor.internal.cglib.util.StringSwitcher;
 import com.google.inject.persist.Transactional;
 
 
@@ -48,7 +37,7 @@ public class ImportPermission {
 				String groups = (String) values.get("group");
 				if(permission.getId()!= null){
 					if(groups != null && !groups.isEmpty()){
-						for(Group group: Group.all().filter("code in ?1",Arrays.asList(groups.split("\\|"))).fetch()){
+						for(Group group: Group.filter("code in ?1",Arrays.asList(groups.split("\\|"))).fetch()){
 							Set<Permission> permissions = group.getPermissions();
 							if(permissions == null)
 								permissions = new HashSet<Permission>();

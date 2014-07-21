@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import com.axelor.apps.base.db.IImports;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.data.Listener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.xml.XMLImporter;
@@ -34,7 +33,6 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
 
 public class ImportService {
 	
@@ -51,11 +49,9 @@ public class ImportService {
 		
 		
 		if (type != null && !type.equals(IImports.BDD) && !folder.exists()) {
-			throw new AxelorException(String.format("%s :\n Erreur : Dossier inacessible.",
-					GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format("Erreur : Dossier inacessible."), IException.CONFIGURATION_ERROR);
 		} else if (!configFile.exists()) {
-			throw new AxelorException(String.format("%s :\n Erreur : Fichier de mapping inacessible.",
-					GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format("Erreur : Fichier de mapping inacessible."), IException.CONFIGURATION_ERROR);
 		}
 		
 		Injector injector = Guice.createInjector(new AbstractModule() {

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+	<form name="import-permission-form" title="Import permission" model="com.axelor.apps.base.db.Import" onNew="action-default-import-permission-record">
+		<field name="typeSelect" readonly="true"/>
+		<field name="configPath" colSpan="4" required="true"/>
+		<field name="path" colSpan="4" required="true"/>
+		<field name="log" colSpan="4"/>
+		<button name="import" title="Importer" colSpan="4"
+			onClick="save,com.axelor.apps.base.web.ImportController:launchImport" />
+	</form>
+	
+	<grid name="import-permission-grid" title="Import permission" model="com.axelor.apps.base.db.Import">
+		<field name="typeSelect"/>
+		<field name="configPath"/>
+		<field name="path"/>
+	</grid>
+	
+	<action-record name="action-default-import-permission-record"
+		model="com.axelor.apps.base.db.Import">
+		<field name="typeSelect" expr="csv" />
+	</action-record>
+	
+</object-views>

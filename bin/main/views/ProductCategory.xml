@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="product-category-grid" title="Product categories" model="com.axelor.apps.base.db.ProductCategory" orderBy="name">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="productFamily"/>
+        <field name="parentProductCategory"/>
+    </grid>
+    
+    <form name="product-category-form" title="Product category" model="com.axelor.apps.base.db.ProductCategory" cols="6">
+	    <toolbar>
+			<button name="viewProducts" title="View Products" onClick="action-view-product-by-category"/>
+		</toolbar>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="productFamily"/>
+        <field name="parentProductCategory"/>
+		<break />
+		<!-- if anyone add new page in this notebook, please remove this if-module attribute from notebook tag and add it to page tag -->
+		<!-- for the time it has only one page so I have added if-module to notebook, -->
+		<!-- if it has multiple pages, we should add if-module to pages with valid module-name -->
+		<notebook colSpan="4" if-module="axelor-supplychain">
+			<page title="Sales Turnover" cols="3" colWidths="20%,30%,20%,30%">
+				<portlet action="portal.category.sale.turnover.per.month" colSpan="4" height="350" />
+			</page>
+		</notebook>
+    </form>    
+</object-views>

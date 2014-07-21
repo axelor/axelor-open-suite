@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+    <grid name="product-family-grid" title="Products families" model="com.axelor.apps.base.db.ProductFamily" orderBy="name">
+        <field name="name"/>
+        <field name="code"/>
+    </grid>
+    
+    <form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" cols="4">
+	    <toolbar>
+			<button name="viewProducts" title="View Products" onClick="action-view-product-by-family"/>
+		</toolbar>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form"
+        domain="self.typeSelect = 1" colSpan="4"/>
+    </form>
+    
+    <action-view name="action-view-product-by-family" title="Products" model="com.axelor.apps.base.db.Product">
+		<view type="grid" name="product-grid"/>
+		<view type="form" name="product-form"/>
+		<domain>self.productFamily.id = :_productFamilyId</domain>
+		<context name="_productFamilyId" expr="eval: __this__.id"/>
+	</action-view>
+	
+</object-views>

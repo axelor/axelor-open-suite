@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="CurrencyConversionLine" lang="java">
+  
+    <integer name="importId"/>
+    <many-to-one name="general" ref="com.axelor.apps.base.db.General" title="Administration"/>
+    <many-to-one name="startCurrency" ref="com.axelor.apps.base.db.Currency" title="Source Currency" required="true"/>
+    <many-to-one name="endCurrency" ref="com.axelor.apps.base.db.Currency" title="Destination Currency" required="true"/>
+    <decimal name="exchangeRate" scale="4" precision="20" title="Exchange rate"/>
+    <date name="fromDate" title="From Date" required="true"/>
+    <date name="toDate" title="To Date"/>
+    <string name="variations"  title="Variation"/>
+  </entity>
+  
+</domain-models>

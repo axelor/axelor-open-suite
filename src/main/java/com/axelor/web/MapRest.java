@@ -17,11 +17,7 @@
  */
 package com.axelor.web;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,25 +25,22 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.crm.db.Lead;
-import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.i18n.I18n;
+import com.axelor.apps.base.service.MapService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 @Path("/map")
 public class MapRest {
 
-	@Inject AddressService addressService;
+	@Inject
+	private Provider<MapService> mapProvider;
+	
 	
 	@Transactional
 	@Path("/partner")
@@ -72,7 +65,7 @@ public class MapRest {
 			
 			if (partner.getMainInvoicingAddress() != null) {
 				Address address = partner.getMainInvoicingAddress();
-				String addressString = makeAddressString(address, objectNode);
+				String addressString = mapProvider.get().makeAddressString(address, objectNode);
 				address.save();
 				objectNode.put("address", addressString);				
 			}
@@ -113,7 +106,7 @@ public class MapRest {
 			
 			if (customer.getMainInvoicingAddress() != null) {
 				Address address = customer.getMainInvoicingAddress();
-				String addressString = makeAddressString(address, objectNode);
+				String addressString = mapProvider.get().makeAddressString(address, objectNode);
 				address.save();
 				objectNode.put("address", addressString);							
 			}
@@ -150,7 +143,7 @@ public class MapRest {
 			
 			if (prospect.getMainInvoicingAddress() != null) {
 				Address address = prospect.getMainInvoicingAddress();
-				String addressString = makeAddressString(address, objectNode);
+				String addressString = mapProvider.get().makeAddressString(address, objectNode);
 				address.save();
 				objectNode.put("address", addressString);							
 			}
@@ -187,7 +180,7 @@ public class MapRest {
 			
 			if (supplier.getMainInvoicingAddress() != null) {
 				Address address = supplier.getMainInvoicingAddress();
-				String addressString = makeAddressString(address, objectNode);
+				String addressString = mapProvider.get().makeAddressString(address, objectNode);
 				address.save();
 				objectNode.put("address", addressString);								
 			}
@@ -201,207 +194,5 @@ public class MapRest {
 		return mainNode;
 	}
 
-	@Path("/lead")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public JsonNode getLeads() {
-
-		List<? extends Lead> leads = Lead.all_().fetch();
-		JsonNodeFactory factory = JsonNodeFactory.instance;
-		ObjectNode mainNode = factory.objectNode();
-		ArrayNode arrayNode = factory.arrayNode();
-
-		for (Lead lead : leads) {
-			
-			String fullName = lead.getFirstName() + " " + lead.getName();
-			
-			if (lead.getEnterpriseName() != null) {
-				fullName = lead.getEnterpriseName() + "</br>" + fullName;
-			}			
-			ObjectNode objectNode = factory.objectNode();
-			objectNode.put("fullName", fullName);
-			objectNode.put("fixedPhone", lead.getFixedPhone() != null ? lead.getFixedPhone() : " ");
-			
-			if (lead.getEmailAddress() != null) {
-				objectNode.put("emailAddress", lead.getEmailAddress().getAddress());
-			}
-			
-			StringBuilder addressString = new StringBuilder();
-			
-			if (lead.getPrimaryAddress() != null) {
-				addressString.append(lead.getPrimaryAddress() + "</br>");
-			}
-			if (lead.getPrimaryCity() != null) {
-				addressString.append(lead.getPrimaryCity() + "</br>");
-			}
-			if (lead.getPrimaryPostalCode() != null) {
-				addressString.append(lead.getPrimaryPostalCode() + "</br>");
-			}
-			if (lead.getPrimaryState() != null) {
-				addressString.append(lead.getPrimaryState() + "</br>");
-			}
-			if (lead.getPrimaryCountry() != null) {
-				addressString.append(lead.getPrimaryCountry().getName());
-			}						 
-			
-			BigDecimal latit = BigDecimal.ZERO;
-			BigDecimal longit = BigDecimal.ZERO;				
-			String qString = addressString.toString().replaceAll("</br>", " ");					
-			Map<String,Object> latlng =  addressService.getMapGoogle(qString, latit, longit);
-			latit = (BigDecimal) latlng.get("latitude");
-			longit = (BigDecimal) latlng.get("longitude");	
-			
-			objectNode.put("latit", latit);
-			objectNode.put("longit", longit);						
-			objectNode.put("address", addressString.toString());
-			
-			objectNode.put("pinColor", "yellow");
-			objectNode.put("pinChar", "L");			
-			arrayNode.add(objectNode);	
-		}
-		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
-		return mainNode;
-	}
 	
-	@Transactional
-	@Path("/opportunity")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public JsonNode getOpportunities() {
-
-		List<? extends Opportunity> opportunities = Opportunity.all_().fetch();
-		JsonNodeFactory factory = JsonNodeFactory.instance;
-		ObjectNode mainNode = factory.objectNode();
-		ArrayNode arrayNode = factory.arrayNode();
-
-		for (Opportunity opportunity : opportunities) {
-			
-			Partner partner = opportunity.getPartner();
-			if (partner == null) continue;
-			
-			ObjectNode objectNode = factory.objectNode();
-			
-			String currencyCode = "";
-			if (opportunity.getCurrency() != null) {
-				currencyCode = opportunity.getCurrency().getCode();
-			}
-			
-			String amtLabel = "Amount";
-			if (!Strings.isNullOrEmpty(I18n.get("amount"))) {
-				amtLabel = I18n.get("amount");				
-			}
-			String amount = amtLabel + " : " +opportunity.getAmount() + " " + currencyCode;
-			
-			objectNode.put("fullName", opportunity.getName() + "</br>" + amount);
-			objectNode.put("fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : " ");
-			
-			if (partner.getEmailAddress() != null) {
-				objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
-			}
-			
-			if (partner.getMainInvoicingAddress() != null) {
-				Address address = partner.getMainInvoicingAddress();
-				String addressString = makeAddressString(address, objectNode);
-				address.save();
-				objectNode.put("address", addressString);							
-			}
-			
-			objectNode.put("pinColor", "pink");
-			objectNode.put("pinChar", "O");			
-			arrayNode.add(objectNode);	
-		}
-		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
-		return mainNode;
-	}	
-
-	private String makeAddressString(Address address, ObjectNode objectNode) {
-
-		BigDecimal latit = address.getLatit();
-		BigDecimal longit = address.getLongit();
-		
-		if (BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0) {
-			
-			String qString = address.getFullName();					
-				Map<String,Object> latlng =  addressService.getMapGoogle(qString, latit, longit);
-				latit = (BigDecimal) latlng.get("latitude");
-				longit = (BigDecimal) latlng.get("longitude");
-				address.setLatit(latit);
-				address.setLongit(longit);
-		}
-		
-		objectNode.put("latit", latit);
-		objectNode.put("longit", longit);
-		StringBuilder addressString = new StringBuilder();
-		
-		if (address.getAddressL2() != null) {
-			addressString.append(address.getAddressL2() + "</br>");
-		}
-		if (address.getAddressL3() != null) {
-			addressString.append(address.getAddressL3() + "</br>");
-		}
-		if (address.getAddressL4() != null) {
-			addressString.append(address.getAddressL4() + "</br>");
-		}
-		if (address.getAddressL5() != null) {
-			addressString.append(address.getAddressL5() + "</br>");
-		}
-		if (address.getAddressL6() != null) {
-			addressString.append(address.getAddressL6());
-		}						 
-		if (address.getAddressL7Country() != null) {
-			addressString = addressString.append("</br>" + address.getAddressL7Country().getName());
-		}		
-		return addressString.toString();
-	}
-	
-	@Path("/geomap/turnover")
-	@GET	
-	@Produces(MediaType.APPLICATION_JSON)
-	public JsonNode getGeoMapData() {
-		
-		Map<String, BigDecimal> data = new HashMap<String, BigDecimal>();		
-		List<? extends SaleOrder> orders = SaleOrder.all_().filter("self.statusSelect=?", 3).fetch();
-		JsonNodeFactory factory = JsonNodeFactory.instance;
-		ObjectNode mainNode = factory.objectNode();
-		ArrayNode arrayNode = factory.arrayNode();
-		
-		ArrayNode labelNode = factory.arrayNode();
-		labelNode.add("Country");
-		labelNode.add("Turnover");
-		arrayNode.add(labelNode);
-		
-		for (SaleOrder so : orders) {
-			
-			Country country = so.getMainInvoicingAddress().getAddressL7Country();
-			BigDecimal value = so.getExTaxTotal();		
-			
-			if (country != null) {
-				String key = country.getName();				
-				
-				if (data.containsKey(key)) {
-					BigDecimal oldValue = data.get(key);
-					oldValue = oldValue.add(value);
-					data.put(key, oldValue);
-				}
-				else {
-					data.put(key, value);
-				}				
-			}			
-		}
-		
-		Iterator<String> keys = data.keySet().iterator();
-		while(keys.hasNext()) {
-			String key = keys.next();
-			ArrayNode dataNode  = factory.arrayNode();
-			dataNode.add(key);
-			dataNode.add(data.get(key));
-			arrayNode.add(dataNode);
-		}				
-		
-		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
-		return mainNode;
-	}	
 }

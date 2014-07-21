@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+    <grid name="base-batch-grid" title="Base batches" model="com.axelor.apps.base.db.BaseBatch">
+    	<field name="actionSelect" />
+    	<field name="code" />
+		<field name="company" />
+		<field name="createdOn"/>
+		<field name="createdBy"/>
+    </grid>
+ 
+    <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch" cols="4"
+    onLoad="action-base-batch-attrs-action-select,action-base-batch-attrs-action-select" 
+    onNew="action-base-batch-record-on-new,action-base-batch-attrs-action-select">
+    	<field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
+    	<field name="code" />
+    	<field name="company" widget="SuggestBox"/>
+    	<break/>
+    	<notebook colSpan="4">
+    		<page name="targetPage" title="Target page" cols="4">
+    			<field name="targetConfigurationSet"/>
+    			<button name="targetBatch" title="Target batch" colSpan="4" onClick="save,action-base-batch-method-action-target" />
+    		</page>
+    		<page title="Information" cols="4">
+    			<field name="createdOn" title="Created on"/>
+				<field name="createdBy" title="Created by" />
+		    	<field name="description" showTitle="false" colSpan="4" />
+		    	<field name="batchList" colSpan="4" />
+    		</page>
+    	</notebook>   	
+    </form>
+    
+    <!-- ACTION RECORD -->
+    <action-record name="action-base-batch-record-on-new" model="com.axelor.apps.base.db.BaseBatch">
+		<field name="createdOn" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		<field name="createdBy" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-record>
+    
+    <!-- ACTION METHOD -->
+	<action-method name="action-base-batch-method-action-target">
+		<call class="com.axelor.apps.base.web.BaseBatchController" method="actionTarget"/>
+	</action-method>
+	
+    <!-- ACTION ATTRS -->
+    <action-attrs name="action-base-batch-attrs-action-select">
+	    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetPage"/>
+	    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetConfigurationSet"/>
+	</action-attrs>
+	
+</object-views>

@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantValue;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.google.inject.Inject;
 
@@ -38,15 +37,6 @@ public class ProductVariantService {
 
 	@Inject
 	private SequenceService sequenceService;
-	
-	private String exceptionMsg;
-	
-	@Inject
-	public ProductVariantService() {
-
-		this.exceptionMsg = GeneralService.getExceptionAccountingMsg();
-		
-	}
 	
 	
 	public ProductVariant createProductVariant(ProductVariantAttr productVariantAttr1, ProductVariantAttr productVariantAttr2, 

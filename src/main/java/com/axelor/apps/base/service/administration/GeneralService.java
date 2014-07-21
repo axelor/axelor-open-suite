@@ -25,24 +25,23 @@ import javax.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UserInfo;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserInfoServiceImpl;
 
 @Singleton
-public final class GeneralService {
+public class GeneralService {
 
-	private static final String EXCEPTION = "Warning !";
+	protected static final String EXCEPTION = "Warning !";
 	
 	private static GeneralService INSTANCE;
 	
 	private Long administrationId;
 	
 	@Inject
-	private GeneralService() {
+	protected GeneralService() {
 	
 		General general = General.all().fetchOne();
 		if(general != null)  {
@@ -79,14 +78,14 @@ public final class GeneralService {
 	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
 	 * sinon récupère celle de l'administration générale,
 	 * sinon date du jour.
-	 * 
+	 * private
 	 * @return
 	 */
 	public static DateTime getTodayDateTime(){	
 		
 		DateTime todayDateTime = new DateTime();
 		
-		UserInfoService userInfoService = new UserInfoService();
+		UserInfoServiceImpl userInfoService = new UserInfoServiceImpl();
 		UserInfo user = userInfoService.getUserInfo();
 		
 		if (user != null && user.getToday() != null){
@@ -144,50 +143,6 @@ public final class GeneralService {
 // Message exception	
 	
 	/**
-	 * Obtenir le message d'erreur pour la facturation.
-	 * 
-	 * @return
-	 */
-	public static String getExceptionInvoiceMsg(){
-		
-		if (getGeneral() != null) {
-			
-			if (getGeneral().getExceptionInvoiceMsg() != null ) {
-				return getGeneral().getExceptionInvoiceMsg();
-			}
-			else {
-				return getGeneral().getExceptionDefaultMsg();
-			}
-		}
-		else {
-			return EXCEPTION;
-		}
-		
-	}
-	
-	/**
-	 * Obtenir le message d'erreur pour la relance.
-	 * 
-	 * @return
-	 */
-	public static String getExceptionReminderMsg(){
-		
-		if (getGeneral() != null) {
-			
-			if (getGeneral().getExceptionReminderMsg() != null ) {
-				return getGeneral().getExceptionReminderMsg();
-			}
-			else {
-				return getGeneral().getExceptionDefaultMsg();
-			}
-		}
-		else {
-			return EXCEPTION;
-		}
-		
-	}
-	
-	/**
 	 * Obtenir le message d'erreur pour le moteur d'email et courrier.
 	 * 
 	 * @return
@@ -209,27 +164,6 @@ public final class GeneralService {
 		
 	}
 	
-	/**
-	 * Obtenir le message d'erreur pour la compta.
-	 * 
-	 * @return
-	 */
-	public static String getExceptionAccountingMsg(){
-		
-		if (getGeneral() != null) {
-			
-			if (getGeneral().getExceptionAccountingMsg() != null ) {
-				return getGeneral().getExceptionAccountingMsg();
-			}
-			else {
-				return getGeneral().getExceptionDefaultMsg();
-			}
-		}
-		else {
-			return EXCEPTION;
-		}
-		
-	}
 	
 	/**
 	 * Obtenir le message d'erreur pour les achats/ventes.
@@ -254,36 +188,6 @@ public final class GeneralService {
 	}
 
 
-
-// Tax 
-	
-	/**
-	 * Obtenir la tva à 0%
-	 * 
-	 * @return
-	 */
-	public static Tax getDefaultExemptionTax(){
-		if (getGeneral() != null) { return getGeneral().getDefaultExemptionTax(); }
-		else { return null; }
-	}
-	
-	
-// Consolidation des écritures de factures
-	/**
-	 * Savoir si le logger est activé
-	 * 
-	 * @return
-	 */
-	public static boolean IsInvoiceMoveConsolidated(){
-		
-		if (getGeneral() != null){
-			return getGeneral().getIsInvoiceMoveConsolidated();
-		}
-		
-		return false;
-	}
-	
-	
 // Conversion de devise
 	
 	/**

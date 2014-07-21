@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="TaxLine" lang="java" cachable="true">
+  
+    <integer name="importId"/>
+    <many-to-one name="tax" ref="Tax" title="Tax" />
+    <date name="startDate" title="Application start Date" required="true"/>
+    <date name="endDate" title="Run off Date" />
+    <decimal name="value" title="Rate" scale="3" precision="20"/>
+    
+    <string name="name" namecolumn="true" search="tax,startDate,endDate" title="Name">
+	    <![CDATA[
+	    	String name = "";
+	    	if(tax != null)  { name += tax.getName();  }
+			name += " : " + startDate;
+			if (endDate != null) { name += " - " + endDate; }
+	    	return name;
+	   	]]>
+   	</string>
+  
+  </entity>
+
+</domain-models>
