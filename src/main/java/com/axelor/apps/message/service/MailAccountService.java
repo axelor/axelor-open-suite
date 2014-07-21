@@ -17,27 +17,11 @@
  */
 package com.axelor.apps.message.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.message.db.MailAccount;
-import com.google.inject.Inject;
 
-public class MailAccountService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(MailAccountService.class);
-	
-	@Inject
-	private UserInfoService uis;
+public interface MailAccountService {
 
 	
-	
-	public MailAccount getDefaultMailAccount()  {
-		
-		MailAccount mailAccount = MailAccount.filter("self.userInfo = ?1 AND self.isDefault = true", uis.getUserInfo()).fetchOne();
-		
-		return mailAccount;
-	}
+	public MailAccount getDefaultMailAccount();
 	
 }

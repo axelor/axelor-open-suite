@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+
+	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+
+	<selection name="message.related.to.select">
+		<option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
+		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
+		<option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
+		<option value="com.axelor.apps.base.db.Product">Product</option>
+		<option value="com.axelor.apps.crm.db.Event">Event</option>
+		<option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
+		<option value="com.axelor.apps.organisation.db.Project">Project/Business</option>
+		<option value="com.axelor.apps.organisation.db.Task">Task (Project)</option>
+	</selection>
+
+	<selection name="message.type.select">
+		<option value="1">Received</option>
+		<option value="2">Sent</option>
+	</selection>
+
+	<selection name="message.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Sent</option>
+		<option value="3">Deleted</option>
+	</selection>
+				
+	<selection name="mail.account.server.type.select">
+		<option value="1">POP</option>
+		<option value="2">IMAP</option>
+	</selection>			
+	
+	<selection name="message.media.type.select">
+		<option value="1">Mail</option>
+		<option value="2">Email</option>
+		<option value="3">Chat</option>
+	</selection>
+
+</object-views>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	
+    <grid name="email-address-grid" title="Email addresses" model="com.axelor.apps.message.db.EmailAddress">
+        <field name="name"/>
+    </grid>
+    
+    <form name="email-address-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress" cols="2">
+		<field name="partner"/>
+		<field name="address" widget="Email" onChange="action-check-string-email-address" />
+    </form>
+    
+    <form name="email-address-simple-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress" cols="2">
+		<field name="address" widget="Email" onChange="action-check-string-email-address" />
+    </form>
+    
+	<action-validate name="action-check-string-email-address">
+		<error message="Please input valid email address" if="address != null &amp;&amp; !address.matches('^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$')" action="action-check-string-email-address-clear"/>
+	</action-validate>
+    
+    <action-record name="action-check-string-email-address-clear" model="com.axelor.apps.base.db.General">
+		<field name="address"  expr="eval:null"/>
+	</action-record>
+	
+</object-views>

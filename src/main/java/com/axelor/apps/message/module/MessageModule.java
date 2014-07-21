@@ -15,23 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.message.service;
+package com.axelor.apps.message.module;
 
-import java.util.List;
+import com.axelor.app.AxelorModule;
+import com.axelor.app.AxelorModuleInfo;
+import com.axelor.apps.message.service.MailAccountService;
+import com.axelor.apps.message.service.MailAccountServiceImpl;
+import com.axelor.apps.message.service.MessageService;
+import com.axelor.apps.message.service.MessageServiceImpl;
 
-import com.axelor.apps.base.db.Template;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.Message;
-import com.axelor.exception.AxelorException;
-import com.axelor.tool.template.TemplateMaker;
+@AxelorModuleInfo(name = "axelor-message")
+public class MessageModule extends AxelorModule {
 
-public interface TemplateMessageService {
-
-	public Message generateMessage(Object object, long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException;
-	
-	public List<EmailAddress> getEmailAddress(String recipients);
-	
-	public TemplateMaker initMaker(long objectId, String model, String tag);
-	
-	
+    @Override
+    protected void configure() {
+        bind(MessageService.class).to(MessageServiceImpl.class);
+        bind(MailAccountService.class).to(MailAccountServiceImpl.class);
+    }
 }

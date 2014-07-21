@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Template" lang="java">
+  	
+  	<string name="name" title="Name" required="true" namecolumn="true"/>
+  	<string name="content" large="true" multiline="true" title="Content"/>
+  	<string name="subject" large="true" multiline="true" title="Suject"/>
+  	<string name="toRecipients" large="true" multiline="true" title="To"/>
+  	<string name="ccRecipients" large="true" multiline="true" title="Cc"/>
+  	<string name="bccRecipients" large="true" multiline="true" title="Bcc"/>
+  	<string name="target" title="Target receptor"/>
+  	<integer name="mediaTypeSelect" title="Media Type" selection="message.media.type.select"/>
+  	<string name="addressBlock" large="true" multiline="true" title="Address Block"/>
+<!--   	<many-to-one name="templateContext" ref="com.axelor.apps.base.db.TemplateContext" /> -->
+<!--   	<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/> -->
+	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
+	<boolean name="isDefault" title="Default ?"/>
+	<string name="filePath" title="File path"/>
+    
+  </entity>
+
+</domain-models>

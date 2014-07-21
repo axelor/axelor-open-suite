@@ -4,11 +4,10 @@ module {
 	name "axelor-message"
 	title "Axelor :: Message"
 	
-	removable true
+	removable false
 
 	module "modules:axelor-exception"
 	module "modules:axelor-tool"
-	module "modules:axelor-base"
 }
 
 dependencies {

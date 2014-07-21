@@ -28,8 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.message.mail.MailSender;
+import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.test.GuiceModules;
 import com.axelor.test.GuiceRunner;
 import com.axelor.tool.template.TemplateMaker;
@@ -49,18 +48,16 @@ public class TemplateSender {
 	public String content = ""
 			+"<h1>About Me ($contact.name;format=\"upper\"$)</h1>"
 			+"<hr />"
-			+"<p><strong>ImportID:</strong> $contact.importId$</p>"
-			+"<p><strong>Title: $contact.titleSelect$</p>"
-			+"<p><strong>Phone:</strong> $contact.fixedPhonePro$</p>"
-			+"<p><strong>Email:</strong> $contact.email;format=\"upper\"$</p>";
+			+"<p><strong>ImportID:</strong> $emailAddress.importId$</p>"
+			+"<p><strong>Name: $emailAddress.name$</p>"
+			+"<p><strong>Email:</strong> $emailAddress.address;format=\"upper\"$</p>";
 
 	public String contentWithContext = ""
 			+"<h1>About Me ($contact.name;format=\"upper\"$)</h1>"
 			+"<hr />"
-			+"<p><strong>ImportID:</strong> $contact.importId$</p>"
-			+"<p><strong>Title: $contact.titleSelect$</p>"
-			+"<p><strong>Phone:</strong> $contact.fixedPhonePro$</p>"
-			+"<p><strong>Email:</strong> $contact.email;format=\"upper\"$</p>"
+			+"<p><strong>ImportID:</strong> $emailAddress.importId$</p>"
+			+"<p><strong>Name: $emailAddress.name$</p>"
+			+"<p><strong>Email:</strong> $emailAddress.address;format=\"upper\"$</p>"
 			+"<pre>public class Hello {<br /><br />"
 			+"private String testKey1 = $testKey1$<br />"
 			+"private String testKey2 = $testKey2$<br />"
@@ -75,7 +72,7 @@ public class TemplateSender {
 		//Set template
 		maker.setTemplate(content);
 		//Set context
-		maker.setContext(Partner.all().filter("self.isContact IS TRUE").fetchOne(), "contact");
+		maker.setContext(EmailAddress.all().fetchOne(), "emailAddress");
 		//Make it
 		String result = maker.make();
 
@@ -108,7 +105,7 @@ public class TemplateSender {
 		//Set template
 		maker.setTemplate(contentWithContext);
 		//Set context with the context
-		maker.setContext(Partner.all().filter("self.isContact IS TRUE").fetchOne(), map, "contact");
+		maker.setContext(EmailAddress.all().fetchOne(), map, "emailAddress");
 		//Make it
 		String result = maker.make();
 

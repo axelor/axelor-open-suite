@@ -17,21 +17,20 @@
  */
 package com.axelor.apps.message.service;
 
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Template;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.Message;
-import com.axelor.exception.AxelorException;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.apps.message.db.MailAccount;
 
-public interface TemplateMessageService {
+public class MailAccountServiceImpl implements MailAccountService {
 
-	public Message generateMessage(Object object, long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException;
+	private static final Logger LOG = LoggerFactory.getLogger(MailAccountServiceImpl.class);
 	
-	public List<EmailAddress> getEmailAddress(String recipients);
 	
-	public TemplateMaker initMaker(long objectId, String model, String tag);
-	
+	public MailAccount getDefaultMailAccount()  {
+		
+		return MailAccount.filter("self.isDefault = true").fetchOne();
+		
+	}
 	
 }
