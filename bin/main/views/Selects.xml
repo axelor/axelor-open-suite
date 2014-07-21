@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+
+	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+	
+	<selection name="account.account.schedule.type">
+		<option value='type'>Type</option>
+		<option value='subtype'>Subtype</option>
+	</selection>
+	
+	<selection name='payment.voucher.state.select'>
+		<option value='1'>Draft</option>
+		<option value='2'>Confirmed</option>
+	</selection>
+	
+	<selection name='account.account.type.select'>
+		<option value='asset'>Asset</option>
+		<option value='cash'>Cash</option>
+		<option value='commitment'>Commitment</option>
+		<option value='currentAsset'>Current Asset</option>
+		<option value='debt'>Debt</option>
+		<option value='equity'>Equity</option>
+		<option value='expense'>Expense</option>
+		<option value='immobilisation'>Immobilisation</option>
+		<option value='income'>Income</option>
+		<option value='payable'>Payable</option>
+		<option value='provision'>Provision</option>
+		<option value='receivable'>Receivable</option>
+		<option value='special'>Special</option>
+		<option value='tax'>Tax</option>
+		<option value='view'>View</option>
+	</selection>
+	
+	<selection name='move.line.reimbursement.state.select'>
+		<option value='0'></option>
+		<option value='1'>Reimbursement ongoing</option>
+		<option value='2'>Reimbursed</option>
+	</selection>
+	
+	<selection name='account.reconcile.status.select'>
+		<option value='1'>Draft</option>
+		<option value='2'>Confirmed</option>
+		<option value='3'>Canceled</option>
+	</selection>
+	
+	<selection name='account.journal.status.select'>
+		<option value="0">Inactive</option>
+		<option value="1">Active</option>
+		<option value="2">Archived</option>
+	</selection>
+
+	<selection name='payment.schedule.state.select'>
+		<option value='1'>Draft</option>
+		<option value='2'>Confirmed</option>
+		<option value='3'>Closed</option>
+		<option value='4'>Canceled</option>
+	</selection>
+	
+	<selection name='move.line.report.type.select'>
+		<option value="1">Payment collection journal</option>
+		<option value="2">General ledger</option>
+		<option value="3">Balance</option>
+		<option value="4">Aged Balance</option>
+		<option value="5">Cheque deposit slip</option>
+		<option value="10">Cash payments summary</option>
+		<option value="11">Journal</option>
+		<option value="13">Payment differences</option>
+		<option value="12">VAT Statement</option>
+	</selection>
+	
+	<selection name='move.line.report.type.select.export'>
+		<option value="6">Export sale -> Acc. Soft.</option>
+		<option value="7">Export refunds -> Acc. Soft.</option>
+		<option value="8">Export tresury -> Acc. Soft.</option>
+		<option value="9">Export purchase -> Acc. Soft.</option>
+	</selection>
+	
+	<selection name='move.state.select'>
+		<option value='draft'>Draft</option>
+		<option value='simulated'>Simulated</option>
+		<option value='validated'>Validated</option>
+		<option value='canceled'>Canceled</option>
+	</selection>
+	
+	<selection name='cash.register.state.select'>
+		<option value='0'>Draft</option>
+		<option value='1'>Closed</option>
+	</selection>
+	
+	<selection name='payer.quality.config.line.incident.type.select'>
+		<option value='0'>Reminder</option>
+		<option value='1'>Reject</option>
+	</selection>
+	
+	<selection name="account.management.type.select">
+		<option value="1">Product</option>
+		<option value="2">Tax</option>
+		<option value="3">Payment</option>
+	</selection>
+	
+	<selection name='iinvoice.operation.type.select'>
+		<option value='1'>Supplier purchase</option>
+		<option value='2'>Supplier refund</option>
+		<option value='3'>Customer sale</option>
+		<option value='4'>Customer refund</option>
+	</selection>
+	
+	<selection name='ipayment.operation.type.select'>
+		<option value='1'>Supplier</option>
+		<option value='2'>Customer</option>
+	</selection>
+	
+	<selection name='iaccount.account.schedule.export.type.select'>
+		<option value='0'>Payment smoothing(DD)</option>
+		<option value='1'>Invoices(DD)</option>
+	</selection>
+	
+	<selection name='iaccount.account.schedule.irrecoverable.state.select'>
+		<option value="0"></option>
+		<option value="1">To shift as irrecoverable</option>
+		<option value="2">Shifted as irrecoverable</option>
+	</selection>
+	
+	<selection name="iinvoice.batch.action.select">
+		<option value="0">Invoicing</option>
+		<option value="1">Status</option>
+		<option value="2">Alarm</option>
+	</selection>
+	
+	<selection name="iaccounting.batch.action.select">
+		<option value="11">Reimbursement</option>
+		<option value="12">Direct debit</option>
+		<option value="14">Reminder</option>
+		<option value="15">Payments by IPO et IPO cheque</option>
+		<option value="16">Doubtful Customers</option>
+		<option value="17">Update customer account</option>
+		<option value="18">Move export</option>
+	</selection>
+	
+	<selection name="ireimbursement.batch.type.select">
+		<option value="1">Reimbursement Export</option>
+		<option value="2">Rejected Reimbursements Import</option>
+	</selection>
+	
+	<selection name="ireimbursement.batch.export.type.select">
+		<option value="1">Generate reimbursements</option>
+		<option value="2">Export reimbursements</option>
+	</selection>
+	
+	<selection name="iaccount.account.schedule.type.select">
+		<option value="1">Export direct debits</option>
+		<option value="2">Import direct debit rejects</option>
+	</selection>
+	
+	<selection name="ireminder.batch.type.select">
+		<option value="1">Classic reminder</option>
+	</selection>
+	
+	<selection name="iinterbank.account.order.batch.type.select">
+		<option value="1">Import payments by IPO and IPO cheque</option>
+		<option value="2">Import payment rejects by IPO and IPO cheque</option>
+	</selection>
+	
+	<selection name="iinvoice.batch.to.status.select">
+		<option value="tov">Validate</option>
+		<option value="val">Ventilate</option>
+	</selection>
+	
+	<selection name="iinvoice.batch.from.status.select">
+		<option value="dra">Draft</option>
+		<option value="tov">To validate</option>
+		<option value="val">Validate</option>
+		<option value="ala">In alarm</option>
+	</selection>
+		
+	<selection name="account.payment.condition.type.select">
+		<option value="1">Net</option>
+		<option value="2">End of month + n days</option>
+		<option value="3">N days + end of month</option>
+		<option value="4">N days + end of month at</option>
+	</selection>
+	
+	<selection name="account.year.period.duration.select">
+		<option value="1">1 Month</option>
+		<option value="2">2 Months</option>
+		<option value="3">3 Months</option>
+		<option value="6">6 Months</option>
+		<option value="12">1 Year</option>
+	</selection>	
+	
+	<selection name="iaccount.payment.mode.type.select">
+		<option value="1">Other</option>
+		<option value="2">Direct debit</option>
+		<option value="3">IPO</option>
+		<option value="4">IPO + Cheque</option>
+		<option value="5">Cash</option>
+		<option value="6">Bank card</option>
+		<option value="7">Cheque</option>
+		<option value="8">Web</option>
+		<option value="9">Transfer</option>
+	</selection>		
+	
+	<selection name="iaccount.payment.mode.in.out.select">
+		<option value="1">In</option>
+		<option value="2">Out</option>
+	</selection>	
+
+	<selection name="account.bank.statement.type.select">
+		<option value="1">General</option>
+		<option value="2">Customer</option>
+		<option value="3">Supplier</option>
+	</selection>	
+	
+	<selection name="account.bank.statement.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
+	</selection>
+	
+	<selection name="move.template.line.debit.credit.select">
+		<option value="0">Debit</option>
+		<option value="1">Credit</option>
+	</selection>	
+	
+
+</object-views>

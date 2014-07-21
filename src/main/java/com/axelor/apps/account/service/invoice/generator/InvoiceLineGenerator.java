@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineType;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
@@ -41,7 +40,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.tool.date.Period;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -56,7 +55,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	// Logger
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceLineGenerator.class);
 	
-	protected AccountManagementService accountManagementService;
+	protected AccountManagementServiceImpl accountManagementServiceImpl;
 	protected CurrencyService currencyService;
 	
 	protected Invoice invoice;
@@ -68,7 +67,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected BigDecimal qty;
 	protected Unit unit; 
 	protected TaxLine taxLine; 
-	protected Task task; 
 	protected LocalDate today;
 	protected boolean isTaxInvoice; 
 	protected InvoiceLineType invoiceLineType;
@@ -99,7 +97,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	
 
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, Task task, InvoiceLineType invoiceLineType, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
+			Unit unit, TaxLine taxLine, InvoiceLineType invoiceLineType, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -109,7 +107,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.qty = qty;
         this.unit = unit;
         this.taxLine = taxLine;
-        this.task = task;
         this.invoiceLineType = invoiceLineType;
         this.discountTypeSelect = discountTypeSelect;
         this.discountAmount = discountAmount;
@@ -117,11 +114,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
-        this.accountManagementService = new AccountManagementService();
+        this.accountManagementServiceImpl = new AccountManagementServiceImpl();
     }
 	
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, Task task, InvoiceLineType invoiceLineType, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
+			Unit unit, InvoiceLineType invoiceLineType, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -130,7 +127,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.description = description;
         this.qty = qty;
         this.unit = unit;
-        this.task = task;
         this.invoiceLineType = invoiceLineType;
         this.discountTypeSelect = discountTypeSelect;
         this.discountAmount = discountAmount;
@@ -138,7 +134,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
-        this.accountManagementService = new AccountManagementService();
+        this.accountManagementServiceImpl = new AccountManagementServiceImpl();
     }
 	
 	public Invoice getInvoice() {
@@ -215,11 +211,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			if(invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_REFUND)  {
 				isPurchase = true;
 			}
-			taxLine =  accountManagementService.getTaxLine(invoice.getInvoiceDate(), product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
+			taxLine =  accountManagementServiceImpl.getTaxLine(invoice.getInvoiceDate(), product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
 		}
 		invoiceLine.setTaxLine(taxLine);
 		
-		invoiceLine.setTask(task);
 		invoiceLine.setInvoiceLineType(invoiceLineType);
 		
 		invoiceLine.setDiscountTypeSelect(discountTypeSelect);

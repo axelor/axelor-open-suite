@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -142,7 +143,7 @@ public class CfonbImportService {
 		
 		if(GeneralService.getGeneral().getTransferAndDirectDebitInterbankCode() == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une Liste des codes motifs de rejet/retour relatifs aux Virements, Prélèvements et TIP dans l'administration générale",
-					GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);	
+					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);	
 		}
 		
 		String headerCFONB = null;
@@ -158,14 +159,14 @@ public class CfonbImportService {
 			headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
 			if(headerCFONB == null)  {
 				throw new AxelorException(String.format("%s :\n Il manque un enregistrement en-tête dans le fichier %s",
-						GeneralService.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(headerCFONB);
 			
 			multiDetailsCFONB = this.getDetailsCFONB(this.importFile, operation, optionalOperation);
 			if(multiDetailsCFONB.isEmpty())  {
 				throw new AxelorException(String.format("%s :\n Il manque un ou plusieurs enregistrements détail dans le fichier %s",
-						GeneralService.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			for(String detail : multiDetailsCFONB)  {
 				this.importFile.remove(detail);
@@ -174,7 +175,7 @@ public class CfonbImportService {
 			endingCFONB = this.getEndingCFONB(this.importFile, operation, optionalOperation);
 			if(endingCFONB == null)  {
 				throw new AxelorException(String.format("%s :\n Il manque un enregistrement fin dans le fichier %s",
-						GeneralService.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(endingCFONB);
 			
@@ -216,7 +217,7 @@ public class CfonbImportService {
 		
 		if(GeneralService.getGeneral().getTransferAndDirectDebitInterbankCode() == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une Liste des codes motifs de rejet/retour relatifs aux Virements, Prélèvements et TIP dans l'administration générale",
-					GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);	
+					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);	
 		}
 		
 		String headerCFONB = null;
@@ -232,14 +233,14 @@ public class CfonbImportService {
 			headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
 			if(headerCFONB == null)  {
 				throw new AxelorException(String.format("%s :\n Il manque un enregistrement en-tête dans le fichier %s",
-						GeneralService.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(headerCFONB);
 			
 			multiDetailsCFONB = this.getDetailsCFONB(this.importFile, operation, optionalOperation);
 			if(multiDetailsCFONB.isEmpty())  {
 				throw new AxelorException(String.format("%s :\n Il manque un ou plusieurs enregistrements détail dans le fichier %s",
-						GeneralService.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			for(String detail : multiDetailsCFONB)  {
 				this.importFile.remove(detail);
@@ -248,7 +249,7 @@ public class CfonbImportService {
 			endingCFONB = this.getEndingCFONB(this.importFile, operation, optionalOperation);
 			if(endingCFONB == null)  {
 				throw new AxelorException(String.format("%s :\n Il manque un enregistrement fin dans le fichier %s",
-						GeneralService.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(endingCFONB);
 			
@@ -313,7 +314,7 @@ public class CfonbImportService {
 		
 		if(totalAmount != totalRecord)  {
 			throw new AxelorException(String.format("%s :\n Le montant total de l'enregistrement suivant n'est pas correct (fichier %s) :\n %s",
-					GeneralService.getExceptionAccountingMsg(),fileName, endingCFONB), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),fileName, endingCFONB), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -412,7 +413,7 @@ public class CfonbImportService {
 			return PaymentMode.findByCode("TIC");
 		}
 		throw new AxelorException(String.format("%s :\n Aucun mode de paiement trouvé pour le code %s et la société %s",
-				GeneralService.getExceptionAccountingMsg(), code, company.getName()), IException.INCONSISTENCY);
+				GeneralServiceAccount.getExceptionAccountingMsg(), code, company.getName()), IException.INCONSISTENCY);
 	}
 	
 	

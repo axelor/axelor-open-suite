@@ -26,9 +26,9 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.MailModel;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -43,7 +43,7 @@ public class AccountConfigService {
 		
 		if(accountConfig == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer les informations comptables pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig;
@@ -57,7 +57,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getReimbursementExportFolderPathCFONB() == null || accountConfig.getReimbursementExportFolderPathCFONB().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un Dossier d'export des remboursements au format CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -66,7 +66,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getPaymentScheduleExportFolderPathCFONB() == null || accountConfig.getPaymentScheduleExportFolderPathCFONB().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un Dossier d'export des prélèvements au format CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -79,7 +79,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getInterbankPaymentOrderImportPathCFONB() == null || accountConfig.getInterbankPaymentOrderImportPathCFONB().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un chemin d'import des paiements par TIP et TIP + chèque pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -88,7 +88,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getTempInterbankPaymentOrderImportPathCFONB() == null || accountConfig.getTempInterbankPaymentOrderImportPathCFONB().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un chemin d'import temporaire des paiements par TIP et TIP + chèque pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -97,7 +97,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getInterbankPaymentOrderRejectImportPathCFONB() == null || accountConfig.getInterbankPaymentOrderRejectImportPathCFONB().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un chemin pour le fichier d'imports des rejets de paiement par TIP et TIP chèque pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -106,7 +106,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getTempInterbankPaymentOrderRejectImportPathCFONB() == null || accountConfig.getTempInterbankPaymentOrderRejectImportPathCFONB().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un chemin pour le fichier des rejets de paiement par TIP et TIP chèque temporaire pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -115,7 +115,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getRejectImportPathAndFileName() == null || accountConfig.getRejectImportPathAndFileName().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un chemin pour le fichier de rejet pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -124,7 +124,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getTempImportPathAndFileName() == null || accountConfig.getTempImportPathAndFileName().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un chemin pour le fichier de rejet temporaire pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -133,7 +133,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getReimbursementImportFolderPathCFONB() == null || accountConfig.getReimbursementImportFolderPathCFONB().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un chemin pour le fichier d'imports des rejets des remboursements pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -142,7 +142,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getTempReimbImportFolderPathCFONB() == null || accountConfig.getTempReimbImportFolderPathCFONB().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un chemin pour le fichier temporaire d'imports des rejets des remboursements pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -156,7 +156,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getRejectJournal() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal de rejet pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getRejectJournal();
@@ -166,7 +166,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getIrrecoverableJournal() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal irrécouvrable pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getIrrecoverableJournal();
@@ -176,7 +176,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getSupplierPurchaseJournal() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal des achats Fourn. pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getSupplierPurchaseJournal();
@@ -186,7 +186,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getSupplierCreditNoteJournal() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal des avoirs fournisseurs pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getSupplierCreditNoteJournal();
@@ -196,7 +196,7 @@ public class AccountConfigService {
 	
 		if(accountConfig.getCustomerSalesJournal() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal des ventes clients pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getCustomerSalesJournal();
@@ -206,7 +206,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getCustomerCreditNoteJournal() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal des avoirs clients pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getCustomerCreditNoteJournal();
@@ -216,7 +216,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getMiscOperationJournal() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal des O.D pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getMiscOperationJournal();
@@ -227,7 +227,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getInvoiceDirectDebitJournal() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal prélèvement facture pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getInvoiceDirectDebitJournal();
@@ -238,7 +238,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getScheduleDirectDebitJournal() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal prélèvement échéancier pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getScheduleDirectDebitJournal();
@@ -248,7 +248,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getReimbursementJournal() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal de remboursement pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getReimbursementJournal();
@@ -263,7 +263,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getSaleJournalType() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un type de journal ventes pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getSaleJournalType();
@@ -273,7 +273,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getCreditNoteJournalType() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un type de journal avoirs pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getCreditNoteJournalType();
@@ -283,7 +283,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getCashJournalType() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un type de journal trésorerie pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getCashJournalType();
@@ -293,7 +293,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getPurchaseJournalType() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un type de journal achats pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getPurchaseJournalType();
@@ -308,7 +308,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getIrrecoverableAccount() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte de créance irrécouvrable pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getIrrecoverableAccount();
@@ -318,7 +318,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getCustomerAccount() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte client pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getCustomerAccount();
@@ -329,7 +329,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getSupplierAccount() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte fournisseur pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getCustomerAccount();
@@ -340,7 +340,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getCashPositionVariationAccount() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte différence de caisse pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getCashPositionVariationAccount();
@@ -351,7 +351,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getReimbursementAccount() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte de remboursement pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getReimbursementAccount();
@@ -362,7 +362,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getDoubtfulCustomerAccount() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte client douteux pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getDoubtfulCustomerAccount();
@@ -376,7 +376,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getIrrecoverableStandardRateTax() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une taxe taux normal pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getIrrecoverableStandardRateTax();
@@ -388,7 +388,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getDirectDebitPaymentMode() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un mode de paiement par prélèvement pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getDirectDebitPaymentMode();
@@ -398,7 +398,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getRejectionPaymentMode() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un mode de paiement après rejet pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getRejectionPaymentMode();
@@ -411,7 +411,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getIrrecoverableReasonPassage() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un motif de passage en irrécouvrable pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getIrrecoverableReasonPassage();
@@ -422,7 +422,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getExportPath() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un Chemin Fichier Exporté (si -> AGRESSO) pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getExportPath();
@@ -433,7 +433,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getRejectPaymentScheduleMailModel() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer les modèles de courrier Imports de rejet pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getRejectPaymentScheduleMailModel();
@@ -444,7 +444,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getReimbursementExportFolderPath() == null)   {
 			throw new AxelorException(String.format("%s :\n Le dossier d'export des remboursement (format SEPA) n'est pas configuré pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getReimbursementExportFolderPath();
@@ -455,7 +455,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getSixMonthDebtPassReason() == null || accountConfig.getSixMonthDebtPassReason().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un Motif de passage (créance de plus de six mois) pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getSixMonthDebtPassReason();
@@ -466,7 +466,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getThreeMonthDebtPassReason() == null || accountConfig.getThreeMonthDebtPassReason().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un Motif de passage (créance de plus de trois mois) pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return accountConfig.getThreeMonthDebtPassReason();
@@ -477,7 +477,7 @@ public class AccountConfigService {
 		
 		if(accountConfig.getReminderConfigLineList() == null || accountConfig.getReminderConfigLineList().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer le tableau de relance pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}

@@ -48,11 +48,11 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PayboxConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.PayboxConfigService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -249,7 +249,7 @@ public class PayboxService {
 	public void checkPayboxPaymentVoucherFields(PaymentVoucher paymentVoucher) throws AxelorException  {
 		if (paymentVoucher.getPaidAmount() == null || paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) > 1)  {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Montant réglé pour la saisie paiement %s.", 
-					GeneralService.getExceptionAccountingMsg(), paymentVoucher.getRef()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), paymentVoucher.getRef()), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -269,7 +269,7 @@ public class PayboxService {
 		
 		if(paidAmount.compareTo(partnerBalance) > 0)  {
 			throw new AxelorException(String.format("%s :\n Le montant réglé pour la saisie paiement par CB ne doit pas être supérieur au solde du payeur.", 
-					GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -279,7 +279,7 @@ public class PayboxService {
 		
 		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0 )  {
 			throw new AxelorException(String.format("%s :\n Attention - Vous ne pouvez pas régler un montant supérieur aux factures selectionnées.", 
-					GeneralService.getExceptionAccountingMsg()), IException.INCONSISTENCY);
+					GeneralServiceAccount.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}
 	
 
@@ -294,7 +294,7 @@ public class PayboxService {
 	public void checkPayboxPartnerFields(Partner partner) throws AxelorException  {
 		if (partner.getEmailAddress().getAddress() == null || partner.getEmailAddress().getAddress().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Email pour le tiers %s.", 
-					GeneralService.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -329,11 +329,11 @@ public class PayboxService {
 			return s.toUpperCase();
 			
 		} catch (InvalidKeyException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralService.getExceptionAccountingMsg(),e), IException.INCONSISTENCY);
+			throw new AxelorException(String.format("%s :\n %s", GeneralServiceAccount.getExceptionAccountingMsg(),e), IException.INCONSISTENCY);
 		} catch (NoSuchAlgorithmException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralService.getExceptionAccountingMsg(),e), IException.INCONSISTENCY);
+			throw new AxelorException(String.format("%s :\n %s", GeneralServiceAccount.getExceptionAccountingMsg(),e), IException.INCONSISTENCY);
 		} catch (UnsupportedEncodingException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralService.getExceptionAccountingMsg(),e), IException.INCONSISTENCY);
+			throw new AxelorException(String.format("%s :\n %s", GeneralServiceAccount.getExceptionAccountingMsg(),e), IException.INCONSISTENCY);
 		}
 	}
 	

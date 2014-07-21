@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="MoveTemplate" lang="java" cachable="true">
+  	<string name="name" title="Name" required="true"/>
+  	<string name="code" title="Code" required="true"/>
+  	<many-to-one name="moveTemplateType" ref="MoveTemplateType" title="Type"  required="1"/>
+  	<many-to-one name="journal" ref="Journal" title="Journal" />
+  	<boolean name="isValid" title="Valid ?" />
+  	<one-to-many name="moveTemplateLineList" ref="MoveTemplateLine" mappedBy="moveTemplate" title="Lignes d'écritures modèles"/>
+  	<integer  name="partnerInputSelect"  />
+  	<string name="fullName" namecolumn="true" search="code,name">
+	    <![CDATA[
+    		return code+" - " + name;
+	    ]]>
+	</string>
+  </entity>
+ 
+</domain-models>

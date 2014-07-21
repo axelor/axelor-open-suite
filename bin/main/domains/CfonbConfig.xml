@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="CfonbConfig" lang="java" cachable="true">
+  	<integer name="importId"/>
+    <string name="name" title="Name"/>
+    <string name="code" title="Code"/>
+    
+   	<!-- Export CFONB -->
+   	<string name="senderRecordCodeExportCFONB" title="Sender record code" default="03"/>
+   	<string name="senderNumExportCFONB" title="Sender Nbr"/>
+   	<string name="senderNameCodeExportCFONB" title="Sender Name"/>
+   	
+   	<string name="recipientRecordCodeExportCFONB" title="Recipient record code" default="06"/>
+   	
+   	<string name="totalRecordCodeExportCFONB" title="Total record code" default="08"/>
+   	
+   	<string name="transferOperationCodeExportCFONB" title="Wire transfer operation code" default="02"/>
+   	<string name="directDebitOperationCodeExportCFONB" title="Direct debit operation code" default="08"/>
+   	
+   	<!-- Import CFONB -->
+   	<string name="headerRecordCodeImportCFONB" title="Header record code" default="31"/>
+   	
+   	<string name="detailRecordCodeImportCFONB" title="Details record code" default="34"/>
+   	
+   	<string name="endingRecordCodeImportCFONB" title="Ending record code" default="39"/>
+   	
+   	<string name="transferOperationCodeImportCFONB" title="Rejected Wire transfer operation code" default="21"/>
+   	<string name="directDebitOperationCodeImportCFONB" title="Unpaid direct debit operation code" default="81"/>
+   	<string name="ipoRejectOperationCodeImportCFONB" title="Unpaid IPO operation code" default="71"/>
+   	<string name="ipoOperationCodeImportCFONB" title="IPO operation code" default="07"/>
+	<string name="ipoAndChequeOperationCodeImportCFONB" title="IPO and Cheque operation code" default="97"/>
+   	
+  </entity>
+  
+</domain-models>

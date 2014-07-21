@@ -28,11 +28,12 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderHistory;
 import com.axelor.apps.account.db.ReminderMethodLine;
+import com.axelor.apps.account.service.MailService;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Mail;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Template;
-import com.axelor.apps.base.service.MailService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.user.UserInfoService;
@@ -110,12 +111,12 @@ public class ReminderActionService {
 		LOG.debug("Begin runAction service ...");
 		if(reminder.getReminderMethod()==null )  {
 			throw new AxelorException(String.format("%s :\nTiers %s: Méthode de relance absente.", 
-					GeneralService.getExceptionReminderMsg(), reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
+					GeneralServiceAccount.getExceptionReminderMsg(), reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		if(reminder.getReminderMethodLine()==null)  {
 			throw new AxelorException(
 					String.format("%s :\nTiers %s: Ligne de relance absente.", 
-							GeneralService.getExceptionReminderMsg(), reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
+							GeneralServiceAccount.getExceptionReminderMsg(), reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 
 		else  {
@@ -152,7 +153,7 @@ public class ReminderActionService {
 		LOG.debug("Begin runMailStandard service ...");	
 		if(reminderMethodLine.getMessageTemplate() == null )  {
 			throw new AxelorException(String.format("%s :\nContrat %s: Modèle de courrier absent pour la matrice de relance %s (Niveau %s).", 
-					GeneralService.getExceptionReminderMsg(), partner.getName(), reminderMethodLine.getReminderMethod().getName(), reminderMethodLine.getReminderLevel().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), reminderMethodLine.getReminderMethod().getName(), reminderMethodLine.getReminderLevel().getName()), IException.CONFIGURATION_ERROR);
 		}
 			
 			
@@ -183,12 +184,12 @@ public class ReminderActionService {
 		LOG.debug("Begin runManualAction service ...");
 		if(reminder.getReminderMethod()==null )  {
 			throw new AxelorException(String.format("%s :\nTiers %s: Méthode de relance absente.", 
-					GeneralService.getExceptionReminderMsg(), reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
+					GeneralServiceAccount.getExceptionReminderMsg(), reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		
 		if(reminder.getWaitReminderMethodLine()==null)  {
 			throw new AxelorException(String.format("%s :\nTiers %s: Ligne de relance absente.", 
-					GeneralService.getExceptionReminderMsg(), reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
+					GeneralServiceAccount.getExceptionReminderMsg(), reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		else  {
 		

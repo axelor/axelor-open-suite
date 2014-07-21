@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.PayboxConfig;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -38,7 +38,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer Paybox pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig;
@@ -63,7 +63,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxSite() == null || payboxConfig.getPayboxSite().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Numéro de site pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxSite();
@@ -73,7 +73,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxRang() == null || payboxConfig.getPayboxRang().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Numéro de rang pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxRang();
@@ -83,7 +83,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxDevise() == null || payboxConfig.getPayboxDevise().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Devise des transactions pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxDevise();
@@ -93,7 +93,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxRetour() == null || payboxConfig.getPayboxRetour().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Liste des variables à retourner par Paybox pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxRetour();
@@ -103,7 +103,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxRetourUrlEffectue() == null || payboxConfig.getPayboxRetourUrlEffectue().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement effectué pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxRetourUrlEffectue();
@@ -113,7 +113,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxRetourUrlRefuse() == null || payboxConfig.getPayboxRetourUrlRefuse().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement refusé pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxRetourUrlRefuse();
@@ -123,7 +123,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxRetourUrlAnnule() == null || payboxConfig.getPayboxRetourUrlAnnule().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement annulé pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxRetourUrlAnnule();
@@ -133,7 +133,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxIdentifiant() == null || payboxConfig.getPayboxIdentifiant().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Identifiant interne pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxIdentifiant();
@@ -143,7 +143,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxHashSelect() == null || payboxConfig.getPayboxHashSelect().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez selectionner un Type d'algorithme de hachage utilisé lors du calcul de l'empreinte pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxHashSelect();
@@ -153,7 +153,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxHmac() == null || payboxConfig.getPayboxHmac().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Signature calculée avec la clé secrète pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxHmac();
@@ -163,7 +163,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxUrl() == null || payboxConfig.getPayboxUrl().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Url de l'environnement pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxUrl();
@@ -173,7 +173,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxPublicKeyPath() == null || payboxConfig.getPayboxPublicKeyPath().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Chemin de la clé publique Paybox pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxPublicKeyPath();
@@ -183,7 +183,7 @@ public class PayboxConfigService extends AccountConfigService  {
 		
 		if(payboxConfig.getPayboxDefaultEmail() == null || payboxConfig.getPayboxDefaultEmail().isEmpty())   {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Email de back-office Axelor pour Paybox pour la configuration Paybox %s",
-					GeneralService.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), payboxConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return payboxConfig.getPayboxDefaultEmail();

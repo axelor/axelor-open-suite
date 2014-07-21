@@ -32,7 +32,6 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.DirectDebitManagement;
-import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Invoice;
@@ -42,6 +41,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -142,7 +142,7 @@ public class PaymentScheduleExportService {
 		}
 		if(bankDetails == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour l'échéancier de paiement %s",
-					GeneralService.getExceptionAccountingMsg(),paymentSchedule.getScheduleId()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),paymentSchedule.getScheduleId()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
 			cfonbExportService.testBankDetailsField(bankDetails);
@@ -155,7 +155,7 @@ public class PaymentScheduleExportService {
 		
 		if(bankDetails == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
-					GeneralService.getExceptionAccountingMsg(), invoice.getPartner().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), invoice.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
 			cfonbExportService.testBankDetailsField(bankDetails);
@@ -168,7 +168,7 @@ public class PaymentScheduleExportService {
 		
 		if(bankDetails == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
-					GeneralService.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
 			cfonbExportService.testBankDetailsField(bankDetails);
@@ -185,7 +185,7 @@ public class PaymentScheduleExportService {
 		if(accountingBatch.getDebitDate() == null)  {
 			throw new AxelorException(String.format(
 					"%s :\n Erreur : Veuillez configurer une date de prélèvement pour la configuration de batch %s"
-					,GeneralService.getExceptionAccountingMsg(),accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+					,GeneralServiceAccount.getExceptionAccountingMsg(),accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 	}
 
@@ -422,7 +422,7 @@ public class PaymentScheduleExportService {
 		if(journal.getSequence() == null)  {
 			throw new AxelorException(String.format(
 							"%s :\n Veuillez configurer une séquence Numéro de prélèvement pour la société %s pour le journal %s ",
-							GeneralService.getExceptionAccountingMsg(),company.getName(),journal.getName()), IException.CONFIGURATION_ERROR);
+							GeneralServiceAccount.getExceptionAccountingMsg(),company.getName(),journal.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return sequenceService.getSequenceNumber(journal.getSequence(), false);
@@ -818,7 +818,7 @@ public class PaymentScheduleExportService {
 		if(invoiceDirectDebitJournal.getSequence() == null)  {
 			throw new AxelorException(String.format(
 							"%s :\n Erreur : Veuillez configurer une séquence Numéro de prélèvement pour la société %s et le journal %s",
-							GeneralService.getExceptionAccountingMsg(), company.getName(), invoiceDirectDebitJournal.getName()), IException.CONFIGURATION_ERROR);
+							GeneralServiceAccount.getExceptionAccountingMsg(), company.getName(), invoiceDirectDebitJournal.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return sequenceService.getSequenceNumber(invoiceDirectDebitJournal.getSequence(), false);

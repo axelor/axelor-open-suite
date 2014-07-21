@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -205,7 +206,7 @@ public class ReconcileService {
 		
 		if (debitMoveLine == null || creditMoveLine == null)  {
 			throw new AxelorException(String.format("%s :\nReconciliation : Merci de renseigner les lignes d'écritures concernées.", 
-					GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);		
+					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);		
 		}
 			
 		// Check if move lines accounts are the same (debit and credit)
@@ -213,14 +214,14 @@ public class ReconcileService {
 			LOG.debug("Compte ligne de credit : {} , Compte ligne de debit : {}", creditMoveLine.getAccount(), debitMoveLine.getAccount());
 			throw new AxelorException(String.format("%s :\nReconciliation : Les lignes d'écritures sélectionnées doivent concerner le même compte comptable. " +
 					" \n (Débit %s compte %s - Crédit %s compte %s)", 
-					GeneralService.getExceptionAccountingMsg(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(), 
+					GeneralServiceAccount.getExceptionAccountingMsg(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(), 
 					creditMoveLine.getName(), creditMoveLine.getAccount().getLabel()), IException.CONFIGURATION_ERROR);		
 		}
 		
 		// Check if the amount to reconcile is != zero
 		if (reconcile.getAmount() == null || reconcile.getAmount().compareTo(BigDecimal.ZERO) == 0)  {
 			throw new AxelorException(String.format("%s :\nReconciliation %s: Le montant réconcilié doit être différent de zéro. \n (Débit %s compte %s - Crédit %s compte %s)", 
-					GeneralService.getExceptionAccountingMsg(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(), 
+					GeneralServiceAccount.getExceptionAccountingMsg(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(), 
 					creditMoveLine.getName(), creditMoveLine.getAccount().getLabel()), IException.INCONSISTENCY);				
 					
 		}
@@ -230,7 +231,7 @@ public class ReconcileService {
 			throw new AxelorException(
 					String.format("%s :\nReconciliation %s: Le montant réconcilié doit être inférieur ou égale au montant restant à réconcilier des lignes d'écritures. " +
 							" \n (Débit %s compte %s - Crédit %s compte %s)", 
-					GeneralService.getExceptionAccountingMsg(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(), 
+							GeneralServiceAccount.getExceptionAccountingMsg(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(), 
 					creditMoveLine.getName(), creditMoveLine.getAccount().getLabel()), IException.INCONSISTENCY);						
 					
 		}

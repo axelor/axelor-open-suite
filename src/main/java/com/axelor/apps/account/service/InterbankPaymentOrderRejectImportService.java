@@ -31,12 +31,12 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -96,13 +96,13 @@ public class InterbankPaymentOrderRejectImportService {
 			Invoice invoice = Invoice.filter("UPPER(self.invoiceId) = ?1 AND self.company = ?2", refReject, company).fetchOne();
 			if(invoice == null)  {
 				throw new AxelorException(String.format("%s \nAucune facture trouvée pour le numéro de facture %s et la société %s",
-						GeneralService.getExceptionAccountingMsg(), refReject, company.getName()), IException.INCONSISTENCY);
+						GeneralServiceAccount.getExceptionAccountingMsg(), refReject, company.getName()), IException.INCONSISTENCY);
 			}
 			
 			Partner partner = invoice.getPartner();
 			if(invoice.getPaymentMode() == null)  {
 				throw new AxelorException(String.format("%s - Aucun mode de paiement configuré pour la facture %s",
-						GeneralService.getExceptionAccountingMsg(), refReject), IException.INCONSISTENCY);
+						GeneralServiceAccount.getExceptionAccountingMsg(), refReject), IException.INCONSISTENCY);
 			}
 			
 			Account bankAccount = paymentModeService.getCompanyAccount(invoice.getPaymentMode(), company);
@@ -142,14 +142,14 @@ public class InterbankPaymentOrderRejectImportService {
 			paymentMode = PaymentMode.findByCode("TIC");
 			if(paymentMode == null)  {
 				throw new AxelorException(String.format("%s :\n Le mode de paiement dont le code est 'TIC' n'a pas été trouvé",
-						GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+						GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 			}
 		}
 		else  {
 			paymentMode = PaymentMode.findByCode("TIP");
 			if(paymentMode == null)  {
 				throw new AxelorException(String.format("%s :\n Le mode de paiement dont le code est 'TIP' n'a pas été trouvé",
-						GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+						GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 			}
 		}
 		return paymentModeService.getCompanyAccount(paymentMode, company);

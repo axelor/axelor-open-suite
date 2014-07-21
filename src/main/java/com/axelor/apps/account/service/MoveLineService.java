@@ -44,10 +44,11 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 
 public class MoveLineService {
@@ -55,7 +56,15 @@ public class MoveLineService {
 	private static final Logger LOG = LoggerFactory.getLogger(MoveLineService.class);
 
 	@Inject
-	private Injector injector;
+	private AccountManagementServiceAccountImpl accountManagementService;
+	
+	@Inject
+	private TaxAccountService taxAccountService;
+	
+	@Inject
+	private FiscalPositionServiceAccountImpl fiscalPositionService;
+	
+	
 	
 	private LocalDate toDay;
 	
@@ -98,7 +107,6 @@ public class MoveLineService {
 			" date d'échéance : {}, référence : {}",  new Object[]{account.getName(), amount, isDebit, isMinus, dueDate, counter});
 		
 		if(partner != null)  {
-			FiscalPositionService fiscalPositionService = injector.getInstance(FiscalPositionService.class);
 			account = fiscalPositionService.getAccount(partner.getFiscalPosition(), account);
 		}
 		
@@ -172,10 +180,6 @@ public class MoveLineService {
 		LOG.debug("Création des lignes d'écriture comptable de la facture/l'avoir {}", invoice.getInvoiceId());
 		
 		Account account2 = account;
-		
-		AccountManagementService accountManagementService = injector.getInstance(AccountManagementService.class);
-		
-		TaxAccountService taxAccountService = injector.getInstance(TaxAccountService.class);
 		
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 		

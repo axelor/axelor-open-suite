@@ -37,11 +37,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
@@ -481,7 +481,7 @@ public class CfonbExportService {
  
 		if(bankDetails == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le remboursement %s",
-					GeneralService.getExceptionAccountingMsg(),reimbursement.getRef()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),reimbursement.getRef()), IException.CONFIGURATION_ERROR);
 		}
 		
 		BigDecimal amount = reimbursement.getAmountReimbursed();
@@ -513,7 +513,7 @@ public class CfonbExportService {
 		
 		if(bankDetails == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
-					GeneralService.getExceptionAccountingMsg(),partner.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		BigDecimal amount = paymentScheduleLine.getDirectDebitAmount();
@@ -547,7 +547,7 @@ public class CfonbExportService {
 			partnerName = this.getPayeurPartnerName(invoice.getPartner());			// Nom/Raison sociale du débiteur
 			if(bankDetails == null) {
 				throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
-						GeneralService.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
+						GeneralServiceAccount.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
 			}
 		}
 		else  {
@@ -561,7 +561,7 @@ public class CfonbExportService {
 			}
 			if(bankDetails == null) {
 				throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
-						GeneralService.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
+						GeneralServiceAccount.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
 			}
 		}
 		
@@ -608,7 +608,7 @@ public class CfonbExportService {
 		BankDetails bankDetails = partner.getBankDetails();
 		if(bankDetails == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
-					GeneralService.getExceptionAccountingMsg(),partner.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 	
 		BigDecimal amount = invoice.getDirectDebitAmount();
@@ -822,7 +822,7 @@ public class CfonbExportService {
 			FileTool.writer(destinationFolder, fileName, cFONB);
 		} catch (IOException e) {
 			throw new AxelorException(String.format("%s :\n Erreur detectée pendant l'ecriture du fichier CFONB : %s",
-					GeneralService.getExceptionAccountingMsg(),e), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),e), IException.CONFIGURATION_ERROR);
 		}
 		
 		
@@ -941,19 +941,19 @@ public class CfonbExportService {
 	public void testBankDetailsField(BankDetails bankDetails) throws AxelorException  {
 		if(bankDetails.getSortCode() == null || bankDetails.getSortCode().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code Guichet pour le RIB %s du tiers payeur %s",
-					GeneralService.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(bankDetails.getAccountNbr() == null || bankDetails.getAccountNbr().isEmpty()) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un Numéro de compte pour le RIB %s du tiers payeur %s",
-					GeneralService.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(bankDetails.getBankCode() == null || bankDetails.getBankCode().isEmpty()) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code Banque pour le RIB %s du tiers payeur %s",
-					GeneralService.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(bankDetails.getBankAddress() == null || bankDetails.getBankAddress().isEmpty()) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une Adresse de Banque pour le RIB %s du tiers payeur %s",
-					GeneralService.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
 	

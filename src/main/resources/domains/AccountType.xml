@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AccountType" lang="java" cachable="true">
+    <string name="nameSelect" title="Type" required="true" unique="true" namecolumn="true" selection="account.account.type.select"/>
+	<string name="name" title="Label"/>
+  </entity>
+
+</domain-models>

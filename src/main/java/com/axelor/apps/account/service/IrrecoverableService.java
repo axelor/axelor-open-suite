@@ -50,6 +50,7 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -57,6 +58,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -432,7 +435,7 @@ public class IrrecoverableService {
 		Move move = this.createIrrecoverableMove(paymentScheduleLine.getRejectMoveLine());
 		if(move == null)  {
 			throw new AxelorException(String.format("%s :\n Erreur généré lors de la création de l'écriture de passage en irrécouvrable %s",
-					GeneralService.getExceptionAccountingMsg()), IException.INCONSISTENCY);
+					GeneralServiceAccount.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}
 		moveService.validateMove(move);
 		irrecoverable.getMoveSet().add(move);
@@ -450,7 +453,7 @@ public class IrrecoverableService {
 		Move move = this.createIrrecoverableMove(invoice, prorataRate, invoice.getRejectMoveLine() != null);
 		if(move == null)  {
 			throw new AxelorException(String.format("%s :\n Erreur généré lors de la création de l'écriture de passage en irrécouvrable %s",
-					GeneralService.getExceptionAccountingMsg()), IException.INCONSISTENCY);
+					GeneralServiceAccount.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}
 		moveService.validateMove(move);
 		irrecoverable.getMoveSet().add(move);
@@ -796,7 +799,7 @@ public class IrrecoverableService {
 		MoveLine customerMoveLine = moveService.getCustomerMoveLineByQuery(invoice);
 		if(customerMoveLine == null)  {
 			throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
-					GeneralService.getExceptionAccountingMsg(), invoice.getInvoiceId()), IException.INCONSISTENCY);
+					GeneralServiceAccount.getExceptionAccountingMsg(), invoice.getInvoiceId()), IException.INCONSISTENCY);
 		}
 		customerMoveLine.setIrrecoverableStateSelect(IAccount.PASSED_IN_IRRECOUVRABLE);
 		
@@ -896,7 +899,7 @@ public class IrrecoverableService {
 		String seq = sequenceService.getSequenceNumber(IAdministration.IRRECOVERABLE, company);
 		if(seq == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de Passage en irrécouvrable pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return seq;
@@ -926,7 +929,7 @@ public class IrrecoverableService {
 			
 			if(moveLine == null)  {
 				throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
-						GeneralService.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
+						GeneralServiceAccount.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
 			}
 			
 			this.passInIrrecoverable(moveLine, managementObject, false);
@@ -952,7 +955,7 @@ public class IrrecoverableService {
 		
 		if(moveLine == null)  {
 			throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
-					GeneralService.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
+					GeneralServiceAccount.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
 		}
 		
 		this.passInIrrecoverable(moveLine, managementObject, false);

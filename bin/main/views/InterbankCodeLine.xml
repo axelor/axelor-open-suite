@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    <grid name="interbank-code-line-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCodeLine" orderBy="code">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="description"/>
+        <field name="technicalRejectOk"/>
+        <field name="interbankCode"/>
+    </grid>
+    <form name="interbank-code-line-form" title="Blocking reason/reject codes list" model="com.axelor.apps.account.db.InterbankCodeLine" cols="4">
+        <group colSpan="4" cols="6">
+            <field name="code"/>
+            <field name="name"/>
+        </group>
+        <field name="interbankCode"/>
+        <group title="Description" colSpan="4" cols="4">
+            <field name="description" showTitle="false" colSpan="4"/>
+            <field name="technicalRejectOk"/>
+        </group>
+        <group title="Domain of use" colSpan="4" cols="6">
+            <field name="transferCfonbOk"/>
+            <field name="directDebitAndTipCfonbOk"/>
+            <field name="directDebitSepaOk"/>
+            <field name="lcrBorOk"/>
+            <field name="chequeOk"/>
+        </group>
+    </form>
+</object-views>

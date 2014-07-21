@@ -23,9 +23,9 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -58,12 +58,12 @@ public class PaymentVoucherSequenceService  {
 		
 		if(bankJournal == null)  {
 			throw new AxelorException(String.format("%s :\n Merci de paramétrer un journal pour le mode de paiement {}", 
-					GeneralService.getExceptionAccountingMsg(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		if(bankJournal.getSequence() == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de saisie paiement pour la société %s et le journal %s.", 
-					GeneralService.getExceptionAccountingMsg(), paymentVoucher.getCompany().getName(), paymentMode.getBankJournal().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), paymentVoucher.getCompany().getName(), paymentMode.getBankJournal().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return sequenceService.getSequenceNumber(bankJournal.getSequence(), false);
@@ -92,7 +92,7 @@ public class PaymentVoucherSequenceService  {
 		
 		if(!sequenceService.hasSequence(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company))  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Numéro de reçu (Saisie paiement) pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}

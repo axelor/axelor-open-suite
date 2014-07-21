@@ -42,6 +42,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -52,27 +53,27 @@ import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserInfoService;
-import com.axelor.apps.tool.xml.Marschaller;
-import com.axelor.apps.xsd.sepa.AccountIdentification3Choice;
-import com.axelor.apps.xsd.sepa.AmountType2Choice;
-import com.axelor.apps.xsd.sepa.BranchAndFinancialInstitutionIdentification3;
-import com.axelor.apps.xsd.sepa.CashAccount7;
-import com.axelor.apps.xsd.sepa.CreditTransferTransactionInformation1;
-import com.axelor.apps.xsd.sepa.CurrencyAndAmount;
-import com.axelor.apps.xsd.sepa.Document;
-import com.axelor.apps.xsd.sepa.FinancialInstitutionIdentification5Choice;
-import com.axelor.apps.xsd.sepa.GroupHeader1;
-import com.axelor.apps.xsd.sepa.Grouping1Code;
-import com.axelor.apps.xsd.sepa.ObjectFactory;
-import com.axelor.apps.xsd.sepa.Pain00100102;
-import com.axelor.apps.xsd.sepa.PartyIdentification8;
-import com.axelor.apps.xsd.sepa.PaymentIdentification1;
-import com.axelor.apps.xsd.sepa.PaymentInstructionInformation1;
-import com.axelor.apps.xsd.sepa.PaymentMethod3Code;
-import com.axelor.apps.xsd.sepa.PaymentTypeInformation1;
-import com.axelor.apps.xsd.sepa.RemittanceInformation1;
-import com.axelor.apps.xsd.sepa.ServiceLevel1Code;
-import com.axelor.apps.xsd.sepa.ServiceLevel2Choice;
+//import com.axelor.apps.tool.xml.Marschaller;
+//import com.axelor.apps.xsd.sepa.AccountIdentification3Choice;
+//import com.axelor.apps.xsd.sepa.AmountType2Choice;
+//import com.axelor.apps.xsd.sepa.BranchAndFinancialInstitutionIdentification3;
+//import com.axelor.apps.xsd.sepa.CashAccount7;
+//import com.axelor.apps.xsd.sepa.CreditTransferTransactionInformation1;
+//import com.axelor.apps.xsd.sepa.CurrencyAndAmount;
+//import com.axelor.apps.xsd.sepa.Document;
+//import com.axelor.apps.xsd.sepa.FinancialInstitutionIdentification5Choice;
+//import com.axelor.apps.xsd.sepa.GroupHeader1;
+//import com.axelor.apps.xsd.sepa.Grouping1Code;
+//import com.axelor.apps.xsd.sepa.ObjectFactory;
+//import com.axelor.apps.xsd.sepa.Pain00100102;
+//import com.axelor.apps.xsd.sepa.PartyIdentification8;
+//import com.axelor.apps.xsd.sepa.PaymentIdentification1;
+//import com.axelor.apps.xsd.sepa.PaymentInstructionInformation1;
+//import com.axelor.apps.xsd.sepa.PaymentMethod3Code;
+//import com.axelor.apps.xsd.sepa.PaymentTypeInformation1;
+//import com.axelor.apps.xsd.sepa.RemittanceInformation1;
+//import com.axelor.apps.xsd.sepa.ServiceLevel1Code;
+//import com.axelor.apps.xsd.sepa.ServiceLevel2Choice;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -262,7 +263,7 @@ public class ReimbursementExportService {
 		
 		if(!sequenceService.hasSequence(IAdministration.REIMBOURSEMENT, company)) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Remboursement pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -363,130 +364,130 @@ public class ReimbursementExportService {
 	 * Création du documemnt XML en mémoire
 	 */
 
-		ObjectFactory factory = new ObjectFactory();
-		
-	// Débit
-		
-		// Paiement
-		ServiceLevel2Choice svcLvl = factory.createServiceLevel2Choice();
-		svcLvl.setCd(ServiceLevel1Code.SEPA);
-
-		PaymentTypeInformation1 pmtTpInf = factory.createPaymentTypeInformation1();
-		pmtTpInf.setSvcLvl(svcLvl);
-		
-		// Payeur
-		PartyIdentification8 dbtr = factory.createPartyIdentification8();
-		dbtr.setNm(bankDetails.getOwnerName());
-		
-		// IBAN
-		AccountIdentification3Choice iban = factory.createAccountIdentification3Choice();
-		iban.setIBAN(bankDetails.getIban());
-		
-		CashAccount7 dbtrAcct = factory.createCashAccount7();
-		dbtrAcct.setId(iban);
-		
-		// BIC
-		FinancialInstitutionIdentification5Choice finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-		finInstnId.setBIC(bankDetails.getBic());
-		
-		BranchAndFinancialInstitutionIdentification3 dbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
-		dbtrAgt.setFinInstnId(finInstnId);
-		
-	// Lot
-		
-		PaymentInstructionInformation1 pmtInf = factory.createPaymentInstructionInformation1();
-		pmtInf.setPmtMtd(PaymentMethod3Code.TRF);
-		pmtInf.setPmtTpInf(pmtTpInf);
-		pmtInf.setReqdExctnDt(datatypeFactory.newXMLGregorianCalendar(dateFormat.format(date)));
-		pmtInf.setDbtr(dbtr);
-		pmtInf.setDbtrAcct(dbtrAcct);
-		pmtInf.setDbtrAgt(dbtrAgt);
-		
-	// Crédit
-		CreditTransferTransactionInformation1 cdtTrfTxInf = null; PaymentIdentification1 pmtId = null;
-		AmountType2Choice amt = null; CurrencyAndAmount instdAmt = null;
-		PartyIdentification8 cbtr = null; CashAccount7 cbtrAcct = null;
-		BranchAndFinancialInstitutionIdentification3 cbtrAgt = null;
-		RemittanceInformation1 rmtInf = null;
-		for (Reimbursement reimbursement : reimbursementList){
-
-			reimbursement = Reimbursement.find(reimbursement.getId());
-			
-			nbOfTxs++;
-			ctrlSum = ctrlSum.add(reimbursement.getAmountReimbursed());
-			bankDetails = reimbursement.getBankDetails();
-			
-			// Paiement
-			pmtId = factory.createPaymentIdentification1();
-			pmtId.setEndToEndId(reimbursement.getRef());
-			
-			// Montant
-			instdAmt = factory.createCurrencyAndAmount();
-			instdAmt.setCcy("EUR");
-			instdAmt.setValue(reimbursement.getAmountReimbursed());
-			
-			amt = factory.createAmountType2Choice();
-			amt.setInstdAmt(instdAmt);
-			
-			// Débiteur
-			cbtr = factory.createPartyIdentification8();
-			cbtr.setNm(bankDetails.getOwnerName());
-			
-			// IBAN
-			iban = factory.createAccountIdentification3Choice();
-			iban.setIBAN(bankDetails.getIban());
-			
-			cbtrAcct = factory.createCashAccount7();
-			cbtrAcct.setId(iban);
-			
-			// BIC
-			finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-			finInstnId.setBIC(bankDetails.getBic());
-			
-			cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
-			cbtrAgt.setFinInstnId(finInstnId);
-			
-			rmtInf = factory.createRemittanceInformation1();
-			
-			rmtInf.getUstrd().add(reimbursement.getDescription());
-						
-			// Transaction
-			cdtTrfTxInf = factory.createCreditTransferTransactionInformation1();
-			cdtTrfTxInf.setPmtId(pmtId);
-			cdtTrfTxInf.setAmt(amt);
-			cdtTrfTxInf.setCdtr(cbtr);
-			cdtTrfTxInf.setCdtrAcct(cbtrAcct);
-			cdtTrfTxInf.setCdtrAgt(cbtrAgt);
-			cdtTrfTxInf.setRmtInf(rmtInf);
-			
-			pmtInf.getCdtTrfTxInf().add(cdtTrfTxInf);
-		}
-		
-	// En-tête
-		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		
-		GroupHeader1 grpHdr = factory.createGroupHeader1();
-		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(dateFormat.format(date)));
-		grpHdr.setNbOfTxs(Integer.toString(nbOfTxs));
-		grpHdr.setCtrlSum(ctrlSum);
-		grpHdr.setGrpg(Grouping1Code.MIXD);
-		grpHdr.setInitgPty(dbtr);
-	
-	// Parent
-		Pain00100102 pain00100102 = factory.createPain00100102();
-		pain00100102.setGrpHdr(grpHdr);
-		pain00100102.getPmtInf().add(pmtInf);
-
-	// Document		
-		Document xml = factory.createDocument();
-		xml.setPain00100102(pain00100102);
+//		ObjectFactory factory = new ObjectFactory();
+//		
+//	// Débit
+//		
+//		// Paiement
+//		ServiceLevel2Choice svcLvl = factory.createServiceLevel2Choice();
+//		svcLvl.setCd(ServiceLevel1Code.SEPA);
+//
+//		PaymentTypeInformation1 pmtTpInf = factory.createPaymentTypeInformation1();
+//		pmtTpInf.setSvcLvl(svcLvl);
+//		
+//		// Payeur
+//		PartyIdentification8 dbtr = factory.createPartyIdentification8();
+//		dbtr.setNm(bankDetails.getOwnerName());
+//		
+//		// IBAN
+//		AccountIdentification3Choice iban = factory.createAccountIdentification3Choice();
+//		iban.setIBAN(bankDetails.getIban());
+//		
+//		CashAccount7 dbtrAcct = factory.createCashAccount7();
+//		dbtrAcct.setId(iban);
+//		
+//		// BIC
+//		FinancialInstitutionIdentification5Choice finInstnId = factory.createFinancialInstitutionIdentification5Choice();
+//		finInstnId.setBIC(bankDetails.getBic());
+//		
+//		BranchAndFinancialInstitutionIdentification3 dbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
+//		dbtrAgt.setFinInstnId(finInstnId);
+//		
+//	// Lot
+//		
+//		PaymentInstructionInformation1 pmtInf = factory.createPaymentInstructionInformation1();
+//		pmtInf.setPmtMtd(PaymentMethod3Code.TRF);
+//		pmtInf.setPmtTpInf(pmtTpInf);
+//		pmtInf.setReqdExctnDt(datatypeFactory.newXMLGregorianCalendar(dateFormat.format(date)));
+//		pmtInf.setDbtr(dbtr);
+//		pmtInf.setDbtrAcct(dbtrAcct);
+//		pmtInf.setDbtrAgt(dbtrAgt);
+//		
+//	// Crédit
+//		CreditTransferTransactionInformation1 cdtTrfTxInf = null; PaymentIdentification1 pmtId = null;
+//		AmountType2Choice amt = null; CurrencyAndAmount instdAmt = null;
+//		PartyIdentification8 cbtr = null; CashAccount7 cbtrAcct = null;
+//		BranchAndFinancialInstitutionIdentification3 cbtrAgt = null;
+//		RemittanceInformation1 rmtInf = null;
+//		for (Reimbursement reimbursement : reimbursementList){
+//
+//			reimbursement = Reimbursement.find(reimbursement.getId());
+//			
+//			nbOfTxs++;
+//			ctrlSum = ctrlSum.add(reimbursement.getAmountReimbursed());
+//			bankDetails = reimbursement.getBankDetails();
+//			
+//			// Paiement
+//			pmtId = factory.createPaymentIdentification1();
+//			pmtId.setEndToEndId(reimbursement.getRef());
+//			
+//			// Montant
+//			instdAmt = factory.createCurrencyAndAmount();
+//			instdAmt.setCcy("EUR");
+//			instdAmt.setValue(reimbursement.getAmountReimbursed());
+//			
+//			amt = factory.createAmountType2Choice();
+//			amt.setInstdAmt(instdAmt);
+//			
+//			// Débiteur
+//			cbtr = factory.createPartyIdentification8();
+//			cbtr.setNm(bankDetails.getOwnerName());
+//			
+//			// IBAN
+//			iban = factory.createAccountIdentification3Choice();
+//			iban.setIBAN(bankDetails.getIban());
+//			
+//			cbtrAcct = factory.createCashAccount7();
+//			cbtrAcct.setId(iban);
+//			
+//			// BIC
+//			finInstnId = factory.createFinancialInstitutionIdentification5Choice();
+//			finInstnId.setBIC(bankDetails.getBic());
+//			
+//			cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
+//			cbtrAgt.setFinInstnId(finInstnId);
+//			
+//			rmtInf = factory.createRemittanceInformation1();
+//			
+//			rmtInf.getUstrd().add(reimbursement.getDescription());
+//						
+//			// Transaction
+//			cdtTrfTxInf = factory.createCreditTransferTransactionInformation1();
+//			cdtTrfTxInf.setPmtId(pmtId);
+//			cdtTrfTxInf.setAmt(amt);
+//			cdtTrfTxInf.setCdtr(cbtr);
+//			cdtTrfTxInf.setCdtrAcct(cbtrAcct);
+//			cdtTrfTxInf.setCdtrAgt(cbtrAgt);
+//			cdtTrfTxInf.setRmtInf(rmtInf);
+//			
+//			pmtInf.getCdtTrfTxInf().add(cdtTrfTxInf);
+//		}
+//		
+//	// En-tête
+//		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//		
+//		GroupHeader1 grpHdr = factory.createGroupHeader1();
+//		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(dateFormat.format(date)));
+//		grpHdr.setNbOfTxs(Integer.toString(nbOfTxs));
+//		grpHdr.setCtrlSum(ctrlSum);
+//		grpHdr.setGrpg(Grouping1Code.MIXD);
+//		grpHdr.setInitgPty(dbtr);
+//	
+//	// Parent
+//		Pain00100102 pain00100102 = factory.createPain00100102();
+//		pain00100102.setGrpHdr(grpHdr);
+//		pain00100102.getPmtInf().add(pmtInf);
+//
+//	// Document		
+//		Document xml = factory.createDocument();
+//		xml.setPain00100102(pain00100102);
 		
 		/**
 		 * Création du documemnt XML physique
 		 */
-		Marschaller.marschalFile(factory.createDocument(xml), "com.axelor.apps.xsd.sepa", 
-				exportFolderPath, String.format("%s.xml", dateFormat.format(date)));
-		
+//		Marschaller.marschalFile(factory.createDocument(xml), "com.axelor.apps.xsd.sepa", 
+//				exportFolderPath, String.format("%s.xml", dateFormat.format(date)));
+//		
 	}
 	
 	

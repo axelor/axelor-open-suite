@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CashRegisterLine;
 import com.axelor.apps.account.db.IAccount;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Mail;
 import com.axelor.apps.base.db.UserInfo;
-import com.axelor.apps.base.service.MailService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.exception.AxelorException;
@@ -59,7 +59,7 @@ public class CashRegisterLineService {
 		Company company = this.user.getActiveCompany();
 		if(company == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une société active pour l'utilisateur %s",
-					GeneralService.getExceptionAccountingMsg(), this.user.getFullName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), this.user.getFullName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		LOG.debug("In closeCashRegister");
@@ -70,14 +70,14 @@ public class CashRegisterLineService {
 		
 		if(cashRegisterLineFound != null)  {
 			throw new AxelorException(String.format("%s :\n Une fermeture de caisse existe déjà pour la même date et la même caisse",
-					GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
 			AccountConfig accountConfig = company.getAccountConfig();
 			
 			if(accountConfig.getCashRegisterAddressEmail() == null)  {
 				throw new AxelorException(String.format("%s :\n Veuillez configurer une adresse email Caisses pour la société %s",
-						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
+						GeneralServiceAccount.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 			}
 			
 			cashRegisterLine.setCreateDateTime(this.todayTime);

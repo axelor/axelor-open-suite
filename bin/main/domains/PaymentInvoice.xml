@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="PaymentInvoice" sequential="true" lang="java">
+  
+  	<many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment" readonly="true"/>
+  
+    <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Move Line" readonly="true"/>
+	<decimal name="invoiceAmount" title="Invoice Amount" readonly="true"/>
+	<decimal name="paidAmount" title="Amount already paid" readonly="true"/>
+  	
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+  	
+  </entity>
+  
+</domain-models>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+  
+  <module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="MoveLineReport" lang="java">
+    
+    <string name="ref" title="Ref." namecolumn="true"/>
+    <date name="dateFrom" title="From" />
+    <date name="dateTo" title="To"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+    <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
+    <many-to-one name="journal" ref="Journal" title="Journal"/>
+    <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
+    <many-to-one name="account" ref="Account" title="Account"/>
+    <string name="exportTypeSelect" title="Export type" selection="iadministration.export.type.select"/>
+    <integer name="typeSelect" title="Printing output"  required="true"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <many-to-one name="fromPartner" ref="com.axelor.apps.base.db.Partner" title="From Partner"/>
+    <many-to-one name="toPartner" ref="com.axelor.apps.base.db.Partner" title="To Partner"/>
+    <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
+    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Fiscal year"/>
+    <date name="date" title="Creation Date" required="true"/>
+    <datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
+    <boolean name="global" title="Global" default="false"/>
+    <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
+    <boolean name="globalByPost" title="Subtotal by cash register" default="false"/>
+    <boolean name="globalByDate" title="Subtotal by date" default="false"/>
+    <boolean name="detailed" title="Detailed" default="false"/>
+    <many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
+    
+    <decimal name="totalDebit" title="Total Debit" readonly="true"/>
+    <decimal name="totalCredit" title="Total Credit" readonly="true"/>
+    <decimal name="balance" title="Balance" readonly="true"/>
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+    
+  </entity>
+</domain-models>

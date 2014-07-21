@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="accounting-situation-partner-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
+    	<field name="company" />
+    	<field name="customerAccount"/>
+       	<field name="supplierAccount"/>
+        <field name="balanceCustAccount"/>
+        <field name="balanceDueCustAccount"/>
+        <field name="balanceDueReminderCustAccount"/>
+    </grid>
+    
+    <form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account" cols="4">
+    	<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+    	<field name="customerAccount"/>
+       	<field name="supplierAccount"/>
+    	<separator title="Customer balance" colSpan="4"/>
+        <portlet colSpan="4" action="action-accounting-situation-view-move-lines"/>
+        <field name="balanceCustAccount"/>
+        <field name="balanceDueCustAccount"/>
+        <field name="balanceDueReminderCustAccount"/>
+        <separator title="Reminder process" colSpan="4"/>
+        <field name="reminder"/>
+    </form>
+    
+    
+    <grid name="accounting-situation-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
+    	<field name="company" />
+    	<field name="partner"/>
+    	<field name="customerAccount"/>
+       	<field name="supplierAccount"/>
+        <field name="balanceCustAccount"/>
+        <field name="balanceDueCustAccount"/>
+        <field name="balanceDueReminderCustAccount"/>
+    </grid>
+    
+    <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account" cols="4">
+    	<field name="company" widget="SuggestBox"/>
+    	<field name="partner"/>
+    	<field name="customerAccount"/>
+       	<field name="supplierAccount"/>
+    	<separator title="Customer balance" colSpan="4"/>
+        <portlet colSpan="4" action="action-accounting-situation-view-move-lines"/>
+        <field name="balanceCustAccount"/>
+        <field name="balanceDueCustAccount"/>
+        <field name="balanceDueReminderCustAccount"/>
+        <separator title="Reminder process" colSpan="4"/>
+        <field name="reminder"/>
+    </form>
+    
+  	<action-method name="action-account-accounting-situation-method-update-customer-account">
+		<call class="com.axelor.apps.account.web.AccountingSituationController" method="updateCustomerAccount"/>
+	</action-method>
+	
+	<action-view name="action-accounting-situation-view-move-lines" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
+        <view type="grid" name="move-line-accounting-situation-grid"/>
+    	<view type="form" name="move-line-accounting-situation-form"/>
+    	<domain>self.partner = :partner AND self.move.company = :company AND self.move.ignoreInAccountingOk IN ('false', null) 
+    	AND self.account.reconcileOk = 'true' AND self.move.state = 'validated'</domain>
+    </action-view>
+    
+ </object-views>

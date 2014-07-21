@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.base.db.Address;
@@ -43,16 +44,14 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.organisation.db.Project;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public abstract class InvoiceGenerator {
+public abstract class InvoiceGenerator  {
 	
 	// Logger
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceGenerator.class);
 
-	protected String exceptionMsg;
 	protected JournalService journalService;
 	
 	protected boolean months30days;
@@ -64,7 +63,6 @@ public abstract class InvoiceGenerator {
 	protected Partner partner;
 	protected Partner contactPartner;
 	protected Currency currency;
-	protected Project project;
 	protected LocalDate today;
 	protected PriceList priceList;
 	protected String internalReference;
@@ -73,7 +71,7 @@ public abstract class InvoiceGenerator {
 	
 	
 	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress, 
-			Partner partner, Partner contactPartner, Currency currency, Project project, PriceList priceList, String internalReference, String externalReference) throws AxelorException {
+			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference) throws AxelorException {
 		
 		this.operationType = operationType;
 		this.company = company;
@@ -82,14 +80,12 @@ public abstract class InvoiceGenerator {
 		this.mainInvoicingAddress = mainInvoicingAddress;
 		this.partner = partner;
 		this.contactPartner = contactPartner;
-		this.project = project;
 		this.currency = currency;
 		this.priceList = priceList;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
 		
 		this.today = GeneralService.getTodayDate();
-		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
 		this.journalService = new JournalService();
 		
 	}
@@ -103,7 +99,7 @@ public abstract class InvoiceGenerator {
 	 * @param contactPartner
 	 * @throws AxelorException
 	 */
-	protected InvoiceGenerator(int operationType, Company company, Partner partner, Partner contactPartner, Project project, PriceList priceList, 
+	protected InvoiceGenerator(int operationType, Company company, Partner partner, Partner contactPartner, PriceList priceList, 
 			String internalReference, String externalReference) throws AxelorException {
 		
 		this.operationType = operationType;
@@ -111,12 +107,10 @@ public abstract class InvoiceGenerator {
 		this.partner = partner;
 		this.contactPartner = contactPartner;
 		this.priceList = priceList;
-		this.project = project;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
 		
 		this.today = GeneralService.getTodayDate();
-		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
 		this.journalService = new JournalService();
 		
 	}
@@ -125,7 +119,6 @@ public abstract class InvoiceGenerator {
 	protected InvoiceGenerator() {
 		
 		this.today = GeneralService.getTodayDate();
-		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
 		this.journalService = new JournalService();
 		
 	}
@@ -143,7 +136,7 @@ public abstract class InvoiceGenerator {
 			case IInvoice.CLIENT_REFUND:
 				return IInvoice.CLIENT_SALE;
 			default:
-				throw new AxelorException(String.format("%s :\nLe type de facture n'est pas rempli %s", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+				throw new AxelorException(String.format("%s :\nLe type de facture n'est pas rempli %s", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		
 	}
@@ -161,7 +154,7 @@ public abstract class InvoiceGenerator {
 		invoice.setInvoiceDate(this.today);
 		
 		if(partner == null)  {
-			throw new AxelorException(String.format("%s :\nAucun tiers selectionné", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format("%s :\nAucun tiers selectionné", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setPartner(partner);
 		
@@ -169,7 +162,7 @@ public abstract class InvoiceGenerator {
 			paymentCondition = partner.getPaymentCondition();
 		}
 		if(paymentCondition == null)  {
-			throw new AxelorException(String.format("%s :\nCondition de paiement absent", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format("%s :\nCondition de paiement absent", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setPaymentCondition(paymentCondition);
 		
@@ -179,7 +172,7 @@ public abstract class InvoiceGenerator {
 			paymentMode = partner.getPaymentMode();
 		}
 		if(paymentMode == null)  {
-			throw new AxelorException(String.format("%s :\nMode de paiement absent", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format("%s :\nMode de paiement absent", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setPaymentMode(paymentMode);
 		
@@ -187,7 +180,7 @@ public abstract class InvoiceGenerator {
 			mainInvoicingAddress = partner.getMainInvoicingAddress();
 		}
 		if(mainInvoicingAddress == null)  {
-			throw new AxelorException(String.format("%s :\nAdresse de facturation absente", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format("%s :\nAdresse de facturation absente", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		
 		invoice.setAddress(mainInvoicingAddress);
@@ -198,11 +191,9 @@ public abstract class InvoiceGenerator {
 			currency = partner.getCurrency();
 		}
 		if(currency == null)  {
-			throw new AxelorException(String.format("%s :\nDevise absente", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format("%s :\nDevise absente", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setCurrency(currency);
-		
-		invoice.setProject(project);
 		
 		invoice.setCompany(company);
 		
@@ -224,7 +215,7 @@ public abstract class InvoiceGenerator {
 	}
 	
 
-	public Account getPartnerAccount(Partner partner, Company company, boolean isSupplierInvoice) throws AxelorException  {
+	protected Account getPartnerAccount(Partner partner, Company company, boolean isSupplierInvoice) throws AxelorException  {
 			
 		if(isSupplierInvoice)  {  return this.getSupplierAccount(partner, company);  }
 		
@@ -233,7 +224,7 @@ public abstract class InvoiceGenerator {
 	}
 	
 	
-	public Account getCustomerAccount(Partner partner, Company company) throws AxelorException  {
+	protected Account getCustomerAccount(Partner partner, Company company) throws AxelorException  {
 		
 		Account customerAccount = null;
 		
@@ -255,7 +246,7 @@ public abstract class InvoiceGenerator {
 		if(customerAccount == null)  {
 			
 			throw new AxelorException(String.format("%s :\nCompte comptable Client manquant pour la société %s", 
-					GeneralService.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
+					GeneralServiceAccount.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
 			
 		}
 		
@@ -264,7 +255,7 @@ public abstract class InvoiceGenerator {
 	}
 	
 	
-	public Account getSupplierAccount(Partner partner, Company company) throws AxelorException  {
+	protected Account getSupplierAccount(Partner partner, Company company) throws AxelorException  {
 		
 		Account supplierAccount = null;
 		
@@ -286,7 +277,7 @@ public abstract class InvoiceGenerator {
 		if(supplierAccount == null)  {
 			
 			throw new AxelorException(String.format("%s :\nCompte comptable Fournisseur manquant pour la société %s", 
-					GeneralService.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
+					GeneralServiceAccount.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
 			
 		}
 		
@@ -295,7 +286,7 @@ public abstract class InvoiceGenerator {
 	}
 	
 	
-	public AccountingSituation getAccountingSituation(Company company)  {
+	protected AccountingSituation getAccountingSituation(Company company)  {
 		
 		if(partner.getAccountingSituationList() == null)  {  return null;  }
 		

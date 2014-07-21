@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="bank-details-grid" id="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
+        <field name="ownerName"/>
+        <field name="bankAddress"/>
+	    <field name="bic"/>
+	    <field name="iban"/>
+    </grid>
+    
+    <form cols="4" name="bank-details-form" id="bank-details-form"  title="Bank details" model="com.axelor.apps.base.db.BankDetails" onNew="action-set-default-partner" onSave="action-validate-bank-details-bbanKey">
+	    <group title="Owner" colSpan="2" cols="4">
+	        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" onChange="action-set-owner-name"/>
+	        <break/>
+	        <field name="ownerName" />
+	    </group>
+	    <group title="Bank" colSpan="2" cols="4">
+	        <field name="countryCode"/>
+	        <break/>
+	        <field name="bankAddress"/>
+	    </group>    
+	    <group title="RIB" colSpan="3" cols="6">
+	        <separator title="Bank"/>
+	        <separator title="Sort Code"/>
+	        <separator title="Account Nbr"/>
+	        <separator title="Key"/>
+	        <break/>
+	        <field name="bankCode" showTitle="false"/>
+	        <field name="sortCode" showTitle="false"/>
+	        <field name="accountNbr" showTitle="false"/>
+	        <field name="bbanKey" showTitle="false"/>
+	    </group>
+	    <group title="IBAN" colSpan="3" cols="6">
+	        <separator title="IBAN (International Bank Account Identifier)" colSpan="3"/>
+	        <separator title="BIC (Bank Identifier Code)" colSpan="2"/>
+	        <break/>
+	        <field name="iban" onChange="save,action-method_bank-details-validIban,save" colSpan="3" showTitle="false"/>
+	        <field name="bic" showTitle="false" colSpan="2"/>
+	        <break/>
+	        <separator title="IBAN + BIC" colSpan="4"/>
+	        <field name="ibanBic" colSpan="4" readonly="true" showTitle="false"/>
+	    </group>
+	</form>
+    
+    <action-method name="action-method_bank-details-validIban">
+    	<call class="com.axelor.apps.base.web.BankDetailsController" method="onChangeIban"/>
+    </action-method>
+	
+	<action-record name="action-set-owner-name" model="com.axelor.apps.base.db.BankDetails">
+		<field name="ownerName" expr="eval:partner != null?(partner.name != null?partner.name:'')+' '+(partner.firstName != null?partner.firstName:''):''" />
+	</action-record>
+	
+	<action-record name="action-set-default-partner" model="com.axelor.apps.base.db.BankDetails">
+		<field name="partner" expr="eval:_parent" if="_parent != null &amp;&amp; _parent.get('_model') == 'com.axelor.apps.base.db.Partner'" />
+		<field name="ownerName" if="_parent != null &amp;&amp; _parent.get('_model') == 'com.axelor.apps.base.db.Partner'" expr="eval:_parent != null?(_parent.name != null?_parent.name:'')+' '+(_parent.firstName != null?_parent.firstName:''):''" />
+	</action-record>
+	
+	 <action-record name="action-record-bank-details-bbanKey" model="com.axelor.apps.contact.db.BankDetails">
+        <field expr="eval: ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) )" name="bbanKey"/>
+    </action-record>
+    
+	<action-validate name="action-validate-bank-details-bbanKey">
+	    <error message="Clé RIB incorrecte" if="( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) ) != Long.parseLong( bbanKey )"/>
+	</action-validate>
+	
+	
+
+</object-views>

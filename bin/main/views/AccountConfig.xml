@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="account-config-grid" title="Account configurations" model="com.axelor.apps.account.db.AccountConfig">
+        <field name="name"/>
+        <field name="code"/>
+    </grid>
+    
+    <form name="account-config-form" title="Account configuration" model="com.axelor.apps.account.db.AccountConfig" cols="4">
+	    
+	    <toolbar>
+			<button name="showInvoice" title="Invoices" onClick="save,action-company-view-invoice"/>
+		</toolbar>
+		
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company"/>
+        <field name="hasChartImported" />
+       	<field name="accountChart" readonlyIf="hasChartImported"/>
+       	<button name="installTemplate" colSpan="1" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" onClick="save,com.axelor.apps.account.web.AccountChartController:installChart" icon="fa-arrow-down"/>
+        <notebook colSpan="4">
+            <page title="Accounting" cols="4" colWidths="20%,30%,20%,30%">
+            	<separator title="Journals" colSpan="4"/>
+    				<field name="saleJournalType"/>
+    				<field name="purchaseJournalType"/>
+    				<field name="cashJournalType"/>
+    				<field name="creditNoteJournalType"/>
+	                <field name="customerSalesJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="customerCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="supplierPurchaseJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="supplierCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="scheduleDirectDebitJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="invoiceDirectDebitJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="rejectJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="reimbursementJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+	                <break/>
+	            <separator title="Accounts" colSpan="4"/>
+	                <field name="customerAccount" domain="self.company = :company"/>
+	                <field name="supplierAccount" domain="self.company = :company"/>
+  	           	 	<field name="doubtfulCustomerAccount" domain="self.company = :company"/>
+	                <field name="irrecoverableAccount" domain="self.company = :company"/>
+	     			<break/>
+                <separator title="Payment differences" colSpan="4"/>
+	                <field name="thresholdDistanceFromRegulation"/>
+	                <field name="cashPositionVariationAccount" domain="self.company = :company"/>
+	            <separator title="Exports" colSpan="4"/>
+	            	<field name="exportPath"/>
+	            <separator title="Cashiers" colSpan="4"/>
+	               	<field name="cashRegisterMailModel"/>
+	               	<field name="cashRegisterAddressEmail"/>
+   	            <separator title="Shift to irrecoverable" colSpan="4"/>
+   	            	<field name="irrecoverableReasonPassage"/>
+   	            	<field name="irrecoverableStandardRateTax"/>
+   	            <separator title="Tax payment" colSpan="4"/>
+   	            	<field name="payingBackTax"/>
+            </page>
+            <page title="CFONB" cols="4">
+            	<field name="cfonbConfig" showTitle="false" widget="NestedEditor" form-view="cfonb-config-form" summary-view="true" colSpan="4"/>
+            </page>
+            <page title="Receivables recovery" cols="4">
+            	<field name="mailTransitTime"/>
+            	<break/>
+                <field name="reminderConfigLineList" showTitle="false" colSpan="4"/>
+            </page>
+            <page title="Reimbursement" cols="4" colWidths="25%,25%,25%,25%">
+            	<separator title="Reimbursements" colSpan="4"/>
+            	<field name="reimbursementExportFolderPath" colSpan="4"/>
+   	       		<field name="reimbursementExportFolderPathCFONB" colSpan="4"/>
+       	    	<field name="lowerThresholdReimbursement"/>
+           		<field name="upperThresholdReimbursement"/>
+       	  		<field name="reimbursementAccount" domain="self.company = :company"/>
+           		<field name="reimbursementMailModel"/>
+           		
+            	<separator title="Reimbursement rejects" colSpan="4"/>
+           		<field name="reimbursementImportFolderPathCFONB" colSpan="4"/>
+           		<field name="tempReimbImportFolderPathCFONB" colSpan="4"/>
+            </page>
+            <page title="Doubtful receivables" cols="4" colWidths="20%,30%,20%,30%">
+           	 	<field name="sixMonthDebtMonthNumber"/>
+           	 	<field name="threeMonthDebtMontsNumber"/>
+           	 	<field name="sixMonthDebtPassReason"/>
+           	 	<field name="threeMonthDebtPassReason"/>
+            </page>
+            <page title="Direct debit" cols="4" colWidths="25%,25%,25%,25%">
+          		<separator title="Direct debits" colSpan="4"/>
+       			<field name="paymentScheduleExportFolderPathCFONB"/>
+       			<field name="directDebitPaymentMode"/>
+       			
+          		<separator title="Direct debit rejects" colSpan="4"/>
+       			<field name="rejectionPaymentMode"/>
+                <field name="paymentScheduleRejectNumLimit"/>
+                <field name="invoiceRejectNumLimit"/>
+                <field name="rejectPaymentScheduleMailModel"/>
+               	<field name="rejectImportPathAndFileName" colSpan="4"/>
+               	<field name="tempImportPathAndFileName" colSpan="4"/>
+            </page>
+            <page title="Acc. Clearance" cols="4" colWidths="20%,30%,20%,30%">
+             	<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" colSpan="4"/>
+             	<field name="profitAccount" domain="self.company = :company"/>
+             	<field name="standardRateTax"/>
+            </page>
+            <page title="Paybox" cols="4">
+            	<field name="payboxConfig" showTitle="false" widget="NestedEditor" form-view="paybox-config-form" summary-view="true" colSpan="4"/>
+            </page>
+            <page title="IPO Payments and IPO Cheque" cols="4" colWidths="20%,30%,20%,30%">
+          		<separator title="Configuration" colSpan="4"/>
+          		<group title="Payments by IPO and IPO Cheque" colSpan="4" colWidths="20%,30%,20%,30%">
+          			<field name="interbankPaymentOrderImportPathCFONB" colSpan="4"/>
+          			<field name="tempInterbankPaymentOrderImportPathCFONB" colSpan="4"/>
+ 				</group>
+          		<group title="Payments rejects by IPO and IPO Cheque" colSpan="4" colWidths="20%,30%,20%,30%">	
+          			<field name="interbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
+          			<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
+       			</group>
+            </page>
+            <page title="Invoicing" cols="4">
+            	<field name="showDetailsInInvoice"/>
+            </page>
+        </notebook>
+    </form>
+	
+	<action-view name="action-company-view-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.company.id = :id</domain>
+		<context name="id" expr="eval: company.id"/>
+	</action-view>
+	
+</object-views>

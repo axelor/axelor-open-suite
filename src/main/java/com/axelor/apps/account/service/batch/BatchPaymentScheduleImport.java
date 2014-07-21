@@ -36,9 +36,9 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.service.PaymentScheduleImportService;
 import com.axelor.apps.account.service.RejectImportService;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Status;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -149,7 +149,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 						/***  Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement  ***/
 						if((invoiceRejectedList == null || invoiceRejectedList.isEmpty()) && (paymentScheduleLineRejectedList == null || paymentScheduleLineRejectedList.isEmpty()))  {
 							throw new AxelorException(String.format("%s :\n Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement : %s", 
-									GeneralService.getExceptionAccountingMsg(),refDebitReject), IException.NO_VALUE);
+									GeneralServiceAccount.getExceptionAccountingMsg(),refDebitReject), IException.NO_VALUE);
 						}
 						else  {
 							i++;

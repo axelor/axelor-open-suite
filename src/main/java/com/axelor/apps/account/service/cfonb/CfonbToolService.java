@@ -22,9 +22,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -60,13 +60,13 @@ public class CfonbToolService {
 			switch(type)  {
 				case 0:
 					throw new AxelorException(String.format("%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour l'émetteur",
-							GeneralService.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
+							GeneralServiceAccount.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
 				case 1:
 					throw new AxelorException(String.format("%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le destinataire",
-							GeneralService.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
+							GeneralServiceAccount.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
 				case 2:
 					throw new AxelorException(String.format("%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le total",
-							GeneralService.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
+							GeneralServiceAccount.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
 				
 				default:
 					break;
@@ -145,7 +145,7 @@ public class CfonbToolService {
 					break;
 			}	
 			throw new AxelorException(String.format("%s :\n Annomlie détectée (l'enregistrement ne fait pas %s caractères : %s) pour l'enregistrement %s, société %s",
-					GeneralService.getExceptionAccountingMsg(),size,s,concerned,company.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),size,s,concerned,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
 	

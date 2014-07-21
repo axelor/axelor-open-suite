@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+  
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity sequential="true" name="Invoice" lang="java">
+  
+ 	<integer name="importId" />
+    <!-- NOT DISPLAY -->
+  	<many-to-one name="canceledPaymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule"/> <!--  Champs non affiché, utilisé pour le passage en irrécouvrable d'un échéancier de paiement -->
+  	
+    <!-- HEADER -->
+    <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true"/>
+	<integer name="operationTypeSelect" title="Document Type" required="true" selection="iinvoice.operation.type.select"/>
+    
+    <!-- Legal informations -->
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" required="true" title="Partner" />
+  	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
+ 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" required="true" />
+    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" required="true" />
+    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
+    <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account" required="true"/>
+	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
+    <boolean name="endOfCycleOk" title="End of cycle" default="false"/>
+    <boolean name="isSubscription" title="Subscription ?" default="false"/>
+    <string name="internalReference" title="Internal Ref." help="true"/>
+    <string name="externalReference" title="External Ref." help="true"/>
+    <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
+    
+    <!-- Dates -->
+    <date name="invoiceDate" title="Invoice Date" required="true" />
+    <date name="dueDate" title="Due Date"/>
+    <date name="subscriptionFromDate" title="From"/>
+    <date name="subscriptionToDate" title="To"/>
+    
+    <!-- Accounting informations -->
+    <boolean name="schedulePaymentOk" title="Belonging to a payment schedule" default="false"/>
+    <many-to-one name="paymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule" title="Payment Schedule" readonly="true"/>
+    <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" required="true" title="Journal"/>
+    <many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
+    <many-to-one name="oldMove" ref="com.axelor.apps.account.db.Move" title="Previous Move" readonly="true"/>
+    <boolean name="doubtfulCustomerOk" title="Doubtful Customer" default="false"/>
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" help="true"/>
+    
+    
+    <!-- Invoice content -->
+    <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice" title="Invoice Lines" />
+    <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice" title="Tax Lines" readonly="true" />
+    
+    <!-- Configuration -->
+    <boolean name="alreadyPrintedOk" title="Already printed ?" default="true" help="true"/>
+    <many-to-one name="previousInvoice" ref="Invoice" title="Previous invoice" />
+    <many-to-one name="refundInvoice" ref="Invoice" title="Refund" />
+    <one-to-many name="originalInvoiceList" ref="com.axelor.apps.account.db.Invoice" mappedBy="refundInvoice" title="Invoice of origin"/>
+    <integer name="irrecoverableStateSelect" title="Irrecouvrable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.state.select"/>
+	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shifting reason"/>
+    <many-to-one name="standardInvoice" ref="Invoice" title="Standard Invoice" />
+  	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+    
+    <!-- Blocking informations -->
+    <boolean name="debitBlockingOk" title="Direct debit blocking"/>
+    <many-to-one name="debitBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
+    <date name="debitBlockingToDate" title="Blocking until"/>
+    <many-to-one name="debitBlockingByUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Blocking done by"/>
+    
+    <boolean name="reminderBlockingOk" title="Reminder blocking"/>
+    <many-to-one name="reminderBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
+    <date name="reminderBlockingToDate" title="Blocking until"/>
+    <many-to-one name="reminderBlockingByUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Blocking done by"/>
+
+    <!-- Payments -->
+    <string name="debitNumber" title="Direct Debit N°"/>
+    <many-to-one name="directDebitManagement" ref="com.axelor.apps.account.db.DirectDebitManagement" title="Direct debit list"/>
+    <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Reject move line"/>
+   	<boolean name="usherPassageOk" title="Transfer(ed) to usher"/>
+    <decimal name="amountRejected" title="Reject amount"/> 
+    <date name="rejectDate" title="Reject Date"/>
+    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
+    <decimal name="directDebitAmount" title="Debited amount" readonly="true"/> 
+    <many-to-one name="paymentMove" ref="com.axelor.apps.account.db.Move" title="Payment Move"/>
+    
+	<!--     Note -->
+    <string name="note" title="Notes" large="true"/>
+    
+    <!-- Totals & Status -->
+    
+	<!--     Total based on the partner currency in the company accounts -->
+	<!--     TODO : To be renamed with the prefix 'accounting' -->
+    <decimal name="exTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true" help="true"/>
+    <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true" help="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="true"/>
+    <decimal name="inTaxTotalRemaining" title="Remaining to pay" readonly="true" />
+    
+	<!--     Totals based on the invoice currency -->
+    <decimal name="invoiceExTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true"/>
+    <decimal name="invoiceTaxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
+    <decimal name="invoiceInTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+    <decimal name="invoiceAmountPaid" title="Amount paid" readonly="true" />
+    
+    <many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
+    <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/>  
+
+  </entity>
+  
+</domain-models>

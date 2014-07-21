@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="Reimbursement" sequential="true" lang="java">
+  
+  	<string name="ref" title="Ref." namecolumn="true" readonly="true"/>
+	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
+	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+	<many-to-many name="moveLineSet" ref="com.axelor.apps.account.db.MoveLine" title="Overdue payment"/>
+    <decimal name="amountReimbursed" title="Reimbursed amount" readonly="true"/>
+	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Details"/>
+    <string name="description" title="Description"/>
+    
+    <boolean name="rejectedOk" title="Rejected reimbursement" default="false" readonly="true"/>
+    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason" readonly="true"/>
+    <date name="rejectDate" title="Reject Date" readonly="true"/>
+	<many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Reject Move line" readonly="true"/>
+  	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+	
+	<decimal name="amountToReimburse" title="Amount to reimburse" readonly="true">
+		<![CDATA[
+    		BigDecimal total = new BigDecimal("0.0");
+	    	
+	    	if (moveLineSet != null){
+	    		for (MoveLine line : moveLineSet){
+	    			total = total.add(line.getAmountRemaining());
+	    		}
+	    	}
+	    	
+	    	return total;
+	    ]]>
+    </decimal>
+	
+  </entity>
+
+</domain-models>

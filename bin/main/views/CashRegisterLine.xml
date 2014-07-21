@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="cash-register-line-grid" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine">
+        <field name="userInfo"/>
+        <field name="cashRegister"/>
+        <field name="createDateTime"/>
+        <field name="cashRegisterDate"/>
+        <field name="cashRegisterAmount"/>
+        <field name="depositedAmount"/>
+        <field name="stateSelect"/>
+    </grid>
+    
+    <form name="cash-register-line-form" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine" cols="4"
+    onNew="action-cash-register-line-record-new,action-cash-register-line-attrs-hidden-button"
+    onLoad="action-cash-register-line-attrs-hidden-button,action-cash-register-line-attrs-readonly">
+        <field name="userInfo"/>
+    	<field name="createDateTime"/>
+    	<group colSpan="4">
+        	<field name="cashRegister"/>
+        	<field name="cashRegisterDate"/>
+    	</group>
+    	<group title="Amounts to register" colSpan="4">
+        	<field name="cashRegisterAmount"/>
+        	<field name="depositedAmount"/>
+    	</group>
+    	<group title="Follow-up" colSpan="2">
+        	<field name="emailSentOk"/>    
+    	</group>
+    	<break/>
+    	<group title="Actions" colSpan="4" cols="4">
+        	<group colSpan="2" cols="2">
+            	<button name="closeCashRegister" title="Close cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:closeCashRegister,action-cash-register-line-attrs-hidden-button,save"/>
+            	<button name="openCashRegister" title="Open cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:openCashRegister,action-cash-register-line-attrs-hidden-button,save"/>
+        	</group>
+        	<group colSpan="2" cols="2">
+            	<field name="stateSelect"/>
+        	</group>
+    	</group>
+    </form>
+    
+    <action-record name="action-cash-register-line-record-new" model="com.axelor.apps.account.db.CashRegisterLine">
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="cashRegister"   expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserCashRegister()"/>
+    	<field name="createDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+    	<field name="cashRegisterDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+    	<field name="stateSelect" expr="0"/>
+    </action-record>
+    
+    <action-attrs name="action-cash-register-line-attrs-hidden-button">
+    	<attribute name="hidden" for="closeCashRegister" expr="eval: emailSentOk || (stateSelect == 1)"/>
+      	<attribute name="hidden" for="openCashRegister" expr="eval: emailSentOk || (stateSelect == 0)"/>	
+    </action-attrs>
+
+	<action-attrs name="action-cash-register-line-attrs-readonly">
+		<attribute name="readonly" for="cashRegister" expr="eval: emailSentOK "/>
+		<attribute name="readonly" for="cashRegisterDate" expr="eval: emailSentOK "/>
+		<attribute name="readonly" for="cashRegisterAmount" expr="eval: emailSentOK "/>
+		<attribute name="readonly" for="depositedAmount" expr="eval: emailSentOK "/>
+	</action-attrs>
+
+</object-views>

@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCreateService;
@@ -132,7 +133,7 @@ public class InterbankPaymentOrderImportService {
 		Invoice invoice = Invoice.filter("UPPER(self.invoiceId) = ?1", ref).fetchOne();
 		if(invoice == null)  {
 			throw new AxelorException(String.format("%s :\n La facture n°%s n'a pas été trouvée pour la société %s",
-					GeneralService.getExceptionAccountingMsg(), ref, company.getName()), IException.INCONSISTENCY);
+					GeneralServiceAccount.getExceptionAccountingMsg(), ref, company.getName()), IException.INCONSISTENCY);
 		}
 		return invoice;
 	}

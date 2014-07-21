@@ -19,20 +19,21 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.CashRegisterLine;
 import com.axelor.apps.account.service.CashRegisterLineService;
+import com.axelor.apps.account.service.MailService;
 import com.axelor.apps.base.db.Mail;
-import com.axelor.apps.base.service.MailService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class CashRegisterLineController {
 
 	@Inject 
-	private CashRegisterLineService crs;
+	private Provider<CashRegisterLineService> cashRegisterLineProvider;
 	
 	@Inject
-	private MailService ms;
+	private Provider<MailService> mailProvider;
 	
 	public void closeCashRegister(ActionRequest request, ActionResponse response)  {
 		
@@ -40,8 +41,8 @@ public class CashRegisterLineController {
 		cashRegisterLine = CashRegisterLine.find(cashRegisterLine.getId());
 		
 		try  {
-			Mail mail = crs.closeCashRegister(cashRegisterLine);
-			ms.generatePdfMail(mail);
+			Mail mail = cashRegisterLineProvider.get().closeCashRegister(cashRegisterLine);
+			mailProvider.get().generatePdfMail(mail);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }	
@@ -53,7 +54,7 @@ public class CashRegisterLineController {
 		cashRegisterLine = CashRegisterLine.find(cashRegisterLine.getId());
 		
 		try  {
-			crs.openCashRegister(cashRegisterLine);
+			cashRegisterLineProvider.get().openCashRegister(cashRegisterLine);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

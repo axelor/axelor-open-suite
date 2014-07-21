@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	
+    <grid name="direct-debit-management-grid" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement">
+        <field name="debitNumber"/>
+    </grid>
+    
+    <form name="direct-debit-management-form-payment-schedule-line" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement" cols="4">
+        <field name="company" widget="SuggestBox"/>
+        <field name="debitNumber"/>
+        <field name="paymentScheduleLineList" colSpan="4"/>
+    </form>
+    
+    <form name="direct-debit-management-form-invoice" title="Direct debit management" model="com.axelor.apps.account.db.DirectDebitManagement" cols="4">
+        <field name="company" widget="SuggestBox"/>
+        <field name="debitNumber"/>
+        <field name="invoiceSet" colSpan="4" grid-view="invoice-grid" form-view="invoice-form"/>
+    </form>
+    
+</object-views>

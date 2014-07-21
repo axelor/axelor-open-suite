@@ -31,10 +31,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoice;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.common.collect.Lists;
@@ -146,7 +146,7 @@ public class PaymentVoucherLoadService  {
 		
 		PaymentInvoiceToPay paymentInvoiceToPay = new PaymentInvoiceToPay();
 		if (paymentVoucher.getPaidAmount() == null)  {
-			throw new AxelorException(String.format("%s :\n Merci de renseigner le montant payé svp.", GeneralService.getExceptionAccountingMsg()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format("%s :\n Merci de renseigner le montant payé svp.", GeneralServiceAccount.getExceptionAccountingMsg()), IException.MISSING_FIELD);
 		}
 		
 		if(moveLine == null)  {  return paymentInvoiceToPayList;  }
@@ -249,7 +249,7 @@ public class PaymentVoucherLoadService  {
 			BigDecimal paidAmount = BigDecimal.ZERO;
 			if (paymentVoucherContext.getPaidAmount() == null){
 				throw new AxelorException(
-					String.format("%s :\n Merci de renseigner le montant payé svp.", GeneralService.getExceptionAccountingMsg()), IException.MISSING_FIELD);			
+					String.format("%s :\n Merci de renseigner le montant payé svp.", GeneralServiceAccount.getExceptionAccountingMsg()), IException.MISSING_FIELD);			
 			}
 			else{
 				paidAmount = paymentVoucherContext.getPaidAmount();

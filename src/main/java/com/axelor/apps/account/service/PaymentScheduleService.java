@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -187,7 +188,7 @@ public class PaymentScheduleService {
 		if(seq == null)  {
 			throw new AxelorException(String.format(
 							"%s :\n Veuillez configurer une séquence Echéancier pour la société %s ",
-							GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+							GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		return seq;
 	}
@@ -326,7 +327,7 @@ public class PaymentScheduleService {
 		
 		if(paymentSchedule.getPaymentScheduleLineList() == null || paymentSchedule.getPaymentScheduleLineList().size() == 0)  {
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez d'abord créer les lignes d'échéancier pour l'échéancier %s ",
-					GeneralService.getExceptionAccountingMsg(), paymentSchedule.getScheduleId()), IException.INCONSISTENCY);
+					GeneralServiceAccount.getExceptionAccountingMsg(), paymentSchedule.getScheduleId()), IException.INCONSISTENCY);
 		}
 			
 //		this.updateInvoices(paymentSchedule); //TODO

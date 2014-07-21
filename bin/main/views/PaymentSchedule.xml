@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="payment-schedule-grid" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule">
+        <field name="scheduleId"/>
+        <field name="creationDate"/>
+        <field name="partner"/>
+        <field name="company"/>
+        <field name="inTaxAmount"/>
+        <field name="nbrTerm"/>
+        <field name="bankDetails"/>
+        <field name="paymentMode"/>
+        <field name="stateSelect"/>
+    </grid>
+    
+    <form name="payment-schedule-form" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule" cols="4"
+     onSave="action-payment-schedule-payment-schedule-id"
+     onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group"
+     onNew="default-payment-schedule-record,action-payment-schedule-attrs-collapse-irrecoverable-group">
+     	<group name="header">
+	     	<field name="scheduleId" readonlyIf="state != 1"/>
+	        <field name="creationDate" readonlyIf="state != 1"/>
+	        <field name="startDate" required="true" readonlyIf="state != 1"/>
+	        <field name="nbrTerm" readonlyIf="state != 1"/>
+	        <field name="partner" domain="self.isContact = false" onChange="action-payment-schedule-record-partner" grid-view="partner-grid" form-view="partner-form" readonlyIf="state != 1"/>
+	        <field name="company" widget="SuggestBox" readonlyIf="state != 1"/>
+	        <field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form"/>
+	        <field name="paymentMode"/>
+	        <field name="currency" readonlyIf="state != 1"/>
+	        <field name="inTaxAmount" readonlyIf="state != 1"/>
+     	</group>
+        <group name="invoiceGroup" colSpan="4" cols="4">
+       	 	<field name="invoiceSet" colSpan="4" domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.status.code = 'dis' and self.inTaxTotalRemaining > 0.0 AND self.currency = :currency" 
+       	 	grid-view="invoice-account-grid" form-view="invoice-form" readonlyIf="state != 1" onChange="action-payment-schedule-record-in-tax-amount"/>
+        	<button name="createPaymentScheduleLines" title="Create schedule lines" colSpan="2" onClick="save,action-payment-schedule-create-payment-schedule-lines,save" showIf="state == 1"/>
+       	</group>
+        <field name="paymentScheduleLineList" colSpan="4" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form" readonlyIf="state != 3"/>
+        <group colSpan="4" cols="6">
+            <button name="validate" title="Validate" colSpan="2" onClick="save,action-payment-schedule-payment-schedule-id,action-payment-schedule-method-validate,save" showIf="state == 1"/>
+            <button name="cancel" title="Cancel" colSpan="2" onClick="action-payment-schedule-method-cancel,save" hideIf="state = 4" />
+            <field name="stateSelect"/>
+        </group>
+        <group name="irrecoverable" title="Irrecoverable" colSpan="4" canCollapse="true" >
+        	<field name="irrecoverableStateSelect"/>
+       		<field name="managementObject"/>
+       		<button name="passInIrrecoverable" title="Shift to irrecoverablePassage en irrécouvrable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable"/>
+       		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable"/>
+        </group>
+    </form>
+    
+    <!-- ACTION RECORD -->
+    <action-record name="default-payment-schedule-record" model="com.axelor.apps.account.db.PaymentSchedule">
+   		<field name="creationDate" expr="eval:__date__"/>
+   		<field name="startDate" expr="eval:__date__"/>
+   		<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+   		<field name="stateSelect" expr="eval: 1"/>
+	</action-record>
+
+	<action-record name="action-payment-schedule-record-partner" model="com.axelor.apps.account.db.PaymentSchedule" >
+		<field name="paymentMode" expr="eval:partner?.paymentMode"/>
+		<field name="currency" expr="eval:partner?.currency"/>
+	</action-record>
+	
+	<action-record name="action-payment-schedule-record-in-tax-amount" model="com.axelor.apps.account.db.PaymentSchedule">
+		<field name="inTaxAmount" expr="eval: invoiceSet?.collect(){ it?.inTaxTotalRemaining }?.sum()" />
+	</action-record>
+	
+	
+	<!-- ACTION ATTRS -->
+	
+	<action-attrs name="action-payment-schedule-attrs-collapse-irrecoverable-group">
+		<attribute name="collapse" for="irrecoverable" expr="eval: irrecoverableStateSelect == null || irrecoverableStateSelect == 0"/>
+	</action-attrs>
+	
+	
+	<!-- ACTION METHOD -->
+	<action-method name="action-payment-schedule-method-validate">
+		<call class="com.axelor.apps.account.web.PaymentScheduleController" method="validate"/>
+	</action-method>
+	
+	<action-method name="action-payment-schedule-create-payment-schedule-lines">
+		<call class="com.axelor.apps.account.web.PaymentScheduleController" method="createPaymentScheduleLines"/>
+	</action-method>
+	
+	<action-method name="action-payment-schedule-payment-schedule-id">
+		<call class="com.axelor.apps.account.web.PaymentScheduleController" method="paymentScheduleScheduleId"/>
+	</action-method>
+	
+	<action-method name="action-payment-schedule-method-cancel">
+		<call class="com.axelor.apps.account.web.PaymentScheduleController" method="cancel"/>
+	</action-method>
+	
+	<search-filters name="payment-schedule-filters" model="com.axelor.apps.account.db.PaymentSchedule" title="Payment schedule filters">
+		<filter title="Ongoing Schedules">
+			<domain>self.startDate &lt; CURRENT_DATE</domain>
+		</filter>
+		<filter title="Old Schedules">
+			<domain>self.startDate &gt; CURRENT_DATE</domain>
+		</filter>
+	</search-filters>
+	
+</object-views>
+
+
+    

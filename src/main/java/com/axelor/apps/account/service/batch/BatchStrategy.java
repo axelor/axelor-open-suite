@@ -27,12 +27,14 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.InterbankPaymentOrderRejectImportService;
+import com.axelor.apps.account.service.MailService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.PaymentScheduleExportService;
 import com.axelor.apps.account.service.PaymentScheduleImportService;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.ReimbursementImportService;
 import com.axelor.apps.account.service.RejectImportService;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
@@ -40,9 +42,7 @@ import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.MailService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -188,7 +188,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 		
 		if(accountingBatch.getBankDetails() == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le configurateur de batch %s",
-					GeneralService.getExceptionAccountingMsg(),accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 		
 		this.cfonbExportService.testBankDetailsField(accountingBatch.getBankDetails());

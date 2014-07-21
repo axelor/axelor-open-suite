@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+    <grid name="invoice-batch-grid" title="Invoice batches" model="com.axelor.apps.account.db.InvoiceBatch">
+    	<field name="actionSelect" />
+    	<field name="code" />
+		<field name="company" />
+    	<field name="usage" />
+		<field name="pricingOption" />
+		<field name="createdOn" title="Created on"/>
+		<field name="createdBy" title="Created by" />
+    </grid>
+ 
+    <form name="invoice-batch-form" title="Invoice batch" model="com.axelor.apps.account.db.InvoiceBatch" cols="4"
+    onLoad="action-invoice-batch-attrs-action-select,action-invoice-batch-attrs-on-select-ok" 
+    onNew="action-invoice-batch-record-on-new,action-invoice-batch-attrs-action-select,action-invoice-batch-attrs-on-select-ok">
+    	<field name="actionSelect" onChange="action-invoice-batch-attrs-action-select"/>
+    	<field name="code" />
+    	<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+    	<break/>
+    	<field name="usage" />
+    	<field name="pricingOption" />
+    	<notebook colSpan="4">
+    		<page name="statusOptionPage" title="Options" cols="4">
+				<field name="toStatusSelect" />
+				<field name="fromStatusSelect"/>
+				<field name="contractManagerUserInfo" />
+				<field name="contractLineId" />
+				<break/>
+				<field name="meIntegrationFromDate" />
+				<field name="meIntegrationToDate" />
+				<field name="onSelectOk" onChange="action-invoice-batch-attrs-on-select-ok"/>
+				<field name="invoiceSet" colSpan="4" onSelect="action-invoice-batch-method-invoice-set-domain" grid-view="invoice-grid" form-view="invoice-form"/>
+    		</page>
+    		<page title="Informations" cols="4">
+    			<field name="createdOn" title="Created on"/>
+				<field name="createdBy" title="Created by" />
+		    	<field name="description" showTitle="false" colSpan="4" />
+		    	<field name="batchList" colSpan="4" />
+    		</page>
+    	</notebook>
+    	<button name="statusBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-status" />
+    </form>
+    
+    <!-- ACTION RECORD -->
+    <action-record name="action-invoice-batch-record-on-new" model="com.axelor.apps.account.db.InvoiceBatch">
+		<field name="createdOn" expr="call:com.axelor.apps.base.service.GeneralService:getTodayDate()"/>
+		<field name="createdBy" expr="call:com.axelor.apps.base.service.UserInfoService:getUserInfo()"/>
+	</action-record>
+    
+    <!-- ACTION METHOD -->
+	<action-method name="action-invoice-batch-method-invoice-set-domain">
+		<call class="com.axelor.apps.account.web.InvoiceBatchController" method="invoiceSetDomain"/>
+	</action-method>
+		
+	<action-method name="action-invoice-batch-method-action-status">
+		<call class="com.axelor.apps.account.web.InvoiceBatchController" method="actionStatus"/>
+	</action-method>
+				
+    <!-- ACTION ATTRS -->
+    <action-attrs name="action-invoice-batch-attrs-action-select">
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 3, 4]" for="statusOptionPage"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 1, 2, 3, 4]" for="invoiceBatch"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 2, 3, 4]" for="statusBatch"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 3, 4]" for="alarmBatch"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 4]" for="memoryBatch"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 3]" for="confirmMemoryBatch"/>
+	    <attribute name="hidden" expr="eval: actionSelect != 1" for="toStatusSelect"/>
+	    <attribute name="hidden" expr="eval: actionSelect != 2" for="clearAlarmsOk"/>
+	    <attribute name="hidden" expr="eval: actionSelect != 2" for="fromStatusSelect"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [3, 4]" for="usage"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [3, 4]" for="pricingOption"/>
+	</action-attrs>
+	
+    <action-attrs name="action-invoice-batch-attrs-on-select-ok">
+	    <attribute name="hidden" expr="eval: !onSelectOk" for="invoiceSet"/>
+	</action-attrs>
+	
+</object-views>

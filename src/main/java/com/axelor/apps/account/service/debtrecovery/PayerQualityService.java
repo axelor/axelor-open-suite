@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderHistory;
 import com.axelor.apps.account.db.ReminderLevel;
 import com.axelor.apps.account.db.ReminderMethodLine;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
@@ -149,7 +150,7 @@ public class PayerQualityService {
 		List<PayerQualityConfigLine> payerQualityConfigLineList = GeneralService.getGeneral().getPayerQualityConfigLineList();
 		if(payerQualityConfigLineList == null || payerQualityConfigLineList.size() == 0)  {
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer un tableau des poids dans l'administration générale",
-					GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 		}	
 		
 		List<Partner> partnerList = this.getPartnerList();

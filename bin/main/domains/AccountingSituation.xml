@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+  
+  <module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="AccountingSituation" lang="java">
+	
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Payer partner" />
+	
+	
+ 	<many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
+    <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
+	
+	<!-- PAGE Compte Client -->
+    <decimal name="balanceCustAccount" title="Total balance" readonly="true"/>
+    <decimal name="balanceDueCustAccount" title="Due balance" readonly="true"/>
+	<decimal name="balanceDueReminderCustAccount" title="Due balance (remindable)" readonly="true"/>
+	<boolean name="custAccountMustBeUpdateOk" title="Partner situation must be updated"/>
+
+	<!--  PAGE Relance -->
+	<one-to-one name="reminder" ref="com.axelor.apps.account.db.Reminder" mappedBy="accountingSituation" title="Reminder"/>
+	
+	
+	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+	
+	<string name="name">
+	<![CDATA[
+		String name = "";
+	    if (partner != null) name += partner.getFullName()+" ("+partner.getPartnerSeq()+")";
+	    if (company != null) name += " - "+company.getName(); 
+		return name;
+    ]]>
+	</string>
+	
+  </entity>
+</domain-models>

@@ -30,8 +30,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -94,8 +94,8 @@ public class BatchMoveLineExport extends BatchStrategy {
 				
 				moveLineReport = MoveLineReport.find(moveLineReport.getId());
 				
-				moveLineDone = MoveLine.all().filter("self.move.moveLineReport = ?1", moveLineReport).count();
-				moveDone = Move.all().filter("self.moveLineReport = ?1", moveLineReport).count();
+				moveLineDone = MoveLine.filter("self.move.moveLineReport = ?1", moveLineReport).count();
+				moveDone = Move.filter("self.moveLineReport = ?1", moveLineReport).count();
 				debit = moveLineReport.getTotalDebit();
 				credit = moveLineReport.getTotalCredit();
 				balance = moveLineReport.getBalance();
@@ -125,15 +125,15 @@ public class BatchMoveLineExport extends BatchStrategy {
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
 		if(accountingBatch.getCompany() == null)  {
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une société pour le configurateur de batch %s",
-					GeneralService.getExceptionAccountingMsg(), accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 		if(accountingBatch.getEndDate() == null)  {
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une date de fin pour le configurateur de batch %s",
-					GeneralService.getExceptionAccountingMsg(), accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 		if(accountingBatch.getMoveLineExportTypeSelect() == null)  {
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer un type d'export pour le configurateur de batch %s",
-					GeneralService.getExceptionAccountingMsg(), accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionAccountingMsg(), accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 	}
 	

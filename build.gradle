@@ -6,9 +6,6 @@ module {
 
 	removable true
 
-	module "modules:axelor-exception"
-	module "modules:axelor-tool"
 	module "modules:axelor-base"
-	module "modules:axelor-message"
 }
 

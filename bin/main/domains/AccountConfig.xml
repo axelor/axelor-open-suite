@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AccountConfig" lang="java" cachable="true">
+  	<integer name="importId" />
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code" unique="true"/>
+    
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    
+<!--     JOURNAL -->
+    <many-to-one name="customerSalesJournal" ref="com.axelor.apps.account.db.Journal" title="Sales Journal"/>
+    <many-to-one name="customerCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title=" Cust. Credit note Journal"/>
+    <many-to-one name="supplierPurchaseJournal" ref="com.axelor.apps.account.db.Journal" title="Supplier Purchase Journal"/>
+    <many-to-one name="supplierCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title="Suppl. Credit Note Journal"/>
+    <many-to-one name="invoiceDirectDebitJournal" ref="com.axelor.apps.account.db.Journal" title="Invoice Direct Debit Journal"/>
+    <many-to-one name="scheduleDirectDebitJournal" ref="com.axelor.apps.account.db.Journal" title="DD Payment Smoothing Journal"/>
+    <many-to-one name="rejectJournal" ref="com.axelor.apps.account.db.Journal" title="Rejects journal"/>
+    <many-to-one name="accountClearanceJournal" ref="com.axelor.apps.account.db.Journal" title="Account clearance journal"/>
+   	<many-to-one name="reimbursementJournal" ref="com.axelor.apps.account.db.Journal" title="Reimbursement Journal"/>
+   	<many-to-one name="irrecoverableJournal" ref="com.axelor.apps.account.db.Journal" title="Irrecoverable Journal"/>
+   	<many-to-one name="miscOperationJournal" ref="com.axelor.apps.account.db.Journal" title="Misc. Operation Journal"/>
+    
+    <many-to-one name="saleJournalType" ref="com.axelor.apps.account.db.JournalType" title="Sales journal type"/>
+    <many-to-one name="purchaseJournalType" ref="com.axelor.apps.account.db.JournalType" title="Purchase journal type"/>
+    <many-to-one name="cashJournalType" ref="com.axelor.apps.account.db.JournalType" title="Cash journal type"/>
+    <many-to-one name="creditNoteJournalType" ref="com.axelor.apps.account.db.JournalType" title="Credit note journal type"/>
+    
+<!--     ACCOUNT -->
+    <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
+    <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
+    <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="true"/>    
+    <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
+    <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
+    
+    <decimal name="thresholdDistanceFromRegulation" title="Allowed Payment range"/>
+   	
+   	<many-to-one name="cashRegisterMailModel" ref="com.axelor.apps.base.db.MailModel" title="Cashier email model"/>
+   	<string name="cashRegisterAddressEmail" title="Cashier email address"/>
+   	<many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax" title="Tax for management fee"/>
+   	
+   	<!--  Onglet CFONB -->
+	<many-to-one name="cfonbConfig" ref="com.axelor.apps.account.db.CfonbConfig" title="Cfonb configuration"/>
+   	
+   	<!--  Doubtful Cust. -->
+   	<string name="sixMonthDebtPassReason" title="Shift Reason (long term debt)" default="Receivables over 6 months"/>
+   	<string name="threeMonthDebtPassReason" title="Shift Reason (short term debt)" default="Receivables over 3 months"/>
+   	<integer name="sixMonthDebtMonthNumber" title="Long term debt duration (month)" default="6"/>
+   	<integer name="threeMonthDebtMontsNumber" title="Short term debt duration (month)" default="3"/>
+   	
+	<!-- DebtRecovery -->
+   	<one-to-many name="reminderConfigLineList" ref="com.axelor.apps.account.db.ReminderConfigLine" mappedBy="accountConfig"  title="Reminder Configuration Table"/>
+   	<integer name="mailTransitTime" title="Mail transit time"/>
+
+	<!-- Reimbursement -->
+   	<string name="reimbursementExportFolderPathCFONB" title="Path for reimbursement files (CFONB)" help="true"/>
+   	<string name="reimbursementExportFolderPath" title="Path for reimbursement files (SEPA)" help="true"/>
+   	<decimal name="lowerThresholdReimbursement" title="Lower reimbursement limit"/>
+   	<decimal name="upperThresholdReimbursement" title="Upper reimbursement limit"/>
+   	<many-to-one name="reimbursementAccount" ref="com.axelor.apps.account.db.Account" title="Reimbursement account"/>
+   	<many-to-one name="reimbursementMailModel" ref="com.axelor.apps.base.db.MailModel" title="Reimbursement mail model"/>
+	
+    <string name="reimbursementImportFolderPathCFONB" title="Filepath for rejected reimbursements"  help="true"/>
+    <string name="tempReimbImportFolderPathCFONB" title="Filepath for temporary rejected reimbursements import" help="true"/>
+   
+   	<string name="exportPath" title="Filepath for exported files (Accounting)"/>
+   	
+   	<!-- Onglet Prélèvements -->
+   	<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)" help="true"/>
+   	
+   	<many-to-one name="directDebitPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode for direct debit"/>
+  	<many-to-one name="rejectionPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode after rejection"/>
+    <integer name="paymentScheduleRejectNumLimit" title="Max Nbr. for payment schedule rejection"/>
+    <integer name="invoiceRejectNumLimit" title="Max Nbr. of invoices rejection"/>
+    <string name="rejectImportPathAndFileName" title="Filepath to import rejected records"  help="true"/>
+    <string name="tempImportPathAndFileName" title="Temporary filepath to import rejected records" help="true"/>
+   	<many-to-one name="rejectPaymentScheduleMailModel" ref="com.axelor.apps.base.db.MailModel" title="Mail model for invoice and payment schedule rejections"/>
+   	
+   	<!--  Onglet Apurements -->
+   	<many-to-many name="clearanceAccountSet" ref="com.axelor.apps.account.db.Account" title="Clearance Accounts"/>
+   	<many-to-one name="profitAccount" ref="com.axelor.apps.account.db.Account" title="Profit accounts"/>
+   	<many-to-one name="standardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax Standard rate for clearance"/>
+   	
+   	<string name="irrecoverableReasonPassage" title="Irrecoverable shifting reason" default="Manual shift into irrecoverable receivables"/>
+   	<many-to-one name="irrecoverableStandardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax Standard rate for irrecoverables"/>
+   	
+	<!--  Onglet Paybox -->
+	<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>
+	  
+	<!-- Onglet Import des paiements par TIP et TIP chèque-->
+   	<string name="interbankPaymentOrderImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments"  help="true"/>
+    <string name="tempInterbankPaymentOrderImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments" help="true"/>
+  	
+  	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments rejects"  help="true"/>
+    <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments rejects" help="true"/>
+  
+    <!-- Onglet Facturation -->
+    <boolean name="showDetailsInInvoice" title="Show details in invoice"/>
+    
+    <!--  Account chart template-->
+	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
+	<boolean name="hasChartImported"  title="Chart imported?" />
+	   
+  </entity>
+  
+</domain-models>

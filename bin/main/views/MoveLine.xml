@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="move-line-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false">
+    	<hilite color="danger" if="$get('move.state') == 'draft'"/>
+      	<field name="move.state" hidden="true"/>
+        <field name="name"/>
+        <field name="date"/>
+        <field name="partner"/>
+        <field name="account"/>
+        <field name="move.company"/>
+        <field name="debit"/>
+        <field name="credit"/>
+        <field name="amountRemaining"/>
+    </grid>
+    
+    <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false"
+    groupBy="account" expandable="true"  >
+    	<hilite color="danger" if="$get('move.state') == 'draft'"/>
+      	<field name="move.state" hidden="true"/>
+        <field name="name"/>
+        <field name="date"/>
+        <field name="partner"/>
+        <field name="account"/>
+        <field name="move.company"/>
+        <field name="debit" aggregate="sum"/>
+        <field name="credit" aggregate="sum"/>
+        <field name="amountRemaining" aggregate="sum"/>
+    </grid>
+    
+    <grid name="move-line-accounting-situation-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false">
+    	<hilite color="danger" if="$get('move.state') == 'draft'"/>
+      	<field name="move.state" hidden="true"/>
+        <field name="name"/>
+        <field name="date"/>
+        <field name="description"/>
+        <field name="account"/>
+        <field name="debit"/>
+        <field name="credit"/>
+        <field name="amountRemaining"/>
+    </grid>
+    
+    <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false"
+    onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
+    onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-contractLine-readonly,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
+    	<notebook colSpan="4">
+	    	<page title="Informations" colSpan="4">
+	    		<group readonly="true">
+	    			<field name="name"/>
+			        <field name="move"/>
+			        <field name="move.company"/>
+		   	        <break/>
+			        <field name="date"/>
+			        <field name="dueDate"/>
+			        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
+			        <break/>
+			        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+		   	        <break/>
+			        <field name="debit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
+			        <field name="credit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
+			        <field name="amountPaid"/>
+			        <field name="amountRemaining"/>
+			        <field name="interbankCodeLine"/>
+			        <field name="passageReason"/>
+			        <field name="usherPassageOk" onChange="save,com.axelor.apps.account.web.MoveLineController:usherProcess"/>
+			        <field name="description"/>
+			        <field name="reimbursementStateSelect"/>
+	    		</group>
+		        <group name="irrecoverable" title="Irrecoverable" colSpan="4" canCollapse="true" >
+		        	<field name="irrecoverableStateSelect"/>
+	        		<field name="managementObject"/>
+	        		<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
+	        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
+		        </group>
+		        <group name="reconcileLists" title="Reconcile list" colSpan="4" cols="4">
+		            <field name="reconcileList1" colSpan="4" canRemove="false" canNew="false"/>
+		            <field name="reconcileList2" colSpan="4" canRemove="false" canNew="false"/>
+		        </group>
+		    </page>
+		    <page title="Analytics" readonly="true">
+		    	<field name="analyticAccountSet" colSpan="4"/>
+		    </page>
+		    <page title="Others" colSpan="4" readonly="true">
+		        <field name="taxLine"/>
+		        <field name="exportedDirectDebitOk"/>
+		    </page>
+        </notebook>
+    </form>
+    
+    <form name="move-line-accounting-situation-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false" canNew="false"
+    onLoad="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-readonly" 
+    onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-contractLine-readonly,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
+    	<notebook colSpan="4">
+    	<page name="informations" title="Informations" colSpan="4">
+	    	<group readonly="true">
+		        <field name="name"/>
+		        <field name="move"/>
+	   	        <break/>
+		        <field name="date"/>
+		        <field name="dueDate"/>
+		        <field name="customer"/>
+		        <break/>
+		        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+	   	        <break/>
+		        <field name="debit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
+		        <field name="credit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
+		        <field name="amountPaid"/>
+		        <field name="amountRemaining"/>
+		        <field name="interbankCodeLine"/>
+		        <field name="passageReason"/>
+		        <field name="usherPassageOk" onChange="save,com.axelor.apps.account.web.MoveLineController:usherProcess"/>
+		        <field name="description"/>
+		        <field name="reimbursementStateSelect"/>
+	        </group>
+	        <group name="irrecoverable" title="Irrecoverable" colSpan="4" canCollapse="true" >
+	        	<field name="irrecoverableStateSelect"/>
+        		<field name="managementObject"/>
+        		<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
+        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
+	        </group>
+	        <group name="reconcileLists" title="Reconcile list" colSpan="4" cols="4">
+	            <field name="reconcileList1" colSpan="4" canRemove="false" canNew="false"/>
+	            <field name="reconcileList2" colSpan="4" canRemove="false" canNew="false"/>
+	        </group>
+	    </page>
+	    <page title="Analytics" readonly="true">
+	    	<field name="analyticAccountSet" colSpan="4"/>
+	    </page>
+	    <page title="Others" colSpan="4" readonly="true">
+	        <field name="taxLine"/>
+	        <field name="exportedDirectDebitOk"/>
+	    </page>
+        </notebook>
+    </form>
+    
+    <action-attrs name="action-move-line-attrs-collapse-irrecoverable-group">
+		<attribute name="collapse" for="irrecoverable" expr="eval: irrecoverableStateSelect == null || irrecoverableStateSelect == 0"/>
+	</action-attrs>
+	
+	<action-attrs name="action-move-line-attrs-readonly">
+		<attribute name="readonly" for="informations" expr="eval: move.state != 'draft'"/>
+	</action-attrs>
+	
+	<action-record name="action-move-line-record-get-move-informations" model="com.axelor.apps.account.db.MoveLine">
+		<field name="partner" expr="eval: _parent?.partner"/>
+		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
+		<field name="dueDate" expr="eval: _parent?.date"/>
+	</action-record>
+	
+	<action-record name="action-move-line-record-get-first-move-line-informations" model="com.axelor.apps.account.db.MoveLine">
+		<field name="interbankCodeLine" expr="eval: _parent?.moveLineList.get(0).interbankCodeLine" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+		<field name="description" expr="eval: _parent?.moveLineList.get(0).description" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+		<field name="exportedDirectDebitOk" expr="eval: _parent?.moveLineList.get(0).exportedDirectDebitOk" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+		<field name="partner" expr="eval: _parent?.moveLineList.get(0).partner" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+	</action-record>
+	
+	<action-attrs name="action-move-line-attrs-domain-account">
+    	<attribute name="domain" for="account" expr="eval: &quot;self.company.id = ${_parent?.company.id}&quot;" if="_parent?.company"/>
+	</action-attrs>
+	
+	<action-attrs name="action-move-line-attrs-hidden-reconcileLists">
+    	<attribute name="hidden" for="reconcileLists" expr="eval: _parent?.state == 'draft'" if="eval: _parent?.state != null"/>
+	</action-attrs>
+	
+	<action-validate name="action-move-line-debit-credit-validate">
+		<alert message="An accounting moveline must have higher a credit value or a debit value." if="debit &gt; 0 &amp;&amp; credit &gt; 0"/>
+		<alert message="Debit and credit value cannot be negative." if="(debit != null &amp;&amp; debit &lt; 0)||(credit != null &amp;&amp; credit &lt; 0)"/>
+	</action-validate> 
+
+	<action-record name="action-move-line-debit-credit-clean" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="0" if="debit &lt; 0"/>
+		<field name="credit" expr="0" if="credit &lt; 0"/>
+	</action-record>
+	
+	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
+		<filter title="Sale Entries">
+			<domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
+		</filter>
+		<filter title="Due Sale Entries">
+			<domain>(self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4) AND self.dueDate &lt; CURRENT_DATE AND self.amountRemaining &gt; 0</domain>
+		</filter>
+		<filter title="Payment Schedule Entries">
+			<domain>self.fromSchedulePaymentOk = true</domain>
+		</filter>
+		<filter title="Purchase Entries">
+			<domain>self.move.invoice.operationTypeSelect = 1 OR self.move.invoice.operationTypeSelect = 2</domain>
+		</filter>
+	</search-filters>
+	
+</object-views>

@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -333,7 +334,7 @@ public class ReminderService {
 		
 		else  {
 			throw new AxelorException(String.format("%s :\nTiers %s, Société %s : Pas de situation comptable.", 
-					GeneralService.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -395,7 +396,7 @@ public class ReminderService {
 				}
 				else {
 					throw new AxelorException(String.format("%s :\nTiers %s, Société %s : Date de reference non determinée.", 
-							GeneralService.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+							GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				if(reminder.getReminderMethod() == null)  {
 					if(rss.getReminderMethod(reminder)!=null)  {
@@ -404,7 +405,7 @@ public class ReminderService {
 					}
 					else  {
 						throw new AxelorException(String.format("%s :\nTiers %s, Société %s : Méthode de relance absente pour la configuration", 
-							GeneralService.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+								GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 					}
 				}
 				else {
@@ -422,7 +423,7 @@ public class ReminderService {
 					// TODO Alarm ?
 					TraceBackService.trace(new AxelorException(
 						String.format("%s :\nTiers %s, Société %s : Niveau de relance en attente de validation", 
-								GeneralService.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.INCONSISTENCY));
+								GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.INCONSISTENCY));
 				}	
 			}
 		}

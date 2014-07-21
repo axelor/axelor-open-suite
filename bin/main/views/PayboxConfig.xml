@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="paybox-config-grid" title="Paybox configurations" model="com.axelor.apps.account.db.PayboxConfig">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="address"/>
+    </grid>
+    
+    <form name="paybox-config-form" title="Paybox configuration" model="com.axelor.apps.account.db.PayboxConfig" cols="4" colWidths="25%,25%,25%,25%">
+	    
+        <field name="name"/>
+        <field name="code"/>
+        
+        <separator colSpan="4"/>
+        
+       	<field name="payboxUrl" colSpan="4"/>
+       	<field name="payboxSite"/>
+       	<field name="payboxRang"/>
+       	<field name="payboxDevise"/>
+       	<field name="payboxIdentifiant"/>
+       	<field name="payboxHashSelect"/>
+       	<field name="payboxDefaultEmail"/>
+		<field name="payboxRetour" colSpan="4"/>
+		<field name="payboxHmac" colSpan="4"/>
+       	<field name="payboxRetourUrlEffectue" colSpan="4"/>
+       	<field name="payboxRetourUrlRefuse" colSpan="4"/>
+       	<field name="payboxRetourUrlAnnule" colSpan="4"/>
+		<field name="payboxPublicKeyPath" colSpan="4"/>
+        
+    </form>
+	
+	
+</object-views>
