@@ -24,9 +24,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.UserInfo;
-import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.supplychain.db.Location;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -81,8 +79,8 @@ public interface SaleOrderService {
 	public String getSequence(Company company) throws AxelorException; 
 	
 
-	public SaleOrder createSaleOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
-			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
+	public SaleOrder createSaleOrder(UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate, 
 			PriceList priceList, Partner clientPartner) throws AxelorException; 
 	
 }

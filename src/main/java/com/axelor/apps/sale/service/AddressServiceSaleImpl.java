@@ -15,29 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.batch;
+package com.axelor.apps.sale.service;
 
-import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.service.administration.AbstractBatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.SaleOrderInvoiceService;
 
-public abstract class BatchStrategy extends AbstractBatch {
 
-	protected BatchInvoicing batchInvoicing;
+public class AddressServiceSaleImpl extends AddressServiceImpl  {
 	
-	protected SaleOrderInvoiceService saleOrderInvoiceService;
+	private static final Logger LOG = LoggerFactory.getLogger(AddressServiceSaleImpl.class);
 	
-	protected BatchStrategy(SaleOrderInvoiceService saleOrderInvoiceService)  {
-		super();
-		this.saleOrderInvoiceService = saleOrderInvoiceService;
-	}
-	
-	
-	protected void updateSaleOrder( SaleOrder saleOrder ){
+	@Override
+	public boolean checkAddressUsed(Long addressId){
+
+		super.checkAddressUsed(addressId);
 		
-		saleOrder.addBatchSetItem( Batch.find( batch.getId() ) );
-			
-		incrementDone();
+		if(addressId != null){
+			if(SaleOrder.all_().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+				return true;
+		}
+		return false;
 	}
+	
+	
 }

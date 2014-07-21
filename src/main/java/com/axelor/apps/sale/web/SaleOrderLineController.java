@@ -23,7 +23,6 @@ import java.util.Map;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.SaleOrderLineService;
@@ -171,18 +170,5 @@ public class SaleOrderLineController {
 		}
 	}
 	
-	public void customizeBillOfMaterial(ActionRequest request, ActionResponse response) {
-
-		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-		
-		BillOfMaterial copyBillOfMaterial = saleOrderLineService.customizeBillOfMaterial(saleOrderLine);
-		
-		if(copyBillOfMaterial != null)  {
-		
-			response.setValue("billOfMaterial", copyBillOfMaterial);
-			response.setFlash("Nomenclature personnalisé créée");
-		}
-		
-	}
 	
 }

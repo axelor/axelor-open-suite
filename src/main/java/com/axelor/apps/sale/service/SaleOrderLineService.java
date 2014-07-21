@@ -24,13 +24,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderSubLine;
@@ -144,17 +143,5 @@ public class SaleOrderLineService {
 		
 	}
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine)  {
-		
-		BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-		
-		if(billOfMaterial != null)  {
-			return JPA.copy(billOfMaterial, true);
-		}
-		
-		return null;
-		
-	}
 	
 }

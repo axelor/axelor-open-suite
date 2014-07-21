@@ -33,12 +33,10 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
-import com.axelor.apps.supplychain.db.Location;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -133,8 +131,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 		}
 
-		saleOrder.setAmountRemainingToBeInvoiced(saleOrder.getInTaxTotal());
-
 		LOG.debug("Montant de la facture: HTT = {},  HT = {}, Taxe = {}, TTC = {}",
 				new Object[] { saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal() });
 
@@ -175,21 +171,18 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 	
 
-	public SaleOrder createSaleOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
-			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
+	public SaleOrder createSaleOrder(UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate, 
 			PriceList priceList, Partner clientPartner) throws AxelorException  {
 		
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
 				new Object[] { company.getName(), externalReference, clientPartner.getFullName() });
 		
 		SaleOrder saleOrder = new SaleOrder();
-		saleOrder.setProject(project);
 		saleOrder.setCompany(company);
 		saleOrder.setContactPartner(contactPartner);
 		saleOrder.setCurrency(currency);
 		saleOrder.setExternalReference(externalReference);
-		saleOrder.setInvoicingTypeSelect(invoicingTypeSelect);
-		saleOrder.setLocation(location);
 		saleOrder.setOrderDate(orderDate);
 		saleOrder.setPriceList(priceList);
 		saleOrder.setSaleOrderLineList(new ArrayList<SaleOrderLine>());

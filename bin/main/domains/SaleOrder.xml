@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="SaleOrder" lang="java">
+  	
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
+  	<integer name="importId" />
+  	<string name="saleOrderSeq" namecolumn="true" title="Reference" readonly="true"/>
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>
+  	<string name="externalReference" title="Customer reference"/>
+  	<date name="creationDate" title="Creation date" required="true" readonly="true"/>
+  	<date name="validationDate" title="Validation date" readonly="true"/>
+	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+	
+<!--   	Onglet Coordonnées client -->
+  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Customer" massUpdate="true"/>
+  	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
+  	<many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" required="true" title="Invoicing address"/>
+	<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
+    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" required="true" title="Delivery address"/>  	
+  
+  	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
+  	<boolean name="hasSubLineDefaultValue" title="Default value for sublines"/>
+  	
+  	
+<!--   	Ligne de devis -->
+	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="saleOrder" title="Sale order lines"/>
+
+<!--   	Ligne de Taxe -->	
+	<one-to-many name="saleOrderLineTaxList" ref="com.axelor.apps.sale.db.SaleOrderLineTax" mappedBy="saleOrder" title="Tax Lines"/>
+  	
+    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
+    <decimal name="taxTotal" title="Total V.A.T." scale="2" precision="20" readonly="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+    
+    <integer name="statusSelect" title="Status" selection="default.status.select" readonly="true"/>
+  	
+<!--   	Onglet Autres informations -->
+	<many-to-one name="salemanUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Salesman" massUpdate="true"/>
+	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team" massUpdate="true"/>
+	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
+    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
+    <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
+	
+<!-- 	Onglet description -->
+	<string name="description" title="Description" large="true"/>
+
+<!-- 	Onglet Commande Client -->
+    <date name="orderDate" title="Order Date"/>
+    <string name="orderNumber" title="Order Number"/>
+    
+<!--     Onglet scheduler -->
+<!-- 	<many-to-one name="scheduler" ref="com.axelor.apps.base.db.Scheduler" title="Scheduler"/> -->
+	<one-to-one name="schedulerInstance" ref="com.axelor.apps.base.db.SchedulerInstance" title="Scheduler instance"/>
+	<date name="subscriptionStartDate" title="Subscription start date"/>
+	<date name="invoicedFirstDate" title="Invoiced first date"/>
+	<date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
+	<date name="subscriptionEndDate" title="Subscription end date"/>
+    
+    <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/>  	
+    
+  </entity>
+
+</domain-models>
