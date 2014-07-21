@@ -29,7 +29,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.user.UserInfoService;
-import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
@@ -47,17 +46,17 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 	private static final Logger LOG = LoggerFactory.getLogger(MinStockRulesServiceImpl.class); 
 
 	@Inject
-	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+	protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 	
 	@Inject
-	private PurchaseOrderLineService purchaseOrderLineService;
+	protected PurchaseOrderLineService purchaseOrderLineService;
 	
 	@Inject
-	private SaleConfigService saleConfigService;
+	protected SaleConfigService saleConfigService;
 	
-	private LocalDate today;
+	protected LocalDate today;
 	
-	private UserInfo user;
+	protected UserInfo user;
 	
 	public MinStockRulesServiceSupplychainImpl(UserInfoService userInfoService) {
 
@@ -67,7 +66,7 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 	
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, Project project, int type) throws AxelorException  {
+	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
 		
 		Location location = locationLine.getLocation();
 		
@@ -102,7 +101,6 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 					Company company = location.getCompany();
 					
 					PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-							project, 
 							this.user, 
 							company, 
 							null, 
@@ -123,8 +121,7 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 									"", 
 									null, 
 									minStockRules.getReOrderQty(), 
-									product.getUnit(), 
-									null));
+									product.getUnit()));
 						
 					purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 					

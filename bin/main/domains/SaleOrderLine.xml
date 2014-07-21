@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="SaleOrderLine" lang="java">
+  
+  	<integer name="saleSupplySelect" title="Supply method" selection="product.sale.supply.select"/>
+  	
+  	<date name="invoicingDate" title="Invoicing Date"/>
+  	
+  	<boolean name="isToInvoice" title="To invoice?"/>
+  	<boolean name="isInvoiced" title="Invoiced ?"/>
+  	<decimal name="amountInvoiced" title="Amount invoiced"/>
+  	<decimal name="amountRemainingToBeInvoiced" title="Remaining to invoice"/>
+  	
+<!--   Onglet Historique -->
+  	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated invoice lines"/>
+  	
+  	
+<!-- Bon de livraison -->
+  	<boolean name="isInvoiceControlled" title="Invoice controlled"/>
+  	
+  	
+  </entity>
+
+</domain-models>

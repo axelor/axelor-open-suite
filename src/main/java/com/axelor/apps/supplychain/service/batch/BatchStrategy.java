@@ -15,27 +15,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.supplychain.service.batch;
 
-import java.util.List;
-import java.util.Map;
-
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 
-public interface SaleOrderPurchaseService {
+public abstract class BatchStrategy extends AbstractBatch {
 
-
-	public void createPurchaseOrders(SaleOrder saleOrder) throws AxelorException;
+	protected BatchInvoicing batchInvoicing;
 	
-	public Map<Partner,List<SaleOrderLine>> splitBySupplierPartner(List<SaleOrderLine> saleOrderLineList) throws AxelorException;
+	protected SaleOrderInvoiceService saleOrderInvoiceService;
+	
+	protected BatchStrategy(SaleOrderInvoiceService saleOrderInvoiceService)  {
+		super();
+		this.saleOrderInvoiceService = saleOrderInvoiceService;
+	}
 	
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createPurchaseOrder(Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder) throws AxelorException;
+	protected void updateSaleOrder( SaleOrder saleOrder ){
+		
+		saleOrder.addBatchSetItem( Batch.find( batch.getId() ) );
+			
+		incrementDone();
+	}
 }
-
-

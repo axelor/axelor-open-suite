@@ -23,8 +23,15 @@ import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
 import com.axelor.apps.supplychain.service.MinStockRulesServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
+import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
+import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
+import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 
 @AxelorModuleInfo(name = "axelor-supplychain")
 public class SupplychainModule extends AxelorModule {
@@ -34,5 +41,9 @@ public class SupplychainModule extends AxelorModule {
         bind(MinStockRulesServiceImpl.class).to(MinStockRulesServiceSupplychainImpl.class);
         bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
         bind(SaleOrderServiceImpl.class).to(SaleOrderServiceStockImpl.class);
+        bind(SaleOrderServiceImpl.class).to(SaleOrderServiceSupplychainImpl.class);
+        bind(PurchaseOrderInvoiceService.class).to(PurchaseOrderInvoiceServiceImpl.class);
+        bind(SaleOrderInvoiceService.class).to(SaleOrderInvoiceServiceImpl.class);
+        bind(SaleOrderPurchaseService.class).to(SaleOrderPurchaseServiceImpl.class);
     }
 }
