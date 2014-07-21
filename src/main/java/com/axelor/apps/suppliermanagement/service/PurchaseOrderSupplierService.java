@@ -148,7 +148,7 @@ public class PurchaseOrderSupplierService {
 				new Object[] { parentPurchaseOrder.getPurchaseOrderSeq(), supplierPartner.getFullName() });
 		
 		PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-				parentPurchaseOrder.getProject(), 
+//				parentPurchaseOrder.getProject(), 
 				user, 
 				parentPurchaseOrder.getCompany(), 
 				null, 
@@ -190,8 +190,8 @@ public class PurchaseOrderSupplierService {
 				purchaseOrderLine.getDescription(), 
 				null,
 				purchaseOrderLine.getQty(), 
-				purchaseOrderLine.getUnit(), 
-				purchaseOrderLine.getTask());
+				purchaseOrderLine.getUnit());
+//				purchaseOrderLine.getTask());
 		
 	}
 }

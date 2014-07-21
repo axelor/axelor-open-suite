@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	
+	<action-view name="wizard-supplier-view" title="My space" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="wizard-supplier-form"/>
+		<view-param name="show-toolbar" value="false"/>
+	</action-view>
+	
+	<form name="wizard-supplier-form" title="My space" model="com.axelor.apps.base.db.Wizard">
+		<field name="id" hidden="true"/>
+	    <break/>
+		<button name="myPurchaseOrder" colSpan="1" title="My purchase orders" onClick="wizard-supplier-form-open-my-purchase-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/>
+	    <button name="myRFQToComplete" colSpan="1" title="My R.F.Q. to complete" onClick="wizard-supplier-form-open-my-rfq-to-complete" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg"/>
+		<button name="myRFQ" colSpan="1" title="My R.F.Q." onClick="wizard-supplier-form-open-my-rfq" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
+		<button name="myStockMove" colSpan="1" title="My deliveries" onClick="wizard-supplier-form-open-stock-move" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
+	</form>
+	
+	<action-view name="wizard-supplier-form-open-my-purchase-order" title="My purchase orders"
+		model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<view type="grid" name="purchase-order-grid"/>
+		<view type="form" name="purchase-order-form"/>
+		<domain>self.supplierPartner = :_myPartner AND self.statusSelect in (2,3,4,5)</domain>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-my-rfq-to-complete" title="My R.F.Q. to complete"
+		model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+		<view type="grid" name="purchase-order-supplier-line-supplier-grid"/>
+    	<view type="form" name="purchase-order-supplier-line-supplier-form"/>
+		<domain>self.supplierPartner = :_myPartner AND self.stateSelect = 1</domain>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-my-rfq" title="My R.F.Q."
+		model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+		<view type="grid" name="purchase-order-supplier-line-supplier-grid"/>
+    	<view type="form" name="purchase-order-supplier-line-supplier-form"/>
+		<domain>self.supplierPartner = :_myPartner AND self.stateSelect in (2,3,4)</domain>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-stock-move" title="My deliveries"
+		model="com.axelor.apps.supplychain.db.StockMove">
+		<view type="grid" name="stock-move-supplier-grid"/>
+		<view type="form" name="stock-move-supplier-form"/>
+		<domain>self.typeSelect = 3 AND self.partner = :_myPartner</domain>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+	</action-view>	
+	
+	
+	<grid name="stock-move-supplier-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove" orderBy="-estimatedDate"  canNew="false" canDelete="false">
+        <field name="stockMoveSeq"/>
+        <field name="estimatedDate"/>
+        <field name="realDate"/>
+        <field name="toAddress"/>
+        <field name="company"/>
+        <field name="partner"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+    <form name="stock-move-supplier-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4" canNew="false" canDelete="false" canCopy="false">
+        <field name="statusSelect" widget="NavSelect" readonly="true"/>
+        <group colSpan="4" cols="6" readonly="true">
+      		<group title="Stock move reference" colSpan="2" cols="2">
+        		<field name="stockMoveSeq"/>
+        		<field name="name"/>
+        		<field name="company" form-view="company-lite-form" widget="SuggestBox"/>
+        		<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+    		</group>
+    		<group title="Stock move informations"  colSpan="2" cols="2" colWidths="40%,70%">
+        		<field name="estimatedDate"/>
+        		<field name="realDate" title="Receipt date"/>
+        		<field name="fromAddress" showIf="typeSelect == 3"/>
+    		</group>
+    	</group>
+       	<field name="stockMoveLineList" colSpan="4" form-view="stock-move-line-supplier-form" grid-view="stock-move-line-supplier-grid" canNew="false" canRemove="false"/>
+    </form>
+    
+    <grid name="stock-move-line-supplier-grid" title="Stock move lines" model="com.axelor.apps.supplychain.db.StockMoveLine" editable="true">
+        <field name="product" readonly="true"/>
+        <field name="shippedQty"/>
+        <field name="unit" readonly="true"/>
+		<field name="shippedDate"/>
+    </grid>
+    
+    <form name="stock-move-line-supplier-form" title="Stock move line" model="com.axelor.apps.supplychain.db.StockMoveLine" cols="4">
+         <field name="product" readonly="true"/>
+        <field name="shippedQty"/>
+        <field name="unit" readonly="true"/>
+		<field name="shippedDate"/>
+    </form>
+	
+</object-views>

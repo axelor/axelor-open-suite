@@ -23,10 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.suppliermanagement.db.IPurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -43,7 +43,7 @@ public class PurchaseOrderSupplierLineService {
 		purchaseOrderLine.setSupplierPartner(purchaseOrderSupplierLine.getSupplierPartner());
 		
 		purchaseOrderLine.setPrice(purchaseOrderSupplierLine.getPrice());
-		purchaseOrderLine.setExTaxTotal(PurchaseOrderLineService.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLine.getPrice()));
+		purchaseOrderLine.setExTaxTotal(PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLine.getPrice()));
 		
 		purchaseOrderSupplierLine.setStateSelect(IPurchaseOrderSupplierLine.ACCEPTED);
 		
