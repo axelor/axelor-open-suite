@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="Training" lang="java">
+  
+    <string name="experienceTypeSelect" title="Experience type" selection="training.experience.type.select"/>
+    <date name="startDate" title="Start date"/>
+    <date name="endDate" title="End date"/>
+    <string name="jobTitle" title="Job position"/>
+    <string name="service" title="Service"/>
+    <string name="duration" title="Duration (days)"/>
+    <string name="jobDescription" title="Job description" large="true" />
+    <string name="referencePosition" title="Reference position"/>
+    <string name="context" title="Context" large="true" />
+    <string name="aims" title="Aims" large="true" />
+    <string name="progress" title="Progress" large="true" />
+    <string name="technicalEnvironment" title="Technical environment" large="true" />
+    <string name="result" title="Result" large="true" />
+<!--     <many-to-one name="business" title="Business" ref="com.axelor.apps.organisation.db.Business" /> -->
+    
+    <many-to-many name="toolKeywordSet" ref="com.axelor.apps.base.db.Keyword" title="Keyword tool"/>
+   	<many-to-many name="sectorKeywordSet" ref="com.axelor.apps.base.db.Keyword" title="Keyword sector"/>
+   	
+  </entity>
+  
+</domain-models>

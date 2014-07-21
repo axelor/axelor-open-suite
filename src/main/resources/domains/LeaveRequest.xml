@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="LeaveRequest" lang="java">
+  
+  	<many-to-one name="employeeUserInfo" title="Employee" ref="com.axelor.apps.base.db.UserInfo" required="true"/>
+  	
+  	<date name="requestDate" title="Request Date"/>
+  	
+  	<datetime name="startDateT" title="From Date/Time"/>
+  	<datetime name="endDateT" title="To Date/Time"/>
+  	
+  	<decimal name="nbrOfDayOff" title="Nbr of Days Off" />
+  	
+ 	<many-to-one name="reasonTask" ref="com.axelor.apps.organisation.db.Task" title="Reason"/>
+ 	
+ 	<many-to-one name="managerUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Manager"/>
+  	
+  	<date name="approvalDate" title="Approval Date"/>
+  	
+  	<decimal name="remainingDaysOnPeriod" title="Remaining days for the period"/>
+  	
+  	<integer name="statusSelect" title="Request status" selection="organisation.leave.request.status.select" readonly="true"/>
+  
+  	<boolean name="accounted" title="Accounted"/>
+  
+  </entity>
+  
+</domain-models>

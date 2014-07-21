@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="Overtime" lang="java">
+  	<many-to-one name="userInfo" title="Employee" ref="com.axelor.apps.base.db.UserInfo" />
+  	<date name="date" title="Date"/>
+  	<decimal name="totalAmount" title="Total amount" />   
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" />
+    <one-to-many name="overtimeLineList" ref="com.axelor.apps.organisation.db.OvertimeLine" mappedBy="overtime" title="Overtime lines"/>
+    <string name="statusSelect" title="Status" selection="hr.expense.status.select" readonly="true"/>
+    <date name="validationDate" title="Date" readonly="true"/>
+    <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/> 
+  	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Month of Payment" />
+  	<string name="motif" title="Reason"/>
+  	
+  </entity>
+  
+  
+</domain-models>

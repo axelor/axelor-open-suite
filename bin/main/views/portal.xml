@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+
+	<portal title="Dashboard" name="human.resources.dashboard.portal.sample" cols="2">
+		<portlet action="portal.human.resources.dashboard.upcoming.holidays" height="350" canSearch="true" />
+		<portlet action="portal.human.resources.dashboard.candidates" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.timesheets" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.travel.expenses" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.overtimes" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.leaverequest" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.timesheets" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.travel.expenses" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.overtimes" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.leaverequest" canSearch="true" height="350" />
+		<portlet action="portal.hr.employees.gender.distribution" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.gender" height="350" />
+		<portlet action="portal.hr.employees.by.category.distribution" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.category" height="350" />	
+		<portlet action="portal.hr.employees.contract.type.distribution" height="350" />	
+		<portlet action="portal.hr.employees.turnover.ytd.vs.lastYear" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.evolution" height="350" />
+		<portlet action="portal.employees.age.pyramid" height="350" />		
+	</portal>
+
+	
+	
+	<action-view name="portal.human.resources.dashboard.candidates" title="All Candidates"
+		model="com.axelor.apps.organisation.db.Candidate">
+		<view type="grid" name="candidate-grid" />
+		<view type="form" name="candidate-form" />
+	</action-view>
+
+	<action-view name="portal.human.resources.dashboard.timesheets" title="All Timesheets"
+		model="com.axelor.apps.organisation.db.Timesheet">
+		<view type="grid" name="timesheet-grid" />
+		<view type="form" name="timesheet-form" />
+	</action-view>
+
+	<action-view name="portal.human.resources.dashboard.travel.expenses" title="All Travel Expenses"
+		model="com.axelor.apps.organisation.db.Expense">
+		<view type="grid" name="expense-grid" />
+		<view type="form" name="expense-form" />
+	</action-view>
+
+	<action-view name="portal.human.resources.dashboard.overtimes" title="All Overtimes"
+		model="com.axelor.apps.organisation.db.Overtime">
+		<view type="grid" name="overtime-grid" />
+		<view type="form" name="overtime-form" />
+	</action-view>
+	
+	<action-view name="portal.human.resources.dashboard.leaverequest" title="All leave requests"
+		model="com.axelor.apps.organisation.db.LeaveRequest">
+		<view type="grid" name="leave-request-grid" />
+		<view type="form" name="leave-request-form" />
+	</action-view>
+
+	<action-view name="portal.human.resources.dashboard.my.timesheets" title="My Timesheets"
+		model="com.axelor.apps.organisation.db.Timesheet">
+		<view type="grid" name="my-timesheet-grid" />
+		<view type="form" name="timesheet-form" />
+		<domain>self.userInfo = :_user_info</domain>
+		<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
+	</action-view>
+
+	<action-view name="portal.human.resources.dashboard.my.travel.expenses" title="My Travel Expenses"
+		model="com.axelor.apps.organisation.db.Expense">
+		<view type="grid" name="my-expense-grid" />
+		<view type="form" name="expense-form" />
+		<domain>self.userInfo = :_user_info</domain>
+		<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
+	</action-view>
+
+	<action-view name="portal.human.resources.dashboard.my.overtimes" title="My Overtimes"
+		model="com.axelor.apps.organisation.db.Overtime">
+		<view type="grid" name="my-overtime-grid" />
+		<view type="form" name="overtime-form" />
+		<domain>self.userInfo = :_user_info</domain>
+		<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
+	</action-view>
+	
+	<action-view name="portal.human.resources.dashboard.my.leaverequest" title="My leave requests"
+		model="com.axelor.apps.organisation.db.LeaveRequest">
+		<view type="grid" name="my-leave-request-grid" />
+		<view type="form" name="leave-request-form" />
+		<domain>self.employeeUserInfo = :_user_info</domain>
+		<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
+	</action-view> 
+
+
+	<action-view title="Employees gender distribution" name="portal.hr.employees.gender.distribution" model="com.axelor.apps.organisation.db.Employee" >
+	  <view type="chart" name="chart.human.resources.dashboard.portal.hr.employees.gender.distribution"/>
+	</action-view>
+	
+	<action-view name="portal.hr.nbr.of.employees.by.gender" title="Employees by gender" model="com.axelor.apps.organisation.db.Employee">
+	  <view type="chart" name="chart.hr.nbr.of.employees.by.gender"/>
+	</action-view>
+	
+	<action-view title="Employees by macro-category" name="portal.hr.employees.by.category.distribution" model="com.axelor.apps.organisation.db.Employee" >
+  		<view type="chart" name="chart.hr.employees.by.category.distribution"/>
+	</action-view>
+
+	<action-view name="portal.hr.nbr.of.employees.by.category" title="Employees by macro-category" model="com.axelor.apps.organisation.db.Employee">
+	  <view type="chart" name="chart.hr.nbr.of.employees.by.category"/>
+	</action-view>
+	
+	<action-view title="Employees contract type distribution" name="portal.hr.employees.contract.type.distribution" model="com.axelor.apps.organisation.db.Employee">
+ 		 <view type="chart" name="chart.hr.employees.contract.type.distribution"/>
+	</action-view>
+	
+	<action-view name="portal.hr.employees.turnover.ytd.vs.lastYear" title="Employees turnover per year" model="com.axelor.apps.organisation.db.Employee">
+	  <view type="chart" name="chart.hr.employees.turnover.ytd.vs.lastYear"/>  
+	</action-view>
+	
+	<action-view  name="portal.hr.nbr.of.employees.evolution" model="com.axelor.apps.organisation.db.Employee"  title="Number of Employees">
+  		<view type="chart" name="chart.hr.nbr.of.employees.evolution"/>
+  		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
+	
+	<action-view name="portal.employees.age.pyramid" title="Employees age pyramid" model="com.axelor.apps.organisation.db.PersonalInfo">
+	  <view type="chart" name="chart.employees.age.pyramid"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
+	
+	<portal title="Project Dashboard" name="org.project.dashboard.portal.sample" cols="2">
+	    <portlet action="portal.projects.by.client.partner" colSpan="1" height="350" canSearch="true"/>	    
+ 	</portal>
+ 	
+	<portal cols="2" name="org.project.dashboard.portal" title="Project/Business Dashboard">
+	  <portlet colSpan="1" height="350" action="portal.projects.by.client.partner" canSearch="true"/>
+	</portal>
+	
+	<action-view title="Projects by Client Partner" model="com.axelor.apps.organisation.db.Project" name="portal.projects.by.client.partner">
+    	<view type="grid" name="project-byclient-grid"/>
+    	<view type="form" name="project-form"/> 
+    	<view-param name="search-filters" value="project-filters"/>
+    	<domain>self.isProject = true</domain>
+	</action-view>
+
+    <portal title="Human Resources DB 1" name="human.resources.dashboard.1.portal" cols="2">
+		<portlet action="portal.human.resources.dashboard.upcoming.holidays" height="350" canSearch="true" />
+		<portlet action="portal.human.resources.dashboard.candidates" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.timesheets" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.travel.expenses" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.overtimes" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.leaverequest" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.timesheets" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.travel.expenses" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.overtimes" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.leaverequest" canSearch="true" height="350" />
+	</portal>
+		
+	<portal title="Human Resources DB 2" name="human.resources.dashboard.2.portal" cols="2">
+		<portlet action="portal.hr.employees.gender.distribution" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.gender" height="350" />
+		<portlet action="portal.hr.employees.by.category.distribution" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.category" height="350" />	
+		<portlet action="portal.hr.employees.contract.type.distribution" height="350" />	
+		<portlet action="portal.hr.employees.turnover.ytd.vs.lastYear" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.evolution" height="350" />
+		<portlet action="portal.employees.age.pyramid" height="350" />		
+	</portal>
+
+
+</object-views>
+  

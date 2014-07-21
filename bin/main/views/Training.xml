@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="training-grid" title="Training" model="com.axelor.apps.organisation.db.Training">
+        <field name="experienceTypeSelect"/>
+        <field name="startDate"/>
+        <field name="endDate"/>
+        <field name="duration"/>
+    </grid>
+    
+    <form name="training-form" title="Training" model="com.axelor.apps.organisation.db.Training" cols="4">
+        <field name="experienceTypeSelect"/>
+        <field name="startDate" onChange="action-training-method-compute-duration"/>
+        <label title=" " colSpan="2" />
+        <field name="endDate" onChange="action-training-method-compute-duration"/>
+        <field name="jobTitle"/>
+        <break/>
+        <field name="service"/>
+        <field name="duration" onChange="action-training-method-compute-date,action-training-method-compute-duration"/>
+        <field name="jobDescription" colSpan="4"/>
+        <field name="referencePosition" />
+        <break/>
+        <field name="context" />
+        <field name="aims" />
+        <field name="progress" />
+        <field name="technicalEnvironment" />
+		<field name="result" />
+		<break/>
+<!-- 		<field name="business" /> -->
+		<field name="toolKeywordSet" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '1'" grid-view="keyword-tool-grid" form-view="keyword-tool-form"/>
+        <field name="sectorKeywordSet" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '2'" grid-view="keyword-area-grid" form-view="keyword-area-form"/>
+        
+    </form>
+    
+    <action-method name="action-training-method-compute-duration">
+    	<call class="com.axelor.apps.organisation.web.TrainingController" method="computeDuration"/>
+    </action-method>
+    
+    <action-method name="action-training-method-compute-date">
+    	<call class="com.axelor.apps.organisation.web.TrainingController" method="computeDate"/>
+    </action-method>
+
+</object-views>

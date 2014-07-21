@@ -29,7 +29,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.report.IReport;
 import com.axelor.apps.organisation.service.ProjectService;
-import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;

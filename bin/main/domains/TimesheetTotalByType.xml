@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="TimesheetTotalByType" lang="java">
+  
+  	<many-to-one name="timesheet" ref="com.axelor.apps.organisation.db.Timesheet" title="Timesheet"/>
+	
+	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
+	<decimal name="duration" title="Duration"/>
+		
+  </entity>
+
+</domain-models>

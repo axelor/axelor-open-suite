@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="ExpenseLine" lang="java">
+  
+  	<many-to-one name="expense" title="Expense" ref="com.axelor.apps.organisation.db.Expense" />
+  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+  	<string name="expenseTypeSelect" title="Type of expense" selection="expense.line.expense.type.select" />
+  	<many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
+  	<many-to-one name="unit" title="UoM" ref="com.axelor.apps.base.db.Unit"/>
+  	<string name="shortDescription" title="Short description" />
+  	<date name="date" title="Date" />
+  	<decimal name="qty" title="Quantity"/>
+  	<decimal name="price" title="Unit price"/>
+  	<decimal name="inTaxTotal" title="Total (TTC)"/>
+  	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+  	<binary name="file" title="File" />
+  	<integer name="fileReceived" title="File received" selection="hr.expense.line.file.received.select"/>
+  	<date name="validationDate" title="Validation Date" readonly="true"/>
+  	<boolean name="isToInvoice" title="To invoice ?"/>
+  	<boolean name="isInvoiced" title="Invoiced" readonly="true"/>
+  	
+  	<!--   	Champ technique non affiché, utilisé pour les reportings -->
+  	<decimal name="companyTotal" title="Total W.T. in company currency" hidden="true"/>
+  </entity>
+  
+</domain-models>

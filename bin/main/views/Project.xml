@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="project-grid" title="Projects" model="com.axelor.apps.organisation.db.Project">
+        <field name="clientPartner"/>
+        <field name="contactPartner"/>
+        <field name="company"/>
+        <field name="name"/>
+        <field name="isModel"/>
+    </grid>
+    <grid name="project-byclient-grid" title="Projects by Client Partner" model="com.axelor.apps.organisation.db.Project" groupBy='clientPartner'>
+	    <field name="clientPartner"/>
+	    <field name="contactPartner"/>
+	    <field name="company"/>
+	    <field name="name"/>
+	    <field name="isModel"/>
+	</grid>
+	
+    <form cols="6" onNew="action-project-group-default" name="project-form" title="Project" model="com.axelor.apps.organisation.db.Project"
+    onSave="action-project-method-create-default-task-on-save">
+	    <toolbar>
+    		<button name="printProject" colSpan="2" title="Print" onClick="action-print-project" icon="fa-print"/>
+    	</toolbar>
+	    <group showTitle="false" colSpan="4">
+	   		<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4"/>
+	        <field name="responsibleUserInfo"/>
+	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
+	        <field name="clientPartner"/>
+	        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	        <field name="company" widget="SuggestBox" form-view="company-lite-form" readonlyIf="projectStatusSelect >= 3 || businessStatusSelect >= 2"/>
+	    </group>
+	    <group showTitle="false" colSpan="2" cols="2">
+	    	<field name="projectStatusSelect" widget="NavSelect" showTitle="false" colSpan="2"/>
+		    <group title="Actions" showTitle="false" colSpan="2" cols="1">
+		        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
+		        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="save,action-project-validate-generate-invoice,action-project-method-create-invoice"/>
+		        <button name="showTask" title="Show tasks" colSpan="1" onClick="action-project-view-task"/>
+		        <button name="updateTaskProgression" title="Update task progress" colSpan="1" onClick="action-project-method-update-task-progress"/>
+		    </group>
+	    </group>
+	    <group title="Times" colSpan="6" cols="6">
+       		<field name="totalTime"/>
+       		<field name="unit"/>  
+       		<spacer colSpan="2"/>
+       		<separator colSpan="6"/>
+            <field name="plannedTime"/>
+            <field name="spentTime"/>
+            <field name="remainingTime"/>
+        </group>
+	    <group title="Description" colSpan="6">
+        	<field name="description" colSpan="6" widget="html" showTitle="false"/>
+        </group>
+        <group name="specificSettings" title="Specific settings" colSpan="6" cols="6" canCollapse="true" colWidths="16%,17%,16%,17%,16%,18%">
+        	<field name="isProject"/>
+        	<field name="isBusiness"/>
+        	<field name="parentProject" onChange="action-project-unit"/>
+        	<group colSpan="2" cols="2">
+        		<separator title="Project model" colSpan="2"/>
+       			<field name="isModel"/>
+            	<field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
+        	</group>
+            <group colSpan="2" cols="2">
+            	<separator title="Expense" colSpan="2"/>
+            	<field name="imputExpense"/>
+            	<field name="typeProjectSelect" showIf="imputExpense == true" onChange="action-project-attrs-domain-task-project"/>
+            	<field name="isReinvoicingExpense"/>
+            </group>
+            <group colSpan="2" cols="2">
+            	<separator title="Timesheet" colSpan="2"/>
+            	<field name="isReinvoicingTime"/>
+            	<field name="isTimeSheetImputable"/> 
+            </group>
+        </group>
+	    <notebook colSpan="6">
+	        <page title="Tasks">
+	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
+	        </page>
+	        <page title="Members" colSpan="4">
+	            <field name="memberUserInfoSet" colSpan="6"/>
+	        </page>
+	    </notebook>
+	</form>
+
+	<action-method name="action-print-project">
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="printProjectReport"/>
+	</action-method>
+	
+    <action-view name="action-project-view-task" title="Tasks" model="com.axelor.apps.organisation.db.Task">
+		<view type="grid" name="task-grid"/>
+		<view type="form" name="task-form"/>
+		<domain>self.project.id = :_projectId</domain>
+		<context name="_projectId" expr="eval: __this__.id"/>
+	</action-view>
+    
+    
+    <action-group name="action-project-group-default">
+    	<action name="action-project-record-default"/>
+    	<action name="action-project-record-unit"/>
+    </action-group>
+    
+    <action-record name="action-project-record-default" model="com.axelor.apps.organisation.db.Project">
+		<field name="isTimeSheetImputable" expr="true"/>
+		<field name="isProject" expr="true"/>
+		<field name="exportTypeSelect" expr="eval: 'pdf'"/>
+    	<field name="realEstimatedMethodSelect" expr="2"/>
+    	<field name="responsibleUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<field name="projectStatusSelect" expr="1"/>
+	</action-record>
+	
+    <action-record name="action-project-record-unit" model="com.axelor.apps.organisation.db.Project">
+		<field name="unit" expr="eval: parentProject?.projectUnit" if="parentProject &amp;&amp; parentProject.unit"/>
+		<field name="unit" expr="call:com.axelor.apps.base.service.administration.GeneralService:getUnit()" if="!parentProject || parentProject.unit == null"/>
+	</action-record>
+	
+	<action-method name="action-project-method-create-invoice">
+		<call class="com.axelor.apps.accountorganisation.web.ProjectInvoiceController" method="createInvoice"/>
+	</action-method>
+	
+	<action-validate name="action-project-validate-generate-invoice">
+		<error message="Generating invoice is impossible, the fields clientPartner and contactPartner must be filled." if="clientPartner == null || contactPartner == null"/>
+   		<error message="Generating invoice is impossible, please link the task to a saleOrderLine to do so." if="eval: taskList?.collect(){ it?.saleOrderLine }?.contains(null) == true"/>
+   		<error message="There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in." if="eval: taskList?.collect(){ it?.isToInvoice }?.contains(true) == false"/>
+	</action-validate> 
+	
+	<action-method name="action-project-method-create-default-task-on-save">
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="createDefaultTask"/>
+	</action-method>
+	
+	<action-method name="action-project-method-update-task-progress">
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="updateTaskProgress"/>
+	</action-method>
+		
+	<action-attrs name="action-project-attrs-domain-task-project">
+		<attribute name="domain" for="defaultTask" expr="eval: &quot;self?.userInfo?.internalUser.id = __user__.id&quot;" if="typeProjectSelect == 1"/>
+		<attribute name="domain" for="parentProject" expr="eval: &quot;self?.responsibleUserInfo?.internalUser.id = __user__.id&quot;" if="typeProjectSelect == 2"/>
+	</action-attrs>
+	
+	<search-filters name="project-filters" model="com.axelor.apps.organisation.db.Project" title="Project filters">
+		<filter title="My Projects">
+			<domain>self.exitDate IS NULL</domain>
+		</filter>
+		<filter title="Models">
+			<domain>self.isModel = true</domain>
+		</filter>
+		<filter title="Billable">
+			<domain>self.isReinvoicingTime = true OR self.isReinvoicingExpense = true</domain>
+		</filter>
+	</search-filters>
+	
+</object-views>

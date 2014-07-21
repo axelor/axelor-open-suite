@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    
+    <calendar name="leave-request-calendar" title="Leave requests" mode="month" colorBy="employeeUserInfo" 
+        model="com.axelor.apps.organisation.db.LeaveRequest"
+	    eventStart="startDateT" 
+	    eventStop="endDateT" 
+	    eventLength="1">
+	    <field name="reasonTask"/>
+ 	 </calendar>
+    
+    <grid name="leave-request-grid" title="Leave requests" model="com.axelor.apps.organisation.db.LeaveRequest">
+        <field name="employeeUserInfo"/>
+        <field name="requestDate"/>
+        <field name="startDateT"/>
+        <field name="endDateT"/>
+        <field name="nbrOfDayOff"/>
+        <field name="reasonTask"/>
+        <field name="managerUserInfo"/>
+        <field name="approvalDate"/>
+        <field name="remainingDaysOnPeriod"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+    <grid edit-icon="true" name="my-leave-request-grid" title="My Leave requests" model="com.axelor.apps.organisation.db.LeaveRequest">
+		  <field name="requestDate"/>
+		  <field name="startDateT"/>
+		  <field name="endDateT"/>
+		  <field name="nbrOfDayOff"/>
+		  <field name="reasonTask"/>
+		  <field name="managerUserInfo"/>
+		  <field name="approvalDate"/>
+		  <field name="remainingDaysOnPeriod"/>
+		  <field name="statusSelect"/>
+	</grid>
+    
+    <form name="leave-request-form" title="Leave request" model="com.axelor.apps.organisation.db.LeaveRequest" cols="4"
+    	onNew="action-leave-request-record-new" onSave="action-leave-request-group-wkf" >
+		<field name="employeeUserInfo"/>
+		<spacer/>
+		<field name="statusSelect" widget="NavSelect" showTitle="false"/>
+        <field name="requestDate" required="true"/>
+        <field name="reasonTask" domain="self.isLeaveRequest = true" form-view="task-leave-reason-form" grid-view="task-leave-reason-grid"/>
+        <field name="accounted"/>
+        <group title="Leave period" colSpan="4" cols="4">
+        	<field name="startDateT" onChange="action-leave-request-method-compute-start-date-time" required="true" />
+        	<field name="endDateT" onChange="action-leave-request-method-compute-end-date-time"/>
+        	<field name="nbrOfDayOff" onChange="action-leave-request-method-compute-duration"/>
+        	<field name="remainingDaysOnPeriod" readonly="true"/>
+        </group>
+        <group colSpan="4" cols="4">
+	        <field name="managerUserInfo"/>
+	        <field name="approvalDate"/>
+        </group>
+        <button name="confirm" title="Confirm" colSpan="2" showIf="statusSelect == 1" onClick="action-leave-request-group-wkf"/>
+        <button name="cancel" title="Cancel" colSpan="2" showIf="statusSelect == 1 || statusSelect == 2" onClick="action-leave-request-group-wkf"/>
+        <button name="validate" title="Validate" colSpan="2" showIf="statusSelect == 2" onClick="action-leave-request-group-wkf"/>
+        <button name="refuse" title="Refuse" colSpan="2" showIf="statusSelect == 2" onClick="action-leave-request-group-wkf"/>
+        <button name="backToDraft" title="Back to draft" colSpan="2" showIf="statusSelect == 5" onClick="action-leave-request-group-wkf"/>
+    </form>
+    
+    <!-- ACTION WORKFLOW -->
+    
+    <action-workflow name="action-leave-request-workflow" model="com.axelor.apps.organisation.db.LeaveRequest"/>
+    
+    <!-- ACTION GROUP -->
+    <action-group name="action-leave-request-group-validate">
+    	<action name="action-leave-request-method-validate"/>
+    	<action name="action-leave-request-record-validate"/>
+    </action-group>
+    
+    <action-group name="action-leave-request-group-wkf">
+    	<action name="save"/>
+    	<action name="action-leave-request-workflow"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <!-- ACTION RECORD -->
+    
+    <action-record name="action-leave-request-record-new" model="com.axelor.apps.organisation.db.LeaveRequest">
+    	<field name="employeeUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="requestDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+    </action-record>
+    
+     <action-record name="action-leave-request-record-draft" model="com.axelor.apps.organisation.db.LeaveRequest">
+    	<field name="statusSelect" expr="eval: 1"/>
+    </action-record>
+    
+     <action-record name="action-leave-request-record-confirm" model="com.axelor.apps.organisation.db.LeaveRequest">
+    	<field name="statusSelect" expr="2"/>
+    </action-record>
+    
+    <action-record name="action-leave-request-record-validate" model="com.axelor.apps.organisation.db.LeaveRequest">
+    	<field name="approvalDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+    	<field name="statusSelect" expr="3"/>
+    </action-record>
+    
+     <action-record name="action-leave-request-record-cancel" model="com.axelor.apps.organisation.db.LeaveRequest">
+    	<field name="statusSelect" expr="4"/>
+    </action-record>
+    
+     <action-record name="action-leave-request-record-refuse" model="com.axelor.apps.organisation.db.LeaveRequest">
+    	<field name="statusSelect" expr="5"/>
+    </action-record>
+    
+    <!-- ACTION METHOD -->
+    
+    <action-method name="action-leave-request-method-validate">
+    	<call class="com.axelor.apps.organisation.web.LeaveRequestController" method="validate"/>
+    </action-method>
+	
+	<action-method name="action-leave-request-method-compute-start-date-time">
+    	<call class="com.axelor.apps.organisation.web.LeaveRequestController" method="computeStartDateTime"/>
+    </action-method>
+    
+    <action-method name="action-leave-request-method-compute-end-date-time">
+    	<call class="com.axelor.apps.organisation.web.LeaveRequestController" method="computeEndDateTime"/>
+    </action-method>
+    
+    <action-method name="action-leave-request-method-compute-duration">
+    	<call class="com.axelor.apps.organisation.web.LeaveRequestController" method="computeDuration"/>
+    </action-method>
+    
+    <!-- ACTION VALIDATE -->
+    
+    <action-condition name="action-leave-request-condition-confirmation">
+    	<check field="requestDate" error="The holiday request date should be equal or before the today date." if="requestDate &gt; __date__"/>
+    	<check error="The holiday end date must be after the start date." if="startDateT &lt; requestDate"/>
+    	<check error="The holiday end date must be after the start date." if="endDateT &lt; startDateT"/>
+    	<check error="Holiday requests duration must always be greater than 0." if="nbrOfDayOff == 0"/>
+    </action-condition>
+    
+    <action-condition name="action-leave-request-condition-validation">
+		<check error="You are not allowed to validate this holiday request, please refer to your supervisor (the supervisor is listed in the employee hierarchy notebook)." if="__user__.id != managerUserInfo?.internalUser.id"/>
+    </action-condition>
+    
+</object-views>

@@ -26,14 +26,12 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.organisation.db.Expense;
 import com.axelor.apps.organisation.db.ExpenseLine;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -44,9 +42,6 @@ public class ExpenseLineService {
 	
 	@Inject
 	private CurrencyService currencyService;
-	
-	@Inject
-	private GeneralService gs;
 	
 	@Inject
 	private AccountManagementService accountManagementService;
@@ -97,7 +92,7 @@ public class ExpenseLineService {
 		FiscalPosition fiscalPosition = null;
 		if(expense.getUserInfo().getPartner() != null)
 			fiscalPosition = expense.getCompany().getPartner().getFiscalPosition();
-		LocalDate today = gs.getTodayDate();
+		LocalDate today = GeneralService.getTodayDate();
 		if(line.getDate() != null)
 			today = line.getDate();
 		return accountManagementService.getTaxLine(

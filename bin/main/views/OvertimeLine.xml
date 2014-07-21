@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="overtime-line-grid" title="Overtime lines" model="com.axelor.apps.organisation.db.OvertimeLine">
+        <field name="description"/>
+        <field name="project"/>
+        <field name="quantity"/>
+        <field name="unit"/>
+        <field name="unitPrice"/>
+        <field name="total"/>
+        <field name="validationDate"/>
+    </grid>
+    
+    <form name="overtime-line-form" title="Overtime line" model="com.axelor.apps.organisation.db.OvertimeLine" cols="4">
+        <field name="description"/>
+        <field name="project"/>
+        <field name="quantity" onChange="action-overtime-line-method-compute-total"/>
+        <field name="unit"/>
+        <field name="unitPrice" onChange="action-overtime-line-method-compute-total"/>
+        <field name="total"/>
+        <button name="validate" title="Validate" colSpan="2"/>
+        <field name="validationDate"/>
+    </form>
+    
+    <action-method name="action-overtime-line-method-compute-total">
+    	<call class="com.axelor.apps.organisation.web.OvertimeLineController" method="computeTotal"/>
+    </action-method>
+    
+</object-views>

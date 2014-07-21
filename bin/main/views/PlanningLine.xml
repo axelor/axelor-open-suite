@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="planning-line-grid" title="Planning lines" model="com.axelor.apps.organisation.db.PlanningLine">
+        <field name="product"/>
+        <field name="employee"/>
+        <field name="task"/>
+        <field name="fromDateTime"/>
+        <field name="toDateTime"/>
+        <field name="duration"/>
+        <field name="unit"/>
+        <field name="timeSheet"/>
+    </grid>
+    
+    <form name="planning-line-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" 
+    onNew="action-planning-line-default-record,action-planning-line-set-datetime">
+        <field name="product" domain="self.applicationTypeSelect = 2"/>
+        <field name="employee"/>
+        <field name="task"/>
+        <field name="fromDateTime" onChange="action-planning-line-method-compute-start-date-time"/>
+        <field name="toDateTime" onChange="action-planning-line-method-compute-end-date-time"/>
+        <field name="duration" onChange="action-planning-line-method-compute-duration"/>
+        <field name="unit" onChange="action-planning-line-method-compute-unit"/>
+        <field name="timeSheet"/>
+    </form>
+    
+    <grid name="planning-line-task-grid" title="Planning lines" model="com.axelor.apps.organisation.db.PlanningLine">
+        <field name="product"/>
+        <field name="employee"/>
+        <field name="planning"/>
+        <field name="fromDateTime"/>
+        <field name="toDateTime"/>
+        <field name="duration"/>
+        <field name="unit"/>
+        <field name="timeSheet"/>
+    </grid>
+    
+    <form name="planning-line-task-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" 
+    onNew="action-planning-line-default-record,action-planning-line-set-datetime">
+        <field name="product" domain="self.applicationTypeSelect = 2"/>
+        <field name="employee"/>
+        <field name="planning"/>
+        <field name="fromDateTime" onChange="action-planning-line-method-compute-start-date-time"/>
+        <field name="toDateTime" onChange="action-planning-line-method-compute-end-date-time"/>
+        <field name="duration" onChange="action-planning-line-method-compute-duration"/>
+        <field name="unit" onChange="action-planning-line-method-compute-unit"/>
+        <field name="timeSheet"/>
+    </form>
+    
+    <action-record name="action-planning-line-default-record" model="com.axelor.apps.organisation.db.PlanningLine">
+    	<field name="fromDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="fromDateTime == null"/> 	
+    	<field name="unit" expr="eval: com.axelor.apps.base.db.Unit.findByCode(&quot;HRE&quot;)"/>
+    	<field name="employee" expr="eval: _parent?.userInfo?.employee"/>
+    </action-record>
+    
+    <action-record name="action-planning-line-set-datetime" model="com.axelor.apps.organisation.db.PlanningLine">
+    	<field name="fromDateTime" expr="eval: fromDateTime.withTime(8,0,0,0)" if="fromDateTime != null"/>
+    </action-record>
+    
+    <action-method name="action-planning-line-method-compute-start-date-time">
+    	<call class="com.axelor.apps.organisation.web.PlanningLineController" method="computeStartDateTime"/>
+    </action-method>
+    
+    <action-method name="action-planning-line-method-compute-end-date-time">
+    	<call class="com.axelor.apps.organisation.web.PlanningLineController" method="computeEndDateTime"/>
+    </action-method>
+    
+    <action-method name="action-planning-line-method-compute-duration">
+    	<call class="com.axelor.apps.organisation.web.PlanningLineController" method="computeDuration"/>
+    </action-method>
+    
+     <action-method name="action-planning-line-method-compute-unit">
+    	<call class="com.axelor.apps.organisation.web.PlanningLineController" method="computeUnit"/>
+    </action-method>
+    
+</object-views>
