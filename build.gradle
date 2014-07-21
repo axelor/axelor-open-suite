@@ -6,7 +6,6 @@ module {
 	
 	removable false
 
-	module "modules:axelor-base"
 	module "modules:axelor-supplychain"
 	module "modules:axelor-organisation"
 	module "modules:axelor-crm"
