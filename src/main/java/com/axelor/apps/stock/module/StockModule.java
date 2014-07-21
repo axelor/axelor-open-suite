@@ -19,8 +19,12 @@ package com.axelor.apps.stock.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.app.AxelorModuleInfo;
+import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.stock.service.AddressServiceStockImpl;
 import com.axelor.apps.stock.service.MinStockRulesService;
 import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
+import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.StockMoveServiceImpl;
 
 @AxelorModuleInfo(name = "axelor-stock")
 public class StockModule extends AxelorModule {
@@ -28,5 +32,7 @@ public class StockModule extends AxelorModule {
     @Override
     protected void configure() {
         bind(MinStockRulesService.class).to(MinStockRulesServiceImpl.class);
+        bind(AddressServiceImpl.class).to(AddressServiceStockImpl.class);
+        bind(StockMoveService.class).to(StockMoveServiceImpl.class);
     }
 }

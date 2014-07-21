@@ -28,34 +28,35 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
-import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class StockMoveController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(StockMoveController.class);
 
 	@Inject
-	private StockMoveService stockMoveService;
+	private Provider<StockMoveService> stockMoveProvider;
 	
 	@Inject
-	private AddressService ads;
+	private Provider<MapService> mapProvider;
 	
 	public void plan(ActionRequest request, ActionResponse response) {
 		
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveService.plan(StockMove.find(stockMove.getId()));
+			stockMoveProvider.get().plan(StockMove.find(stockMove.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -66,7 +67,7 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			String newSeq = stockMoveService.realize(StockMove.find(stockMove.getId()));
+			String newSeq = stockMoveProvider.get().realize(StockMove.find(stockMove.getId()));
 			
 			response.setReload(true);
 			
@@ -84,7 +85,7 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveService.cancel(StockMove.find(stockMove.getId()));		
+			stockMoveProvider.get().cancel(StockMove.find(stockMove.getId()));		
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -188,7 +189,7 @@ public class StockMoveController {
 			BigDecimal dLon = fromAddress.getLongit();
 			BigDecimal aLat = toAddress.getLatit();
 			BigDecimal aLon =  toAddress.getLongit();
-			Map<String, Object> result = ads.getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
+			Map<String, Object> result = mapProvider.get().getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
 			if(result != null){
 				Map<String,Object> mapView = new HashMap<String,Object>();
 				mapView.put("title", "Map");
@@ -207,7 +208,7 @@ public class StockMoveController {
 			response.setFlash("No move lines to split");
 			return;
 		}
-		Boolean selected = stockMoveService.splitStockMoveLinesUnit(stockMoveLines, new BigDecimal(1));
+		Boolean selected = stockMoveProvider.get().splitStockMoveLinesUnit(stockMoveLines, new BigDecimal(1));
 		
 		if(!selected)
 			response.setFlash("Please select lines to split");
@@ -226,7 +227,7 @@ public class StockMoveController {
 			response.setFlash("Please entry proper split qty");
 			return ;
 		}
-		Boolean selected = stockMoveService.splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
+		Boolean selected = stockMoveProvider.get().splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
 		if(!selected)
 			response.setFlash("Please select lines to split");
 		response.setReload(true);
@@ -235,7 +236,7 @@ public class StockMoveController {
 	
 	public void shipReciveAllProducts(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		stockMoveService.copyQtyToRealQty(StockMove.find(stockMove.getId()));
+		stockMoveProvider.get().copyQtyToRealQty(StockMove.find(stockMove.getId()));
 		response.setReload(true);
 	}
 	
@@ -244,7 +245,7 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveService.generateReversion(StockMove.find(stockMove.getId()));		
+			stockMoveProvider.get().generateReversion(StockMove.find(stockMove.getId()));		
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

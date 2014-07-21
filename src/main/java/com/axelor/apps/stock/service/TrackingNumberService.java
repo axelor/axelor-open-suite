@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -40,16 +39,7 @@ public class TrackingNumberService {
 	private static final Logger LOG = LoggerFactory.getLogger(TrackingNumberService.class); 
 
 	@Inject
-	private SequenceService sequenceService;
-	
-	private String exceptionMsg;
-	
-	@Inject
-	public TrackingNumberService() {
-
-		this.exceptionMsg = GeneralService.getExceptionAccountingMsg();
-		
-	}
+	private SequenceService sequenceService;	
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -101,8 +91,8 @@ public class TrackingNumberService {
 		TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
 		
 		if (trackingNumberConfiguration.getSequence() == null)  {
-			throw new AxelorException(String.format("%s Aucune séquence configurée pour les Numéros de suivi pour le produit %s ",
-					exceptionMsg, company.getName(), product.getCode()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format("Aucune séquence configurée pour les Numéros de suivi pour le produit %s ",
+					company.getName(), product.getCode()), IException.CONFIGURATION_ERROR);
 		}
 		
 		String seq = sequenceService.getSequenceNumber(trackingNumberConfiguration.getSequence(), false);

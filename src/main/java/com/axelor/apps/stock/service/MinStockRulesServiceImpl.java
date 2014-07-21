@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
-import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.stock.db.IMinStockRules;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Location;
@@ -57,7 +56,7 @@ public class MinStockRulesServiceImpl implements MinStockRulesService  {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, Project project, int type) throws AxelorException  {
+	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
 		
 		Location location = locationLine.getLocation();
 		

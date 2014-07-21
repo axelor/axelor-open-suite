@@ -20,7 +20,6 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.LocationLine;
 import com.axelor.apps.supplychain.db.MinStockRules;
@@ -31,7 +30,7 @@ public interface MinStockRulesService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, Project project, int type) throws AxelorException; 
+	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException; 
 	
 	
 	public boolean useMinStockRules(LocationLine locationLine, MinStockRules minStockRules, BigDecimal qty, int type); 
