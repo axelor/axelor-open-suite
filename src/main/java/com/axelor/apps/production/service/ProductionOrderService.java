@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.organisation.db.Project;
+//import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
@@ -68,15 +68,15 @@ public class ProductionOrderService {
 	}
 
 	
-	public ProductionOrder createProductionOrder(Project businessProject, boolean isToInvoice) throws AxelorException  {
-		
-		return new ProductionOrder(
-				this.getProductionOrderSeq(), 
-				isToInvoice, 
-				businessProject);
-		
-		
-	}
+//	public ProductionOrder createProductionOrder(Project businessProject, boolean isToInvoice) throws AxelorException  {
+//		
+//		return new ProductionOrder(
+//				this.getProductionOrderSeq(), 
+//				isToInvoice, 
+//				businessProject);
+//		
+//		
+//	}
 	
 	
 	public String getProductionOrderSeq() throws AxelorException  {
@@ -101,16 +101,16 @@ public class ProductionOrderService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, Project businessProject) throws AxelorException  {
-		
-		ProductionOrder productionOrder = this.createProductionOrder(businessProject, false);
-		
-		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested);
-		
-		return productionOrder.save();
-		
-	}
+//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+//	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, Project businessProject) throws AxelorException  {
+//		
+//		ProductionOrder productionOrder = this.createProductionOrder(businessProject, false);
+//		
+//		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested);
+//		
+//		return productionOrder.save();
+//		
+//	}
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.exception.AxelorException;
@@ -39,8 +38,8 @@ public class ProductionConfigService {
 		ProductionConfig productionConfig = ProductionConfig.findByCompany(company);
 		
 		if(productionConfig == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer la production pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format("Veuillez configurer la production pour la société %s",
+					company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return productionConfig;
@@ -54,8 +53,8 @@ public class ProductionConfigService {
 	public Location getProductionVirtualLocation(ProductionConfig productionConfig) throws AxelorException  {
 		
 		if(productionConfig.getProductionVirtualLocation() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Emplacement Virtuel Production pour la société %s",
-					GeneralService.getExceptionAccountingMsg(), productionConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format("Veuillez configurer un Emplacement Virtuel Production pour la société %s",
+					productionConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return productionConfig.getProductionVirtualLocation();

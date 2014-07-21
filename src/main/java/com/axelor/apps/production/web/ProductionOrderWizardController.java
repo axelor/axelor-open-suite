@@ -23,7 +23,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.organisation.db.Project;
+//import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.service.ProductionOrderService;
@@ -64,19 +64,19 @@ public class ProductionOrderWizardController {
 				product = billOfMaterial.getProduct();
 			}
 			
-			Project businessProject = null;
-			if(context.get("business_id") != null)  {
-				businessProject = Project.find(((Integer) context.get("business_id")).longValue());
-			}
+//			Project businessProject = null;
+//			if(context.get("business_id") != null)  {
+//				businessProject = Project.find(((Integer) context.get("business_id")).longValue());
+//			}
 			
-			ProductionOrder productionOrder = productionOrderService.generateProductionOrder(product, billOfMaterial, qty, businessProject);
+//			ProductionOrder productionOrder = productionOrderService.generateProductionOrder(product, billOfMaterial, qty, businessProject);
 			
-			if(productionOrder != null)  {
-				response.setFlash("Ordre de production créé ("+productionOrder.getProductionOrderSeq()+")");
-			}
-			else  {
-				response.setFlash("Erreur lors de la création de l'ordre de production");
-			}
+//			if(productionOrder != null)  {
+//				response.setFlash("Ordre de production créé ("+productionOrder.getProductionOrderSeq()+")");
+//			}
+//			else  {
+//				response.setFlash("Erreur lors de la création de l'ordre de production");
+//			}
 		}
 		
 	}

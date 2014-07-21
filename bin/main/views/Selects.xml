@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+
+	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+	
+	<selection name="production.manuf.order.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Canceled</option>
+		<option value="3">Planned</option>
+		<option value="4">In progress</option>
+		<option value="5">Standby</option>
+		<option value="6">Finished</option>
+		
+	</selection>
+	
+	<selection name="iproduction.prod.resource.resource.type.select">
+		<option value="1">Human</option>
+		<option value="2">Machine</option>
+		<option value="3">Human and Machine</option>
+	</selection>
+	
+	<selection name="iproduction.prod.resource.cost.type.select">
+		<option value="1">Per hour</option>
+		<option value="2">Per Cycle</option>
+	</selection>
+	
+	<selection name="iproduction.project.prod.inv.type.select">
+		<option value="1">None</option>
+		<option value="2">Yes (Fixed)</option>
+		<option value="3">Yes (Real)</option>
+	</selection>
+	
+</object-views>

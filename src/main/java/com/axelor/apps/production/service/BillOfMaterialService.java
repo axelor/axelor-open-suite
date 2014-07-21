@@ -33,6 +33,8 @@ import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdResource;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -141,7 +143,7 @@ public class BillOfMaterialService {
 					
 					if(resourceType == IProdResource.RESOURCE_HUMAN || resourceType == IProdResource.RESOURCE_BOTH)  {
 						
-						costPrice = costPrice.add(this._computeHumanResourceCost(prodResource));
+//						costPrice = costPrice.add(this._computeHumanResourceCost(prodResource));
 						
 					}
 					if(resourceType == IProdResource.RESOURCE_MACHINE || resourceType == IProdResource.RESOURCE_BOTH)  {
@@ -179,42 +181,53 @@ public class BillOfMaterialService {
 		return costPrice;
 	}
 	
+//	
+//	private BigDecimal _computeHumanResourceCost(ProdResource prodResource) throws AxelorException  {
+//		
+//		BigDecimal costPrice = BigDecimal.ZERO;
+//		
+//		if(prodResource.getProdHumanResourceList() != null)  {
+//			
+//			for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
+//				
+//				if(prodHumanResource.getEmployee() != null)  {
+//					
+//					BigDecimal costPerMin = unitConversionService.convert(Unit.findByCode(UNIT_MIN_CODE), Unit.findByCode(UNIT_DAY_CODE), prodHumanResource.getEmployee().getDailySalaryCost());
+//					
+//					costPrice = costPrice.add((costPerMin).multiply(new BigDecimal(prodHumanResource.getDuration()/60)));
+//					
+//				}
+//				else if(prodHumanResource.getProduct() != null)  {
+//					
+//					Product product = prodHumanResource.getProduct();
+//					
+//					BigDecimal costPerMin = unitConversionService.convert(Unit.findByCode(UNIT_MIN_CODE), product.getUnit(), product.getCostPrice());
+//					
+//					costPrice = costPrice.add((costPerMin).multiply(new BigDecimal(prodHumanResource.getDuration()/60)));
+//					
+//				}
+//			}
+//			
+//		}
+//		
+//		logger.debug("Human resource cost : {} (Resource : {})",costPrice, prodResource.getName());
+//		
+//		return costPrice;
+//	}
 	
-	private BigDecimal _computeHumanResourceCost(ProdResource prodResource) throws AxelorException  {
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine)  {
 		
-		BigDecimal costPrice = BigDecimal.ZERO;
+		BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
 		
-		if(prodResource.getProdHumanResourceList() != null)  {
-			
-			for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
-				
-				if(prodHumanResource.getEmployee() != null)  {
-					
-					BigDecimal costPerMin = unitConversionService.convert(Unit.findByCode(UNIT_MIN_CODE), Unit.findByCode(UNIT_DAY_CODE), prodHumanResource.getEmployee().getDailySalaryCost());
-					
-					costPrice = costPrice.add((costPerMin).multiply(new BigDecimal(prodHumanResource.getDuration()/60)));
-					
-				}
-				else if(prodHumanResource.getProduct() != null)  {
-					
-					Product product = prodHumanResource.getProduct();
-					
-					BigDecimal costPerMin = unitConversionService.convert(Unit.findByCode(UNIT_MIN_CODE), product.getUnit(), product.getCostPrice());
-					
-					costPrice = costPrice.add((costPerMin).multiply(new BigDecimal(prodHumanResource.getDuration()/60)));
-					
-				}
-			}
-			
+		if(billOfMaterial != null)  {
+			return JPA.copy(billOfMaterial, true);
 		}
 		
-		logger.debug("Human resource cost : {} (Resource : {})",costPrice, prodResource.getName());
+		return null;
 		
-		return costPrice;
 	}
-	
-	
-	
 	
 	
 }

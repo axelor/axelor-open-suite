@@ -96,8 +96,8 @@ public class OperationOrderService {
 			
 			for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
 				
-				operationOrder.addProdHumanResourceListItem(
-						new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getEmployee(), prodHumanResource.getDuration()));
+//				operationOrder.addProdHumanResourceListItem(
+//						new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getEmployee(), prodHumanResource.getDuration()));
 				
 			}
 			

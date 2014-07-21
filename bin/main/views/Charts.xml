@@ -1,0 +1,909 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+<!-- 		SUM(_operationOrder.planned_duration)/36 AS charge -->
+	<chart name="chart.real.charge.by.machine" title="Charge réelle par machine">
+		<dataset type="sql">
+	    <![CDATA[
+		        SELECT
+		0 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 1 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 0)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		
+		
+		SELECT
+		1 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 2 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 1)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		2 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 3 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 2)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		3 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 4 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 3)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		4 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 5 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 4)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		5 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 6 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 5)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		6 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 7 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 6)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		
+		
+		
+		
+		
+		SELECT
+		7 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 8 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 7)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		8 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 9 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 8)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		9 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 10 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 9)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		10 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 11 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 10)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		11 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 12 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 11)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		12 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 13 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 12)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		13 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 14 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 13)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		14 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 15 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 14)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		15 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 16 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 15)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		
+		
+		
+		SELECT
+		16 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 17 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 16)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		17 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 18 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 17)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		18 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 19 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 18)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name
+		
+		
+		UNION
+		
+		SELECT
+		19 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 20 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 19)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name
+		    
+		    
+		UNION
+		
+		SELECT
+		20 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 21 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 20)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name
+		    
+		    
+		UNION
+		
+		SELECT
+		21 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 22 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 21)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name
+		    
+		    
+		UNION
+		
+		SELECT
+		22 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 23 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 22)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name    
+		    
+		    
+		UNION
+		
+		SELECT
+		23 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.real_start_datet) < 24 AND EXTRACT(HOUR from _operationOrder.real_end_datet) >= 23)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.real_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.real_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name      
+		    
+		ORDER BY
+		   hour
+	    ]]>
+	    </dataset>
+		<category key="hour" type="time" />
+		<series key="charge" groupBy="machine" type="line" aggregate="sum" />
+	</chart>
+	
+	
+	<chart name="chart.planned.charge.by.machine" title="Charge previsionnelle par machine">
+		<dataset type="sql">
+	    <![CDATA[
+			    SELECT
+		0 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 1 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 0)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		
+		
+		SELECT
+		1 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 2 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 1)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		2 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 3 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 2)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		3 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 4 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 3)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		4 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 5 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 4)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		5 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 6 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 5)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		6 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 7 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 6)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		
+		
+		
+		
+		
+		SELECT
+		7 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 8 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 7)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		8 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 9 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 8)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		9 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 10 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 9)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		10 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 11 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 10)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		11 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 12 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 11)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		12 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 13 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 12)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		13 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 14 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 13)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		14 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 15 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 14)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		15 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 16 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 15)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		
+		
+		
+		SELECT
+		16 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 17 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 16)  AND _machine.name = _machine.name 
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		17 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 18 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 17)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name
+		
+		UNION
+		
+		SELECT
+		18 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 19 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 18)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name
+		
+		
+		UNION
+		
+		SELECT
+		19 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 20 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 19)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name
+		    
+		    
+		UNION
+		
+		SELECT
+		20 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 21 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 20)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name
+		    
+		    
+		UNION
+		
+		SELECT
+		21 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 22 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 21)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name
+		    
+		    
+		UNION
+		
+		SELECT
+		22 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 23 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 22)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name    
+		    
+		    
+		UNION
+		
+		SELECT
+		23 as hour,
+		_machine.name AS machine,
+		COUNT(_operationOrder.id)*100 AS charge
+		FROM
+		    production_operation_order _operationOrder
+		LEFT JOIN
+		    production_prod_resource  AS _machineProdResource on (_operationOrder.machine_prod_resource = _machineProdResource.id) 
+		LEFT JOIN
+		    production_machine as _machine on(_machineProdResource.machine = _machine.id)
+		WHERE (EXTRACT(HOUR from _operationOrder.planned_start_datet) < 24 AND EXTRACT(HOUR from _operationOrder.planned_end_datet) >= 23)  AND _machine.name = _machine.name
+		AND EXTRACT(DAY from _operationOrder.planned_start_datet) <= EXTRACT(DAY from DATE(:today))  AND EXTRACT(DAY from _operationOrder.planned_end_datet) >= EXTRACT(DAY from DATE(:today)) 
+		GROUP BY
+		    _machine.name      
+		    
+		ORDER BY
+		   hour
+	    ]]>
+	    </dataset>
+		<category key="hour" type="time" />
+		<series key="charge" groupBy="machine" type="line" aggregate="sum" />
+	</chart>
+
+
+
+
+</object-views>

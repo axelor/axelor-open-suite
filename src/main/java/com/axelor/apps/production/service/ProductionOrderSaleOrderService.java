@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
-import com.axelor.apps.organisation.db.Project;
+//import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
@@ -108,7 +108,7 @@ public class ProductionOrderSaleOrderService {
 				
 			}
 			
-			return productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject()).save();
+//			return productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject()).save();
 		
 		}
 		
@@ -123,30 +123,30 @@ public class ProductionOrderSaleOrderService {
 		logger.debug("Création d'un devis client pour l'ordre de production : {}",
 				new Object[] { productionOrder.getProductionOrderSeq() });
 		
-		Project businessProject = productionOrder.getBusinessProject();
+//		Project businessProject = productionOrder.getBusinessProject();
 		
-		Partner partner = businessProject.getClientPartner();
-		
-		if(businessProject.getCompany() != null)  {
-		
-			SaleOrder saleOrder = saleOrderServiceStockImpl.createSaleOrder(
-					businessProject, 
-					user, 
-					businessProject.getCompany(), 
-					null, 
-					partner.getCurrency(), 
-					null, 
-					null,
-					null, 
-					IPurchaseOrder.INVOICING_FREE, 
-					saleOrderServiceStockImpl.getLocation(businessProject.getCompany()), 
-					today, 
-					PriceList.filter("self.partner = ?1 AND self.typeSelect = 1", partner).fetchOne(), 
-					partner);
+//		Partner partner = businessProject.getClientPartner();
+//		
+//		if(businessProject.getCompany() != null)  {
+//		
+//			SaleOrder saleOrder = saleOrderServiceStockImpl.createSaleOrder(
+//					businessProject, 
+//					user, 
+//					businessProject.getCompany(), 
+//					null, 
+//					partner.getCurrency(), 
+//					null, 
+//					null,
+//					null, 
+//					IPurchaseOrder.INVOICING_FREE, 
+//					saleOrderServiceStockImpl.getLocation(businessProject.getCompany()), 
+//					today, 
+//					PriceList.filter("self.partner = ?1 AND self.typeSelect = 1", partner).fetchOne(), 
+//					partner);
+//			
+//			saleOrder.save();
 			
-			saleOrder.save();
-			
-		}
+//		}
 		
 		//TODO 
 		
