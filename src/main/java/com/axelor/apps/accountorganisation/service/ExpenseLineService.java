@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.service.AccountManagementService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.organisation.db.Expense;
 import com.axelor.apps.organisation.db.ExpenseLine;
 import com.axelor.exception.AxelorException;

@@ -29,8 +29,6 @@ import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.accountorganisation.exceptions.IExceptionMessage;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
@@ -41,6 +39,8 @@ import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.db.Timesheet;
 import com.axelor.apps.organisation.db.TimesheetLine;
+import com.axelor.apps.organisation.service.invoice.InvoiceGeneratorOrganisation;
+import com.axelor.apps.organisation.service.invoice.InvoiceLineGeneratorOrganisation;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -63,7 +63,7 @@ public class TaskInvoiceService {
 		
 		Project project = task.getProject();
 		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, project.getCompany(), project.getClientPartner(), 
+		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(IInvoice.CLIENT_SALE, project.getCompany(), project.getClientPartner(), 
 				project.getContactPartner(), project, null, project.getName(), null) {	
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -193,7 +193,7 @@ public class TaskInvoiceService {
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, BigDecimal exTaxTotal, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
 			Unit unit, TaxLine taxLine, Task task, ProductVariant productVariant) throws AxelorException  {
 		
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, taxLine, task, 
+		InvoiceLineGeneratorOrganisation invoiceLineGenerator = new InvoiceLineGeneratorOrganisation(invoice, product, productName, price, description, qty, unit, taxLine, task, 
 				product.getInvoiceLineType(), BigDecimal.ZERO, 0, exTaxTotal, false) {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {

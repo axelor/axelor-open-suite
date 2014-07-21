@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="Task" lang="java">
+  
+  	<string name="importId"/>
+  	
+  	<boolean name="isToInvoice" title="To invoice ?"/>
+  	<date name="invoicingDate" title="Invoicing Date"/>
+  	<decimal name="amountToInvoice" title="Amount to invoice"/>
+  	<many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order line (origin)"/>
+  	
+  	
+  </entity>
+
+</domain-models>
