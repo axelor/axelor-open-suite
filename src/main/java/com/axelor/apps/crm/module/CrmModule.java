@@ -15,31 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.service;
+package com.axelor.apps.crm.module;
 
-import com.axelor.apps.base.db.Batch;
+import com.axelor.app.AxelorModule;
+import com.axelor.app.AxelorModuleInfo;
+import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
-import com.axelor.apps.crm.service.batch.BatchEventReminderMessage;
-import com.axelor.apps.message.service.MailAccountService;
-import com.google.inject.Injector;
 
-public class EventReminderThread extends Thread {
-	
-	private Batch batch;
-	private Injector injector;
+@AxelorModuleInfo(name = "axelor-crm")
+public class CrmModule extends AxelorModule {
 
-	public EventReminderThread(Batch batch, Injector injector) {
-		this.batch = batch;
-		this.injector = injector;
-	}
-
-	@Override
-	public void run() {
-		
-		new BatchEventReminderMessage(injector.getInstance(MessageServiceCrmImpl.class), injector.getInstance(MailAccountService.class)).process();
-	}
-	
-	
-	
-
+    @Override
+    protected void configure() {
+        bind(MessageServiceBaseImpl.class).to(MessageServiceCrmImpl.class);
+    }
 }

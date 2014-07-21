@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="TargetConfiguration" lang="java">
+  
+    <string name="name" title="Name"/>
+    <string name="code" title="Code"/>
+    <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
+  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+  	
+<!-- Opportunity -->
+    <decimal name="opportunityAmountWon" title="Amount Won"/>
+    <integer name="opportunityCreatedNumber" title="Created Nbr"/>
+    <integer name="opportunityCreatedWon" title="Created Won"/>
+    
+<!-- Sales order -->
+<!-- 	<decimal name="saleOrderAmountWon" title="Amount won"/> -->
+<!--     <integer name="saleOrderCreatedNumber" title="Created number"/> -->
+<!--     <integer name="saleOrderCreatedWon" title="Created won"/> -->
+
+<!-- Call -->
+    <integer name="callEmittedNumber" title="Call emitted Nbr"/>
+    <integer name="meetingNumber" title="Meeting Nbr"/>
+    
+    <integer name="periodTypeSelect" title="Period type" selection="crm.target.configuration.period.type.select"/>
+    
+    <date name="fromDate" title="Date from" required="true"/>
+    <date name="toDate" title="Date to" required="true"/>
+    
+    
+  </entity>
+</domain-models>

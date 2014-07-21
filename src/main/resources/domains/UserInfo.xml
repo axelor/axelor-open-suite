@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="UserInfo" sequential="true" lang="java">
+  
+   	<many-to-one name="fbPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential" title="Facebook Personal Credential"/>
+   	<many-to-one name="twtPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential" title="Twitter Personal Credential"/>
+   	<many-to-one name="lnPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential" title="LinkedIn Personal Credential"/>
+    
+<!--     Calendar -->
+    <many-to-many name="followersCalUserInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Followers users"/>
+    <many-to-many name="authorizeCalUserInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Authorized users to follow me"/>
+    
+    
+  </entity>
+
+</domain-models>

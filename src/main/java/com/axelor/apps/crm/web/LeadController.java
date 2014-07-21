@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportSettings;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.tool.net.URLService;
@@ -43,7 +43,7 @@ import com.google.inject.Provider;
 public class LeadController {
 
 	@Inject
-	private Provider<AddressService> addressProvider;
+	private Provider<MapService> mapProvider;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(LeadController.class);
 	
@@ -131,7 +131,7 @@ public class LeadController {
 			response.setFlash("Can not open map, Please Configure Application Home First.");
 			return;
 		}
-		if (!addressProvider.get().isInternetAvailable()) {
+		if (!mapProvider.get().isInternetAvailable()) {
 			response.setFlash("Can not open map, Please Check your Internet connection.");
 			return;			
 		}		

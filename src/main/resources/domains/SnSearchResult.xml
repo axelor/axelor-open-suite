@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
+	<entity name="SnSearchResult">
+		<![CDATA[
+	    This class represents a profile retrieved from the social networks
+	    after a search in SnProfile's view.
+	 	It contains data that we could get but there aren't stored in database.
+	    @author David Nguyen
+	    ]]>
+		<string name="userRef" help="true"/>
+		<string name="userName" help="true"/>
+		<string name="firstName" help="true"/>
+		<string name="lastName" help="true"/>
+		<string name="gender" title="Gender" readonly="true"/>
+		<string name="link" help="true"/>
+		<string name="companyName" help="true"/>
+		<string name="location" help="true"/>
+		<string name="locale" help="true"/>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>
+ 		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" />
+ 		<!-- <binary name="picture" image="true" title="Photo"/> -->
+ 		<string name="pictureUrl" title="Picture Link" readonly="true"/>
+ 		<many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet"/>
+	</entity>
+</domain-models>

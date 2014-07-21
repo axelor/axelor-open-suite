@@ -38,6 +38,9 @@ public class LeadService {
 	@Inject
 	private SequenceService sequenceService;
 	
+	@Inject
+	private UserInfoService userInfoService;
+	
 	
 	/**
 	 * Convert lead into a partner
@@ -116,7 +119,7 @@ public class LeadService {
 	 */
 	public Partner setPartnerCompany(Partner partner)  {
 		
-		UserInfoService userInfoService = new UserInfoService();
+//		UserInfoService userInfoService = new UserInfoService();
 		
 		if(userInfoService.getUserActiveCompany() != null)  {
 			partner.setCompanySet(new HashSet<Company>());

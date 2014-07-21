@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
+
+	<entity name="SnStatusComments">
+		<![CDATA[
+	    This class represents a comment/status post on a social network
+	 	This object is used in a trail view.
+	 	parentSnStatusComments is the status post
+	 	childrenSnStatusCommentsList are the comments on the status
+	    @author David Nguyen
+	    ]]>
+		<many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" orphan="true" title="Post"/>
+		<many-to-one name="parentSnStatusComments" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" orphan="true" title="Parent Comment"/>
+		<one-to-many name="childrenSnStatusCommentsList" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" mappedBy="parentSnStatusComments"/>
+		<many-to-one name="snProfile" ref="com.axelor.apps.socialnetwork.db.SnProfile" orphan="true" title="By" readonly="true"/>
+		<many-to-one name="snPage" ref="com.axelor.apps.socialnetwork.db.SnPage" orphan="true" title="Page"/>
+		<many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet" title="Social Network" required="true"/>
+		<string name="commentRef" title="Comment Id" readonly="true"/>
+		<string name="content" title="Content" multiline="true" max="700" />
+		<datetime name="commentDateT" title="Time" tz="true" readonly="true"/>
+		<boolean name="isFacebookWall" title="Comment on Wall ?" default="false"/>
+	</entity>
+
+</domain-models>

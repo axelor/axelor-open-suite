@@ -26,8 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.message.service.MailAccountService;
-import com.axelor.apps.message.service.MessageService;
 import com.axelor.db.JPA;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -39,9 +39,9 @@ public class BatchEventReminderMessage extends BatchStrategy {
 	private boolean stop = false;
 	
 	@Inject
-	public BatchEventReminderMessage(MessageService messageService, MailAccountService mailAccountService) {
+	public BatchEventReminderMessage(MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
 		
-		super(messageService, mailAccountService);
+		super(messageServiceCrmImpl, mailAccountService);
 	}
 	
 	
@@ -68,7 +68,7 @@ public class BatchEventReminderMessage extends BatchStrategy {
 				
 			for(Event event : eventList)  {
 				try {
-					messageService.createMessage(event, mailAccountService.getDefaultMailAccount());
+					messageServiceCrmImpl.createMessage(event, mailAccountService.getDefaultMailAccount());
 				} catch (Exception e) {
 					
 					TraceBackService.trace(new Exception(String.format("Event %s", 

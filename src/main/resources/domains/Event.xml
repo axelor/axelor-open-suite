@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="Event" lang="java">
+
+<!-- Commun   -->
+	<integer name="importId" />
+  	<integer name="typeSelect" title="Type" selection="crm.event.type.select" default="2"/>
+  	<string name="subject" namecolumn="true" title="Subject" />
+	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>  
+  	<datetime name="startDateTime" title="Start Date"/>
+  	<datetime name="endDateTime" title="End Date"/>
+	<date name="limitDateT" title="Limit Date"/>
+  	
+  	<long name="duration" title="Duration"/>
+  	
+  	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Category"/>
+  	<integer name="prioritySelect" title="Priority" selection="crm.event.ticket.priority.select"/>
+  	
+  	<string name="relatedToSelect" title="Related to" selection="crm.event.related.to.select"/>
+  	<integer name="relatedToSelectId"/>
+  	
+    <string name="description" large="true" title="Description"/>
+    
+    <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
+  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+  	
+  	<one-to-many name="eventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="event" title="Attendees"/>
+	
+	<many-to-one name="calendar" ref="com.axelor.apps.crm.db.Calendar" title="Calendar" />
+	<string name="calendarEventUid" title="UID (Calendar)"/>
+	
+	<one-to-many name="eventReminderList" ref="com.axelor.apps.crm.db.EventReminder" mappedBy="event" title="Reminders"/>
+	
+	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+  	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
+	<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
+	
+<!-- Call -->
+    <integer name="callStatusSelect" title="Status" selection="crm.event.call.status.select"/>  
+    
+<!-- Meeting -->
+	<many-to-one name="meetingType" ref="com.axelor.apps.crm.db.MeetingType" title="Meeting type"/>
+	<string name="location" title="Location"/>
+
+<!-- Task -->
+	<integer name="taskStatusSelect" title="Status" selection="crm.event.task.status.select"/>
+    
+<!-- Ticket -->
+	<integer name="ticketStatusSelect" title="Status" selection="crm.event.ticket.status.select"/>
+    <integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select"/>
+    <string name="ticketNumberSeq" title="Ticket N°"/>
+    <many-to-many name="userInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Watchers"/>
+    <many-to-one name="responsibleUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="User in charge of the issue"/>
+<!--   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/> -->
+  
+  </entity>
+
+</domain-models>

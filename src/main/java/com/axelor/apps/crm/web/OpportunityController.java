@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.OpportunityService;
@@ -32,34 +32,36 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class OpportunityController {
-	@Inject
-	OpportunityService ose;
 	
 	@Inject
-	UserInfoService uis;
+	Provider<OpportunityService> OpportunityProvider;
 	
 	@Inject
-	AddressService addressService;
+	Provider<UserInfoService> userInfoProvider;
+	
+	@Inject
+	Provider<MapService> mapProvider;
 	
 	public void saveOpportunitySalesStage(ActionRequest request, ActionResponse response) throws AxelorException {
 		Opportunity opportunity = request.getContext().asType(Opportunity.class);
 		Opportunity persistOpportunity = Opportunity.find(opportunity.getId());
 		persistOpportunity.setSalesStageSelect(opportunity.getSalesStageSelect());
-		ose.saveOpportunity(persistOpportunity);
+		OpportunityProvider.get().saveOpportunity(persistOpportunity);
 	}
 	
 	public void assignToMe(ActionRequest request, ActionResponse response)  {
 		if(request.getContext().get("id") != null){
 			Opportunity opportunity = Opportunity.find((Long)request.getContext().get("id"));
-			opportunity.setUserInfo(uis.getUserInfo());
-			ose.saveOpportunity(opportunity);
+			opportunity.setUserInfo(userInfoProvider.get().getUserInfo());
+			OpportunityProvider.get().saveOpportunity(opportunity);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
 			for(Opportunity opportunity : Opportunity.filter("id in ?1",request.getContext().get("_ids")).fetch()){
-				opportunity.setUserInfo(uis.getUserInfo());
-				ose.saveOpportunity(opportunity);
+				opportunity.setUserInfo(userInfoProvider.get().getUserInfo());
+				OpportunityProvider.get().saveOpportunity(opportunity);
 			}
 		}
 		response.setReload(true);
@@ -72,7 +74,7 @@ public class OpportunityController {
 			response.setFlash("Can not open map, Please Configure Application Home First.");
 			return;
 		}
-		if (!addressService.isInternetAvailable()) {
+		if (!mapProvider.get().isInternetAvailable()) {
 			response.setFlash("Can not open map, Please Check your Internet connection.");
 			return;			
 		}		

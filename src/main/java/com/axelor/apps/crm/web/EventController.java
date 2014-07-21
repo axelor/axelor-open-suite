@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.crm.db.Event;
@@ -54,6 +55,9 @@ public class EventController {
 	
 	@Inject
 	private Provider<AddressService> addressProvider;
+	
+	@Inject
+	private Provider<MapService> mapProvider;
 	
 	@Inject
 	private Provider<UserInfoService> userInfoProvider;
@@ -170,7 +174,7 @@ public class EventController {
 	public void viewMap(ActionRequest request, ActionResponse response)  {
 		Event event = request.getContext().asType(Event.class);
 		if(event.getLocation() != null){
-			Map<String,Object> result = addressProvider.get().getMap(event.getLocation(), BigDecimal.ZERO, BigDecimal.ZERO);
+			Map<String,Object> result = mapProvider.get().getMap(event.getLocation(), BigDecimal.ZERO, BigDecimal.ZERO);
 			if(result != null){
 				Map<String,Object> mapView = new HashMap<String,Object>();
 				mapView.put("title", "Map");

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+ 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+ 	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
+ 	<entity name="SnSendMessage">
+ 		<![CDATA[
+	    This class represents a personal message
+	 	(they are sent in the user private message inbox).
+	 	snMessageRef is the id of the message after being sent
+	 	userInfo is the user who send the message
+	 	socialNet is the social network on which the message will be sent
+	 	partner is the user to whom the message will be sent
+	 	personalCredential is used for API access
+	 	snRef is the id of the partner to whom the message will be sent
+	    @author David Nguyen
+	    ]]>
+ 		<string name="content" multiline="true" max="140" required="true" title="Content"/>
+ 		<string name="snMessageRef" />
+ 		<string name="subject" title="Subject"/>
+ 		<datetime name="messageDateT" tz="true" title="Message date" readonly="true"/>
+ 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" />
+ 		<many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet" orphan="true" required="true" title="Social Network"/>
+ 		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" required="true" title="To User"/>
+ 		<many-to-one name="personalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential" required="true" title="Personal Credential"/>
+ 		<string name="snRef" title="Social Network Id" required="true"/>
+ 	</entity>
+ </domain-models>

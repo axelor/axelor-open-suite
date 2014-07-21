@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
+	<entity name="SnProfile">
+		<![CDATA[
+	    This class represents all 3 social networks profiles
+	 	It contains data that we could get from them
+	    @author David Nguyen
+	    ]]>
+		<string name="snFbRef" title="Facebook User/Page ID"/>
+		<string name="snTwtRef" title="Twitter User ID"/>
+		<string name="snLnRef" title="LinkedIn User/Company ID"/>
+		<string name="fbUserName" title="Facebook Username"/>
+		<string name="twtUserName" title="Twitter Username"/>
+		<one-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
+		<one-to-one name="lead" ref="com.axelor.apps.crm.db.Lead"/>
+		<date name="birthdayDate" title="Birthday"/>
+		<string name="fbProfileLink" title="Facebook profile link"/>
+		<string name="twtProfileLink" title="Twitter profile link"/>
+		<string name="lnProfileLink" title="LinkedIn profile link"/>
+		<string name="hometown" title="Hometown"/>
+		<string name="fbLocation" title="Location"/>
+		<string name="lnLocation" title="Location"/>
+		<string name="twtLocation" title="Location"/>
+		<string name="fbEmail" title="Email"/>
+		<string name="fbPictureUrl" title="Picture Url"/>
+		<string name="lnPictureUrl" title="Picture Url"/>
+		<string name="twtPictureUrl" title="Picture Url"/>
+		<string name="gender" title="Gender"/>
+		<string name="lnHeadline" title="Headline"/>
+		<string name="fbLocale" title="Locale"/>
+		<many-to-many name="snPageSet" ref="com.axelor.apps.socialnetwork.db.SnPage"/>
+	</entity>
+</domain-models>
