@@ -22,6 +22,7 @@
 		    <button name="back" title="Back" hidden="true"/>
 		    <button name="copy" title="Copy" hidden="true"/>
 		    <button name="search" title="Search" hidden="true"/>
+		    <button name="exportObjects" title="Export Object" onClick="action-method-general-export-objects" />
 		</toolbar>
 	    <field name="today"/>
 	    <field name="logOk"/>
@@ -93,6 +94,10 @@
 	
 	<action-method name="action-general-method-show-duplicate">
 		<call method="showDuplicate" class="com.axelor.apps.base.web.GeneralController"/>
+	</action-method>
+	
+	<action-method name="action-method-general-export-objects">
+	    <call method="exportObjects" class="com.axelor.apps.base.web.GeneralController"/>
 	</action-method>
 	
 	<action-validate name="action-check-string-camel-case">
