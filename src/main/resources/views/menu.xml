@@ -10,6 +10,11 @@
 <!-- 		icon="img/64px/mail_64px.png" groups="admins,erp"/> -->
 
 <!-- 	title-f="Messagerie" -->
+	<menuitem name="mail-root" title="Emails/Mails" priority="70"
+		icon="img/64px/mail_64px.png" groups="admins,erp"/>
+	
+	<menuitem name="mail-root-mail" parent="mail-root" title="All batchs mails" />
+	
 	<menuitem name="mail-root-email-box" parent="mail-root" title="Email box" priority="100"/>
 		
 <!-- 	title-f="Boite de réception" -->
