@@ -52,9 +52,9 @@
 	      DATE_PART('month', self.validation_date) AS _month,  
 	      DATE_PART('year', self.validation_date) AS _year
 	    FROM
-	      supplychain_sale_order AS self
+	      sale_sale_order AS self
 	    JOIN
-	      supplychain_sale_order_line AS _line
+	      sale_sale_order_line AS _line
 	      ON _line.sale_order = self.id
 	    JOIN
 	      base_user_info AS _user
@@ -87,7 +87,7 @@
 		      SUM(_order.ex_tax_total) AS _turn_over,
 		      DATE_PART('year',_order.validation_date) AS _year
 		    FROM
-		      supplychain_sale_order AS _order  
+		      sale_sale_order AS _order  
 		    JOIN
 		      base_user_info AS _user
 		      ON _user.id = :_user_id
@@ -118,9 +118,9 @@
 			DATE_PART('year',_order.creation_date) AS _year,
 			_line.product_name AS _product
 		FROM
-			supplychain_sale_order AS _order 
+			sale_sale_order AS _order 
 		LEFT JOIN
-			supplychain_sale_order_line AS _line 
+			sale_sale_order_line AS _line 
 			ON _line.sale_order = _order.id
 		WHERE
 			_order.status_select=3
@@ -144,9 +144,9 @@
 	      _family.name AS _product_family,
 	      DATE_PART('year', _order.validation_date) AS _year
 	    FROM
-	      supplychain_sale_order_line AS _line
+	      sale_sale_order_line AS _line
 	    JOIN
-	      supplychain_sale_order AS _order
+	      sale_sale_order AS _order
 	    ON
 	      _order.id = _line.sale_order
 	    JOIN
@@ -179,7 +179,7 @@
 	      SUM(_order.ex_tax_total) AS _turn_over,
 	      DATE_PART('year',_order.validation_date) AS _year
 	    FROM
-	      supplychain_sale_order AS _order  
+	      sale_sale_order AS _order  
 	    JOIN
 	      base_user_info AS _user
 	      ON _user.id = :_user_id
@@ -211,9 +211,9 @@
 	      _family.name AS _product_family,
 	      DATE_PART('year', _order.validation_date) AS _year
 	    FROM
-	      supplychain_sale_order_line AS _line
+	      sale_sale_order_line AS _line
 	    JOIN
-	      supplychain_sale_order AS _order
+	      sale_sale_order AS _order
 	    ON
 	      _order.id = _line.sale_order
 	    JOIN
@@ -257,7 +257,7 @@
 	    team.name as _team_name,
 	    coalesce(sum(self.ex_tax_total),0) as amount
 	  from 
-	    supplychain_sale_order self
+	    sale_sale_order self
 	  JOIN
 	    base_team team
 	    ON team.id=self.team
@@ -287,7 +287,7 @@
 	    sum(self.ex_tax_total) as amount,
 	    saleman.full_name as name
 	  FROM
-	    supplychain_sale_order self
+	    sale_sale_order self
 	  JOIN
 	    base_user_info saleman
 	    ON saleman.id=self.saleman_user_info
@@ -322,9 +322,9 @@
 	    sum(self.ex_tax_total) as amount,
 	    family.name as family_name
 	  FROM
-	    supplychain_sale_order self
+	    sale_sale_order self
 	  JOIN
-	    supplychain_sale_order_line _line
+	    sale_sale_order_line _line
 	    ON _line.sale_order=self.id
 	  JOIN
 	    base_product products
@@ -359,9 +359,9 @@
 	    category.name as category_name,
 	    coalesce(sum(orders.ex_tax_total) ,0) as amount
 	  from
-	    supplychain_sale_order_line orders
+	    sale_sale_order_line orders
 	  JOIN
-	    supplychain_sale_order self
+	    sale_sale_order self
 	    ON self.id = orders.sale_order
 	  JOIN
 	    base_product product
@@ -395,7 +395,7 @@
 	    country.name as name,
 	    coalesce(sum(self.ex_tax_total),0) as amount
 	  FROM
-	    supplychain_sale_order self
+	    sale_sale_order self
 	  JOIN
 	    base_address address
 	    ON address.id=self.main_invoicing_address
@@ -428,7 +428,7 @@
 		    COALESCE(SUM(self.ex_tax_total), 0.00) AS _amount,   
 		    date_part('year',self.validation_date) || '-' || date_part('mon',self.validation_date) || '-01' AS _month
 		  FROM
-		    supplychain_sale_order AS self
+		    sale_sale_order AS self
 		  JOIN
 		    base_user_info AS _user
 		    ON _user.id = :_user_id
@@ -466,9 +466,9 @@
 	      _sale_order.ex_tax_total AS _turn_over,
 	      _line.product AS _line_product
 	    FROM
-	      supplychain_sale_order AS _sale_order
+	      sale_sale_order AS _sale_order
 	    JOIN
-	      supplychain_sale_order_line AS _line ON _sale_order.id = _line.sale_order
+	      sale_sale_order_line AS _line ON _sale_order.id = _line.sale_order
 	    JOIN
 	      base_user_info _user
 	      ON _user.id = :_user_id
@@ -519,9 +519,9 @@
 	      _line.qty AS _turn_over,
 	      _line.product AS _line_product
 	    FROM
-	      supplychain_sale_order AS _sale_order
+	      sale_sale_order AS _sale_order
 	    JOIN
-	      supplychain_sale_order_line AS _line ON _sale_order.id = _line.sale_order
+	      sale_sale_order_line AS _line ON _sale_order.id = _line.sale_order
 	    JOIN
 	      base_user_info _user
 	      ON _user.id = :_user_id

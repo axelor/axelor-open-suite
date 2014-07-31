@@ -25,7 +25,7 @@
     </form>
     
     <action-attrs name="action-sale-order-schedule-line-attrs-sale-order-line-domain">
-    	<attribute name="domain" for="saleorderLine" expr="eval: self.saleOrder = :saleOrder "/>
+    	<attribute name="domain" for="saleOrderLine" expr="eval: self.saleOrder = :saleOrder "/>
     </action-attrs>
     
     <action-attrs name="action-sale-order-schedule-line-attrs-hide-nb-of-day">
