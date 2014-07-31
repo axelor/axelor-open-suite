@@ -19,12 +19,23 @@ package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.app.AxelorModuleInfo;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
+import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
+import com.axelor.apps.stock.service.LocationLineService;
+import com.axelor.apps.stock.service.LocationLineServiceImpl;
+import com.axelor.apps.stock.service.MinStockRulesService;
 import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
+import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
+import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.supplychain.service.MinStockRulesServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
@@ -38,12 +49,17 @@ public class SupplychainModule extends AxelorModule {
 
     @Override
     protected void configure() {
+    	bind(MinStockRulesService.class).to(MinStockRulesServiceImpl.class);
         bind(MinStockRulesServiceImpl.class).to(MinStockRulesServiceSupplychainImpl.class);
+        bind(StockMoveService.class).to(StockMoveServiceImpl.class);
         bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
-        bind(SaleOrderServiceImpl.class).to(SaleOrderServiceStockImpl.class);
+        bind(PurchaseOrderLineService.class).to(PurchaseOrderLineServiceImpl.class);
+        bind(LocationLineService.class).to(LocationLineServiceImpl.class);
+        bind(SaleOrderService.class).to(SaleOrderServiceStockImpl.class);
         bind(SaleOrderServiceImpl.class).to(SaleOrderServiceSupplychainImpl.class);
         bind(PurchaseOrderInvoiceService.class).to(PurchaseOrderInvoiceServiceImpl.class);
         bind(SaleOrderInvoiceService.class).to(SaleOrderInvoiceServiceImpl.class);
         bind(SaleOrderPurchaseService.class).to(SaleOrderPurchaseServiceImpl.class);
+        bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
     }
 }

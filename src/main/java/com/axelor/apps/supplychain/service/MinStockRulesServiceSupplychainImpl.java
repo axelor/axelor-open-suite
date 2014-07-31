@@ -58,6 +58,7 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 	
 	protected UserInfo user;
 	
+	@Inject
 	public MinStockRulesServiceSupplychainImpl(UserInfoService userInfoService) {
 
 		super(userInfoService);
