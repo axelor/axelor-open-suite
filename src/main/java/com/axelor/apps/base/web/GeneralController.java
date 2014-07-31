@@ -90,14 +90,18 @@ public class GeneralController {
 	
 	public void exportObjects(ActionRequest request, ActionResponse response){
 		MetaFile metaFile = eos.exportObject();
-		response.setView(ActionView
-				  .define("Export Object")
-				  .model("com.axelor.meta.db.MetaFile")
-				  .add("form", "meta-files-form")
-				  .add("grid", "meta-files-grid")
-				  .param("forceEdit", "true")
-				  .context("_showRecord", metaFile.getId().toString())
-				  .map());
-		
+		if(metaFile == null){
+			response.setFlash("Attachment directory OR Application source does not exist");
+		}
+		else {
+			response.setView(ActionView
+					  .define("Export Object")
+					  .model("com.axelor.meta.db.MetaFile")
+					  .add("form", "meta-files-form")
+					  .add("grid", "meta-files-grid")
+					  .param("forceEdit", "true")
+					  .context("_showRecord", metaFile.getId().toString())
+					  .map());
+		}
 	}	
 }

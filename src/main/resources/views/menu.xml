@@ -237,9 +237,6 @@
 	
 	
 
-	<menuitem name="mail-root" title="Emails/Mails" priority="70"
-		icon="img/64px/mail_64px.png" groups="admins,erp"/>
-
 	<menuitem name="mail-root-email" parent="mail-root" title="All batchs emails"/>
 
 	<menuitem name="mail-root-email-all" title="All Emails"
@@ -254,8 +251,6 @@
 	</action-view>
 
 	
-
-	<menuitem name="mail-root-mail" parent="mail-root" title="All batchs mails" />
 
 	<menuitem name="mail-root-mail-all" title="All Mails"
 		parent="mail-root-mail" action="mail.root.mail.all" />

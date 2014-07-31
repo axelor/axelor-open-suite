@@ -50,6 +50,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAction;
@@ -81,8 +82,12 @@ public class ExportDbObjectService {
 	@Transactional
 	public MetaFile exportObject() {
 		
-		group = uis.getUserInfo().getInternalUser().getGroup();
+		group = AuthUtils.getUser().getGroup();
 		try {
+			if(!new File(AppSettings.get().get("file.upload.dir")).exists()) { return null; }
+			File moduleDir = new File(AppSettings.get().get("application.src"));
+			if(!moduleDir.exists()){ return null; }
+			
 			MetaFile metaFile = new MetaFile();
 			String fileName = "ExportObject-"+DateTime.now().toString("yyyMMddHHmmSS")+".csv";
 			metaFile.setFileName(fileName);
@@ -90,7 +95,6 @@ public class ExportDbObjectService {
 			metaFile = metaFile.save();
 			
 			SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-			File moduleDir = new File(AppSettings.get().get("application.src"));
 			updateObjectMap(Arrays.asList(moduleDir.listFiles()), saxParserFactory.newSAXParser(), new XmlHandler());
 			
 			writeObjects(MetaFiles.getPath(metaFile).toFile());
@@ -106,6 +110,7 @@ public class ExportDbObjectService {
 	private void writeObjects(File objectFile) {
 		try {
 			List<? extends MetaMenu> menuList = MetaMenu.all_().filter("self.parent = null AND self.left = true AND ?1 MEMBER OF self.groups",group).order("-priority").order("id").fetch();
+			log.debug("Total root menus: {}",menuList.size());
 			generateMenuGraph(menuList);
 			CsvTool.csvWriter(objectFile.getParent(), objectFile.getName(), ';', csvHeaders, fieldDataList);
 		} catch (IOException e) {
