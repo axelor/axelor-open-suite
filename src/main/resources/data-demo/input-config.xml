@@ -395,14 +395,14 @@
 <!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' -->
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"/> 	
 	
-	<input file="supplychain_supplychainBatch.csv" separator=";" type="com.axelor.apps.supplychain.db.SupplychainBatch" />
+	<input file="supplychain_supplychainBatch.csv" separator=";" type="com.axelor.apps.sale.db.SaleBatch" />
 	
 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory">
 	    <bind to="statusSelect" eval="3" />
 		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
 	</input>
 	
-	<input file="supplychain_supplychainConfig.csv" separator=";" type="com.axelor.apps.supplychain.db.SupplychainConfig"/>
+	<input file="supplychain_supplychainConfig.csv" separator=";" type="com.axelor.apps.sale.db.SaleConfig"/>
 	
 	<input file="supplychain_inventoryLine.csv" separator=";" type="com.axelor.apps.supplychain.db.InventoryLine" />
 	
