@@ -11,14 +11,14 @@
 	   <portlet colSpan="6" action="action-partner-view-sales-orders" />
 	</form>
 	
-    <action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
+    <action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="grid" name="sales-order-grid"/>
 		<view type="form" name="sales-order-form"/>
 		<domain>self.clientPartner.id = :id OR self.contactPartner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
-     <action-view name="action-partner-view-sales-orders" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
+     <action-view name="action-partner-view-sales-orders" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="grid" name="sales-order-grid"/>
 		<view type="form" name="sales-order-form"/>
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id)</domain>
