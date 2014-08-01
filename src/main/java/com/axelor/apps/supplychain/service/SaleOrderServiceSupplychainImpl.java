@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
-import com.axelor.apps.supplychain.db.Location;
+import com.axelor.apps.stock.db.Location;
 import com.axelor.exception.AxelorException;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {

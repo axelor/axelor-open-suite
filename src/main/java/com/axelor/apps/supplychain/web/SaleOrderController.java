@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.supplychain.db.Location;
+import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
 import com.axelor.exception.AxelorException;

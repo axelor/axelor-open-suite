@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.supplychain.db.StockMove;
+import com.axelor.apps.stock.db.StockMove;
 
 
 public class AddressServiceSupplychainImpl extends AddressServiceImpl  {

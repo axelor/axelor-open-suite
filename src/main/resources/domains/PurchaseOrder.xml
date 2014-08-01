@@ -7,7 +7,7 @@
 
   <entity name="PurchaseOrder" lang="java">
   
-  	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
+  	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
 	
   </entity>
 

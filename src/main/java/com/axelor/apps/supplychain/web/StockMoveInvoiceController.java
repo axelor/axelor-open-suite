@@ -18,7 +18,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.supplychain.db.StockMove;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
