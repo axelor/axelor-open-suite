@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
-    <grid name="location-grid" title="Stock Locations" model="com.axelor.apps.supplychain.db.Location">
+    <grid name="location-grid" title="Stock Locations" model="com.axelor.apps.stock.db.Location">
         <toolbar>
     		<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
     	</toolbar>
@@ -16,7 +16,7 @@
         <field name="isDefaultLocation"/>
     </grid>
     
-    <form name="location-form" title="Stock Location" model="com.axelor.apps.supplychain.db.Location" cols="6"
+    <form name="location-form" title="Stock Location" model="com.axelor.apps.stock.db.Location" cols="6"
     	onNew="action-location-record-new">
     	<toolbar>
     		<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory" colSpan="1"/>
@@ -53,7 +53,7 @@
     	<call class="com.axelor.apps.supplychain.web.LocationController" method="print"></call>
     </action-method>
         
-    <action-record name="action-location-record-new" model="com.axelor.apps.supplychain.db.Location">
+    <action-record name="action-location-record-new" model="com.axelor.apps.stock.db.Location">
 	    <field name="typeSelect" expr="1"/>
 	</action-record>
     
@@ -66,7 +66,7 @@
 		<context name="_location" expr="eval: __self__"/>
 	</action-view>
 	
-    <action-view name="action-location-view-location-content" title="Location content" model="com.axelor.apps.supplychain.db.LocationLine">
+    <action-view name="action-location-view-location-content" title="Location content" model="com.axelor.apps.stock.db.LocationLine">
 		<view type="grid" name="location-line-grid" />
 		<view type="form" name="location-line-form" />
 		<domain>self.location.id =:locationId AND self.currentQty != 0</domain>

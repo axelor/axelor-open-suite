@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.service.AddressServiceImpl;
-import com.axelor.apps.supplychain.db.StockMove;
+import com.axelor.apps.stock.db.StockMove;
 
 
 public class AddressServiceStockImpl extends AddressServiceImpl  {

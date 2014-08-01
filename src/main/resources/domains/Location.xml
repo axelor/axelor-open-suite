@@ -3,19 +3,19 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
 
-  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+  <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="Location" lang="java">
   	
   	<integer name="importId" />
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="parent" ref="com.axelor.apps.supplychain.db.Location" title="Parent"/>
+    <many-to-one name="parent" ref="com.axelor.apps.stock.db.Location" title="Parent"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <integer name="typeSelect" title="Type" selection="supplychain.location.type.select"/>
     <boolean name="isDefaultLocation" title="Default location"/>
-    <one-to-many name="locationLineList" ref="com.axelor.apps.supplychain.db.LocationLine" mappedBy="location" title="Location lines"/>
-    <one-to-many name="detailsLocationLineList" ref="com.axelor.apps.supplychain.db.LocationLine" mappedBy="detailsLocation" title="Details Location lines"/>
+    <one-to-many name="locationLineList" ref="com.axelor.apps.stock.db.LocationLine" mappedBy="location" title="Location lines"/>
+    <one-to-many name="detailsLocationLineList" ref="com.axelor.apps.stock.db.LocationLine" mappedBy="detailsLocation" title="Details Location lines"/>
     <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
     
     <finder-method name="findByCompany" using="company"/>

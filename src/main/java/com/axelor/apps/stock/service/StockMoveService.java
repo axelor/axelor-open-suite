@@ -26,9 +26,9 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.supplychain.db.Location;
-import com.axelor.apps.supplychain.db.StockMove;
-import com.axelor.apps.supplychain.db.StockMoveLine;
+import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 

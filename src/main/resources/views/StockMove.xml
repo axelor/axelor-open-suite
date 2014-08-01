@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
-    <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove" orderBy="-estimatedDate">
+    <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
     	</toolbar>
@@ -19,7 +19,7 @@
 <!--         <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/> -->
     </grid>
     
-     <grid name="stock-move-out-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove" orderBy="-estimatedDate">
+     <grid name="stock-move-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
     	</toolbar>
@@ -37,7 +37,7 @@
         <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
     </grid>
     
-    <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove" orderBy="-estimatedDate">
+    <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
     	</toolbar>
@@ -55,7 +55,7 @@
         <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
     </grid>
     
-    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4"
+    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" cols="4"
     	onNew="action-stock-move-record-new,action-stock-move-attrs-hide-button-generate-invoice"
     	onLoad="action-stock-move-attrs-hide-button-generate-invoice,action-stock-move-attrs-canceled-read-only,action-stock-move-group-read-only">
         <field name="typeSelect"/>
@@ -157,11 +157,11 @@
     	<attribute name="readonly" for="invoice" expr="false"/>
     </action-attrs>
     
-    <action-record name="action-stock-move-record-draft" model="com.axelor.apps.supplychain.db.StockMove">
+    <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
     </action-record>
     
-    <action-record name="action-stock-move-record-new" model="com.axelor.apps.supplychain.db.StockMove">
+    <action-record name="action-stock-move-record-new" model="com.axelor.apps.stock.db.StockMove">
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	    <field name="statusSelect" expr="eval: 1"/>
 	    <field name="isWithBackorder" expr="eval:true" />
@@ -169,11 +169,11 @@
 	    <field name="typeSelect" expr="eval: _typeSelect"/>
 	</action-record>
 	
-	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.supplychain.db.StockMove">
+	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.stock.db.StockMove">
 		<field name="fromAddress" expr="eval:fromLocation?.address" />
 	</action-record>
 	
-	<action-record name="action-stock-move-set-to-address" model="com.axelor.apps.supplychain.db.StockMove">
+	<action-record name="action-stock-move-set-to-address" model="com.axelor.apps.stock.db.StockMove">
 		<field name="toAddress" expr="eval:toLocation?.address" />
 	</action-record>
 	
@@ -221,7 +221,7 @@
 		<alert message="The move doesn't contain any product, do you wish to continue ?" if="stockMoveLineList != null &amp;&amp; stockMoveLineList.sum{it->it.realQty} == 0"/>
 	</action-validate>
 	
-	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.supplychain.db.StockMove" title="Customer deliveries filters">
+	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove" title="Customer deliveries filters">
 		<filter title="Deliveries to prepare">
 			<domain>self.statusSelect = 2</domain>
 		</filter>
@@ -236,7 +236,7 @@
 		</filter>
 	</search-filters>
 	
-	<search-filters name="supplier-arrivals-filters" model="com.axelor.apps.supplychain.db.StockMove" title="Supplier arrivals filters">
+	<search-filters name="supplier-arrivals-filters" model="com.axelor.apps.stock.db.StockMove" title="Supplier arrivals filters">
 		<filter title="Today Arrivals">
 			<domain>self.estimatedDate = CURRENT_DATE</domain>
 		</filter>
@@ -251,7 +251,7 @@
 		</filter>
 	</search-filters>
 	
-	<search-filters name="internal-stock-move-filters" model="com.axelor.apps.supplychain.db.StockMove" title="Internal Stock Move filters">
+	<search-filters name="internal-stock-move-filters" model="com.axelor.apps.stock.db.StockMove" title="Internal Stock Move filters">
 		<filter title="Moves To Prepare">
 			<domain>self.statusSelect = 2</domain>
 		</filter>

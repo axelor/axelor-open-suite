@@ -10,7 +10,7 @@
         	</group>
         	<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
             	<group colSpan="4">
-                	<field name="location" title="Location" widget="ManyToOne" x-target="com.axelor.apps.supplychain.db.Location"/>
+                	<field name="location" title="Location" widget="ManyToOne" x-target="com.axelor.apps.stock.db.Location"/>
                 	<field name="inventoryDate" title="Inventory date" widget="Date"/>
                 	<spacer/>
                 	<field name="description" title="Description" max="600" colSpan="4"/>
@@ -41,7 +41,7 @@
     </action-record>
     
     <action-record name="action-create-inventory-wizard-record-location"
-    	model="com.axelor.apps.supplychain.db.Location"
+    	model="com.axelor.apps.stock.db.Location"
     	search="('self.id = ?1', _location.id)">
     	<field name="id" expr="eval: _location.id"/>
     </action-record>
@@ -50,7 +50,7 @@
     	<call class="com.axelor.apps.supplychain.web.LocationController" method="createInventory"/>
     </action-method>
     
-    <action-view name="action-location-view-inventory" title="Inventory generated" model="com.axelor.apps.supplychain.db.Inventory">
+    <action-view name="action-location-view-inventory" title="Inventory generated" model="com.axelor.apps.stock.db.Inventory">
     	<view type="form" name="inventory-form"/>
     	<context name="_showRecord" expr="eval: inventoryId"/>
     </action-view>

@@ -52,9 +52,9 @@
 	      DATE_PART('month', self.validation_date) AS _month,  
 	      DATE_PART('year', self.validation_date) AS _year
 	    FROM
-	      supplychain_sale_order AS self
+	      sale_sale_order AS self
 	    JOIN
-	      supplychain_sale_order_line AS _line
+	      sale_sale_order_line AS _line
 	      ON _line.sale_order = self.id
 	    JOIN
 	      base_user_info AS _user
@@ -87,7 +87,7 @@
 		      SUM(_order.ex_tax_total) AS _turn_over,
 		      DATE_PART('year',_order.validation_date) AS _year
 		    FROM
-		      supplychain_sale_order AS _order  
+		      sale_sale_order AS _order  
 		    JOIN
 		      base_user_info AS _user
 		      ON _user.id = :_user_id
@@ -118,9 +118,9 @@
 			DATE_PART('year',_order.creation_date) AS _year,
 			_line.product_name AS _product
 		FROM
-			supplychain_sale_order AS _order 
+			sale_sale_order AS _order 
 		LEFT JOIN
-			supplychain_sale_order_line AS _line 
+			sale_sale_order_line AS _line 
 			ON _line.sale_order = _order.id
 		WHERE
 			_order.status_select=3
@@ -144,9 +144,9 @@
 	      _family.name AS _product_family,
 	      DATE_PART('year', _order.validation_date) AS _year
 	    FROM
-	      supplychain_sale_order_line AS _line
+	      sale_sale_order_line AS _line
 	    JOIN
-	      supplychain_sale_order AS _order
+	      sale_sale_order AS _order
 	    ON
 	      _order.id = _line.sale_order
 	    JOIN
@@ -179,7 +179,7 @@
 	      SUM(_order.ex_tax_total) AS _turn_over,
 	      DATE_PART('year',_order.validation_date) AS _year
 	    FROM
-	      supplychain_sale_order AS _order  
+	      sale_sale_order AS _order  
 	    JOIN
 	      base_user_info AS _user
 	      ON _user.id = :_user_id
@@ -211,9 +211,9 @@
 	      _family.name AS _product_family,
 	      DATE_PART('year', _order.validation_date) AS _year
 	    FROM
-	      supplychain_sale_order_line AS _line
+	      sale_sale_order_line AS _line
 	    JOIN
-	      supplychain_sale_order AS _order
+	      sale_sale_order AS _order
 	    ON
 	      _order.id = _line.sale_order
 	    JOIN
@@ -257,7 +257,7 @@
 	    team.name as _team_name,
 	    coalesce(sum(self.ex_tax_total),0) as amount
 	  from 
-	    supplychain_sale_order self
+	    sale_sale_order self
 	  JOIN
 	    base_team team
 	    ON team.id=self.team
@@ -287,7 +287,7 @@
 	    sum(self.ex_tax_total) as amount,
 	    saleman.full_name as name
 	  FROM
-	    supplychain_sale_order self
+	    sale_sale_order self
 	  JOIN
 	    base_user_info saleman
 	    ON saleman.id=self.saleman_user_info
@@ -322,9 +322,9 @@
 	    sum(self.ex_tax_total) as amount,
 	    family.name as family_name
 	  FROM
-	    supplychain_sale_order self
+	    sale_sale_order self
 	  JOIN
-	    supplychain_sale_order_line _line
+	    sale_sale_order_line _line
 	    ON _line.sale_order=self.id
 	  JOIN
 	    base_product products
@@ -359,9 +359,9 @@
 	    category.name as category_name,
 	    coalesce(sum(orders.ex_tax_total) ,0) as amount
 	  from
-	    supplychain_sale_order_line orders
+	    sale_sale_order_line orders
 	  JOIN
-	    supplychain_sale_order self
+	    sale_sale_order self
 	    ON self.id = orders.sale_order
 	  JOIN
 	    base_product product
@@ -395,7 +395,7 @@
 	    country.name as name,
 	    coalesce(sum(self.ex_tax_total),0) as amount
 	  FROM
-	    supplychain_sale_order self
+	    sale_sale_order self
 	  JOIN
 	    base_address address
 	    ON address.id=self.main_invoicing_address
@@ -428,7 +428,7 @@
 		    COALESCE(SUM(self.ex_tax_total), 0.00) AS _amount,   
 		    date_part('year',self.validation_date) || '-' || date_part('mon',self.validation_date) || '-01' AS _month
 		  FROM
-		    supplychain_sale_order AS self
+		    sale_sale_order AS self
 		  JOIN
 		    base_user_info AS _user
 		    ON _user.id = :_user_id
@@ -466,9 +466,9 @@
 	      _sale_order.ex_tax_total AS _turn_over,
 	      _line.product AS _line_product
 	    FROM
-	      supplychain_sale_order AS _sale_order
+	      sale_sale_order AS _sale_order
 	    JOIN
-	      supplychain_sale_order_line AS _line ON _sale_order.id = _line.sale_order
+	      sale_sale_order_line AS _line ON _sale_order.id = _line.sale_order
 	    JOIN
 	      base_user_info _user
 	      ON _user.id = :_user_id
@@ -519,9 +519,9 @@
 	      _line.qty AS _turn_over,
 	      _line.product AS _line_product
 	    FROM
-	      supplychain_sale_order AS _sale_order
+	      sale_sale_order AS _sale_order
 	    JOIN
-	      supplychain_sale_order_line AS _line ON _sale_order.id = _line.sale_order
+	      sale_sale_order_line AS _line ON _sale_order.id = _line.sale_order
 	    JOIN
 	      base_user_info _user
 	      ON _user.id = :_user_id
@@ -679,13 +679,13 @@
 	            when self.estimated_date &lt; self.real_date then 'Late Deliveries'                        
 	      END) AS status    
 	    FROM
-	      supplychain_stock_move AS self
+	      stock_stock_move AS self
 	    JOIN
 	      base_user_info AS _user
 	      ON _user.id = :id
 	      AND self.company = _user.active_company      
 	    JOIN
-	      supplychain_location AS _location
+	      stock_location AS _location
 	      ON _location.type_select = 2
 	      AND self.to_location = _location.id
 	    WHERE
@@ -712,13 +712,13 @@
 	      ROUND(AVG((self.estimated_date - self.real_date)*-1)) AS moves,
 	      'Average Delay' AS label
 	    FROM
-	      supplychain_stock_move AS self
+	      stock_stock_move AS self
 	    JOIN
 	      base_user_info AS _user
 	      ON _user.id = :id 
 	      AND self.company = _user.active_company
 	    JOIN
-	      supplychain_location AS _location
+	      stock_location AS _location
 	      ON self.to_location = _location.id
 	      AND _location.type_select = 2
 	    WHERE
@@ -813,9 +813,9 @@
 	    sum(_line.qty) as qty,
 	    buyer.full_name buyer_name  
 	  FROM
-	    supplychain_purchase_order_line _line
+	    purchase_purchase_order_line _line
 	  JOIN
-	    supplychain_purchase_order self
+	    purchase_purchase_order self
 	    ON _line.purchase_order=self.id
 	  JOIN
 	    base_user_info _user
@@ -847,9 +847,9 @@
 	      family.name as family_name,
 	      coalesce(sum(self.ex_tax_total) ,0) as amount
 	    FROM
-	      supplychain_purchase_order_line orders
+	      purchase_purchase_order_line orders
 	    JOIN
-	      supplychain_purchase_order self
+	      purchase_purchase_order self
 	      ON self.id=orders.purchase_order
 	    JOIN
 	      base_user_info _user
@@ -884,30 +884,30 @@
 	  SELECT
 	     
 	    base_product_family.name AS _family_product,
-	    TRUNC((SUM(supplychain_purchase_order_line.ex_tax_total) * 100)/(SELECT
-	        SUM(supplychain_purchase_order_line.ex_tax_total)
+	    TRUNC((SUM(purchase_purchase_order_line.ex_tax_total) * 100)/(SELECT
+	        SUM(purchase_purchase_order_line.ex_tax_total)
 	      FROM
-	        supplychain_purchase_order self
+	        purchase_purchase_order self
 	      JOIN
 	        base_user_info _user
 	        ON _user.id = :_user_id
 	        AND self.company = _user.active_company
 	      LEFT JOIN
-	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+	        purchase_purchase_order_line ON purchase_purchase_order_line.purchase_order = self.id
 	      WHERE
 	        self.validation_date &gt;= DATE(:fromDate) AND self.validation_date &lt;= DATE(:toDate)
 	      AND
 	        self.status_select IN (4,5)),2) AS _percent
 	  FROM
-	    supplychain_purchase_order self
+	    purchase_purchase_order self
 	  JOIN
 	    base_user_info _user
 	    ON _user.id = :_user_id
 	    AND self.company = _user.active_company    
 	  LEFT JOIN
-	    supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+	    purchase_purchase_order_line ON purchase_purchase_order_line.purchase_order = self.id
 	  LEFT JOIN
-	    base_product ON base_product.id = supplychain_purchase_order_line.product
+	    base_product ON base_product.id = purchase_purchase_order_line.product
 	  LEFT JOIN
 	    base_product_family ON base_product_family.id = base_product.product_family
 	  WHERE
@@ -936,7 +936,7 @@
 	    DATE_PART('month', _order.validation_date) || '-01' AS _month,
 	    SUM(_order.ex_tax_total) AS _turn_over
 	  FROM
-	    supplychain_purchase_order AS _order
+	    purchase_purchase_order AS _order
 	  JOIN
 	    base_user_info AS _user
 	    ON _user.id = :_user_id
@@ -967,13 +967,13 @@
 	    DATE_PART('month',_order.validation_date) || '-01' AS _month,
 	    SUM(_line.qty) AS _qty
 	  FROM
-	    supplychain_purchase_order AS _order
+	    purchase_purchase_order AS _order
 	  JOIN
 	    base_user_info AS _user
 	    ON _user.id = :_user_id
 	    AND _order.company = _user.active_company
 	  JOIN
-	    supplychain_purchase_order_line AS _line 
+	    purchase_purchase_order_line AS _line 
 	    ON _order.id = _line.purchase_order
 	  WHERE
 	    _order.validation_date &gt;= DATE(:fromDate) 
@@ -1001,7 +1001,7 @@
 	    DATE_PART('year', _order.validation_date) || '-' ||
 	    DATE_PART('month', _order.validation_date) || '-' || '01' AS _month
 	  FROM
-	    supplychain_purchase_order AS _order
+	    purchase_purchase_order AS _order
 	  JOIN
 	    base_user_info AS _user
 	    ON _user.id = :_user_id
@@ -1421,9 +1421,9 @@
 			               		(SELECT SUM(CASE WHEN move.from_location = loc.id THEN -1*qty
 			                           WHEN move.to_location = loc.id THEN qty
 			                           END) AS qty                                                                 
-		               			FROM 	supplychain_stock_move_line line,
-			                    		supplychain_stock_move move,
-			                    		supplychain_location loc 
+		               			FROM 	stock_stock_move_line line,
+			                    		stock_stock_move move,
+			                    		stock_location loc 
 			               		WHERE line.stock_move = move.id 
 									AND move.real_date <= DATE(:todayDate)
 									AND move.status_select in (2,3)
@@ -1431,7 +1431,7 @@
 									AND loc.id = location.id
 									AND (move.from_location = loc.id OR move.to_location = loc.id)
 									AND loc.type_select = 1) AS qty
-						FROM supplychain_location_line loc_line, supplychain_location location
+						FROM stock_location_line loc_line, stock_location location
 						WHERE loc_line.location = location.id 
 							AND location.type_select = 1 
 							AND loc_line.product = :id
@@ -1442,9 +1442,9 @@
 				         	           	CASE WHEN move.from_location = location.id THEN -1*line.qty
 				                        WHEN move.to_location = location.id THEN line.qty
 				                        END AS qty
-				                     FROM supplychain_stock_move_line line 
-				                     LEFT JOIN supplychain_stock_move move ON (line.stock_move = move.id)
-				                     LEFT JOIN supplychain_location location ON (move.from_location = location.id OR move.to_location = location.id)
+				                     FROM stock_stock_move_line line 
+				                     LEFT JOIN stock_stock_move move ON (line.stock_move = move.id)
+				                     LEFT JOIN stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
 		      	             		 WHERE  line.product = :id
 					                     AND move.estimated_date > DATE(:todayDate)
 					                     AND location.type_select = 1) location
@@ -1468,9 +1468,9 @@
 				 ((SELECT DATE(:fromDate) AS real_date,location.name AS locat,
 			     (SELECT SUM(CASE WHEN move.from_location = loc.id THEN -1*qty WHEN move.to_location = loc.id THEN qty END) AS qty                                                                 
        		FROM  
-       			supplychain_stock_move_line line,
-       			supplychain_stock_move move,	        
-       			supplychain_location loc 
+       			stock_stock_move_line line,
+       			stock_stock_move move,	        
+       			stock_location loc 
       		WHERE 
       		    line.stock_move = move.id 
 			    AND move.real_date <= DATE(:fromDate)
@@ -1480,7 +1480,7 @@
 				AND (move.from_location = loc.id OR move.to_location = loc.id)
 				AND loc.type_select = 1) AS qty
 		    FROM 
-		   		supplychain_location_line loc_line, supplychain_location location
+		   		stock_location_line loc_line, stock_location location
 		    WHERE 
 		        loc_line.location = location.id 
 				AND location.type_select = 1 
@@ -1495,11 +1495,11 @@
                     	 WHEN move.to_location = location.id THEN line.qty
                     END AS qty
 		    FROM 
-		     	supplychain_stock_move_line line 
+		     	stock_stock_move_line line 
             LEFT JOIN 
-             	supplychain_stock_move move ON (line.stock_move = move.id)
+             	stock_stock_move move ON (line.stock_move = move.id)
             LEFT JOIN 
-             	supplychain_location location ON (move.from_location = location.id OR move.to_location = location.id)
+             	stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
 		    WHERE  
 		    	line.product = :id
 	            AND move.real_date > DATE(:fromDate)

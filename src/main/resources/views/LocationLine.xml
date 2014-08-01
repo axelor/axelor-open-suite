@@ -3,47 +3,47 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
-    <grid name="location-line-grid" title="Stock Locations content" model="com.axelor.apps.supplychain.db.LocationLine">
+    <grid name="location-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine">
         <field name="product"/>
         <field name="currentQty"/>
         <field name="futureQty"/>
     </grid>
     
-    <form name="location-line-form" title="Stock Location content" model="com.axelor.apps.supplychain.db.LocationLine" cols="4">
+    <form name="location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.LocationLine" cols="4">
         <field name="product"/>
         <field name="currentQty"/>
         <field name="futureQty"/>
     </form>
     
-    <grid name="location-line-product-grid" title="Stock Locations content" model="com.axelor.apps.supplychain.db.LocationLine">
+    <grid name="location-line-product-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine">
         <field name="location"/>
         <field name="currentQty"/>
         <field name="futureQty"/>
         <field name="lastFutureStockMoveDate"/>
     </grid>
     
-    <form name="location-line-product-form" title="Stock Location content" model="com.axelor.apps.supplychain.db.LocationLine" cols="4">
+    <form name="location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.LocationLine" cols="4">
         <field name="location"/>
         <field name="currentQty"/>
         <field name="futureQty"/>
         <field name="lastFutureStockMoveDate"/>
     </form>
     
-     <grid name="location-line-product-group-by-variant-grid" title="Stock Locations content" model="com.axelor.apps.supplychain.db.LocationLine" groupBy="product">
+     <grid name="location-line-product-group-by-variant-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine" groupBy="product">
         <field name="location"/>
         <field name="currentQty"/>
         <field name="futureQty"/>
         <field name="lastFutureStockMoveDate"/>
     </grid>
     
-    <grid name="location-line-details-grid" title="Stock Locations content" model="com.axelor.apps.supplychain.db.LocationLine">
+    <grid name="location-line-details-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine">
         <field name="product"/>
         <field name="currentQty"/>
         <field name="futureQty"/>
         <field name="trackingNumber"/>
     </grid>
     
-    <form name="location-line-details-form" title="Stock Location content" model="com.axelor.apps.supplychain.db.LocationLine" cols="4">
+    <form name="location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.LocationLine" cols="4">
         <field name="product"/>
         <field name="currentQty"/>
         <field name="futureQty"/>

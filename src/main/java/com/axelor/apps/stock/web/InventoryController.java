@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.stock.service.InventoryService;
-import com.axelor.apps.supplychain.db.Inventory;
-import com.axelor.apps.supplychain.db.InventoryLine;
-import com.axelor.apps.supplychain.db.Location;
+import com.axelor.apps.stock.db.Inventory;
+import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
