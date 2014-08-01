@@ -169,7 +169,7 @@
 	    </notebook>
 	</form>    
     
-   <action-view name="action-product-view-stock-product-variant" title="Stock" model="com.axelor.apps.supplychain.db.LocationLine">
+   <action-view name="action-product-view-stock-product-variant" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
     	<view type="grid" name="location-line-product-group-by-variant-grid"/>
     	<view type="form" name="location-line-product-form"/>
     	<domain>self.product.parentProduct.id = :id and self.location.typeSelect = 1</domain>

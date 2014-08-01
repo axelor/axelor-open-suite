@@ -52,9 +52,9 @@
 			               		(SELECT SUM(CASE WHEN move.from_location = loc.id THEN -1*qty
 			                           WHEN move.to_location = loc.id THEN qty
 			                           END) AS qty                                                                 
-		               			FROM 	supplychain_stock_move_line line,
-			                    		supplychain_stock_move move,
-			                    		supplychain_location loc,
+		               			FROM 	stock_stock_move_line line,
+			                    		stock_stock_move move,
+			                    		stock_location loc,
 			                    		base_product prod 
 			               		WHERE line.stock_move = move.id 
 									AND move.real_date <= DATE(:todayDate)
@@ -64,8 +64,8 @@
 									AND loc.id = location.id
 									AND (move.from_location = loc.id OR move.to_location = loc.id)
 									AND loc.type_select = 1) AS qty
-						FROM supplychain_location_line loc_line, 
-							 supplychain_location location,
+						FROM stock_location_line loc_line, 
+							 stock_location location,
 							 base_product prod 
 						WHERE loc_line.location = location.id 
 							AND location.type_select = 1 
@@ -78,9 +78,9 @@
 				         	           	CASE WHEN move.from_location = location.id THEN -1*line.qty
 				                        WHEN move.to_location = location.id THEN line.qty
 				                        END AS qty
-				                     FROM supplychain_stock_move_line line 
-				                     LEFT JOIN supplychain_stock_move move ON (line.stock_move = move.id)
-				                     LEFT JOIN supplychain_location location ON (move.from_location = location.id OR move.to_location = location.id)
+				                     FROM stock_stock_move_line line 
+				                     LEFT JOIN stock_stock_move move ON (line.stock_move = move.id)
+				                     LEFT JOIN stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
 				                     LEFT JOIN base_product prod ON (line.product = prod.id)
 		      	             		 WHERE prod.parent_product = :id 
 					                     AND move.estimated_date > DATE(:todayDate)
@@ -113,9 +113,9 @@
 				 ((SELECT DATE(:fromDate) AS real_date,location.name AS locat,
 			     (SELECT SUM(CASE WHEN move.from_location = loc.id THEN -1*qty WHEN move.to_location = loc.id THEN qty END) AS qty                                                                 
        		FROM  
-       			supplychain_stock_move_line line,
-       			supplychain_stock_move move,	        
-       			supplychain_location loc,
+       			stock_stock_move_line line,
+       			stock_stock_move move,	        
+       			stock_location loc,
        			base_product prod 
       		WHERE 
       		    line.stock_move = move.id 
@@ -127,8 +127,8 @@
 				AND (move.from_location = loc.id OR move.to_location = loc.id)
 				AND loc.type_select = 1) AS qty
 		    FROM 
-		   		supplychain_location_line loc_line, 
-		   		supplychain_location location,
+		   		stock_location_line loc_line, 
+		   		stock_location location,
 		   		base_product prod 
 		    WHERE 
 		        loc_line.location = location.id 
@@ -145,11 +145,11 @@
                     	 WHEN move.to_location = location.id THEN line.qty
                     END AS qty
 		    FROM 
-		     	supplychain_stock_move_line line 
+		     	stock_stock_move_line line 
             LEFT JOIN 
-             	supplychain_stock_move move ON (line.stock_move = move.id)
+             	stock_stock_move move ON (line.stock_move = move.id)
             LEFT JOIN 
-             	supplychain_location location ON (move.from_location = location.id OR move.to_location = location.id)
+             	stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
 		    WHERE  
 		    	line.product = :id
 	            AND move.real_date > DATE(:fromDate)
