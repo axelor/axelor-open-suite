@@ -439,31 +439,31 @@
 <!-- 	Mise à jour de l'employé sur l'utilisateur -->
 	<input file="base_userInfo.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.base.db.UserInfo" update="true"/>
 	
-	<input file="supplychain_location.csv" separator=";" type="com.axelor.apps.supplychain.db.Location"/>
+	<input file="supplychain_location.csv" separator=";" type="com.axelor.apps.stock.db.Location"/>
 	
-	<input file="supplychain_minStockRules.csv" separator=";" type="com.axelor.apps.supplychain.db.MinStockRules"/>
+	<input file="supplychain_minStockRules.csv" separator=";" type="com.axelor.apps.stock.db.MinStockRules"/>
 	
 <!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' -->
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"/> 	
 	
 	<input file="supplychain_supplychainBatch.csv" separator=";" type="com.axelor.apps.sale.db.SaleBatch" />
 	
-	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory">
+	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory">
 	    <bind to="statusSelect" eval="3" />
 		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
 	</input>
 	
 	<input file="supplychain_supplychainConfig.csv" separator=";" type="com.axelor.apps.sale.db.SaleConfig"/>
 	
-	<input file="supplychain_inventoryLine.csv" separator=";" type="com.axelor.apps.supplychain.db.InventoryLine" />
+	<input file="supplychain_inventoryLine.csv" separator=";" type="com.axelor.apps.stock.db.InventoryLine" />
 	
-<!-- 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory"   -->
+<!-- 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory"   -->
 <!-- 	search="self.inventorySeq = :inventorySeq" call="com.axelor.csv.script.ImportInventory:importInventory" update="true"> -->
 <!-- 		<bind to="statusSelect" eval="3" /> -->
 <!-- 		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/> -->
 <!-- 	</input> -->
 	
-<!-- 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory"   -->
+<!-- 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory"   -->
 <!-- 	search="self.inventorySeq = :inventorySeq" call="com.axelor.csv.script.ImportInventory:realizeMove" update="true"> -->
 <!-- 		<bind to="statusSelect" eval="3" /> -->
 <!-- 	</input> -->
@@ -520,9 +520,9 @@
  		<bind to="paymentDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(paymentDateTime)" column="paymentDateTime"/>
  	</input>
  	
-<!-- 	<input file="supplychain_stockMove.csv" separator=";" type="com.axelor.apps.supplychain.db.StockMove"/> -->
+<!-- 	<input file="supplychain_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove"/> -->
 	
-<!-- 	<input file="supplychain_stockMoveLine.csv" separator=";" type="com.axelor.apps.supplychain.db.StockMoveLine"/> -->
+<!-- 	<input file="supplychain_stockMoveLine.csv" separator=";" type="com.axelor.apps.stock.db.StockMoveLine"/> -->
 	
 	
 <!-- 	  	PRODUCTION -->
