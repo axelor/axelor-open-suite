@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ProductionConfig;
-import com.axelor.apps.supplychain.db.Location;
+import com.axelor.apps.stock.db.Location;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 

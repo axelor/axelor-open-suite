@@ -28,9 +28,9 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.db.ILocation;
 import com.axelor.apps.stock.db.IStockMove;
-import com.axelor.apps.supplychain.db.Location;
-import com.axelor.apps.supplychain.db.StockMove;
-import com.axelor.apps.supplychain.db.StockMoveLine;
+import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 

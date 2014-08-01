@@ -12,7 +12,7 @@
   	<string name="name" title="Name"/>
     <string name="serialNumber" title="Serial Nbr"/>
     <string name="description" title="Description" large="true"/>
-    <many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
+    <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
     <integer name="startingDuration" title="Starting duration (min)"/>
     <integer name="setupDuration" title="Setup duration (min)"/>
     

@@ -198,7 +198,7 @@
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
-  	<action-view name="action-manuf-order-view-operation-order-consumed-product" title="Consumed products" model="com.axelor.apps.supplychain.db.StockMoveLine">
+  	<action-view name="action-manuf-order-view-operation-order-consumed-product" title="Consumed products" model="com.axelor.apps.stock.db.StockMoveLine">
   		<view type="grid" name="stock-move-line-production-grid"/>
 		<view type="form" name="stock-move-line-production-form"/>
   		<domain>self.consumedOperationOrder.manufOrder.id = :id</domain>
