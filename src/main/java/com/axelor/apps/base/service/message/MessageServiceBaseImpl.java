@@ -54,9 +54,6 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	private UserInfoService userInfoService;
 	
 	@Inject
-	private TemplateMessageService templateMessageService;
-	
-	@Inject
 	public MessageServiceBaseImpl(UserInfoService userInfoService) {
 
 		this.todayTime = GeneralService.getTodayDateTime();
