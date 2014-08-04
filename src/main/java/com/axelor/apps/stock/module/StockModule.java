@@ -32,7 +32,7 @@ public class StockModule extends AxelorModule {
     @Override
     protected void configure() {
         bind(MinStockRulesService.class).to(MinStockRulesServiceImpl.class);
-        bind(AddressServiceImpl.class).to(AddressServiceStockImpl.class);
+        bind(AddressServiceStockImpl.class);
         bind(StockMoveService.class).to(StockMoveServiceImpl.class);
     }
 }
