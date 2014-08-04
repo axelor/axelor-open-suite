@@ -36,7 +36,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public abstract class MessageServiceCrmImpl extends MessageServiceBaseImpl {
+public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MessageServiceCrmImpl.class);
 	
