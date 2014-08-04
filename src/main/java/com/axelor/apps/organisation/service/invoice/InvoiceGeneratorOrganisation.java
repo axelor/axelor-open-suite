@@ -35,7 +35,7 @@ import com.axelor.apps.organisation.db.Project;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public abstract class InvoiceGeneratorOrganisation extends InvoiceGenerator  {
+public class InvoiceGeneratorOrganisation extends InvoiceGenerator  {
 	
 	// Logger
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceGeneratorOrganisation.class);
@@ -97,7 +97,9 @@ public abstract class InvoiceGeneratorOrganisation extends InvoiceGenerator  {
 	}
 	
 	
-	abstract public Invoice generate() throws AxelorException;
+	public Invoice generate() throws AxelorException {
+		return null;
+	}
 	
 	
 	@Override
