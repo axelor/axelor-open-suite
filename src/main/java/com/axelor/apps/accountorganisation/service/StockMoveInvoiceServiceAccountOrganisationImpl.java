@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.service.invoice.InvoiceLineGeneratorOrganisation;
-import com.axelor.apps.supplychain.db.StockMoveLine;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;

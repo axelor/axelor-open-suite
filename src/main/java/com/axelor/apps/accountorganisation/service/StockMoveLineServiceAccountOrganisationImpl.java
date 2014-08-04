@@ -31,12 +31,12 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
-import com.axelor.apps.supplychain.db.Location;
-import com.axelor.apps.supplychain.db.StockMoveLine;
+import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public abstract class StockMoveLineServiceAccountOrganisationImpl extends StockMoveLineServiceImpl  {
+public class StockMoveLineServiceAccountOrganisationImpl extends StockMoveLineServiceImpl  {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(StockMoveLineServiceAccountOrganisationImpl.class); 
 

@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.supplychain.db.Location;
+import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 
