@@ -47,7 +47,7 @@
     </action-record>
     
     <action-method name="action-location-method-create-inventory">
-    	<call class="com.axelor.apps.supplychain.web.LocationController" method="createInventory"/>
+    	<call class="com.axelor.apps.stock.web.LocationController" method="createInventory"/>
     </action-method>
     
     <action-view name="action-location-view-inventory" title="Inventory generated" model="com.axelor.apps.stock.db.Inventory">

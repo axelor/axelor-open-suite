@@ -50,7 +50,7 @@
     </form>
     
     <action-method name="action-stock-location-method-print">
-    	<call class="com.axelor.apps.supplychain.web.LocationController" method="print"></call>
+    	<call class="com.axelor.apps.stock.web.LocationController" method="print"></call>
     </action-method>
         
     <action-record name="action-location-record-new" model="com.axelor.apps.stock.db.Location">
@@ -58,7 +58,7 @@
 	</action-record>
     
     <action-method name="action-location-is-default-location">
-   		<call class="com.axelor.apps.supplychain.web.LocationController" method="checkIsDefaultLocation"/>
+   		<call class="com.axelor.apps.stock.web.LocationController" method="checkIsDefaultLocation"/>
 	</action-method>
 	
     <action-view name="action-location-view-create-inventory" title="Create inventory" model="com.axelor.apps.base.db.Wizard">

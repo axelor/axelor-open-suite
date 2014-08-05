@@ -34,7 +34,7 @@
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move"/>
-        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.stock.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
     </grid>
     
     <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
@@ -52,7 +52,7 @@
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move"/>
-        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.stock.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
     </grid>
     
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" cols="4"
@@ -82,10 +82,10 @@
 				<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-check-stock-move-line-real-qty,action-stock-move-method-realize,action-stock-move-group-read-only,action-stock-move-attrs-hide-button-generate-invoice,save"/>
 				<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-method-cancel,action-stock-move-attrs-canceled-read-only,save"/>
 	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
-            	<button name="generateInvoice" title="Generate invoice" onClick="save,action-stock-move-method-generate-invoice"/>
+            	<button name="generateInvoice" title="Generate invoice" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain"/>
             	<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion"/>
             	<button name="printStockMove" title=" Print" onClick="save,action-print-stock-move" icon="fa-print"/>
-            	<button name="viewDirection" title="View Direction" colSpan="1" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" showIf="typeSelect == 2"/>
+            	<button name="viewDirection" title="View Direction" colSpan="1" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.stock.web.StockMoveController:viewDirection" showIf="typeSelect == 2"/>
         	</group>
     	</group>
     	<break/>
@@ -97,9 +97,9 @@
             	<field name="stockMoveLineList" colSpan="4" form-view="stock-move-line-form" grid-view="stock-move-line-grid" readonlyIf="statusSelect == 3"/>
         	</page>
         	<page title="Configuration">
-           		<field name="saleOrder"/>
-           		<field name="purchaseOrder"/>
-            	<field name="invoice"/>
+           		<field name="saleOrder" if-module="axelor-supplychain"/>
+           		<field name="purchaseOrder" if-module="axelor-supplychain"/>
+            	<field name="invoice" if-module="axelor-supplychain"/>
         	</page>
     	</notebook>
     </form>
@@ -178,39 +178,35 @@
 	</action-record>
 	
 	<action-method name="action-stock-move-method-plan">
-		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="plan"/>
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="plan"/>
 	</action-method>
 	
 	<action-method name="action-stock-move-method-realize">
-		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="realize"/>
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="realize"/>
 	</action-method>
 	
 	<action-method name="action-stock-move-method-cancel">
-		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="cancel"/>
-	</action-method>
-	
-	<action-method name="action-stock-move-method-generate-invoice">
-		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoice"/>
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="cancel"/>
 	</action-method>
 	
 	<action-method name="action-print-stock-move">
-		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="printStockMove"/>
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="printStockMove"/>
 	</action-method>
 	
 	<action-method name="action-stock-move-method-split-stock-move-lines-speical">
-		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="splitStockMoveLinesSpecial"/>
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="splitStockMoveLinesSpecial"/>
 	</action-method>
 	
 	<action-method name="action-stock-move-method-split-stock-move-lines-unit">
-		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="splitStockMoveLinesUnit"/>
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="splitStockMoveLinesUnit"/>
 	</action-method>
 	
 	<action-method name="action-stock-move-ship-recieve-all-products">
-	    <call class="com.axelor.apps.supplychain.web.StockMoveController" method="shipReciveAllProducts"/>
+	    <call class="com.axelor.apps.stock.web.StockMoveController" method="shipReciveAllProducts"/>
 	</action-method>
 	
 	<action-method name="action-stock-move-method-generate-reversion">
-	    <call class="com.axelor.apps.supplychain.web.StockMoveController" method="generateReversion"/>
+	    <call class="com.axelor.apps.stock.web.StockMoveController" method="generateReversion"/>
 	</action-method>
 	
 	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">

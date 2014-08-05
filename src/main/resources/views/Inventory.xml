@@ -68,23 +68,23 @@
 	</action-record>
 	
 	<action-method name="action-inventory-method-show-inventory">
-		<call class="com.axelor.apps.supplychain.web.InventoryController" method="showInventory"/>
+		<call class="com.axelor.apps.stock.web.InventoryController" method="showInventory"/>
 	</action-method>
 	
 	<action-method name="action-inventory-method-import-file">
-		<call class="com.axelor.apps.supplychain.web.InventoryController" method="importFile"/>
+		<call class="com.axelor.apps.stock.web.InventoryController" method="importFile"/>
 	</action-method>
 	
 	<action-method name="action-inventory-method-generate-stock-move">
-		<call class="com.axelor.apps.supplychain.web.InventoryController" method="generateStockMove"/>
+		<call class="com.axelor.apps.stock.web.InventoryController" method="generateStockMove"/>
 	</action-method>
         
     <action-method name="action-inventory-method-fill-inventory">
-		<call class="com.axelor.apps.supplychain.web.InventoryController" method="fillInventoryLineList"/>
+		<call class="com.axelor.apps.stock.web.InventoryController" method="fillInventoryLineList"/>
 	</action-method>
 	
 	<action-method name="action-set-inventory-seq" >
-		<call class="com.axelor.apps.supplychain.web.InventoryController" method="setInventorySequence"/>
+		<call class="com.axelor.apps.stock.web.InventoryController" method="setInventorySequence"/>
 	</action-method>
 	
     <search-filters name="inventories-filters" model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">

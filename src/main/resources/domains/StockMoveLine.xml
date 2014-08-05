@@ -19,7 +19,7 @@
     
     <many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="Tracking Nbr."/>
     
-    <integer name="accordanceSelect" title="Accordance" selection="supplychain.stock.move.line.accordance.select"/>
+    <integer name="accordanceSelect" title="Accordance" selection="stock.move.line.accordance.select"/>
     
 <!--     TODO a deplacer dans Supplier management -->
     <decimal name="shippedQty" title="Shipped qty"/>
