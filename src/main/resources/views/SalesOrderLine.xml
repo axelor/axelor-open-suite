@@ -37,12 +37,12 @@
 	    <notebook colSpan="4">
 	        <page title="Settings">
 	            <group colSpan="4" cols="4" colWidths="30%,10%,30%,10%">
-	                <field name="saleSupplySelect" onChange="action-sale-order-line-get-production-information,action-sale-order-line-attrs-hide-product-variant"/>
+	                <field name="saleSupplySelect" if-module="axelor-supplychain" onChange="action-sale-order-line-get-production-information,action-sale-order-line-attrs-hide-product-variant"/>
 	                <break/>
 	                <field name="supplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" showIf="saleSupplySelect == 2"/>
 	                <field name="task"/>
-	                <field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" />
-	                <button name="customizeBOM" title="Customize BOM" colSpan="2" onClick="action-method-customize-bill-of-material" />
+	                <field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production"/>
+	                <button name="customizeBOM" title="Customize BOM" colSpan="2" onClick="action-production-method-customize-bill-of-material" if-module="axelor-production" />
 	            </group>
 	        </page>
 	        <page title="Notes">
@@ -57,10 +57,10 @@
 	        <page name="details" title="SO line details">
 	            <field name="saleOrderSubLineList" colSpan="4"/>
 	        </page>
-	        <page title="Invoicing follow-up">
+	        <page title="Invoicing follow-up" if-module="axelor-supplychain">
 	            <field name="isToInvoice"/>
 	            <field name="isInvoiced"/>
-	            <field name="invoicingDate"/>
+	            <field name="invoicingDate" />
 	            <field name="amountInvoiced"/>
 	            <field name="amountRemainingToBeInvoiced"/>
 	            <field name="invoiceSet" colSpan="6"/>
@@ -93,21 +93,17 @@
     
    	<!-- ACTION METHOD -->
 	<action-method name="action-sale-order-line-method-compute">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="compute"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="compute"/>
 	</action-method>
 	
 	<action-method name="action-sale-order-line-method-get-product-information">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="getProductInformation"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="getProductInformation"/>
 	</action-method>
 	
 	<action-method name="action-sale-order-line-method-get-discount">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="getDiscount"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="getDiscount"/>
 	</action-method>
 	
-	<action-method name="action-method-customize-bill-of-material">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="customizeBillOfMaterial"/>
-	</action-method>
-        
   	<!-- ACTION ATTRS -->
     <action-attrs name="action-sale-order-line-attrs-ressources-planning">
     	<attribute name="hidden" for="ressourcesPlanning" expr="eval: !(product?.applicationTypeSelect == 2 || product?.productTypeSelect == 'service' &amp;&amp; saleSupplySelect == 3)" if="product != null"/>

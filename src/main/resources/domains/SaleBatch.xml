@@ -9,7 +9,7 @@
   	
   	<!-- HEADER -->
   	<string name="code" title="Code" namecolumn="true"/>
-    <integer name="actionSelect" title="Action" required="true" selection="supplychain.batch.action.select"/>
+    <integer name="actionSelect" title="Action" required="true" selection="sale.batch.action.select"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
     
     <!-- OTHERS INFORMATIONS -->

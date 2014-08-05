@@ -103,7 +103,7 @@
 		
 	<action-view name="portal.saleman.dashboard.view.sample" title="Salesman Dashboard" 
 	icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.saleman.dashboard.portal.sample" />
+		<view type="portal" name="sale.saleman.dashboard.portal.sample" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
@@ -114,7 +114,7 @@
 
 	<action-view name="portal.sale.manager.dashboard.view.sample" title="Sales Manager Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.sale.manager.dashboard.portal.sample" />
+		<view type="portal" name="sale.manager.dashboard.portal.sample" />
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
 	</action-view>
 		
@@ -122,22 +122,22 @@
 		title="Sales" priority="50" />	
 	
 	<menuitem name="menu-sale-dashboard-1" parent="menu-sale-dashboard"  
-		title="Sales Db 1" icon="img/16px/chart_16px.png" action="supplychain.sale.dashboard.1.portal" />	
+		title="Sales Db 1" icon="img/16px/chart_16px.png" action="sale.dashboard.1.portal" />	
 		
-	<action-view name="supplychain.sale.dashboard.1.portal" title="Sales Db 1"
+	<action-view name="sale.dashboard.1.portal" title="Sales Db 1"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.sale.dashboard.1.portal.view" />	 
+		<view type="portal" name="sale.dashboard.1.portal.view" />	 
 		<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>  
 	</action-view>
 	
 	<menuitem name="menu-sale-dashboard-2" parent="menu-sale-dashboard"  
-		title="Sales Db 2" icon="img/16px/chart_16px.png" action="supplychain.sale.dashboard.2.portal" />	
+		title="Sales Db 2" icon="img/16px/chart_16px.png" action="sale.dashboard.2.portal" />	
 		
-	<action-view name="supplychain.sale.dashboard.2.portal" title="Sales Db 2"
+	<action-view name="sale.dashboard.2.portal" title="Sales Db 2"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.sale.dashboard.2.portal.view" />	 
+		<view type="portal" name="sale.dashboard.2.portal.view" />	 
 		<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> 
 	</action-view>
 	

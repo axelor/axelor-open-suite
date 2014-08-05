@@ -46,11 +46,11 @@
     
     <!-- ACTION METHOD -->
 	<action-method name="action-sale-order-sub-line-method-compute">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderSubLineController" method="compute"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderSubLineController" method="compute"/>
 	</action-method>
 	
 	<action-method name="action-sale-order-sub-line-method-get-product-information">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderSubLineController" method="getProductInformation"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderSubLineController" method="getProductInformation"/>
 	</action-method>
 	
 	

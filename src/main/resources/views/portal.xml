@@ -5,7 +5,7 @@
 	
 		<!-- SALES MAN DASHBOARD -->
 		
-	<portal title="Dashboard" name="supplychain.saleman.dashboard.portal.sample" cols="2">
+	<portal title="Dashboard" name="sale.saleman.dashboard.portal.sample" cols="2">
 		<portlet action="portal.saleman.dashboard.orders" height="350" canSearch="true" />
 		<portlet action="portal.my.turnover.per.month" height="350" />
 		<portlet action="portal.saleman.dashboard.leads" canSearch="true" height="350" />
@@ -57,7 +57,7 @@
 	
 	<!-- 	SALES MANAGER DASHBOARD -->
 	
-	<portal title="Dashboard" name="supplychain.sale.manager.dashboard.portal.sample" cols="2">
+	<portal title="Dashboard" name="sale.manager.dashboard.portal.sample" cols="2">
 		<portlet action="portal.sale.turnover.ytd.vs.previous.years.by.month" height="350"/>
 		<portlet action="portal.sale.turnover.ytd.vs.past.year" height="350"/>  	
 		<portlet action="portal.sale.turnover.by.product.ytd.vs.lastyear" height="350"/>
@@ -70,11 +70,11 @@
 		<portlet action="portal.sale.manager.dashboard.sale.per.country" height="350" />
 		<portlet action="portal.turnover.sale.by.month.by.category" height="350" />    
    	    <portlet action="portal.units.sold.on.cust.sale.by.category" height="350" />
-   	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350"/>  
-   	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350"/>  
-   	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350"/> 
-   	    <portlet action="portal.stockMove.deliveries.time.delay.in.nbr" height="350"/>
-   	    <portlet action="portal.stockMove.average.delivery.time.delay" height="350"/> 
+   	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350" if-module="axelor-stock"/>  
+   	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350" if-module="axelor-stock"/>  
+   	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350" if-module="axelor-stock"/> 
+   	    <portlet action="portal.stockMove.deliveries.time.delay.in.nbr" height="350" if-module="axelor-stock"/>
+   	    <portlet action="portal.stockMove.average.delivery.time.delay" height="350" if-module="axelor-stock"/> 
 	</portal>
 	
 	<action-view title="Sales turnover comparison per month this year vs past years" model="com.axelor.apps.sale.db.SaleOrder" name="portal.sale.turnover.ytd.vs.previous.years.by.month">
@@ -154,283 +154,7 @@
 	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
  		
-	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.supplychain.portal.default.month.value">
-	  <field name="monthSelect" expr="eval:12"/>
-	</action-record>
 	
-	<action-view title="Customer deliveries by country" name="portal.stockMove.nbr.delivery.by.country">
-	  <view type="chart" name="chart.stockMove.nbr.delivery.by.country"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-	</action-view>
-	
-	<action-view title="Product deliveries in qty by country" name="portal.stockMoveLine.product.delivery.by.country">
-	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-	</action-view>
-	
-	<action-view title="Product deliveries in qty by country by family" name="portal.stockMoveLine.product.delivery.by.country.by.family">
-	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country.by.family"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-	</action-view>
-	
-	<action-view title="Customer deliveries statistics" name="portal.stockMove.deliveries.time.delay.in.nbr">
-	  <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>  
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
-	</action-view>
-	
-	<action-view title="Customer average delivery delay" name="portal.stockMove.average.delivery.time.delay">
-	  <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>  
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
-	</action-view>
-
-<!--   	Purchase Buyer Dashboard -->
-	
-	<portal title="Dashboard" name="supplychain.purchase.buyer.dashboard.portal.sample" cols="2">
-		<portlet action="portal.purchase.buyer.dashboard.validated.orders" height="350" canSearch="true" />
-		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.my.purchase.per.product.family.volume" height="350"/>
-	    <portlet action="portal.my.purchase.amount.per.product.family" height="350"/>
-		<portlet action="portal.purchase.amount.per.product.family" canSearch="true" height="350"/>
-		<portlet action="portal.nbr.of.po.per.month"  canSearch="true" height="350" />
-		<portlet action="portal.total.purchase.amount" canSearch="true" height="350"/>
-		<portlet action="portal.total.purchase.qty" canSearch="true" height="350"/>
-	</portal>
-
-
-	<action-view name="portal.purchase.buyer.dashboard.validated.orders" title="My Validated POs"
-		model="com.axelor.apps.purchase.db.PurchaseOrder">
-		<view type="grid" name="my-purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.buyerUserInfo =:_user_info and self.company = :_active_company and self.statusSelect = 4</domain>
-    	<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
-    	<context name="_active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
-	
-	<action-view name="portal.purchase.buyer.dashboard.orders" title="My Purchase Orders"
-		model="com.axelor.apps.purchase.db.PurchaseOrder">
-		<view type="grid" name="my-purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.buyerUserInfo =:_user_info and self.company = :_active_company</domain>
-    	<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
-    	<context name="_active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/> 
-	</action-view>
-
-	<action-view name="portal.purchase.buyer.dashboard.order.to.validate" title="My RFQs and POs To Validate (Requested &amp; Received)"
-		model="com.axelor.apps.purchase.db.PurchaseOrder">
-		<view type="grid" name="my-purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.buyerUserInfo =:_user_info and self.statusSelect in (2,3) and self.company =:_active_company</domain>
-    	<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
-    	<context name="_active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
-	
-	<action-view name="portal.my.purchase.per.product.family.volume" title="My purchased qty by product family"
-		model="com.axelor.apps.purchase.db.PurchaseOrder">
-	  <view type="chart" name="chart.my.purchase.per.product.family.volume"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	  <context name="activeUser" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
-
-	<action-view name="portal.my.purchase.amount.per.product.family" title="My purchased amount by product family"
-		model="com.axelor.apps.purchase.db.PurchaseOrder">
-	  <view type="chart" name="chart.my.purchase.amount.per.product.family"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	  <context name="activeUser" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
-
-	<action-view name="portal.purchase.amount.per.product.family" title="Purchased amount by product family"
-		model="com.axelor.apps.purchase.db.PurchaseOrder">
-	  <view type="chart" name="chart.purchase.amount.per.product.family"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
-
-	<action-view name="portal.nbr.of.po.per.month" title="Nbr of PO by month" model="com.axelor.apps.purchase.db.PurchaseOrder">
-	  <view type="chart" name="chart.nbr.of.po.per.month"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
-	</action-view>
-	
-	<action-view name="portal.total.purchase.amount" title="Total Purchased Amount by month" model="com.axelor.apps.purchase.db.PurchaseOrder">
-	  <view type="chart" name="chart.total.purchase.amount"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
-	</action-view>	
-	
-	<action-view name="portal.total.purchase.qty" title="Total Purchased Qty by month" model="com.axelor.apps.purchase.db.PurchaseOrder">
-	  <view type="chart" name="chart.total.purchase.qty"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
-	</action-view>
-
-	
-	<!-- 	Purchase Manager Dashboard -->
-	
-	
-	<portal title="Dashboard" name="supplychain.purchase.manager.dashboard.portal.sample" cols="2">
-		<portlet action="portal.purchase.manager.dashboard.validated.orders" height="350" canSearch="true" />
-		<portlet action="portal.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.purchase.order.volume.by.buyer.by.family" height="350"/>
-	    <portlet action="portal.purchase.order.amount.by.family" height="350"/>
-	    <portlet action="portal.purchase.order.amount.distribution.by.family" height="350"/>
-		<portlet action="portal.50.latest.supplier.orders" canSearch="true" height="350"/>
-	</portal>
-
-	<action-view name="portal.purchase.manager.dashboard.validated.orders" title="Current Purchase Orders"
-		model="com.axelor.apps.purchase.db.PurchaseOrder">
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect in (4,5)</domain>
-	</action-view>
-
-	<action-view name="portal.purchase.manager.dashboard.order.to.validate" title="RFQ And PO To Validate"
-		model="com.axelor.apps.purchase.db.PurchaseOrder">
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 3</domain>
-	</action-view>
-	
-	<action-view name="portal.purchase.order.volume.by.buyer.by.family" title="POs Volume by buyer by family">
-	  <view type="chart" name="chart.purchase.order.volume.by.buyer.by.family"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
-	</action-view>
-	
-	<action-view name="portal.purchase.order.amount.by.family" title="Purchased amount by family">
-	  <view type="chart" name="chart.purchase.order.amount.by.family"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>  
-	</action-view>
-	
-	<action-view name="portal.purchase.order.amount.distribution.by.family" title="Purchased amount distribution by family">
-	  <view type="chart" name="chart.purchase.order.amount.distribution.by.family"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>    
-	</action-view>
-
-	<action-view name="portal.50.latest.supplier.orders" title="50 Latest Supplier Orders">
-			<view type="grid" name="purchase-order-grid" />
-			<view type="form" name="purchase-order-form" />
-	</action-view>
-	
-<!-- 	Stock Dashboard -->
-	
-	<portal title="Dashboard" name="stock.dashboard.portal.sample" cols="2">		
-		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />
-		<portlet action="portal.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />
-		<portlet action="portal.stock.move.upcoming.suppl.arrivals" height="350" canSearch="true" />
-		<portlet action="portal.stock.move.late.suppl.arrivals" canSearch="true" height="350" />
-		<portlet action="portal.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
-	    <portlet action="portal.production.stock.move.in.planned"  height="350" canSearch="true"/>    
-	    <portlet action="portal.production.stock.move.out.planned" height="350" canSearch="true"/>       			
-	    <portlet action="portal.production.stock.move.in.realized" height="350" canSearch="true"/>
-	    <portlet action="portal.production.stock.move.out.realized" height="350" canSearch="true"/>  
-	    <portlet action="portal.nbr.product.per.family" height="350" canSearch="true"/>       			
-	</portal>
-
-	<portal title="Dashboard" name="stock.dashboard.portal.one" cols="2">	
-		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />	
-		<portlet action="portal.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />	
-		<portlet action="portal.stock.move.upcoming.suppl.arrivals" canSearch="true" height="350" />	
-		<portlet action="portal.stock.move.late.suppl.arrivals" canSearch="true" height="350" />	
-		<portlet action="portal.production.stock.move.in.planned" canSearch="true" height="350" />	
-		<portlet action="portal.production.stock.move.in.realized" canSearch="true" height="350" />	
-		<portlet action="portal.production.stock.move.out.planned" canSearch="true" height="350" />	
-		<portlet action="portal.production.stock.move.out.realized" canSearch="true" height="350" />	
-		<portlet action="portal.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
-	</portal>
-
-	<portal title="Dashboard" name="stock.dashboard.portal.two" cols="2">
-	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350"/>  
-  	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350"/>  
-  	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350"/> 
-  	    <portlet action="portal.stockMove.deliveries.time.delay.in.nbr" height="350"/>
-  	    <portlet action="portal.stockMove.average.delivery.time.delay" height="350"/>
-	</portal>
-	
-	<action-view name="portal.stock.dashboard.upcoming.deliveries" title="Upcoming deliveries"
-		model="com.axelor.apps.stock.db.StockMove">
-		<view type="grid" name="stock-move-grid" />
-		<view type="form" name="stock-move-form" />
-		<domain>self.toLocation.typeSelect = 3 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2</domain>
-	</action-view>
-
-	<action-view title="Late customer deliveries" model="com.axelor.apps.stock.db.StockMove" name="portal.stock.move.late.cust.late.deliveries">
-	   <view type="grid" name="stock-move-grid"/>
-	   <view type="form" name="stock-move-form"/>
-	   <domain>self.toLocation.typeSelect = 3 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect= 2 AND self.company=:active_company</domain>
-	   <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
-	</action-view>
-
-	<action-view title="Upcoming supplier arrivals" model="com.axelor.apps.stock.db.StockMove" name="portal.stock.move.upcoming.suppl.arrivals">
-		  <view type="grid" name="stock-move-grid"/>
-		  <view type="form" name="stock-move-form"/>
-		  <domain>self.fromLocation.typeSelect = 2 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
-		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
-	</action-view>
-
-	<action-view title="Late supplier arrivals" model="com.axelor.apps.stock.db.StockMove" name="portal.stock.move.late.suppl.arrivals">
-		  <view type="grid" name="stock-move-grid"/>
-		  <view type="form" name="stock-move-form"/>
-		  <domain>self.fromLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
-		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
-	</action-view>
-
-	<action-view title="Product soon out of stock by location" model="com.axelor.apps.stock.db.LocationLine" name="portal.location.line.product.out.stock.bylocation">
-		  <view type="grid" name="location-line-grid"/>
-		  <view type="form" name="location-line-form"/>
-		  <domain>self.futureQty &lt; 0 AND self.location.company=:active_company</domain>
-		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
-	</action-view>
-	
-	<action-view title="Production Stock Move in Planned" icon="img/16px/productSmall_16px.png" model="com.axelor.apps.stock.db.StockMove" name="portal.production.stock.move.in.planned">
-	    <view type="grid" name="stock-move-in-grid"/>
-	    <view type="form"/>
-	    <domain>self.id IN (SELECT inStockMove FROM ManufOrder WHERE statusSelect=3) OR self.id IN (SELECT inStockMove FROM OperationOrder where statusSelect=3)</domain>
-	</action-view>
-	
-	<action-view title="Production Stock Move out Planned" icon="img/16px/productSmall_16px.png" model="com.axelor.apps.stock.db.StockMove" name="portal.production.stock.move.out.planned">
-	    <view type="grid" name="stock-move-out-grid"/>
-	    <view type="form"/>
-	    <domain>self.id IN (SELECT outStockMove FROM ManufOrder WHERE statusSelect=3)</domain>
-	</action-view>
-	
-	<action-view title="Production stock move in realized" model="com.axelor.apps.stock.db.StockMove" name="portal.production.stock.move.in.realized">
-	    <view type="grid" name="stock-move-in-grid"/>
-	    <view type="form"/>
-	    <domain>self.id IN (SELECT inStockMove FROM ManufOrder WHERE statusSelect IN (4,5)) OR self.id IN (SELECT inStockMove FROM OperationOrder where statusSelect IN (4,5))</domain>
-	</action-view>
-	
-	<action-view title="Production stock move out realized" model="com.axelor.apps.stock.db.StockMove" name="portal.production.stock.move.out.realized">
-	    <view type="grid" name="stock-move-out-grid"/>
-	    <view type="form"/>
-	    <domain>self.id IN (SELECT outStockMove FROM ManufOrder WHERE statusSelect IN (4,5))</domain>
-	</action-view>
-
-	<action-view name="portal.nbr.product.per.family" title="Number of Product per Family" model="com.axelor.apps.base.db.Product">
-	  <view type="chart" name="chart.nbr.product.per.family"/>
-	</action-view>
-	
-	<action-view name="portal.nbr.product.per.category" title="Number of Product per Category" model="com.axelor.apps.base.db.Product">
-	  <view type="chart" name="chart.nbr.product.per.category"/>
-	</action-view>
-	
-	<action-view name="portal.product.type.distribution" title="Product type distribution" model="com.axelor.apps.base.db.Product">
-	  <view type="chart" name="chart.product.type.distribution"/>
-	</action-view>
-	
-	<action-view name="portal.product.launches.withdrawal.each.month" title="Product launches/withdrawal each month" model="com.axelor.apps.base.db.Product">
-	  <view type="chart" name="chart.product.launches.withdrawal.each.month"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	</action-view>
 	
 	<!-- This portal is used in product-form (base) -->
 	<action-view name="portal.product.sale.turnover.per.month" title="Product sale turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product">
@@ -445,92 +169,10 @@
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
-	<!-- This portlet is used in location-form -->
-	<action-view title="Location value" name="portal.locationLine.location.value">
-	  <view type="chart" name="chart.locationLine.location.value"/>
-	</action-view>
-
-	<!-- Purchase Order Dashboard -->
-		
-	<portal name="supply.chain.purchase.order.dashboard.portal.sample" title="Dashboard">
-		<portlet action="portal.my.purchase.orders.to.execute" canSearch="true" height="350" />
-		<portlet action="portal.ongoing.purchase.orders" canSearch="true" height="350" />
-		<portlet action="portal.my.ongoing.purchase.orders" canSearch="true" height="350" />
-		<portlet action="portal.closed.purchase.orders" canSearch="true" height="350" />
-		<portlet action="portal.my.closed.purchase.orders" canSearch="true" height="350" />
-	</portal>
-	
-	<action-view title="My Orders to process" model="com.axelor.apps.purchase.db.PurchaseOrder" name="portal.my.purchase.orders.to.execute">
-	    <view type="grid" name="my-purchase-order-grid"/>
-	    <view type="form" name="purchase-order-form"/>
-	    <domain>self.statusSelect=3 AND self.buyerUserInfo =:user_info</domain>
-	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-	</action-view>
-	
-	<action-view title="Ongoing Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" name="portal.ongoing.purchase.orders">
-	    <view type="grid" name="purchase-order-grid"/>
-	    <view type="form" name="purchase-order-form"/>
-	    <domain>self.statusSelect=4</domain>    
-	</action-view>
-	
-	<action-view title="My Ongoing Purchase Orders" model="com.axelor.apps.purchase.db.PurchaseOrder" name="portal.my.ongoing.purchase.orders">
-	    <view type="grid" name="my-purchase-order-grid"/>
-	    <view type="form" name="purchase-order-form"/>
-	    <domain>self.statusSelect=4 AND self.buyerUserInfo =:user_info</domain>
-	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-	</action-view>
-	
-	<action-view title="Closed Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" name="portal.closed.purchase.orders">
-	    <view type="grid" name="purchase-order-grid"/>
-	    <view type="form" name="purchase-order-form"/>
-	    <domain>self.statusSelect=5</domain>    
-	</action-view>
-	
-	<action-view title="My Closed Purchase Orders" model="com.axelor.apps.purchase.db.PurchaseOrder" name="portal.my.closed.purchase.orders">
-	    <view type="grid" name="my-purchase-order-grid"/>
-	    <view type="form" name="purchase-order-form"/>
-	    <domain>self.statusSelect=5 AND self.buyerUserInfo =:user_info</domain>
-	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-	</action-view>
-	
-	
-	<!-- 	Purchases Dashboard -->
-	
-	<portal name="supplychain.purchase.dashboard.1.portal" title="Purchases Dashboard 1">
-		<portlet action="portal.purchase.buyer.dashboard.validated.orders" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.my.purchase.per.product.family.volume" canSearch="true" height="350" />
-		<portlet action="portal.my.purchase.amount.per.product.family" canSearch="true" height="350" />
-		<portlet action="portal.purchase.amount.per.product.family" canSearch="true" height="350" />
-		<portlet action="portal.nbr.of.po.per.month" canSearch="true" height="350" />
-		<portlet action="portal.total.purchase.amount" canSearch="true" height="350" />
-		<portlet action="portal.total.purchase.qty" canSearch="true" height="350" />
-		<portlet action="portal.purchase.manager.dashboard.validated.orders" canSearch="true" height="350" />
-		</portal>
-	
-	<portal name="supplychain.purchase.dashboard.2.portal" title="Purchases Dashboard 2">
-		<portlet action="portal.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.purchase.order.volume.by.buyer.by.family" canSearch="true" height="350" />
-		<portlet action="portal.purchase.order.amount.by.family" canSearch="true" height="350" />
-		<portlet action="portal.purchase.order.amount.distribution.by.family" canSearch="true" height="350" />
-		<portlet action="portal.ongoing.supplier.rfq" canSearch="true" height="350" />
-		<portlet action="portal.my.ongoing.supplier.rfq" canSearch="true" height="350" />
-		<portlet action="portal.purchase.orders.to.execute" canSearch="true" height="350" />
-		<portlet action="portal.my.purchase.orders.to.execute" canSearch="true" height="350" />
-		<portlet action="portal.ongoing.purchase.orders" canSearch="true" height="350" />
-		<portlet action="portal.my.ongoing.purchase.orders" canSearch="true" height="350" />
-	</portal>
-	
-	<portal name="supplychain.purchase.dashboard.3.portal" title="Purchases Dashboard 3">
-		<portlet action="portal.closed.purchase.orders" canSearch="true" height="350" />
-		<portlet action="portal.my.closed.purchase.orders" canSearch="true" height="350" />
-	</portal>
-	
 	
 	<!-- Sales DashBoard -->
 	
-	<portal name="supplychain.sale.dashboard.1.portal.view" title="Sales Dashboard 1">
+	<portal name="sale.dashboard.1.portal.view" title="Sales Dashboard 1">
 		<portlet action="portal.saleman.dashboard.orders" canSearch="true" height="350" />
 		<portlet action="portal.my.turnover.per.month"  height="350" />
 		<portlet action="portal.sale.manager.dashboard.turnover.per.team"  height="350" />
@@ -542,7 +184,7 @@
 		<portlet action="portal.units.sold.on.cust.sale.by.category"  height="350" />
 	</portal>
 	
-	<portal name="supplychain.sale.dashboard.2.portal.view" title="Sales Dashboard 2">
+	<portal name="sale.dashboard.2.portal.view" title="Sales Dashboard 2">
 		<portlet action="portal.sale.turnover.by.product.ytd.vs.lastyear" canSearch="true" height="350" />
 		<portlet action="portal.sale.turnover.ytd.vs.previous.years.by.month" height="350"/>
 		<portlet action="portal.sale.turnover.ytd.vs.lastyear" canSearch="true" height="350" />
@@ -611,82 +253,6 @@
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 		
-	
-	<!-- 	Product-form Actions Portlets -->
-	
-	<action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
-    	<view type="grid" name="location-line-product-grid"/>
-    	<view type="form" name="location-line-product-form"/>
-    	<domain>self.product.id = :id and self.location.typeSelect = 1</domain>
-    </action-view>
-    
-    <action-view name="action-stock-report-for-product" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
-    	<view type="chart" name="chart.stock.report.for.product"/>
-     </action-view>
-  	
-  	 <action-view name="action-stock-history-report-for-product" title="Stock History" model="com.axelor.apps.stock.db.LocationLine">
-    	<view type="chart" name="chart.stock.history.report.for.product"/>
-     </action-view>	
-     
-     <!-- 	Product-form Actions Portlets -->
-		
-	 <action-view name="action-product-view-stock-move-line-incoming-planned" title="Stock Moves planned"
-		model="com.axelor.apps.stock.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-all-grid"/>
-		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.product.id = :_id AND self.stockMove.statusSelect = 2 and self.stockMove.typeSelect = 3</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>	
-	
-	<action-view name="action-product-view-stock-move-line-consumption-planned" title="Stock Moves consumption planned"
-		model="com.axelor.apps.stock.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-all-grid"/>
-		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.product.id = :_id and self.stockMove.statusSelect = 2 and self.stockMove.toLocation.typeSelect = 3</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>
-	
-	<action-view name="action-product-view-stock-move-line-consumption-historical" title="Stock Moves consumption historical"
-		model="com.axelor.apps.stock.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-all-grid"/>
-		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.product.id = :_id and self.stockMove.toLocation.typeSelect = 3</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>	
-	
- 	<action-view name="action-product-view-stock-move-line" title="Stock Moves historical"
-		model="com.axelor.apps.stock.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-all-grid"/>
-		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.product.id = :_id</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>	
-	
-	<action-view name="action-product-view-supplier-requests-historical" title="Supplier requests historical"
-		model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
-		<view type="grid" name="purchase-order-supplier-line-supplier-grid" />
-		<view type="form" name="purchase-order-supplier-line-supplier-form" />
-		<domain>self.purchaseOrderLine.product.id = :_id</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>
-	
-	<action-view name="action-product-view-purchase-order-line-in-progress" title="Purchase order in progress"
-		model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-		<view type="grid" name="purchase-order-line-grid"/>
-		<view type="form" name="purchase-order-line-form"/>
-		<domain>self.product.id = :_id and self.purchaseOrder.statusSelect in (1,2,3)</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>	
-	
-	<action-view name="action-product-view-purchase-order-line-historical" title="Purchase order historical"
-		model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-		<view type="grid" name="purchase-order-line-grid"/>
-		<view type="form" name="purchase-order-line-form"/>
-		<domain>self.product.id = :_id</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>	
-	
-	
  	<!-- This Portlet is called in Partner-Form in axelor-base and axelor-account -->
 	<action-view name="portal.customer.sale.lastYear.vs.ytd.by.family" title="Sales turnover comparison per month this year vs past years by family" model="com.axelor.apps.sale.db.SaleOrderLine">
 	  <view type="chart" name="chart.customer.sale.lastYear.vs.ytd.by.family"/>
