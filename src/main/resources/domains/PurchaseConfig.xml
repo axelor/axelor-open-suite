@@ -12,7 +12,7 @@
     
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" unique="true"/>
 
-  	<integer name="purchaseOrderInvoicingTypeSelect" title="Purchases order invoicing type" selection="supplychain.purchase.order.invoicing.type.select"/>
+  	<integer name="purchaseOrderInvoicingTypeSelect" title="Purchases order invoicing type" selection="purchase.purchase.order.invoicing.type.select"/>
   	
   </entity>
   

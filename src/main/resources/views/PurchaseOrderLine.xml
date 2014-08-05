@@ -36,8 +36,8 @@
     
     <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" cols="4" colWidths="400,*"
     onNew="action-purchase-order-line-record-new,action-purchase-order-line-attrs-hide-product-variant"
-    onLoad="action-purchase-order-line-attrs-task-readonly,action-purchase-order-line-attrs-hide-product-variant,action-purchase-order-line-record-dummy-sale-price">
-	    <field name="product" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-record-product-variant,action-purchase-order-line-attrs-hide-product-variant" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
+    onLoad="action-purchase-order-line-attrs-task-readonly,action-purchase-order-line-attrs-hide-product-variant">
+	    <field name="product" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-attrs-hide-product-variant" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-purchase-order-line-method-get-discount,action-purchase-order-line-method-compute"/>
 	    <field name="unit"/>
@@ -64,13 +64,20 @@
 	        	<portlet action="action-purchase-order-line-view-stock-move-line" colSpan="4"/>
 	        </page>
 	        <page title="Links" colSpan="4" cols="4">
-	            <field name="task"/>    
+	            <field name="task" if-module="axelor-account-organisation"/>    
 	        </page>
 	        <page title="Suppliers requests" colSpan="4" cols="4" if-module="axelor-suppliermanagement">
 	        	<button name="generateSuppliersRequests" title="Generate suppliers requests" colSpan="2" onClick="save,action-purchase-order-line-method-generate-suppliers-requests,save"/>
 	        	<field name="supplierPartner"/>
-	        	<field name="purchaseOrderSupplierLineList" colSpan="4" grid-view="purchase-order-supplier-line-grid" form-view="purchase-order-supplier-line-form" />
+	        	<field name="purchaseOrderSupplierLineList" colSpan="4" grid-view="purchase-order-supplier-line-grid" form-view="purchase-order-supplier-line-form"/>
 	        </page>
+	        <page title="Account" colSpan="4" cols="4" if-module="axelor-account">
+	        	<field name="isInvoiced"/>
+	        	<field name="amountInvoiced"/>
+	        	<field name="amountRemainingToBeInvoiced"/>
+	        	<break/>
+	        	<field name="invoiceSet"/>
+	        </page> 
 	    </notebook>       
 	</form>
 	
@@ -86,15 +93,15 @@
    	<!-- ACTION METHOD -->
 	
 	<action-method name="action-purchase-order-line-method-compute">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="compute"/>
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="compute"/>
 	</action-method>
 	
 	<action-method name="action-purchase-order-line-method-get-product-information">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="getProductInformation"/>
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="getProductInformation"/>
 	</action-method>
 	
 	<action-method name="action-purchase-order-line-method-get-discount">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="getDiscount"/>
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="getDiscount"/>
 	</action-method>
 	
 	<action-method name="action-purchase-order-line-method-generate-suppliers-requests">

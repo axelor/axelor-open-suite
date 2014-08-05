@@ -6,7 +6,7 @@
     <grid name="purchase-config-grid" title="Purchase configurations" model="com.axelor.apps.purchase.db.PurchaseConfig">
         <field name="name"/>
         <field name="code"/>
-        <field name="address"/>
+        <field name="company"/>
     </grid>
 
     <form name="purchase-config-form" title="Purchase configuration" model="com.axelor.apps.purchase.db.PurchaseConfig" cols="4">

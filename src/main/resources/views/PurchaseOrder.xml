@@ -10,7 +10,7 @@
 		<field name="purchaseOrderSeq"/>
         <field name="supplierPartner"/>
         <field name="externalReference"/>
-        <field name="project"/>
+        <field name="project" if-module="axelor-account-organisation"/>
         <field name="orderDate"/>
         <field name="buyerUserInfo"/>
         <field name="inTaxTotal"/>
@@ -23,7 +23,7 @@
 		  <field name="purchaseOrderSeq"/>
 		  <field name="supplierPartner"/>
 		  <field name="externalReference"/>
-		  <field name="project"/>
+		  <field name="project" if-module="axelor-account-organisation"/>
 		  <field name="orderDate"/>
 		  <field name="inTaxTotal"/>
 		  <field name="statusSelect"/>
@@ -45,21 +45,21 @@
 	        <field name="internalReference"/>
 	        <field name="externalReference"/>
 	        <field name="currency"/>
-	        <field name="project" domain="self.isBusiness = true"/>
+	        <field name="project" domain="self.isBusiness = true" if-module="axelor-account-organisation"/>
 	    </group>
 	    <notebook colSpan="4">
 	        <page title="PO information" colSpan="4" cols="6">
 	            <group title="Contacts" colSpan="6" cols="6" readonlyIf="statusSelect == 5">
 	                <field name="supplierPartner" form-view="partner-form" onChange="action-purchase-order-record-partner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
 	                <field name="contactPartner" domain="self.isContact = true AND self.mainPartner = :supplierPartner" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	                <field name="invoicingTypeSelect"/>
+	                <field name="invoicingTypeSelect" if-module="axelor-account"/>
 	                <field name="buyerUserInfo"/>
 	                <field name="priceList" domain="self.typeSelect = 2 and (self.partner = null or self.partner = :supplierPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
-	                <field name="invoice"/>
+	                <field name="invoice" if-module="axelor-account"/>
 	            </group>
 	            <group title="Delivery" colSpan="6" cols="6">
 	                <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
-	                <field name="location.address"/>
+	                <field name="location.address" if-module="axelor-supplychain"/>
 	                <field name="deliveryDate"/>
 	            </group>
 	            <field name="purchaseOrderLineList" colSpan="6" form-view="purchase-order-line-form" grid-view="purchase-order-line-purchase-order-grid" readonlyIf="statusSelect == 5"/>
@@ -91,7 +91,7 @@
 	                    
 	                     <spacer/> <spacer/><separator colSpan="1"/>
 	                    <spacer/><field name="inTaxTotal" css="highlight"/>
-	                    <spacer/><field name="amountRemainingToBeInvoiced"/>
+	                    <spacer/><field name="amountRemainingToBeInvoiced" if-module="axelor-account"/>
 	                </group>
 	                 <group colSpan="3" cols="3">
 	                    <field name="statusSelect" showTitle="false" widget="NavSelect"/>
@@ -99,8 +99,8 @@
 	            </group>
 	        </page>
 	        <page title="Financial terms" colSpan="4" cols="4">
-                <field name="paymentMode" domain="self.inOutSelect = 2"/>
-                <field name="paymentCondition"/>
+                <field name="paymentMode" domain="self.inOutSelect = 2" if-module="axelor-account"/>
+                <field name="paymentCondition" if-module="axelor-account"/>
 	        </page>
 			<page title="Notes" colSpan="4" cols="4">
 				<field name="notes" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
@@ -159,16 +159,16 @@
     
     
     <action-method name="action-sale-order-method-validate-supplier">
-    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="validateSupplier"/>
+    	<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="validateSupplier"/>
     </action-method>
     
     
     <action-method name="action-purchase-order-method-compute">
-    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="compute"/>
+    	<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="compute"/>
     </action-method>
  	
  	<action-method name="action-purchase-order-set-sequence">
- 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="setSequence"/>
+ 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="setSequence"/>
  	</action-method>
     
     <action-method name="action-purchase-order-method-generate-control-invoice">
@@ -184,7 +184,7 @@
     </action-method>
     
     <action-method name="action-purchase-order-method-show-purchase-order">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="showPurchaseOrder"/>
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="showPurchaseOrder"/>
 	</action-method>
     
     <action-method name="action-purchase-order-method-clear-purchase-order">
