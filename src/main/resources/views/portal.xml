@@ -5,7 +5,7 @@
 	
 		<!-- SALES MAN DASHBOARD -->
 		
-	<portal title="Dashboard" name="supplychain.saleman.dashboard.portal.sample" cols="2">
+	<portal title="Dashboard" name="sale.saleman.dashboard.portal.sample" cols="2">
 		<portlet action="portal.saleman.dashboard.orders" height="350" canSearch="true" />
 		<portlet action="portal.my.turnover.per.month" height="350" />
 		<portlet action="portal.saleman.dashboard.leads" canSearch="true" height="350" />
@@ -57,7 +57,7 @@
 	
 	<!-- 	SALES MANAGER DASHBOARD -->
 	
-	<portal title="Dashboard" name="supplychain.sale.manager.dashboard.portal.sample" cols="2">
+	<portal title="Dashboard" name="sale.manager.dashboard.portal.sample" cols="2">
 		<portlet action="portal.sale.turnover.ytd.vs.previous.years.by.month" height="350"/>
 		<portlet action="portal.sale.turnover.ytd.vs.past.year" height="350"/>  	
 		<portlet action="portal.sale.turnover.by.product.ytd.vs.lastyear" height="350"/>
@@ -154,10 +154,6 @@
 	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
  		
-	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.supplychain.portal.default.month.value">
-	  <field name="monthSelect" expr="eval:12"/>
-	</action-record>
-	
 	<action-view title="Customer deliveries by country" name="portal.stockMove.nbr.delivery.by.country">
 	  <view type="chart" name="chart.stockMove.nbr.delivery.by.country"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
@@ -321,7 +317,7 @@
 	
 	<!-- Sales DashBoard -->
 	
-	<portal name="supplychain.sale.dashboard.1.portal.view" title="Sales Dashboard 1">
+	<portal name="sale.dashboard.1.portal.view" title="Sales Dashboard 1">
 		<portlet action="portal.saleman.dashboard.orders" canSearch="true" height="350" />
 		<portlet action="portal.my.turnover.per.month"  height="350" />
 		<portlet action="portal.sale.manager.dashboard.turnover.per.team"  height="350" />
@@ -333,7 +329,7 @@
 		<portlet action="portal.units.sold.on.cust.sale.by.category"  height="350" />
 	</portal>
 	
-	<portal name="supplychain.sale.dashboard.2.portal.view" title="Sales Dashboard 2">
+	<portal name="sale.dashboard.2.portal.view" title="Sales Dashboard 2">
 		<portlet action="portal.sale.turnover.by.product.ytd.vs.lastyear" canSearch="true" height="350" />
 		<portlet action="portal.sale.turnover.ytd.vs.previous.years.by.month" height="350"/>
 		<portlet action="portal.sale.turnover.ytd.vs.lastyear" canSearch="true" height="350" />
