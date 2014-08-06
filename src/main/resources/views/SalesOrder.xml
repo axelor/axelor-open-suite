@@ -23,19 +23,21 @@
  		<call class="com.axelor.apps.supplychain.web.SaleOrderInvoiceController" method="generateInvoice"/>
 	</action-method>
 	
-	<action-method name="action-supplychain-sale-order-create-stock-move">
+	<action-method name="action-supplychain-sale-order-create-stock-move" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMoves"/>
 	</action-method>
 	
-	<action-method name="action-supplychain-sale-order-create-purchase-order">
+	<action-method name="action-supplychain-sale-order-create-purchase-order" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createPurchaseOrders"/>
 	</action-method>
 	
-	<action-method name="action-supplychain-sale-order-create-production-order">
+	<action-method name="action-sale-order-method-get-location" >
+    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
+    </action-method>
+	
+	<action-method name="action-supplychain-sale-order-create-production-order" >
 		<call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController" method="createProductionOrders"/>
 	</action-method>
 	
-	<action-validate name="action-supplychain-sale-order-validate-check-location">
-		<error message="The location must be filled." if="location == null"/>
-	</action-validate>
+	
 </object-views>	
