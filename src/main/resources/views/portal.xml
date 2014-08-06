@@ -46,7 +46,7 @@
 	    <portlet action="portal.production.stock.move.out.planned" height="350" canSearch="true"/>       			
 	    <portlet action="portal.production.stock.move.in.realized" height="350" canSearch="true"/>
 	    <portlet action="portal.production.stock.move.out.realized" height="350" canSearch="true"/>  
-	    <portlet action="portal.nbr.product.per.family" height="350" canSearch="true"/>       			
+	    <portlet action="portal.nbr.product.per.family" height="350" canSearch="true" if-module="axelor-supplychain"/>       			
 	</portal>
 
 	<portal title="Dashboard" name="stock.dashboard.portal.one" cols="2">	
@@ -128,23 +128,6 @@
 	    <domain>self.id IN (SELECT outStockMove FROM ManufOrder WHERE statusSelect IN (4,5))</domain>
 	</action-view>
 
-	<action-view name="portal.nbr.product.per.family" title="Number of Product per Family" model="com.axelor.apps.base.db.Product">
-	  <view type="chart" name="chart.nbr.product.per.family"/>
-	</action-view>
-	
-	<action-view name="portal.nbr.product.per.category" title="Number of Product per Category" model="com.axelor.apps.base.db.Product">
-	  <view type="chart" name="chart.nbr.product.per.category"/>
-	</action-view>
-	
-	<action-view name="portal.product.type.distribution" title="Product type distribution" model="com.axelor.apps.base.db.Product">
-	  <view type="chart" name="chart.product.type.distribution"/>
-	</action-view>
-	
-	<action-view name="portal.product.launches.withdrawal.each.month" title="Product launches/withdrawal each month" model="com.axelor.apps.base.db.Product">
-	  <view type="chart" name="chart.product.launches.withdrawal.each.month"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	</action-view>
-	
 	<!-- This portlet is used in location-form -->
 	<action-view title="Location value" name="portal.locationLine.location.value">
 	  <view type="chart" name="chart.locationLine.location.value"/>
