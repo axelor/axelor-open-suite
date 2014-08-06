@@ -151,7 +151,7 @@
 			    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	        </page>
 			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain">
-				<portlet colSpan="6" action="portal.customer.sale.lastYear.vs.ytd.by.family" height="350"/>
+				<portlet colSpan="6" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
 			</page>
 			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm">
      			 <portlet colSpan="6" action="portal.customer.crm.activities" height="350"/>
