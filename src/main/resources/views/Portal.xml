@@ -151,7 +151,7 @@
 
 
 	<portal title="Dashboard" name="crm.opportunities.dashboard.1.portal" cols="2">
-		<portlet action="portal.saleman.dashboard.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.salesman.dashboard.opportunities" height="350" canSearch="true"/>
 		<portlet action="portal.closed.opportunities" height="350" canSearch="true"/>
 		<portlet action="portal.open.opportunities" height="350" canSearch="true"/>
 		<portlet action="portal.my.closed.opportunities" height="350" canSearch="true"/>
@@ -231,7 +231,7 @@
 	<!-- Lead Dashboard 1 -->
 
 	<portal title="Lead Dashboard 1" name="crm.lead.dashboard.portal.one" cols="2">
-		<portlet action="portal.saleman.dashboard.leads" height="350" canSearch="true"/>
+		<portlet action="portal.salesman.dashboard.leads" height="350" canSearch="true"/>
 		<portlet action="portal.leads.by.source" height="350" />
 		<portlet action="portal.leads.by.country" height="350" />
 		<portlet action="portal.leads.by.team.by.status" height="350" />
@@ -335,7 +335,7 @@
 
 
 	<portal title="Event Dashboard 1" name="crm.event.dashboard.portal.one" cols="2">
-		<portlet action="portal.saleman.dashboard.activities" height="350" canSearch="true" />
+		<portlet action="portal.salesman.dashboard.activities" height="350" canSearch="true" />
 		<portlet action="portal.my.today.support.activities" height="350" canSearch="true" />
 	</portal>
 
