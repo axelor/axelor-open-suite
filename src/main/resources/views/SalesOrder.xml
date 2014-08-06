@@ -225,7 +225,7 @@
     
     <action-group name="action-sale-group-onchange-company">
     	<action name="action-sale-order-record-company-configuration"/>
-    	<action name="action-sale-order-method-get-location" if-module="axelor-supplychain"/>
+    	<action name="action-sale-order-method-get-location" />
     </action-group>
     
     <action-group name="action-sale-group-confirm">
@@ -235,16 +235,20 @@
     </action-group>
     
     <action-group name="action-sale-group-validate">
-    	<action name="action-supplychain-sale-order-validate-check-location" if-module="axelor-supplychain"/>
-    	<action name="action-account-organisation-sale-order-create-tasks" if-module="axelor-account-organisation"/>
-    	<action name="action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
-    	<action name="action-supplychain-sale-order-create-purchase-order"  if-module="axelor-supplychain"/>
-    	<action name="action-supplychain-sale-order-create-production-order" if-module="axelor-supplychain"/>
+    	<action name="action-supplychain-sale-order-validate-check-location" />
+    	<action name="action-account-organisation-sale-order-create-tasks" />
+    	<action name="action-supplychain-sale-order-create-stock-move" />
+    	<action name="action-supplychain-sale-order-create-purchase-order" />
+    	<action name="action-supplychain-sale-order-create-production-order" />
     	<action name="action-sale-order-method-validate-customer"/>
     	<action name="action-sale-order-record-validate"/>
     	<action name="action-sale-order-attrs-validated-read-only"/>
     </action-group>
     
+	<action-validate name="action-supplychain-sale-order-validate-check-location">
+		<error message="The location must be filled." if="location == null"/>
+	</action-validate>
+	
     <action-method name="action-sale-order-method-show-sale-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="showSaleOrder"/>
 	</action-method>
