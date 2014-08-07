@@ -23,7 +23,7 @@
 <!--     IMPORT DU PACKAGE 'BASE' -->
 	<input file="base_birtTemplate.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplate" />
 	
-	<input file="base_britTemplateParameter.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplateParameter" />
+	<input file="base_birtTemplateParameter.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplateParameter" />
 	
 	<input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" />
 	     
