@@ -36,7 +36,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Template;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
@@ -49,7 +49,7 @@ public class ReminderActionService {
 	private static final Logger LOG = LoggerFactory.getLogger(ReminderActionService.class); 
 	
 	@Inject
-	private UserInfoService uis;
+	private UserService userService;
 	
 	@Inject
 	private AlarmEngineService<Partner> aes;
@@ -266,7 +266,7 @@ public class ReminderActionService {
 		reminderHistory.setReferenceDate(reminder.getReferenceDate());
 		reminderHistory.setReminderMethod(reminder.getReminderMethod());
 		
-		reminderHistory.setUserReminder(uis.getUserInfo());
+		reminderHistory.setUserReminder(userService.getUser());
 		reminder.getReminderHistoryList().add(reminderHistory);
 		reminderHistory.save();
 		LOG.debug("End saveReminder service");	

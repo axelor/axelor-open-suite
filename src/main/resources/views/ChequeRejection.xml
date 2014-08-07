@@ -28,7 +28,7 @@
         	<field name="paymentVoucher" onChange="action-cheque-rejection-record-amount-rejected,action-cheque-rejection-record-partner" onSelect="action-cheque-rejection-attrs-domain-payment-voucher" domain="self.company=:company">
             	<grid orderBy="-paymentDateTime" title="Payment voucher">
                 	<field name="ref"/>
-                	<field name="userInfo"/>
+                	<field name="user"/>
                 	<field name="paymentMode"/>
                 	<field name="paymentDateTime"/>
                 	<field name="payerPartner"/>
@@ -62,7 +62,7 @@
     
      <action-record name="default-cheque-rejection-record" model="com.axelor.apps.account.db.ChequeRejection">
         <field name="status" expr="action:action-status-record-dra"/>
-		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<field name="company" expr="eval:__user__.activeCompany"/>
    		<field name="dateTime" expr="action:action-payment-voucher-getDateTime"/>
    		<field name="paymentMode" expr="action:action-payment-mode-record-cheque"/>
     </action-record>

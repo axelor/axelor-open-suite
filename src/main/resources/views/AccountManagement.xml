@@ -76,22 +76,22 @@
     
     <!-- ACTION RECORD -->
     <action-record name="action-account-management-record-default" model="com.axelor.apps.account.db.AccountManagement">
-        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="company"  expr="eval:__user__.activeCompany"/>
     </action-record>
     
 	<action-record name="action-account-management-record-product" model="com.axelor.apps.account.db.AccountManagement">
         <field name="typeSelect" expr="eval: 1"/>
-        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="company"  expr="eval:__user__.activeCompany"/>
     </action-record>
     
 	<action-record name="action-account-management-record-tax" model="com.axelor.apps.account.db.AccountManagement">
         <field name="typeSelect" expr="eval: 2"/>
-        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="company"  expr="eval:__user__.activeCompany"/>
     </action-record>
     
 	<action-record name="action-account-management-record-payment" model="com.axelor.apps.account.db.AccountManagement">
         <field name="typeSelect" expr="eval: 3"/>
-        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="company"  expr="eval:__user__.activeCompany"/>
     </action-record>
     
     <action-validate name="action-account-management-product-validate">

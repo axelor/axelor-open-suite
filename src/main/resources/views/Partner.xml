@@ -107,7 +107,7 @@
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
 	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" form-view="company-lite-form" onChange="action-partner-company-set-validate"/>
 	                <break/>
-	                <field name="userInfo"/>
+	                <field name="user"/>
 	                <field name="team"/>
 	            </group>
 	        </page>

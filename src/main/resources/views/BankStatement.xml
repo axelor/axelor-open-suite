@@ -45,7 +45,7 @@
 	</form>
  
    <action-record model="com.axelor.apps.account.db.BankStatement" name="action-bank-statement-active-company">
-       <field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+       <field name="company" expr="eval:__user__.activeCompany"/>
    </action-record>
    
    <action-record model="com.axelor.apps.account.db.BankStatement" name="action-bank-statement-set-months">

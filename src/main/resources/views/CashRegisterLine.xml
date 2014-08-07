@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
     <grid name="cash-register-line-grid" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine">
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="cashRegister"/>
         <field name="createDateTime"/>
         <field name="cashRegisterDate"/>
@@ -16,7 +16,7 @@
     <form name="cash-register-line-form" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine" cols="4"
     onNew="action-cash-register-line-record-new,action-cash-register-line-attrs-hidden-button"
     onLoad="action-cash-register-line-attrs-hidden-button,action-cash-register-line-attrs-readonly">
-        <field name="userInfo"/>
+        <field name="user"/>
     	<field name="createDateTime"/>
     	<group colSpan="4">
         	<field name="cashRegister"/>
@@ -42,8 +42,8 @@
     </form>
     
     <action-record name="action-cash-register-line-record-new" model="com.axelor.apps.account.db.CashRegisterLine">
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    	<field name="cashRegister"   expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserCashRegister()"/>
+    	<field name="user" expr="eval:__user__"/>
+    	<field name="cashRegister"   expr="eval:__user__.activeCashRegister"/>
     	<field name="createDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
     	<field name="cashRegisterDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
     	<field name="stateSelect" expr="0"/>

@@ -837,7 +837,7 @@
 		title="Move Templates" model="com.axelor.apps.account.db.MoveTemplate">
 		<view type="grid" name="move-template-grid" />
 		<view type="form" name="move-template-form"  />
-		<context name="_activeCompanyId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompanyId()" />
+		<context name="_activeCompanyId" expr="eval:__user__.activeCompany.id" />
 	</action-view>
 
 

@@ -54,7 +54,7 @@
     <action-record name="default-payment-schedule-record" model="com.axelor.apps.account.db.PaymentSchedule">
    		<field name="creationDate" expr="eval:__date__"/>
    		<field name="startDate" expr="eval:__date__"/>
-   		<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+   		<field name="company"  expr="eval:__user__.activeCompany"/>
    		<field name="stateSelect" expr="eval: 1"/>
 	</action-record>
 

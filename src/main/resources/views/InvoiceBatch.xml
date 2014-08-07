@@ -25,8 +25,7 @@
     	<notebook colSpan="4">
     		<page name="statusOptionPage" title="Options" cols="4">
 				<field name="toStatusSelect" />
-				<field name="fromStatusSelect"/>
-				<field name="contractManagerUserInfo" />
+				<field name="fromStatusSelect"/>				
 				<field name="contractLineId" />
 				<break/>
 				<field name="meIntegrationFromDate" />
@@ -47,7 +46,7 @@
     <!-- ACTION RECORD -->
     <action-record name="action-invoice-batch-record-on-new" model="com.axelor.apps.account.db.InvoiceBatch">
 		<field name="createdOn" expr="call:com.axelor.apps.base.service.GeneralService:getTodayDate()"/>
-		<field name="createdBy" expr="call:com.axelor.apps.base.service.UserInfoService:getUserInfo()"/>
+		<field name="createdBy" expr="eval:__user__"/>
 	</action-record>
     
     <!-- ACTION METHOD -->

@@ -77,7 +77,7 @@
     <!-- ACTION RECORD -->
     <action-record name="action-accounting-batch-record-on-new" model="com.axelor.apps.account.db.AccountingBatch">
 		<field name="createdOn" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-		<field name="createdBy" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<field name="createdBy" expr="eval:__user__"/>
 	</action-record>
     
     <action-record name="action-accounting-batch-record-default-currency" model="com.axelor.apps.account.db.AccountingBatch">

@@ -43,7 +43,6 @@ import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
-import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -68,9 +67,6 @@ public class PaymentScheduleService {
 	@Inject
 	private AlarmEngineService<Partner> aes;
 
-	@Inject
-	private UserInfoService uis;
-	
 	@Inject
 	private DoubtfulCustomerService dcs;
 	

@@ -6,7 +6,7 @@
     <grid name="account-clearance-grid" title="Account clearance operations" model="com.axelor.apps.account.db.AccountClearance">
         <field name="name"/>
         <field name="dateTime"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="amountThreshold"/>
         <field name="dateThreshold"/>
         <field name="company"/>
@@ -18,7 +18,7 @@
     	onLoad="action-account-clearance-attrs-hidden-buttons">
     	<field name="name"/>
     	<field name="dateTime"/>
-    	<field name="userInfo"/>
+    	<field name="user"/>
     	<field name="company" widget="SuggestBox"/>
    		<group title="Clearance settings" colSpan="4" cols="4">
         	<field name="amountThreshold"/>
@@ -42,8 +42,8 @@
     
     <action-record name="action-account-clearance-record-default" model="com.axelor.apps.account.db.AccountClearance">
         <field name="status" expr="action:action-status-record-dra"/>
-        <field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-   		<field name="company"   expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="user" expr="eval:__user__"/>
+   		<field name="company"   expr="eval:__user__.activeCompany"/>
     </action-record>
     
 </object-views>

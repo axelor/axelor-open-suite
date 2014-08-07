@@ -12,7 +12,7 @@
 		else  return "-";
 		]]>
  	</string>
-    <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Cashier Agent" readonly="true"/>
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="Cashier Agent" readonly="true"/>
     <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash Register" required="true"/>
     <datetime name="createDateTime" title="Creation Date" tz="true" readonly="true"/>
     <date name="cashRegisterDate" title="Cash register date" required="true"/>

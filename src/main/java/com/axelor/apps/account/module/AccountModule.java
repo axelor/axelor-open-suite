@@ -24,13 +24,11 @@ import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.ProductServiceAccountImpl;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
-import com.axelor.apps.account.service.user.UserInfoServiceAccountImpl;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
-import com.axelor.apps.base.service.user.UserInfoServiceImpl;
 
 @AxelorModuleInfo(name = "axelor-account")
 public class AccountModule extends AxelorModule {
@@ -40,8 +38,6 @@ public class AccountModule extends AxelorModule {
         bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
         
         bind(ProductServiceImpl.class).to(ProductServiceAccountImpl.class);
-        
-        bind(UserInfoServiceImpl.class).to(UserInfoServiceAccountImpl.class);
         
         bind(GeneralService.class).to(GeneralServiceAccount.class);
         

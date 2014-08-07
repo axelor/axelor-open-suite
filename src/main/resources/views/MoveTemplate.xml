@@ -75,7 +75,7 @@
     </action-record>
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-set-active-company">
-    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+    	<field name="company" expr="eval:__user__.activeCompany" />
     </action-record>
     
     <action-method name="action-move-template-method-check-validity">

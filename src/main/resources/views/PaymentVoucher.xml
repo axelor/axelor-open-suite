@@ -7,7 +7,7 @@
         <field name="ref"/>
         <field name="operationTypeSelect"/>
         <field name="cashRegister"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="paymentMode"/>
         <field name="paymentDateTime"/>
         <field name="partner"/>
@@ -24,7 +24,7 @@
 		<group name="header" colSpan="3" cols="4">
 			<field name="ref" readonly="true" />
 			<field name="operationTypeSelect" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
-			<field name="userInfo" />
+			<field name="user" />
 			<field name="paymentDateTime" />
 			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
 			<field name="cashRegister" />
@@ -188,14 +188,14 @@
 	</action-attrs>
 	
 	<action-record name="action-record-payment-voucher-default-record" model="com.axelor.apps.account.db.PaymentVoucher">
-		<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-       	<field name="cashRegister" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserCashRegister()"/>
-		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<field name="user" expr="eval:__user__"/>
+       	<field name="cashRegister" expr="eval:__user__.activeCashRegister"/>
+		<field name="company" expr="eval:__user__.activeCompany"/>
 		<field name="operationTypeSelect" expr="eval: _operationTypeSelect"/>
 	</action-record>
 	
 	<action-record name="action-record-payment-voucher-cash-register-record" model="com.axelor.apps.account.db.PaymentVoucher">
-		<field name="cashRegister" expr="eval: userInfo?.activeCashRegister"/>
+		<field name="cashRegister" expr="eval: user?.activeCashRegister"/>
 	</action-record>
 	
 	<action-method name="action-payment-voucher-getDateTime">

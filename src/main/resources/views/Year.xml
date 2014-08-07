@@ -32,7 +32,7 @@
     
     <action-record name="action-year-record-new" model="com.axelor.apps.base.db.Year">
     	<field name="status" expr="action:action-status-record-ope"/>
-    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="company"  expr="eval:__user__.activeCompany"/>
     </action-record>
     
     <action-method name="action-year-close-method">

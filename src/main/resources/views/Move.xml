@@ -107,8 +107,8 @@
    	<!-- ACTION RECORD -->
     <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
         <field name="state" expr="eval: 'draft'"/>
-        <field name="cashRegister" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserCashRegister()"/>
-		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="cashRegister" expr="eval:__user__.activeCashRegister"/>
+		<field name="company" expr="eval:__user__.activeCompany"/>
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
 		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
     </action-record>

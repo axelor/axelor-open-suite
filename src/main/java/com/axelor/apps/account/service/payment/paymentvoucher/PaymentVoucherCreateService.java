@@ -36,11 +36,12 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.axelor.auth.db.User;
+import com.axelor.auth.AuthUtils;
 
 public class PaymentVoucherCreateService  {
 	
@@ -120,7 +121,7 @@ public class PaymentVoucherCreateService  {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public PaymentVoucher createPaymentVoucher(Company company, CashRegister cashRegister, UserInfo userInfo, PaymentMode paymentMode, DateTime dateTime, Partner partner,
+	public PaymentVoucher createPaymentVoucher(Company company, CashRegister cashRegister, User user, PaymentMode paymentMode, DateTime dateTime, Partner partner,
 			BigDecimal amount, MoveLine moveLine, Invoice invoiceToPay, MoveLine rejectToPay,
 			PaymentScheduleLine scheduleToPay, PaymentSchedule paymentScheduleToPay) throws AxelorException  {
 
@@ -140,7 +141,7 @@ public class PaymentVoucherCreateService  {
 		if (company != null && paymentMode != null && partner != null)  {
 			paymentVoucher.setCompany(company);
 			paymentVoucher.setCashRegister(cashRegister);
-			paymentVoucher.setUserInfo(userInfo);
+			paymentVoucher.setUser(user);
 			paymentVoucher.setPaymentDateTime(dateTime2);
 
 			paymentVoucher.setPaymentMode(paymentMode);

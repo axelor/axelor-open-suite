@@ -27,9 +27,9 @@ import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Mail;
-import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -43,13 +43,13 @@ public class CashRegisterLineService {
 	private MailService ms;
 	
 	private DateTime todayTime;
-	private UserInfo user;
+	private User user;
 
 	@Inject
-	public CashRegisterLineService(UserInfoService uis) {
+	public CashRegisterLineService(UserService userService) {
 		
 		this.todayTime = GeneralService.getTodayDateTime();
-		this.user = uis.getUserInfo();
+		this.user = userService.getUser();
 		
 	}
 	
@@ -81,7 +81,7 @@ public class CashRegisterLineService {
 			}
 			
 			cashRegisterLine.setCreateDateTime(this.todayTime);
-			cashRegisterLine.setUserInfo(this.user);
+			cashRegisterLine.setUser(this.user);
 			cashRegisterLine.setStateSelect(IAccount.CLOSED_CASHREGISTERLINE);
 			cashRegisterLine.save();
 			

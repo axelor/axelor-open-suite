@@ -42,12 +42,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Status;
-import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -79,13 +79,13 @@ public class AccountClearanceService {
 	private AccountManagementService accountManagementService;
 	
 	private DateTime todayTime;
-	private UserInfo user;
+	private User user;
 
 	@Inject
-	public AccountClearanceService(UserInfoService userInfoService) {
+	public AccountClearanceService(UserService userService) {
 
 		this.todayTime = GeneralService.getTodayDateTime();
-		this.user = userInfoService.getUserInfo();
+		this.user = userService.getUser();
 	}
 	
 	
@@ -185,7 +185,7 @@ public class AccountClearanceService {
 		accountClearance.getMoveLineSet().addAll(moveLineSet);
 		accountClearance.setName(name);
 		accountClearance.setDateTime(this.todayTime);
-		accountClearance.setUserInfo(this.user);
+		accountClearance.setUser(this.user);
 		accountClearance.setStatus(Status.findByCode("val"));
 		return accountClearance;
 		

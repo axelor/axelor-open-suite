@@ -212,7 +212,7 @@
 	<action-record name="action-move-line-report-default-record" model="com.axelor.apps.account.db.MoveLineReport">
         <field name="status" expr="action:action-status-record-dra"/>
 		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<field name="company" expr="eval:__user__.activeCompany"/>
 	</action-record>
 	
 	<action-record name="action-move-Live-report-record-set-date-to" model="com.axelor.apps.account.db.MoveLineReport">

@@ -52,7 +52,6 @@ import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.user.UserInfoService;
 //import com.axelor.apps.tool.xml.Marschaller;
 //import com.axelor.apps.xsd.sepa.AccountIdentification3Choice;
 //import com.axelor.apps.xsd.sepa.AmountType2Choice;
@@ -91,9 +90,6 @@ public class ReimbursementExportService {
 	
 	@Inject
 	private ReconcileService reconcileService;
-	
-	@Inject
-	private UserInfoService userInfoService;
 	
 	@Inject
 	private SequenceService sequenceService;

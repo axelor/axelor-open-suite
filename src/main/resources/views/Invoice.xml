@@ -92,13 +92,13 @@
                 <field name="reminderBlockingOk"/>
                 <group name="debitBlockingGroup" colSpan="6" cols="4" showIf="debitBlockingOk">
                 	<separator title="Direct debit blocking" colSpan="4"/>
-                    <field name="debitBlockingByUserInfo"/>
+                    <field name="debitBlockingByUser"/>
                     <field name="debitBlockingToDate"/>
                     <field name="debitBlockingReason" colSpan="4"/>
                 </group>
                 <group name="reminderBlockingGroup" colSpan="6" cols="4" showIf="reminderBlockingOk">
                 	<separator title="Reminder blocking" colSpan="4"/>
-                    <field name="reminderBlockingByUserInfo"/>
+                    <field name="reminderBlockingByUser"/>
                     <field name="reminderBlockingToDate"/>
                     <field name="reminderBlockingReason" colSpan="4"/>
                 </group>
@@ -134,7 +134,7 @@
 	            </group>
 	            <group colSpan="2" cols="2">
 	                <field name="status" domain="self.invoiceStatusOK = true"/>
-	                <field name="validatedByUserInfo"/>
+	                <field name="validatedByUser"/>
 	            </group>
             </group>
             <group title="Totals" colSpan="2" cols="2" colWidths="50%,50%">
@@ -251,8 +251,8 @@
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
         <field name="invoiceDate" expr="eval: __date__"/>
         <field name="status" expr="action:action-status-record-dra"/>
-        <field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-        <field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency" />
+        <field name="company" expr="eval:__user__.activeCompany"/>
+        <field name="currency" expr="eval:com.axelor.auth.db.User.find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect"/>
         <field name="dueDate" expr="eval: __date__"/>
     </action-record>
