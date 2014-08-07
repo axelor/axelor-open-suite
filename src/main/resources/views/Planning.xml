@@ -5,14 +5,14 @@
     
     <grid name="planning-grid" title="Planning" model="com.axelor.apps.organisation.db.Planning">
         <field name="period"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="date"/>
     </grid>
     
     <form name="planning-form" title="Planning" model="com.axelor.apps.organisation.db.Planning" cols="6" 
     	onNew="action-planning-record-default,action-planning-method-get-period">
         <field name="period"/>
-        <field name="userInfo" onChange="action-planning-method-get-period"/>
+        <field name="user" onChange="action-planning-method-get-period"/>
         <field name="date" onChange="action-planning-method-get-period"/>
         
         <group title="Configuration" colSpan="4">
@@ -35,7 +35,7 @@
     </action-record>
     
     <action-record name="action-planning-record-default" model="com.axelor.apps.organisation.db.Planning">
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="user" expr="eval:__user__"/>
     	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
     </action-record>
     

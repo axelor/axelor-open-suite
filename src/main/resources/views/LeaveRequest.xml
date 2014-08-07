@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
     
-    <calendar name="leave-request-calendar" title="Leave requests" mode="month" colorBy="employeeUserInfo" 
+    <calendar name="leave-request-calendar" title="Leave requests" mode="month" colorBy="employeeUser" 
         model="com.axelor.apps.organisation.db.LeaveRequest"
 	    eventStart="startDateT" 
 	    eventStop="endDateT" 
@@ -13,13 +13,13 @@
  	 </calendar>
     
     <grid name="leave-request-grid" title="Leave requests" model="com.axelor.apps.organisation.db.LeaveRequest">
-        <field name="employeeUserInfo"/>
+        <field name="employeeUser"/>
         <field name="requestDate"/>
         <field name="startDateT"/>
         <field name="endDateT"/>
         <field name="nbrOfDayOff"/>
         <field name="reasonTask"/>
-        <field name="managerUserInfo"/>
+        <field name="managerUser"/>
         <field name="approvalDate"/>
         <field name="remainingDaysOnPeriod"/>
         <field name="statusSelect"/>
@@ -31,7 +31,7 @@
 		  <field name="endDateT"/>
 		  <field name="nbrOfDayOff"/>
 		  <field name="reasonTask"/>
-		  <field name="managerUserInfo"/>
+		  <field name="managerUser"/>
 		  <field name="approvalDate"/>
 		  <field name="remainingDaysOnPeriod"/>
 		  <field name="statusSelect"/>
@@ -39,7 +39,7 @@
     
     <form name="leave-request-form" title="Leave request" model="com.axelor.apps.organisation.db.LeaveRequest" cols="4"
     	onNew="action-leave-request-record-new" onSave="action-leave-request-group-wkf" >
-		<field name="employeeUserInfo"/>
+		<field name="employeeUser"/>
 		<spacer/>
 		<field name="statusSelect" widget="NavSelect" showTitle="false"/>
         <field name="requestDate" required="true"/>
@@ -52,7 +52,7 @@
         	<field name="remainingDaysOnPeriod" readonly="true"/>
         </group>
         <group colSpan="4" cols="4">
-	        <field name="managerUserInfo"/>
+	        <field name="managerUser"/>
 	        <field name="approvalDate"/>
         </group>
         <button name="confirm" title="Confirm" colSpan="2" showIf="statusSelect == 1" onClick="action-leave-request-group-wkf"/>
@@ -81,7 +81,7 @@
     <!-- ACTION RECORD -->
     
     <action-record name="action-leave-request-record-new" model="com.axelor.apps.organisation.db.LeaveRequest">
-    	<field name="employeeUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="employeeUser" expr="eval:__user__"/>
     	<field name="requestDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
     </action-record>
     
@@ -134,7 +134,7 @@
     </action-condition>
     
     <action-condition name="action-leave-request-condition-validation">
-		<check error="You are not allowed to validate this holiday request, please refer to your supervisor (the supervisor is listed in the employee hierarchy notebook)." if="__user__.id != managerUserInfo?.internalUser.id"/>
+		<check error="You are not allowed to validate this holiday request, please refer to your supervisor (the supervisor is listed in the employee hierarchy notebook)." if="__user__.id != managerUser?.id"/>
     </action-condition>
     
 </object-views>

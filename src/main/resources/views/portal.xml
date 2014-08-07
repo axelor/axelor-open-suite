@@ -61,32 +61,28 @@
 		model="com.axelor.apps.organisation.db.Timesheet">
 		<view type="grid" name="my-timesheet-grid" />
 		<view type="form" name="timesheet-form" />
-		<domain>self.userInfo = :_user_info</domain>
-		<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
+		<domain>self.user = :__user__</domain>
 	</action-view>
 
 	<action-view name="portal.human.resources.dashboard.my.travel.expenses" title="My Travel Expenses"
 		model="com.axelor.apps.organisation.db.Expense">
 		<view type="grid" name="my-expense-grid" />
 		<view type="form" name="expense-form" />
-		<domain>self.userInfo = :_user_info</domain>
-		<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
+		<domain>self.user = :__user__</domain>
 	</action-view>
 
 	<action-view name="portal.human.resources.dashboard.my.overtimes" title="My Overtimes"
 		model="com.axelor.apps.organisation.db.Overtime">
 		<view type="grid" name="my-overtime-grid" />
 		<view type="form" name="overtime-form" />
-		<domain>self.userInfo = :_user_info</domain>
-		<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
+		<domain>self.user = :__user__</domain>
 	</action-view>
 	
 	<action-view name="portal.human.resources.dashboard.my.leaverequest" title="My leave requests"
 		model="com.axelor.apps.organisation.db.LeaveRequest">
 		<view type="grid" name="my-leave-request-grid" />
 		<view type="form" name="leave-request-form" />
-		<domain>self.employeeUserInfo = :_user_info</domain>
-		<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
+		<domain>self.employeeUser = :__user__</domain>
 	</action-view> 
 
 

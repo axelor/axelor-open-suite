@@ -5,7 +5,7 @@
     
     <grid name="financial-information-history-line-grid" title="Financial information historicals" model="com.axelor.apps.organisation.db.FinancialInformationHistoryLine">
         <field name="dateT"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="turnover"/>
         <field name="cost"/>
         <field name="margin"/>
@@ -13,7 +13,7 @@
     
     <form name="financial-information-history-line-form" title="Financial information historical" model="com.axelor.apps.organisation.db.FinancialInformationHistoryLine" cols="4">
         <field name="dateT"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="turnover"/>
         <field name="cost"/>
         <field name="margin"/>

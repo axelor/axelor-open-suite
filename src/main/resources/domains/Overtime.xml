@@ -6,14 +6,14 @@
   <module name="organisation" package="com.axelor.apps.organisation.db"/>
 
   <entity name="Overtime" lang="java">
-  	<many-to-one name="userInfo" title="Employee" ref="com.axelor.apps.base.db.UserInfo" />
+  	<many-to-one name="user" title="Employee" ref="com.axelor.auth.db.User" />
   	<date name="date" title="Date"/>
   	<decimal name="totalAmount" title="Total amount" />   
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" />
     <one-to-many name="overtimeLineList" ref="com.axelor.apps.organisation.db.OvertimeLine" mappedBy="overtime" title="Overtime lines"/>
     <string name="statusSelect" title="Status" selection="hr.expense.status.select" readonly="true"/>
     <date name="validationDate" title="Date" readonly="true"/>
-    <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/> 
+    <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/> 
   	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Month of Payment" />
   	<string name="motif" title="Reason"/>
   	

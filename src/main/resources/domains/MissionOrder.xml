@@ -13,7 +13,7 @@
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 		<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Business"/>
 		<many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="Employee"/>
-		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Mission manager"/>
+		<many-to-one name="user" ref="com.axelor.auth.db.User" title="Mission manager"/>
 		<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
 		<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Local contact"/>
 		<many-to-one name="qualificationKeyword" ref="com.axelor.apps.base.db.Keyword" title="Qualification (contractual)"/>

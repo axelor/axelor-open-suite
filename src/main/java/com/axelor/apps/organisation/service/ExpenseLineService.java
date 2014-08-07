@@ -90,7 +90,7 @@ public class ExpenseLineService {
 	public TaxLine getTaxLine(Expense expense,ExpenseLine line) throws AxelorException  {
 		
 		FiscalPosition fiscalPosition = null;
-		if(expense.getUserInfo().getPartner() != null)
+		if(expense.getUser().getPartner() != null)
 			fiscalPosition = expense.getCompany().getPartner().getFiscalPosition();
 		LocalDate today = GeneralService.getTodayDate();
 		if(line.getDate() != null)

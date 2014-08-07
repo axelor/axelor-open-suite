@@ -20,7 +20,7 @@
   	<integer name="taskProgress" title="Task Progress" selection="grade.0.up.to.100.select"/>
   	<string name="description" title="Description" large="true"/>
   	<boolean name="isTimesheetAffected" title="Input from timesheet ?"/>
-  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
+  	<many-to-one name="user" ref="com.axelor.auth.db.User" title="Assigned to"/>
   	<integer name="statusSelect" title="Status" selection="organisation.project.status.select"/>
   	<integer name="realEstimatedMethodSelect" title="Real estimated compute method" selection="organisation.project.real.estimated.method.select"/>
   	<boolean name="isToInvoice" title="To invoice ?"/>

@@ -37,9 +37,9 @@ public class PlanningController {
 		Planning planning = request.getContext().asType(Planning.class);
 	
 		try {
-			if(planning.getDate() != null && planning.getUserInfo() != null && planning.getUserInfo().getActiveCompany() != null) {
+			if(planning.getDate() != null && planning.getUser() != null && planning.getUser().getActiveCompany() != null) {
 				
-				response.setValue("period", periodService.get().rightPeriod(planning.getDate(), planning.getUserInfo().getActiveCompany()));				
+				response.setValue("period", periodService.get().rightPeriod(planning.getDate(), planning.getUser().getActiveCompany()));				
 			}
 			else {
 				response.setValue("period", null);

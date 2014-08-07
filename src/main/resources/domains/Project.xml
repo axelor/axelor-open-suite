@@ -48,8 +48,8 @@
   	
   	<one-to-many name="taskList" ref="com.axelor.apps.organisation.db.Task" mappedBy="project" title="Tasks"/>
 	  	
-  	<many-to-one name="responsibleUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Responsible"/>
-  	<many-to-many name="memberUserInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Members"/>
+  	<many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="Responsible"/>
+  	<many-to-many name="memberUserSet" ref="com.axelor.auth.db.User" title="Members"/>
   	
   	<many-to-one name="modelProject" ref="com.axelor.apps.organisation.db.Project" title="Project model"/>
   	<many-to-one name="preSalesTask" ref="com.axelor.apps.organisation.db.Task" title="Task"/>

@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
-    <calendar name="task-calendar" title="Tasks" mode="month" colorBy="userInfo" 
+    <calendar name="task-calendar" title="Tasks" mode="month" colorBy="user" 
         model="com.axelor.apps.organisation.db.Task"
 	    eventStart="startDateT" 
 	    eventStop="endDateT" 
@@ -21,7 +21,7 @@
     
     <grid name="task-project-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task" orderBy="taskProgress">
         <field name="name"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="plannedTime"/>
         <field name="spentTime"/>
     </grid>
@@ -36,7 +36,7 @@
        		<field name="project" onChange="action-task-attrs-project-title,action-task-attrs-hide-financial,action-task-record-real-estimated-method"/>
         	<field name="startDateT"/>
         	<field name="endDateT"/>  
-        	<field name="userInfo"/>
+        	<field name="user"/>
         	<field name="totalTime"/>
         	<field name="project.unit"/>  
     	</group>
@@ -153,7 +153,7 @@
     	</group>
     	<group title="Context" colSpan="4" cols="6">
        		<field name="project" onChange="action-task-attrs-project-title,action-task-attrs-hide-financial"/>
-        	<field name="userInfo"/>
+        	<field name="user"/>
         	<field name="taskProgress" widget="Progress"/>
         	<field name="startDateT"/>
         	<field name="endDateT"/>    
@@ -178,7 +178,7 @@
     <action-record name="action-task-default-record" model="com.axelor.apps.organisation.db.Task">
     	<field name="startDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="startDateT == null"/>
     	<field name="statusSelect" expr="eval: 1"/>
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="user" expr="eval:__user__"/>
     	<field name="isTimesheetAffected" expr="true"/>
     	<field name="exportTypeSelect" expr="eval: 'pdf'"/>
     </action-record>
@@ -339,13 +339,13 @@
 	
 	<search-filters name="tasks-filters" model="com.axelor.apps.organisation.db.Task" title="Tasks filters">
 		<filter title="My Tasks">
-			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+			<domain>self.user.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Today tasks">
-			<domain>self.userInfo.internalUser.id = :_internalUser and self.startDateT &lt;= :_todayDateTime</domain>
+			<domain>self.user.id = :_internalUser and self.startDateT &lt;= :_todayDateTime</domain>
 		</filter>
 		<filter title="My Upcoming Tasks">
-			<domain>self.userInfo.internalUser.id = :_internalUser and self.startDateT &lt; :_newDate</domain>
+			<domain>self.user.id = :_internalUser and self.startDateT &lt; :_newDate</domain>
 		</filter>
 		<filter title="Tasks Underevaluated">
 			<domain>self.spentTime &gt; self.estimateTime</domain>

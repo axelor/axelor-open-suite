@@ -12,7 +12,7 @@
         <field name="date"/>
         <field name="project"/>
         <field name="task"/>
-        <field name="timesheet.userInfo"/>
+        <field name="timesheet.user"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
         <field name="dayNightSelect"/>
@@ -23,7 +23,7 @@
         <field name="date"/>
         <field name="project" onChange="action-timesheet-line-record-task"/>
         <field name="task" onChange="action-timesheet-line-record-project" domain="self.project = :project or :project = null"/>
-        <field name="timesheet.userInfo"/>
+        <field name="timesheet.user"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
         <field name="dayNightSelect"/>
@@ -56,7 +56,7 @@
         <field name="date"/>
         <field name="project"/>
         <field name="task"/>
-        <field name="timesheet.userInfo"/>
+        <field name="timesheet.user"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
         <field name="dayNightSelect"/>
@@ -67,7 +67,7 @@
         <field name="date"/>
         <field name="project" onChange="action-timesheet-line-record-task"/>
         <field name="task" onChange="action-timesheet-line-record-project" domain="self.project = :project or :project = null"/>
-        <field name="timesheet.userInfo"/>
+        <field name="timesheet.user"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
         <field name="dayNightSelect"/>
@@ -136,7 +136,7 @@
     </action-record>
     
     <action-record name="action-timesheet-line-record-default-production-timesheet" model="com.axelor.apps.organisation.db.TimesheetLine">
-	    <field name="timesheet" expr="eval: com.axelor.apps.organisation.db.Timesheet.filter('self.userInfo.employee = ?1 and fromDate &lt;= ?2 and toDate &gt;= ?3',employee,date,date ).fetchOne()"/>
+	    <field name="timesheet" expr="eval: com.axelor.apps.organisation.db.Timesheet.filter('self.user.employee = ?1 and fromDate &lt;= ?2 and toDate &gt;= ?3',employee,date,date ).fetchOne()"/>
     </action-record>
     
     

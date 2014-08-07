@@ -205,7 +205,7 @@ public class ProjectService {
 		BigDecimal purchaseOrderCost = (BigDecimal) q.getSingleResult();
 		
 		
-		q = JPA.em().createQuery("select SUM(tl.timesheet.userInfo.employee.dailySalaryCost * tl.duration) FROM TimesheetLine as tl WHERE tl.task.project = ?1 and tl.timesheet.statusSelect = 3");
+		q = JPA.em().createQuery("select SUM(tl.timesheet.user.employee.dailySalaryCost * tl.duration) FROM TimesheetLine as tl WHERE tl.task.project = ?1 and tl.timesheet.statusSelect = 3");
 		q.setParameter(1, project);
 				
 		BigDecimal timesheetLineCost = (BigDecimal) q.getSingleResult();
@@ -289,7 +289,7 @@ public class ProjectService {
 //		BigDecimal customerInvoiceLineCost = (BigDecimal) q.getSingleResult();
 		
 		
-		q = JPA.em().createQuery("select SUM(tl.timesheet.userInfo.employee.dailySalaryCost * tl.duration) FROM TimesheetLine as tl WHERE tl.task.project = ?1 and tl.timesheet.statusSelect = 3");
+		q = JPA.em().createQuery("select SUM(tl.timesheet.user.employee.dailySalaryCost * tl.duration) FROM TimesheetLine as tl WHERE tl.task.project = ?1 and tl.timesheet.statusSelect = 3");
 		q.setParameter(1, project);
 				
 		BigDecimal timesheetLineCost = (BigDecimal) q.getSingleResult();

@@ -50,7 +50,7 @@ public class TimesheetController {
 	public void getPeriod(ActionRequest request, ActionResponse response) {
 
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		Company company = timesheet.getUserInfo().getActiveCompany();
+		Company company = timesheet.getUser().getActiveCompany();
 		
 		try {
 			
@@ -96,7 +96,7 @@ public class TimesheetController {
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 
 		StringBuilder url = new StringBuilder();
-		String language = timesheet.getUserInfo().getPartner().getLanguageSelect() != null? timesheet.getUserInfo().getPartner().getLanguageSelect() : timesheet.getUserInfo().getActiveCompany().getPrintingSettings().getLanguageSelect() != null ? timesheet.getUserInfo().getActiveCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+		String language = timesheet.getUser().getPartner().getLanguageSelect() != null? timesheet.getUser().getPartner().getLanguageSelect() : timesheet.getUser().getActiveCompany().getPrintingSettings().getLanguageSelect() != null ? timesheet.getUser().getActiveCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
 		language = language.equals("")? "en": language;
 		
 		url.append(
@@ -110,10 +110,10 @@ public class TimesheetController {
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
 		
-			LOG.debug("Impression des informations timesheet "+timesheet.getUserInfo().getPartner().getName()+" "+timesheet.getUserInfo().getPartner().getFirstName()+" : "+url.toString());
+			LOG.debug("Impression des informations timesheet "+timesheet.getUser().getPartner().getName()+" "+timesheet.getUser().getPartner().getFirstName()+" : "+url.toString());
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Employee "+timesheet.getUserInfo().getPartner().getName()+" "+timesheet.getUserInfo().getPartner().getFirstName());
+			mapView.put("title", "Employee "+timesheet.getUser().getPartner().getName()+" "+timesheet.getUser().getPartner().getFirstName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);		

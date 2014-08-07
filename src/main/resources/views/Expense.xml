@@ -12,7 +12,7 @@
 	</grid>
 
     <grid name="expense-grid" title="Expenses" model="com.axelor.apps.organisation.db.Expense">
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="date"/>
         <field name="company"/>
         <field name="totalAmount" title="Total (TTC)"/>
@@ -37,7 +37,7 @@
     	<toolbar>
     		<button name="printExpense" colSpan="2" title="Print" onClick="action-print-expenses" icon="fa-print"/>
     	</toolbar>
-    	<field name="userInfo"/>
+    	<field name="user"/>
    	 	<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="2"/>
         <field name="date" />
         <field name="company" form-view="company-lite-form" widget="SuggestBox"/>
@@ -60,7 +60,7 @@
         		<button name="compute" title="Compute" colSpan="2" onClick="action-expense-compute-expense-line"/>
 	        </group>
    			<group colSpan="1" cols="2" readonly="true">
-   				<field name="validatedByUserInfo" colSpan="1"/>
+   				<field name="validatedByUser" colSpan="1"/>
              	<field name="validationDate" colSpan="1"/>
    	 			<field name="validationStatusSelect" hideIf="statusSelect == 1 || statusSelect == 6"/>
    			</group>
@@ -73,10 +73,10 @@
     </action-group>
     
 	<action-record name="action-expense-record-default" model="com.axelor.apps.organisation.db.Expense">
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="user" expr="eval:__user__"/>
     	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
     	<field name="statusSelect" expr="eval: 1"/>
-		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<field name="company" expr="eval:__user__.activeCompany"/>
     </action-record>
     
     <action-record name="action-expense-record-default-currency" model="com.axelor.apps.organisation.db.Expense">
@@ -104,7 +104,7 @@
     </action-validate>
     
     <action-record name="action-expense-record-validation-info" model="com.axelor.apps.organisation.db.Expense">
-    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" if="validationStatusSelect == 1"/>
+    	<field name="validatedByUser" expr="eval:__user__" if="validationStatusSelect == 1"/>
     	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="validationStatusSelect == 1"/>
     </action-record>
     

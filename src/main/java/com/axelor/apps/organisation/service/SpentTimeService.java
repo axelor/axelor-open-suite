@@ -35,7 +35,7 @@ public class SpentTimeService {
 		spentTime.setDuration(duration);
 		spentTime.setUnit(timesheetLine.getTimesheet().getUnit());
 		spentTime.setTimesheetImputed(true);
-		spentTime.setUserInfo(timesheetLine.getTimesheet().getUserInfo());
+		spentTime.setUser(timesheetLine.getTimesheet().getUser());
 		
 		return spentTime;
 		

@@ -66,7 +66,7 @@
 				<group title="Hierarchy" colSpan="6" cols="4">
 					<group colSpan="2" cols="2" colWidths="20%,80%">
 						<field name="supervisedBySelect"/>
-						<field name="managerUserInfo" showIf="supervisedBySelect == 1"/>
+						<field name="managerUser" showIf="supervisedBySelect == 1"/>
 						<field name="managerProfileProduct" showIf="supervisedBySelect == 2" domain="self.applicationTypeSelect = 2"/>        
 					</group>
 					<group colSpan="2" cols="2" colWidths="20%,80%">

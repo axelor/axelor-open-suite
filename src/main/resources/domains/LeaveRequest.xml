@@ -7,7 +7,7 @@
 
   <entity name="LeaveRequest" lang="java">
   
-  	<many-to-one name="employeeUserInfo" title="Employee" ref="com.axelor.apps.base.db.UserInfo" required="true"/>
+  	<many-to-one name="employeeUser" title="Employee" ref="com.axelor.auth.db.User" required="true"/>
   	
   	<date name="requestDate" title="Request Date"/>
   	
@@ -18,7 +18,7 @@
   	
  	<many-to-one name="reasonTask" ref="com.axelor.apps.organisation.db.Task" title="Reason"/>
  	
- 	<many-to-one name="managerUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Manager"/>
+ 	<many-to-one name="managerUser" ref="com.axelor.auth.db.User" title="Manager"/>
   	
   	<date name="approvalDate" title="Approval Date"/>
   	

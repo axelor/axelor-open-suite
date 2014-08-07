@@ -92,7 +92,7 @@ public class ExpenseController {
 		if (urlNotExist == null){
 
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Name "+expense.getUserInfo().getFullName());
+			mapView.put("title", "Name "+expense.getUser().getFullName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);	

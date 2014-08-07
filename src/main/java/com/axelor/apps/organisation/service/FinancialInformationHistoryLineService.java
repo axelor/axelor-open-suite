@@ -21,12 +21,12 @@ import java.math.BigDecimal;
 
 import org.joda.time.LocalDateTime;
 
-import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.organisation.db.FinancialInformationHistoryLine;
 import com.axelor.apps.organisation.db.Task;
+import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 
 
@@ -36,13 +36,13 @@ public class FinancialInformationHistoryLineService {
 	private UnitConversionService unitConversionService;
 	
 	private LocalDateTime todayTime;
-	private UserInfo user;
+	private User user;
 
 	@Inject
-	public FinancialInformationHistoryLineService(UserInfoService userInfoService) {
+	public FinancialInformationHistoryLineService(UserService userService) {
 		
 		this.todayTime = GeneralService.getTodayDateTime().toLocalDateTime();
-		this.user = userInfoService.getUserInfo();
+		this.user = userService.getUser();
 		
 	}
 	
@@ -51,7 +51,7 @@ public class FinancialInformationHistoryLineService {
 		
 		FinancialInformationHistoryLine financialInformationHistoryLine = new FinancialInformationHistoryLine();
 		financialInformationHistoryLine.setTask(task);
-		financialInformationHistoryLine.setUserInfo(user);
+		financialInformationHistoryLine.setUser(user);
 		financialInformationHistoryLine.setDateT(todayTime);
 		financialInformationHistoryLine.setTurnover(turnover);
 		financialInformationHistoryLine.setCost(cost);

@@ -25,7 +25,7 @@
     	</toolbar>
 	    <group showTitle="false" colSpan="4">
 	   		<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4"/>
-	        <field name="responsibleUserInfo"/>
+	        <field name="responsibleUser"/>
 	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
@@ -78,7 +78,7 @@
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
 	        </page>
 	        <page title="Members" colSpan="4">
-	            <field name="memberUserInfoSet" colSpan="6"/>
+	            <field name="memberUserSet" colSpan="6"/>
 	        </page>
 	    </notebook>
 	</form>
@@ -105,8 +105,8 @@
 		<field name="isProject" expr="true"/>
 		<field name="exportTypeSelect" expr="eval: 'pdf'"/>
     	<field name="realEstimatedMethodSelect" expr="2"/>
-    	<field name="responsibleUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="responsibleUser" expr="eval:__user__"/>
+		<field name="company" expr="eval:__user__.activeCompany"/>
 		<field name="projectStatusSelect" expr="1"/>
 	</action-record>
 	
@@ -134,8 +134,8 @@
 	</action-method>
 		
 	<action-attrs name="action-project-attrs-domain-task-project">
-		<attribute name="domain" for="defaultTask" expr="eval: &quot;self?.userInfo?.internalUser.id = __user__.id&quot;" if="typeProjectSelect == 1"/>
-		<attribute name="domain" for="parentProject" expr="eval: &quot;self?.responsibleUserInfo?.internalUser.id = __user__.id&quot;" if="typeProjectSelect == 2"/>
+		<attribute name="domain" for="defaultTask" expr="eval: &quot;self?.user?.id = __user__.id&quot;" if="typeProjectSelect == 1"/>
+		<attribute name="domain" for="parentProject" expr="eval: &quot;self?.responsibleUser?.id = __user__.id&quot;" if="typeProjectSelect == 2"/>
 	</action-attrs>
 	
 	<search-filters name="project-filters" model="com.axelor.apps.organisation.db.Project" title="Project filters">

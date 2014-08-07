@@ -8,7 +8,7 @@
   <entity name="SpentTime" lang="java">
   
   	<boolean name="timesheetImputed" title="Already imputed on timesheet" readonly="true"/>
-  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User"/>
+  	<many-to-one name="user" ref="com.axelor.auth.db.User" title="User"/>
   	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
     <decimal name="duration" title="Duration" />
     <date name="date" title="Date"/>

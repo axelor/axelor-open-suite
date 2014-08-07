@@ -5,7 +5,7 @@
     
     <grid name="financial-information-update-grid" title="Others financials informations" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
         <field name="date"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="product"/>
         <field name="amount"/>
         <field name="typeSelect"/>
@@ -16,7 +16,7 @@
     <form name="financial-information-update-form" title="Other financial information" model="com.axelor.apps.organisation.db.FinancialInformationUpdate" cols="4" 
     onNew="action-financial-information-update-record-default">
         <field name="date"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="product"/>
         <field name="amount"/>
         <field name="typeSelect"/>
@@ -26,7 +26,7 @@
     
     <action-record name="action-financial-information-update-record-default" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
     	<field name="date" expr="eval: __date__"/>
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="user" expr="eval:__user__"/>
     </action-record>
     
 </object-views>

@@ -29,7 +29,7 @@
     	</group>
     	<group showTitle="false" cols="4">
         	<field name="company" widget="SuggestBox" form-view="company-lite-form" readonlyIf="projectStatusSelect >= 3 || businessStatusSelect >= 2"/>
-        	<field name="responsibleUserInfo"/>
+        	<field name="responsibleUser"/>
 	        <field name="clientPartner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
@@ -129,7 +129,7 @@
    				<portlet colSpan="4" action="action-business-project-view-production-manuf-order"/>
 	        </page>
 	        <page title="members" colSpan="4">
-	            <field name="memberUserInfoSet" colSpan="6"/>
+	            <field name="memberUserSet" colSpan="6"/>
 	        </page>
 	        <page title="Need">
 	            <field name="needTypeSelect"/>
@@ -159,8 +159,8 @@
 		<field name="isBusiness" expr="true"/>
     	<field name="exportTypeSelect" expr="eval: 'pdf'"/>
     	<field name="realEstimatedMethodSelect" expr="2"/>
-    	<field name="responsibleUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="responsibleUser" expr="eval:__user__"/>
+		<field name="company" expr="eval:__user__.activeCompany"/>
 		<field name="businessStatusSelect" expr="1"/>		
 		<field name="unit" expr="eval: company?.administration?.unit"/>
 		<field name="marginCoef" expr="1"/>

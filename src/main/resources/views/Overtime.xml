@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
     <grid name="overtime-grid" title="Overtimes" model="com.axelor.apps.organisation.db.Overtime">
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="date"/>
         <field name="totalAmount"/>
         <field name="currency"/>
@@ -24,7 +24,7 @@
     
     <form name="overtime-form" title="Overtime" model="com.axelor.apps.organisation.db.Overtime" cols="6"
     onNew="action-overtime-default-record">
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="date"/>
         <field name="statusSelect" widget="NavSelect"/>
         <break />
@@ -45,14 +45,14 @@
 	            <button name="refuse" title="Refuse" colSpan="1" onClick="save,action-overtime-record-refuse" showIf="statusSelect == 1 || statusSelect == 2"/>
 	        </group>
    			<group colSpan="1" cols="2" readonly="true">
-   				<field name="validatedByUserInfo" colSpan="1"/>
+   				<field name="validatedByUser" colSpan="1"/>
              	<field name="validationDate" colSpan="1"/>
    			</group>
         </group>
     </form>
     
     <action-record name="action-overtime-default-record" model="com.axelor.apps.organisation.db.Overtime">
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="user" expr="eval:__user__"/>
     	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
     	<field name="currency" expr="eval: _activeCompany.currency"/>	
     	<field name="statusSelect" expr="eval: 1"/>
@@ -65,13 +65,13 @@
     <action-record name="action-overtime-record-validate-manager" model="com.axelor.apps.organisation.db.Overtime">
     	<field name="statusSelect" expr="eval: 3"/>
     	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="validatedByUser" expr="eval:__user__"/>
     </action-record>
     
     <action-record name="action-overtime-record-validate-commercial" model="com.axelor.apps.organisation.db.Overtime">
     	<field name="statusSelect" expr="eval: 4"/>
     	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="validatedByUser" expr="eval:__user__"/>
     </action-record>
         
     <action-record name="action-overtime-record-confirm" model="com.axelor.apps.organisation.db.Overtime">

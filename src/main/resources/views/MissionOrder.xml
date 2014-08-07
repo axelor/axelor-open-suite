@@ -32,7 +32,7 @@
             	<field name="address"/>
             	<field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
             	<break/>
-            	<field name="userInfo"/>
+            	<field name="user"/>
             	<field name="workingTime"/>
         	</group>
     	</group>
