@@ -25,8 +25,7 @@
 		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
-		<domain>self.recipientUserInfo.internalUser.id = :_internalUser AND self.statusSelect = 2</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<domain>self.recipientUser = :__user__ AND self.statusSelect = 2</domain>
 	</action-view>	
 		
 <!-- 	title-f="Nouveau message" -->
@@ -47,8 +46,7 @@
 		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
-		<domain>self.statusSelect = 1 AND self.senderUserInfo.internalUser.id = :_internalUser</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<domain>self.statusSelect = 1 AND self.senderUser = :__user__</domain>
 	</action-view>	
 		
 <!-- 	title-f="Messages envoyés" -->
@@ -59,8 +57,7 @@
 		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
-		<domain>self.senderUserInfo.internalUser.id = :_internalUser AND self.statusSelect = 2</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<domain>self.senderUser = :__user__ AND self.statusSelect = 2</domain>
 	</action-view>
 		
 <!-- 	title-f="Messages supprimés" -->
@@ -71,8 +68,7 @@
 		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
-		<domain>self.statusSelect = 3 AND (self.senderUserInfo.internalUser.id = :_internalUser OR self.recipientUserInfo.internalUser.id = :_internalUser)</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<domain>self.statusSelect = 3 AND (self.senderUser = :__user__ OR self.recipientUser = :__user__)</domain>
 	</action-view>
 
 	<menuitem name="mail-root-email-conf" parent="mail-root-email-box" title="Configuration"/>
@@ -83,8 +79,7 @@
 		model="com.axelor.apps.message.db.MailAccount" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.userInfo.internalUser.id = :_internalUser</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<domain>self.user = :__user__</domain>
 	</action-view>
 	
 	<menuitem name="mail-root-email-conf-routing" parent="mail-root-email-conf" title="Routings" action="mail.root.email.conf.routing" />	

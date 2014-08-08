@@ -14,7 +14,7 @@
     onNew="action-mail-account-default-record">
     	<group title="Informations" colSpan="4">
             <field name="name"/>
-            <field name="userInfo"/>
+            <field name="user"/>
         	<field name="signature" widget="Html" x-lite="true" colSpan="4"/>
         	<field name="isDefault" onChange="action-mail-account-validate-is-default"/>
         </group>
@@ -31,11 +31,11 @@
     </form>
 
 	<action-record name="action-mail-account-default-record" model="com.axelor.apps.message.db.MailAccount">
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="user" expr="eval:__user__"/>
     </action-record>
     
 	<action-validate name="action-mail-account-validate-is-default">
-		<error message="There is already a default mail account" if="com.axelor.apps.message.db.MailAccount.all().filter('self.isDefault = true and self.userInfo.id = :userInfo').count() > 0 &amp;&amp; isDefault = true"/>
+		<error message="There is already a default mail account" if="com.axelor.apps.message.db.MailAccount.all().filter('self.isDefault = true and self.user = :user').count() > 0 &amp;&amp; isDefault = true"/>
 	</action-validate>
     
 </object-views>

@@ -5,7 +5,7 @@
 	
     <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sentDateT">
         <field name="sentDateT"/>
-        <field name="senderUserInfo"/>
+        <field name="senderUser"/>
         <field name="subject"/>
     </grid>
     
@@ -18,7 +18,7 @@
     	<group title="Informations" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
             <field name="sentDateT"/>
             <field name="fromEmailAddress" />
-            <field name="senderUserInfo"/>
+            <field name="senderUser"/>
             <field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature"/>
             <field name="statusSelect"/>
             <field name="mediaTypeSelect" onChange="action-message-attrs-showhide-by-media-type"/>
@@ -29,7 +29,7 @@
         	<field name="ccEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
         	<field name="bccEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
         	<field name="addressBlock" colSpan="4" widget="html"/>
-        	<field name="recipientUserInfo" widget="TagSelect" x-create="name" colSpan="4" help="Internal Message"/>
+        	<field name="recipientUser" widget="TagSelect" x-create="name" colSpan="4" help="Internal Message"/>
         </group>
         <group title="Content" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
         	<field name="subject" title="Subject" colSpan="4"/>
@@ -56,18 +56,18 @@
     </action-record>
 	
     <action-record model="com.axelor.apps.message.db.Message" name="action-message-record-active-company">
-      <field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+      <field name="company" expr="eval:__user__.activeCompany"/>
     </action-record>
     
 	<action-record name="action-message-record-default" model="com.axelor.apps.message.db.Message">
     	<field name="sentDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="typeSelect" expr="eval: 2"/>
-    	<field name="senderUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="senderUser" expr="eval:__user__"/>
     </action-record>
     
     <action-record name="action-message-record-mail-account" model="com.axelor.apps.message.db.Message">
-    	<field name="mailAccount" expr="eval: com.axelor.apps.message.db.MailAccount.filter('self.isDefault = true and self.userInfo = ?1',senderUserInfo).fetchOne()"/>
+    	<field name="mailAccount" expr="eval: com.axelor.apps.message.db.MailAccount.filter('self.isDefault = true and self.user = ?1',senderUser).fetchOne()"/>
     </action-record>
     
     <action-record name="action-message-record-get-signature" model="com.axelor.apps.message.db.Message">
@@ -87,8 +87,8 @@
 	   	<attribute name="hidden" for="ccEmailAddressSet" expr="false" if="eval: mediaTypeSelect == 2" />
 	    <attribute name="hidden" for="bccEmailAddressSet" expr="true" if="eval: mediaTypeSelect == 1 || mediaTypeSelect == 3" />
 	   	<attribute name="hidden" for="bccEmailAddressSet" expr="false" if="eval: mediaTypeSelect == 2" />
-	   	<attribute name="hidden" for="recipientUserInfo" expr="true" if="eval: mediaTypeSelect == 2 ||  mediaTypeSelect == 1" />
-	  	<attribute name="hidden" for="recipientUserInfo" expr="false" if="eval: mediaTypeSelect == 3" /> 
+	   	<attribute name="hidden" for="recipientUser" expr="true" if="eval: mediaTypeSelect == 2 ||  mediaTypeSelect == 1" />
+	  	<attribute name="hidden" for="recipientUser" expr="false" if="eval: mediaTypeSelect == 3" /> 
     </action-attrs>
     
     <!-- ACTION METHOD -->
