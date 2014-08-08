@@ -26,6 +26,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

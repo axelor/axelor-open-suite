@@ -38,6 +38,12 @@ import com.google.inject.persist.Transactional;
 
 public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
+	public MessageServiceCrmImpl(UserService userService) {
+		super(userService);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	private static final Logger LOG = LoggerFactory.getLogger(MessageServiceCrmImpl.class);
 	
 	private DateTime todayTime;
