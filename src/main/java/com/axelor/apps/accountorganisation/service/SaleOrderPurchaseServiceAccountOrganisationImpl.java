@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -42,9 +42,9 @@ public class SaleOrderPurchaseServiceAccountOrganisationImpl extends SaleOrderPu
 	protected PurchaseOrderServiceAccountOrganisationImpl purchaseOrderServiceAccountOrganisationImpl;
 
 	@Inject
-	public SaleOrderPurchaseServiceAccountOrganisationImpl(UserInfoService userInfoService) {
+	public SaleOrderPurchaseServiceAccountOrganisationImpl(UserService userService) {
 
-		super(userInfoService);
+		super(userService);
 	}
 	
 

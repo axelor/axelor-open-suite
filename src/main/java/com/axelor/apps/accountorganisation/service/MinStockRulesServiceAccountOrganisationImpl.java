@@ -26,7 +26,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.stock.db.IMinStockRules;
@@ -49,8 +49,8 @@ public class MinStockRulesServiceAccountOrganisationImpl extends MinStockRulesSe
 	
 	@Inject
 	public MinStockRulesServiceAccountOrganisationImpl(
-			UserInfoService userInfoService) {
-		super(userInfoService);
+			UserService userService) {
+		super(userService);
 		
 	}
 	

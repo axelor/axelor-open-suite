@@ -25,25 +25,25 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 
 public class PurchaseOrderServiceAccountOrganisationImpl extends PurchaseOrderServiceSupplychainImpl {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceAccountOrganisationImpl.class); 
 
-	public PurchaseOrder createPurchaseOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+	public PurchaseOrder createPurchaseOrder(Project project, User buyerUser, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
 		
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
 				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
 		
-		PurchaseOrder purchaseOrder = super.createPurchaseOrder(buyerUserInfo, company, contactPartner, currency, deliveryDate, 
+		PurchaseOrder purchaseOrder = super.createPurchaseOrder(buyerUser, company, contactPartner, currency, deliveryDate, 
 				internalReference, externalReference, invoicingTypeSelect, orderDate, priceList, supplierPartner);
 				
 		purchaseOrder.setProject(project);

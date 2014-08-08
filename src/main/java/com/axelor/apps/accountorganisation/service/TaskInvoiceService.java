@@ -245,10 +245,10 @@ public class TaskInvoiceService {
 	
 	public Employee getTimesheetEmployee(Timesheet timesheet) throws AxelorException  {
 		
-		Employee employee = timesheet.getUserInfo().getEmployee();
+		Employee employee = timesheet.getUser().getEmployee();
 		
 		if(employee == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TASK_INVOICE_1), timesheet.getUserInfo().getFullName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TASK_INVOICE_1), timesheet.getUser().getFullName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return employee;

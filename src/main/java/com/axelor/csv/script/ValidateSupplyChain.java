@@ -24,7 +24,7 @@ import javax.persistence.Query;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.accountorganisation.service.TaskSaleOrderService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -60,7 +60,7 @@ public class ValidateSupplyChain {
 	PurchaseOrderInvoiceService purchaseOrderInvoiceService;
 	
 	@Inject
-	UserInfoService userInfoSerivce;
+	UserService userSerivce;
 	
 	@Inject
 	InvoiceService invoiceService;
@@ -138,7 +138,7 @@ public class ValidateSupplyChain {
 					stockMove.setRealDate(purchaseOrder.getDeliveryDate());
 				}
 				purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
-				purchaseOrder.setValidatedByUserInfo(userInfoSerivce.getUserInfo());
+				purchaseOrder.setValidatedByUser(userSerivce.getUser());
 				purchaseOrder.setSupplierPartner(purchaseOrderServiceSupplychainImpl.validateSupplier(purchaseOrder));
 				Invoice invoice = purchaseOrderInvoiceService.generateInvoice(purchaseOrder);
 				invoice.setInvoiceDate(purchaseOrder.getValidationDate());
