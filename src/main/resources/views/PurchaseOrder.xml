@@ -12,7 +12,7 @@
         <field name="externalReference"/>
         <field name="project" if-module="axelor-account-organisation"/>
         <field name="orderDate"/>
-        <field name="buyerUserInfo"/>
+        <field name="buyerUser"/>
         <field name="inTaxTotal"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
@@ -53,7 +53,7 @@
 	                <field name="supplierPartner" form-view="partner-form" onChange="action-purchase-order-record-partner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
 	                <field name="contactPartner" domain="self.isContact = true AND self.mainPartner = :supplierPartner" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	                <field name="invoicingTypeSelect" if-module="axelor-account"/>
-	                <field name="buyerUserInfo"/>
+	                <field name="buyerUser"/>
 	                <field name="priceList" domain="self.typeSelect = 2 and (self.partner = null or self.partner = :supplierPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
 	                <field name="invoice" if-module="axelor-account"/>
 	            </group>
@@ -79,7 +79,7 @@
 	                        <button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect >= 4" colSpan="1" onClick="save,action-purchase-order-method-clear-purchase-order"/>
 	                    </group>
 	                    <group readonly="true" colSpan="1" cols="2" colWidths="50%,50%">
-	                        <field name="validatedByUserInfo" colSpan="1"/>
+	                        <field name="validatedByUser" colSpan="1"/>
 	                        <field name="validationDate" colSpan="1"/>
 	                    </group>
 	                </group>
@@ -114,8 +114,8 @@
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="1"/>
     	<field name="invoicingTypeSelect" expr="1"/>
-    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-    	<field name="buyerUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+    	<field name="buyerUser" expr="eval:__user__"/>
     	<field name="orderDate" expr="eval: __date__"/>
     </action-record>
     
@@ -134,7 +134,7 @@
     <action-record name="action-purchase-order-record-validate" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="4"/>
     	<field name="validationDate" expr="eval: __date__"/>
-    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="validatedByUser" expr="eval:__user__"/>
     </action-record>
     
     <action-record name="action-purchase-order-record-draft" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -207,10 +207,10 @@
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">
-			<domain>(self.statusSelect = 1 or self.statusSelect = 2 or self.statusSelect = 3) and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2 or self.statusSelect = 3) and self.buyerUser.internalUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Sales">
-			<domain>(self.statusSelect = 4 or self.statusSelect = 5) and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 4 or self.statusSelect = 5) and self.buyerUser.internalUser.id = :_internalUser</domain>
 		</filter>
 	</search-filters>
 	

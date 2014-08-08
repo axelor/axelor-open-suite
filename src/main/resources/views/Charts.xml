@@ -35,7 +35,7 @@
 	    AND self.purchaseOrder.validationDate &lt;= :toDate
 	    AND self.purchaseOrder.statusSelect &gt; 3 
 	    AND self.purchaseOrder.statusSelect &lt; 6
-	    AND self.purchaseOrder.buyerUserInfo = :activeUser
+	    AND self.purchaseOrder.buyerUser = :activeUserId
 	    AND self.purchaseOrder.company = :activeCompany
 	  GROUP BY
 	    product.productFamily.name
@@ -63,7 +63,7 @@
 	    Product product
 	    
 	  WHERE
-	    self.purchaseOrder.buyerUserInfo = :activeUser
+	    self.purchaseOrder.buyerUser.id = :activeUserId
 	    AND self.purchaseOrder.company = :activeCompany
 	    AND self.purchaseOrder.validationDate &gt;= :fromDate AND self.purchaseOrder.validationDate &lt;= :toDate
 	    AND self.purchaseOrder.createdOn &lt;= CURRENT_TIMESTAMP
@@ -98,12 +98,12 @@
 	    purchase_purchase_order self
 	    ON _line.purchase_order=self.id
 	  JOIN
-	    base_user_info _user
+	    auth_user _user
 	    ON _user.id = :_user_id
 	    AND self.company = _user.active_company
 	  JOIN
-	    base_user_info buyer
-	    ON buyer.id=self.buyer_user_info
+	    auth_user buyer
+	    ON buyer.id=self.buyer_user
 	  where
 	    self.validation_date &gt;= DATE(:fromDate) AND self.validation_date &lt;= DATE(:toDate)
 	    AND self.status_select in(4,5)
@@ -132,7 +132,7 @@
 	      purchase_purchase_order self
 	      ON self.id=orders.purchase_order
 	    JOIN
-	      base_user_info _user
+	      auth_user _user
 	      ON _user.id = :_user_id
 	      AND self.company = _user.active_company
 	    JOIN
@@ -169,7 +169,7 @@
 	      FROM
 	        purchase_purchase_order self
 	      JOIN
-	        base_user_info _user
+	        auth_user _user
 	        ON _user.id = :_user_id
 	        AND self.company = _user.active_company
 	      LEFT JOIN
@@ -181,7 +181,7 @@
 	  FROM
 	    purchase_purchase_order self
 	  JOIN
-	    base_user_info _user
+	    auth_user _user
 	    ON _user.id = :_user_id
 	    AND self.company = _user.active_company    
 	  LEFT JOIN
@@ -218,7 +218,7 @@
 	  FROM
 	    purchase_purchase_order AS _order
 	  JOIN
-	    base_user_info AS _user
+	    auth_user AS _user
 	    ON _user.id = :_user_id
 	    AND _order.company = _user.active_company
 	  WHERE
@@ -249,7 +249,7 @@
 	  FROM
 	    purchase_purchase_order AS _order
 	  JOIN
-	    base_user_info AS _user
+	    auth_user AS _user
 	    ON _user.id = :_user_id
 	    AND _order.company = _user.active_company
 	  JOIN
@@ -283,7 +283,7 @@
 	  FROM
 	    purchase_purchase_order AS _order
 	  JOIN
-	    base_user_info AS _user
+	    auth_user AS _user
 	    ON _user.id = :_user_id
 	    AND _order.company = _user.active_company
 	  WHERE

@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.UserInfo;
+import com.axelor.auth.db.User;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -153,7 +153,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	
 	
 	@Override
-	public PurchaseOrder createPurchaseOrder(UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, LocalDate orderDate, 
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
 		
@@ -161,7 +161,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
 		
 		PurchaseOrder purchaseOrder = new PurchaseOrder();
-		purchaseOrder.setBuyerUserInfo(buyerUserInfo);
+		purchaseOrder.setBuyerUser(buyerUser);
 		purchaseOrder.setCompany(company);
 		purchaseOrder.setContactPartner(contactPartner);
 		purchaseOrder.setCurrency(currency);

@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.UserInfo;
+import com.axelor.auth.db.User;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -72,7 +72,7 @@ public interface PurchaseOrderService {
 	
 	
 	
-	PurchaseOrder createPurchaseOrder(UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+	PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, LocalDate orderDate, 
 			PriceList priceList, Partner supplierPartner) throws AxelorException ;
 		
