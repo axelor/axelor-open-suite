@@ -247,7 +247,7 @@
 "TrackingNumberConfiguration MANAGE","com.axelor.apps.base.db.TrackingNumberConfiguration","true","true","true","true","true","SALE|PURCH|OPTS"
 "Unit READ","com.axelor.apps.base.db.Unit","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
 "UnitConversion READ","com.axelor.apps.base.db.UnitConversion","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
-"UserInfo READ","com.axelor.apps.base.db.UserInfo","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
+"User READ","com.axelor.auth.db.User","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
 "ViewController READ","com.axelor.apps.base.db.ViewController","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
 "Wizard READ","com.axelor.apps.base.db.Wizard","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
 "Year READ","com.axelor.apps.base.db.Year","true",,,,,"SALE|PURCH|HRSC|OPTS"

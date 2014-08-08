@@ -127,7 +127,7 @@
 		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)" column="endDate"/>
 	</input>
 	
-	<input file="base_userInfo.csv" separator=";" type="com.axelor.apps.base.db.UserInfo" />
+	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true"/>
 <!--       TODO A COMPLETER -->
 <!-- 		<bind column="firstName" to="name" /> -->
 <!-- 		<bind column="lastName" to="password"/> -->
@@ -290,8 +290,8 @@
 			</bind>
 			<bind to="contactDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
 			<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
-			<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(userInfo)"/>
-			<bind to="userInfo" search="self.importId = :userInfo" update="true" column="userInfo"/>
+			<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(user)"/>
+			<bind to="user" search="self.importId = :user" update="true" column="user"/>
 	</input>
 	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType" />
@@ -299,13 +299,13 @@
 	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project">
  	    <bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
  	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
- 	    <bind column="memberUserInfoSet_id" to="memberUserInfoSet" search="self.importId in :memberUserInfoSet_id" eval="memberUserInfoSet_id.split('\\|') as List"/>
+ 	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
  	</input>	
 
 	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project" search="self.importId = :importId" update="true">
  	    <bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
  	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
- 	    <bind column="memberUserInfoSet_id" to="memberUserInfoSet" search="self.importId in :memberUserInfoSet_id" eval="memberUserInfoSet_id.split('\\|') as List"/>
+ 	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
  	</input>	
  	
  	<input file="organisation_task.csv" separator=";" type="com.axelor.apps.organisation.db.Task">
@@ -323,7 +323,7 @@
  	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project" search="self.importId = :importId" update="true" call="com.axelor.apps.organisation.service.ProjectService:importProject" >
  		<bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
  	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
- 	    <bind column="memberUserInfoSet_id" to="memberUserInfoSet" search="self.importId in :memberUserInfoSet_id" eval="memberUserInfoSet_id.split('\\|') as List"/>
+ 	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
  	</input>    
  	    
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event">
@@ -335,8 +335,8 @@
 	
 	<input file="crm_opportunity.csv" separator=";" type="com.axelor.apps.crm.db.Opportunity">
 		<bind to="expectedCloseDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(expectedCloseDate)" column="expectedCloseDate"/>
-		<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(userInfo)"/>
-		<bind to="userInfo" search="self.importId = :userInfo" update="true" column="userInfo"/>
+		<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(user)"/>
+		<bind to="user" search="self.importId = :user" update="true" column="user"/>
 	</input>
 	
 	
@@ -387,7 +387,7 @@
 	
 	
 <!-- 	Mise à jour de l'employé sur l'utilisateur -->
-	<input file="base_userInfo.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.base.db.UserInfo" update="true"/>
+	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true"/>
 	
 	<input file="supplychain_location.csv" separator=";" type="com.axelor.apps.stock.db.Location"/>
 	
