@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
@@ -39,7 +39,7 @@ public class LeadService {
 	private SequenceService sequenceService;
 	
 	@Inject
-	private UserInfoService userInfoService;
+	private UserService userService;
 	
 	
 	/**
@@ -119,11 +119,10 @@ public class LeadService {
 	 */
 	public Partner setPartnerCompany(Partner partner)  {
 		
-//		UserInfoService userInfoService = new UserInfoService();
 		
-		if(userInfoService.getUserActiveCompany() != null)  {
+		if(userService.getUserActiveCompany() != null)  {
 			partner.setCompanySet(new HashSet<Company>());
-			partner.getCompanySet().add(userInfoService.getUserActiveCompany());
+			partner.getCompanySet().add(userService.getUserActiveCompany());
 		}
 		
 		return partner;

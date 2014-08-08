@@ -39,7 +39,7 @@
     <!-- ACTION RECORD -->
     <action-record name="action-crm-batch-record-on-new" model="com.axelor.apps.crm.db.CrmBatch">
 		<field name="createdOn" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-		<field name="createdBy" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<field name="createdBy" expr="eval:__user__"/>
 	</action-record>
     
     <!-- ACTION METHOD -->

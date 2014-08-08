@@ -67,7 +67,7 @@
 		<domain>self.typeSelect = 3</domain>
 		<context name="_typeSelect" expr="3"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
 		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
 	</action-view>
@@ -84,7 +84,7 @@
 		<domain>self.typeSelect = 2</domain>
 		<context name="_typeSelect" expr="2"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
 	</action-view>
 	
@@ -99,7 +99,7 @@
 		<domain>self.typeSelect = 1</domain>
 		<context name="_typeSelect" expr="1"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
 	</action-view>
 	
@@ -115,7 +115,7 @@
 		<context name="_typeSelect" expr="5"/>
 		<context name="_prioritySelect" expr="2"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>
 	
 	<menuitem name="crm-root-lead" parent="crm-root"
@@ -127,9 +127,9 @@
 		<view type="form" name="lead-form"/>
 		<view-param name="search-filters" value="lead-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
 	<menuitem name="crm-root-opportunity" parent="crm-root"
@@ -140,9 +140,9 @@
 		<view type="grid" name="opportunity-grid"/>
 		<view type="form" name="opportunity-form"/>
 		<view-param name="search-filters" value="opportunity-filters"/>
-		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+		<context name="_internalUserId" expr="eval:__user__.id"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 		
@@ -154,8 +154,7 @@
 		<view type="calendar" name="event-calendar-color-by-calendar"/>
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>self.userInfo.internalUser.id = :_internalUser</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<domain>self.user = :__user__</domain>
 		<context name="_typeSelect" expr="2"/>
 	</action-view>
 	
@@ -164,13 +163,13 @@
 		
 	<action-view name="crm.root.meeting.team.calendar" title="Team Calendar"
 		model="com.axelor.apps.crm.db.Event" icon="img/16px/calendarTask_16px.png">
-		<view type="calendar" name="event-calendar-color-by-user-info"/>
+		<view type="calendar" name="event-calendar-color-by-user"/>
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>self.team = :_myActiveTeam</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_typeSelect" expr="2"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>
 	
 <!-- 	<action-view title="My Meetings Calendar" icon="img/16px/calendarTask_16px.png" model="com.axelor.apps.crm.db.Event" name="crm.root.meeting.my.calendar"> -->
@@ -312,7 +311,7 @@
 	<action-view name="top.new.opportunity.view" title="Create Opportunity" model="com.axelor.apps.crm.db.Opportunity" >
 		<view type="form" name="opportunity-form"/>
 		<view type="grid" name="opportunity-grid"/>
-		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
 	<menuitem name="top-menu-create-lead" parent="top-menu-utility"	title="Create Lead" action="top.new.lead.view"  icon="img/16px/create_16px.png"/>
@@ -321,7 +320,7 @@
 		<view type="form" name="lead-form" />
 		<view type="grid" name="lead-grid" />
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
 	<menuitem name="top-prospection" title="Prospection" groups="admins,erp" top="true" left="false" priority="170"/>
@@ -331,7 +330,7 @@
 		<view type="grid" name="lead-grid" />
 		<view type="form" name="lead-form" />
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
 	<menuitem name="top-prospection-opportunity" title="Opportunities" action="top.prospection.opportunity" parent="top-prospection"  groups="admins,erp,crm" top="true" left="false"/> 	
@@ -339,7 +338,7 @@
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
 	
@@ -375,7 +374,7 @@
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="crm.target.user.dashboard.portal" />
 		<context name="date" expr="eval: __date__"/>
-		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<context name="user" expr="eval:__user__"/>
 	</action-view>
 	
 	<menuitem name="menu-target-team-dashboard" parent="menu-target-dashboard"
@@ -384,7 +383,7 @@
 	<action-view name="crm.portal.target.team.dashboard.view" title="Target team Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="crm.target.team.dashboard.portal" />
-		<context name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeamId()"/>
+		<context name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
 		<context name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
 	

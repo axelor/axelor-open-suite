@@ -17,8 +17,8 @@
 	    <group title="Information" colSpan="4" colWidths="15%,35%,15%,35%">
 	        <field name="name"/>
 	        <field name="code"/>
-	        <field name="userInfo" showIf="team == null"/>
-	        <field name="team" showIf="userInfo == null"/>
+	        <field name="user" showIf="team == null"/>
+	        <field name="team" showIf="user == null"/>
 	    </group>
 	    <group title="Period" colSpan="4" colWidths="15%,35%,15%,35%">
 	        <field name="periodTypeSelect"/>

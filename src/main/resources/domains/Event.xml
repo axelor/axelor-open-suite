@@ -26,7 +26,7 @@
   	
     <string name="description" large="true" title="Description"/>
     
-    <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="Assigned to"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
   	<one-to-many name="eventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="event" title="Attendees"/>
@@ -54,8 +54,8 @@
 	<integer name="ticketStatusSelect" title="Status" selection="crm.event.ticket.status.select"/>
     <integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select"/>
     <string name="ticketNumberSeq" title="Ticket N°"/>
-    <many-to-many name="userInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Watchers"/>
-    <many-to-one name="responsibleUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="User in charge of the issue"/>
+    <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Watchers"/>
+    <many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
 <!--   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/> -->
   
   </entity>

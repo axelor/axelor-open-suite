@@ -125,7 +125,7 @@
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
 	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
-	                <field name="userInfo"/>
+	                <field name="user"/>
 	                <field name="team"/>
 	            </group>
 	        </page>
@@ -214,7 +214,7 @@
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
 	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
-	                <field name="userInfo"/>
+	                <field name="user"/>
 	                <field name="team"/>
 	            </group>
             </page>
@@ -280,7 +280,7 @@
     	<field name="webSite" expr="eval: _lead.website"/>
     	<field name="source" expr="eval: _lead.source"/>
     	<field name="department" expr="eval: _lead.department"/>
-    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="jobTitle" expr="eval: _lead.jobTitle"/>
     </action-record>
@@ -340,7 +340,7 @@
 	        </group>
 	    </group>    
         <group title="Assigned to" canCollapse="true">
-	        <field name="userInfo"/>
+	        <field name="user"/>
 	    	<field name="team"/>
 	        <field name="company" widget="SuggestBox"/>
         </group>
@@ -364,7 +364,7 @@
 	        </group>
         </group>
         <group title="Assignment" cols="4" colSpan="4" canCollapse="true">
-	        <field name="userInfo"/>
+	        <field name="user"/>
 	    	<field name="team" onSelect="action-event-attrs-team-domain"/>
         </group>
     </form>
@@ -374,7 +374,7 @@
     	<field name="typeSelect" expr="eval: 1"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfo.find(_lead.userInfo.id)"/>
+    	<field name="user" expr="eval: com.axelor.auth.db.User.find(_lead.user.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
@@ -399,7 +399,7 @@
 	        </group>
         </group>
         <group title="Assignment" cols="4" colSpan="4" canCollapse="true">
-	        <field name="userInfo"/>
+	        <field name="user"/>
 	    	<field name="team" onSelect="action-event-attrs-team-domain"/>
         </group>
     </form>
@@ -408,7 +408,7 @@
     	<field name="typeSelect" expr="eval: 2"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfo.find(_lead.userInfo.id)"/>
+    	<field name="user" expr="eval: com.axelor.auth.db.User.find(_lead.user.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
@@ -434,7 +434,7 @@
 	        </group>
         </group>
         <group title="Assigned to" cols="4" colSpan="4" canCollapse="true">
-	        <field name="userInfo"/>
+	        <field name="user"/>
 	    	<field name="team" onSelect="action-event-attrs-team-domain"/>
         </group>
     </form>
@@ -443,7 +443,7 @@
     	<field name="typeSelect" expr="eval: 3"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfo.find(_lead.userInfo.id)"/>
+    	<field name="user" expr="eval: com.axelor.auth.db.User.find(_lead.user.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="taskStatusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
