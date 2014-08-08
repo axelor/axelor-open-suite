@@ -17,7 +17,7 @@
   	
   	<integer name="orderAlertSelect" title="Refill type" selection="stock.min.stock.rules.order.alert.select"/>
   	
-  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User"/>
+  	<many-to-one name="user" ref="com.axelor.auth.db.User" title="User"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
   </entity>

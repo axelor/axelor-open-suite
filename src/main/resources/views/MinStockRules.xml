@@ -20,7 +20,7 @@
         <field name="reOrderQty"/>
         <field name="typeSelect"/>
         <field name="orderAlertSelect"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="team"/>
     </form>
     
@@ -28,8 +28,8 @@
 	    <field name="minQty" expr="1"/>
 	    <field name="orderAlertSelect" expr="1"/>
 	    <field name="typeSelect" expr="2"/>
-	    <field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-	    <field name="team"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+	    <field name="user" expr="eval:__user__"/>
+	    <field name="team"  expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-record>
     
 </object-views>

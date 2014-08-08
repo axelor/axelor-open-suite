@@ -131,8 +131,8 @@
 	    FROM
 	      stock_stock_move AS self
 	    JOIN
-	      base_user_info AS _user
-	      ON _user.id = :id
+	      auth_user AS _user
+	      ON _user.id = :userId
 	      AND self.company = _user.active_company      
 	    JOIN
 	      stock_location AS _location
@@ -164,8 +164,8 @@
 	    FROM
 	      stock_stock_move AS self
 	    JOIN
-	      base_user_info AS _user
-	      ON _user.id = :id 
+	      auth_user AS _user
+	      ON _user.id = :userId 
 	      AND self.company = _user.active_company
 	    JOIN
 	      stock_location AS _location

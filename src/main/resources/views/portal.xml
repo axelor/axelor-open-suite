@@ -6,32 +6,32 @@
 	
 	<action-view title="Customer deliveries by country" name="portal.stockMove.nbr.delivery.by.country">
 	  <view type="chart" name="chart.stockMove.nbr.delivery.by.country"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	<action-view title="Product deliveries in qty by country" name="portal.stockMoveLine.product.delivery.by.country">
 	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	<action-view title="Product deliveries in qty by country by family" name="portal.stockMoveLine.product.delivery.by.country.by.family">
 	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country.by.family"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	<action-view title="Customer deliveries statistics" name="portal.stockMove.deliveries.time.delay.in.nbr">
 	  <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>  
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
+	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 	
 	<action-view title="Customer average delivery delay" name="portal.stockMove.average.delivery.time.delay">
 	  <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>  
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
+	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 
 <!-- 	Stock Dashboard -->
@@ -80,28 +80,28 @@
 	   <view type="grid" name="stock-move-grid"/>
 	   <view type="form" name="stock-move-form"/>
 	   <domain>self.toLocation.typeSelect = 3 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect= 2 AND self.company=:active_company</domain>
-	   <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	   <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	</action-view>
 
 	<action-view title="Upcoming supplier arrivals" model="com.axelor.apps.stock.db.StockMove" name="portal.stock.move.upcoming.suppl.arrivals">
 		  <view type="grid" name="stock-move-grid"/>
 		  <view type="form" name="stock-move-form"/>
 		  <domain>self.fromLocation.typeSelect = 2 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
-		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	</action-view>
 
 	<action-view title="Late supplier arrivals" model="com.axelor.apps.stock.db.StockMove" name="portal.stock.move.late.suppl.arrivals">
 		  <view type="grid" name="stock-move-grid"/>
 		  <view type="form" name="stock-move-form"/>
 		  <domain>self.fromLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
-		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UseService:getUserActiveCompany()" />
 	</action-view>
 
 	<action-view title="Product soon out of stock by location" model="com.axelor.apps.stock.db.LocationLine" name="portal.location.line.product.out.stock.bylocation">
 		  <view type="grid" name="location-line-grid"/>
 		  <view type="form" name="location-line-form"/>
 		  <domain>self.futureQty &lt; 0 AND self.location.company=:active_company</domain>
-		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	</action-view>
 	
 	<action-view title="Production Stock Move in Planned" icon="img/16px/productSmall_16px.png" model="com.axelor.apps.stock.db.StockMove" name="portal.production.stock.move.in.planned">
