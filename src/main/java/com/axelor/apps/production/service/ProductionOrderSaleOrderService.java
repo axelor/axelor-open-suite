@@ -22,20 +22,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IProduct;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -54,13 +51,13 @@ public class ProductionOrderSaleOrderService {
 	
 	private LocalDate today;
 	
-	private UserInfo user;
+	private User user;
 	
 	@Inject
-	public ProductionOrderSaleOrderService(UserInfoService userInfoService) {
+	public ProductionOrderSaleOrderService(UserService userInfoService) {
 
 		this.today = GeneralService.getTodayDate();
-		this.user = userInfoService.getUserInfo();
+		this.user = userInfoService.getUser();
 	}
 	
 	

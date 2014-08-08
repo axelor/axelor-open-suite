@@ -130,7 +130,7 @@
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="plannedStartDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="startDate == null"/>
-    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="company" expr="eval:__user__.activeCompany"/>
     </action-record>
     
     <action-method name="action-manuf-order-method-is-to-invoice">
