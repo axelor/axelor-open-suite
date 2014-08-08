@@ -70,7 +70,7 @@ Axelor Team</p>";"$Partner.emailAddress.address$";;;2
 <p>Please do not hesitate to contact me for any further explanation regarding the quote.</p>
 
 <p>Best regards<br/>
-$SaleOrder.userInfo.partner.firstName$ $SaleOrder.userInfo.partner.name$</p>
+$SaleOrder.user.partner.firstName$ $SaleOrder.user.partner.name$</p>
 ";"$SaleOrder.clientPartner.emailAddress.address$";;;2
 "Delivery Order";"StockMove";"en";;;;"true";;"Order $StockMove.SaleOrder.SaleOrderSeq$ shipped";"<p>Good morning,</p>
 
@@ -102,5 +102,5 @@ Axelor Team</p>";"$Invoice.partner.emailAddress.address$";;;2
 <p>Can you please indicate to us for each product the expected delivery date and if some products are subjected to special discounts.</p>
 
 <p>Best regards<br/>
-$PurchaseOrder.buyerUserInfo.partner.firstName$ $PurchaseOrder.buyerUserInfo.partner.name$</p>
+$PurchaseOrder.buyerUser.partner.firstName$ $PurchaseOrder.buyerUser.partner.name$</p>
 ";"$PurchaseOrder.contactPartner.emailAddress.address$";;;2

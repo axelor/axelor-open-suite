@@ -1,4 +1,4 @@
-"importId";"name";"project.importId";"description";"startDateT";"endDateT";"totalTime";"taskProgress";"statusSelect";"userInfo.importId";"isTimesheetAffected";"isLeaveResquest";"isToInvoice";"amountToInvoice";"product.importId";"qty";"price";"realEstimatedMethodSelect";"hasCummulation";"accountingDay";"exportTypeSelect"
+"importId";"name";"project.importId";"description";"startDateT";"endDateT";"totalTime";"taskProgress";"statusSelect";"user.importId";"isTimesheetAffected";"isLeaveResquest";"isToInvoice";"amountToInvoice";"product.importId";"qty";"price";"realEstimatedMethodSelect";"hasCummulation";"accountingDay";"exportTypeSelect"
 1;"Prepare offer for tender";2;;"NOW[-5M09H00m]";"NOW[-5M+1d17H00m]";1;100;4;8;"true";"false";"false";;;;;2;;;"pdf"
 2;"Audit";2;;"NOW[-4M09H00m]";;10;10;3;8;"true";"false";"false";;;;;2;;;"pdf"
 3;"Document preparation";2;;"NOW[-4M+10d09H00m]";;5;0;1;8;"true";"false";"false";;;;;2;;;"pdf"
