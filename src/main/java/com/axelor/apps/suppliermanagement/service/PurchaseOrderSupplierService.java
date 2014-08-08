@@ -30,9 +30,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
-import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -58,13 +56,11 @@ public class PurchaseOrderSupplierService {
 	
 	private LocalDate today;
 	
-	private UserInfo user;
-	
 	@Inject
-	public PurchaseOrderSupplierService(UserInfoService userInfoService) {
+	public PurchaseOrderSupplierService() {
 
 		this.today = GeneralService.getTodayDate();
-		this.user = userInfoService.getUserInfo();
+		this.user =  AuthUtils.getUser();
 	}
 	
 	

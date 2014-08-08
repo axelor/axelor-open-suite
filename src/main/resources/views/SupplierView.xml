@@ -22,7 +22,7 @@
 		<view type="grid" name="purchase-order-grid"/>
 		<view type="form" name="purchase-order-form"/>
 		<domain>self.supplierPartner = :_myPartner AND self.statusSelect in (2,3,4,5)</domain>
-		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
 	</action-view>
 	
 	<action-view name="wizard-supplier-form-open-my-rfq-to-complete" title="My R.F.Q. to complete"
@@ -30,7 +30,7 @@
 		<view type="grid" name="purchase-order-supplier-line-supplier-grid"/>
     	<view type="form" name="purchase-order-supplier-line-supplier-form"/>
 		<domain>self.supplierPartner = :_myPartner AND self.stateSelect = 1</domain>
-		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
 	</action-view>
 	
 	<action-view name="wizard-supplier-form-open-my-rfq" title="My R.F.Q."
@@ -38,7 +38,7 @@
 		<view type="grid" name="purchase-order-supplier-line-supplier-grid"/>
     	<view type="form" name="purchase-order-supplier-line-supplier-form"/>
 		<domain>self.supplierPartner = :_myPartner AND self.stateSelect in (2,3,4)</domain>
-		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
 	</action-view>
 	
 	<action-view name="wizard-supplier-form-open-stock-move" title="My deliveries"
@@ -46,7 +46,7 @@
 		<view type="grid" name="stock-move-supplier-grid"/>
 		<view type="form" name="stock-move-supplier-form"/>
 		<domain>self.typeSelect = 3 AND self.partner = :_myPartner</domain>
-		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
 	</action-view>	
 	
 	
