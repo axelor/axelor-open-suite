@@ -27,8 +27,8 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
-import com.axelor.apps.base.service.user.UserInfoService;
-import com.axelor.apps.base.service.user.UserInfoServiceImpl;
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
 import com.axelor.apps.message.service.MessageServiceImpl;
 
@@ -38,7 +38,7 @@ public class BaseModule extends AxelorModule {
     @Override
     protected void configure() {
         bind(AddressService.class).to(AddressServiceImpl.class);
-        bind(UserInfoService.class).to(UserInfoServiceImpl.class);
+        bind(UserService.class).to(UserServiceImpl.class);
 //        bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
         bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);
         bind(AccountManagementService.class).to(AccountManagementServiceImpl.class);

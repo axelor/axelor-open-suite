@@ -60,7 +60,7 @@
 	
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
    
-    <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="Assigned to"/>
 	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
 	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true"/>
     <string name="description" title="Description"  large="true"/>

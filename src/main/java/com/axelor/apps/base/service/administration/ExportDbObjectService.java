@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
@@ -63,7 +63,7 @@ import com.google.inject.persist.Transactional;
 public class ExportDbObjectService {
 	
 	@Inject
-	UserInfoService uis;
+	UserService uis;
 	
 	private static final Logger log = LoggerFactory.getLogger(ExportDbObjectService.class);
 	

@@ -32,7 +32,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -48,7 +48,7 @@ public class PartnerController {
 	private SequenceService sequenceService;
 	
 	@Inject
-	UserInfoService userInfoService;
+	UserService userService;
 	
 	@Inject
 	AddressService addressService;
@@ -222,7 +222,7 @@ public class PartnerController {
 	
 	public Set<Company> getActiveCompany(){
 		Set<Company> companySet = new HashSet<Company>();
-		companySet.add(userInfoService.getUserInfo().getActiveCompany());	
+		companySet.add(userService.getUser().getActiveCompany());	
 		return companySet;
 	}
 }

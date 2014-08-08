@@ -9,6 +9,6 @@
     <form name="team-form" title="Team" model="com.axelor.apps.base.db.Team" cols="4">
         <field name="code"/>
         <field name="name"/>
-        <field name="userInfoSet" colSpan="4"/>
+        <field name="userSet" colSpan="4"/>
     </form>
 </object-views>

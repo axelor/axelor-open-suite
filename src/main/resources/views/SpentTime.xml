@@ -5,7 +5,7 @@
 	
     <grid name="spent-time-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
         <field name="date"/>
-		<field name="userInfo"/>
+		<field name="user"/>
         <field name="duration"/>
        	<field name="unit"/>
 		<field name="task" />
@@ -16,7 +16,7 @@
     <form name="spent-time-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
         <field name="event"/>
         <field name="timesheetImputed"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="task" />
         <field name="date"/>
         <field name="duration"/>
@@ -25,7 +25,7 @@
     
     <grid name="spent-time-ticket-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
 		<field name="date"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="duration"/>
        	<field name="unit"/>
 		<field name="timesheetImputed"/>
@@ -33,7 +33,7 @@
     
     <form name="spent-time-ticket-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
         <field name="timesheetImputed"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="date"/>
         <field name="duration"/>
        	<field name="unit"/>
@@ -41,7 +41,7 @@
     
     <grid name="spent-time-task-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
         <field name="date"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="duration"/>
        	<field name="unit"/>
 		<field name="event"/>
@@ -50,7 +50,7 @@
     
     <form name="spent-time-task-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
         <field name="date"/>
-		<field name="userInfo"/>
+		<field name="user"/>
         <field name="duration"/>
        	<field name="unit"/>
 		<field name="event"/>
@@ -59,7 +59,7 @@
     
     <action-record name="action-spent-time-record-default" model="com.axelor.apps.base.db.SpentTime">
     	<field name="task" expr="eval: _parent?.task"/>
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="user" expr="eval:__user__"/>
     	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
     	<field name="unit" expr="eval: _parent?.task?.project?.unit"/>
     </action-record>

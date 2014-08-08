@@ -23,33 +23,33 @@
 		model="com.axelor.apps.organisation.db.Timesheet">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
-		<domain>self.userInfo = :_userInfo and self.statusSelect = 1</domain>
-		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<domain>self.user = :_user and self.statusSelect = 1</domain>
+		<context name="_user" expr="eval:__user__"/>
 	</action-view>	
 	
 	<action-view name="consultant.dashboard.portal.expense" title="My expenses to complete"
 		model="com.axelor.apps.organisation.db.Expense">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
-		<domain>self.userInfo = :_userInfo and self.statusSelect = 1</domain>
-		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<domain>self.user = :_user and self.statusSelect = 1</domain>
+		<context name="_user" expr="eval:__user__"/>
 	</action-view>
 	
 	<action-view name="consultant.dashboard.portal.tasks" title="My Tasks"
 		model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="crm-task-grid"/>
 		<view type="form" name="crm-task-form"/>
-		<domain>self.typeSelect = 3 and self.userInfo.internalUser.id = :_internalUser</domain>
+		<domain>self.typeSelect = 3 and self.user = :_user</domain>
 		<context name="_typeSelect" expr="3"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_user" expr="eval: __user__"/>
 	</action-view>	
 	
 	<action-view name="consultant.dashboard.portal.leave.request" title="My leave requests"
 		model="com.axelor.apps.organisation.db.LeaveRequest">
 		<view type="grid" name="leave-request-grid" />
 		<view type="form" name="leave-request-form" />
-		<domain>self.employeeUserInfo = :_userInfo and self.statusSelect = 2</domain>
-		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<domain>self.employeeUser = :_user and self.statusSelect = 2</domain>
+		<context name="_user" expr="eval:__user__"/>
 	</action-view>	
 	
 	
@@ -61,8 +61,8 @@
 		model="com.axelor.apps.organisation.db.Timesheet">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
-		<domain>self.userInfo = :_userInfo</domain>
-		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<domain>self.user = :_user</domain>
+		<context name="_user" expr="eval:__user__"/>
 	</action-view>	
 	
 	<menuitem name="menu-consultant-create-timesheet" title="Create Timesheet" groups="consultant" 
@@ -83,8 +83,8 @@
 		model="com.axelor.apps.organisation.db.Expense" >
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
-		<domain>self.userInfo = :_userInfo</domain>
-		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<domain>self.user = :_user</domain>
+		<context name="_user" expr="eval:__user__"/>
 	</action-view>
 	
 	<menuitem name="menu-consultant-create-expense" title="Create Expense" groups="consultant" 
@@ -105,8 +105,8 @@
 		model="com.axelor.apps.organisation.db.LeaveRequest" >
 		<view type="grid" name="leave-request-grid" />
 		<view type="form" name="leave-request-form" />
-		<domain>self.employeeUserInfo = :_userInfo</domain>
-		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<domain>self.employeeUser = :_user</domain>
+		<context name="_user" expr="eval:__user__"/>
 	</action-view>
 	
 	<menuitem name="menu-consultant-create-leave-request" title="Create Leave request" groups="consultant" 
@@ -123,8 +123,8 @@
 	<action-view name="menu.consultant.create.leave.request.calendar" title="Leave request calendar"
 		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/16px/calendarTask_16px.png">
 		<view type="calendar" name="leave-request-calendar" />
-		<domain>self.employeeUserInfo = :_userInfo</domain>
-		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<domain>self.employeeUser = :_user</domain>
+		<context name="_user" expr="eval:__user__"/>
 	</action-view>	
 	
 	
@@ -135,9 +135,9 @@
 		model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="crm-task-grid"/>
 		<view type="form" name="crm-task-form"/>
-		<domain>self.typeSelect = 3 and self.userInfo.internalUser.id = :_internalUser</domain>
+		<domain>self.typeSelect = 3 and self.user = :_user</domain>
 		<context name="_typeSelect" expr="3"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_user" expr="eval:__user__"/>
 	</action-view>	
 	
 	
@@ -148,9 +148,9 @@
 		model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
-		<domain>self.typeSelect = :_typeSelect and self.userInfo.internalUser.id = :_internalUser</domain>
+		<domain>self.typeSelect = :_typeSelect and self.user = :_user</domain>
 		<context name="_typeSelect" expr="5"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_user" expr="eval:__user__"/>
 	</action-view>	
 
 </object-views>

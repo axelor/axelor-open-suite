@@ -28,13 +28,13 @@
 		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
     
-     <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="userInfo">
+     <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
         <field name="fullName"/>
         <field name="mainInvoicingAddress"/>
         <field name="fixedPhone"/>
 		<field name="mobilePhone"/>
         <field name="emailAddress.address"/>
-        <field name="userInfo"/>
+        <field name="user"/>
     </grid>
     
     <form name="partner-form" id="base-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
@@ -151,7 +151,7 @@
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
 	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
-	                <field name="userInfo"/>
+	                <field name="user"/>
 	                <field name="team"/>
 	            </group>
 	        </page>
@@ -275,7 +275,7 @@
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
 	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
-	                <field name="userInfo"/>
+	                <field name="user"/>
 	                <field name="team"/>
 	            </group>
 	        </page>
@@ -327,10 +327,10 @@
     </action-record>
     
     <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
-    	<field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency" if="!isContact"/>
+    	<field name="currency" expr="eval:__user__.activeCompany?.currency" if="!isContact"/>
     	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact" />
-    	<field name="userInfo"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+    	<field name="user"  expr="eval:__user__"/>
+    	<field name="team"  expr="eval:__user__.activeTeam"/>
     	<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
     </action-record>
     
@@ -339,10 +339,10 @@
     	<field name="isContact" expr="true"/>
     	<field name="companySet" expr="eval: _parent?.companySet"/>
     	<field name="languageSelect" expr="eval: _parent?.languageSelect"/>
-    	<field name="userInfo"  expr="eval: _parent.userInfo" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="user"  expr="eval: _parent.user" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
     	<field name="team"  expr="eval: _parent.team" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="userInfo"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="user"  expr="eval:__user__" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="team"  expr="eval:__user__.activeTeam" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
     </action-record>
     
     <action-record name="action-partner-set-non-contact-fields" model="com.axelor.apps.base.db.Partner">

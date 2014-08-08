@@ -26,13 +26,11 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.net.URLService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
@@ -43,7 +41,7 @@ public class ProductController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
 	
-	@Inject UserInfoService userInfoService;
+	@Inject UserService userService;
 	
 	@Inject
 	private ProductService productService;
@@ -76,7 +74,7 @@ public class ProductController {
 	public void printProductCatelog(ActionRequest request, ActionResponse response) {
 
 		StringBuilder url = new StringBuilder();
-		User user =  AuthUtils.getUser();
+		User user =  userService.getUser();
 		
 		int currentYear = GeneralService.getTodayDateTime().getYear();
 		String productIds = "";
@@ -120,18 +118,17 @@ public class ProductController {
 	public void printProductSheet(ActionRequest request, ActionResponse response) {
 
 		Product product = request.getContext().asType(Product.class);
-		UserInfo userInfo =  userInfoService.getUserInfo();
+		User user =  userService.getUser();
 	
 		StringBuilder url = new StringBuilder();
-				
-		User user = AuthUtils.getUser();
+		 
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 		
 		url.append(new ReportSettings(IReport.PRODUCT_SHEET)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
 					.addParam("ProductId", product.getId().toString())
-					.addParam("CompanyId", userInfo.getActiveCompany().getId().toString())
+					.addParam("CompanyId", user.getActiveCompany().getId().toString())
 					.getUrl());
 		
 		LOG.debug("URL : {}", url);

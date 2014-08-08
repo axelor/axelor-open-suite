@@ -15,7 +15,7 @@
 				<boolean name="sharedWithMe" default="false" help="set if File is shared With me file" />
 				<boolean name="writable" default="true" help="set if file is shared With me" ></boolean>
 				<string name="sharedBy"  help="name of user who has shared file"/>				
-				<many-to-one name="driveUser" ref="com.axelor.apps.base.db.UserInfo" orphan="true" help="Google apps User"/>
+				<many-to-one name="driveUser" ref="com.axelor.auth.db.User" orphan="true" help="Google apps User"/>
 				<many-to-one name="googleDirectory" ref="GoogleDirectory" orphan="true" help="Google Directory"></many-to-one>
 				<one-to-many name="templates" ref="com.axelor.apps.googleapps.db.TemplateFile" mappedBy="googleFile" help="Template to create Document"/>
 				<one-to-many name="filePermissions" ref="com.axelor.apps.googleapps.db.FilePermission" mappedBy="googleFile" help="File permission to share File" />

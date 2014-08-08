@@ -18,22 +18,22 @@
         <group title="Invoicing blocking" colSpan="8" cols="6" showIf="invoicingBlockingOk">
         	<field name="invoicingBlockingToDate"/>
         	<field name="invoicingBlockingReason"/>
-        	<field name="invoicingBlockingByUserInfo"/>
+        	<field name="invoicingBlockingByUser"/>
         </group>
         <group title="Direct debit blocking" colSpan="8" cols="6" showIf="debitBlockingOk">
         	<field name="debitBlockingToDate"/>
         	<field name="debitBlockingReason"/>
-        	<field name="debitBlockingByUserInfo"/>
+        	<field name="debitBlockingByUser"/>
         </group>
         <group title="Reimbursement blocking" colSpan="8" cols="6" showIf="reimbursementBlockingOk">
         	<field name="reimbursementBlockingToDate"/>
         	<field name="reimbursementBlockingReason"/>
-        	<field name="reimbursementBlockingByUserInfo"/>
+        	<field name="reimbursementBlockingByUser"/>
         </group>
         <group title="Reminder blocking" colSpan="8" cols="6" showIf="reminderBlockingOk">
         	<field name="reminderBlockingToDate"/>
         	<field name="reminderBlockingReason"/>
-        	<field name="reminderBlockingByUserInfo"/>
+        	<field name="reminderBlockingByUser"/>
         </group>
     </form>
 

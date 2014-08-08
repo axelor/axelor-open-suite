@@ -13,6 +13,6 @@
 		<datetime name="createDate" title="Create Date" />
 		<datetime name="startDate" title="Start Date" />
 		<datetime name="endDate" title="End date"/>
-		<many-to-one name="user" column="user_id" ref="com.axelor.apps.base.db.UserInfo" title="User"/>
+		<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
 	</entity>
 </domain-models>
