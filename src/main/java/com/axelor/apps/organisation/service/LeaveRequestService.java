@@ -40,8 +40,7 @@ public class LeaveRequestService {
 		event.setTypeSelect(IEvent.HOLIDAY);
 		event.setStartDateTime(leaveRequest.getStartDateT());
 		event.setEndDateTime(leaveRequest.getEndDateT());
-		// TODO: uncomment this when in CRM UserInfo -> User migration is done 
-		// event.setUser(leaveRequest.getEmployeeUser());
+		event.setUser(leaveRequest.getEmployeeUser());
 		if(leaveRequest.getReasonTask()!= null)  {
 			event.setDescription(leaveRequest.getReasonTask().getName());
 		}
