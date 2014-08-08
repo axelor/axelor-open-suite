@@ -47,13 +47,6 @@ public class MinStockRulesServiceAccountOrganisationImpl extends MinStockRulesSe
 	
 	protected Project project;
 	
-	@Inject
-	public MinStockRulesServiceAccountOrganisationImpl(
-			UserService userService) {
-		super(userService);
-		
-	}
-	
 	public void setProject(Project project)  {
 		
 		this.project = project;

@@ -41,13 +41,6 @@ public class SaleOrderPurchaseServiceAccountOrganisationImpl extends SaleOrderPu
 	@Inject
 	protected PurchaseOrderServiceAccountOrganisationImpl purchaseOrderServiceAccountOrganisationImpl;
 
-	@Inject
-	public SaleOrderPurchaseServiceAccountOrganisationImpl(UserService userService) {
-
-		super(userService);
-	}
-	
-
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createPurchaseOrder(Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder) throws AxelorException  {
