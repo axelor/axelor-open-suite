@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.UserInfo;
+import com.axelor.auth.db.User;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
@@ -55,14 +55,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	}
 
 
-	public SaleOrder createSaleOrder(UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
 			PriceList priceList, Partner clientPartner) throws AxelorException  {
 		
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
 				new Object[] { company.getName(), externalReference, clientPartner.getFullName() });
 		
-		SaleOrder saleOrder = super.createSaleOrder(buyerUserInfo, company, contactPartner, currency, deliveryDate, internalReference, 
+		SaleOrder saleOrder = super.createSaleOrder(buyerUser, company, contactPartner, currency, deliveryDate, internalReference, 
 				externalReference, orderDate, priceList, clientPartner);
 		
 		saleOrder.setLocation(location);

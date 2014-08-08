@@ -29,9 +29,8 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -53,13 +52,11 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 
 	protected LocalDate today;
 	
-	protected UserInfo user;
-	
 	@Inject
-	public SaleOrderPurchaseServiceImpl(UserInfoService userInfoService) {
+	public SaleOrderPurchaseServiceImpl() {
 
 		this.today = GeneralService.getTodayDate();
-		this.user = userInfoService.getUserInfo();
+		this.user = AuthUtils.getUser();
 	}
 	
 

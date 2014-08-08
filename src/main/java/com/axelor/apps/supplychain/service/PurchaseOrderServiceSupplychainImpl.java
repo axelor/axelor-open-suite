@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.UserInfo;
+import com.axelor.auth.db.User;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -63,14 +63,14 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	@Inject
 	private StockConfigService stockConfigService;
 	
-	public PurchaseOrder createPurchaseOrder(UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
 		
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
 				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
 		
-		PurchaseOrder purchaseOrder = super.createPurchaseOrder(buyerUserInfo, company, contactPartner, currency, deliveryDate, 
+		PurchaseOrder purchaseOrder = super.createPurchaseOrder(buyerUser, company, contactPartner, currency, deliveryDate, 
 				internalReference, externalReference, invoicingTypeSelect, orderDate, priceList, supplierPartner);
 				
 		purchaseOrder.setLocation(location);

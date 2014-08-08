@@ -27,8 +27,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.UserInfo;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.auth.db.User;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
@@ -55,14 +55,6 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 	protected SaleConfigService saleConfigService;
 	
 	protected LocalDate today;
-	
-	protected UserInfo user;
-	
-	@Inject
-	public MinStockRulesServiceSupplychainImpl(UserInfoService userInfoService) {
-
-		super(userInfoService);
-	}
 	
 	
 	@Override
