@@ -76,7 +76,7 @@
 	                        </group>
 	                        <group colSpan="1" cols="2" colWidths="50%,50%">
 	                            <field name="creationDate" readonly="true"/>
-	                            <field name="validatedByUserInfo" colSpan="1" readonly="true"/>
+	                            <field name="validatedByUser" colSpan="1" readonly="true"/>
 	                            <field name="validationDate" colSpan="1" readonly="true"/>
 	                            <field name="orderDate"/>
 	                            <field name="orderNumber"/>
@@ -99,7 +99,7 @@
 	        </page>
 	        <page title="Other informations">
 	            <group title="Sales follow-up" colSpan="2" cols="2">
-	                <field name="salemanUserInfo"/>
+	                <field name="salemanUser"/>
 	                <field name="team" onSelect="action-sale-order-domain-on-team"/>
 	            </group>
 	            <group title="Financial terms" colSpan="2" cols="2">
@@ -178,7 +178,7 @@
 		        <field name="creationDate" readonly="true"/>
 		        <field name="orderDate" readonly="true"/>
 		        <field name="shipmentDate" readonly="true" if-module="axelor-supplychain"/>
-		        <field name="salemanUserInfo"/>
+		        <field name="salemanUser"/>
 		      </group>
 		      <group title="Totaux" colSpan="1" cols="1">
 		          <group readonly="true" colSpan="1" css="subtotal" cols="2" colWidths="30%,50%">
@@ -207,7 +207,7 @@
 	</action-record>
 	
     <action-attrs name="action-sale-order-domain-on-team">
-    	<attribute name="domain" for="team" expr="eval: salemanUserInfo?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salemanUserInfo?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
+    	<attribute name="domain" for="team" expr="eval: salemanUser?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salemanUser?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
     </action-attrs>
     
     <action-attrs name="action-sale-order-attrs-validated-read-only">
@@ -268,7 +268,7 @@
     <action-record name="action-sale-order-record-validate" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="statusSelect" expr="eval: 3"/>
     	<field name="validationDate" expr="eval: __date__"/>
-    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="validatedByUser" expr="eval:___user___"/>
     </action-record>
     
      <action-record name="action-sale-order-record-cancel" model="com.axelor.apps.sale.db.SaleOrder">
@@ -282,11 +282,11 @@
     <action-record name="action-sale-order-record-default" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="creationDate" expr="eval: __date__"/>
     	<field name="statusSelect" expr="eval: 1"/>
-    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
     	<field name="invoicingTypeSelect" expr="eval: 5"/>
     	<field name="hasGlobalTask" expr="eval: true"/>
-    	<field name="salemanUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+    	<field name="salemanUser" expr="eval:___user___"/>
+    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     </action-record>
     
     <action-record name="action-sale-order-record-company-configuration" model="com.axelor.apps.sale.db.SaleOrder">
@@ -335,10 +335,10 @@
     
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
 		<filter title="My Proposals">
-			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salemanUserInfo.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salemanUser.internalUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Sales">
-			<domain>self.statusSelect = 3 and self.salemanUserInfo.internalUser.id = :_internalUser</domain>
+			<domain>self.statusSelect = 3 and self.salemanUser.internalUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Team Proposals">
 			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.team = :_myActiveTeam</domain>

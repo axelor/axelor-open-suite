@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.UserInfo;
+import com.axelor.auth.db.User;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.ISaleOrder;
@@ -171,7 +171,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 	
 
-	public SaleOrder createSaleOrder(UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate, 
 			PriceList priceList, Partner clientPartner) throws AxelorException  {
 		

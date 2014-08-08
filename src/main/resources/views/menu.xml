@@ -16,7 +16,7 @@
 		<view type="grid" name="sale-order-grid"/>
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>	
 	
 	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" priority="1"
@@ -28,7 +28,7 @@
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>	
 	
 	
@@ -81,7 +81,7 @@
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<domain>self.statusSelect = 2</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>	
 	
 	
@@ -94,7 +94,7 @@
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<domain>self.statusSelect = 3</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>	
 	
 	
