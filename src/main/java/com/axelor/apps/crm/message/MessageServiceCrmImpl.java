@@ -38,6 +38,7 @@ import com.google.inject.persist.Transactional;
 
 public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
+	@Inject
 	public MessageServiceCrmImpl(UserService userService) {
 		super(userService);
 		// TODO Auto-generated constructor stub
