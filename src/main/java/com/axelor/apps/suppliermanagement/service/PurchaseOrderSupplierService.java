@@ -36,6 +36,8 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -55,6 +57,8 @@ public class PurchaseOrderSupplierService {
 	private PurchaseOrderLineService purchaseOrderLineService;
 	
 	private LocalDate today;
+	
+	protected User user;
 	
 	@Inject
 	public PurchaseOrderSupplierService() {
