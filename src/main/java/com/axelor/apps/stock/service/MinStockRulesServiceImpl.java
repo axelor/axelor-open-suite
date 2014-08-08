@@ -30,6 +30,8 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.MinStockRules;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -42,6 +44,8 @@ public class MinStockRulesServiceImpl implements MinStockRulesService  {
 	private StockConfigService stockConfigService;
 	
 	private LocalDate today;
+	
+	protected User user;
 	
 	@Inject
 	public MinStockRulesServiceImpl() {
