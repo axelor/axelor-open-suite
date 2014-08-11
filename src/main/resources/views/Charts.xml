@@ -116,7 +116,7 @@
 		  LEFT JOIN 
 		    meta_select_item as selection_item ON selection_item.select_id = selection.id
 		  JOIN
-			base_user_info _user
+			auth_user as _user
 			ON _user.id = :_user_id
 		  JOIN
 			base_partner_company_set m2m_companySet
