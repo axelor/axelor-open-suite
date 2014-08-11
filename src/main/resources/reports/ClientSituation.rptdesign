@@ -504,14 +504,13 @@
             <xml-property name="queryText"><![CDATA[select Partner.id, Company.logo_path, Partner.title_select , Partner.partner_type_select, Partner.first_name as partner_first_name,
 Partner.name as partner_name, Partner.partner_seq, Partner.picture as partner_picture, InvoicingAddress.full_name as invoicing_full_name,
 Partner.fixed_phone, Partner.fax, Partner.mobile_phone, EmailAddress.address as email_address, Partner.web_site, 
-InternalUser.name as internal_user_name, Team.name as team_name,
+AuthUser.name as internal_user_name, Team.name as team_name,
 AccountingSituation.balance_cust_account, AccountingSituation.balance_due_cust_account, AccountingSituation.balance_due_reminder_cust_account
 from base_partner as Partner
-left join base_user_info as UserInfo on (Partner.user_info = UserInfo.id)
-left join base_company as Company on (Company.id = UserInfo.active_company)
+left join auth_user as AuthUser on (Partner.user_id = AuthUser.id)
+left join base_company as Company on (Company.id = AuthUser.active_company)
 left join base_address as InvoicingAddress on (Partner.main_invoicing_address = InvoicingAddress.id)
 left join message_email_address as EmailAddress on (Partner.email_address = EmailAddress.id)
-left join auth_user as InternalUser on (UserInfo.internal_user = InternalUser.id)
 left join base_team as Team on (Partner.team = Team.id)
 left join account_accounting_situation as AccountingSituation on (AccountingSituation.partner = Partner.id and AccountingSituation.company = Company.id)
 where Partner.id = ?
@@ -1375,9 +1374,9 @@ SaleOrder.order_date, Currency.symbol as Currency
 from base_partner as Partner
 inner join supplychain_sale_order as SaleOrder on (SaleOrder.client_partner = Partner.id)
 left join base_partner as ContactPartner on (ContactPartner.id = SaleOrder.contact_partner)
-inner join base_user_info as UserInfo on (UserInfo.id = Partner.user_info)
+inner join auth_user as AuthUser on (AuthUser.id = Partner.user_id)
 left join base_currency as Currency on (SaleOrder.currency = Currency.id)
-where Partner.id = ? and SaleOrder.company = UserInfo.active_company
+where Partner.id = ? and SaleOrder.company = AuthUser.active_company
 
 ORDER BY SaleOrder.order_date desc
 ]]></xml-property>
@@ -1596,11 +1595,11 @@ ORDER BY SaleOrder.order_date desc
                     <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Event.id, Event.created_on, Event.end_date_time, Event.start_date_time, UserInfo.full_name, Event.type_select, 
+            <xml-property name="queryText"><![CDATA[select Event.id, Event.created_on, Event.end_date_time, Event.start_date_time, AuthUser.full_name, Event.type_select, 
 Event.status_select
 from base_partner as Partner
 inner join crm_event as Event on(Event.client_partner = Partner.id)
-left join base_user_info as UserInfo on (UserInfo.id = Event.user_info)
+left join auth_user as AuthUser on (AuthUser.id = Event.user_id)
 where Partner.id = ?
 AND Event.status_select = ? 
 AND Event.type_select = ?

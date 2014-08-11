@@ -523,14 +523,13 @@ ContactPartner.fax order by ContactPartner.name]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.logo_path, Address.full_name, Partner.web_site, Email.name as email, Partner.fax, Partner.fixed_phone as fixed_phone1
-from auth_user as Users 
-inner join base_user_info as UserInfo on (UserInfo.internal_user = Users.id)
-left outer join base_company as Company on (UserInfo.active_company = Company.id)
+from auth_user as AuthUser 
+left outer join base_company as Company on (AuthUser.active_company = Company.id)
 left outer join base_address as Address on (Company.address = Address.id)
 left outer join base_partner as Partner on (Company.partner = Partner.id)
 left outer join message_email_address as Email on (Partner.email_address = Email.id)
 
-where Users.id = ?]]></xml-property>
+where AuthUser.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
