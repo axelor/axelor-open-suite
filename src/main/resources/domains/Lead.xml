@@ -56,7 +56,7 @@
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Contact" readonly="true"/>
     
     
-    <many-to-one name="user" ref="com.axelor.auth.db.User" title="Assigned to" />
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" />
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"  />
   	
 	<!--   	Social Network -->

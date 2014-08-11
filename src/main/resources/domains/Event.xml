@@ -26,7 +26,7 @@
   	
     <string name="description" large="true" title="Description"/>
     
-    <many-to-one name="user" ref="com.axelor.auth.db.User" title="Assigned to"/>
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
   	<one-to-many name="eventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="event" title="Attendees"/>
