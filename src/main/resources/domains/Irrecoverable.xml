@@ -14,7 +14,7 @@
   	<many-to-many name="moveSet" ref="com.axelor.apps.account.db.Move" title="Moves generated"/>
   	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
   	<datetime name="dateTime" title="Date" tz="true" readonly="true"/>
-  	<many-to-one name="user" ref="com.axelor.auth.db.User" title="User" readonly="true"/>
+  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User" readonly="true"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
   	<string name="exportTypeSelect" title="Export file type" selection="iadministration.export.type.select"/>
   

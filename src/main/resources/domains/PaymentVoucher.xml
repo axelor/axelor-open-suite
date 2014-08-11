@@ -12,7 +12,7 @@
 		<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" required="true"/>
 	    <datetime name="paymentDateTime" title="Payment date" tz="true"/>
 		<decimal name="paidAmount" title="Amount paid" />
-		<many-to-one name="user" ref="com.axelor.auth.db.User" title="User" readonly="true"/>
+		<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User" readonly="true"/>
         <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
 		<many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Overdue moveline" />
 		<decimal name="remainingAllocatedAmount" title="Amount Remaining to allocate" />
