@@ -122,7 +122,7 @@
 	    	FROM
 	        	crm_opportunity self
 	    	LEFT JOIN
-	        	auth_user as sale_man ON self.user = sale_man.id
+	        	auth_user as sale_man ON self.user_id = sale_man.id
 	        	AND sale_man.full_name IS NOT NULL
 	    	GROUP BY
 		    	_sale_man
@@ -272,7 +272,7 @@
 			FROM
 			    crm_lead as self
 			LEFT JOIN
-	        	auth_user as sale_man ON self.user = sale_man.id
+	        	auth_user as sale_man ON self.user_id = sale_man.id
 			LEFT JOIN
 	        	meta_select as selection ON selection.name = 'crm.lead.status.select'
 	    	LEFT JOIN 
@@ -307,7 +307,7 @@
 					crm_event AS _event
 				LEFT JOIN
 					auth_user AS _user
-					ON _event.user = _user.id
+					ON _event.user_id = _user.id
 					
 				JOIN
 					(SELECT 
@@ -498,7 +498,7 @@
 	    FROM
 	        crm_event as self
 	    JOIN
-	      auth_user as sale_man ON self.user = sale_man.id
+	      auth_user as sale_man ON self.user_id = sale_man.id
 	    JOIN
 	      meta_select as selection    ON selection.name = 'crm.event.ticket.status.select'
 	    JOIN 
@@ -709,7 +709,7 @@
 	  LEFT JOIN
 	    auth_user AS _user
 	  ON
-	    _ticket.user = _user.id  
+	    _ticket.user_id = _user.id  
 	  WHERE
 	    _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
 	    AND _ticket.type_select != 5
@@ -797,7 +797,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.user = :__user__
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -837,7 +837,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.user = :__user__
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -877,7 +877,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.user = :__user__
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -917,7 +917,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.user = :__user__
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -957,7 +957,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.user = :__user__
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -997,7 +997,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.user = :__user__
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -1037,7 +1037,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.user = :__user__
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
