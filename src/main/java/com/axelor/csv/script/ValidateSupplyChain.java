@@ -93,9 +93,9 @@ public class ValidateSupplyChain {
 //	ProductionOrderSaleOrderService productionOrderSaleOrderService;
 	
 	public Object validateSupplyChain(Object bean, Map values) {
-		String objectQuery = "(SELECT 'inv' as type,id,datet as date from supplychain_inventory) " +
-		"UNION ALL(SELECT 'so' as type,id,validation_date as date from supplychain_sale_order) " +
-		"UNION ALL(SELECT 'po' as type,id,order_date as date from supplychain_purchase_order) order by date";
+		String objectQuery = "(SELECT 'inv' as type,id,datet as date from stock_inventory) " +
+		"UNION ALL(SELECT 'so' as type,id,validation_date as date from sale_sale_order) " +
+		"UNION ALL(SELECT 'po' as type,id,order_date as date from purchase_purchase_order) order by date";
 
 		Query query = JPA.em().createNativeQuery(objectQuery);
 		for(Object objects : query.getResultList()){
