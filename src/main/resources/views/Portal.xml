@@ -11,7 +11,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect in (9, 10)</domain>
+		<domain>self.salesStageSelect in (9, 10)</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -20,14 +20,14 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect not in (9, 10)</domain>
+		<domain>self.salesStageSelect not in (9, 10)</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	<action-view name="portal.unassigned.opportunities" title="Unassigned Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.user is null and self.saleStageSelect = 1</domain>
+		<domain>self.user is null and self.salesStageSelect = 1</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -36,7 +36,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect in (9,10)  AND self.team = :active_team</domain>
+		<domain>self.salesStageSelect in (9,10)  AND self.team = :active_team</domain>
 		<context name="active_team"
 			expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
@@ -46,7 +46,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect not in (9,10)  AND self.team = :active_team</domain>
+		<domain>self.salesStageSelect not in (9,10)  AND self.team = :active_team</domain>
 		<context name="active_team"
 			expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
@@ -58,7 +58,7 @@
 		title="Opportunities Won By Partner" model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid-group" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect = 9</domain>
+		<domain>self.salesStageSelect = 9</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -66,7 +66,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-top-deal-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect not in (9, 10)</domain>
+		<domain>self.salesStageSelect not in (9, 10)</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -74,7 +74,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-top-deal-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect not in (9, 10) and self.user =:__user__</domain>
+		<domain>self.salesStageSelect not in (9, 10) and self.user =:__user__</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -82,7 +82,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-top-deal-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect not in (9, 10) and self.team =:active_team</domain>
+		<domain>self.salesStageSelect not in (9, 10) and self.team =:active_team</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 		<context name="active_team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>
@@ -91,7 +91,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-key-account-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect in (9, 10)</domain>
+		<domain>self.salesStageSelect in (9, 10)</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -99,7 +99,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-key-account-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect in (9, 10) and self.user =:__user__</domain>
+		<domain>self.salesStageSelect in (9, 10) and self.user =:__user__</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 		<context name="user" expr="eval:__user__"/>
 	</action-view>
@@ -108,7 +108,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-key-account-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect in (9, 10) and self.team =:active_team</domain>
+		<domain>self.salesStageSelect in (9, 10) and self.team =:active_team</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 		<context name="active_team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>
@@ -125,14 +125,14 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.updatedOn &gt; date(now())-30 and self.saleStageSelect = 10</domain>
+		<domain>self.updatedOn &gt; date(now())-30 and self.salesStageSelect = 10</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	<action-view title="My Closed Opportunities" model="com.axelor.apps.crm.db.Opportunity"
 		name="portal.my.closed.opportunities">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect in (9, 10) AND self.user =:__user__</domain>
+		<domain>self.salesStageSelect in (9, 10) AND self.user =:__user__</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -140,7 +140,7 @@
 		name="portal.my.open.opportunities">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.saleStageSelect NOT in (9, 10) AND self.user =:__user__</domain>
+		<domain>self.salesStageSelect NOT in (9, 10) AND self.user =:__user__</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 

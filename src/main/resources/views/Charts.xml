@@ -14,11 +14,11 @@
 		    FROM
 		        crm_opportunity self
 		    LEFT JOIN
-		        meta_select as selection ON selection.name = 'crm.opportunity.sale.stage.select'
+		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 		    LEFT JOIN 
 		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
-				cast(selection_item.value as decimal) = self.sale_stage_select			
+				cast(selection_item.value as decimal) = self.sales_stage_select			
 		    GROUP BY
 			   selection_item.id
 			ORDER BY
@@ -38,11 +38,11 @@
 		    FROM
 		        crm_opportunity self
 		    LEFT JOIN
-		        meta_select as selection ON selection.name = 'crm.opportunity.sale.stage.select'
+		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 		    LEFT JOIN 
 		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
-				cast(selection_item.value as decimal) = self.sale_stage_select	and self.sale_stage_select not in (9, 10)		
+				cast(selection_item.value as decimal) = self.sales_stage_select	and self.sales_stage_select not in (9, 10)		
 		    GROUP BY
 			   selection_item.id
 			ORDER BY
@@ -102,7 +102,7 @@
 			FROM
     			crm_opportunity self
  			JOIN
-    			base_source as Source ON self.source = Source.id and self.sale_stage_select = 9
+    			base_source as Source ON self.source = Source.id and self.sales_stage_select = 9
 			GROUP BY
     			_source
 			ORDER BY
@@ -146,11 +146,11 @@
             LEFT JOIN 
                 base_source src on src.id = self.source
 			LEFT JOIN
-	        	meta_select as selection ON selection.name = 'crm.opportunity.sale.stage.select'
+	        	meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 	    	LEFT JOIN 
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
-				selection_item.value = cast(self.sale_stage_select as char)		
+				selection_item.value = cast(self.sales_stage_select as char)		
 			GROUP BY
 			    selection_item.id,
 			    src.name
@@ -173,15 +173,15 @@
 		FROM
 			crm_opportunity self
 		JOIN
-			meta_select as selection ON selection.name = 'crm.opportunity.sale.stage.select'
+			meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 		JOIN 
 	 		meta_select_item as selection_item ON selection_item.select_id = selection.id
 		WHERE
-			selection_item.value = cast(self.sale_stage_select as char)
+			selection_item.value = cast(self.sales_stage_select as char)
 		AND
     		self.expected_close_date < current_date+ interval '90 day' 
 		AND 
-    		self.sale_stage_select <9
+    		self.sales_stage_select <9
                 
 		GROUP BY
 			selection_item.id, pipeline
