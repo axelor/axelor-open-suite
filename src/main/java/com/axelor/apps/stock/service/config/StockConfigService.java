@@ -36,7 +36,7 @@ public class StockConfigService {
 		StockConfig stockConfig = company.getStockConfig();
 		
 		if(stockConfig == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer le module stock pour la société %s",
+			throw new AxelorException(String.format("Veuillez configurer le module stock pour la société %s",
 					company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
