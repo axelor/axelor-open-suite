@@ -76,7 +76,7 @@ public class SaleOrderLineTaxService {
 					for(SaleOrderSubLine saleOrderSubLine : saleOrderLine.getSaleOrderSubLineList())  {
 						TaxLine taxLine = saleOrderSubLine.getTaxLine();
 						LOG.debug("Tax {}", taxLine);
-						
+
 						if (map.containsKey(taxLine)) {
 						
 							SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
@@ -128,8 +128,11 @@ public class SaleOrderLineTaxService {
 			
 			// Dans la devise de la facture
 			BigDecimal exTaxBase = saleOrderLineTax.getExTaxBase();
-			BigDecimal taxTotal = saleOrderToolService.computeAmount(exTaxBase, saleOrderLineTax.getTaxLine().getValue());
-			saleOrderLineTax.setTaxTotal(taxTotal);
+			BigDecimal taxTotal = BigDecimal.ZERO;
+			if(saleOrderLineTax.getTaxLine() != null){
+				taxTotal = saleOrderToolService.computeAmount(exTaxBase, saleOrderLineTax.getTaxLine().getValue());
+				saleOrderLineTax.setTaxTotal(taxTotal);
+			}
 			saleOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
 			
 			saleOrderLineTaxList.add(saleOrderLineTax);
