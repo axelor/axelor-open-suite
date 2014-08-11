@@ -286,7 +286,7 @@
 	   	auth_user saleman
 	    ON saleman.id=self.saleman_user
 	  JOIN
-	    auth_user
+	    auth_user _user
 	    ON _user.id = :_user_id
 	    AND self.company = _user.active_company
 	  WHERE
