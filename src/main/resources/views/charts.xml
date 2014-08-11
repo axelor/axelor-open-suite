@@ -78,7 +78,7 @@
 		      account_invoice_line AS _line 
 		      ON _line.invoice=_invoice.id
 		    JOIN
-			base_user_info _user
+			auth_user as _user
 			ON _user.id = :_user_id
 			AND _invoice.company = _user.active_company	
 		    LEFT JOIN
@@ -137,7 +137,7 @@
 	      account_invoice_line AS _line 
 	      ON _line.invoice=_invoice.id
 	    JOIN
-			base_user_info _user
+			auth_user AS _user
 			ON _user.id = :_user_id
 			AND _invoice.company = _user.active_company	  
 	    LEFT JOIN
@@ -190,7 +190,7 @@
 			AND _invoice.operation_type_select=3
 			AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:toDate) 
 		JOIN
-			base_user_info _user
+			auth_user AS _user
 			ON _user.id = :_user_id
 			AND _invoice.company = _user.active_company	
 		LEFT JOIN
@@ -520,7 +520,7 @@
 	      base_status AS _status
 	      ON _status.code != 'dra' AND _status.id = self.status
 	    JOIN
-	          base_user_info AS _user
+	          auth_user AS _user
 	          ON _user.id = :id
 	    JOIN
 	          base_company AS _company
@@ -555,7 +555,7 @@
 				        base_status AS _status
 						ON _status.code != 'dra' AND _status.id = _invoice.status
 				 	JOIN 
-				 	    base_user_info AS _user
+				 	    auth_user AS _user
 		        		ON _user.id = :id
 		      		JOIN 
 		      		    base_company AS _company
@@ -590,7 +590,7 @@
 	                    base_status AS _status
 	                    ON _status.code != 'dra' AND _status.id = _invoice.status
 			        JOIN 
-			            base_user_info AS _user
+			            auth_user AS _user
 	                    ON _user.id = :id
 	                JOIN
 	                    base_company AS _company
@@ -624,7 +624,7 @@
 	       base_status AS _status
 	       ON _status.code != 'dra' AND _status.id = self.status
 	  JOIN   
-	       base_user_info AS _user
+	       auth_user AS _user
 	       ON _user.id = :id
 	  JOIN   
 	      base_company AS _company
@@ -661,7 +661,7 @@
 		          base_status AS _status
 				  ON _status.code != 'dra' AND _status.id = _invoice.status
 			 JOIN
-			        base_user_info AS _user
+			        auth_user AS _user
 			        ON _user.id = :id
 	      	JOIN
 		        base_company AS _company
@@ -694,7 +694,7 @@
 	                    base_status AS _status
 	                    ON _status.code != 'dra' AND _status.id = _invoice.status
 			        JOIN  
-			             base_user_info AS _user
+			             auth_user AS _user
 	                     ON _user.id = :id
 	                JOIN 
 	                     base_company AS _company
@@ -733,7 +733,7 @@
 	        ON _status.code != 'dra'
 	        AND _status.id = self.status
 	      JOIN
-	        base_user_info AS _user
+	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
 	        base_company AS _company
@@ -754,7 +754,7 @@
 	        ON _status.code != 'dra'
 	        AND _status.id = self.status
 	      JOIN
-	        base_user_info AS _user
+	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
 	        base_company AS _company
@@ -775,7 +775,7 @@
 	        ON _status.code != 'dra'
 	        AND _status.id = self.status
 	      JOIN
-	        base_user_info AS _user
+	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
 	        base_company AS _company
@@ -796,7 +796,7 @@
 	        ON _status.code != 'dra'
 	        AND _status.id = self.status
 	      JOIN
-	        base_user_info AS _user
+	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
 	        base_company AS _company
@@ -841,7 +841,7 @@
 	        ON _status.code != 'dra'
 	        AND _status.id = self.status
 	      JOIN
-	        base_user_info AS _user
+	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
 	        base_company AS _company
@@ -862,7 +862,7 @@
 	        ON _status.code != 'dra'
 	        AND _status.id = self.status
 	      JOIN
-	        base_user_info AS _user
+	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
 	        base_company AS _company
@@ -883,7 +883,7 @@
 	        ON _status.code != 'dra'
 	        AND _status.id = self.status
 	      JOIN
-	        base_user_info AS _user
+	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
 	        base_company AS _company
@@ -929,7 +929,7 @@
 	        ON _status.code != 'dra'
 	        AND _status.id = self.status
 	      JOIN
-	        base_user_info AS _user
+	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
 	        base_company AS _company
@@ -950,7 +950,7 @@
 	        ON _status.code != 'dra'
 	        AND _status.id = self.status
 	      JOIN
-	        base_user_info AS _user
+	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
 	        base_company AS _company
@@ -971,7 +971,7 @@
 	        ON _status.code != 'dra'
 	        AND _status.id = self.status
 	      JOIN
-	        base_user_info AS _user
+	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
 	        base_company AS _company
