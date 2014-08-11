@@ -56,6 +56,7 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 	
 	protected LocalDate today;
 	
+	protected User user;
 	
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

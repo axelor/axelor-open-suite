@@ -35,6 +35,8 @@ import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -51,6 +53,8 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 	protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
 
 	protected LocalDate today;
+	
+	protected User user;
 	
 	@Inject
 	public SaleOrderPurchaseServiceImpl() {
