@@ -585,9 +585,7 @@ FROM
 LEFT JOIN 
 	base_company AS Company ON (Company.id = Business.company)
 LEFT JOIN
-	base_user_info as UserInfo ON (UserInfo.id = Business.responsible_user_info)
-LEFT JOIN 
-	auth_user AS AuthUser ON (AuthUser.id = UserInfo.internal_user)
+	auth_user as AuthUser ON (AuthUser.id = Business.responsible_user)
 LEFT JOIN 
 	base_currency AS Currency ON (Currency.id = Company.currency)
 LEFT JOIN

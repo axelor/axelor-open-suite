@@ -381,9 +381,9 @@ Partner.name, Partner.first_name, Project.name as business,
 Unit.name as unit_name, Unit.code as unit_code,
 Partner.title_select, Partner.partner_type_select, PrintingSetting.pdf_header
 from organisation_timesheet as Timesheet
-left join base_user_info as UserInfo on (Timesheet.user_info = UserInfo.id)
-left join base_partner as Partner on (UserInfo.partner = Partner.id)
-left join base_company as Company on (UserInfo.active_company = Company.id)
+left join auth_user as AuthUser on (Timesheet.user_id = AuthUser.id)
+left join base_partner as Partner on (AuthUser.partner = Partner.id)
+left join base_company as Company on (AuthUser.active_company = Company.id)
 left join base_unit as Unit on (Timesheet.unit = Unit.id)
 left join organisation_project as Project on (Timesheet.project = Project.id)
 left join public.base_printing_settings as PrintingSetting on (Company.printing_settings = PrintingSetting.id)
