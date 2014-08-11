@@ -15,4 +15,11 @@
 		<option value="6">Canceled</option>
 	</selection>
 	
+	
+	<selection name="purchase.purchase.order.invoicing.type.select">
+		<option value="1">Free</option>
+		<option value="2">By delivery</option>
+		<option value="3">Per order</option>
+	</selection>
+	
 </object-views>
