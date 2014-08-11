@@ -455,12 +455,6 @@
 		<option value="4">Canceled</option>
 	</selection>
 												
-	<selection name="supplychain.purchase.order.invoicing.type.select">
-		<option value="1">Free</option>
-		<option value="2">By delivery</option>
-		<option value="3">Per order</option>
-	</selection>
-		
 	<selection name="base.html.template.type.select">
 		<option value="1">Contact</option>
 		<option value="2">Campaign</option>

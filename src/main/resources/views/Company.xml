@@ -41,7 +41,10 @@
             	<field name="generatedEmailFileName" />
             </page>
             <page title="Supply chain configuration" cols="2">
-				<field name="supplychainConfig" showTitle="false" widget="NestedEditor" canSelect="false" form-view="supplychain-config-form" summary-view="true" colSpan="4"/>
+				<field name="saleConfig" showTitle="false" widget="NestedEditor" canSelect="false" form-view="sale-config-form" summary-view="true" colSpan="4" if-module="axelor-sale"/>
+				<field name="stockConfig" showTitle="false" widget="NestedEditor" canSelect="false" form-view="stock-config-form" summary-view="true" colSpan="4" if-module="axelor-stock"/>
+				<field name="purchaseConfig" showTitle="false" widget="NestedEditor" canSelect="false" form-view="purchase-config-form" summary-view="true" colSpan="4" if-module="axelor-purchase"/>
+<!-- 				<field name="supplychainConfig" showTitle="false" widget="NestedEditor" canSelect="false" form-view="supplychain-config-form" summary-view="true" colSpan="4"/> -->
         	</page>
             <page title="Organisation">
             	<field name="taskProduct"/>
