@@ -34,7 +34,7 @@
 		<date name="decisionDate" title="Decision Date"/>
 		
 		<!-- Candidate follow-up -->
-		<many-to-one name="user" ref="com.axelor.auth.db.User" title="Followed by"/>
+		<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Followed by"/>
 		<integer name="recruitmentStatusSelect" title="Recruitment state" selection="organisation.candidate.recruitment.state.select"/>
 		<date name="recruitementDate" title="Recruitment date"/>		
 		<decimal name="globalEvaluation" title="Global grade" help="true" />

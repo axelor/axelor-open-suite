@@ -6,7 +6,7 @@
   <module name="organisation" package="com.axelor.apps.organisation.db"/>
 
   <entity name="Overtime" lang="java">
-  	<many-to-one name="user" title="Employee" ref="com.axelor.auth.db.User" />
+  	<many-to-one name="user" column="user_id" title="Employee" ref="com.axelor.auth.db.User" />
   	<date name="date" title="Date"/>
   	<decimal name="totalAmount" title="Total amount" />   
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" />

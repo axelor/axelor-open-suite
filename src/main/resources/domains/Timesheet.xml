@@ -7,7 +7,7 @@
 
   <entity name="Timesheet" lang="java">
   
-  	<many-to-one name="user" ref="com.axelor.auth.db.User" title="Employee" required="true"/>
+  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Employee" required="true"/>
   	<date name="fromDate" title="From Date"/>
     <date name="toDate" title="To Date"/>
     <integer name="projectSatisfactionSelect" title="Project satisfaction" selection="grade.0.up.to.10.select"/>
