@@ -35,7 +35,7 @@
 	    AND self.purchaseOrder.validationDate &lt;= :toDate
 	    AND self.purchaseOrder.statusSelect &gt; 3 
 	    AND self.purchaseOrder.statusSelect &lt; 6
-	    AND self.purchaseOrder.buyerUser = :activeUserId
+	    AND self.purchaseOrder.buyerUser = :activeUser
 	    AND self.purchaseOrder.company = :activeCompany
 	  GROUP BY
 	    product.productFamily.name
@@ -63,7 +63,7 @@
 	    Product product
 	    
 	  WHERE
-	    self.purchaseOrder.buyerUser.id = :activeUserId
+	    self.purchaseOrder.buyerUser = :activeUser
 	    AND self.purchaseOrder.company = :activeCompany
 	    AND self.purchaseOrder.validationDate &gt;= :fromDate AND self.purchaseOrder.validationDate &lt;= :toDate
 	    AND self.purchaseOrder.createdOn &lt;= CURRENT_TIMESTAMP

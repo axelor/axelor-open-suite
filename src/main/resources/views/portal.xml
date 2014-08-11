@@ -46,7 +46,7 @@
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.my.purchase.per.product.family.volume"/>
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	  <context name="activeUserId" expr="eval:__user__.id"/>
+	  <context name="activeUser" expr="eval:__user__"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 
@@ -54,7 +54,7 @@
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.my.purchase.amount.per.product.family"/>
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	  <context name="activeUserId" expr="eval:__user__.id"/>
+	  <context name="activeUser" expr="eval:__user__"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 
