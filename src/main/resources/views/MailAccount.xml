@@ -14,7 +14,7 @@
     onNew="action-mail-account-default-record">
     	<group title="Informations" colSpan="4">
             <field name="name"/>
-            <field name="user"/>
+            <field name="user" column="user_id"/>
         	<field name="signature" widget="Html" x-lite="true" colSpan="4"/>
         	<field name="isDefault" onChange="action-mail-account-validate-is-default"/>
         </group>
