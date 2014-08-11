@@ -94,7 +94,7 @@
 		  <view type="grid" name="stock-move-grid"/>
 		  <view type="form" name="stock-move-form"/>
 		  <domain>self.fromLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
-		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UseService:getUserActiveCompany()" />
+		  <context name="active_company" expr="eval:__user__.activeCompany" />
 	</action-view>
 
 	<action-view title="Product soon out of stock by location" model="com.axelor.apps.stock.db.LocationLine" name="portal.location.line.product.out.stock.bylocation">
