@@ -288,9 +288,9 @@
             <xml-property name="queryText"><![CDATA[select SaleOrderLine.id, SaleOrder.order_date, ClientPartner.full_name as "client_name", SaleOrderLine.ex_tax_total,
 AuthUser.full_name as "user_name", SaleOrderLine.product_name,Project.name as task_name
 from organisation_project as Project 
-left outer join supplychain_sale_order as SaleOrder on (SaleOrder.project = Project.id)
+left outer join sale_sale_order as SaleOrder on (SaleOrder.project = Project.id)
 
-left outer join supplychain_sale_order_line as SaleOrderLine on (SaleOrderLine.sale_order = SaleOrder.id)
+left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.sale_order = SaleOrder.id)
 
 left outer join base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
 left outer join auth_user as AuthUser on (SaleOrder.saleman_user = AuthUser.id)
@@ -2547,8 +2547,8 @@ where Project.id = ? and SaleOrder.status_select = 2]]></xml-property>
 AuthUser.full_name as "user_name", PurchaseOrderLine.product_name, Project.name as task_name
 from organisation_project as Project 
 
-left outer join supplychain_purchase_order as PurchaseOrder on (PurchaseOrder.project = Project.id)
-left outer join supplychain_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
+left outer join purchase_purchase_order as PurchaseOrder on (PurchaseOrder.project = Project.id)
+left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
 
 left outer join base_partner as SupplierPartner on (PurchaseOrder.supplier_partner = SupplierPartner.id)
 left outer join auth_user as AuthUser on (PurchaseOrder.buyer_user = AuthUser.id)

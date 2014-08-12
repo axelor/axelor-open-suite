@@ -268,8 +268,8 @@
             <xml-property name="queryText"><![CDATA[select SaleOrderLine.id, SaleOrder.order_date, ClientPartner.full_name as "client_name", SaleOrderLine.ex_tax_total,
 AuthUser.full_name as "user_name", SaleOrderLine.product_name
 from organisation_task as Task 
-left outer join supplychain_sale_order_line as SaleOrderLine on (SaleOrderLine.task = Task.id)
-left outer join supplychain_sale_order as SaleOrder on (SaleOrder.id = SaleOrderLine.sale_order)
+left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.task = Task.id)
+left outer join sale_sale_order as SaleOrder on (SaleOrder.id = SaleOrderLine.sale_order)
 left outer join base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
 left outer join auth_user as AuthUser on (SaleOrder.saleman_user = AuthUser.id)
 where Task.id = ? and SaleOrder.status_select = 3]]></xml-property>
@@ -2506,8 +2506,8 @@ where Task.id = ? and SaleOrder.status_select = 3]]></xml-property>
             <xml-property name="queryText"><![CDATA[select SupplierPartner.id, PurchaseOrder.order_date, SupplierPartner.full_name as "client_name", PurchaseOrderLine.ex_tax_total,
 AuthUser.full_name as "user_name", PurchaseOrderLine.product_name
 from organisation_task as Task 
-left outer join supplychain_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.task = Task.id)
-left outer join supplychain_purchase_order as PurchaseOrder on (PurchaseOrder.id = PurchaseOrderLine.purchase_order)
+left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.task = Task.id)
+left outer join purchase_purchase_order as PurchaseOrder on (PurchaseOrder.id = PurchaseOrderLine.purchase_order)
 left outer join base_partner as SupplierPartner on (PurchaseOrder.supplier_partner = SupplierPartner.id)
 left outer join auth_user as AuthUser on (PurchaseOrder.buyer_user = AuthUser.id)
 where Task.id = ? and PurchaseOrder.status_select = 3]]></xml-property>
