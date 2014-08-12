@@ -1372,7 +1372,7 @@ SaleOrder.amount_remaining_to_be_invoiced, SaleOrder.status_select,
 SaleOrder.order_date, Currency.symbol as Currency
 
 from base_partner as Partner
-inner join supplychain_sale_order as SaleOrder on (SaleOrder.client_partner = Partner.id)
+inner join sale_sale_order as SaleOrder on (SaleOrder.client_partner = Partner.id)
 left join base_partner as ContactPartner on (ContactPartner.id = SaleOrder.contact_partner)
 inner join auth_user as AuthUser on (AuthUser.id = Partner.user_id)
 left join base_currency as Currency on (SaleOrder.currency = Currency.id)
