@@ -359,7 +359,6 @@
 "admin-conf-general-unit";"Units";"admins|ERP"
 "menu-auth";"User Management";"admins"
 "menu-auth-users";"Users";"admins"
-"admin-root-user-user-info";"Users";"admins"
 "admin-root-user";"Users/Companies";"admins"
 "hr-root-validationforms";"Validation forms";"admins|ERP|MGT|HRM"
 "account-conf-financial-tax";"V.A.T.";"admins|ERP|MGT|CPT"
