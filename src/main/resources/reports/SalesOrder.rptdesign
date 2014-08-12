@@ -870,7 +870,7 @@ DeliveryAddress.addressl4 as "delAddress4", DeliveryAddress.addressl5 as "delAdd
 DeliveryAddress.addressl6 as "delAddress6", DeliveryCountry.name as "DeliveryCountry",
 SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total,
 DefBankDetail.iban, DefBankDetail.bic, Currency.code as "CurrencyCode", SaleOrder.external_reference
-from public.supplychain_sale_order as SaleOrder
+from public.sale_sale_order as SaleOrder
 left outer join public.base_company as Company on (SaleOrder.company = Company.id)
 left outer join public.base_partner as Partner on (Company.partner = Partner.id)
 left outer join public.base_address as PartnerAddress on (Partner.main_invoicing_address = PartnerAddress.id)
@@ -1226,9 +1226,9 @@ SOSubLine.qty as "subQty", SubUnit.code as "subUnitCode", SOSubLine.price as "su
 SOSubLine.ex_tax_total as "subExTaxTotal", SOLine.description, SOLine.qty as "quantity", Unit.code as "UnitCode", 
 SOLine.product_name as "ProductName", SOLine.price as "unit_price", SOLine.ex_tax_total, Currency.code as "CurrencyCode",
  TaxLine.value as "tax_line",  SubTaxLine.value as "sub_tax_line"
-from public.supplychain_sale_order as SaleOrder
-left outer join public.supplychain_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
-left outer join public.supplychain_sale_order_sub_line as SOSubLine on (SOSubLine.sale_order_line = SOLine.id)
+from public.sale_sale_order as SaleOrder
+left outer join public.sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
+left outer join public.sale_sale_order_sub_line as SOSubLine on (SOSubLine.sale_order_line = SOLine.id)
 left outer join public.base_product as Product on (SOLine.product = Product.id)
 left outer join public.base_unit as Unit on (Product.unit = Unit.id)
 left outer join public.base_currency as Currency on (SaleOrder.currency = Currency.id)
@@ -1336,8 +1336,8 @@ where SaleOrder.id = ?]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select TaxLine.value, SOLineTax.ex_tax_base, SOLineTax.tax_total
-from public.supplychain_sale_order_line_tax as SOLineTax
-inner join public.supplychain_sale_order as SOrder on (SOLineTax.sale_order = SOrder.id)
+from public.sale_sale_order_line_tax as SOLineTax
+inner join public.sale_sale_order as SOrder on (SOLineTax.sale_order = SOrder.id)
 left outer join public.account_tax_line as TaxLine on (SOLineTax.tax_line = TaxLine.id)
 where SOrder.id = ?
 ]]></xml-property>

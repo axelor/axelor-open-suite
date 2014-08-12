@@ -229,7 +229,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT Location.id as location_id, Company.logo_path, Location.name as location_name	
 FROM 
-	supplychain_location AS Location
+	stock_location AS Location
 LEFT JOIN 
 	base_company AS Company ON (Company.id = Location.company)
 WHERE
@@ -664,9 +664,9 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
 		Product.code AS product_code, LocationLine.current_qty, Unit.code as unit_code, Product.sale_price,
 		Currency.code AS currency_code, Product.cost_price
 FROM 
-	supplychain_location as Location 
+	stock_location as Location 
 LEFT OUTER JOIN 
-	supplychain_location_line as LocationLine ON (LocationLine.location = Location.id)
+	stock_location_line as LocationLine ON (LocationLine.location = Location.id)
 LEFT JOIN 
 	base_product AS Product ON (Product.id = LocationLine.product)	
 LEFT JOIN
