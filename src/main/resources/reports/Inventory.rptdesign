@@ -235,8 +235,8 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select Inventory.inventory_seq as "inventoryName", Location.name as "inventoryLocation", 
 Inventory.dateT as "inventoryDate", Company.logo_path
-from supplychain_inventory as Inventory 
-left outer join supplychain_location as Location on (Inventory.location = Location.id)
+from stock_inventory as Inventory 
+left outer join stock_location as Location on (Inventory.location = Location.id)
 left outer join base_company as Company on (Location.company = Company.id)
 where Inventory.id = ?]]></xml-property>
         </oda-data-set>
@@ -372,8 +372,8 @@ where Inventory.id = ?]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Product.name as "productName", Product.code as "productCode", InventoryLine.current_qty,
 InventoryLine.real_qty, InventoryLine.description, Unit.code as "unit"
-from supplychain_inventory_line as InventoryLine 
-inner join supplychain_inventory as Inventory on (InventoryLine.inventory = Inventory.id)
+from stock_inventory_line as InventoryLine 
+inner join stock_inventory as Inventory on (InventoryLine.inventory = Inventory.id)
 left outer join base_product as Product on (InventoryLine.product = Product.id)
 left outer join base_unit as Unit on (Product.unit = Unit.id)
 where Inventory.id = ?
