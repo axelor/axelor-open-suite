@@ -906,7 +906,7 @@ LEFT JOIN
 	ManufOrder.id as manuf_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, Unit.code as unit_code,
 	TrackingNumber.tracking_number_seq, StockMoveLine.qty
 FROM
-	supplychain_stock_move_line AS StockMoveLine 
+	stock_stock_move_line AS StockMoveLine 
 INNER JOIN
 	production_manuf_order as ManufOrder ON (StockMoveLine.consumed_manuf_order = ManufOrder.id)
 LEFT JOIN 

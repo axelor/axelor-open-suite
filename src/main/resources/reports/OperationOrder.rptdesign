@@ -750,7 +750,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
 	OperationOrder.id as operation_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, Unit.code as unit_code,
 	TrackingNumber.tracking_number_seq, StockMoveLine.qty
 FROM
-	supplychain_stock_move_line AS StockMoveLine 
+	stock_stock_move_line AS StockMoveLine 
 INNER JOIN
 	production_operation_order as OperationOrder ON (StockMoveLine.consumed_operation_order = OperationOrder.id)
 LEFT JOIN 
