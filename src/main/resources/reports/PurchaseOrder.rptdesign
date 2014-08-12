@@ -559,7 +559,7 @@ Address.addressl2, Address.addressl3, Address.addressl4, Address.addressl5, Addr
 Country.name as "countryName", PaymentMode.name as "PaymentMode", PaymentCond.name as "PaymentCond",
 PurchaseOrder.ex_tax_total, PurchaseOrder.in_tax_total, PurchaseOrder.tax_total, Currency.code as "CurrencyCode",
 DefBankDetail.iban, DefBankDetail.bic, Company.name as "CopmanyName", PurchaseOrder.notes
-from public.supplychain_purchase_order as PurchaseOrder
+from public.purchase_purchase_order as PurchaseOrder
 left outer join public.base_company as Company on (PurchaseOrder.company = Company.id)
 left outer join public.base_partner as Partner on (PurchaseOrder.supplier_partner = Partner.id)
 left outer join public.base_address as Address on (Partner.main_invoicing_address = Address.id)
@@ -885,8 +885,8 @@ left outer join public.account_payment_mode as PaymentMode on (Partner.payment_m
             <xml-property name="queryText"><![CDATA[select PurchaseOrder.id as purchase_id, PurchaseOrderLine.id as purchase_line_id, PurchaseOrderLine.product_name, PurchaseOrderLine.description, PurchaseOrderLine.qty,
 Unit.code as "UnitCode", PurchaseOrderLine.price as "UnitPrice", PurchaseOrderLine.ex_tax_total,
 TaxLine.value as "TaxValue"
-from public.supplychain_purchase_order_line as PurchaseOrderLine
-inner join public.supplychain_purchase_order as PurchaseOrder on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
+from public.purchase_purchase_order_line as PurchaseOrderLine
+inner join public.purchase_purchase_order as PurchaseOrder on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
 left outer join public.base_product as Product on (PurchaseOrderLine.product = Product.id)
 left outer join public.base_unit as Unit on (PurchaseOrderLine.unit = Unit.id)
 left outer join public.account_tax_line as TaxLine on (PurchaseOrderLine.tax_line = TaxLine.id)]]></xml-property>
@@ -1113,8 +1113,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select POrder.id as purchase_id, TaxLine.value, POLineTax.ex_tax_base, POLineTax.tax_total
-from public.supplychain_purchase_order_line_tax as POLineTax
-inner join public.supplychain_purchase_order as POrder on (POLineTax.purchase_order = POrder.id)
+from public.purchase_purchase_order_line_tax as POLineTax
+inner join public.purchase_purchase_order as POrder on (POLineTax.purchase_order = POrder.id)
 left outer join public.account_tax_line as TaxLine on (POLineTax.tax_line = TaxLine.id)]]></xml-property>
         </oda-data-set>
     </data-sets>
