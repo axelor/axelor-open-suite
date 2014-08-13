@@ -32,8 +32,7 @@
 	</grid>
     
     <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" cols="4" 
-    onNew="action-purchase-order-record-new,action-purchase-order-record-company-configuration,action-purchase-order-method-get-location" 
-    onSave="action-purchase-order-set-sequence">
+    onNew="action-group-purchase-order-on-new-actions" onSave="action-purchase-order-set-sequence">
     	<toolbar>
             <button name="print" title="Print" icon="fa-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
@@ -41,7 +40,7 @@
 	    <group colSpan="4" cols="6" readonlyIf="statusSelect == 5">
 	        <field name="purchaseOrderSeq" css="highlight"/>
 	        <field name="orderDate"/>
-	        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-purchase-order-record-company-configuration,action-purchase-order-method-get-location"/>
+	        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-group-purchase-order-company-change-actions"/>
 	        <field name="internalReference"/>
 	        <field name="externalReference"/>
 	        <field name="currency"/>
@@ -71,7 +70,7 @@
 	                        <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="1" onClick="action-purchase-order-record-draft,save"/>
 	                        <button name="requested" title="Requested" showIf="statusSelect == 1" colSpan="1" onClick="action-purchase-order-record-requested,save"/>
 	                        <button name="receipt" title="Receipt" showIf="statusSelect == 2" colSpan="1" onClick="action-purchase-order-record-receipt,save"/>
-	                        <button name="validate" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-purchase-order-validate-location,save,action-purchase-order-method-compute,save,action-purchase-order-create-stock-move,action-purchase-order-record-validate,action-sale-order-method-validate-supplier,save"/>
+	                        <button name="validate" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-group-purchase-order-on-validate-actions"/>
 	                        <button name="completed" title="Completed" showIf="statusSelect == 4" colSpan="1" onClick="action-purchase-order-record-completed,save"/>
 	                        <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-purchase-order-record-cancel"/>
 	                        <button name="showInvoice" title="Show invoice" showIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-purchase-order-show-invoice"/>
@@ -111,6 +110,28 @@
 	    </notebook>
 	</form>
     
+    <action-group name="action-group-purchase-order-on-new-actions">
+    	<action name="action-purchase-order-record-new"/>
+    	<action name="action-purchase-order-record-company-configuration"/>
+    	<action name="action-purchase-order-method-get-location"/>
+    </action-group>
+    
+    <action-group name="action-group-purchase-order-company-change-actions">
+	    <action name="action-purchase-order-record-company-configuration"/>
+	    <action name="action-purchase-order-method-get-location"/>
+    </action-group>
+    
+    <action-group name="action-group-purchase-order-on-validate-actions">    	
+    	<action name="action-purchase-order-validate-location"/>
+    	<action name="save"/>
+    	<action name="action-purchase-order-method-compute"/>
+    	<action name="save"/>
+    	<action name="action-purchase-order-create-stock-move"/>
+    	<action name="action-purchase-order-record-validate"/>
+    	<action name="action-sale-order-method-validate-supplier"/>
+    	<action name="save"/>
+    </action-group>
+     
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="1"/>
     	<field name="invoicingTypeSelect" expr="1"/>
@@ -171,25 +192,9 @@
  		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="setSequence"/>
  	</action-method>
     
-    <action-method name="action-purchase-order-method-generate-control-invoice">
- 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController" method="generateInvoice"/>
-	</action-method>
-	
-	<action-method name="action-purchase-order-create-stock-move">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="createStockMoves"/>
-	</action-method>
-	
-	<action-method name="action-purchase-order-method-get-location">
-    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="getLocation"/>
-    </action-method>
-    
     <action-method name="action-purchase-order-method-show-purchase-order">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="showPurchaseOrder"/>
 	</action-method>
-    
-    <action-method name="action-purchase-order-method-clear-purchase-order">
-    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="clearPurchaseOrder"/>
-    </action-method>
     
     
     
