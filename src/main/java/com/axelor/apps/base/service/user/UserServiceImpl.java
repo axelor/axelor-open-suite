@@ -43,10 +43,9 @@ public class UserServiceImpl implements UserService  {
 		}
 		catch(Exception ex){}
 		if(user == null) {
-			user = User.findByCode("admin");
-			return user;
+			user = User.findByCode("admin");			
 		}
-		return null;
+		return user;
 	}
 	
 	public Long getUserId() {
