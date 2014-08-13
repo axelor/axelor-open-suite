@@ -17,7 +17,7 @@
         <field name="timesheetPeriodConfig"/>
         <field name="employee"/>
         <notebook colSpan="4">
-        	<page title="User login settings">
+        	<page title="User login settings" cols="1">
                 <include view="user-form" from="axelor-core"/>
         	</page>
         	<page title="Internal companies">
