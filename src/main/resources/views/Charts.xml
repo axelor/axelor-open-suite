@@ -187,6 +187,8 @@
 	          (_order.validation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD') 
 	          AND _order.validation_date &lt;= DATE(:toDateLY))
 	         )      
+ 		  AND
+    	    _order.ex_tax_total > 0.00	         
 	    GROUP BY
 	      _year
 	    ORDER BY
@@ -264,7 +266,9 @@
 	    AND self.status_select=3
 	  GROUP BY
 	    team.name
-	  
+	  HAVING  
+	    sum(self.ex_tax_total) > 0
+	    	  
 	  </dataset>
 	  <category key="_team_name" type="text" title="Team"/>
 	  <series key="amount" type="bar" title="Amount"/>
@@ -294,7 +298,8 @@
 	    AND self.status_select=3
 	  GROUP BY
 	    saleman_name
-	  
+	  HAVING
+    	sum(self.ex_tax_total) > 0
 	  </dataset>
 	  <category key="saleman_name" type="text" title="Salesman"/>
 	  <series key="amount" type="bar" title="Amount"/>
@@ -336,7 +341,8 @@
 	    self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
 	  GROUP BY
 	    family_name
-	  
+	  HAVING
+    	sum(self.ex_tax_total) > 0
 	  </dataset>
 	  <category key="family_name" type="text" title="Product Family"/>
 	  <series key="amount" type="donut" title="Amount"/>
@@ -405,7 +411,8 @@
 	    and self.status_select=3
 	  GROUP BY
 	    country_name
-	  
+	  HAVING
+  		sum(self.ex_tax_total) > 0
 	  </dataset>
 	  <category key="country_name" type="text" title="Country"/>
 	  <series key="amount" type="donut" title="Amount"/>
@@ -482,7 +489,7 @@
 	        ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product 
 	
 	  ON
-	    _sale._line_product=_product._product_id
+	    _sale._line_product=_product._product_id AND _sale._turn_over > 0.00
 	  GROUP BY 
 	    _product._product_type,_month
 	  ORDER BY 
