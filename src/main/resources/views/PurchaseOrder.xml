@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <action-method name="action-purchase-order-method-generate-control-invoice">
+ 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController" method="generateInvoice"/>
+	</action-method>
+	
+	<action-method name="action-purchase-order-create-stock-move">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="createStockMoves"/>
+	</action-method>
+	
+	<action-method name="action-purchase-order-method-get-location">
+    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="getLocation"/>
+    </action-method>
+    
+    <action-method name="action-purchase-order-method-clear-purchase-order">
+    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="clearPurchaseOrder"/>
+    </action-method>
+	
+</object-views>
