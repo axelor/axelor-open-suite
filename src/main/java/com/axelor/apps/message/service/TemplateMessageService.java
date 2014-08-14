@@ -31,7 +31,7 @@ public interface TemplateMessageService {
 	
 	public List<EmailAddress> getEmailAddress(String recipients);
 	
-	public TemplateMaker initMaker(long objectId, String model, String tag);
+	public TemplateMaker initMaker(long objectId, String model, String tag) throws InstantiationException, IllegalAccessException, ClassNotFoundException;
 	
 	
 }

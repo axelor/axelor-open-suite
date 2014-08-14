@@ -34,7 +34,7 @@ import com.axelor.tool.template.TemplateMaker;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
-public class TemplateMessageServiceImpl {
+public class TemplateMessageServiceImpl implements TemplateMessageService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TemplateMessageServiceImpl.class); 
 
