@@ -125,7 +125,7 @@
 	        </page>
 	        <page title="Production informations">
 <!-- 	        	<include view="business-project-production-form" from="axelor-production"/> -->
-	        	<field name="prodInvTypeSelect"/>
+	        	<field name="prodInvTypeSelect" if-module="axelor-production"/>
    				<portlet colSpan="4" action="action-business-project-view-production-manuf-order"/>
 	        </page>
 	        <page title="members" colSpan="4">

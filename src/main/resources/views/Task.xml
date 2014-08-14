@@ -57,14 +57,14 @@
 	            <field name="planningLineList" onChange="action-task-method-get-planned-time" colSpan="4" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
 	        </page>
 	        <page title="Invoicing follow-up">
-	            <field name="saleOrderLine" onChange="action-task-saleOrderLine-on-change"/>
+	            <field name="saleOrderLine" onChange="action-task-saleOrderLine-on-change" if-module="axelor-account-organisation"/>
 	            <field name="product"/>
 	            <field name="qty"/>
 	            <field name="price"/> 
-	            <field name="isToInvoice"/>
+	            <field name="isToInvoice" if-module="axelor-account-organisation"/>
 	            <field name="isTimesheetAffected"/>
-	            <field name="invoicingDate"/>
-	            <field name="amountToInvoice"/>  
+	            <field name="invoicingDate" if-module="axelor-account-organisation"/>
+	            <field name="amountToInvoice" if-module="axelor-account-organisation"/>  
 	            <button name="generateDraftInvoice" title="Generate draft invoice" showIf="isToInvoice == true &amp;&amp; statusSelect == 4" colSpan="2" onClick="save,action-task-method-create-invoice"/>
 	        </page>
 	        <page title="Notes">
