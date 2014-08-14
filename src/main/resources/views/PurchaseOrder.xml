@@ -57,7 +57,7 @@
 	                <field name="invoice" if-module="axelor-account"/>
 	            </group>
 	            <group title="Delivery" colSpan="6" cols="6">
-	                <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
+	                <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain"/>
 	                <field name="location.address" if-module="axelor-supplychain"/>
 	                <field name="deliveryDate"/>
 	            </group>
