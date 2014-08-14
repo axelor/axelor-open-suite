@@ -5,12 +5,16 @@
     
     <grid name="production-order-grid" title="Production orders" model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
         <field name="productionOrderSeq"/>
+        <!--  TODO: this field is commented in domain
         <field name="businessProject"/>
+         -->
     </grid>
     
     <form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" cols="4">
         <field name="productionOrderSeq"/>
+        <!--  TODO: this field is commented in domain
         <field name="businessProject"/>
+        -->
         <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice"/>
         <button name="showManufOrderWizard" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
         <group name="addManufOrderWizard" title="Add Manu. Order" hidden="true" colSpan="2">
