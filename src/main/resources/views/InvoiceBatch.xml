@@ -14,8 +14,8 @@
     </grid>
  
     <form name="invoice-batch-form" title="Invoice batch" model="com.axelor.apps.account.db.InvoiceBatch" cols="4"
-    onLoad="action-invoice-batch-attrs-action-select,action-invoice-batch-attrs-on-select-ok" 
-    onNew="action-invoice-batch-record-on-new,action-invoice-batch-attrs-action-select,action-invoice-batch-attrs-on-select-ok">
+    onLoad="action-account-invoice-batch-onload-group" 
+    onNew="action-account-invoice-batch-onnew-group">
     	<field name="actionSelect" onChange="action-invoice-batch-attrs-action-select"/>
     	<field name="code" />
     	<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
@@ -42,6 +42,18 @@
     	</notebook>
     	<button name="statusBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-status" />
     </form>
+    
+    <!-- ACTION GROUPs -->
+    <action-group name="action-account-invoice-batch-onnew-group">
+	    <action name="action-invoice-batch-record-on-new"/>
+	    <action name="action-invoice-batch-attrs-action-select"/>
+	    <action name="action-invoice-batch-attrs-on-select-ok"/>
+    </action-group>
+    
+    <action-group name="action-account-invoice-batch-onload-group">
+	    <action name="action-invoice-batch-attrs-action-select"/>
+	    <action name="action-invoice-batch-attrs-on-select-ok"/>
+    </action-group>
     
     <!-- ACTION RECORD -->
     <action-record name="action-invoice-batch-record-on-new" model="com.axelor.apps.account.db.InvoiceBatch">

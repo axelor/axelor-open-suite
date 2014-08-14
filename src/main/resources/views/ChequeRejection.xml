@@ -15,7 +15,7 @@
     </grid>
     
     <form name="cheque-rejection-form" title="Cheque Rejection" model="com.axelor.apps.account.db.ChequeRejection" cols="4"
-     onNew="default-cheque-rejection-record, action-cheque-rejection-attrs-hidden-after-validated"
+     onNew="action-account-cheque-rejection-onnew-group"
      onLoad="action-cheque-rejection-attrs-hidden-after-validated">
         <group title="Header" colSpan="4" cols="4">
         	<field name="name"/>
@@ -50,6 +50,11 @@
         	<field name="move"/>
     	</group>
     </form>
+    
+    <action-group name="action-account-cheque-rejection-onnew-group">
+	    <action name="default-cheque-rejection-record"/>
+	    <action name="action-cheque-rejection-attrs-hidden-after-validated"/>
+    </action-group>
     
     <action-attrs name="action-cheque-rejection-attrs-domain-payment-voucher">
       	<attribute name="domain" for="paymentVoucher" expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode.id = ${paymentMode?.id} and self.base.id = ${partner?.id}&quot;" if="eval: partner != null"/>

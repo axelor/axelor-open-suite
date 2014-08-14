@@ -18,9 +18,9 @@
     </grid>
 
 	<form cols="4" name="payment-voucher-form" title="Payment voucher" model="com.axelor.apps.account.db.PaymentVoucher"
-    	onLoad="action-payment-voucher-attrs-hidden-paybox-email,action-pv-hide-confirm-button,action-pv-hide-rejectToPay,action-pv-hide-invoiceToPay,action-record-fill-date-time-pv,action-pv-attrs-hidden-bankCardTransactionNumber,action-attrs-payment-voucher-hidden-receipt,action-attrs-payment-voucher-readonly-status,action-payment-voucher-hidden-fields-if-purchase"
+    	onLoad="action-account-payment-voucher-onload-group"
 		onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum"
-		onNew="action-payment-voucher-attrs-hidden-paybox-email,action-record-payment-voucher-default-record,action-record-payment-voucher-cash-register-record,action-pv-hide-confirm-button,action-pv-hide-rejectToPay,action-pv-hide-invoiceToPay,action-record-fill-date-time-pv,action-pv-attrs-hidden-bankCardTransactionNumber,action-attrs-payment-voucher-hidden-receipt,action-attrs-payment-voucher-readonly-status,action-payment-voucher-hidden-fields-if-purchase">
+		onNew="action-account-payment-voucher-onnew-group">
 		<group name="header" colSpan="3" cols="4">
 			<field name="ref" readonly="true" />
 			<field name="operationTypeSelect" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
@@ -88,6 +88,32 @@
 			<field name="receiptNo" />
 		</group>
 	</form>
+    
+    <action-group name="action-account-payment-voucher-onnew-group">
+	    <action name="action-payment-voucher-attrs-hidden-paybox-email"/>
+	    <action name="action-record-payment-voucher-default-record"/>
+	    <action name="action-record-payment-voucher-cash-register-record"/>
+	    <action name="action-pv-hide-confirm-button"/>
+	    <action name="action-pv-hide-rejectToPay"/>
+	    <action name="action-pv-hide-invoiceToPay"/>
+	    <action name="action-record-fill-date-time-pv"/>
+	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
+	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
+	    <action name="action-attrs-payment-voucher-readonly-status"/>
+	    <action name="action-payment-voucher-hidden-fields-if-purchase"/>
+    </action-group>
+    
+    <action-group name="action-account-payment-voucher-onload-group">
+	    <action name="action-payment-voucher-attrs-hidden-paybox-email"/>
+	    <action name="action-pv-hide-confirm-button"/>
+	    <action name="action-pv-hide-rejectToPay"/>
+	    <action name="action-pv-hide-invoiceToPay"/>
+	    <action name="action-record-fill-date-time-pv"/>
+	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
+	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
+	    <action name="action-attrs-payment-voucher-readonly-status"/>
+	    <action name="action-payment-voucher-hidden-fields-if-purchase"/>
+    </action-group>
     
  	<action-record name="action-record-fill-date-time-pv" model="com.axelor.apps.account.db.PaymentVoucher">
    		<field name="paymentDateTime" expr="action:action-payment-voucher-getDateTime" if="id == null"/>

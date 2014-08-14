@@ -14,8 +14,8 @@
     </grid>
     
     <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
-    onNew="action-invoice-line-record-new,action-invoice-line-attrs-hide-product-variant"
-    onLoad="action-invoice-line-method-product-management,action-invoice-line-attrs-hide-product-variant">
+    onNew="action-account-invoice-line-onnew-group"
+    onLoad="action-account-invoice-line-onload-group">
     	<notebook>
     		<page title="Informations">
 		        <field name="product" required="true" onChange="action-invoice-line-attrs-hide-product-variant,action-invoice-line-method-get-product-information,action-invoice-line-record-product-variant,action-invoice-line-method-compute,action-invoice-line-record-invoice-line-type"/>
@@ -66,6 +66,17 @@
 		<field name="taxLine.tax.name"/>
 		<field name="taxLine.value"/>
     </form>
+    
+    <!-- ACTION GROUPs -->
+    <action-group name="action-account-invoice-line-onnew-group">
+	    <action name="action-invoice-line-record-new"/>
+	    <action name="action-invoice-line-attrs-hide-product-variant"/>
+    </action-group>
+    
+    <action-group name="action-account-invoice-line-onload-group">
+	    <action name="action-invoice-line-method-product-management"/>
+	    <action name="action-invoice-line-attrs-hide-product-variant"/>
+    </action-group>
     
     <action-record name="action-invoice-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>

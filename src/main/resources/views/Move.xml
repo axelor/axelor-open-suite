@@ -17,8 +17,8 @@
         <field name="state"/>
     </grid>
     <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" cols="4" canDelete="false"
-    onLoad="action-move-attrs-status,action-move-attrs-hidden-date,action-move-attrs-hidden-get-info-from-first-move-line-ok"
-    onNew="action-move-attrs-status,default-move-record,action-move-attrs-hidden-get-info-from-first-move-line-ok,action-move-attrs-hidden-date,action-move-method-get-period"
+    onLoad="action-account-move-onload-group"
+    onNew="action-account-move-onnew-group"
     onSave="save,action-move-record-draft-sequence">
     	<toolbar>
     		<button name="reverse" title="Reverse" onClick="action-move-method-generate-reverse-move" icon="fa-exchange"/>
@@ -49,8 +49,8 @@
 			        <field name="amountRemaining"/>
 			    </grid>
             	<form title="Move line"
-            	 onLoad="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-readonly"
-            	 onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
+            	 onLoad="action-account-move-moveline-onload-group"
+            	 onNew="action-account-move-moveline-onnew-group">
 				    <notebook colSpan="4">
 				    	<page title="Informations" colSpan="4">
 					        <field name="name"/>
@@ -103,7 +103,35 @@
 	    </page>
 	    </notebook>
    </form>
-   
+	
+	<!-- ACTION GROUPs -->
+	
+	<action-group name="action-account-move-onload-group">
+		<action name="action-move-attrs-status"/>
+		<action name="action-move-attrs-hidden-date"/>
+		<action name="action-move-attrs-hidden-get-info-from-first-move-line-ok"/>
+	</action-group>
+	
+	<action-group name="action-account-move-onnew-group">
+		<action name="action-move-attrs-status"/>
+		<action name="default-move-record"/>
+		<action name="action-move-attrs-hidden-get-info-from-first-move-line-ok"/>
+		<action name="action-move-attrs-hidden-date"/>
+		<action name="action-move-method-get-period"/>
+	</action-group>
+	
+	<action-group name="action-account-move-moveline-onload-group">
+		<action name="action-move-line-attrs-collapse-irrecoverable-group"/>
+		<action name="action-move-line-attrs-readonly"/>
+	</action-group>
+	
+	<action-group name="action-account-move-moveline-onnew-group">
+		<action name="action-move-line-attrs-collapse-irrecoverable-group"/>
+		<action name="action-move-line-record-get-move-informations"/>
+		<action name="action-move-line-record-get-first-move-line-informations"/>
+		<action name="action-move-line-attrs-hidden-reconcileLists"/>
+	</action-group>
+	   
    	<!-- ACTION RECORD -->
     <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
         <field name="state" expr="eval: 'draft'"/>

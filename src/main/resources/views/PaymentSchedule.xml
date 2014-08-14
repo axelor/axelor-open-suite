@@ -18,7 +18,7 @@
     <form name="payment-schedule-form" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule" cols="4"
      onSave="action-payment-schedule-payment-schedule-id"
      onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group"
-     onNew="default-payment-schedule-record,action-payment-schedule-attrs-collapse-irrecoverable-group">
+     onNew="action-account-payment-schedule-onnew-group">
      	<group name="header">
 	     	<field name="scheduleId" readonlyIf="state != 1"/>
 	        <field name="creationDate" readonlyIf="state != 1"/>
@@ -49,6 +49,12 @@
        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable"/>
         </group>
     </form>
+    
+    <!-- ACTION GROUPs -->
+    <action-group name="action-account-payment-schedule-onnew-group">
+	    <action name="default-payment-schedule-record"/>
+	    <action name="action-payment-schedule-attrs-collapse-irrecoverable-group"/>
+    </action-group>
     
     <!-- ACTION RECORD -->
     <action-record name="default-payment-schedule-record" model="com.axelor.apps.account.db.PaymentSchedule">

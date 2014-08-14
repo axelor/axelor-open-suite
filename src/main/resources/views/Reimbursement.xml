@@ -10,8 +10,8 @@
     </grid>
     
     <form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement" cols="4"
-    onNew="action-reimbursement-hidden-button-attrs,action-reimbursement-hidden-reject-field-attrs"
-    onLoad="action-reimbursement-hidden-button-attrs,action-reimbursement-hidden-reject-field-attrs">
+    onNew="action-account-reimbursement-onnew-group"
+    onLoad="action-account-reimbursement-onload-group">
     	<group title="Header" colSpan="4" cols="4">
     		<field name="ref"/>
     		<break/>
@@ -44,6 +44,16 @@
         	</group>
     	</group>
     </form>
+    
+    <action-group name="action-account-reimbursement-onnew-group">
+	    <action name="action-reimbursement-hidden-button-attrs"/>
+	    <action name="action-reimbursement-hidden-reject-field-attrs"/>
+    </action-group>
+    
+    <action-group name="action-account-reimbursement-onload-group">
+	    <action name="action-reimbursement-hidden-button-attrs"/>
+	    <action name="action-reimbursement-hidden-reject-field-attrs"/>
+    </action-group>
     
  	<action-attrs name="action-reimbursement-hidden-button-attrs">
  		<attribute name="hidden" for="validateReimbursement" expr="eval: status?.code != 'tov' "/>

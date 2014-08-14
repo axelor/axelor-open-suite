@@ -44,7 +44,7 @@
     
     <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false"
     onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
-    onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-contractLine-readonly,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
+    onNew="action-account-move-line-onnew-group">
     	<notebook colSpan="4">
 	    	<page title="Informations" colSpan="4">
 	    		<group readonly="true">
@@ -91,7 +91,7 @@
     
     <form name="move-line-accounting-situation-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false" canNew="false"
     onLoad="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-readonly" 
-    onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-contractLine-readonly,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
+    onNew="action-account-move-line-onnew-group">
     	<notebook colSpan="4">
     	<page name="informations" title="Informations" colSpan="4">
 	    	<group readonly="true">
@@ -134,6 +134,14 @@
 	    </page>
         </notebook>
     </form>
+    
+    <action-group name="action-account-move-line-onnew-group">
+	    <action name="action-move-line-attrs-collapse-irrecoverable-group"/>
+	    <action name="action-move-line-attrs-contractLine-readonly"/>
+	    <action name="action-move-line-record-get-move-informations"/>
+	    <action name="action-move-line-record-get-first-move-line-informations"/>
+	    <action name="action-move-line-attrs-hidden-reconcileLists"/>
+    </action-group>
     
     <action-attrs name="action-move-line-attrs-collapse-irrecoverable-group">
 		<attribute name="collapse" for="irrecoverable" expr="eval: irrecoverableStateSelect == null || irrecoverableStateSelect == 0"/>

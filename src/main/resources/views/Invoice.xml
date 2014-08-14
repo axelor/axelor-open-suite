@@ -27,7 +27,7 @@
     </grid>
     
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4" 
-    	onNew="action-invoice-record-default,action-invoice-attrs-collapse-irrecoverable-group,action-invoice-method-get-journal"
+    	onNew="action-account-invoice-onnew-group"
     	onLoad="action-invoice-attrs-collapse-irrecoverable-group">
     	<toolbar>
     		<button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
@@ -246,6 +246,12 @@
         <field name="invoiceDate"/>
         <field name="status"/>
     </grid>
+    
+    <action-group name="action-account-invoice-onnew-group">
+	    <action name="action-invoice-record-default"/>
+	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
+	    <action name="action-invoice-method-get-journal"/>
+    </action-group>
     
 	<!-- ACTION RECORD -->
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">

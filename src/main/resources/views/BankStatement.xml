@@ -14,8 +14,7 @@
      </grid>
   
     <form name="bank-statement-form" cols="4" title="Bank Statement" model="com.axelor.apps.account.db.BankStatement" 
-    onNew="action-bank-statement-active-company,action-bank-statement-set-months,action-bank-statement-set-currency,action-bank-statement-default-status"
-    readonlyIf="statusSelect == 2">
+    onNew="action-account-bank-statement-onnew-group" readonlyIf="statusSelect == 2">
 		<group name="header" colSpan="3" cols="4">
 			<field name="name" colSpan="2" />
 			<break />
@@ -43,6 +42,13 @@
 			<button name="compute" title="Compute" onClick="save,action-bank-statement-method-compute" hideIf="statusSelect == 2"/>
 		</group> 
 	</form>
+ 
+   <action-group name="action-account-bank-statement-onnew-group">
+	   <action name="action-bank-statement-active-company"/>
+	   <action name="action-bank-statement-set-months"/>
+	   <action name="action-bank-statement-set-currency"/>
+	   <action name="action-bank-statement-default-status"/>
+   </action-group>
  
    <action-record model="com.axelor.apps.account.db.BankStatement" name="action-bank-statement-active-company">
        <field name="company" expr="eval:__user__.activeCompany"/>

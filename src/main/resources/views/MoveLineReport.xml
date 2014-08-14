@@ -24,8 +24,8 @@
     </grid>
     
     <form name="move-line-report-form" title="Accounting report" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
-	    onNew="action-move-line-report-default-record,action-move-line-report-date-readonly"
-	    onLoad="action-move-line-report-button-hidden,action-move-line-report-date-readonly"
+	    onNew="action-account-moveline-report-onnew-group"
+	    onLoad="action-account-moveline-report-onload-group"
 	    onSave="action-move-line-report-method-get-sequence">
 	    
 	    <field name="ref" readonly="true"/>
@@ -88,8 +88,8 @@
     </grid>
     
     <form name="move-line-report-export-form" title="Accounting export" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
-	    onNew="action-move-line-report-default-record,action-move-line-report-button-hidden,action-move-line-report-date-readonly"
-	    onLoad="action-move-line-report-button-hidden,action-move-line-report-date-readonly"
+	    onNew="action-account-moveline-report-export-onnew-group"
+	    onLoad="action-account-moveline-report-onload-group"
 	    onSave="action-move-line-report-method-get-sequence">
     	<notebook colSpan="4">
 	    	<page title="Search" colSpan="4">
@@ -116,6 +116,24 @@
 		    </page>
         </notebook>
     </form>
+    
+<!-- 	ACTIO GROUPs -->    
+    
+    <action-group name="action-account-moveline-report-onnew-group">
+	    <action name="action-move-line-report-default-record"/>
+	    <action name="action-move-line-report-date-readonly"/>
+    </action-group>
+    
+    <action-group name="action-account-moveline-report-onload-group">
+	    <action name="action-move-line-report-button-hidden"/>
+	    <action name="action-move-line-report-date-readonly"/>
+    </action-group>
+    
+    <action-group name="action-account-moveline-report-export-onnew-group">
+	    <action name="action-move-line-report-default-record"/>
+	    <action name="action-move-line-report-button-hidden"/>
+	    <action name="action-move-line-report-date-readonly"/>
+    </action-group>
     
 <!--     ACTION ATTRS -->
 	    

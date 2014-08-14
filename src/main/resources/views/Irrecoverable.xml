@@ -10,7 +10,7 @@
     </grid>
     
     <form name="irrecoverable-form" title="Irrecoverable" model="com.axelor.apps.account.db.Irrecoverable" cols="4"
-    	onNew="action-record-irrecoverable-default-record,action-irrecoverable-attrs-hidden" 
+    	onNew="action-account-irrecoverable-onnew-group" 
     	onLoad="action-irrecoverable-attrs-hidden">
         <group title="Header" colSpan="4" cols="4">
         	<field name="name"/>
@@ -40,6 +40,11 @@
         	<field name="moveSet" colSpan="4" showIf="status.code != 'dra'"/>
     	</group>
     </form>
+    
+    <action-group name="action-account-irrecoverable-onnew-group">
+	    <action name="action-record-irrecoverable-default-record"/>
+	    <action name="action-irrecoverable-attrs-hidden"/>
+    </action-group>
     
     <action-attrs name="action-irrecoverable-attrs-hidden">
     	<attribute name="hidden" for="getIrrecoverable" expr="eval: status?.code == 'val'"/>
