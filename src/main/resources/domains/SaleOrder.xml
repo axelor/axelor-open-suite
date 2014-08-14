@@ -42,8 +42,6 @@
 <!--   	Onglet Autres informations -->
 	<many-to-one name="salemanUser" ref="com.axelor.auth.db.User" title="Salesman" massUpdate="true"/>
 	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team" massUpdate="true"/>
-	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
-    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
 	
 <!-- 	Onglet description -->

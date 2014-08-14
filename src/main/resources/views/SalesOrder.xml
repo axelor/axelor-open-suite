@@ -42,7 +42,7 @@
 	    </menubar>
 	    <group colSpan="4" cols="6">
 	        <field name="saleOrderSeq" css="highlight"/>
-	        <field name="project" domain="self.isBusiness = true"/>        
+	        <field name="project" domain="self.isBusiness = true" if-module="axelor-account-organisation"/>        
 	        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-sale-group-onchange-company" />
 	        <field name="externalReference"/>
 	        <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain"/>
@@ -103,8 +103,8 @@
 	                <field name="team" onSelect="action-sale-order-domain-on-team"/>
 	            </group>
 	            <group title="Financial terms" colSpan="2" cols="2">
-	                <field name="paymentMode" domain="self.inOutSelect = 1"/>
-	                <field name="paymentCondition"/>
+	                <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-account-organisation"/>
+	                <field name="paymentCondition" if-module="axelor-account-organisation"/>
 	            </group>
 	            <group title="Marketing" colSpan="2">
 	                <field name="source"/>
