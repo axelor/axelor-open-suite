@@ -95,7 +95,7 @@ public class TrackingNumberService {
 					company.getName(), product.getCode()), IException.CONFIGURATION_ERROR);
 		}
 		
-		String seq = sequenceService.getSequenceNumber(trackingNumberConfiguration.getSequence(), false);
+		String seq = sequenceService.getSequenceNumber(trackingNumberConfiguration.getSequence());
 		
 		trackingNumber.setTrackingNumberSeq(seq);
 		
