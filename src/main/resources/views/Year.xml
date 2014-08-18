@@ -24,11 +24,29 @@
         <separator colSpan="4"/>
 <!--         <field name="reportedBalanceLineList" colSpan="4"/> -->
         <field name="status"/>
-        <button name="close" title="Close fiscal year" colSpan="2" onClick="action-year-check-date,action-year-close-method,save"/>
+        <button name="close" title="Close fiscal year" colSpan="2" onClick="action-group-account-year-close-click"/>
     	<field name="periodDurationSelect" />
-    	<button name="generatePeriods" title="Generate periods" colSpan="2" onClick="action-year-check-date,save,action-year-validate-generate-period,com.axelor.apps.account.web.YearController:generatePeriods,save"/>
+    	<button name="generatePeriods" title="Generate periods" colSpan="2" onClick="action-group-account-year-generateperiod-click"/>
     	<field name="periodList" colSpan="4" />
     </form>
+    
+    <action-group name="action-group-account-year-close-click">
+    	<action name="action-year-check-date"/>
+    	<action name="action-year-close-method"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-account-year-generateperiod-click">
+    	<action name="action-year-check-date"/>
+    	<action name="save"/>
+    	<action name="action-year-validate-generate-period"/>
+    	<action name="action-method-account-year-generate-periods"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-method name="action-method-account-year-generate-periods">
+    	<call class="com.axelor.apps.account.web.YearController" method="generatePeriods"/>
+    </action-method>
     
     <action-record name="action-year-record-new" model="com.axelor.apps.base.db.Year">
     	<field name="status" expr="action:action-status-record-ope"/>
