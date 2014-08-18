@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;
 
@@ -93,7 +94,7 @@ public abstract class AbstractBatch {
 		
 	}
 	
-	protected void start() throws IllegalArgumentException, IllegalAccessException {
+	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
 
 		LOG.info("Début batch {} ::: {}", new Object[]{ model, batch.getStartDate() });
 		

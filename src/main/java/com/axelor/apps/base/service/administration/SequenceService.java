@@ -148,7 +148,7 @@ public class SequenceService {
 	
 	
 	
-	public String getSequenceNumber(Sequence sequence, boolean check)  {
+	public String getSequenceNumber(Sequence sequence)  {
 		
 		return this.getSequenceNumber(sequence, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
 		
