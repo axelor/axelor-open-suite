@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.9.xsd">
 
-	<input file="input/axelor-organisation-wkf.csv" separator="," type="com.axelor.wkf.db.Workflow">
+	<input file="axelor-organisation-wkf.csv" separator="," type="com.axelor.wkf.db.Workflow">
 		<bind column="name" to="name" />
 		<bind column="metaModel" to="metaModel" search="self.name = :metaModel" />
 		<bind to="active" eval="false" />
@@ -11,5 +11,23 @@
 		<bind column="xmlData" to="xmlData" />
 	</input>
 
+	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name"/>
+  	
+  	<input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"  search="self.name = :name">
+        <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
+    </input>
+    
+    <input file="organisation_mobilityChoice.csv" separator=";" type="com.axelor.apps.organisation.db.MobilityChoice"/>
+    
+    <input file="organisation_publicHolidays.csv" separator=";" type="com.axelor.apps.organisation.db.PublicHolidays" />
+    
+    <input file="organisation_publicHolidaysLine.csv" separator=";" type="com.axelor.apps.organisation.db.PublicHolidaysLine" />
+    
+    <input file="organisation_schedule.csv" separator=";" type="com.axelor.apps.organisation.db.Schedule" />
+  	
+  	<input file="organisation_scheduleLine.csv" separator=";" type="com.axelor.apps.organisation.db.ScheduleLine" />
+  	
+  	<input file="organisation_scheduleSubLine.csv" separator=";" type="com.axelor.apps.organisation.db.ScheduleSubLine" />
+  	
 </csv-inputs>
 
