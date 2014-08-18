@@ -1,0 +1,2 @@
+name;object;canRead;canWrite;canCreate;canRemove;canExport;readCondition;readParams;writeCondition;writeParams;createCondition;createParams;removeCondition;removeParams
+perm.account.all;com.axelor.apps.account.db.*;true;true;true;true;true;;;;;;;;
