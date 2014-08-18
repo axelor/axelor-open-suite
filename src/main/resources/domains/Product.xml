@@ -15,7 +15,7 @@
     <string name="internalDescription" large="true" title="Internal description" initParam="true"/>
     <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile"  initParam="true"/>
     <many-to-one name="productCategory" ref="ProductCategory" title="Product category" initParam="true" massUpdate="true"/>
-    <many-to-one name="productFamily" ref="ProductFamily" title="Famly" initParam="true"/>
+    <many-to-one name="productFamily" ref="ProductFamily" title="Family" initParam="true"/>
     <many-to-one name="unit" ref="Unit" title="Unit" initParam="true" massUpdate="true"/>
 
     <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select" initParam="true"/>
