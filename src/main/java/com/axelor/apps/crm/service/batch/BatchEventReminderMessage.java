@@ -29,6 +29,7 @@ import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 
@@ -46,7 +47,7 @@ public class BatchEventReminderMessage extends BatchStrategy {
 	
 	
 	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException {
+	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
 		
 		super.start();
 		

@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.crm.db.TargetConfiguration;
 import com.axelor.apps.crm.service.TargetService;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Injector;
@@ -47,7 +48,7 @@ public class BatchTarget extends BatchStrategy {
 	
 	
 	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException {
+	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
 		
 		super.start();
 		
