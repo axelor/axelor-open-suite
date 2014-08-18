@@ -22,8 +22,11 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.base.db.Company;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Sequence;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -62,31 +65,63 @@ public class PaymentModeService {
 //	}
 	
 	
-	public Account getCompanyAccount(PaymentMode paymentMode,Company company) throws AxelorException{
+	public Account getCompanyAccount(PaymentMode paymentMode, Company company) throws AxelorException{
 		
 		LOG.debug("Récupération du compte comptable du mode de paiement associé à la société :" +
 			" Société : {}, Mode de paiement : {}", new Object[]{ company.getName(),paymentMode.getName() });
 		
-		Account account = null;
+		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company);
 		
-		if(paymentMode.getAccountManagementList() != null && !paymentMode.getAccountManagementList().isEmpty()){
-			
-			for (AccountManagement am : paymentMode.getAccountManagementList()) {
-				if(am.getCompany().equals(company)){
-					
-					account = am.getCashAccount();
-					
-				}
-			}
-			
+		if(accountManagement != null)  {
+			return accountManagement.getCashAccount();
 		}
 		
-		if (account == null) {
-			throw new AxelorException(String.format("Société : %s, Mode de paiement : %S: Compte comptable associé non configuré",
-					company.getName(),paymentMode.getName()), IException.CONFIGURATION_ERROR);
-		}
+		throw new AxelorException(String.format("Société : %s, Mode de paiement : %S: Compte comptable associé non configuré",
+				company.getName(),paymentMode.getName()), IException.CONFIGURATION_ERROR);
 		
-		return account;
 	}
 
+	
+	public AccountManagement getAccountManagement(PaymentMode paymentMode, Company company)  {
+		
+		if(paymentMode.getAccountManagementList() == null)  {  return null;  }
+		
+		for(AccountManagement accountManagement : paymentMode.getAccountManagementList())  {
+			
+			if(accountManagement.getCompany().equals(company))  {
+				
+				return accountManagement;
+				
+			}
+		}
+		
+		return null;
+	}
+	
+	public Sequence getPaymentModeSequence(PaymentMode paymentMode, Company company) throws AxelorException  {
+		
+		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company);
+		
+		if(accountManagement == null || accountManagement.getSequence() == null)  {
+			throw new AxelorException(String.format(
+							"%s :\n Erreur : Veuillez configurer une séquence pour la société %s et le mode de paiement %s",
+							GeneralServiceAccount.getExceptionAccountingMsg(), company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		return accountManagement.getSequence();
+	}
+	
+	public Journal getPaymentModeJournal(PaymentMode paymentMode, Company company) throws AxelorException  {
+		
+		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company);
+		
+		if(accountManagement == null || accountManagement.getJournal() == null)  {
+			throw new AxelorException(String.format(
+							"%s :\n Erreur : Veuillez configurer un journal pour la société %s et le mode de paiement %s",
+							GeneralServiceAccount.getExceptionAccountingMsg(), company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		return accountManagement.getJournal();
+	}
+	
 }

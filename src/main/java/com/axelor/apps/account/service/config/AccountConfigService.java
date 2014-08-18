@@ -222,28 +222,6 @@ public class AccountConfigService {
 		return accountConfig.getMiscOperationJournal();
 	}
 	
-	
-	public Journal getInvoiceDirectDebitJournal(AccountConfig accountConfig) throws AxelorException  {
-		
-		if(accountConfig.getInvoiceDirectDebitJournal() == null)   {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal prélèvement facture pour la société %s",
-					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		return accountConfig.getInvoiceDirectDebitJournal();
-	}
-	
-	
-	public Journal getScheduleDirectDebitJournal(AccountConfig accountConfig) throws AxelorException  {
-		
-		if(accountConfig.getScheduleDirectDebitJournal() == null)   {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal prélèvement échéancier pour la société %s",
-					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		return accountConfig.getScheduleDirectDebitJournal();
-	}
-	
 	public Journal getReimbursementJournal(AccountConfig accountConfig) throws AxelorException  {
 		
 		if(accountConfig.getReimbursementJournal() == null)   {

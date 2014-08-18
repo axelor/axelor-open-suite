@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -37,6 +38,9 @@ public class PaymentVoucherSequenceService  {
 	
 	@Inject
 	private SequenceService sequenceService;
+	
+	@Inject
+	private PaymentModeService paymentModeService;
 	
 	
 	
@@ -53,20 +57,10 @@ public class PaymentVoucherSequenceService  {
 	public String getReference(PaymentVoucher paymentVoucher) throws AxelorException  {
 			
 		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
+		Company company = paymentVoucher.getCompany();
 		
-		Journal bankJournal = paymentMode.getBankJournal();
 		
-		if(bankJournal == null)  {
-			throw new AxelorException(String.format("%s :\n Merci de paramétrer un journal pour le mode de paiement {}", 
-					GeneralServiceAccount.getExceptionAccountingMsg(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		if(bankJournal.getSequence() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de saisie paiement pour la société %s et le journal %s.", 
-					GeneralServiceAccount.getExceptionAccountingMsg(), paymentVoucher.getCompany().getName(), paymentMode.getBankJournal().getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		return sequenceService.getSequenceNumber(bankJournal.getSequence(), false);
+		return sequenceService.getSequenceNumber(paymentModeService.getPaymentModeSequence(paymentMode, company));
 	}
 	
 	

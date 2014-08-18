@@ -31,8 +31,6 @@
 	                <field name="customerCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 	                <field name="supplierPurchaseJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 	                <field name="supplierCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-	                <field name="scheduleDirectDebitJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-	                <field name="invoiceDirectDebitJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 	                <field name="rejectJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 	                <field name="reimbursementJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 	                <field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company"/>

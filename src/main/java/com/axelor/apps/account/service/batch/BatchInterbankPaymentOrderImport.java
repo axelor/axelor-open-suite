@@ -56,7 +56,7 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 	}
 
 	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException {
+	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
 	
 		super.start();
 		

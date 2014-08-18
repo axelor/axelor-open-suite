@@ -12,6 +12,9 @@
 	<one-to-many name="analyticAccountManagementList" ref="AnalyticAccountManagement" mappedBy="accountManagement" title="Analytic accounts"/>
 	
     <many-to-one  name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
+    <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
+   	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
+    
     
   </entity>
   

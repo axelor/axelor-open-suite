@@ -58,7 +58,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 	}
 
 	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException {
+	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
 	
 		super.start();
 		
@@ -71,6 +71,8 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 
 		paymentScheduleExportService.setSepa(sepa);
 		cfonbExportService.setSepa(sepa);
+		
+		paymentScheduleExportService.checkDirectDebitSequence(company);
 		
 		switch (batch.getAccountingBatch().getDirectDebitExportTypeSelect()) {
 		

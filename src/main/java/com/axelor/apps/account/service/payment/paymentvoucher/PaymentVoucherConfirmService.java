@@ -104,7 +104,7 @@ public class PaymentVoucherConfirmService  {
 		Partner payerPartner = paymentVoucher.getPartner();
 		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
 		Company company = paymentVoucher.getCompany();
-		Journal journal = paymentMode.getBankJournal();
+		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
 		LocalDate paymentDate = paymentVoucher.getPaymentDateTime().toLocalDate();
 		
 		boolean scheduleToBePaid = false;
@@ -137,7 +137,7 @@ public class PaymentVoucherConfirmService  {
 		if(paymentVoucher.getMoveLine() == null || (paymentVoucher.getMoveLine() != null && !allRight) || (scheduleToBePaid && !allRight && paymentVoucher.getMoveLine() != null))  {
 		
 			//Manage all the cases in the same way. As if a move line (Excess payment) is selected, we cancel it first
-			Move move = moveService.createMove(paymentVoucher.getPaymentMode().getBankJournal(),company,null,payerPartner, paymentDate, paymentMode, paymentVoucher.getCashRegister());
+			Move move = moveService.createMove(journal, company, null, payerPartner, paymentDate, paymentMode, paymentVoucher.getCashRegister());
 			
 			move.setPaymentVoucher(paymentVoucher);
 			

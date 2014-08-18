@@ -17,8 +17,6 @@
     <many-to-one name="customerCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title=" Cust. Credit note Journal"/>
     <many-to-one name="supplierPurchaseJournal" ref="com.axelor.apps.account.db.Journal" title="Supplier Purchase Journal"/>
     <many-to-one name="supplierCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title="Suppl. Credit Note Journal"/>
-    <many-to-one name="invoiceDirectDebitJournal" ref="com.axelor.apps.account.db.Journal" title="Invoice Direct Debit Journal"/>
-    <many-to-one name="scheduleDirectDebitJournal" ref="com.axelor.apps.account.db.Journal" title="DD Payment Smoothing Journal"/>
     <many-to-one name="rejectJournal" ref="com.axelor.apps.account.db.Journal" title="Rejects journal"/>
     <many-to-one name="accountClearanceJournal" ref="com.axelor.apps.account.db.Journal" title="Account clearance journal"/>
    	<many-to-one name="reimbursementJournal" ref="com.axelor.apps.account.db.Journal" title="Reimbursement Journal"/>

@@ -55,22 +55,22 @@ public class MoveService {
 	private static final Logger LOG = LoggerFactory.getLogger(MoveService.class);
 	
 	@Inject
-	private PeriodService ps;
+	private PeriodService periodService;
 	
 	@Inject
-	private MoveLineService mls;
+	private MoveLineService moveLineService;
 	
 	@Inject
 	private SequenceService sequenceService;
 	
 	@Inject
-	private PaymentService pas;
+	private PaymentService paymentService;
 	
 	@Inject
-	private ReconcileService rs;
+	private ReconcileService reconcileService;
 	
 	@Inject
-	private AccountCustomerService acs;
+	private AccountCustomerService accountCustomerService;
 	
 	@Inject
 	private AccountConfigService accountConfigService;
@@ -154,7 +154,7 @@ public class MoveService {
 		move.setIgnoreInReminderOk(ignoreInReminderOk);
 		move.setIgnoreInAccountingOk(ignoreInAccountingOk);
 		
-		Period period = ps.rightPeriod(date, company);
+		Period period = periodService.rightPeriod(date, company);
 			
 		move.setPeriod(period);
 		move.setDate(date);
@@ -211,7 +211,7 @@ public class MoveService {
 				
 				boolean isMinus = this.isMinus(invoice);
 				
-				move.getMoveLineList().addAll(mls.createMoveLines(invoice, move, company, partner, account, consolidate, isPurchase, isDebitCustomer, isMinus));
+				move.getMoveLineList().addAll(moveLineService.createMoveLines(invoice, move, company, partner, account, consolidate, isPurchase, isDebitCustomer, isMinus));
 				
 				move.save();
 
@@ -361,10 +361,10 @@ public class MoveService {
 	 */
 	public MoveLine getInvoiceCustomerMoveLineByLoop(Invoice invoice) throws AxelorException  {
 		if(this.isDebitCustomer(invoice))  {
-			return mls.getDebitCustomerMoveLine(invoice);
+			return moveLineService.getDebitCustomerMoveLine(invoice);
 		}
 		else  {
-			return mls.getCreditCustomerMoveLine(invoice);
+			return moveLineService.getCreditCustomerMoveLine(invoice);
 		}
 	}
 	
@@ -508,14 +508,14 @@ public class MoveService {
 		// Récupération des dûs
 		MoveLine invoiceCustomerMoveLine = this.getCustomerMoveLineByLoop(invoice);
 
-		List<MoveLine> debitMoveLines = pas.getInvoiceDue(invoice, true); //TODO ajouter parametrage general
+		List<MoveLine> debitMoveLines = paymentService.getInvoiceDue(invoice, true); //TODO ajouter parametrage general
 
 		if(debitMoveLines != null && debitMoveLines.size() != 0)  {
 			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
 			if(this.isSameAccount(debitMoveLines, invoice.getPartnerAccount()))  {
 				List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
 				creditMoveLineList.add(invoiceCustomerMoveLine);
-				pas.useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLineList);
+				paymentService.useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLineList);
 			}
 			// Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les trop-perçus
 			else  {
@@ -523,7 +523,7 @@ public class MoveService {
 			}
 
 			// Gestion du passage en 580
-			rs.balanceCredit(invoiceCustomerMoveLine, company, true);
+			reconcileService.balanceCredit(invoiceCustomerMoveLine, company, true);
 
 			BigDecimal remainingPaidAmount = invoiceCustomerMoveLine.getAmountRemaining();
 			// Si il y a un restant à payer, alors on crée un trop-perçu.
@@ -547,7 +547,7 @@ public class MoveService {
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		
 		// Récupération des trop-perçus
-		List<MoveLine> creditMoveLineList = pas.getExcessPayment(invoice, accountConfigService.getCustomerAccount(accountConfig));
+		List<MoveLine> creditMoveLineList = paymentService.getExcessPayment(invoice, accountConfigService.getCustomerAccount(accountConfig));
 		
 		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 			
@@ -561,7 +561,7 @@ public class MoveService {
 			if(this.isSameAccount(creditMoveLineList, account))  {
 				List<MoveLine> debitMoveLineList = new ArrayList<MoveLine>();
 				debitMoveLineList.add(invoiceCustomerMoveLine);
-				pas.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
+				paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
 			}
 			// Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les trop-perçus
 			else  {
@@ -575,18 +575,18 @@ public class MoveService {
 					BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit()); 
 					
 					// Création de la ligne au crédit
-					MoveLine creditMoveLine =  mls.createMoveLine(move , partner, account , amount, false, false, toDay, 1, null);
+					MoveLine creditMoveLine =  moveLineService.createMoveLine(move , partner, account , amount, false, false, toDay, 1, null);
 					move.getMoveLineList().add(creditMoveLine);
 					
 					// Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de l'eau
-					pas.useExcessPaymentWithAmountConsolidated(creditMoveLineList, amount, move, 2, partner,
+					paymentService.useExcessPaymentWithAmountConsolidated(creditMoveLineList, amount, move, 2, partner,
 							 company, account, invoice.getInvoiceDate(), invoice.getDueDate());
 						
 					this.validateMove(move);
 					
 					//Création de la réconciliation
-					Reconcile reconcile = rs.createReconcile(invoiceCustomerMoveLine, creditMoveLine, amount);
-					rs.confirmReconcile(reconcile);
+					Reconcile reconcile = reconcileService.createReconcile(invoiceCustomerMoveLine, creditMoveLine, amount);
+					reconcileService.confirmReconcile(reconcile);
 				}
 			}
 
@@ -664,17 +664,17 @@ public class MoveService {
 			BigDecimal amount = totalDebitAmount.min(invoiceCustomerMoveLine.getCredit()); 
 			
 			// Création de la ligne au débit
-			MoveLine debitMoveLine =  mls.createMoveLine(oDmove , partner, account , amount, true, false, toDay, 1, null);
+			MoveLine debitMoveLine =  moveLineService.createMoveLine(oDmove , partner, account , amount, true, false, toDay, 1, null);
 			oDmove.getMoveLineList().add(debitMoveLine);
 			
 			// Emploie des dûs sur les lignes de credit qui seront créées au fil de l'eau
-			pas.createExcessPaymentWithAmount(debitMoveLines, amount, oDmove, 2, partner, company, null, account, toDay);
+			paymentService.createExcessPaymentWithAmount(debitMoveLines, amount, oDmove, 2, partner, company, null, account, toDay);
 			
 			this.validateMove(oDmove);
 			
 			//Création de la réconciliation
-			Reconcile reconcile = rs.createReconcile(debitMoveLine, invoiceCustomerMoveLine, amount);
-			rs.confirmReconcile(reconcile);
+			Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, invoiceCustomerMoveLine, amount);
+			reconcileService.confirmReconcile(reconcile);
 		}
 		return oDmove;
 	}
@@ -700,7 +700,7 @@ public class MoveService {
 		
 		Move excessMove = this.createMove(journal, company, refund, partner, null);
 		
-		MoveLine debitMoveLine = mls.createMoveLine(excessMove,
+		MoveLine debitMoveLine = moveLineService.createMoveLine(excessMove,
 				partner,
 				account,
 				amount,
@@ -711,7 +711,7 @@ public class MoveService {
 				null);
 		excessMove.getMoveLineList().add(debitMoveLine);
 		
-		MoveLine creditMoveLine = mls.createMoveLine(excessMove,
+		MoveLine creditMoveLine = moveLineService.createMoveLine(excessMove,
 				partner,
 				account,
 				amount,
@@ -725,8 +725,8 @@ public class MoveService {
 		this.validateMove(excessMove);
 		
 		//Création de la réconciliation
-		Reconcile reconcile = rs.createReconcile(debitMoveLine, invoiceCustomerMoveLine, amount);
-		rs.confirmReconcile(reconcile);
+		Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, invoiceCustomerMoveLine, amount);
+		reconcileService.confirmReconcile(reconcile);
 	}
 	
 	
@@ -818,7 +818,7 @@ public class MoveService {
 					journal.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		move.setReference(sequenceService.getSequenceNumber(journal.getSequence(), false));
+		move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
 		
 		this.validateEquiponderanteMove(move);
 		
@@ -839,7 +839,7 @@ public class MoveService {
 	
 	public void flagPartners(Move move)  {
 		
-		acs.flagPartners(acs.getPartnerOfMove(move), move.getCompany());
+		accountCustomerService.flagPartners(accountCustomerService.getPartnerOfMove(move), move.getCompany());
 		
 	}
 	
@@ -855,7 +855,7 @@ public class MoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateCustomerAccount(Move move)  {
 		
-		acs.updatePartnerAccountingSituation(acs.getPartnerOfMove(move), move.getCompany(), true, true, false);
+		accountCustomerService.updatePartnerAccountingSituation(accountCustomerService.getPartnerOfMove(move), move.getCompany(), true, true, false);
 	}
 	
 	
@@ -971,7 +971,7 @@ public class MoveService {
 				isDebit = false;
 				amount = line.getDebit();
 			}
-			moveLines.add(mls.createMoveLine(newMove, newMove.getPartner(), line.getAccount(), amount, isDebit, false, null, 0, null));
+			moveLines.add(moveLineService.createMoveLine(newMove, newMove.getPartner(), line.getAccount(), amount, isDebit, false, null, 0, null));
 		}
 		newMove.setMoveLineList(moveLines);
 		return newMove.save();

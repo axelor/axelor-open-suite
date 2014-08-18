@@ -32,6 +32,8 @@
         	</page>
         	<page name="paymentModePage" title="Payment mode" cols="2">
      			<field name="paymentMode" colSpan="2"/>
+     			<field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
+				<field name="sequence" domain="self.company = :company"/>
         	</page>
         </notebook>
     </form>
@@ -72,6 +74,8 @@
     	<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
         <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
         <field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" />
+        <field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
+		<field name="sequence" domain="self.company = :company"/>
     </form>
     
     <!-- ACTION RECORD -->

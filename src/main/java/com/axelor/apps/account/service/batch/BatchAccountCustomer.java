@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 
@@ -44,7 +45,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 	
 	
 	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException {
+	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
 		
 		super.start();
 		
