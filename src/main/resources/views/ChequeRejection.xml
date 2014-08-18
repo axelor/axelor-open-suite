@@ -25,7 +25,7 @@
         	<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
     	</group>
     	<group title="Payment Rejected" colSpan="4" cols="4">
-        	<field name="paymentVoucher" onChange="action-cheque-rejection-record-amount-rejected,action-cheque-rejection-record-partner" onSelect="action-cheque-rejection-attrs-domain-payment-voucher" domain="self.company=:company">
+        	<field name="paymentVoucher" onChange="action-group-account-cheque-rejection-paymentvoucher-onchange" onSelect="action-cheque-rejection-attrs-domain-payment-voucher" domain="self.company=:company">
             	<grid orderBy="-paymentDateTime" title="Payment voucher">
                 	<field name="ref"/>
                 	<field name="user"/>
@@ -45,7 +45,7 @@
         	<field name="description"/>
     	</group>
     	<group title="Action" colSpan="4" cols="4">
-        	<button name="validateChequeRejection" title="Validate reject" colSpan="2" onClick="save,com.axelor.apps.account.web.ChequeRejectionController:validateChequeRejection"/>
+        	<button name="validateChequeRejection" title="Validate reject" colSpan="2" onClick="action-group-account-cheque-rejection-validate-click"/>
         	<field name="status"/>
         	<field name="move"/>
     	</group>
@@ -55,6 +55,20 @@
 	    <action name="default-cheque-rejection-record"/>
 	    <action name="action-cheque-rejection-attrs-hidden-after-validated"/>
     </action-group>
+    
+    <action-group name="action-group-account-cheque-rejection-paymentvoucher-onchange">
+    	<action name="action-cheque-rejection-record-amount-rejected"/>
+    	<action name="action-cheque-rejection-record-partner"/>
+    </action-group>
+    
+    <action-group name="action-group-account-cheque-rejection-validate-click">
+    	<action name="save"/>
+    	<action name="action-method-account-cheque-rejection-validate"/>
+    </action-group>
+    
+    <action-method name="action-method-account-cheque-rejection-validate">
+    	<call class="com.axelor.apps.account.web.ChequeRejectionController" method="validateChequeRejection"/>
+    </action-method>
     
     <action-attrs name="action-cheque-rejection-attrs-domain-payment-voucher">
       	<attribute name="domain" for="paymentVoucher" expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode.id = ${paymentMode?.id} and self.base.id = ${partner?.id}&quot;" if="eval: partner != null"/>

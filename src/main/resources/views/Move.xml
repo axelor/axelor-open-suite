@@ -61,8 +61,8 @@
 					        <break/>
 					        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
 			    		    <break/>
-					        <field name="debit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
-					        <field name="credit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
+					        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
+					        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 					        <field name="amountPaid"/>
 					        <field name="amountRemaining"/>
 					        <field name="interbankCodeLine"/>
@@ -86,7 +86,7 @@
 	        <group title="Actions" colSpan="4" cols="6">
 	            <field name="state" readonly="true"/>
 	            <field name="validationDate" readonly="true"/>
-	            <button name="validate" title="Validate" colSpan="2" onClick="save,action-move-record-draft-sequence,save,action-move-method-validate,action-move-attrs-status,save"/>
+	            <button name="validate" title="Validate" colSpan="2" onClick="action-group-account-move-validate-click"/>
 	        </group>
         
         </page>
@@ -130,6 +130,15 @@
 		<action name="action-move-line-record-get-move-informations"/>
 		<action name="action-move-line-record-get-first-move-line-informations"/>
 		<action name="action-move-line-attrs-hidden-reconcileLists"/>
+	</action-group>
+	
+	<action-group name="action-group-account-move-validate-click">
+		<action name="save"/>
+		<action name="action-move-record-draft-sequence"/>
+		<action name="save"/>
+		<action name="action-move-method-validate"/>
+		<action name="action-move-attrs-status"/>
+		<action name="save"/>
 	</action-group>
 	   
    	<!-- ACTION RECORD -->

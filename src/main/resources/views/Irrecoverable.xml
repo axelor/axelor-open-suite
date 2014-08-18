@@ -33,7 +33,7 @@
     	</group>
     	<group title="Irrecoverable Execution" colSpan="4" cols="4">
         	<group title="Action" colSpan="4" cols="4">
-            	<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:passInIrrecoverable,action-irrecoverable-attrs-hidden"/>
+            	<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="action-group-account-irrecoverable-passin-click"/>
             	<button name="showTraceBack" title="Anomalies" onClick="save,action-irrecoverable-show-trace-back" colSpan="2"/>
             	<field name="status"/>
         	</group>
@@ -45,6 +45,16 @@
 	    <action name="action-record-irrecoverable-default-record"/>
 	    <action name="action-irrecoverable-attrs-hidden"/>
     </action-group>
+    
+    <action-group name="action-group-account-irrecoverable-passin-click">
+    	<action name="save"/>
+    	<action name="action-method-account-irrecoverable-pass-in"/>
+    	<action name="action-irrecoverable-attrs-hidden"/>
+    </action-group>
+    
+    <action-method name="action-method-account-irrecoverable-pass-in">
+    	<call class="com.axelor.apps.account.web.IrrecoverableController" method="passInIrrecoverable"/>
+    </action-method>
     
     <action-attrs name="action-irrecoverable-attrs-hidden">
     	<attribute name="hidden" for="getIrrecoverable" expr="eval: status?.code == 'val'"/>

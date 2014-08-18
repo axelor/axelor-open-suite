@@ -31,7 +31,7 @@
 			<field name="hasAutoInput" />
 		</group>
         <group title="Actions" colSpan="1" cols="1">
-            <button name="confirmPaymentVoucher" title="Confirm payment" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:confirmPaymentVoucher,action-attrs-payment-voucher-readonly-status"/>
+            <button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click"/>
             <button name="showMoveLines" title="Show move lines" onClick="com.axelor.apps.account.web.PaymentVoucherControllerSimple:showMoveLines"/>
             <button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
         </group>
@@ -40,16 +40,16 @@
 			<group title="To pay" colSpan="2" cols="3" colWidths="15%,40%,5%">
 				<field name="invoiceToPay"
 					onSelect="action-payment-voucher-domain-on-invoice-to-pay" 
-					onChange="action-paymentVoucherInvoice-onChange,action-pv-hide-rejectToPay,action-pv-moveLine-domain-1,action-payment-voucher-company-onChange"
+					onChange="action-group-account-payment-voucher-invoicetopay-onchange"
 					form-view="invoice-form" grid-view="invoice-grid" />
 				<label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="1" />
 				<field name="rejectToPay" title="Reject to pay" 
 					onSelect="action-payment-voucher-domain-on-reject-to-pay" 
-					onChange="action-pv-hide-invoiceToPay,action-paymentVoucherRejectToPay-onChange,action-pv-moveLine-domain-3,action-payment-voucher-company-onChange"/>
+					onChange="action-group-account-payment-voucher-rejecttopay-onchange"/>
 			</group>
 	        <group title="Payer" colSpan="2" cols="2" colWidths="20%,80%">
 	                <field name="partner"  onSelect="action-payment-voucher-set-partner-domain" onChange="action-pv-moveLine-domain-4" form-view="partner-form" grid-view="partner-grid"/>
-	                <field name="paymentMode" onSelect="action-set-payment-mode-domain" widget="SuggestBox" onChange="action-pv-attrs-hidden-bankCardTransactionNumber,action-pv-hide-confirm-button,action-attrs-payment-voucher-hidden-receipt,action-attrs-payment-voucher-readonly-status"/>
+	                <field name="paymentMode" onSelect="action-set-payment-mode-domain" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange"/>
 	       			<field name="currency"/>
 	        </group>
 		</group>
@@ -77,7 +77,7 @@
 				<button name="validateEmail" title="Validate" colSpan="2" onClick="save,com.axelor.apps.account.web.PayboxController:addPayboxEmail,save" />
 				<field name="defaultEmailOk" />
 			</group>
-			<button name="paybox" title="Paybox" colSpan="2" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum,action-payment-voucher-attrs-hidden-paybox-email,com.axelor.apps.account.web.PayboxController:paybox" />
+			<button name="paybox" title="Paybox" colSpan="2" onClick="action-group-account-payment-voucher-paybox-onclick" />
 			<field name="bankCardTransactionNumber" />
 			<field name="payboxPaidOk" onChange="action-pv-hide-confirm-button,action-attrs-payment-voucher-readonly-status" />
 		</group>
@@ -114,6 +114,52 @@
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
 	    <action name="action-payment-voucher-hidden-fields-if-purchase"/>
     </action-group>
+    
+    <action-group name="action-group-account-payment-voucher-confirm-click">
+    	<action name="save"/>
+    	<action name="action-method-account-payment-voucher-confirm"/>
+    	<action name="action-attrs-payment-voucher-readonly-status"/>
+    </action-group>
+    
+    <action-group name="action-group-account-payment-voucher-invoicetopay-onchange">
+    	<action name="action-paymentVoucherInvoice-onChange"/>
+    	<action name="action-pv-hide-rejectToPay"/>
+    	<action name="action-pv-moveLine-domain-1"/>
+    	<action name="action-payment-voucher-company-onChange"/>
+    </action-group>
+    
+    <action-group name="action-group-account-payment-voucher-rejecttopay-onchange">
+    	<action name="action-pv-hide-invoiceToPay"/>
+    	<action name="action-paymentVoucherRejectToPay-onChange"/>
+    	<action name="action-pv-moveLine-domain-3"/>
+    	<action name="action-payment-voucher-company-onChange"/>
+    </action-group>
+    
+    <action-group name="action-group-account-payment-voucher-paymentmode-onchange">
+    	<action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
+    	<action name="action-pv-hide-confirm-button"/>
+    	<action name="action-attrs-payment-voucher-hidden-receipt"/>
+    	<action name="action-attrs-payment-voucher-readonly-status"/>
+    </action-group>
+    
+    <action-group name="action-group-account-payment-voucher-paybox-onclick">
+    	<action name="save"/>
+    	<action name="action-method-account-payment-voucher-set-num"/>
+    	<action name="action-payment-voucher-attrs-hidden-paybox-email"/>
+    	<action name="action-method-account-payment-voucher-paybox"/>
+    </action-group>
+    
+    <action-method name="action-method-account-payment-voucher-paybox">
+    	<call class="com.axelor.apps.account.web.PayboxController" method="paybox"/>
+    </action-method>
+    
+    <action-method name="action-method-account-payment-voucher-set-num">
+    	<call class="com.axelor.apps.account.web.PaymentVoucherController" method="paymentVoucherSetNum"/>
+    </action-method>
+    
+    <action-method name="action-method-account-payment-voucher-confirm">
+    	<call class="com.axelor.apps.account.web.PaymentVoucherController" method="confirmPaymentVoucher"/>
+    </action-method>
     
  	<action-record name="action-record-fill-date-time-pv" model="com.axelor.apps.account.db.PaymentVoucher">
    		<field name="paymentDateTime" expr="action:action-payment-voucher-getDateTime" if="id == null"/>

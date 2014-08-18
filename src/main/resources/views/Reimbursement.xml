@@ -31,7 +31,7 @@
             	<field name="status"/>
        		</group>
         	<group colSpan="2" cols="2">
-            	<button name="validateReimbursement" title="Validate" onClick="com.axelor.apps.account.web.ReimbursementController:validateReimbursement,action-reimbursement-hidden-button-attrs,save"/>  
+            	<button name="validateReimbursement" title="Validate" onClick="action-group-account-reimbursement-validate-click"/>  
         	</group>
     	</group>
     	<field name="moveLineSet" colSpan="4" hideIf="status == null || status.code == 'dra'"/>
@@ -54,6 +54,16 @@
 	    <action name="action-reimbursement-hidden-button-attrs"/>
 	    <action name="action-reimbursement-hidden-reject-field-attrs"/>
     </action-group>
+    
+    <action-group name="action-group-account-reimbursement-validate-click">
+    	<action name="action-method-account-reimbursement-validate"/>
+	    <action name="action-reimbursement-hidden-button-attrs"/>
+	    <action name="save"/>
+    </action-group>
+    
+    <action-method name="action-method-account-reimbursement-validate">
+    	<call class="com.axelor.apps.account.web.ReimbursementController" method="validateReimbursement"/>
+    </action-method>
     
  	<action-attrs name="action-reimbursement-hidden-button-attrs">
  		<attribute name="hidden" for="validateReimbursement" expr="eval: status?.code != 'tov' "/>
