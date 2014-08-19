@@ -66,7 +66,7 @@
 	                <field name="purchaseOrderLineTaxList" showTitle="false" colSpan="2"/>
 	                <group title="Action(s)" colSpan="2" cols="2">
 	                    <group colSpan="1" cols="1">
-	                        <button name="compute" title="Compute" hideIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="save,action-purchase-order-method-compute,save"/>
+	                        <button name="compute" title="Compute" hideIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-group-purchase-purchase-order-compute-click"/>
 	                        <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="1" onClick="action-purchase-order-record-draft,save"/>
 	                        <button name="requested" title="Requested" showIf="statusSelect == 1" colSpan="1" onClick="action-purchase-order-record-requested,save"/>
 	                        <button name="receipt" title="Receipt" showIf="statusSelect == 2" colSpan="1" onClick="action-purchase-order-record-receipt,save"/>
@@ -129,6 +129,12 @@
     	<action name="action-purchase-order-create-stock-move"/>
     	<action name="action-purchase-order-record-validate"/>
     	<action name="action-sale-order-method-validate-supplier"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-purchase-purchase-order-compute-click">
+    	<action name="save"/>
+    	<action name="action-purchase-order-method-compute"/>
     	<action name="save"/>
     </action-group>
      

@@ -35,11 +35,11 @@
     </grid>
     
     <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" cols="4" colWidths="400,*"
-    onNew="action-purchase-order-line-record-new,action-purchase-order-line-attrs-hide-product-variant"
-    onLoad="action-purchase-order-line-attrs-task-readonly,action-purchase-order-line-attrs-hide-product-variant">
-	    <field name="product" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-attrs-hide-product-variant" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
+    onNew="action-group-purchase-purchase-orderline-onnew"
+    onLoad="action-group-purchase-purchase-orderline-onload">
+	    <field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
 	    <field name="productName"/>
-	    <field name="qty" onChange="action-purchase-order-line-method-get-discount,action-purchase-order-line-method-compute"/>
+	    <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
 	    <field name="unit"/>
 	    <field name="price" onChange="action-purchase-order-line-method-compute,save">
 	    	<hilite color="danger" if="salePrice &lt; saleMinPrice"/>
@@ -67,7 +67,7 @@
 	            <field name="task" if-module="axelor-account-organisation"/>    
 	        </page>
 	        <page title="Suppliers requests" colSpan="4" cols="4" if-module="axelor-suppliermanagement">
-	        	<button name="generateSuppliersRequests" title="Generate suppliers requests" colSpan="2" onClick="save,action-purchase-order-line-method-generate-suppliers-requests,save"/>
+	        	<button name="generateSuppliersRequests" title="Generate suppliers requests" colSpan="2" onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
 	        	<field name="supplierPartner"/>
 	        	<field name="purchaseOrderSupplierLineList" colSpan="4" grid-view="purchase-order-supplier-line-grid" form-view="purchase-order-supplier-line-form"/>
 	        </page>
@@ -81,6 +81,34 @@
 	    </notebook>       
 	</form>
 	
+	<!-- ACTION GROUPs -->
+	
+	<action-group name="action-group-purchase-purchase-orderline-onnew">
+		<action name="action-purchase-order-line-record-new"/>
+		<action name="action-purchase-order-line-attrs-hide-product-variant"/>
+	</action-group>
+	
+	<action-group name="action-group-purchase-purchase-orderline-onload">
+		<action name="action-purchase-order-line-attrs-task-readonly"/>
+		<action name="action-purchase-order-line-attrs-hide-product-variant"/>
+	</action-group>
+	
+	<action-group name="action-group-purchase-purchase-orderline-product-onchange">
+		<action name="action-purchase-order-line-method-get-product-information"/>
+		<action name="action-purchase-order-line-method-compute"/>
+		<action name="action-purchase-order-line-attrs-hide-product-variant"/>
+	</action-group>
+	
+	<action-group name="action-group-purchase-purchase-orderline-qty-onchange">
+		<action name="action-purchase-order-line-method-get-discount"/>
+		<action name="action-purchase-order-line-method-compute"/>
+	</action-group>
+	
+	<action-group name="action-group-purchase-purchase-orderline-generate-supplierreq-click">
+		<action name="save"/>
+		<action name="action-purchase-order-line-method-generate-suppliers-requests"/>
+		<action name="save"/>
+	</action-group>
 	
 	<!-- ACTION RECORD -->
 	
