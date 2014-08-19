@@ -34,7 +34,7 @@
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move"/>
-        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.stock.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" readonlyIf="typeSelect != 2"/>
     </grid>
     
     <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
@@ -52,12 +52,12 @@
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move"/>
-        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.stock.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" readonlyIf="typeSelect != 2"/>
     </grid>
     
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" cols="4"
-    	onNew="action-stock-move-record-new,action-stock-move-attrs-hide-button-generate-invoice"
-    	onLoad="action-stock-move-attrs-hide-button-generate-invoice,action-stock-move-attrs-canceled-read-only,action-stock-move-group-read-only">
+    	onNew="action-group-stock-stockmove-onnew"
+    	onLoad="action-group-stock-stockmove-onload">
         <field name="typeSelect"/>
         <field name="statusSelect" widget="NavSelect"/>
         <group colSpan="4" cols="6">
@@ -78,14 +78,14 @@
         		<field name="isWithBackorder" />
     		</group>
     		<group title="Action(s)" colSpan="2" cols="2">
-            	<button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="save,action-stock-move-method-plan,action-stock-move-group-read-only,save"/>
-				<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-check-stock-move-line-real-qty,action-stock-move-method-realize,action-stock-move-group-read-only,action-stock-move-attrs-hide-button-generate-invoice,save"/>
-				<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-method-cancel,action-stock-move-attrs-canceled-read-only,save"/>
-	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
+            	<button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="action-group-stock-stockmove-plan-click"/>
+				<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="action-group-stock-stockmove-realize-click"/>
+				<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="action-group-stock-stockmove-cancel-click"/>
+	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
             	<button name="generateInvoice" title="Generate invoice" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain"/>
             	<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion"/>
             	<button name="printStockMove" title=" Print" onClick="save,action-print-stock-move" icon="fa-print"/>
-            	<button name="viewDirection" title="View Direction" colSpan="1" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.stock.web.StockMoveController:viewDirection" showIf="typeSelect == 2"/>
+            	<button name="viewDirection" title="View Direction" colSpan="1" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" showIf="typeSelect == 2"/>
         	</group>
     	</group>
     	<break/>
@@ -128,6 +128,46 @@
     	<action name="action-stock-move-attrs-validated-read-only" if="statusSelect == 3"/>
     </action-group>
     
+    <action-group name="action-group-stock-stockmove-onnew">
+    	<action name="action-stock-move-record-new"/>
+    	<action name="action-stock-move-attrs-hide-button-generate-invoice"/>
+    </action-group>
+    
+    <action-group name="action-group-stock-stockmove-onload">
+    	<action name="action-stock-move-attrs-hide-button-generate-invoice"/>
+    	<action name="action-stock-move-attrs-canceled-read-only"/>
+    	<action name="action-stock-move-group-read-only"/>
+    </action-group>
+
+	<action-group name="action-group-stock-stockmove-plan-click">
+	 	<action name="save"/>
+	  	<action name="action-stock-move-method-plan"/>
+	  	<action name="action-stock-move-group-read-only"/>
+	  	<action name="save"/>
+	</action-group>
+    
+	<action-group name="action-group-stock-stockmove-realize-click">
+	  	<action name="save"/>
+    	<action name="action-stock-move-check-stock-move-line-real-qty"/>
+    	<action name="action-stock-move-method-realize"/>
+    	<action name="action-stock-move-group-read-only"/>
+    	<action name="action-stock-move-attrs-hide-button-generate-invoice"/>    	    	    	
+    	<action name="save"/>
+	</action-group>
+	
+	<action-group name="action-group-stock-stockmove-cancel-click">
+	  	<action name="save"/>
+    	<action name="action-stock-move-method-cancel"/>
+    	<action name="action-stock-move-attrs-canceled-read-only"/>
+    	<action name="save"/>
+    </action-group>
+
+  	<action-group name="action-group-stock-stockmove-draft-click">
+	  	<action name="save"/>
+    	<action name="action-stock-move-record-draft"/>
+    	<action name="save"/>
+  	</action-group>
+
     <action-attrs name="action-stock-move-attrs-planned-read-only">
     	<attribute name="readonly" for="typeSelect" expr="true"/>
     	<attribute name="readonly" for="company" expr="true"/>
@@ -207,6 +247,10 @@
 	
 	<action-method name="action-stock-move-method-generate-reversion">
 	    <call class="com.axelor.apps.stock.web.StockMoveController" method="generateReversion"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-method-view-direction">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="viewDirection"/>
 	</action-method>
 	
 	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">

@@ -29,9 +29,14 @@
         	<break/>
         	<group colSpan="1">
         	</group>
-        	<button name="validate" title="Validate" onClick="action-location-method-create-inventory,action-location-view-inventory" colSpan="4"/>
+        	<button name="validate" title="Validate" onClick="action-group-stock-createinventory-wizard-validate-click" colSpan="4"/>
     	</group>
 	</form>
+    
+    <action-group name="action-group-stock-createinventory-wizard-validate-click">
+    	<action name="action-location-method-create-inventory"/>
+    	<action name="action-location-view-inventory"/>
+    </action-group>
     
     <action-record name="action-create-inventory-wizard-record-default" model="com.axelor.apps.base.db.Wizard">
     	<field name="inventoryDate" expr="eval: __date__"/>

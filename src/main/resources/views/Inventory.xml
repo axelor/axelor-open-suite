@@ -22,7 +22,7 @@
 	    <field name="dateT"/>
 	    <group title="Import" colSpan="2" hideIf="statusSelect != 2" cols="2">
 	    	<field name="importFilePath"/><break/>
-	    	<button name="importFile" title="Import" colSpan="2" onClick="save,action-set-inventory-seq,action-inventory-method-import-file,save" showIf="importFilePath != null"/>
+	    	<button name="importFile" title="Import" colSpan="2" onClick="action-group-stock-inventory-importfile-click" showIf="importFilePath != null"/>
 	    </group>
 	    <group colSpan="4" title="Description">
 	    	<field name="description" colSpan="4" showTitle="false"/>
@@ -34,17 +34,57 @@
             <field name="excludeOutOfStock"/>
             <field name="includeObsolete"/>
         </group>
-        <button name="fillInventory" title="Fill inventory" showIf="location != null" colSpan="4" onClick="save,action-inventory-method-fill-inventory,action-set-inventory-seq,save"/>
+        <button name="fillInventory" title="Fill inventory" showIf="location != null" colSpan="4" onClick="action-group-stock-inventory-fillinventory-click"/>
 	    <separator/>
 	    <field name="inventoryLineList" colSpan="4" readonlyIf="statusSelect == 3"/>
 	    <group title="Actions" colSpan="4">
-	        <button name="plan" title="Plan" showIf="statusSelect == 1 &amp;&amp; location != null" colSpan="1" onClick="save,action-inventory-record-plan,action-set-inventory-seq,save"/><break/>
-			<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-inventory-method-generate-stock-move,action-inventory-record-realize,save"/><break/>
-			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-inventory-record-cancel,save"/><break/>
-        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-inventory-record-draft,save"/>
+	        <button name="plan" title="Plan" showIf="statusSelect == 1 &amp;&amp; location != null" colSpan="1" onClick="action-group-stock-inventory-plan-click"/><break/>
+			<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="action-group-stock-inventory-realize-click"/><break/>
+			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="action-group-stock-inventory-cancel-click"/><break/>
+        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-inventory-draft-click"/>
 	    </group> 
     </form>
     
+    <action-group name="action-group-stock-inventory-importfile-click">
+    	<action name="save"/>
+    	<action name="action-set-inventory-seq"/>
+    	<action name="action-inventory-method-import-file"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-stock-inventory-fillinventory-click">
+    	<action name="save"/>
+    	<action name="action-inventory-method-fill-inventory"/>
+    	<action name="action-set-inventory-seq"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-stock-inventory-plan-click">
+    	<action name="save"/>
+    	<action name="action-inventory-record-plan"/>
+    	<action name="action-set-inventory-seq"/>    	
+    	<action name="save"/>
+    </action-group>
+
+    <action-group name="action-group-stock-inventory-realize-click">
+    	<action name="save"/>
+    	<action name="action-inventory-method-generate-stock-move"/>
+    	<action name="action-inventory-record-realize"/>    	
+    	<action name="save"/>
+    </action-group>
+
+    <action-group name="action-group-stock-inventory-cancel-click">
+    	<action name="save"/>
+    	<action name="action-inventory-record-cancel"/>    	
+    	<action name="save"/>
+    </action-group>
+
+    <action-group name="action-group-stock-inventory-draft-click">
+    	<action name="save"/>
+    	<action name="action-inventory-record-draft"/>    	
+    	<action name="save"/>
+    </action-group>
+
     <action-record name="action-inventory-record-new" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
 	    <field name="dateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
