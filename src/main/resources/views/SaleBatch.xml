@@ -45,7 +45,7 @@
     <!-- ACTION RECORD -->
     <action-record name="action-sale-batch-record-on-new" model="com.axelor.apps.sale.db.SaleBatch">
 		<field name="createdOn" expr="call:com.axelor.apps.sale.service.administration.GeneralService:getTodayDate()"/>
-		<field name="createdBy" expr="call:com.axelor.apps.sale.service.user.UserInfoService:getUserInfo()"/>
+		<field name="createdBy" expr="__user__"/>
 	</action-record>
     
     <!-- ACTION METHOD -->
