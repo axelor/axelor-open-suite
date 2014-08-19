@@ -31,7 +31,7 @@
     </grid>
     
     <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" cols="4" 
-    onNew="action-account-record-new,action-lead-default-record-new" 
+    onNew="action-group-crm-lead-onnew" 
     onLoad="action-lead-attrs-readonly-other-address">
 	    <toolbar>
 	        <button name="convertLead" title="Convert lead" hideIf="statusSelect == 4" onClick="save,action-lead-view-convert-lead" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
@@ -96,7 +96,7 @@
 		            <field name="otherState"/>
 		            <field name="otherPostalCode"/>
 		            <field name="otherCountry"/>
-		            <field name="isCopyAddress" onChange="action-lead-record-other-address,action-lead-attrs-readonly-other-address"/>
+		            <field name="isCopyAddress" onChange="action-group-crm-lead-iscopyaddress-onchange"/>
 		        </group>
 		        <group title="Extra information" colSpan="4" css="groupTitle" cols="6" readonlyIf="statusSelect == 4 || statusSelect == 6">
 		            <field name="officeName"/>
@@ -162,6 +162,15 @@
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
 	
+	<action-group name="action-group-crm-lead-onnew">
+		<action name="action-account-record-new"/>
+		<action name="action-lead-default-record-new"/>
+	</action-group>
+	
+	<action-group name="action-group-crm-lead-iscopyaddress-onchange">
+		<action name="action-lead-record-other-address"/>
+		<action name="action-lead-attrs-readonly-other-address"/>
+	</action-group>
 	
 	<action-method name="action-lead-event-add-attendee">
 		<call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>
