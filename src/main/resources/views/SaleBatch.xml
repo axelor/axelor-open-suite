@@ -12,8 +12,8 @@
     </grid>
  
     <form name="sale-batch-form" title="Sale Batch" model="com.axelor.apps.sale.db.SaleBatch" cols="4"
-    onLoad="action-sale-batch-attrs-action-select,action-sale-batch-attrs-action-select" 
-    onNew="action-sale-batch-record-on-new,action-sale-batch-attrs-action-select">
+    onLoad="action-group-supplychain-salebatch-onload" 
+    onNew="action-group-supplychain-salebatch-onnew">
     	<field name="actionSelect" onChange="action-sale-batch-attrs-action-select"/>
     	<field name="code" />
     	<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
@@ -30,6 +30,17 @@
     		</page>
     	</notebook>   	
     </form>
+    
+    <!-- ACTION GROUPs -->
+    <action-group name="action-group-supplychain-salebatch-onload">
+    	<action name="action-sale-batch-attrs-action-select"/>
+    	<action name="action-sale-batch-attrs-action-select"/>
+    </action-group>
+    
+    <action-group name="action-group-supplychain-salebatch-onnew">
+    	<action name="action-sale-batch-record-on-new"/>
+    	<action name="action-sale-batch-attrs-action-select"/>
+    </action-group>
     
     <!-- ACTION RECORD -->
     <action-record name="action-sale-batch-record-on-new" model="com.axelor.apps.sale.db.SaleBatch">

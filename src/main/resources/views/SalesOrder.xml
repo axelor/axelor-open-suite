@@ -4,16 +4,29 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
 	
 	<form name="sale-order-form" id="supplychain-sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
-	onNew="action-sale-order-record-default,action-sale-order-record-company-configuration,action-supplychain-sale-order-method-get-location,action-sale-order-record-currency,action-sale-order-attrs-collapse-specific-settings-group"
-	onSave="action-sale-order-set-sequence" onLoad="action-sale-order-attrs-collapse-specific-settings-group,action-sale-order-attrs-validated-read-only">
+	onNew="action-group-supplychain-saleorder-onnew"
+	onSave="action-sale-order-set-sequence" onLoad="action-group-supplychain-saleorder-onload">
 		<include view="sale-order-form" from="axelor-sale"/>
 	</form>
 	
 	<form name="sale-order-form-client" id="supplychain-sale-order-form-client" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
-	onNew="action-sale-order-record-default,action-sale-order-record-company-configuration,action-supplychain-sale-order-method-get-location,action-sale-order-record-currency,action-sale-order-attrs-collapse-specific-settings-group"
-	onSave="action-sale-order-set-sequence" onLoad="action-sale-order-attrs-collapse-specific-settings-group,action-sale-order-attrs-validated-read-only">
+	onNew="action-group-supplychain-saleorder-onnew"
+	onSave="action-sale-order-set-sequence" onLoad="action-group-supplychain-saleorder-onload">
 		<include view="sale-order-form-client" from="axelor-sale" />
 	</form>
+	
+	<action-group name="action-group-supplychain-saleorder-onnew">
+		<action name="action-sale-order-record-default"/>
+		<action name="action-sale-order-record-company-configuration"/>
+		<action name="action-supplychain-sale-order-method-get-location"/>
+		<action name="action-sale-order-record-currency"/>
+		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
+	</action-group>
+	
+	<action-group name="action-group-supplychain-saleorder-onload">
+		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
+		<action name="action-sale-order-attrs-validated-read-only"/>
+	</action-group>
 	
 	<action-method name="action-supplychain-sale-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
