@@ -6,7 +6,7 @@
 <!-- 	<grid name="expense-edit-line-grid" editable="true" title="Expense Lines" -->
 <!-- 		model="com.axelor.apps.organisation.db.ExpenseLine"> -->
 <!-- 		<field name="date"/> -->
-<!--         <field name="product" colSpan="2" widget="SuggestBox" onChange="action-expense-line-method-get-product-information-1,action-expense-line-method-get-product-information-2,action-expense-line-method-compute" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/> -->
+<!--         <field name="product" colSpan="2" widget="SuggestBox" onChange="action-group-organisation-expenseline-product-onchange" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/> -->
 <!-- 		<field name="shortDescription" /> -->
 <!-- 		<field name="expenseTypeSelect" /> -->
 <!-- 		<field name="task" onSelect="action-attrs-expense-line-task-domain"/> -->
@@ -46,7 +46,7 @@
 	        <field name="task" onSelect="action-attrs-expense-line-task-domain"/>
 	    </group>
 	    <group title="Details" colSpan="4">
-	        <field name="product" colSpan="2" widget="SuggestBox" onChange="action-expense-line-method-get-product-information-1,action-expense-line-method-get-product-information-2,action-expense-line-method-compute" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
+	        <field name="product" colSpan="2" widget="SuggestBox" onChange="action-group-organisation-expenseline-product-onchange" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
 	        <field name="shortDescription" colSpan="4"/>
 	        <field name="qty" onChange="action-expense-line-method-compute"/>
 	        <field name="unit"/>
@@ -65,6 +65,12 @@
 	        <field name="isInvoiced" hideIf="expenseTypeSelect == 1"/>
 	    </group>
 	</form>
+
+	<action-group name="action-group-organisation-expenseline-product-onchange">
+		<action name="action-expense-line-method-get-product-information-1"/>
+		<action name="action-expense-line-method-get-product-information-2"/>
+		<action name="action-expense-line-method-compute"/>
+	</action-group>
 
 	<action-record name="action-expense-line-default-record" model="com.axelor.apps.organisation.db.ExpenseLine">
     	<field name="expenseTypeSelect" expr="eval: 2"/>

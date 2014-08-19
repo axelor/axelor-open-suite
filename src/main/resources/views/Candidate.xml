@@ -19,7 +19,7 @@
 
 
 	<form name="candidate-form" title="Candidate" model="com.axelor.apps.organisation.db.Candidate" cols="6" 
-	onNew="action-record-candidate-default,action-method-candidate-default-record,action-attrs-candidate-recruitment-advancement" 
+	onNew="action-group-organisation-candidate-onnew" 
 	onSave="action-organisation-candidate-save-record">
 	    <toolbar>
 	        <button name="showCandidate" title="Print CV" icon="fa-print" onClick="save,action-partner-method-show-candidate"/>
@@ -73,15 +73,15 @@
 	                </group>
 	                <group colSpan="2" cols="4">
 	                    <group hideIf="recruitmentStatusSelect == 8" colSpan="2">
-	                        <button name="newCandidate" title="New candidate" showIf="recruitmentStatusSelect == 6 || recruitmentStatusSelect == 9" colSpan="6" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="preSelection" title="Pre-selected" showIf="recruitmentStatusSelect == 1" colSpan="6" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="firstInterview" title="1st Interview" showIf="recruitmentStatusSelect == 2" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="secondInterview" title="2nd Interview" showIf="recruitmentStatusSelect == 3" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="thirdInterview" title="3rd Interview" showIf="recruitmentStatusSelect == 4" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="rejectRecruitmentAdvancement" title="Rejected" showIf="recruitmentStatusSelect == 2 || recruitmentStatusSelect == 3 || recruitmentStatusSelect == 4 || etatCandidature == 5" onClick="action-record-button-reject,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="proposeOfferRecruitmentAdvancement" title="Offer proposed" showIf="recruitmentStatusSelect == 3 || recruitmentStatusSelect == 4 || recruitmentStatusSelect == 5" onClick="action-record-candidate-propose-offer-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="acceptOfferRecruitmentAdvancement" title="Offer accepted" showIf="recruitmentStatusSelect == 7" onClick="action-record-candidate-propose-offer-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="rejectOfferRecruitmentAdvancement" title="Offer refused" showIf="recruitmentStatusSelect == 7" onClick="action-record-button-reject-offer,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+	                        <button name="newCandidate" title="New candidate" showIf="recruitmentStatusSelect == 6 || recruitmentStatusSelect == 9" colSpan="6" onClick="action-group-organisation-candidate-button-click-common"/>
+	                        <button name="preSelection" title="Pre-selected" showIf="recruitmentStatusSelect == 1" colSpan="6" onClick="action-group-organisation-candidate-button-click-common"/>
+	                        <button name="firstInterview" title="1st Interview" showIf="recruitmentStatusSelect == 2" onClick="action-group-organisation-candidate-button-click-common"/>
+	                        <button name="secondInterview" title="2nd Interview" showIf="recruitmentStatusSelect == 3" onClick="action-group-organisation-candidate-button-click-common"/>
+	                        <button name="thirdInterview" title="3rd Interview" showIf="recruitmentStatusSelect == 4" onClick="action-group-organisation-candidate-button-click-common"/>
+	                        <button name="rejectRecruitmentAdvancement" title="Rejected" showIf="recruitmentStatusSelect == 2 || recruitmentStatusSelect == 3 || recruitmentStatusSelect == 4 || etatCandidature == 5" onClick="action-group-organisation-candidate-rejectrecruit-click"/>
+	                        <button name="proposeOfferRecruitmentAdvancement" title="Offer proposed" showIf="recruitmentStatusSelect == 3 || recruitmentStatusSelect == 4 || recruitmentStatusSelect == 5" onClick="action-group-organisation-candidate-offerproposed-click"/>
+	                        <button name="acceptOfferRecruitmentAdvancement" title="Offer accepted" showIf="recruitmentStatusSelect == 7" onClick="action-group-organisation-candidate-offeraccepted-click"/>
+	                        <button name="rejectOfferRecruitmentAdvancement" title="Offer refused" showIf="recruitmentStatusSelect == 7" onClick="action-group-organisation-candidate-offerrefused-click"/>
 	                    </group>
 	                    <break/>
 	                    <field name="recruitementDate" showIf="recruitmentStatusSelect == 2 || recruitmentStatusSelect == 3 || recruitmentStatusSelect == 4"/>
@@ -132,6 +132,52 @@
 	        </page>
 	    </notebook>
 	</form>
+
+	<action-group name="action-group-organisation-candidate-onnew">
+		<action name="action-record-candidate-default"/>
+		<action name="action-method-candidate-default-record"/>
+		<action name="action-attrs-candidate-recruitment-advancement"/>
+	</action-group>
+
+	<action-group name="action-group-organisation-candidate-button-click-common">
+		<action name="action-record-recruitment-advancement"/>
+		<action name="save"/>
+		<action name="action-method-candidate-create-recruitment-process-line"/>
+		<action name="action-record-candidate-reset-fields"/>
+		<action name="save"/>
+	</action-group>
+
+	<action-group name="action-group-organisation-candidate-rejectrecruit-click">
+		<action name="action-record-button-reject"/>
+		<action name="save"/>
+		<action name="action-method-candidate-create-recruitment-process-line"/>
+		<action name="action-record-candidate-reset-fields"/>
+		<action name="save"/>
+	</action-group>
+	
+	<action-group name="action-group-organisation-candidate-offerproposed-click">
+		<action name="action-record-candidate-propose-offer-recruitment-advancement"/>
+		<action name="save"/>
+		<action name="action-method-candidate-create-recruitment-process-line"/>
+		<action name="action-record-candidate-reset-fields"/>
+		<action name="save"/>
+	</action-group>
+	
+	<action-group name="action-group-organisation-candidate-offeraccepted-click">
+		<action name="action-record-candidate-propose-offer-recruitment-advancement"/>
+		<action name="save"/>
+		<action name="action-method-candidate-create-recruitment-process-line"/>
+		<action name="action-record-candidate-reset-fields"/>
+		<action name="save"/>
+	</action-group>
+	
+	<action-group name="action-group-organisation-candidate-offerrefused-click">
+		<action name="action-record-button-reject-offer"/>
+		<action name="save"/>
+		<action name="action-method-candidate-create-recruitment-process-line"/>
+		<action name="action-record-candidate-reset-fields"/>
+		<action name="save"/>
+	</action-group>
 
 	<action-record name="action-organisation-candidate-evaluation-record" model="com.axelor.apps.organisation.db.Candidate">
 		<field name="evaluationGrade" expr="eval: evaluationLineList?.collect(){ it?.coefficient * it?.gradeSelect }?.sum() / evaluationLineList?.collect(){ it?.coefficient }?.sum()" />

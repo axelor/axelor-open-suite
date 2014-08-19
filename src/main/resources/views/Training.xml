@@ -18,7 +18,7 @@
         <field name="jobTitle"/>
         <break/>
         <field name="service"/>
-        <field name="duration" onChange="action-training-method-compute-date,action-training-method-compute-duration"/>
+        <field name="duration" onChange="action-group-organisation-training-"/>
         <field name="jobDescription" colSpan="4"/>
         <field name="referencePosition" />
         <break/>
@@ -33,6 +33,11 @@
         <field name="sectorKeywordSet" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '2'" grid-view="keyword-area-grid" form-view="keyword-area-form"/>
         
     </form>
+    
+    <action-group name="action-group-organisation-training-">
+    	<action name="action-training-method-compute-date"/>
+    	<action name="action-training-method-compute-duration"/>
+    </action-group>
     
     <action-method name="action-training-method-compute-duration">
     	<call class="com.axelor.apps.organisation.web.TrainingController" method="computeDuration"/>

@@ -35,7 +35,7 @@
 	    	<field name="projectStatusSelect" widget="NavSelect" showTitle="false" colSpan="2"/>
 		    <group title="Actions" showTitle="false" colSpan="2" cols="1">
 		        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
-		        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="save,action-project-validate-generate-invoice,action-project-method-create-invoice"/>
+		        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="action-group-organisation-generate-draftinvoice-click"/>
 		        <button name="showTask" title="Show tasks" colSpan="1" onClick="action-project-view-task"/>
 		        <button name="updateTaskProgression" title="Update task progress" colSpan="1" onClick="action-project-method-update-task-progress"/>
 		    </group>
@@ -98,6 +98,12 @@
     <action-group name="action-project-group-default">
     	<action name="action-project-record-default"/>
     	<action name="action-project-record-unit"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-generate-draftinvoice-click">
+    	<action name="save"/>
+    	<action name="action-project-validate-generate-invoice"/>
+    	<action name="action-project-method-create-invoice"/>
     </action-group>
     
     <action-record name="action-project-record-default" model="com.axelor.apps.organisation.db.Project">

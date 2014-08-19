@@ -17,7 +17,7 @@
 	</grid>
     
     <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="4"
-    onNew="action-timesheet-default-record,action-timesheet-getPeriod">
+    onNew="action-group-organisation-timesheet-onnew">
      	<toolbar>
             <button name="print" title="Print" icon="fa-print" onClick="save,action-print-pdf-timesheet"/>
 	    </toolbar>
@@ -59,8 +59,8 @@
 		<group colSpan="4" cols="4">
 			<group colSpan="2">
 				<group title="Action(s)" colSpan="2" cols="1">
-					<button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-timesheet-record-confirm,save"/>
-					<button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-timesheet-method-validate,action-timesheet-record-validate,save"/>
+					<button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="action-group-organisation-timesheet-confirm-click"/>
+					<button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="action-group-organisation-timesheet-validate-click"/>
 					<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-timesheet-record-cancel"/>
 				</group>
 				<group readonly="true" colSpan="2">
@@ -74,6 +74,24 @@
 			</group>
 		</group>
     </form>
+    
+    <action-group name="action-group-organisation-timesheet-onnew">
+    	<action name="action-timesheet-default-record"/>
+    	<action name="action-timesheet-getPeriod"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-timesheet-confirm-click">
+    	<action name="save"/>
+    	<action name="action-timesheet-record-confirm"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-timesheet-validate-click">
+    	<action name="save"/>
+    	<action name="action-timesheet-method-validate"/>
+    	<action name="action-timesheet-record-validate"/>
+    	<action name="save"/>
+    </action-group>
     
     <action-record name="action-timesheet-record-complete-group-default" model="com.axelor.apps.organisation.db.Timesheet">
     	<field name="completeFromDate" expr="eval: fromDate" if="completeFromDate == null"/>

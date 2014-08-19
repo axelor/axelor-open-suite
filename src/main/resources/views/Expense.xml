@@ -51,11 +51,11 @@
    	 	<break/>
        	<group title="Action(s)" colSpan="4">
    			<group colSpan="1" cols="1">
-   				<button name="draft" title="Draft" colSpan="2" onClick="save,action-expense-record-draft,save" showIf="statusSelect == 6"/>
-        		<button name="submit" title="Submit" colSpan="2" onClick="action-expense-compute-expense-line,save,action-expense-record-submit,action-expense-method-check-validation-status,save" showIf="statusSelect == 1"/>
-	            <button name="validateManager" title="Validate" colSpan="1" onClick="save,action-expense-method-check-validation-status,action-expense-record-validate-manager,action-expense-alert-validate,action-expense-record-validation-info,save" showIf="statusSelect == 2"/>
-	            <button name="validateCommercial" title="Validate" colSpan="1" onClick="save,action-expense-record-validate-commercial,action-expense-record-validation-info,save" showIf="statusSelect == 3"/>
-	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-expense-record-confirm,save" showIf="statusSelect == 4"/>
+   				<button name="draft" title="Draft" colSpan="2" onClick="action-group-organisation-expense-draft-click" showIf="statusSelect == 6"/>
+        		<button name="submit" title="Submit" colSpan="2" onClick="action-group-organisation-expense-submit-click" showIf="statusSelect == 1"/>
+	            <button name="validateManager" title="Validate" colSpan="1" onClick="action-group-organisation-expense-validatemanager-click" showIf="statusSelect == 2"/>
+	            <button name="validateCommercial" title="Validate" colSpan="1" onClick="action-group-organisation-expense-validatecommercial-click" showIf="statusSelect == 3"/>
+	         	<button name="confirm" title="Confirm" colSpan="1" onClick="action-group-organisation-expense-confirm-click" showIf="statusSelect == 4"/>
 	            <button name="refuse" title="Refuse" colSpan="1" onClick="save,action-expense-record-refuse" showIf="statusSelect == 2"/>
         		<button name="compute" title="Compute" colSpan="2" onClick="action-expense-compute-expense-line"/>
 	        </group>
@@ -70,6 +70,42 @@
     <action-group name="action-expense-group-default">
     	<action name="action-expense-record-default"/>
     	<action name="action-expense-record-default-currency"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-expense-draft-click">
+    	<action name="save"/>
+    	<action name="action-expense-record-draft"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-expense-submit-click">
+    	<action name="action-expense-compute-expense-line"/>
+    	<action name="save"/>
+    	<action name="action-expense-record-submit"/>
+    	<action name="action-expense-method-check-validation-status"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-expense-validatemanager-click">
+    	<action name="save"/>
+    	<action name="action-expense-method-check-validation-status"/>
+    	<action name="action-expense-record-validate-manager"/>
+    	<action name="action-expense-alert-validate"/>
+    	<action name="action-expense-record-validation-info"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-expense-validatecommercial-click">
+    	<action name="save"/>
+    	<action name="action-expense-record-validate-commercial"/>
+    	<action name="action-expense-record-validation-info"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-expense-confirm-click">
+    	<action name="save"/>
+    	<action name="action-expense-record-confirm"/>
+    	<action name="save"/>
     </action-group>
     
 	<action-record name="action-expense-record-default" model="com.axelor.apps.organisation.db.Expense">

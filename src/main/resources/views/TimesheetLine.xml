@@ -19,7 +19,7 @@
     </grid>
     
     <form name="timesheet-line-calendar-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" 
-    onNew="action-timesheet-line-record-default,action-timesheet-line-record-default-duration,action-timesheet-line-record-task">
+    onNew="action-group-organisation-timesheetline-onnew">
         <field name="date"/>
         <field name="project" onChange="action-timesheet-line-record-task"/>
         <field name="task" onChange="action-timesheet-line-record-project" domain="self.project = :project or :project = null"/>
@@ -41,7 +41,7 @@
     </grid>
     
     <form name="timesheet-line-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" 
-    onNew="action-timesheet-line-record-default,action-timesheet-line-record-default-duration,action-timesheet-line-record-task">
+    onNew="action-group-organisation-timesheetline-onnew">
         <field name="date"/>
         <field name="project" onChange="action-timesheet-line-record-task"/>
         <field name="task" onChange="action-timesheet-line-record-project" domain="self.project = :project or :project = null"/>
@@ -63,7 +63,7 @@
     </grid>
     
     <form name="timesheet-line-task-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" 
-    onNew="action-timesheet-line-record-default,action-timesheet-line-record-default-duration,action-timesheet-line-record-task">
+    onNew="action-group-organisation-timesheetline-onnew">
         <field name="date"/>
         <field name="project" onChange="action-timesheet-line-record-task"/>
         <field name="task" onChange="action-timesheet-line-record-project" domain="self.project = :project or :project = null"/>
@@ -85,7 +85,7 @@
     </grid>
     
      <form name="timesheet-line-employee-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" 
-     onNew="action-timesheet-line-record-default,action-timesheet-line-record-task">
+     onNew="action-group-organisation-timesheetline-employee-onnew">
         <field name="date"/>
         <field name="project"/>
         <field name="task" onChange="action-timesheet-line-record-project" domain="self.project = :project or :project = null"/>
@@ -106,7 +106,7 @@
     </grid>
     
     <form name="timesheet-line-production-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" 
-    onNew="action-timesheet-line-record-default-production,action-timesheet-line-record-default-duration">
+    onNew="action-group-organisation-timesheetline-production-onnew">
         <field name="date" onChange="action-timesheet-line-record-default-production-timesheet"/>
         <field name="timesheet" title="Employee" domain="self.statusSelect = 1 OR self.statusSelect = 2"/>
         <field name="project" onChange="action-timesheet-line-record-default-production-timesheet"/>
@@ -117,7 +117,22 @@
         <field name="isInvoiced"/>
     </form>
     
+    <action-group name="action-group-organisation-timesheetline-onnew">
+    	<action name="action-timesheet-line-record-default"/>
+    	<action name="action-timesheet-line-record-default-duration"/>
+    	<action name="action-timesheet-line-record-task"/>
+    </action-group>
     
+    <action-group name="action-group-organisation-timesheetline-employee-onnew">
+    	<action name="action-timesheet-line-record-default"/>
+    	<action name="action-timesheet-line-record-task"/>
+    </action-group>
+
+    <action-group name="action-group-organisation-timesheetline-production-onnew">
+    	<action name="action-timesheet-line-record-default-production"/>
+    	<action name="action-timesheet-line-record-default-duration"/>
+    </action-group>
+
     <action-record name="action-timesheet-line-record-default" model="com.axelor.apps.organisation.db.TimesheetLine">
 	    <field name="date" expr="eval: startDateT.toLocalDate()" if="startDateT != null"/>
 	    <field name="date" expr="eval: __date__" if="startDateT == null"/>
