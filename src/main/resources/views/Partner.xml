@@ -13,9 +13,9 @@
 	    <field name="fixedPhone"/>
 		<field name="emailAddress.address"/>
 	    <field name="partnerCategory"/>
-		<button name="logCall" title="Log Call" colSpan="1" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"/>
-		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting"/>
-		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+		<button name="logCall" title="Log Call" colSpan="1" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"  if-module="axelor-crm"/>
+		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
+		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
 	</grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -23,9 +23,9 @@
 	    <field name="fixedPhone"/>
 	    <field name="mobilePhone"/>
 	    <field name="emailAddress.address"/>
-	    <button name="logCall" title="Log Call" colSpan="1" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"/>
-		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting"/>
-		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+	    <button name="logCall" title="Log Call" colSpan="1" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call" if-module="axelor-crm"/>
+		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
+		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
 	</grid>
     
      <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
@@ -48,10 +48,10 @@
 	    </toolbar>
 	     <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null"/>
-	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null"/>
-	            <item title="Create task" action="save,action-partner-view-create-task" readonlyIf="id == null"/>
-	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null"/>
+	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null" />
+	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null" />
+	            <item title="Create task" action="save,action-partner-view-create-task" readonlyIf="id == null" />
+	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null" />
 	        </menu>
 	    </menubar>
 <!-- 		<include view="incl-event-actions-partner-form" from="axelor-crm" if-module="axelor-crm" /> -->
@@ -224,10 +224,10 @@
 	    </toolbar>
 	     <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null"/>
-	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null"/>
-	            <item title="Create task" action="save,action-partner-view-create-task" readonlyIf="id == null"/>
-	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null"/>
+	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null" />
+	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null" />
+	            <item title="Create task" action="save,action-partner-view-create-task" readonlyIf="id == null" />
+	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null" />
 	        </menu>
 	    </menubar>
 <!-- 	    <include view="incl-event-actions-partner-form" from="axelor-crm" if-module="axelor-crm" /> -->
@@ -284,7 +284,6 @@
 	        	<include view="incl-show-project-partner-form" from="axelor-organisation" />
 	        	<include view="incl-activities-partner-form" from="axelor-crm" />
 	        	<include view="incl-sales-order-portal-form" from="axelor-sale" />
-
 	        </page>
 	    </notebook>
 	</form>
