@@ -15,16 +15,16 @@
 	</grid>
     
     <form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" cols="4" 
-    onNew="action-sale-order-line-record-new,action-sale-order-line-record-sequence,action-sale-order-line-attrs-hide-product-variant"
-    onLoad="action-sale-order-line-attrs-ressources-planning,action-sale-order-line-attrs-hide-product-variant,action-sale-order-line-attrs-task-readonly">
+    onNew="action-group-sale-saleorderline-onnew"
+    onLoad="action-group-sale-saleorderline-onload">
 	    <group colSpan="4" cols="4">
 		    <field name="sequence"/>
 		    <field name="isToPrintLineSubTotal"/>
 	    </group>
 	    <separator colSpan="4"/>
-	    <field name="product" onChange="action-sale-order-line-record-product-variant,action-sale-order-line-method-get-product-information,action-sale-order-line-method-compute,action-sale-order-line-attrs-ressources-planning,action-sale-order-line-attrs-hide-product-variant,action-sale-order-line-get-production-information" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
+	    <field name="product" onChange="action-group-sale-saleorderline-product-onchange" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
 	    <field name="productName"/>
-	    <field name="qty" onChange="action-sale-order-line-method-get-discount,action-sale-order-line-method-compute"/>
+	    <field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
 	    <field name="unit"/>
 	    <field name="price" onChange="action-sale-order-line-method-compute"/>
 	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
@@ -37,7 +37,7 @@
 	    <notebook colSpan="4">
 	        <page title="Settings">
 	            <group colSpan="4" cols="4" colWidths="30%,10%,30%,10%">
-	                <field name="saleSupplySelect" if-module="axelor-supplychain" onChange="action-sale-order-line-get-production-information,action-sale-order-line-attrs-hide-product-variant"/>
+	                <field name="saleSupplySelect" if-module="axelor-supplychain" onChange="action-group-sale-saleorderline-salesupplyselect-onchange"/>
 	                <break/>
 	                <field name="supplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" showIf="saleSupplySelect == 2"/>
 	                <field name="task"/>
@@ -72,6 +72,37 @@
 	    </notebook>
 	</form>
     
+    <action-group name="action-group-sale-saleorderline-onnew">
+    	<action name="action-sale-order-line-record-new"/>
+    	<action name="action-sale-order-line-record-sequence"/>
+    	<action name="action-sale-order-line-attrs-hide-product-variant"/>
+    </action-group>
+    
+    <action-group name="action-group-sale-saleorderline-onload">
+    	<action name="action-sale-order-line-attrs-ressources-planning"/>
+    	<action name="action-sale-order-line-attrs-hide-product-variant"/>
+    	<action name="action-sale-order-line-attrs-task-readonly"/>
+    </action-group>
+
+    <action-group name="action-group-sale-saleorderline-product-onchange">
+    	<action name="action-sale-order-line-record-product-variant"/>
+    	<action name="action-sale-order-line-method-get-product-information"/>
+    	<action name="action-sale-order-line-method-compute"/>
+    	<action name="action-sale-order-line-attrs-ressources-planning"/>
+    	<action name="action-sale-order-line-attrs-hide-product-variant"/>
+    	<action name="action-sale-order-line-get-production-information"/>
+    </action-group>
+
+    <action-group name="action-group-sale-saleorderline-qty-onchange">
+    	<action name="action-sale-order-line-method-get-discount"/>
+    	<action name="action-sale-order-line-method-compute"/>
+    </action-group>
+
+    <action-group name="action-group-sale-saleorderline-salesupplyselect-onchange">
+    	<action name="action-sale-order-line-get-production-information"/>
+    	<action name="action-sale-order-line-attrs-hide-product-variant"/>
+    </action-group>
+
     <!-- ACTION RECORD -->
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>

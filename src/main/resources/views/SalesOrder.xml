@@ -24,8 +24,8 @@
     </grid>
     
 	<form name="sale-order-form" id="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
-	onNew="action-sale-order-record-default,action-sale-order-record-company-configuration,action-sale-order-record-currency,action-sale-order-attrs-collapse-specific-settings-group"
-	onSave="action-sale-order-set-sequence" onLoad="action-sale-order-attrs-collapse-specific-settings-group,action-sale-order-attrs-validated-read-only">
+	onNew="action-group-sale-saleorder-onnew"
+	onSave="action-sale-order-set-sequence" onLoad="action-group-sale-saleorder-onload">
 	    <toolbar>
 <!-- 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SaleOrderController:saveDocumentForOrder"/> -->
             <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
@@ -152,8 +152,8 @@
 	
 	
 	<form name="sale-order-form-client" id="sale-order-form-client" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
-	onNew="action-sale-order-record-default,action-sale-order-record-company-configuration,action-sale-order-record-currency,action-sale-order-attrs-collapse-specific-settings-group"
-	onSave="action-sale-order-set-sequence" onLoad="action-sale-order-attrs-collapse-specific-settings-group,action-sale-order-attrs-validated-read-only">
+	onNew="action-group-sale-saleorder-onnew"
+	onSave="action-sale-order-set-sequence" onLoad="action-group-sale-saleorder-onload">
 		<toolbar>
             <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
 	    </toolbar>
@@ -242,6 +242,18 @@
     	<action name="action-supplychain-sale-order-create-production-order" />
     	<action name="action-sale-order-method-validate-customer"/>
     	<action name="action-sale-order-record-validate"/>
+    	<action name="action-sale-order-attrs-validated-read-only"/>
+    </action-group>
+    
+    <action-group name="action-group-sale-saleorder-onnew">
+    	<action name="action-sale-order-record-default"/>
+    	<action name="action-sale-order-record-company-configuration"/>
+    	<action name="action-sale-order-record-currency"/>
+    	<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
+    </action-group>
+    
+    <action-group name="action-group-sale-saleorder-onload">
+    	<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
     	<action name="action-sale-order-attrs-validated-read-only"/>
     </action-group>
     

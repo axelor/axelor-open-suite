@@ -16,10 +16,10 @@
     </grid>
     
     <form name="sale-order-sub-line-form" title="SO subline" model="com.axelor.apps.sale.db.SaleOrderSubLine" cols="4" 
-    onNew="action-sale-order-sub-line-record-new,action-sale-order-sub-line-record-sequence,action-sale-order-sub-line-attrs-hide-product-variant"
+    onNew="action-group-sale-saleorder-subline-onnew"
     onLoad="action-sale-order-sub-line-attrs-hide-product-variant">
     	<field name="sequence"/>
-    	<field name="product" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) " onChange="action-sale-order-sub-line-method-get-product-information,action-sale-order-sub-line-method-compute,action-sale-order-sub-line-record-product-variant,action-sale-order-sub-line-attrs-hide-product-variant"/>
+    	<field name="product" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) " onChange="action-group-sale-saleorder-subline-product-onchange"/>
     	<field name="productName"/>
     	<field name="employee"/>
     	<field name="description" colSpan="4"/>
@@ -34,6 +34,19 @@
 	        <field name="discountAmount" onChange="action-sale-order-sub-line-method-compute"/>
 	    </group>
     </form>
+    
+    <action-group name="action-group-sale-saleorder-subline-onnew">
+    	<action name="action-sale-order-sub-line-record-new"/>
+    	<action name="action-sale-order-sub-line-record-sequence"/>
+    	<action name="action-sale-order-sub-line-attrs-hide-product-variant"/>
+    </action-group>
+    
+    <action-group name="action-group-sale-saleorder-subline-product-onchange">
+    	<action name="action-sale-order-sub-line-method-get-product-information"/>
+    	<action name="action-sale-order-sub-line-method-compute"/>
+    	<action name="action-sale-order-sub-line-record-product-variant"/>
+    	<action name="action-sale-order-sub-line-attrs-hide-product-variant"/>
+    </action-group>
     
     <action-record name="action-sale-order-sub-line-record-new" model="com.axelor.apps.sale.db.SaleOrderSubLine">
     	<field name="qty" expr="eval: 1"/>
