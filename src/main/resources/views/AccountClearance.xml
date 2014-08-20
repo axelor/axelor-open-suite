@@ -6,7 +6,7 @@
     <grid name="account-clearance-grid" title="Account clearance operations" model="com.axelor.apps.account.db.AccountClearance">
         <field name="name"/>
         <field name="dateTime"/>
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="amountThreshold"/>
         <field name="dateThreshold"/>
         <field name="company"/>
@@ -18,22 +18,47 @@
     	onLoad="action-account-clearance-attrs-hidden-buttons">
     	<field name="name"/>
     	<field name="dateTime"/>
-    	<field name="userInfo"/>
+    	<field name="user"/>
     	<field name="company" widget="SuggestBox"/>
    		<group title="Clearance settings" colSpan="4" cols="4">
         	<field name="amountThreshold"/>
         	<field name="dateThreshold"/>
     	</group>
-    	<button name="getExcessPayment" title="Get overdue payments" colSpan="4" onClick="save,com.axelor.apps.account.web.AccountClearanceController:getExcessPayment,save"/>
+    	<button name="getExcessPayment" title="Get overdue payments" colSpan="4" onClick="action-group-account-account-clearance-excesspayment-click"/>
     	<field name="moveLineSet" colSpan="4"/>
     	<group title="Actions" colSpan="2" cols="2">
-        	<button name="validateAccountClearance" title="Validate account clearances" colSpan="2" onClick="save,com.axelor.apps.account.web.AccountClearanceController:validateAccountClearance,action-account-clearance-attrs-hidden-buttons,save"/>
+        	<button name="validateAccountClearance" title="Validate account clearances" colSpan="2" onClick="action-group-account-account-clearance-validate-click"/>
         	<field name="status"/>
     	</group>
     	<group title="Links" colSpan="2" cols="2" showIf="status.code != 'dra'">
-        	<button name="showAccountClearanceMoveLines" title="Move lines generated" colSpan="2" onClick="com.axelor.apps.account.web.AccountClearanceControllerSimple:showAccountClearanceMoveLines"/>
+        	<button name="showAccountClearanceMoveLines" title="Move lines generated" colSpan="2" onClick="action-method-account-clearance-show-move-lines"/>
     	</group>
     </form>
+    
+    <action-group name="action-group-account-account-clearance-excesspayment-click">
+    	<action name="save"/>
+    	<action name="action-method-account-clearance-get-excesspayment"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-account-account-clearance-validate-click">
+	    <action name="save"/>
+	    <action name="action-method-account-clearance-validate"/>
+	    <action name="action-account-clearance-attrs-hidden-buttons"/>
+	    <action name="save"/>
+    </action-group>
+    
+    <action-method name="action-method-account-clearance-get-excesspayment">
+    	<call class="com.axelor.apps.account.web.AccountClearanceController" method="getExcessPayment"/>
+    </action-method>
+    
+    <action-method name="action-method-account-clearance-validate">
+    	<call class="com.axelor.apps.account.web.AccountClearanceController" method="validateAccountClearance"/>
+    </action-method>
+    
+    <action-method name="action-method-account-clearance-show-move-lines">
+    	<call class="com.axelor.apps.account.web.AccountClearanceControllerSimple" method="showAccountClearanceMoveLines"/>
+    </action-method>
     
 	<action-attrs name="action-account-clearance-attrs-hidden-buttons">
 	    <attribute name="hidden" expr="eval: status.code == 'val'" for="getExcessPayment"/>
@@ -42,8 +67,8 @@
     
     <action-record name="action-account-clearance-record-default" model="com.axelor.apps.account.db.AccountClearance">
         <field name="status" expr="action:action-status-record-dra"/>
-        <field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-   		<field name="company"   expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="user" expr="eval:__user__"/>
+   		<field name="company"   expr="eval:__user__.activeCompany"/>
     </action-record>
     
 </object-views>

@@ -18,7 +18,7 @@
     <form name="payment-schedule-form" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule" cols="4"
      onSave="action-payment-schedule-payment-schedule-id"
      onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group"
-     onNew="default-payment-schedule-record,action-payment-schedule-attrs-collapse-irrecoverable-group">
+     onNew="action-account-payment-schedule-onnew-group">
      	<group name="header">
 	     	<field name="scheduleId" readonlyIf="state != 1"/>
 	        <field name="creationDate" readonlyIf="state != 1"/>
@@ -34,11 +34,11 @@
         <group name="invoiceGroup" colSpan="4" cols="4">
        	 	<field name="invoiceSet" colSpan="4" domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.status.code = 'dis' and self.inTaxTotalRemaining > 0.0 AND self.currency = :currency" 
        	 	grid-view="invoice-account-grid" form-view="invoice-form" readonlyIf="state != 1" onChange="action-payment-schedule-record-in-tax-amount"/>
-        	<button name="createPaymentScheduleLines" title="Create schedule lines" colSpan="2" onClick="save,action-payment-schedule-create-payment-schedule-lines,save" showIf="state == 1"/>
+        	<button name="createPaymentScheduleLines" title="Create schedule lines" colSpan="2" onClick="action-group-account-payment-schedule-create-click" showIf="state == 1"/>
        	</group>
         <field name="paymentScheduleLineList" colSpan="4" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form" readonlyIf="state != 3"/>
         <group colSpan="4" cols="6">
-            <button name="validate" title="Validate" colSpan="2" onClick="save,action-payment-schedule-payment-schedule-id,action-payment-schedule-method-validate,save" showIf="state == 1"/>
+            <button name="validate" title="Validate" colSpan="2" onClick="action-group-account-payment-schedule-validate-click" showIf="state == 1"/>
             <button name="cancel" title="Cancel" colSpan="2" onClick="action-payment-schedule-method-cancel,save" hideIf="state = 4" />
             <field name="stateSelect"/>
         </group>
@@ -50,11 +50,30 @@
         </group>
     </form>
     
+    <!-- ACTION GROUPs -->
+    <action-group name="action-account-payment-schedule-onnew-group">
+	    <action name="default-payment-schedule-record"/>
+	    <action name="action-payment-schedule-attrs-collapse-irrecoverable-group"/>
+    </action-group>
+    
+    <action-group name="action-group-account-payment-schedule-create-click">
+    	<action name="save"/>
+    	<action name="action-payment-schedule-create-payment-schedule-lines"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-account-payment-schedule-validate-click">
+    	<action name="save"/>
+    	<action name="action-payment-schedule-payment-schedule-id"/>
+    	<action name="action-payment-schedule-method-validate"/>
+    	<action name="save"/>
+    </action-group>
+    
     <!-- ACTION RECORD -->
     <action-record name="default-payment-schedule-record" model="com.axelor.apps.account.db.PaymentSchedule">
    		<field name="creationDate" expr="eval:__date__"/>
    		<field name="startDate" expr="eval:__date__"/>
-   		<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+   		<field name="company"  expr="eval:__user__.activeCompany"/>
    		<field name="stateSelect" expr="eval: 1"/>
 	</action-record>
 

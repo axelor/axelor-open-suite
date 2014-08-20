@@ -9,7 +9,7 @@
   
    	<string name="name" title="Reference" readonly="true"/>
 	<datetime name="dateTime" title="Account clearance date" tz="true" readonly="true"/>
-	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User" readonly="true"/>
+	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User" readonly="true"/>
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/> 
 	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
 	<decimal name="amountThreshold" title="Clearance maximum amount" required="true"/>

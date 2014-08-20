@@ -24,26 +24,26 @@
     </grid>
     
     <form name="move-line-report-form" title="Accounting report" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
-	    onNew="action-move-line-report-default-record,action-move-line-report-date-readonly"
-	    onLoad="action-move-line-report-button-hidden,action-move-line-report-date-readonly"
+	    onNew="action-account-moveline-report-onnew-group"
+	    onLoad="action-account-moveline-report-onload-group"
 	    onSave="action-move-line-report-method-get-sequence">
 	    
 	    <field name="ref" readonly="true"/>
     	<field name="date"/>
-    	<field name="typeSelect" selection="move.line.report.type.select" onChange="action-move-line-report-record,action-move-line-report-method-get-journal-type,action-move-line-report-record-default,action-move-line-report-method-get-account"/>
+    	<field name="typeSelect" selection="move.line.report.type.select" onChange="action-group-account-moveline-report-typeselect-onchange"/>
 		<field name="exportTypeSelect"/>
 		<field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-move-line-report-method-get-account" readonlyIf="ref != null"/>
 		<break/>
 		<separator colSpan="4"/>
-	    <button name="search" title="Search" onClick="save,action-move-line-report-method-search-move-line,save" colSpan="2" hideIf="typeSelect == 12" />
-        <button name="export" title="Print" icon="fa-print" onClick="save,action-move-line-report-method-print-export-moveLine,action-move-line-report-method-get-reload,action-move-line-report-button-hidden,action-move-line-report-date-readonly" colSpan="2"/>
+	    <button name="search" title="Search" onClick="action-group-account-moveline-report-search-click" colSpan="2" hideIf="typeSelect == 12" />
+        <button name="export" title="Print" icon="fa-print" onClick="action-group-account-moveline-report-export-click" colSpan="2"/>
 		<field name="status"/>
 		<field name="publicationDateTime"/>
 		<break/>
     	<notebook colSpan="4">
 	    	<page title="Filter" colSpan="4">
 				<field name="cashRegister" hideIf="!typeSelect || [0,2,3,4,12].indexOf(typeSelect) != -1"/>
-				<field name="period" onSelect="action-move-line-report-attrs-period-domain" onChange="action-move-line-report-record-year,action-move-line-report-record-date-from-and-date-to"/>
+				<field name="period" onSelect="action-move-line-report-attrs-period-domain" onChange="action-group-account-moveline-report-period-onchange"/>
 				<field name="year" onSelect="action-move-line-report-attrs-year-domain" hideIf="typeSelect != 12" requiredIf="typeSelect == 12"/>
 				<break/>
 		        <field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" requiredIf="typeSelect == 12"/>
@@ -88,23 +88,23 @@
     </grid>
     
     <form name="move-line-report-export-form" title="Accounting export" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
-	    onNew="action-move-line-report-default-record,action-move-line-report-button-hidden,action-move-line-report-date-readonly"
-	    onLoad="action-move-line-report-button-hidden,action-move-line-report-date-readonly"
+	    onNew="action-account-moveline-report-export-onnew-group"
+	    onLoad="action-account-moveline-report-onload-group"
 	    onSave="action-move-line-report-method-get-sequence">
     	<notebook colSpan="4">
 	    	<page title="Search" colSpan="4">
 		    	<field name="ref" readonly="true"/>
 		    	<field name="date"/>
-		    	<field name="typeSelect" selection="move.line.report.type.select.export" onChange="action-move-line-report-record,action-move-line-report-method-get-journal-type,action-move-line-report-record-default,action-move-line-report-method-get-account"/>
+		    	<field name="typeSelect" selection="move.line.report.type.select.export" onChange="action-group-account-moveline-report-typeselect-onchange"/>
 				<field name="company" widget="SuggestBox" onChange="action-move-line-report-method-get-account" readonlyIf="ref != null"/>
 				<break/>
 		        <field name="dateFrom" onChange="action-move-Live-report-record-set-date-to"/>
 		        <field name="dateTo"/>
-		        <field name="period" onSelect="action-move-line-report-attrs-period-domain" onChange="action-move-line-report-record-year,action-move-line-report-record-date-from-and-date-to"/>
+		        <field name="period" onSelect="action-move-line-report-attrs-period-domain" onChange="action-group-account-moveline-report-period-onchange"/>
 		        <field name="journal"/>
 		        <break/>
-		        <button name="search" title="Search" onClick="save,action-move-line-report-method-search-move-line,save" colSpan="2"/>
-		        <button name="export" title="Export" onClick="save,action-move-line-report-method-print-export-moveLine,action-move-line-report-method-get-reload,action-move-line-report-button-hidden,action-move-line-report-date-readonly" colSpan="2"/>
+		        <button name="search" title="Search" onClick="action-group-account-moveline-report-search-click" colSpan="2"/>
+		        <button name="export" title="Export" onClick="action-group-account-moveline-report-export-click" colSpan="2"/>
         		<button name="showMoveExported" title="Exported moves" onClick="save,action-move-line-report-method-show-move-exported" colSpan="2"/>
 	       		<button name="replayExport" title="Run export again" onClick="save,action-move-line-report-method-replay-export" colSpan="2"/>
 				<field name="status"/>
@@ -116,6 +116,57 @@
 		    </page>
         </notebook>
     </form>
+    
+<!-- 	ACTION GROUPs -->    
+    
+    <action-group name="action-account-moveline-report-onnew-group">
+	    <action name="action-move-line-report-default-record"/>
+	    <action name="action-move-line-report-date-readonly"/>
+    </action-group>
+    
+    <action-group name="action-account-moveline-report-onload-group">
+	    <action name="action-move-line-report-button-hidden"/>
+	    <action name="action-move-line-report-date-readonly"/>
+    </action-group>
+    
+    <action-group name="action-account-moveline-report-export-onnew-group">
+	    <action name="action-move-line-report-default-record"/>
+	    <action name="action-move-line-report-button-hidden"/>
+	    <action name="action-move-line-report-date-readonly"/>
+    </action-group>
+    
+    <action-group name="action-group-account-moveline-report-typeselect-onchange">
+    	<action name="action-move-line-report-record"/>
+    	<action name="action-move-line-report-method-get-journal-type"/>
+    	<action name="action-move-line-report-record-default"/>
+    	<action name="action-move-line-report-method-get-account"/>
+    </action-group>
+    
+    <action-group name="action-group-account-moveline-report-export-click">
+    	<action name="save"/>
+    	<action name="action-move-line-report-method-print-export-moveLine"/>
+    	<action name="action-move-line-report-method-get-reload"/>
+    	<action name="action-move-line-report-button-hidden"/>
+    	<action name="action-move-line-report-date-readonly"/>
+    </action-group>
+    
+    <action-group name="action-group-account-moveline-report-search-click">
+    	<action name="save"/>
+    	<action name="action-move-line-report-method-search-move-line"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-account-moveline-report-period-onchange">
+    	<action name="action-move-line-report-record-year"/>
+    	<action name="action-move-line-report-record-date-from-and-date-to"/>
+    </action-group>
+    
+    <action-group name="action-group-account-moveline-report-typeselect-onchange">
+    	<action name="action-move-line-report-record"/>
+    	<action name="action-move-line-report-method-get-journal-type"/>
+    	<action name="action-move-line-report-record-default"/>
+    	<action name="action-move-line-report-method-get-account"/>
+    </action-group>
     
 <!--     ACTION ATTRS -->
 	    
@@ -212,7 +263,7 @@
 	<action-record name="action-move-line-report-default-record" model="com.axelor.apps.account.db.MoveLineReport">
         <field name="status" expr="action:action-status-record-dra"/>
 		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<field name="company" expr="eval:__user__.activeCompany"/>
 	</action-record>
 	
 	<action-record name="action-move-Live-report-record-set-date-to" model="com.axelor.apps.account.db.MoveLineReport">

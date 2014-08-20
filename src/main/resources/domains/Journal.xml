@@ -23,6 +23,9 @@
   	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
   	
+  	<many-to-many name="validAccountTypeSet" ref="com.axelor.apps.account.db.AccountType" title="Compatible Account Types" help="true"/>
+  	<many-to-many name="validAccountSet" ref="com.axelor.apps.account.db.Account" title="Compatible Accounts" help="true"/>
+  	
   </entity>
 
 </domain-models>

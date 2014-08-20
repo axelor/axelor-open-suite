@@ -62,12 +62,12 @@
     <boolean name="debitBlockingOk" title="Direct debit blocking"/>
     <many-to-one name="debitBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
     <date name="debitBlockingToDate" title="Blocking until"/>
-    <many-to-one name="debitBlockingByUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Blocking done by"/>
+    <many-to-one name="debitBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
     
     <boolean name="reminderBlockingOk" title="Reminder blocking"/>
     <many-to-one name="reminderBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
     <date name="reminderBlockingToDate" title="Blocking until"/>
-    <many-to-one name="reminderBlockingByUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Blocking done by"/>
+    <many-to-one name="reminderBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
 
     <!-- Payments -->
     <string name="debitNumber" title="Direct Debit N°"/>
@@ -99,7 +99,7 @@
     <decimal name="invoiceAmountPaid" title="Amount paid" readonly="true" />
     
     <many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
-    <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/>  
+    <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>  
 
   </entity>
   

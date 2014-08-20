@@ -44,7 +44,7 @@
     
     <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false"
     onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
-    onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-contractLine-readonly,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
+    onNew="action-account-move-line-onnew-group">
     	<notebook colSpan="4">
 	    	<page title="Informations" colSpan="4">
 	    		<group readonly="true">
@@ -58,13 +58,13 @@
 			        <break/>
 			        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
 		   	        <break/>
-			        <field name="debit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
-			        <field name="credit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
+			        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
+			        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 			        <field name="amountPaid"/>
 			        <field name="amountRemaining"/>
 			        <field name="interbankCodeLine"/>
 			        <field name="passageReason"/>
-			        <field name="usherPassageOk" onChange="save,com.axelor.apps.account.web.MoveLineController:usherProcess"/>
+			        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
 			        <field name="description"/>
 			        <field name="reimbursementStateSelect"/>
 	    		</group>
@@ -90,8 +90,8 @@
     </form>
     
     <form name="move-line-accounting-situation-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false" canNew="false"
-    onLoad="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-readonly" 
-    onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-contractLine-readonly,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
+    onLoad="action-group-account-moveline-accounting-situation-onload" 
+    onNew="action-account-move-line-onnew-group">
     	<notebook colSpan="4">
     	<page name="informations" title="Informations" colSpan="4">
 	    	<group readonly="true">
@@ -104,13 +104,13 @@
 		        <break/>
 		        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
 	   	        <break/>
-		        <field name="debit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
-		        <field name="credit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
+		        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
+		        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 		        <field name="amountPaid"/>
 		        <field name="amountRemaining"/>
 		        <field name="interbankCodeLine"/>
 		        <field name="passageReason"/>
-		        <field name="usherPassageOk" onChange="save,com.axelor.apps.account.web.MoveLineController:usherProcess"/>
+		        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
 		        <field name="description"/>
 		        <field name="reimbursementStateSelect"/>
 	        </group>
@@ -134,6 +134,33 @@
 	    </page>
         </notebook>
     </form>
+    
+    <action-group name="action-account-move-line-onnew-group">
+	    <action name="action-move-line-attrs-collapse-irrecoverable-group"/>
+	    <action name="action-move-line-attrs-contractLine-readonly"/>
+	    <action name="action-move-line-record-get-move-informations"/>
+	    <action name="action-move-line-record-get-first-move-line-informations"/>
+	    <action name="action-move-line-attrs-hidden-reconcileLists"/>
+    </action-group>
+	
+	<action-group name="action-group-account-moveline-debitcredit-onchange">
+		<action name="action-move-line-debit-credit-validate"/>
+		<action name="action-move-line-debit-credit-clean"/>
+	</action-group>
+    
+    <action-group name="action-group-account-moveline-accounting-situation-onload">
+    	<action name="action-move-line-attrs-collapse-irrecoverable-group"/>
+    	<action name="action-move-line-attrs-readonly"/>
+    </action-group>
+    
+    <action-group name="action-group-account-moveline-usher-process-onchange">
+    	<action name="save"/>
+    	<action name="action-method-account-moveline-usher-process"/>
+    </action-group>
+    
+    <action-method name="action-method-account-moveline-usher-process">
+    	<call class="com.axelor.apps.account.web.MoveLineController" method="usherProcess"/>
+    </action-method>
     
     <action-attrs name="action-move-line-attrs-collapse-irrecoverable-group">
 		<attribute name="collapse" for="irrecoverable" expr="eval: irrecoverableStateSelect == null || irrecoverableStateSelect == 0"/>

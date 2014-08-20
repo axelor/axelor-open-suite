@@ -107,7 +107,7 @@
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
 	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" form-view="company-lite-form" onChange="action-partner-company-set-validate"/>
 	                <break/>
-	                <field name="userInfo"/>
+	                <field name="user"/>
 	                <field name="team"/>
 	            </group>
 	        </page>
@@ -151,7 +151,7 @@
 			    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	        </page>
 			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain">
-				<portlet colSpan="6" action="portal.customer.sale.lastYear.vs.ytd.by.family" height="350"/>
+				<portlet colSpan="6" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
 			</page>
 			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm">
      			 <portlet colSpan="6" action="portal.customer.crm.activities" height="350"/>

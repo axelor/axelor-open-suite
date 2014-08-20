@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
     <grid name="cash-register-line-grid" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine">
-        <field name="userInfo"/>
+        <field name="user"/>
         <field name="cashRegister"/>
         <field name="createDateTime"/>
         <field name="cashRegisterDate"/>
@@ -14,9 +14,8 @@
     </grid>
     
     <form name="cash-register-line-form" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine" cols="4"
-    onNew="action-cash-register-line-record-new,action-cash-register-line-attrs-hidden-button"
-    onLoad="action-cash-register-line-attrs-hidden-button,action-cash-register-line-attrs-readonly">
-        <field name="userInfo"/>
+    onNew="action-account-cash-registerline-onnew-group" onLoad="action-account-cash-registerline-onload-group">
+        <field name="user"/>
     	<field name="createDateTime"/>
     	<group colSpan="4">
         	<field name="cashRegister"/>
@@ -32,8 +31,8 @@
     	<break/>
     	<group title="Actions" colSpan="4" cols="4">
         	<group colSpan="2" cols="2">
-            	<button name="closeCashRegister" title="Close cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:closeCashRegister,action-cash-register-line-attrs-hidden-button,save"/>
-            	<button name="openCashRegister" title="Open cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:openCashRegister,action-cash-register-line-attrs-hidden-button,save"/>
+            	<button name="closeCashRegister" title="Close cashier" colSpan="2" onClick="action-group-account-cash-registerline-close-click"/>
+            	<button name="openCashRegister" title="Open cashier" colSpan="2" onClick="action-group-account-cash-registerline-open-click"/>
         	</group>
         	<group colSpan="2" cols="2">
             	<field name="stateSelect"/>
@@ -41,9 +40,41 @@
     	</group>
     </form>
     
+    <action-group name="action-account-cash-registerline-onnew-group">
+	    <action name="action-cash-register-line-record-new"/>
+	    <action name="action-cash-register-line-attrs-hidden-button"/>
+    </action-group>
+    
+    <action-group name="action-account-cash-registerline-onload-group">
+	    <action name="action-cash-register-line-attrs-hidden-button"/>
+	    <action name="action-cash-register-line-attrs-readonly"/>
+    </action-group>
+    
+    <action-group name="action-group-account-cash-registerline-close-click">
+    	<action name="save"/>
+    	<action name="action-method-account-cash-registerline-close"/>
+    	<action name="action-cash-register-line-attrs-hidden-button"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-account-cash-registerline-open-click">
+    	<action name="save"/>
+    	<action name="action-method-account-cash-registerline-open"/>
+    	<action name="action-cash-register-line-attrs-hidden-button"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-method name="action-method-account-cash-registerline-close">
+    	<call class="com.axelor.apps.account.web.CashRegisterController" method="closeCashRegister"/>
+    </action-method>
+    
+    <action-method name="action-method-account-cash-registerline-open">
+    	<call class="com.axelor.apps.account.web.CashRegisterController" method="openCashRegister"/>
+    </action-method>
+
     <action-record name="action-cash-register-line-record-new" model="com.axelor.apps.account.db.CashRegisterLine">
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    	<field name="cashRegister"   expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserCashRegister()"/>
+    	<field name="user" expr="eval:__user__"/>
+    	<field name="cashRegister"   expr="eval:__user__.activeCashRegister"/>
     	<field name="createDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
     	<field name="cashRegisterDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
     	<field name="stateSelect" expr="0"/>

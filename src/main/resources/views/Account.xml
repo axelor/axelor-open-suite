@@ -30,13 +30,18 @@
         <field name="code"/>
         <field name="name"/>
         <field name="accountType"/>
-        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-account-clean-company,action-account-validate"/>
-		<field name="parent" domain="self.company = :company" onChange="action-account-clean-company,action-account-validate"/>
+        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-group-account-account-onchange-common"/>
+		<field name="parent" domain="self.company = :company" onChange="action-group-account-account-onchange-common"/>
         <field name="reconcileOk"/>
     </form>
     
+    <action-group name="action-group-account-account-onchange-common">
+    	<action name="action-account-clean-company"/>
+    	<action name="action-account-validate"/>
+    </action-group>
+    
     <action-record name="action-account-record-new" model="com.axelor.apps.account.db.Account">
-    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="company"  expr="eval:__user__.activeCompany"/>
     </action-record>
          
     <action-validate name="action-account-validate">

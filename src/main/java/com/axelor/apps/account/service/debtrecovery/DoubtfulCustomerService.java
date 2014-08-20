@@ -41,7 +41,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -62,9 +61,6 @@ public class DoubtfulCustomerService {
 	
 	@Inject
 	private SequenceService sgs;
-	
-	@Inject
-	private UserInfoService uis;
 	
 	@Inject
 	private AccountConfigService accountConfigService;

@@ -3,19 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
 
-  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+  <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="PurchaseOrder" lang="java">
-  
-  	<integer name="invoicingTypeSelect" title="Invoicing type" selection="purchase.purchase.order.invoicing.type.select"/>
-  	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice" readonly="true"/>
+  <entity name="SaleOrder" lang="java">
+  	
 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
-  	
-    <decimal name="amountRemainingToBeInvoiced" title="Amount remaining to invoice" readonly="true"/>
-
-	
-	
+    
   </entity>
 
 </domain-models>

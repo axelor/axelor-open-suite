@@ -8,12 +8,17 @@
     </grid>
     <form name="tax-account-form" title="Tax accounting configuration" model="com.axelor.apps.account.db.TaxAccount" cols="4"
     onNew="action-tax-account-record-new">
-        <field name="company" widget="SuggestBox" onChange="action-tax-account-clean-company,action-tax-account-validate"/>
-        <field name="account" domain="self.company = :company" onChange="action-tax-account-clean-company,action-tax-account-validate"/>
+        <field name="company" widget="SuggestBox" onChange="action-group-account-tax-account-common-onchange"/>
+        <field name="account" domain="self.company = :company" onChange="action-group-account-tax-account-common-onchange"/>
     </form>
     
+    <action-group name="action-group-account-tax-account-common-onchange">
+    	<action name="action-tax-account-clean-company"/>
+    	<action name="action-tax-account-validate"/>
+    </action-group>
+    
     <action-record name="action-tax-account-record-new" model="com.axelor.apps.account.db.TaxAccount">
-    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="company" expr="eval:__user__.activeCompany"/>
     </action-record>
     
     <action-validate name="action-tax-account-validate">

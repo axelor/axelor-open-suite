@@ -19,7 +19,7 @@
         <field name="company"/>
         <field name="hasChartImported" />
        	<field name="accountChart" readonlyIf="hasChartImported"/>
-       	<button name="installTemplate" colSpan="1" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" onClick="save,com.axelor.apps.account.web.AccountChartController:installChart" icon="fa-arrow-down"/>
+       	<button name="installTemplate" colSpan="1" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" onClick="action-group-account-config-installchart-click" icon="fa-arrow-down"/>
         <notebook colSpan="4">
             <page title="Accounting" cols="4" colWidths="20%,30%,20%,30%">
             	<separator title="Journals" colSpan="4"/>
@@ -121,6 +121,15 @@
             </page>
         </notebook>
     </form>
+	
+	<action-group name="action-group-account-config-installchart-click">
+		<action name="save"/>
+		<action name="action-method-account-config-install-chart"/>
+	</action-group>
+	
+	<action-method name="action-method-account-config-install-chart">
+		<call class="com.axelor.apps.account.web.AccountChartController" method="installChart"/>
+	</action-method>
 	
 	<action-view name="action-company-view-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>

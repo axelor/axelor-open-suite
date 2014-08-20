@@ -20,18 +20,18 @@ package com.axelor.apps.account.service.invoice.workflow.validate;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.Status;
-import com.axelor.apps.base.db.UserInfo;
-import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.exception.AxelorException;
+import com.axelor.auth.db.User;
+import com.axelor.auth.AuthUtils;
 
 public class ValidateState extends WorkflowInvoice {
 	
-	protected UserInfo user;
+	protected User user;
 	
-	public ValidateState(UserInfoService userInfoService, Invoice invoice) {
+	public ValidateState(Invoice invoice) {
 		
 		super(invoice);
-		this.user = userInfoService.getUserInfo();
+		this.user = AuthUtils.getUser();
 		
 	}
 	
@@ -39,7 +39,7 @@ public class ValidateState extends WorkflowInvoice {
 	public void process( ) throws AxelorException {
 		
 		invoice.setStatus( Status.findByCode("val") );
-		invoice.setValidatedByUserInfo( UserInfo.find( user.getId() ) );
+		invoice.setValidatedByUser( user );
 		
 	}
 	

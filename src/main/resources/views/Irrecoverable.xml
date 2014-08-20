@@ -10,11 +10,11 @@
     </grid>
     
     <form name="irrecoverable-form" title="Irrecoverable" model="com.axelor.apps.account.db.Irrecoverable" cols="4"
-    	onNew="action-record-irrecoverable-default-record,action-irrecoverable-attrs-hidden" 
+    	onNew="action-account-irrecoverable-onnew-group" 
     	onLoad="action-irrecoverable-attrs-hidden">
         <group title="Header" colSpan="4" cols="4">
         	<field name="name"/>
-        	<field name="userInfo"/>
+        	<field name="user"/>
         	<field name="dateTime"/>
         	<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
     	</group>
@@ -33,13 +33,28 @@
     	</group>
     	<group title="Irrecoverable Execution" colSpan="4" cols="4">
         	<group title="Action" colSpan="4" cols="4">
-            	<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:passInIrrecoverable,action-irrecoverable-attrs-hidden"/>
+            	<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="action-group-account-irrecoverable-passin-click"/>
             	<button name="showTraceBack" title="Anomalies" onClick="save,action-irrecoverable-show-trace-back" colSpan="2"/>
             	<field name="status"/>
         	</group>
         	<field name="moveSet" colSpan="4" showIf="status.code != 'dra'"/>
     	</group>
     </form>
+    
+    <action-group name="action-account-irrecoverable-onnew-group">
+	    <action name="action-record-irrecoverable-default-record"/>
+	    <action name="action-irrecoverable-attrs-hidden"/>
+    </action-group>
+    
+    <action-group name="action-group-account-irrecoverable-passin-click">
+    	<action name="save"/>
+    	<action name="action-method-account-irrecoverable-pass-in"/>
+    	<action name="action-irrecoverable-attrs-hidden"/>
+    </action-group>
+    
+    <action-method name="action-method-account-irrecoverable-pass-in">
+    	<call class="com.axelor.apps.account.web.IrrecoverableController" method="passInIrrecoverable"/>
+    </action-method>
     
     <action-attrs name="action-irrecoverable-attrs-hidden">
     	<attribute name="hidden" for="getIrrecoverable" expr="eval: status?.code == 'val'"/>
@@ -49,9 +64,9 @@
 	
 	<action-record name="action-record-irrecoverable-default-record" model="com.axelor.apps.account.db.Irrecoverable">
 		<field name="dateTime" expr="eval:__datetime__"/>
-		<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<field name="user" expr="eval:__user__"/>
         <field name="status" expr="action:action-status-record-dra"/>
-   		<field name="company"   expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+   		<field name="company"   expr="eval:__user__.activeCompany"/>
 	</action-record>
 	
 	<action-view name="action-irrecoverable-show-trace-back" title="Anomalies"	model="com.axelor.exception.db.TraceBack">

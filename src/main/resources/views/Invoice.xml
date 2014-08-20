@@ -27,7 +27,7 @@
     </grid>
     
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4" 
-    	onNew="action-invoice-record-default,action-invoice-attrs-collapse-irrecoverable-group,action-invoice-method-get-journal"
+    	onNew="action-account-invoice-onnew-group"
     	onLoad="action-invoice-attrs-collapse-irrecoverable-group">
     	<toolbar>
     		<button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
@@ -35,8 +35,8 @@
 	    </toolbar>
 <!--         <field name="endOfCycleOk"/> -->
         <field name="invoiceId"/>
-        <field name="operationTypeSelect" onChange="action-invoice-method-get-journal,action-invoice-record-partner-change" readonlyIf="status.code != 'dra'"/>
-        <field name="company" readonlyIf="status.code != 'dra'" widget="SuggestBox" onChange="action-invoice-method-get-journal,action-invoice-record-company-change" form-view="company-lite-form"/>
+        <field name="operationTypeSelect" onChange="action-group-account-invoice-operationtype-onchange" readonlyIf="status.code != 'dra'"/>
+        <field name="company" readonlyIf="status.code != 'dra'" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-lite-form"/>
 		<field name="currency" readonlyIf="status.code != 'dra'" onChange="action-invoice-attrs-change-total-title"/>
 		<group name="dateGroup" title="Dates" colSpan="4" cols="4" canCollapse="true" readonlyIf="status.code == 'dis'">
             <field name="invoiceDate" onChange="action-invoice-record-due-date"/>
@@ -46,7 +46,7 @@
             <field name="subscriptionToDate" showIf="isSubscription"/>
         </group>
 		<group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true">
-            <field name="partner" onSelect="action-set-partner-domain" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date" readonlyIf="status.code != 'dra'" />
+            <field name="partner" onSelect="action-set-partner-domain" grid-view="partner-grid" form-view="partner-form" onChange="action-group-account-invoice-partner-onchange" readonlyIf="status.code != 'dra'" />
        		<field name="contactPartner"  onSelect="action-set-partner-domain" form-view="partner-contact-form" grid-view="partner-contact-grid" domain="self.isContact = true"/>
 			<field name="address" colSpan="2"/>
 			<break/>
@@ -92,13 +92,13 @@
                 <field name="reminderBlockingOk"/>
                 <group name="debitBlockingGroup" colSpan="6" cols="4" showIf="debitBlockingOk">
                 	<separator title="Direct debit blocking" colSpan="4"/>
-                    <field name="debitBlockingByUserInfo"/>
+                    <field name="debitBlockingByUser"/>
                     <field name="debitBlockingToDate"/>
                     <field name="debitBlockingReason" colSpan="4"/>
                 </group>
                 <group name="reminderBlockingGroup" colSpan="6" cols="4" showIf="reminderBlockingOk">
                 	<separator title="Reminder blocking" colSpan="4"/>
-                    <field name="reminderBlockingByUserInfo"/>
+                    <field name="reminderBlockingByUser"/>
                     <field name="reminderBlockingToDate"/>
                     <field name="reminderBlockingReason" colSpan="4"/>
                 </group>
@@ -134,7 +134,7 @@
 	            </group>
 	            <group colSpan="2" cols="2">
 	                <field name="status" domain="self.invoiceStatusOK = true"/>
-	                <field name="validatedByUserInfo"/>
+	                <field name="validatedByUser"/>
 	            </group>
             </group>
             <group title="Totals" colSpan="2" cols="2" colWidths="50%,50%">
@@ -247,12 +247,33 @@
         <field name="status"/>
     </grid>
     
+    <action-group name="action-account-invoice-onnew-group">
+	    <action name="action-invoice-record-default"/>
+	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
+	    <action name="action-invoice-method-get-journal"/>
+    </action-group>
+    
+    <action-group name="action-group-account-invoice-operationtype-onchange">
+    	<action name="action-invoice-method-get-journal"/>
+    	<action name="action-invoice-record-partner-change"/>
+    </action-group>
+    
+    <action-group name="action-group-account-invoice-company-onchange">
+    	<action name="action-invoice-method-get-journal"/>
+    	<action name="action-invoice-record-company-change"/>
+    </action-group>
+    
+    <action-group name="action-group-account-invoice-partner-onchange">
+    	<action name="action-invoice-record-partner-change"/>
+    	<action name="action-invoice-record-due-date"/>
+    </action-group>
+
 	<!-- ACTION RECORD -->
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
         <field name="invoiceDate" expr="eval: __date__"/>
         <field name="status" expr="action:action-status-record-dra"/>
-        <field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-        <field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency" />
+        <field name="company" expr="eval:__user__.activeCompany"/>
+        <field name="currency" expr="eval:com.axelor.auth.db.User.find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect"/>
         <field name="dueDate" expr="eval: __date__"/>
     </action-record>

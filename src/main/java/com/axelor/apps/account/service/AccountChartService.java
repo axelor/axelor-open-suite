@@ -98,6 +98,7 @@ public class AccountChartService {
 	
 	@Transactional
 	public void updateChartCompany(AccountChart act, Company company, AccountConfig accountConfig){
+		accountConfig = AccountConfig.find(accountConfig.getId());
 		accountConfig.setHasChartImported(true);
 		accountConfig.save();
 		act = AccountChart.find(act.getId());

@@ -15,10 +15,10 @@
     onNew="action-account-management-record-default"
     onLoad="action-account-management-attrs-type">
     	<field name="typeSelect" onChange="action-account-management-attrs-type"/>
-        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-account-management-clean-company,action-account-management-product-validate"/>
-        <field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" onChange="action-account-management-clean-company,action-account-management-product-validate"/>
-        <field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'income'" onChange="action-account-management-clean-company,action-account-management-product-validate"/>
-        <field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" onChange="action-account-management-clean-company,action-account-management-product-validate"/>
+        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-group-account-account-management-onchange-common"/>
+        <field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" onChange="action-group-account-account-management-onchange-common"/>
+        <field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'income'" onChange="action-group-account-account-management-onchange-common"/>
+        <field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" onChange="action-group-account-account-management-onchange-common"/>
         <notebook colSpan="4">
         	<page name="analyticAccountManagementPage" title="Analytic account" cols="2">
         		<field name="analyticAccountManagementList" colSpan="2"/>
@@ -49,9 +49,9 @@
     <form name="account-management-product-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement" cols="4"
     onNew="action-account-management-record-product">
     	<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
-        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-account-management-clean-company,action-account-management-product-validate"/>
-        <field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'payable'" onChange="action-account-management-clean-company,action-account-management-product-validate"/>
-        <field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'receivable'" onChange="action-account-management-clean-company,action-account-management-product-validate"/>
+        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-group-account-account-management-onchange-common"/>
+        <field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'payable'" onChange="action-group-account-account-management-onchange-common"/>
+        <field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'receivable'" onChange="action-group-account-account-management-onchange-common"/>
         <notebook colSpan="4">
         	<page name="analyticAccountManagementPage" title="Comptes analytiques" cols="2">
         		<field name="analyticAccountManagementList" colSpan="2"/>
@@ -78,24 +78,29 @@
 		<field name="sequence" domain="self.company = :company"/>
     </form>
     
+    <action-group name="action-group-account-account-management-onchange-common">
+    	<action name="action-account-management-clean-company"/>
+    	<action name="action-account-management-product-validate"/>
+    </action-group>
+    
     <!-- ACTION RECORD -->
     <action-record name="action-account-management-record-default" model="com.axelor.apps.account.db.AccountManagement">
-        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="company"  expr="eval:__user__.activeCompany"/>
     </action-record>
     
 	<action-record name="action-account-management-record-product" model="com.axelor.apps.account.db.AccountManagement">
         <field name="typeSelect" expr="eval: 1"/>
-        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="company"  expr="eval:__user__.activeCompany"/>
     </action-record>
     
 	<action-record name="action-account-management-record-tax" model="com.axelor.apps.account.db.AccountManagement">
         <field name="typeSelect" expr="eval: 2"/>
-        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="company"  expr="eval:__user__.activeCompany"/>
     </action-record>
     
 	<action-record name="action-account-management-record-payment" model="com.axelor.apps.account.db.AccountManagement">
         <field name="typeSelect" expr="eval: 3"/>
-        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="company"  expr="eval:__user__.activeCompany"/>
     </action-record>
     
     <action-validate name="action-account-management-product-validate">

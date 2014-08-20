@@ -36,13 +36,19 @@
 	        <separator title="IBAN (International Bank Account Identifier)" colSpan="3"/>
 	        <separator title="BIC (Bank Identifier Code)" colSpan="2"/>
 	        <break/>
-	        <field name="iban" onChange="save,action-method_bank-details-validIban,save" colSpan="3" showTitle="false"/>
+	        <field name="iban" onChange="action-group-account-bankdetails-iban-onchange" colSpan="3" showTitle="false"/>
 	        <field name="bic" showTitle="false" colSpan="2"/>
 	        <break/>
 	        <separator title="IBAN + BIC" colSpan="4"/>
 	        <field name="ibanBic" colSpan="4" readonly="true" showTitle="false"/>
 	    </group>
 	</form>
+    
+    <action-group name="action-group-account-bankdetails-iban-onchange">
+    	<action name="save"/>
+    	<action name="action-method_bank-details-validIban"/>
+    	<action name="save"/>
+    </action-group>
     
     <action-method name="action-method_bank-details-validIban">
     	<call class="com.axelor.apps.base.web.BankDetailsController" method="onChangeIban"/>

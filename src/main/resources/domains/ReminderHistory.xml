@@ -16,7 +16,7 @@
 	<boolean name="unknownAddressOK" title="Address unknown"/>
 	<decimal name="balanceDue" title="Partner Balance due"/>
 	<decimal name="balanceDueReminder" title="Balance due remindable"/>
-	<many-to-one name="userReminder" ref="com.axelor.apps.base.db.UserInfo" title="User"/>
+	<many-to-one name="userReminder" ref="com.axelor.auth.db.User" title="User"/>
 	<many-to-one name="reminderMail" ref="com.axelor.apps.base.db.Mail" title="Reminder mail"/>
 	
     <string name="name" namecolumn="true" search="referenceDate,reminder" title="Name">
