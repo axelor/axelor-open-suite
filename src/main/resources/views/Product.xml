@@ -155,7 +155,7 @@
             	<button name="updateProductsPrices" title="Update products prices" colSpan="2" onClick="save,action-product-method-update-products-prices" help="Update current product prices and variants"/>
 	        </page>
 <!-- 	        <page title="Turnover"> -->
-<!--   				<portlet action="portal.product.sale.turnover.per.month" height="350" colSpan="4" />       -->
+<!--   				<portlet action="portal.product.sales.turnover.per.month" height="350" colSpan="4" />       -->
 <!-- 			</page>	         -->
  			<page title="Links" if-module="axelor-supplychain">
  				<portlet action="action-product-view-stock-move-line-incoming-planned" colSpan="4"/>
@@ -169,7 +169,7 @@
 	    </notebook>
 	</form>    
     
-   <action-view name="action-product-view-stock-product-variant" title="Stock" model="com.axelor.apps.supplychain.db.LocationLine">
+   <action-view name="action-product-view-stock-product-variant" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
     	<view type="grid" name="location-line-product-group-by-variant-grid"/>
     	<view type="form" name="location-line-product-form"/>
     	<domain>self.product.parentProduct.id = :id and self.location.typeSelect = 1</domain>

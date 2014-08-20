@@ -1,0 +1,3 @@
+"id";"code";"name";"navigation";"permissions";"technicalStaff";"roles"
+1;"admins";"Admins";;;"true";"role.admin"
+2;"users";"Users";;;"false";"role.user"

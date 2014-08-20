@@ -40,7 +40,7 @@
     
     <action-record name="action-period-record-open" model="com.axelor.apps.base.db.Period">
     	<field name="status" expr="action:action-status-record-ope"/>
-    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="company"  expr="eval:__user__.activeCompany"/>
      </action-record>
     
 	 <action-attrs name="action-period-attrs-button">

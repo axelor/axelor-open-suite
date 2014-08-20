@@ -28,8 +28,8 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.UserInfo;
-import com.axelor.apps.base.service.user.UserInfoServiceImpl;
+import com.axelor.apps.base.service.user.UserServiceImpl;
+import com.axelor.auth.db.User;
 
 @Singleton
 public class GeneralService {
@@ -85,8 +85,8 @@ public class GeneralService {
 		
 		DateTime todayDateTime = new DateTime();
 		
-		UserInfoServiceImpl userInfoService = new UserInfoServiceImpl();
-		UserInfo user = userInfoService.getUserInfo();
+		UserServiceImpl userService = new UserServiceImpl();
+		User user = userService.getUser();
 		
 		if (user != null && user.getToday() != null){
 			todayDateTime = user.getToday();

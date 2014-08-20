@@ -24,7 +24,7 @@
 		<!-- if it has multiple pages, we should add if-module to pages with valid module-name -->
 		<notebook colSpan="4" if-module="axelor-supplychain">
 			<page title="Sales Turnover" cols="3" colWidths="20%,30%,20%,30%">
-				<portlet action="portal.category.sale.turnover.per.month" colSpan="4" height="350" />
+				<portlet action="portal.category.sales.turnover.per.month" colSpan="4" height="350" />
 			</page>
 		</notebook>
     </form>    

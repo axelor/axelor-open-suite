@@ -12,8 +12,8 @@
 	
   	
 <!--   	Intern message -->
-  	<many-to-one name="senderUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Sender (User)" readonly="true"/>
-  	<many-to-one name="recipientUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Recipient"/>
+  	<many-to-one name="senderUser" ref="com.axelor.auth.db.User" title="Sender (User)" readonly="true"/>
+  	<many-to-one name="recipientUser" ref="com.axelor.auth.db.User" title="Recipient"/>
   
   </entity>
   

@@ -2,13 +2,13 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
-    <grid name="user-info-grid" title="Users list" model="com.axelor.apps.base.db.UserInfo">
+    <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
+        <field name="name"/>
         <field name="fullName"/>
         <field name="partner"/>
         <field name="activeCompany"/>
-        <field name="internalUser"/>
     </grid>
-    <form name="user-info-form" title="User" model="com.axelor.apps.base.db.UserInfo" cols="4"
+    <form name="user-form" title="User" model="com.axelor.auth.db.User" cols="4" id="user-form-base"
     onNew="action-user-language-record">
         <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
         <field name="activeCompany" widget="SuggestBox"/>
@@ -17,15 +17,8 @@
         <field name="timesheetPeriodConfig"/>
         <field name="employee"/>
         <notebook colSpan="4">
-        	<page title="User login settings">
-	        	<field widget="NestedEditor" canSelect="false" summary-view="true" name="internalUser" showTitle="false">
-	                <form cols="4" title="User login settings">
-                      <field name="name"/>
-                      <field name="group"/>
-                      <field name="code"/>
-                      <field widget="password" name="password"/>
-	                </form>
-	             </field>
+        	<page title="User login settings" cols="1">
+                <include view="user-form" from="axelor-core"/>
         	</page>
         	<page title="Internal companies">
         		<field name="companySet" showTitle="false" colSpan="4"/>
@@ -43,8 +36,8 @@
         		<field name="lnPersonalCredential" grid-view="ln-credential-grid" form-view="ln-credential-form"/>
         	</page>
         	<page title="Calendars">
-        		<field name="followersCalUserInfoSet"/>
-        		<field name="authorizeCalUserInfoSet"/>
+        		<field name="followersCalUserSet"/>
+        		<field name="authorizeCalUserSet"/>
         	</page>
         </notebook>
         
@@ -53,7 +46,7 @@
     
     
     
-    <action-record name="action-user-language-record" model="com.axelor.apps.base.db.UserInfo">
+    <action-record name="action-user-language-record" model="com.axelor.auth.db.User">
     	<field name="language" expr="fr"/>
     </action-record>
     

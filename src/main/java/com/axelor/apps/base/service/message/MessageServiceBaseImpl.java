@@ -31,7 +31,7 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.IMessage;
 import com.axelor.apps.message.db.MailAccount;
@@ -51,16 +51,13 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	private DateTime todayTime;
 	
 	@Inject
-	private UserInfoService userInfoService;
+	private UserService userService;
 	
 	@Inject
-	private TemplateMessageService templateMessageService;
-	
-	@Inject
-	public MessageServiceBaseImpl(UserInfoService userInfoService) {
+	public MessageServiceBaseImpl(UserService userService) {
 
 		this.todayTime = GeneralService.getTodayDateTime();
-		this.userInfoService = userInfoService;
+		this.userService = userService;
 	}
 	
 	
@@ -90,8 +87,8 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 				mediaTypeSelect)
 				.save();
 		
-		message.setCompany(userInfoService.getUserActiveCompany());
-		message.setSenderUserInfo(userInfoService.getUserInfo());
+		message.setCompany(userService.getUserActiveCompany());
+		message.setSenderUser(userService.getUser());
 		return message;
 		
 	}	
@@ -117,7 +114,7 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	
 	private void sendToUser(Message message)  {
 		
-		if(!message.getSentByEmail() && message.getRecipientUserInfo()!=null)  {
+		if(!message.getSentByEmail() && message.getRecipientUser()!=null)  {
 			message.setStatusSelect(IMessage.STATUS_SENT);
 			message.setSentByEmail(false);
 			message.save();

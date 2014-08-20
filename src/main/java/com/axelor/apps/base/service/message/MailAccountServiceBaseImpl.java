@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
 import com.google.inject.Inject;
@@ -30,13 +30,13 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 	private static final Logger LOG = LoggerFactory.getLogger(MailAccountServiceBaseImpl.class);
 	
 	@Inject
-	private UserInfoService uis;
+	private UserService uis;
 
 	
 	@Override
 	public MailAccount getDefaultMailAccount()  {
 		
-		MailAccount mailAccount = MailAccount.filter("self.userInfo = ?1 AND self.isDefault = true", uis.getUserInfo()).fetchOne();
+		MailAccount mailAccount = MailAccount.filter("self.user = ?1 AND self.isDefault = true", uis.getUser()).fetchOne();
 		
 		return mailAccount;
 	}

@@ -184,7 +184,7 @@
 		<view type="form" />
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = false</domain>
-		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 	</action-view>
 	
@@ -197,7 +197,7 @@
 		<view type="form" />
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = true</domain>
-		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="true"/>
 	</action-view>
 	
@@ -237,9 +237,6 @@
 	
 	
 
-	<menuitem name="mail-root" title="Emails/Mails" priority="70"
-		icon="img/64px/mail_64px.png" groups="admins,erp"/>
-
 	<menuitem name="mail-root-email" parent="mail-root" title="All batchs emails"/>
 
 	<menuitem name="mail-root-email-all" title="All Emails"
@@ -254,8 +251,6 @@
 	</action-view>
 
 	
-
-	<menuitem name="mail-root-mail" parent="mail-root" title="All batchs mails" />
 
 	<menuitem name="mail-root-mail-all" title="All Mails"
 		parent="mail-root-mail" action="mail.root.mail.all" />
@@ -381,11 +376,12 @@
 	<menuitem name="admin-root-user" parent="admin-root"
 		title="Users/Companies" />
 
-	<menuitem name="admin-root-user-user-info" parent="admin-root-user"
-		title="Users" action="admin.root.base.user.info" />
+	<menuitem name="admin-root-user-user" parent="admin-root-user"
+		title="Users" action="admin.root.base.user" />
 
-	<action-view name="admin.root.base.user.info" title="Users"
-		model="com.axelor.apps.base.db.UserInfo" icon="img/16px/organisationSmall_16px.png">
+	<!-- TODO: rename this actions base.user.info (UserInfo to User) -->
+	<action-view name="admin.root.base.user" title="Users"
+		model="com.axelor.auth.db.User" icon="img/16px/organisationSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>

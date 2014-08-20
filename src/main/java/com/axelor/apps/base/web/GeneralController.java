@@ -30,18 +30,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.db.JPA;
 import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
+import com.google.inject.Inject;
 
 public class GeneralController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
+	
+	@Inject
+	private ExportDbObjectService eos;
 	
 	public Set<MetaField> setFields(String model) throws IOException {
 		LOG.debug("Model: {}",model);
@@ -83,4 +87,21 @@ public class GeneralController {
 		else 
 			response.setFlash("Please select key fields to check duplicate");
 	}
+	
+	public void exportObjects(ActionRequest request, ActionResponse response){
+		MetaFile metaFile = eos.exportObject();
+		if(metaFile == null){
+			response.setFlash("Attachment directory OR Application source does not exist");
+		}
+		else {
+			response.setView(ActionView
+					  .define("Export Object")
+					  .model("com.axelor.meta.db.MetaFile")
+					  .add("form", "meta-files-form")
+					  .add("grid", "meta-files-grid")
+					  .param("forceEdit", "true")
+					  .context("_showRecord", metaFile.getId().toString())
+					  .map());
+		}
+	}	
 }

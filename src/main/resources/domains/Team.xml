@@ -10,7 +10,7 @@
   	<string name="importId"/>
     <string name="code" title="Code"/>
     <string name="name" title="Name" required="true"/>
-    <many-to-many name="userInfoSet" ref="com.axelor.apps.base.db.UserInfo" mappedBy="teamSet" title="Users/Employees"/>
+    <many-to-many name="userSet" ref="com.axelor.auth.db.User" mappedBy="teamSet" title="Users/Employees"/>
   
   </entity>
 

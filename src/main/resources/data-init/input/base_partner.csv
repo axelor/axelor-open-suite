@@ -1,0 +1,4 @@
+"importId";"partnerSeq";"partnerTypeSelect";"isContact";"name";"firstName";"fullName";"titleSelect";"languageSelect";"mainInvoicingAddress.importId";"deliveryAddress.importId";"email";"fixedPhone";"mobilePhone";"bankDetails.importId";"invoiceSendingFormatSelect";"paymentMode.importId";"paymentCondition.importId";"partnerCategory.code";"currency.code";"blocking.importId";"rejectCounter";"companySet_importId";"customerAccount_code";"supplierAccount_code";"mainPartner_importId";"customerTypeSelect";"supplierTypeSelect";"industrySectorSelect";"user.importId";"team.importId";"source.id";"fiscalPosition.importId";"picture.fileName"
+90000;"P99999";1;"false";"My Company";;"My Company";;"en";90000;90000;;;;;"emailpaper";;;;"EUR";;;1;;;;1;1;;;;;;
+100000;"P00001";1;"false";"Customer";;"Customer";;"en";;;;;;;"emailpaper";;;;"EUR";;;1;;;;3;1;;;;;;
+100001;"P00030";1;"false";"Supplier";;"Supplier";;"en";;;;;;;"emailpaper";;;;"EUR";;;1;;;;1;2;;;;;;

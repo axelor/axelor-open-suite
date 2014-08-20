@@ -16,22 +16,22 @@
     <boolean name="debitBlockingOk" title="Direct Debit Blocking ?"/>
     <date name="debitBlockingToDate" title="Block until"/>
     <many-to-one name="debitBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <many-to-one name="debitBlockingByUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Blocking done by"/>
+    <many-to-one name="debitBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
 	<!-- GROUP Reminder Blocking -->
     <boolean name="reminderBlockingOk" title="Block Reminders ?"/>
     <date name="reminderBlockingToDate" title="Block until"/>
     <many-to-one name="reminderBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <many-to-one name="reminderBlockingByUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Blocking done by"/>
+    <many-to-one name="reminderBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
 	<!-- GROUP Blocage Facturation -->
     <boolean name="invoicingBlockingOk" title="Block Invoicing ?"/>
     <date name="invoicingBlockingToDate" title="Block until"/>
     <many-to-one name="invoicingBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <many-to-one name="invoicingBlockingByUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Blocking done by"/>
+    <many-to-one name="invoicingBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
     <!-- GROUP Blocage Remboursement -->
     <boolean name="reimbursementBlockingOk" title="Block Reimbursement"/>
     <date name="reimbursementBlockingToDate" title="Block until"/>
     <many-to-one name="reimbursementBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <many-to-one name="reimbursementBlockingByUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Blocking done by"/>
+    <many-to-one name="reimbursementBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
         
     <string name="name" title="Reference" search="company,partner">
 	    <![CDATA[

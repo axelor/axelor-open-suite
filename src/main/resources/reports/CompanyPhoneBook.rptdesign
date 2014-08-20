@@ -385,8 +385,8 @@ Partner.fax
 from organisation_employee as Employee 
 left outer join base_partner as Partner on (Employee.internal_contact = Partner.id)
 left outer join base_partner_company_set as CompanySet on (CompanySet.base_partner = Partner.id)
-left outer join base_user_info as UserInfo on (UserInfo.internal_user = 1)
-left outer join base_company as Company on (Company.id = UserInfo.active_company)
+left outer join auth_user as AuthUser on (AuthUser.id = 1)
+left outer join base_company as Company on (Company.id = AuthUser.active_company)
 left outer join organisation_employee_job_keyword_set as KeyWordSet on (KeyWordSet.organisation_employee = Employee.id)
 left outer join base_keyword as JobKeyword on (JobKeyword.id = KeyWordSet.job_keyword_set)
 left join public.message_email_address as EmailAddress on (Partner.email_address = EmailAddress.id)
@@ -526,12 +526,11 @@ order by Employee.name]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.logo_path, Address.full_name, Partner.web_site
-from auth_user as Users 
-inner join base_user_info as UserInfo on (UserInfo.internal_user = Users.id)
-left outer join base_company as Company on (UserInfo.active_company = Company.id)
+from auth_user as AuthUser 
+left outer join base_company as Company on (AuthUser.active_company = Company.id)
 left outer join base_address as Address on (Company.address = Address.id)
 left outer join base_partner as Partner on (Company.partner = Partner.id)
-where Users.id = ?]]></xml-property>
+where AuthUser.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

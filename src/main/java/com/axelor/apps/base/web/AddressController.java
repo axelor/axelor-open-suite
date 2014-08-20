@@ -38,7 +38,7 @@ import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.data.Importer;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.xml.XMLImporter;
@@ -65,7 +65,7 @@ public class AddressController {
 	private Provider<MapService> mapProvider;
 	
 	@Inject
-	private Provider<UserInfoService> UserInfoProvider;
+	private Provider<UserService> UserProvider;
 	
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
@@ -264,7 +264,7 @@ public class AddressController {
 	}
 
 	public void directionsMap(ActionRequest request, ActionResponse response)  {
-		Partner currPartner = UserInfoProvider.get().getUserPartner();
+		Partner currPartner = UserProvider.get().getUserPartner();
 		Address departureAddress = currPartner.getDeliveryAddress();
 		if (departureAddress != null) {
 			Address arrivalAddress = request.getContext().asType(Address.class);

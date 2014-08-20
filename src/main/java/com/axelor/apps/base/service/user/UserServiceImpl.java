@@ -20,24 +20,44 @@ package com.axelor.apps.base.service.user;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Team;
-import com.axelor.apps.base.db.UserInfo;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 
 /**
- * UserInfoService est une classe implémentant l'ensemble des services pour
+ * UserService est une classe implémentant l'ensemble des services pour
  * les informations utilisateur.
  * 
  */
-public interface UserInfoService {
+public class UserServiceImpl implements UserService  {
 
 	/**
-	 * Méthode qui retourne le userInfo de l'utilisateur connecté
+	 * Méthode qui retourne le User de l'utilisateur connecté
 	 * 
-	 * @return UserInfo
-	 * 		Le userInfo de l'utilisateur
+	 * @return User
+	 * 		Le user de l'utilisateur
 	 */
-	public UserInfo getUserInfo();
+	public User getUser() {
+		User user = null;
+		try{
+			user = AuthUtils.getUser();
+		}
+		catch(Exception ex){}
+		if(user == null) {
+			user = User.findByCode("admin");			
+		}
+		return user;
+	}
 	
-	public Long getUserInfoId();
+	public Long getUserId() {
+		User user = this.getUser();
+	
+		if(user != null)  {
+			return user.getId();
+		}
+		
+		return null;
+	}
+	
 	
 	/**
 	 * Méthode qui retourne la société active de l'utilisateur connecté
@@ -45,7 +65,15 @@ public interface UserInfoService {
 	 * @return Company
 	 * 		La société
 	 */
-	public Company getUserActiveCompany();
+	public Company getUserActiveCompany() {
+		
+		User user = getUser();
+		if (user != null && user.getActiveCompany() != null){
+			return user.getActiveCompany();
+		}
+	
+		return null;
+	}
     
 
 	/**
@@ -54,7 +82,16 @@ public interface UserInfoService {
 	 * @return Company
 	 * 		La société
 	 */
-	public Long getUserActiveCompanyId(); 
+	public Long getUserActiveCompanyId() {
+		
+		User user = getUser();
+		if (user != null && user.getActiveCompany() != null){
+			return user.getActiveCompany().getId();
+		}
+	
+		return null;
+	}
+	
 	
 	/**
 	 * Méthode qui retourne l'équipe active de l'utilisateur connecté
@@ -62,7 +99,15 @@ public interface UserInfoService {
 	 * @return Team
 	 * 		L'équipe
 	 */
-	public Team getUserActiveTeam();
+	public Team getUserActiveTeam() {
+		
+		User user = getUser();
+		if (user != null && user.getActiveTeam() != null){
+			return user.getActiveTeam();
+		}
+	
+		return null;
+	}
 	
 	/**
 	 * Méthode qui retourne l'équipe active de l'utilisateur connecté
@@ -70,7 +115,15 @@ public interface UserInfoService {
 	 * @return Team
 	 * 		L'équipe
 	 */
-	public Long getUserActiveTeamId();
+	public Long getUserActiveTeamId() {
+		
+		User user = getUser();
+		if (user != null && user.getActiveTeam() != null){
+			return user.getActiveTeam().getId();
+		}
+	
+		return null;
+	}
 	
 	/**
 	 * Méthode qui retourne le tiers de l'utilisateur connecté
@@ -78,5 +131,14 @@ public interface UserInfoService {
 	 * @return Partner
 	 * 		Le tiers
 	 */
-	public Partner getUserPartner();
+	public Partner getUserPartner() {
+		
+		User user = getUser();
+		if (user != null && user.getPartner() != null){
+			return user.getPartner();
+		}
+	
+		return null;
+	}
 }
+ 
