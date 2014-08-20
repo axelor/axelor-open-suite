@@ -21,11 +21,11 @@
 		<field name="amount"/>
 		<field name="probability" width="45"/>
         <field name="expectedCloseDate" width="70"/>
-        <field name="userInfo"/>
-        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" readonlyIf="userInfo != null" />
-        <button name="next-stage" icon="fa-chevron-circle-right" help="Next Stage" onClick="action-opportunity-set-next-stage,action-opportunity-save-sale-stage-select" readonlyIf="salesStageSelect &gt; 7" />
-        <button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-opportunity-set-closed-won,action-opportunity-save-sale-stage-select" readonlyIf="salesStageSelect &gt; 8" />
-        <button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sale-stage-select" readonlyIf="salesStageSelect &gt; 8" />
+        <field name="user"/>
+        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" readonlyIf="user != null" />
+        <button name="next-stage" icon="fa-chevron-circle-right" help="Next Stage" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 7" />
+        <button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 8" />
+        <button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 8" />
     </grid>
 
    <grid orderBy="salesStageSelect,expectedCloseDate" edit-icon="true" name="my-opportunity-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity">
@@ -42,16 +42,16 @@
 		<field name="amount"/>
 		<field name="probability" width="45"/>
 		<field name="expectedCloseDate" width="70"/>
-		<button name="next-stage" help="Next Stage" readonlyIf="salesStageSelect > 7" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,action-opportunity-save-sale-stage-select"/>
-		<button name="closed-won" help="Closed won" readonlyIf="salesStageSelect > 8" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,action-opportunity-save-sale-stage-select"/>
-		<button name="closed-lost" help="Closed lost" readonlyIf="salesStageSelect > 8" icon="fa-minus-circle" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sale-stage-select"/>
+		<button name="next-stage" help="Next Stage" readonlyIf="salesStageSelect > 7" icon="fa-chevron-circle-right" onClick="action-group-crm-opportunity-nextstage-click"/>
+		<button name="closed-won" help="Closed won" readonlyIf="salesStageSelect > 8" icon="fa-check-circle" onClick="action-group-crm-opportunity-closedwon-click"/>
+		<button name="closed-lost" help="Closed lost" readonlyIf="salesStageSelect > 8" icon="fa-minus-circle" onClick="action-group-crm-opportunity-closedlost-click"/>
 	</grid>
 
     
     	 
    <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner"> 
    		<field name="name"/>
-   		<field name="userInfo"/>
+   		<field name="user"/>
         <field name="partner"/>
         <field name="currency"/>
         <field name="expectedCloseDate"/>
@@ -103,9 +103,9 @@
 					<field name="campaign"/>
 			</group>
 			<group title="Assigned to" colSpan="2" cols="2" canCollapse="true">
-				<field name="userInfo"/>
+				<field name="user"/>
 				<label title="" />
-				<button name="grabLead" colSpan="1" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe" hideIf="userInfo.id == _internalUserInfoId"/>
+				<button name="grabLead" colSpan="1" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe" hideIf="user.id == _internalUserId"/>
 				<field name="team"/>
 				<field name="company" widget="SuggestBox"/>
 			</group>
@@ -122,11 +122,26 @@
     	<action name="action-opportunity-record-from-partner" if="_partner != null"/>
     </action-group>
     
+    <action-group name="action-group-crm-opportunity-nextstage-click">
+    	<action name="action-opportunity-set-next-stage"/>
+    	<action name="action-opportunity-save-sale-stage-select"/>
+    </action-group>
+    
+    <action-group name="action-group-crm-opportunity-closedwon-click">
+    	<action name="action-opportunity-set-closed-won"/>
+    	<action name="action-opportunity-save-sale-stage-select"/>
+    </action-group>
+    
+    <action-group name="action-group-crm-opportunity-closedlost-click">
+    	<action name="action-opportunity-set-closed-lost"/>
+    	<action name="action-opportunity-save-sale-stage-select"/>
+    </action-group>
+    
     <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+    	<field name="user" expr="eval:__user__"/>
     	<field name="salesStageSelect" expr="1"/>
-    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     </action-record>
     
     <action-record name="action-opportunity-record-currency" model="com.axelor.apps.crm.db.Opportunity">
@@ -134,8 +149,8 @@
 	</action-record>
 	
 	<action-record name="action-opportunity-record-default" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+    	<field name="user" expr="eval:__user__"/>
+    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-record>
     
     <action-record name="action-opportunity-record-from-lead" model="com.axelor.apps.crm.db.Opportunity">
@@ -144,11 +159,11 @@
     	<field name="description" expr="eval: _lead.description"/>
     	<field name="source" expr="eval: _lead.source"/>
     	<field name="campaign" expr="eval: _lead.campaign"/>
-    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="salesStageSelect" expr="1"/>
     	<field name="currency" expr="eval: _lead.currency"/>
-    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
     </action-record>
     
     <action-record name="action-opportunity-record-from-partner" model="com.axelor.apps.crm.db.Opportunity">
@@ -156,19 +171,19 @@
     	<field name="partner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
     	<field name="description" expr="eval: _partner.description"/>
     	<field name="source" expr="eval: _partner.source"/>
-    	<field name="userInfo" expr="eval: _partner.userInfo"/>
+    	<field name="user" expr="eval: _partner.user"/>
     	<field name="team" expr="eval: _partner.team"/>
     	<field name="salesStageSelect" expr="1"/>
     	<field name="currency" expr="eval: _partner.currency"/>
-    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
     </action-record>
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">
 		<filter title="My Opportunities">
-			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+			<domain>self.user.internalUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="Unassigned Opportunities">
-			<domain>self.userInfo IS NULL</domain>
+			<domain>self.user IS NULL</domain>
 		</filter>
 		<filter title="My Team Opportunities">
 			<domain>self.team = :_myActiveTeam</domain>

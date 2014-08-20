@@ -6,7 +6,7 @@
     <grid name="target-configuration-grid" title="Target configurations" model="com.axelor.apps.crm.db.TargetConfiguration">
         <field name="name"/>
         <field name="code"/>
-        <field name="userInfo" />
+        <field name="user" />
        	<field name="team"/>
     </grid>
     
@@ -16,8 +16,8 @@
 	        <field name="code"/>    
 	    </group>
 	    <group title="Concerns" colSpan="4">
-	        <field name="userInfo" showIf="team == null"/>
-	        <field name="team" showIf="userInfo == null"/>    
+	        <field name="user" showIf="team == null"/>
+	        <field name="team" showIf="user == null"/>    
 	    </group>
 	    <group title="Period" colSpan="4">
 	        <field name="periodTypeSelect"/>

@@ -12,8 +12,8 @@
     </grid>
  
     <form name="crm-batch-form" title="CRM Batch" model="com.axelor.apps.crm.db.CrmBatch" cols="4"
-    onLoad="action-crm-batch-attrs-action-select,action-crm-batch-attrs-action-select" 
-    onNew="action-crm-batch-record-on-new,action-crm-batch-attrs-action-select">
+    onLoad="action-crm-batch-attrs-action-select" 
+    onNew="action-group-crm-crmbatch-onnew">
     	<field name="actionSelect" onChange="action-crm-batch-attrs-action-select"/>
     	<field name="code" />
     	<field name="company" widget="SuggestBox"/>
@@ -36,10 +36,15 @@
     	</notebook>   	
     </form>
     
+    <action-group name="action-group-crm-crmbatch-onnew">
+    	<action name="action-crm-batch-record-on-new"/>
+    	<action name="action-crm-batch-attrs-action-select"/>
+    </action-group>
+    
     <!-- ACTION RECORD -->
     <action-record name="action-crm-batch-record-on-new" model="com.axelor.apps.crm.db.CrmBatch">
 		<field name="createdOn" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-		<field name="createdBy" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<field name="createdBy" expr="eval:__user__"/>
 	</action-record>
     
     <!-- ACTION METHOD -->

@@ -10,7 +10,7 @@
 <!--     		<button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> -->
     		<button name="checkDuplicate" title="Check duplicate" onClick="action-general-check-duplicate-records" help=""/>
     	</toolbar>
-    	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (userInfo == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
+    	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
 	    <hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="(statusSelect == 2 || statusSelect == 3) &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
 	    <hilite color="success" if="statusSelect == 4"/>
@@ -22,16 +22,16 @@
         <field name="fixedPhone"/>
 		<field name="emailAddress.address"/>
 		<field name="contactDate"/>
-		<field name="userInfo"/>
+		<field name="user"/>
         <field name="statusSelect"/>
-        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="userInfo != null"/>
+        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="user != null"/>
 		<button name="logCall" title="Log Call" icon="fa-phone" onClick="action-lead-view-create-call"/>
 		<button name="scheduleMeeting" title="Schedule Meeting" icon="fa-group" onClick="action-lead-view-create-meeting"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
     <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" cols="4" 
-    onNew="action-account-record-new,action-lead-default-record-new" 
+    onNew="action-group-crm-lead-onnew" 
     onLoad="action-lead-attrs-readonly-other-address">
 	    <toolbar>
 	        <button name="convertLead" title="Convert lead" hideIf="statusSelect == 4" onClick="save,action-lead-view-convert-lead" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
@@ -75,8 +75,8 @@
 	            </group>
 	            <group title="Assigned to" colSpan="4">
 	                <field name="contactDate"/>
-	                <button name="grabLead" colSpan="2" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead" hideIf="userInfo.id == _internalUserInfoId"/>
-	                <field name="userInfo"/>
+	                <button name="grabLead" colSpan="2" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead" hideIf="user.id == _internalUserId"/>
+	                <field name="user"/>
 	                <field name="team"/>
 	            </group>
 	        </group>  
@@ -96,7 +96,7 @@
 		            <field name="otherState"/>
 		            <field name="otherPostalCode"/>
 		            <field name="otherCountry"/>
-		            <field name="isCopyAddress" onChange="action-lead-record-other-address,action-lead-attrs-readonly-other-address"/>
+		            <field name="isCopyAddress" onChange="action-group-crm-lead-iscopyaddress-onchange"/>
 		        </group>
 		        <group title="Extra information" colSpan="4" css="groupTitle" cols="6" readonlyIf="statusSelect == 4 || statusSelect == 6">
 		            <field name="officeName"/>
@@ -138,13 +138,13 @@
         <field name="fixedPhone"/>
 		<field name="emailAddress.address"/>
 		<field name="contactDate"/>
-		<field name="userInfo"/>
+		<field name="user"/>
         <field name="statusSelect"/>
 		<button name="add" title="Add" icon="fa-plus" onClick="action-lead-event-add-attendee"/>
     </grid>
 	
 	<grid orderBy="-contactDate,statusSelect" edit-icon="true" name="my-lead-grid" title="My Leads" model="com.axelor.apps.crm.db.Lead">
-		<hilite color="warning" if="statusSelect == 1 &amp;&amp; (userInfo == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
+		<hilite color="warning" if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
 	    <hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="(statusSelect == 2 || statusSelect == 3) &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
 	    <hilite color="success" if="statusSelect == 4"/>
@@ -162,6 +162,15 @@
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
 	
+	<action-group name="action-group-crm-lead-onnew">
+		<action name="action-account-record-new"/>
+		<action name="action-lead-default-record-new"/>
+	</action-group>
+	
+	<action-group name="action-group-crm-lead-iscopyaddress-onchange">
+		<action name="action-lead-record-other-address"/>
+		<action name="action-lead-attrs-readonly-other-address"/>
+	</action-group>
 	
 	<action-method name="action-lead-event-add-attendee">
 		<call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>
@@ -172,14 +181,14 @@
 	</action-method>
     
     <action-record name="action-lead-record-new" model="com.axelor.apps.crm.db.Lead">
-    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
     </action-record>
     
     <action-record name="action-lead-default-record-new" model="com.axelor.apps.crm.db.Lead">
     	<field name="statusSelect" expr="2"/>
     	<field name="contactDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="contactDate == null"/>
-    	<field name="userInfo"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+    	<field name="user"  expr="eval:__user__"/>
+    	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     </action-record>
     
     <action-record name="action-lead-record-other-address" model="com.axelor.apps.crm.db.Lead">
@@ -267,10 +276,10 @@
 	
    	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">
 		<filter title="My Leads">
-			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+			<domain>self.user = :__user__</domain>
 		</filter>
 		<filter title="Unassigned Leads">
-			<domain>self.userInfo IS NULL</domain>
+			<domain>self.user IS NULL</domain>
 		</filter>
 		<filter title="My Team Leads">
 			<domain>self.team = :_myActiveTeam</domain>

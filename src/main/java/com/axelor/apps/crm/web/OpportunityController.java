@@ -24,9 +24,9 @@ import java.util.Map;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.MapService;
-import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -39,8 +39,6 @@ public class OpportunityController {
 	@Inject
 	Provider<OpportunityService> OpportunityProvider;
 	
-	@Inject
-	Provider<UserInfoService> userInfoProvider;
 	
 	@Inject
 	Provider<MapService> mapProvider;
@@ -55,12 +53,12 @@ public class OpportunityController {
 	public void assignToMe(ActionRequest request, ActionResponse response)  {
 		if(request.getContext().get("id") != null){
 			Opportunity opportunity = Opportunity.find((Long)request.getContext().get("id"));
-			opportunity.setUserInfo(userInfoProvider.get().getUserInfo());
+			opportunity.setUser(AuthUtils.getUser());
 			OpportunityProvider.get().saveOpportunity(opportunity);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
 			for(Opportunity opportunity : Opportunity.filter("id in ?1",request.getContext().get("_ids")).fetch()){
-				opportunity.setUserInfo(userInfoProvider.get().getUserInfo());
+				opportunity.setUser(AuthUtils.getUser());
 				OpportunityProvider.get().saveOpportunity(opportunity);
 			}
 		}

@@ -30,7 +30,6 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.Lead;
@@ -41,7 +40,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-
+import com.axelor.auth.AuthUtils;
 
 public class EventController {
 
@@ -58,9 +57,6 @@ public class EventController {
 	
 	@Inject
 	private Provider<MapService> mapProvider;
-	
-	@Inject
-	private Provider<UserInfoService> userInfoProvider;
 	
 	
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
@@ -210,14 +206,14 @@ public class EventController {
 	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
 		if(request.getContext().get("id") != null){
 			Lead lead = Lead.find((Long)request.getContext().get("id"));
-			lead.setUserInfo(userInfoProvider.get().getUserInfo());
+			lead.setUser(AuthUtils.getUser());
 			if(lead.getStatusSelect() == 1)
 				lead.setStatusSelect(2);
 			eventProvider.get().saveLead(lead);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
 			for(Lead lead : Lead.filter("id in ?1",request.getContext().get("_ids")).fetch()){
-				lead.setUserInfo(userInfoProvider.get().getUserInfo());
+				lead.setUser(AuthUtils.getUser());
 				if(lead.getStatusSelect() == 1)
 					lead.setStatusSelect(2);
 				eventProvider.get().saveLead(lead);
@@ -230,12 +226,12 @@ public class EventController {
 	public void assignToMeEvent(ActionRequest request, ActionResponse response)  {
 		if(request.getContext().get("id") != null){
 			Event event = Event.find((Long)request.getContext().get("id"));
-			event.setUserInfo(userInfoProvider.get().getUserInfo());
+			event.setUser(AuthUtils.getUser());
 			eventProvider.get().saveEvent(event);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
 			for(Event event : Event.filter("id in ?1",request.getContext().get("_ids")).fetch()){
-				event.setUserInfo(userInfoProvider.get().getUserInfo());
+				event.setUser(AuthUtils.getUser());
 				eventProvider.get().saveEvent(event);
 			}
 		}

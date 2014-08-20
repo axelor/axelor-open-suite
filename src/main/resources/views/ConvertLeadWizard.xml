@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
     
-    <form cols="4" name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" onNew="action-convert-lead-wizard-default,action-convert-lead-wizard-address">
+    <form cols="4" name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" onNew="action-group-crm-convlead-wizard-onnew">
  		<toolbar>
 	        <button name="validate" title="Validate" onClick="action-lead-method-convert-lead"/>
 	    </toolbar>
@@ -66,6 +66,10 @@
  		
 	</form>
 	
+	<action-group name="action-group-crm-convlead-wizard-onnew">
+		<action name="action-convert-lead-wizard-default"/>
+		<action name="action-convert-lead-wizard-address"/>
+	</action-group>
 	
 	<action-record name="action-convert-lead-wizard-default" model="com.axelor.apps.base.db.Wizard">
     	<field name="partner" expr="action: action-convert-lead-wizard-record-default-partner"/>
@@ -125,7 +129,7 @@
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
 	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
-	                <field name="userInfo"/>
+	                <field name="user"/>
 	                <field name="team"/>
 	            </group>
 	        </page>
@@ -149,7 +153,7 @@
 	            <break/>
 	            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name"/>
 	            <break/>
-	            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
+	            <field name="partnerTypeSelect" showTitle="false" onChange="action-group-crm-convlead-partnertype-onchange"/>
 	        </group>
 	    </group>
 	    <break/>
@@ -214,7 +218,7 @@
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
 	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
-	                <field name="userInfo"/>
+	                <field name="user"/>
 	                <field name="team"/>
 	            </group>
             </page>
@@ -222,6 +226,10 @@
 	</form>
 	
 	
+	<action-group name="action-group-crm-convlead-partnertype-onchange">
+		<action name="action-partner-attrs-change-name"/>
+		<action name="action-partner-attrs-hide-tabs"/>
+	</action-group>
 	
 	<action-record name="action-convert-lead-wizard-record-default-partner" model="com.axelor.apps.base.db.Partner">
 		<field name="isContact" expr="eval: false"/>
@@ -280,7 +288,7 @@
     	<field name="webSite" expr="eval: _lead.website"/>
     	<field name="source" expr="eval: _lead.source"/>
     	<field name="department" expr="eval: _lead.department"/>
-    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="jobTitle" expr="eval: _lead.jobTitle"/>
     </action-record>
@@ -340,7 +348,7 @@
 	        </group>
 	    </group>    
         <group title="Assigned to" canCollapse="true">
-	        <field name="userInfo"/>
+	        <field name="user"/>
 	    	<field name="team"/>
 	        <field name="company" widget="SuggestBox"/>
         </group>
@@ -364,7 +372,7 @@
 	        </group>
         </group>
         <group title="Assignment" cols="4" colSpan="4" canCollapse="true">
-	        <field name="userInfo"/>
+	        <field name="user"/>
 	    	<field name="team" onSelect="action-event-attrs-team-domain"/>
         </group>
     </form>
@@ -374,7 +382,7 @@
     	<field name="typeSelect" expr="eval: 1"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfo.find(_lead.userInfo.id)"/>
+    	<field name="user" expr="eval: com.axelor.auth.db.User.find(_lead.user.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
@@ -399,7 +407,7 @@
 	        </group>
         </group>
         <group title="Assignment" cols="4" colSpan="4" canCollapse="true">
-	        <field name="userInfo"/>
+	        <field name="user"/>
 	    	<field name="team" onSelect="action-event-attrs-team-domain"/>
         </group>
     </form>
@@ -408,7 +416,7 @@
     	<field name="typeSelect" expr="eval: 2"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfo.find(_lead.userInfo.id)"/>
+    	<field name="user" expr="eval: com.axelor.auth.db.User.find(_lead.user.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
@@ -434,7 +442,7 @@
 	        </group>
         </group>
         <group title="Assigned to" cols="4" colSpan="4" canCollapse="true">
-	        <field name="userInfo"/>
+	        <field name="user"/>
 	    	<field name="team" onSelect="action-event-attrs-team-domain"/>
         </group>
     </form>
@@ -443,7 +451,7 @@
     	<field name="typeSelect" expr="eval: 3"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfo.find(_lead.userInfo.id)"/>
+    	<field name="user" expr="eval: com.axelor.auth.db.User.find(_lead.user.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="taskStatusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>

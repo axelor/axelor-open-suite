@@ -14,11 +14,11 @@
 		    FROM
 		        crm_opportunity self
 		    LEFT JOIN
-		        meta_select as selection ON selection.name = 'crm.opportunity.sale.stage.select'
+		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 		    LEFT JOIN 
 		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
-				cast(selection_item.value as decimal) = self.sale_stage_select			
+				cast(selection_item.value as decimal) = self.sales_stage_select			
 		    GROUP BY
 			   selection_item.id
 			ORDER BY
@@ -38,11 +38,11 @@
 		    FROM
 		        crm_opportunity self
 		    LEFT JOIN
-		        meta_select as selection ON selection.name = 'crm.opportunity.sale.stage.select'
+		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 		    LEFT JOIN 
 		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
-				cast(selection_item.value as decimal) = self.sale_stage_select	and self.sale_stage_select not in (9, 10)		
+				cast(selection_item.value as decimal) = self.sales_stage_select	and self.sales_stage_select not in (9, 10)		
 		    GROUP BY
 			   selection_item.id
 			ORDER BY
@@ -102,7 +102,7 @@
 			FROM
     			crm_opportunity self
  			JOIN
-    			base_source as Source ON self.source = Source.id and self.sale_stage_select = 9
+    			base_source as Source ON self.source = Source.id and self.sales_stage_select = 9
 			GROUP BY
     			_source
 			ORDER BY
@@ -122,7 +122,7 @@
 	    	FROM
 	        	crm_opportunity self
 	    	LEFT JOIN
-	        	base_user_info as sale_man ON self.user_info = sale_man.id
+	        	auth_user as sale_man ON self.user_id = sale_man.id
 	        	AND sale_man.full_name IS NOT NULL
 	    	GROUP BY
 		    	_sale_man
@@ -146,11 +146,11 @@
             LEFT JOIN 
                 base_source src on src.id = self.source
 			LEFT JOIN
-	        	meta_select as selection ON selection.name = 'crm.opportunity.sale.stage.select'
+	        	meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 	    	LEFT JOIN 
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
-				selection_item.value = cast(self.sale_stage_select as char)		
+				selection_item.value = cast(self.sales_stage_select as char)		
 			GROUP BY
 			    selection_item.id,
 			    src.name
@@ -173,15 +173,15 @@
 		FROM
 			crm_opportunity self
 		JOIN
-			meta_select as selection ON selection.name = 'crm.opportunity.sale.stage.select'
+			meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 		JOIN 
 	 		meta_select_item as selection_item ON selection_item.select_id = selection.id
 		WHERE
-			selection_item.value = cast(self.sale_stage_select as char)
+			selection_item.value = cast(self.sales_stage_select as char)
 		AND
     		self.expected_close_date < current_date+ interval '90 day' 
 		AND 
-    		self.sale_stage_select <9
+    		self.sales_stage_select <9
                 
 		GROUP BY
 			selection_item.id, pipeline
@@ -272,7 +272,7 @@
 			FROM
 			    crm_lead as self
 			LEFT JOIN
-	        	base_user_info as sale_man ON self.user_info = sale_man.id
+	        	auth_user as sale_man ON self.user_id = sale_man.id
 			LEFT JOIN
 	        	meta_select as selection ON selection.name = 'crm.lead.status.select'
 	    	LEFT JOIN 
@@ -306,8 +306,8 @@
 				FROM
 					crm_event AS _event
 				LEFT JOIN
-					base_user_info AS _user
-					ON _event.user_info = _user.id
+					auth_user AS _user
+					ON _event.user_id = _user.id
 					
 				JOIN
 					(SELECT 
@@ -390,11 +390,11 @@
 			      saleMan.fullName AS _sale_man			      
 			    FROM
 			      Event self,    
-			      UserInfo saleMan      
+			      User saleMan      
 			    
 			    WHERE
 			      self.typeSelect = 1 AND
-			      self.userInfo = saleMan AND
+			      self.user = saleMan AND
 			      self.team = :team AND
 			      self.createdOn BETWEEN DATE(:fromDateT) AND DATE(:todayDate)
 			    GROUP BY        
@@ -498,7 +498,7 @@
 	    FROM
 	        crm_event as self
 	    JOIN
-	      base_user_info as sale_man ON self.user_info = sale_man.id
+	      auth_user as sale_man ON self.user_id = sale_man.id
 	    JOIN
 	      meta_select as selection    ON selection.name = 'crm.event.ticket.status.select'
 	    JOIN 
@@ -707,9 +707,9 @@
 	  FROM
 	    crm_event AS _ticket    
 	  LEFT JOIN
-	    base_user_info AS _user
+	    auth_user AS _user
 	  ON
-	    _ticket.user_info = _user.id  
+	    _ticket.user_id = _user.id  
 	  WHERE
 	    _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
 	    AND _ticket.type_select != 5
@@ -732,7 +732,7 @@
 			    SELECT
 				    self.callEmittedNumber*100/self.callEmittedNumberTarget   		AS 	_callEmittedNumber
 				FROM Target self 
-				WHERE self.userInfo = :user_info and :date between self.fromDate and self.toDate and self.callEmittedNumberTarget > 0
+				WHERE self.user = :__user__ and :date between self.fromDate and self.toDate and self.callEmittedNumberTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_callEmittedNumber" type="text"/>
@@ -753,7 +753,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser = :activeUser
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -776,7 +776,7 @@
 			    SELECT
 				    self.meetingNumber*100/self.meetingNumberTarget   		AS 	_meetingNumber
 				FROM Target self 
-				WHERE self.userInfo = :user_info and :date between self.fromDate and self.toDate and self.meetingNumberTarget > 0
+				WHERE self.user = :__user__ and :date between self.fromDate and self.toDate and self.meetingNumberTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_meetingNumber" type="text"/>
@@ -797,7 +797,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser = :activeUser
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -816,7 +816,7 @@
 			    SELECT
 				    self.opportunityAmountWon*100/self.opportunityAmountWonTarget   		AS 	_opportunityAmountWon
 				FROM Target self 
-				WHERE self.userInfo = :user_info and :date between self.fromDate and self.toDate and self.opportunityAmountWonTarget > 0
+				WHERE self.user = :__user__ and :date between self.fromDate and self.toDate and self.opportunityAmountWonTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_opportunityAmountWon" type="text"/>
@@ -837,7 +837,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser = :activeUser
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -856,7 +856,7 @@
 			    SELECT
 				    self.opportunityCreatedNumber*100/self.opportunityCreatedNumberTarget 		AS 	_opportunityCreatedNumber
 				FROM Target self 
-				WHERE self.userInfo = :user_info and :date between self.fromDate and self.toDate and self.opportunityCreatedNumberTarget > 0
+				WHERE self.user = :__user__ and :date between self.fromDate and self.toDate and self.opportunityCreatedNumberTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_opportunityCreatedNumber" type="text"/>
@@ -877,7 +877,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser = :activeUser
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -896,7 +896,7 @@
 			    SELECT
 				    self.opportunityCreatedWon*100/self.opportunityCreatedWonTarget   		AS 	_opportunityCreatedWon
 				FROM Target self 
-				WHERE self.userInfo = :user_info and :date between self.fromDate and self.toDate and self.opportunityCreatedWonTarget > 0
+				WHERE self.user = :__user__ and :date between self.fromDate and self.toDate and self.opportunityCreatedWonTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_opportunityCreatedWon" type="text"/>
@@ -917,7 +917,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser = :activeUser
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -936,7 +936,7 @@
 			    SELECT
 				    self.saleOrderAmountWon*100/self.saleOrderAmountWonTarget   		AS 	_saleOrderAmountWon
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.saleOrderAmountWonTarget > 0
+				WHERE self.user = :__user__ and self.fromDate <= :date and self.toDate >= :date and self.saleOrderAmountWonTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_saleOrderAmountWon" type="text"/>
@@ -957,7 +957,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser = :activeUser
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -976,7 +976,7 @@
 			    SELECT
 				    self.saleOrderCreatedNumber*100/self.saleOrderCreatedNumberTarget   		AS 	_saleOrderCreatedNumber
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.saleOrderCreatedNumberTarget > 0
+				WHERE self.user = :__user__ and self.fromDate <= :date and self.toDate >= :date and self.saleOrderCreatedNumberTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_saleOrderCreatedNumber" type="text"/>
@@ -997,7 +997,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser = :activeUser
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -1016,7 +1016,7 @@
 			    SELECT
 				    self.saleOrderCreatedWon*100/self.saleOrderCreatedWonTarget   		AS 	_saleOrderCreatedWon
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.saleOrderCreatedWonTarget > 0
+				WHERE self.user = :__user__ and self.fromDate <= :date and self.toDate >= :date and self.saleOrderCreatedWonTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_saleOrderCreatedWon" type="text"/>
@@ -1037,7 +1037,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser = :activeUser
+				WHERE self.user = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -1094,7 +1094,7 @@
 		</chart>
 		
 		<action-record name="action.chart.crm.chart.set.active.team" model="com.axelor.apps.crm.db.Event">
-		    <field name="activeTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
+		    <field name="activeTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" />
 		</action-record>
 		
 		<chart name="chart.team.meeting.target.gauge" title="Meetings number target completed (%)">

@@ -62,7 +62,7 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.UserInfo;
+import com.axelor.auth.db.User;
 import com.axelor.apps.crm.db.Calendar;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventAttendee;
@@ -159,7 +159,7 @@ public class CalendarService {
 	}
 	
 	
-	public void synchronizeCalendars(UserInfo userInfo) throws MalformedURLException, ObjectStoreException, ObjectNotFoundException, SocketException, ConstraintViolationException  {
+	public void synchronizeCalendars(User user) throws MalformedURLException, ObjectStoreException, ObjectNotFoundException, SocketException, ConstraintViolationException  {
 	
 		for(Calendar internalCalendar : this.getInternalCalendarList())  {
 			
@@ -196,7 +196,7 @@ public class CalendarService {
 	
 	public List<Calendar> getInternalCalendarList()  {
 		
-//		List<Calendar> internalCalendarList = Calendar.all().filter("self", UserInfo userInfo) // TODO Récupérer la liste des calendriers du tiers
+//		List<Calendar> internalCalendarList = Calendar.all().filter("self", User user) // TODO Récupérer la liste des calendriers du tiers
 		
 		List<Calendar> internalCalendarList = Calendar.all().fetch();
 		

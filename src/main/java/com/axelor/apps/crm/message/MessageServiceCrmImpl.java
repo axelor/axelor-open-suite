@@ -24,9 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.UserInfo;
+import com.axelor.auth.db.User;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
-import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.IMessage;
@@ -36,28 +36,29 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public abstract class MessageServiceCrmImpl extends MessageServiceBaseImpl {
+public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
+
+	@Inject
+	public MessageServiceCrmImpl(UserService userService) {
+		super(userService);
+		// TODO Auto-generated constructor stub
+	}
+
 
 	private static final Logger LOG = LoggerFactory.getLogger(MessageServiceCrmImpl.class);
 	
 	private DateTime todayTime;
 	
 	
-	@Inject
-	public MessageServiceCrmImpl(UserInfoService userInfoService) {
-
-		super(userInfoService);
-	}
-	
 	@Transactional
 	public Message createMessage(Event event, MailAccount mailAccount)  {
 		
-		UserInfo recipientUserInfo = event.getUserInfo();
+		User recipientUser = event.getUser();
 		
 		List<EmailAddress> toEmailAddressList = Lists.newArrayList();
 		
-		if(recipientUserInfo != null)  {
-			Partner partner = recipientUserInfo.getPartner();
+		if(recipientUser != null)  {
+			Partner partner = recipientUser.getPartner();
 			if(partner != null)  {
 				EmailAddress emailAddress = partner.getEmailAddress();
 				if(emailAddress != null)  {
@@ -84,7 +85,7 @@ public abstract class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 				mailAccount,
 				null, null, 0);
 		
-		message.setRecipientUserInfo(event.getResponsibleUserInfo());
+		message.setRecipientUser(event.getResponsibleUser());
 		
 		return message.save();
 	}	

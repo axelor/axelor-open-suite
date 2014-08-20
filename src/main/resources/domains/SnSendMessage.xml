@@ -8,7 +8,7 @@
 	    This class represents a personal message
 	 	(they are sent in the user private message inbox).
 	 	snMessageRef is the id of the message after being sent
-	 	userInfo is the user who send the message
+	 	user is the user who send the message
 	 	socialNet is the social network on which the message will be sent
 	 	partner is the user to whom the message will be sent
 	 	personalCredential is used for API access
@@ -19,7 +19,7 @@
  		<string name="snMessageRef" />
  		<string name="subject" title="Subject"/>
  		<datetime name="messageDateT" tz="true" title="Message date" readonly="true"/>
- 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" />
+ 		<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" />
  		<many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet" orphan="true" required="true" title="Social Network"/>
  		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" required="true" title="To User"/>
  		<many-to-one name="personalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential" required="true" title="Personal Credential"/>
