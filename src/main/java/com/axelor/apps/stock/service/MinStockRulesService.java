@@ -20,9 +20,9 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.supplychain.db.Location;
-import com.axelor.apps.supplychain.db.LocationLine;
-import com.axelor.apps.supplychain.db.MinStockRules;
+import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.MinStockRules;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 

@@ -12,9 +12,9 @@
     
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" unique="true"/>
 
-   	<many-to-one name="customerVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Customer virtual location"/>
-    <many-to-one name="supplierVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Supplier virtual location"/>
-    <many-to-one name="inventoryVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Inventory virtual location"/>
+   	<many-to-one name="customerVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Customer virtual location"/>
+    <many-to-one name="supplierVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Supplier virtual location"/>
+    <many-to-one name="inventoryVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Inventory virtual location"/>
     
   	<boolean name="hasOutSmForStorableProduct" title="Generate out. moves for storable products ?"/>
   	<boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for non storable products ?"/>

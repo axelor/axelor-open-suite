@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
 
-  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+  <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockMove" lang="java">
   
@@ -11,14 +11,14 @@
 
 	<string name="stockMoveSeq" namecolumn="true" title="Ref." readonly="true"/>
     <string name="name" title="Name"/>
-    <many-to-one name="fromLocation" ref="com.axelor.apps.supplychain.db.Location" title="From location"/>
-    <many-to-one name="toLocation" ref="com.axelor.apps.supplychain.db.Location" title="To location"/>
+    <many-to-one name="fromLocation" ref="com.axelor.apps.stock.db.Location" title="From location"/>
+    <many-to-one name="toLocation" ref="com.axelor.apps.stock.db.Location" title="To location"/>
     
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realDate" title="Move date" readonly="true"/>
     
-    <integer name="statusSelect" title="Status" selection="supplychain.stock.move.status.select" readonly="true"/>
-    <integer name="typeSelect" title="Type Status" selection="supplychain.stock.move.type.select"/>
+    <integer name="statusSelect" title="Status" selection="stock.move.status.select" readonly="true"/>
+    <integer name="typeSelect" title="Type Status" selection="stock.move.type.select"/>
     
     <many-to-one name="fromAddress" ref="com.axelor.apps.base.db.Address" title="From address"/>
     <many-to-one name="toAddress" ref="com.axelor.apps.base.db.Address" title="To address"/>
@@ -26,7 +26,7 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     
-    <one-to-many name="stockMoveLineList" ref="com.axelor.apps.supplychain.db.StockMoveLine" mappedBy="stockMove" title="Stock move content"/>
+    <one-to-many name="stockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="stockMove" title="Stock move content"/>
     
     <boolean name="isWithReturnSurplus" title="Return surplus"/>
     <boolean name="isWithBackorder" title="Manage BackOrder "/>

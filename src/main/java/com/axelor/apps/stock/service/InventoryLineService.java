@@ -21,8 +21,8 @@ import java.math.BigDecimal;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
-import com.axelor.apps.supplychain.db.Inventory;
-import com.axelor.apps.supplychain.db.InventoryLine;
+import com.axelor.apps.stock.db.Inventory;
+import com.axelor.apps.stock.db.InventoryLine;
 
 public class InventoryLineService {
 

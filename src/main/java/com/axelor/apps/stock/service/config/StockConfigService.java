@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockConfig;
-import com.axelor.apps.supplychain.db.Location;
+import com.axelor.apps.stock.db.Location;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -36,7 +36,7 @@ public class StockConfigService {
 		StockConfig stockConfig = company.getStockConfig();
 		
 		if(stockConfig == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer le module stock pour la société %s",
+			throw new AxelorException(String.format("Veuillez configurer le module stock pour la société %s",
 					company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		

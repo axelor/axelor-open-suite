@@ -10,7 +10,7 @@
 		title="Customer Deliveries" action="stock.root.custdeliveries" />
 
 	<action-view name="stock.root.custdeliveries" title="Customer Deliveries"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-out-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
@@ -22,7 +22,7 @@
 		title="Supplier Arrivals" action="stock.root.suparrivals" />
 
 	<action-view name="stock.root.suparrivals" title="Supplier Arrivals"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-in-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
@@ -36,7 +36,7 @@
 		title="Internal Stock Moves" action="stock.root.internal" />
 
 	<action-view name="stock.root.internal" title="Internal Stock Moves"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
@@ -53,7 +53,7 @@
 		title="Production needs" action="stock.root.incoming.production" />
 
 	<action-view name="stock.root.incoming.production" title="Production needs"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<domain>self.statusSelect = 2 and self.toLocation.id = 5</domain>
@@ -63,7 +63,7 @@
 		title="Production forecasts" action="stock.root.outcoming.production" />
 
 	<action-view name="stock.root.outcoming.production" title="Production forecasts"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<domain>self.statusSelect = 2 and self.fromLocation.id = 5</domain>
@@ -73,7 +73,7 @@
 		title="Receptions fournisseurs" action="stock.root.incoming.supplier" />
 
 	<action-view name="stock.root.incoming.supplier" title="Receptions fournisseurs"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<domain>self.statusSelect = 2 and self.fromLocation.id = 3</domain>
@@ -83,7 +83,7 @@
 		title="Retours fournisseurs" action="stock.root.outcoming.supplier" />
 
 	<action-view name="stock.root.outcoming.supplier" title="Retours fournisseurs"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<domain>self.statusSelect = 2 and self.toLocation.id = 3</domain>
@@ -93,7 +93,7 @@
 		title="Expéditions clients" action="stock.root.outcoming.client" />
 
 	<action-view name="stock.root.outcoming.client" title="Expéditions clients"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<domain>self.statusSelect = 2 and self.toLocation.id = 2</domain>
@@ -103,7 +103,7 @@
 		title="Retours clients" action="stock.root.incoming.client" />
 
 	<action-view name="stock.root.incoming.client" title="Retours clients"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<domain>self.statusSelect = 2 and self.fromLocation.id = 2</domain>
@@ -119,7 +119,7 @@
 		title="Inventories" action="stock.root.inventories.draft" icon="img/16px/inventory_16px.png"/>
 	
 	<action-view name="stock.root.inventories.draft" title="Inventories"
-		model="com.axelor.apps.supplychain.db.Inventory" icon="img/16px/inventory_16px.png">
+		model="com.axelor.apps.stock.db.Inventory" icon="img/16px/inventory_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="inventories-filters"/>
@@ -129,7 +129,7 @@
 		title="Stock Moves Lines" action="stock.root.all.line" />
 
 	<action-view name="stock.root.all.line" title="Stock Moves Lines"
-		model="com.axelor.apps.supplychain.db.StockMoveLine" icon="img/16px/productSmall_16px.png">
+		model="com.axelor.apps.stock.db.StockMoveLine" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-line-all-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>
 	</action-view>		
@@ -141,7 +141,7 @@
 		title="Stock Locations" action="stock.root.location" />
 	
 	<action-view name="stock.root.location" title="Stock Locations"
-		model="com.axelor.apps.supplychain.db.Location" icon="img/16px/addressBook_16px.png">
+		model="com.axelor.apps.stock.db.Location" icon="img/16px/addressBook_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -150,7 +150,7 @@
 		title="Minimum stock rules" action="stock.root.conf.min.Stock.rules" />
 	
 	<action-view name="stock.root.conf.min.Stock.rules" title="Minimum stock rules"
-		model="com.axelor.apps.supplychain.db.MinStockRules" icon="img/16px/addressBook_16px.png">
+		model="com.axelor.apps.stock.db.MinStockRules" icon="img/16px/addressBook_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -195,7 +195,7 @@
 	<menuitem name="top-stock-moves-all" title="Stock moves" action="top.stock.moves.all" parent="top-stock" groups="admins,erp" top="true" left="false"/>	
 	
 	<action-view name="top.stock.moves.all" title="Stock moves"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" />
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
@@ -204,7 +204,7 @@
 	<menuitem name="top-stock-cust-deliveries" title="Customer deliveries" action="top.stock.cust.deliveries" parent="top-stock" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.stock.cust.deliveries" title="Customer deliveries"
-		model="com.axelor.apps.supplychain.db.StockMove" >
+		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-grid" />
 		<view type="form" name="stock-move-form" />
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
@@ -215,7 +215,7 @@
 	<menuitem name="top-stock-internal-moves" title="Internal moves" action="top.stock.internal.moves" parent="top-stock" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.stock.internal.moves" title="Internal moves"
-		model="com.axelor.apps.supplychain.db.StockMove" >
+		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-grid" />
 		<view type="form" name="stock-move-form" />
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
@@ -226,7 +226,7 @@
 	<menuitem name="top-stock-suppl-deliveries" title="Supplier deliveries" action="top.stock.suppl.deliveries" parent="top-stock" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.stock.suppl.deliveries" title="Supplier deliveries"
-		model="com.axelor.apps.supplychain.db.StockMove" >
+		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-grid" />
 		<view type="form" name="stock-move-form" />
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>

@@ -483,15 +483,15 @@ Partner.title_select, Partner.name, Partner.first_name, Partner.partner_type_sel
 DeliveryAddress.addressl2, DeliveryAddress.addressl3, DeliveryAddress.addressl4, DeliveryAddress.addressl5, 
 DeliveryAddress.addressl6, Country.name as "countryName", PrintingSetting.pdf_header, 
 AuthUser.name as last_modified_by
-from supplychain_stock_move as StockMove
+from stock_stock_move as StockMove
 left outer join public.base_company as Company on (StockMove.company = Company.id)
 left outer join public.base_partner as Partner on (StockMove.partner = Partner.id)
 left outer join public.base_address as DeliveryAddress on (StockMove.to_address = DeliveryAddress.id)
 left outer join public.base_country as Country on (DeliveryAddress.addressl7country = Country.id)
 left join public.auth_user as AuthUser on (StockMove.updated_by = AuthUser.id)
 left join public.base_printing_settings as PrintingSetting on (Company.printing_settings = PrintingSetting.id)
-left join public.supplychain_sale_order as SaleOrder on (StockMove.sale_order = SaleOrder.id)
-left join public.supplychain_purchase_order as PurchaseOrder on (StockMove.purchase_order = PurchaseOrder.id)
+left join public.sale_sale_order as SaleOrder on (StockMove.sale_order = SaleOrder.id)
+left join public.purchase_purchase_order as PurchaseOrder on (StockMove.purchase_order = PurchaseOrder.id)
 --where StockMove.id = ?
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -858,8 +858,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, Product.name as product_name,
 StockMoveLine.qty, Unit.code as unit_code, TrackingNumber.tracking_number_seq
-from public.supplychain_stock_move as StockMove
-inner join public.supplychain_stock_move_line as StockMoveLine on (StockMoveLine.stock_move = StockMove.id)
+from public.stock_stock_move as StockMove
+inner join public.stock_stock_move_line as StockMoveLine on (StockMoveLine.stock_move = StockMove.id)
 left join base_product as Product on (StockMoveLine.product = Product.id)
 left join base_unit as Unit on (StockMoveLine.unit = Unit.id)
 left join base_tracking_number as TrackingNumber on (StockMoveLine.tracking_number = TrackingNumber.id)

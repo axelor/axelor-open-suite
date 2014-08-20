@@ -3,21 +3,21 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
 
-  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+  <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="MinStockRules" lang="java">
   
   	<string name="name" title="Name"/>
 	
-	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>  	
+	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>  	
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="minQty" title="Min. Qty"/>
   	<decimal name="reOrderQty" title="Refill Qty"/>
-  	<integer name="typeSelect" title="Type" selection="supplychain.min.stock.rules.type.select"/>
+  	<integer name="typeSelect" title="Type" selection="stock.min.stock.rules.type.select"/>
   	
-  	<integer name="orderAlertSelect" title="Refill type" selection="supplychain.min.stock.rules.order.alert.select"/>
+  	<integer name="orderAlertSelect" title="Refill type" selection="stock.min.stock.rules.order.alert.select"/>
   	
-  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User"/>
+  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
   </entity>

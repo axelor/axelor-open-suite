@@ -3,17 +3,17 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
 
-  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+  <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="Inventory" lang="java">
   
   	<string name="inventorySeq" title="Inventory N°" readonly="true"/>
-  	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location" required="true"/>
-    <integer name="statusSelect" title="Status" selection="supplychain.inventory.status.select" readonly="true"/>
+  	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location" required="true"/>
+    <integer name="statusSelect" title="Status" selection="inventory.status.select" readonly="true"/>
   	<datetime name="dateT" title="Date" required="true" tz="true"/>
   	<string name="description" title="Description" large="true"/>
-  	<one-to-many name="inventoryLineList" ref="com.axelor.apps.supplychain.db.InventoryLine" mappedBy="inventory" title="Inventory lines"/>
-  	<integer name="formatSelect" title="File Format" selection="supplychain.inventory.format.select"/>
+  	<one-to-many name="inventoryLineList" ref="com.axelor.apps.stock.db.InventoryLine" mappedBy="inventory" title="Inventory lines"/>
+  	<integer name="formatSelect" title="File Format" selection="stock.inventory.format.select"/>
   	<string name="importFilePath" title="File Path"/>
   	
   	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Product family"/>

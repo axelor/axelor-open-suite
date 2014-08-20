@@ -26,10 +26,10 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.supplychain.db.Location;
-import com.axelor.apps.supplychain.db.LocationLine;
-import com.axelor.apps.supplychain.db.StockMove;
-import com.axelor.apps.supplychain.db.StockMoveLine;
+import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 
 public interface StockMoveLineService {

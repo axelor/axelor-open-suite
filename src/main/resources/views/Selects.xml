@@ -6,73 +6,49 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
-	<selection name="product.sale.supply.select">
-		<option value="1">FromStock</option>
-		<option value="2">Purchase</option>
-		<option value="3">Produce</option>
-	</selection>
-	
-	<selection name="supplychain.location.type.select">
+	<selection name="stock.location.type.select">
 		<option value="1">Internal</option>
 		<option value="2">External</option>
 		<option value="3">Virtual</option>
 	</selection>
 	
-	<selection name="supplychain.inventory.format.select">
+	<selection name="stock.inventory.format.select">
 		<option value="1">PDF</option>
 		<option value="2">XLS</option>
 	</selection>
 	
-	<selection name="supplychain.stock.move.status.select">
+	<selection name="stock.move.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Planned</option>
 		<option value="3">Realized</option>
 		<option value="4">Canceled</option>
 	</selection>
 	
-	<selection name="supplychain.inventory.status.select">
+	<selection name="inventory.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Planned</option>
 		<option value="3">Realized</option>
 		<option value="4">Canceled</option>
 	</selection>
 	
-	<selection name="supplychain.stock.move.type.select">
+	<selection name="stock.move.type.select">
 		<option value="1">Internal move</option>
 		<option value="2">Outgoing move</option>
 		<option value="3">Incoming move</option>
 	</selection>
 	
-	<selection name="supplychain.min.stock.rules.type.select">
+	<selection name="stock.min.stock.rules.type.select">
 		<option value="1">Current</option>
 		<option value="2">Future</option>
 	</selection>
 	
-	<selection name="supplychain.min.stock.rules.order.alert.select">
+	<selection name="stock.min.stock.rules.order.alert.select">
 		<option value="1">Alert</option>
 		<option value="2">Purchase order</option>
 		<option value="3">Production order</option>
 	</selection>
 	
-	<selection name="supplychain.purchase.order.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Requested</option>
-		<option value="3">Received</option>
-		<option value="4">Validated</option>
-		<option value="5">Finished</option>
-		<option value="6">Canceled</option>
-	</selection>
-
-	<selection name="supplychain.invoicing.moment.select">
-		<option value="1">When a task is over</option>
-		<option value="2">Draft invoice N days after order validation</option>
-	</selection>
-	
-	<selection name="supplychain.batch.action.select">
-		<option value="1">Invoicing</option>
-	</selection>
-	
-	<selection name="supplychain.stock.move.line.accordance.select">
+	<selection name="stock.move.line.accordance.select">
 		<option value="1">Compliant</option>
 		<option value="2">Non compliant</option>
 	</selection>

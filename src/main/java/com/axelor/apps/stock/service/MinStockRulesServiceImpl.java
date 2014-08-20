@@ -24,14 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.stock.db.IMinStockRules;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.apps.supplychain.db.Location;
-import com.axelor.apps.supplychain.db.LocationLine;
-import com.axelor.apps.supplychain.db.MinStockRules;
+import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.MinStockRules;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -45,13 +45,13 @@ public class MinStockRulesServiceImpl implements MinStockRulesService  {
 	
 	private LocalDate today;
 	
-	private UserInfo user;
+	protected User user;
 	
 	@Inject
-	public MinStockRulesServiceImpl(UserInfoService userInfoService) {
+	public MinStockRulesServiceImpl() {
 
 		this.today = GeneralService.getTodayDate();
-		this.user = userInfoService.getUserInfo();
+		this.user = AuthUtils.getUser();
 	}
 	
 	
