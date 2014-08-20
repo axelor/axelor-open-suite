@@ -12,7 +12,7 @@
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address"
 		cols="2" colWidths="*,200"
 		onNew="default-address-record"
-		onSave="action-base-address-set-address-used,action-base-address-check-address-used"
+		onSave="action-group-base-address-onsave"
 		readonlyIf="id != null &amp;&amp; fromMain == null">
 		<field name="isUsed" widget="BOOLEAN" hidden="true" /> 
 		<group name="main" title="Address details" cols="1" colSpan="1">
@@ -51,6 +51,11 @@
 			</field>
 		</group>
 	</form>
+
+	<action-group name="action-group-base-address-onsave">
+		<action name="action-base-address-set-address-used"/>
+		<action name="action-base-address-check-address-used"/>
+	</action-group>
 
 	<action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
 		<field name="addressL7Country" expr="action:default-address-country-record" />

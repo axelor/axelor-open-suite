@@ -10,7 +10,7 @@
 	</grid>
 	
 	<form name="import-form" title="Import" model="com.axelor.apps.base.db.Import"
-    	onNew="action-default-import-record,attrs-default-import" 
+    	onNew="action-group-base-import-onnew" 
 		onLoad="attrs-default-import">
 		<group colSpan="2" cols="2"> 
 			<field name="name"/>
@@ -24,6 +24,11 @@
 		<button name="import" title="Launch" colSpan="4" onClick="save,com.axelor.apps.base.web.ImportController:launchImport"/>
 		<field name="log" colSpan="4"/>
 	</form>
+
+	<action-group name="action-group-base-import-onnew">
+		<action name="action-default-import-record"/>
+		<action name="attrs-default-import"/>
+	</action-group>
 
 	<action-record name="action-default-import-record" model="com.axelor.apps.base.db.Import">
 		<field name="typeSelect" expr="eval: 'bdd'" if="type == 'bdd'"/>

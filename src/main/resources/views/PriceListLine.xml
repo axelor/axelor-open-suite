@@ -14,7 +14,7 @@
 	</grid>
     
 	<form name="price-list-line-form" title="Price list line" model="com.axelor.apps.base.db.PriceListLine"
-	onNew="action-price-list-line-record-default,action-price-list-line-record-type-select">
+	onNew="action-group-base-pricelistline-onnew">
 		<group name="application" title="Apply on" colSpan="4">
 			<field name="product" onChange="action-price-list-line-record-product"/> 
 			<label title="Or"/>
@@ -25,6 +25,11 @@
 		<field name="amount"/>
 		<field name="minQty"/>
 	</form>
+	
+	<action-group name="action-group-base-pricelistline-onnew">
+		<action name="action-price-list-line-record-default"/>
+		<action name="action-price-list-line-record-type-select"/>
+	</action-group>
 	
 	<action-record name="action-price-list-line-record-default" model="com.axelor.apps.base.db.PriceListLine">
 		<field name="typeSelect" expr="3"/>

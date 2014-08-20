@@ -38,9 +38,9 @@
     </grid>
     
     <form name="partner-form" id="base-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-record-customer-supplier-type" 
+    onNew="action-group-base-partner-onnew" 
     onLoad="action-partner-attrs-change-name" 
-    onSave="save,action-set-partner-seq,action-create-accounting-situation">
+    onSave="action-group-base-partner-onsave">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
@@ -246,9 +246,9 @@
 	        <group colSpan="1" cols="1">
 	            <field name="titleSelect" showTitle="false" placeholder="Civility"/>
 	            <break/>
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-check-string-capital-case,action-partner-record-full-name"/>
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange"/>
 	            <break/>
-	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-check-string-camel-case,action-partner-record-full-name"/>
+	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-group-base-partner-contact-name-onchange"/>
 	            <break/>
 	            <separator title="Company"/>
 	            <field name="mainPartner"/>
@@ -287,6 +287,23 @@
 	        </page>
 	    </notebook>
 	</form>
+	
+	<action-group name="action-group-base-partner-onnew">
+		<action name="action-partner-record-partner-type-select"/>
+		<action name="action-partner-record-set-default"/>
+		<action name="action-partner-record-customer-supplier-type"/>
+	</action-group>
+	
+	<action-group name="action-group-base-partner-onsave">
+		<action name="save"/>
+		<action name="action-set-partner-seq"/>
+		<action name="action-create-accounting-situation"/>
+	</action-group>
+	
+	<action-group name="action-group-base-partner-contact-name-onchange">
+		<action name="action-check-string-capital-case"/>
+		<action name="action-partner-record-full-name"/>
+	</action-group>
 	
 	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
 		<field name="name" expr="eval: com.axelor.apps.crm.db.Lead.find(_parent._lead).name"/>

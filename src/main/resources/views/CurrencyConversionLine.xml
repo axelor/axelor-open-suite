@@ -18,7 +18,7 @@
     onNew="action-currency-conversion-line-default-record">
         <field name="startCurrency"/>
         <field name="endCurrency" />
-        <button title="Get rate" colSpan="2" readonlyIf="startCurrency == null || endCurrency == null || toDate != null" onClick="action-currency-conversion-line-validate-rate-change,action-currency-conversion-line-method-convert" name="getRate"/>
+        <button title="Get rate" colSpan="2" readonlyIf="startCurrency == null || endCurrency == null || toDate != null" onClick="action-group-base-currencyconversionline-getrate-click" name="getRate"/>
         <group title="Applicable dates" colSpan="4">
 	        <field name="fromDate" onChange="action-currency-conversion-line-method-check-date" />
 	        <field name="toDate" onChange="action-currency-conversion-line-method-check-date" readonlyIf="fromDate == null"/>
@@ -29,7 +29,7 @@
         </group>
     </form>
     
-    <form onNew="action-currency-conversion-line-wizard-set-date,action-currency-conversion-line-set-exchange-rate,action-currency-conversion-line-method-convert" 
+    <form onNew="action-group-base-checkcurrencyrate-wizard-onnew" 
     name="wizard-check-currency-rate-form" title="Check currency exhange rates" model="com.axelor.apps.base.db.Wizard" cols="4">
     	<field name="startCurrency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code" title="Source Currency"/>
     	<field name="endCurrency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code" title="Destination Currency" />
@@ -46,6 +46,17 @@
 	    </group>
 	    <button name="updateRate"  title="Save new rate"  help="Create currency conversion lines with new rate" onClick="action-currency-conversion-line-method-apply-conversion-rate" colSpan="4" readonlyIf="startCurrency == null || endCurrency == null || newExchangeRate == null"/>
     </form>
+    
+    <action-group name="action-group-base-currencyconversionline-getrate-click">
+    	<action name="action-currency-conversion-line-validate-rate-change"/>
+    	<action name="action-currency-conversion-line-method-convert"/>
+    </action-group>
+    
+    <action-group name="action-group-base-checkcurrencyrate-wizard-onnew">
+    	<action name="action-currency-conversion-line-wizard-set-date"/>
+    	<action name="action-currency-conversion-line-set-exchange-rate"/>
+    	<action name="action-currency-conversion-line-method-convert"/>
+    </action-group>
     
     <action-method name="action-currency-conversion-line-method-getTodayDate">
     	<call class="com.axelor.apps.base.service.administration.GeneralService" method="getTodayDate()"/>

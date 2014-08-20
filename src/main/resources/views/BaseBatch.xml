@@ -12,8 +12,8 @@
     </grid>
  
     <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch" cols="4"
-    onLoad="action-base-batch-attrs-action-select,action-base-batch-attrs-action-select" 
-    onNew="action-base-batch-record-on-new,action-base-batch-attrs-action-select">
+    onLoad="action-base-batch-attrs-action-select" 
+    onNew="action-group-base-basebatch-onnew">
     	<field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
     	<field name="code" />
     	<field name="company" widget="SuggestBox"/>
@@ -31,6 +31,12 @@
     		</page>
     	</notebook>   	
     </form>
+    
+    <!-- ACTION GROUP -->
+    <action-group name="action-group-base-basebatch-onnew">
+    	<action name="action-base-batch-record-on-new"/>
+    	<action name="action-base-batch-attrs-action-select"/>
+    </action-group>
     
     <!-- ACTION RECORD -->
     <action-record name="action-base-batch-record-on-new" model="com.axelor.apps.base.db.BaseBatch">

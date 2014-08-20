@@ -18,8 +18,8 @@ xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelo
     </grid>
     
     <form cols="6" name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence"
-    onNew="action-sequence-default,action-sequence-generic-attrs-tool-bar,action-sequence-attrs" 
-    onLoad="action-sequence-attrs-tool-bar,action-sequence-attrs">
+    onNew="action-group-base-sequence-onnew" 
+    onLoad="action-group-base-sequence-onload">
 		<toolbar>
 			<button name="reset" title="Reset" onClick="save,action-sequence-method-reset,save"/>
 		</toolbar>
@@ -50,6 +50,18 @@ xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelo
 			<label title="%WY : Week number" colSpan="4"/>
 		</group>
 	</form>
+    
+    <!-- ACTION GROUPs -->
+    <action-group name="action-group-base-sequence-onnew">
+    	<action name="action-sequence-default"/>
+    	<action name="action-sequence-generic-attrs-tool-bar"/>
+    	<action name="action-sequence-attrs"/>
+    </action-group>
+    
+    <action-group name="action-group-base-sequence-onload">
+    	<action name="action-sequence-attrs-tool-bar"/>
+    	<action name="action-sequence-attrs"/>
+    </action-group>
     
     <!-- ACTION RECORD -->
     <action-record name="action-sequence-default" model="com.axelor.apps.base.db.Sequence">

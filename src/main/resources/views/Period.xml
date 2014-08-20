@@ -14,7 +14,7 @@
     </grid>
     
     <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" cols="4"
-	    onNew="action-period-record-open,action-period-attrs-button"
+	    onNew="action-grouop-base-period-onnew"
 	    onLoad="action-period-attrs-button">
         <field name="name"/>
     	<field name="code"/>
@@ -25,14 +25,29 @@
     	<separator colSpan="4"/>
     	<group colSpan="4" cols="4">
         	<group colSpan="2" cols="2">
-            	<button name="close" title="Close period" colSpan="2" onClick="action-period-record-close,action-period-attrs-button,save"/>
-            	<button name="reopen" title="Reopen period" colSpan="2" onClick="action-period-record-open,action-period-attrs-button,save"/>
+            	<button name="close" title="Close period" colSpan="2" onClick="action-grouop-base-period-close-click"/>
+            	<button name="reopen" title="Reopen period" colSpan="2" onClick="action-grouop-base-period-reopen-click"/>
         	</group>
         	<group colSpan="2" cols="2">
             	<field name="status"/>
         	</group>        
     	</group>
     </form>
+    
+    <action-group name="action-grouop-base-period-onnew">
+    	<action name="action-period-record-open"/>
+    	<action name="action-period-attrs-button"/>
+    </action-group>
+    
+    <action-group name="action-grouop-base-period-close-click">
+    	<action name="action-period-record-close"/>
+    	<action name="action-period-attrs-button,save"/>
+    </action-group>
+    
+    <action-group name="action-grouop-base-period-reopen-click">
+    	<action name="action-period-record-open"/>
+    	<action name="action-period-attrs-button,save"/>
+    </action-group>
     
     <action-record name="action-period-record-close" model="com.axelor.apps.base.db.Period">
     	<field name="status" expr="action:action-status-record-clo"/>

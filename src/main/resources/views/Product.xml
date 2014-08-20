@@ -25,7 +25,7 @@
 	    <field name="salePrice" width="120"/>
     </grid>
 
-   <form cols="2" name="product-form" onNew="action-product-record-default-new,action-product-record-sale-supply-select" title="Product" model="com.axelor.apps.base.db.Product" >
+   <form cols="2" name="product-form" onNew="action-group-base-product-onnew" title="Product" model="com.axelor.apps.base.db.Product" >
     <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
@@ -41,7 +41,7 @@
 					<field name="versionSelect"/>
 					<break/>
 					<group title="Product typology" colSpan="3" cols="2" colWidths="30%,70%">
-						<field name="productTypeSelect" onChange="action-product-record-sale-supply-select,action-product-validate-sale-supply-select"/>
+						<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange"/>
 						<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select"/>
 						<field name="invoiceLineType"/>
 					</group>
@@ -61,7 +61,7 @@
 					<field name="salePrice"/>
 					<field name="startDate"/>
 					<field name="saleCurrency"/>
-					<field name="endDate" onChange="action-product-validate-end-date,action-product-method-reset-end-date"/>
+					<field name="endDate" onChange="action-group-base-product-enddate-onchange"/>
 					<field name="unit"/>
 				</group>
 				<group colSpan="4">
@@ -174,6 +174,21 @@
     	<view type="form" name="location-line-product-form"/>
     	<domain>self.product.parentProduct.id = :id and self.location.typeSelect = 1</domain>
     </action-view>
+    
+    <action-group name="action-group-base-product-onnew">
+    	<action name="action-product-record-default-new"/>
+    	<action name="action-product-record-sale-supply-select"/>
+    </action-group>
+    
+    <action-group name="action-group-base-product-producttype-onchange">
+    	<action name="action-product-record-sale-supply-select"/>
+    	<action name="action-product-validate-sale-supply-select"/>
+    </action-group>
+    
+    <action-group name="action-group-base-product-enddate-onchange">
+    	<action name="action-product-validate-end-date"/>
+    	<action name="action-product-method-reset-end-date"/>
+    </action-group>
     
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="applicationTypeSelect" expr="1"/>
