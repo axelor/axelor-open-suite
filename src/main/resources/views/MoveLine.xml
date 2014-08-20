@@ -54,7 +54,9 @@
 		   	        <break/>
 			        <field name="date"/>
 			        <field name="dueDate"/>
-			        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
+			        <field name="partner" onSelect="action-move-line-set-companyid-from-movecompany" domain="self.isContact = false AND :company_id MEMBER OF self.companySet" grid-view="partner-grid" form-view="partner-form"/>
+			        <!-- dummy field added for setting domain on partner -->
+			        <field name="company_id" hidden="true"/>
 			        <break/>
 			        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
 		   	        <break/>
@@ -183,8 +185,14 @@
 		<field name="partner" expr="eval: _parent?.moveLineList.get(0).partner" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
 	</action-record>
 	
+	<action-record name="action-move-line-set-companyid-from-movecompany" model="com.axelor.apps.account.db.MoveLine">
+	  <field if="move != null &amp;&amp; move.company != null" name="company_id" expr="eval:move.company.id"/>  
+	</action-record>
+
 	<action-attrs name="action-move-line-attrs-domain-account">
-    	<attribute name="domain" for="account" expr="eval: &quot;self.company.id = ${_parent?.company.id}&quot;" if="_parent?.company"/>
+		<attribute for="account" name="domain"
+			if="move.company != null &amp;&amp; !move.journal.validAccountTypeSet.isEmpty() &amp;&amp; !move.journal.validAccountSet.isEmpty()"
+			expr="eval: &quot; self.company.id = ${move.company.id} AND (self.accountType.id IN (${move.journal.validAccountTypeSet?.collect{it.id}.join(',')}) OR self.id IN (${move.journal.validAccountSet?.collect{it.id}.join(',')})) &quot;" />
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-hidden-reconcileLists">
