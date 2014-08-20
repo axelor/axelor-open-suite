@@ -5,11 +5,16 @@
     
     
     <form name="generate-message-wizard-form"  model="com.axelor.apps.base.db.Wizard" title="Generate message" cols="4" 
-    onNew="action-generate-message-record-on-new,action-generate-message-attrs-template-domain">
+    onNew="action-group-message-generate-wizard-onnew">
       	<field name="template" title="Template" widget="SuggestBox" x-type="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Template" x-targetName="name" colSpan="2"/>
       	<button name="validate" title="Validate" onClick="action-generate-message-method-generate-message" colSpan="1"/>
       	<spacer/>
 	</form>
+    
+    <action-group name="action-group-message-generate-wizard-onnew">
+    	<action name="action-generate-message-record-on-new"/>
+    	<action name="action-generate-message-attrs-template-domain"/>
+    </action-group>
     
     <action-record name="action-generate-message-record-on-new" model="com.axelor.apps.base.db.Wizard">
     	<field name="template" expr="eval:  com.axelor.apps.base.db.Template.filter('self.metaModel.fullName = ?1 and self.isDefault = true',_templateContextModel).fetchOne()"/> 
