@@ -56,7 +56,7 @@ public class BillOfMaterialService {
 	
 	public List<BillOfMaterial> getBillOfMaterialList(Product product)  {
 		
-		return BillOfMaterial.filter("self.product = ?1", product).fetch();
+		return(List<BillOfMaterial>) BillOfMaterial.filter("self.product = ?1", product).fetch();
 		
 		
 	}

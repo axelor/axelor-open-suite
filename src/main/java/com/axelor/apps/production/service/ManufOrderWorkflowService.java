@@ -52,7 +52,7 @@ public class ManufOrderWorkflowService {
 			
 			OperationOrder operationOrderPriority = OperationOrder.filter("self.manufOrder = ?1", manufOrder).order("priority").fetchOne();
 			
-			List<OperationOrder> operationOrderList = OperationOrder.filter("self.manufOrder = ?1 AND self.priority = ?2", manufOrder, operationOrderPriority.getPriority()).fetch();
+			List<OperationOrder> operationOrderList = (List<OperationOrder>)OperationOrder.filter("self.manufOrder = ?1 AND self.priority = ?2", manufOrder, operationOrderPriority.getPriority()).fetch();
 			
 			for(OperationOrder operationOrder : operationOrderList)  {
 				
