@@ -1,723 +1,378 @@
 "key","message","comment","context"
-"50 Latest Supplier Orders","","","resources/views/portal.xml:319"
-"Action(s)","","","resources/views/PurchaseOrder.xml:68
-resources/views/StockMove.xml:80
-resources/views/SaleOrder.xml:69"
-"Actions","","","resources/views/SaleOrder.xml:37
-resources/views/SaleOrder.xml:8
-resources/views/Inventory.xml:40"
-"Alert","","","resources/views/Selects.xml:52"
-"All Purchases Docs","","","resources/views/menu.xml:286"
-"All Sales Docs","","","resources/views/menu.xml:257"
-"Amount","","","resources/views/Charts.xml:1022
-resources/views/Charts.xml:767
-resources/views/Charts.xml:316
-resources/views/Charts.xml:274
-resources/views/Charts.xml:352
-resources/views/Charts.xml:840
-resources/views/Charts.xml:244
-resources/views/Charts.xml:414
-resources/views/Charts.xml:385"
-"Arrivals History","","","resources/views/StockMove.xml:246"
-"Besoins de production","","","resources/views/menu.xml:56
-resources/views/menu.xml:53"
-"Buyer","","","resources/views/Charts.xml:801"
-"Cancel","","","resources/views/PurchaseOrder.xml:76
-resources/views/SaleOrder.xml:74
-resources/views/StockMove.xml:83
-resources/views/Inventory.xml:43"
-"Canceled","","","resources/views/Selects.xml:30
-resources/views/Selects.xml:37
-resources/views/Selects.xml:63"
-"Cancelled Arrivals","","","resources/views/StockMove.xml:249"
-"Category","","","resources/views/Charts.xml:1331
-resources/views/menu.xml:492"
-"Category Dashboard","","","resources/views/menu.xml:504"
-"Category Db","","","resources/views/menu.xml:495"
-"Clear purchase order","","","resources/views/PurchaseOrder.xml:79"
-"Closed Purchase orders","","","resources/views/portal.xml:483"
-"Completed","","","resources/views/PurchaseOrder.xml:75"
-"Compliant","","","resources/views/Selects.xml:76"
-"Compute","","","resources/views/SaleOrder.xml:71
-resources/views/PurchaseOrder.xml:70"
-"Configuration","","","resources/views/StockMove.xml:99
-resources/views/menu.xml:138"
-"Confirm","","","resources/views/SaleOrder.xml:72"
-"Contacts","","","resources/views/PurchaseOrder.xml:52"
-"Country","","","resources/views/Charts.xml:590
-resources/views/Charts.xml:553
-resources/views/Charts.xml:631
-resources/views/Charts.xml:384"
-"Create SO","","","resources/views/menu.xml:246"
+"Accordance","","","resources/domains/StockMoveLine.xml:22"
+"Action(s)","","","resources/views/StockMove.xml:80"
+"Actions","","","resources/views/Inventory.xml:40"
+"Address","","","resources/domains/Location.xml:19"
+"Alert","","","resources/views/Selects.xml:46"
+"Arrivals History","","","resources/views/StockMove.xml:286"
+"Cancel","","","resources/views/Inventory.xml:43
+resources/views/StockMove.xml:83"
+"Canceled","","","resources/views/Selects.xml:24
+resources/views/Selects.xml:31"
+"Cancelled Arrivals","","","resources/views/StockMove.xml:289"
+"Code","","","resources/domains/StockConfig.xml:11"
+"Company","","","resources/domains/StockConfig.xml:13
+resources/domains/StockMove.xml:26
+resources/domains/Location.xml:13"
+"Compliant","","","resources/views/Selects.xml:52"
+"Configuration","","","resources/views/menu.xml:138
+resources/views/StockMove.xml:99"
+"Country","","","resources/views/Charts.xml:35
+resources/views/Charts.xml:113
+resources/views/Charts.xml:72"
 "Create inventory","","","resources/views/CreateInventoryWizard.xml:7
-resources/views/Location.xml:64
-resources/views/Location.xml:22"
-"Created by","","","resources/views/SupplychainBatch.xml:27"
-"Created on","","","resources/views/SupplychainBatch.xml:26"
-"Current","","","resources/views/Selects.xml:47"
-"Current Purchase Orders","","","resources/views/portal.xml:288"
-"Customer Deliveries","","","resources/views/menu.xml:13
-resources/views/menu.xml:10"
-"Customer average delivery delay","","","resources/views/Charts.xml:672
-resources/views/portal.xml:185"
-"Customer deliveries","","","resources/views/menu.xml:322
-resources/views/menu.xml:319"
-"Customer deliveries by country","","","resources/views/portal.xml:161
-resources/views/Charts.xml:524"
-"Customer deliveries filters","","","resources/views/StockMove.xml:224"
-"Customer deliveries statistics","","","resources/views/portal.xml:179
-resources/views/Charts.xml:636"
-"Customer information","","","resources/views/SaleOrder.xml:167
-resources/views/SaleOrder.xml:52"
-"Customize BOM","","","resources/views/SaleOrderLine.xml:45"
-"Dashboard","","","resources/views/portal.xml:326
-resources/views/portal.xml:278
-resources/views/portal.xml:455
-resources/views/portal.xml:60
-resources/views/portal.xml:193
-resources/views/portal.xml:339
-resources/views/portal.xml:351
-resources/views/portal.xml:8"
-"Delay","","","resources/views/Charts.xml:700"
-"Deliveries Cancelled","","","resources/views/StockMove.xml:234"
-"Deliveries History","","","resources/views/StockMove.xml:231"
-"Deliveries to prepare","","","resources/views/StockMove.xml:225"
-"Delivery","","","resources/views/PurchaseOrderLine.xml:61
-resources/views/PurchaseOrder.xml:60
-resources/views/SaleOrderLine.xml:51"
-"Description","","","resources/views/Inventory.xml:27
+resources/views/Location.xml:22
+resources/views/Location.xml:64"
+"Current","","","resources/views/Selects.xml:41"
+"Current Qty","","","resources/domains/InventoryLine.xml:12
+resources/domains/LocationLine.xml:13"
+"Customer Deliveries","","","resources/views/menu.xml:10
+resources/views/menu.xml:13"
+"Customer average delivery delay","","","resources/views/Charts.xml:154
+resources/views/portal.xml:31"
+"Customer deliveries","","","resources/views/menu.xml:204
+resources/views/menu.xml:207"
+"Customer deliveries by country","","","resources/views/Charts.xml:6
+resources/views/portal.xml:7"
+"Customer deliveries filters","","","resources/views/StockMove.xml:264"
+"Customer deliveries statistics","","","resources/views/portal.xml:25
+resources/views/Charts.xml:118"
+"Customer virtual location","","","resources/domains/StockConfig.xml:15"
+"Dashboard","","","resources/views/portal.xml:39
+resources/views/portal.xml:64
+resources/views/portal.xml:52"
+"Date","","","resources/views/Charts.xml:305
+resources/views/Charts.xml:462
+resources/domains/Inventory.xml:13"
+"Default location","","","resources/domains/Location.xml:16"
+"Delay","","","resources/views/Charts.xml:182"
+"Deliveries Cancelled","","","resources/views/StockMove.xml:274"
+"Deliveries History","","","resources/views/StockMove.xml:271"
+"Deliveries to prepare","","","resources/views/StockMove.xml:265"
+"Description","","","resources/domains/InventoryLine.xml:14
+resources/domains/Inventory.xml:14
 resources/views/CreateInventoryWizard.xml:16
-resources/views/SaleOrder.xml:115"
-"Details","","","resources/views/PurchaseOrderLine.xml:57"
-"Discount","","","resources/views/SaleOrderLine.xml:33
-resources/views/PurchaseOrderLine.xml:52
-resources/views/SaleOrderSubLine.xml:32"
-"Draft","","","resources/views/StockMove.xml:84
-resources/views/Inventory.xml:44
-resources/views/Selects.xml:27
-resources/views/Selects.xml:34
-resources/views/PurchaseOrder.xml:71
-resources/views/Selects.xml:58"
-"Draft invoice N days after order validation","","","resources/views/Selects.xml:68"
-"Excel Export","","","resources/views/SaleOrder.xml:33"
+resources/views/Inventory.xml:27"
+"Details Location lines","","","resources/domains/Location.xml:18"
+"Draft","","","resources/views/Inventory.xml:44
+resources/views/Selects.xml:28
+resources/views/Selects.xml:21
+resources/views/StockMove.xml:84"
+"Estimated Date","","","resources/views/Charts.xml:389
+resources/views/Charts.xml:245"
+"Estimated date","","","resources/domains/StockMove.xml:17"
+"Excl. out of stock products ?","","","resources/domains/Inventory.xml:21"
 "Exclude out of stock products ?","","","resources/views/CreateInventoryWizard.xml:22"
 "Export","","","resources/views/Inventory.xml:18"
-"Expéditions clients","","","resources/views/menu.xml:93
-resources/views/menu.xml:96"
-"External","","","resources/views/Selects.xml:17"
-"Family","","","resources/views/menu.xml:498"
-"Family Dashboard","","","resources/views/portal.xml:603
-resources/views/menu.xml:509
-resources/views/portal.xml:599"
-"Family Db","","","resources/views/menu.xml:501"
+"Expéditions clients","","","resources/views/menu.xml:96
+resources/views/menu.xml:93"
+"External","","","resources/views/Selects.xml:11"
+"File Format","","","resources/domains/Inventory.xml:16"
+"File Path","","","resources/domains/Inventory.xml:17"
 "Fill inventory","","","resources/views/Inventory.xml:37"
 "Fill inventory with","","","resources/views/CreateInventoryWizard.xml:19
 resources/views/Inventory.xml:31"
-"Financial terms","","","resources/views/SaleOrder.xml:105
-resources/views/PurchaseOrder.xml:101"
-"Finished","","","resources/views/Selects.xml:62"
-"From Date","","","resources/views/Charts.xml:846
-resources/views/Charts.xml:1255
-resources/views/Charts.xml:962
-resources/views/Charts.xml:1100
-resources/views/Charts.xml:928
-resources/views/Charts.xml:390
-resources/views/Charts.xml:321
-resources/views/Charts.xml:741
-resources/views/Charts.xml:284
-resources/views/Charts.xml:1289
-resources/views/Charts.xml:219
-resources/views/Charts.xml:474
-resources/views/Charts.xml:774
-resources/views/Charts.xml:808
-resources/views/Charts.xml:897
-resources/views/Charts.xml:357
-resources/views/Charts.xml:1337
-resources/views/Charts.xml:420
-resources/views/Charts.xml:1315
-resources/views/Charts.xml:706
-resources/views/Charts.xml:1149
-resources/views/Charts.xml:993
-resources/views/Charts.xml:249
-resources/views/Charts.xml:1221"
-"FromStock","","","resources/views/Selects.xml:10"
-"Future","","","resources/views/Selects.xml:48"
-"Generate control invoice","","","resources/views/PurchaseOrder.xml:78"
-"Generate invoice","","","resources/views/StockMove.xml:85
-resources/views/SaleOrder.xml:75"
+"Forecasted Stock","","","resources/views/Charts.xml:309"
+"Forecasts","","","resources/views/menu.xml:50"
+"From","","","resources/views/Charts.xml:403
+resources/views/Charts.xml:251"
+"From address","","","resources/domains/StockMove.xml:23"
+"From location","","","resources/domains/StockMove.xml:14"
+"Future","","","resources/views/Selects.xml:42"
+"Future Qty","","","resources/domains/LocationLine.xml:14"
+"Generate inc. moves for non storable products ?","","","resources/domains/StockConfig.xml:22"
+"Generate inc. moves for storable products ?","","","resources/domains/StockConfig.xml:21"
+"Generate invoice","","","resources/views/StockMove.xml:85"
+"Generate out. moves for non storable products ?","","","resources/domains/StockConfig.xml:20"
+"Generate out. moves for storable products ?","","","resources/domains/StockConfig.xml:19"
 "Generate reversion","","","resources/views/StockMove.xml:86"
-"Generate suppliers requests","","","resources/views/PurchaseOrderLine.xml:70"
-"Historical Period","","","resources/views/Charts.xml:560
-resources/views/Charts.xml:527
-resources/views/Charts.xml:639
-resources/views/Charts.xml:898
-resources/views/Charts.xml:675
-resources/views/Charts.xml:963
-resources/views/Charts.xml:929
-resources/views/Charts.xml:598"
+"Historical Period","","","resources/views/Charts.xml:42
+resources/views/Charts.xml:121
+resources/views/Charts.xml:9
+resources/views/Charts.xml:157
+resources/views/Charts.xml:80"
 "Import","","","resources/views/Inventory.xml:23
-resources/views/Inventory.xml:25"
+resources/views/Inventory.xml:25
+resources/domains/Location.xml:10
+resources/domains/StockMoveLine.xml:12
+resources/domains/StockConfig.xml:9
+resources/domains/StockMove.xml:10"
+"Incl. obsolete products ?","","","resources/domains/Inventory.xml:22"
 "Include obsolete products ?","","","resources/views/CreateInventoryWizard.xml:23"
-"Incoming move","","","resources/views/Selects.xml:43"
-"Industry Sector","","","resources/views/Charts.xml:1356"
-"Information","","","resources/views/SupplychainBatch.xml:25"
-"Internal","","","resources/views/Selects.xml:16"
-"Internal Stock Move filters","","","resources/views/StockMove.xml:254"
-"Internal Stock Moves","","","resources/views/menu.xml:39
-resources/views/menu.xml:36"
-"Internal move","","","resources/views/Selects.xml:41"
-"Internal moves","","","resources/views/menu.xml:330
-resources/views/menu.xml:333"
+"Incoming move","","","resources/views/Selects.xml:37"
+"Internal","","","resources/views/Selects.xml:10"
+"Internal Stock Move filters","","","resources/views/StockMove.xml:294"
+"Internal Stock Moves","","","resources/views/menu.xml:36
+resources/views/menu.xml:39"
+"Internal move","","","resources/views/Selects.xml:35"
+"Internal moves","","","resources/views/menu.xml:215
+resources/views/menu.xml:218"
 "Inventories","","","resources/views/menu.xml:119
 resources/views/menu.xml:122"
-"Inventories History","","","resources/views/Inventory.xml:94"
-"Inventories filters","","","resources/views/Inventory.xml:90"
-"Inventory","","","resources/views/Inventory.xml:14
-resources/views/Inventory.xml:6"
+"Inventories History","","","resources/views/Inventory.xml:134"
+"Inventories filters","","","resources/views/Inventory.xml:130"
+"Inventory","","","resources/views/Inventory.xml:6
+resources/views/Inventory.xml:14
+resources/domains/InventoryLine.xml:10"
+"Inventory N°","","","resources/domains/Inventory.xml:10"
 "Inventory date","","","resources/views/CreateInventoryWizard.xml:14"
-"Inventory generated","","","resources/views/CreateInventoryWizard.xml:53"
+"Inventory generated","","","resources/views/CreateInventoryWizard.xml:58"
 "Inventory line","","","resources/views/InventoryLine.xml:15"
-"Inventory lines","","","resources/views/InventoryLine.xml:6"
-"Inventory.code","Code","","java/com/axelor/apps/supplychain/report/ITranslation.java:91"
-"Inventory.date","Date","","java/com/axelor/apps/supplychain/report/ITranslation.java:89"
-"Inventory.description","Description","","java/com/axelor/apps/supplychain/report/ITranslation.java:94"
-"Inventory.location","Location","","java/com/axelor/apps/supplychain/report/ITranslation.java:90"
-"Inventory.name","Name","","java/com/axelor/apps/supplychain/report/ITranslation.java:88"
-"Inventory.realQty","Quantity","","java/com/axelor/apps/supplychain/report/ITranslation.java:93"
-"Inventory.title","INVENTORY","","java/com/axelor/apps/supplychain/report/ITranslation.java:87"
-"Inventory.unit","Unit","","java/com/axelor/apps/supplychain/report/ITranslation.java:92"
-"Invoices","","","resources/views/SaleOrder.xml:300"
-"Invoices dates","","","resources/views/SaleOrder.xml:131"
-"Invoicing","","","resources/views/Selects.xml:72
-resources/views/SaleOrder.xml:195
-resources/views/SaleOrder.xml:123
-resources/views/SaleOrder.xml:112"
-"Invoicing batch","","","resources/views/SupplychainBatch.xml:23"
-"Invoicing follow-up","","","resources/views/SaleOrderLine.xml:60"
-"Invoicing informations","","","resources/views/SupplychainConfig.xml:29"
-"Invoicing page","","","resources/views/SupplychainBatch.xml:22"
-"Last Year To Date","","","resources/views/Charts.xml:142"
-"Late Deliveries","","","resources/views/StockMove.xml:228"
-"Late customer deliveries","","","resources/views/portal.xml:366"
-"Late supplier arrivals","","","resources/views/portal.xml:380"
-"Links","","","resources/views/PurchaseOrderLine.xml:66"
-"Location","","","resources/views/Charts.xml:1214
-resources/views/CreateInventoryWizard.xml:13"
+"Inventory lines","","","resources/views/InventoryLine.xml:6
+resources/domains/Inventory.xml:15"
+"Inventory virtual location","","","resources/domains/StockConfig.xml:17"
+"Inventory.code","Code","","java/com/axelor/apps/stock/report/ITranslation.java:42"
+"Inventory.date","Date","","java/com/axelor/apps/stock/report/ITranslation.java:40"
+"Inventory.description","Description","","java/com/axelor/apps/stock/report/ITranslation.java:45"
+"Inventory.location","Location","","java/com/axelor/apps/stock/report/ITranslation.java:41"
+"Inventory.name","Name","","java/com/axelor/apps/stock/report/ITranslation.java:39"
+"Inventory.realQty","Quantity","","java/com/axelor/apps/stock/report/ITranslation.java:44"
+"Inventory.title","INVENTORY","","java/com/axelor/apps/stock/report/ITranslation.java:38"
+"Inventory.unit","Unit","","java/com/axelor/apps/stock/report/ITranslation.java:43"
+"Last Future Stock Move","","","resources/domains/LocationLine.xml:15"
+"Late Deliveries","","","resources/views/StockMove.xml:268"
+"Late customer deliveries","","","resources/views/portal.xml:79"
+"Late supplier arrivals","","","resources/views/portal.xml:93"
+"Location","","","resources/views/CreateInventoryWizard.xml:13
+resources/domains/Inventory.xml:11
+resources/domains/LocationLine.xml:10
+resources/domains/MinStockRules.xml:12
+resources/views/Charts.xml:199"
+"Location Details","","","resources/domains/LocationLine.xml:18"
 "Location Lines","","","resources/views/Location.xml:39"
 "Location content","","","resources/views/Location.xml:69"
-"Location value","","","resources/views/portal.xml:449
-resources/views/Charts.xml:1202"
-"Marketing","","","resources/views/SaleOrder.xml:109"
+"Location lines","","","resources/domains/Location.xml:17"
+"Location value","","","resources/views/Charts.xml:187
+resources/views/portal.xml:132"
+"Manage BackOrder","","","resources/domains/StockMove.xml:32"
+"Min. Qty","","","resources/domains/MinStockRules.xml:14"
 "Minimum stock rule","","","resources/views/MinStockRules.xml:16"
 "Minimum stock rules","","","resources/views/menu.xml:150
-resources/views/MinStockRules.xml:6
-resources/views/menu.xml:153"
-"Month","","","resources/views/Charts.xml:1196
-resources/views/Charts.xml:1167
-resources/views/Charts.xml:1139
-resources/views/Charts.xml:519
-resources/views/Charts.xml:1275
-resources/views/Charts.xml:46
-resources/views/Charts.xml:986
-resources/views/Charts.xml:466
-resources/views/Charts.xml:1241
-resources/views/Charts.xml:921
-resources/views/Charts.xml:955
-resources/views/Charts.xml:413"
-"Moves","","","resources/views/Charts.xml:554
-resources/views/Charts.xml:668
-resources/views/Charts.xml:701"
-"Moves Cancelled","","","resources/views/StockMove.xml:261"
-"Moves History","","","resources/views/StockMove.xml:258"
-"Moves To Prepare","","","resources/views/StockMove.xml:255"
-"My Closed Purchase Orders","","","resources/views/portal.xml:489"
-"My Current Leads","","","resources/views/portal.xml:30"
-"My Ongoing Purchase Orders","","","resources/views/portal.xml:476"
-"My Opportunities","","","resources/views/portal.xml:49"
-"My Orders to process","","","resources/views/portal.xml:463"
-"My Proposals","","","resources/views/SaleOrder.xml:340"
-"My Purchase Orders","","","resources/views/portal.xml:216"
-"My RFQs","","","resources/views/PurchaseOrder.xml:209"
-"My RFQs and POs To Validate (Requested & Received)","","","resources/views/portal.xml:225"
-"My Sales","","","resources/views/PurchaseOrder.xml:212
-resources/views/SaleOrder.xml:343"
-"My Sales Orders","","","resources/views/portal.xml:16"
-"My Team Proposals","","","resources/views/SaleOrder.xml:346"
-"My Team Sales","","","resources/views/SaleOrder.xml:349"
-"My Today Activities","","","resources/views/portal.xml:40"
-"My Turnover per month","","","resources/views/Charts.xml:388
-resources/views/portal.xml:24"
-"My Validated POs","","","resources/views/portal.xml:207"
-"My purchased amount by product family","","","resources/views/portal.xml:242
-resources/views/Charts.xml:739"
-"My purchased qty by product family","","","resources/views/portal.xml:234
-resources/views/Charts.xml:704"
-"Nbr of PO by month","","","resources/views/portal.xml:256
-resources/views/Charts.xml:960"
-"Nbr of Units sold (Orders) by category","","","resources/views/Charts.xml:472
-resources/views/portal.xml:151"
-"New Purchase order","","","resources/views/menu.xml:202
-resources/views/menu.xml:199"
-"New Sale order","","","resources/views/menu.xml:171
-resources/views/menu.xml:174"
-"No Of Units","","","resources/views/Charts.xml:520"
-"Non compliant","","","resources/views/Selects.xml:77"
-"Notes","","","resources/views/SaleOrderLine.xml:48
-resources/views/PurchaseOrder.xml:105"
-"Number of Product per Category","","","resources/views/Charts.xml:1047
-resources/views/portal.xml:422"
-"Number of Product per Family","","","resources/views/portal.xml:418
-resources/views/Charts.xml:1025"
-"Ongoing Purchase orders","","","resources/views/portal.xml:470"
-"Orders","","","resources/views/menu.xml:298
-resources/views/menu.xml:272
-resources/views/Charts.xml:987
-resources/views/menu.xml:275
-resources/views/menu.xml:301"
-"Other informations","","","resources/views/SaleOrder.xml:100"
-"Outgoing move","","","resources/views/Selects.xml:42"
-"PDF","","","resources/views/Selects.xml:22"
-"PO information","","","resources/views/PurchaseOrder.xml:51"
-"PO line","","","resources/views/PurchaseOrderLine.xml:39"
-"PO lines","","","resources/views/PurchaseOrderLine.xml:24
-resources/views/PurchaseOrderLine.xml:7"
-"POs Volume by buyer by family","","","resources/views/Charts.xml:771
-resources/views/portal.xml:301"
-"Partner Type","","","resources/views/Charts.xml:1308"
-"Percent","","","resources/views/Charts.xml:892"
+resources/views/menu.xml:153
+resources/views/MinStockRules.xml:6"
+"Month","","","resources/views/Charts.xml:336"
+"Move date","","","resources/domains/StockMove.xml:18"
+"Moves","","","resources/views/Charts.xml:150
+resources/views/Charts.xml:183
+resources/views/Charts.xml:36"
+"Moves Cancelled","","","resources/views/StockMove.xml:301"
+"Moves History","","","resources/views/StockMove.xml:298"
+"Moves To Prepare","","","resources/views/StockMove.xml:295"
+"Name","","","resources/domains/Location.xml:11
+resources/domains/MinStockRules.xml:10
+resources/domains/StockConfig.xml:10
+resources/domains/StockMove.xml:13"
+"Non compliant","","","resources/views/Selects.xml:53"
+"Outgoing move","","","resources/views/Selects.xml:36"
+"PDF","","","resources/views/Selects.xml:16"
+"Parent","","","resources/domains/Location.xml:12"
+"Partner","","","resources/domains/StockMove.xml:27
+resources/domains/Location.xml:14"
 "Periodical processing","","","resources/views/menu.xml:116"
-"Plan","","","resources/views/StockMove.xml:81
-resources/views/Inventory.xml:41"
-"Plan a call","","","resources/views/SaleOrder.xml:10
-resources/views/SaleOrder.xml:39
-resources/views/SaleOrder.xml:360"
-"Plan a meeting","","","resources/views/SaleOrder.xml:354
-resources/views/SaleOrder.xml:38
-resources/views/SaleOrder.xml:9"
-"Plan a task","","","resources/views/SaleOrder.xml:366
-resources/views/SaleOrder.xml:40
-resources/views/SaleOrder.xml:11"
-"Planned","","","resources/views/Selects.xml:35
-resources/views/Selects.xml:28"
-"Planned Inventories","","","resources/views/Inventory.xml:91"
-"Print","","","resources/views/SaleOrder.xml:22
-resources/views/StockMove.xml:87
-resources/views/PurchaseOrder.xml:8
-resources/views/SaleOrder.xml:158
-resources/views/StockMove.xml:36
-resources/views/PurchaseOrder.xml:38
+"Plan","","","resources/views/Inventory.xml:41
+resources/views/StockMove.xml:81"
+"Planned","","","resources/views/Selects.xml:29
+resources/views/Selects.xml:22"
+"Planned Inventories","","","resources/views/Inventory.xml:131"
+"Print","","","resources/views/Location.xml:8
 resources/views/Location.xml:23
+resources/views/StockMove.xml:18
+resources/views/StockMove.xml:36
 resources/views/StockMove.xml:54
-resources/views/PurchaseOrder.xml:18
-resources/views/PurchaseOrder.xml:30
-resources/views/Location.xml:8
-resources/views/Inventory.xml:20
-resources/views/SaleOrder.xml:31
-resources/views/SaleOrder.xml:150
-resources/views/StockMove.xml:18"
-"Print StockMove(s)","","","resources/views/StockMove.xml:8
+resources/views/StockMove.xml:87
+resources/views/Inventory.xml:20"
+"Print StockMove(s)","","","resources/views/StockMove.xml:24
 resources/views/StockMove.xml:42
-resources/views/StockMove.xml:24"
-"Produce","","","resources/views/Selects.xml:12"
-"Product","","","resources/views/Charts.xml:1177"
-"Product Category","","","resources/views/Charts.xml:351
-resources/views/Charts.xml:1065"
-"Product Db","","","resources/views/menu.xml:484
-resources/views/menu.xml:487"
-"Product Family","","","resources/views/Charts.xml:202
-resources/views/Charts.xml:839
-resources/views/Charts.xml:1043
-resources/views/Charts.xml:732
-resources/views/Charts.xml:315
-resources/views/Charts.xml:766
-resources/views/Charts.xml:891
-resources/views/Charts.xml:1021"
-"Product Family Sales Turnover this year vs last year","","","resources/views/portal.xml:109
-resources/views/Charts.xml:174"
-"Product Type","","","resources/views/Charts.xml:1088"
-"Product category","","","resources/views/CreateInventoryWizard.xml:21"
-"Product deliveries in qty by country","","","resources/views/Charts.xml:557
-resources/views/portal.xml:167"
-"Product deliveries in qty by country by family","","","resources/views/Charts.xml:595
-resources/views/portal.xml:173"
-"Product family","","","resources/views/CreateInventoryWizard.xml:20"
-"Product launches/withdrawal each month","","","resources/views/portal.xml:430
-resources/views/Charts.xml:1098"
-"Product sale turnover (Excl. Tax) last 12 month","","","resources/views/Charts.xml:1174
-resources/views/portal.xml:442"
-"Product sale turnover (Excl. Tax) per month","","","resources/views/Charts.xml:1147
-resources/views/portal.xml:436"
-"Product soon out of stock by location","","","resources/views/portal.xml:387"
-"Product type distribution","","","resources/views/Charts.xml:1069
-resources/views/portal.xml:426"
-"Production Stock Move in Planned","","","resources/views/portal.xml:394"
-"Production Stock Move out Planned","","","resources/views/portal.xml:400"
-"Production order","","","resources/views/Selects.xml:54"
-"Production stock move in realized","","","resources/views/portal.xml:406"
-"Production stock move out realized","","","resources/views/portal.xml:412"
-"Products","","","resources/views/Charts.xml:1140
-resources/views/Charts.xml:1044
-resources/views/menu.xml:481
-resources/views/Charts.xml:1066
-resources/views/Charts.xml:1089"
-"Products DB 1","","","resources/views/portal.xml:591"
-"Prévisions","","","resources/views/menu.xml:50"
-"Prévisions de production","","","resources/views/menu.xml:66
+resources/views/StockMove.xml:8"
+"Product","","","resources/domains/LocationLine.xml:12
+resources/domains/StockMoveLine.xml:14
+resources/domains/InventoryLine.xml:11
+resources/domains/MinStockRules.xml:13"
+"Product category","","","resources/views/CreateInventoryWizard.xml:21
+resources/domains/Inventory.xml:20"
+"Product deliveries in qty by country","","","resources/views/Charts.xml:39
+resources/views/portal.xml:13"
+"Product deliveries in qty by country by family","","","resources/views/Charts.xml:77
+resources/views/portal.xml:19"
+"Product family","","","resources/views/CreateInventoryWizard.xml:20
+resources/domains/Inventory.xml:19"
+"Product model","","","resources/domains/StockMoveLine.xml:28"
+"Product soon out of stock by location","","","resources/views/portal.xml:100"
+"Production Stock Move in Planned","","","resources/views/portal.xml:107"
+"Production Stock Move out Planned","","","resources/views/portal.xml:113"
+"Production forecasts","","","resources/views/menu.xml:66
 resources/views/menu.xml:63"
-"Purchase","","","resources/views/Selects.xml:11"
-"Purchase Buyer Dashboard","","","resources/views/menu.xml:377"
-"Purchase Buyer Db","","","resources/views/menu.xml:374"
-"Purchase Manager Dashboard","","","resources/views/menu.xml:387"
-"Purchase Manager Db","","","resources/views/menu.xml:384"
-"Purchase Order Dashboard","","","resources/views/menu.xml:395"
-"Purchase Order Db","","","resources/views/menu.xml:392"
-"Purchase order","","","resources/views/Selects.xml:53"
-"Purchase orders","","","resources/views/menu.xml:211
-resources/views/menu.xml:208"
-"PurchaseOrder.bankDetails","Bank detail","","java/com/axelor/apps/supplychain/report/ITranslation.java:84"
-"PurchaseOrder.bankingInfo","Bank info","","java/com/axelor/apps/supplychain/report/ITranslation.java:82"
-"PurchaseOrder.base","Base","","java/com/axelor/apps/supplychain/report/ITranslation.java:76"
-"PurchaseOrder.cheque","Cheque","","java/com/axelor/apps/supplychain/report/ITranslation.java:83"
-"PurchaseOrder.customer","Customer","","java/com/axelor/apps/supplychain/report/ITranslation.java:70"
-"PurchaseOrder.customerRef","Ref. Customer","","java/com/axelor/apps/supplychain/report/ITranslation.java:68"
-"PurchaseOrder.deliveryDate","Delivery date","","java/com/axelor/apps/supplychain/report/ITranslation.java:64"
-"PurchaseOrder.note","Note","","java/com/axelor/apps/supplychain/report/ITranslation.java:81"
-"PurchaseOrder.paymentCondition","Payment condition","","java/com/axelor/apps/supplychain/report/ITranslation.java:65"
-"PurchaseOrder.paymentMode","Payment mode","","java/com/axelor/apps/supplychain/report/ITranslation.java:66"
-"PurchaseOrder.priceExclTax","Price excl Tax","","java/com/axelor/apps/supplychain/report/ITranslation.java:75"
-"PurchaseOrder.productDescription","Product/Description","","java/com/axelor/apps/supplychain/report/ITranslation.java:71"
-"PurchaseOrder.purchaseInfo","Purchase info","","java/com/axelor/apps/supplychain/report/ITranslation.java:63"
-"PurchaseOrder.qtyUnit","Qty / Price","","java/com/axelor/apps/supplychain/report/ITranslation.java:73"
-"PurchaseOrder.state","State","","java/com/axelor/apps/supplychain/report/ITranslation.java:85"
-"PurchaseOrder.supplier","Supplier","","java/com/axelor/apps/supplychain/report/ITranslation.java:69"
-"PurchaseOrder.supplyRef","Ref. Supplier","","java/com/axelor/apps/supplychain/report/ITranslation.java:67"
-"PurchaseOrder.tax","Tax","","java/com/axelor/apps/supplychain/report/ITranslation.java:72"
-"PurchaseOrder.taxAmount","Tax amount","","java/com/axelor/apps/supplychain/report/ITranslation.java:77"
-"PurchaseOrder.totalExclTax","Total excl Tax","","java/com/axelor/apps/supplychain/report/ITranslation.java:78"
-"PurchaseOrder.totalInclTax","Total Incl Tax","","java/com/axelor/apps/supplychain/report/ITranslation.java:80"
-"PurchaseOrder.totalTax","Total Tax","","java/com/axelor/apps/supplychain/report/ITranslation.java:79"
-"PurchaseOrder.unitPrice","Unit price","","java/com/axelor/apps/supplychain/report/ITranslation.java:74"
-"Purchased amount by family","","","resources/views/Charts.xml:806
-resources/views/portal.xml:307"
-"Purchased amount by product family","","","resources/views/Charts.xml:991
-resources/views/portal.xml:250"
-"Purchased amount distribution by family","","","resources/views/portal.xml:313
-resources/views/Charts.xml:844"
-"Purchases","","","resources/views/menu.xml:453
-resources/views/menu.xml:284
-resources/views/menu.xml:196"
-"Purchases Dashboard 1","","","resources/views/portal.xml:499"
-"Purchases Dashboard 2","","","resources/views/portal.xml:512"
-"Purchases Dashboard 3","","","resources/views/portal.xml:525"
-"Purchases Db 1","","","resources/views/menu.xml:456
-resources/views/menu.xml:459"
-"Purchases Db 2","","","resources/views/menu.xml:465
-resources/views/menu.xml:468"
-"Purchases Db 3","","","resources/views/menu.xml:473
-resources/views/menu.xml:476"
-"Purchases Order filters","","","resources/views/PurchaseOrder.xml:208"
-"Quantity","","","resources/views/Charts.xml:802
-resources/views/Charts.xml:591
-resources/views/Charts.xml:733
-resources/views/Charts.xml:632"
-"Quotes","","","resources/views/menu.xml:262
-resources/views/menu.xml:260"
-"RFQ","","","resources/views/menu.xml:288
-resources/views/menu.xml:291"
-"RFQ And PO To Validate","","","resources/views/portal.xml:295"
-"Realize","","","resources/views/Inventory.xml:42
-resources/views/StockMove.xml:82"
-"Realized","","","resources/views/Selects.xml:29
-resources/views/Selects.xml:36"
-"Receipt","","","resources/views/PurchaseOrder.xml:73"
-"Received","","","resources/views/Selects.xml:60"
-"Receptions fournisseurs","","","resources/views/menu.xml:73
-resources/views/menu.xml:76"
-"Requested","","","resources/views/PurchaseOrder.xml:72
-resources/views/Selects.xml:59"
-"Ressources Planning","","","resources/views/SaleOrderLine.xml:68"
-"Retours clients","","","resources/views/menu.xml:106
-resources/views/menu.xml:103"
-"Retours fournisseurs","","","resources/views/menu.xml:86
-resources/views/menu.xml:83"
-"SO Tax line","","","resources/views/PurchaseOrderLineTax.xml:14
-resources/views/SaleOrderLineTax.xml:14"
-"SO Tax lines","","","resources/views/SaleOrderLineTax.xml:6
-resources/views/PurchaseOrderLineTax.xml:6"
-"SO line","","","resources/views/SaleOrderLine.xml:19"
-"SO line details","","","resources/views/SaleOrderLine.xml:57"
-"SO lines","","","resources/views/SaleOrderLine.xml:6"
-"SO schedule line","","","resources/views/SaleOrderScheduleLine.xml:17"
-"SO schedule lines","","","resources/views/SaleOrderScheduleLine.xml:6"
-"SO subline","","","resources/views/SaleOrderSubLine.xml:20"
-"SO sublines","","","resources/views/SaleOrderSubLine.xml:6"
-"Sale order","","","resources/views/SaleOrder.xml:156
-resources/views/SaleOrder.xml:28"
-"Sale order content","","","resources/views/SaleOrder.xml:173
-resources/views/SaleOrder.xml:64"
-"Sale orders","","","resources/views/menu.xml:186
-resources/views/SaleOrder.xml:141
-resources/views/SaleOrder.xml:6
-resources/views/menu.xml:183"
-"Sales","","","resources/views/menu.xml:430
-resources/views/menu.xml:255
-resources/views/menu.xml:168"
-"Sales Dashboard 1","","","resources/views/portal.xml:533"
-"Sales Dashboard 2","","","resources/views/portal.xml:545"
-"Sales Db 1","","","resources/views/menu.xml:436
-resources/views/menu.xml:433"
-"Sales Db 2","","","resources/views/menu.xml:447
-resources/views/menu.xml:444"
-"Sales Manager Dashboard","","","resources/views/menu.xml:368"
-"Sales Manager Db","","","resources/views/menu.xml:365"
-"Sales Order filters","","","resources/views/SaleOrder.xml:339"
-"Sales TurnOver by Product this year vs last year","","","resources/views/portal.xml:97
-resources/views/Charts.xml:81"
-"Sales Turnover (Orders) by month by category","","","resources/views/Charts.xml:418
-resources/views/portal.xml:145"
-"Sales Turnover This year vs Last year","","","resources/views/portal.xml:86"
-"Sales Turnover YTD vs Last year by Product Family","","","resources/views/Charts.xml:107
-resources/views/portal.xml:103"
-"Sales distribution per product category","","","resources/views/Charts.xml:319
-resources/views/portal.xml:133"
-"Sales distribution per product family","","","resources/views/portal.xml:127
-resources/views/Charts.xml:282"
-"Sales follow-up","","","resources/views/SaleOrder.xml:101"
-"Sales order","","","resources/views/menu.xml:249"
-"Sales per country","","","resources/views/portal.xml:139
-resources/views/Charts.xml:355"
-"Sales turnover comparison per month this year vs past years","","","resources/views/Charts.xml:11
-resources/views/portal.xml:80"
-"Sales turnover this year vs last year","","","resources/views/Charts.xml:51"
-"Sales turnover this year vs past years","","","resources/views/portal.xml:91
-resources/views/Charts.xml:139"
-"SalesMan","","","resources/views/Charts.xml:1222"
-"SaleOrder.bankDetails","Bank detail","","java/com/axelor/apps/supplychain/report/ITranslation.java:61"
-"SaleOrder.bankingInfo","Banking Information","","java/com/axelor/apps/supplychain/report/ITranslation.java:59"
-"SaleOrder.base","Base","","java/com/axelor/apps/supplychain/report/ITranslation.java:53"
-"SaleOrder.cheque","Cheque","","java/com/axelor/apps/supplychain/report/ITranslation.java:60"
-"SaleOrder.customer","Customer","","java/com/axelor/apps/supplychain/report/ITranslation.java:45"
-"SaleOrder.customerRef","Customer Ref.","","java/com/axelor/apps/supplychain/report/ITranslation.java:43"
-"SaleOrder.date","Date","","java/com/axelor/apps/supplychain/report/ITranslation.java:39"
-"SaleOrder.deliveryAddress","Delivery address","","java/com/axelor/apps/supplychain/report/ITranslation.java:47"
-"SaleOrder.invoicingAddrs","Invoicing address","","java/com/axelor/apps/supplychain/report/ITranslation.java:46"
-"SaleOrder.no","Order N°","","java/com/axelor/apps/supplychain/report/ITranslation.java:38"
-"SaleOrder.note","Note","","java/com/axelor/apps/supplychain/report/ITranslation.java:58"
-"SaleOrder.paymentCondition","Payment condition","","java/com/axelor/apps/supplychain/report/ITranslation.java:40"
-"SaleOrder.paymentMode","Payment mode","","java/com/axelor/apps/supplychain/report/ITranslation.java:41"
-"SaleOrder.priceExclTax","Price HT","","java/com/axelor/apps/supplychain/report/ITranslation.java:52"
-"SaleOrder.productDescription","Product/description","","java/com/axelor/apps/supplychain/report/ITranslation.java:48"
-"SaleOrder.qtyUnit","Qty / Unit","","java/com/axelor/apps/supplychain/report/ITranslation.java:50"
-"SaleOrder.supplier","Supplier","","java/com/axelor/apps/supplychain/report/ITranslation.java:44"
-"SaleOrder.supplyRef","Supplier Ref.","","java/com/axelor/apps/supplychain/report/ITranslation.java:42"
-"SaleOrder.tax","Tax","","java/com/axelor/apps/supplychain/report/ITranslation.java:49"
-"SaleOrder.taxAmount","Tax Amount","","java/com/axelor/apps/supplychain/report/ITranslation.java:54"
-"SaleOrder.totalExclTax","Total excl. Tax","","java/com/axelor/apps/supplychain/report/ITranslation.java:55"
-"SaleOrder.totalInclTax","Total incl. Tax","","java/com/axelor/apps/supplychain/report/ITranslation.java:57"
-"SaleOrder.totalTax","Total Tax","","java/com/axelor/apps/supplychain/report/ITranslation.java:56"
-"SaleOrder.unitPrice","Qty / Unit","","java/com/axelor/apps/supplychain/report/ITranslation.java:51"
-"Salesman","","","resources/views/Charts.xml:1256
-resources/views/Charts.xml:273"
-"Salesman Dashboard","","","resources/views/menu.xml:357"
-"Salesman Db","","","resources/views/menu.xml:354"
-"Schedule","","","resources/views/SaleOrder.xml:119"
-"Send Email","","","resources/views/PurchaseOrder.xml:31
-resources/views/PurchaseOrder.xml:19"
-"Send email","","","resources/views/SaleOrder.xml:23
-resources/views/SaleOrder.xml:32
-resources/views/PurchaseOrder.xml:39"
-"Settings","","","resources/views/SaleOrderLine.xml:38"
+"Production needs","","","resources/views/menu.xml:56
+resources/views/menu.xml:53"
+"Production order","","","resources/views/Selects.xml:48"
+"Production stock move in realized","","","resources/views/portal.xml:119"
+"Production stock move out realized","","","resources/views/portal.xml:125"
+"Purchase order","","","resources/views/Selects.xml:47"
+"Qty","","","resources/domains/StockMoveLine.xml:15"
+"Quantity","","","resources/views/Charts.xml:73
+resources/views/Charts.xml:390
+resources/views/Charts.xml:306
+resources/views/Charts.xml:337
+resources/views/Charts.xml:114
+resources/views/Charts.xml:246
+resources/views/Charts.xml:463"
+"Real Qty","","","resources/domains/InventoryLine.xml:13"
+"RealQty","","","resources/domains/StockMoveLine.xml:16"
+"Realize","","","resources/views/StockMove.xml:82
+resources/views/Inventory.xml:42"
+"Realized","","","resources/views/Selects.xml:23
+resources/views/Selects.xml:30"
+"Receptions fournisseurs","","","resources/views/menu.xml:76
+resources/views/menu.xml:73"
+"Ref.","","","resources/domains/StockMove.xml:12"
+"Refill Qty","","","resources/domains/MinStockRules.xml:15"
+"Refill type","","","resources/domains/MinStockRules.xml:18"
+"Retours clients","","","resources/views/menu.xml:103
+resources/views/menu.xml:106"
+"Retours fournisseurs","","","resources/views/menu.xml:83
+resources/views/menu.xml:86"
+"Return surplus","","","resources/domains/StockMove.xml:31"
 "Ship/Receive all products","","","resources/views/StockMove.xml:96"
-"Show Invoices","","","resources/views/SaleOrder.xml:124"
-"Show invoice","","","resources/views/PurchaseOrder.xml:77"
-"Special split","","","resources/views/StockMove.xml:95
+"Shipped date","","","resources/domains/StockMoveLine.xml:26"
+"Shipped qty","","","resources/domains/StockMoveLine.xml:25"
+"Special split","","","resources/views/StockMove.xml:107
 resources/views/StockMove.xml:113
-resources/views/StockMove.xml:107"
-"Specific settings","","","resources/views/SaleOrder.xml:59"
+resources/views/StockMove.xml:95"
 "Split","","","resources/views/StockMove.xml:109"
 "Split by unit","","","resources/views/StockMove.xml:94"
 "Split in Qty of","","","resources/views/StockMove.xml:108"
-"Status","","","resources/views/Charts.xml:667"
-"Stock","","","resources/views/menu.xml:308
-resources/views/menu.xml:410
-resources/views/Location.xml:40"
-"Stock Dashboard","","","resources/views/menu.xml:403"
-"Stock Dashboard 1","","","resources/views/menu.xml:416"
-"Stock Dashboard 2","","","resources/views/menu.xml:425"
-"Stock Db","","","resources/views/menu.xml:400"
-"Stock Db 1","","","resources/views/menu.xml:413"
-"Stock Db 2","","","resources/views/menu.xml:422"
+"Status","","","resources/views/Charts.xml:149
+resources/domains/Inventory.xml:12
+resources/domains/StockMove.xml:20"
+"Stock","","","resources/views/Charts.xml:341
+resources/views/portal.xml:144
+resources/views/menu.xml:193
+resources/views/portal.xml:138
+resources/views/Charts.xml:203
+resources/views/Location.xml:40
+resources/views/menu.xml:248"
+"Stock Dashboard","","","resources/views/menu.xml:241"
+"Stock Dashboard 1","","","resources/views/menu.xml:254"
+"Stock Dashboard 2","","","resources/views/menu.xml:263"
+"Stock Db","","","resources/views/menu.xml:238"
+"Stock Db 1","","","resources/views/menu.xml:251"
+"Stock Db 2","","","resources/views/menu.xml:260"
 "Stock Details","","","resources/views/Location.xml:43"
+"Stock History","","","resources/views/Charts.xml:249
+resources/views/portal.xml:148
+resources/views/Charts.xml:401"
 "Stock Location","","","resources/views/Location.xml:20"
-"Stock Location content","","","resources/views/LocationLine.xml:46
-resources/views/LocationLine.xml:25
+"Stock Location content","","","resources/views/LocationLine.xml:25
+resources/views/LocationLine.xml:46
 resources/views/LocationLine.xml:12"
-"Stock Locations","","","resources/views/menu.xml:141
-resources/views/Location.xml:6
+"Stock Locations","","","resources/views/Location.xml:6
+resources/views/menu.xml:141
 resources/views/menu.xml:144"
-"Stock Locations content","","","resources/views/LocationLine.xml:39
-resources/views/LocationLine.xml:32
+"Stock Locations content","","","resources/views/LocationLine.xml:6
 resources/views/LocationLine.xml:18
-resources/views/LocationLine.xml:6"
+resources/views/LocationLine.xml:32
+resources/views/LocationLine.xml:39"
 "Stock Move","","","resources/views/StockMoveLine.xml:43"
-"Stock Moves Lines","","","resources/views/menu.xml:132
-resources/views/menu.xml:129"
+"Stock Moves Lines","","","resources/views/menu.xml:129
+resources/views/menu.xml:132"
+"Stock Moves consumption historical","","","resources/views/portal.xml:171"
+"Stock Moves consumption planned","","","resources/views/portal.xml:163"
+"Stock Moves historical","","","resources/views/portal.xml:179"
+"Stock Moves planned","","","resources/views/portal.xml:155"
 "Stock Value","","","resources/views/Location.xml:46"
+"Stock batches","","","resources/views/menu.xml:171
+resources/views/menu.xml:174"
+"Stock config","","","resources/domains/Company.xml:10"
+"Stock configuration","","","resources/views/StockConfig.xml:12"
+"Stock configurations","","","resources/views/StockConfig.xml:6
+resources/views/menu.xml:181
+resources/views/menu.xml:184"
 "Stock management","","","resources/views/menu.xml:7"
-"Stock move","","","resources/views/StockMove.xml:60"
+"Stock move","","","resources/views/StockMove.xml:60
+resources/domains/StockMoveLine.xml:10"
+"Stock move content","","","resources/domains/StockMove.xml:29"
 "Stock move details","","","resources/views/StockMove.xml:93"
 "Stock move informations","","","resources/views/StockMove.xml:70
-resources/views/SupplychainConfig.xml:23"
+resources/views/StockConfig.xml:23"
 "Stock move line","","","resources/views/StockMoveLine.xml:18
 resources/views/StockMoveLine.xml:70
 resources/views/StockMoveLine.xml:42"
-"Stock move lines","","","resources/views/StockMoveLine.xml:6
+"Stock move lines","","","resources/views/StockMoveLine.xml:29
 resources/views/StockMoveLine.xml:61
-resources/views/StockMoveLine.xml:29"
+resources/views/StockMoveLine.xml:6"
 "Stock move reference","","","resources/views/StockMove.xml:64"
-"Stock moves","","","resources/views/menu.xml:313
-resources/views/StockMove.xml:40
-resources/views/StockMove.xml:22
+"Stock moves","","","resources/views/menu.xml:198
 resources/views/StockMove.xml:6
-resources/views/menu.xml:310"
-"StockLocation.accountingValue","Accounting Value","","java/com/axelor/apps/supplychain/report/ITranslation.java:33"
-"StockLocation.code","Code","","java/com/axelor/apps/supplychain/report/ITranslation.java:30"
-"StockLocation.date","Date","","java/com/axelor/apps/supplychain/report/ITranslation.java:23"
-"StockLocation.detailsByLocation","Details by location","","java/com/axelor/apps/supplychain/report/ITranslation.java:36"
-"StockLocation.location","Location","","java/com/axelor/apps/supplychain/report/ITranslation.java:25"
-"StockLocation.locationTotalContent","Location Total Content","","java/com/axelor/apps/supplychain/report/ITranslation.java:28"
-"StockLocation.locations","Locations","","java/com/axelor/apps/supplychain/report/ITranslation.java:24"
-"StockLocation.productName","Product Name","","java/com/axelor/apps/supplychain/report/ITranslation.java:29"
-"StockLocation.qtyUnit","Qty / Unit","","java/com/axelor/apps/supplychain/report/ITranslation.java:31"
-"StockLocation.saleValue","Sale Value","","java/com/axelor/apps/supplychain/report/ITranslation.java:32"
-"StockLocation.title","LOCATION FINANCIAL DATA","","java/com/axelor/apps/supplychain/report/ITranslation.java:22"
-"StockLocation.total","Total","","java/com/axelor/apps/supplychain/report/ITranslation.java:35"
-"StockLocation.totalAccountingValue","Total Accounting Value","","java/com/axelor/apps/supplychain/report/ITranslation.java:27"
-"StockLocation.totalSaleValue","Total Sale Value","","java/com/axelor/apps/supplychain/report/ITranslation.java:26"
-"StockLocation.unitValue","Unit Value","","java/com/axelor/apps/supplychain/report/ITranslation.java:34"
-"StockMove.customer","Customer","","java/com/axelor/apps/supplychain/report/ITranslation.java:103"
-"StockMove.date","Date","","java/com/axelor/apps/supplychain/report/ITranslation.java:99"
-"StockMove.deliveryAddress","Delivery Address","","java/com/axelor/apps/supplychain/report/ITranslation.java:107"
-"StockMove.deliveryDetails","Delivery Detail","","java/com/axelor/apps/supplychain/report/ITranslation.java:108"
-"StockMove.deliveryOrder","Delivery Order","","java/com/axelor/apps/supplychain/report/ITranslation.java:97"
-"StockMove.internalMove","Internal Move","","java/com/axelor/apps/supplychain/report/ITranslation.java:96"
-"StockMove.lotNoRef","Lot N°/Ref","","java/com/axelor/apps/supplychain/report/ITranslation.java:111"
-"StockMove.movePreparedBy","Move prepared by","","java/com/axelor/apps/supplychain/report/ITranslation.java:104"
-"StockMove.product","Product","","java/com/axelor/apps/supplychain/report/ITranslation.java:112"
-"StockMove.purchaseOrder","Order","","java/com/axelor/apps/supplychain/report/ITranslation.java:101"
-"StockMove.qtyUnit","Qty / Unit","","java/com/axelor/apps/supplychain/report/ITranslation.java:110"
-"StockMove.receivedBy","Received by","","java/com/axelor/apps/supplychain/report/ITranslation.java:106"
-"StockMove.receptionOrder","Reception Order","","java/com/axelor/apps/supplychain/report/ITranslation.java:98"
-"StockMove.reference","Reference","","java/com/axelor/apps/supplychain/report/ITranslation.java:100"
-"StockMove.stockPreparedBy","Order prepared by","","java/com/axelor/apps/supplychain/report/ITranslation.java:105"
-"StockMove.variant","Variant","","java/com/axelor/apps/supplychain/report/ITranslation.java:109"
-"StockMove.weight","Weight","","java/com/axelor/apps/supplychain/report/ITranslation.java:102"
-"Subscription","","","resources/views/SaleOrder.xml:127"
-"Subscription dates","","","resources/views/SaleOrder.xml:128"
-"Supplier Arrivals","","","resources/views/menu.xml:22
-resources/views/menu.xml:25"
-"Supplier RFQ/PO","","","resources/views/PurchaseOrder.xml:36"
-"Supplier RFQs/POs","","","resources/views/PurchaseOrder.xml:22
-resources/views/PurchaseOrder.xml:6"
-"Supplier arrivals filters","","","resources/views/StockMove.xml:239"
-"Supplier deliveries","","","resources/views/menu.xml:341
-resources/views/menu.xml:344"
-"Supplier invoices","","","resources/views/PurchaseOrder.xml:197"
-"Suppliers managements","","","resources/views/PurchaseOrder.xml:108"
-"Suppliers requests","","","resources/views/PurchaseOrderLine.xml:69"
-"Supply chain configuration","","","resources/views/SupplychainConfig.xml:12"
-"Supply chain configurations","","","resources/views/SupplychainConfig.xml:6"
-"Supplychain batches","","","resources/views/menu.xml:227
-resources/views/menu.xml:224"
-"Supplychain configurations","","","resources/views/menu.xml:237
-resources/views/menu.xml:234"
-"Team","","","resources/views/Charts.xml:243"
-"The field 'Location' must be filled.","","","resources/views/PurchaseOrder.xml:205"
-"The location must be filled.","","","resources/views/SaleOrder.xml:332"
-"The move doesn't contain any product, do you wish to continue ?","","","resources/views/StockMove.xml:221"
-"This Year To Date","","","resources/views/Charts.xml:141"
-"To Date","","","resources/views/Charts.xml:847
-resources/views/Charts.xml:391
-resources/views/Charts.xml:1101
-resources/views/Charts.xml:250
-resources/views/Charts.xml:775
-resources/views/Charts.xml:285
-resources/views/Charts.xml:322
-resources/views/Charts.xml:475
-resources/views/Charts.xml:1150
-resources/views/Charts.xml:742
-resources/views/Charts.xml:809
-resources/views/Charts.xml:358
-resources/views/Charts.xml:1290
-resources/views/Charts.xml:1176
-resources/views/Charts.xml:421
-resources/views/Charts.xml:1316
-resources/views/Charts.xml:707
-resources/views/Charts.xml:994
-resources/views/Charts.xml:1338
-resources/views/Charts.xml:220"
-"Today Arrivals","","","resources/views/StockMove.xml:240"
-"Total Purchased Amount by month","","","resources/views/Charts.xml:895
-resources/views/portal.xml:262"
-"Total Purchased Qty by month","","","resources/views/portal.xml:268
-resources/views/Charts.xml:926"
-"Totals","","","resources/views/PurchaseOrder.xml:88"
-"Totaux","","","resources/views/SaleOrder.xml:87
-resources/views/SaleOrder.xml:183"
-"Tracking Numbers","","","resources/views/menu.xml:162
-resources/views/menu.xml:159"
-"Turn Over","","","resources/views/Charts.xml:922"
-"TurnOver","","","resources/views/Charts.xml:171
-resources/views/Charts.xml:467
-resources/views/Charts.xml:104
-resources/views/Charts.xml:78
-resources/views/Charts.xml:47"
-"Turnover","","","resources/views/Charts.xml:1242
-resources/views/Charts.xml:1309
-resources/views/Charts.xml:1168
-resources/views/Charts.xml:136
-resources/views/Charts.xml:1197
-resources/views/Charts.xml:203
-resources/views/Charts.xml:1332
-resources/views/Charts.xml:1276
-resources/views/Charts.xml:1357"
-"Turnover (excl. Tax) per saleman","","","resources/views/portal.xml:121
-resources/views/Charts.xml:247"
-"Turnover (excl. Tax) per team","","","resources/views/Charts.xml:217
-resources/views/portal.xml:115"
-"Turnover per customer category","","","resources/views/Charts.xml:1313
-resources/views/portal.xml:577"
-"Turnover per customer sector","","","resources/views/Charts.xml:1335
-resources/views/portal.xml:583"
-"Turnover per customer type","","","resources/views/Charts.xml:1287
-resources/views/portal.xml:571"
-"Turnover per month per saleman (4 month)","","","resources/views/Charts.xml:1253
-resources/views/portal.xml:565"
-"Turnover per month per saleman (6 month)","","","resources/views/portal.xml:559
-resources/views/Charts.xml:1219"
-"Units","","","resources/views/Charts.xml:956"
-"Upcoming arrivals","","","resources/views/StockMove.xml:243"
-"Upcoming deliveries","","","resources/views/portal.xml:360"
-"Upcoming supplier arrivals","","","resources/views/portal.xml:373"
-"Validate","","","resources/views/CreateInventoryWizard.xml:32
-resources/views/SaleOrder.xml:73
-resources/views/PurchaseOrder.xml:74"
-"Validated","","","resources/views/Selects.xml:61"
-"Value","","","resources/views/Charts.xml:1215"
-"View Direction","","","resources/views/StockMove.xml:88
+resources/views/StockMove.xml:22
+resources/views/StockMove.xml:40
+resources/views/menu.xml:195"
+"StockLocation.accountingValue","Accounting Value","","java/com/axelor/apps/stock/report/ITranslation.java:33"
+"StockLocation.code","Code","","java/com/axelor/apps/stock/report/ITranslation.java:30"
+"StockLocation.date","Date","","java/com/axelor/apps/stock/report/ITranslation.java:23"
+"StockLocation.detailsByLocation","Details by location","","java/com/axelor/apps/stock/report/ITranslation.java:36"
+"StockLocation.location","Location","","java/com/axelor/apps/stock/report/ITranslation.java:25"
+"StockLocation.locationTotalContent","Location Total Content","","java/com/axelor/apps/stock/report/ITranslation.java:28"
+"StockLocation.locations","Locations","","java/com/axelor/apps/stock/report/ITranslation.java:24"
+"StockLocation.productName","Product Name","","java/com/axelor/apps/stock/report/ITranslation.java:29"
+"StockLocation.qtyUnit","Qty / Unit","","java/com/axelor/apps/stock/report/ITranslation.java:31"
+"StockLocation.saleValue","Sale Value","","java/com/axelor/apps/stock/report/ITranslation.java:32"
+"StockLocation.title","LOCATION FINANCIAL DATA","","java/com/axelor/apps/stock/report/ITranslation.java:22"
+"StockLocation.total","Total","","java/com/axelor/apps/stock/report/ITranslation.java:35"
+"StockLocation.totalAccountingValue","Total Accounting Value","","java/com/axelor/apps/stock/report/ITranslation.java:27"
+"StockLocation.totalSaleValue","Total Sale Value","","java/com/axelor/apps/stock/report/ITranslation.java:26"
+"StockLocation.unitValue","Unit Value","","java/com/axelor/apps/stock/report/ITranslation.java:34"
+"StockMove.customer","Customer","","java/com/axelor/apps/stock/report/ITranslation.java:54"
+"StockMove.date","Date","","java/com/axelor/apps/stock/report/ITranslation.java:50"
+"StockMove.deliveryAddress","Delivery Address","","java/com/axelor/apps/stock/report/ITranslation.java:58"
+"StockMove.deliveryDetails","Delivery Detail","","java/com/axelor/apps/stock/report/ITranslation.java:59"
+"StockMove.deliveryOrder","Delivery Order","","java/com/axelor/apps/stock/report/ITranslation.java:48"
+"StockMove.internalMove","Internal Move","","java/com/axelor/apps/stock/report/ITranslation.java:47"
+"StockMove.lotNoRef","Lot N°/Ref","","java/com/axelor/apps/stock/report/ITranslation.java:62"
+"StockMove.movePreparedBy","Move prepared by","","java/com/axelor/apps/stock/report/ITranslation.java:55"
+"StockMove.product","Product","","java/com/axelor/apps/stock/report/ITranslation.java:63"
+"StockMove.purchaseOrder","Order","","java/com/axelor/apps/stock/report/ITranslation.java:52"
+"StockMove.qtyUnit","Qty / Unit","","java/com/axelor/apps/stock/report/ITranslation.java:61"
+"StockMove.receivedBy","Received by","","java/com/axelor/apps/stock/report/ITranslation.java:57"
+"StockMove.receptionOrder","Reception Order","","java/com/axelor/apps/stock/report/ITranslation.java:49"
+"StockMove.reference","Reference","","java/com/axelor/apps/stock/report/ITranslation.java:51"
+"StockMove.stockPreparedBy","Order prepared by","","java/com/axelor/apps/stock/report/ITranslation.java:56"
+"StockMove.variant","Variant","","java/com/axelor/apps/stock/report/ITranslation.java:60"
+"StockMove.weight","Weight","","java/com/axelor/apps/stock/report/ITranslation.java:53"
+"Supplier Arrivals","","","resources/views/menu.xml:25
+resources/views/menu.xml:22"
+"Supplier arrivals filters","","","resources/views/StockMove.xml:279"
+"Supplier deliveries","","","resources/views/menu.xml:226
+resources/views/menu.xml:229"
+"Supplier virtual location","","","resources/domains/StockConfig.xml:16"
+"Team","","","resources/domains/MinStockRules.xml:21"
+"The move doesn't contain any product, do you wish to continue ?","","","resources/views/StockMove.xml:261"
+"To","","","resources/views/Charts.xml:404
+resources/views/Charts.xml:252"
+"To address","","","resources/domains/StockMove.xml:24"
+"To location","","","resources/domains/StockMove.xml:15"
+"Today","","","resources/views/Charts.xml:205
+resources/views/Charts.xml:343"
+"Today Arrivals","","","resources/views/StockMove.xml:280"
+"Tracking Nbr","","","resources/domains/LocationLine.xml:17"
+"Tracking Nbr.","","","resources/domains/StockMoveLine.xml:20"
+"Tracking Numbers","","","resources/views/menu.xml:159
+resources/views/menu.xml:162"
+"TrackingNumber","","","resources/domains/InventoryLine.xml:16"
+"Type","","","resources/domains/MinStockRules.xml:16
+resources/domains/Location.xml:15"
+"Type Status","","","resources/domains/StockMove.xml:21"
+"Unit","","","resources/domains/StockMoveLine.xml:17"
+"Unit price","","","resources/domains/StockMoveLine.xml:18"
+"Upcoming arrivals","","","resources/views/StockMove.xml:283"
+"Upcoming deliveries","","","resources/views/portal.xml:73"
+"Upcoming supplier arrivals","","","resources/views/portal.xml:86"
+"User","","","resources/domains/MinStockRules.xml:20"
+"Validate","","","resources/views/CreateInventoryWizard.xml:32"
+"Value","","","resources/views/Charts.xml:200"
+"View Direction","","","resources/views/StockMove.xml:37
 resources/views/StockMove.xml:55
-resources/views/StockMove.xml:37"
+resources/views/StockMove.xml:88"
 "View location content","","","resources/views/Location.xml:35"
-"Virtual","","","resources/views/Selects.xml:18"
-"Virtual locations informations","","","resources/views/SupplychainConfig.xml:18"
-"When a task is over","","","resources/views/Selects.xml:67"
-"Word Export","","","resources/views/SaleOrder.xml:34"
-"XLS","","","resources/views/Selects.xml:23"
-"Year","","","resources/views/Charts.xml:103
-resources/views/Charts.xml:77
-resources/views/Charts.xml:170
-resources/views/Charts.xml:135"
-"Year 1 To Date","","","resources/views/Charts.xml:13"
-"Year 2 To Date","","","resources/views/Charts.xml:14"
-"supplychain Batch","","","resources/views/SupplychainBatch.xml:16"
-"supplychain batches","","","resources/views/SupplychainBatch.xml:6"
+"Virtual","","","resources/views/Selects.xml:12"
+"Virtual locations informations","","","resources/views/StockConfig.xml:18"
+"XLS","","","resources/views/Selects.xml:17"
