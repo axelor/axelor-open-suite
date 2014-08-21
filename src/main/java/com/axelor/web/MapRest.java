@@ -48,7 +48,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getPartners() {
 		
-		List<? extends Partner> customers = Partner.all_().filter("self.customerTypeSelect IN (?, ?) OR self.supplierTypeSelect IN (?, ?) AND self.isContact=?", 2,3,2,3, false).fetch();
+		List<? extends Partner> customers = Partner.all().filter("self.customerTypeSelect IN (?, ?) OR self.supplierTypeSelect IN (?, ?) AND self.isContact=?", 2,3,2,3, false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -89,7 +89,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getCustomers() {
 		
-		List<? extends Partner> customers = Partner.all_().filter("self.customerTypeSelect=? AND self.isContact=?", 3, false).fetch();
+		List<? extends Partner> customers = Partner.all().filter("self.customerTypeSelect=? AND self.isContact=?", 3, false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -126,7 +126,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getProspects() {
 		
-		List<? extends Partner> customers = Partner.all_().filter("self.customerTypeSelect=? AND self.isContact=?", 2, false).fetch();
+		List<? extends Partner> customers = Partner.all().filter("self.customerTypeSelect=? AND self.isContact=?", 2, false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -163,7 +163,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getSuppliers() {
 		
-		List<? extends Partner> customers = Partner.all_().filter("self.supplierTypeSelect=? AND self.isContact=?", 2, 3 , false).fetch();
+		List<? extends Partner> customers = Partner.all().filter("self.supplierTypeSelect=? AND self.isContact=?", 2, 3 , false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
