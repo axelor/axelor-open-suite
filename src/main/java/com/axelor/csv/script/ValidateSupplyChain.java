@@ -131,7 +131,7 @@ public class ValidateSupplyChain {
 			purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 			if(purchaseOrder.getStatusSelect() == 4 || purchaseOrder.getStatusSelect() == 5 && purchaseOrder.getLocation() == null){
 				purchaseOrderServiceSupplychainImpl.createStocksMoves(purchaseOrder);
-				StockMove stockMove = StockMove.all_().filter("purchaseOrder.id = ?1",purchaseOrder.getId()).fetchOne();
+				StockMove stockMove = StockMove.all().filter("purchaseOrder.id = ?1",purchaseOrder.getId()).fetchOne();
 				if(stockMove != null){
 					stockMoveService.copyQtyToRealQty(stockMove);
 					stockMoveService.realize(stockMove);
@@ -172,7 +172,7 @@ public class ValidateSupplyChain {
 					invoiceService.validate(invoice);
 					invoiceService.ventilate(invoice);
 				}
-				StockMove stockMove = StockMove.all_().filter("saleOrder = ?1",saleOrder).fetchOne();
+				StockMove stockMove = StockMove.all().filter("saleOrder = ?1",saleOrder).fetchOne();
 				if(stockMove != null && stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 					stockMoveService.copyQtyToRealQty(stockMove);
 					stockMoveService.validate(stockMove);

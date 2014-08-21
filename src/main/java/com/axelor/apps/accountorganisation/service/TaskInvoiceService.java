@@ -150,14 +150,14 @@ public class TaskInvoiceService {
 	
 	public List<TimesheetLine> getTimesheetLineToInvoice(Task task)  {
 		
-		return TimesheetLine.all().filter("self.timesheet.statusSelect = 3 AND self.task.id = ?1 AND self.isToInvoice = true", task.getId()).fetch();
+		return (List<TimesheetLine>) TimesheetLine.all().filter("self.timesheet.statusSelect = 3 AND self.task.id = ?1 AND self.isToInvoice = true", task.getId()).fetch();
 		
 	}
 	
 	
 	public List<ExpenseLine> getExpenseLineToInvoice(Task task)  {
 		
-		return ExpenseLine.all().filter("self.expense.statusSelect = 3 AND self.task.id = ?1 AND self.isToInvoice = true", task.getId()).fetch();
+		return (List<ExpenseLine>) ExpenseLine.all().filter("self.expense.statusSelect = 3 AND self.task.id = ?1 AND self.isToInvoice = true", task.getId()).fetch();
 		
 	}
 	
