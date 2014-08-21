@@ -34,7 +34,7 @@ public class AddressServiceSaleImpl extends AddressServiceImpl  {
 		super.checkAddressUsed(addressId);
 		
 		if(addressId != null){
-			if(SaleOrder.all_().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+			if(SaleOrder.all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
 		}
 		return false;

@@ -48,7 +48,7 @@ public class MapRest {
 	public JsonNode getGeoMapData() {
 		
 		Map<String, BigDecimal> data = new HashMap<String, BigDecimal>();		
-		List<? extends SaleOrder> orders = SaleOrder.all_().filter("self.statusSelect=?", 3).fetch();
+		List<? extends SaleOrder> orders = SaleOrder.all().filter("self.statusSelect=?", 3).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
