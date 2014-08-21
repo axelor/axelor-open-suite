@@ -194,11 +194,11 @@ public class CalendarService {
 	}
 	
 	
-	public List<Calendar> getInternalCalendarList()  {
+	public List<? extends Calendar> getInternalCalendarList()  {
 		
-//		List<Calendar> internalCalendarList = Calendar.all().filter("self", User user) // TODO Récupérer la liste des calendriers du tiers
+//		List<? extends Calendar> internalCalendarList = Calendar.all().filter("self", User user) // TODO Récupérer la liste des calendriers du tiers
 		
-		List<Calendar> internalCalendarList = Calendar.all().fetch();
+		List<? extends Calendar> internalCalendarList = Calendar.all().fetch();
 		
 		return internalCalendarList; 
 	}
@@ -242,7 +242,7 @@ public class CalendarService {
 //		  Calendar calendar = collection.getCalendar("g.dubaux@axelor.com");
 		
 		
-		List<Event> eventList = Event.all().filter("self.typeSelect != 6 and self.calendarEventUid IS NULL and self.calendar = ?1",internalCalendar).fetch();
+		List<? extends Event> eventList = Event.all().filter("self.typeSelect != 6 and self.calendarEventUid IS NULL and self.calendar = ?1",internalCalendar).fetch();
 		
 	  
 		List<VEvent> vEventList = new ArrayList<VEvent>();
@@ -327,7 +327,7 @@ public class CalendarService {
 	
 	
 	
-	public List<VEvent> createEvents(List<Event> eventList) throws SocketException  {
+	public List<VEvent> createEvents(List<? extends Event> eventList) throws SocketException  {
 		
 		List<VEvent> vEventList = new ArrayList<VEvent>();
 		
@@ -514,7 +514,7 @@ public class CalendarService {
 			uidList.add(vEvent.getUid().getValue());
 		}
 		
-		List<Event> eventList = null;
+		List<? extends Event> eventList = null;
 		
 		if(uidList != null && uidList.size() > 0)  {
 			eventList = Event.filter("self.typeSelect = ?1 AND self.calendar = ?2 AND self.calendarEventUid not in ?3", 6, internalCalendar, uidList).fetch();

@@ -79,7 +79,7 @@ public class BatchEventReminder extends BatchStrategy {
 			
 			int durationTypeSelect = batch.getCrmBatch().getDurationTypeSelect();
 			
-			List<EventReminder> eventReminderList = EventReminder.all()
+			List<? extends EventReminder> eventReminderList = EventReminder.all()
 					.filter("self.event.startDateTime > ?1 AND self.durationTypeSelect = ?2", today, durationTypeSelect).fetch();
 			
 			

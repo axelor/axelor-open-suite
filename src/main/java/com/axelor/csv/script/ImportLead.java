@@ -22,10 +22,10 @@ import com.axelor.auth.db.User;
 public class ImportLead{
 	
 	public User importCreatedBy(String importId){
-		User user = User.all_().filter("self.importId = ?1",importId).fetchOne();
+		User user = User.all().filter("self.importId = ?1",importId).fetchOne();
 		if(user != null)
 			return user;
-		return User.all_().filter("self.code = 'democrm'").fetchOne();
+		return User.all().filter("self.code = 'democrm'").fetchOne();
 	}
 
 }

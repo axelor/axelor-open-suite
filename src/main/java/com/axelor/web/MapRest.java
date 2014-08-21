@@ -50,7 +50,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getLeads() {
 
-		List<? extends Lead> leads = Lead.all_().fetch();
+		List<? extends Lead> leads = Lead.all().fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -114,7 +114,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getOpportunities() {
 
-		List<? extends Opportunity> opportunities = Opportunity.all_().fetch();
+		List<? extends Opportunity> opportunities = Opportunity.all().fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
