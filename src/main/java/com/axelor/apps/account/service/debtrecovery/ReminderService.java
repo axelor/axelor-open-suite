@@ -206,7 +206,7 @@ public class ReminderService {
 	public List<MoveLine> getMoveLineReminder(Partner partner, Company company)  {
 		List<MoveLine> moveLineList = new ArrayList<MoveLine>();
 
-		List<MoveLine> moveLineQuery = this.getMoveLine(partner, company);
+		List<MoveLine> moveLineQuery = (List<MoveLine>) this.getMoveLine(partner, company);
 		
 		int mailTransitTime = company.getAccountConfig().getMailTransitTime();
 		

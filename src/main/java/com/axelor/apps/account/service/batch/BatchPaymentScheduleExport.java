@@ -206,7 +206,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			cfonbExportService.exportPaymentScheduleCFONB(
 					batch.getStartDate(),
 					accountingBatch.getDebitDate(),
-					PaymentScheduleLine.filter("?1 MEMBER OF self.batchSet", batchToExport).fetch(),
+					(List<PaymentScheduleLine>) PaymentScheduleLine.filter("?1 MEMBER OF self.batchSet", batchToExport).fetch(),
 					accountingBatch.getCompany(),
 					accountingBatch.getBankDetails());
 
@@ -371,7 +371,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			cfonbExportService.exportInvoiceCFONB(
 					batch.getStartDate(), 
 					accountingBatch.getDebitDate(), 
-					Invoice.filter("?1 MEMBER OF self.batchSet", batchToExport).fetch(), 
+					(List<Invoice>) Invoice.filter("?1 MEMBER OF self.batchSet", batchToExport).fetch(), 
 					accountingBatch.getCompany(), 
 					accountingBatch.getBankDetails());
 		

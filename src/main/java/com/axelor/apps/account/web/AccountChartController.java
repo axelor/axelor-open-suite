@@ -39,7 +39,7 @@ public class AccountChartController {
 		AccountChart act = AccountChart.find(accountConfig.getAccountChart().getId());
 		Company company = Company.find(accountConfig.getCompany().getId());
 		accountConfig = AccountConfig.find(accountConfig.getId());
-		List<? extends Account> accountList = Account.all_().filter("self.company.id = ?1 AND self.parent != null", company.getId()).fetch();
+		List<? extends Account> accountList = Account.all().filter("self.company.id = ?1 AND self.parent != null", company.getId()).fetch();
 		if(accountList.isEmpty()){
 			if(acts.installAccountChart(act,company,accountConfig))
 				response.setFlash("The chart of account has been loaded successfully");

@@ -102,7 +102,7 @@ public class PaymentService {
 			 LOG.debug("Comptes : {}", invoiceLineDebit.getAccount());
 			
 			 // Récupérer les trop pérçu du tiers pour le même compte que la ligne en débit
-			 List<MoveLine> creditMoveLines = this.getExcessPayment(invoice, invoiceLineDebit.getAccount());
+			 List<MoveLine> creditMoveLines = (List<MoveLine>) this.getExcessPayment(invoice, invoiceLineDebit.getAccount());
 			
 			 List<MoveLine> debitMoveLines = new ArrayList<MoveLine>();
 			 debitMoveLines.add(invoiceLineDebit);
@@ -147,7 +147,7 @@ public class PaymentService {
 		Partner partner = invoice.getPartner();
 
 		// Récupérer les dûs du tiers pour le même compte que celui de l'avoir
-		List<? extends MoveLine> debitMoveLines = ms.getOrignalInvoiceFromRefund(invoice);
+		List<MoveLine> debitMoveLines = ms.getOrignalInvoiceFromRefund(invoice);
 			
 		List<? extends MoveLine> othersDebitMoveLines = null;
 		if(useOthersInvoiceDue)  {

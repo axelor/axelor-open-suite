@@ -167,7 +167,7 @@ public class IrrecoverableService {
 	 * @return
 	 */
 	public List<Invoice> getInvoiceList(Company company)   {
-		return Invoice.filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.status.code = 'dis' AND self.inTaxTotalRemaining > 0 AND self.rejectMoveLine IS NULL ORDER BY self.dueDate ASC", IInvoice.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
+		return (List<Invoice>) Invoice.filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.status.code = 'dis' AND self.inTaxTotalRemaining > 0 AND self.rejectMoveLine IS NULL ORDER BY self.dueDate ASC", IInvoice.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
 	}
 	
 	/**
@@ -177,7 +177,7 @@ public class IrrecoverableService {
 	 * @return
 	 */
 	public List<Invoice> getRejectInvoiceList(Company company)   {
-		return Invoice.filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.status.code = 'dis' AND self.inTaxTotalRemaining = 0 AND self.rejectMoveLine IS NOT NULL ORDER BY self.dueDate ASC", IInvoice.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
+		return (List<Invoice>) Invoice.filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.status.code = 'dis' AND self.inTaxTotalRemaining = 0 AND self.rejectMoveLine IS NOT NULL ORDER BY self.dueDate ASC", IInvoice.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
 	}
 	
 	
@@ -188,7 +188,7 @@ public class IrrecoverableService {
 	 * @return
 	 */
 	public List<PaymentScheduleLine> getPaymentScheduleLineList(Company company)   {
-		return PaymentScheduleLine
+		return (List<PaymentScheduleLine>) PaymentScheduleLine
 				.filter("self.paymentSchedule.irrecoverableStateSelect = ?1 AND self.paymentSchedule.company = ?2 AND self.paymentSchedule.state = '4' AND self.rejectMoveLine.amountRemaining > 0 ORDER BY self.scheduleDate ASC", IAccount.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
 	}
 	

@@ -88,7 +88,7 @@ public class BatchReminder extends BatchStrategy {
 	public void reminderPartner()  {
 		
 		int i = 0;
-		List<Partner> partnerList = Partner.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", batch.getAccountingBatch().getCompany()).fetch();
+		List<Partner> partnerList = (List<Partner>) Partner.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", batch.getAccountingBatch().getCompany()).fetch();
 		
 		for (Partner partner : partnerList) {
 
@@ -125,7 +125,7 @@ public class BatchReminder extends BatchStrategy {
 	
 	public void generateMail()  {
 		
-		List<Mail> mailList = Mail.all().filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
+		List<Mail> mailList = (List<Mail>) Mail.all().filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
 		
 		LOG.debug("Nombre de fichiers à générer : {}",mailList.size());
 		for(Mail mail : mailList)  {

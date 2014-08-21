@@ -89,7 +89,7 @@ public class PaymentVoucherLoadService  {
 		
 		moveLines.remove(excludeMoveLine);
 		
-		return moveLines;
+		return (List<MoveLine>) moveLines;
 	}
 	
 	

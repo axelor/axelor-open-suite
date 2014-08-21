@@ -62,7 +62,7 @@ public class GeneralController {
 		 LocalDate today = GeneralService.getTodayDate();
 		 
 		 for(CurrencyConversionLine ccl : general.getCurrencyConversionLineList()){
-			CurrencyConversionLine cclCoverd = CurrencyConversionLine.all_().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",ccl.getStartCurrency(),ccl.getEndCurrency(),today).fetchOne();
+			CurrencyConversionLine cclCoverd = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",ccl.getStartCurrency(),ccl.getEndCurrency(),today).fetchOne();
 			LOG.info("Currency Conversion Line for {} already covered : {}",today,ccl);
 			if(ccl.isSelected() && ccl.getToDate() == null & cclCoverd == null){
 				BigDecimal currentRate = ccs.convert(ccl.getStartCurrency(), ccl.getEndCurrency());

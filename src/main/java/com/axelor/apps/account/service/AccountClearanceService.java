@@ -109,7 +109,7 @@ public class AccountClearanceService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setExcessPayment(AccountClearance accountClearance) throws AxelorException  {
 		accountClearance.setMoveLineSet(new HashSet<MoveLine>());
-		List<MoveLine> moveLineList = this.getExcessPayment(accountClearance);
+		List<MoveLine> moveLineList = (List<MoveLine>) this.getExcessPayment(accountClearance);
 		if(moveLineList != null && moveLineList.size() != 0)  {
 			accountClearance.getMoveLineSet().addAll(moveLineList);
 		}

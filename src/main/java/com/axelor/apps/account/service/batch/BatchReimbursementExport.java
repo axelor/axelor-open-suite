@@ -129,9 +129,9 @@ public class BatchReimbursementExport extends BatchStrategy {
 	
 	public void runCreateReimbursementExport(Company company)  {
 		
-		List<Reimbursement> reimbursementList = Reimbursement.filter("self.status.code != 'rei' AND self.status.code != 'can' AND self.company = ?1", company).fetch();
+		List<Reimbursement> reimbursementList = (List<Reimbursement>) Reimbursement.filter("self.status.code != 'rei' AND self.status.code != 'can' AND self.company = ?1", company).fetch();
 		
-		List<Partner> partnerList = Partner.filter("?1 IN self.companySet = ?1", company).fetch();
+		List<Partner> partnerList = (List<Partner>) Partner.filter("?1 IN self.companySet = ?1", company).fetch();
 		
 		int i=0;
 
@@ -151,7 +151,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 				if(reimbursementExportService.canBeReimbursed(partner, Company.find(company.getId())))  {
 				
-					List<MoveLine> moveLineList = MoveLine.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+					List<MoveLine> moveLineList = (List<MoveLine>) MoveLine.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 							"AND self.move.state = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND " +
 							"self.reimbursementStateSelect = ?4 "
 							,IMove.VALIDATED_MOVE ,Partner.find(partner.getId()), Company.find(company.getId()), IAccount.NULL).fetch();
@@ -196,7 +196,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 		int i=0;
 		
 		// On récupère les remboursements dont les trop perçu ont été annulés
-		List<Reimbursement> reimbursementToCancelList = Reimbursement
+		List<Reimbursement> reimbursementToCancelList = (List<Reimbursement>) Reimbursement
 				.filter("self.company = ?1 and self.status.code = 'val' and self.amountToReimburse = 0", company).fetch();
 		
 		// On annule les remboursements
@@ -206,7 +206,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 		}
 		
 		// On récupère les remboursement à rembourser
-		List<Reimbursement> reimbursementList = Reimbursement
+		List<Reimbursement> reimbursementList = (List<Reimbursement>) Reimbursement
 				.filter("self.company = ?1 and self.status.code = 'val' and self.amountToReimburse > 0", company).fetch();
 		
 		List<Reimbursement> reimbursementToExport = new ArrayList<Reimbursement>();
