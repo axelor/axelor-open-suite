@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="rum-grid" title="Références uniques de mandat" model="com.axelor.apps.account.db.Rum">
+    <grid name="rum-grid" title="Unique Mandate References" model="com.axelor.apps.account.db.Rum">
         <field name="rumNumber"/>
         <field name="debtorName"/>
         <field name="debtorAddress"/>
@@ -12,7 +12,7 @@
         <field name="mandateSignatureCommune"/>
     </grid>
     
-    <form name="rum-form" title="Référence unique de mandat" model="com.axelor.apps.account.db.Rum" cols="4"
+    <form name="rum-form" title="Unique Mandate References" model="com.axelor.apps.account.db.Rum" cols="4"
     	onNew="action-rum-record-new">
         <field name="rumNumber"/>
         <field name="debtorName"/>

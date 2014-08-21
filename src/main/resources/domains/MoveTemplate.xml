@@ -11,7 +11,7 @@
   	<many-to-one name="moveTemplateType" ref="MoveTemplateType" title="Type"  required="1"/>
   	<many-to-one name="journal" ref="Journal" title="Journal" />
   	<boolean name="isValid" title="Valid ?" />
-  	<one-to-many name="moveTemplateLineList" ref="MoveTemplateLine" mappedBy="moveTemplate" title="Lignes d'écritures modèles"/>
+  	<one-to-many name="moveTemplateLineList" ref="MoveTemplateLine" mappedBy="moveTemplate" title="Template Move Lines"/>
   	<integer  name="partnerInputSelect"  />
   	<string name="fullName" namecolumn="true" search="code,name">
 	    <![CDATA[

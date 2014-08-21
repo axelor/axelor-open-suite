@@ -46,7 +46,7 @@
         <field name="purchaseTax"/>
     </grid>
     
-    <form name="account-management-product-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement" cols="4"
+    <form name="account-management-product-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement" cols="4"
     onNew="action-account-management-record-product">
     	<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
         <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-group-account-account-management-onchange-common"/>

@@ -47,18 +47,18 @@
         <field name="moveTemplate" required="true" widget="MANY_TO_ONE" x-target="com.axelor.apps.account.db.MoveTemplate" readonlyIf="moveTemplateType == null" title="Template" domain="self.moveTemplateType = :moveTemplateType AND self.isValid = true AND self.journal.company = :company AND self.journal.statusSelect = 1"/>
         <field name="company" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Company" title="Company" hidden="true" />
         <field name="dataInputList" widget="ONE_TO_MANY" readonlyIf="moveTemplate == null || moveTemplateType == null" x-target="com.axelor.apps.base.db.Wizard" title="Saisie des données d'écriture" colSpan="4">
-        	<grid title="Saisie des données d'écriture" >
+        	<grid title="MoveLines content data input" >
         		<field name="date" widget="DATE" required="true" title="Date" onChange="action-move-template-wizard-check-value"/>
-        		<field name="moveBalance" widget="DECIMAL" required="true" title="Montant Ecriture" onChange="action-move-template-wizard-check-value" />
-        		<field name="debitPartner" title="Tiers à Débiter"   widget="MANY_TO_ONE" domain="self.isContact = false" readonlyIf="moveTemplate.partnerInputSelect == 2 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
-      			<field name="creditPartner" title="Tiers à Créditer" widget="MANY_TO_ONE" domain="self.isContact = false"  readonlyIf="moveTemplate.partnerInputSelect == 1 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
+        		<field name="moveBalance" widget="DECIMAL" required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value" />
+        		<field name="debitPartner" title="Partner to Debit"   widget="MANY_TO_ONE" domain="self.isContact = false" readonlyIf="moveTemplate.partnerInputSelect == 2 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
+      			<field name="creditPartner" title="Partner to Credit" widget="MANY_TO_ONE" domain="self.isContact = false"  readonlyIf="moveTemplate.partnerInputSelect == 1 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
         	</grid>
-        	<form title="Saisie des données d'écriture" onLoad="action-move-template-wizard-line-set-move-template" onNew="action-move-template-wizard-line-set-move-template">
+        	<form title="MoveLine content data input" onLoad="action-move-template-wizard-line-set-move-template" onNew="action-move-template-wizard-line-set-move-template">
         		<field name="moveTemplate"  widget="MANY_TO_ONE" x-target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
         		<field name="date" widget="DATE" title="Date" required="true" onChange="action-move-template-wizard-check-value"/>
-        		<field name="moveBalance" widget="DECIMAL" precision="20" scale="2"  min="0" required="true" title="Montant Ecriture" onChange="action-move-template-wizard-check-value"  />
-        		<field name="debitPartner" title="Tiers à Débiter"   widget="MANY_TO_ONE" domain="self.isContact = false" readonlyIf="moveTemplate.partnerInputSelect == 2 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
-			    <field name="creditPartner" title="Tiers à Créditer" widget="MANY_TO_ONE" domain="self.isContact = false"  readonlyIf="moveTemplate.partnerInputSelect == 1 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
+        		<field name="moveBalance" widget="DECIMAL" precision="20" scale="2"  min="0" required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value"  />
+        		<field name="debitPartner" title="Partner to Debit"   widget="MANY_TO_ONE" domain="self.isContact = false" readonlyIf="moveTemplate.partnerInputSelect == 2 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
+			    <field name="creditPartner" title="Partner to Credit" widget="MANY_TO_ONE" domain="self.isContact = false"  readonlyIf="moveTemplate.partnerInputSelect == 1 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
         	</form>
         </field>
         <button name="generateMoves" readonlyIf="dataInputList == null || dataInputList.isEmpty()" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" />
