@@ -34,11 +34,11 @@ public class AddressServiceSupplychainImpl extends AddressServiceImpl  {
 	public boolean checkAddressUsed(Long addressId){
 		LOG.debug("Address Id to be checked = {}",addressId);
 		if(addressId != null){
-			if(Partner.all_().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+			if(Partner.all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
-			if(SaleOrder.all_().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+			if(SaleOrder.all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
-			if(StockMove.all_().filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1",addressId).fetchOne() != null)
+			if(StockMove.all().filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
 		}
 		return false;

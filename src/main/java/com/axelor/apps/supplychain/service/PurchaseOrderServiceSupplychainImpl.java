@@ -142,7 +142,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	
 	public void clearPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  {
 		
-		List<StockMove> stockMoveList = StockMove.filter("self.purchaseOrder = ?1 AND self.statusSelect = 2", purchaseOrder).fetch();
+		List<StockMove> stockMoveList = (List<StockMove>) StockMove.filter("self.purchaseOrder = ?1 AND self.statusSelect = 2", purchaseOrder).fetch();
 		
 		for(StockMove stockMove : stockMoveList)  {
 			
