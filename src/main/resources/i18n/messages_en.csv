@@ -1,773 +1,1125 @@
 "key","message","comment","context"
-"0 %","","","resources/views/Selects.xml:36"
-"00","","","resources/views/Selects.xml:61"
-"10 %","","","resources/views/Selects.xml:37"
-"100 %","","","resources/views/Selects.xml:46"
-"15","","","resources/views/Selects.xml:62"
-"20 %","","","resources/views/Selects.xml:38"
-"30","","","resources/views/Selects.xml:63"
-"30 %","","","resources/views/Selects.xml:39"
-"40 %","","","resources/views/Selects.xml:40"
-"45","","","resources/views/Selects.xml:64"
-"50 %","","","resources/views/Selects.xml:41"
-"60 %","","","resources/views/Selects.xml:42"
-"70 %","","","resources/views/Selects.xml:43"
-"80 %","","","resources/views/Selects.xml:44"
-"90 %","","","resources/views/Selects.xml:45"
-"Actions","","","resources/views/Lead.xml:41"
-"Activities","","","resources/views/Charts.xml:1399
-resources/views/Lead.xml:123"
-"Activity","","","resources/views/menu.xml:297"
-"Add","","","resources/views/Lead.xml:142
-resources/views/Event.xml:118"
-"Address","","","resources/views/ConvertLeadWizard.xml:109
-resources/views/ConvertLeadWizard.xml:179
-resources/views/ConvertLeadWizard.xml:110
-resources/views/ConvertLeadWizard.xml:186"
-"All Upcoming Holidays","","","resources/views/Portal.xml:481"
-"Amount","","","resources/views/Charts.xml:93
-resources/views/Charts.xml:134
-resources/views/Charts.xml:163
-resources/views/Charts.xml:194
-resources/views/Charts.xml:53
+"0 %",,,"resources/views/Selects.xml:36"
+"00",,,"resources/views/Selects.xml:61"
+"10 %",,,"resources/views/Selects.xml:37"
+"100 %",,,"resources/views/Selects.xml:46"
+"15",,,"resources/views/Selects.xml:62"
+"20 %",,,"resources/views/Selects.xml:38"
+"30",,,"resources/views/Selects.xml:63"
+"30 %",,,"resources/views/Selects.xml:39"
+"40 %",,,"resources/views/Selects.xml:40"
+"45",,,"resources/views/Selects.xml:64"
+"50 %",,,"resources/views/Selects.xml:41"
+"60 %",,,"resources/views/Selects.xml:42"
+"70 %",,,"resources/views/Selects.xml:43"
+"80 %",,,"resources/views/Selects.xml:44"
+"90 %",,,"resources/views/Selects.xml:45"
+"API Key",,,"resources/domains/ApplicationCredentials.xml:14"
+"API Secret",,,"resources/domains/ApplicationCredentials.xml:16"
+"Access Token",,,"resources/domains/AppsCredentials.xml:10"
+"Action",,,"resources/domains/CrmBatch.xml:12
+resources/domains/CalendarConfiguration.xml:11"
+"Actions",,,"resources/views/Partner.xml:19
+resources/views/Lead.xml:42"
+"Activities",,,"resources/views/Lead.xml:124
+resources/views/Charts.xml:1399"
+"Activity",,,"resources/views/menu.xml:295"
+"Add",,,"resources/views/Event.xml:118
+resources/views/Lead.xml:143"
+"Address",,,"resources/views/ConvertLeadWizard.xml:190
+resources/domains/Lead.xml:32
+resources/views/ConvertLeadWizard.xml:113
+resources/views/ConvertLeadWizard.xml:114
+resources/views/ConvertLeadWizard.xml:183
+resources/domains/Lead.xml:25"
+"All Upcoming Holidays",,,"resources/views/Portal.xml:464"
+"Allow calls ?",,,"resources/domains/Lead.xml:53"
+"Allow emails ?",,,"resources/domains/Lead.xml:54"
+"Amount",,,"resources/views/Charts.xml:53
 resources/views/Charts.xml:73
-resources/views/Charts.xml:29"
-"Analysis","","","resources/views/Selects.xml:88"
-"Assign to me","","","resources/views/Opportunity.xml:108
-resources/views/Event.xml:387
-resources/views/Event.xml:198
-resources/views/Event.xml:376
-resources/views/Opportunity.xml:8
-resources/views/Lead.xml:77
-resources/views/Event.xml:361
-resources/views/Event.xml:167
-resources/views/Lead.xml:26
+resources/views/Charts.xml:163
+resources/views/Charts.xml:93
+resources/views/Charts.xml:194
+resources/views/Charts.xml:29
+resources/views/Charts.xml:134
+resources/domains/Opportunity.xml:14"
+"Amount Won",,,"resources/domains/Target.xml:19
+resources/domains/TargetConfiguration.xml:16"
+"Amount won",,,"resources/domains/Target.xml:16"
+"Analysis",,,"resources/views/Selects.xml:88"
+"Assign to",,,"resources/domains/EventReminder.xml:14"
+"Assign to me",,,"resources/views/Event.xml:209
+resources/views/Event.xml:412
+resources/views/Event.xml:169
+resources/views/Event.xml:178
+resources/views/Event.xml:427
+resources/views/Event.xml:438
 resources/views/Opportunity.xml:25
-resources/views/Event.xml:158
-resources/views/Lead.xml:8
-resources/views/Event.xml:149"
-"Assigned","","","resources/views/Selects.xml:11"
-"Assigned to","","","resources/views/Event.xml:278
-resources/views/ConvertLeadWizard.xml:436
-resources/views/Lead.xml:75
-resources/views/ConvertLeadWizard.xml:125
-resources/views/ConvertLeadWizard.xml:214
-resources/views/Event.xml:349
+resources/views/Event.xml:160
+resources/views/Opportunity.xml:8
+resources/views/Lead.xml:27
+resources/views/Lead.xml:78
+resources/views/Opportunity.xml:108
+resources/views/Lead.xml:8"
+"Assigned",,,"resources/views/Selects.xml:11"
+"Assigned to",,,"resources/domains/Event.xml:29
+resources/domains/Target.xml:12
+resources/views/Event.xml:301
+resources/views/Event.xml:102
 resources/views/Opportunity.xml:105
-resources/views/ConvertLeadWizard.xml:342
-resources/views/Event.xml:196
-resources/views/Event.xml:102"
-"Assignment","","","resources/views/ConvertLeadWizard.xml:401
-resources/views/ConvertLeadWizard.xml:366"
-"Attendees","","","resources/views/Event.xml:286
-resources/views/Event.xml:205
-resources/views/Event.xml:111"
-"Attributes","","","resources/views/Event.xml:183
-resources/views/Event.xml:415
-resources/views/Event.xml:265
-resources/views/Event.xml:336
-resources/views/Event.xml:76"
-"Best Open Deals","","","resources/views/Portal.xml:66"
-"CALENDAR_SERVER","","","resources/views/Selects.xml:69"
-"CGP","","","resources/views/Selects.xml:73"
-"CHANDLER","","","resources/views/Selects.xml:74"
-"CRM","","","resources/views/menu.xml:9
-resources/views/menu.xml:351"
-"CRM Activities","","","resources/views/Charts.xml:1381"
-"CRM Batch","","","resources/views/CrmBatch.xml:16"
-"CRM batches","","","resources/views/menu.xml:280
-resources/views/menu.xml:277
-resources/views/CrmBatch.xml:6"
-"Calendar","","","resources/views/Calendar.xml:10"
-"Calendar Configurations","","","resources/views/menu.xml:252
-resources/views/menu.xml:249"
-"Calendars","","","resources/views/Calendar.xml:6
-resources/views/menu.xml:243
-resources/views/menu.xml:240"
-"Call","","","resources/views/Event.xml:163
-resources/views/Selects.xml:19
+resources/views/ConvertLeadWizard.xml:129
+resources/domains/Opportunity.xml:29
+resources/views/ConvertLeadWizard.xml:218
+resources/views/Event.xml:207
+resources/views/ConvertLeadWizard.xml:444
 resources/views/ConvertLeadWizard.xml:350
+resources/views/Event.xml:386
+resources/views/Lead.xml:76
+resources/domains/Lead.xml:59
+resources/domains/TargetConfiguration.xml:12"
+"Assignment",,,"resources/views/ConvertLeadWizard.xml:374
+resources/views/ConvertLeadWizard.xml:409"
+"Attendee",,,"resources/domains/EventAttendee.xml:16"
+"Attendees",,,"resources/domains/Event.xml:32
+resources/views/Event.xml:309
+resources/views/Event.xml:111
+resources/views/Event.xml:216"
+"Attributes",,,"resources/views/Event.xml:194
+resources/views/Event.xml:466
+resources/views/Event.xml:76
+resources/views/Event.xml:288
+resources/views/Event.xml:373"
+"Authorized users to follow me",,,"resources/domains/User.xml:16"
+"Batchs",,,"resources/domains/EventReminder.xml:16
+resources/domains/CrmBatch.xml:17"
+"Best Open Deals",,,"resources/views/Portal.xml:66"
+"Best case",,,"resources/domains/Opportunity.xml:16"
+"Birthday",,,"resources/domains/SnProfile.xml:19"
+"Browser",,,"resources/domains/TrackerInfo.xml:15"
+"By",,,"resources/domains/SnStatusComments.xml:19"
+"CALENDAR_SERVER",,,"resources/views/Selects.xml:69"
+"CGP",,,"resources/views/Selects.xml:73"
+"CHANDLER",,,"resources/views/Selects.xml:74"
+"CRM",,,"resources/views/menu.xml:9
+resources/views/menu.xml:349"
+"CRM Activities",,,"resources/views/Portal.xml:595
+resources/views/Charts.xml:1381"
+"CRM Batch",,,"resources/views/CrmBatch.xml:16"
+"CRM batches",,,"resources/views/menu.xml:275
+resources/views/menu.xml:278
+resources/views/CrmBatch.xml:6"
+"Calendar",,,"resources/views/Calendar.xml:10
+resources/domains/Event.xml:34"
+"Calendar Configurations",,,"resources/views/menu.xml:247
+resources/views/menu.xml:250"
+"Calendars",,,"resources/views/menu.xml:238
+resources/views/menu.xml:241
+resources/domains/CalendarConfiguration.xml:15
+resources/views/Calendar.xml:6"
+"Call",,,"resources/views/ConvertLeadWizard.xml:358
+resources/views/menu.xml:37
 resources/views/menu.xml:40
 resources/views/ConvertLeadWizard.xml:46
-resources/views/menu.xml:37"
-"Call emitted historical","","","resources/views/Charts.xml:744
-resources/views/Portal.xml:513"
-"Call filters","","","resources/views/Event.xml:661"
-"Calls","","","resources/views/Charts.xml:407
-resources/views/menu.xml:432
-resources/views/Charts.xml:378
-resources/views/menu.xml:95
+resources/views/Selects.xml:19
+resources/views/Event.xml:174"
+"Call emitted Nbr",,,"resources/domains/TargetConfiguration.xml:26"
+"Call emitted Nbr.",,,"resources/domains/Target.xml:34
+resources/domains/Target.xml:32"
+"Call emitted historical",,,"resources/views/Portal.xml:496
+resources/views/Charts.xml:744"
+"Call filters",,,"resources/views/Event.xml:731"
+"Calls",,,"resources/views/menu.xml:95
+resources/views/Charts.xml:407
 resources/views/TargetConfiguration.xml:39
-resources/views/Event.xml:147
 resources/views/menu.xml:92
-resources/views/Charts.xml:335"
-"Calls Dashboard","","","resources/views/Portal.xml:301"
-"Calls Db","","","resources/views/menu.xml:435"
-"Calls by team by user","","","resources/views/Charts.xml:381
-resources/views/Portal.xml:352"
-"Calls emitted historical","","","resources/views/Portal.xml:575
+resources/views/Event.xml:158
+resources/views/menu.xml:430
+resources/views/Charts.xml:335
+resources/views/Charts.xml:378"
+"Calls Dashboard",,,"resources/views/Portal.xml:294"
+"Calls Db",,,"resources/views/menu.xml:433"
+"Calls by team by user",,,"resources/views/Portal.xml:345
+resources/views/Charts.xml:381"
+"Calls emitted historical",,,"resources/views/Portal.xml:558
 resources/views/Charts.xml:1071"
-"Calls emitted target completed (%)","","","resources/views/Portal.xml:509
+"Calls emitted target completed (%)",,,"resources/views/Portal.xml:554
+resources/views/Portal.xml:492
 resources/views/Charts.xml:729
-resources/views/Charts.xml:1056
-resources/views/Portal.xml:571"
-"Calls type by team","","","resources/views/Charts.xml:338
-resources/views/Portal.xml:347"
-"Calls type by user","","","resources/views/Portal.xml:342
+resources/views/Charts.xml:1056"
+"Calls type by team",,,"resources/views/Charts.xml:338
+resources/views/Portal.xml:340"
+"Calls type by user",,,"resources/views/Portal.xml:335
 resources/views/Charts.xml:295"
-"Cancel","","","resources/views/Event.xml:238
-resources/views/Event.xml:166
-resources/views/Event.xml:160
-resources/views/Event.xml:244"
-"Canceled","","","resources/views/Selects.xml:103"
-"Cases","","","resources/views/Charts.xml:519
+"Campaign",,,"resources/domains/TrackerLine.xml:13
+resources/domains/Opportunity.xml:20
+resources/domains/Tracker.xml:14"
+"Campaign code",,,"resources/domains/TrackerInfo.xml:13"
+"Cancel",,,"resources/views/Event.xml:261
+resources/views/Event.xml:171
+resources/views/Event.xml:267
+resources/views/Event.xml:177"
+"Canceled",,,"resources/views/Selects.xml:103"
+"Cases",,,"resources/views/Charts.xml:519
 resources/views/Charts.xml:551"
-"Chart","","","resources/views/Portal.xml:224
+"Category",,,"resources/domains/Event.xml:21"
+"Chart",,,"resources/views/Portal.xml:214
 resources/views/Portal.xml:219
-resources/views/Portal.xml:187"
-"City","","","resources/views/ConvertLeadWizard.xml:180
-resources/views/ConvertLeadWizard.xml:111
-resources/views/ConvertLeadWizard.xml:187"
-"Civility","","","resources/views/ConvertLeadWizard.xml:92
-resources/views/ConvertLeadWizard.xml:146
-resources/views/Lead.xml:54"
-"Closed","","","resources/views/Selects.xml:124"
-"Closed Opportunities","","","resources/views/Portal.xml:11"
-"Closed Tickets","","","resources/views/Event.xml:692"
-"Closed lost","","","resources/views/Opportunity.xml:47
-resources/views/Opportunity.xml:78
-resources/views/Opportunity.xml:28
-resources/views/Selects.xml:92"
-"Closed won","","","resources/views/Opportunity.xml:77
-resources/views/Selects.xml:91
-resources/views/Opportunity.xml:27
-resources/views/Opportunity.xml:46"
-"Comment","","","resources/views/Event.xml:439"
-"Comments","","","resources/views/Event.xml:434
-resources/views/Event.xml:431"
-"Company","","","resources/views/ConvertLeadWizard.xml:98"
-"Concerns","","","resources/views/TargetConfiguration.xml:18"
-"Configuration","","","resources/views/menu.xml:201"
-"Confirmed","","","resources/views/Selects.xml:108"
-"Connection settings","","","resources/views/Calendar.xml:13"
-"Contact","","","resources/views/ConvertLeadWizard.xml:193
-resources/views/ConvertLeadWizard.xml:101
-resources/views/ConvertLeadWizard.xml:19
-resources/views/Lead.xml:52
-resources/views/ConvertLeadWizard.xml:84
-resources/views/EventAttendee.xml:11"
-"Contacts","","","resources/views/Event.xml:140
-resources/views/EventAttendee.xml:6
-resources/views/Event.xml:113
-resources/views/Event.xml:207
-resources/views/Event.xml:288"
-"Content","","","resources/views/Event.xml:444"
-"Context","","","resources/views/Opportunity.xml:81
-resources/views/ConvertLeadWizard.xml:318"
-"Convert into Contact ?","","","resources/views/ConvertLeadWizard.xml:13"
-"Convert into Partner ?","","","resources/views/ConvertLeadWizard.xml:22"
-"Convert lead","","","resources/views/Lead.xml:199
-resources/views/Lead.xml:36
-resources/views/ConvertLeadWizard.xml:7"
-"Converted","","","resources/views/Selects.xml:13"
-"Coordonnées","","","resources/views/Lead.xml:68"
-"Country","","","resources/views/ConvertLeadWizard.xml:114
-resources/views/Charts.xml:576
-resources/views/ConvertLeadWizard.xml:183
-resources/views/ConvertLeadWizard.xml:190"
-"Create","","","resources/views/menu.xml:12"
-"Create Call","","","resources/views/menu.xml:305"
-"Create Lead","","","resources/views/menu.xml:318
-resources/views/menu.xml:320"
-"Create Meeting","","","resources/views/menu.xml:307"
-"Create Opportunity","","","resources/views/menu.xml:310
-resources/views/menu.xml:312"
-"Create Task","","","resources/views/menu.xml:303"
-"Create a task ?","","","resources/views/ConvertLeadWizard.xml:58"
-"Create call","","","resources/views/Lead.xml:207
-resources/views/Lead.xml:42"
-"Create into Opportunity ?","","","resources/views/ConvertLeadWizard.xml:31"
-"Create meeting","","","resources/views/Lead.xml:213"
-"Create opportunity","","","resources/views/Lead.xml:225
-resources/views/Lead.xml:45"
-"Create task","","","resources/views/Lead.xml:219
-resources/views/Lead.xml:44"
-"Created by","","","resources/views/CrmBatch.xml:32"
-"Created leads per month","","","resources/views/Charts.xml:584
-resources/views/Portal.xml:294"
-"Created on","","","resources/views/CrmBatch.xml:31"
-"Credentials","","","resources/views/Calendar.xml:20"
-"Customer","","","resources/views/Charts.xml:550"
-"Daily","","","resources/views/Selects.xml:164"
-"Dashboard","","","resources/views/Portal.xml:179
-resources/views/Portal.xml:166
-resources/views/Portal.xml:153"
-"Dates","","","resources/views/Event.xml:85
-resources/views/Event.xml:407
-resources/views/Event.xml:258
-resources/views/ConvertLeadWizard.xml:429
-resources/views/Event.xml:176
-resources/views/ConvertLeadWizard.xml:395
-resources/views/ConvertLeadWizard.xml:360
-resources/views/Event.xml:328"
-"Days","","","resources/views/Selects.xml:146"
-"Dead","","","resources/views/Selects.xml:15"
-"Delivery address","","","resources/views/ConvertLeadWizard.xml:185"
-"Description","","","resources/views/ConvertLeadWizard.xml:425
-resources/views/ConvertLeadWizard.xml:356
-resources/views/Event.xml:255
-resources/views/ConvertLeadWizard.xml:391
-resources/views/Event.xml:172
-resources/views/Event.xml:173
-resources/views/Event.xml:70
-resources/views/Event.xml:71
-resources/views/Event.xml:428
-resources/views/Opportunity.xml:113
-resources/views/Event.xml:254
-resources/views/Event.xml:324
-resources/views/Event.xml:325"
-"Details","","","resources/views/Event.xml:399"
-"Due Open Tickets","","","resources/views/Charts.xml:607
-resources/views/Portal.xml:380"
-"Email","","","resources/views/Selects.xml:140"
-"Enterprise name","","","resources/views/Lead.xml:62"
-"Event","","","resources/views/menu.xml:353
-resources/views/Selects.xml:24
-resources/views/Selects.xml:54"
-"Event Categories","","","resources/views/menu.xml:234
-resources/views/menu.xml:231"
-"Event Dashboard 1","","","resources/views/menu.xml:357
-resources/views/Portal.xml:337"
-"Event Db","","","resources/views/menu.xml:355"
-"Event categories","","","resources/views/EventCategory.xml:6"
-"Event category","","","resources/views/EventCategory.xml:16"
-"Event configuration categories","","","resources/views/EventCategory.xml:10"
-"Event reminder","","","resources/views/Selects.xml:156
-resources/views/EventReminder.xml:14"
-"Event reminder batch","","","resources/views/CrmBatch.xml:24"
-"Event reminder page","","","resources/views/CrmBatch.xml:22"
-"Event reminders","","","resources/views/EventReminder.xml:6"
-"Events","","","resources/views/Target.xml:43
-resources/views/Event.xml:6
-resources/views/Event.xml:33
-resources/views/Event.xml:42"
-"Existing business","","","resources/views/Selects.xml:78"
-"Export calendar","","","resources/views/Event.xml:44
-resources/views/Event.xml:8"
-"Extra information","","","resources/views/Lead.xml:100"
-"Feedback","","","resources/views/Selects.xml:123"
-"Financial terms","","","resources/views/ConvertLeadWizard.xml:331
-resources/views/Opportunity.xml:92"
-"Finish","","","resources/views/Event.xml:390
-resources/views/Event.xml:317
-resources/views/Event.xml:379
-resources/views/Event.xml:310"
-"Finished","","","resources/views/Selects.xml:114"
-"First name","","","resources/views/ConvertLeadWizard.xml:96
+resources/views/Portal.xml:182"
+"Check duplicate",,,"resources/views/Lead.xml:11"
+"Children sn status comments list",,,"resources/domains/SnStatusComments.xml:18"
+"City",,,"resources/views/ConvertLeadWizard.xml:191
+resources/domains/Lead.xml:33
+resources/views/ConvertLeadWizard.xml:115
+resources/views/ConvertLeadWizard.xml:184
+resources/domains/Lead.xml:26"
+"Civility",,,"resources/views/ConvertLeadWizard.xml:96
 resources/views/ConvertLeadWizard.xml:150
-resources/views/Lead.xml:58"
-"Follow-up","","","resources/views/ConvertLeadWizard.xml:322
-resources/views/Opportunity.xml:85"
-"For all","","","resources/views/Selects.xml:152"
-"For me","","","resources/views/Selects.xml:151"
-"From Date","","","resources/views/Charts.xml:204
-resources/views/Charts.xml:340
-resources/views/Charts.xml:524
-resources/views/Charts.xml:229
+resources/views/Lead.xml:55"
+"Closed",,,"resources/views/Selects.xml:124"
+"Closed Opportunities",,,"resources/views/Portal.xml:11"
+"Closed Tickets",,,"resources/views/Event.xml:762"
+"Closed lost",,,"resources/views/Opportunity.xml:47
+resources/views/Opportunity.xml:28
+resources/views/Selects.xml:92
+resources/views/Opportunity.xml:78"
+"Closed won",,,"resources/views/Opportunity.xml:27
+resources/views/Opportunity.xml:77
+resources/views/Selects.xml:91
+resources/views/Opportunity.xml:46"
+"Code",,,"resources/domains/OpportunityType.xml:11
+resources/domains/CrmBatch.xml:11
+resources/domains/EventCategory.xml:11
+resources/domains/Target.xml:11
+resources/domains/Campaign.xml:11
+resources/domains/TargetConfiguration.xml:11
+resources/domains/MeetingType.xml:12"
+"Comment",,,"resources/views/Event.xml:490"
+"Comment Id",,,"resources/domains/SnStatusComments.xml:22"
+"Comment on Wall ?",,,"resources/domains/SnStatusComments.xml:25"
+"Comments",,,"resources/views/Event.xml:485
+resources/views/Event.xml:482"
+"Company",,,"resources/views/ConvertLeadWizard.xml:102
+resources/domains/CrmBatch.xml:13
+resources/domains/Opportunity.xml:24"
+"Company name",,,"resources/domains/SnSearchResult.xml:19"
+"Concerns",,,"resources/views/TargetConfiguration.xml:18"
+"Configuration",,,"resources/views/menu.xml:199"
+"Confirmed",,,"resources/views/Selects.xml:108"
+"Connection settings",,,"resources/views/Calendar.xml:13"
+"Contact",,,"resources/domains/EventAttendee.xml:13
+resources/views/ConvertLeadWizard.xml:197
+resources/views/ConvertLeadWizard.xml:88
+resources/views/EventAttendee.xml:11
+resources/domains/Lead.xml:56
+resources/views/Lead.xml:53
+resources/domains/Event.xml:40
+resources/domains/TrackerInfo.xml:10
+resources/views/ConvertLeadWizard.xml:105
+resources/views/ConvertLeadWizard.xml:19"
+"Contact date",,,"resources/domains/Lead.xml:44"
+"Contact name",,,"resources/domains/Lead.xml:65"
+"Contacts",,,"resources/views/Event.xml:151
+resources/views/EventAttendee.xml:6
+resources/domains/Campaign.xml:20
+resources/views/Event.xml:113
+resources/views/Event.xml:311
+resources/domains/MailingList.xml:13
+resources/views/Event.xml:218"
+"Content",,,"resources/domains/SnSendMessage.xml:18
+resources/views/Event.xml:495
+resources/domains/SnStatusUpdates.xml:24
+resources/domains/SnStatusComments.xml:23"
+"Context",,,"resources/views/ConvertLeadWizard.xml:326
+resources/views/Opportunity.xml:81"
+"Convert into Contact ?",,,"resources/views/ConvertLeadWizard.xml:13"
+"Convert into Partner ?",,,"resources/views/ConvertLeadWizard.xml:22"
+"Convert lead",,,"resources/views/ConvertLeadWizard.xml:7
+resources/views/Lead.xml:210
+resources/views/Lead.xml:37"
+"Converted",,,"resources/views/Selects.xml:13"
+"Coordonnées",,,"resources/views/Lead.xml:69"
+"Copy primary address",,,"resources/domains/Lead.xml:37"
+"Country",,,"resources/views/ConvertLeadWizard.xml:118
+resources/views/ConvertLeadWizard.xml:187
+resources/domains/Lead.xml:29
+resources/views/Charts.xml:576
+resources/views/ConvertLeadWizard.xml:194
+resources/domains/Lead.xml:36"
+"Create",,,"resources/views/menu.xml:12"
+"Create Call",,,"resources/views/menu.xml:303"
+"Create Lead",,,"resources/views/menu.xml:316
+resources/views/menu.xml:318"
+"Create Meeting",,,"resources/views/menu.xml:305"
+"Create Opportunity",,,"resources/views/menu.xml:308
+resources/views/menu.xml:310"
+"Create Task",,,"resources/views/menu.xml:301"
+"Create a task ?",,,"resources/views/ConvertLeadWizard.xml:58"
+"Create call",,,"resources/views/Partner.xml:30
+resources/views/Lead.xml:218
+resources/views/Partner.xml:20
+resources/views/Lead.xml:43"
+"Create into Opportunity ?",,,"resources/views/ConvertLeadWizard.xml:31"
+"Create meeting",,,"resources/views/Partner.xml:36
+resources/views/Lead.xml:224"
+"Create opportunity",,,"resources/views/Partner.xml:48
+resources/views/Lead.xml:46
+resources/views/Partner.xml:23
+resources/views/Lead.xml:236"
+"Create task",,,"resources/views/Lead.xml:230
+resources/views/Partner.xml:42
+resources/views/Partner.xml:22
+resources/views/Lead.xml:45"
+"Created Nbr",,,"resources/domains/TargetConfiguration.xml:17"
+"Created Nbr.",,,"resources/domains/Target.xml:17
+resources/domains/Target.xml:20"
+"Created Won",,,"resources/domains/TargetConfiguration.xml:18
+resources/domains/Target.xml:18
+resources/domains/Target.xml:21"
+"Created by",,,"resources/views/CrmBatch.xml:32"
+"Created leads per month",,,"resources/views/Portal.xml:287
+resources/views/Charts.xml:584"
+"Created on",,,"resources/views/CrmBatch.xml:31"
+"Credentials",,,"resources/views/Calendar.xml:20"
+"Crm batch",,,"resources/domains/Batch.xml:10"
+"Currency",,,"resources/domains/Opportunity.xml:12"
+"Customer",,,"resources/views/Charts.xml:550
+resources/domains/Opportunity.xml:11
+resources/domains/Event.xml:39"
+"Daily",,,"resources/views/Selects.xml:164"
+"Dashboard",,,"resources/views/Portal.xml:161
+resources/views/Portal.xml:148
+resources/views/Portal.xml:174"
+"Date from",,,"resources/domains/TargetConfiguration.xml:31
+resources/domains/Target.xml:39"
+"Date to",,,"resources/domains/TargetConfiguration.xml:32
+resources/domains/Target.xml:40"
+"Dates",,,"resources/views/Event.xml:281
+resources/views/Event.xml:85
+resources/views/Event.xml:187
+resources/views/ConvertLeadWizard.xml:403
+resources/views/ConvertLeadWizard.xml:437
+resources/views/Event.xml:365
+resources/views/Event.xml:458
+resources/views/ConvertLeadWizard.xml:368"
+"Days",,,"resources/views/Selects.xml:146"
+"Dead",,,"resources/views/Selects.xml:15"
+"Delivery address",,,"resources/views/ConvertLeadWizard.xml:189"
+"Dep./Div.",,,"resources/domains/Lead.xml:20"
+"Description",,,"resources/views/Event.xml:278
+resources/views/Event.xml:277
+resources/views/Opportunity.xml:113
+resources/views/ConvertLeadWizard.xml:399
+resources/domains/Opportunity.xml:22
+resources/views/ConvertLeadWizard.xml:433
+resources/domains/Event.xml:27
+resources/views/Event.xml:479
+resources/views/Event.xml:70
+resources/views/Event.xml:184
+resources/views/Event.xml:183
+resources/domains/Lead.xml:43
+resources/views/ConvertLeadWizard.xml:364
+resources/views/Event.xml:362
+resources/views/Event.xml:71
+resources/views/Event.xml:361
+resources/domains/CrmBatch.xml:16"
+"Details",,,"resources/views/Event.xml:450"
+"Drive User",,,"resources/domains/AppsCredentials.xml:8"
+"Due Open Tickets",,,"resources/views/Portal.xml:373
+resources/views/Charts.xml:607"
+"Duration",,,"resources/domains/EventReminder.xml:12
+resources/domains/Event.xml:19"
+"Duration type",,,"resources/domains/EventReminder.xml:13
+resources/domains/CrmBatch.xml:19"
+"Email",,,"resources/views/Selects.xml:140
+resources/domains/Lead.xml:40
+resources/domains/SnProfile.xml:27"
+"End Date",,,"resources/domains/Event.xml:16"
+"Enterprise name",,,"resources/views/Lead.xml:63
+resources/domains/Lead.xml:15"
+"Event",,,"resources/views/menu.xml:351
+resources/domains/EventReminder.xml:10
+resources/views/Selects.xml:24
+resources/views/Selects.xml:54
+resources/domains/Message.xml:10
+resources/domains/EventAttendee.xml:10"
+"Event Categories",,,"resources/views/menu.xml:229
+resources/views/menu.xml:232"
+"Event Dashboard 1",,,"resources/views/Portal.xml:330
+resources/views/menu.xml:355"
+"Event Db",,,"resources/views/menu.xml:353"
+"Event categories",,,"resources/views/EventCategory.xml:6"
+"Event category",,,"resources/views/EventCategory.xml:16
+resources/domains/Campaign.xml:32"
+"Event configuration categories",,,"resources/views/EventCategory.xml:10"
+"Event date",,,"resources/domains/Campaign.xml:33"
+"Event reminder",,,"resources/views/Selects.xml:156
+resources/views/EventReminder.xml:14"
+"Event reminder batch",,,"resources/views/CrmBatch.xml:24"
+"Event reminder page",,,"resources/views/CrmBatch.xml:22"
+"Event reminders",,,"resources/views/EventReminder.xml:6"
+"Events",,,"resources/views/Event.xml:6
+resources/views/Event.xml:33
+resources/views/Target.xml:43
+resources/views/Event.xml:42"
+"Existing business",,,"resources/views/Selects.xml:78"
+"Expected close date",,,"resources/domains/Opportunity.xml:13"
+"Export calendar",,,"resources/views/Event.xml:44
+resources/views/Event.xml:8"
+"Extra information",,,"resources/views/Lead.xml:101"
+"Facebook",,,"resources/domains/SnStatusUpdates.xml:17"
+"Facebook Personal Credential",,,"resources/domains/User.xml:10"
+"Facebook User/Page ID",,,"resources/domains/SnProfile.xml:12"
+"Facebook Username",,,"resources/domains/SnProfile.xml:15"
+"Facebook profile link",,,"resources/domains/SnProfile.xml:20"
+"Facebook update ref",,,"resources/domains/SnStatusUpdates.xml:22"
+"Fax",,,"resources/domains/Lead.xml:21"
+"Feedback",,,"resources/views/Selects.xml:123"
+"Filter",,,"resources/domains/Campaign.xml:39"
+"Financial terms",,,"resources/views/Opportunity.xml:92
+resources/views/ConvertLeadWizard.xml:339"
+"Finish",,,"resources/views/Event.xml:354
+resources/views/Event.xml:430
+resources/views/Event.xml:441
+resources/views/Event.xml:347"
+"Finished",,,"resources/views/Selects.xml:114"
+"First name",,,"resources/views/ConvertLeadWizard.xml:154
+resources/views/Lead.xml:59
+resources/views/ConvertLeadWizard.xml:100
+resources/domains/SnSearchResult.xml:15
+resources/domains/Lead.xml:14"
+"Fixed Phone",,,"resources/domains/Lead.xml:19"
+"Follow ?",,,"resources/domains/Campaign.xml:31"
+"Follow-up",,,"resources/views/Opportunity.xml:85
+resources/views/ConvertLeadWizard.xml:330"
+"Followers users",,,"resources/domains/User.xml:15"
+"For all",,,"resources/views/Selects.xml:152"
+"For me",,,"resources/views/Selects.xml:151"
+"From Date",,,"resources/views/Charts.xml:297
 resources/views/Charts.xml:263
-resources/views/Charts.xml:556
+resources/views/Charts.xml:340
 resources/views/Charts.xml:383
-resources/views/Charts.xml:297"
-"From date must be less than the to date","","","resources/views/Target.xml:76"
-"Function","","","resources/views/Lead.xml:64"
-"GCAL","","","resources/views/Selects.xml:70"
-"High","","","resources/views/Selects.xml:130
-resources/views/Selects.xml:30"
-"Historical Period","","","resources/views/Charts.xml:586"
-"Historical events completed","","","resources/views/Lead.xml:240"
-"Holiday","","","resources/views/Selects.xml:22"
-"Holidays","","","resources/views/menu.xml:462"
-"Holidays Db","","","resources/views/menu.xml:465"
-"Hours","","","resources/views/Selects.xml:145"
-"ICAL_SERVER","","","resources/views/Selects.xml:68"
-"Identify deciders","","","resources/views/Selects.xml:87"
-"Immediate","","","resources/views/Selects.xml:32"
-"Import calendar","","","resources/views/Event.xml:45
+resources/views/Charts.xml:229
+resources/views/Charts.xml:524
+resources/views/Charts.xml:204
+resources/views/Charts.xml:556"
+"From date must be less than the to date",,,"resources/views/Target.xml:76"
+"Function",,,"resources/views/Lead.xml:65"
+"GCAL",,,"resources/views/Selects.xml:70"
+"Gender",,,"resources/domains/SnSearchResult.xml:17
+resources/domains/SnProfile.xml:31"
+"Generate message object for each email ?",,,"resources/domains/Campaign.xml:15"
+"Generated list ?",,,"resources/domains/Campaign.xml:23"
+"Google Apps User",,,"resources/domains/AppsCredentials.xml:8"
+"Google Scope",,,"resources/domains/AppsCredentials.xml:13"
+"Group",,,"resources/domains/CalendarConfiguration.xml:13"
+"Headline",,,"resources/domains/SnProfile.xml:32"
+"High",,,"resources/views/Selects.xml:30
+resources/views/Selects.xml:130"
+"Historical Period",,,"resources/views/Charts.xml:586"
+"Historical events completed",,,"resources/views/Partner.xml:63
+resources/views/Lead.xml:251"
+"Holiday",,,"resources/views/Selects.xml:22"
+"Holidays",,,"resources/views/menu.xml:460"
+"Holidays Db",,,"resources/views/menu.xml:463"
+"Hometown",,,"resources/domains/SnProfile.xml:23"
+"Hour",,,"resources/domains/TrackerInfo.xml:17"
+"Hours",,,"resources/views/Selects.xml:145"
+"ICAL_SERVER",,,"resources/views/Selects.xml:68"
+"Identify deciders",,,"resources/views/Selects.xml:87"
+"Ignore mailing rejection ?",,,"resources/domains/Campaign.xml:36"
+"Immediate",,,"resources/views/Selects.xml:32"
+"Import",,,"resources/domains/Partner.xml:8
+resources/domains/Event.xml:11
+resources/domains/Lead.xml:10
+resources/domains/MeetingType.xml:10
+resources/domains/EventCategory.xml:9"
+"Import calendar",,,"resources/views/Event.xml:45
 resources/views/Event.xml:9"
-"In process","","","resources/views/Selects.xml:12"
-"In progress","","","resources/views/Selects.xml:121"
-"Incoming","","","resources/views/Selects.xml:96"
-"Information","","","resources/views/Target.xml:17
+"In process",,,"resources/views/Selects.xml:12"
+"In progress",,,"resources/views/Selects.xml:121"
+"Incoming",,,"resources/views/Selects.xml:96"
+"Information",,,"resources/views/Target.xml:17
 resources/views/CrmBatch.xml:30"
-"Informations","","","resources/views/ConvertLeadWizard.xml:157
-resources/views/ConvertLeadWizard.xml:420
-resources/views/ConvertLeadWizard.xml:317
-resources/views/ConvertLeadWizard.xml:386
+"Informations",,,"resources/views/ConvertLeadWizard.xml:394
+resources/views/Event.xml:491
+resources/views/ConvertLeadWizard.xml:428
+resources/views/ConvertLeadWizard.xml:161
 resources/views/Event.xml:56
-resources/views/ConvertLeadWizard.xml:351
-resources/views/Lead.xml:84
-resources/views/Event.xml:440"
-"Invoicing address","","","resources/views/ConvertLeadWizard.xml:178"
-"Invoicing/Payment","","","resources/views/ConvertLeadWizard.xml:204"
-"KMS","","","resources/views/Selects.xml:72"
-"Key accounts","","","resources/views/Portal.xml:92"
-"Late Tickets","","","resources/views/Portal.xml:475"
-"Lead","","","resources/views/Lead.xml:34
-resources/views/menu.xml:361
-resources/views/Selects.xml:51"
-"Lead Dashboard 1","","","resources/views/Portal.xml:233"
-"Lead Db","","","resources/views/menu.xml:363"
-"Lead Db 1","","","resources/views/menu.xml:365"
-"Lead filters","","","resources/views/Lead.xml:266"
-"Lead.address_information","Address Information","","java/com/axelor/apps/crm/db/report/ITranslation.java:34"
-"Lead.company","Company","","java/com/axelor/apps/crm/db/report/ITranslation.java:30"
-"Lead.email","Email","","java/com/axelor/apps/crm/db/report/ITranslation.java:26"
-"Lead.fax","Fax","","java/com/axelor/apps/crm/db/report/ITranslation.java:28"
-"Lead.header","Header","","java/com/axelor/apps/crm/db/report/ITranslation.java:23"
-"Lead.industry","Industry","","java/com/axelor/apps/crm/db/report/ITranslation.java:31"
-"Lead.lead_owner","Lead Owner","","java/com/axelor/apps/crm/db/report/ITranslation.java:29"
-"Lead.name","Name","","java/com/axelor/apps/crm/db/report/ITranslation.java:24"
-"Lead.other_address","Other Address","","java/com/axelor/apps/crm/db/report/ITranslation.java:36"
-"Lead.phone","Phone","","java/com/axelor/apps/crm/db/report/ITranslation.java:27"
-"Lead.primary_address","Primary Address","","java/com/axelor/apps/crm/db/report/ITranslation.java:35"
-"Lead.source","Source","","java/com/axelor/apps/crm/db/report/ITranslation.java:32"
-"Lead.status","Status","","java/com/axelor/apps/crm/db/report/ITranslation.java:33"
-"Lead.title","Title","","java/com/axelor/apps/crm/db/report/ITranslation.java:25"
-"Leads","","","resources/views/Event.xml:211
-resources/views/menu.xml:330
-resources/views/Lead.xml:133
-resources/views/Charts.xml:292
-resources/views/menu.xml:125
-resources/views/Event.xml:292
-resources/views/menu.xml:329
+resources/views/ConvertLeadWizard.xml:325
+resources/views/ConvertLeadWizard.xml:359
+resources/views/Lead.xml:85"
+"Invoicing address",,,"resources/views/ConvertLeadWizard.xml:182"
+"Invoicing/Payment",,,"resources/views/ConvertLeadWizard.xml:208"
+"Is post successful",,,"resources/domains/SnStatusUpdates.xml:30"
+"Job Title",,,"resources/domains/Lead.xml:17"
+"KMS",,,"resources/views/Selects.xml:72"
+"Key",,,"resources/domains/Tracker.xml:11"
+"Key accounts",,,"resources/views/Portal.xml:91"
+"Label",,,"resources/domains/Tracker.xml:12"
+"Last Access Time",,,"resources/domains/AppsCredentials.xml:12"
+"Last name",,,"resources/domains/SnSearchResult.xml:16
+resources/domains/Lead.xml:13"
+"Late Tickets",,,"resources/views/Portal.xml:458"
+"Lead",,,"resources/views/menu.xml:359
+resources/views/Lead.xml:35
+resources/domains/EventAttendee.xml:14
+resources/domains/Event.xml:41
+resources/domains/TrackerInfo.xml:11
+resources/domains/Opportunity.xml:26
+resources/views/Selects.xml:51
+resources/domains/EmailAddress.xml:10
+resources/domains/SnProfile.xml:18"
+"Lead Dashboard 1",,,"resources/views/Portal.xml:228"
+"Lead Db",,,"resources/views/menu.xml:361"
+"Lead Db 1",,,"resources/views/menu.xml:363"
+"Lead filters",,,"resources/views/Lead.xml:277"
+"Lead.address_information","Address Information",,"java/com/axelor/apps/crm/db/report/ITranslation.java:34"
+"Lead.company","Company",,"java/com/axelor/apps/crm/db/report/ITranslation.java:30"
+"Lead.email","Email",,"java/com/axelor/apps/crm/db/report/ITranslation.java:26"
+"Lead.fax","Fax",,"java/com/axelor/apps/crm/db/report/ITranslation.java:28"
+"Lead.header","Header",,"java/com/axelor/apps/crm/db/report/ITranslation.java:23"
+"Lead.industry","Industry",,"java/com/axelor/apps/crm/db/report/ITranslation.java:31"
+"Lead.lead_owner","Lead Owner",,"java/com/axelor/apps/crm/db/report/ITranslation.java:29"
+"Lead.name","Name",,"java/com/axelor/apps/crm/db/report/ITranslation.java:24"
+"Lead.other_address","Other Address",,"java/com/axelor/apps/crm/db/report/ITranslation.java:36"
+"Lead.phone","Phone",,"java/com/axelor/apps/crm/db/report/ITranslation.java:27"
+"Lead.primary_address","Primary Address",,"java/com/axelor/apps/crm/db/report/ITranslation.java:35"
+"Lead.source","Source",,"java/com/axelor/apps/crm/db/report/ITranslation.java:32"
+"Lead.status","Status",,"java/com/axelor/apps/crm/db/report/ITranslation.java:33"
+"Lead.title","Title",,"java/com/axelor/apps/crm/db/report/ITranslation.java:25"
+"Leads",,,"resources/views/Charts.xml:602
+resources/views/Event.xml:146
+resources/domains/MailingList.xml:14
+resources/views/Event.xml:222
 resources/views/menu.xml:122
-resources/views/Lead.xml:6
 resources/views/Charts.xml:258
-resources/views/Charts.xml:224
-resources/views/Charts.xml:602
 resources/views/Charts.xml:577
-resources/views/Event.xml:135"
-"Leads Source","","","resources/views/menu.xml:207
-resources/views/menu.xml:204"
-"Leads by Country","","","resources/views/Charts.xml:554
-resources/views/Portal.xml:250"
-"Leads by Salesman by Status","","","resources/views/Portal.xml:261
-resources/views/Charts.xml:261"
-"Leads by Source","","","resources/views/Charts.xml:202
+resources/views/menu.xml:125
+resources/views/Charts.xml:224
+resources/views/Event.xml:315
+resources/views/menu.xml:327
+resources/views/menu.xml:328
+resources/views/Charts.xml:292
+resources/views/Lead.xml:6
+resources/domains/Campaign.xml:21
+resources/views/Lead.xml:134"
+"Leads Source",,,"resources/views/menu.xml:202
+resources/views/menu.xml:205"
+"Leads by Country",,,"resources/views/Charts.xml:554
 resources/views/Portal.xml:245"
-"Leads by Team by Status","","","resources/views/Charts.xml:227
-resources/views/Portal.xml:255"
-"Linked to","","","resources/views/Event.xml:340
-resources/views/Event.xml:269
-resources/views/Opportunity.xml:100
+"Leads by Salesman by Status",,,"resources/views/Portal.xml:256
+resources/views/Charts.xml:261"
+"Leads by Source",,,"resources/views/Charts.xml:202
+resources/views/Portal.xml:240"
+"Leads by Team by Status",,,"resources/views/Portal.xml:250
+resources/views/Charts.xml:227"
+"Limit Date",,,"resources/domains/Event.xml:17"
+"Link",,,"resources/domains/SnSearchResult.xml:18
+resources/domains/SnPage.xml:20"
+"Linked to",,,"resources/views/Event.xml:292
+resources/views/Event.xml:377
+resources/views/Event.xml:198
 resources/views/Event.xml:93
-resources/views/Event.xml:420
-resources/views/Event.xml:187"
-"Location","","","resources/views/Event.xml:249
-resources/views/Event.xml:63
+resources/views/Event.xml:471
+resources/views/Opportunity.xml:100"
+"LinkedIn Personal Credential",,,"resources/domains/User.xml:12"
+"LinkedIn User/Company ID",,,"resources/domains/SnProfile.xml:14"
+"LinkedIn profile link",,,"resources/domains/SnProfile.xml:22"
+"Linkedin",,,"resources/domains/SnStatusUpdates.xml:19"
+"Linkedin update ref",,,"resources/domains/SnStatusUpdates.xml:21"
+"Locale",,,"resources/domains/SnProfile.xml:33
+resources/domains/SnSearchResult.xml:21"
+"Location",,,"resources/domains/SnProfile.xml:24
+resources/views/Event.xml:66
 resources/views/Event.xml:64
-resources/views/Event.xml:251
-resources/views/Event.xml:322
-resources/views/Event.xml:323
-resources/views/Event.xml:66"
-"Log Call","","","resources/views/Lead.xml:27
-resources/views/Lead.xml:159"
-"Log a call ?","","","resources/views/ConvertLeadWizard.xml:40"
-"Low","","","resources/views/Selects.xml:128
+resources/domains/Event.xml:48
+resources/views/Event.xml:359
+resources/views/Event.xml:272
+resources/views/Event.xml:360
+resources/domains/SnSearchResult.xml:20
+resources/views/Event.xml:63
+resources/views/Event.xml:274
+resources/domains/SnProfile.xml:26
+resources/domains/SnProfile.xml:25
+resources/domains/TrackerInfo.xml:14"
+"Log Call",,,"resources/views/Lead.xml:160
+resources/views/Lead.xml:28"
+"Log a call ?",,,"resources/views/ConvertLeadWizard.xml:40"
+"Login",,,"resources/domains/Calendar.xml:12"
+"Low",,,"resources/views/Selects.xml:128
 resources/views/Selects.xml:28"
-"Map","","","resources/views/Lead.xml:10
-resources/views/Opportunity.xml:9"
-"Marketing","","","resources/views/Lead.xml:115"
-"Medium","","","resources/views/Selects.xml:129"
-"Meeting","","","resources/views/ConvertLeadWizard.xml:385
-resources/views/menu.xml:26
+"Mailing lists",,,"resources/domains/Campaign.xml:18"
+"Marketing",,,"resources/views/Lead.xml:116"
+"Marketing Campaign",,,"resources/domains/Lead.xml:51"
+"Medium",,,"resources/views/Selects.xml:129"
+"Meeting",,,"resources/views/menu.xml:29
+resources/views/Selects.xml:20
 resources/views/ConvertLeadWizard.xml:55
-resources/views/Event.xml:241
-resources/views/menu.xml:29
-resources/views/Selects.xml:20"
-"Meeting Participants","","","resources/views/menu.xml:225
-resources/views/menu.xml:222"
-"Meeting Types","","","resources/views/menu.xml:216
-resources/views/menu.xml:213"
-"Meeting filters","","","resources/views/Event.xml:649"
-"Meeting number historical","","","resources/views/Portal.xml:583
+resources/views/Event.xml:264
+resources/views/menu.xml:26
+resources/views/ConvertLeadWizard.xml:393"
+"Meeting Nbr",,,"resources/domains/TargetConfiguration.xml:27"
+"Meeting Nbr.",,,"resources/domains/Target.xml:33
+resources/domains/Target.xml:35"
+"Meeting Participants",,,"resources/views/menu.xml:220
+resources/views/menu.xml:223"
+"Meeting Types",,,"resources/views/menu.xml:211
+resources/views/menu.xml:214"
+"Meeting filters",,,"resources/views/Event.xml:719"
+"Meeting number historical",,,"resources/views/Portal.xml:566
 resources/views/Charts.xml:1115"
-"Meeting type","","","resources/views/MeetingType.xml:10"
-"Meeting types","","","resources/views/MeetingType.xml:6"
-"Meetings","","","resources/views/Event.xml:23
-resources/views/Event.xml:228
+"Meeting type",,,"resources/views/MeetingType.xml:10
+resources/domains/Event.xml:47"
+"Meeting types",,,"resources/views/MeetingType.xml:6"
+"Meetings",,,"resources/views/menu.xml:76
+resources/views/Event.xml:251
+resources/views/Event.xml:23
+resources/views/Event.xml:246
 resources/views/TargetConfiguration.xml:44
-resources/views/Event.xml:223
-resources/views/menu.xml:79
-resources/views/menu.xml:426
-resources/views/menu.xml:76"
-"Meetings Db","","","resources/views/menu.xml:429"
-"Meetings number historical","","","resources/views/Charts.xml:788
-resources/views/Portal.xml:521"
-"Meetings number target completed (%)","","","resources/views/Portal.xml:517
-resources/views/Charts.xml:1100
-resources/views/Portal.xml:579
-resources/views/Charts.xml:773"
-"Minutes","","","resources/views/Selects.xml:144"
-"Month","","","resources/views/Charts.xml:656
-resources/views/Charts.xml:695
+resources/views/menu.xml:424
+resources/views/menu.xml:79"
+"Meetings Db",,,"resources/views/menu.xml:427"
+"Meetings number historical",,,"resources/views/Portal.xml:504
+resources/views/Charts.xml:788"
+"Meetings number target completed (%)",,,"resources/views/Portal.xml:500
+resources/views/Portal.xml:562
+resources/views/Charts.xml:773
+resources/views/Charts.xml:1100"
+"Message date",,,"resources/domains/SnSendMessage.xml:21"
+"Message update ref",,,"resources/domains/SnPagePostRef.xml:15"
+"Minutes",,,"resources/views/Selects.xml:144"
+"Mobile N°",,,"resources/domains/Lead.xml:18"
+"Model",,,"resources/domains/MailingList.xml:12"
+"Month",,,"resources/views/Charts.xml:601
+resources/views/Charts.xml:656
 resources/views/Charts.xml:722
-resources/views/Charts.xml:601"
-"Monthly","","","resources/views/Selects.xml:162"
-"My Active Tickets","","","resources/views/Portal.xml:409"
-"My Best Open Deals","","","resources/views/Portal.xml:74"
-"My Calendar","","","resources/views/menu.xml:150
+resources/views/Charts.xml:695"
+"Monthly",,,"resources/views/Selects.xml:162"
+"My Active Tickets",,,"resources/views/Portal.xml:400"
+"My Best Open Deals",,,"resources/views/Portal.xml:74"
+"My Calendar",,,"resources/views/menu.xml:297
 resources/views/menu.xml:153
 resources/views/Event.xml:29
-resources/views/menu.xml:299"
-"My Calls","","","resources/views/Event.xml:662"
-"My Closed Opportunities","","","resources/views/Portal.xml:133"
-"My Key accounts","","","resources/views/Portal.xml:100"
-"My Late Tickets","","","resources/views/Portal.xml:466"
-"My Leads","","","resources/views/Lead.xml:145
-resources/views/Lead.xml:267
-resources/views/Portal.xml:267"
-"My Meetings","","","resources/views/Event.xml:650"
-"My New Tickets","","","resources/views/Portal.xml:417"
-"My New Urgent Tickets","","","resources/views/Portal.xml:449"
-"My Open Opportunities","","","resources/views/Portal.xml:143"
-"My Opportunities","","","resources/views/Opportunity.xml:167
+resources/views/menu.xml:150"
+"My Calls",,,"resources/views/Event.xml:732"
+"My Closed Opportunities",,,"resources/views/Portal.xml:132"
+"My Key accounts",,,"resources/views/Portal.xml:99"
+"My Late Tickets",,,"resources/views/Portal.xml:451"
+"My Leads",,,"resources/views/Lead.xml:146
+resources/views/Lead.xml:278
+resources/views/Portal.xml:262"
+"My Meetings",,,"resources/views/Event.xml:720"
+"My New Tickets",,,"resources/views/Portal.xml:406"
+"My New Urgent Tickets",,,"resources/views/Portal.xml:436"
+"My Open Opportunities",,,"resources/views/Portal.xml:140"
+"My Opportunities",,,"resources/views/Opportunity.xml:182
 resources/views/Opportunity.xml:31"
-"My Tasks","","","resources/views/Event.xml:635"
-"My Team Best Open Deals","","","resources/views/Portal.xml:83"
-"My Team Calendar","","","resources/views/menu.xml:301"
-"My Team Calls","","","resources/views/Event.xml:668"
-"My Team Closed Opportunities","","","resources/views/Portal.xml:36"
-"My Team Key accounts","","","resources/views/Portal.xml:109"
-"My Team Leads","","","resources/views/Portal.xml:285
-resources/views/Lead.xml:273"
-"My Team Meetings","","","resources/views/Event.xml:656"
-"My Team Open Opportunities","","","resources/views/Portal.xml:46"
-"My Team Opportunities","","","resources/views/Opportunity.xml:173"
-"My Team Tasks","","","resources/views/Event.xml:644"
-"My Team Tickets","","","resources/views/Event.xml:677"
-"My Tickets","","","resources/views/Event.xml:674"
-"My Today Calls","","","resources/views/Event.xml:665"
-"My Today Support Activities","","","resources/views/Portal.xml:458"
-"My Today Tasks","","","resources/views/Event.xml:638"
-"My Upcoming Meetings","","","resources/views/Event.xml:653"
-"My Upcoming Tasks","","","resources/views/Event.xml:641"
-"My Urgent Tickets","","","resources/views/Portal.xml:400"
-"Name","","","resources/views/ConvertLeadWizard.xml:148
-resources/views/Lead.xml:56
-resources/views/ConvertLeadWizard.xml:94"
-"Needs analysis","","","resources/views/Selects.xml:85"
-"Negociation","","","resources/views/Selects.xml:90"
-"New","","","resources/views/Selects.xml:10
-resources/views/Selects.xml:120"
-"New Cases by Customer","","","resources/views/Charts.xml:522
-resources/views/Portal.xml:370"
-"New Tickets","","","resources/views/Portal.xml:438
-resources/views/Event.xml:686"
-"New Urgent Tickets","","","resources/views/Portal.xml:432"
-"New business","","","resources/views/Selects.xml:79"
-"Next Stage","","","resources/views/Opportunity.xml:45
-resources/views/Opportunity.xml:76
-resources/views/Opportunity.xml:26"
-"No of Tickets","","","resources/views/Charts.xml:657"
-"Non-participant","","","resources/views/Selects.xml:134"
-"None","","","resources/views/Selects.xml:161"
-"Normal","","","resources/views/Selects.xml:29"
-"Not started","","","resources/views/Selects.xml:112"
-"Notes","","","resources/views/ConvertLeadWizard.xml:201
-resources/views/ConvertLeadWizard.xml:120"
-"On going","","","resources/views/Selects.xml:113"
-"Ongoing Tickets","","","resources/views/Event.xml:689"
-"Open Cases by Agents","","","resources/views/Charts.xml:491
-resources/views/Portal.xml:366"
-"Open Opportunities","","","resources/views/Portal.xml:20"
-"Open tickets by priority","","","resources/views/Charts.xml:411
-resources/views/Portal.xml:357"
-"Open tickets by status","","","resources/views/Charts.xml:463
-resources/views/Portal.xml:362"
-"Open tickets distribution by Priority","","","resources/views/Charts.xml:437
-resources/views/Portal.xml:376"
-"Opportunities","","","resources/views/menu.xml:139
-resources/views/TargetConfiguration.xml:30
-resources/views/menu.xml:393
-resources/views/Lead.xml:248
+"My Tasks",,,"resources/views/Event.xml:705"
+"My Team Best Open Deals",,,"resources/views/Portal.xml:82"
+"My Team Calendar",,,"resources/views/menu.xml:299"
+"My Team Calls",,,"resources/views/Event.xml:738"
+"My Team Closed Opportunities",,,"resources/views/Portal.xml:36"
+"My Team Key accounts",,,"resources/views/Portal.xml:108"
+"My Team Leads",,,"resources/views/Lead.xml:284
+resources/views/Portal.xml:278"
+"My Team Meetings",,,"resources/views/Event.xml:726"
+"My Team Open Opportunities",,,"resources/views/Portal.xml:46"
+"My Team Opportunities",,,"resources/views/Opportunity.xml:188"
+"My Team Tasks",,,"resources/views/Event.xml:714"
+"My Team Tickets",,,"resources/views/Event.xml:747"
+"My Tickets",,,"resources/views/Event.xml:744"
+"My Today Calls",,,"resources/views/Event.xml:735"
+"My Today Support Activities",,,"resources/views/Portal.xml:443"
+"My Today Tasks",,,"resources/views/Event.xml:708"
+"My Upcoming Meetings",,,"resources/views/Event.xml:723"
+"My Upcoming Tasks",,,"resources/views/Event.xml:711"
+"My Urgent Tickets",,,"resources/views/Portal.xml:393"
+"Name",,,"resources/views/ConvertLeadWizard.xml:98
+resources/domains/EventCategory.xml:10
+resources/domains/Opportunity.xml:10
+resources/domains/SocialNet.xml:16
+resources/domains/MailingList.xml:10
+resources/domains/Calendar.xml:18
+resources/domains/CalendarConfiguration.xml:10
+resources/views/ConvertLeadWizard.xml:152
+resources/views/Lead.xml:57
+resources/domains/OpportunityType.xml:10
+resources/domains/SnPage.xml:17
+resources/domains/TargetConfiguration.xml:10
+resources/domains/Campaign.xml:10
+resources/domains/MeetingType.xml:11"
+"Needs analysis",,,"resources/views/Selects.xml:85"
+"Negociation",,,"resources/views/Selects.xml:90"
+"Network Type",,,"resources/domains/ApplicationCredentials.xml:18
+resources/domains/PersonalCredential.xml:13"
+"New",,,"resources/views/Selects.xml:120
+resources/views/Selects.xml:10"
+"New Cases by Customer",,,"resources/views/Portal.xml:363
+resources/views/Charts.xml:522"
+"New Tickets",,,"resources/views/Event.xml:756
+resources/views/Portal.xml:425"
+"New Urgent Tickets",,,"resources/views/Portal.xml:419"
+"New business",,,"resources/views/Selects.xml:79"
+"Next Stage",,,"resources/views/Opportunity.xml:76
+resources/views/Opportunity.xml:26
+resources/views/Opportunity.xml:45"
+"Next step",,,"resources/domains/Opportunity.xml:21"
+"No of Tickets",,,"resources/views/Charts.xml:657"
+"Nom",,,"resources/domains/Target.xml:10"
+"Non-participant",,,"resources/views/Selects.xml:134"
+"None",,,"resources/views/Selects.xml:161"
+"Normal",,,"resources/views/Selects.xml:29"
+"Not started",,,"resources/views/Selects.xml:112"
+"Notes",,,"resources/views/ConvertLeadWizard.xml:124
+resources/views/ConvertLeadWizard.xml:205"
+"Number of hits",,,"resources/domains/TrackerLine.xml:11"
+"Office name",,,"resources/domains/Lead.xml:16"
+"On going",,,"resources/views/Selects.xml:113"
+"Ongoing Tickets",,,"resources/views/Event.xml:759"
+"Open Cases by Agents",,,"resources/views/Charts.xml:491
+resources/views/Portal.xml:359"
+"Open Opportunities",,,"resources/views/Portal.xml:20"
+"Open tickets by priority",,,"resources/views/Charts.xml:411
+resources/views/Portal.xml:350"
+"Open tickets by status",,,"resources/views/Portal.xml:355
+resources/views/Charts.xml:463"
+"Open tickets distribution by Priority",,,"resources/views/Charts.xml:437
+resources/views/Portal.xml:369"
+"Opportunities",,,"resources/views/menu.xml:391
+resources/views/Partner.xml:71
+resources/views/menu.xml:136
 resources/views/Charts.xml:113
-resources/views/Opportunity.xml:61
-resources/views/Opportunity.xml:67
-resources/views/menu.xml:337
-resources/views/Opportunity.xml:52
-resources/views/menu.xml:338
+resources/views/menu.xml:336
+resources/views/menu.xml:335
 resources/views/Opportunity.xml:6
-resources/views/menu.xml:136"
-"Opportunities By Origin By Stage","","","resources/views/Charts.xml:137"
-"Opportunities By Sale Stage","","","resources/views/Charts.xml:8
-resources/views/Portal.xml:192"
-"Opportunities By Source","","","resources/views/Charts.xml:56"
-"Opportunities By Type","","","resources/views/Charts.xml:76
-resources/views/Portal.xml:197"
-"Opportunities Db 1","","","resources/views/menu.xml:399
-resources/views/menu.xml:396"
-"Opportunities Db 2","","","resources/views/menu.xml:407
-resources/views/menu.xml:404"
-"Opportunities Db 3","","","resources/views/menu.xml:412
-resources/views/menu.xml:415"
-"Opportunities Won By Lead Source","","","resources/views/Charts.xml:96
+resources/views/menu.xml:139
+resources/views/Opportunity.xml:67
+resources/views/Opportunity.xml:61
+resources/views/Lead.xml:259
+resources/views/Opportunity.xml:52
+resources/views/TargetConfiguration.xml:30"
+"Opportunities By Origin By Stage",,,"resources/views/Charts.xml:137"
+"Opportunities By Sale Stage",,,"resources/views/Portal.xml:187
+resources/views/Charts.xml:8"
+"Opportunities By Source",,,"resources/views/Charts.xml:56"
+"Opportunities By Type",,,"resources/views/Portal.xml:192
+resources/views/Charts.xml:76"
+"Opportunities Db 1",,,"resources/views/menu.xml:394
+resources/views/menu.xml:397"
+"Opportunities Db 2",,,"resources/views/menu.xml:402
+resources/views/menu.xml:405"
+"Opportunities Db 3",,,"resources/views/menu.xml:410
+resources/views/menu.xml:413"
+"Opportunities Won By Lead Source",,,"resources/views/Charts.xml:96
+resources/views/Portal.xml:204"
+"Opportunities Won By Partner",,,"resources/views/Portal.xml:58"
+"Opportunities Won By Salesman",,,"resources/views/Charts.xml:116
 resources/views/Portal.xml:209"
-"Opportunities Won By Partner","","","resources/views/Portal.xml:58"
-"Opportunities Won By Salesman","","","resources/views/Charts.xml:116
-resources/views/Portal.xml:214"
-"Opportunities amount won historical","","","resources/views/Charts.xml:828
-resources/views/Portal.xml:529
-resources/views/Charts.xml:1155
-resources/views/Portal.xml:591"
-"Opportunities amount won target competed (%)","","","resources/views/Charts.xml:1140
-resources/views/Portal.xml:587"
-"Opportunities amount won target completed (%)","","","resources/views/Charts.xml:813
-resources/views/Portal.xml:525"
-"Opportunities created number historical","","","resources/views/Charts.xml:1195
-resources/views/Portal.xml:537
+"Opportunities amount won historical",,,"resources/views/Portal.xml:574
+resources/views/Charts.xml:828
+resources/views/Portal.xml:512
+resources/views/Charts.xml:1155"
+"Opportunities amount won target competed (%)",,,"resources/views/Portal.xml:570
+resources/views/Charts.xml:1140"
+"Opportunities amount won target completed (%)",,,"resources/views/Portal.xml:508
+resources/views/Charts.xml:813"
+"Opportunities created number historical",,,"resources/views/Portal.xml:520
+resources/views/Charts.xml:1195
 resources/views/Charts.xml:868
-resources/views/Portal.xml:599"
-"Opportunities created number target completed (%)","","","resources/views/Portal.xml:533
-resources/views/Charts.xml:1180
-resources/views/Portal.xml:595
-resources/views/Charts.xml:853"
-"Opportunities created won historical","","","resources/views/Charts.xml:908
-resources/views/Portal.xml:545
+resources/views/Portal.xml:582"
+"Opportunities created number target completed (%)",,,"resources/views/Portal.xml:516
+resources/views/Charts.xml:853
+resources/views/Portal.xml:578
+resources/views/Charts.xml:1180"
+"Opportunities created won historical",,,"resources/views/Portal.xml:590
 resources/views/Charts.xml:1235
-resources/views/Portal.xml:607"
-"Opportunities created won target completed (%)","","","resources/views/Charts.xml:893
-resources/views/Portal.xml:603
-resources/views/Portal.xml:541
-resources/views/Charts.xml:1220"
-"Opportunities filters","","","resources/views/Opportunity.xml:166"
-"Opportunity","","","resources/views/ConvertLeadWizard.xml:37
-resources/views/ConvertLeadWizard.xml:316
+resources/views/Portal.xml:528
+resources/views/Charts.xml:908"
+"Opportunities created won target completed (%)",,,"resources/views/Portal.xml:586
+resources/views/Charts.xml:893
+resources/views/Charts.xml:1220
+resources/views/Portal.xml:524"
+"Opportunities filters",,,"resources/views/Opportunity.xml:181"
+"Opportunity",,,"resources/views/Selects.xml:52
 resources/views/Opportunity.xml:73
-resources/views/Selects.xml:52
-resources/views/Target.xml:28"
-"Opportunity Type","","","resources/views/Charts.xml:92"
-"Opportunity type","","","resources/views/OpportunityType.xml:11"
-"Opportunity types","","","resources/views/OpportunityType.xml:6"
-"Optional participant","","","resources/views/Selects.xml:135"
-"Or Select Contact","","","resources/views/ConvertLeadWizard.xml:15"
-"Or Select Partner","","","resources/views/ConvertLeadWizard.xml:24"
-"Other address","","","resources/views/Lead.xml:92"
-"Outgoing","","","resources/views/Selects.xml:97"
-"Partner","","","resources/views/ConvertLeadWizard.xml:28
-resources/views/ConvertLeadWizard.xml:138"
-"Partner Details","","","resources/views/ConvertLeadWizard.xml:162"
-"Partner/Contact","","","resources/views/Selects.xml:50"
-"Pause","","","resources/views/Event.xml:316
-resources/views/Event.xml:309"
-"Pending","","","resources/views/Selects.xml:115"
-"Period","","","resources/views/TargetConfiguration.xml:22
+resources/views/Target.xml:28
+resources/views/ConvertLeadWizard.xml:37
+resources/views/ConvertLeadWizard.xml:324"
+"Opportunity Type",,,"resources/views/Charts.xml:92"
+"Opportunity amount",,,"resources/domains/Lead.xml:49"
+"Opportunity type",,,"resources/views/OpportunityType.xml:11"
+"Opportunity types",,,"resources/views/OpportunityType.xml:6"
+"Optional participant",,,"resources/views/Selects.xml:135"
+"Or Select Contact",,,"resources/views/ConvertLeadWizard.xml:15"
+"Or Select Partner",,,"resources/views/ConvertLeadWizard.xml:24"
+"Other address",,,"resources/views/Lead.xml:93"
+"Outgoing",,,"resources/views/Selects.xml:97"
+"Page",,,"resources/domains/SnStatusComments.xml:20
+resources/domains/SnStatusUpdates.xml:29"
+"Page ref",,,"resources/domains/SnPage.xml:16"
+"Pages",,,"resources/domains/SnStatusUpdates.xml:28"
+"Parent Comment",,,"resources/domains/SnStatusComments.xml:17"
+"Partner",,,"resources/views/ConvertLeadWizard.xml:142
+resources/views/Partner.xml:6
+resources/views/Partner.xml:17
+resources/views/ConvertLeadWizard.xml:28
+resources/domains/SnProfile.xml:17
+resources/domains/SnSearchResult.xml:23
+resources/domains/Participant.xml:10
+resources/views/Partner.xml:13"
+"Partner Details",,,"resources/views/ConvertLeadWizard.xml:166"
+"Partner/Contact",,,"resources/views/Selects.xml:50"
+"Password",,,"resources/domains/Calendar.xml:13"
+"Pause",,,"resources/views/Event.xml:346
+resources/views/Event.xml:353"
+"Pending",,,"resources/views/Selects.xml:115"
+"Period",,,"resources/views/TargetConfiguration.xml:22
 resources/views/Target.xml:23"
-"Pipeline","","","resources/views/Charts.xml:193"
-"Pipeline by Stage and Type","","","resources/views/Charts.xml:32
-resources/views/Portal.xml:202"
-"Pipeline next 90 days","","","resources/views/Charts.xml:166"
-"Planified","","","resources/views/Selects.xml:101"
-"Postal addresses","","","resources/views/ConvertLeadWizard.xml:177"
-"Postal code","","","resources/views/ConvertLeadWizard.xml:189
-resources/views/ConvertLeadWizard.xml:182
-resources/views/ConvertLeadWizard.xml:113"
-"Previous Stage","","","resources/views/Opportunity.xml:75"
-"Primary address","","","resources/views/Lead.xml:85"
-"Print","","","resources/views/Lead.xml:38
+"Period type",,,"resources/domains/TargetConfiguration.xml:29
+resources/domains/Target.xml:37"
+"Personal Credential",,,"resources/domains/SnSendMessage.xml:25"
+"Picture",,,"resources/domains/Lead.xml:41"
+"Picture Link",,,"resources/domains/SnSearchResult.xml:25"
+"Picture Url",,,"resources/domains/SnProfile.xml:29
+resources/domains/SnProfile.xml:28
+resources/domains/SnProfile.xml:30"
+"Picture url",,,"resources/domains/SnPage.xml:21"
+"Pipeline",,,"resources/views/Charts.xml:193"
+"Pipeline by Stage and Type",,,"resources/views/Portal.xml:197
+resources/views/Charts.xml:32"
+"Pipeline next 90 days",,,"resources/views/Charts.xml:166"
+"Planified",,,"resources/views/Selects.xml:101"
+"Port",,,"resources/domains/Calendar.xml:16"
+"Post",,,"resources/domains/SnStatusComments.xml:16"
+"Post on Wall ?",,,"resources/domains/SnStatusUpdates.xml:20"
+"Postal addresses",,,"resources/views/ConvertLeadWizard.xml:181"
+"Postal code",,,"resources/views/ConvertLeadWizard.xml:117
+resources/views/ConvertLeadWizard.xml:186
+resources/domains/Lead.xml:28
+resources/views/ConvertLeadWizard.xml:193
+resources/domains/Lead.xml:35"
+"Present ?",,,"resources/domains/Participant.xml:11"
+"Previous Stage",,,"resources/views/Opportunity.xml:75"
+"Primary address",,,"resources/views/Lead.xml:86"
+"Print",,,"resources/views/Lead.xml:39
 resources/views/Lead.xml:9"
-"Priority","","","resources/views/Charts.xml:433
-resources/views/Charts.xml:458"
-"Product","","","resources/views/Selects.xml:53"
-"Project/Business","","","resources/views/Selects.xml:56"
-"Proposal/Quote","","","resources/views/Selects.xml:89"
-"Proposition","","","resources/views/Selects.xml:86"
-"Prospection","","","resources/views/menu.xml:327
-resources/views/Selects.xml:83"
-"Qualification","","","resources/views/Selects.xml:84"
-"Quote/Order","","","resources/views/Selects.xml:55"
-"Real","","","resources/views/Target.xml:47
-resources/views/Target.xml:32"
-"Realized","","","resources/views/Selects.xml:102"
-"Recent lost deals","","","resources/views/Portal.xml:126"
-"Recently created opportunities","","","resources/views/Portal.xml:118"
-"Recycled","","","resources/views/Selects.xml:14"
-"Related to","","","resources/views/Event.xml:98"
-"Reminders","","","resources/views/Event.xml:353
+"Priority",,,"resources/views/Charts.xml:433
+resources/views/Charts.xml:458
+resources/domains/Event.xml:22"
+"Privacy parameter",,,"resources/domains/SnStatusUpdates.xml:32"
+"Probability (%)",,,"resources/domains/Opportunity.xml:19"
+"Product",,,"resources/views/Selects.xml:53"
+"Progress",,,"resources/domains/Event.xml:55"
+"Project/Business",,,"resources/views/Selects.xml:56"
+"Proposal/Quote",,,"resources/views/Selects.xml:89"
+"Proposition",,,"resources/views/Selects.xml:86"
+"Prospection",,,"resources/views/Selects.xml:83
+resources/views/menu.xml:325"
+"Qualification",,,"resources/views/Selects.xml:84"
+"Queries",,,"resources/domains/MailingList.xml:15
+resources/domains/Campaign.xml:22"
+"Quote/Order",,,"resources/views/Selects.xml:55"
+"Real",,,"resources/views/Target.xml:32
+resources/views/Target.xml:47"
+"Realized",,,"resources/views/Selects.xml:102"
+"Recent lost deals",,,"resources/views/Portal.xml:125"
+"Recently created opportunities",,,"resources/views/Portal.xml:117"
+"Recycled",,,"resources/views/Selects.xml:14"
+"Redirect URL",,,"resources/domains/ApplicationCredentials.xml:20"
+"Redirection",,,"resources/domains/TrackerInfo.xml:16"
+"Referred by",,,"resources/domains/Lead.xml:52"
+"Refresh Token",,,"resources/domains/AppsCredentials.xml:11"
+"Related to",,,"resources/views/Event.xml:98
+resources/domains/Event.xml:24"
+"Related to select",,,"resources/domains/Event.xml:25"
+"RemindedOk",,,"resources/domains/EventReminder.xml:15"
+"Reminders",,,"resources/views/Event.xml:213
+resources/views/Event.xml:390
 resources/views/Event.xml:108
-resources/views/Event.xml:202
-resources/views/Event.xml:283"
-"Reported","","","resources/views/Selects.xml:116"
-"Required participant","","","resources/views/Selects.xml:136"
-"Resolved","","","resources/views/Selects.xml:122"
-"Sales Stage","","","resources/views/Charts.xml:28
+resources/views/Event.xml:306
+resources/domains/Event.xml:37"
+"Reported",,,"resources/views/Selects.xml:116"
+"Required participant",,,"resources/views/Selects.xml:136"
+"Resolved",,,"resources/views/Selects.xml:122"
+"SSL ?",,,"resources/domains/Calendar.xml:15"
+"Sales Stage",,,"resources/views/Charts.xml:28
 resources/views/Charts.xml:52"
-"Sales orders amount won historical","","","resources/views/Charts.xml:948
-resources/views/Charts.xml:1275"
-"Sales orders amount won target completed (%)","","","resources/views/Charts.xml:1260
+"Sales orders amount won historical",,,"resources/views/Charts.xml:1275
+resources/views/Charts.xml:948"
+"Sales orders amount won target completed (%)",,,"resources/views/Charts.xml:1260
 resources/views/Charts.xml:933"
-"Sales orders created number historical","","","resources/views/Charts.xml:1315
+"Sales orders created number historical",,,"resources/views/Charts.xml:1315
 resources/views/Charts.xml:988"
-"Sales orders created number target completed (%)","","","resources/views/Charts.xml:1300
+"Sales orders created number target completed (%)",,,"resources/views/Charts.xml:1300
 resources/views/Charts.xml:973"
-"Sales orders created won historical","","","resources/views/Charts.xml:1355
-resources/views/Charts.xml:1028"
-"Sales orders created won target completed","","","resources/views/Charts.xml:1340"
-"Sales orders created won target completed (%)","","","resources/views/Charts.xml:1013"
-"Salesman","","","resources/views/Charts.xml:133
-resources/views/Charts.xml:406
+"Sales orders created won historical",,,"resources/views/Charts.xml:1028
+resources/views/Charts.xml:1355"
+"Sales orders created won target completed",,,"resources/views/Charts.xml:1340"
+"Sales orders created won target completed (%)",,,"resources/views/Charts.xml:1013"
+"Sales stage",,,"resources/domains/Opportunity.xml:18"
+"Salesman",,,"resources/views/Charts.xml:518
 resources/views/Charts.xml:291
-resources/views/Charts.xml:518"
-"Schedule Meeting","","","resources/views/Lead.xml:160
-resources/views/Lead.xml:28"
-"Schedule a meeting ?","","","resources/views/ConvertLeadWizard.xml:49"
-"Schedule meeting","","","resources/views/Lead.xml:43"
-"Send Email","","","resources/views/Lead.xml:161
-resources/views/Lead.xml:29"
-"Send email","","","resources/views/Lead.xml:37"
-"Settings","","","resources/views/ConvertLeadWizard.xml:123
-resources/views/ConvertLeadWizard.xml:212"
-"Source","","","resources/views/Charts.xml:162
+resources/views/Charts.xml:406
+resources/views/Charts.xml:133"
+"Schedule Meeting",,,"resources/views/Lead.xml:29
+resources/views/Lead.xml:161"
+"Schedule a meeting ?",,,"resources/views/ConvertLeadWizard.xml:49"
+"Schedule meeting",,,"resources/views/Partner.xml:21
+resources/views/Lead.xml:44"
+"Send Email",,,"resources/views/Lead.xml:30
+resources/views/Lead.xml:162"
+"Send campaign from",,,"resources/domains/Campaign.xml:16"
+"Send email",,,"resources/views/Lead.xml:38"
+"Settings",,,"resources/views/ConvertLeadWizard.xml:127
+resources/views/ConvertLeadWizard.xml:216"
+"Sn message ref",,,"resources/domains/SnSendMessage.xml:19"
+"Sn page",,,"resources/domains/SnPagePostRef.xml:17"
+"Sn page post ref list",,,"resources/domains/SnStatusUpdates.xml:26"
+"Sn page set",,,"resources/domains/SnProfile.xml:34"
+"Sn profile",,,"resources/domains/Lead.xml:63
+resources/domains/SnStatusUpdates.xml:27"
+"Sn profile set",,,"resources/domains/SnPage.xml:19"
+"Sn status updates",,,"resources/domains/Product.xml:9
+resources/domains/SnPagePostRef.xml:16"
+"Social Network",,,"resources/domains/SnStatusComments.xml:21
+resources/domains/SnStatusUpdates.xml:31
+resources/domains/SnSendMessage.xml:23"
+"Social Network Id",,,"resources/domains/SnSendMessage.xml:26"
+"Social Network Profile",,,"resources/domains/Partner.xml:10"
+"Social net",,,"resources/domains/SnSearchResult.xml:26"
+"Source",,,"resources/views/Charts.xml:72
+resources/views/Charts.xml:162
+resources/domains/Opportunity.xml:23
 resources/views/Charts.xml:223
-resources/views/Charts.xml:72
-resources/views/Charts.xml:112"
-"Source details","","","resources/views/Lead.xml:111"
-"Start","","","resources/views/Event.xml:388
-resources/views/Event.xml:315
-resources/views/Event.xml:308
-resources/views/Event.xml:377"
-"State","","","resources/views/ConvertLeadWizard.xml:188
-resources/views/ConvertLeadWizard.xml:112
-resources/views/ConvertLeadWizard.xml:181"
-"Status","","","resources/views/Charts.xml:487"
-"Status details","","","resources/views/Lead.xml:107"
-"Subject","","","resources/views/Event.xml:248
-resources/views/Event.xml:247
-resources/views/Event.xml:395
-resources/views/Event.xml:320
-resources/views/Event.xml:397
+resources/views/Charts.xml:112
+resources/domains/Lead.xml:47"
+"Source description",,,"resources/domains/Lead.xml:50"
+"Source details",,,"resources/views/Lead.xml:112"
+"Start",,,"resources/views/Event.xml:345
+resources/views/Event.xml:428
+resources/views/Event.xml:439
+resources/views/Event.xml:352"
+"Start Date",,,"resources/domains/Event.xml:15"
+"State",,,"resources/views/ConvertLeadWizard.xml:116
+resources/views/ConvertLeadWizard.xml:185
+resources/domains/Lead.xml:27
+resources/views/ConvertLeadWizard.xml:192
+resources/domains/Lead.xml:34"
+"Status",,,"resources/domains/EventAttendee.xml:12
+resources/domains/Event.xml:51
+resources/domains/Lead.xml:46
+resources/domains/Campaign.xml:14
+resources/domains/Event.xml:54
+resources/domains/Event.xml:44
+resources/domains/Event.xml:14
+resources/views/Charts.xml:487"
+"Status description",,,"resources/domains/Lead.xml:48"
+"Status details",,,"resources/views/Lead.xml:108"
+"Subject",,,"resources/views/Event.xml:271
+resources/views/Event.xml:182
+resources/views/Event.xml:270
+resources/views/Event.xml:181
 resources/views/Event.xml:60
-resources/views/Event.xml:321
+resources/views/Event.xml:357
+resources/domains/Event.xml:13
+resources/domains/SnSendMessage.xml:20
 resources/views/Event.xml:59
-resources/views/Event.xml:170
-resources/views/Event.xml:171"
-"Synchronize calendar","","","resources/views/Event.xml:10"
-"Synchronize calendars","","","resources/views/Event.xml:46"
-"Target","","","resources/views/Target.xml:16
-resources/views/menu.xml:270
-resources/views/Selects.xml:157
-resources/views/menu.xml:369
-resources/views/Target.xml:30
-resources/views/Target.xml:45"
-"Target Team Db","","","resources/views/menu.xml:382"
-"Target User Dashboard","","","resources/views/Portal.xml:490"
-"Target User Db","","","resources/views/menu.xml:372"
-"Target batch","","","resources/views/CrmBatch.xml:28"
-"Target configuration","","","resources/views/TargetConfiguration.xml:13"
-"Target configurations","","","resources/views/TargetConfiguration.xml:6"
-"Target page","","","resources/views/CrmBatch.xml:26"
-"Target team Dashboard","","","resources/views/Portal.xml:551
-resources/views/menu.xml:385"
-"Target user Dashboard","","","resources/views/menu.xml:375"
-"Targets","","","resources/views/Target.xml:6
-resources/views/menu.xml:267
-resources/views/TargetConfiguration.xml:28"
-"Targets Configurations","","","resources/views/menu.xml:261"
-"Targets configurations","","","resources/views/menu.xml:258"
-"Task","","","resources/views/ConvertLeadWizard.xml:419
-resources/views/Selects.xml:21
-resources/views/menu.xml:15
-resources/views/Event.xml:313
+resources/views/Event.xml:448
+resources/views/Event.xml:358
+resources/views/Event.xml:446"
+"Synchronize calendar",,,"resources/views/Event.xml:10"
+"Synchronize calendars",,,"resources/views/Event.xml:46"
+"Target",,,"resources/views/Selects.xml:157
+resources/views/Target.xml:16
+resources/domains/Campaign.xml:13
+resources/views/Target.xml:45
+resources/views/menu.xml:268
+resources/views/menu.xml:367
+resources/views/Target.xml:30"
+"Target Team Db",,,"resources/views/menu.xml:380"
+"Target URL",,,"resources/domains/Tracker.xml:10"
+"Target User Dashboard",,,"resources/views/Portal.xml:473"
+"Target User Db",,,"resources/views/menu.xml:370"
+"Target batch",,,"resources/views/CrmBatch.xml:28"
+"Target configuration",,,"resources/views/TargetConfiguration.xml:13"
+"Target configurations",,,"resources/views/TargetConfiguration.xml:6"
+"Target page",,,"resources/views/CrmBatch.xml:26"
+"Target team Dashboard",,,"resources/views/menu.xml:383
+resources/views/Portal.xml:534"
+"Target user Dashboard",,,"resources/views/menu.xml:373"
+"Targets",,,"resources/views/Target.xml:6
+resources/views/TargetConfiguration.xml:28
+resources/views/menu.xml:265"
+"Targets Configurations",,,"resources/views/menu.xml:259"
+"Targets configurations",,,"resources/domains/CrmBatch.xml:21
+resources/views/menu.xml:256"
+"Task",,,"resources/views/menu.xml:18
 resources/views/ConvertLeadWizard.xml:64
-resources/views/menu.xml:18"
-"Task (Project)","","","resources/views/Selects.xml:57"
-"Tasks","","","resources/views/menu.xml:420
-resources/views/menu.xml:60
-resources/views/Event.xml:300
-resources/views/menu.xml:63"
-"Tasks Db","","","resources/views/menu.xml:423"
-"Tasks filters","","","resources/views/Event.xml:634"
-"Team","","","resources/views/Charts.xml:1157
-resources/views/Charts.xml:1197
-resources/views/Charts.xml:377
-resources/views/Charts.xml:1237
+resources/views/ConvertLeadWizard.xml:427
+resources/views/menu.xml:15
+resources/views/Selects.xml:21
+resources/views/Event.xml:350"
+"Task (Project)",,,"resources/views/Selects.xml:57"
+"Tasks",,,"resources/views/menu.xml:63
+resources/views/menu.xml:418
+resources/views/Event.xml:337
+resources/views/menu.xml:60"
+"Tasks Db",,,"resources/views/menu.xml:421"
+"Tasks filters",,,"resources/views/Event.xml:704"
+"Team",,,"resources/domains/Opportunity.xml:30
 resources/views/Charts.xml:1317
-resources/views/Charts.xml:1277
-resources/views/Charts.xml:1073
-resources/views/Charts.xml:257
+resources/views/Charts.xml:1237
 resources/views/Charts.xml:1117
 resources/views/Charts.xml:1357
-resources/views/Charts.xml:384"
-"Team Calendar","","","resources/views/menu.xml:163
-resources/views/menu.xml:166"
-"Tentative","","","resources/views/Selects.xml:107"
-"Ticket","","","resources/views/Selects.xml:23
+resources/domains/Target.xml:13
+resources/views/Charts.xml:257
+resources/views/Charts.xml:1277
+resources/views/Charts.xml:377
+resources/views/Charts.xml:1157
+resources/views/Charts.xml:384
+resources/views/Charts.xml:1197
+resources/views/Charts.xml:1073
+resources/domains/Campaign.xml:34
+resources/domains/TargetConfiguration.xml:13
+resources/domains/Event.xml:30
+resources/domains/Lead.xml:60"
+"Team Calendar",,,"resources/views/menu.xml:165
+resources/views/menu.xml:162"
+"Template",,,"resources/domains/Campaign.xml:25"
+"Template rule",,,"resources/domains/Campaign.xml:26"
+"Tentative",,,"resources/views/Selects.xml:107"
+"Ticket",,,"resources/domains/SpentTime.xml:10
+resources/views/Event.xml:410
+resources/views/Selects.xml:23
+resources/views/menu.xml:48
 resources/views/menu.xml:51
-resources/views/Event.xml:359
-resources/views/Event.xml:385
-resources/views/menu.xml:48"
-"Ticket N°","","","resources/views/Event.xml:394"
-"Ticket filters","","","resources/views/Event.xml:673"
-"Tickets","","","resources/views/menu.xml:443
-resources/views/Lead.xml:255
-resources/views/Charts.xml:434
+resources/views/Event.xml:436"
+"Ticket N°",,,"resources/views/Event.xml:445
+resources/domains/Event.xml:56"
+"Ticket filters",,,"resources/views/Event.xml:743"
+"Tickets",,,"resources/views/menu.xml:107
+resources/views/menu.xml:110
 resources/views/Charts.xml:459
 resources/views/Charts.xml:723
-resources/views/menu.xml:110
-resources/views/menu.xml:107
+resources/views/menu.xml:441
+resources/views/Charts.xml:434
+resources/views/Partner.xml:78
 resources/views/Charts.xml:488
+resources/views/Lead.xml:266
 resources/views/Charts.xml:696"
-"Tickets Dashboard","","","resources/views/Portal.xml:322
-resources/views/Portal.xml:309"
-"Tickets Db 1","","","resources/views/menu.xml:449
-resources/views/menu.xml:446"
-"Tickets Db 2","","","resources/views/menu.xml:457
-resources/views/menu.xml:454"
-"To Date","","","resources/views/Charts.xml:230
-resources/views/Charts.xml:298
+"Tickets Dashboard",,,"resources/views/Portal.xml:302
+resources/views/Portal.xml:315"
+"Tickets Db 1",,,"resources/views/menu.xml:444
+resources/views/menu.xml:447"
+"Tickets Db 2",,,"resources/views/menu.xml:455
+resources/views/menu.xml:452"
+"Time",,,"resources/domains/SnStatusComments.xml:24"
+"Title",,,"resources/domains/Lead.xml:12
+resources/domains/Calendar.xml:10"
+"To Date",,,"resources/views/Charts.xml:264
 resources/views/Charts.xml:341
-resources/views/Charts.xml:264
-resources/views/Charts.xml:205
+resources/views/Charts.xml:230
 resources/views/Charts.xml:525
-resources/views/Charts.xml:557"
-"Total created tickets by month by priority","","","resources/views/Charts.xml:624
-resources/views/Portal.xml:384"
-"Total created tickets by month by status","","","resources/views/Charts.xml:661
-resources/views/Portal.xml:388"
-"Total open tickets by month by user","","","resources/views/Charts.xml:700
-resources/views/Portal.xml:392"
-"Type","","","resources/views/Charts.xml:1398"
-"Unassigned Leads","","","resources/views/Portal.xml:277
-resources/views/Lead.xml:270"
-"Unassigned Opportunities","","","resources/views/Opportunity.xml:170
+resources/views/Charts.xml:205
+resources/views/Charts.xml:557
+resources/views/Charts.xml:298"
+"To User",,,"resources/domains/SnSendMessage.xml:24"
+"Total created tickets by month by priority",,,"resources/views/Charts.xml:624
+resources/views/Portal.xml:377"
+"Total created tickets by month by status",,,"resources/views/Portal.xml:381
+resources/views/Charts.xml:661"
+"Total open tickets by month by user",,,"resources/views/Portal.xml:385
+resources/views/Charts.xml:700"
+"Tracker",,,"resources/domains/TrackerLine.xml:10"
+"Tracker Line",,,"resources/domains/Campaign.xml:29"
+"Tracker key",,,"resources/domains/TrackerInfo.xml:12"
+"Trackers",,,"resources/domains/Campaign.xml:28"
+"Twitter",,,"resources/domains/SnStatusUpdates.xml:18"
+"Twitter Personal Credential",,,"resources/domains/User.xml:11"
+"Twitter User ID",,,"resources/domains/SnProfile.xml:13"
+"Twitter Username",,,"resources/domains/SnProfile.xml:16"
+"Twitter profile link",,,"resources/domains/SnProfile.xml:21"
+"Twitter update ref",,,"resources/domains/SnStatusUpdates.xml:23"
+"Type",,,"resources/domains/EventReminder.xml:11
+resources/domains/Calendar.xml:14
+resources/domains/Campaign.xml:12
+resources/domains/EventCategory.xml:12
+resources/domains/Opportunity.xml:15
+resources/domains/Event.xml:12
+resources/views/Charts.xml:1398"
+"UID (Calendar)",,,"resources/domains/Event.xml:35"
+"Unassigned Leads",,,"resources/views/Lead.xml:281
+resources/views/Portal.xml:270"
+"Unassigned Opportunities",,,"resources/views/Opportunity.xml:185
 resources/views/Portal.xml:27"
-"Unassigned Tickets","","","resources/views/Event.xml:680"
-"Upcoming events","","","resources/views/Lead.xml:232"
-"Urgent","","","resources/views/Selects.xml:31"
-"Urgent Tickets","","","resources/views/Portal.xml:425
-resources/views/Event.xml:683"
-"User","","","resources/views/Charts.xml:870
-resources/views/Charts.xml:746
-resources/views/Charts.xml:990
-resources/views/Charts.xml:950
-resources/views/Charts.xml:1030
-resources/views/Charts.xml:334
+"Unassigned Tickets",,,"resources/views/Event.xml:750"
+"Upcoming events",,,"resources/views/Partner.xml:55
+resources/views/Lead.xml:243"
+"Update Time",,,"resources/domains/SnStatusUpdates.xml:25"
+"Urgent",,,"resources/views/Selects.xml:31"
+"Urgent Tickets",,,"resources/views/Event.xml:753
+resources/views/Portal.xml:412"
+"Url",,,"resources/domains/Calendar.xml:11"
+"User",,,"resources/views/Charts.xml:746
 resources/views/Charts.xml:910
+resources/domains/CalendarConfiguration.xml:12
 resources/views/Charts.xml:830
-resources/views/Charts.xml:790"
-"Validate","","","resources/views/Event.xml:389
-resources/views/Event.xml:243
-resources/views/Event.xml:159
-resources/views/Event.xml:237
-resources/views/Event.xml:165
+resources/views/Charts.xml:334
+resources/views/Charts.xml:950
+resources/views/Charts.xml:870
+resources/views/Charts.xml:990
+resources/views/Charts.xml:790
+resources/domains/SnSearchResult.xml:22
+resources/views/Charts.xml:1030
+resources/domains/SnPage.xml:15
+resources/domains/SnSendMessage.xml:22"
+"User Token",,,"resources/domains/PersonalCredential.xml:14"
+"User Token Secret",,,"resources/domains/PersonalCredential.xml:16"
+"User in charge of the issue",,,"resources/domains/Event.xml:58"
+"User name",,,"resources/domains/SnPage.xml:18
+resources/domains/SnSearchResult.xml:14"
+"User ref",,,"resources/domains/SnSearchResult.xml:13"
+"Username",,,"resources/domains/PersonalCredential.xml:17"
+"Validate",,,"resources/views/Event.xml:260
+resources/views/Event.xml:429
 resources/views/ConvertLeadWizard.xml:9
-resources/views/Event.xml:378"
-"Vs","","","resources/views/Target.xml:52
-resources/views/Target.xml:34
-resources/views/Target.xml:40
+resources/views/Event.xml:170
+resources/views/Event.xml:176
+resources/views/Event.xml:440
+resources/views/Event.xml:266"
+"Vs",,,"resources/views/Target.xml:34
 resources/views/Target.xml:49
-resources/views/Target.xml:37"
-"Weekly","","","resources/views/Selects.xml:163"
-"Weeks","","","resources/views/Selects.xml:147"
-"ZIMBRA","","","resources/views/Selects.xml:71"
-"calls Db","","","resources/views/menu.xml:438"
+resources/views/Target.xml:52
+resources/views/Target.xml:37
+resources/views/Target.xml:40"
+"Watchers",,,"resources/domains/Event.xml:57"
+"Website",,,"resources/domains/SocialNet.xml:17
+resources/domains/Lead.xml:22"
+"Weekly",,,"resources/views/Selects.xml:163"
+"Weeks",,,"resources/views/Selects.xml:147"
+"Worst case",,,"resources/domains/Opportunity.xml:17"
+"ZIMBRA",,,"resources/views/Selects.xml:71"
+"amount",,,"java/com/axelor/web/MapRest.java:136
+java/com/axelor/web/MapRest.java:135"
+"calls Db",,,"resources/views/menu.xml:436"
+"help:ApplicationCredentials.apikey","API Application's Key",,"resources/domains/ApplicationCredentials.xml:14"
+"help:ApplicationCredentials.apisecret","API Application's Secret Key",,"resources/domains/ApplicationCredentials.xml:16"
+"help:ApplicationCredentials.redirectUrl","You must Specify Same URL which you specify under Social Networking API Applicaton's ,eg:- FOR Facebook WEBSITE WITH FACEBOOK LOGIN",,"resources/domains/ApplicationCredentials.xml:20"
+"help:ApplicationCredentials.socialNet","Social Networking Type",,"resources/domains/ApplicationCredentials.xml:18"
+"help:AppsCredentials.accessToken","Google Apps User",,"resources/domains/AppsCredentials.xml:10"
+"help:AppsCredentials.lastAccessTime","Last access time of Authorization",,"resources/domains/AppsCredentials.xml:12"
+"help:AppsCredentials.refreshToken","Refresh Token retrived by Google to get Access Token",,"resources/domains/AppsCredentials.xml:11"
+"help:PersonalCredential.publicUserToken","User token to access protected resources",,"resources/domains/PersonalCredential.xml:14"
+"help:PersonalCredential.secretUserToken","User token secret required to access protected resources",,"resources/domains/PersonalCredential.xml:16"
+"help:PersonalCredential.snUserName","User name who gets granted access",,"resources/domains/PersonalCredential.xml:17"
+"help:PersonalCredential.socialNet","Network Type",,"resources/domains/PersonalCredential.xml:13"
+"help:SnSearchResult.companyName","Name of Company",,"resources/domains/SnSearchResult.xml:19"
+"help:SnSearchResult.firstName","First Name of Person",,"resources/domains/SnSearchResult.xml:15"
+"help:SnSearchResult.lastName","Last Name of Person",,"resources/domains/SnSearchResult.xml:16"
+"help:SnSearchResult.link","Profile Link",,"resources/domains/SnSearchResult.xml:18"
+"help:SnSearchResult.locale","Locale",,"resources/domains/SnSearchResult.xml:21"
+"help:SnSearchResult.location","Location",,"resources/domains/SnSearchResult.xml:20"
+"help:SnSearchResult.userName","User Name",,"resources/domains/SnSearchResult.xml:14"
+"help:SnSearchResult.userRef","Facebook Generated Unique User's ID",,"resources/domains/SnSearchResult.xml:13"
+"help:SocialNet.name","Name of Social Networking",,"resources/domains/SocialNet.xml:16"
+"help:SocialNet.website","Website for Social Networking",,"resources/domains/SocialNet.xml:17"
