@@ -69,7 +69,7 @@ public class TimesheetService {
 		
 		List<TimesheetLine> timesheetLineList = Lists.newArrayList();
 		
-		List<SpentTime> spentTimeList = SpentTime.all().filter("self.user = ?1 AND self.task = ?2  AND self.timesheetImputed IN (false,null)", timesheet.getUser(), task).fetch();
+		List<SpentTime> spentTimeList = (List<SpentTime>) SpentTime.all().filter("self.user = ?1 AND self.task = ?2  AND self.timesheetImputed IN (false,null)", timesheet.getUser(), task).fetch();
 		
 		for(SpentTime spentTime : spentTimeList)  {
 			
