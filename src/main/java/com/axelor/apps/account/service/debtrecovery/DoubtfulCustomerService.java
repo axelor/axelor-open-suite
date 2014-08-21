@@ -374,10 +374,10 @@ public class DoubtfulCustomerService {
 	 * @return
 	 * 		Les lignes d'écriture de rejet de facture à transférer sur le comtpe client douteux
 	 */
-	public List<MoveLine> getRejectMoveLine(int rule, Account doubtfulCustomerAccount, Company company)  {
+	public List<? extends MoveLine> getRejectMoveLine(int rule, Account doubtfulCustomerAccount, Company company)  {
 		
 		LocalDate date = null;
-		List<MoveLine> moveLineList = null;
+		List<? extends MoveLine> moveLineList = null;
 		
 		switch (rule) {
 		

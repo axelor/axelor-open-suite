@@ -89,13 +89,13 @@ public class AccountClearanceService {
 	}
 	
 	
-	public List<MoveLine> getExcessPayment(AccountClearance accountClearance) throws AxelorException  {		
+	public List<? extends MoveLine> getExcessPayment(AccountClearance accountClearance) throws AxelorException  {		
 		
 		Company company = accountClearance.getCompany();
 		
 		this.testCompanyField(company);
 		
-		List<MoveLine> moveLineList = MoveLine.filter("self.company = ?1 AND self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+		List<? extends MoveLine> moveLineList = MoveLine.filter("self.company = ?1 AND self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.state = ?2 AND self.amountRemaining > 0 AND self.amountRemaining <= ?3 AND self.credit > 0 AND self.account in ?4 AND self.date <= ?5",
 				company, IMove.VALIDATED_MOVE , accountClearance.getAmountThreshold(), 
 				company.getAccountConfig().getClearanceAccountSet(), accountClearance.getDateThreshold()).fetch();

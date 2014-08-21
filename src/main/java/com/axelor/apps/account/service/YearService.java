@@ -83,7 +83,7 @@ public class YearService {
 		@SuppressWarnings("unchecked")
 		List<Partner> partnerList = q.getResultList();
 		
-		List<Partner> partnerListAll = Partner.all().fetch();
+		List<? extends Partner> partnerListAll = Partner.all().fetch();
 
 		
 		LOG.debug("Nombre total de tiers : {}", partnerListAll.size());
@@ -207,7 +207,7 @@ public class YearService {
 	@Deprecated
 	public BigDecimal computeReportedBalance2(LocalDate fromDate, LocalDate toDate, Partner partner, Account account)  {
 		
-		List<MoveLine> moveLineList = MoveLine.all()
+		List<? extends MoveLine> moveLineList = MoveLine.all()
 				.filter("self.partner = ?1 AND self.ignoreInAccountingOk = 'false' AND self.date >= ?2 AND self.date <= ?3 AND self.account = ?4", 
 						partner, fromDate, toDate, account).fetch();
 		

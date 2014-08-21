@@ -103,7 +103,7 @@ public class MoveLineExportService {
 	}
 	
 	
-	public BigDecimal getSumDebit(String queryFilter, List<Move> moveList)  {
+	public BigDecimal getSumDebit(String queryFilter, List<? extends Move> moveList)  {
 		
 		Query q = JPA.em().createQuery("select SUM(self.debit) FROM MoveLine as self WHERE " + queryFilter, BigDecimal.class);
 		q.setParameter(1, moveList);
@@ -309,7 +309,7 @@ public class MoveLineExportService {
 		
 		for(LocalDate dt : allDates) {				
 			
-			List<Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<? extends Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 			
 			if(moveLineReport.getJournal() != null)  {
 				journalList = new ArrayList<Journal>();
@@ -318,7 +318,7 @@ public class MoveLineExportService {
 			
 			for(Journal journal : journalList)  {
 			
-				List<Move> moveList = Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<? extends Move> moveList = Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 				
 				String journalCode = journal.getExportCode();
 				
@@ -455,7 +455,7 @@ public class MoveLineExportService {
 		
 		for(LocalDate dt : allDates) {				
 			
-			List<Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<? extends Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 			
 			if(moveLineReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();

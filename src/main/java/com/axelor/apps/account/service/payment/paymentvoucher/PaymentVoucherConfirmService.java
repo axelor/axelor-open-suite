@@ -218,7 +218,7 @@ public class PaymentVoucherConfirmService  {
 	 * Récupérer les éléments à payer dans le bon ordre
 	 * @return
 	 */
-	public List<PaymentInvoiceToPay>  getPaymentInvoiceToPayList(PaymentVoucher paymentVoucher)  {
+	public List<? extends PaymentInvoiceToPay>  getPaymentInvoiceToPayList(PaymentVoucher paymentVoucher)  {
 		
 		return PaymentInvoiceToPay.	filter("self.paymentVoucher = ?1 ORDER by self.sequence ASC", paymentVoucher).fetch();
 		
