@@ -51,7 +51,7 @@ public class GeneralController {
 		LOG.debug("Model: {}",model);
 		Set<MetaField> fieldSet = new HashSet<MetaField>();
 		List<String> fields = new ArrayList<String>();
-		for(MetaField field :MetaField.all_().filter("metaModel.fullName = ?1 AND (relationship = null OR relationship = 'ManyToOne')",model).fetch()){
+		for(MetaField field :MetaField.all().filter("metaModel.fullName = ?1 AND (relationship = null OR relationship = 'ManyToOne')",model).fetch()){
 			fieldSet.add(field);
 			fields.add(field.getName());
 		}

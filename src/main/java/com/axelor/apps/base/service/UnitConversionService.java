@@ -48,7 +48,7 @@ public class UnitConversionService {
 	 * @return Le coefficient de conversion.
 	 * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
 	 */
-	public BigDecimal getCoefficient(List<UnitConversion> unitConversionList, Unit startUnit, Unit endUnit) throws AxelorException {
+	public BigDecimal getCoefficient(List<? extends UnitConversion> unitConversionList, Unit startUnit, Unit endUnit) throws AxelorException {
 		/* Looking for the start unit and the end unit in the unitConversionList to get the coefficient */
 		for (UnitConversion unitConversion : unitConversionList){
 			

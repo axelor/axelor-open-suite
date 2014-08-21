@@ -86,7 +86,7 @@ public class AlarmEngineService <T extends Model>  {
 	 */
 	public Map<T, List<Alarm>> get(Class<T> klass, T... params) {
 		
-		List<AlarmEngine> alarmEngines = AlarmEngine.filter("metaModel = ?1 AND activeOk = true AND externalOk = false", MetaModelService.getMetaModel(klass)).fetch(); 
+		List<? extends AlarmEngine> alarmEngines = AlarmEngine.filter("metaModel = ?1 AND activeOk = true AND externalOk = false", MetaModelService.getMetaModel(klass)).fetch(); 
 		
 		LOG.debug("Lancement des moteurs de type {} : {} moteurs à lancer", klass, alarmEngines.size());
 				
@@ -111,7 +111,7 @@ public class AlarmEngineService <T extends Model>  {
 	 * 
 	 * @throws Exception
 	 */
-	protected Map<T, List<Alarm>> get(List<AlarmEngine> alarmEngines, Class<T> klass, T... params) {
+	protected Map<T, List<Alarm>> get(List<? extends AlarmEngine> alarmEngines, Class<T> klass, T... params) {
 	
 		Map<T, List<Alarm>> map = new HashMap<T, List<Alarm>>();
 		Map<T, Alarm> alarmMap = new HashMap<T, Alarm>();

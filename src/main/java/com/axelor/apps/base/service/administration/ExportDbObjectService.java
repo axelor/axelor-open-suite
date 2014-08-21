@@ -109,7 +109,7 @@ public class ExportDbObjectService {
 
 	private void writeObjects(File objectFile) {
 		try {
-			List<? extends MetaMenu> menuList = MetaMenu.all_().filter("self.parent = null AND self.left = true AND ?1 MEMBER OF self.groups",group).order("-priority").order("id").fetch();
+			List<? extends MetaMenu> menuList = MetaMenu.all().filter("self.parent = null AND self.left = true AND ?1 MEMBER OF self.groups",group).order("-priority").order("id").fetch();
 			log.debug("Total root menus: {}",menuList.size());
 			generateMenuGraph(menuList);
 			CsvTool.csvWriter(objectFile.getParent(), objectFile.getName(), ';', csvHeaders, fieldDataList);
@@ -125,7 +125,7 @@ public class ExportDbObjectService {
 			if(model != null && !objectList.contains(model)) {
 				updateFieldData(menu.getAction());
 			}
-			List<? extends MetaMenu> childList = MetaMenu.all_().filter("self.parent = ?1 AND self.left = true AND ?2 MEMBER OF self.groups", menu,group).order("-priority").order("id").fetch();
+			List<? extends MetaMenu> childList = MetaMenu.all().filter("self.parent = ?1 AND self.left = true AND ?2 MEMBER OF self.groups", menu,group).order("-priority").order("id").fetch();
 			generateMenuGraph(childList);
 		}
 		

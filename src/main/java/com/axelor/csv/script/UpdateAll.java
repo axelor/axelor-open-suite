@@ -40,7 +40,7 @@ public class UpdateAll {
 				Company company = (Company) bean;
 				General general = General.all().fetchOne();
 				company.setAdministration(general);
-				List<Period> periods = Period.all().filter("self.company.id = ?1",company.getId()).fetch();
+				List<? extends Period> periods = Period.all().filter("self.company.id = ?1",company.getId()).fetch();
 				Status opeStatus = Status.all().filter("self.code = 'ope'").fetchOne();
 				if(periods == null || periods.isEmpty()) {
 					for(Year year : Year.all().filter("self.company.id = ?1",company.getId()).fetch()) {

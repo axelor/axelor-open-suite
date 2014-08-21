@@ -102,7 +102,7 @@ public class ProductServiceImpl implements ProductService{
 	
 	private void updateSalePriceOfVariant(Product product)  {
 		
-		List<Product> productVariantList = Product.filter("self.parentProduct = ?1", product).fetch();
+		List<? extends Product> productVariantList = Product.filter("self.parentProduct = ?1", product).fetch();
 		
 		for(Product productVariant : productVariantList)  {
 			

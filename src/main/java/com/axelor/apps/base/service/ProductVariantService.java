@@ -199,7 +199,7 @@ public class ProductVariantService {
 			LOG.debug("Recherche d'un variant de produit ayant au moins comme attributs {} : {}", 
 					productVariantValue1.getProductVariantAttr().getCode(), productVariantValue1.getCode());
 			
-			List<Product> productList = Product.filter("self.parentProduct = ?1 " +
+			List<? extends Product> productList = Product.filter("self.parentProduct = ?1 " +
 					"AND ((self.productVariant.productVariantAttr1.code = ?2 AND self.productVariant.productVariantValue1.code = ?3) " +
 					"OR (self.productVariant.productVariantAttr2.code = ?2 AND self.productVariant.productVariantValue2.code = ?3) " + 
 					"OR (self.productVariant.productVariantAttr3.code = ?2 AND self.productVariant.productVariantValue3.code = ?3) " + 

@@ -119,7 +119,7 @@ public class AddressServiceImpl implements AddressService  {
 	public boolean checkAddressUsed(Long addressId){
 		LOG.debug("Address Id to be checked = {}",addressId);
 		if(addressId != null){
-			if(Partner.all_().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+			if(Partner.all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
 		}
 		return false;
