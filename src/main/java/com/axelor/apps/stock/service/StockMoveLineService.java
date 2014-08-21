@@ -77,7 +77,7 @@ public interface StockMoveLineService {
 	
 	
 	
-	public List<LocationLine> getLocationLines(Product product, Location location) throws AxelorException;
+	public List<? extends LocationLine> getLocationLines(Product product, Location location) throws AxelorException;
 
 	
 	

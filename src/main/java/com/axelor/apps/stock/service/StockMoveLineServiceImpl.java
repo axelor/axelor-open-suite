@@ -158,7 +158,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	
 	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, Location location) throws AxelorException  {
 		
-		List<LocationLine> locationLineList = this.getLocationLines(product, location);
+		List<? extends LocationLine> locationLineList = this.getLocationLines(product, location);
 		
 		if(locationLineList != null)  {
 			for(LocationLine locationLine : locationLineList)  {
@@ -178,9 +178,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	
 	
 	
-	public List<LocationLine> getLocationLines(Product product, Location location) throws AxelorException  {
+	public List<? extends LocationLine> getLocationLines(Product product, Location location) throws AxelorException  {
 		
-		List<LocationLine> locationLineList = LocationLine.
+		List<? extends LocationLine> locationLineList = LocationLine.
 				filter("self.product = ?1 AND self.futureQty > 0 AND self.trackingNumber IS NOT NULL AND self.detailsLocation = ?2"
 						+trackingNumberService.getOrderMethod(product.getTrackingNumberConfiguration()), product, location).fetch();
 		

@@ -34,7 +34,7 @@ public class AddressServiceStockImpl extends AddressServiceImpl  {
 		super.checkAddressUsed(addressId);
 
 		if(addressId != null){
-			if(StockMove.all_().filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1",addressId).fetchOne() != null)
+			if(StockMove.all().filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
 		}
 		return false;

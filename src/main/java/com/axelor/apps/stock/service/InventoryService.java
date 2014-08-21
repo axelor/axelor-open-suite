@@ -292,7 +292,7 @@ public class InventoryService {
 		
 		this.initInventoryLines(inventory);
 		
-		List<LocationLine> locationLineList = this.getLocationLines(inventory);
+		List<? extends LocationLine> locationLineList = this.getLocationLines(inventory);
 		
 		if (locationLineList != null) {
 			List<InventoryLine> inventoryLineList = new ArrayList<InventoryLine>();
@@ -310,7 +310,7 @@ public class InventoryService {
 	}
 	
 	
-	public List<LocationLine> getLocationLines(Inventory inventory)  {
+	public List<? extends LocationLine> getLocationLines(Inventory inventory)  {
 		
 		String query = "(self.location = ? OR self.detailsLocation = ?)";
 		List<Object> params = new ArrayList<Object>();
