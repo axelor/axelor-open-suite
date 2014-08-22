@@ -7,11 +7,11 @@
 
   <entity name="Planning" lang="java">
   	
-  	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Période"/>
-  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Fait par"/>
+  	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
+  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Realized by"/>
 	<date name="date" title="Date"/>
 	
-	<one-to-many name="planningLineList" ref="com.axelor.apps.organisation.db.PlanningLine" mappedBy="planning" title="Les lignes de plannification"/>
+	<one-to-many name="planningLineList" ref="com.axelor.apps.organisation.db.PlanningLine" mappedBy="planning" title="Planning lines"/>
 
 	<boolean name="hasCompleteTimesheetLines" title="Complete lines"/>
   	<date name="completeFromDate" title="From Date"/>
