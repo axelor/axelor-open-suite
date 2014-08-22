@@ -1,109 +1,109 @@
-"key","message","comment","context"
-"Address",,,"resources/domains/EmailAddress.xml:11"
-"Address Block","Bloc d'adresse",,"resources/domains/Message.xml:23
+key,message,comment,context
+Address,Adresse postale,,resources/domains/EmailAddress.xml:11
+Address Block,Bloc d'adresse,,"resources/domains/Message.xml:23
 resources/domains/Template.xml:18"
-"All batchs mails",,,"resources/views/menu.xml:16"
-"Bcc","Cci",,"resources/domains/Template.xml:15
+All batchs mails,Envois courrier en masse,,resources/views/menu.xml:16
+Bcc,Cci,,"resources/domains/Template.xml:15
 resources/domains/Message.xml:28"
-"Cc","Cci",,"resources/domains/Message.xml:27
+Cc,Cci,,"resources/domains/Message.xml:27
 resources/domains/Template.xml:14"
-"Chat","Messagerie interne",,"resources/views/Selects.xml:39"
-"Code",,,"resources/domains/Wizard.xml:11"
-"Configuration","Configuration",,"resources/views/menu.xml:74"
-"Configurations","Configurations",,"resources/views/MailAccount.xml:25"
-"Content","Contenu",,"resources/domains/Message.xml:12
+Chat,Messagerie interne,,resources/views/Selects.xml:39
+Code,,,resources/domains/Wizard.xml:11
+Configuration,Configuration,,resources/views/menu.xml:74
+Configurations,Configurations,,resources/views/MailAccount.xml:25
+Content,Contenu,,"resources/domains/Message.xml:12
 resources/domains/Template.xml:11
 resources/views/Message.xml:34"
-"Default ?",,,"resources/domains/Template.xml:22"
-"Default account ?",,,"resources/domains/MailAccount.xml:17"
-"Delete","Supprimer",,"resources/views/Message.xml:47"
-"Deleted","Supprimée",,"resources/views/Selects.xml:28"
-"Draft","Brouillon",,"resources/views/Selects.xml:26"
-"Draft emails","Emails Brouillon",,"resources/views/menu.xml:42
+Default ?,Par défaut ?,,resources/domains/Template.xml:22
+Default account ?,Compte par défaut ?,,resources/domains/MailAccount.xml:17
+Delete,Supprimer,,resources/views/Message.xml:47
+Deleted,Supprimée,,resources/views/Selects.xml:28
+Draft,Brouillon,,resources/views/Selects.xml:26
+Draft emails,Emails Brouillon,,"resources/views/menu.xml:42
 resources/views/menu.xml:46"
-"Email","Email",,"resources/views/Selects.xml:38
+Email,Email,,"resources/views/Selects.xml:38
 resources/views/Message.xml:14"
-"Email address","Adresse Email",,"resources/views/EmailAddress.xml:15
+Email address,Adresse Email,,"resources/views/EmailAddress.xml:15
 resources/views/EmailAddress.xml:10"
-"Email addresses","Adresses email",,"resources/views/EmailAddress.xml:6
+Email addresses,Adresses email,,"resources/views/EmailAddress.xml:6
 resources/views/menu.xml:96
 resources/views/menu.xml:93"
-"Email box","Boîte Email",,"resources/views/menu.xml:18"
-"Emails","Emails",,"resources/views/Message.xml:6"
-"Emails/Mails",,,"resources/views/menu.xml:14"
-"Event","Evènement",,"resources/views/Selects.xml:14"
-"File path","Chemin vers fichier",,"resources/domains/Message.xml:20
+Email box,Boîte Email,,resources/views/menu.xml:18
+Emails,Emails,,resources/views/Message.xml:6
+Emails/Mails,Emails/Courriers,,resources/views/menu.xml:14
+Event,Evènement,,resources/views/Selects.xml:14
+File path,Chemin vers fichier,,"resources/domains/Message.xml:20
 resources/domains/Template.xml:23"
-"Forecasted Sent Date","Date prévue d'envoi",,"resources/domains/Message.xml:14"
-"Generate message","Générer message",,"resources/views/GenerateMessageWizard.xml:8"
-"Host",,,"resources/domains/MailAccount.xml:14"
-"IMAP","IMAP",,"resources/views/Selects.xml:33"
-"Import",,,"resources/domains/EmailAddress.xml:10"
-"Inbox","Boîte de réception",,"resources/views/menu.xml:21
+Forecasted Sent Date,Date prévue d'envoi,,resources/domains/Message.xml:14
+Generate message,Générer message,,resources/views/GenerateMessageWizard.xml:8
+Host,Hôte,,resources/domains/MailAccount.xml:14
+IMAP,IMAP,,resources/views/Selects.xml:33
+Import,,,resources/domains/EmailAddress.xml:10
+Inbox,Boîte de réception,,"resources/views/menu.xml:21
 resources/views/menu.xml:25"
-"Informations","Informations",,"resources/views/Message.xml:18
+Informations,Informations,,"resources/views/Message.xml:18
 resources/views/MailAccount.xml:15"
-"Internal Message","Message interne",,"resources/views/Message.xml:32"
-"Lead","Piste",,"resources/views/Selects.xml:11"
-"Login","Identifiant",,"resources/views/MailAccount.xml:21
+Internal Message,Message interne,,resources/views/Message.xml:32
+Lead,Piste,,resources/views/Selects.xml:11
+Login,Identifiant,,"resources/views/MailAccount.xml:21
 resources/domains/MailAccount.xml:12"
-"Mail","Courrier",,"resources/views/Selects.xml:37"
-"Mail account","Compte email",,"resources/views/MailAccount.xml:14
+Mail,Courrier,,resources/views/Selects.xml:37
+Mail account,Compte email,,"resources/views/MailAccount.xml:14
 resources/domains/Message.xml:31"
-"Mail accounts","Comptes email",,"resources/views/MailAccount.xml:6"
-"Media Type","Type de média",,"resources/domains/Message.xml:22
+Mail accounts,Comptes email,,resources/views/MailAccount.xml:6
+Media Type,Type de média,,"resources/domains/Message.xml:22
 resources/domains/Template.xml:17"
-"Model",,,"resources/domains/Template.xml:21"
-"Name",,,"resources/domains/Template.xml:10
+Model,Objet métier,,resources/domains/Template.xml:21
+Name,Intitulé,,"resources/domains/Template.xml:10
 resources/domains/Wizard.xml:10
 resources/domains/MailAccount.xml:10"
-"New email","Nouvel email",,"resources/views/menu.xml:32
+New email,Nouvel email,,"resources/views/menu.xml:32
 resources/views/menu.xml:36"
-"Opportunity","Opportunité",,"resources/views/Selects.xml:12"
-"POP","POP",,"resources/views/Selects.xml:32"
-"Partner/Contact","Tiers/Contact",,"resources/views/Selects.xml:10"
-"Password",,,"resources/domains/MailAccount.xml:13"
-"Please input valid email address","Merci de saisir une adresse email valide.",,"resources/views/EmailAddress.xml:20"
-"Port",,,"resources/domains/MailAccount.xml:15"
-"Print","Imprimer",,"resources/views/Message.xml:16"
-"Product","Produit",,"resources/views/Selects.xml:13"
-"Project/Business","Projet/Affaire",,"resources/views/Selects.xml:16"
-"Quote/Order","Devis/Commande",,"resources/views/Selects.xml:15"
-"Received","Reçu",,"resources/views/Selects.xml:21"
-"Recipients","Destinataires",,"resources/views/Message.xml:27"
-"Related to","Associé à ",,"resources/views/Message.xml:39
+Opportunity,Opportunité,,resources/views/Selects.xml:12
+POP,POP,,resources/views/Selects.xml:32
+Partner/Contact,Tiers/Contact,,resources/views/Selects.xml:10
+Password,Mot de passe,,resources/domains/MailAccount.xml:13
+Please input valid email address,Merci de saisir une adresse email valide.,,resources/views/EmailAddress.xml:20
+Port,,,resources/domains/MailAccount.xml:15
+Print,Imprimer,,resources/views/Message.xml:16
+Product,Produit,,resources/views/Selects.xml:13
+Project/Business,Projet/Affaire,,resources/views/Selects.xml:16
+Quote/Order,Devis/Commande,,resources/views/Selects.xml:15
+Received,Reçu,,resources/views/Selects.xml:21
+Recipients,Destinataires,,resources/views/Message.xml:27
+Related to,Associé à ,,"resources/views/Message.xml:39
 resources/domains/Message.xml:15
 resources/domains/Message.xml:17"
-"Related to1 select","Lié à (1) sélection",,"resources/domains/Message.xml:16"
-"Related to2 select","Lié à (2) sélection",,"resources/domains/Message.xml:18"
-"Routings","Gamme",,"resources/views/menu.xml:88
+Related to1 select,Lié à (1) sélection,,resources/domains/Message.xml:16
+Related to2 select,Lié à (2) sélection,,resources/domains/Message.xml:18
+Routings,Gamme,,"resources/views/menu.xml:88
 resources/views/menu.xml:85"
-"SMTP Account","Compte SMTP",,"resources/views/menu.xml:76
+SMTP Account,Compte SMTP,,"resources/views/menu.xml:76
 resources/views/menu.xml:79"
-"SSL/TLS",,,"resources/domains/MailAccount.xml:16"
-"Send","Envoyer",,"resources/views/Message.xml:46"
-"Sender (Email)","Expéditeur (Email)",,"resources/domains/Message.xml:29"
-"Sent","Envoyé",,"resources/views/Selects.xml:27
+SSL/TLS,,,resources/domains/MailAccount.xml:16
+Send,Envoyer,,resources/views/Message.xml:46
+Sender (Email),Expéditeur (Email),,resources/domains/Message.xml:29
+Sent,Envoyé,,"resources/views/Selects.xml:27
 resources/views/Selects.xml:22"
-"Sent by email","Envoyé par email",,"resources/domains/Message.xml:30"
-"Sent date","Date d'envoi",,"resources/domains/Message.xml:13"
-"Sentbox","Emails Envoyés",,"resources/views/menu.xml:53
+Sent by email,Envoyé par email,,resources/domains/Message.xml:30
+Sent date,Date d'envoi,,resources/domains/Message.xml:13
+Sentbox,Emails Envoyés,,"resources/views/menu.xml:53
 resources/views/menu.xml:57"
-"Server Type",,,"resources/domains/MailAccount.xml:11"
-"Signature",,,"resources/domains/MailAccount.xml:18"
-"Status","Statut",,"resources/domains/Message.xml:19"
-"Subject","Sujet/Objet",,"resources/views/Message.xml:35
+Server Type,Type serveur,,resources/domains/MailAccount.xml:11
+Signature,,,resources/domains/MailAccount.xml:18
+Status,Statut,,resources/domains/Message.xml:19
+Subject,Sujet/Objet,,"resources/views/Message.xml:35
 resources/domains/Message.xml:11"
-"Suject",,,"resources/domains/Template.xml:12"
-"Target receptor",,,"resources/domains/Template.xml:16"
-"Task (Project)","Tâche (Projet)",,"resources/views/Selects.xml:17"
-"Template","Modèle",,"resources/views/GenerateMessageWizard.xml:9"
-"There is already a default mail account","Il existe déjà une compte email par défaut.",,"resources/views/MailAccount.xml:38"
-"To","A",,"resources/domains/Message.xml:26
+Suject,Sujet,,resources/domains/Template.xml:12
+Target receptor,,,resources/domains/Template.xml:16
+Task (Project),Tâche (Projet),,resources/views/Selects.xml:17
+Template,Modèle,,resources/views/GenerateMessageWizard.xml:9
+There is already a default mail account,Il existe déjà une compte email par défaut.,,resources/views/MailAccount.xml:38
+To,A,,"resources/domains/Message.xml:26
 resources/domains/Template.xml:13"
-"Trash","Corbeille",,"resources/views/menu.xml:64
+Trash,Corbeille,,"resources/views/menu.xml:64
 resources/views/menu.xml:68"
-"Type",,,"resources/domains/Message.xml:10"
-"Validate","Valider",,"resources/views/GenerateMessageWizard.xml:10"
-"help:Message.bccEmailAddressSet",,,"resources/domains/Message.xml:28"
-"help:Message.ccEmailAddressSet",,,"resources/domains/Message.xml:27"
+Type,,,resources/domains/Message.xml:10
+Validate,Valider,,resources/views/GenerateMessageWizard.xml:10
+help:Message.bccEmailAddressSet,,,resources/domains/Message.xml:28
+help:Message.ccEmailAddressSet,,,resources/domains/Message.xml:27
