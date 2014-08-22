@@ -42,7 +42,7 @@ public class ImportPartner {
 	        try{
 	            Partner partner = (Partner) bean;
 				partner.setContactPartnerSet(new HashSet<Partner>());
-				List<? extends Partner> partnerList = Partner.all_().filter("self.mainPartner.id = ?1",partner.getId()).fetch();
+				List<? extends Partner> partnerList = Partner.all().filter("self.mainPartner.id = ?1",partner.getId()).fetch();
 				for(Partner pt : partnerList)
 					partner.getContactPartnerSet().add(pt);
 				for(Company company : partner.getCompanySet())  {

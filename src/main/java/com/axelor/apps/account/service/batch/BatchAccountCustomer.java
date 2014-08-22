@@ -64,7 +64,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 		boolean updateDueCustAccountOk = accountingBatch.getUpdateDueCustAccountOk();
 		boolean updateDueReminderCustAccountOk = accountingBatch.getUpdateDueReminderCustAccountOk();
 		
-		List<AccountingSituation> accountingSituationList = AccountingSituation.all().filter("self.company = ?1", company).fetch();
+		List<AccountingSituation> accountingSituationList = (List<AccountingSituation>) AccountingSituation.all().filter("self.company = ?1", company).fetch();
 		int i = 0;
 		JPA.clear();
 		for(AccountingSituation accountingSituation : accountingSituationList)  {
@@ -126,10 +126,10 @@ public class BatchAccountCustomer extends BatchStrategy {
 		List<AccountingSituation> accountingSituationList = null;
 		
 		if(company != null)  {
-			accountingSituationList = AccountingSituation.all().filter("self.company = ?1 and self.custAccountMustBeUpdateOk = 'true'", company).fetch();
+			accountingSituationList = (List<AccountingSituation>) AccountingSituation.all().filter("self.company = ?1 and self.custAccountMustBeUpdateOk = 'true'", company).fetch();
 		}
 		else  {
-			accountingSituationList = AccountingSituation.all().filter("self.custAccountMustBeUpdateOk = 'true'").fetch();
+			accountingSituationList = (List<AccountingSituation>) AccountingSituation.all().filter("self.custAccountMustBeUpdateOk = 'true'").fetch();
 		}
 		
 		int i = 0;

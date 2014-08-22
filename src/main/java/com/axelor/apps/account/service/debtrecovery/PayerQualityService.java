@@ -73,7 +73,7 @@ public class PayerQualityService {
 	
 	
 	public List<MoveLine> getMoveLineRejectList(Partner partner)  {
-		return MoveLine.filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, today.minusYears(1)).fetch();
+		return (List<MoveLine>) MoveLine.filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, today.minusYears(1)).fetch();
 	}
 	
 	
@@ -141,7 +141,7 @@ public class PayerQualityService {
 	
 	
 	public List<Partner> getPartnerList()  {
-		return  Partner.filter("self.customerTypeSelect = 3").fetch();
+		return  (List<Partner>) Partner.filter("self.customerTypeSelect = 3").fetch();
 	}
 	
 	

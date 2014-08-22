@@ -103,7 +103,7 @@ public class MoveLineExportService {
 	}
 	
 	
-	public BigDecimal getSumDebit(String queryFilter, List<Move> moveList)  {
+	public BigDecimal getSumDebit(String queryFilter, List<? extends Move> moveList)  {
 		
 		Query q = JPA.em().createQuery("select SUM(self.debit) FROM MoveLine as self WHERE " + queryFilter, BigDecimal.class);
 		q.setParameter(1, moveList);
@@ -309,7 +309,7 @@ public class MoveLineExportService {
 		
 		for(LocalDate dt : allDates) {				
 			
-			List<Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = (List<Journal>) Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 			
 			if(moveLineReport.getJournal() != null)  {
 				journalList = new ArrayList<Journal>();
@@ -318,7 +318,7 @@ public class MoveLineExportService {
 			
 			for(Journal journal : journalList)  {
 			
-				List<Move> moveList = Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<? extends Move> moveList = Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 				
 				String journalCode = journal.getExportCode();
 				
@@ -333,7 +333,7 @@ public class MoveLineExportService {
 						Move firstMove = moveList.get(0);
 						String periodCode = firstMove.getPeriod().getFromDate().toString("yyyyMM");
 						
-						this.updateMoveList(moveList, moveLineReport, interfaceDate, exportNumber);
+						this.updateMoveList((List<Move>) moveList, moveLineReport, interfaceDate, exportNumber);
 						
 						String items[] = new String[8];
 						items[0] = companyCode;
@@ -455,7 +455,7 @@ public class MoveLineExportService {
 		
 		for(LocalDate dt : allDates) {				
 			
-			List<Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = (List<Journal>) Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 			
 			if(moveLineReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -464,7 +464,7 @@ public class MoveLineExportService {
 			
 			for(Journal journal : journalList)  {
 			
-				List<Move> moveList = Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<Move> moveList = (List<Move>) Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 				
 				String journalCode = journal.getExportCode();
 				
@@ -600,7 +600,7 @@ public class MoveLineExportService {
 		
 		for(LocalDate dt : allDates) {				
 			
-			List<Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = (List<Journal>) Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 			
 			if(moveLineReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -609,7 +609,7 @@ public class MoveLineExportService {
 			
 			for(Journal journal : journalList)  {
 			
-				List<Move> moveList = Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<Move> moveList = (List<Move>) Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 				
 				String journalCode = journal.getExportCode();
 				
@@ -743,7 +743,7 @@ public class MoveLineExportService {
 		
 		for(LocalDate dt : allDates) {				
 			
-			List<Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = (List<Journal>) Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 			
 			if(moveLineReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -752,7 +752,7 @@ public class MoveLineExportService {
 			
 			for(Journal journal : journalList)  {
 			
-				List<Move> moveList = Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<Move> moveList = (List<Move>) Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 				
 				String journalCode = journal.getExportCode();
 				
@@ -764,7 +764,7 @@ public class MoveLineExportService {
 					
 					for(Move move : moveList)  {
 						
-						List<MoveLine> moveLineList = MoveLine.filter("self.account.reconcileOk = true AND self.credit != 0.00 AND self.move in ?1" + moveLineQueryStr, moveList).fetch();
+						List<MoveLine> moveLineList = (List<MoveLine>) MoveLine.filter("self.account.reconcileOk = true AND self.credit != 0.00 AND self.move in ?1" + moveLineQueryStr, moveList).fetch();
 						
 						if(moveLineList.size() > 0) {
 							
@@ -898,7 +898,7 @@ public class MoveLineExportService {
 					for (Long accountId : accountIds) {
 						if(accountId!=null) {
 							String accountCode = Account.find(accountId).getCode();
-							List<MoveLine> moveLines = MoveLine.filter("self.account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"+ 
+							List<MoveLine> moveLines = (List<MoveLine>) MoveLine.filter("self.account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"+ 
 							localDate.toString() +"' AND self.move.exportNumber = '"+ exportAgressoRef +"'" + moveLineQueryStr, accountId).fetch();
 							
 							LOG.debug("movelines  : {} " , moveLines);

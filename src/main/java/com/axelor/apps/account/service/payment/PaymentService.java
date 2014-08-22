@@ -102,7 +102,7 @@ public class PaymentService {
 			 LOG.debug("Comptes : {}", invoiceLineDebit.getAccount());
 			
 			 // Récupérer les trop pérçu du tiers pour le même compte que la ligne en débit
-			 List<MoveLine> creditMoveLines = this.getExcessPayment(invoice, invoiceLineDebit.getAccount());
+			 List<MoveLine> creditMoveLines = (List<MoveLine>) this.getExcessPayment(invoice, invoiceLineDebit.getAccount());
 			
 			 List<MoveLine> debitMoveLines = new ArrayList<MoveLine>();
 			 debitMoveLines.add(invoiceLineDebit);
@@ -126,10 +126,10 @@ public class PaymentService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public List<MoveLine> getExcessPayment(Invoice invoice, Account account) throws AxelorException {
+	public List<? extends MoveLine> getExcessPayment(Invoice invoice, Account account) throws AxelorException {
 		 Company company = invoice.getCompany();
 		
-		 List<MoveLine> creditMoveLines =  MoveLine
+		 List<? extends MoveLine> creditMoveLines =  MoveLine
 		 .filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 		 " AND self.account.reconcileOk = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
 		 " AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
@@ -142,14 +142,14 @@ public class PaymentService {
 	
 	
 	
-	public List<MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue) throws AxelorException {
+	public List<? extends MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue) throws AxelorException {
 		Company company = invoice.getCompany();
 		Partner partner = invoice.getPartner();
 
 		// Récupérer les dûs du tiers pour le même compte que celui de l'avoir
 		List<MoveLine> debitMoveLines = ms.getOrignalInvoiceFromRefund(invoice);
 			
-		List<MoveLine> othersDebitMoveLines = null;
+		List<? extends MoveLine> othersDebitMoveLines = null;
 		if(useOthersInvoiceDue)  {
 			if(debitMoveLines != null && debitMoveLines.size() != 0)  {
 				othersDebitMoveLines = MoveLine

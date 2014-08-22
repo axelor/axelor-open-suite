@@ -337,7 +337,7 @@ public class MailService {
 	 */
 	public Mail replaceTag(Mail mail)  {
 		
-		List<MailModelTag> mailModelTagList = MailModelTag.all().fetch();
+		List<? extends MailModelTag> mailModelTagList = MailModelTag.all().fetch();
 
 		String content = mail.getContent();
 		String subject = mail.getSubject();
@@ -395,7 +395,7 @@ public class MailService {
 	public void generateAllPdfMail()  {
 		LOG.debug("Génération en masse des emails et courriers au format Pdf");
 		
-		List<Mail> mailList = Mail.filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
+		List<? extends Mail> mailList = Mail.filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
 		
 		LOG.debug("Nombre de fichiers à générer : {}",mailList.size());
 		for(Mail mail : mailList)  {
@@ -569,7 +569,7 @@ public class MailService {
 	 * 			Un contrat
 	 * @return
 	 */
-	public List<Mail> getMailList(Partner partner)  {
+	public List<? extends Mail> getMailList(Partner partner)  {
 		return Mail.filter("self.partner = ?1", partner).fetch();
 	}
 	

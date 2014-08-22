@@ -95,11 +95,11 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 			this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, threeMonthDebtPassReason);
 			
 			// FACTURES REJETES
-			List<MoveLine> moveLineList = doubtfulCustomerService.getRejectMoveLine(0, doubtfulCustomerAccount, company);
+			List<MoveLine> moveLineList = (List<MoveLine>) doubtfulCustomerService.getRejectMoveLine(0, doubtfulCustomerAccount, company);
 			LOG.debug("Nombre de lignes d'écriture de rejet concernées (Créance de + 6 mois) au 411 : {} ",moveLineList.size());
 			this.createDoubtFulCustomerRejectMove(moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
 			
-			moveLineList = doubtfulCustomerService.getRejectMoveLine(1, doubtfulCustomerAccount, company);
+			moveLineList = (List<MoveLine>) doubtfulCustomerService.getRejectMoveLine(1, doubtfulCustomerAccount, company);
 			LOG.debug("Nombre de lignes d'écriture de rejet concernées (Créance de + 3 mois) au 411 : {} ",moveLineList.size());
 			this.createDoubtFulCustomerRejectMove(moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
 	

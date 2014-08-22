@@ -88,7 +88,7 @@ public class MoveController {
 	public void validateMultipleMoves(ActionRequest request, ActionResponse response){
 		List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
 		if(!moveIds.isEmpty()){
-			List<? extends Move> moveList = Move.all_().filter("self.id in ?1 AND self.state NOT IN ('validated','canceled')", moveIds).fetch();
+			List<? extends Move> moveList = Move.all().filter("self.id in ?1 AND self.state NOT IN ('validated','canceled')", moveIds).fetch();
 			if(!moveList.isEmpty()){
 				boolean error = moveService.get().validateMultiple(moveList);
 				if(error)

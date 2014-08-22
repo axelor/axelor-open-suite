@@ -502,9 +502,9 @@ public class ReimbursementExportService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createReimbursementInvoice(Partner partner, Company company, List<MoveLine> moveLineList) throws AxelorException  {
+	public void createReimbursementInvoice(Partner partner, Company company, List<? extends MoveLine> moveLineList) throws AxelorException  {
 			
-		BigDecimal total = this.getTotalAmountRemaining(moveLineList);
+		BigDecimal total = this.getTotalAmountRemaining((List<MoveLine>) moveLineList);
 		
 		if(total.compareTo(BigDecimal.ZERO) > 0)  {			
 			
@@ -512,7 +512,7 @@ public class ReimbursementExportService {
 			
 			Reimbursement reimbursement = this.createReimbursement(partner, company);
 				
-			this.fillMoveLineSet(reimbursement, moveLineList, total);
+			this.fillMoveLineSet(reimbursement, (List<MoveLine>) moveLineList, total);
 				
 			if(total.compareTo(company.getAccountConfig().getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
 			// Seuil haut dépassé	
@@ -540,7 +540,7 @@ public class ReimbursementExportService {
 		Partner partner = invoice.getPartner();
 		
 		// récupération des trop-perçus du tiers
-		List<MoveLine> moveLineList = MoveLine.filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+		List<? extends MoveLine> moveLineList = MoveLine.filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.state = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStateSelect = ?3 "
 				,IMove.VALIDATED_MOVE , partner, IAccount.NULL).fetch();
 		

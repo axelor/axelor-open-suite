@@ -508,7 +508,7 @@ public class MoveService {
 		// Récupération des dûs
 		MoveLine invoiceCustomerMoveLine = this.getCustomerMoveLineByLoop(invoice);
 
-		List<MoveLine> debitMoveLines = paymentService.getInvoiceDue(invoice, true); //TODO ajouter parametrage general
+		List<MoveLine> debitMoveLines = (List<MoveLine>) paymentService.getInvoiceDue(invoice, true); //TODO ajouter parametrage general
 
 		if(debitMoveLines != null && debitMoveLines.size() != 0)  {
 			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
@@ -547,7 +547,7 @@ public class MoveService {
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		
 		// Récupération des trop-perçus
-		List<MoveLine> creditMoveLineList = paymentService.getExcessPayment(invoice, accountConfigService.getCustomerAccount(accountConfig));
+		List<MoveLine> creditMoveLineList = (List<MoveLine>) paymentService.getExcessPayment(invoice, accountConfigService.getCustomerAccount(accountConfig));
 		
 		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 			

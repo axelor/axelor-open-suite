@@ -46,14 +46,14 @@ public abstract class BatchWkf extends BatchStrategy {
 	 * 
 	 * @return Une liste de facture.
 	 */
-	protected static Collection<Invoice> invoices(InvoiceBatch invoiceBatch, boolean isTo) {
+	protected static Collection<? extends Invoice> invoices(InvoiceBatch invoiceBatch, boolean isTo) {
 
 		if (invoiceBatch.getOnSelectOk()) { return invoiceBatch.getInvoiceSet(); } 
 		else { return invoiceQuery(invoiceBatch, isTo); }
 
 	}
 
-	public static List<Invoice> invoiceQuery(InvoiceBatch invoiceBatch, boolean isTo) {
+	public static List<? extends Invoice> invoiceQuery(InvoiceBatch invoiceBatch, boolean isTo) {
 		
 		if ( invoiceBatch != null ){
 			

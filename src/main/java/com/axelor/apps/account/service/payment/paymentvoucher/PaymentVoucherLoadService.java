@@ -69,7 +69,7 @@ public class PaymentVoucherLoadService  {
 	 * @throws AxelorException 
 	 */
 	public List<MoveLine> getMoveLines(PaymentVoucher paymentVoucher, MoveLine excludeMoveLine) throws AxelorException {
-		List<MoveLine> moveLines = null;
+		List<? extends MoveLine> moveLines = null;
 		
 		String query = "self.partner = ?1 " +
 				"and self.account.reconcileOk = 't' " +
@@ -89,7 +89,7 @@ public class PaymentVoucherLoadService  {
 		
 		moveLines.remove(excludeMoveLine);
 		
-		return moveLines;
+		return (List<MoveLine>) moveLines;
 	}
 	
 	

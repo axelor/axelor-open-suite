@@ -308,7 +308,7 @@ public class PaymentScheduleExportService {
 	 * @return
 	 */
 	public List<MoveLine> getInvoiceMoveLineListToReconcile(PaymentSchedule paymentSchedule)  {
-		return MoveLine
+		return (List<MoveLine>) MoveLine
 				.filter("self.move.state = ?1 AND self.exportedDirectDebitOk = 'false' " +
 						"AND self.account.reconcileOk = ?2 AND self.amountRemaining > 0 " +
 						"AND self.move.invoice.operationTypeSelect = ?3 " +
@@ -363,7 +363,7 @@ public class PaymentScheduleExportService {
 		
 		PaymentMode paymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
 		
-		List<PaymentScheduleLine> paymentScheduleLineList = PaymentScheduleLine
+		List<PaymentScheduleLine> paymentScheduleLineList = (List<PaymentScheduleLine>) PaymentScheduleLine
 				.filter("self.status.code = 'upr' AND self.paymentSchedule.state = '2' AND self.paymentSchedule.company = ?1 " +
 						"AND self.scheduleDate <= ?2 " +
 						"AND self.debitBlockingOk IN ('false',null) " +
@@ -516,7 +516,7 @@ public class PaymentScheduleExportService {
 		
 		LOG.debug("Récupération de l'objet de prélèvement du tiers {}", partner.getFullName());
 		
-		List<MoveLine> moveLineListResult = MoveLine.filter("self IN (?1) and self.partner = ?2", moveLineList, partner).fetch();
+		List<MoveLine> moveLineListResult = (List<MoveLine>) MoveLine.filter("self IN (?1) and self.partner = ?2", moveLineList, partner).fetch();
 		
 		for(MoveLine moveLine : moveLineListResult)  {
 			Invoice invoice = cfonbExportService.getInvoice(moveLine);
@@ -636,7 +636,7 @@ public class PaymentScheduleExportService {
 		 * - la facture est remplie sur l'écriture
 		 * - la facture n'est pas selectionnée sur un échéancier
 		 */
-		List<MoveLine> moveLineList = MoveLine
+		List<MoveLine> moveLineList = (List<MoveLine>) MoveLine
 				.filter("self.move.state = ?1 AND self.exportedDirectDebitOk = 'false' " +
 						"AND self.move.company = ?2 " +
 						"AND self.account.reconcileOk = ?3 AND self.amountRemaining > 0 " +
@@ -657,7 +657,7 @@ public class PaymentScheduleExportService {
 		
 		
 		// Récupération des factures rejetées
-		List<Invoice> invoiceRejectList = Invoice
+		List<Invoice> invoiceRejectList = (List<Invoice>) Invoice
 				.filter("self.rejectMoveLine IS NOT NULL AND self.rejectMoveLine.amountRemaining > 0 AND self.rejectMoveLine.debit > 0" +
 						" AND self.paymentMode = ?1 AND self.company = ?2 AND self.rejectMoveLine.exportedDirectDebitOk = 'false' AND self.move.state = ?3" +
 						" AND self.rejectMoveLine.account.reconcileOk = 'true' " +

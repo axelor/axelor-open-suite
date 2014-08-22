@@ -98,7 +98,7 @@ public class ReminderService {
 				
 	
 	public BigDecimal getSubstractBalanceDue( Partner partner)  {
-		List<MoveLine> moveLineQuery = MoveLine.filter("self.partner = ?1", partner).fetch();
+		List<? extends MoveLine> moveLineQuery = MoveLine.filter("self.partner = ?1", partner).fetch();
 		BigDecimal balance = BigDecimal.ZERO;
 		for(MoveLine moveLine : moveLineQuery)  {
 			if(moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
@@ -206,7 +206,7 @@ public class ReminderService {
 	public List<MoveLine> getMoveLineReminder(Partner partner, Company company)  {
 		List<MoveLine> moveLineList = new ArrayList<MoveLine>();
 
-		List<MoveLine> moveLineQuery = this.getMoveLine(partner, company);
+		List<MoveLine> moveLineQuery = (List<MoveLine>) this.getMoveLine(partner, company);
 		
 		int mailTransitTime = company.getAccountConfig().getMailTransitTime();
 		
@@ -282,7 +282,7 @@ public class ReminderService {
 	 * 			Une société
 	 * @return
 	 */
-	public List<MoveLine> getMoveLine(Partner partner, Company company)  {
+	public List<? extends MoveLine> getMoveLine(Partner partner, Company company)  {
 		
 		return MoveLine.filter("self.partner = ?1 and self.move.company = ?2", partner, company).fetch();
 

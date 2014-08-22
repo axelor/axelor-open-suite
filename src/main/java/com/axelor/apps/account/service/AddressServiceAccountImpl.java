@@ -35,7 +35,7 @@ public class AddressServiceAccountImpl extends AddressServiceImpl  {
 
 		if(addressId != null){
 			
-			if(Invoice.all_().filter("self.address.id = ?1",addressId).fetchOne() != null)
+			if(Invoice.all().filter("self.address.id = ?1",addressId).fetchOne() != null)
 				return true;
 		}
 		return false;

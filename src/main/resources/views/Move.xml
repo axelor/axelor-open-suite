@@ -90,7 +90,7 @@
 	        </group>
         
         </page>
-        <page title="Accounting export" colSpan="4">
+        <page title="Accounting export" colSpan="4" hideIf="state == 'draft'">
 	    	<field name="exportNumber"/>
 	        <field name="exportDate"/>
 	        <field name="accountingOk"/>
