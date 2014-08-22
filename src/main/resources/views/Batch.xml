@@ -29,7 +29,7 @@
 		<button name="showPartner" title="Partners" onClick="save,action-batch-show-partner" colSpan="2" hidden="true"/>
 		<button name="showAccountingSituation" title="Accounting situations" onClick="save,action-batch-show-accounting-situation" colSpan="2" hidden="true"/>
 		<button name="showPaymentVoucher" title="Payment vouchers" onClick="save,action-batch-show-payment-voucher" colSpan="2" hidden="true"/>
-		<button name="showMoveLineReport" title="Export comptable" onClick="save,action-batch-show-move-line-report" colSpan="2" hidden="true"/>
+		<button name="showMoveLineReport" title="Accounting Export" onClick="save,action-batch-show-move-line-report" colSpan="2" hidden="true"/>
     </form>
     
      <action-attrs name="action-batch-attrs">
