@@ -1,18 +1,153 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	<form name="sale-order-form" id="supplychain-sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
 	onNew="action-group-supplychain-saleorder-onnew"
 	onSave="action-sale-order-set-sequence" onLoad="action-group-supplychain-saleorder-onload">
-		<include view="sale-order-form" from="axelor-sale"/>
+	  <toolbar>
+	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
+	    <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
+	    <button name="excelExport" title="Excel Export" icon="fa-file-text" onClick="save,action-sale-order-method-export-sale-order-excel"/>
+	    <button name="wordExport" title="Word Export" icon="fa-file-text" onClick="save,action-sale-order-method-export-sale-order-word"/>
+	  </toolbar>
+	  <menubar>
+	    <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+	      <item title="Plan a meeting" action="action-sale-order-view-plan-meeting"/>
+	      <item title="Plan a call" action="action-sale-order-view-plan-call"/>
+	      <item title="Plan a task" action="action-sale-order-view-plan-task"/>
+	    </menu>
+	  </menubar>
+	  <panel>
+	    <field name="saleOrderSeq" css="highlight"/>
+	    <field name="project" domain="self.isBusiness = true" if-module="axelor-account-organisation"/>
+	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-lite-form"/>
+	    <field name="externalReference"/>
+	    <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain"/>
+	    <field name="currency"/>
+	  </panel>
+	  <panel-tabs>
+	    <panel title="Customer information">
+	      <field name="clientPartner" onChange="action-sale-order-record-partner" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid"/>
+	      <field name="mainInvoicingAddress"/>
+	      <field name="invoicingTypeSelect" if-module="axelor-supplychain"/>
+	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	      <field name="deliveryAddress"/>
+	      <field name="priceList" domain="self.typeSelect = 1 and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
+	      <panel x-span="8">       
+	        <panel name="specificSettings" title="Specific settings" x-span="8">
+	          <field name="isToPrintLineSubTotal"/>
+	          <field name="hasGlobalTask"/>
+	        </panel>
+	        <panel x-span="12">
+	          <field name="statusSelect" widget="NavSelect" x-span="12"/>
+	        </panel>
+	      </panel>      
+	      <panel readonly="true" title="Totaux" x-span="4">
+	        <field name="exTaxTotal" x-span="12"/>
+	        <field name="taxTotal" x-span="12"/>
+	        <field name="inTaxTotal" css="subtotal-total" x-span="12"/>
+	        <field name="amountRemainingToBeInvoiced" if-module="axelor-supplychain" x-span="12"/>        
+	      </panel>  
+	    </panel>
+	    
+	    <panel-related field="saleOrderLineList"/>
+	    <panel-related field="saleOrderLineTaxList"/>
+	    
+	    <panel title="Other informations">
+	      <panel title="Sales follow-up" x-span="12">
+	        <field name="salemanUser"/>
+	        <field name="team" onSelect="action-sale-order-domain-on-team"/>
+	      </panel>
+	      <panel title="Financial terms" x-span="12">
+	        <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-account-organisation"/>
+	        <field name="paymentCondition" if-module="axelor-account-organisation"/>
+	      </panel>
+	      <panel title="Marketing" x-span="12">
+	        <field name="source"/>
+	      </panel>
+	      <panel title="Invoicing" if-module="axelor-supplychain" x-span="12">
+	        <field name="showDetailsInInvoice"/>
+	        <field name="invoicingMomentSelect" showIf="invoicingTypeSelect == 2"/>
+	      </panel>
+	      <panel title="Description" x-span="12">
+	        <field name="description" showTitle="false" widget="Html" x-lite="true" x-span="12"/>
+	      </panel>        
+	    </panel>
+	    
+	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" if-module="axelor-supplychain"/>          
+	    <panel-related field="invoiceSet" title="Invoicing" showIf="statusSelect == 3" if-module="axelor-supplychain"/>      
+	    
+	    <panel title="Subscription" showIf="invoicingTypeSelect == 6" if-module="axelor-supplychain">
+	      <panel title="Subscription dates" x-span="12">
+	        <field name="subscriptionStartDate" onChange="action-sale-order-record-subscription-start-date"/>
+	        <field name="subscriptionEndDate"/>
+	      </panel>
+	      <panel title="Invoices dates" x-span="12">
+	        <field name="invoicedFirstDate" onChange="action-scheduler-instance-record-first-execution-date"/>
+	        <field name="nextInvPeriodStartDate"/>
+	        <field name="schedulerInstance"/>
+	        <field name="schedulerInstance.lastTheoreticalExecutionDate"/>
+	      </panel>
+	    </panel>
+	  </panel-tabs>
+	  
+	  <panel-side title="Action(s)">      
+	    <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="1" onClick="save,action-sale-order-method-compute,save"/>
+	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-sale-group-confirm,save"/>
+	    <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-sale-group-validate,save"/>
+	    <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-sale-order-record-cancel"/>
+	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="2" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="4" onClick="action-sale-order-view-invoice"/>
+	  </panel-side>    
+	  <panel-side title="Info.">    
+	    <field name="creationDate" readonly="true"/>
+	    <field name="validatedByUser" readonly="true" colSpan="1"/>
+	    <field name="validationDate" readonly="true" colSpan="1"/>
+	    <field name="orderDate"/>
+	    <field name="orderNumber"/>
+	    <field name="shipmentDate" if-module="axelor-supplychain"/>
+	  </panel-side>   
 	</form>
 	
 	<form name="sale-order-form-client" id="supplychain-sale-order-form-client" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
-	onNew="action-group-supplychain-saleorder-onnew"
-	onSave="action-sale-order-set-sequence" onLoad="action-group-supplychain-saleorder-onload">
-		<include view="sale-order-form-client" from="axelor-sale" />
+		  onNew="action-group-supplychain-saleorder-onnew"
+		  onSave="action-sale-order-set-sequence" onLoad="action-group-supplychain-saleorder-onload">
+	  <toolbar>
+	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
+	  </toolbar>
+	  <panel>
+	    <field name="saleOrderSeq" css="highlight"/>
+	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-lite-form"/>
+	    <field name="externalReference"/>
+	    <field name="currency"/>
+	  </panel>
+	  <panel-tabs>
+	    <panel title="Customer information">
+	      <field name="clientPartner" onChange="action-sale-order-record-partner" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid"/>
+	      <field name="mainInvoicingAddress"/>
+	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	      <field name="deliveryAddress"/>      
+	      <panel x-span="8">
+	        <field name="validationDate" readonly="true"/>
+	        <field name="creationDate" readonly="true"/>
+	        <field name="orderDate" readonly="true"/>
+	        <field name="shipmentDate" readonly="true" if-module="axelor-supplychain"/>  
+	        <field name="salemanUser" x-span="10"/>
+	        <field name="statusSelect" widget="NavSelect" x-span="12"/>
+	      </panel>      
+	      <panel title="Totaux" readonly="true" x-span="4">
+	          <field name="exTaxTotal" x-span="12"/>
+	          <field name="taxTotal" x-span="12"/>
+	          <field name="inTaxTotal" css="subtotal-total" x-span="12"/>
+	          <field name="amountRemainingToBeInvoiced" if-module="axelor-supplychain" x-span="12"/>
+	      </panel>
+	    </panel>    
+	    <panel-related field="saleOrderLineList" />
+	    <panel-related field="saleOrderLineTaxList" />
+	    <panel-related field="invoiceSet" title="Invoicing" form-view="invoice-client-form" grid-view="invoice-client-grid" showIf="statusSelect == 3" if-module="axelor-supplychain"/>      
+	  </panel-tabs>
 	</form>
 	
 	<action-group name="action-group-supplychain-saleorder-onnew">

@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
-    <form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" cols="4" id="product-faimly-form">
-	    <include view="product-family-form" from="axelor-base" />
-		<notebook colSpan="4" hideIf="fromMenu == null">
-			<page title="Sales Turnover" cols="2" colWidths="20%,30%,20%,30%">
-				<portlet action="portal.family.sales.turnover.per.month" colSpan="3" height="350" />
-			</page>
-		</notebook>
-    </form>
+	<form cols="4" name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" id="product-faimly-form">
+	  <toolbar>
+	    <button name="viewProducts" title="View Products" onClick="action-view-product-by-family"/>
+	  </toolbar>
+	  <panel>
+	    <field name="name"/>
+	    <field name="code"/>
+	  </panel>
+	  <panel-tabs>
+	    <panel-related field="accountManagementList" domain="self.typeSelect = 1" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
+	    <panel title="Sales Turnover" hideIf="fromMenu == null" >    
+	      <!-- TODO: remove this comment if portlet works in panel
+	      <portlet colSpan="3" height="350" action="portal.family.sales.turnover.per.month"/>
+	      -->
+	    </panel>
+	  </panel-tabs>  
+	</form>
     
 	<action-view title="Family sale turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="portal.family.sales.turnover.per.month">
 		  <view type="chart" name="chart.family.sale.turnover.per.month"/>
