@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="account-grid" title="Accounts" model="com.axelor.apps.account.db.Account">
         <field name="code"/>
@@ -25,15 +25,16 @@
         </node>
     </tree>
 
-    <form name="account-form" title="Account" model="com.axelor.apps.account.db.Account" cols="4"
-    	onNew="action-account-record-new">
-        <field name="code"/>
-        <field name="name"/>
-        <field name="accountType"/>
-        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-group-account-account-onchange-common"/>
-		<field name="parent" domain="self.company = :company" onChange="action-group-account-account-onchange-common"/>
-        <field name="reconcileOk"/>
-    </form>
+<form  onNew="action-account-record-new" name="account-form" title="Account" model="com.axelor.apps.account.db.Account">
+	<panel title="General">
+	  <field name="code"/>
+	  <field name="name"/>
+	  <field name="accountType"/>
+	  <field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-lite-form"/>
+	  <field name="parent" onChange="action-group-account-account-onchange-common" domain="self.company = :company"/>
+	  <field name="reconcileOk"/>
+   </panel>
+</form>
     
     <action-group name="action-group-account-account-onchange-common">
     	<action name="action-account-clean-company"/>

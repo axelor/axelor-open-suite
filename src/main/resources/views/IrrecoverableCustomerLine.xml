@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="irrecoverable-customer-line-grid" title="Customers" model="com.axelor.apps.account.db.IrrecoverableCustomerLine">
         <field name="partner"/>
     </grid>
     
-    <form name="irrecoverable-customer-line-form" title="Customer" model="com.axelor.apps.account.db.IrrecoverableCustomerLine" cols="4">
-        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
-        <field name="irrecoverablePaymentScheduleLineLineList" colSpan="4"/>
-        <field name="irrecoverableInvoiceLineList" colSpan="4"/>
+    <form name="irrecoverable-customer-line-form" title="Customer" model="com.axelor.apps.account.db.IrrecoverableCustomerLine" cols="4" >
+        <panel title="Overview">
+        	<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" x-span="12"/>
+        </panel>
+        <panel-tabs>
+        	<panel-related field="irrecoverablePaymentScheduleLineLineList" x-span="12"/>
+        	<panel-related field="irrecoverableInvoiceLineList" x-span="12"/>
+        </panel-tabs>
+        
     </form>
     
 </object-views>

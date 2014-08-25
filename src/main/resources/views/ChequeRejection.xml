@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
     <grid name="cheque-rejection-grid" title="Cheque Rejections" model="com.axelor.apps.account.db.ChequeRejection">
         <field name="name"/>
@@ -14,19 +14,26 @@
         <field name="status"/>
     </grid>
     
-    <form name="cheque-rejection-form" title="Cheque Rejection" model="com.axelor.apps.account.db.ChequeRejection" cols="4"
-     onNew="action-account-cheque-rejection-onnew-group"
-     onLoad="action-cheque-rejection-attrs-hidden-after-validated">
-        <group title="Header" colSpan="4" cols="4">
-        	<field name="name"/>
-        	<field name="dateTime"/>
-        	<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
-        	<field name="paymentMode"/>
-        	<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-    	</group>
-    	<group title="Payment Rejected" colSpan="4" cols="4">
-        	<field name="paymentVoucher" onChange="action-group-account-cheque-rejection-paymentvoucher-onchange" onSelect="action-cheque-rejection-attrs-domain-payment-voucher" domain="self.company=:company">
-            	<grid orderBy="-paymentDateTime" title="Payment voucher">
+   <form cols="4" onLoad="action-cheque-rejection-attrs-hidden-after-validated" onNew="action-account-cheque-rejection-onnew-group" name="cheque-rejection-form" title="Cheque Rejection" model="com.axelor.apps.account.db.ChequeRejection">
+  <panel title="Overview" colSpan="4" cols="4">
+    <field name="status"/>
+    <field name="move"/>
+    <field name="name"/>
+    <field name="dateTime"/>
+    <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+    <field name="paymentMode"/>
+    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+  </panel>
+  <panel title="Reject Information" >
+    <field name="rejectionDate"/>
+    <field name="interbankCodeLine" domain="self.chequeOk = 't'"/>
+    <field name="description"/>
+    <field name="amountRejected"/>
+  </panel>
+
+  <panel title="Payment Rejected">
+  <field name="paymentVoucher" onChange="action-group-account-cheque-rejection-paymentvoucher-onchange" onSelect="action-cheque-rejection-attrs-domain-payment-voucher" domain="self.company=:company">
+            	<editor x-layout="table"  orderBy="-paymentDateTime" title="Payment voucher">
                 	<field name="ref"/>
                 	<field name="user"/>
                 	<field name="paymentMode"/>
@@ -35,21 +42,18 @@
                 	<field name="paidAmount"/>
                 	<field name="generatedMove"/>
                 	<field name="state"/>
-            	</grid>
+            	</editor>
         	</field>
-        	<field name="amountRejected"/>
-    	</group>
-    	<group title="Reject Information" colSpan="4" cols="4">
-        	<field name="rejectionDate"/>
-        	<field name="interbankCodeLine" domain="self.chequeOk = 't'"/>
-        	<field name="description"/>
-    	</group>
-    	<group title="Action" colSpan="4" cols="4">
-        	<button name="validateChequeRejection" title="Validate reject" colSpan="2" onClick="action-group-account-cheque-rejection-validate-click"/>
-        	<field name="status"/>
-        	<field name="move"/>
-    	</group>
-    </form>
+  </panel>  
+ 
+
+  
+  <panel-side title="Action" >
+    <button name="validateChequeRejection" title="Validate reject" colSpan="2" onClick="action-group-account-cheque-rejection-validate-click"/>
+    
+  </panel-side>
+</form>
+
     
     <action-group name="action-account-cheque-rejection-onnew-group">
 	    <action name="default-cheque-rejection-record"/>

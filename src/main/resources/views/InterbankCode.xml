@@ -1,29 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     <grid name="interbank-code-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
         <field name="code"/>
         <field name="name"/>
         <field name="description"/>
     </grid>
-    <form name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode" cols="6">
-        <group colSpan="6" cols="6">
-            <field name="code"/>
-            <field name="name"/>
-            <field name="endDate"/>
-        </group>
-        <group title="Description" colSpan="6" cols="6">
-            <field name="description" showTitle="false" colSpan="6"/>
-        </group>
-        <field name="interbankCodeLineList" colSpan="6">
-	        <grid title="Blocking reason/reject codes lists">
+     <grid name="interbank-code-line-custom-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCodeLine"> 
 		        <field name="code"/>
 		        <field name="name"/>
 		        <field name="description"/>
 		        <field name="technicalRejectOk"/>
-	    	</grid>
-	    	<form title="Blocking reason/reject codes lists">
+	</grid>
+	    	<form model="com.axelor.apps.account.db.InterbankCodeLine" name="interbank-code-line-custom-form" title="Blocking reason/reject codes lists">
 		        <group colSpan="4" cols="6">
 		            <field name="code"/>
 		            <field name="name"/>
@@ -40,6 +30,17 @@
 		            <field name="chequeOk"/>
 		        </group>
 	  		</form>
-        </field>
-    </form>
+    <form cols="6" name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
+  <panel title="Overview">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="endDate"/>
+  </panel>
+  <panel title="Description" >
+    <field name="description" showTitle="false" x-span="12"/>
+  </panel> 
+  <panel-related field="interbankCodeLineList" form-view="interbank-code-line-custom-form" grid-view="interbank-code-line-custom-grid"/>
+    
+</form>
+    
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
    
     <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="invoiceLineType.name,qty" >
         <field name="invoiceLineType"/>
@@ -16,8 +16,8 @@
     <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
     onNew="action-account-invoice-line-onnew-group"
     onLoad="action-account-invoice-line-onload-group">
-    	<notebook>
-    		<page title="Informations">
+    	<panel-tabs>
+    		<panel title="Informations">
 		        <field name="product" required="true" onChange="action-group-account-invoice-line-product-onchange"/>
 		        <field name="invoiceLineType"/>
 		        <field name="productName"/>
@@ -26,20 +26,20 @@
 		        <field name="product.unit"/>
 		        <field name="exTaxTotal"/>
 		        <field name="task"/>
-		        <group title="Tax informations" colSpan="4" cols="4">
+		        <panel title="Tax informations" x-span="12">
 		    		<field name="taxLine"/>
 					<field name="taxLine.tax.name"/>
 					<field name="taxLine.value"/>
-				</group>
-				 <group name="discount" title="Discount" colSpan="4" cols="4" canCollapse="true">
+				</panel>
+				 <panel name="discount" title="Discount" x-span="12">
 			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute"/>
 			        <field name="discountAmount" onChange="action-invoice-line-method-compute"/>
-			    </group>
-    		</page>
-    		<page title="Notes">
-    			<field name="note"/>
-    		</page>
-    	</notebook>
+			    </panel>
+    		</panel>
+    		<panel title="Notes">
+    			<field name="note" x-span="12"/>
+    		</panel>
+    	</panel-tabs>
         
     </form>
     
@@ -55,16 +55,19 @@
     
     <form name="tax-invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
     onLoad="action-invoice-line-method-product-management">
-        <field name="product" required="true" onChange="action-group-account-tax-invoice-line-product-onchange"/>
-        <field name="invoiceLineType"/>
-        <field name="productName"/>
-        <field name="qty" required="true" onChange="action-group-account-tax-invoice-line-qty-onchange"/>
-        <field name="price" required="true" onChange="action-invoice-line-method-compute"/>
-        <field name="product.unit"/>
-        <field name="exTaxTotal"/>
-    	<field name="taxLine"/>
-		<field name="taxLine.tax.name"/>
-		<field name="taxLine.value"/>
+        <panel title="Overview">
+        	 <field name="product" required="true" onChange="action-group-account-tax-invoice-line-product-onchange"/>
+	        <field name="invoiceLineType"/>
+	        <field name="productName"/>
+	        <field name="qty" required="true" onChange="action-group-account-tax-invoice-line-qty-onchange"/>
+	        <field name="price" required="true" onChange="action-invoice-line-method-compute"/>
+	        <field name="product.unit"/>
+	        <field name="exTaxTotal"/>
+	    	<field name="taxLine"/>
+			<field name="taxLine.tax.name"/>
+			<field name="taxLine.value"/>
+        </panel>
+       
     </form>
     
     <!-- ACTION GROUPs -->

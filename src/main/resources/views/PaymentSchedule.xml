@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="payment-schedule-grid" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule">
         <field name="scheduleId"/>
@@ -15,40 +15,41 @@
         <field name="stateSelect"/>
     </grid>
     
-    <form name="payment-schedule-form" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule" cols="4"
-     onSave="action-payment-schedule-payment-schedule-id"
-     onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group"
-     onNew="action-account-payment-schedule-onnew-group">
-     	<group name="header">
-	     	<field name="scheduleId" readonlyIf="state != 1"/>
-	        <field name="creationDate" readonlyIf="state != 1"/>
-	        <field name="startDate" required="true" readonlyIf="state != 1"/>
-	        <field name="nbrTerm" readonlyIf="state != 1"/>
-	        <field name="partner" domain="self.isContact = false" onChange="action-payment-schedule-record-partner" grid-view="partner-grid" form-view="partner-form" readonlyIf="state != 1"/>
-	        <field name="company" widget="SuggestBox" readonlyIf="state != 1"/>
-	        <field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form"/>
-	        <field name="paymentMode"/>
-	        <field name="currency" readonlyIf="state != 1"/>
-	        <field name="inTaxAmount" readonlyIf="state != 1"/>
-     	</group>
-        <group name="invoiceGroup" colSpan="4" cols="4">
-       	 	<field name="invoiceSet" colSpan="4" domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.status.code = 'dis' and self.inTaxTotalRemaining > 0.0 AND self.currency = :currency" 
-       	 	grid-view="invoice-account-grid" form-view="invoice-form" readonlyIf="state != 1" onChange="action-payment-schedule-record-in-tax-amount"/>
-        	<button name="createPaymentScheduleLines" title="Create schedule lines" colSpan="2" onClick="action-group-account-payment-schedule-create-click" showIf="state == 1"/>
-       	</group>
-        <field name="paymentScheduleLineList" colSpan="4" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form" readonlyIf="state != 3"/>
-        <group colSpan="4" cols="6">
-            <button name="validate" title="Validate" colSpan="2" onClick="action-group-account-payment-schedule-validate-click" showIf="state == 1"/>
-            <button name="cancel" title="Cancel" colSpan="2" onClick="action-payment-schedule-method-cancel,save" hideIf="state = 4" />
-            <field name="stateSelect"/>
-        </group>
-        <group name="irrecoverable" title="Irrecoverable" colSpan="4" canCollapse="true" >
+   <form cols="4" onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group" onSave="action-payment-schedule-payment-schedule-id" onNew="action-account-payment-schedule-onnew-group" name="payment-schedule-form" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule">
+  <panel title="Overview">
+    <field name="scheduleId" readonlyIf="state != 1"/>
+    <field name="creationDate" readonlyIf="state != 1"/>
+    <field name="startDate" readonlyIf="state != 1" required="true"/>
+    <field name="nbrTerm" readonlyIf="state != 1"/>
+    <field name="partner" readonlyIf="state != 1" onChange="action-payment-schedule-record-partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="company" readonlyIf="state != 1" widget="SuggestBox"/>
+    <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
+    <field name="paymentMode"/>
+    <field name="currency" readonlyIf="state != 1"/>
+    <field name="inTaxAmount" readonlyIf="state != 1"/>
+     <field name="stateSelect"/>
+  </panel>
+   <panel  title="Irrecoverable">
         	<field name="irrecoverableStateSelect"/>
        		<field name="managementObject"/>
        		<button name="passInIrrecoverable" title="Shift to irrecoverablePassage en irrécouvrable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable"/>
        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable"/>
-        </group>
-    </form>
+  </panel>
+  <panel-tabs>
+    <panel-related title="Invoices" field="invoiceSet"  domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.status.code = 'dis' and self.inTaxTotalRemaining > 0.0 AND self.currency = :currency" 	grid-view="invoice-account-grid" form-view="invoice-form" readonlyIf="state != 1" onChange="action-payment-schedule-record-in-tax-amount"/>
+    <panel-related title="PaymentSchduleLine" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form" readonlyIf="state != 3"/>
+  </panel-tabs>  
+ 
+    <panel-side >
+      <panel title="actions">
+          <button name="validate" title="Validate"  onClick="action-group-account-payment-schedule-validate-click" showIf="state == 1"/>
+          <button name="cancel" title="Cancel"  onClick="action-payment-schedule-method-cancel,save" hideIf="state = 4" />
+          <button name="createPaymentScheduleLines" title="Create schedule lines" colSpan="2" onClick="action-group-account-payment-schedule-create-click" showIf="state == 1"/>
+      </panel>
+   </panel-side>
+    
+
+  </form>
     
     <!-- ACTION GROUPs -->
     <action-group name="action-account-payment-schedule-onnew-group">

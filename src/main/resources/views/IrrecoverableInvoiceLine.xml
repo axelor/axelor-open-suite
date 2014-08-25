@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
     <grid name="irrecoverable-invoice-line-grid" title="Invoices" model="com.axelor.apps.account.db.IrrecoverableInvoiceLine">
         <field name="name"/>
         <field name="invoice"/>
     </grid>
     <form name="irrecoverable-invoice-line-form" title="Invoice" model="com.axelor.apps.account.db.IrrecoverableInvoiceLine" cols="4">
-        <field name="name"/>
-        <field name="invoiceLineSeq"/>
-        <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
-        <field name="irrecoverableReportLineList" colSpan="4"/>
+       <panel title="Overview">
+	       	<field name="name"/>
+	        <field name="invoiceLineSeq"/>
+	        <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/> 
+       </panel>
+       <panel-tabs>
+       	<panel-related field="irrecoverableReportLineList" x-span="12"/>
+       </panel-tabs>
+        
     </form>
 </object-views>

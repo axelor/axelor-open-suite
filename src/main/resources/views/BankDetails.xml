@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="bank-details-grid" id="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
         <field name="ownerName"/>
@@ -10,39 +10,27 @@
 	    <field name="iban"/>
     </grid>
     
-    <form cols="4" name="bank-details-form" id="bank-details-form"  title="Bank details" model="com.axelor.apps.base.db.BankDetails" onNew="action-set-default-partner" onSave="action-validate-bank-details-bbanKey">
-	    <group title="Owner" colSpan="2" cols="4">
-	        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" onChange="action-set-owner-name"/>
-	        <break/>
-	        <field name="ownerName" />
-	    </group>
-	    <group title="Bank" colSpan="2" cols="4">
-	        <field name="countryCode"/>
-	        <break/>
-	        <field name="bankAddress"/>
-	    </group>    
-	    <group title="RIB" colSpan="3" cols="6">
-	        <separator title="Bank"/>
-	        <separator title="Sort Code"/>
-	        <separator title="Account Nbr"/>
-	        <separator title="Key"/>
-	        <break/>
-	        <field name="bankCode" showTitle="false"/>
-	        <field name="sortCode" showTitle="false"/>
-	        <field name="accountNbr" showTitle="false"/>
-	        <field name="bbanKey" showTitle="false"/>
-	    </group>
-	    <group title="IBAN" colSpan="3" cols="6">
-	        <separator title="IBAN (International Bank Account Identifier)" colSpan="3"/>
-	        <separator title="BIC (Bank Identifier Code)" colSpan="2"/>
-	        <break/>
-	        <field name="iban" onChange="action-group-account-bankdetails-iban-onchange" colSpan="3" showTitle="false"/>
-	        <field name="bic" showTitle="false" colSpan="2"/>
-	        <break/>
-	        <separator title="IBAN + BIC" colSpan="4"/>
-	        <field name="ibanBic" colSpan="4" readonly="true" showTitle="false"/>
-	    </group>
-	</form>
+   <form cols="4" onSave="action-validate-bank-details-bbanKey" onNew="action-set-default-partner" name="bank-details-form" title="Bank details" model="com.axelor.apps.base.db.BankDetails" id="bank-details-form">
+  <panel title="Owner">
+    <field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="ownerName"/>
+  </panel>
+  <panel title="Bank" >
+    <field name="countryCode"/>
+    <field name="bankAddress"/>
+  </panel>
+  <panel title="RIB" >
+    <field name="bankCode" />
+    <field name="sortCode" />
+    <field name="accountNbr" />
+    <field name="bbanKey" />
+  </panel>
+  <panel title="IBAN">
+    <field name="iban"  onChange="action-group-account-bankdetails-iban-onchange"/>
+    <field name="bic"/>
+    <field name="ibanBic"  readonly="true" />
+  </panel>
+</form>
     
     <action-group name="action-group-account-bankdetails-iban-onchange">
     	<action name="save"/>
