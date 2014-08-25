@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -33,52 +33,59 @@
         <field name="saleMinPrice"/>
         <field name="salePrice" hidden="true"/>
     </grid>
-    
-    <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" cols="4" colWidths="400,*"
-    onNew="action-group-purchase-purchase-orderline-onnew"
-    onLoad="action-group-purchase-purchase-orderline-onload">
-	    <field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
+
+	<form name="purchase-order-line-form" title="PO line" 
+		model="com.axelor.apps.purchase.db.PurchaseOrderLine" 
+		onNew="action-group-purchase-purchase-orderline-onnew"
+		onLoad="action-group-purchase-purchase-orderline-onload">
+	  <panel>
+		<field name="product"
+			onChange="action-group-purchase-purchase-orderline-product-onchange"
+			domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) " />
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
 	    <field name="unit"/>
 	    <field name="price" onChange="action-purchase-order-line-method-compute,save">
-	    	<hilite color="danger" if="salePrice &lt; saleMinPrice"/>
+	      <hilite color="danger" if="salePrice &lt; saleMinPrice"/>
 	    </field>
 	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="exTaxTotal"/>
 	    <field name="taxLine.value"/>
 	    <field name="saleMinPrice" readonly="true"/>
 	    <field name="salePrice" hidden="true"/>
-	    <group name="discount" title="Discount" colSpan="4" cols="4" canCollapse="true">
-	        <field name="discountTypeSelect" onChange="action-purchase-order-line-method-compute"/>
-	        <field name="discountAmount" onChange="action-purchase-order-line-method-compute"/>
-	    </group>
-	    <notebook colSpan="4">
-	        <page title="Details" colSpan="4" cols="4">
-	        	<field name="createdBy"/>
-        		<field name="createdOn"/>
-	        </page>
-	        <page title="Delivery" colSpan="4" cols="4">
-	        	<field name="desiredDelivDate"/>
-    			<field name="estimatedDelivDate"/>
-	        	<portlet action="action-purchase-order-line-view-stock-move-line" colSpan="4"/>
-	        </page>
-	        <page title="Links" colSpan="4" cols="4">
-	            <field name="task" if-module="axelor-account-organisation"/>    
-	        </page>
-	        <page title="Suppliers requests" colSpan="4" cols="4" if-module="axelor-suppliermanagement">
-	        	<button name="generateSuppliersRequests" title="Generate suppliers requests" colSpan="2" onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
-	        	<field name="supplierPartner"/>
-	        	<field name="purchaseOrderSupplierLineList" colSpan="4" grid-view="purchase-order-supplier-line-grid" form-view="purchase-order-supplier-line-form"/>
-	        </page>
-	        <page title="Account" colSpan="4" cols="4" if-module="axelor-account">
-	        	<field name="isInvoiced"/>
-	        	<field name="amountInvoiced"/>
-	        	<field name="amountRemainingToBeInvoiced"/>
-	        	<break/>
-	        	<field name="invoiceSet"/>
-	        </page> 
-	    </notebook>       
+	  </panel>  
+	  
+	  <panel name="discount" title="Discount" canCollapse="true">
+	    <field name="discountTypeSelect" onChange="action-purchase-order-line-method-compute"/>
+	    <field name="discountAmount" onChange="action-purchase-order-line-method-compute"/>
+	  </panel>
+	  <panel-tabs>
+	    <panel title="Details">
+	      <field name="createdBy"/>
+	      <field name="createdOn"/>
+	    </panel>
+	    <panel title="Delivery">
+	      <field name="desiredDelivDate"/>
+	      <field name="estimatedDelivDate"/>	      
+	      <!-- TODO: remove this comment if portlet works well in panel
+	      <portlet colSpan="4" action="action-purchase-order-line-view-stock-move-line"/>
+	      -->
+	    </panel>
+	    <panel title="Links">
+	      <field name="task" if-module="axelor-account-organisation"/>
+	    </panel>
+	    <panel title="Suppliers requests" if-module="axelor-suppliermanagement">
+	      <button name="generateSuppliersRequests" title="Generate suppliers requests" colSpan="2" onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
+	      <field name="supplierPartner"/>
+	      <field name="purchaseOrderSupplierLineList" colSpan="4" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
+	    </panel>
+	    <panel title="Account" if-module="axelor-account">
+	      <field name="isInvoiced"/>
+	      <field name="amountInvoiced"/>
+	      <field name="amountRemainingToBeInvoiced"/>            
+	    </panel>
+	    <panel-related field="invoiceSet"/>
+	  </panel-tabs>
 	</form>
 	
 	<!-- ACTION GROUPs -->

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
     	<toolbar>
@@ -30,84 +30,97 @@
 		  <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
 		  <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
-    
-    <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" cols="4" 
-    onNew="action-group-purchase-order-on-new-actions" onSave="action-purchase-order-set-sequence">
-    	<toolbar>
-            <button name="print" title="Print" icon="fa-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
-	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
-	    </toolbar>
-	    <group colSpan="4" cols="6" readonlyIf="statusSelect == 5">
-	        <field name="purchaseOrderSeq" css="highlight"/>
-	        <field name="orderDate"/>
-	        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-group-purchase-order-company-change-actions"/>
-	        <field name="internalReference"/>
-	        <field name="externalReference"/>
-	        <field name="currency"/>
-	        <field name="project" domain="self.isBusiness = true" if-module="axelor-account-organisation"/>
-	    </group>
-	    <notebook colSpan="4">
-	        <page title="PO information" colSpan="4" cols="6">
-	            <group title="Contacts" colSpan="6" cols="6" readonlyIf="statusSelect == 5">
-	                <field name="supplierPartner" form-view="partner-form" onChange="action-purchase-order-record-partner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
-	                <field name="contactPartner" domain="self.isContact = true AND self.mainPartner = :supplierPartner" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	                <field name="invoicingTypeSelect" if-module="axelor-account"/>
-	                <field name="buyerUser"/>
-	                <field name="priceList" domain="self.typeSelect = 2 and (self.partner = null or self.partner = :supplierPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
-	                <field name="invoice" if-module="axelor-account"/>
-	            </group>
-	            <group title="Delivery" colSpan="6" cols="6">
-	                <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain"/>
-	                <field name="location.address" if-module="axelor-supplychain"/>
-	                <field name="deliveryDate"/>
-	            </group>
-	            <field name="purchaseOrderLineList" colSpan="6" form-view="purchase-order-line-form" grid-view="purchase-order-line-purchase-order-grid" readonlyIf="statusSelect == 5"/>
-	            <group colSpan="3" cols="2">
-	                <field name="purchaseOrderLineTaxList" showTitle="false" colSpan="2"/>
-	                <group title="Action(s)" colSpan="2" cols="2">
-	                    <group colSpan="1" cols="1">
-	                        <button name="compute" title="Compute" hideIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-group-purchase-purchase-order-compute-click"/>
-	                        <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="1" onClick="action-purchase-order-record-draft,save"/>
-	                        <button name="requested" title="Requested" showIf="statusSelect == 1" colSpan="1" onClick="action-purchase-order-record-requested,save"/>
-	                        <button name="receipt" title="Receipt" showIf="statusSelect == 2" colSpan="1" onClick="action-purchase-order-record-receipt,save"/>
-	                        <button name="validate" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-group-purchase-order-on-validate-actions"/>
-	                        <button name="completed" title="Completed" showIf="statusSelect == 4" colSpan="1" onClick="action-purchase-order-record-completed,save"/>
-	                        <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-purchase-order-record-cancel"/>
-	                        <button name="showInvoice" title="Show invoice" showIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-purchase-order-show-invoice"/>
-	                        <button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4" colSpan="1" onClick="save,action-purchase-order-method-generate-control-invoice"/>
-	                        <button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect >= 4" colSpan="1" onClick="save,action-purchase-order-method-clear-purchase-order"/>
-	                    </group>
-	                    <group readonly="true" colSpan="1" cols="2" colWidths="50%,50%">
-	                        <field name="validatedByUser" colSpan="1"/>
-	                        <field name="validationDate" colSpan="1"/>
-	                    </group>
-	                </group>
-	            </group>
-	            <group colSpan="3" cols="3">
-	                <group title="Totals" colSpan="3" cols="3" colWidths="50%,50%">
-	                    <spacer/><field name="exTaxTotal" />
-	                    <spacer/><field name="taxTotal" />
-	                    
-	                     <spacer/> <spacer/><separator colSpan="1"/>
-	                    <spacer/><field name="inTaxTotal" css="highlight"/>
-	                    <spacer/><field name="amountRemainingToBeInvoiced" if-module="axelor-account"/>
-	                </group>
-	                 <group colSpan="3" cols="3">
-	                    <field name="statusSelect" showTitle="false" widget="NavSelect"/>
-	                </group>
-	            </group>
-	        </page>
-	        <page title="Financial terms" colSpan="4" cols="4">
-                <field name="paymentMode" domain="self.inOutSelect = 2" if-module="axelor-account"/>
-                <field name="paymentCondition" if-module="axelor-account"/>
-	        </page>
-			<page title="Notes" colSpan="4" cols="4">
-				<field name="notes" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
-			</page>
-			<page title="Suppliers managements" colSpan="4" cols="4" if-module="axelor-suppliermanagement">
-				<include view="purchase-order-supplier-form"/>
-			</page>
-	    </notebook>
+
+	<form onSave="action-purchase-order-set-sequence" onNew="action-group-purchase-order-on-new-actions"
+		name="purchase-order-form" title="Supplier RFQ/PO"
+		model="com.axelor.apps.purchase.db.PurchaseOrder">
+	  <toolbar>
+	    <button name="print" title="Print" icon="fa-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
+	    <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
+	  </toolbar>
+	  <panel readonlyIf="statusSelect == 5">
+	    <field name="purchaseOrderSeq" css="highlight"/>
+	    <field name="orderDate"/>
+	    <field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-lite-form"/>
+	    <field name="internalReference"/>
+	    <field name="externalReference"/>
+	    <field name="currency"/>
+	    <field name="project" domain="self.isBusiness = true" if-module="axelor-account-organisation"/>    
+	  </panel>
+	  <panel-tabs>    
+	    <panel title="PO information">
+	      <panel title="Contacts" readonlyIf="statusSelect == 5" x-span="12">
+	        <field name="supplierPartner" onChange="action-purchase-order-record-partner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" form-view="partner-form"/>
+	        <field name="buyerUser"/>
+			<field name="contactPartner"
+				domain="self.isContact = true AND self.mainPartner = :supplierPartner"
+				form-view="partner-contact-form" grid-view="partner-contact-grid" />
+			<field name="priceList"
+				domain="self.typeSelect = 2 and (self.partner = null or self.partner = :supplierPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)" />        
+	        <field name="invoicingTypeSelect" if-module="axelor-account"/>
+	        <field name="invoice" if-module="axelor-account"/>
+	      </panel>
+	      <panel title="Delivery" x-span="12">
+	        <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain"/>
+	        <field name="location.address" if-module="axelor-supplychain"/>
+	        <field name="deliveryDate"/>
+	      </panel>
+	      <panel x-span="8">
+	        <field name="statusSelect" showTitle="false" widget="NavSelect" x-span="12"/>  
+	      </panel>
+	      <panel x-span="4">
+	        <panel title="Totals">
+	          <spacer/>
+	          <field name="exTaxTotal"/>
+	          <spacer/>
+	          <field name="taxTotal"/>
+	          <spacer/>
+	          <spacer/>
+	           <!-- TODO: remove this comment if separator works in panel
+	           <separator colSpan="1"/>
+	            -->
+	          <spacer/>
+	          <field name="inTaxTotal" css="highlight"/>
+	          <spacer/>
+	          <field name="amountRemainingToBeInvoiced" if-module="axelor-account"/>          
+	        </panel>
+	      </panel>
+	    </panel>
+	    <panel-related field="purchaseOrderLineList" title="PO Lines"/>    
+	    <panel-related field="purchaseOrderLineTaxList" title="Tax Lines"/>
+	    <panel title="Financial terms">
+	      <field name="paymentMode" domain="self.inOutSelect = 2" if-module="axelor-account"/>
+	      <field name="paymentCondition" if-module="axelor-account"/>
+	    </panel>
+	    <panel title="Notes">
+	      <field name="notes" showTitle="false" x-span="12" widget="Html" x-lite="true"/>
+	    </panel>
+	    <panel title="Suppliers managements" colSpan="4" cols="4" if-module="axelor-suppliermanagement">
+	      <!-- remove this comment if include works in panel
+	      <include view="purchase-order-supplier-form"/> 
+	      -->
+	    </panel>
+	  </panel-tabs>
+	  <panel-side title="Action(s)">
+	    <panel>
+	      <button name="compute" title="Compute" hideIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-group-purchase-purchase-order-compute-click"/>
+	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="1" onClick="action-purchase-order-record-draft,save"/>
+	      <button name="requested" title="Requested" showIf="statusSelect == 1" colSpan="1" onClick="action-purchase-order-record-requested,save"/>
+	      <button name="receipt" title="Receipt" showIf="statusSelect == 2" colSpan="1" onClick="action-purchase-order-record-receipt,save"/>
+	      <button name="validate" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-group-purchase-order-on-validate-actions"/>
+	      <button name="completed" title="Completed" showIf="statusSelect == 4" colSpan="1" onClick="action-purchase-order-record-completed,save"/>
+	      <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-purchase-order-record-cancel"/>
+	      <button name="showInvoice" title="Show invoice" showIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-purchase-order-show-invoice"/>
+	      <button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4" colSpan="1" onClick="save,action-purchase-order-method-generate-control-invoice"/>
+	      <button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect &gt;= 4" colSpan="1" onClick="save,action-purchase-order-method-clear-purchase-order"/>
+	    </panel>
+	  </panel-side>
+	  <panel-side title="Info.">
+	    <panel readonly="true">
+	      <field name="validatedByUser"/>
+	      <field name="validationDate"/>
+	    </panel>    
+	  </panel-side>        
 	</form>
     
     <action-group name="action-group-purchase-order-on-new-actions">
