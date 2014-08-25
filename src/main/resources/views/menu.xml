@@ -70,7 +70,7 @@
 	</action-view>	
 	
 	<menuitem name="stock-root-incoming-supplier" parent="stock-root-planned"
-		title="Receptions fournisseurs" action="stock.root.incoming.supplier" />
+		title="Supplier deliveries" action="stock.root.incoming.supplier" />
 
 	<action-view name="stock.root.incoming.supplier" title="Receptions fournisseurs"
 		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
@@ -80,7 +80,7 @@
 	</action-view>	
 	
 	<menuitem name="stock-root-outcoming-supplier" parent="stock-root-planned"
-		title="Retours fournisseurs" action="stock.root.outcoming.supplier" />
+		title="Supplier returns" action="stock.root.outcoming.supplier" />
 
 	<action-view name="stock.root.outcoming.supplier" title="Retours fournisseurs"
 		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
@@ -90,7 +90,7 @@
 	</action-view>	
 	
 	<menuitem name="stock-root-outcoming-client" parent="stock-root-planned"
-		title="Expéditions clients" action="stock.root.outcoming.client" />
+		title="Customer deliveries" action="stock.root.outcoming.client" />
 
 	<action-view name="stock.root.outcoming.client" title="Expéditions clients"
 		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
@@ -100,7 +100,7 @@
 	</action-view>	
 	
 	<menuitem name="stock-root-incoming-client" parent="stock-root-planned"
-		title="Retours clients" action="stock.root.incoming.client" />
+		title="Customer returns" action="stock.root.incoming.client" />
 
 	<action-view name="stock.root.incoming.client" title="Retours clients"
 		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
