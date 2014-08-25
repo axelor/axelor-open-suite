@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
     	<field name="sequence"/>
@@ -14,14 +14,13 @@
 	    <field name="exTaxTotal"/>
 	</grid>
     
-    <form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" cols="4" 
-    onNew="action-group-sale-saleorderline-onnew"
-    onLoad="action-group-sale-saleorderline-onload">
-	    <group colSpan="4" cols="4">
-		    <field name="sequence"/>
-		    <field name="isToPrintLineSubTotal"/>
-	    </group>
-	    <separator colSpan="4"/>
+	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"
+	 	  onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew">
+	  <panel>
+	    <field name="sequence"/>
+	    <field name="isToPrintLineSubTotal"/>
+	  </panel>
+	  <panel>
 	    <field name="product" onChange="action-group-sale-saleorderline-product-onchange" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
@@ -29,47 +28,41 @@
 	    <field name="price" onChange="action-sale-order-line-method-compute"/>
 	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="exTaxTotal"/>
-	    <field name="taxLine.value"/>      
-	    <group name="discount" title="Discount" colSpan="4" cols="4" canCollapse="true">
-	        <field name="discountTypeSelect" onChange="action-sale-order-line-method-compute"/>
-	        <field name="discountAmount" onChange="action-sale-order-line-method-compute"/>
-	    </group>
-	    <notebook colSpan="4">
-	        <page title="Settings">
-	            <group colSpan="4" cols="4" colWidths="30%,10%,30%,10%">
-	                <field name="saleSupplySelect" if-module="axelor-supplychain" onChange="action-group-sale-saleorderline-salesupplyselect-onchange"/>
-	                <break/>
-	                <field name="supplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" showIf="saleSupplySelect == 2"/>
-	                <field name="task"/>
-	                <field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production"/>
-	                <button name="customizeBOM" title="Customize BOM" colSpan="2" onClick="action-production-method-customize-bill-of-material" if-module="axelor-production" />
-	            </group>
-	        </page>
-	        <page title="Notes">
-	            <field name="description" colSpan="4" showTitle="false" widget="Html" x-lite="true"/>
-	        </page>
-	        <page title="Delivery" colSpan="4" cols="4">
-    			<field name="estimatedDelivDate"/>
-    			<spacer/>
-    			<break/>
-	        	<portlet action="action-sale-order-line-view-stock-move-line" colSpan="4"/>
-	        </page> 
-	        <page name="details" title="SO line details">
-	            <field name="saleOrderSubLineList" colSpan="4"/>
-	        </page>
-	        <page title="Invoicing follow-up" if-module="axelor-supplychain">
-	            <field name="isToInvoice"/>
-	            <field name="isInvoiced"/>
-	            <field name="invoicingDate" />
-	            <field name="amountInvoiced"/>
-	            <field name="amountRemainingToBeInvoiced"/>
-	            <field name="invoiceSet" colSpan="6"/>
-	        </page>
-	        <page name="ressourcesPlanning" title="Ressources Planning">
-	            <field name="employeeSet" colSpan="4" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
-	            <field name="candidateSet" colSpan="4"/>
-	        </page>
-	    </notebook>
+	    <field name="taxLine.value"/>
+	  </panel>
+	  <panel name="discount" title="Discount">
+	    <field name="discountTypeSelect" onChange="action-sale-order-line-method-compute"/>
+	    <field name="discountAmount" onChange="action-sale-order-line-method-compute"/>
+	  </panel>
+	  <panel-tabs>
+	    <panel title="Settings">
+	        <field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain"/>        
+	        <field name="supplierPartner" showIf="saleSupplySelect == 2" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
+	        <field name="task"/>
+	        <field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production"/>
+	        <button name="customizeBOM" title="Customize BOM" colSpan="2" onClick="action-production-method-customize-bill-of-material" if-module="axelor-production"/>
+	    </panel>
+	    <panel title="Notes">
+	      <field name="description" showTitle="false" x-span="12" widget="Html" x-lite="true"/>
+	    </panel>
+	    <panel title="Delivery">
+	      <field name="estimatedDelivDate"/>
+	      <!-- TODO: remove this comment if portlet works in panel
+	      <portlet colSpan="4" action="action-sale-order-line-view-stock-move-line"/>
+	      -->
+	    </panel>
+	    <panel-related title="SO lines" field="saleOrderSubLineList"/>    
+	    <panel title="Invoicing follow-up" if-module="axelor-supplychain">
+	      <field name="isToInvoice" x-span="3"/>
+	      <field name="isInvoiced" x-span="3"/>
+	      <field name="invoicingDate"/>
+	      <field name="amountInvoiced"/>
+	      <field name="amountRemainingToBeInvoiced"/>      
+	    </panel>
+	    <panel-related field="invoiceSet"/>
+	    <panel-related field="employeeSet" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
+	    <panel-related field="candidateSet"/>
+	  </panel-tabs>
 	</form>
     
     <action-group name="action-group-sale-saleorderline-onnew">
