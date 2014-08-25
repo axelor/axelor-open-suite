@@ -112,13 +112,13 @@
 	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="4" onClick="action-sale-order-view-invoice"/>
 	  </panel-side>
 	  
-	  <panel-side title="Info." x-span="4">
-	    <field name="creationDate" readonly="true" colSpan="1"/>
-	    <field name="validatedByUser" readonly="true" colSpan="1"/>
-	    <field name="validationDate" readonly="true" colSpan="1"/>
-	    <field name="orderDate" colSpan="1"/>
-	    <field name="orderNumber" colSpan="1"/>
-	    <field name="shipmentDate" colSpan="1" if-module="axelor-supplychain"/>
+	  <panel-side title="Info.">
+	    <field name="creationDate" readonly="true" x-span="6"/>
+	    <field name="validatedByUser" readonly="true" x-span="6"/>
+	    <field name="validationDate" readonly="true" x-span="6"/>
+	    <field name="orderDate" x-span="6"/>
+	    <field name="orderNumber" x-span="6"/>
+	    <field name="shipmentDate" x-span="6" if-module="axelor-supplychain"/>
 	  </panel-side>
 	</form>
 
