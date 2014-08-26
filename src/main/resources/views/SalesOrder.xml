@@ -68,12 +68,22 @@
 	          <field name="statusSelect" widget="NavSelect" x-span="12"/>
 	        </panel>
 	      </panel>      
-	      <panel readonly="true" title="Totaux" x-span="4">
-	        <field name="exTaxTotal" x-span="12"/>
-	        <field name="taxTotal" x-span="12"/>
-	        <field name="inTaxTotal" css="subtotal-total" x-span="12"/>
-	        <field name="amountRemainingToBeInvoiced" if-module="axelor-supplychain" x-span="12"/>        
-	      </panel>  
+	      <panel readonly="true"  css="order-subtotal" x-span="4">     
+	        <field name="inTaxTotal" showTitle="false" x-span="12">
+	          <viewer>
+	            &lt;dl class="dl-horizontal"&gt;
+	              &lt;dt&gt;Total W.T.&lt;/dt&gt;
+	              &lt;dd&gt;{{record.exTaxTotal}}&lt;/dd&gt;
+	              &lt;dt&gt;Total V.A.T.&lt;/dt&gt;
+	              &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
+	              &lt;dt class="order-subtotal-total"&gt;Total A.T.I.&lt;/dt&gt;
+	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
+	              &lt;dt&gt;Amount remaining to invoice&lt;/dt&gt;
+	              &lt;dd&gt;{{record.amountRemainingToBeInvoiced}}&lt;/dd&gt;
+	            &lt;/dl&gt;
+	          </viewer>
+	        </field>
+	      </panel>
 	    </panel>
 	    
 	    <panel-related field="saleOrderLineList"/>
@@ -126,14 +136,14 @@
 	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="2" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="4" onClick="action-sale-order-view-invoice"/>
 	  </panel-side>    
-	  <panel-side title="Info.">    
-	    <field name="creationDate" readonly="true"/>
-	    <field name="validatedByUser" readonly="true" colSpan="1"/>
-	    <field name="validationDate" readonly="true" colSpan="1"/>
-	    <field name="orderDate"/>
-	    <field name="orderNumber"/>
-	    <field name="shipmentDate" if-module="axelor-supplychain"/>
-	  </panel-side>    
+	  <panel-side title="Info.">
+	    <field name="creationDate" readonly="true" x-span="6"/>
+	    <field name="validatedByUser" readonly="true" x-span="6"/>
+	    <field name="validationDate" readonly="true" x-span="6"/>
+	    <field name="orderDate" x-span="6"/>
+	    <field name="orderNumber" x-span="6"/>
+	    <field name="shipmentDate" x-span="6" if-module="axelor-supplychain"/>
+	  </panel-side>
 	  
 	</form>
 
