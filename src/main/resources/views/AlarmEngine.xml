@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	<selection name="alarm.engine.manager.type">
 		<option value="0"></option>
@@ -20,28 +20,31 @@
         <field name="externalOk"/>
     </grid>
 
-    <form name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine" cols="4"
-    onLoad="action-alarm-engine-attrs-external"
-    onNew="action-alarm-engine-attrs-external"
-    onSave="action-alarm-engine-method-validate-query">
-        <field name="code"/>
-        <field name="metaModel"/>
-        <field name="alarmMessage"/>
-        <field name="managerTypeSelect"/>
-        <group colSpan="4" cols="6">
-	        <field name="activeOk"/>
-	        <field name="lockingOk"/>
-	        <field name="externalOk" onChange="action-alarm-engine-attrs-external"/>
-        </group>
-        <notebook colSpan="4">
-        	<page name="queryPage" title="Query" cols="4">
-        		<field name="query" colSpan="4" showTitle="false" widget="CodeEditor" x-syntax="sql" />
-        	</page>
-        	<page title="Description" cols="4">
-        		<field name="description" colSpan="4" showTitle="false" />
-        	</page>
-        </notebook>
-    </form>
+    <form cols="4" onLoad="action-alarm-engine-attrs-external" 
+    	onSave="action-alarm-engine-method-validate-query" 
+    	onNew="action-alarm-engine-attrs-external" 
+    	name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine">
+	    <panel>
+		    <field name="code"/>
+		    <field name="metaModel"/>
+		    <field name="alarmMessage"/>
+		    <field name="managerTypeSelect"/>
+	  	</panel>
+	  	<panel>
+		    <field name="activeOk" x-span="2"/>
+		    <field name="lockingOk" x-span="2"/>
+		    <field name="externalOk" onChange="action-alarm-engine-attrs-external" x-span="2"/>
+	    </panel>
+	    <panel-tabs>
+		    <panel name="queryPage" title="Query">
+		      <field name="query" showTitle="false" x-span="12" widget="CodeEditor" x-syntax="sql"/>
+		    </panel>
+		    <panel title="Description">
+		      <field name="description" showTitle="false" x-span="12"/>
+		    </panel>
+	  </panel-tabs>    
+	</form>
+
     
     <action-attrs name="action-alarm-engine-attrs-external">
     	<attribute name="hidden" for="queryPage" expr="eval: externalOk"/>

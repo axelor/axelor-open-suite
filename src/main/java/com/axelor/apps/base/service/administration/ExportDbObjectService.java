@@ -82,10 +82,13 @@ public class ExportDbObjectService {
 	@Transactional
 	public MetaFile exportObject() {
 		
-		group = AuthUtils.getUser().getGroup();
+		//group = AuthUtils.getUser().getGroup();
+		group = Group.filter("self.code = 'admins'").fetchOne();
 		try {
+			log.debug("Attachment dir: {}",AppSettings.get().get("file.upload.dir"));
 			if(!new File(AppSettings.get().get("file.upload.dir")).exists()) { return null; }
 			File moduleDir = new File(AppSettings.get().get("application.src"));
+			log.debug("Module dir: {}",AppSettings.get().get("application.src"));
 			if(!moduleDir.exists()){ return null; }
 			
 			MetaFile metaFile = new MetaFile();
@@ -119,13 +122,15 @@ public class ExportDbObjectService {
 	}
 
 	private void generateMenuGraph(List<? extends MetaMenu> menuList) {
-		
+		//log.debug("Checking menu list: {}",menuList);
 		for(MetaMenu menu : menuList) {
 			String model = menu.getAction() != null ? menu.getAction().getModel() : null;
+			//log.debug("Action model: ",model);
 			if(model != null && !objectList.contains(model)) {
 				updateFieldData(menu.getAction());
 			}
-			List<? extends MetaMenu> childList = MetaMenu.all().filter("self.parent = ?1 AND self.left = true AND ?2 MEMBER OF self.groups", menu,group).order("-priority").order("id").fetch();
+			//List<? extends MetaMenu> childList = MetaMenu.all().filter("self.parent = ?1 AND self.left = true AND ?2 MEMBER OF self.groups", menu,group).order("-priority").order("id").fetch();
+			List<? extends MetaMenu> childList = MetaMenu.all().filter("self.parent = ?1 AND self.left = true",menu).order("-priority").order("id").fetch();
 			generateMenuGraph(childList);
 		}
 		
@@ -138,7 +143,7 @@ public class ExportDbObjectService {
 		Map<String,Object> moduleMap  = (Map<String, Object>)objectMap.get(objName);
 		if(moduleMap == null){return;} 
 		boolean addObject = true;
-		
+		//log.debug("Adding object: {}",objName);
 		for(Entry<String, Object> module : moduleMap.entrySet()){
 			boolean addModule = true;
 			for(Map<String,String> field : (List<Map<String,String>>)module.getValue()){
@@ -221,10 +226,10 @@ public class ExportDbObjectService {
 			String modulePath = module.getAbsolutePath();
 			File modelDir = new File(modulePath+"/src/main/resources/domains/");									
 			if(!modelDir.exists()){ continue;}
-//			log.debug("Module : {}",modelDir.getAbsolutePath());
+			//log.debug("Module : {}",modelDir.getAbsolutePath());
 			
 			for(File objectFile : modelDir.listFiles()){
-//				log.debug("Parsing domain : {}",objectFile.getName());
+				//log.debug("Parsing domain : {}",objectFile.getName());
 				String objectName = objectFile.getName().split("\\.")[0];
 				parser.parse(new InputSource(new FileInputStream(objectFile)), xmlHandler);
 				Map<String,Object> moduleMap = (Map<String, Object>) objectMap.get(objectName);

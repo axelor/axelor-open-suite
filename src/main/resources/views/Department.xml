@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="department-grid" title="Departments" model="com.axelor.apps.base.db.Department">
         <field name="region"/>
@@ -9,12 +9,14 @@
         <field name="name"/>
     </grid>
     
-    <form name="department-form" title="Departement" model="com.axelor.apps.base.db.Department" cols="4">
-        <field name="name"/>
-        <field name="code"/>
-        <field name="region"/>
-        <field name="communeList" colSpan="2"/>
-        <field name="cantonList" colSpan="2"/>
+    <form name="department-form" title="Departement" model="com.axelor.apps.base.db.Department" >
+    	<panel>
+	        <field name="name"/>
+	        <field name="code"/>
+	        <field name="region"/>
+        </panel>
+        <panel-related field="communeList" x-span="12" />
+        <panel-related field="cantonList" x-span="12" />
     </form>
     
 </object-views>

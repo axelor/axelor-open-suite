@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
 		<field name="fullName" />
@@ -9,49 +9,49 @@
 		<button name="directions" icon="fa-location-arrow" help="Direction" onClick="com.axelor.apps.base.web.AddressController:directionsMap" />
 	</grid>
 	
-	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address"
-		cols="2" colWidths="*,200"
-		onNew="default-address-record"
-		onSave="action-group-base-address-onsave"
-		readonlyIf="id != null &amp;&amp; fromMain == null">
-		<field name="isUsed" widget="BOOLEAN" hidden="true" /> 
-		<group name="main" title="Address details" cols="1" colSpan="1">
-			<group colSpan="4" cols="2" colWidths="25%,*">
-				<field name="addressL2" onChange="action-check-string-capital-case"/>
-				<field name="addressL3" onChange="action-check-string-capital-case"/>
-				<field name="addressL4" onChange="action-check-string-capital-case"/>
-				<field name="addressL5" onChange="action-check-string-capital-case"/>
-				<field name="commune" onChange="action-address-change-commune"/>
-				<field name="addressL6" required="true" onChange="action-check-string-capital-case"/>
-				<field name="addressL7Country" required="true" />
-				<field name="inseeCode"/>
-				<field name="latit" />
-				<field name="longit" />
-			</group>
-		</group>
-		<group name="actions" title="Actions" cols="1" colSpan="1" hideIf="$popup()">
-			<button name="map" title="View map" icon="fa-map-marker"
-				onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
-			<button name="directions" title="Get directions" icon="fa-location-arrow"
-				onClick="com.axelor.apps.base.web.AddressController:directionsMap" />
-		</group>
-		<group colSpan="2" cols="4" title="QAS certification" >
-			<field name="certifiedOk"/>
-			<break/>
-			<button name="validate" title="Validate" colSpan="2" 
-				onClick="com.axelor.apps.base.web.AddressController:validate,save" />
-			<button name="select" title="Choose" colSpan="2" 
-				onClick="com.axelor.apps.base.web.AddressController:select,save" />
-			<field name="pickList" colSpan="4" showTitle="false">
-				<grid title="Pick list">
-					<field name="partialAddress"/>
-					<field name="postcode"/>
-					<field name="score"/>
-				</grid>
-			</field>
-		</group>
+	<form cols="2" colWidths="*,200" onSave="action-group-base-address-onsave" onNew="default-address-record" readonlyIf="id != null &amp;&amp; fromMain == null" name="address-form" title="Address" model="com.axelor.apps.base.db.Address">
+	  <panel name="main" title="Address details" x-span="12">
+	      <field name="addressL2" onChange="action-check-string-capital-case"/>
+	      <field name="addressL3" onChange="action-check-string-capital-case"/>
+	      <field name="addressL4" onChange="action-check-string-capital-case"/>
+	      <field name="addressL5" onChange="action-check-string-capital-case"/>
+	      <field name="commune" onChange="action-address-change-commune"/>
+	      <field name="addressL6" onChange="action-check-string-capital-case" required="true"/>
+	      <field name="addressL7Country" required="true"/>
+	      <field name="inseeCode"/>
+	      <field name="isUsed" hidden="true" widget="BOOLEAN"/>
+	  </panel>
+	  <panel-side title="Actions" hideIf="$popup()">
+	    <field name="latit" x-span="6"/>
+	    <field name="longit" x-span="6"/>
+	    <spacer/>
+	    <panel x-span="8">
+	    <button name="map" title="View map" icon="fa-map-marker" onClick="com.axelor.apps.base.web.AddressController:viewMap,save"/>
+	    <button name="directions" title="Get directions" icon="fa-location-arrow" onClick="com.axelor.apps.base.web.AddressController:directionsMap"/>
+	    </panel> 
+	  </panel-side>
+	  <panel title="QAS certification" x-span="12">
+	    <field name="certifiedOk" x-span="4"/>
+	    <panel x-span="4">
+	    <button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+	    <button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+	    </panel>
+	    <field name="pickList" title="Pick list" x-span="12">
+	      <viewer><![CDATA[
+	        <pickList>
+	        {{record.partialAddress}} {{record.postcode}} {{record.score}}
+	        </address>
+	        ]]>
+	        </viewer>
+	      <editor>
+	        <field name="partialAddress" x-span="4"/>
+	        <field name="postcode" x-span="4"/>
+	        <field name="score" x-span="4"/>
+	      </editor>
+	    </field>
+	  </panel>
 	</form>
-
+	
 	<action-group name="action-group-base-address-onsave">
 		<action name="action-base-address-set-address-used"/>
 		<action name="action-base-address-check-address-used"/>

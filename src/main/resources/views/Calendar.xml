@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     <grid name="calendar-grid" title="Calendars" model="com.axelor.apps.crm.db.Calendar">
         <field name="name"/>
         <field name="typeSelect"/>
@@ -9,14 +9,14 @@
         <field name="port"/>
     </grid>
     <form name="calendar-form" title="Calendar" model="com.axelor.apps.crm.db.Calendar" cols="4">
-        <field name="title"/>
-        <field name="url"/>
-        <break/>
-        <field name="login"/>
-        <field name="password" />
-        <break/>
-        <field name="typeSelect"/>
-        <field name="isSslConnection"/>
-        <field name="port"/>
+    	<panel>
+	        <field name="title"/>
+	        <field name="url"/>
+	        <field name="login"/>
+	        <field name="password" />
+	        <field name="typeSelect"/>
+	        <field name="isSslConnection"/>
+	        <field name="port"/>
+        </panel>
     </form>
 </object-views> 

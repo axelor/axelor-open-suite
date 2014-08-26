@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
     <grid name="alarm-engine-batch-grid" title="Alarm engine batches" model="com.axelor.apps.base.db.AlarmEngineBatch">
     	<field name="code" />
@@ -9,20 +9,24 @@
    		<field name="alarmEngineSet" />
     </grid>
     
-    <form name="alarm-engine-batch-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngineBatch" cols="4">
-    	<field name="code" />
-        <notebook colSpan="4">
-        	<page title="Configuration" cols="4">
-        		<field name="metaModelSet" colSpan="2" />
-        		<field name="alarmEngineSet" colSpan="2" onSelect="alarm-engine-batch-attrs-alarm-engine-domain"/>
-        	</page>
-        	<page title="Batches" cols="4">
-		    	<field name="description" showTitle="false" colSpan="4" />
-        		<field name="batchList" colSpan="4" grid-view="batch-grid" form-view="batch-form"/>
-        	</page>
-        </notebook>
-        <button name="run" title="Run" onClick="save,alarm-engine-batch-method-run"/>
-    </form>
+    <form cols="4" name="alarm-engine-batch-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngineBatch">
+	  <toolbar>
+	    <button name="run" title="Run" onClick="save,alarm-engine-batch-method-run"/>
+	  </toolbar>
+	  <panel x-stack="true">
+	    <field name="code" x-span="4"/>
+	  </panel>
+	  <panel-tabs>
+	    <panel title="Configuration">
+	      <field name="metaModelSet" />
+	      <field name="alarmEngineSet" onSelect="alarm-engine-batch-attrs-alarm-engine-domain"/>
+	    </panel>
+	    <panel title="Batches">
+	      <field name="description" showTitle="false" x-span="12"/>
+	      <field name="batchList" x-span="12" form-view="batch-form" grid-view="batch-grid"/>
+	    </panel>
+	  </panel-tabs>
+	</form>
     
     <action-method name="alarm-engine-batch-method-run">
     	<call class="com.axelor.apps.base.web.AlarmEngineBatchController" method="launch"/>

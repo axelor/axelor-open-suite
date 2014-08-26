@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="currency-conversion-line-grid" groupBy="startCurrency,endCurrency" orderBy="-fromDate" title="Currency conversion lines" model="com.axelor.apps.base.db.CurrencyConversionLine">
         <field name="startCurrency"/>
@@ -16,35 +16,38 @@
     
     <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" cols="4"
     onNew="action-currency-conversion-line-default-record">
-        <field name="startCurrency"/>
-        <field name="endCurrency" />
-        <button title="Get rate" colSpan="2" readonlyIf="startCurrency == null || endCurrency == null || toDate != null" onClick="action-group-base-currencyconversionline-getrate-click" name="getRate"/>
-        <group title="Applicable dates" colSpan="4">
-	        <field name="fromDate" onChange="action-currency-conversion-line-method-check-date" />
-	        <field name="toDate" onChange="action-currency-conversion-line-method-check-date" readonlyIf="fromDate == null"/>
-        </group>
-        <group title="Rate" colSpan="4">
-	        <field name="exchangeRate"/>
-	        <field name="variations" />
-        </group>
+        <panel>
+		  <field name="startCurrency"/>
+		  <field name="endCurrency"/>
+		  <button name="getRate" title="Get rate" readonlyIf="startCurrency == null || endCurrency == null || toDate != null" colSpan="2" onClick="action-group-base-currencyconversionline-getrate-click"/>
+		</panel> 
+		<panel title="Applicable dates" readonlyIf="startCurrency == null || endCurrency == null">
+		    <field name="fromDate" onChange="action-currency-conversion-line-method-check-date"/>
+		    <field name="toDate" readonlyIf="fromDate == null" onChange="action-currency-conversion-line-method-check-date"/>
+		</panel>
+		<panel title="Rate">
+		    <field name="exchangeRate"/>
+		    <field name="variations"/>
+		</panel>
     </form>
     
     <form onNew="action-group-base-checkcurrencyrate-wizard-onnew" 
     name="wizard-check-currency-rate-form" title="Check currency exhange rates" model="com.axelor.apps.base.db.Wizard" cols="4">
-    	<field name="startCurrency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code" title="Source Currency"/>
-    	<field name="endCurrency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code" title="Destination Currency" />
-    	<field name="general" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.General" x-targetName="today" title="General" hidden="true" />
-    	<group colSpan="4" cols="6" title="System active rate">
-    		<field name="date" widget="DATE" title="Rate Date" readonly="true" />
-	    	<field name="exchangeRate" widget="DECIMAL" title="Exchange rate" readonly="true"/>
-	    </group>
-	    <group colSpan="4" cols="6" title="Rate updation">
-	    	<field name="newExchangeRate" widget="DECIMAL" title="New exchange rate" />
-	    	<field name="variations" title="Variation" />
-	    	<button title="Check / Update rate" help="Get new rate at present from internet" readonlyIf="startCurrency == null || endCurrency == null" onClick="action-currency-conversion-line-method-convert" name="checkRate"/>
-	    	<label title="" />
-	    </group>
-	    <button name="updateRate"  title="Save new rate"  help="Create currency conversion lines with new rate" onClick="action-currency-conversion-line-method-apply-conversion-rate" colSpan="4" readonlyIf="startCurrency == null || endCurrency == null || newExchangeRate == null"/>
+      <panel>
+    	<field name="startCurrency" title="Source Currency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code"/>
+    	<field name="endCurrency" title="Destination Currency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code"/>
+    	<field name="general" title="General" hidden="true" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.General" x-targetName="today"/>
+  	  </panel>    
+	  <panel title="System active rate" x-span="12">
+	    <field name="date" title="Rate Date" readonly="true" widget="DATE"/>
+	    <field name="exchangeRate" title="Exchange rate" readonly="true" widget="DECIMAL"/>
+	  </panel>
+	  <panel title="Rate updation">
+	    <field name="newExchangeRate" title="New exchange rate" widget="DECIMAL"/>
+	    <field name="variations" title="Variation"/>
+	    <button name="checkRate" title="Check / Update rate" help="Get new rate at present from internet" readonlyIf="startCurrency == null || endCurrency == null" onClick="action-currency-conversion-line-method-convert"/>
+	    <button name="updateRate" title="Save new rate" help="Create currency conversion lines with new rate" readonlyIf="startCurrency == null || endCurrency == null || newExchangeRate == null" colSpan="4" onClick="action-currency-conversion-line-method-apply-conversion-rate"/>
+	  </panel>
     </form>
     
     <action-group name="action-group-base-currencyconversionline-getrate-click">

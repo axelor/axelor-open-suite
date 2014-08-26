@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	<grid name="general-grid" title="General admin" model="com.axelor.apps.base.db.General">
        	<toolbar>
@@ -16,69 +16,65 @@
 	</grid>
 	
 	<form name="general-form" title="General admin" model="com.axelor.apps.base.db.General" cols="6">
-       	<toolbar>
+    	<toolbar>
 		    <button name="new" title="New" hidden="true"/>
 		    <button name="delete" title="Delete" hidden="true"/>
 		    <button name="back" title="Back" hidden="true"/>
 		    <button name="copy" title="Copy" hidden="true"/>
 		    <button name="search" title="Search" hidden="true"/>
-		    <button name="exportObjects" title="Export Object" onClick="action-method-general-export-objects" />
+		    <button name="exportObjects" title="Export Object" onClick="action-method-general-export-objects"/>
 		</toolbar>
-	    <field name="today"/>
-	    <field name="logOk"/>
-	    <field name="defaultProjectUnit"/>
-	    <notebook colSpan="6">
-	        <page title="Accounting" cols="4">
-	            <field name="defaultExemptionTax"/>
-	            <field name="isInvoiceMoveConsolidated"/>
-	            <separator title="Rejects reasons and codes list" colSpan="6"/>
-	            <field name="transferAndDirectDebitInterbankCode"/>
-	            <field name="chequeInterbankCode"/>
-	            <separator title="Payer quality" colSpan="4"/>
-	            <field name="payerQualityConfigLineList" colSpan="4"/>
-	            <button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
-	            <separator title="Currency conversion" colSpan="4"/>
-	            <button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate" colSpan="1" onClick="save,action-general-method-update-currency-conversion" />
-	            <label title="" colSpan="3"/> 
-	            <field name="currencyConversionLineList" colSpan="4" />
-	        </page>
-	        <page title="Interfaces" cols="4">
-	            <group name="map" title="Mapping" colSpan="4">
-	                <field name="mapApiSelect"/>
-	                <button name="checkMapApi" title="Test mapping service connection" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:checkMapApi"/>
-	            </group>
-	            <group name="qas" title="Addresses validation" colSpan="4">
-	                <field name="qasWsdlUrl"/>
-	                <button name="checkQasWsdl" title="Test connection to QAS webservice" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
-	            </group>
-	            <group name="ws" title="Webservices" colSpan="4">
-	            	<field name="currencyWsURL" colSpan="4"/>
-	            </group>
-	        </page>
-	        <page title="Exceptions" cols="4">
-	            <field name="exceptionDefaultMsg" colSpan="4"/>
-	            <field name="exceptionInvoiceMsg" colSpan="4"/>
-	            <field name="exceptionAccountingMsg" colSpan="4"/>
-	            <field name="exceptionReminderMsg" colSpan="4"/>
-	            <field name="exceptionMailMsg" colSpan="4"/>
-	            <field name="exceptionSupplychainMsg" colSpan="4"/>
-	        </page>
-	    </notebook>
+		<panel>
+		    <field name="today"/>
+		    <field name="logOk"/>
+		    <field name="defaultProjectUnit"/>
+		</panel>
+		<panel-tabs>
+		    <panel title="Accounting">
+		      <field name="defaultExemptionTax"/>
+		      <field name="isInvoiceMoveConsolidated"/>
+		      <panel title="Rejects reasons and codes list" x-span="12">
+		        <field name="transferAndDirectDebitInterbankCode"/>
+		        <field name="chequeInterbankCode"/>
+		      </panel>
+		      <panel title="Payer quality" x-span="12">
+		        <field name="payerQualityConfigLineList" x-span="12"/>
+		        <button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
+		      </panel>
+		      <panel title="Currency conversion" x-span="12">
+		        <button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate"  onClick="save,action-general-method-update-currency-conversion"/>
+		        <field name="currencyConversionLineList" x-span="12"/>
+		      </panel>
+		    </panel>
+		    <panel title="Interfaces">
+		      <panel name="map" title="Mapping"  x-span="12">
+		        <field name="mapApiSelect"/>
+		        <button name="checkMapApi" title="Test mapping service connection" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:checkMapApi"/>
+		      </panel>
+		      <panel name="qas" title="Addresses validation"  x-span="12">
+		        <field name="qasWsdlUrl"/>
+		        <button name="checkQasWsdl" title="Test connection to QAS webservice" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
+		      </panel>
+		      <panel name="ws" title="Webservices"  x-span="12">
+		        <field name="currencyWsURL" x-span="12"/>
+		      </panel>
+		    </panel>
+		    <panel title="Exceptions">
+		      <field name="exceptionDefaultMsg" x-span="12"/>
+		      <field name="exceptionInvoiceMsg" x-span="12"/>
+		      <field name="exceptionAccountingMsg" x-span="12"/>
+		      <field name="exceptionReminderMsg" x-span="12"/>
+		      <field name="exceptionMailMsg" x-span="12"/>
+		      <field name="exceptionSupplychainMsg" x-span="12"/>
+		    </panel>
+		</panel-tabs>
 	</form>
 	
-	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" cols="4" onNew="action-general-check-duplicate-set-fields-set">
-		<field name="fieldsSet" title="Fields" widget="MANY_TO_MANY" x-target="com.axelor.meta.db.MetaField" colSpan="4" readonly="true" help="Key fields to check duplicate records">
-			<grid title="Fields">
-				<field name="name"/>
-				<field name="label" title="Field"/>
-			</grid>
-			<form title="Fields">
-				<field name="name"/>
-				<field name="label" title="Field"/>
-			</form>
-		</field>
-		<button name="showDuplicate" onClick="action-general-method-show-duplicate" title="Show" colSpan="1"/>
-        <group colSpan="3"></group>
+	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-general-check-duplicate-set-fields-set">
+		<panel>
+			<field name="fieldsSet" title="Fields" widget="MANY_TO_MANY" x-target="com.axelor.meta.db.MetaField" x-span="12" readonly="true" help="Key fields to check duplicate records" />
+			<button name="showDuplicate" onClick="action-general-method-show-duplicate" title="Show" colSpan="1"/>
+		</panel>
 	</form>
 	
 	

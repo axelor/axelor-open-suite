@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	<grid name="indicator-generator-grid" title="Indicator generators" model="com.axelor.apps.base.db.IndicatorGenerator">
 		<field name="code"/>
@@ -11,13 +11,15 @@
 	</grid>
 	
 	<form name="indicator-generator-form" title="Indicator generator" model="com.axelor.apps.base.db.IndicatorGenerator">
-		<field name="code"/>
-		<field name="name" colSpan="4"/>
-		<field name="requestLanguage" />
-		<field name="request" colSpan="4" widget="CodeEditor" x-syntax="sql"/>
-		<button name="run" title="Execute" colSpan="4" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorController:run" />
-		<field name="result" colSpan="4" />
-		<field name="log" colSpan="4" />
+		<panel>
+			<field name="code"/>
+			<field name="name" x-span="12"/>
+			<field name="requestLanguage" />
+			<field name="request" x-span="12" widget="CodeEditor" x-syntax="sql"/>
+			<button name="run" title="Execute" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorController:run" />
+			<field name="result" x-span="12" />
+			<field name="log" x-span="12" />
+		</panel>
 	</form>
 
 </object-views>
