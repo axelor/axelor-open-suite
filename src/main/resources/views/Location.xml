@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="location-grid" title="Stock Locations" model="com.axelor.apps.stock.db.Location">
         <toolbar>
@@ -16,38 +16,33 @@
         <field name="isDefaultLocation"/>
     </grid>
     
-    <form name="location-form" title="Stock Location" model="com.axelor.apps.stock.db.Location" cols="6"
-    	onNew="action-location-record-new">
-    	<toolbar>
-    		<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory" colSpan="1"/>
-    		<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
-    	</toolbar>
-        <field name="name"/>
-        <field name="parent"/>        
-        <field name="typeSelect" onChange="action-location-is-default-location"/>
-        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-location-is-default-location"/>
-        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="address" />
-        <field name="isDefaultLocation" onChange="action-location-is-default-location"/>
-        <break/>
-        <spacer/>
-        <break/>
-        <button name="viewContent" title="View location content" colSpan="6" onClick="action-location-view-location-content"/>
-        <break/>
-        <spacer/>
-        <break/>
-        <notebook title="Location Lines" colSpan="6">
-        	<page title="Stock">
-        		<field name="locationLineList" colSpan="6" grid-view="location-line-grid" form-view="location-line-form"/>
-        	</page>
-        	<page title="Stock Details">
-        		<field name="detailsLocationLineList" colSpan="6" grid-view="location-line-details-grid" form-view="location-line-details-form"/>
-        	</page>
-			<page title="Stock Value">
-				<portlet action="portal.locationLine.location.value" height="350" colSpan="2" />
-			</page>        	
-        </notebook>
-    </form>
+	<form name="location-form" title="Stock Location" model="com.axelor.apps.stock.db.Location" onNew="action-location-record-new">
+	  <toolbar>
+	    <button name="createInventory" title="Create inventory" colSpan="1" onClick="action-location-view-create-inventory"/>
+	    <button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
+	  </toolbar>
+	  <panel>
+	    <field name="name"/>
+	    <field name="parent"/>
+	    <field name="typeSelect" onChange="action-location-is-default-location"/>
+	    <field name="company" widget="SuggestBox" onChange="action-location-is-default-location" form-view="company-lite-form"/>
+	    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+	    <field name="address"/>
+	    <field name="isDefaultLocation" onChange="action-location-is-default-location"/>
+	  </panel>    
+	  <panel-tabs>
+	    <panel-related title="Location Lines" field="locationLineList" form-view="location-line-form" grid-view="location-line-grid"/>    
+	    <panel-related title="Stock Details" field="detailsLocationLineList" form-view="location-line-details-form" grid-view="location-line-details-grid"/>
+	    <panel title="Stock Value">    
+	      <!-- TODO: remove this comment if portlet is allowed in panel
+	      <portlet height="350" action="portal.locationLine.location.value"/>      
+	      -->
+	    </panel>
+	  </panel-tabs>    
+	  <panel-side title="Action(s)">
+	    <button name="viewContent" title="View location content" onClick="action-location-view-location-content"/>
+	  </panel-side>
+	</form>
     
     <action-method name="action-stock-location-method-print">
     	<call class="com.axelor.apps.stock.web.LocationController" method="print"></call>
