@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="target-grid" title="Targets" model="com.axelor.apps.crm.db.Target">
         <field name="name"/>
@@ -11,47 +11,47 @@
         <field name="toDate"/>
     </grid>
     
-    <form name="target-form" title="Target" model="com.axelor.apps.crm.db.Target" cols="4"  
-    onLoad="action-target-method-update,save" 
-    onSave="action-target-validate">
-	    <group title="Information" colSpan="4" colWidths="15%,35%,15%,35%">
-	        <field name="name"/>
-	        <field name="code"/>
-	        <field name="user" showIf="team == null"/>
-	        <field name="team" showIf="user == null"/>
-	    </group>
-	    <group title="Period" colSpan="4" colWidths="15%,35%,15%,35%">
-	        <field name="periodTypeSelect"/>
-	        <field name="fromDate"/>
-	        <field name="toDate"/>
-	    </group>
-	    <group title="Opportunity" colSpan="4" cols="4" colWidths="15%,35%,15%,35%">
-	        <spacer/>
-	        <separator title="Target"/>
-	        <spacer/>
-	        <separator title="Real"/>
-	        <field name="opportunityAmountWonTarget"/>
-	        <label title="Vs"/>
-	        <field name="opportunityAmountWon" showTitle="false" />
-	        <field name="opportunityCreatedNumberTarget"/>
-	        <label title="Vs"/>
-	        <field name="opportunityCreatedNumber" showTitle="false"/>
-	        <field name="opportunityCreatedWonTarget"/>
-	        <label title="Vs"/>
-	        <field name="opportunityCreatedWon" showTitle="false"/>  
-	    </group>
-	    <group title="Events" colSpan="4" cols="4" colWidths="15%,35%,15%,35%">
-	        <spacer/>
-	        <separator title="Target"/>
-	        <spacer/>
-	        <separator title="Real"/>
-	        <field name="callEmittedNumberTarget"/>
-	        <label title="Vs"/>
-	        <field name="callEmittedNumber" showTitle="false"/>
-	        <field name="meetingNumberTarget"/>
-	        <label title="Vs"/>
-	        <field name="meetingNumber" showTitle="false"/>
-	    </group>
+<!--     <form name="target-form" title="Target" model="com.axelor.apps.crm.db.Target" cols="4"   -->
+<!--     onLoad="action-target-method-update,save"  -->
+<!--     onSave="action-target-validate"> -->
+<!-- 	    <group title="Information" colSpan="4" colWidths="15%,35%,15%,35%"> -->
+<!-- 	        <field name="name"/> -->
+<!-- 	        <field name="code"/> -->
+<!-- 	        <field name="user" showIf="team == null"/> -->
+<!-- 	        <field name="team" showIf="user == null"/> -->
+<!-- 	    </group> -->
+<!-- 	    <group title="Period" colSpan="4" colWidths="15%,35%,15%,35%"> -->
+<!-- 	        <field name="periodTypeSelect"/> -->
+<!-- 	        <field name="fromDate"/> -->
+<!-- 	        <field name="toDate"/> -->
+<!-- 	    </group> -->
+<!-- 	    <group title="Opportunity" colSpan="4" cols="4" colWidths="15%,35%,15%,35%"> -->
+<!-- 	        <spacer/> -->
+<!-- 	        <separator title="Target"/> -->
+<!-- 	        <spacer/> -->
+<!-- 	        <separator title="Real"/> -->
+<!-- 	        <field name="opportunityAmountWonTarget"/> -->
+<!-- 	        <label title="Vs"/> -->
+<!-- 	        <field name="opportunityAmountWon" showTitle="false" /> -->
+<!-- 	        <field name="opportunityCreatedNumberTarget"/> -->
+<!-- 	        <label title="Vs"/> -->
+<!-- 	        <field name="opportunityCreatedNumber" showTitle="false"/> -->
+<!-- 	        <field name="opportunityCreatedWonTarget"/> -->
+<!-- 	        <label title="Vs"/> -->
+<!-- 	        <field name="opportunityCreatedWon" showTitle="false"/>   -->
+<!-- 	    </group> -->
+<!-- 	    <group title="Events" colSpan="4" cols="4" colWidths="15%,35%,15%,35%"> -->
+<!-- 	        <spacer/> -->
+<!-- 	        <separator title="Target"/> -->
+<!-- 	        <spacer/> -->
+<!-- 	        <separator title="Real"/> -->
+<!-- 	        <field name="callEmittedNumberTarget"/> -->
+<!-- 	        <label title="Vs"/> -->
+<!-- 	        <field name="callEmittedNumber" showTitle="false"/> -->
+<!-- 	        <field name="meetingNumberTarget"/> -->
+<!-- 	        <label title="Vs"/> -->
+<!-- 	        <field name="meetingNumber" showTitle="false"/> -->
+<!-- 	    </group> -->
 <!-- 	    <group title="Sales order" colSpan="4"> -->
 <!--         	<group colSpan="2" cols="2"> -->
 <!-- 	        	<separator title="Target" colSpan="2"/> -->
@@ -66,7 +66,55 @@
 <!-- 	        	<field name="saleOrderCreatedWon"/> -->
 <!--         	</group> -->
 <!--         </group> -->
-	</form>
+<!-- 	</form> -->
+	
+<form cols="4" onLoad="action-target-method-update,save" onSave="action-target-validate" name="target-form" title="Target" model="com.axelor.apps.crm.db.Target">
+  <panel title="Information">
+    <field name="name"/>
+    <field name="code"/>
+    <field name="user" showIf="team == null"/>
+    <field name="team" showIf="user == null"/>
+  </panel>
+  <panel title="Period">
+    <field name="periodTypeSelect"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+  </panel>
+  <panel-tabs>
+    <panel title="Opportunity">
+    <panel title="Target" x-span="6">
+     <field name="opportunityAmountWonTarget" x-span="10"/>
+     <label title="Vs" x-span="2"/>
+     <field name="opportunityCreatedNumberTarget" x-span="10"/>
+     <label title="Vs" x-span="2"/>
+    <field name="opportunityCreatedWonTarget" x-span="10"/>
+      <label title="Vs" x-span="2"/>
+    </panel>
+    
+    <panel title="Real" x-span="6">
+        <field name="opportunityAmountWon" showTitle="false" x-span="12"/>
+        <field name="opportunityCreatedNumber" showTitle="false" x-span="12"/>
+      <field name="opportunityCreatedWon" showTitle="false" x-span="12"/>
+    </panel>
+  </panel>  
+  
+  <panel title="Events">
+    <panel title="Target" x-span="6">
+        <field name="callEmittedNumberTarget" x-span="10"/>
+        <label title="Vs" x-span="2"/>
+      <field name="meetingNumberTarget" x-span="10"/>
+      <label title="Vs" x-span="2"/>
+    </panel>
+    <panel title="Real" x-span="6">
+        <field name="callEmittedNumber" showTitle="false" x-span="12"/>
+       <field name="meetingNumber" showTitle="false" x-span="12"/>
+    </panel>
+    
+   </panel>
+    </panel-tabs>
+
+</form>
+
     
     <action-method name="action-target-method-update">
     	<call class="com.axelor.apps.crm.web.TargetController" method="update"/>

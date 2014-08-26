@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="event-reminder-grid" title="Event reminders" model="com.axelor.apps.crm.db.EventReminder">
         <field name="typeSelect"/>
@@ -12,10 +12,13 @@
     
     <form name="event-reminder-form" title="Event reminder" model="com.axelor.apps.crm.db.EventReminder" cols="4" 
     onNew="action-event-reminder-record-default">
-        <field name="typeSelect"/>
-		<field name="assignToSelect"/>
-        <field name="duration"/>
-        <field name="durationTypeSelect"/>
+        <panel title="Overview">
+	        <field name="typeSelect"/>
+			<field name="assignToSelect"/>
+	        <field name="duration"/>
+	        <field name="durationTypeSelect"/>
+        </panel>
+        
     </form>
     
     <action-record name="action-event-reminder-record-default" model="com.axelor.apps.crm.db.EventReminder">

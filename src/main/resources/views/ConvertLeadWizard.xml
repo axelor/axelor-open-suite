@@ -1,70 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
-    
-    <form cols="4" name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" onNew="action-group-crm-convlead-wizard-onnew">
- 		<toolbar>
-	        <button name="validate" title="Validate" onClick="action-lead-method-convert-lead"/>
-	    </toolbar>
- 		
- 		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
-			<field name="hasConvertIntoContact" widget="Boolean" title="Convert into Contact ?"/>
-			<field name="selectContactPartner" widget="ManyToOne" x-target="com.axelor.apps.base.db.Partner" title="Or Select Contact" domain="self.isContact = 'true'"
-			form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-		</group>
-		<group colSpan="4" showIf="hasConvertIntoContact" showTitle="false">
-			<field name="contactPartner" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" summary-view="true" 
-			form-view="contact-lead-converted-form" edit-window="self" canSelect="false" title="Contact" showTitle="false"/>
-		</group>
-		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
-			<field name="hasConvertIntoPartner" widget="Boolean" title="Convert into Partner ?"/>
-			<field name="selectPartner" widget="ManyToOne" x-target="com.axelor.apps.base.db.Partner" title="Or Select Partner" domain="self.isContact = 'false'"
-			form-view="partner-form" grid-view="partner-grid"/>
-		</group>
-		<group colSpan="4" showIf="hasConvertIntoPartner" showTitle="false">
-			<field name="partner" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" summary-view="true" 
-			form-view="partner-lead-converted-form" edit-window="self" canSelect="false" title="Partner" showTitle="false"/>
-		</group>
-		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
-			<field name="hasConvertIntoOpportunity" widget="Boolean" title="Create into Opportunity ?"/>
-			<spacer/>
-			<spacer/>
-		</group>
-		<group colSpan="4" showIf="hasConvertIntoOpportunity"  showTitle="false">
-			<field name="opportunity" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.crm.db.Opportunity" summary-view="true" 
-			form-view="opportunity-lead-converted-form" edit-window="self" canSelect="false" title="Opportunity" showTitle="false"/>
-		</group>
-		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
-			<field name="hasConvertIntoCall" widget="Boolean" title="Log a call ?"/>
-			<spacer/>
-			<spacer/>
-		</group>
-		<group colSpan="4" showIf="hasConvertIntoCall"  showTitle="false">
-			<field name="callEvent" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.crm.db.Event" summary-view="true" 
-			form-view="call-lead-converted-form" edit-window="self" canSelect="false" title="Call" showTitle="false"/>
-		</group>
-		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
-			<field name="hasConvertIntoMeeting" widget="Boolean" title="Schedule a meeting ?"/>
-			<spacer/>
-			<spacer/>
-		</group>
-		<group colSpan="4" showIf="hasConvertIntoMeeting"  showTitle="false">
-			<field name="meetingEvent" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.crm.db.Event" canNew="true" canRemove="false" canView="true" 
-			canSelect="false"  summary-view="true" form-view="meeting-lead-converted-form"  edit-window="self" title="Meeting" showTitle="false"/>
- 		</group>
- 		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
-			<field name="hasConvertIntoTask" widget="Boolean" title="Create a task ?"/>
-			<spacer/>
-			<spacer/>
-		</group>
-		<group colSpan="4" showIf="hasConvertIntoTask">
-			<field name="taskEvent" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.crm.db.Event" canNew="true" canRemove="false" canView="true" 
-			canSelect="false"  summary-view="true" form-view="crm-task-lead-converted-form"  edit-window="self" title="Task" showTitle="false"/>
- 		</group>
- 		
-	</form>
+<form cols="4" onNew="action-group-crm-convlead-wizard-onnew" name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard">
+  <toolbar>
+    <button name="validate" title="Validate" onClick="action-lead-method-convert-lead"/>
+  </toolbar>
+  <panel title="Overview">
+    <field name="hasConvertIntoContact" title="Convert into Contact ?" widget="Boolean"/>
+    <field name="selectContactPartner" title="Or Select Contact" widget="ManyToOne" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" x-target="com.axelor.apps.base.db.Partner"/>
+    <field name="hasConvertIntoPartner" title="Convert into Partner ?" widget="Boolean"/>
+    <field name="selectPartner" title="Or Select Partner" widget="ManyToOne" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid" x-target="com.axelor.apps.base.db.Partner"/>
+   <field name="hasConvertIntoOpportunity" title="Create into Opportunity ?" widget="Boolean"/>
+     <field name="hasConvertIntoCall" title="Log a call ?" widget="Boolean"/>
+    <field name="hasConvertIntoMeeting" title="Schedule a meeting ?" widget="Boolean"/>
+    <field name="hasConvertIntoTask" title="Create a task ?" widget="Boolean"/>
+ </panel>
+  <panel showTitle="false" showIf="hasConvertIntoContact">
+    <field name="contactPartner" title="Contact" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="contact-lead-converted-form" summary-view="true" x-target="com.axelor.apps.base.db.Partner" x-type="MANY_TO_ONE"/>
+  </panel>
+  <panel showTitle="false" showIf="hasConvertIntoPartner">
+    <field name="partner" title="Partner" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="partner-lead-converted-form" summary-view="true" x-target="com.axelor.apps.base.db.Partner" x-type="MANY_TO_ONE"/>
+  </panel>
+  <panel showTitle="false" showIf="hasConvertIntoOpportunity" colSpan="4">
+    <field name="opportunity" title="Opportunity" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="opportunity-lead-converted-form" summary-view="true" x-target="com.axelor.apps.crm.db.Opportunity" x-type="MANY_TO_ONE"/>
+  </panel>
+  <panel showTitle="false" showIf="hasConvertIntoCall">
+    <field name="callEvent" title="Call" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="call-lead-converted-form" summary-view="true" x-target="com.axelor.apps.crm.db.Event" x-type="MANY_TO_ONE"/>
+  </panel>
+  <panel showTitle="false" showIf="hasConvertIntoMeeting">
+    <field name="meetingEvent" title="Meeting" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="meeting-lead-converted-form" summary-view="true" x-target="com.axelor.apps.crm.db.Event" x-type="MANY_TO_ONE"/>
+  </panel>
+  <panel showIf="hasConvertIntoTask" colSpan="4">
+    <field name="taskEvent" title="Task" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="crm-task-lead-converted-form" summary-view="true" x-target="com.axelor.apps.crm.db.Event" x-type="MANY_TO_ONE"/>
+  </panel>
+</form>
+
 	
 	<action-group name="action-group-crm-convlead-wizard-onnew">
 		<action name="action-convert-lead-wizard-default"/>
@@ -83,148 +55,133 @@
     
 	
 	
-	<form name="contact-lead-converted-form" title="Contact" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-	onNew="action-partner-contact-record-default" 
-	onLoad="action-convert-lead-wizard-attrs-default-contact-address">
-	    <group colSpan="6" cols="6">
-	        <group colSpan="1" cols="1">
-	            <group colSpan="1">
-	                <field name="picture" showTitle="false"/>
-	            </group>
-	        </group>
-	        <group colSpan="1" cols="1">
-	            <field name="titleSelect" showTitle="false" placeholder="Civility"/>
-	            <break/>
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
-	            <break/>
-	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name"/>
-	            <break/>
-	            <separator title="Company"/>
-	            <field name="mainPartner"/>
-	        </group>
-	        <group title="Contact" colSpan="4" cols="4">
-	            <field name="jobTitle"/>
-	            <field name="reportsTo"/>
-	            <separator colSpan="4"/>
-	            <field name="fixedPhone"/>
-	            <field name="mobilePhone"/>
-	            <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
-	            <field name="fax"/>
-	            <group title="Address" colSpan="4" cols="4">
-		    		<field name="primaryAddress" widget="STRING" x-type="STRING" title="Address"/>
-		    		<field name="primaryCity" title="City"/>
-		    		<field name="primaryState" title="State"/>
-		    		<field name="primaryPostalCode" title="Postal code"/>
-		    		<field name="primaryCountry" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name" title="Country"/>
-		    	</group>
-	        </group>
-	    </group>
-	    <break/>
-	    <notebook colSpan="4">
-	        <page title="Notes">
-	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
-	        </page>
-	        <page title="Settings" cols="4">
-	            <field name="languageSelect"/>
-	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
-	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
-	                <break/>
-	                <field name="user"/>
-	                <field name="team"/>
-	            </group>
-	        </page>
-	    </notebook>
-	</form>
+	<form onLoad="action-convert-lead-wizard-attrs-default-contact-address" onNew="action-partner-contact-record-default" name="contact-lead-converted-form" title="Contact" model="com.axelor.apps.base.db.Partner">
+  
+		<panel title="Personal">
+			<panel x-span="4">
+			  <field name="picture" x-span="12" widget="Image" showTitle="false"/>
+			</panel>
+			<panel x-span="8">
+			  <field name="fullName" title="Name" x-span="12">
+			    <editor>
+			      <field name="titleSelect"  showTitle="false" placeholder="Civility" x-span="2"/>
+			      <field name="name" showTitle="false" css="highlight" placeholder="Name" x-span="5"/>
+			       <field name="firstName" showTitle="false" css="highlight" placeholder="First name" x-span="5"/>
+			    </editor>
+			  </field>
+			</panel>
+		</panel>  
+		<panel title="Company" x-span="6">
+		   <field name="mainPartner"/> 
+		 </panel> 
+		<panel title="Contact"  x-span="6">
+			<field name="jobTitle"/>
+			<field name="reportsTo"/>
+			<field name="fixedPhone"/>
+			<field name="mobilePhone"/>
+			<field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
+			<field name="fax"/>
+			<panel title="Address" css="address-list">
+				<field name="primaryAddress" title="Address" widget="STRING" x-type="STRING" x-span="12"/>
+				<field name="primaryCity" title="City" x-span="4"/>
+				<field name="primaryState" title="State" x-span="4"/>
+				<field name="primaryPostalCode" title="Postal code" x-span="4"/>
+				<field x-span="12" name="primaryCountry" title="Country" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name"/>
+			</panel>
+		</panel>
+		<panel-tabs>
+			<panel title="Notes">
+			  <field x-span="12" name="description" showTitle="false" widget="Html" x-lite="true"/>
+			</panel>
+			<panel title="Settings" cols="4">
+			  <field name="languageSelect"/>
+			  <panel title="Assigned to">
+			    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
+			    <field name="user"/>
+			    <field name="team"/>
+			  </panel>
+			</panel>
+		</panel-tabs>
+</form>
+
 	
-	
-	<form name="partner-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-    onNew="action-partner-record-set-default"
-    onLoad="action-convert-lead-wizard-record-default-partner-address">
-	    <group colSpan="6" cols="6">
-	        <group colSpan="1" cols="1">
-	            <group colSpan="1">
-	                <field name="picture" showTitle="false"/>
-	            </group>
-	        </group>
-	        <group colSpan="1">
-	            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility"/>
-	            <break/>
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
-	            <break/>
-	            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name"/>
-	            <break/>
-	            <field name="partnerTypeSelect" showTitle="false" onChange="action-group-crm-convlead-partnertype-onchange"/>
-	        </group>
-	    </group>
-	    <break/>
-	    <notebook colSpan="4">
-	        <page name="information" title="Informations">
-	            <group colSpan="4" cols="4" hideIf="isContact">
-                    <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
-                    <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
-	            </group>
-	            <group title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="4" cols="4">
-	                <group colSpan="2" cols="2">
-	                    <field name="partnerCategory" widget="SuggestBox"/>
-	                    <field name="industrySectorSelect"/>
-	                    <field name="site"/>
-	                    <field name="department"/>
-	                </group>
-	                <group colSpan="2" cols="2">
-	                    <field name="saleTurnover"/>
-	                    <field name="nbrEmployees"/>
-	                    <field name="registrationCode"/>
-	                    <field name="taxNbr"/>
-	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.iscontact = false AND self.partnerTypeSelect = 1"/>
-	                </group>
-	            </group>
-	            <group title="Postal addresses" colSpan="4" cols="4">
-	                <group title="Invoicing address" colSpan="2" cols="2">
-			    		<field name="primaryAddress" title="Address"/>
-			    		<field name="primaryCity" title="City"/>
-			    		<field name="primaryState" title="State"/>
-			    		<field name="primaryPostalCode" title="Postal code"/>
-			    		<field name="primaryCountry" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name" title="Country"/>
-			    	</group>
-			    	<group title="Delivery address" colSpan="2" cols="2">
-			    		<field name="otherAddress" title="Address"/>
-			    		<field name="otherCity" title="City"/>
-			    		<field name="otherState" title="State"/>
-			    		<field name="otherPostalCode" title="Postal code"/>
-			    		<field name="otherCountry" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name" title="Country"/>
-			    	</group>
-	            </group>
-	            <group title="Contact" colSpan="4" cols="4">
-	                <field name="fixedPhone"/>
-	                <field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
-	                <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
-	                <field name="fax"/>
-	                <field name="webSite"/>
-	            </group>
-	        </page>
-	        <page title="Notes">
-	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
-	        </page>
-	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" colSpan="4" cols="4">
-	            <field name="invoiceSendingFormatSelect"/>
-	            <field name="paymentMode"/>
-	            <field name="paymentCondition"/>
-	            <field name="currency"/>
-	            <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
-	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
-	        </page>
-	        <page title="Settings" cols="4">
-	            <field name="languageSelect"/>
-	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
-	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
-	                <break/>
-	                <field name="user"/>
-	                <field name="team"/>
-	            </group>
-            </page>
-	    </notebook>
-	</form>
-	
+<form cols="6" colWidths="25*" onLoad="action-convert-lead-wizard-record-default-partner-address" onNew="action-partner-record-set-default" name="partner-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner">
+
+	<panel title="Personal">
+	  <panel x-span="4">
+	    <field name="picture" widget="Image" showTitle="false"/>
+	  </panel>
+	  <panel x-span="8">
+	    <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" x-span="2"/>
+	    <field name="name" showTitle="false" css="highlight" placeholder="Name" x-span="5"/>
+	    <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" x-span="5"/>
+	  </panel>
+	  <panel title="Partner">
+	    <field name="partnerTypeSelect" showTitle="false" onChange="action-group-crm-convlead-partnertype-onchange"/>
+	  </panel>
+	</panel>
+	<panel-tabs>
+	  <panel  title="Informations">
+	    <panel hideIf="isContact" x-span="12" >
+	      <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
+	      <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
+	    </panel>
+	    <panel title="Partner Details" hideIf="partnerTypeSelect == 2" x-span="12">
+	        <field name="partnerCategory" widget="SuggestBox"/>
+	        <field name="industrySectorSelect"/>
+	        <field name="site"/>
+	        <field name="department"/>
+	        <field name="saleTurnover"/>
+	        <field name="nbrEmployees"/>
+	        <field name="registrationCode"/>
+	        <field name="taxNbr"/>
+	        <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.iscontact = false AND self.partnerTypeSelect = 1"/>
+	    </panel>
+	    <panel title="Postal addresses" x-span="12">
+	      <panel title="Invoicing address">
+	        <field name="primaryAddress" title="Address" x-span="6"/>
+	        <field name="primaryCity" title="City"/>
+	        <field name="primaryState" title="State"/>
+	        <field name="primaryPostalCode" title="Postal code"/>
+	        <field name="primaryCountry" title="Country" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name"/>
+	      </panel>
+	      <panel x-span="6" title="Delivery address">
+	        <field name="otherAddress" title="Address"/>
+	        <field name="otherCity" title="City"/>
+	        <field name="otherState" title="State"/>
+	        <field name="otherPostalCode" title="Postal code"/>
+	        <field name="otherCountry" title="Country" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name"/>
+	      </panel>
+	    </panel>
+	    <panel title="Contact" x-span="12">
+	      <field name="fixedPhone"/>
+	      <field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
+	      <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
+	      <field name="fax"/>
+	      <field name="webSite"/>
+	    </panel>
+	  </panel>
+	  <panel title="Notes">
+	    <field name="description" showTitle="false" x-span="12" widget="Html" x-lite="true"/>
+	  </panel>
+	  <panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact">
+	    <field name="invoiceSendingFormatSelect"/>
+	    <field name="paymentMode"/>
+	    <field name="paymentCondition"/>
+	    <field name="currency"/>
+	    <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
+	    <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid" x-span="12"/>
+	  </panel>
+	  <panel title="Settings" >
+	    <field name="languageSelect" x-span="12"/>
+	    <panel title="Assigned to" x-span="12" >
+	      <field name="companySet" widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
+	      <field name="user"/>
+	      <field name="team"/>
+	    </panel>
+	  </panel>
+	</panel-tabs>
+</form>
 	
 	<action-group name="action-group-crm-convlead-partnertype-onchange">
 		<action name="action-partner-attrs-change-name"/>
@@ -321,61 +278,62 @@
     	<field name="id" expr="eval: _parent._lead.otherCountry.id"/>
     </action-record>
 	
-	<form name="opportunity-lead-converted-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" cols="4">
-         <group title="Informations" colSpan="4" cols="6">
-	        <group title="Context" colSpan="4" cols="6">
-		        <field name="name"/>
-		        <field name="opportunityType" widget="SuggestBox"/>
-	        </group>
-	        <group title="Follow-up" colSpan="4" cols="6">
-				<field name="saleStageSelect"/>
-				<field name="source"/>
-				<field name="expectedCloseDate"/>
-				<field name="nextStep"/>
-				<field name="probability"/>
-				<field name="campaign"/>	
-	        </group>
-	        <group colSpan="4" cols="6">
-                <group title="Financial terms" colSpan="2" cols="4">
-        	        <field name="amount"/>
-    		        <field name="currency"/>
-    		        <field name="bestCase"/>
-    		        <field name="worstCase"/>
-    		    </group>
-    	        <group colSpan="2">
-                    <field name="description" colSpan="2"/>
-                </group>
-	        </group>
-	    </group>    
-        <group title="Assigned to" canCollapse="true">
-	        <field name="user"/>
-	    	<field name="team"/>
-	        <field name="company" widget="SuggestBox"/>
-        </group>
-    </form>
+	<form cols="4" name="opportunity-lead-converted-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
+  <panel title="Informations">
+    <panel title="Context" x-span="12">
+      <field name="name"/>
+      <field name="opportunityType" widget="SuggestBox"/>
+    </panel>
+    <panel title="Follow-up" x-span="12">
+      <field name="saleStageSelect"/>
+      <field name="source"/>
+      <field name="expectedCloseDate"/>
+      <field name="nextStep"/>
+      <field name="probability"/>
+      <field name="campaign"/>
+    </panel>
+    <panel>
+      <panel title="Financial terms" x-span="12">
+        <field name="amount"/>
+        <field name="currency"/>
+        <field name="bestCase"/>
+        <field name="worstCase"/>
+      </panel>
+      <panel x-span="12">
+        <field name="description" x-span="12"/>
+      </panel>
+    </panel>
+  </panel>
+  <panel title="Assigned to" >
+    <field name="user"/>
+    <field name="team"/>
+    <field name="company" widget="SuggestBox"/>
+  </panel>
+</form>
+
 	
 	
-	<form name="call-lead-converted-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="4">
-        <group title="Informations" cols="4" colSpan="4">
-        	<field name="subject" colSpan="4"/>
-        	<field name="callStatusSelect" colSpan="2"/>
-            <field name="statusSelect" showTitle="false" colSpan="1"/>
-	        <spacer/><break/>
-	        <group title="Description" colSpan="4" cols="2" css="groupTitle">
-	        	<field name="description" widget="TEXT" x-height="4" colSpan="2" showTitle="false"/>
-	        </group>
-	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
-	            <separator title="Dates" colSpan="6"/>
-	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
-				<field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
-	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
-	        </group>
-        </group>
-        <group title="Assignment" cols="4" colSpan="4" canCollapse="true">
-	        <field name="user"/>
-	    	<field name="team" onSelect="action-event-attrs-team-domain"/>
-        </group>
-    </form>
+<form cols="4" name="call-lead-converted-form" title="Call" model="com.axelor.apps.crm.db.Event">
+  <panel title="Informations">
+    <field name="subject"/>
+    <field name="callStatusSelect"/>
+    <field name="statusSelect" showTitle="false"/>
+  </panel>
+    <panel title="Description"  css="groupTitle" >
+      <field name="description" showTitle="false"  widget="TEXT" x-height="4" x-span="12"/>
+    </panel>
+    <panel title="Dates"  css="groupTitle">
+      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+      
+      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+    </panel>
+  <panel title="Assignment">
+    <field name="user"/>
+    <field name="team" onSelect="action-event-attrs-team-domain"/>
+  </panel>
+</form>
+
 	
 	
 	<action-record name="action-convert-lead-wizard-default-call-event" model="com.axelor.apps.crm.db.Event">
@@ -390,27 +348,27 @@
     	<field name="callStatusSelect" expr="2"/>
     </action-record>
 	
-	<form name="meeting-lead-converted-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="4">
-        <group title="Informations" cols="4" colSpan="4">
-        	<field name="subject" colSpan="4"/>
-        	<field name="statusSelect"/>
-            <field name="meetingType" widget="SuggestBox"/>
-	        <spacer/><break/>
-	        <group title="Description" colSpan="4" cols="2" css="groupTitle">
-	        	<field name="description" widget="TEXT" x-height="4" colSpan="2" showTitle="false"/>
-	        </group>
-	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
-	            <separator title="Dates" colSpan="6"/>
-	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
-	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
-	            <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
-	        </group>
-        </group>
-        <group title="Assignment" cols="4" colSpan="4" canCollapse="true">
-	        <field name="user"/>
-	    	<field name="team" onSelect="action-event-attrs-team-domain"/>
-        </group>
-    </form>
+<form cols="4" name="meeting-lead-converted-form" title="Meeting" model="com.axelor.apps.crm.db.Event">
+  <panel title="Informations">
+    <field name="subject" colSpan="4"/>
+    <field name="statusSelect"/>
+    <field name="meetingType" widget="SuggestBox"/>
+  </panel>
+  
+    <panel title="Description"  css="groupTitle">
+      <field name="description" showTitle="false" x-span="12" widget="TEXT" x-height="4"/>
+    </panel>
+    <panel title="Dates"  css="groupTitle">
+      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+    </panel>
+  <panel title="Assignment">
+    <field name="user"/>
+    <field name="team" onSelect="action-event-attrs-team-domain"/>
+  </panel>
+</form>
+
     
      <action-record name="action-convert-lead-wizard-default-meeting-event" model="com.axelor.apps.crm.db.Event">
     	<field name="typeSelect" expr="eval: 2"/>
@@ -423,29 +381,27 @@
     	<field name="duration" expr="0"/>
     </action-record>
     
-    
-    <form name="crm-task-lead-converted-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="4">
-        <group title="Informations" cols="4" colSpan="4">
-        	<field name="subject" colSpan="4"/>
-	        <field name="taskStatusSelect"/>
-            <field name="prioritySelect"/>
-	        <spacer/><break/>
-	        <group title="Description" colSpan="4" cols="2" css="groupTitle">
-	        	<field name="description" widget="TEXT" x-height="4" colSpan="2" showTitle="false"/>
-	        </group>
-	        <group colSpan="4" css="groupTitle" cols="4" colWidths="25*">
-	            <separator title="Dates" colSpan="4"/>
-	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
-				<field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
-	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
-				<field name="limitDateT"/>
-	        </group>
-        </group>
-        <group title="Assigned to" cols="4" colSpan="4" canCollapse="true">
-	        <field name="user"/>
-	    	<field name="team" onSelect="action-event-attrs-team-domain"/>
-        </group>
-    </form>
+<form cols="4" name="crm-task-lead-converted-form" title="Task" model="com.axelor.apps.crm.db.Event">
+  <panel title="Informations">
+    <field name="subject" />
+    <field name="taskStatusSelect"/>
+    <field name="prioritySelect"/>
+  </panel>
+    <panel title="Description" css="groupTitle">
+      <field name="description" showTitle="false" x-span="12" widget="TEXT" x-height="4"/>
+    </panel>
+    <panel title="Dates"  css="groupTitle">
+      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+      <field name="limitDateT"/>
+    </panel>
+  <panel title="Assigned to">
+    <field name="user"/>
+    <field name="team" onSelect="action-event-attrs-team-domain"/>
+  </panel>
+</form>
+
     
     <action-record name="action-convert-lead-wizard-default-task-event" model="com.axelor.apps.crm.db.Event">
     	<field name="typeSelect" expr="eval: 3"/>
