@@ -7,18 +7,12 @@
 	  <toolbar>
 	    <button name="viewProducts" title="View Products" onClick="action-view-product-by-family"/>
 	  </toolbar>
-	  <panel>
-	    <field name="name"/>
-	    <field name="code"/>
+	  <panel-include view="product-family-form" from="axelor-base"/>
+	  <panel title="Sales Turnover" hideIf="fromMenu == null" >    
+		<!-- TODO: remove this comment if portlet works in panel
+		<portlet colSpan="3" height="350" action="portal.family.sales.turnover.per.month"/>
+		-->
 	  </panel>
-	  <panel-tabs>
-	    <panel-related field="accountManagementList" domain="self.typeSelect = 1" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
-	    <panel title="Sales Turnover" hideIf="fromMenu == null" >    
-	      <!-- TODO: remove this comment if portlet works in panel
-	      <portlet colSpan="3" height="350" action="portal.family.sales.turnover.per.month"/>
-	      -->
-	    </panel>
-	  </panel-tabs>  
 	</form>
     
 	<action-view title="Family sale turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="portal.family.sales.turnover.per.month">
