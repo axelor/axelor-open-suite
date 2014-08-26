@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <form name="purchase-order-supplier-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" cols="4" >
-    
-		<field name="isPurchaseParent"/>
-		<field name="parentPurchaseOrder" hideIf="isPurchaseParent"/>
-		<button name="generateSuppliersPurchaseOrder" title="Generate suppliers purchase orders" colSpan="2" onClick="save,action-purchase-order-method-generate-suppliers-purchase-order,save"/>
-		<button name="showSuppliersPurchaseOrder" title="Show suppliers purchase orders" colSpan="2" onClick="action-purchase-order-view-show-suppliers-purchase-order"/>
-		<button name="generatePurchaseOrderSupplierLine" title="Generate all suppliers requests" colSpan="2" onClick="save,action-purchase-order-method-generate-purchase-order-supplier-line,save"/>
-
+    	<panel>
+			<field name="isPurchaseParent"/>
+			<field name="parentPurchaseOrder" hideIf="isPurchaseParent"/>
+			<button name="generateSuppliersPurchaseOrder" title="Generate suppliers purchase orders" onClick="save,action-purchase-order-method-generate-suppliers-purchase-order,save"/>
+			<button name="showSuppliersPurchaseOrder" title="Show suppliers purchase orders" onClick="action-purchase-order-view-show-suppliers-purchase-order"/>
+			<button name="generatePurchaseOrderSupplierLine" title="Generate all suppliers requests" onClick="save,action-purchase-order-method-generate-purchase-order-supplier-line,save"/>
+		</panel>
 	</form>
     
     <action-method name="action-purchase-order-method-generate-suppliers-purchase-order">

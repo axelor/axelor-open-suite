@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	<grid name="purchase-order-supplier-line-grid" title="suppliers requests" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
 		<field name="supplierPartner"/>
@@ -11,22 +11,28 @@
 		<field name="estimatedDelivDate"/>
 		<field name="stateSelect"/>
 	</grid>
-	
-	<form name="purchase-order-supplier-line-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine" cols="4" 
+
+	<form name="purchase-order-supplier-line-form" title="Supplier request"
+		model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine"
 		onNew="action-purchase-order-supplier-line-record-request,action-purchase-order-supplier-line-attrs-new">
-		<field name="stateSelect" widget="NavSelect" showTitle="false" readonly="true" colSpan="4"/>
-		<field name="supplierPartner"/>
-		<field name="availableQty"/>
-		<field name="purchaseOrderLine.unit"/>
-		<field name="price"/>
-		<field name="estimatedDelivDate"/>
-		<break/>
-		<field name="comment" colSpan="4"/>
-		<button name="accept" title="Accept" colSpan="2" onClick="save,action-purchase-order-supplier-line-method-accept,save" showIf="stateSelect == 1 || stateSelect == 2"/>
-		<button name="notAccept" title="Not accept" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-not-accept,save" showIf="stateSelect == 1 || stateSelect == 2"/>
-		<button name="cancel" title="Cancel" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-cancel,save" hideIf="stateSelect == 5"/>
-		<button name="request" title="Request" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-request,save" showIf="stateSelect == 5"/>
-		<button name="sendByEmail" title="Write to the supplier" colSpan="2" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
+	  <panel>
+	    <field name="stateSelect" showTitle="false" readonly="true" x-span="12" widget="NavSelect"/>
+	    <field name="supplierPartner"/>
+	    <field name="availableQty"/>
+	    <field name="purchaseOrderLine.unit"/>
+	    <field name="price"/>
+	    <field name="estimatedDelivDate"/>
+	  </panel>
+	  <panel>
+	    <field name="comment" x-span="12"/>
+	  </panel>  
+	  <panel-side title="Action(s)">
+	    <button name="accept" title="Accept" showIf="stateSelect == 1 || stateSelect == 2" colSpan="2" onClick="save,action-purchase-order-supplier-line-method-accept,save"/>
+	    <button name="notAccept" title="Not accept" showIf="stateSelect == 1 || stateSelect == 2" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-not-accept,save"/>
+	    <button name="cancel" title="Cancel" hideIf="stateSelect == 5" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-cancel,save"/>
+	    <button name="request" title="Request" showIf="stateSelect == 5" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-request,save"/>
+	    <button name="sendByEmail" title="Write to the supplier" colSpan="2" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
+	  </panel-side>
 	</form>
 	
 	
@@ -43,20 +49,23 @@
 	</grid>
 	
 	
-	<form name="purchase-order-supplier-line-supplier-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine" cols="4">
-		<field name="stateSelect" widget="NavSelect" showTitle="false" readonly="true" colSpan="4"/>
-		<field name="purchaseOrderLine.purchaseOrder.purchaseOrderSeq"/>
-		<field name="purchaseOrderLine.product"/>
-		<field name="purchaseOrderLine.qty"/>
-		<field name="purchaseOrderLine.unit"/>
-		<field name="availableQty" readonlyIf="stateSelect != 1"/>
-		<field name="purchaseOrderLine.desiredDelivDate"/>
-		<field name="price" readonlyIf="stateSelect != 1"/>
-		<field name="estimatedDelivDate" readonlyIf="stateSelect != 1"/>
-		<field name="comment" colSpan="4"/>
-		<button name="submit" title="Submit" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-submit,save" showIf="stateSelect == 1"/>
-	</form>
-	
+	<form name="purchase-order-supplier-line-supplier-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+	  <panel>
+	    <field name="stateSelect" showTitle="false" readonly="true" x-span="12" widget="NavSelect"/>
+	    <field name="purchaseOrderLine.purchaseOrder.purchaseOrderSeq"/>
+	    <field name="purchaseOrderLine.product"/>
+	    <field name="purchaseOrderLine.qty"/>
+	    <field name="purchaseOrderLine.unit"/>
+	    <field name="availableQty" readonlyIf="stateSelect != 1"/>
+	    <field name="purchaseOrderLine.desiredDelivDate"/>
+	    <field name="price" readonlyIf="stateSelect != 1"/>
+	    <field name="estimatedDelivDate" readonlyIf="stateSelect != 1"/>
+	    <button name="submit" title="Submit" showIf="stateSelect == 1" onClick="save,action-purchase-order-supplier-line-record-submit,save"/>
+	  </panel>
+	  <panel>
+	    <field name="comment" x-span="12"/>
+	  </panel>  
+	</form>	
 	
 	<action-record name="action-purchase-order-supplier-line-record-request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
 		<field name="stateSelect" expr="1"/>
