@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="prod-human-resource-grid" title="Prod. Human resources" model="com.axelor.apps.production.db.ProdHumanResource">
         <field name="product"/>
@@ -9,10 +9,12 @@
         <field name="duration" widget="duration" x-big="true" x-seconds="true"/>
     </grid>
     
-    <form name="prod-human-resource-form" title="Prod. Human resource" model="com.axelor.apps.production.db.ProdHumanResource" cols="4">
-        <field name="product"/>
-        <field name="employee"/>
-        <field name="duration" widget="duration" x-big="true" x-seconds="true"/>
+    <form name="prod-human-resource-form" title="Prod. Human resource" model="com.axelor.apps.production.db.ProdHumanResource">
+		<panel>
+	        <field name="product"/>
+	        <field name="employee"/>
+	        <field name="duration" widget="duration" x-big="true" x-seconds="true"/>
+        </panel>
     </form>
     
 </object-views>

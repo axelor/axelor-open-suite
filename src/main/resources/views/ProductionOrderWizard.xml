@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     
-    <form cols="4" name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" 
+    <form name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" 
     onNew="action-production-order-wizard-record-default,action-production-order-wizard-record-default-bom">
-
-		<field name="product" widget="ManyToOne" x-target="com.axelor.apps.base.db.Product" title="Product" showIf="!product_id"/>
-		<field name="qty" widget="decimal" title="Quantity"/>
-		<field name="billOfMaterial" widget="ManyToOne" x-target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" 
-		onSelect="action-production-order-wizard-attrs-bill-of-material-domain"
-		onChange="action-production-order-wizard-record-product"/>
-		<button name="validate" title="Validate" onClick="action-production-order-wizard-method-validate"/>
-
+		<panel>
+			<field name="product" widget="ManyToOne" x-target="com.axelor.apps.base.db.Product" title="Product" showIf="!product_id"/>
+			<field name="qty" widget="decimal" title="Quantity"/>
+			<field name="billOfMaterial" widget="ManyToOne" x-target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" 
+			onSelect="action-production-order-wizard-attrs-bill-of-material-domain"
+			onChange="action-production-order-wizard-record-product"/>
+			<button name="validate" title="Validate" onClick="action-production-order-wizard-method-validate"/>
+		</panel>
 	</form>
 
 	<action-record name="action-production-order-wizard-record-default" model="com.axelor.apps.base.db.Wizard">

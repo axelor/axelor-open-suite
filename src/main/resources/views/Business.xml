@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
-    <form name="business-project-production-form" title="Business" model="com.axelor.apps.organisation.db.Project" cols="6">
-       	<field name="prodInvTypeSelect"/>
-       	<portlet colSpan="4" action="action-business-project-view-production-manuf-order"/>
+    <form name="business-project-production-form" title="Business" model="com.axelor.apps.organisation.db.Project">
+       	<panel>
+       		<field name="prodInvTypeSelect"/>
+       	</panel>
+       	<!-- TODO: remove this comment if portlet works in panel 
+       	<panel x-span="12">
+       		<portlet x-span="12" action="action-business-project-view-production-manuf-order"/>
+       	</panel>
+       	 -->
 	</form>
 	
 	<action-view name="action-business-project-view-production-manuf-order" title="Operation orders" model="com.axelor.apps.production.db.ManufOrder">

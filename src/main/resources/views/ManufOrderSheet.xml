@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="manuf-order-sheet-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.OperationOrder">
     	<field name="picture"/>
     	<field name="observation"/>
     </grid>
     
-    <form name="manuf-order-sheet-form" title="Manufacturing order" model="com.axelor.apps.production.db.OperationOrder" cols="4">
-    	<field name="picture" showTitle="false" widget="Image" />
-    	<group colSpan="3" cols="3" title="Observations (état des filetages, aspect général, état des surfaces d'appuis...) :">
-    		<field name="observation" colSpan="3" showTitle="false"/>
-    	</group>
-    	
-    	<field name="manufOrderSheetLineList" colSpan="4">
-    		<grid title="Conformité">
-    			<field name="product"/>
-    			<field name="diameter"/>
-    			<field name="according"/>
-    			<field name="notAccording"/>
-    		</grid>
-    		<form title="Conformité">
-    			<field name="product"/>
-    			<field name="diameter"/>
-    			<field name="according"/>
-    			<field name="notAccording"/>
-    		</form>
-    	</field>
-    	<label title="Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord." colSpan="4"/>
+	<form name="manuf-order-sheet-form" title="Manufacturing order" model="com.axelor.apps.production.db.OperationOrder">
+	  <panel x-span="12">
+	    <field name="picture" showTitle="false" widget="Image"/>
+	  </panel>  
+	  <panel title="Observations (état des filetages, aspect général, état des surfaces d'appuis...) :" x-span="12">
+	    <field name="observation" showTitle="false" x-span="12"/>
+	  </panel>
+	  <panel-related field="manufOrderSheetLineList" title="Conformité" form-view="manuf-order-sheet-line-form" grid-view="manuf-order-sheet-line-grid" />
+	  <panel x-span="12">
+	    <label title="Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord." x-span="12"/>
+	  </panel>  
+	</form>
+    
+    <form name="manuf-order-sheet-line-form" model="com.axelor.apps.production.db.ManufOrderSheetLine" title="ManufOrderSheetLine">
+		<panel>
+			<field name="operationOrder"/>
+			<field name="product"/>
+			<field name="diameter"/>
+			<field name="accordingSelect"/>
+			<field name="archived"/>
+		</panel>
     </form>
-     
+    
+	<grid name="manuf-order-sheet-line-grid" title="ManufOrderSheetLine" model="com.axelor.apps.production.db.ManufOrderSheetLine" edit-icon="true">
+	  <field name="operationOrder"/>
+	  <field name="product"/>
+	  <field name="diameter"/>
+	  <field name="accordingSelect"/>
+	  <field name="archived"/>
+	</grid>
      
      <selection name="production.manuf.order.sheet.line.according.select">
      	<option value="0"></option>

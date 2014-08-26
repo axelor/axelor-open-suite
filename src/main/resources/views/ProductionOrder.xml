@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="production-order-grid" title="Production orders" model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
         <field name="productionOrderSeq"/>
@@ -10,25 +10,27 @@
          -->
     </grid>
     
-    <form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" cols="4">
-        <field name="productionOrderSeq"/>
-        <!--  TODO: this field is commented in domain
-        <field name="businessProject"/>
-        -->
-        <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice"/>
-        <button name="showManufOrderWizard" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
-        <group name="addManufOrderWizard" title="Add Manu. Order" hidden="true" colSpan="2">
-	        <field name="product" widget="ManyToOne" x-target="com.axelor.apps.base.db.Product" title="Product"/>
-	        <field name="billOfMaterial" widget="ManyToOne" x-target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" 
-			onSelect="action-production-order-wizard-attrs-bill-of-material-domain"
-			onChange="action-production-order-wizard-record-product"/>
-			<field name="qty" widget="decimal" title="Quantity"/>
-	        <button name="AddManufOrder" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-method-add-manuf-order"/>
-        </group>
-<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
-        <field name="manufOrderList" colSpan="4"/>
-        <portlet colSpan="4" action="action-production-order-view-operation-order"/>
-    </form>
+	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder">
+	  <panel>
+	    <field name="productionOrderSeq"/>
+	    <!--  TODO: this field is commented in domain
+	    <field name="businessProject"/>
+	    -->
+	    <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice"/>
+	    <button name="showManufOrderWizard" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
+	  </panel>  
+	  <panel title="Add Manu. Order" hidden="true">
+	    <field name="product" title="Product" widget="ManyToOne" x-target="com.axelor.apps.base.db.Product"/>
+	    <field name="billOfMaterial" title="BOM" widget="ManyToOne" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" x-target="com.axelor.apps.production.db.BillOfMaterial"/>
+	    <field name="qty" title="Quantity" widget="decimal"/>
+	    <button name="AddManufOrder" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-method-add-manuf-order"/>
+	  </panel>
+	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
+	  <panel-related field="manufOrderList" x-span="12"/>
+	  <!-- TODO: remove this comment if portlet works with panel
+	  <portlet colSpan="4" action="action-production-order-view-operation-order"/>
+	  -->
+	</form>
     
     
     <action-method name="action-production-order-method-is-to-invoice">
