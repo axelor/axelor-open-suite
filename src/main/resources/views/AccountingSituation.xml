@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="accounting-situation-partner-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
     	<field name="company" />
@@ -12,18 +12,24 @@
         <field name="balanceDueReminderCustAccount"/>
     </grid>
     
-    <form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account" cols="4">
-    	<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
-    	<field name="customerAccount"/>
-       	<field name="supplierAccount"/>
-    	<separator title="Customer balance" colSpan="4"/>
-        <portlet colSpan="4" action="action-accounting-situation-view-move-lines"/>
-        <field name="balanceCustAccount"/>
-        <field name="balanceDueCustAccount"/>
-        <field name="balanceDueReminderCustAccount"/>
-        <separator title="Reminder process" colSpan="4"/>
-        <field name="reminder"/>
-    </form>
+ <form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account" cols="4">
+	<panel title="Overview">
+		<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+		<field name="customerAccount"/>
+		 <field name="supplierAccount"/>
+	</panel>
+    	
+	<panel title="Customer balance">
+		<!-- TODO:Un comment this line when Portlet is working inside panel -->
+		<!--         <portlet colSpan="4" action="action-accounting-situation-view-move-lines"/> -->
+		<field name="balanceCustAccount"/>
+		<field name="balanceDueCustAccount"/>
+		<field name="balanceDueReminderCustAccount"/>
+	</panel>
+    <panel title="Reminder process">
+    	<field name="reminder"/>
+    </panel>
+</form>
     
     
     <grid name="accounting-situation-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
@@ -36,19 +42,25 @@
         <field name="balanceDueReminderCustAccount"/>
     </grid>
     
-    <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account" cols="4">
-    	<field name="company" widget="SuggestBox"/>
-    	<field name="partner"/>
-    	<field name="customerAccount"/>
-       	<field name="supplierAccount"/>
-    	<separator title="Customer balance" colSpan="4"/>
-        <portlet colSpan="4" action="action-accounting-situation-view-move-lines"/>
-        <field name="balanceCustAccount"/>
-        <field name="balanceDueCustAccount"/>
-        <field name="balanceDueReminderCustAccount"/>
-        <separator title="Reminder process" colSpan="4"/>
-        <field name="reminder"/>
-    </form>
+ <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account" cols="4">
+	<panel title="Overview">
+		<field name="company" widget="SuggestBox"/>
+		<field name="partner"/>
+		<field name="customerAccount"/>
+		<field name="supplierAccount"/>
+	</panel>
+    	
+	<panel title="Customer balance" colSpan="4">
+		<!-- TODO:un-comment this line when portlet is working in panel -->
+		<!--         <portlet colSpan="4" action="action-accounting-situation-view-move-lines"/> -->
+		<field name="balanceCustAccount"/>
+		<field name="balanceDueCustAccount"/>
+		<field name="balanceDueReminderCustAccount"/>
+	</panel>
+    <panel title="Reminder process" colSpan="4">
+    	<field name="reminder"/>
+    </panel>
+</form>
     
   	<action-method name="action-account-accounting-situation-method-update-customer-account">
 		<call class="com.axelor.apps.account.web.AccountingSituationController" method="updateCustomerAccount"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="move-line-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false">
     	<hilite color="danger" if="$get('move.state') == 'draft'"/>
@@ -45,96 +45,92 @@
     <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false"
     onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
     onNew="action-account-move-line-onnew-group">
-    	<notebook colSpan="4">
-	    	<page title="Informations" colSpan="4">
-	    		<group readonly="true">
+    	<panel-tabs>
+	    	<panel title="Informations" >
+	    		<panel readonly="true">
 	    			<field name="name"/>
 			        <field name="move"/>
 			        <field name="move.company"/>
-		   	        <break/>
 			        <field name="date"/>
 			        <field name="dueDate"/>
 			        <field name="partner" onSelect="action-move-line-set-companyid-from-movecompany" domain="self.isContact = false AND :company_id MEMBER OF self.companySet" grid-view="partner-grid" form-view="partner-form"/>
 			        <!-- dummy field added for setting domain on partner -->
 			        <field name="company_id" hidden="true"/>
-			        <break/>
 			        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
-		   	        <break/>
 			        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 			        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 			        <field name="amountPaid"/>
 			        <field name="amountRemaining"/>
-			        <field name="interbankCodeLine"/>
+			       
 			        <field name="passageReason"/>
 			        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
 			        <field name="description"/>
 			        <field name="reimbursementStateSelect"/>
-	    		</group>
-		        <group name="irrecoverable" title="Irrecoverable" colSpan="4" canCollapse="true" >
+	    		</panel>
+	    		</panel>
+	    		 <panel-related field="interbankCodeLine"/>
+		        <panel name="irrecoverable" title="Irrecoverable">
 		        	<field name="irrecoverableStateSelect"/>
 	        		<field name="managementObject"/>
 	        		<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
 	        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
-		        </group>
-		        <group name="reconcileLists" title="Reconcile list" colSpan="4" cols="4">
-		            <field name="reconcileList1" colSpan="4" canRemove="false" canNew="false"/>
-		            <field name="reconcileList2" colSpan="4" canRemove="false" canNew="false"/>
-		        </group>
-		    </page>
-		    <page title="Analytics" readonly="true">
-		    	<field name="analyticAccountSet" colSpan="4"/>
-		    </page>
-		    <page title="Others" colSpan="4" readonly="true">
+		        </panel>
+		        
+		        <panel-related field="reconcileList1" canRemove="false" canNew="false"/>
+		        <panel-related field="reconcileList2"  canRemove="false" canNew="false"/>
+		    <panel title="Analytics" readonly="true">
+		    	<field name="analyticAccountSet" x-span="12" />
+		    </panel>
+		    <panel title="Others" readonly="true">
 		        <field name="taxLine"/>
 		        <field name="exportedDirectDebitOk"/>
-		    </page>
-        </notebook>
+		    </panel>
+        </panel-tabs>
     </form>
     
     <form name="move-line-accounting-situation-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false" canNew="false"
     onLoad="action-group-account-moveline-accounting-situation-onload" 
     onNew="action-account-move-line-onnew-group">
-    	<notebook colSpan="4">
-    	<page name="informations" title="Informations" colSpan="4">
-	    	<group readonly="true">
+    	<panel-tabs>
+    	<panel name="informations" title="Informations">
+	    	<panel readonly="true">
 		        <field name="name"/>
 		        <field name="move"/>
-	   	        <break/>
+	
 		        <field name="date"/>
 		        <field name="dueDate"/>
 		        <field name="customer"/>
-		        <break/>
+
 		        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
-	   	        <break/>
+	   	     
 		        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 		        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 		        <field name="amountPaid"/>
 		        <field name="amountRemaining"/>
-		        <field name="interbankCodeLine"/>
+		    
 		        <field name="passageReason"/>
 		        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
 		        <field name="description"/>
 		        <field name="reimbursementStateSelect"/>
-	        </group>
-	        <group name="irrecoverable" title="Irrecoverable" colSpan="4" canCollapse="true" >
+	        </panel>
+	        </panel>
+	        <panel-related field="interbankCodeLine" readonly="true"/>
+	        <panel name="irrecoverable" title="Irrecoverable" >
 	        	<field name="irrecoverableStateSelect"/>
         		<field name="managementObject"/>
         		<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
         		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
-	        </group>
-	        <group name="reconcileLists" title="Reconcile list" colSpan="4" cols="4">
-	            <field name="reconcileList1" colSpan="4" canRemove="false" canNew="false"/>
-	            <field name="reconcileList2" colSpan="4" canRemove="false" canNew="false"/>
-	        </group>
-	    </page>
-	    <page title="Analytics" readonly="true">
-	    	<field name="analyticAccountSet" colSpan="4"/>
-	    </page>
-	    <page title="Others" colSpan="4" readonly="true">
+	        </panel>
+	        <panel-related field="reconcileList1"  canRemove="false" canNew="false"/>
+	        <panel-related field="reconcileList2" colSpan="4" canRemove="false" canNew="false"/>
+	    <panel title="Analytics" readonly="true">
+	    	<field name="analyticAccountSet" x-span="12"/>
+	    </panel>
+	    <panel title="Others"  readonly="true">
 	        <field name="taxLine"/>
 	        <field name="exportedDirectDebitOk"/>
-	    </page>
-        </notebook>
+	    </panel>
+        </panel-tabs>
     </form>
     
     <action-group name="action-account-move-line-onnew-group">

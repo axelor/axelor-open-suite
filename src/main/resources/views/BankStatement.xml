@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
   
      <grid name="bank-statement-grid" title="Bank Statements" model="com.axelor.apps.account.db.BankStatement">
 			<field name="name" />
@@ -13,35 +13,30 @@
             <field name="statusSelect"/> 
      </grid>
   
-    <form name="bank-statement-form" cols="4" title="Bank Statement" model="com.axelor.apps.account.db.BankStatement" 
-    onNew="action-account-bank-statement-onnew-group" readonlyIf="statusSelect == 2">
-		<group name="header" colSpan="3" cols="4">
-			<field name="name" colSpan="2" />
-			<break />
-			<field name="company" onChange="action-bank-statement-set-currency" widget="SuggestBox"/>
-			<field name="currency" />
-			<field name="fromDate" />
-			<field name="toDate" />
-			<field name="journal" domain="self.statusSelect = 1 AND self.company = :company"/>
-			<field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect='cash'"/>
-		</group>
-		<group title="Status" colSpan="1" cols="1">
-			<field name="statusSelect" title="Status"/>
-			<button name="validated" title="Validated" onClick="action-group-account-bankstatement-validate-click" hideIf="statusSelect == 2"/>
-		</group>
-		<group title="Balance" colSpan="3" cols="4">
-			<field name="startingBalance" />
-			<field name="endingBalance" />
-		</group>
-		<break />
-		<separator title="" colSpan="4" />
-		<field name="bankStatementLineList" colSpan="4"/>
-		<separator title="" colSpan="4" />
-		<group colSpan="2" cols="4">
-			<field name="computedBalance" />
-			<button name="compute" title="Compute" onClick="action-group-account-bankstatement-compute-click" hideIf="statusSelect == 2"/>
-		</group> 
-	</form>
+ <form cols="4" onNew="action-account-bank-statement-onnew-group" readonlyIf="statusSelect == 2" name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.account.db.BankStatement">
+  
+  <panel title="Overview">
+    <field name="name"/>
+    <field name="company" widget="SuggestBox" onChange="action-bank-statement-set-currency"/>
+    <field name="currency"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"/>
+    <field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect='cash'"/>
+  </panel>
+  <panel title="Status" >
+    <field name="statusSelect" title="Status"/>
+    <button name="validated" title="Validated" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-validate-click"/>
+  </panel>
+	<panel title="Balance" >
+		<field name="startingBalance"/>
+		<field name="endingBalance"/>
+		<field name="computedBalance"/>
+	    <button name="compute" title="Compute" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-compute-click"/>
+	</panel>
+    <panel-related field="bankStatementLineList" x-span="12"/>
+</form>
+
  
    <action-group name="action-account-bank-statement-onnew-group">
 	   <action name="action-bank-statement-active-company"/>

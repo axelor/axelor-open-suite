@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     <grid name="tax-account-grid" title="Tax accounting configurations" model="com.axelor.apps.account.db.TaxAccount">
         <field name="company"/>
         <field name="account"/>
     </grid>
     <form name="tax-account-form" title="Tax accounting configuration" model="com.axelor.apps.account.db.TaxAccount" cols="4"
     onNew="action-tax-account-record-new">
-        <field name="company" widget="SuggestBox" onChange="action-group-account-tax-account-common-onchange"/>
+       <panel title="Overview">
+       	 <field name="company" widget="SuggestBox" onChange="action-group-account-tax-account-common-onchange"/>
         <field name="account" domain="self.company = :company" onChange="action-group-account-tax-account-common-onchange"/>
+       </panel>
+       
     </form>
     
     <action-group name="action-group-account-tax-account-common-onchange">

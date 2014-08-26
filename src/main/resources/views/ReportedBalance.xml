@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     <grid name="reported-balance-grid" title="Reported balance list" model="com.axelor.apps.account.db.ReportedBalance">
  		<field name="company"/>
   		<field name="partner"/>		
     </grid>
-    <form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance" cols="4">
- 		<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
- 		<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
- 		<field name="reportedBalanceLineList" colSpan="4">
- 			<grid title="Reported balance lines" >
- 				<field name="year"/>
- 				<field name="amount"/>
-    		</grid>
- 			<form title="Reported balance line" cols="4">
- 				<field name="year"/>
- 				<field name="amount"/>
-    		</form>
- 		</field>
-    </form>
+ <form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance" cols="4">
+
+	<panel title="Overview">
+		<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+		<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
+	</panel>
+
+	<panel-related field="reportedBalanceLineList" x-span="12" form-view="reported-balance-line-custom-from" grid-view="reported-balance-line-custom-grid"/>
+	
+ </form>
+<grid name="reported-balance-line-custom-grid" model="com.axelor.apps.account.db.ReportedBalanceLine"  title="Reported balance lines" >
+	<field name="year"/>
+	<field name="amount"/>
+</grid>
+<form name="reported-balance-line-custom-form" model="com.axelor.apps.account.db.ReportedBalanceLine"  title="Reported balance line" cols="4">
+	<panel tite="Overview">
+		<field name="year"/>
+		<field name="amount"/>
+	</panel>
+</form>
         
 </object-views>

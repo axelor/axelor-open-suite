@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="year-account-grid" title="Fiscal years" model="com.axelor.apps.base.db.Year">
         <field name="name"/>
@@ -13,22 +13,24 @@
         <field name="status"/>
     </grid>
     
-    <form name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year" cols="4"
-    onNew="action-year-record-new" onSave="action-year-check-date" >
-        <field name="name"/>
-        <field name="code"/>
-        <field name="fromDate" />
-        <field name="toDate"  />
-        <field name="reportedBalanceDate"/>
-        <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
-        <separator colSpan="4"/>
-<!--         <field name="reportedBalanceLineList" colSpan="4"/> -->
-        <field name="status"/>
-        <button name="close" title="Close fiscal year" colSpan="2" onClick="action-group-account-year-close-click"/>
-    	<field name="periodDurationSelect" />
-    	<button name="generatePeriods" title="Generate periods" colSpan="2" onClick="action-group-account-year-generateperiod-click"/>
-    	<field name="periodList" colSpan="4" />
-    </form>
+    <form cols="4" onSave="action-year-check-date" onNew="action-year-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
+		<panel title="Overview">
+			<field name="name"/>
+			<field name="code"/>
+			<field name="fromDate"/>
+			<field name="toDate"/>
+			<field name="reportedBalanceDate"/>
+			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+		</panel>
+		<panel-related field="periodList"/>
+		<panel-side>
+			<field name="status"/>
+			<button name="close" title="Close fiscal year" colSpan="2" onClick="action-group-account-year-close-click"/>
+			<field name="periodDurationSelect"/>
+			<button name="generatePeriods" title="Generate periods" colSpan="2" onClick="action-group-account-year-generateperiod-click"/>
+		</panel-side>
+</form>
+
     
     <action-group name="action-group-account-year-close-click">
     	<action name="action-year-check-date"/>

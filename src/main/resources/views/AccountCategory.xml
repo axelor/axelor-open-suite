@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="account-category-grid" title="Account Category" model="com.axelor.apps.account.db.AccountCategory">
         <field name="name"/>
@@ -10,11 +10,13 @@
     </grid>
     
     <form name="account-category-form" title="Account Category" model="com.axelor.apps.account.db.AccountCategory" cols="4">
-        <field name="name"/>
-        <field name="type"/>
-        <field name="signType"/>
-        <field name="accounts" colSpan="4"/>
-        <field name="accountCategoryLines" colSpan="4"/>
+       <panel title="General">
+	        <field name="name"/>
+	        <field name="type"/>
+	        <field name="signType"/>
+	        <field name="accounts"/>
+	        <field name="accountCategoryLines"/>
+       </panel>
     </form>
     
 </object-views>

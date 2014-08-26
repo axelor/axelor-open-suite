@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     <grid name="move-grid" orderBy="-date" title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
         <toolbar>
             <button name="validateMove" title="Validate" prompt="Validation of moves is irrevocable" onClick="action-move-method-validate-multiple-moves"/>
@@ -16,93 +16,83 @@
         <field name="invoice"/>
         <field name="state"/>
     </grid>
-    <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" cols="4" canDelete="false"
-    onLoad="action-account-move-onload-group"
-    onNew="action-account-move-onnew-group"
-    onSave="save,action-move-record-draft-sequence">
-    	<toolbar>
-    		<button name="reverse" title="Reverse" onClick="action-move-method-generate-reverse-move" icon="fa-exchange"/>
-    	</toolbar>
-    	<notebook colSpan="4">
-    	<page title="Informations" colSpan="4">
-	        <group title="Move header" colSpan="4" readonlyIf="state == 'validated'">
-	            <field name="reference"/>
-	            <field name="date" onChange="action-move-method-get-period"/>
-	            <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-move-method-get-period"/>
-	            <field name="period"/>
-	            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
-	            <field name="cashRegister"/>
-	            <field name="invoice" domain="self.company = :company" grid-view="invoice-grid" form-view="invoice-form"/>
-	            <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"/>
-	            <field name="paymentMode"/>
-	            <field name="paymentVoucher"/>
-	            <field name="getInfoFromFirstMoveLineOk"/>
-	         </group>
-             <field name="moveLineList" colSpan="4" readonlyIf="state == 'validated'">
-            	<grid title="Move lines">
-			        <field name="name"/>
-			        <field name="date"/>
-			        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
-			        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
-			        <field name="debit"/>
-			        <field name="credit"/>
-			        <field name="amountRemaining"/>
-			    </grid>
-            	<form title="Move line"
-            	 onLoad="action-account-move-moveline-onload-group"
-            	 onNew="action-account-move-moveline-onnew-group">
-				    <notebook colSpan="4">
-				    	<page title="Informations" colSpan="4">
-					        <field name="name"/>
-					        <break/>
-					        <field name="date"/>
-					        <field name="dueDate"/>
-					        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
-					        <break/>
-					        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
-			    		    <break/>
-					        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
-					        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
-					        <field name="amountPaid"/>
-					        <field name="amountRemaining"/>
-					        <field name="interbankCodeLine"/>
-					        <field name="description"/>
-					        <group name="reconcileLists" title="Reconcile list" colSpan="4" cols="4">
-					            <field name="reconcileList1" colSpan="4"/>
-					            <field name="reconcileList2" colSpan="4"/>
-					        </group>						        
-					        <break/>
-					    </page>
-					    <page title="Analytics">
-					    	<field name="analyticAccountSet" colSpan="4"/>
-					    </page>
-					    <page title="Others" colSpan="4">
-					        <field name="exportedDirectDebitOk"/>
-					    </page>
-					</notebook>	
-            	</form>
-	            	
-            </field>
-	        <group title="Actions" colSpan="4" cols="6">
-	            <field name="state" readonly="true"/>
-	            <field name="validationDate" readonly="true"/>
-	            <button name="validate" title="Validate" colSpan="2" onClick="action-group-account-move-validate-click"/>
-	        </group>
-        
-        </page>
-        <page title="Accounting export" colSpan="4" hideIf="state == 'draft'">
-	    	<field name="exportNumber"/>
-	        <field name="exportDate"/>
-	        <field name="accountingOk"/>
-	        <field name="moveLineReport" form-view="move-line-report-export-form"/>
-	    </page>
-	    <page title="Others" colSpan="4">
-	    	<field name="ignoreInAccountingOk"/>
-	        <field name="ignoreInReminderOk"/>
-	        <field name="rejectOk"/>
-	    </page>
-	    </notebook>
-   </form>
+      <grid name="move-line-custom-grid" model="com.axelor.apps.account.db.MoveLine" edit-icon="true" title="Move lines">
+          <field name="name"/>
+          <field name="date"/>
+          <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+          <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+          <field name="debit"/>
+          <field name="credit"/>
+          <field name="amountRemaining"/>
+        </grid>
+        <form model="com.axelor.apps.account.db.MoveLine" name="move-line-custom-form" onLoad="action-account-move-moveline-onload-group" onNew="action-account-move-moveline-onnew-group" title="Move line">
+          <panel-tabs>
+            <panel title="Informations">
+              <field name="name"/>
+              <field name="date"/>
+              <field name="dueDate"/>
+              <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+              <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+              <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
+              <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
+              <field name="amountPaid"/>
+              <field name="amountRemaining"/>
+              <field name="interbankCodeLine"/>
+              <field name="description"/>
+            </panel>
+            <panel-related field="reconcileList1" x-span="12"/>
+             <panel-related field="reconcileList2" x-span="12"/>
+            <panel title="Analytics">
+              <field name="analyticAccountSet" x-span="12"/>
+            </panel>
+            <panel title="Others" >
+              <field name="exportedDirectDebitOk" x-span="12"/>
+            </panel>
+          </panel-tabs>
+        </form>
+   <form cols="4" onLoad="action-account-move-onload-group" onSave="save,action-move-record-draft-sequence" onNew="action-account-move-onnew-group" canDelete="false" name="move-form" title="Account move" model="com.axelor.apps.account.db.Move">
+  <toolbar>
+    <button name="reverse" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
+  </toolbar>
+  <panel-tabs>
+    <panel title="Informations">
+      <panel title="Move header" readonlyIf="state == 'validated'" x-span="12">
+        <field name="reference"/>
+        <field name="date" onChange="action-move-method-get-period"/>
+        <field name="company" widget="SuggestBox" onChange="action-move-method-get-period" form-view="company-lite-form"/>
+        <field name="period"/>
+        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="cashRegister"/>
+        <field name="invoice" domain="self.company = :company" form-view="invoice-form" grid-view="invoice-grid"/>
+        <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"/>
+        <field name="paymentMode"/>
+        <field name="paymentVoucher"/>
+        <field name="getInfoFromFirstMoveLineOk"/>
+      </panel>
+    </panel>
+     <panel-related field="moveLineList" readonlyIf="state == 'validated'" colSpan="4" grid-view="move-line-custom-grid" form-view="move-line-custom-form"/>
+    <panel title="Accounting export" hideIf="state == 'draft'" >
+      <field name="exportNumber"/>
+      <field name="exportDate"/>
+      <field name="accountingOk"/>
+      <field name="moveLineReport" form-view="move-line-report-export-form"/>
+    </panel>
+    <panel title="Others">
+      <field name="ignoreInAccountingOk"/>
+      <field name="ignoreInReminderOk"/>
+      <field name="rejectOk"/>
+    </panel>
+  </panel-tabs>
+  
+  <panel-side title="Action">
+    
+        <field name="state" readonly="true"/>
+        <field name="validationDate" readonly="true"/>
+        <button name="validate" title="Validate" colSpan="2" onClick="action-group-account-move-validate-click"/>
+  </panel-side>
+
+
+</form>
 	
 	<!-- ACTION GROUPs -->
 	

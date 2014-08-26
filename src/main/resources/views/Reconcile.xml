@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
         <field name="debitMoveLine"/>
@@ -13,22 +13,24 @@
     </grid>
 
 
-    <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile" cols="4" 
-    	onNew="action-reconcile-record-default"
-    	onLoad="action-reconcile-attrs-default">
-        <group colSpan="4" title="" cols="4">
-        	<field name="debitMoveLine" onChange="action-reconcile-attrs-domain-credit" domain="self.debit &gt; 0.0" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
-        	<field name="creditMoveLine" onChange="action-reconcile-attrs-domain-debit" domain="self.credit &gt; 0.0" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
-        	<field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
-        	<field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
-    	</group>
-    	<group colSpan="4" cols="4">
-        	<field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
-        	<field name="statusSelect"/>
-    	</group>
-   		<button name="reconcile" title="Reconcile" colSpan="2" onClick="save,action-reconcile-method-reconcile" showIf="statusSelect == 1"/>
-       	<button name="unreconcile" title="Unreconcile" colSpan="2" onClick="save,action-reconcile-method-unreconcile" showIf="statusSelect == 2"/>
-    </form>
+    <form cols="4" onLoad="action-reconcile-attrs-default" onNew="action-reconcile-record-default" name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
+	<panel title="Overview">
+		<field name="debitMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onChange="action-reconcile-attrs-domain-credit" domain="self.debit &gt; 0.0"/>
+		 <field name="creditMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onChange="action-reconcile-attrs-domain-debit" domain="self.credit &gt; 0.0"/>
+		 <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
+		 <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
+	</panel>
+	<panel-side title="Info">
+	  <field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
+	  <field name="statusSelect"/>
+	</panel-side>
+	<panel-side title="Actions">
+		<button name="reconcile" title="Reconcile" showIf="statusSelect == 1" colSpan="2" onClick="save,action-reconcile-method-reconcile"/>
+		<button name="unreconcile" title="Unreconcile" showIf="statusSelect == 2" colSpan="2" onClick="save,action-reconcile-method-unreconcile"/>
+	</panel-side>
+  
+</form>
+
     
     
     <action-record name="action-reconcile-record-default" model="com.axelor.apps.account.db.Reconcile">

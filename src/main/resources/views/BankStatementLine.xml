@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
    
     <grid name="bank-statement-line-grid" title="Bank Statement Lines" model="com.axelor.apps.account.db.BankStatementLine">
         <field name="effectDate"/>
@@ -13,19 +13,22 @@
         <field name="amount"/>
     </grid>
   
-     <form name="bank-statement-line-form" title="Bank Statement Line" cols="4" model="com.axelor.apps.account.db.BankStatementLine">
-		<field name="name" />
-		<break />
-		<field name="reference" />
-		<field name="effectDate" />
-		<field name="partner" onChange="action-bank-statement-line-set-account"/>
-		<field name="typeSelect" onChange="action-bank-statement-line-set-account"/>
-		<field name="account" />
-		<field name="amount" />
-		<separator title="Associated MoveLine" colSpan="3" />
-		<field name="moveLine" colSpan="3" onSelect="action-bank-statement-line-move-line-domain"/>
-		<field name="isPosted"/>
-	</form>
+     <form cols="4" name="bank-statement-line-form" title="Bank Statement Line" model="com.axelor.apps.account.db.BankStatementLine">
+	  <panel title="Overview">
+	    <field name="name"/>
+	    <field name="reference"/>
+	    <field name="effectDate"/>
+	    <field name="partner" onChange="action-bank-statement-line-set-account"/>
+	    <field name="typeSelect" onChange="action-bank-statement-line-set-account"/>
+	    <field name="account"/>
+	    <field name="amount"/>
+	  </panel>
+  
+	  <panel title="Associated MoveLine">
+	    <field name="moveLine" onSelect="action-bank-statement-line-move-line-domain"/>
+	    <field name="isPosted"/>
+	  </panel>
+</form>
     
    <action-record model="com.axelor.apps.account.db.BankStatementLine" name="action-bank-statement-line-set-account">
        <field name="account" expr="eval: com.axelor.apps.account.db.AccountingSituation.filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; _parent"/>

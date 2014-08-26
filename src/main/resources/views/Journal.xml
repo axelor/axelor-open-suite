@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal">
         <field name="code"/>
         <field name="name"/>
@@ -15,33 +15,36 @@
         <field name="company"/>
     </grid>
     
-    <form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal" 
-    	cols="4" onNew="account-journal-record-default">
-    	
-    	<field name="code"/>
-        <field name="name"/>
-        <field name="company"/>
-        <field name="type"/>
-    	<notebook colSpan="4">
-    		<page title="General" colSpan="4">
-    			<portlet action="action-journal-view-move-line" colSpan="4"/>
-    		</page>
-    		<page title="Configurations" colSpan="4" colWidths="25%,25%,25%,25%">
-		        <field name="exportCode"/>
-		        <field name="excessPaymentOk"/>
-		        <field name="editReceiptOk"/>
-		        <field name="notExportOk"/>
-		        <field name="descriptionModel"/>
-		        <field name="descriptionIdentificationOk"/>
-		        <field name="sequence" domain="self.code = 'move' and self.company = :company"/>
-    		</page>
-    	</notebook>
-		<group colSpan="4" cols="4">    
-		  	<field name="statusSelect" readonly="true" widget="NavSelect" showTitle="false" colSpan="2"/>  
-		  	<field name="isObsolete" onChange="account-journal-record-status-archived"/>      
-		  	<button name="activeStatus" title="Active" onClick="account-journal-record-status-active,save" hideIf="statusSelect == 1"/>    
-		</group>
-    </form>
+ <form cols="4" onNew="account-journal-record-default" name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal">
+	<panel title="Overview">
+		<field name="code"/>
+		<field name="name"/>
+		<field name="company"/>
+		<field name="type"/>
+	</panel>
+
+	<panel-tabs>
+		<panel title="General">
+		  <!-- TODO:Un-comment this line when portlet is working -->
+		  <!--<portlet colSpan="4" action="action-journal-view-move-line" x-span="12"/>-->
+		</panel>
+		<panel title="Configurations">
+			 <field name="editReceiptOk" x-span="6"/>
+			<field name="excessPaymentOk" x-span="6"/>
+			<field name="descriptionIdentificationOk" x-span="6"/>
+			<field name="notExportOk" x-span="6"/>
+			<field name="exportCode"/>
+			<field name="descriptionModel"/>
+			<field name="sequence" domain="self.code = 'move' and self.company = :company"/>
+		</panel>
+	</panel-tabs>
+	<panel-side title="Status">
+		<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"/>
+		<field name="isObsolete" onChange="account-journal-record-status-archived"/>
+		<button name="activeStatus" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save"/>
+	</panel-side>
+</form>
+
     
     
     <action-view name="action-journal-view-move-line" title="Move lines" model="com.axelor.apps.account.db.MoveLine">

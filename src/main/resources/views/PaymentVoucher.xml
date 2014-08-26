@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="payment-voucher-grid" title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
         <field name="ref"/>
@@ -17,77 +17,61 @@
         <field name="stateSelect"/>
     </grid>
 
-	<form cols="4" name="payment-voucher-form" title="Payment voucher" model="com.axelor.apps.account.db.PaymentVoucher"
-    	onLoad="action-account-payment-voucher-onload-group"
-		onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum"
-		onNew="action-account-payment-voucher-onnew-group">
-		<group name="header" colSpan="3" cols="4">
-			<field name="ref" readonly="true" />
-			<field name="operationTypeSelect" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
-			<field name="user" />
-			<field name="paymentDateTime" />
-			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
-			<field name="cashRegister" />
-			<field name="hasAutoInput" />
-		</group>
-        <group title="Actions" colSpan="1" cols="1">
-            <button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click"/>
-            <button name="showMoveLines" title="Show move lines" onClick="com.axelor.apps.account.web.PaymentVoucherControllerSimple:showMoveLines"/>
-            <button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
-        </group>
-		<separator title="" colSpan="4" />
-		<group name="toPayGroup" colSpan="4" cols="4" colWidths="10%,40%">
-			<group title="To pay" colSpan="2" cols="3" colWidths="15%,40%,5%">
-				<field name="invoiceToPay"
-					onSelect="action-payment-voucher-domain-on-invoice-to-pay" 
-					onChange="action-group-account-payment-voucher-invoicetopay-onchange"
-					form-view="invoice-form" grid-view="invoice-grid" />
-				<label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="1" />
-				<field name="rejectToPay" title="Reject to pay" 
-					onSelect="action-payment-voucher-domain-on-reject-to-pay" 
-					onChange="action-group-account-payment-voucher-rejecttopay-onchange"/>
-			</group>
-	        <group title="Payer" colSpan="2" cols="2" colWidths="20%,80%">
-	                <field name="partner"  onSelect="action-payment-voucher-set-partner-domain" onChange="action-pv-moveLine-domain-4" form-view="partner-form" grid-view="partner-grid"/>
-	                <field name="paymentMode" onSelect="action-set-payment-mode-domain" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange"/>
-	       			<field name="currency"/>
-	        </group>
-		</group>
-		<separator title="" colSpan="4" />
-		<group name="paidGroup" colSpan="4" cols="6" colWidths="20%,25%,5%,5%,20%,25%">
-			<field name="paidAmount"/>
-			<label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="2" />
-			<field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs"/>
-    		<break/>
-            <field name="remainingAmount" readonly="true" />
-			<break />
-			<button name="loadMoveLines" title="Load invoice and display other invoices to pay" colSpan="6" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" />
-		</group>
-		<field name="paymentInvoiceList" grid-view="payment-invoice-grid" form-view="payment-invoice-form" colSpan="4"/>
-		<break />
-		<button name="loadSelectedLines" title="Load selected lines" colSpan="4"
-			onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" />
-		<field name="paymentInvoiceToPayList" colSpan="4" />
-		<break />
-		<group name="payboxGroup" title="Paybox" colSpan="4" cols="4">
-			<group name="payboxEmail" title="Add an email for payment through Paybox" hidden="true" colSpan="4" cols="4" canCollapse="true">
-				<label title="The payer doesn't have email attached. Please input/provide the email to use." />
-				<field name="email" widget="Email"/>
-				<field name="toSaveEmailOk" />
-				<button name="validateEmail" title="Validate" colSpan="2" onClick="save,com.axelor.apps.account.web.PayboxController:addPayboxEmail,save" />
-				<field name="defaultEmailOk" />
-			</group>
-			<button name="paybox" title="Paybox" colSpan="2" onClick="action-group-account-payment-voucher-paybox-onclick" />
-			<field name="bankCardTransactionNumber" />
-			<field name="payboxPaidOk" onChange="action-pv-hide-confirm-button,action-attrs-payment-voucher-readonly-status" />
-		</group>
-		<break />
-		<group name="footer" colSpan="4" cols="4">
-			<field name="stateSelect" />
-			<field name="generatedMove" />
-			<field name="receiptNo" />
-		</group>
-	</form>
+<form cols="4" onLoad="action-account-payment-voucher-onload-group" onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum" onNew="action-account-payment-voucher-onnew-group" name="payment-voucher-form" title="Payment voucher" model="com.axelor.apps.account.db.PaymentVoucher">
+		<panel title="Overview">
+			 <field name="ref" readonly="true"/>
+			 <field name="operationTypeSelect" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
+			 <field name="user"/>
+			 <field name="paymentDateTime"/>
+			 <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+			 <field name="cashRegister"/>
+			 <field name="hasAutoInput"/>
+			 <field name="paidAmount"/>
+			 <label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="2"/>
+			 <field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs"/>
+			<field name="remainingAmount" readonly="true"/>
+		</panel>
+		<panel-side name="payboxGroup" title="Paybox">
+			<panel name="payboxEmail" title="Add an email for payment through Paybox" hidden="true">
+			  <label title="The payer doesn't have email attached. Please input/provide the email to use."/>
+			  <field name="email" widget="Email"/>
+			  <field name="toSaveEmailOk"/>
+			  <button name="validateEmail" title="Validate" colSpan="2" onClick="save,com.axelor.apps.account.web.PayboxController:addPayboxEmail,save"/>
+			  <field name="defaultEmailOk"/>
+			</panel>
+			<panel>
+				<button name="paybox" title="Paybox" colSpan="2" onClick="action-group-account-payment-voucher-paybox-onclick"/>
+				<field name="bankCardTransactionNumber"/>
+				<field name="payboxPaidOk" onChange="action-pv-hide-confirm-button,action-attrs-payment-voucher-readonly-status"/>
+			</panel>
+		</panel-side>
+		<panel-side title="Info">
+		  <field name="stateSelect"/>
+		  <field name="generatedMove"/>
+		  <field name="receiptNo"/>
+		</panel-side>
+		<panel-side title="Actions">
+		  <button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click"/>
+		  <button name="showMoveLines" title="Show move lines" onClick="com.axelor.apps.account.web.PaymentVoucherControllerSimple:showMoveLines"/>
+		  <button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
+		  <button name="loadMoveLines" title="Load invoice and display other invoices to pay" colSpan="6" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save"/>
+		  <button name="loadSelectedLines" title="Load selected lines" colSpan="4" onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save"/>
+		</panel-side>
+		<panel title="To pay" x-span="6">
+		    <field name="invoiceToPay" onChange="action-group-account-payment-voucher-invoicetopay-onchange" onSelect="action-payment-voucher-domain-on-invoice-to-pay" form-view="invoice-form" grid-view="invoice-grid"/>
+		    <label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="1"/>
+		    <field name="rejectToPay" title="Reject to pay" onChange="action-group-account-payment-voucher-rejecttopay-onchange" onSelect="action-payment-voucher-domain-on-reject-to-pay"/>
+		</panel>
+		<panel title="Payer" x-span="6">
+		  <field name="partner" onChange="action-pv-moveLine-domain-4" onSelect="action-payment-voucher-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+		  <field name="paymentMode" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
+		  <field name="currency"/>
+		</panel>
+		<panel-tabs>
+			<panel-related x-span="12" field="paymentInvoiceList"  form-view="payment-invoice-form" grid-view="payment-invoice-grid"/>
+			<panel-related x-span="12" field="paymentInvoiceToPayList"/>
+		</panel-tabs>
+</form>
     
     <action-group name="action-account-payment-voucher-onnew-group">
 	    <action name="action-payment-voucher-attrs-hidden-paybox-email"/>

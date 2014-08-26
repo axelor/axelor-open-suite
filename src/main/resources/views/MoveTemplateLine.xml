@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="move-template-line-grid" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
         <field name="moveTemplate"/>
@@ -13,9 +13,8 @@
     </grid>
     
     <form name="move-template-line-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine" onNew="action-move-template-line-set-domain" onLoad="action-move-template-line-set-domain">
-        <group colSpan="4" cols="4" readonlyIf="isValid">
+        <panel title="Overview"  readonlyIf="isValid">
 	        <field name="moveTemplate"  onChange="action-move-template-line-get-account" required="true"/>
-	        <break/>
 	        <field name="name"/>
 	        <field name="debitCreditSelect" onChange="action-move-template-line-get-account"/>
 	        <field name="product" onChange="action-move-template-line-get-account"/>
@@ -24,7 +23,7 @@
 	        <field name="hasPartnerToDebit" showIf="debitCreditSelect == '0'" />
 	        <field name="hasPartnerToCredit" showIf="debitCreditSelect == '1'" />
 	        <field name="isValid" readonly="true"/>
-        </group>
+        </panel>
     </form>
     
     <action-attrs name="action-move-template-line-set-domain">

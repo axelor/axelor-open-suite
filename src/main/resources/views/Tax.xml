@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
     <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax">
         <field name="code"/>
         <field name="name"/>
     </grid>
     
-    <form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" cols="4">
-        <field name="code"/>
-        <field name="name"/>
-        <notebook colSpan="4">
-        	<page title="Tax rate list">
-        		<field name="activeTaxLine"/>
-		        <field name="taxLineList" colSpan="4">
-		            <grid title="Tax rate lines">
-		                <field name="startDate"/>
-		                <field name="endDate"/>
-		                <field name="value"/>
-		            </grid>
-		            <form title="Tax rate" cols="6">
-		                <field name="value"/>
-		                <field name="startDate"/>
-		                <field name="endDate"/>
-		            </form>
-		        </field>
-        	</page>
-        	<page title="Accounting configuration">
-				<field name="taxAccountList" colSpan="4"/>
-        	</page>
-        </notebook>
-    </form>
+<form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" cols="4">
+	<panel 	title="Overview">
+		<field name="code"/>
+		<field name="name"/>
+	</panel>
+    <panel-tabs>
+		<panel title="Tax rate list">
+			<field name="activeTaxLine"/>
+		 	<field name="taxLineList" x-span="12" grid-view="" form-view=""/>
+		</panel>
+    	<panel-related title="Accounting configuration" field="taxAccountList"/>
+    </panel-tabs>
+</form>
+<grid name="tax-line-custom-grid" model="com.axelor.apps.account.db.TaxLine" title="Tax rate lines">
+		<field name="startDate"/>
+		<field name="endDate"/>
+		<field name="value"/>
+</grid>
+<form name="tax-line-custom-form" model="com.axelor.apps.account.db.TaxLine" title="Tax rate" cols="6">
+    <panel title="Overview">
+    	<field name="value"/>
+	    <field name="startDate"/>
+	    <field name="endDate"/>
+    </panel>
+    
+</form>
     
 </object-views>

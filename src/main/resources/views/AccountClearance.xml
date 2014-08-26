@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="account-clearance-grid" title="Account clearance operations" model="com.axelor.apps.account.db.AccountClearance">
         <field name="name"/>
@@ -13,27 +13,27 @@
         <field name="status"/>
     </grid>
     
-    <form name="account-clearance-form" title="Account clearance" model="com.axelor.apps.account.db.AccountClearance" cols="4"
-    	onNew="action-account-clearance-record-default"
-    	onLoad="action-account-clearance-attrs-hidden-buttons">
-    	<field name="name"/>
-    	<field name="dateTime"/>
-    	<field name="user"/>
-    	<field name="company" widget="SuggestBox"/>
-   		<group title="Clearance settings" colSpan="4" cols="4">
-        	<field name="amountThreshold"/>
-        	<field name="dateThreshold"/>
-    	</group>
-    	<button name="getExcessPayment" title="Get overdue payments" colSpan="4" onClick="action-group-account-account-clearance-excesspayment-click"/>
-    	<field name="moveLineSet" colSpan="4"/>
-    	<group title="Actions" colSpan="2" cols="2">
-        	<button name="validateAccountClearance" title="Validate account clearances" colSpan="2" onClick="action-group-account-account-clearance-validate-click"/>
-        	<field name="status"/>
-    	</group>
-    	<group title="Links" colSpan="2" cols="2" showIf="status.code != 'dra'">
-        	<button name="showAccountClearanceMoveLines" title="Move lines generated" colSpan="2" onClick="action-method-account-clearance-show-move-lines"/>
-    	</group>
-    </form>
+<form  onLoad="action-account-clearance-attrs-hidden-buttons" onNew="action-account-clearance-record-default" name="account-clearance-form" title="Account clearance" model="com.axelor.apps.account.db.AccountClearance">
+	 <panel title="General">
+	   <field name="name"/>
+	   <field name="dateTime"/>
+	   <field name="user"/>
+	   <field name="company" widget="SuggestBox"/>
+	   <field name="status"/>
+	 </panel>
+	<panel title="Clearance settings" >
+	    <field name="amountThreshold"/>
+	    <field name="dateThreshold"/>
+	</panel>
+	<panel-tabs>
+	  <panel-related field="moveLineSet"/>  
+	</panel-tabs>
+	<panel-side title="Actions"> 
+	    <button name="getExcessPayment" title="Get overdue payments"  onClick="action-group-account-account-clearance-excesspayment-click"/>
+	    <button name="validateAccountClearance" title="Validate account clearances" onClick="action-group-account-account-clearance-validate-click"/>
+	    <button name="showAccountClearanceMoveLines" title="Move lines generated"  onClick="action-method-account-clearance-show-move-lines"/> 
+	</panel-side>
+</form>
     
     <action-group name="action-group-account-account-clearance-excesspayment-click">
     	<action name="save"/>

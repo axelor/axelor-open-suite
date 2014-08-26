@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="reimbursement-grid" title="Reimbursements" model="com.axelor.apps.account.db.Reimbursement">
     	<field name="ref"/>
@@ -9,42 +9,32 @@
         <field name="total"/>
     </grid>
     
-    <form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement" cols="4"
-    onNew="action-account-reimbursement-onnew-group"
-    onLoad="action-account-reimbursement-onload-group">
-    	<group title="Header" colSpan="4" cols="4">
-    		<field name="ref"/>
-    		<break/>
-    		<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-    		<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
-    	</group>
-    	<group title="Reimbursement details" colSpan="4" cols="4">
-    		<field name="amountToReimburse"/>
-    		<field name="amountReimbursed"/>
-    		<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
-    	</group>
-    	<break/>
-    	<separator title="Reason" colSpan="4"/>
-    	<field name="description" showTitle="false" colSpan="4"/>
-    	<group title="Actions" colSpan="4" cols="4">
-        	<group colSpan="2" cols="2">
-            	<field name="status"/>
-       		</group>
-        	<group colSpan="2" cols="2">
-            	<button name="validateReimbursement" title="Validate" onClick="action-group-account-reimbursement-validate-click"/>  
-        	</group>
-    	</group>
-    	<field name="moveLineSet" colSpan="4" hideIf="status == null || status.code == 'dra'"/>
-    	<group colSpan="2" cols="3">
-        	<field name="rejectedOk"/>
-        	<group name="rejectInformation" title="Reject Information" colSpan="2" cols="3">
-            	<field name="interbankCodeLine"/>
-            	<field name="rejectDate"/>
-            	<field name="rejectMoveLine"/>
-        	</group>
-    	</group>
-    </form>
-    
+    <form cols="4" onLoad="action-account-reimbursement-onload-group" onNew="action-account-reimbursement-onnew-group" name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement">
+	  <panel title="Overview">
+	    <field name="ref" x-span="12"/>
+	    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+	    <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+	  </panel>
+	  <panel title="Reimbursement details">
+	    <field name="amountToReimburse"/>
+	    <field name="amountReimbursed"/>
+	    <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	  </panel>
+	  <panel title="Reason">
+	      <field name="description" x-span="12"/>
+	 </panel>
+	 <panel  title="Reject Information" >
+	     <field name="rejectedOk"/>
+	    <field name="interbankCodeLine"/>
+	    <field name="rejectDate"/>
+	    <field name="rejectMoveLine"/>
+	 </panel> 
+	<panel-related field="moveLineSet" hideIf="status == null || status.code == 'dra'" x-span="12"/>
+	<panel-side title="Info">
+	  <field name="status"/>
+	  <button name="validateReimbursement" title="Validate" onClick="action-group-account-reimbursement-validate-click"/>
+	</panel-side>
+</form>
     <action-group name="action-account-reimbursement-onnew-group">
 	    <action name="action-reimbursement-hidden-button-attrs"/>
 	    <action name="action-reimbursement-hidden-reject-field-attrs"/>
