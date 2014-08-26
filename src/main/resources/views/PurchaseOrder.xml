@@ -65,25 +65,8 @@
 	        <field name="location.address" if-module="axelor-supplychain"/>
 	        <field name="deliveryDate"/>
 	      </panel>
-	      <panel x-span="8">
+	      <panel x-span="12">
 	        <field name="statusSelect" showTitle="false" widget="NavSelect" x-span="12"/>  
-	      </panel>
-	      <panel x-span="4">
-	        <panel title="Totals">
-	          <spacer/>
-	          <field name="exTaxTotal"/>
-	          <spacer/>
-	          <field name="taxTotal"/>
-	          <spacer/>
-	          <spacer/>
-	           <!-- TODO: remove this comment if separator works in panel
-	           <separator colSpan="1"/>
-	            -->
-	          <spacer/>
-	          <field name="inTaxTotal" css="highlight"/>
-	          <spacer/>
-	          <field name="amountRemainingToBeInvoiced" if-module="axelor-account"/>          
-	        </panel>
 	      </panel>
 	    </panel>
 	    <panel-related field="purchaseOrderLineList" title="PO Lines"/>    
@@ -94,13 +77,12 @@
 	    </panel>
 	    <panel title="Notes">
 	      <field name="notes" showTitle="false" x-span="12" widget="Html" x-lite="true"/>
-	    </panel>
-	    <panel title="Suppliers managements" colSpan="4" cols="4" if-module="axelor-suppliermanagement">
-	      <!-- remove this comment if include works in panel
-	      <include view="purchase-order-supplier-form"/> 
-	      -->
-	    </panel>
+	    </panel>	    
 	  </panel-tabs>
+	  <panel if-module="axelor-suppliermanagement">
+	  	<label title="Suppliers managements"/>
+	  </panel>
+	  <panel-include view="purchase-order-supplier-form" from="axelor-suppliermanagement" if-module="axelor-suppliermanagement"/>
 	  <panel-side title="Action(s)">
 	    <panel>
 	      <button name="compute" title="Compute" hideIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-group-purchase-purchase-order-compute-click"/>
@@ -119,6 +101,17 @@
 	    <panel readonly="true">
 	      <field name="validatedByUser"/>
 	      <field name="validationDate"/>
+	    </panel>    
+	    <panel title="Totals">
+	      <spacer/>
+	      <field name="exTaxTotal"/>
+	      <spacer/>
+	      <field name="taxTotal"/>
+	      <spacer/>                     
+	      <spacer/>
+	      <field name="inTaxTotal" css="subtotal-total"/>
+	      <spacer/>
+	      <field name="amountRemainingToBeInvoiced" if-module="axelor-account"/>          
 	    </panel>    
 	  </panel-side>        
 	</form>
