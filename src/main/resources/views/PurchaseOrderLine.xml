@@ -74,10 +74,10 @@
 	    <panel title="Links">
 	      <field name="task" if-module="axelor-account-organisation"/>
 	    </panel>
-	    <panel title="Suppliers requests" if-module="axelor-suppliermanagement">
+	    <panel title="Suppliers requests" if-module="axelor-supplier-management">
 	      <button name="generateSuppliersRequests" title="Generate suppliers requests" colSpan="2" onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
 	      <field name="supplierPartner"/>
-	      <field name="purchaseOrderSupplierLineList" colSpan="4" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
+	      <panel-related field="purchaseOrderSupplierLineList" x-span="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
 	    </panel>
 	    <panel title="Account" if-module="axelor-account">
 	      <field name="isInvoiced"/>
