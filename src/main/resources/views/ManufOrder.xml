@@ -94,9 +94,9 @@
 	      </panel>
 	    </panel>
 	    <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-consumed">
-	      <field name="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" x-span="12"/>
-	      <field name="consumedStockMoveLineList" readonlyIf="statusSelect == 6" x-span="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
-	      <field name="diffConsumeProdProductList" x-span="12"/>
+	      <panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" x-span="12"/>
+	      <panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" x-span="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
+	      <panel-related field="diffConsumeProdProductList" x-span="12"/>
 	    </panel>
 	    <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
 	      <!-- TODO: remove this comment if portlet works in panel
@@ -106,9 +106,9 @@
 	      -->
 	    </panel>
 	    <panel title="Finished products">
-	      <field name="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" x-span="12"/>
-	      <field name="producedStockMoveLineList" readonlyIf="statusSelect == 6" x-span="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
-	      <field name="wasteProdProductList" x-span="12"/>
+	      <panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" x-span="12"/>
+	      <panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" x-span="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
+	      <panel-related field="wasteProdProductList" x-span="12"/>
 	      <panel title="Description" x-span="12">
 	        <field name="wasteProdDescription" showTitle="false" x-span="12"/>
 	      </panel>
