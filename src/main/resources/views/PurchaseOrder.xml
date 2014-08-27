@@ -79,10 +79,10 @@
 	      <field name="notes" showTitle="false" x-span="12" widget="Html" x-lite="true"/>
 	    </panel>	    
 	  </panel-tabs>
-	  <panel if-module="axelor-suppliermanagement">
+	  <panel if-module="axelor-supplier-management">
 	  	<label title="Suppliers managements"/>
 	  </panel>
-	  <panel-include view="purchase-order-supplier-form" from="axelor-suppliermanagement" if-module="axelor-suppliermanagement"/>
+	  <panel-include view="purchase-order-supplier-form" from="axelor-supplier-management" if-module="axelor-supplier-management"/>
 	  <panel-side title="Action(s)">
 	    <panel>
 	      <button name="compute" title="Compute" hideIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-group-purchase-purchase-order-compute-click"/>
