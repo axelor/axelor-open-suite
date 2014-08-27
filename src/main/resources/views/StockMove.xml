@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
@@ -55,58 +55,60 @@
         <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" readonlyIf="typeSelect != 2"/>
     </grid>
     
-    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" cols="4"
-    	onNew="action-group-stock-stockmove-onnew"
-    	onLoad="action-group-stock-stockmove-onload">
-        <field name="typeSelect"/>
-        <field name="statusSelect" widget="NavSelect"/>
-        <group colSpan="4" cols="6">
-      		<group title="Stock move reference" colSpan="2" cols="2">
-        		<field name="stockMoveSeq"/>
-        		<field name="name"/>
-        		<field name="company" form-view="company-lite-form" widget="SuggestBox"/>
-        		<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-    		</group>
-    		<group title="Stock move informations"  colSpan="2" cols="2" colWidths="40%,70%">
-        		<field name="fromLocation" onChange="action-stock-move-set-from-address"/>
-        		<field name="toLocation" onChange="action-stock-move-set-to-address"/>
-        		<field name="estimatedDate"/>
-        		<field name="realDate"/>
-        		<field name="fromAddress" showIf="typeSelect == 3"/>
-        		<field name="toAddress" showIf="typeSelect == 2"/>
-        		<field name="isWithReturnSurplus" showIf="typeSelect &gt;= 2"/>
-        		<field name="isWithBackorder" />
-    		</group>
-    		<group title="Action(s)" colSpan="2" cols="2">
-            	<button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="action-group-stock-stockmove-plan-click"/>
-				<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="action-group-stock-stockmove-realize-click"/>
-				<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="action-group-stock-stockmove-cancel-click"/>
-	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
-            	<button name="generateInvoice" title="Generate invoice" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain"/>
-            	<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion"/>
-            	<button name="printStockMove" title=" Print" onClick="save,action-print-stock-move" icon="fa-print"/>
-            	<button name="viewDirection" title="View Direction" colSpan="1" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" showIf="typeSelect == 2"/>
-        	</group>
-    	</group>
-    	<break/>
-    	<notebook colSpan="4">
-        	<page title="Stock move details">
-        	    <button name="splitByUnit" title="Split by unit" onClick="save,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect == 1 || statusSelect == 2" />
-        	    <button name="specialSplit" title="Special split" onClick="save,action-stock-move-wizard-special-split" showIf="statusSelect == 1 || statusSelect == 2" />
-        	    <button name="shipReciveAllProducts" title="Ship/Receive all products" onClick="save,action-stock-move-ship-recieve-all-products" showIf="statusSelect == 1 || statusSelect == 2" />
-            	<field name="stockMoveLineList" colSpan="4" form-view="stock-move-line-form" grid-view="stock-move-line-grid" readonlyIf="statusSelect == 3"/>
-        	</page>
-        	<page title="Configuration">
-           		<field name="saleOrder" if-module="axelor-supplychain"/>
-           		<field name="purchaseOrder" if-module="axelor-supplychain"/>
-            	<field name="invoice" if-module="axelor-supplychain"/>
-        	</page>
-    	</notebook>
-    </form>
+	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
+		 onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+	  <panel>
+		  <field name="typeSelect" title="Type" x-span="4"/>
+		  <field name="statusSelect" widget="NavSelect" x-span="8"/>
+	  </panel>
+	  <panel>
+	    <panel title="Stock move reference">
+	      <field name="stockMoveSeq" x-span="12"/>
+	      <field name="name" x-span="12"/>
+	      <field name="company" widget="SuggestBox" form-view="company-lite-form" x-span="12"/>
+	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" x-span="12"/>
+	    </panel>
+	    <panel title="Stock move informations">
+	      <field name="fromLocation" onChange="action-stock-move-set-from-address" x-span="12"/>
+	      <field name="toLocation" onChange="action-stock-move-set-to-address" x-span="12"/>
+	      <field name="estimatedDate" x-span="6"/>
+	      <field name="realDate" x-span="6"/>
+	      <field name="fromAddress" showIf="typeSelect == 3" x-span="12"/>
+	      <field name="toAddress" showIf="typeSelect == 2" x-span="12"/>
+	      <field name="isWithReturnSurplus" showIf="typeSelect &gt;= 2" x-span="6"/>
+	      <field name="isWithBackorder" x-span="6"/>
+	    </panel>
+	  </panel>  
+	  <panel-tabs>
+	    <panel title="Split/Ship/Receive">
+	      <button name="splitByUnit" title="Split by unit" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-method-split-stock-move-lines-unit"/>
+	      <button name="specialSplit" title="Special split" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-wizard-special-split"/>
+	      <button name="shipReciveAllProducts" title="Ship/Receive all products" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-ship-recieve-all-products"/>
+	    </panel>
+	    <panel-related field="stockMoveLineList" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
+	    <panel title="Configuration">
+	      <field name="saleOrder" if-module="axelor-supplychain"/>
+	      <field name="purchaseOrder" if-module="axelor-supplychain"/>
+	      <field name="invoice" if-module="axelor-supplychain"/>
+	    </panel>
+	  </panel-tabs>
+	  <panel-side title="Action(s)">
+	    <button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="action-group-stock-stockmove-plan-click"/>
+	    <button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="action-group-stock-stockmove-realize-click"/>
+	    <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="action-group-stock-stockmove-cancel-click"/>
+	    <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
+	    <button name="generateInvoice" title="Generate invoice" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion"/>
+	    <button name="printStockMove" title=" Print" icon="fa-print" onClick="save,action-print-stock-move"/>
+	    <button name="viewDirection" title="View Direction" help="View Direction" showIf="typeSelect == 2" colSpan="1" icon="fa-location-arrow" onClick="action-stock-move-method-view-direction"/>
+	  </panel-side>
+	</form>
     
-    <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard" cols="2">
-        <field name="splitQty" widget="INTEGER" title="Split in Qty of"/>
-        <button name="split" title="Split" onClick="action-stock-move-method-split-stock-move-lines-speical" colSpan="2"/>
+    <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
+    	<panel>
+	        <field name="splitQty" widget="INTEGER" title="Split in Qty of"/>
+	        <button name="split" title="Split" onClick="action-stock-move-method-split-stock-move-lines-speical"/>
+        </panel>
     </form>
     
     
