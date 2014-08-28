@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="planning-line-grid" title="Planning lines" model="com.axelor.apps.organisation.db.PlanningLine">
         <field name="product"/>
@@ -14,16 +14,18 @@
         <field name="timeSheet"/>
     </grid>
     
-    <form name="planning-line-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" 
+    <form name="planning-line-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" 
     onNew="action-group-organisation-planningline-onnew">
-        <field name="product" domain="self.applicationTypeSelect = 2"/>
-        <field name="employee"/>
-        <field name="task"/>
-        <field name="fromDateTime" onChange="action-planning-line-method-compute-start-date-time"/>
-        <field name="toDateTime" onChange="action-planning-line-method-compute-end-date-time"/>
-        <field name="duration" onChange="action-planning-line-method-compute-duration"/>
-        <field name="unit" onChange="action-planning-line-method-compute-unit"/>
-        <field name="timeSheet"/>
+    	<panel>
+	        <field name="product" domain="self.applicationTypeSelect = 2"/>
+	        <field name="employee"/>
+	        <field name="task"/>
+	        <field name="fromDateTime" onChange="action-planning-line-method-compute-start-date-time"/>
+	        <field name="toDateTime" onChange="action-planning-line-method-compute-end-date-time"/>
+	        <field name="duration" onChange="action-planning-line-method-compute-duration"/>
+	        <field name="unit" onChange="action-planning-line-method-compute-unit"/>
+	        <field name="timeSheet"/>
+        </panel>
     </form>
     
     <grid name="planning-line-task-grid" title="Planning lines" model="com.axelor.apps.organisation.db.PlanningLine">
@@ -37,16 +39,18 @@
         <field name="timeSheet"/>
     </grid>
     
-    <form name="planning-line-task-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" 
+    <form name="planning-line-task-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" 
     onNew="action-group-organisation-planningline-onnew">
-        <field name="product" domain="self.applicationTypeSelect = 2"/>
-        <field name="employee"/>
-        <field name="planning"/>
-        <field name="fromDateTime" onChange="action-planning-line-method-compute-start-date-time"/>
-        <field name="toDateTime" onChange="action-planning-line-method-compute-end-date-time"/>
-        <field name="duration" onChange="action-planning-line-method-compute-duration"/>
-        <field name="unit" onChange="action-planning-line-method-compute-unit"/>
-        <field name="timeSheet"/>
+    	<panel>
+	        <field name="product" domain="self.applicationTypeSelect = 2"/>
+	        <field name="employee"/>
+	        <field name="planning"/>
+	        <field name="fromDateTime" onChange="action-planning-line-method-compute-start-date-time"/>
+	        <field name="toDateTime" onChange="action-planning-line-method-compute-end-date-time"/>
+	        <field name="duration" onChange="action-planning-line-method-compute-duration"/>
+	        <field name="unit" onChange="action-planning-line-method-compute-unit"/>
+	        <field name="timeSheet"/>
+        </panel>
     </form>
     
     <action-group name="action-group-organisation-planningline-onnew">

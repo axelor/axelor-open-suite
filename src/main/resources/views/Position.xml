@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
 
 	<form name="position-form" title="Professional background"
 		model="com.axelor.apps.organisation.db.Position">
-		<field name="name" />
-		<field name="startDate" />
-		<field name="endDate" />
-		<field name="employer" />
-		<field name="description" />
-		<field name="departureCause" />
-		<field name="department" />
-		<field name="duration" />
-		<field name="referenceTitle" />
-		<field name="context" />
-		<field name="goals" />
-		<field name="development" />
-		<field name="result" />
-		<field name="technicalEnvironment" />
-		<field name="contact" />
-		<field name="recommendationSelect" />
-		<field name="comment" />
+		<panel>
+			<field name="name" />
+			<field name="startDate" />
+			<field name="endDate" />
+			<field name="employer" />
+			<field name="description" />
+			<field name="departureCause" />
+			<field name="department" />
+			<field name="duration" />
+			<field name="referenceTitle" />
+			<field name="context" />
+			<field name="goals" />
+			<field name="development" />
+			<field name="result" />
+			<field name="technicalEnvironment" />
+			<field name="contact" />
+			<field name="recommendationSelect" />
+			<field name="comment" />
+		</panel>
 	</form>
 
 	<grid name="position-grid" title="Professional background"

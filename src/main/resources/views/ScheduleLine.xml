@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="schedule-line-grid" title="Working Time shifts" model="com.axelor.apps.organisation.db.ScheduleLine" expandable="true">
         <field name="startDate"/>
         <field name="scheduleSubLineList"/>
     </grid>
     
-    <form name="schedule-line-form" title="Working Time shift" model="com.axelor.apps.organisation.db.ScheduleLine" cols="4" >
-        <field name="startDate"/>
-        <field name="scheduleSubLineList" colSpan="4"/>
+    <form name="schedule-line-form" title="Working Time shift" model="com.axelor.apps.organisation.db.ScheduleLine" >
+        <panel>
+	        <field name="startDate"/>
+	        <panel-related field="scheduleSubLineList" x-span="12"/>
+        </panel>
     </form>
     
     

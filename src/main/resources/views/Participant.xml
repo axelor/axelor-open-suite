@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="participant-grid" title="Participants" model="com.axelor.apps.crm.db.Participant">
         <field name="partner"/>
@@ -9,8 +9,10 @@
     </grid>
     
     <form name="participant-form" title="Participant" model="com.axelor.apps.crm.db.Participant" cols="4">
-        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
-        <field name="isComing"/>
+		<panel>
+	        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
+	        <field name="isComing"/>
+        </panel>
     </form>
     
 </object-views>

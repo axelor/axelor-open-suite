@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
 	<grid name="skill-line-edit-grid" title="Skills" model="com.axelor.apps.organisation.db.SkillLine" editable="true">
 		<field name="name" />
@@ -9,31 +9,31 @@
 	</grid>
 	
 	<form name="skill-line-edit-form" title="Skills" model="com.axelor.apps.organisation.db.SkillLine">
-		<field name="name" />
-		<field name="value" />
+		<panel>
+			<field name="name" />
+			<field name="value" />
+		</panel>
 	</form>
 		
 	<form name="skill-set-edit-form" title="Skill" model="com.axelor.apps.organisation.db.SkillSet">
-		<field name="skillLineList" grid-view="skill-line-edit-grid" form-view="skill-line-edit-form" showTitle="false"/>
-		<field name="languageSet" grid-view="language-grid" form-view="language-form" showTitle="false"/>
+		<panel>
+			<field name="skillLineList" grid-view="skill-line-edit-grid" form-view="skill-line-edit-form" showTitle="false"/>
+			<field name="languageSet" grid-view="language-grid" form-view="language-form" showTitle="false"/>
+		</panel>
 	</form>
 
 	<form name="competence-edit-form" title="Competences" model="com.axelor.apps.organisation.db.Competence">
-		<field name="name"/>
-		<field name="subTitle"/>
-		<field name="interventionTypeSet" colSpan="2"/>
-		<field name="competenceAreaSet" colSpan="2"/>
-		<notebook colSpan="4">
-			<page title="Expertises">
-				<field name="expertSkillSet" widget="NestedEditor" summary-view="true" showTitle="false" form-view="skill-set-edit-form"></field>
-			</page>
-			<page title="Mastered Skills">
-				<field name="masteredSkillSet" widget="NestedEditor" summary-view="true" showTitle="false" form-view="skill-set-edit-form"></field>
-			</page>
-			<page title="Awareness">
-				<field name="awareSkillSet" widget="NestedEditor" summary-view="true" showTitle="false" form-view="skill-set-edit-form"></field>
-			</page>
-		</notebook>
+	  <panel>
+	    <field name="name"/>
+	    <field name="subTitle"/>
+	    <field name="competenceAreaSet" widget="TagSelect"/>
+	    <field name="interventionTypeSet" widget="TagSelect"/>  
+	  </panel>
+	  <panel-tabs>
+	    <panel-related title="Expertises" field="expertSkillSet" widget="NestedEditor" summary-view="true" showTitle="false" form-view="skill-set-edit-form"/>      
+	    <panel-related title="Mastered Skills" field="masteredSkillSet" widget="NestedEditor" summary-view="true" showTitle="false" form-view="skill-set-edit-form"/>
+	    <panel-related title="Awareness" field="awareSkillSet" widget="NestedEditor" summary-view="true" showTitle="false" form-view="skill-set-edit-form"/>
+	  </panel-tabs>
 	</form>
 	<grid name="competence-edit-grid" title="Competences" model="com.axelor.apps.organisation.db.Competence">
 		<field name="name" />

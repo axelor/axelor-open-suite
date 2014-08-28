@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
 	<grid name="employee-leave-grid" title="Employee leaves" model="com.axelor.apps.organisation.db.EmployeeLeave">
 		<field name="reasonTask"/>
@@ -10,11 +10,13 @@
 		<field name="cumulation"/>
 	</grid>
 
-	<form name="employee-leave-form" title="Employee leave"	model="com.axelor.apps.organisation.db.EmployeeLeave" cols="4">
-		<field name="reasonTask"/>
-		<field name="leaveBalances"/>
-		<field name="leaveRequestInProgress"/>
-		<field name="cumulation"/>
+	<form name="employee-leave-form" title="Employee leave"	model="com.axelor.apps.organisation.db.EmployeeLeave">
+		<panel>
+			<field name="reasonTask"/>
+			<field name="leaveBalances"/>
+			<field name="leaveRequestInProgress"/>
+			<field name="cumulation"/>
+		</panel>
 	</form>
 	
 </object-views>
