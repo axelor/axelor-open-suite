@@ -84,7 +84,16 @@
 	      <field name="amountInvoiced"/>
 	      <field name="amountRemainingToBeInvoiced"/>            
 	    </panel>
-	    <panel-related field="invoiceSet"/>
+	    <panel-related field="invoiceSet">
+	      <field name="invoiceId"/>
+	      <field name="partner"/>
+	      <field name="paymentMode"/>
+	      <field name="invoiceDate"/>
+	      <field name="dueDate"/>
+	      <field name="status"/>
+	      <field name="inTaxTotal" title="Total"/>
+	      <field name="inTaxTotalRemaining" title="Remaining"/>	    
+	    </panel-related>
 	  </panel-tabs>
 	</form>
 	
