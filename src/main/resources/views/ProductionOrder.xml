@@ -26,7 +26,15 @@
 	    <button name="AddManufOrder" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-method-add-manuf-order"/>
 	  </panel>
 	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
-	  <panel-related field="manufOrderList" x-span="12"/>
+	  <panel-related field="manufOrderList" x-span="12">
+        <field name="manufOrderSeq"/>      
+        <field name="product"/>
+        <field name="qty"/>
+        <field name="plannedStartDate"/>    
+        <field name="plannedEndDate"/>    
+        <field name="priority"/>
+        <field name="statusSelect"/>	  	
+	  </panel-related>
 	  <!-- TODO: remove this comment if portlet works with panel
 	  <portlet colSpan="4" action="action-production-order-view-operation-order"/>
 	  -->
