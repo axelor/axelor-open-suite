@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	<grid name="routing-action-create-line-grid" title="Creations" model="com.axelor.apps.base.db.RoutingActionCreateLine">
 		<field name="metaField"/>
 		<field name="value"/>
 	</grid>
 	
-	<form name="routing-action-create-line-form" title="Creation" model="com.axelor.apps.base.db.RoutingActionCreateLine" cols="2">
-		<field name="metaField"/>
-		<field name="value"/>
+	<form name="routing-action-create-line-form" title="Creation" model="com.axelor.apps.base.db.RoutingActionCreateLine">
+		<panel>
+			<field name="metaField" x-span="12"/>
+			<field name="value" x-span="12"/>
+		</panel>
 	</form>
 
 </object-views>

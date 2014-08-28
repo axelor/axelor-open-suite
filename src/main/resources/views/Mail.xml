@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="mail-grid" title="Mails list " model="com.axelor.apps.base.db.Mail">
         <field name="code"/>
@@ -17,7 +17,7 @@
     </grid>
     
     <form name="mail-form" title="Mail" model="com.axelor.apps.base.db.Mail" cols="4" onLoad="action-mail-hidden-attrs">
-    	<group title="Informations" colSpan="4">
+    	<panel title="Informations">
  			<field name="code"/>
         	<field name="name"/>
             <field name="typeSelect" onChange="action-mail-hidden-attrs"/>
@@ -25,25 +25,27 @@
             <field name="mailModel"/>
             <field name="pdfFilePath"/>
             <field name="company" widget="SuggestBox"/>
-        </group>
-        <group title="Content" colSpan="4">
-        	<field name="subject" colSpan="4"/>
-       	 	<field name="content" colSpan="4"/>
-        </group>
-        <group title="Sending dates" colSpan="4">
+        </panel>
+        <panel title="Content">
+        	<field name="subject" x-span="12" />
+       	 	<field name="content" x-span="12" />
+        </panel>
+        <panel title="Sending dates">
        	 	<field name="sendScheduleDate"/>
         	<field name="sendRealDate"/>
-        </group>
-        <group title="Recipient" colSpan="4">
+        </panel>
+        <panel title="Recipient">
         	<field name="addressEmail"/>
         	<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-        </group>
-        <group title="Complementary information" colSpan="4">
+        </panel>
+        <panel title="Complementary information">
         	<field name="reminderHistory"/>         
         	<field name="cashRegisterLine"/>
         	<field name="rejectMoveLine"/>
-        </group> 
-        <button name="printMail" title="Print" colSpan="2" icon="fa-print" onClick="save,action-mail-method-print-mail"/>
+        </panel>
+        <panel>
+        	<button name="printMail" title="Print"  icon="fa-print" onClick="save,action-mail-method-print-mail"/>
+        </panel>
     </form>
 
 	<action-attrs name="action-mail-hidden-attrs">

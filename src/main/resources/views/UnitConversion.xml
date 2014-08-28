@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     <grid name="unit-conversion-grid" title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion">
         <field name="startUnit"/>
         <field name="coef"/>
         <field name="endUnit"/>
     </grid>
-    <form name="unit-conversion-form" title="Unit conversion" model="com.axelor.apps.base.db.UnitConversion" cols="6">
-        <field name="startUnit"/>
-        <field name="coef"/>
-        <field name="endUnit"/>
+    <form name="unit-conversion-form" title="Unit conversion" model="com.axelor.apps.base.db.UnitConversion">
+    	<panel>
+	        <field name="startUnit"/>
+	        <field name="coef"/>
+	        <field name="endUnit"/>
+        </panel>
     </form>
 </object-views>

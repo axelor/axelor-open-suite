@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
     <grid name="spent-time-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
         <field name="date"/>
@@ -13,14 +13,16 @@
         <field name="timesheetImputed"/>
     </grid>
     
-    <form name="spent-time-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
-        <field name="event"/>
-        <field name="timesheetImputed"/>
-        <field name="user"/>
-        <field name="task" />
-        <field name="date"/>
-        <field name="duration"/>
-       	<field name="unit"/>
+    <form name="spent-time-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" onNew="action-spent-time-record-default">
+    	<panel>
+	        <field name="event"/>
+	        <field name="timesheetImputed"/>
+	        <field name="user"/>
+	        <field name="task" />
+	        <field name="date"/>
+	        <field name="duration"/>
+	       	<field name="unit"/>
+       	</panel>
     </form>
     
     <grid name="spent-time-ticket-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
@@ -31,12 +33,14 @@
 		<field name="timesheetImputed"/>
     </grid>
     
-    <form name="spent-time-ticket-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
-        <field name="timesheetImputed"/>
-        <field name="user"/>
-        <field name="date"/>
-        <field name="duration"/>
-       	<field name="unit"/>
+    <form name="spent-time-ticket-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" onNew="action-spent-time-record-default">
+    	<panel>
+	        <field name="timesheetImputed"/>
+	        <field name="user"/>
+	        <field name="date"/>
+	        <field name="duration"/>
+	       	<field name="unit"/>
+       	</panel>
     </form>
     
     <grid name="spent-time-task-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
@@ -48,13 +52,15 @@
         <field name="timesheetImputed"/>
     </grid>
     
-    <form name="spent-time-task-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
-        <field name="date"/>
-		<field name="user"/>
-        <field name="duration"/>
-       	<field name="unit"/>
-		<field name="event"/>
-        <field name="timesheetImputed"/>
+    <form name="spent-time-task-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" onNew="action-spent-time-record-default">
+    	<panel>
+	        <field name="date"/>
+			<field name="user"/>
+	        <field name="duration"/>
+	       	<field name="unit"/>
+			<field name="event"/>
+	        <field name="timesheetImputed"/>
+        </panel>
     </form>
     
     <action-record name="action-spent-time-record-default" model="com.axelor.apps.base.db.SpentTime">

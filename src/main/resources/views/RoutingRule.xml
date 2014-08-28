@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	<grid name="routing-rule-grid" title="Routing rules" model="com.axelor.apps.base.db.RoutingRule">
 		<field name="metaField" />
@@ -9,14 +9,12 @@
 		<field name="value"/>
 	</grid>
 	
-	<form name="routing-rule-form" title="Routing rule" model="com.axelor.apps.base.db.RoutingRule" cols="6">
-		<field name="metaField" domain="self.metaModel.name = 'Message'" widget="SuggestBox">
-			<grid title="Field">
-				<field name="label"/>
-			</grid>
-		</field>
-		<field name="ruleTypeSelect"/>
-		<field name="value"/>
+	<form name="routing-rule-form" title="Routing rule" model="com.axelor.apps.base.db.RoutingRule">
+		<panel>
+			<field name="metaField" domain="self.metaModel.name = 'Message'" widget="SuggestBox" />
+			<field name="ruleTypeSelect"/>
+			<field name="value"/>
+		</panel>
 	</form>
 
 </object-views>

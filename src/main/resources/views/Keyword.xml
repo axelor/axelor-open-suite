@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	<grid name="keyword-grid" title="Keywords" model="com.axelor.apps.base.db.Keyword">
         <field name="typeSelect"/>
@@ -9,8 +9,10 @@
     </grid>
     
     <form name="keyword-form" title="Keyword" model="com.axelor.apps.base.db.Keyword">
-        <field name="typeSelect"/>
-        <field name="keyWord"/>
+    	<panel>
+	        <field name="typeSelect"/>
+	        <field name="keyWord"/>
+	    </panel>
     </form>
     
     <!-- Outils -->
@@ -19,7 +21,9 @@
     </grid>
     <form name="keyword-tool-form" title="Tool Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-tool-record-new">
-		<field name="keyWord" />
+		<panel>
+			<field name="keyWord" />
+		</panel>
 	</form>
 
 	<!-- Secteurs -->
@@ -28,7 +32,9 @@
     </grid>
 	<form name="keyword-area-form" title="Sector Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-area-record-new">
-		<field name="keyWord" />
+		<panel>
+			<field name="keyWord" />
+		</panel>
 	</form>
 	
 	<!-- Métiers -->
@@ -37,7 +43,9 @@
     </grid>
 	<form name="keyword-profession-form" title="Jobtitle Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-profession-record-new">
-		<field name="keyWord" />
+		<panel>
+			<field name="keyWord" />
+		</panel>
 	</form>
 
 	<!-- Outils -->

@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="template-rule-grid" title="Template rules" model="com.axelor.apps.base.db.TemplateRule">
         <field name="name"/>
         <field name="metaModel"/>
     </grid>
     
-    <form name="template-rule-form" title="Template rule" model="com.axelor.apps.base.db.TemplateRule" cols="4" onNew="action-template-rule-record-new">
-        <field name="name"/>
-        <field name="metaModel"/>
-        <field name="templateRuleLineList" colSpan="4"/>
+    <form name="template-rule-form" title="Template rule" model="com.axelor.apps.base.db.TemplateRule" onNew="action-template-rule-record-new">
+    	<panel>
+	        <field name="name"/>
+	        <field name="metaModel"/>
+	        <panel-related field="templateRuleLineList" x-span="12"/>
+        </panel>
     </form>
     
     <action-record name="action-template-rule-record-new" model="com.axelor.apps.base.db.TemplateRule">

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     <grid name="region-grid" title="Regions" model="com.axelor.apps.base.db.Region">
         <field name="code"/>
         <field name="name"/>
         <field name="country"/>
     </grid>
-    <form name="region-form" title="Region" model="com.axelor.apps.base.db.Region" cols="4">
-        <field name="name"/>
-        <field name="code"/>
-        <field name="country"/>
+    <form name="region-form" title="Region" model="com.axelor.apps.base.db.Region">
+    	<panel>
+	        <field name="name"/>
+	        <field name="code"/>
+	        <field name="country"/>
+        </panel>
     </form>
 </object-views>

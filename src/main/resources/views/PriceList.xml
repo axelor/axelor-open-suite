@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	
     <grid name="price-list-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList"> 
@@ -12,29 +12,27 @@
     	<field name="isActive"/>
     </grid>
     
-   <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList" cols="4"
+   <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
    onNew="action-price-list-record-default,action-price-list-record-title">
-	    <field name="title" /> 
-    	<field name="isActive"/> 
-    	<break/>
-	    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" onChange="action-price-list-record-title"/> 
-	    <field name="typeSelect"/>
-	    <break/>
-    	<field name="validFromDate" onChange="action-price-list-record-title"/>
-    	<field name="validToDate" onChange="action-price-list-record-title"/> 
-    	<break/>
-    	<field name="isDisplayed"/>
-    	<break/>
-    	<notebook colSpan="4">
-    		<page name="priceListLine" title="Price list lines" >
+   		<panel>
+		    <field name="title" /> 
+    		<field name="isActive"/> 
+		    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" onChange="action-price-list-record-title"/> 
+		    <field name="typeSelect"/>
+	    	<field name="validFromDate" onChange="action-price-list-record-title"/>
+    		<field name="validToDate" onChange="action-price-list-record-title"/> 
+	    	<field name="isDisplayed"/>
+    	</panel>
+    	<panel-tabs>
+    		<panel name="priceListLine" title="Price list lines" >
     			<field name="generalDiscount"/>
-    			<label name="or" title="Or"/>
-    			<field name="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="4"/>
-    		 </page>
-    		<page name="comments" title="Comments">
-    			<field name="comments"/>    					
-    		</page>
-    	</notebook>
+    			<label name="or" title="Or" x-span="12"/>
+    			<panel-related field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" x-span="12"/>
+    		 </panel>
+    		<panel name="comments" title="Comments">
+    			<field name="comments" x-span="12"/>    					
+    		</panel>
+    	</panel-tabs>
    </form>
    
    <action-record name="action-price-list-record-default" model="com.axelor.apps.base.db.PriceList">

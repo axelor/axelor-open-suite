@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
-	<grid name="indicator-generator-grouping-grid" title="Indicators generators" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping">
+	<grid name="indicator-generator-grouping-grid" title="Indicators groups" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping">
 		<field name="code"/>
 		<field name="name"/>
 		<field name="path"/>
 	</grid>
 	
-	<form name="indicator-generator-grouping-form" title="Indicators generators" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping">
-		<field name="code"/>
-		<field name="name" colSpan="4"/>
-		<field name="indicatorGeneratorSet" colSpan="4" />
-		<button name="run" title="Execute" colSpan="4" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:run" />
-		<field name="result" colSpan="4" />
-		<field name="log" colSpan="4" />
-		<field name="path"/>
-		<button name="export" title="Export indicators" colSpan="2" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:export" />
-		
+	<form name="indicator-generator-grouping-form" title="Indicators groups" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping">
+		<panel>
+			<field name="code"/>
+			<field name="name" x-span="12"/>
+			<panel-related field="indicatorGeneratorSet" x-span="12" />
+			<button name="run" title="Execute" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:run" />
+			<field name="result" x-span="12"/>
+			<field name="log" x-span="12" />
+			<field name="path"/>
+			<button name="export" title="Export indicators"  onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:export" />
+		</panel>
 	</form>
 
 </object-views>

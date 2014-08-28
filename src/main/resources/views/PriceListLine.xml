@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	
     <grid name="price-list-line-grid" title="Price list lines" model="com.axelor.apps.base.db.PriceListLine"> 
@@ -15,15 +15,19 @@
     
 	<form name="price-list-line-form" title="Price list line" model="com.axelor.apps.base.db.PriceListLine"
 	onNew="action-group-base-pricelistline-onnew">
-		<group name="application" title="Apply on" colSpan="4">
-			<field name="product" onChange="action-price-list-line-record-product"/> 
-			<label title="Or"/>
-			<field name="productCategory"/>
-		</group>
-		<field name="typeSelect" onChange="action-price-list-line-record-type-select"/>
-		<field name="amountTypeSelect" hideIf="typeSelect == 3"/>
-		<field name="amount"/>
-		<field name="minQty"/>
+		 <panel name="application" title="Apply on">
+		      <panel x-span="6">
+					<field name="product" onChange="action-price-list-line-record-product" x-span="12"/>
+		        	<label title="Or" x-span="12"/>
+		        	<field name="productCategory" x-span="12"/>
+		      </panel>
+		      <panel x-span="6">
+		        	<field name="typeSelect" onChange="action-price-list-line-record-type-select" x-span="12"/>
+		        	<field name="amountTypeSelect" hideIf="typeSelect == 3" x-span="12"/>
+					<field name="amount" x-span="12"/>
+					<field name="minQty" x-span="12"/>
+		     </panel>
+		</panel>
 	</form>
 	
 	<action-group name="action-group-base-pricelistline-onnew">
