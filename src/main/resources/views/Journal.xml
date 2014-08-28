@@ -16,34 +16,29 @@
     </grid>
     
  <form cols="4" onNew="account-journal-record-default" name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal">
-	<panel title="Overview">
-		<field name="code"/>
-		<field name="name"/>
-		<field name="company"/>
-		<field name="type"/>
-	</panel>
-
-	<panel-tabs>
-		<panel title="General">
-		  <!-- TODO:Un-comment this line when portlet is working -->
-		  <!--<portlet colSpan="4" action="action-journal-view-move-line" x-span="12"/>-->
-		</panel>
-		<panel title="Configurations">
-			 <field name="editReceiptOk" x-span="6"/>
-			<field name="excessPaymentOk" x-span="6"/>
-			<field name="descriptionIdentificationOk" x-span="6"/>
-			<field name="notExportOk" x-span="6"/>
-			<field name="exportCode"/>
-			<field name="descriptionModel"/>
-			<field name="sequence" domain="self.code = 'move' and self.company = :company"/>
-		</panel>
-	</panel-tabs>
-	<panel-side title="Status">
-		<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"/>
-		<field name="isObsolete" onChange="account-journal-record-status-archived"/>
-		<button name="activeStatus" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save"/>
-	</panel-side>
+  <panel title="Overview">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="company"/>
+    <field name="type"/>
+  </panel>
+  <panel title="Configurations">
+      <field name="editReceiptOk" x-span="6"/>
+      <field name="excessPaymentOk" x-span="6"/>
+      <field name="descriptionIdentificationOk" x-span="6"/>
+      <field name="notExportOk" x-span="6"/>
+      <field name="exportCode"/>
+      <field name="descriptionModel"/>
+      <field name="sequence" domain="self.code = 'move' and self.company = :company"/>
+    </panel>
+  <panel-dashlet title="General" action="action-journal-view-move-line"/>
+  <panel-side title="Status">
+    <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"/>
+    <field name="isObsolete" onChange="account-journal-record-status-archived"/>
+    <button name="activeStatus" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save"/>
+  </panel-side>
 </form>
+
 
     
     

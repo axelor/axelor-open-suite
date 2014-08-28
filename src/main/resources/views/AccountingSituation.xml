@@ -20,8 +20,6 @@
 	</panel>
     	
 	<panel title="Customer balance">
-		<!-- TODO:Un comment this line when Portlet is working inside panel -->
-		<!--         <portlet colSpan="4" action="action-accounting-situation-view-move-lines"/> -->
 		<field name="balanceCustAccount"/>
 		<field name="balanceDueCustAccount"/>
 		<field name="balanceDueReminderCustAccount"/>
@@ -29,6 +27,7 @@
     <panel title="Reminder process">
     	<field name="reminder"/>
     </panel>
+    <panel-dashlet action="action-accounting-situation-view-move-lines"/>
 </form>
     
     
@@ -51,8 +50,6 @@
 	</panel>
     	
 	<panel title="Customer balance" colSpan="4">
-		<!-- TODO:un-comment this line when portlet is working in panel -->
-		<!--         <portlet colSpan="4" action="action-accounting-situation-view-move-lines"/> -->
 		<field name="balanceCustAccount"/>
 		<field name="balanceDueCustAccount"/>
 		<field name="balanceDueReminderCustAccount"/>
@@ -60,6 +57,7 @@
     <panel title="Reminder process" colSpan="4">
     	<field name="reminder"/>
     </panel>
+     <panel-dashlet action="action-accounting-situation-view-move-lines"/>
 </form>
     
   	<action-method name="action-account-accounting-situation-method-update-customer-account">
