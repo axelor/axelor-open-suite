@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
  	
     <form name="incl-sales-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	   <portlet colSpan="6" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
+    	<panel-dashlet x-span="12" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
 	</form>
 	
      <form name="incl-sales-order-portal-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	   <portlet colSpan="6" action="action-partner-view-sales-orders" />
+	   <panel-dashlet x-span="12" action="action-partner-view-sales-orders" />
 	</form>
 	
     <action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
