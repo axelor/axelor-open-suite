@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
     <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sentDateT">
         <field name="sentDateT"/>
@@ -9,42 +9,38 @@
         <field name="subject"/>
     </grid>
     
-    <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message" cols="4"
+    <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message"
     onNew="action-group-message-message-onnew"
     onLoad="action-message-attrs-showhide-by-media-type">
       <toolbar>
 	        <button name="print" title="Print" icon="fa-print" onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
+	        <button name="send" title="Send" icon="fa-envelope" onClick="action-group-message-message-send-click" showIf="statusSelect == 1 " />
+        	<button name="delete" title="Delete" icon="fa-trash" onClick="action-group-message-message-delete-click" showIf="statusSelect != 3"/>
 	  </toolbar>
-    	<group title="Informations" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
+    	<panel title="Informations" readonlyIf="statusSelect == 2 || statusSelect == 3">
             <field name="sentDateT"/>
             <field name="fromEmailAddress" />
             <field name="senderUser"/>
             <field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature"/>
             <field name="statusSelect"/>
             <field name="mediaTypeSelect" onChange="action-message-attrs-showhide-by-media-type"/>
-<!--             <field name="sentByEmail"/> -->
-        </group>
-        <group title="Recipients" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
-        	<field name="toEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
-        	<field name="ccEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
-        	<field name="bccEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
-        	<field name="addressBlock" colSpan="4" widget="html"/>
-        	<field name="recipientUser" widget="TagSelect" x-create="name" colSpan="4" help="Internal Message"/>
-        </group>
-        <group title="Content" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
-        	<field name="subject" title="Subject" colSpan="4"/>
-        	<spacer/>
-       	 	<field name="content" colSpan="4" showTitle="false" widget="html"/>
-        </group>
-        <group title="Related to" colSpan="1" cols="2" readonlyIf="statusSelect == 3">
-	        <field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId"/>
-	        <field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId"/>
-	        <field name="filePath" widget="url"/>
-        </group>
-<!--         <button name="printMail" title="Imprimer" colSpan="2" onClick="save,action-mail-method-print-mail"/> -->
-<!--         <button name="reply" title="Reply" showIf="!canReply" onClick="com.axelor.dyndemo.web.DynController:showReply"/> -->
-        <button name="send" title="Send" icon="fa-envelope" onClick="action-group-message-message-send-click" showIf="statusSelect == 1 "/>
-        <button name="delete" title="Delete" icon="fa-trash" onClick="action-group-message-message-delete-click" showIf="statusSelect != 3"/>
+        </panel>
+        <panel title="Recipients" readonlyIf="statusSelect == 2 || statusSelect == 3">
+        	<field name="toEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" x-span="12"/>
+        	<field name="ccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" x-span="12"/>
+        	<field name="bccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" x-span="12"/>
+        	<field name="addressBlock" x-span="12" widget="html"/>
+        	<field name="recipientUser" widget="TagSelect" x-create="name" help="Internal Message" x-span="12"/>
+        </panel>
+        <panel title="Content" readonlyIf="statusSelect == 2 || statusSelect == 3">
+        	<field name="subject" title="Subject" x-span="12"/>
+       	 	<field name="content" x-span="12" showTitle="false" widget="html"/>
+        </panel>
+        <panel title="Related to"  readonlyIf="statusSelect == 3">
+	        <field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" x-span="4"/>
+	        <field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId" x-span="4"/>
+	        <field name="filePath" widget="url" x-span="4"/>
+        </panel>
     </form>
     
     <action-group name="action-group-message-message-onnew">
