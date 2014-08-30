@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="trace-back-grid" title="TraceBack" model="com.axelor.exception.db.TraceBack" orderBy="-id">
        	<toolbar>
@@ -21,7 +21,7 @@
         <field name="exception"/>
     </grid>
     
-    <form name="trace-back-form" title="TraceBack" model="com.axelor.exception.db.TraceBack" cols="4" onLoad="action-trace-back-load">
+    <form name="trace-back-form" title="TraceBack" model="com.axelor.exception.db.TraceBack" onLoad="action-trace-back-load">
     	<toolbar>
 		    <button name="new" title="" hidden="true"/>
 		    <button name="edit" title="" hidden="true"/>
@@ -30,26 +30,28 @@
 		    <button name="copy" title="" hidden="true"/>
 		    <button name="cancel" title="" hidden="true"/>
 		</toolbar>
-        <field name="date"/>
-        <field name="internalUser"/>
-        <field name="origin" />
-        <field name="typeSelect"/>
-        <field name="categorySelect"/>
-        <group name="exceptionGroup" title="Anomaly" colSpan="4" cols="2">
-        	<field name="exception" showTitle="false" colSpan="2"/>
-        </group>
-        <group name="errorGroup" title="Error" colSpan="4" cols="2">
-            <field name="error" showTitle="false" colSpan="2"/>
-        </group>
-        <group name="causeGroup" title="Cause" colSpan="4" cols="2">
-            <field name="cause" showTitle="false" colSpan="2"/>
-        </group>
-        <group name="messageGroup" title="Message" colSpan="4" cols="2">
-            <field name="message" showTitle="false" colSpan="2"/>
-        </group>
-        <group name="traceGroup" title="Trace" colSpan="4" cols="2">
-            <field name="trace" showTitle="false" colSpan="2"/>
-        </group>
+		<panel>
+	        <field name="date"/>
+	        <field name="internalUser"/>
+	        <field name="origin" />
+	        <field name="typeSelect"/>
+	        <field name="categorySelect"/>
+        </panel>
+        <panel name="exceptionGroup" title="Anomaly">
+        	<field name="exception" showTitle="false" x-span="12"/>
+        </panel>
+        <panel name="errorGroup" title="Error">
+            <field name="error" showTitle="false" x-span="12"/>
+        </panel>
+        <panel name="causeGroup" title="Cause">
+            <field name="cause" showTitle="false" x-span="12"/>
+        </panel>
+        <panel name="messageGroup" title="Message">
+            <field name="message" showTitle="false" x-span="12"/>
+        </panel>
+        <panel name="traceGroup" title="Trace" >
+            <field name="trace" showTitle="false" x-span="12"/>
+        </panel>
     </form>
     
     <action-attrs name="action-trace-back-load">
