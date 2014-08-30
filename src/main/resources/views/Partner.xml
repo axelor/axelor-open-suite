@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
  	
     <form name="incl-activities-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
-	    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
-	    <portlet colSpan="6" action="action-partner-view-opportunities"/>
-	    <portlet colSpan="6" action="action-partner-view-tickets"/>
+	    <panel-dashlet x-span="12" action="action-partner-view-upcoming-events"/>
+	    <panel-dashlet x-span="12" action="action-partner-view-historical-events-completed"/>
+	    <panel-dashlet x-span="12" action="action-partner-view-opportunities"/>
+	    <panel-dashlet x-span="12" action="action-partner-view-tickets"/>
 	</form>
 	
     <form name="incl-events-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <portlet colSpan="6" action="portal.customer.crm.activities" height="350"/>
+	    <panel-dashlet x-span="12" action="portal.customer.crm.activities" height="350"/>
 	</form>
 	
     <form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
