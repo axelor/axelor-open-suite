@@ -12,7 +12,7 @@
         <field name="status"/>
     </grid>
     
-    <form name="year-form" title="Fiscal year" model="com.axelor.apps.base.db.Year" cols="4"
+    <form name="year-form" title="Fiscal year" model="com.axelor.apps.base.db.Year"
     onNew="action-year-record-new">
     	<panel>
 	        <field name="name"/>

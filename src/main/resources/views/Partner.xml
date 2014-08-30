@@ -47,7 +47,7 @@
 	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null" if-module="axelor-account"/>
 	    </toolbar>
 	     <menubar>
-	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
 	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null" />
 	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null" />
 	            <item title="Create task" action="save,action-partner-view-create-task" readonlyIf="id == null" />

@@ -47,11 +47,13 @@
 	  	</panel>  
     </form>
 	
-    <form name="alarm-invoice-form" title="Alarm" model="com.axelor.apps.base.db.Alarm" cols="6">
-        <field name="date"/>
-        <field name="acquitOk" onChange="save,action-alarm-method-acquit-invoice" />
-        <field name="alarmEngine" summary-view="alarm-message-form" form-view="alarm-message-form" edit-window="self" />
-        <field name="content" colSpan="6" showTitle="false" />
+    <form name="alarm-invoice-form" title="Alarm" model="com.axelor.apps.base.db.Alarm">
+    	<panel>
+	        <field name="date"/>
+	        <field name="acquitOk" onChange="save,action-alarm-method-acquit-invoice" />
+	        <field name="alarmEngine" summary-view="alarm-message-form" form-view="alarm-message-form" edit-window="self" />
+	        <field name="content" x-span="12" showTitle="false" />
+        </panel>
     </form>
     
     <action-method name="action-alarm-method-acquit-invoice">
