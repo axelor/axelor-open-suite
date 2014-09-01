@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
 	<grid name="expense-edit-grid" title="Expenses" editable="true"
 		model="com.axelor.apps.organisation.db.Expense">
@@ -32,40 +32,39 @@
 	</grid>
 	    
     
-    <form name="expense-form" title="Expense" model="com.axelor.apps.organisation.db.Expense" cols="4"
-    onNew="action-expense-group-default" onLoad="action-expense-method-check-validation-status">
-    	<toolbar>
-    		<button name="printExpense" colSpan="2" title="Print" onClick="action-print-expenses" icon="fa-print"/>
-    	</toolbar>
-    	<field name="user"/>
-   	 	<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="2"/>
-        <field name="date" />
-        <field name="company" form-view="company-lite-form" widget="SuggestBox"/>
-        <field name="totalAmount" title="Total (TTC)"/>
-       	<field name="currency" />
-       	<field name="project" />
-   	 	<field name="expenseLineList" colSpan="4"/>
-   	 	<break/>
-   	 	<field name="paymentPeriod"/>
-   	 	<field name="refusalReason" showIf="statusSelect == 6"/>
-   	 	<break/>
-       	<group title="Action(s)" colSpan="4">
-   			<group colSpan="1" cols="1">
-   				<button name="draft" title="Draft" colSpan="2" onClick="action-group-organisation-expense-draft-click" showIf="statusSelect == 6"/>
-        		<button name="submit" title="Submit" colSpan="2" onClick="action-group-organisation-expense-submit-click" showIf="statusSelect == 1"/>
-	            <button name="validateManager" title="Validate" colSpan="1" onClick="action-group-organisation-expense-validatemanager-click" showIf="statusSelect == 2"/>
-	            <button name="validateCommercial" title="Validate" colSpan="1" onClick="action-group-organisation-expense-validatecommercial-click" showIf="statusSelect == 3"/>
-	         	<button name="confirm" title="Confirm" colSpan="1" onClick="action-group-organisation-expense-confirm-click" showIf="statusSelect == 4"/>
-	            <button name="refuse" title="Refuse" colSpan="1" onClick="save,action-expense-record-refuse" showIf="statusSelect == 2"/>
-        		<button name="compute" title="Compute" colSpan="2" onClick="action-expense-compute-expense-line"/>
-	        </group>
-   			<group colSpan="1" cols="2" readonly="true">
-   				<field name="validatedByUser" colSpan="1"/>
-             	<field name="validationDate" colSpan="1"/>
-   	 			<field name="validationStatusSelect" hideIf="statusSelect == 1 || statusSelect == 6"/>
-   			</group>
-        </group>
-    </form>
+	<form name="expense-form" title="Expense" model="com.axelor.apps.organisation.db.Expense" onLoad="action-expense-method-check-validation-status" onNew="action-expense-group-default">
+	  <toolbar>
+	    <button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="action-print-expenses"/>
+	  </toolbar>
+	  <panel>
+	    <field name="user"/>
+	    <field name="statusSelect" showTitle="false" x-span="12" widget="NavSelect"/>
+	    <field name="date"/>
+	    <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+	    <field name="totalAmount" title="Total (TTC)"/>
+	    <field name="currency"/>
+	    <field name="project"/>
+	    <field name="expenseLineList" x-span="12"/>    
+	    <field name="paymentPeriod"/>
+	    <field name="refusalReason" showIf="statusSelect == 6"/>
+	  </panel>
+	  <panel-side title="Action(s)">
+	    <panel x-span="12">
+	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="2" onClick="action-group-organisation-expense-draft-click"/>
+	      <button name="submit" title="Submit" showIf="statusSelect == 1" colSpan="2" onClick="action-group-organisation-expense-submit-click"/>
+	      <button name="validateManager" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="action-group-organisation-expense-validatemanager-click"/>
+	      <button name="validateCommercial" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-group-organisation-expense-validatecommercial-click"/>
+	      <button name="confirm" title="Confirm" showIf="statusSelect == 4" colSpan="1" onClick="action-group-organisation-expense-confirm-click"/>
+	      <button name="refuse" title="Refuse" showIf="statusSelect == 2" colSpan="1" onClick="save,action-expense-record-refuse"/>
+	      <button name="compute" title="Compute" colSpan="2" onClick="action-expense-compute-expense-line"/>
+	    </panel>
+	    <panel readonly="true" x-span="12">
+	      <field name="validatedByUser"  x-span="12"/>
+	      <field name="validationDate"  x-span="12"/>
+	      <field name="validationStatusSelect" hideIf="statusSelect == 1 || statusSelect == 6"  x-span="12"/>
+	    </panel>
+	  </panel-side>
+	</form>
     
     <action-group name="action-expense-group-default">
     	<action name="action-expense-record-default"/>

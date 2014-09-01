@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="planning-grid" title="Planning" model="com.axelor.apps.organisation.db.Planning">
         <field name="period"/>
@@ -9,25 +9,24 @@
         <field name="date"/>
     </grid>
     
-    <form name="planning-form" title="Planning" model="com.axelor.apps.organisation.db.Planning" cols="6" 
-    	onNew="action-planning-record-default,action-planning-method-get-period">
-        <field name="period"/>
-        <field name="user" onChange="action-planning-method-get-period"/>
-        <field name="date" onChange="action-planning-method-get-period"/>
-        
-        <group title="Configuration" colSpan="4">
-		  	<field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default"/>
-		  	<group title="Complete time sheet configuration" colSpan="4" showIf="hasCompleteTimesheetLines == true">
-		  		<field name="completeFromDate"/>
-			  	<field name="completeToDate"/>
-			  	<field name="completeDefaultTask"/>
-			  	<field name="duration"/>
-		  	</group>
-		  	<button name="completeTimeSheetButton" title="Complete time sheet" colSpan="1" onClick="save" showIf="hasCompleteTimesheetLines == true"/>
-        </group>
-        
-        <field name="planningLineList" colSpan="6" grid-view="planning-line-grid" form-view="planning-line-form"/>
-    </form>
+	<form name="planning-form" title="Planning" model="com.axelor.apps.organisation.db.Planning" onNew="action-planning-record-default,action-planning-method-get-period">
+	  <panel>
+	    <field name="period" x-span="4"/>
+	    <field name="user" onChange="action-planning-method-get-period" x-span="4"/>
+	    <field name="date" onChange="action-planning-method-get-period" x-span="4"/>
+	  </panel>  
+	  <panel title="Configuration" x-span="12">
+	    <field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default" x-span="12"/>
+	    <panel title="Complete time sheet configuration" showIf="hasCompleteTimesheetLines == true"  x-span="12">
+	      <field name="completeFromDate"/>
+	      <field name="completeToDate"/>
+	      <field name="completeDefaultTask"/>
+	      <field name="duration"/>
+	    </panel>
+	    <button name="completeTimeSheetButton" title="Complete time sheet" showIf="hasCompleteTimesheetLines == true" colSpan="1" onClick="save"/>
+	  </panel>
+	  <panel-related field="planningLineList"  x-span="12" form-view="planning-line-form" grid-view="planning-line-grid"/>
+	</form>
     
     <action-record name="action-planning-record-complete-group-default" model="com.axelor.apps.organisation.db.Planning">
     	<field name="completeFromDate" expr="eval: period?.fromDate" if="completeFromDate == null"/>

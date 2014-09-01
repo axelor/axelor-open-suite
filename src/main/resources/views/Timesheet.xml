@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="timesheet-grid" title="Timesheets" model="com.axelor.apps.organisation.db.Timesheet">
         <field name="user"/>
@@ -16,65 +16,64 @@
 	  <field name="statusSelect"/>
 	</grid>
     
-    <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="4"
-    onNew="action-group-organisation-timesheet-onnew">
-     	<toolbar>
-            <button name="print" title="Print" icon="fa-print" onClick="save,action-print-pdf-timesheet"/>
-	    </toolbar>
-        <field name="user" readonlyIf="statusSelect >= 3"/>
-		<spacer/>
-		<field name="statusSelect" showTitle="false" widget="NavSelect"/>
-		<break/>
-		<field name="fromDate" onChange="action-timesheet-getPeriod" readonlyIf="statusSelect >= 3"/>
-		<field name="toDate" readonlyIf="statusSelect >= 3"/>
-		<field name="unit" readonlyIf="statusSelect >= 3"/>
-		<field name="project" domain="self.isBusiness = true" readonlyIf="statusSelect >= 3"/>
-        <group title="Satisfaction" colSpan="4" cols="4">
-        	<separator title="Project" colSpan="4"/>
-			<field name="projectSatisfactionSelect" widget="SelectProgress"/>
-	        <field name="projectComment"/>
-	        <separator colSpan="4" title="Company"/>
-			<field name="companySatisfactionSelect" widget="SelectProgress"/>
-        	<field name="companyComment"/>
-        </group>
-        <separator colSpan="4" title="Details of time spent on project/tasks"/>
-        <group title="Configuration" readonlyIf="statusSelect >= 3" colSpan="4" cols="7">
-			<field name="hasToGetLeaveRequests"/>
-			<field name="hasToGetSpentTimeFromTask"/>
-			<field name="hasToGetPlanningLine"/>
-			<button name="getSpentTimeButton" title="Get past time" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true)" colSpan="1" onClick="save,action-timesheet-method-get-task-spent-time"/>
-			<separator colSpan="7"/>
-			<group colSpan="7" cols="6">
-					<field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default"/>
-				<group title="Complete time sheet configuration" showIf="hasCompleteTimesheetLines == true" colSpan="4">
-					<field name="completeFromDate"/>
-					<field name="completeToDate"/>
-					<field name="completeDefaultTask"/>
-					<field name="duration"/>
-				</group>
-				<button name="completeTimeSheetButton" title="Complete time sheet" showIf="statusSelect != 3 &amp;&amp; hasCompleteTimesheetLines == true" colSpan="6" onClick="save"/>
-			</group>    
-		</group> 
-        <field name="timesheetLineList" colSpan="4" grid-view="timesheet-line-grid" form-view="timesheet-line-form" readonlyIf="statusSelect >= 3"/>
-		<group colSpan="4" cols="4">
-			<group colSpan="2">
-				<group title="Action(s)" colSpan="2" cols="1">
-					<button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="action-group-organisation-timesheet-confirm-click"/>
-					<button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="action-group-organisation-timesheet-validate-click"/>
-					<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-timesheet-record-cancel"/>
-				</group>
-				<group readonly="true" colSpan="2">
-					<field name="validatedByUser" colSpan="1"/>
-					<field name="validationDate" colSpan="1"/>
-				</group>
-			</group>
-			<group title="Totals" colSpan="4" cols="2" readonlyIf="statusSelect >= 3">
-				<field name="timesheetInputTotal"/>
-				<field name="timesheetTotalByTypeList" colSpan="4"/>
-			</group>
-		</group>
-    </form>
-    
+	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" onNew="action-group-organisation-timesheet-onnew">
+	  <toolbar>
+	    <button name="print" title="Print" icon="fa-print" onClick="save,action-print-pdf-timesheet"/>
+	  </toolbar>
+	  <panel>
+	    <field name="user" readonlyIf="statusSelect &gt;= 3"/>
+	    <field name="statusSelect" showTitle="false" widget="NavSelect" x-span="12"/>
+	    <field name="fromDate" readonlyIf="statusSelect &gt;= 3" onChange="action-timesheet-getPeriod"/>
+	    <field name="toDate" readonlyIf="statusSelect &gt;= 3"/>
+	    <field name="unit" readonlyIf="statusSelect &gt;= 3"/>
+	    <field name="project" readonlyIf="statusSelect &gt;= 3" domain="self.isBusiness = true"/>
+	  </panel>
+	  <panel title="Satisfaction">
+	    <panel title="Project" x-span="12">
+	      <field name="projectSatisfactionSelect" widget="SelectProgress"/>
+	      <field name="projectComment"/>
+	    </panel>
+	    <panel title="Company" x-span="12">
+	      <field name="companySatisfactionSelect" widget="SelectProgress"/>
+	      <field name="companyComment"/>
+	    </panel>
+	  </panel>
+	  <panel title="Details of time spent on project/tasks">
+	    <panel title="Configuration" readonlyIf="statusSelect &gt;= 3" x-span="12">
+	      <panel x-span="12">
+	        <field name="hasToGetLeaveRequests" x-span="4"/>
+	        <field name="hasToGetSpentTimeFromTask" x-span="4"/>
+	        <field name="hasToGetPlanningLine" x-span="4"/>
+	        <button name="getSpentTimeButton" title="Get past time" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true)" colSpan="1" onClick="save,action-timesheet-method-get-task-spent-time"/>
+	      </panel>        
+	      <panel x-span="12">
+	        <field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default" x-span="4"/>
+	        <panel title="Complete time sheet configuration" showIf="hasCompleteTimesheetLines == true" x-span="8">
+	          <field name="completeFromDate"/>
+	          <field name="completeToDate"/>
+	          <field name="completeDefaultTask"/>
+	          <field name="duration"/>
+	        </panel>
+	        <button name="completeTimeSheetButton" title="Complete time sheet" showIf="statusSelect != 3 &amp;&amp; hasCompleteTimesheetLines == true" colSpan="6" onClick="save"/>
+	      </panel>
+	    </panel>
+	    <panel-related field="timesheetLineList" readonlyIf="statusSelect &gt;= 3" x-span="12" form-view="timesheet-line-form" grid-view="timesheet-line-grid"/>
+	  </panel>
+	  <panel title="Totals" readonlyIf="statusSelect &gt;= 3">
+	    <field name="timesheetInputTotal"/>
+	    <panel-related field="timesheetTotalByTypeList" x-span="12"/>
+	  </panel>
+	  <panel-side title="Action(s)">
+	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="action-group-organisation-timesheet-confirm-click"/>
+	    <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="action-group-organisation-timesheet-validate-click"/>
+	    <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-timesheet-record-cancel"/>
+	  </panel-side>
+	  <panel-side title="Info.">
+	    <field name="validatedByUser"/>
+	    <field name="validationDate"/>
+	  </panel-side>
+	</form>    
+	
     <action-group name="action-group-organisation-timesheet-onnew">
     	<action name="action-timesheet-default-record"/>
     	<action name="action-timesheet-getPeriod"/>

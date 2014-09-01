@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="overtime-grid" title="Overtimes" model="com.axelor.apps.organisation.db.Overtime">
         <field name="user"/>
@@ -22,34 +22,32 @@
 		<field name="period" />
 	</grid>
     
-    <form name="overtime-form" title="Overtime" model="com.axelor.apps.organisation.db.Overtime" cols="6"
-    onNew="action-overtime-default-record">
-        <field name="user"/>
-        <field name="date"/>
-        <field name="statusSelect" widget="NavSelect"/>
-        <break />
-        <field name="totalAmount"/>
-        <field name="currency"/>
-        <field name="overtimeLineList" colSpan="6"/>
-        <break />
-        <field name="period"/>
-        <field name="motif" showIf="statusSelect == 6"/>
-        <break />
-       	<group title="Action(s)" colSpan="4">
-   			<group colSpan="1" cols="1">
-   				<button name="draft" title="Draft" colSpan="2" onClick="save,action-overtime-record-draft,save" showIf="statusSelect == 6"/>
-        		<button name="submit" title="Submit" colSpan="2" onClick="save,action-overtime-record-submit,save" showIf="statusSelect == 1"/>
-	            <button name="validateManager" title="Validate" colSpan="1" onClick="save,action-overtime-record-validate-manager,save" showIf="statusSelect == 2"/>
-	            <button name="validateCommercial" title="Validate" colSpan="1" onClick="save,action-overtime-record-validate-commercial,save" showIf="statusSelect == 3"/>
-	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-overtime-record-confirm,save" showIf="statusSelect == 4"/>
-	            <button name="refuse" title="Refuse" colSpan="1" onClick="save,action-overtime-record-refuse" showIf="statusSelect == 1 || statusSelect == 2"/>
-	        </group>
-   			<group colSpan="1" cols="2" readonly="true">
-   				<field name="validatedByUser" colSpan="1"/>
-             	<field name="validationDate" colSpan="1"/>
-   			</group>
-        </group>
-    </form>
+	<form name="overtime-form" title="Overtime" model="com.axelor.apps.organisation.db.Overtime" onNew="action-overtime-default-record">
+	  <panel>
+	    <field name="user"/>
+	    <field name="date"/>
+	    <field name="statusSelect" widget="NavSelect" x-span="12"/>
+	    <field name="totalAmount"/>
+	    <field name="currency"/>
+	    <panel-related field="overtimeLineList" x-span="12"/>
+	    <field name="period"/>
+	    <field name="motif" showIf="statusSelect == 6"/>
+	  </panel>
+	  <panel-side title="Action(s)">
+	    <panel x-span="12">
+	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="2" onClick="save,action-overtime-record-draft,save"/>
+	      <button name="submit" title="Submit" showIf="statusSelect == 1" colSpan="2" onClick="save,action-overtime-record-submit,save"/>
+	      <button name="validateManager" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-overtime-record-validate-manager,save"/>
+	      <button name="validateCommercial" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="save,action-overtime-record-validate-commercial,save"/>
+	      <button name="confirm" title="Confirm" showIf="statusSelect == 4" colSpan="1" onClick="save,action-overtime-record-confirm,save"/>
+	      <button name="refuse" title="Refuse" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-overtime-record-refuse"/>
+	    </panel>
+	    <panel readonly="true" x-span="12">
+	      <field name="validatedByUser"/>
+	      <field name="validationDate"/>
+	    </panel>
+	  </panel-side>
+	</form>
     
     <action-record name="action-overtime-default-record" model="com.axelor.apps.organisation.db.Overtime">
     	<field name="user" expr="eval:__user__"/>
