@@ -21,14 +21,14 @@
 		</panel>
 	  	<panel-tabs>
 	    	<panel name="targetPage" title="Target page" >
-	      		<field name="targetConfigurationSet" x-span="12"/>
-	      	<button name="targetBatch" title="Target batch" onClick="save,action-base-batch-method-action-target"/>
+<!-- 	      		<panel-related field="targetConfigurationSet" x-span="12"/> -->
+	      		<button name="targetBatch" title="Target batch" onClick="save,action-base-batch-method-action-target"/>
 	    	</panel>
 	    	<panel title="Information">
 		      <field name="createdOn" title="Created on"/>
 		      <field name="createdBy" title="Created by"/>
 		      <field name="description" showTitle="false" x-span="12"/>
-		      <field name="batchList" x-span="12"/>
+		      <panel-related field="batchList" x-span="12"/>
 		    </panel>
   		</panel-tabs>
     </form>

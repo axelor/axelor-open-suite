@@ -33,7 +33,7 @@
 	    </panel>
 	    <panel title="Bank details">
 	      <field name="defaultBankDetails"/>
-	      <field name="bankDetailsSet" showTitle="false" x-span="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	      <panel-related field="bankDetailsSet" showTitle="false" x-span="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    </panel>
 	    <panel title="Mails / Emails">
 	      <field name="generatedMailFilePath" />

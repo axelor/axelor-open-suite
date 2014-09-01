@@ -38,12 +38,12 @@
 		        <field name="chequeInterbankCode"/>
 		      </panel>
 		      <panel title="Payer quality" x-span="12">
-		        <field name="payerQualityConfigLineList" x-span="12"/>
+		        <panel-related field="payerQualityConfigLineList" x-span="12"/>
 		        <button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
 		      </panel>
 		      <panel title="Currency conversion" x-span="12">
 		        <button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate"  onClick="save,action-general-method-update-currency-conversion"/>
-		        <field name="currencyConversionLineList" x-span="12"/>
+		        <panel-related field="currencyConversionLineList" x-span="12"/>
 		      </panel>
 		    </panel>
 		    <panel title="Interfaces">

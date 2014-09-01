@@ -18,12 +18,12 @@
 	  </panel>
 	  <panel-tabs>
 	    <panel title="Configuration">
-	      <field name="metaModelSet" />
-	      <field name="alarmEngineSet" onSelect="alarm-engine-batch-attrs-alarm-engine-domain"/>
+	      <panel-related  field="metaModelSet" x-span="12"/>
+	      <panel-related field="alarmEngineSet" onSelect="alarm-engine-batch-attrs-alarm-engine-domain" x-span="12"/>
 	    </panel>
 	    <panel title="Batches">
 	      <field name="description" showTitle="false" x-span="12"/>
-	      <field name="batchList" x-span="12" form-view="batch-form" grid-view="batch-grid"/>
+	      <panel-related field="batchList" x-span="12" form-view="batch-form" grid-view="batch-grid"/>
 	    </panel>
 	  </panel-tabs>
 	</form>

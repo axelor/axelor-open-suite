@@ -36,19 +36,7 @@
 	    <button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
 	    <button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
 	    </panel>
-	    <field name="pickList" title="Pick list" x-span="12">
-	      <viewer><![CDATA[
-	        <pickList>
-	        {{record.partialAddress}} {{record.postcode}} {{record.score}}
-	        </address>
-	        ]]>
-	        </viewer>
-	      <editor>
-	        <field name="partialAddress" x-span="4"/>
-	        <field name="postcode" x-span="4"/>
-	        <field name="score" x-span="4"/>
-	      </editor>
-	    </field>
+	    <panel-related field="pickList" title="Pick list" x-span="12" />
 	  </panel>
 	</form>
 	
