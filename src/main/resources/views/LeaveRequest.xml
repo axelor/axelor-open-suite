@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     
     <calendar name="leave-request-calendar" title="Leave requests" mode="month" colorBy="employeeUser" 
@@ -37,29 +37,30 @@
 		  <field name="statusSelect"/>
 	</grid>
     
-    <form name="leave-request-form" title="Leave request" model="com.axelor.apps.organisation.db.LeaveRequest" cols="4"
+    <form name="leave-request-form" title="Leave request" model="com.axelor.apps.organisation.db.LeaveRequest"
     	onNew="action-leave-request-record-new" onSave="action-leave-request-group-wkf" >
-		<field name="employeeUser"/>
-		<spacer/>
-		<field name="statusSelect" widget="NavSelect" showTitle="false"/>
-        <field name="requestDate" required="true"/>
-        <field name="reasonTask" domain="self.isLeaveRequest = true" form-view="task-leave-reason-form" grid-view="task-leave-reason-grid"/>
-        <field name="accounted"/>
-        <group title="Leave period" colSpan="4" cols="4">
+    	<panel>
+			<field name="employeeUser"/>
+			<field name="requestDate" required="true"/>
+			<field name="reasonTask" domain="self.isLeaveRequest = true" form-view="task-leave-reason-form" grid-view="task-leave-reason-grid"/>
+			<field name="accounted"/>
+			<field name="statusSelect" widget="NavSelect" showTitle="false" x-span="12"/>
+        </panel>
+        <panel title="Leave period">
         	<field name="startDateT" onChange="action-leave-request-method-compute-start-date-time" required="true" />
         	<field name="endDateT" onChange="action-leave-request-method-compute-end-date-time"/>
         	<field name="nbrOfDayOff" onChange="action-leave-request-method-compute-duration"/>
         	<field name="remainingDaysOnPeriod" readonly="true"/>
-        </group>
-        <group colSpan="4" cols="4">
+        </panel>
+        <panel-side>
 	        <field name="managerUser"/>
 	        <field name="approvalDate"/>
-        </group>
-        <button name="confirm" title="Confirm" colSpan="2" showIf="statusSelect == 1" onClick="action-leave-request-group-wkf"/>
-        <button name="cancel" title="Cancel" colSpan="2" showIf="statusSelect == 1 || statusSelect == 2" onClick="action-leave-request-group-wkf"/>
-        <button name="validate" title="Validate" colSpan="2" showIf="statusSelect == 2" onClick="action-leave-request-group-wkf"/>
-        <button name="refuse" title="Refuse" colSpan="2" showIf="statusSelect == 2" onClick="action-leave-request-group-wkf"/>
-        <button name="backToDraft" title="Back to draft" colSpan="2" showIf="statusSelect == 5" onClick="action-leave-request-group-wkf"/>
+	        <button name="confirm" title="Confirm" colSpan="2" showIf="statusSelect == 1" onClick="action-leave-request-group-wkf"/>
+	        <button name="cancel" title="Cancel" colSpan="2" showIf="statusSelect == 1 || statusSelect == 2" onClick="action-leave-request-group-wkf"/>
+	        <button name="validate" title="Validate" colSpan="2" showIf="statusSelect == 2" onClick="action-leave-request-group-wkf"/>
+	        <button name="refuse" title="Refuse" colSpan="2" showIf="statusSelect == 2" onClick="action-leave-request-group-wkf"/>
+	        <button name="backToDraft" title="Back to draft" colSpan="2" showIf="statusSelect == 5" onClick="action-leave-request-group-wkf"/>
+        </panel-side>
     </form>
     
     <!-- ACTION WORKFLOW -->
