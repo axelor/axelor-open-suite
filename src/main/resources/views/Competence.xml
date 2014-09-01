@@ -16,10 +16,8 @@
 	</form>
 		
 	<form name="skill-set-edit-form" title="Skill" model="com.axelor.apps.organisation.db.SkillSet">
-		<panel>
-			<field name="skillLineList" grid-view="skill-line-edit-grid" form-view="skill-line-edit-form" showTitle="false"/>
-			<field name="languageSet" grid-view="language-grid" form-view="language-form" showTitle="false"/>
-		</panel>
+		<panel-related field="skillLineList" grid-view="skill-line-edit-grid" form-view="skill-line-edit-form" showTitle="false"/>
+		<panel-related field="languageSet" grid-view="language-grid" form-view="language-form" showTitle="false"/>
 	</form>
 
 	<form name="competence-edit-form" title="Competences" model="com.axelor.apps.organisation.db.Competence">
