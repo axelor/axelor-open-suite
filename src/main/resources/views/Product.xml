@@ -98,7 +98,7 @@
 				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>
 				<field name="lastProductionPrice" readonly="true"/>
 				<panel if-module="axelor-production" x-span="12" colWidths="20%,30%,20%,30%">
-					<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/><break/>
+					<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
 <!-- 					<panel-dashlet action="action-product-view-show-bill-of-material" x-span="12"/> -->
 				</panel>
 			</panel>
