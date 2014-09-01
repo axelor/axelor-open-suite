@@ -54,7 +54,6 @@
 	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null" />
 	        </menu>
 	    </menubar>
-<!-- 		<include view="incl-event-actions-partner-form" from="axelor-crm" if-module="axelor-crm" /> -->
 	    <panel>
         <field name="picture" showTitle="false" widget="Image" x-span="4"/>
         <panel x-span="8">
@@ -63,11 +62,6 @@
           <field x-span="5" name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name"/>
           <field x-span="5" name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name"/>
         </panel>
-        <button-group x-span="2">
-        <button name="facebook" css="img-button" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
-        <button name="linkedin" css="img-button" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
-        <button name="twitter" css="img-button" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
-        </button-group>
   </panel>
   <panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2"  colSpan="4" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
   <panel-tabs>
@@ -147,6 +141,11 @@
           ]]></viewer>
           </field>
 	  </panel>
+	<panel title="Activities" showIf="id != null" if-module="axelor-crm">
+		<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project" />
+	</panel>
+	<panel-dashlet x-span="12" title="Sales" showIf="id != null" if-module="axelor-supplychain" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
+	<panel-dashlet x-span="12" title="Events" showIf="id != null" if-module="axelor-crm" action="portal.customer.crm.activities" height="350"/>
     <panel title="Notes" x-span="12">
       <field name="description" x-span="12" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
     </panel>
@@ -211,7 +210,7 @@
         <field name="email"/>
     </grid>
     
-    <form cols="4" colWidths="25*" name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
+    <form name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
 	    onNew="action-partner-record-partner-type-select" 
 	    onLoad="action-partner-attrs-change-name" 
 	    onSave="save,action-set-partner-seq">
@@ -219,45 +218,44 @@
 	    <toolbar>
     		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1" readonlyIf="id == null"/>
     	</toolbar>
-    	
-	    <group colSpan="1">
-	        <field name="picture"/>
-	    </group>
-	    <group colSpan="3" cols="6">
-	        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight"/>
-	        <field name="name" css="highlight" onChange="action-partner-record-full-name"/>
-	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight" onChange="action-partner-record-full-name"/>
-	        <break/>
-	        <field name="partnerCategory" widget="SuggestBox"/>
-	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name"/>
-	        <field name="isContact" hideIf="partnerTypeSelect != 2"/>
-	        <break/>
-	        <field name="mainPartner" hideIf="!isContact"/>
-	    </group>
-	    <notebook colSpan="4">
-	        <page name="information" title="Informations">
-	            <group title="Partner details" colSpan="3" cols="4" hideIf="partnerTypeSelect == 2">
+	    <panel>
+	        <field name="picture" widget="Image" x-span="4"/>
+		    <panel x-span="8">
+		        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight" />
+		        <spacer/>
+		        <field name="name" css="highlight" onChange="action-partner-record-full-name"/>
+		        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight" onChange="action-partner-record-full-name"/>
+		        <field name="partnerCategory" widget="SuggestBox"/>
+		        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name"/>
+		        <field name="isContact" hideIf="partnerTypeSelect != 2"/>
+		        <spacer/>
+		        <field name="mainPartner" hideIf="!isContact"/>
+		    </panel>
+		</panel>
+	    <panel-tabs>
+	        <panel name="information" title="Informations">
+	            <panel title="Partner details" x-span="12"  hideIf="partnerTypeSelect == 2">
 	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
-	            </group>
-	            <group title="Postal addresses" hideIf="isContact" colSpan="3" cols="4">
+	            </panel>
+	            <panel x-span="12" title="Postal addresses" hideIf="isContact">
 	                <field name="mainInvoicingAddress" onChange="action-partner-record-main-invoicing-address"/>
 	                <field name="deliveryAddress"/>
-	            </group>
-	            <group title="Contact" colSpan="3" cols="4">
+	            </panel>
+	            <panel title="Contact" x-span="12">
 	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
 	                <field name="fax"/>
 	                <field name="fixedPhone"/>
 					<field name="mobilePhone"/>
 	                <field name="webSite"/>
-	            </group>
-	        </page>
-	    </notebook>
+	            </panel>
+	       </panel>
+	    </panel-tabs>
     </form>
 	
 
-	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
+	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" 
 	onNew="action-partner-contact-record-default" 
 	onLoad="action-partner-attrs-change-name" 
 	onSave="save,action-set-partner-seq">
@@ -274,62 +272,43 @@
 	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null" />
 	        </menu>
 	    </menubar>
-<!-- 	    <include view="incl-event-actions-partner-form" from="axelor-crm" if-module="axelor-crm" /> -->
-	    <group colSpan="6" cols="6">
-	        <group colSpan="1" cols="1">
-	            <group colSpan="1">
-	                <field name="picture" showTitle="false"/>
-	            </group>
-	            <break/>
-	            <group colSpan="1" showIf="id != null">
-	                <button name="facebook" css="img-button" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="linkedin" css="img-button" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="twitter" css="img-button" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
-	            </group>
-	        </group>
-	        <group colSpan="1" cols="1">
-	            <field name="titleSelect" showTitle="false" placeholder="Civility"/>
-	            <break/>
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange"/>
-	            <break/>
-	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-group-base-partner-contact-name-onchange"/>
-	            <break/>
-	            <separator title="Company"/>
-	            <field name="mainPartner"/>
-	        </group>
-	        <group title="Contact" colSpan="4" cols="4">
-	            <field name="jobTitle"/>
-	            <field name="reportsTo"/>
-	            <separator colSpan="4"/>
-	            <field name="fixedPhone"/>
-	            <field name="mobilePhone"/>
-	            <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
-	            <field name="fax"/>
-	            <field name="mainInvoicingAddress" title="Address"/>     
-	        </group>
-	    </group>
-	    <break/>
-	    <notebook colSpan="4">
-	        <page title="Notes">
-	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
-	        </page>
-	        <page title="Settings" cols="4">
-	            <field name="partnerSeq"/>
-	            <field name="languageSelect"/>
-	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
-	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
-	                <break/>
-	                <field name="user"/>
-	                <field name="team"/>
-	            </group>
-	        </page>
-
-		    <page name="activities" title="Activities" showIf="id != null" if-module="axelor-crm">
-	        	<include view="incl-show-project-partner-form" from="axelor-organisation" />
-	        	<include view="incl-activities-partner-form" from="axelor-crm" />
-	        	<include view="incl-sales-order-portal-form" from="axelor-sale" />
-	        </page>
-	    </notebook>
+	    <panel>
+	    	<field name="picture" widget="Image" showTitle="false" x-span="4"/>
+	        <panel x-span="8">
+	            <field name="titleSelect" showTitle="false" placeholder="Civility" x-span="2" />
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange" x-span="5" />
+	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-group-base-partner-contact-name-onchange" x-span="5" />
+	            <panel title="Company" x-span="12" >
+	            	<field name="mainPartner"/>
+	           	</panel>
+	        </panel>
+         </panel>
+        <panel title="Contact">
+            <field name="jobTitle"/>
+            <field name="reportsTo"/>
+            <field name="fixedPhone"/>
+            <field name="mobilePhone"/>
+            <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
+            <field name="fax"/>
+            <field name="mainInvoicingAddress" title="Address"/>     
+        </panel>
+        <panel title="Notes">
+            <field name="description" showTitle="false" x-span="12" widget="Html" x-lite="true"/>
+        </panel>
+        <panel-side title="Settings">
+            <field name="partnerSeq"/>
+            <field name="languageSelect"/>
+            <panel title="Assigned to" canCollapse="true" x-span="12">
+                <field name="companySet" x-span="12" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate" />
+                <field name="user"/>
+                <field name="team"/>
+            </panel>
+        </panel-side>
+<!-- 		    <page name="activities" title="Activities" showIf="id != null" if-module="axelor-crm"> -->
+<!-- 	        	<include view="incl-show-project-partner-form" from="axelor-organisation" /> -->
+<!-- 	        	<include view="incl-activities-partner-form" from="axelor-crm" /> -->
+<!-- 	        	<include view="incl-sales-order-portal-form" from="axelor-sale" /> -->
+<!-- 	        </page> -->
 	</form>
 	
 	<action-group name="action-group-base-partner-onnew">
