@@ -44,7 +44,7 @@
 	    <field name="totalAmount" title="Total (TTC)"/>
 	    <field name="currency"/>
 	    <field name="project"/>
-	    <field name="expenseLineList" x-span="12"/>    
+	    <panel-related field="expenseLineList" x-span="12"/>    
 	    <field name="paymentPeriod"/>
 	    <field name="refusalReason" showIf="statusSelect == 6"/>
 	  </panel>
