@@ -187,7 +187,9 @@
     	<action name="action-task-attrs-status-select"/>
     	<action name="action-task-record-task-completed"/>
     	<action name="action-task-method-update-financial-information"/>
+    	<!-- TODO: remove this comment if 'save' issue is resolved 
     	<action name="save"/>
+    	 -->
     </action-group>
     
     <action-group name="action-group-organisation-project-onchange">
