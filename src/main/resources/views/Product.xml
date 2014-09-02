@@ -41,7 +41,7 @@
 				<panel title="Product typology" x-span="6" colWidths="30%,70%">
 					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" x-span="12"/>
 					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" x-span="12"/>
-					<field name="invoiceLineType" x-span="12"/>
+					<field name="invoiceLineType" x-span="12" if-module="axelor-account"/>
 				</panel>
 				<panel title="Categorization" x-span="6" colWidths="30%,70%">
 					<field name="applicationTypeSelect" onChange="action-set-product-type-select" x-span="12"/>
@@ -81,7 +81,7 @@
 				<panel-related title="Suppliers catalog" field="supplierCatalogList" x-span="12"/>        
 			</panel>
 	        <panel-related title="Accounting" field="accountManagementList" x-span="12" domain="self.typeSelect = 1" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
-	        <panel title="Stock" showIf="productTypeSelect == 'storable'">
+	        <panel title="Stock" showIf="productTypeSelect == 'storable'" if-module="axelor-stock">
             	<panel title="Procurement settings" x-span="12">
 					<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'" x-span="4"/>
 					<field name="isRawMaterial" showIf="productTypeSelect != 'service'" x-span="4"/>
@@ -94,7 +94,7 @@
 <!-- 					<panel-dashlet action="action-stock-history-report-for-product" height="200" x-span="12"/> -->
 				</panel>
 			</panel>
-			<panel title="Production informations" showIf="productTypeSelect != 'service'">
+			<panel title="Production informations" showIf="productTypeSelect != 'service'" if-module="axelor-production">
 				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>
 				<field name="lastProductionPrice" readonly="true"/>
 				<panel if-module="axelor-production" x-span="12" colWidths="20%,30%,20%,30%">
@@ -109,7 +109,7 @@
         	 		<field name="isPerishable" />
 	            	<field name="perishableNbrOfMonths" showIf="isPerishable"/>
         	 	</panel>
-        	 	<panel x-span="12">
+        	 	<panel x-span="12" if-module="axelor-stock">
 		            <field name="trackingNumberConfiguration"/>
 	            </panel>
 	        </panel>
