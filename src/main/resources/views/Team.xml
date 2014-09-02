@@ -3,14 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     <grid name="team-grid" title="Teams" model="com.axelor.apps.base.db.Team">
-        <field name="code"/>
         <field name="name"/>
+		<field name="code"/>
     </grid>
     <form name="team-form" title="Team" model="com.axelor.apps.base.db.Team">
     	<panel x-span="12">
         	<field name="code"/>
         	<field name="name"/>
-          <panel-related field="userSet" x-span="12"/>
+			<panel-related field="userSet" x-span="12"/>
         </panel>
     </form>
 </object-views>

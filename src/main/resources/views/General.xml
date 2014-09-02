@@ -31,41 +31,41 @@
 		</panel>
 		<panel-tabs>
 		    <panel title="Accounting">
-		      <field name="defaultExemptionTax"/>
-		      <field name="isInvoiceMoveConsolidated"/>
-		      <panel title="Rejects reasons and codes list" x-span="12">
-		        <field name="transferAndDirectDebitInterbankCode"/>
-		        <field name="chequeInterbankCode"/>
-		      </panel>
-		      <panel title="Payer quality" x-span="12">
-		        <panel-related field="payerQualityConfigLineList" x-span="12"/>
-		        <button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
-		      </panel>
-		      <panel title="Currency conversion" x-span="12">
-		        <button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate"  onClick="save,action-general-method-update-currency-conversion"/>
-		        <panel-related field="currencyConversionLineList" x-span="12"/>
-		      </panel>
+				<field name="defaultExemptionTax"/>
+				<field name="isInvoiceMoveConsolidated"/>
+				<panel title="Rejects reasons and codes list" x-span="12">
+					<field name="transferAndDirectDebitInterbankCode"/>
+					<field name="chequeInterbankCode"/>
+				</panel>
+				<panel title="Payer quality" x-span="12">
+					<button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
+					<panel-related field="payerQualityConfigLineList" x-span="12"/>
+				</panel>
+				<panel title="Currency conversion" x-span="12">
+					<button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate"  onClick="save,action-general-method-update-currency-conversion"/>
+					<panel-related field="currencyConversionLineList" x-span="12"/>
+				</panel>
 		    </panel>
 		    <panel title="Interfaces">
-		      <panel name="map" title="Mapping"  x-span="12">
-		        <field name="mapApiSelect"/>
-		        <button name="checkMapApi" title="Test mapping service connection" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:checkMapApi"/>
-		      </panel>
-		      <panel name="qas" title="Addresses validation"  x-span="12">
-		        <field name="qasWsdlUrl"/>
-		        <button name="checkQasWsdl" title="Test connection to QAS webservice" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
-		      </panel>
-		      <panel name="ws" title="Webservices"  x-span="12">
-		        <field name="currencyWsURL" x-span="12"/>
-		      </panel>
+				<panel name="map" title="Mapping"  x-span="12">
+					<field name="mapApiSelect"/>
+					<button name="checkMapApi" title="Test mapping service connection" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:checkMapApi"/>
+				</panel>
+				<panel name="qas" title="Addresses validation"  x-span="12">
+					<field name="qasWsdlUrl"/>
+					<button name="checkQasWsdl" title="Test connection to QAS webservice" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
+				</panel>
+				<panel name="ws" title="Webservices"  x-span="12">
+					<field name="currencyWsURL" x-span="12"/>
+				</panel>
 		    </panel>
 		    <panel title="Exceptions">
-		      <field name="exceptionDefaultMsg" x-span="12"/>
-		      <field name="exceptionInvoiceMsg" x-span="12"/>
-		      <field name="exceptionAccountingMsg" x-span="12"/>
-		      <field name="exceptionReminderMsg" x-span="12"/>
-		      <field name="exceptionMailMsg" x-span="12"/>
-		      <field name="exceptionSupplychainMsg" x-span="12"/>
+				<field name="exceptionDefaultMsg" x-span="12"/>
+				<field name="exceptionInvoiceMsg" x-span="12"/>
+				<field name="exceptionAccountingMsg" x-span="12"/>
+				<field name="exceptionReminderMsg" x-span="12"/>
+				<field name="exceptionMailMsg" x-span="12"/>
+				<field name="exceptionSupplychainMsg" x-span="12"/>
 		    </panel>
 		</panel-tabs>
 	</form>

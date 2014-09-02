@@ -6,7 +6,6 @@
     <grid name="template-grid" title="Templates" model="com.axelor.apps.base.db.Template">
         <field name="name"/>
         <field name="subject"/>
-        <field name="target"/>
         <field name="metaModel"/>
     </grid>
     
@@ -16,16 +15,16 @@
 		onLoad="action-template-attrs-showhide-by-media-type">
 		<panel x-span="12">
 			<field name="name"/>
-			<field name="isDefault"/>
-			<field name="mediaTypeSelect" onChange="action-template-attrs-showhide-by-media-type" />
+			<field name="mediaTypeSelect" x-span="4" onChange="action-template-attrs-showhide-by-media-type" />
+			<field name="isDefault" x-span="2"/>
 			<field name="metaModel"/>
 			<field name="target"/>
 			<field name="templateContext" x-span="12"/>
 		</panel>
-		<panel name="attachedFiles" title="Attached files" x-span="12">
+		<panel-side name="attachedFiles" title="Attached files" x-span="12">
 			    <field name="birtTemplate" x-span="12"/>
 			    <field name="filePath" widget="url" x-span="12"/>
-  		</panel>
+  		</panel-side>
 		<panel name="recipientGroup" title="Destinated to" x-span="12">
 			<field name="addressBlock" x-span="12" widget="Html" x-lite="false" />
 			<field name="toRecipients" x-span="12"/>

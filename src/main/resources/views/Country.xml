@@ -5,15 +5,15 @@
     <grid name="country-grid" title="Countries" model="com.axelor.apps.base.db.Country">
         <field name="name"/>
         <field name="code"/>
-	    <field name="cog" />
-	    <field name="phonePrefix" />
     </grid>
     <form name="country-form" title="Country" model="com.axelor.apps.base.db.Country" >
     	<panel>
 	        <field name="name" onChange="action-check-string-capital-case"/>
 	        <field name="code"/>
-		    <field name="cog" />
-		    <field name="phonePrefix" />
 	    </panel>
+		<panel title="Attributes">
+			<field name="cog" />
+		    <field name="phonePrefix" />			
+		</panel>
     </form>
 </object-views>
