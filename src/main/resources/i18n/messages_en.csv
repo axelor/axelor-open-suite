@@ -1,198 +1,197 @@
 "key","message","comment","context"
 "Action","","","resources/domains/SaleBatch.xml:12"
-"Action(s)","","","resources/views/SalesOrder.xml:69"
-"Actions","","","resources/views/SalesOrder.xml:37
+"Action(s)","","","resources/views/SalesOrder.xml:131"
+"Actions","","","resources/views/SalesOrder.xml:40
 resources/views/SalesOrder.xml:8"
 "All Sales Docs","","","resources/views/menu.xml:73"
-"Amount","","","resources/views/Charts.xml:305
+"Amount","","","resources/views/Charts.xml:418
 resources/views/Charts.xml:274
 resources/views/Charts.xml:348
-resources/views/Charts.xml:384
+resources/views/Charts.xml:305
 resources/views/Charts.xml:447
-resources/views/Charts.xml:418"
+resources/views/Charts.xml:384"
 "Amount A.T.I.","","","resources/domains/SaleOrderLineTax.xml:12"
 "Amount Tax","","","resources/domains/SaleOrderLineTax.xml:11"
 "Base W.T.","","","resources/domains/SaleOrderLineTax.xml:10"
-"Batchs","","","resources/domains/SaleOrder.xml:17
-resources/domains/SaleBatch.xml:17"
-"Cancel","","","resources/views/SalesOrder.xml:74"
+"Basic","","","resources/views/SaleConfig.xml:13"
+"Batchs","","","resources/domains/SaleBatch.xml:17
+resources/domains/SaleOrder.xml:17"
+"Cancel","","","resources/views/SalesOrder.xml:135"
 "Category","","","resources/views/Charts.xml:725"
 "Category sale turnover (Excl. Tax) per month","","","resources/views/Charts.xml:755
 resources/views/portal.xml:228"
 "Code","","","resources/domains/SaleConfig.xml:11
 resources/domains/SaleBatch.xml:11"
 "Company","","","resources/domains/SaleConfig.xml:13
-resources/domains/SaleBatch.xml:13
-resources/domains/SaleOrder.xml:10"
-"Compute","","","resources/views/SalesOrder.xml:71"
-"Confirm","","","resources/views/SalesOrder.xml:72"
+resources/domains/SaleOrder.xml:10
+resources/domains/SaleBatch.xml:13"
+"Compute","","","resources/views/SalesOrder.xml:132"
+"Confirm","","","resources/views/SalesOrder.xml:133"
 "Contact","","","resources/domains/SaleOrder.xml:21"
 "Country","","","resources/views/Charts.xml:417"
 "Create SO","","","resources/views/menu.xml:62"
 "Creation date","","","resources/domains/SaleOrder.xml:15"
 "Currency","","","resources/domains/SaleOrder.xml:13"
 "Customer","","","resources/domains/SaleOrder.xml:20"
-"Customer information","","","resources/views/SalesOrder.xml:167
-resources/views/SalesOrder.xml:52"
+"Customer information","","","resources/views/SalesOrder.xml:55
+resources/views/SalesOrder.xml:178"
 "Customer reference","","","resources/domains/SaleOrder.xml:14"
-"Customize BOM","","","resources/views/SalesOrderLine.xml:45"
-"Dashboard","","","resources/views/portal.xml:8
-resources/views/portal.xml:56"
+"Customize BOM","","","resources/views/SalesOrderLine.xml:43"
+"Dashboard","","","resources/views/portal.xml:56
+resources/views/portal.xml:8"
 "Default value for sublines","","","resources/domains/SaleOrder.xml:27"
-"Delivery","","","resources/views/SalesOrderLine.xml:51"
+"Delivery","","","resources/views/SalesOrderLine.xml:48"
 "Delivery address","","","resources/domains/SaleOrder.xml:24"
 "Delivery date","","","resources/domains/SaleOrderLine.xml:35"
-"Description","","","resources/domains/SaleOrderSubLine.xml:15
+"Description","","","resources/domains/SaleOrder.xml:48
+resources/domains/SaleOrderSubLine.xml:15
+resources/views/SalesOrder.xml:108
 resources/domains/SaleBatch.xml:16
-resources/domains/SaleOrderLine.xml:21
-resources/domains/SaleOrder.xml:48
-resources/views/SalesOrder.xml:115"
-"Discount","","","resources/views/SalesOrderSubLine.xml:32
-resources/views/SalesOrderLine.xml:33"
-"Discount amount","","","resources/domains/SaleOrderSubLine.xml:22
-resources/domains/SaleOrderLine.xml:25"
+resources/domains/SaleOrderLine.xml:21"
+"Discount","","","resources/views/SalesOrderLine.xml:33
+resources/views/SalesOrderSubLine.xml:33"
+"Discount amount","","","resources/domains/SaleOrderLine.xml:25
+resources/domains/SaleOrderSubLine.xml:22"
 "Estimated delivery date","","","resources/domains/SaleOrderLine.xml:28"
-"Excel Export","","","resources/views/SalesOrder.xml:33"
+"Excel Export","","","resources/views/SalesOrder.xml:36"
 "Family sale turnover (Excl. Tax) per month","","","resources/views/Charts.xml:11"
-"Financial terms","","","resources/views/SalesOrder.xml:105"
-"From Date","","","resources/views/Charts.xml:709
-resources/views/Charts.xml:507
-resources/views/Charts.xml:649
-resources/views/Charts.xml:615
-resources/views/Charts.xml:757
-resources/views/Charts.xml:315
-resources/views/Charts.xml:247
-resources/views/Charts.xml:423
-resources/views/Charts.xml:731
+"Financial terms","","","resources/views/SalesOrder.xml:97"
+"From Date","","","resources/views/Charts.xml:757
+resources/views/Charts.xml:561
 resources/views/Charts.xml:13
-resources/views/Charts.xml:279
-resources/views/Charts.xml:389
-resources/views/Charts.xml:453
-resources/views/Charts.xml:353
+resources/views/Charts.xml:315
+resources/views/Charts.xml:649
 resources/views/Charts.xml:683
-resources/views/Charts.xml:561"
-"Generate invoice","","","resources/views/SalesOrder.xml:75"
-"Import","","","resources/domains/SaleConfig.xml:9
-resources/domains/SaleOrder.xml:11
-resources/domains/SaleOrderLine.xml:12"
+resources/views/Charts.xml:423
+resources/views/Charts.xml:453
+resources/views/Charts.xml:615
+resources/views/Charts.xml:353
+resources/views/Charts.xml:731
+resources/views/Charts.xml:279
+resources/views/Charts.xml:709
+resources/views/Charts.xml:389
+resources/views/Charts.xml:247
+resources/views/Charts.xml:507"
+"Generate invoice","","","resources/views/SalesOrder.xml:136"
+"Import","","","resources/domains/SaleOrderLine.xml:12
+resources/domains/SaleConfig.xml:9
+resources/domains/SaleOrder.xml:11"
 "In % / fixed","","","resources/domains/SaleOrderSubLine.xml:23
 resources/domains/SaleOrderLine.xml:26"
 "Industry Sector","","","resources/views/Charts.xml:750"
+"Info.","","","resources/views/SalesOrder.xml:139"
 "Invoiced first date","","","resources/domains/SaleOrder.xml:58"
-"Invoices","","","resources/views/SalesOrder.xml:330"
-"Invoices dates","","","resources/views/SalesOrder.xml:131"
-"Invoicing","","","resources/views/SalesOrder.xml:112
-resources/views/SalesOrder.xml:123
-resources/views/SalesOrder.xml:195
-resources/views/Selects.xml:10"
+"Invoices","","","resources/views/SalesOrder.xml:333"
+"Invoices dates","","","resources/views/SalesOrder.xml:121"
+"Invoicing","","","resources/views/Selects.xml:10
+resources/views/SalesOrder.xml:104
+resources/views/SalesOrder.xml:114
+resources/views/SalesOrder.xml:200"
 "Invoicing address","","","resources/domains/SaleOrder.xml:22"
-"Invoicing follow-up","","","resources/views/SalesOrderLine.xml:60"
+"Invoicing follow-up","","","resources/views/SalesOrderLine.xml:55"
 "Invoicing informations","","","resources/views/SaleConfig.xml:18"
 "Label","","","resources/domains/SaleOrderSubLine.xml:14"
 "Last Year To Date","","","resources/views/Charts.xml:168"
-"Marketing","","","resources/views/SalesOrder.xml:109"
-"Month","","","resources/views/Charts.xml:829
-resources/views/Charts.xml:608
-resources/views/Charts.xml:72
+"Marketing","","","resources/views/SalesOrder.xml:101"
+"Month","","","resources/views/Charts.xml:32
+resources/views/Charts.xml:829
 resources/views/Charts.xml:669
-resources/views/Charts.xml:635
-resources/views/Charts.xml:579
 resources/views/Charts.xml:446
+resources/views/Charts.xml:72
+resources/views/Charts.xml:608
+resources/views/Charts.xml:635
 resources/views/Charts.xml:499
+resources/views/Charts.xml:579
 resources/views/Charts.xml:774
-resources/views/Charts.xml:552
-resources/views/Charts.xml:32"
+resources/views/Charts.xml:552"
 "My Current Leads","","","resources/views/portal.xml:29"
 "My Opportunities","","","resources/views/portal.xml:46"
-"My Proposals","","","resources/views/SalesOrder.xml:349"
-"My Sales","","","resources/views/SalesOrder.xml:352"
+"My Proposals","","","resources/views/SalesOrder.xml:352"
+"My Sales","","","resources/views/SalesOrder.xml:355"
 "My Sales Orders","","","resources/views/portal.xml:16"
-"My Team Proposals","","","resources/views/SalesOrder.xml:355"
-"My Team Sales","","","resources/views/SalesOrder.xml:358"
+"My Team Proposals","","","resources/views/SalesOrder.xml:358"
+"My Team Sales","","","resources/views/SalesOrder.xml:361"
 "My Today Activities","","","resources/views/portal.xml:38"
-"My Turnover per month","","","resources/views/Charts.xml:421
-resources/views/portal.xml:23"
+"My Turnover per month","","","resources/views/portal.xml:23
+resources/views/Charts.xml:421"
 "Name","","","resources/domains/SaleConfig.xml:10"
 "Nbr of Units sold (Orders) by category","","","resources/views/portal.xml:147
 resources/views/Charts.xml:505"
-"New Sale order","","","resources/views/menu.xml:14
-resources/views/menu.xml:11"
+"New Sale order","","","resources/views/menu.xml:11
+resources/views/menu.xml:14"
 "Next invoiced period start date","","","resources/domains/SaleOrder.xml:59"
 "No Of Units","","","resources/views/Charts.xml:553"
-"Notes","","","resources/views/SalesOrderLine.xml:48"
+"Notes","","","resources/views/SalesOrderLine.xml:45"
 "Order Date","","","resources/domains/SaleOrder.xml:51"
 "Order Number","","","resources/domains/SaleOrder.xml:52"
 "Orders","","","resources/views/menu.xml:88
 resources/views/menu.xml:91"
-"Other informations","","","resources/views/SalesOrder.xml:100"
+"Other informations","","","resources/views/SalesOrder.xml:92"
 "Partner Type","","","resources/views/Charts.xml:702"
-"Plan a call","","","resources/views/SalesOrder.xml:39
+"Plan a call","","","resources/views/SalesOrder.xml:42
 resources/views/SalesOrder.xml:10
-resources/views/SalesOrder.xml:369"
-"Plan a meeting","","","resources/views/SalesOrder.xml:363
-resources/views/SalesOrder.xml:9
-resources/views/SalesOrder.xml:38"
-"Plan a task","","","resources/views/SalesOrder.xml:375
-resources/views/SalesOrder.xml:11
-resources/views/SalesOrder.xml:40"
+resources/views/SalesOrder.xml:372"
+"Plan a meeting","","","resources/views/SalesOrder.xml:366
+resources/views/SalesOrder.xml:41
+resources/views/SalesOrder.xml:9"
+"Plan a task","","","resources/views/SalesOrder.xml:378
+resources/views/SalesOrder.xml:43
+resources/views/SalesOrder.xml:11"
 "Price list","","","resources/domains/SaleOrder.xml:23"
-"Print","","","resources/views/SalesOrder.xml:22
-resources/views/SalesOrder.xml:31
-resources/views/SalesOrder.xml:150
-resources/views/SalesOrder.xml:158"
+"Print","","","resources/views/SalesOrder.xml:160
+resources/views/SalesOrder.xml:34
+resources/views/SalesOrder.xml:22
+resources/views/SalesOrder.xml:169"
 "Print subtotal / line","","","resources/domains/SaleOrderLine.xml:15"
 "Print subtotal per line","","","resources/domains/SaleOrder.xml:26"
-"Product","","","resources/domains/SaleOrderLine.xml:13
-resources/views/Charts.xml:589
-resources/domains/SaleOrderSubLine.xml:13"
+"Product","","","resources/domains/SaleOrderSubLine.xml:13
+resources/domains/SaleOrderLine.xml:13
+resources/views/Charts.xml:589"
 "Product Category","","","resources/views/Charts.xml:383"
 "Product Family","","","resources/views/Charts.xml:230
 resources/views/Charts.xml:347"
-"Product Family Sales Turnover this year vs last year","","","resources/views/Charts.xml:202
-resources/views/portal.xml:105"
+"Product Family Sales Turnover this year vs last year","","","resources/views/portal.xml:105
+resources/views/Charts.xml:202"
 "Product name","","","resources/domains/SaleOrderLine.xml:16"
 "Product sale turnover (Excl. Tax) last 12 month","","","resources/views/Charts.xml:586
 resources/views/portal.xml:162"
 "Product sale turnover (Excl. Tax) per month","","","resources/views/portal.xml:156
 resources/views/Charts.xml:559"
-"Product variant","","","resources/domains/SaleOrderSubLine.xml:25
-resources/domains/SaleOrderLine.xml:37"
+"Product variant","","","resources/domains/SaleOrderLine.xml:37
+resources/domains/SaleOrderSubLine.xml:25"
 "Qty","","","resources/domains/SaleOrderLine.xml:14
 resources/domains/SaleOrderSubLine.xml:17"
 "Quotes","","","resources/views/menu.xml:76
 resources/views/menu.xml:78"
 "Reference","","","resources/domains/SaleOrder.xml:12"
-"Ressources Planning","","","resources/views/SalesOrderLine.xml:68"
 "SO Tax line","","","resources/views/SalesOrderLineTax.xml:14"
 "SO Tax lines","","","resources/views/SalesOrderLineTax.xml:6"
-"SO line","","","resources/views/SalesOrderLine.xml:19"
-"SO line details","","","resources/views/SalesOrderLine.xml:57"
-"SO lines","","","resources/views/SalesOrderLine.xml:6"
+"SO line","","","resources/views/SalesOrderLine.xml:18"
+"SO lines","","","resources/views/SalesOrderLine.xml:54
+resources/views/SalesOrderLine.xml:6"
 "SO schedule line","","","resources/views/SalesOrderScheduleLine.xml:17"
 "SO schedule lines","","","resources/views/SalesOrderScheduleLine.xml:6"
-"SO subline","","","resources/views/SalesOrderSubLine.xml:20"
+"SO subline","","","resources/views/SalesOrderSubLine.xml:19"
 "SO sublines","","","resources/views/SalesOrderSubLine.xml:6"
 "Sale batch","","","resources/domains/Batch.xml:11"
 "Sale batches","","","resources/views/menu.xml:43
 resources/views/menu.xml:40"
 "Sale config","","","resources/domains/Company.xml:10"
 "Sale configuration","","","resources/views/SaleConfig.xml:12"
-"Sale configurations","","","resources/views/menu.xml:50
-resources/views/SaleConfig.xml:6
-resources/views/menu.xml:53"
-"Sale order","","","resources/views/SalesOrder.xml:156
-resources/domains/SaleOrderLineTax.xml:8
-resources/views/SalesOrder.xml:28
-resources/domains/SaleOrderLine.xml:10"
-"Sale order content","","","resources/views/SalesOrder.xml:64
-resources/views/SalesOrder.xml:173"
-"Sale order lines","","","resources/domains/SaleOrder.xml:31
-resources/domains/SaleOrderSubLine.xml:10"
+"Sale configurations","","","resources/views/menu.xml:53
+resources/views/menu.xml:50
+resources/views/SaleConfig.xml:6"
+"Sale order","","","resources/domains/SaleOrderLine.xml:10
+resources/views/SalesOrder.xml:31
+resources/views/SalesOrder.xml:167
+resources/domains/SaleOrderLineTax.xml:8"
+"Sale order lines","","","resources/domains/SaleOrderSubLine.xml:10
+resources/domains/SaleOrder.xml:31"
 "Sale order sub-lines","","","resources/domains/SaleOrderLine.xml:31"
 "Sale orders","","","resources/views/SalesOrder.xml:6
 resources/views/menu.xml:26
-resources/views/menu.xml:23
-resources/views/SalesOrder.xml:141"
+resources/views/SalesOrder.xml:151
+resources/views/menu.xml:23"
 "SaleOrder.bankDetails","Bank detail","","java/com/axelor/apps/sale/report/ITranslation.java:45"
 "SaleOrder.bankingInfo","Banking Information","","java/com/axelor/apps/sale/report/ITranslation.java:43"
 "SaleOrder.base","Base","","java/com/axelor/apps/sale/report/ITranslation.java:37"
@@ -217,18 +216,18 @@ resources/views/SalesOrder.xml:141"
 "SaleOrder.totalInclTax","Total incl. Tax","","java/com/axelor/apps/sale/report/ITranslation.java:41"
 "SaleOrder.totalTax","Total Tax","","java/com/axelor/apps/sale/report/ITranslation.java:40"
 "SaleOrder.unitPrice","Qty / Unit","","java/com/axelor/apps/sale/report/ITranslation.java:35"
-"Sales","","","resources/views/menu.xml:8
+"Sales","","","resources/views/menu.xml:122
 resources/views/menu.xml:71
-resources/views/menu.xml:122"
+resources/views/menu.xml:8"
 "Sales Dashboard 1","","","resources/views/portal.xml:171"
 "Sales Dashboard 2","","","resources/views/portal.xml:183"
-"Sales Db 1","","","resources/views/menu.xml:125
-resources/views/menu.xml:128"
-"Sales Db 2","","","resources/views/menu.xml:136
-resources/views/menu.xml:139"
+"Sales Db 1","","","resources/views/menu.xml:128
+resources/views/menu.xml:125"
+"Sales Db 2","","","resources/views/menu.xml:139
+resources/views/menu.xml:136"
 "Sales Manager Dashboard","","","resources/views/menu.xml:116"
 "Sales Manager Db","","","resources/views/menu.xml:113"
-"Sales Order filters","","","resources/views/SalesOrder.xml:348"
+"Sales Order filters","","","resources/views/SalesOrder.xml:351"
 "Sales TurnOver by Product this year vs last year","","","resources/views/Charts.xml:107
 resources/views/portal.xml:93"
 "Sales Turnover (Orders) by month by category","","","resources/views/portal.xml:141
@@ -236,122 +235,121 @@ resources/views/Charts.xml:451"
 "Sales Turnover This year vs Last year","","","resources/views/portal.xml:82"
 "Sales Turnover YTD vs Last year by Product Family","","","resources/views/portal.xml:99
 resources/views/Charts.xml:133"
-"Sales distribution per product category","","","resources/views/Charts.xml:351
-resources/views/portal.xml:129"
+"Sales distribution per product category","","","resources/views/portal.xml:129
+resources/views/Charts.xml:351"
 "Sales distribution per product family","","","resources/views/portal.xml:123
 resources/views/Charts.xml:313"
-"Sales follow-up","","","resources/views/SalesOrder.xml:101"
+"Sales follow-up","","","resources/views/SalesOrder.xml:93"
 "Sales order","","","resources/views/menu.xml:65"
 "Sales order invoicing type","","","resources/domains/SaleConfig.xml:15"
 "Sales per country","","","resources/views/portal.xml:135
 resources/views/Charts.xml:387"
-"Sales turnover comparison per month this year vs past years","","","resources/views/portal.xml:76
-resources/views/Charts.xml:37"
-"Sales turnover comparison per month this year vs past years by family","","","resources/views/Charts.xml:781
-resources/views/portal.xml:235"
+"Sales turnover comparison per month this year vs past years","","","resources/views/Charts.xml:37
+resources/views/portal.xml:76"
+"Sales turnover comparison per month this year vs past years by family","","","resources/views/portal.xml:235
+resources/views/Charts.xml:781"
 "Sales turnover this year vs last year","","","resources/views/Charts.xml:77"
 "Sales turnover this year vs past years","","","resources/views/portal.xml:87
 resources/views/Charts.xml:165"
 "SalesMan","","","resources/views/Charts.xml:616"
-"Salesman","","","resources/views/Charts.xml:304
+"Salesman","","","resources/domains/SaleOrder.xml:43
 resources/views/Charts.xml:650
-resources/domains/SaleOrder.xml:43"
+resources/views/Charts.xml:304"
 "Salesman Dashboard","","","resources/views/menu.xml:105"
 "Salesman Db","","","resources/views/menu.xml:102"
-"Schedule","","","resources/views/SalesOrder.xml:119"
 "Scheduler instance","","","resources/domains/SaleOrder.xml:56"
-"Send email","","","resources/views/SalesOrder.xml:32
-resources/views/SalesOrder.xml:23"
-"Seq.","","","resources/domains/SaleOrderSubLine.xml:12
-resources/domains/SaleOrderLine.xml:11"
+"Schedules","","","resources/views/SalesOrder.xml:113"
+"Send email","","","resources/views/SalesOrder.xml:23
+resources/views/SalesOrder.xml:35"
+"Seq.","","","resources/domains/SaleOrderLine.xml:11
+resources/domains/SaleOrderSubLine.xml:12"
 "Settings","","","resources/views/SalesOrderLine.xml:38"
-"Show Invoices","","","resources/views/SalesOrder.xml:124"
+"Show Invoices","","","resources/views/SalesOrder.xml:137"
 "Source","","","resources/domains/SaleOrder.xml:45"
-"Specific settings","","","resources/views/SalesOrder.xml:59"
+"Specific settings","","","resources/views/SalesOrder.xml:63"
 "Status","","","resources/domains/SaleOrder.xml:40"
-"Subscription","","","resources/views/SalesOrder.xml:127"
-"Subscription dates","","","resources/views/SalesOrder.xml:128"
+"Subscription","","","resources/views/SalesOrder.xml:116"
+"Subscription dates","","","resources/views/SalesOrder.xml:117"
 "Subscription end date","","","resources/domains/SaleOrder.xml:60"
 "Subscription start date","","","resources/domains/SaleOrder.xml:57"
 "Supplier","","","resources/domains/SaleOrderLine.xml:24"
-"Tax","","","resources/domains/SaleOrderSubLine.xml:19
-resources/domains/SaleOrderLine.xml:18
-resources/domains/SaleOrderLineTax.xml:9"
+"Tax","","","resources/domains/SaleOrderLineTax.xml:9
+resources/domains/SaleOrderSubLine.xml:19
+resources/domains/SaleOrderLine.xml:18"
 "Tax Lines","","","resources/domains/SaleOrder.xml:34"
 "Team","","","resources/domains/SaleOrder.xml:44
 resources/views/Charts.xml:273"
-"The location must be filled.","","","resources/views/SalesOrder.xml:261"
+"The location must be filled.","","","resources/views/SalesOrder.xml:264"
 "This Year To Date","","","resources/views/Charts.xml:167"
-"To Date","","","resources/views/Charts.xml:508
-resources/views/Charts.xml:758
-resources/views/Charts.xml:316
-resources/views/Charts.xml:248
-resources/views/Charts.xml:424
-resources/views/Charts.xml:710
-resources/views/Charts.xml:732
+"To Date","","","resources/views/Charts.xml:758
 resources/views/Charts.xml:14
 resources/views/Charts.xml:588
-resources/views/Charts.xml:454
-resources/views/Charts.xml:354
-resources/views/Charts.xml:684
-resources/views/Charts.xml:562
+resources/views/Charts.xml:390
+resources/views/Charts.xml:316
 resources/views/Charts.xml:280
-resources/views/Charts.xml:390"
+resources/views/Charts.xml:684
+resources/views/Charts.xml:424
+resources/views/Charts.xml:454
+resources/views/Charts.xml:710
+resources/views/Charts.xml:354
+resources/views/Charts.xml:732
+resources/views/Charts.xml:508
+resources/views/Charts.xml:562
+resources/views/Charts.xml:248"
 "Total A.T.I.","","","resources/domains/SaleOrder.xml:38"
 "Total V.A.T.","","","resources/domains/SaleOrder.xml:37"
-"Total W.T.","","","resources/domains/SaleOrderSubLine.xml:20
-resources/domains/SaleOrderLine.xml:19
-resources/domains/SaleOrder.xml:36"
-"Total W.T. in company currency","","","resources/domains/SaleOrderSubLine.xml:28
-resources/domains/SaleOrderLine.xml:40"
-"Totaux","","","resources/views/SalesOrder.xml:183
-resources/views/SalesOrder.xml:87"
-"TurnOver","","","resources/views/Charts.xml:73
+"Total W.T.","","","resources/domains/SaleOrderLine.xml:19
+resources/domains/SaleOrder.xml:36
+resources/domains/SaleOrderSubLine.xml:20"
+"Total W.T. in company currency","","","resources/domains/SaleOrderLine.xml:40
+resources/domains/SaleOrderSubLine.xml:28"
+"Totaux","","","resources/views/SalesOrder.xml:191"
+"TurnOver","","","resources/views/Charts.xml:500
+resources/views/Charts.xml:73
+resources/views/Charts.xml:199
 resources/views/Charts.xml:130
-resources/views/Charts.xml:104
-resources/views/Charts.xml:500
-resources/views/Charts.xml:199"
+resources/views/Charts.xml:104"
 "Turnover","","","resources/views/Charts.xml:231
-resources/views/Charts.xml:609
-resources/views/Charts.xml:670
 resources/views/Charts.xml:162
+resources/views/Charts.xml:33
+resources/views/Charts.xml:670
 resources/views/Charts.xml:580
-resources/views/Charts.xml:726
-resources/views/Charts.xml:703
-resources/views/Charts.xml:636
+resources/views/Charts.xml:609
 resources/views/Charts.xml:775
+resources/views/Charts.xml:636
 resources/views/Charts.xml:830
+resources/views/Charts.xml:726
 resources/views/Charts.xml:751
-resources/views/Charts.xml:33"
-"Turnover (excl. Tax) per saleman","","","resources/views/portal.xml:117
-resources/views/Charts.xml:277"
+resources/views/Charts.xml:703"
+"Turnover (excl. Tax) per saleman","","","resources/views/Charts.xml:277
+resources/views/portal.xml:117"
 "Turnover (excl. Tax) per team","","","resources/views/Charts.xml:245
 resources/views/portal.xml:111"
-"Turnover per customer category","","","resources/views/portal.xml:215
-resources/views/Charts.xml:707"
+"Turnover per customer category","","","resources/views/Charts.xml:707
+resources/views/portal.xml:215"
 "Turnover per customer sector","","","resources/views/Charts.xml:729
 resources/views/portal.xml:221"
-"Turnover per customer type","","","resources/views/portal.xml:209
-resources/views/Charts.xml:681"
+"Turnover per customer type","","","resources/views/Charts.xml:681
+resources/views/portal.xml:209"
 "Turnover per month per saleman (4 month)","","","resources/views/portal.xml:203
 resources/views/Charts.xml:647"
 "Turnover per month per saleman (6 month)","","","resources/views/Charts.xml:613
 resources/views/portal.xml:197"
 "Unit","","","resources/domains/SaleOrderSubLine.xml:16
 resources/domains/SaleOrderLine.xml:22"
-"Unit cost price in company currency","","","resources/domains/SaleOrderLine.xml:41
-resources/domains/SaleOrderSubLine.xml:29"
-"Unit price","","","resources/domains/SaleOrderLine.xml:17
-resources/domains/SaleOrderSubLine.xml:18"
-"Validate","","","resources/views/SalesOrder.xml:73"
+"Unit cost price in company currency","","","resources/domains/SaleOrderSubLine.xml:29
+resources/domains/SaleOrderLine.xml:41"
+"Unit price","","","resources/domains/SaleOrderSubLine.xml:18
+resources/domains/SaleOrderLine.xml:17"
+"Validate","","","resources/views/SalesOrder.xml:134"
 "Validated by","","","resources/domains/SaleOrder.xml:62"
 "Validation date","","","resources/domains/SaleOrder.xml:16"
-"Word Export","","","resources/views/SalesOrder.xml:34"
-"Year","","","resources/views/Charts.xml:129
+"Word Export","","","resources/views/SalesOrder.xml:37"
+"Year","","","resources/views/Charts.xml:103
+resources/views/Charts.xml:129
 resources/views/Charts.xml:198
-resources/views/Charts.xml:103
 resources/views/Charts.xml:161"
-"Year 1 To Date","","","resources/views/Charts.xml:39
-resources/views/Charts.xml:783"
+"Year 1 To Date","","","resources/views/Charts.xml:783
+resources/views/Charts.xml:39"
 "Year 2 To Date","","","resources/views/Charts.xml:784
 resources/views/Charts.xml:40"
