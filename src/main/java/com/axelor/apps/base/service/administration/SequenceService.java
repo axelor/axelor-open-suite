@@ -94,7 +94,7 @@ public class SequenceService {
 		}	
 			
 		if (company == null)  {
-			return Sequence.findByCode("code");
+			return Sequence.findByCode(code);
 		}
 		else {
 			return Sequence.filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
