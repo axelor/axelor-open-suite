@@ -1,5 +1,5 @@
-"importId";"name";"code";"description";"productFamily.importId";"productCategory.importId";"applicationTypeSelect";"procurementMethodSelect";"isRawMaterial";"unit.importId";"productTypeSelect";"salePrice";"saleCurrency.code";"purchasePrice";"purchaseCurrency.code";"defaultSupplierPartner.importId";"startDate";"endDate";"invoiceLineType.id";"saleSupplySelect";"costPrice";"hasWarranty";"warrantyNbrOfMonths";"isPerishable";"perishableNbrOfMonths";"defaultBillOfMaterial.importId";"managPriceCoef"
-10000;"Product";"PROD";"Product sold to customer";10000;10000;;"buy";"false";1;"storable";60;"EUR";40;"EUR";;"TODAY";;;1;50;"true";12;"false";;;1.4
-10001;"Service";"SERV";"Service delivered to customer";10001;10001;;"buy";"false";103;"service";100;"EUR";75;"EUR";;"TODAY";;;2;85;"false";;"false";;;1.4
-10002;"Engineer";"ENG";"Engineer within the company";10002;10002;;;"false";103;"service";400;"EUR";300;"EUR";;"TODAY";;;2;350;"false";;"false";;;1.4
-10003;"Travel expense";"TEXP";"Expenses of company employees while traveling";10002;10002;;;"false";1;"service";1;"EUR";1;"EUR";;;;;3;1;"false";;"false";;;1.4
+importId;name;code;description;productFamily.importId;productCategory.importId;applicationTypeSelect;procurementMethodSelect;isRawMaterial;unit.importId;productTypeSelect;salePrice;saleCurrency.code;purchasePrice;purchaseCurrency.code;startDate;endDate;saleSupplySelect;costPrice;hasWarranty;warrantyNbrOfMonths;isPerishable;perishableNbrOfMonths;managPriceCoef
+10000;Product;PROD;Product sold to customer;10000;10000;1;buy;false;1;storable;60;EUR;40;EUR;TODAY;;1;50;true;12;false;;1.4
+10001;Service;SERV;Service delivered to customer;10001;10001;1;buy;false;103;service;100;EUR;75;EUR;TODAY;;2;85;false;;false;;1.4
+10002;Engineer;ENG;Engineer within the company;10002;10002;2;;false;103;service;400;EUR;300;EUR;TODAY;;2;350;false;;false;;1.4
+10003;Travel expense;TEXP;Expenses of company employees while traveling;10002;10002;3;;false;1;service;1;EUR;1;EUR;TODAY;;3;1;false;;false;;1.4
