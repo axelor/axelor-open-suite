@@ -1,85 +1,86 @@
 "key","message","comment","context"
-"%",,,"resources/domains/SaleOrderScheduleLine.xml:13"
-"Amount invoiced",,,"resources/domains/SaleOrderLine.xml:16"
-"Amount remaining to invoice",,,"resources/domains/SaleOrder.xml:15"
-"Amount to invoice",,,"resources/domains/SaleOrderScheduleLine.xml:12"
-"Associated invoice lines",,,"resources/domains/SaleOrderLine.xml:20"
-"Category","Catégorie",,"resources/views/menu.xml:18"
-"Category Dashboard","Tb Catégories",,"resources/views/menu.xml:30"
-"Category Db","Tb Catégories",,"resources/views/menu.xml:21"
-"Created by","Créé par",,"resources/views/SaleBatch.xml:27"
-"Created on","Créé le",,"resources/views/SaleBatch.xml:26"
-"Cumulated invoiced %",,,"resources/domains/SaleOrderScheduleLine.xml:15"
-"Date of shipment",,,"resources/domains/SaleOrder.xml:11"
-"Draft invoice N days after order validation","Facture brouillons N jrs après validation Cmde",,"resources/views/Selects.xml:17"
-"Family","Famille",,"resources/views/menu.xml:24"
-"Family Dashboard","Tb Famille",,"resources/views/portal.xml:14
-resources/views/portal.xml:18
-resources/views/menu.xml:35"
-"Family Db","Tb Famille",,"resources/views/menu.xml:27"
-"Family sale turnover (Excl. Tax) per month",,,"resources/views/ProductFamily.xml:15"
-"From Date","Date de",,"resources/views/Charts.xml:75"
-"FromStock","Stock",,"resources/views/Selects.xml:10"
-"Information","Information",,"resources/views/SaleBatch.xml:25"
-"Invoice",,,"resources/domains/SaleOrderScheduleLine.xml:17
+"%","","","resources/domains/SaleOrderScheduleLine.xml:13"
+"Amount invoiced","","","resources/domains/SaleOrderLine.xml:16"
+"Amount remaining to invoice","","","resources/domains/SaleOrder.xml:15"
+"Amount to invoice","","","resources/domains/SaleOrderScheduleLine.xml:12"
+"Associated invoice lines","","","resources/domains/SaleOrderLine.xml:20"
+"Batches","","","resources/views/SaleBatch.xml:29"
+"Category","Catégorie","","resources/views/menu.xml:18"
+"Category Dashboard","Tb Catégories","","resources/views/menu.xml:30"
+"Category Db","Tb Catégories","","resources/views/menu.xml:21"
+"Created by","Créé par","","resources/views/SaleBatch.xml:22"
+"Created on","Créé le","","resources/views/SaleBatch.xml:21"
+"Cumulated invoiced %","","","resources/domains/SaleOrderScheduleLine.xml:15"
+"Date of shipment","","","resources/domains/SaleOrder.xml:11"
+"Description","","","resources/views/SaleBatch.xml:26"
+"Draft invoice N days after order validation","Facture brouillons N jrs après validation Cmde","","resources/views/Selects.xml:17"
+"Family","Famille","","resources/views/menu.xml:24"
+"Family Dashboard","Tb Famille","","resources/views/portal.xml:14
+resources/views/menu.xml:35
+resources/views/portal.xml:18"
+"Family Db","Tb Famille","","resources/views/menu.xml:27"
+"Family sale turnover (Excl. Tax) per month","","","resources/views/ProductFamily.xml:18"
+"From Date","Date de","","resources/views/Charts.xml:75"
+"FromStock","Stock","","resources/views/Selects.xml:10"
+"Invoice","","","resources/domains/SaleOrderScheduleLine.xml:17
 resources/domains/StockMove.xml:13"
-"Invoice controlled",,,"resources/domains/SaleOrderLine.xml:24"
-"Invoiced ?",,,"resources/domains/SaleOrderLine.xml:15"
-"Invoicing","Facturation",,"resources/views/Selects.xml:21"
-"Invoicing Date",,,"resources/domains/SaleOrderLine.xml:12"
-"Invoicing batch","Batch Facturation",,"resources/views/SaleBatch.xml:23"
-"Invoicing page","Facturation",,"resources/views/SaleBatch.xml:22"
-"Invoicing trigger",,,"resources/domains/SaleOrder.xml:14"
-"Invoicing type",,,"resources/domains/SaleOrder.xml:12"
-"Linked invoices",,,"resources/domains/SaleOrder.xml:18"
-"Location","Emplacement",,"resources/domains/PurchaseOrder.xml:10
-resources/domains/SaleOrder.xml:10"
-"Month","Mois",,"resources/views/Charts.xml:114"
-"Nbr of days",,,"resources/domains/SaleOrderScheduleLine.xml:16"
-"Number of Product per Category","Nbr de produits par catégorie",,"resources/views/Charts.xml:28
+"Invoice controlled","","","resources/domains/SaleOrderLine.xml:24"
+"Invoiced ?","","","resources/domains/SaleOrderLine.xml:15"
+"Invoicing","Facturation","","resources/views/Selects.xml:21"
+"Invoicing Date","","","resources/domains/SaleOrderLine.xml:12"
+"Invoicing batch","Batch Facturation","","resources/views/SaleBatch.xml:23"
+"Invoicing trigger","","","resources/domains/SaleOrder.xml:14"
+"Invoicing type","","","resources/domains/SaleOrder.xml:12"
+"Linked invoices","","","resources/domains/SaleOrder.xml:18"
+"Location","Emplacement","","resources/domains/SaleOrder.xml:10
+resources/domains/PurchaseOrder.xml:10"
+"Month","Mois","","resources/views/Charts.xml:114"
+"Nbr of days","","","resources/domains/SaleOrderScheduleLine.xml:16"
+"Number of Product per Category","Nbr de produits par catégorie","","resources/views/Charts.xml:28
 resources/views/portal.xml:35"
-"Number of Product per Family","Nbr de produits par famille",,"resources/views/Charts.xml:6
-resources/views/portal.xml:31"
-"Partner",,,"resources/views/Partner.xml:6
-resources/views/Partner.xml:10"
-"Produce","Produire",,"resources/views/Selects.xml:12"
-"Product Category","Catégorie de produit",,"resources/views/Charts.xml:46"
-"Product Db","Tb produits",,"resources/views/menu.xml:10
-resources/views/menu.xml:13"
-"Product Family","Famille produit",,"resources/views/Charts.xml:24"
-"Product Type","Type produit",,"resources/views/Charts.xml:69"
-"Product family","Famille produit",,"resources/views/ProductFamily.xml:6"
-"Product launches/withdrawal each month","Lancement/Retrait produits par mois",,"resources/views/Charts.xml:73
-resources/views/portal.xml:26"
-"Product type distribution","Distribution par type de produit",,"resources/views/portal.xml:22
-resources/views/Charts.xml:50"
-"Products","Produits",,"resources/views/Charts.xml:25
-resources/views/Charts.xml:47
-resources/views/Charts.xml:115
+"Number of Product per Family","Nbr de produits par famille","","resources/views/portal.xml:31
+resources/views/Charts.xml:6"
+"Partner","","","resources/views/Partner.xml:10
+resources/views/Partner.xml:6"
+"Produce","Produire","","resources/views/Selects.xml:12"
+"Product Category","Catégorie de produit","","resources/views/Charts.xml:46"
+"Product Db","Tb produits","","resources/views/menu.xml:13
+resources/views/menu.xml:10"
+"Product Family","Famille produit","","resources/views/Charts.xml:24"
+"Product Type","Type produit","","resources/views/Charts.xml:69"
+"Product family","Famille produit","","resources/views/ProductFamily.xml:6"
+"Product launches/withdrawal each month","Lancement/Retrait produits par mois","","resources/views/portal.xml:26
+resources/views/Charts.xml:73"
+"Product type distribution","Distribution par type de produit","","resources/views/Charts.xml:50
+resources/views/portal.xml:22"
+"Products","Produits","","resources/views/Charts.xml:115
 resources/views/Charts.xml:70
-resources/views/menu.xml:7"
-"Products DB 1","Tb Produits 1",,"resources/views/portal.xml:6"
-"Purchase","Achat",,"resources/views/Selects.xml:11"
-"Purchase order","Devis fournisseurs",,"resources/domains/StockMove.xml:12"
-"Purchase order line",,,"resources/domains/StockMoveLine.xml:11"
-"Remaining to invoice",,,"resources/domains/SaleOrderLine.xml:17"
-"Sale Batch",,,"resources/views/SaleBatch.xml:16"
-"Sale batches",,,"resources/views/SaleBatch.xml:6"
-"Sale order","Devis",,"resources/views/SalesOrder.xml:14
-resources/domains/StockMove.xml:11
+resources/views/menu.xml:7
+resources/views/Charts.xml:47
+resources/views/Charts.xml:25"
+"Products DB 1","Tb Produits 1","","resources/views/portal.xml:6"
+"Purchase","Achat","","resources/views/Selects.xml:11"
+"Purchase order","Devis fournisseurs","","resources/domains/StockMove.xml:12"
+"Purchase order line","","","resources/domains/StockMoveLine.xml:11"
+"Remaining to invoice","","","resources/domains/SaleOrderLine.xml:17"
+"Sale Batch","","","resources/views/SaleBatch.xml:14"
+"Sale batches","","","resources/views/SaleBatch.xml:6"
+"Sale order","Devis","","resources/domains/StockMove.xml:11
+resources/views/SalesOrder.xml:17
 resources/domains/SaleOrderScheduleLine.xml:10
-resources/views/SalesOrder.xml:8"
-"Sales Turnover",,,"resources/views/ProductFamily.xml:9"
-"Sales order line",,,"resources/domains/StockMoveLine.xml:10"
-"Sales orders",,,"resources/views/Partner.xml:14
-resources/views/Partner.xml:21"
-"Schedule line list",,,"resources/domains/SaleOrder.xml:21"
-"Seq.",,,"resources/domains/SaleOrderScheduleLine.xml:11"
-"Show details in invoice",,,"resources/domains/SaleOrder.xml:13"
-"Supply method",,,"resources/domains/SaleOrderLine.xml:10"
-"Task","Tâche",,"resources/domains/SaleOrderScheduleLine.xml:14"
-"To Date","à Date",,"resources/views/Charts.xml:76"
-"To invoice?",,,"resources/domains/SaleOrderLine.xml:14"
-"When a task is over","Lorsqu'une tâche est terminée",,"resources/views/Selects.xml:16"
-"help:SaleOrderScheduleLine.nbOfDay","Si facturation en fonction de nb de jours",,"resources/domains/SaleOrderScheduleLine.xml:16"
-"help:SaleOrderScheduleLine.saleOrderLine","Si facturation à la tâche",,"resources/domains/SaleOrderScheduleLine.xml:14"
+resources/views/SalesOrder.xml:9"
+"Sales Turnover","","","resources/views/ProductFamily.xml:11"
+"Sales order line","","","resources/domains/StockMoveLine.xml:10"
+"Sales orders","","","resources/views/Partner.xml:21
+resources/views/Partner.xml:14"
+"Schedule line list","","","resources/domains/SaleOrder.xml:21"
+"Seq.","","","resources/domains/SaleOrderScheduleLine.xml:11"
+"Show details in invoice","","","resources/domains/SaleOrder.xml:13"
+"Supply method","","","resources/domains/SaleOrderLine.xml:10"
+"Task","Tâche","","resources/domains/SaleOrderScheduleLine.xml:14"
+"To Date","à Date","","resources/views/Charts.xml:76"
+"To invoice?","","","resources/domains/SaleOrderLine.xml:14"
+"View Products","","","resources/views/ProductFamily.xml:8"
+"When a task is over","Lorsqu'une tâche est terminée","","resources/views/Selects.xml:16"
+"help:SaleOrderScheduleLine.nbOfDay","Si facturation en fonction de nb de jours","","resources/domains/SaleOrderScheduleLine.xml:16"
+"help:SaleOrderScheduleLine.saleOrderLine","Si facturation à la tâche","","resources/domains/SaleOrderScheduleLine.xml:14"
