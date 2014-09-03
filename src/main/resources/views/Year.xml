@@ -21,9 +21,6 @@
 	        <field name="toDate"/>
 	        <field name="company" widget="SuggestBox"/>
 	    </panel>
-	    <panel>
-	        <field name="status"/>
-    	</panel>
     </form>
     
     

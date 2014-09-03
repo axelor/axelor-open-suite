@@ -15,24 +15,22 @@
    <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
    onNew="action-price-list-record-default,action-price-list-record-title">
    		<panel>
-		    <field name="title" /> 
-    		<field name="isActive"/> 
-		    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" onChange="action-price-list-record-title"/> 
-		    <field name="typeSelect"/>
-	    	<field name="validFromDate" onChange="action-price-list-record-title"/>
-    		<field name="validToDate" onChange="action-price-list-record-title"/> 
-	    	<field name="isDisplayed"/>
+		    <field name="title"/>
+			<field name="typeSelect" x-span="4"/>
+			<field name="isActive" x-span="2"/>
+			<field name="partner" onChange="action-price-list-record-title" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="isDisplayed"/>
+			<field name="validFromDate" onChange="action-price-list-record-title"/>
+			<field name="validToDate" onChange="action-price-list-record-title"/>
     	</panel>
-    	<panel-tabs>
-    		<panel name="priceListLine" title="Price list lines" >
-    			<field name="generalDiscount"/>
-    			<label name="or" title="Or" x-span="12"/>
-    			<panel-related field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" x-span="12"/>
-    		 </panel>
-    		<panel name="comments" title="Comments">
-    			<field name="comments" x-span="12"/>    					
-    		</panel>
-    	</panel-tabs>
+		<panel name="priceListLine" title="Price list lines" >
+			<field name="generalDiscount"/>
+			<label name="or" title="Or" x-span="12"/>
+			<panel-related field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" x-span="12"/>
+		 </panel>
+		<panel name="comments" title="Comments">
+			<field name="comments" x-span="12"/>    					
+		</panel>
    </form>
    
    <action-record name="action-price-list-record-default" model="com.axelor.apps.base.db.PriceList">

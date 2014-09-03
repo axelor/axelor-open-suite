@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	<grid name="keyword-grid" title="Keywords" model="com.axelor.apps.base.db.Keyword">
+		<field name="keyWord"/>
         <field name="typeSelect"/>
-        <field name="keyWord"/>
     </grid>
     
     <form name="keyword-form" title="Keyword" model="com.axelor.apps.base.db.Keyword">
