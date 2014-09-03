@@ -1,56 +1,57 @@
 "key","message","comment","context"
-"Accept","Accepter",,"resources/views/PurchaseOrderSupplierLine.xml:25"
-"Accepted","Acceptée",,"resources/views/Selects.xml:12"
-"Available qty",,,"resources/domains/PurchaseOrderSupplierLine.xml:12"
-"Cancel","Annuler",,"resources/views/PurchaseOrderSupplierLine.xml:27"
-"Canceled","Annulé",,"resources/views/Selects.xml:14"
-"Comment",,,"resources/domains/PurchaseOrderSupplierLine.xml:16"
-"Estim. delivery date",,,"resources/domains/PurchaseOrderSupplierLine.xml:18"
-"Generate all suppliers requests","Générer toutes les demandes aux fournisseurs",,"resources/views/PurchaseOrder.xml:12"
-"Generate suppliers purchase orders","Générer commandes fournisseurs",,"resources/views/PurchaseOrder.xml:10"
-"Initial purchase order",,,"resources/domains/PurchaseOrder.xml:12"
-"My R.F.Q.","Mes demandes de cotations",,"resources/views/SupplierView.xml:16
-resources/views/SupplierView.xml:37"
-"My R.F.Q. to complete","Mes demandes de cotations à compléter",,"resources/views/SupplierView.xml:15
-resources/views/SupplierView.xml:29"
-"My deliveries","Mes livraisons",,"resources/views/SupplierView.xml:17
-resources/views/SupplierView.xml:45"
-"My purchase orders","Mes commandes",,"resources/views/SupplierView.xml:14
-resources/views/SupplierView.xml:21"
-"My space","Mon espace",,"resources/views/SupplierView.xml:6
+"Accept","Accepter","","resources/views/PurchaseOrderSupplierLine.xml:30"
+"Accepted","Acceptée","","resources/views/Selects.xml:12"
+"Action(s)","","","resources/views/PurchaseOrderSupplierLine.xml:29"
+"Available qty","","","resources/domains/PurchaseOrderSupplierLine.xml:12"
+"Cancel","Annuler","","resources/views/PurchaseOrderSupplierLine.xml:32"
+"Canceled","Annulé","","resources/views/Selects.xml:14"
+"Comment","","","resources/domains/PurchaseOrderSupplierLine.xml:16"
+"Estim. delivery date","","","resources/domains/PurchaseOrderSupplierLine.xml:18"
+"Generate all suppliers requests","Générer toutes les demandes aux fournisseurs","","resources/views/PurchaseOrder.xml:12"
+"Generate suppliers purchase orders","Générer commandes fournisseurs","","resources/views/PurchaseOrder.xml:10"
+"Initial purchase order","","","resources/domains/PurchaseOrder.xml:12"
+"My R.F.Q.","Mes demandes de cotations","","resources/views/SupplierView.xml:40
+resources/views/SupplierView.xml:18"
+"My R.F.Q. to complete","Mes demandes de cotations à compléter","","resources/views/SupplierView.xml:17
+resources/views/SupplierView.xml:32"
+"My deliveries","Mes livraisons","","resources/views/SupplierView.xml:48
+resources/views/SupplierView.xml:19"
+"My purchase orders","Mes commandes","","resources/views/SupplierView.xml:16
+resources/views/SupplierView.xml:24"
+"My space","Mon espace","","resources/views/SupplierView.xml:6
 resources/views/SupplierView.xml:11"
-"Not accept","Ne pas retenir",,"resources/views/PurchaseOrderSupplierLine.xml:26"
-"Not accepted","Non retenu",,"resources/views/Selects.xml:13"
-"Purchase order",,,"resources/domains/PurchaseOrderSupplierLine.xml:10"
-"Purchase order?",,,"resources/domains/PurchaseOrder.xml:13"
-"Receipt date","Date de reception",,"resources/views/SupplierView.xml:74"
-"Request","Demander",,"resources/views/PurchaseOrderSupplierLine.xml:28"
-"Requested","Demandé",,"resources/views/Selects.xml:10"
-"Show suppliers purchase orders","Les commandes fournisseurs associées",,"resources/views/PurchaseOrder.xml:11"
-"State",,,"resources/domains/PurchaseOrderSupplierLine.xml:20"
-"Stock move","Mouvement de stock",,"resources/views/SupplierView.xml:63"
-"Stock move informations","Informations sur Stocks Internes",,"resources/views/SupplierView.xml:72"
-"Stock move line","Ligne mvt. de stock",,"resources/views/SupplierView.xml:88"
-"Stock move lines","Lignes mvt. de stock",,"resources/views/SupplierView.xml:81"
-"Stock move reference","Références mouvement de stock",,"resources/views/SupplierView.xml:66"
-"Stock moves","Mouvements de stock",,"resources/views/SupplierView.xml:53"
-"Submit","Envoyer",,"resources/views/PurchaseOrderSupplierLine.xml:57"
-"Submitted","Soumis(e)",,"resources/views/Selects.xml:11"
-"Supplier",,,"resources/domains/PurchaseOrderLine.xml:12
-resources/domains/PurchaseOrderSupplierLine.xml:22"
-"Supplier RFQ/PO","Dv/Cmde Fourn.",,"resources/views/PurchaseOrder.xml:6"
-"Supplier request","Demande d'achat",,"resources/views/PurchaseOrderSupplierLine.xml:46
-resources/views/PurchaseOrderSupplierLine.xml:16"
-"Supplier requests","Demandes d'achat",,"resources/views/menu.xml:11
+"Not accept","Ne pas retenir","","resources/views/PurchaseOrderSupplierLine.xml:31"
+"Not accepted","Non retenu","","resources/views/Selects.xml:13"
+"Purchase order","","","resources/domains/PurchaseOrderSupplierLine.xml:10"
+"Purchase order?","","","resources/domains/PurchaseOrder.xml:13"
+"Receipt date","Date de reception","","resources/views/SupplierView.xml:79"
+"Request","Demander","","resources/views/PurchaseOrderSupplierLine.xml:33"
+"Requested","Demandé","","resources/views/Selects.xml:10"
+"Show suppliers purchase orders","Les commandes fournisseurs associées","","resources/views/PurchaseOrder.xml:11"
+"State","","","resources/domains/PurchaseOrderSupplierLine.xml:20"
+"Stock move","Mouvement de stock","","resources/views/SupplierView.xml:66"
+"Stock move informations","Informations sur Stocks Internes","","resources/views/SupplierView.xml:77"
+"Stock move line","Ligne mvt. de stock","","resources/views/SupplierView.xml:93"
+"Stock move lines","Lignes mvt. de stock","","resources/views/SupplierView.xml:86"
+"Stock move reference","Références mouvement de stock","","resources/views/SupplierView.xml:71"
+"Stock moves","Mouvements de stock","","resources/views/SupplierView.xml:56"
+"Submit","Envoyer","","resources/views/PurchaseOrderSupplierLine.xml:63"
+"Submitted","Soumis(e)","","resources/views/Selects.xml:11"
+"Supplier","","","resources/domains/PurchaseOrderSupplierLine.xml:22
+resources/domains/PurchaseOrderLine.xml:12"
+"Supplier RFQ/PO","Dv/Cmde Fourn.","","resources/views/PurchaseOrder.xml:6"
+"Supplier request","Demande d'achat","","resources/views/PurchaseOrderSupplierLine.xml:17
+resources/views/PurchaseOrderSupplierLine.xml:52"
+"Supplier requests","Demandes d'achat","","resources/views/menu.xml:11
 resources/views/menu.xml:8"
-"Supplier requests completed","Demandes d'achat complétés",,"resources/views/menu.xml:18
-resources/views/menu.xml:21"
-"Supplier requests historical","Historique demandes d'achat",,"resources/views/menu.xml:28
-resources/views/menu.xml:31"
-"Suppliers purchase","Achats fournisseurs",,"resources/views/PurchaseOrder.xml:24"
-"Suppliers requests",,,"resources/domains/PurchaseOrderLine.xml:11"
-"Unit price",,,"resources/domains/PurchaseOrderSupplierLine.xml:14"
-"Write to the supplier","Ecrire au fournisseur",,"resources/views/PurchaseOrderSupplierLine.xml:29"
-"help:PurchaseOrderSupplierLine.estimatedDelivDate","Estimated by supplier",,"resources/domains/PurchaseOrderSupplierLine.xml:18"
-"suppliers requests","Demandes d'achat",,"resources/views/PurchaseOrderSupplierLine.xml:6
-resources/views/PurchaseOrderSupplierLine.xml:33"
+"Supplier requests completed","Demandes d'achat complétés","","resources/views/menu.xml:21
+resources/views/menu.xml:18"
+"Supplier requests historical","Historique demandes d'achat","","resources/views/menu.xml:31
+resources/views/menu.xml:28"
+"Suppliers purchase","Achats fournisseurs","","resources/views/PurchaseOrder.xml:24"
+"Suppliers requests","","","resources/domains/PurchaseOrderLine.xml:11"
+"Unit price","","","resources/domains/PurchaseOrderSupplierLine.xml:14"
+"Write to the supplier","Ecrire au fournisseur","","resources/views/PurchaseOrderSupplierLine.xml:34"
+"help:PurchaseOrderSupplierLine.estimatedDelivDate","Estimated by supplier","","resources/domains/PurchaseOrderSupplierLine.xml:18"
+"suppliers requests","Demandes d'achat","","resources/views/PurchaseOrderSupplierLine.xml:6
+resources/views/PurchaseOrderSupplierLine.xml:39"
