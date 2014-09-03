@@ -1,401 +1,400 @@
-key,message,comment,context
-Add Manu. Order,Ordre de fabrication,,resources/views/ProductionOrder.xml:20
-Add Manuf. Order,Ordre de fabrication,,"resources/views/ProductionOrder.xml:19
+"key","message","comment","context"
+"Add Manu. Order","Ordre de fabrication","","resources/views/ProductionOrder.xml:22"
+"Add Manuf. Order","Ordre de fabrication","","resources/views/ProductionOrder.xml:20
 resources/views/ProductionOrder.xml:26"
-All Current Manufacturing Orders,Tous les ordres de fabrication en cours,,resources/views/ManufacturingDashboard.xml:27
-All Manufacturing Order Plannings,Tous les ordres de fabrication planifiés,,resources/views/ManufacturingDashboard.xml:35
-All Upcoming Manufacturing Orders,Tous les ordres de fabrication à venir,,resources/views/ManufacturingDashboard.xml:19
-BOM,Nomenclature,,"resources/views/ProductionOrderWizard.xml:14
-resources/views/ProductionOrder.xml:24"
-BOMs,Lignes de nomenclature,,resources/domains/BillOfMaterial.xml:18
-Bill of material,Nomenclatures,,"resources/views/BillOfMaterial.xml:62
-resources/views/BillOfMaterial.xml:16
-resources/views/BillOfMaterial.xml:53
-resources/views/BillOfMaterial.xml:24"
-Bills of material,Nomenclatures,,"resources/views/BillOfMaterial.xml:40
-resources/views/BillOfMaterial.xml:6
-resources/views/BillOfMaterial.xml:78
+"All Current Manufacturing Orders","Tous les ordres de fabrication en cours","","resources/views/ManufacturingDashboard.xml:27"
+"All Manufacturing Order Plannings","Tous les ordres de fabrication planifiés","","resources/views/ManufacturingDashboard.xml:35"
+"All Upcoming Manufacturing Orders","Tous les ordres de fabrication à venir","","resources/views/ManufacturingDashboard.xml:19"
+"BOM","Nomenclature","","resources/views/ProductionOrder.xml:24
+resources/views/ProductionOrderWizard.xml:14"
+"BOMs","Lignes de nomenclature","","resources/domains/BillOfMaterial.xml:18"
+"Bill of material","Nomenclatures","","resources/views/BillOfMaterial.xml:16
+resources/views/BillOfMaterial.xml:26
+resources/views/BillOfMaterial.xml:55
+resources/views/BillOfMaterial.xml:66"
+"Bills of material","Nomenclatures","","resources/views/BillOfMaterial.xml:102
 resources/views/BillOfMaterial.xml:71
-resources/views/BillOfMaterial.xml:102"
-Bills of materials,Nomenclatures,,"resources/views/menu.xml:15
-resources/views/menu.xml:12"
-BoM,Nomenclature,,"resources/domains/SaleOrderLine.xml:10
-resources/domains/ManufOrder.xml:39
-resources/domains/ProdRemains.xml:12"
-Business,Affaire,,resources/views/Business.xml:6
-Cancel,Annuler,,"resources/views/ManufOrder.xml:47
+resources/views/BillOfMaterial.xml:6
+resources/views/BillOfMaterial.xml:42
+resources/views/BillOfMaterial.xml:78"
+"Bills of materials","Nomenclatures","","resources/views/menu.xml:12
+resources/views/menu.xml:15"
+"BoM","Nomenclature","","resources/domains/ProdRemains.xml:12
+resources/domains/SaleOrderLine.xml:10
+resources/domains/ManufOrder.xml:39"
+"Business","Affaire","","resources/views/Business.xml:6"
+"Cancel","Annuler","","resources/views/ManufOrder.xml:59
+resources/views/ManufOrder.xml:47
+resources/views/OperationOrder.xml:64
 resources/views/OperationOrder.xml:54
 resources/views/ManufOrder.xml:24
-resources/views/ManufOrder.xml:60
-resources/views/OperationOrder.xml:36
-resources/views/OperationOrder.xml:67"
-Canceled,Annulé,,resources/views/Selects.xml:11
-Cancelled MOs,OFs annulés,,resources/views/ManufOrder.xml:224
-Cancelled Operations,Opérations annulées,,resources/views/OperationOrder.xml:194
-Capacity / cycle,Capacité / cycle,,resources/domains/ProdResource.xml:16
-Capacity information,Informations sur la capacité,,"resources/views/ProdResource.xml:21
-resources/views/ProdResource.xml:58"
-Charge by machine,Charge par machine,,"resources/views/menu.xml:83
+resources/views/OperationOrder.xml:36"
+"Canceled","Annulé","","resources/views/Selects.xml:11"
+"Cancelled MOs","OFs annulés","","resources/views/ManufOrder.xml:222"
+"Cancelled Operations","Opérations annulées","","resources/views/OperationOrder.xml:187"
+"Capacity / cycle","Capacité / cycle","","resources/domains/ProdResource.xml:16"
+"Capacity information","Informations sur la capacité","","resources/views/ProdResource.xml:55
+resources/views/ProdResource.xml:22"
+"Charge by machine","Charge par machine","","resources/views/menu.xml:86
 resources/views/ChargeByMachineDashboard.xml:6
-resources/views/menu.xml:86"
-Charge previsionnelle par machine,Charge previsionnelle par machine,,resources/views/Charts.xml:457
-Charge réelle par machine,Charge réelle par machine,,resources/views/Charts.xml:7
-Code,,,"resources/domains/ProdResource.xml:13
+resources/views/menu.xml:83"
+"Charge previsionnelle par machine","Charge previsionnelle par machine","","resources/views/Charts.xml:457"
+"Charge réelle par machine","Charge réelle par machine","","resources/views/Charts.xml:7"
+"Code","","","resources/domains/ProductionConfig.xml:11
 resources/domains/ProdProcess.xml:14
-resources/domains/ProductionConfig.xml:11"
-Company,Société,,"resources/domains/ManufOrder.xml:21
-resources/domains/BillOfMaterial.xml:23
-resources/domains/ProductionConfig.xml:13"
-Compliance,Conformité,,resources/domains/ManufOrderSheetLine.xml:13
-Compute cost price,Calculer coût de revient,,resources/views/BillOfMaterial.xml:32
-Configurations,Configurations,,resources/views/menu.xml:92
-Conforme,Conforme,,resources/views/ManufOrderSheet.xml:37
-Conformité,Conformité,,"resources/views/OperationOrder.xml:111
-resources/views/ManufOrderSheet.xml:24
-resources/views/ManufOrderSheet.xml:18"
-Conformités,,,resources/domains/OperationOrder.xml:63
-Consumed products,Produits consommés,,"resources/views/ManufOrder.xml:100
+resources/domains/ProdResource.xml:13"
+"Company","Société","","resources/domains/BillOfMaterial.xml:23
+resources/domains/ProductionConfig.xml:13
+resources/domains/ManufOrder.xml:21"
+"Compliance","Conformité","","resources/domains/ManufOrderSheetLine.xml:13"
+"Compute cost price","Calculer coût de revient","","resources/views/BillOfMaterial.xml:34"
+"Configurations","Configurations","","resources/views/menu.xml:92"
+"Conforme","Conforme","","resources/views/ManufOrderSheet.xml:44"
+"Conformité","Conformité","","resources/views/ManufOrderSheet.xml:18"
+"Conformités","","","resources/domains/OperationOrder.xml:63"
+"Consumed products","Produits consommés","","resources/domains/OperationOrder.xml:30
 resources/domains/ManufOrder.xml:28
-resources/views/ManufOrder.xml:105
-resources/views/ManufOrder.xml:201
-resources/views/OperationOrder.xml:102
-resources/domains/OperationOrder.xml:30"
-Cost,Coût,,resources/views/BillOfMaterial.xml:31
-Cost (W.T.),Coût (H.T.),,resources/domains/ProdResource.xml:26
-Cost price,Prix de revient,,resources/domains/BillOfMaterial.xml:22
-Cost type,Type coût,,resources/domains/ProdResource.xml:25
-Costing information,Informations sur les coûts,,"resources/views/ProdResource.xml:29
-resources/views/ProdResource.xml:66"
-Dashboard,Tableau de bord,,"resources/views/ManufacturingDashboard.xml:6
-resources/views/ManufacturingDashboard.xml:12"
-Dates,Dates,,"resources/views/OperationOrder.xml:87
-resources/views/ManufOrder.xml:78"
-Default BOM,Nomenclature par défaut,,resources/domains/Product.xml:9
-Default Machine,Machine par défaut,,resources/domains/ProdResource.xml:14
-Default Machine informations,Informations de la machine par defaut,,"resources/views/ProdResource.xml:19
-resources/views/ProdResource.xml:56"
-Default resource product,Produit ressource par défaut,,resources/domains/ProductionConfig.xml:16
-Description,Description,,"resources/domains/Machine.xml:14
-resources/views/ManufOrder.xml:114
-resources/views/ProdProcessLine.xml:19
-resources/domains/ManufOrder.xml:56
-resources/domains/ProdProcessLine.xml:16"
-Diff consume manuf order,,,resources/domains/ProdProduct.xml:23
-Diff consume operation order,,,resources/domains/ProdProduct.xml:19
-Difference,Différences,,resources/domains/ManufOrder.xml:29
-Differences,Différence,,"resources/domains/OperationOrder.xml:31
-resources/views/ManufOrder.xml:194"
-Draft,Brouillon,,resources/views/Selects.xml:10
-Draft MOs,OFs brouillons,,resources/views/ManufOrder.xml:209
-Draft Operations,Opérations brouillons,,resources/views/OperationOrder.xml:179
-Duration,Durée,,resources/domains/ProdHumanResource.xml:15
-Duration / cycle (hh:mm),Durée / Cycle (hh:mm),,resources/domains/ProdResource.xml:18
-Duration between two cycles (hh:mm),Temps entre 2 cycles (hh:mm),,resources/domains/ProdResource.xml:20
-Ee,,,resources/domains/TimesheetLine.xml:11
-Ending duration (hh:mm),Temps clôture (hh:mm),,resources/domains/ProdResource.xml:21
-Finish,Terminer,,"resources/views/ManufOrder.xml:59
+resources/views/ManufOrder.xml:101
+resources/views/OperationOrder.xml:98
+resources/views/ManufOrder.xml:199
+resources/views/ManufOrder.xml:96"
+"Cost","Coût","","resources/views/BillOfMaterial.xml:33"
+"Cost (W.T.)","Coût (H.T.)","","resources/domains/ProdResource.xml:26"
+"Cost price","Prix de revient","","resources/domains/BillOfMaterial.xml:22"
+"Cost type","Type coût","","resources/domains/ProdResource.xml:25"
+"Costing information","Informations sur les coûts","","resources/views/ProdResource.xml:30
+resources/views/ProdResource.xml:63"
+"Dashboard","Tableau de bord","","resources/views/ManufacturingDashboard.xml:12
+resources/views/ManufacturingDashboard.xml:6"
+"Dates","Dates","","resources/views/ManufOrder.xml:76
+resources/views/OperationOrder.xml:85"
+"Default BOM","Nomenclature par défaut","","resources/domains/Product.xml:9"
+"Default Machine","Machine par défaut","","resources/domains/ProdResource.xml:14"
+"Default Machine informations","Informations de la machine par defaut","","resources/views/ProdResource.xml:54
+resources/views/ProdResource.xml:21"
+"Default resource product","Produit ressource par défaut","","resources/domains/ProductionConfig.xml:16"
+"Description","Description","","resources/domains/ManufOrder.xml:56
+resources/views/ManufOrder.xml:112
+resources/domains/Machine.xml:14
+resources/domains/ProdProcessLine.xml:16
+resources/views/ProdProcessLine.xml:21"
+"Diff consume manuf order","","","resources/domains/ProdProduct.xml:23"
+"Diff consume operation order","","","resources/domains/ProdProduct.xml:19"
+"Difference","Différences","","resources/domains/ManufOrder.xml:29"
+"Differences","Différence","","resources/domains/OperationOrder.xml:31
+resources/views/ManufOrder.xml:192"
+"Draft","Brouillon","","resources/views/Selects.xml:10"
+"Draft MOs","OFs brouillons","","resources/views/ManufOrder.xml:207"
+"Draft Operations","Opérations brouillons","","resources/views/OperationOrder.xml:172"
+"Duration","Durée","","resources/domains/ProdHumanResource.xml:15"
+"Duration / cycle (hh:mm)","Durée / Cycle (hh:mm)","","resources/domains/ProdResource.xml:18"
+"Duration between two cycles (hh:mm)","Temps entre 2 cycles (hh:mm)","","resources/domains/ProdResource.xml:20"
+"Ee","","","resources/domains/TimesheetLine.xml:11"
+"Ending duration (hh:mm)","Temps clôture (hh:mm)","","resources/domains/ProdResource.xml:21"
+"Finish","Terminer","","resources/views/ManufOrder.xml:58
 resources/views/ManufOrder.xml:46
-resources/views/OperationOrder.xml:53
-resources/views/ManufOrder.xml:23
 resources/views/OperationOrder.xml:35
-resources/views/OperationOrder.xml:68"
-Finished,Terminé,,resources/views/Selects.xml:15
-Finished MOs,OFs terminés,,resources/views/ManufOrder.xml:221
-Finished Operations,Opérations terminées,,resources/views/OperationOrder.xml:191
-Finished products,Produits finis,,resources/views/ManufOrder.xml:110
-Generate waste stock move,Générer Mvt de sortie rebus,,resources/views/ManufOrder.xml:96
-Human,Homme,,resources/views/Selects.xml:20
-Human and Machine,Homme et Machine,,resources/views/Selects.xml:22
-Human resources,Ressources humaines,,"resources/views/ProdResource.xml:36
-resources/domains/ProdResource.xml:28
+resources/views/OperationOrder.xml:53
+resources/views/OperationOrder.xml:65
+resources/views/ManufOrder.xml:23"
+"Finished","Terminé","","resources/views/Selects.xml:15"
+"Finished MOs","OFs terminés","","resources/views/ManufOrder.xml:219"
+"Finished Operations","Opérations terminées","","resources/views/OperationOrder.xml:184"
+"Finished products","Produits finis","","resources/views/ManufOrder.xml:108"
+"Generate waste stock move","Générer Mvt de sortie rebus","","resources/views/ManufOrder.xml:92"
+"Human","Homme","","resources/views/Selects.xml:20"
+"Human and Machine","Homme et Machine","","resources/views/Selects.xml:22"
+"Human resources","Ressources humaines","","resources/domains/ProdResource.xml:28
+resources/views/ProdResource.xml:36
 resources/domains/OperationOrder.xml:27"
-Import,,,"resources/domains/ManufOrder.xml:10
-resources/domains/ProdProcess.xml:10
+"Import","","","resources/domains/ProdProduct.xml:10
+resources/domains/ProdHumanResource.xml:10
+resources/domains/ProdResource.xml:10
+resources/domains/ManufOrder.xml:10
+resources/domains/ProductionConfig.xml:9
+resources/domains/ProdProcessLine.xml:10
 resources/domains/ProductionOrder.xml:10
+resources/domains/ProdProcess.xml:10
 resources/domains/ProdRemains.xml:10
 resources/domains/OperationOrder.xml:10
-resources/domains/ProdProcessLine.xml:10
 resources/domains/BillOfMaterial.xml:10
-resources/domains/Machine.xml:10
-resources/domains/ProdResource.xml:10
-resources/domains/ProductionConfig.xml:9
-resources/domains/ProdProduct.xml:10
-resources/domains/ProdHumanResource.xml:10"
-In progress,En cours,,resources/views/Selects.xml:13
-Is closed,Est terminé,,resources/domains/ProductionOrder.xml:16
-Is with difference,Avec différence ?,,resources/domains/OperationOrder.xml:50
-Label,Libellé,,"resources/domains/ProdProcessLine.xml:14
-resources/domains/ProdResource.xml:12
-resources/domains/BillOfMaterial.xml:21
-resources/domains/ProdProcess.xml:13"
-Last production price,Dernier prix de production,,resources/domains/Product.xml:8
-Late Planned MOs,OFs en retard,,resources/views/ManufOrder.xml:230
-Late Planned Operations,Opérations plannifiées en retard,,resources/views/OperationOrder.xml:200
-Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord.,Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord.,,resources/views/ManufOrderSheet.xml:31
-Location,Emplacement,,resources/domains/Machine.xml:15
-MO,N° OF,,resources/domains/ManufOrder.xml:23
-MOs Finished late,OFs terminés en retard,,resources/views/ManufOrder.xml:233
-MOs In Progress,OFs en cours,,resources/views/ManufOrder.xml:215
-MOs In Standby,OFs en pause,,resources/views/ManufOrder.xml:218
-MOs to invoice,OFs à facturer,,resources/views/ManufOrder.xml:227
-Machine,Machine,,"resources/views/Machine.xml:14
-resources/domains/OperationOrder.xml:25
-resources/views/ProdResource.xml:51
-resources/views/Selects.xml:21"
-Machines,Machines,,"resources/views/menu.xml:107
-resources/views/ProdResource.xml:45
-resources/views/Machine.xml:6
-resources/views/ProdResource.xml:39
+resources/domains/Machine.xml:10"
+"In progress","En cours","","resources/views/Selects.xml:13"
+"Is closed","Est terminé","","resources/domains/ProductionOrder.xml:16"
+"Is with difference","Avec différence ?","","resources/domains/OperationOrder.xml:50"
+"Label","Libellé","","resources/domains/ProdResource.xml:12
+resources/domains/ProdProcess.xml:13
+resources/domains/ProdProcessLine.xml:14
+resources/domains/BillOfMaterial.xml:21"
+"Last production price","Dernier prix de production","","resources/domains/Product.xml:8"
+"Late Planned MOs","OFs en retard","","resources/views/ManufOrder.xml:228"
+"Late Planned Operations","Opérations plannifiées en retard","","resources/views/OperationOrder.xml:193"
+"Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord.","Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord.","","resources/views/ManufOrderSheet.xml:20"
+"Location","Emplacement","","resources/domains/Machine.xml:15"
+"MO","N° OF","","resources/domains/ManufOrder.xml:23"
+"MOs Finished late","OFs terminés en retard","","resources/views/ManufOrder.xml:231"
+"MOs In Progress","OFs en cours","","resources/views/ManufOrder.xml:213"
+"MOs In Standby","OFs en pause","","resources/views/ManufOrder.xml:216"
+"MOs to invoice","OFs à facturer","","resources/views/ManufOrder.xml:225"
+"Machine","Machine","","resources/views/Machine.xml:14
+resources/views/ProdResource.xml:47
+resources/views/Selects.xml:21
+resources/domains/OperationOrder.xml:25"
+"Machines","Machines","","resources/views/menu.xml:107
+resources/views/ProdResource.xml:37
+resources/views/ProdResource.xml:41
+resources/domains/ProdResource.xml:30
 resources/views/menu.xml:104
-resources/domains/ProdResource.xml:30"
-Manage consumed products on operations?,Gérer la consommation par opération,,resources/domains/ManufOrder.xml:37
-ManufOrder.billOfMaterial,Nomenclature,,java/com/axelor/apps/production/report/ITranslation.java:49
-ManufOrder.effective,Réel,,java/com/axelor/apps/production/report/ITranslation.java:53
-ManufOrder.endDate,Date de fin,,java/com/axelor/apps/production/report/ITranslation.java:58
-ManufOrder.forecast,Prévu,,java/com/axelor/apps/production/report/ITranslation.java:52
-ManufOrder.machine,Machine,,java/com/axelor/apps/production/report/ITranslation.java:55
-ManufOrder.num,N°,,java/com/axelor/apps/production/report/ITranslation.java:54
-ManufOrder.operation,Opération,,java/com/axelor/apps/production/report/ITranslation.java:56
-ManufOrder.operations,Opérations,,java/com/axelor/apps/production/report/ITranslation.java:51
-ManufOrder.origin,Origine,,java/com/axelor/apps/production/report/ITranslation.java:48
-ManufOrder.plannedStartDate,Date début plannifiée,,java/com/axelor/apps/production/report/ITranslation.java:45
-ManufOrder.product,Produit,,java/com/axelor/apps/production/report/ITranslation.java:46
-ManufOrder.productCode,Code produit,,java/com/axelor/apps/production/report/ITranslation.java:61
-ManufOrder.productName,Nom,,java/com/axelor/apps/production/report/ITranslation.java:62
-ManufOrder.productionProcess,Gamme,,java/com/axelor/apps/production/report/ITranslation.java:50
-ManufOrder.productsToPrepare,Produits à préparer (Consommer),,java/com/axelor/apps/production/report/ITranslation.java:60
-ManufOrder.quantity,Quantité,,java/com/axelor/apps/production/report/ITranslation.java:47
-ManufOrder.startDate,Date de début,,java/com/axelor/apps/production/report/ITranslation.java:57
-ManufOrder.status,Etat,,java/com/axelor/apps/production/report/ITranslation.java:59
-ManufOrder.title,Ordre de fabrication,,java/com/axelor/apps/production/report/ITranslation.java:44
-ManufOrder.trackingNumber,Numéro de lot,,java/com/axelor/apps/production/report/ITranslation.java:63
-Manufacturing,Production,,"resources/views/menu.xml:135
+resources/views/Machine.xml:6"
+"Manage consumed products on operations?","Gérer la consommation par opération","","resources/domains/ManufOrder.xml:37"
+"ManufOrder.billOfMaterial","Nomenclature","","java/com/axelor/apps/production/report/ITranslation.java:49"
+"ManufOrder.effective","Réel","","java/com/axelor/apps/production/report/ITranslation.java:53"
+"ManufOrder.endDate","Date de fin","","java/com/axelor/apps/production/report/ITranslation.java:58"
+"ManufOrder.forecast","Prévu","","java/com/axelor/apps/production/report/ITranslation.java:52"
+"ManufOrder.machine","Machine","","java/com/axelor/apps/production/report/ITranslation.java:55"
+"ManufOrder.num","N°","","java/com/axelor/apps/production/report/ITranslation.java:54"
+"ManufOrder.operation","Opération","","java/com/axelor/apps/production/report/ITranslation.java:56"
+"ManufOrder.operations","Opérations","","java/com/axelor/apps/production/report/ITranslation.java:51"
+"ManufOrder.origin","Origine","","java/com/axelor/apps/production/report/ITranslation.java:48"
+"ManufOrder.plannedStartDate","Date début plannifiée","","java/com/axelor/apps/production/report/ITranslation.java:45"
+"ManufOrder.product","Produit","","java/com/axelor/apps/production/report/ITranslation.java:46"
+"ManufOrder.productCode","Code produit","","java/com/axelor/apps/production/report/ITranslation.java:61"
+"ManufOrder.productName","Nom","","java/com/axelor/apps/production/report/ITranslation.java:62"
+"ManufOrder.productionProcess","Gamme","","java/com/axelor/apps/production/report/ITranslation.java:50"
+"ManufOrder.productsToPrepare","Produits à préparer (Consommer)","","java/com/axelor/apps/production/report/ITranslation.java:60"
+"ManufOrder.quantity","Quantité","","java/com/axelor/apps/production/report/ITranslation.java:47"
+"ManufOrder.startDate","Date de début","","java/com/axelor/apps/production/report/ITranslation.java:57"
+"ManufOrder.status","Etat","","java/com/axelor/apps/production/report/ITranslation.java:59"
+"ManufOrder.title","Ordre de fabrication","","java/com/axelor/apps/production/report/ITranslation.java:44"
+"ManufOrder.trackingNumber","Numéro de lot","","java/com/axelor/apps/production/report/ITranslation.java:63"
+"ManufOrderSheetLine","","","resources/views/ManufOrderSheet.xml:24
+resources/views/ManufOrderSheet.xml:34"
+"Manufacturing","Production","","resources/views/menu.xml:135
 resources/views/menu.xml:8"
-Manufacturing Dashboard,Tableau de bord OF,,"resources/views/menu.xml:125
+"Manufacturing Dashboard","Tableau de bord OF","","resources/views/menu.xml:141
 resources/views/menu.xml:128
-resources/views/menu.xml:141"
-Manufacturing Db,Db production,,resources/views/menu.xml:138
-Manufacturing order,Ordre de fabrication,,"resources/domains/StockMoveLine.xml:10
-resources/views/ManufOrderSheet.xml:11
+resources/views/menu.xml:125"
+"Manufacturing Db","Db production","","resources/views/menu.xml:138"
+"Manufacturing order","Ordre de fabrication","","resources/views/ManufOrderSheet.xml:11
+resources/views/ManufOrder.xml:51
 resources/domains/OperationOrder.xml:20
 resources/domains/StockMoveLine.xml:11
-resources/views/ManufOrder.xml:52"
-Manufacturing order filters,Filtre sur les OFs,,resources/views/ManufOrder.xml:208
-Manufacturing orders,Ordres de fabrication,,"resources/views/menu.xml:44
-resources/views/menu.xml:41
-resources/views/ManufOrderSheet.xml:6
+resources/domains/StockMoveLine.xml:10"
+"Manufacturing order filters","Filtre sur les OFs","","resources/views/ManufOrder.xml:206"
+"Manufacturing orders","Ordres de fabrication","","resources/views/menu.xml:44
 resources/views/ManufOrder.xml:6
 resources/views/ManufOrder.xml:28
-resources/domains/ProductionOrder.xml:15"
-Manufacturing processes,Gammes,,"resources/views/menu.xml:25
-resources/views/menu.xml:22"
-Max. capacity / cycle,Capacité Max. / Cycle,,resources/domains/ProdResource.xml:17
-Moves In/Out,Entrées/Sorties,,resources/views/ManufOrder.xml:91
-Name,Nom,,"resources/domains/Machine.xml:12
+resources/views/menu.xml:41
+resources/domains/ProductionOrder.xml:15
+resources/views/ManufOrderSheet.xml:6"
+"Manufacturing processes","Gammes","","resources/views/menu.xml:22
+resources/views/menu.xml:25"
+"Max. capacity / cycle","Capacité Max. / Cycle","","resources/domains/ProdResource.xml:17"
+"Moves In/Out","Entrées/Sorties","","resources/views/ManufOrder.xml:87"
+"Name","Nom","","resources/domains/Machine.xml:12
 resources/domains/OperationOrder.xml:14
-resources/domains/ProductionOrder.xml:12
-resources/domains/ProductionConfig.xml:10"
-Non conforme,Non conforme,,resources/views/ManufOrderSheet.xml:38
-None,Aucun,,resources/views/Selects.xml:31
-Not manage stock,Ne pas gérer le stock,,resources/domains/BillOfMaterial.xml:24
-"Observations (état des filetages, aspect général, état des surfaces d'appuis...) :","Observations (état des filetages, aspect général, état des surfaces d'appuis...) :",,"resources/views/ManufOrderSheet.xml:13
-resources/domains/OperationOrder.xml:62"
-Operation,Opération,,"resources/domains/OperationOrder.xml:35
-resources/views/OperationOrder.xml:63"
-Operation name,Intitulé Opération,,resources/domains/OperationOrder.xml:16
-Operation order,Ordre de fabrication,,"resources/domains/ManufOrderSheetLine.xml:10
+resources/domains/ProductionConfig.xml:10
+resources/domains/ProductionOrder.xml:12"
+"Non conforme","Non conforme","","resources/views/ManufOrderSheet.xml:45"
+"None","Aucun","","resources/views/Selects.xml:31"
+"Not manage stock","Ne pas gérer le stock","","resources/domains/BillOfMaterial.xml:24"
+"Observations (état des filetages, aspect général, état des surfaces d'appuis...) :","Observations (état des filetages, aspect général, état des surfaces d'appuis...) :","","resources/domains/OperationOrder.xml:62
+resources/views/ManufOrderSheet.xml:15"
+"Operation","Opération","","resources/domains/OperationOrder.xml:35
+resources/views/OperationOrder.xml:60"
+"Operation name","Intitulé Opération","","resources/domains/OperationOrder.xml:16"
+"Operation order","Ordre de fabrication","","resources/domains/StockMoveLine.xml:13
 resources/domains/ProdResource.xml:33
-resources/domains/ProdHumanResource.xml:17
-resources/domains/StockMoveLine.xml:13"
-Operation order filters,Filtre des opérations,,resources/views/OperationOrder.xml:178
-Operation orders,Opération de fabrication,,"resources/views/menu.xml:55
-resources/views/Business.xml:11
+resources/domains/ManufOrderSheetLine.xml:10
+resources/domains/ProdHumanResource.xml:17"
+"Operation order filters","Filtre des opérations","","resources/views/OperationOrder.xml:171"
+"Operation orders","Opération de fabrication","","resources/views/Business.xml:17
 resources/domains/ManufOrder.xml:16
-resources/views/ManufOrder.xml:75
-resources/views/ProductionOrder.xml:55"
-OperationOrder.associatedBOM,Opération ,,java/com/axelor/apps/production/report/ITranslation.java:25
-OperationOrder.cycleDuration,Nomenclature associée,,java/com/axelor/apps/production/report/ITranslation.java:33
-OperationOrder.dates,Dates,,java/com/axelor/apps/production/report/ITranslation.java:26
-OperationOrder.delayBtwCycle,Délai entre deux cycle,,java/com/axelor/apps/production/report/ITranslation.java:36
-OperationOrder.machine,Machine,,java/com/axelor/apps/production/report/ITranslation.java:32
-OperationOrder.num,N°,,java/com/axelor/apps/production/report/ITranslation.java:42
-OperationOrder.operationDetails,Détails de l'opération,,java/com/axelor/apps/production/report/ITranslation.java:37
-OperationOrder.operationName,Nom de l'opération,,java/com/axelor/apps/production/report/ITranslation.java:23
-OperationOrder.operationRequirement,Pré-requis opérationnel,,java/com/axelor/apps/production/report/ITranslation.java:31
-OperationOrder.plannedEndDate,Date de début réelle,,java/com/axelor/apps/production/report/ITranslation.java:28
-OperationOrder.plannedStartDate,Date de début plannifié,,java/com/axelor/apps/production/report/ITranslation.java:27
-OperationOrder.productName,Nom du produit,,java/com/axelor/apps/production/report/ITranslation.java:39
-OperationOrder.productToPrepare,Produit à préparer (Consommer),,java/com/axelor/apps/production/report/ITranslation.java:38
-OperationOrder.qty,Quantité,,java/com/axelor/apps/production/report/ITranslation.java:40
-OperationOrder.realEndDate,Date de fin réelle,,java/com/axelor/apps/production/report/ITranslation.java:30
-OperationOrder.realStartDate,Date de début réelle,,java/com/axelor/apps/production/report/ITranslation.java:29
-OperationOrder.relatedToProduct,Produit concerné,,java/com/axelor/apps/production/report/ITranslation.java:24
-OperationOrder.startTime,Temps de démarrage,,java/com/axelor/apps/production/report/ITranslation.java:34
-OperationOrder.stopTime,Temps d'arrêt,,java/com/axelor/apps/production/report/ITranslation.java:35
-OperationOrder.title,Opération de fabrication,,java/com/axelor/apps/production/report/ITranslation.java:22
-OperationOrder.trackingNumber,Numéro de lot,,java/com/axelor/apps/production/report/ITranslation.java:41
-Operations,Opérations,,"resources/views/OperationOrder.xml:19
-resources/domains/ProdProcess.xml:12
-resources/views/OperationOrder.xml:41"
-Operations Finished late,Opérations terminées en retard,,resources/views/OperationOrder.xml:203
-Operations In Progress,Opérations en cours,,resources/views/OperationOrder.xml:185
-Operations In Standby,Opérations en pause,,resources/views/OperationOrder.xml:188
-Operations orders,Operations de production,,resources/views/menu.xml:52
-Operations to invoice,Opérations à facturer,,resources/views/OperationOrder.xml:197
-Operations with difference,Opérations avec différences de consommation,,resources/views/OperationOrder.xml:206
-Parent BOM,Nomenclature parente,,resources/domains/BillOfMaterial.xml:19
-Part,Composant,,resources/domains/ManufOrderSheetLine.xml:11
-Pause,Pause,,"resources/views/ManufOrder.xml:57
+resources/views/menu.xml:55
+resources/views/ProductionOrder.xml:65"
+"OperationOrder.associatedBOM","Opération ","","java/com/axelor/apps/production/report/ITranslation.java:25"
+"OperationOrder.cycleDuration","Nomenclature associée","","java/com/axelor/apps/production/report/ITranslation.java:33"
+"OperationOrder.dates","Dates","","java/com/axelor/apps/production/report/ITranslation.java:26"
+"OperationOrder.delayBtwCycle","Délai entre deux cycle","","java/com/axelor/apps/production/report/ITranslation.java:36"
+"OperationOrder.machine","Machine","","java/com/axelor/apps/production/report/ITranslation.java:32"
+"OperationOrder.num","N°","","java/com/axelor/apps/production/report/ITranslation.java:42"
+"OperationOrder.operationDetails","Détails de l'opération","","java/com/axelor/apps/production/report/ITranslation.java:37"
+"OperationOrder.operationName","Nom de l'opération","","java/com/axelor/apps/production/report/ITranslation.java:23"
+"OperationOrder.operationRequirement","Pré-requis opérationnel","","java/com/axelor/apps/production/report/ITranslation.java:31"
+"OperationOrder.plannedEndDate","Date de début réelle","","java/com/axelor/apps/production/report/ITranslation.java:28"
+"OperationOrder.plannedStartDate","Date de début plannifié","","java/com/axelor/apps/production/report/ITranslation.java:27"
+"OperationOrder.productName","Nom du produit","","java/com/axelor/apps/production/report/ITranslation.java:39"
+"OperationOrder.productToPrepare","Produit à préparer (Consommer)","","java/com/axelor/apps/production/report/ITranslation.java:38"
+"OperationOrder.qty","Quantité","","java/com/axelor/apps/production/report/ITranslation.java:40"
+"OperationOrder.realEndDate","Date de fin réelle","","java/com/axelor/apps/production/report/ITranslation.java:30"
+"OperationOrder.realStartDate","Date de début réelle","","java/com/axelor/apps/production/report/ITranslation.java:29"
+"OperationOrder.relatedToProduct","Produit concerné","","java/com/axelor/apps/production/report/ITranslation.java:24"
+"OperationOrder.startTime","Temps de démarrage","","java/com/axelor/apps/production/report/ITranslation.java:34"
+"OperationOrder.stopTime","Temps d'arrêt","","java/com/axelor/apps/production/report/ITranslation.java:35"
+"OperationOrder.title","Opération de fabrication","","java/com/axelor/apps/production/report/ITranslation.java:22"
+"OperationOrder.trackingNumber","Numéro de lot","","java/com/axelor/apps/production/report/ITranslation.java:41"
+"Operations","Opérations","","resources/views/OperationOrder.xml:41
+resources/views/OperationOrder.xml:19
+resources/domains/ProdProcess.xml:12"
+"Operations Finished late","Opérations terminées en retard","","resources/views/OperationOrder.xml:196"
+"Operations In Progress","Opérations en cours","","resources/views/OperationOrder.xml:178"
+"Operations In Standby","Opérations en pause","","resources/views/OperationOrder.xml:181"
+"Operations orders","Operations de production","","resources/views/menu.xml:52"
+"Operations to invoice","Opérations à facturer","","resources/views/OperationOrder.xml:190"
+"Operations with difference","Opérations avec différences de consommation","","resources/views/OperationOrder.xml:199"
+"Parent BOM","Nomenclature parente","","resources/domains/BillOfMaterial.xml:19"
+"Part","Composant","","resources/domains/ManufOrderSheetLine.xml:11"
+"Pause","Pause","","resources/views/ManufOrder.xml:22
 resources/views/ManufOrder.xml:45
-resources/views/OperationOrder.xml:52
-resources/views/ManufOrder.xml:22
-resources/views/OperationOrder.xml:69
-resources/views/OperationOrder.xml:34"
-Per Cycle,Par cycle,,resources/views/Selects.xml:27
-Per hour,Par heure,,resources/views/Selects.xml:26
-Picture,Image,,resources/domains/OperationOrder.xml:61
-Plan,Planifier,,"resources/views/OperationOrder.xml:32
-resources/views/OperationOrder.xml:65
-resources/views/ManufOrder.xml:55
-resources/views/ManufOrder.xml:43
+resources/views/ManufOrder.xml:56
+resources/views/OperationOrder.xml:34
+resources/views/OperationOrder.xml:66
+resources/views/OperationOrder.xml:52"
+"Per Cycle","Par cycle","","resources/views/Selects.xml:27"
+"Per hour","Par heure","","resources/views/Selects.xml:26"
+"Picture","Image","","resources/domains/OperationOrder.xml:61"
+"Plan","Planifier","","resources/views/OperationOrder.xml:32
 resources/views/OperationOrder.xml:50
-resources/views/ManufOrder.xml:20"
-Planned,Planifié,,resources/views/Selects.xml:12
-Planned MOs,OFs plannifiés,,resources/views/ManufOrder.xml:212
-Planned Operations,Opérations plannifiées,,resources/views/OperationOrder.xml:182
-Planned dates,Dates prévues,,"resources/views/ManufOrder.xml:80
-resources/views/OperationOrder.xml:89"
-Planned duration,Durée planifiée,,resources/domains/OperationOrder.xml:47
-Planned end date,Date de fin,,"resources/domains/ManufOrder.xml:46
+resources/views/OperationOrder.xml:62
+resources/views/ManufOrder.xml:20
+resources/views/ManufOrder.xml:54
+resources/views/ManufOrder.xml:43"
+"Planned","Planifié","","resources/views/Selects.xml:12"
+"Planned MOs","OFs plannifiés","","resources/views/ManufOrder.xml:210"
+"Planned Operations","Opérations plannifiées","","resources/views/OperationOrder.xml:175"
+"Planned dates","Dates prévues","","resources/views/OperationOrder.xml:86
+resources/views/ManufOrder.xml:77"
+"Planned duration","Durée planifiée","","resources/domains/OperationOrder.xml:47"
+"Planned end date","Date de fin","","resources/domains/ManufOrder.xml:46
 resources/domains/OperationOrder.xml:38"
-Planned operations,Opérations planifiées,,"resources/views/OperationOrder.xml:8
-resources/views/menu.xml:66
-resources/views/menu.xml:63"
-Planned start date,Date de début prévisionnelle,,"resources/domains/ManufOrder.xml:45
-resources/domains/OperationOrder.xml:37"
-Print,Imprimer,,"resources/views/OperationOrder.xml:55
-resources/views/ManufOrder.xml:61
+"Planned operations","Opérations planifiées","","resources/views/menu.xml:66
+resources/views/menu.xml:63
+resources/views/OperationOrder.xml:8"
+"Planned start date","Date de début prévisionnelle","","resources/domains/OperationOrder.xml:37
+resources/domains/ManufOrder.xml:45"
+"Print","Imprimer","","resources/views/ManufOrder.xml:48
 resources/views/OperationOrder.xml:21
-resources/views/OperationOrder.xml:71
-resources/views/ManufOrder.xml:48
-resources/views/ManufOrder.xml:25
+resources/views/OperationOrder.xml:68
 resources/views/ManufOrder.xml:8
-resources/views/OperationOrder.xml:37
-resources/views/ManufOrder.xml:30"
-Priority,Priorité,,"resources/domains/ProdProcessLine.xml:15
-resources/domains/BillOfMaterial.xml:14
+resources/views/ManufOrder.xml:30
+resources/views/ManufOrder.xml:60
+resources/views/OperationOrder.xml:55
+resources/views/ManufOrder.xml:25
+resources/views/OperationOrder.xml:37"
+"Priority","Priorité","","resources/domains/BillOfMaterial.xml:14
+resources/domains/ProdProcessLine.xml:15
 resources/domains/OperationOrder.xml:12
 resources/domains/ManufOrder.xml:24"
-Prod. Human resource,Ressources humaines,,resources/views/ProdHumanResource.xml:12
-Prod. Human resources,Ressources humaines,,resources/views/ProdHumanResource.xml:6
-Produced products,Produits fabriqués,,resources/domains/ManufOrder.xml:33
-Product,Produit,,"resources/domains/ManufOrder.xml:40
-resources/domains/BillOfMaterial.xml:12
-resources/domains/ProdRemains.xml:13
-resources/views/ProductionOrder.xml:21
-resources/views/ProdProduct.xml:13
-resources/domains/ProdResource.xml:23
+"Prod. Human resource","Ressources humaines","","resources/views/ProdHumanResource.xml:12"
+"Prod. Human resources","Ressources humaines","","resources/views/ProdHumanResource.xml:6"
+"Produced products","Produits fabriqués","","resources/domains/ManufOrder.xml:33"
+"Product","Produit","","resources/views/ProductionOrder.xml:23
 resources/views/ProductionOrderWizard.xml:10
-resources/domains/ProdProduct.xml:12"
-Production configuration,Configuration de la production,,resources/views/ProductionConfig.xml:12
-Production configurations,Configs. Production,,"resources/views/ProductionConfig.xml:6
+resources/domains/ProdResource.xml:23
+resources/views/ProdProduct.xml:13
+resources/domains/ProdProduct.xml:12
+resources/domains/ProdRemains.xml:13
+resources/domains/BillOfMaterial.xml:12
+resources/domains/ManufOrder.xml:40"
+"Production configuration","Configuration de la production","","resources/views/ProductionConfig.xml:12"
+"Production configurations","Configs. Production","","resources/views/menu.xml:119
 resources/views/menu.xml:116
-resources/views/menu.xml:119"
-Production location,Emplacement de production,,resources/domains/ProdProcess.xml:16
-Production order,Ordre de production,,"resources/domains/ManufOrder.xml:14
-resources/views/ProductionOrder.xml:13"
-Production order filters,Filtres des ordres de productions,,resources/views/ProductionOrder.xml:62
-Production order wizard,Assistant Ordre Production,,resources/views/ProductionOrderWizard.xml:8
-Production orders,Ordres de production,,resources/views/ProductionOrder.xml:6
-Production orders closed,Ordres de productions terminés,,resources/views/ProductionOrder.xml:66
-Production orders to invoice,Ordres de productions à facturer,,resources/views/ProductionOrder.xml:63
-Production process,Gamme,,"resources/domains/ManufOrder.xml:43
-resources/views/ProdProcess.xml:6
-resources/views/ProdProcessLine.xml:14
-resources/domains/ProdProcessLine.xml:12
-resources/views/ProdProcessLine.xml:6
+resources/views/ProductionConfig.xml:6"
+"Production location","Emplacement de production","","resources/domains/ProdProcess.xml:16"
+"Production order","Ordre de production","","resources/views/ProductionOrder.xml:13
+resources/domains/ManufOrder.xml:14"
+"Production order filters","Filtres des ordres de productions","","resources/views/ProductionOrder.xml:72"
+"Production order wizard","Assistant Ordre Production","","resources/views/ProductionOrderWizard.xml:8"
+"Production orders","Ordres de production","","resources/views/ProductionOrder.xml:6"
+"Production orders closed","Ordres de productions terminés","","resources/views/ProductionOrder.xml:76"
+"Production orders to invoice","Ordres de productions à facturer","","resources/views/ProductionOrder.xml:73"
+"Production process","Gamme","","resources/domains/ProdProcessLine.xml:12
 resources/views/ProdProcess.xml:14
+resources/views/ProdProcessLine.xml:14
+resources/views/ProdProcess.xml:6
+resources/domains/ManufOrder.xml:43
+resources/views/ProdProcessLine.xml:6
 resources/domains/BillOfMaterial.xml:17"
-Production remains,Restes,,"resources/views/ProdRemains.xml:6
+"Production remains","Restes","","resources/domains/BillOfMaterial.xml:20
 resources/views/ProdRemains.xml:12
-resources/domains/BillOfMaterial.xml:20"
-Production virtual location,Emplacement virtuel de production,,resources/domains/ProductionConfig.xml:15
-Production waste,Rebus de production,,resources/views/ManufOrder.xml:95
-Productions orders,Ordres de Production,,"resources/views/menu.xml:34
+resources/views/ProdRemains.xml:6"
+"Production virtual location","Emplacement virtuel de production","","resources/domains/ProductionConfig.xml:15"
+"Production waste","Rebus de production","","resources/views/ManufOrder.xml:91"
+"Productions orders","Ordres de Production","","resources/views/menu.xml:34
 resources/views/menu.xml:31"
-Products,Produits,,resources/views/ProdProduct.xml:6
-Products to consume,Produits à consommer,,"resources/domains/OperationOrder.xml:29
+"Products","Produits","","resources/views/ProdProduct.xml:6"
+"Products to consume","Produits à consommer","","resources/domains/ManufOrder.xml:27
 resources/domains/ProdProcessLine.xml:18
-resources/domains/ManufOrder.xml:27"
-Products to produce,Produits à produire,,resources/domains/ManufOrder.xml:32
-Profile,Profil,,resources/domains/ProdHumanResource.xml:13
-Qty,Qté,,"resources/domains/ManufOrder.xml:18
+resources/domains/OperationOrder.xml:29"
+"Products to produce","Produits à produire","","resources/domains/ManufOrder.xml:32"
+"Profile","Profil","","resources/domains/ProdHumanResource.xml:13"
+"Qty","Qté","","resources/domains/ManufOrder.xml:18
+resources/domains/ProdRemains.xml:14
 resources/domains/BillOfMaterial.xml:13
-resources/domains/ProdProduct.xml:13
-resources/domains/ProdRemains.xml:14"
-Quantity,Quantité,,"resources/views/ProductionOrder.xml:25
+resources/domains/ProdProduct.xml:13"
+"Quantity","Quantité","","resources/views/ProductionOrder.xml:25
 resources/views/ProductionOrderWizard.xml:11"
-Raw material,Matière première,,resources/domains/BillOfMaterial.xml:15
-Real dates,Dates réelles,,"resources/views/OperationOrder.xml:94
-resources/views/ManufOrder.xml:85"
-Real duration,Durée réelle,,resources/domains/OperationOrder.xml:48
-Real end date,Date réelle de fin,,"resources/domains/ManufOrder.xml:49
-resources/domains/OperationOrder.xml:41"
-Real operations,Opérations réelles,,"resources/views/menu.xml:76
-resources/views/OperationOrder.xml:14
-resources/views/menu.xml:73"
-Real start date,Date réelle de début,,"resources/domains/OperationOrder.xml:40
+"Raw material","Matière première","","resources/domains/BillOfMaterial.xml:15"
+"Real dates","Dates réelles","","resources/views/OperationOrder.xml:90
+resources/views/ManufOrder.xml:81"
+"Real duration","Durée réelle","","resources/domains/OperationOrder.xml:48"
+"Real end date","Date réelle de fin","","resources/domains/OperationOrder.xml:41
+resources/domains/ManufOrder.xml:49"
+"Real operations","Opérations réelles","","resources/views/menu.xml:73
+resources/views/menu.xml:76
+resources/views/OperationOrder.xml:14"
+"Real start date","Date réelle de début","","resources/domains/OperationOrder.xml:40
 resources/domains/ManufOrder.xml:48"
-Remains,Restes,,"resources/views/BillOfMaterial.xml:65
-resources/views/BillOfMaterial.xml:28"
-Resource,Ressource,,"resources/domains/OperationOrder.xml:24
+"Remains","Restes","","resources/views/BillOfMaterial.xml:27
+resources/views/BillOfMaterial.xml:67"
+"Resource","Ressource","","resources/domains/ProdProcessLine.xml:13
+resources/views/ProdResource.xml:13
 resources/domains/ProdResource.xml:31
-resources/domains/ProdHumanResource.xml:12
-resources/domains/ProdProcessLine.xml:13
-resources/views/ProdResource.xml:13"
-Resource type,Type de ressource,,resources/domains/ProdResource.xml:15
-Resources,Les Ressources,,"resources/views/menu.xml:98
-resources/views/ProdResource.xml:6
-resources/views/menu.xml:95"
-Resume,Reprendre,,"resources/views/ManufOrder.xml:58
-resources/views/OperationOrder.xml:70"
-Serial Nbr,N° Série,,resources/domains/Machine.xml:13
-Setup duration (min),Tps mise en place (min),,resources/domains/Machine.xml:17
-Standby,En pause,,resources/views/Selects.xml:14
-Start,Démarrer,,"resources/views/OperationOrder.xml:33
-resources/views/OperationOrder.xml:66
-resources/views/ManufOrder.xml:56
-resources/views/ManufOrder.xml:44
-resources/views/OperationOrder.xml:51
-resources/views/ManufOrder.xml:21"
-Starting duration (hh:mm),Tps démarrage (hh:mm),,resources/domains/ProdResource.xml:19
-Starting duration (min),Tps démarrage (min),,resources/domains/Machine.xml:16
-Status,Statut,,"resources/domains/ManufOrder.xml:58
-resources/domains/OperationOrder.xml:33"
-Stock move in,Mouvement entrée,,"resources/domains/OperationOrder.xml:43
+resources/domains/OperationOrder.xml:24
+resources/domains/ProdHumanResource.xml:12"
+"Resource type","Type de ressource","","resources/domains/ProdResource.xml:15"
+"Resources","Les Ressources","","resources/views/menu.xml:95
+resources/views/menu.xml:98
+resources/views/ProdResource.xml:6"
+"Resume","Reprendre","","resources/views/OperationOrder.xml:67
+resources/views/ManufOrder.xml:57"
+"Serial Nbr","N° Série","","resources/domains/Machine.xml:13"
+"Setup duration (min)","Tps mise en place (min)","","resources/domains/Machine.xml:17"
+"Standby","En pause","","resources/views/Selects.xml:14"
+"Start","Démarrer","","resources/views/OperationOrder.xml:51
+resources/views/OperationOrder.xml:33
+resources/views/ManufOrder.xml:21
+resources/views/OperationOrder.xml:63
+resources/views/ManufOrder.xml:55
+resources/views/ManufOrder.xml:44"
+"Starting duration (hh:mm)","Tps démarrage (hh:mm)","","resources/domains/ProdResource.xml:19"
+"Starting duration (min)","Tps démarrage (min)","","resources/domains/Machine.xml:16"
+"Status","Statut","","resources/domains/OperationOrder.xml:33
+resources/domains/ManufOrder.xml:58"
+"Stock move in","Mouvement entrée","","resources/domains/OperationOrder.xml:43
 resources/domains/ManufOrder.xml:51"
-Stock move out,Mouvement sortie rebus,,"resources/domains/ManufOrder.xml:54
-resources/domains/ManufOrder.xml:52"
-Stock moves,Mouvements de stock,,"resources/views/OperationOrder.xml:99
-resources/views/ManufOrder.xml:90"
-Timesheet lines,Lignes de Feuille de Tps,,resources/views/OperationOrder.xml:107
-To consume manuf order,,,resources/domains/ProdProduct.xml:22
-To consume operation order,,,resources/domains/ProdProduct.xml:18
-To consume prod process line,,,resources/domains/ProdProduct.xml:29
-To consume products,Produits à consommer,,"resources/views/ManufOrder.xml:187
-resources/views/ProdProcessLine.xml:22"
-To invoice ?,A facturer ? ,,"resources/domains/OperationOrder.xml:18
-resources/domains/ProductionOrder.xml:13
+"Stock move out","Mouvement sortie rebus","","resources/domains/ManufOrder.xml:52
+resources/domains/ManufOrder.xml:54"
+"Stock moves","Mouvements de stock","","resources/views/ManufOrder.xml:86
+resources/views/OperationOrder.xml:95"
+"Timesheet lines","Lignes de Feuille de Tps","","resources/views/OperationOrder.xml:103"
+"To consume manuf order","","","resources/domains/ProdProduct.xml:22"
+"To consume operation order","","","resources/domains/ProdProduct.xml:18"
+"To consume prod process line","","","resources/domains/ProdProduct.xml:29"
+"To consume products","Produits à consommer","","resources/views/ProdProcessLine.xml:24
+resources/views/ManufOrder.xml:185"
+"To invoice ?","A facturer ? ","","resources/domains/ProductionOrder.xml:13
+resources/domains/OperationOrder.xml:18
 resources/domains/ManufOrder.xml:12"
-To produce manuf order,,,resources/domains/ProdProduct.xml:25
-Unit,Unité,,"resources/domains/BillOfMaterial.xml:16
+"To produce manuf order","","","resources/domains/ProdProduct.xml:25"
+"Unit","Unité","","resources/domains/BillOfMaterial.xml:16
 resources/domains/ProdProduct.xml:14
 resources/domains/ProdRemains.xml:15"
-Validate,Valider,,resources/views/ProductionOrderWizard.xml:15
-Version,,,resources/domains/Product.xml:11
-Waste,Rebus,,resources/domains/ManufOrder.xml:34
-Waste manuf order,,,resources/domains/ProdProduct.xml:26
-Yes (Fixed),Oui (Fixe),,resources/views/Selects.xml:32
-Yes (Real),Oui (Réel),,resources/views/Selects.xml:33
-update product cost price,Mettre à jour le coût sur le produit,,resources/views/BillOfMaterial.xml:34
-Ø1,,,resources/domains/ManufOrderSheetLine.xml:12
+"Validate","Valider","","resources/views/ProductionOrderWizard.xml:15"
+"Version","","","resources/domains/Product.xml:11"
+"Waste","Rebus","","resources/domains/ManufOrder.xml:34"
+"Waste manuf order","","","resources/domains/ProdProduct.xml:26"
+"Yes (Fixed)","Oui (Fixe)","","resources/views/Selects.xml:32"
+"Yes (Real)","Oui (Réel)","","resources/views/Selects.xml:33"
+"update product cost price","Mettre à jour le coût sur le produit","","resources/views/BillOfMaterial.xml:36"
+"Ø1","","","resources/domains/ManufOrderSheetLine.xml:12"
