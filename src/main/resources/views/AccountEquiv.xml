@@ -9,7 +9,7 @@
     </grid>
 
     <form name="account-equiv-form" title="Account equivalence" model="com.axelor.apps.account.db.AccountEquiv" cols="4">
-        <panel title="Overview">
+        <panel>
         	<field name="fromAccount"/>
        		<field name="toAccount"/>
         </panel>

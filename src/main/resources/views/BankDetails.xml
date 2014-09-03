@@ -19,7 +19,7 @@
 	    <field name="countryCode"/>
 	    <field name="bankAddress"/>
 	  </panel>
-	  <panel title="RIB" >
+	  <panel title="BBAN" >
 	    <field name="bankCode" />
 	    <field name="sortCode" />
 	    <field name="accountNbr" />
