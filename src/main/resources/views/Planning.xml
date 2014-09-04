@@ -9,11 +9,11 @@
         <field name="date"/>
     </grid>
     
-	<form name="planning-form" title="Planning" model="com.axelor.apps.organisation.db.Planning" onNew="action-planning-record-default,action-planning-method-get-period">
+	<form name="planning-form" title="Planning" model="com.axelor.apps.organisation.db.Planning" onNew="action-planning-record-default">
 	  <panel>
 	    <field name="period" x-span="4"/>
-	    <field name="user" onChange="action-planning-method-get-period" x-span="4"/>
-	    <field name="date" onChange="action-planning-method-get-period" x-span="4"/>
+	    <field name="user" x-span="4"/>
+	    <field name="date" x-span="4"/>
 	  </panel>  
 	  <panel title="Configuration" x-span="12">
 	    <field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default" x-span="12"/>
