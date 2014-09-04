@@ -18,6 +18,8 @@
     <integer name="nextNum" title="Next N°" required="true"/>
     <boolean name="yearlyResetOk" title="Yearly reset"/>
     
+    <unique-constraint columns="company,code"/>
+    
   </entity>
 
 </domain-models>

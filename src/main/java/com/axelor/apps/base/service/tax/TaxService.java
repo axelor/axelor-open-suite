@@ -64,7 +64,7 @@ public class TaxService {
 			}
 		}
 		
-		throw new AxelorException(String.format("%s :\n Veuillez configurer une version de taxe pour la taxe %s", tax.getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(String.format("Veuillez configurer une version de taxe pour la taxe %s", tax.getName()), IException.CONFIGURATION_ERROR);
 	}
 
 }

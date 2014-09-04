@@ -10,8 +10,6 @@
     <string name="name" title="Name" required="true" unique="true"/>
     <string name="code" title="Code"/>
     
-    <boolean name="invoiceStatusOK" title="Invoice status ?" />
-  
   </entity>
 
 </domain-models>

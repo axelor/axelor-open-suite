@@ -9,13 +9,13 @@
   
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" unique="true"/>
-    <date name="fromDate" title="From"/>
-    <date name="toDate" title="To"/>
+    <date name="fromDate" title="From" required="true"/>
+    <date name="toDate" title="To" required="true"/>
     <one-to-many name="periodList" ref="com.axelor.apps.base.db.Period" mappedBy="year" title="Periods list"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
     <integer name="periodDurationSelect" title="Period duration" selection="account.year.period.duration.select"/>
-    <integer name="typeSelect" title="Type" selection="account.year.type.select" />
+    <integer name="typeSelect" title="Type" selection="account.year.type.select" required="true"/>
   
   </entity>
 
