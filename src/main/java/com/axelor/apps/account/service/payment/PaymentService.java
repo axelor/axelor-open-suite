@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -130,10 +131,10 @@ public class PaymentService {
 		 Company company = invoice.getCompany();
 		
 		 List<? extends MoveLine> creditMoveLines =  MoveLine
-		 .filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
+		 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 		 " AND self.account.reconcileOk = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
 		 " AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
-		 company, "validated", true, invoice.getPartner(), account).fetch();
+		 company, IMove.STATUS_VALIDATED, true, invoice.getPartner(), account).fetch();
 		 
 		 LOG.debug("Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
 
@@ -153,17 +154,17 @@ public class PaymentService {
 		if(useOthersInvoiceDue)  {
 			if(debitMoveLines != null && debitMoveLines.size() != 0)  {
 				othersDebitMoveLines = MoveLine
-						 .filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
+						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 AND self NOT IN ?5 ORDER BY self.date ASC ",
-						 company, "validated", true, partner, debitMoveLines).fetch();
+						 company, IMove.STATUS_VALIDATED, true, partner, debitMoveLines).fetch();
 			}
 			else  {
 				othersDebitMoveLines = MoveLine
-						 .filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
+						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 ORDER BY self.date ASC ",
-						 company, "validated", true, partner).fetch();
+						 company, IMove.STATUS_VALIDATED, true, partner).fetch();
 			}
 			debitMoveLines.addAll(othersDebitMoveLines);
 		}

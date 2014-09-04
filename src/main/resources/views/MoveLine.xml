@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
     <grid name="move-line-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false">
-    	<hilite color="danger" if="$get('move.state') == 'draft'"/>
-      	<field name="move.state" hidden="true"/>
+    	<hilite color="danger" if="$get('move.statusSelect') == 1"/>
+      	<field name="move.statusSelect" hidden="true"/>
         <field name="name"/>
         <field name="date"/>
         <field name="partner"/>
@@ -16,10 +16,20 @@
         <field name="amountRemaining"/>
     </grid>
     
+    <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" edit-icon="true" title="Move lines">
+		<field name="name"/>
+		<field name="date"/>
+		<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+		<field name="account" onSelect="action-move-line-attrs-domain-account"/>
+		<field name="debit"/>
+		<field name="credit"/>
+		<field name="amountRemaining"/>
+	</grid>
+    
     <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false"
     groupBy="account" expandable="true"  >
-    	<hilite color="danger" if="$get('move.state') == 'draft'"/>
-      	<field name="move.state" hidden="true"/>
+    	<hilite color="danger" if="$get('move.statusSelect') == 1"/>
+      	<field name="move.statusSelect" hidden="true"/>
         <field name="name"/>
         <field name="date"/>
         <field name="partner"/>
@@ -31,8 +41,8 @@
     </grid>
     
     <grid name="move-line-accounting-situation-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false">
-    	<hilite color="danger" if="$get('move.state') == 'draft'"/>
-      	<field name="move.state" hidden="true"/>
+    	<hilite color="danger" if="$get('move.statusSelect') == 1"/>
+      	<field name="move.statusSelect" hidden="true"/>
         <field name="name"/>
         <field name="date"/>
         <field name="description"/>
@@ -88,6 +98,37 @@
         </panel-tabs>
     </form>
     
+    <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
+	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group">
+		
+		<panel title="Informations">
+			<field name="name"/>
+			<field name="date"/>
+			<field name="dueDate"/>
+			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="account" onSelect="action-move-line-attrs-domain-account"/>
+			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
+			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
+			<field name="amountPaid"/>
+			<field name="amountRemaining"/>
+			<field name="interbankCodeLine"/>
+			<field name="description"/>
+		</panel>
+			
+		<panel-tabs>	
+			<panel-related field="reconcileList1" x-span="12"/>
+			<panel-related field="reconcileList2" x-span="12"/>
+			
+			<panel title="Analytics">
+				<field name="analyticAccountSet" x-span="12"/>
+			</panel>
+			
+			<panel title="Others" >
+				<field name="exportedDirectDebitOk" x-span="12"/>
+			</panel>
+		</panel-tabs>
+	</form>
+    
     <form name="move-line-accounting-situation-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false" canNew="false"
     onLoad="action-group-account-moveline-accounting-situation-onload" 
     onNew="action-account-move-line-onnew-group">
@@ -135,7 +176,6 @@
     
     <action-group name="action-account-move-line-onnew-group">
 	    <action name="action-move-line-attrs-collapse-irrecoverable-group"/>
-	    <action name="action-move-line-attrs-contractLine-readonly"/>
 	    <action name="action-move-line-record-get-move-informations"/>
 	    <action name="action-move-line-record-get-first-move-line-informations"/>
 	    <action name="action-move-line-attrs-hidden-reconcileLists"/>
@@ -151,6 +191,11 @@
     	<action name="action-move-line-attrs-readonly"/>
     </action-group>
     
+     <action-group name="action-account-move-moveline-onload-group">
+		<action name="action-move-line-attrs-collapse-irrecoverable-group"/>
+		<action name="action-move-line-attrs-readonly"/>
+	</action-group>
+    
     <action-group name="action-group-account-moveline-usher-process-onchange">
     	<action name="save"/>
     	<action name="action-method-account-moveline-usher-process"/>
@@ -165,7 +210,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-readonly">
-		<attribute name="readonly" for="informations" expr="eval: move.state != 'draft'"/>
+		<attribute name="readonly" for="informations" expr="eval: move.statusSelect != 1"/>
 	</action-attrs>
 	
 	<action-record name="action-move-line-record-get-move-informations" model="com.axelor.apps.account.db.MoveLine">
@@ -192,7 +237,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-hidden-reconcileLists">
-    	<attribute name="hidden" for="reconcileLists" expr="eval: _parent?.state == 'draft'" if="eval: _parent?.state != null"/>
+    	<attribute name="hidden" for="reconcileLists" expr="eval: _parent?.statusSelect == 1" if="eval: _parent?.statusSelect != null"/>
 	</action-attrs>
 	
 	<action-validate name="action-move-line-debit-credit-validate">

@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
@@ -79,9 +80,10 @@ public class AccountCustomerService {
 												"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
 												"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
 												"WHERE ml.partner = ?1 AND move.company = ?2 AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
-												"AND move.state = 'validated' AND ml.amount_remaining > 0 ")
+												"AND move.statusSelect = ?3 AND ml.amount_remaining > 0 ")
 												.setParameter(1, partner)
-												.setParameter(2, company);
+												.setParameter(2, company)
+												.setParameter(3, IMove.STATUS_VALIDATED);
 		
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
 		
@@ -129,10 +131,11 @@ public class AccountCustomerService {
 				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
 				"WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_reminder_ok IN ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
-				"AND move.state = 'validated' AND ml.amount_remaining > 0 ")
+				"AND move.statusSelect = ?4 AND ml.amount_remaining > 0 ")
 				.setParameter(1, today.toDate(), TemporalType.DATE)
 				.setParameter(2, partner)
-				.setParameter(3, company);
+				.setParameter(3, company)
+				.setParameter(4, IMove.STATUS_VALIDATED);
 
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
 		
@@ -181,11 +184,12 @@ public class AccountCustomerService {
 				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
 				"WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_reminder_ok in ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
-				"AND move.state = 'validated' AND ml.amount_remaining > 0 ")
+				"AND move.statusSelect = ?5 AND ml.amount_remaining > 0 ")
 				.setParameter(1, mailTransitTime)
 				.setParameter(2, today.toDate(), TemporalType.DATE)
 				.setParameter(3, partner)
-				.setParameter(4, company);
+				.setParameter(4, company)
+				.setParameter(5, IMove.STATUS_VALIDATED);
 		
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
 		

@@ -15,18 +15,21 @@
         <field name="stateSelect"/>
     </grid>
     
-	 <form cols="4" onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group" onSave="action-payment-schedule-payment-schedule-id" onNew="action-account-payment-schedule-onnew-group" name="payment-schedule-form" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule">
+	 <form  name="payment-schedule-form" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule" cols="4" 
+	 onNew="action-account-payment-schedule-onnew-group" 
+	 onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group" 
+	 onSave="action-payment-schedule-payment-schedule-id">
 		<panel title="Overview">
-			<field name="scheduleId" readonlyIf="state != 1"/>
-			<field name="creationDate" readonlyIf="state != 1"/>
-			<field name="startDate" readonlyIf="state != 1" required="true"/>
-			<field name="nbrTerm" readonlyIf="state != 1"/>
-			<field name="partner" readonlyIf="state != 1" onChange="action-payment-schedule-record-partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="company" readonlyIf="state != 1" widget="SuggestBox"/>
+			<field name="scheduleId" readonlyIf="stateSelect != 1"/>
+			<field name="creationDate" readonlyIf="stateSelect != 1"/>
+			<field name="startDate" readonlyIf="stateSelect != 1" required="true"/>
+			<field name="nbrTerm" readonlyIf="stateSelect != 1"/>
+			<field name="partner" readonlyIf="stateSelect != 1" onChange="action-payment-schedule-record-partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="company" readonlyIf="stateSelect != 1" widget="SuggestBox"/>
 			<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="paymentMode"/>
-			<field name="currency" readonlyIf="state != 1"/>
-			<field name="inTaxAmount" readonlyIf="state != 1"/>
+			<field name="currency" readonlyIf="stateSelect != 1"/>
+			<field name="inTaxAmount" readonlyIf="stateSelect != 1"/>
 			<field name="stateSelect"/>
 		</panel>
 		 <panel  title="Irrecoverable">
@@ -36,19 +39,17 @@
 			<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable"/>
 		</panel>
 		<panel-tabs>
-		  <panel-related title="Invoices" field="invoiceSet"  domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.status.code = 'dis' and self.inTaxTotalRemaining > 0.0 AND self.currency = :currency" 	grid-view="invoice-account-grid" form-view="invoice-form" readonlyIf="state != 1" onChange="action-payment-schedule-record-in-tax-amount"/>
-		  <panel-related title="PaymentSchduleLine" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form" readonlyIf="state != 3"/>
+		  <panel-related title="Invoices" field="invoiceSet"  domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.statusSelect = 3 and self.inTaxTotalRemaining > 0.0 AND self.currency = :currency" grid-view="invoice-account-grid" form-view="invoice-form" readonlyIf="stateSelect != 1" onChange="action-payment-schedule-record-in-tax-amount"/>
+		  <panel-related title="PaymentSchduleLine" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form" readonlyIf="stateSelect != 3"/>
 		</panel-tabs>  
 	
 		 <panel-side >
 			<panel title="actions">
-			    <button name="validate" title="Validate"  onClick="action-group-account-payment-schedule-validate-click" showIf="state == 1"/>
-			    <button name="cancel" title="Cancel"  onClick="action-payment-schedule-method-cancel,save" hideIf="state = 4" />
-			    <button name="createPaymentScheduleLines" title="Create schedule lines" colSpan="2" onClick="action-group-account-payment-schedule-create-click" showIf="state == 1"/>
+			    <button name="validate" title="Validate"  onClick="action-group-account-payment-schedule-validate-click" showIf="stateSelect == 1"/>
+			    <button name="cancel" title="Cancel"  onClick="action-payment-schedule-method-cancel,save" hideIf="stateSelect = 4" />
+			    <button name="createPaymentScheduleLines" title="Create schedule lines" colSpan="2" onClick="action-group-account-payment-schedule-create-click" showIf="stateSelect == 1"/>
 			</panel>
 		</panel-side>
-	  
-	
 	</form>
     
     <!-- ACTION GROUPs -->

@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -74,7 +75,7 @@ public class PaymentVoucherLoadService  {
 		String query = "self.partner = ?1 " +
 				"and self.account.reconcileOk = 't' " +
 				"and self.amountRemaining > 0 " +
-				"and self.move.state = 'validated' " +
+				"and self.move.statusSelect = ?3 " +
 				"and self.move.ignoreInReminderOk = 'f' " +
 				"and self.move.company = ?2 ";
 		
@@ -85,7 +86,7 @@ public class PaymentVoucherLoadService  {
 			query += " and self.credit > 0 ";
 		}
 		
-		moveLines = MoveLine.filter(query, paymentVoucher.getPartner(), paymentVoucher.getCompany()).fetch();
+		moveLines = MoveLine.filter(query, paymentVoucher.getPartner(), paymentVoucher.getCompany(), IMove.STATUS_VALIDATED).fetch();
 		
 		moveLines.remove(excludeMoveLine);
 		

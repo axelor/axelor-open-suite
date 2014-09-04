@@ -78,11 +78,11 @@
 		<option value="9">Export purchase -> Acc. Soft.</option>
 	</selection>
 	
-	<selection name='move.state.select'>
-		<option value='draft'>Draft</option>
-		<option value='simulated'>Simulated</option>
-		<option value='validated'>Validated</option>
-		<option value='canceled'>Canceled</option>
+	<selection name='iacount.move.status.select'>
+		<option value='1'>Draft</option>
+		<option value='2'>Simulated</option>
+		<option value='3'>Validated</option>
+		<option value='4'>Canceled</option>
 	</selection>
 	
 	<selection name='cash.register.state.select'>
@@ -169,13 +169,6 @@
 		<option value="val">Ventilate</option>
 	</selection>
 	
-	<selection name="iinvoice.batch.from.status.select">
-		<option value="dra">Draft</option>
-		<option value="tov">To validate</option>
-		<option value="val">Validate</option>
-		<option value="ala">In alarm</option>
-	</selection>
-		
 	<selection name="account.payment.condition.type.select">
 		<option value="1">Net</option>
 		<option value="2">End of month + n days</option>
@@ -215,6 +208,13 @@
 		<option value="0">Debit</option>
 		<option value="1">Credit</option>
 	</selection>	
+	
+	<selection name="iaccount.invoice.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
+		<option value="3">Ventilated</option>
+		<option value="4">Canceled</option>
+	</selection>
 	
 
 </object-views>

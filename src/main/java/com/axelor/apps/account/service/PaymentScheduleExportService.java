@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.DirectDebitManagement;
 import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.IMove;
+import com.axelor.apps.account.db.IPaymentSchedule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -309,12 +310,12 @@ public class PaymentScheduleExportService {
 	 */
 	public List<MoveLine> getInvoiceMoveLineListToReconcile(PaymentSchedule paymentSchedule)  {
 		return (List<MoveLine>) MoveLine
-				.filter("self.move.state = ?1 AND self.exportedDirectDebitOk = 'false' " +
+				.filter("self.move.statusSelect = ?1 AND self.exportedDirectDebitOk = 'false' " +
 						"AND self.account.reconcileOk = ?2 AND self.amountRemaining > 0 " +
 						"AND self.move.invoice.operationTypeSelect = ?3 " +
 						"AND self.move.invoice.schedulePaymentOk = 'true' " +
 						"AND self.move.invoice.paymentSchedule = ?4 "+
-						"ORDER BY self.date", IMove.VALIDATED_MOVE, true, IInvoice.CLIENT_SALE, paymentSchedule).fetch();
+						"ORDER BY self.date", IMove.STATUS_VALIDATED, true, IInvoice.CLIENT_SALE, paymentSchedule).fetch();
 	}
 	
 	
@@ -364,12 +365,12 @@ public class PaymentScheduleExportService {
 		PaymentMode paymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
 		
 		List<PaymentScheduleLine> paymentScheduleLineList = (List<PaymentScheduleLine>) PaymentScheduleLine
-				.filter("self.status.code = 'upr' AND self.paymentSchedule.state = '2' AND self.paymentSchedule.company = ?1 " +
+				.filter("self.status.code = 'upr' AND self.paymentSchedule.stateSelect = ?5 AND self.paymentSchedule.company = ?1 " +
 						"AND self.scheduleDate <= ?2 " +
 						"AND self.debitBlockingOk IN ('false',null) " +
 						"AND self.paymentSchedule.currency = ?3 " +
-						"AND self.paymentSchedule.paymentMode = ?4 ORDER BY self.scheduleDate"
-						, company, debitDate, currency, paymentMode).fetch(); 
+						"AND self.paymentSchedule.paymentMode = ?4 ORDER BY self.scheduleDate",
+						company, debitDate, currency, paymentMode, IPaymentSchedule.STATUS_CONFIRMED).fetch(); 
 		
 		if(paymentScheduleLineList.size() < 50)  {
 			LOG.debug("\n Liste des échéances retenues : {} \n", this.toStringPaymentScheduleLineList(paymentScheduleLineList));
@@ -637,7 +638,7 @@ public class PaymentScheduleExportService {
 		 * - la facture n'est pas selectionnée sur un échéancier
 		 */
 		List<MoveLine> moveLineList = (List<MoveLine>) MoveLine
-				.filter("self.move.state = ?1 AND self.exportedDirectDebitOk = 'false' " +
+				.filter("self.move.statusSelect = ?1 AND self.exportedDirectDebitOk = 'false' " +
 						"AND self.move.company = ?2 " +
 						"AND self.account.reconcileOk = ?3 AND self.amountRemaining > 0 " +
 						"AND self.debit > 0 " +
@@ -645,7 +646,7 @@ public class PaymentScheduleExportService {
 						"AND self.move.invoice.paymentMode = ?4 " +
 						"AND self.move.invoice.schedulePaymentOk = 'false' " +
 						"AND self.move.invoice.currency = ?5"
-						, IMove.VALIDATED_MOVE, company, true, paymentMode, currency).fetch(); 
+						, IMove.STATUS_VALIDATED, company, true, paymentMode, currency).fetch(); 
 		
 		
 		// Ajout des factures
@@ -659,11 +660,11 @@ public class PaymentScheduleExportService {
 		// Récupération des factures rejetées
 		List<Invoice> invoiceRejectList = (List<Invoice>) Invoice
 				.filter("self.rejectMoveLine IS NOT NULL AND self.rejectMoveLine.amountRemaining > 0 AND self.rejectMoveLine.debit > 0" +
-						" AND self.paymentMode = ?1 AND self.company = ?2 AND self.rejectMoveLine.exportedDirectDebitOk = 'false' AND self.move.state = ?3" +
+						" AND self.paymentMode = ?1 AND self.company = ?2 AND self.rejectMoveLine.exportedDirectDebitOk = 'false' AND self.move.statusSelect = ?3" +
 						" AND self.rejectMoveLine.account.reconcileOk = 'true' " +
 						" AND self.rejectMoveLine.invoiceReject IS NOT NULL" +
 						" AND self.currency = ?4"
-						, paymentMode, company, IMove.VALIDATED_MOVE, currency).fetch();
+						, paymentMode, company, IMove.STATUS_VALIDATED, currency).fetch();
 		
 		// Ajout des factures rejetées
 		for(Invoice invoice : invoiceRejectList)  {

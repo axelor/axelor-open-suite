@@ -10,7 +10,7 @@
   	<many-to-one name="canceledPaymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule"/> <!--  Champs non affiché, utilisé pour le passage en irrécouvrable d'un échéancier de paiement -->
   	
     <!-- HEADER -->
-    <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true"/>
+    <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true" unique="true"/>
 	<integer name="operationTypeSelect" title="Document Type" required="true" selection="iinvoice.operation.type.select"/>
     
     <!-- Legal informations -->
@@ -98,7 +98,8 @@
     <decimal name="invoiceInTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="invoiceAmountPaid" title="Amount paid" readonly="true" />
     
-    <many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
+    <integer name="statusSelect" title="State" selection="iaccount.invoice.status.select" readonly="true" default="1"/>
+    
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>  
 
   </entity>

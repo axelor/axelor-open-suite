@@ -57,5 +57,11 @@ public interface IInvoice {
 	// TOSTATUSSELECT
 	static final String TO_VAL = "tov";
 	static final String TO_DIS = "val";
+	
+	// STATUS SELECT
+	static final int STATUS_DRAFT = 1;
+	static final int STATUS_VALIDATED = 2;
+	static final int STATUS_VENTILATED = 3;
+	static final int STATUS_CANCELED = 4;
 
 }

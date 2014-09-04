@@ -62,7 +62,7 @@ public abstract class BatchWkf extends BatchStrategy {
 			String query = "self.company = ?1";
 			params.add(invoiceBatch.getCompany());
 	
-			query += " AND self.status.code = ?2";
+			query += " AND self.statusSelect = ?2";
 			if (isTo) { params.add(invoiceBatch.getToStatusSelect()); }
 			else { params.add(invoiceBatch.getFromStatusSelect()); }
 	

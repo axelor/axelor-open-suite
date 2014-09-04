@@ -22,9 +22,9 @@ public interface  IMove {
 	/**
 	 * State select
 	 */
-	static final String DRAFT_MOVE = "draft";
-	static final String SIMULATED_MOVE = "simulated";
-	static final String VALIDATED_MOVE = "validated";
-	static final String CANCELED_MOVE = "canceled";
+	static final int STATUS_DRAFT = 1;
+	static final int STATUS_SIMULATED = 2;
+	static final int STATUS_VALIDATED = 3;
+	static final int STATUS_CANCELED = 4;
 
 }

@@ -68,7 +68,7 @@
         <view type="grid" name="move-line-accounting-situation-grid"/>
     	<view type="form" name="move-line-accounting-situation-form"/>
     	<domain>self.partner = :partner AND self.move.company = :company AND self.move.ignoreInAccountingOk IN ('false', null) 
-    	AND self.account.reconcileOk = 'true' AND self.move.state = 'validated'</domain>
+    	AND self.account.reconcileOk = 'true' AND self.move.statusSelect = 3</domain>
     </action-view>
     
  </object-views>

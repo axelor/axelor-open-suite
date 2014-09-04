@@ -44,8 +44,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
