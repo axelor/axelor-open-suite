@@ -2,9 +2,10 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
+	
     <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal">
-        <field name="code"/>
         <field name="name"/>
+		<field name="code"/>
         <field name="type"/>
         <field name="exportCode"/>
         <field name="excessPaymentOk"/>
@@ -15,29 +16,43 @@
         <field name="company"/>
     </grid>
     
- <form cols="4" onNew="account-journal-record-default" name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal">
-  <panel title="Overview">
-    <field name="code"/>
-    <field name="name"/>
-    <field name="company"/>
-    <field name="type"/>
-  </panel>
-  <panel title="Configurations">
-      <field name="editReceiptOk" x-span="6"/>
-      <field name="excessPaymentOk" x-span="6"/>
-      <field name="descriptionIdentificationOk" x-span="6"/>
-      <field name="notExportOk" x-span="6"/>
-      <field name="exportCode"/>
-      <field name="descriptionModel"/>
-      <field name="sequence" domain="self.code = 'move' and self.company = :company"/>
-    </panel>
-  <panel-dashlet title="General" action="action-journal-view-move-line"/>
-  <panel-side title="Status">
-    <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"/>
-    <field name="isObsolete" onChange="account-journal-record-status-archived"/>
-    <button name="activeStatus" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save"/>
-  </panel-side>
-</form>
+	<form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"cols="4" 
+		onNew="account-journal-record-default" >
+		
+		<panel>
+			<field name="name"/>
+			<field name="code"/>
+			<field name="company"/>
+			<field name="type"/>
+		</panel>
+		
+		<panel title="Configurations">
+			<panel title="MoveLine" x-span="12">
+				<field name="sequence" domain="self.code = 'move' and self.company = :company"/>
+				<field name="descriptionModel"/>
+				<field name="descriptionIdentificationOk"/>
+			</panel>  
+			<spacer/>
+			<panel title="Payments" x-span="12">
+				<field name="editReceiptOk" x-span="6"/>
+				<field name="excessPaymentOk" x-span="6"/>
+			</panel>
+		</panel>
+		
+		<panel-dashlet title="General" action="action-journal-view-move-line"/>
+		
+		<panel-side title="Status">
+			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"/>
+			<field name="isObsolete" onChange="account-journal-record-status-archived"/>
+			<button name="activeStatus" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save"/>
+		</panel-side>
+		
+		<panel-side title="Exports">
+			<field name="exportCode" x-span="4"/>
+			<field name="notExportOk" x-span="2"/>
+		</panel-side>
+
+	</form>
 
 
     
