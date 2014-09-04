@@ -541,8 +541,8 @@ public class ReimbursementExportService {
 		
 		// récupération des trop-perçus du tiers
 		List<? extends MoveLine> moveLineList = MoveLine.filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
-				"AND self.move.state = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStateSelect = ?3 "
-				,IMove.VALIDATED_MOVE , partner, IAccount.NULL).fetch();
+				"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStateSelect = ?3 "
+				,IMove.STATUS_VALIDATED , partner, IAccount.NULL).fetch();
 		
 		this.createReimbursementInvoice(partner, company, moveLineList);
 		

@@ -13,8 +13,8 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
     
     <!-- UPDATE STATUS -->
-    <string name="fromStatusSelect" title="Invoice initial status" default="dra" selection="iinvoice.batch.from.status.select"/>
-    <string name="toStatusSelect" title="Invoice final status" default="tov" selection="iinvoice.batch.to.status.select"/>
+    <integer name="fromStatusSelect" title="Invoice initial status" default="1" selection="iaccount.invoice.status.select"/>
+    <integer name="toStatusSelect" title="Invoice final status" default="2" selection="iaccount.invoice.status.select"/>
     <boolean name="onSelectOk" title="Select invoices manually ?" />
     <many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Invoices selection" />
     
@@ -22,7 +22,7 @@
     
     <!-- OTHERS INFORMATIONS -->
     <string name="description" title="Description" large="true" />
-<!--     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="invoiceBatch" title="Batches" /> -->
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="invoiceBatch" title="Batches" />
   
   </entity>
 

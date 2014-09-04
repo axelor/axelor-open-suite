@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -80,7 +79,8 @@ public class VentilateState extends WorkflowInvoice {
 	
 	protected void checkInvoiceDate() throws AxelorException  {
 		
-		if(Invoice.filter("self.status.code = 'dis' AND self.invoiceDate > ?1 AND self.operationTypeSelect = ?2", invoice.getInvoiceDate(),invoice.getOperationTypeSelect()).count() > 0)  {
+		if(Invoice.filter("self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3", 
+				IInvoice.STATUS_VENTILATED, invoice.getInvoiceDate(), invoice.getOperationTypeSelect()).count() > 0)  {
 			throw new AxelorException(String.format("La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée"), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -136,7 +136,7 @@ public class VentilateState extends WorkflowInvoice {
 	 * @throws AxelorException 
 	 */
 	protected void setStatus( ) {
-		invoice.setStatus(Status.findByCode("dis"));
+		invoice.setStatusSelect(IInvoice.STATUS_VENTILATED);
 	}
 	
 	/**

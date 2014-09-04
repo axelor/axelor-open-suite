@@ -152,9 +152,9 @@ public class BatchReimbursementExport extends BatchStrategy {
 				if(reimbursementExportService.canBeReimbursed(partner, Company.find(company.getId())))  {
 				
 					List<MoveLine> moveLineList = (List<MoveLine>) MoveLine.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
-							"AND self.move.state = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND " +
+							"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND " +
 							"self.reimbursementStateSelect = ?4 "
-							,IMove.VALIDATED_MOVE ,Partner.find(partner.getId()), Company.find(company.getId()), IAccount.NULL).fetch();
+							,IMove.STATUS_VALIDATED ,Partner.find(partner.getId()), Company.find(company.getId()), IAccount.NULL).fetch();
 					
 					LOG.debug("Liste des trop perçus : {}", moveLineList);
 					

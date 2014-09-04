@@ -96,8 +96,8 @@ public class AccountClearanceService {
 		this.testCompanyField(company);
 		
 		List<? extends MoveLine> moveLineList = MoveLine.filter("self.company = ?1 AND self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
-				"AND self.move.state = ?2 AND self.amountRemaining > 0 AND self.amountRemaining <= ?3 AND self.credit > 0 AND self.account in ?4 AND self.date <= ?5",
-				company, IMove.VALIDATED_MOVE , accountClearance.getAmountThreshold(), 
+				"AND self.move.statusSelect = ?2 AND self.amountRemaining > 0 AND self.amountRemaining <= ?3 AND self.credit > 0 AND self.account in ?4 AND self.date <= ?5",
+				company, IMove.STATUS_VALIDATED , accountClearance.getAmountThreshold(), 
 				company.getAccountConfig().getClearanceAccountSet(), accountClearance.getDateThreshold()).fetch();
 		
 		LOG.debug("Liste des trop perçus récupérés : {}", moveLineList);

@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.IInvoice;
+import com.axelor.apps.account.db.IPaymentSchedule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -189,7 +190,9 @@ public class IrrecoverableService {
 	 */
 	public List<PaymentScheduleLine> getPaymentScheduleLineList(Company company)   {
 		return (List<PaymentScheduleLine>) PaymentScheduleLine
-				.filter("self.paymentSchedule.irrecoverableStateSelect = ?1 AND self.paymentSchedule.company = ?2 AND self.paymentSchedule.state = '4' AND self.rejectMoveLine.amountRemaining > 0 ORDER BY self.scheduleDate ASC", IAccount.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
+				.filter("self.paymentSchedule.irrecoverableStateSelect = ?1 AND self.paymentSchedule.company = ?2 " +
+						"AND self.paymentSchedule.stateSelect = ?3 AND self.rejectMoveLine.amountRemaining > 0 ORDER BY self.scheduleDate ASC", 
+						IAccount.TO_PASS_IN_IRRECOUVRABLE, company, IPaymentSchedule.STATUS_CONFIRMED).fetch();
 	}
 	
 	

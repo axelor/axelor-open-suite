@@ -126,7 +126,7 @@ public class InvoiceController {
 		invoice = Invoice.find(invoice.getId());
 
 		is.get().cancel(invoice);
-		response.setFlash("Facture "+invoice.getStatus().getName());
+		response.setFlash("Facture annulée");
 		response.setReload(true);
 	}
 	

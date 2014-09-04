@@ -45,9 +45,7 @@ public class MajorEndCycleVentilateState extends VentilateState {
 		
 		if( invoice.getPaymentSchedule() != null && invoice.getEndOfCycleOk())  {
 			
-			
 			paymentScheduleService.closePaymentSchedule(invoice.getPaymentSchedule());
-			
 			
 		}
 		

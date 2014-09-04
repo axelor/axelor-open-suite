@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.validate;
 
+import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
-import com.axelor.apps.base.db.Status;
-import com.axelor.exception.AxelorException;
-import com.axelor.auth.db.User;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 
 public class ValidateState extends WorkflowInvoice {
 	
@@ -38,7 +38,7 @@ public class ValidateState extends WorkflowInvoice {
 	@Override
 	public void process( ) throws AxelorException {
 		
-		invoice.setStatus( Status.findByCode("val") );
+		invoice.setStatusSelect(IInvoice.STATUS_VALIDATED);
 		invoice.setValidatedByUser( user );
 		
 	}

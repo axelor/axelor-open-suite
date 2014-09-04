@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.IAccount;
+import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
@@ -265,7 +266,8 @@ public class MoveLineExportService {
 		else  {
 			dateQueryStr += " AND self.accountingOk = false ";
 		}
-		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false  ";
+		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
+		dateQueryStr += String.format(" AND self.statusSelect = %s ", IMove.STATUS_VALIDATED);
 		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
@@ -304,6 +306,7 @@ public class MoveLineExportService {
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
 		}
+		moveQueryStr += String.format(" AND self.statusSelect = %s ", IMove.STATUS_VALIDATED);
 		
 		LocalDate interfaceDate = moveLineReport.getDate();
 		
@@ -412,6 +415,7 @@ public class MoveLineExportService {
 			dateQueryStr += " AND self.accountingOk = false ";
 		}
 		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
+		dateQueryStr += String.format(" AND self.statusSelect = %s ", IMove.STATUS_VALIDATED);
 		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
@@ -450,6 +454,7 @@ public class MoveLineExportService {
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
 		}
+		moveQueryStr += String.format(" AND self.statusSelect = %s ", IMove.STATUS_VALIDATED);
 		
 		LocalDate interfaceDate = moveLineReport.getDate();
 		
@@ -557,6 +562,7 @@ public class MoveLineExportService {
 			dateQueryStr += " AND self.accountingOk = false ";
 		}
 		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
+		dateQueryStr += String.format(" AND self.statusSelect = %s ", IMove.STATUS_VALIDATED);
 		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
@@ -595,6 +601,7 @@ public class MoveLineExportService {
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
 		}
+		moveQueryStr += String.format(" AND self.statusSelect = %s ", IMove.STATUS_VALIDATED);
 		
 		LocalDate interfaceDate = moveLineReport.getDate();
 		
@@ -700,6 +707,7 @@ public class MoveLineExportService {
 			dateQueryStr += " AND self.accountingOk = false ";
 		}
 		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
+		dateQueryStr += String.format(" AND self.statusSelect = %s ", IMove.STATUS_VALIDATED);
 		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
@@ -738,6 +746,7 @@ public class MoveLineExportService {
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
 		}
+		moveQueryStr += String.format(" AND self.statusSelect = %s ", IMove.STATUS_VALIDATED);
 		
 		LocalDate interfaceDate = moveLineReport.getDate();
 		
@@ -864,6 +873,7 @@ public class MoveLineExportService {
 			moveLineQueryStr += String.format(" AND self.account.reconcileOk = false ");  
 		}
 		moveLineQueryStr += String.format("AND self.move.accountingOk = true AND self.move.ignoreInAccountingOk = false AND self.move.moveLineReport = %s", moveLineReport.getId());  
+		moveLineQueryStr += String.format(" AND self.move.statusSelect = %s ", IMove.STATUS_VALIDATED);
 		
 		Query queryDate = JPA.em().createQuery("SELECT self.date from MoveLine self where self.account != null AND (self.debit > 0 OR self.credit > 0) " + moveLineQueryStr + " group by self.date ORDER BY self.date");
 		

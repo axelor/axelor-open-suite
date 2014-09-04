@@ -42,7 +42,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -201,7 +200,7 @@ public abstract class InvoiceGenerator  {
 		
 		invoice.setJournal(journalService.getJournal(invoice)); 
 		
-		invoice.setStatus(Status.findByCode("dra"));
+		invoice.setStatusSelect(IInvoice.STATUS_DRAFT);
 		
 		invoice.setPriceList(priceList);
 		
