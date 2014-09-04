@@ -29,7 +29,7 @@
 			<panel-related field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" x-span="12"/>
 		 </panel>
 		<panel name="comments" title="Comments">
-			<field name="comments" x-span="12"/>    					
+			<field name="comments" x-span="12" x-height="3"/>    					
 		</panel>
    </form>
    
