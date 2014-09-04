@@ -9,7 +9,7 @@
   	
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
   	<integer name="importId" />
-  	<string name="saleOrderSeq" namecolumn="true" title="Reference" readonly="true"/>
+  	<string name="saleOrderSeq" namecolumn="true" title="Reference" readonly="true" unique="true"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>
   	<string name="externalReference" title="Customer reference"/>
   	<date name="creationDate" title="Creation date" required="true" readonly="true"/>
@@ -34,7 +34,7 @@
 	<one-to-many name="saleOrderLineTaxList" ref="com.axelor.apps.sale.db.SaleOrderLineTax" mappedBy="saleOrder" title="Tax Lines"/>
   	
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
-    <decimal name="taxTotal" title="Total V.A.T." scale="2" precision="20" readonly="true"/>
+    <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     
     <integer name="statusSelect" title="Status" selection="default.status.select" readonly="true"/>
