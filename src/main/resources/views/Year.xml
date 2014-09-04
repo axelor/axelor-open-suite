@@ -3,25 +3,34 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
-    <grid name="year-grid" title="Fiscal years" model="com.axelor.apps.base.db.Year">
+    <grid name="year-grid" title="Year" model="com.axelor.apps.base.db.Year">
         <field name="name"/>
         <field name="code"/>
         <field name="fromDate"/>
         <field name="toDate"/>
         <field name="company"/>
-        <field name="status"/>
     </grid>
     
-    <form name="year-form" title="Fiscal year" model="com.axelor.apps.base.db.Year"
-    onNew="action-year-record-new">
+    <form name="year-form" title="Year" model="com.axelor.apps.base.db.Year"
+    onNew="action-year-record-new" onSave="action-year-check-date,action-civil-year-check-date">
     	<panel>
 	        <field name="name"/>
 	        <field name="code"/>
 	        <field name="fromDate"/>
 	        <field name="toDate"/>
 	        <field name="company" widget="SuggestBox"/>
+	        <field name="typeSelect" readonly="true" />
 	    </panel>
     </form>
     
+    
+     <action-record name="action-year-record-new" model="com.axelor.apps.base.db.Year">
+    	<field name="company"  expr="eval:__user__.activeCompany"/>
+    	<field name="typeSelect" expr="eval:0"/>
+    </action-record>
+    
+    <action-validate name="action-civil-year-check-date">
+		<error message="Civil year already exist for 'From' and 'To' date." if="Year.all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND id != ?6 AND typeSelect = 0',fromDate,toDate,fromDate,toDate,company,id).count() > 0 &amp;&amp; typeSelect == 0" />
+	</action-validate>
     
 </object-views>

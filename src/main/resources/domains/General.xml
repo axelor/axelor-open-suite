@@ -26,6 +26,8 @@
 		<string name="currencyWsURL" title="Currency Ws URL" />
 
 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="general" title="Currency conversion table"/>
+		
+		<boolean name="hasQasValidation" title="Use QAS Validation ?" help="true" />
 
 	</entity>
 

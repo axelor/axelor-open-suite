@@ -54,6 +54,7 @@
 				<panel name="qas" title="Addresses validation"  x-span="12">
 					<field name="qasWsdlUrl"/>
 					<button name="checkQasWsdl" title="Test connection to QAS webservice" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
+					<field name="hasQasValidation" />
 				</panel>
 				<panel name="ws" title="Webservices"  x-span="12">
 					<field name="currencyWsURL" x-span="12"/>

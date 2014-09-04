@@ -74,15 +74,7 @@
 		</bind>
 	</input>
 	
-	<input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year">
-        <bind to="name" column="name"/>
-        <bind to="code" column="code"/>
-        <bind to="toDate" column="toDate"/>
-        <bind to="fromDate" column="fromDate"/>
-        <bind to="status" search="self.code = :status_code" >
-            <bind to="code" column="status_code"/>
-        </bind>
-    </input>
+	<input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year" />
     
     <input file="base_productFamily.csv" separator=";" type="com.axelor.apps.base.db.ProductFamily" />
     

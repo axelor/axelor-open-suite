@@ -51,7 +51,7 @@
 			</panel>
 	    </panel>
 	    <panel-tabs title="Product specific attributes">
-			<panel title="Sale">	
+			<panel title="Sale" showTitle="false">	
 				<panel x-span="6" title="Sales">
 					<field name="salePrice" x-span="12"/>
 					<field name="saleCurrency" x-span="12"/>
@@ -68,7 +68,7 @@
 					<field name="internalDescription" showTitle="false" x-span="12" widget="html"/>
 				</panel>
 			</panel>
-			<panel title="Purchase/Costs">
+			<panel title="Purchase/Costs" showTitle="false">
 				<panel title="Purchases" x-span="6">
 					<field name="purchasePrice" x-span="12"/>
 					<field name="purchaseCurrency" x-span="12"/>
@@ -80,8 +80,8 @@
 				</panel>
 				<panel-related title="Suppliers catalog" field="supplierCatalogList" x-span="12"/>        
 			</panel>
-	        <panel-related title="Accounting" field="accountManagementList" x-span="12" domain="self.typeSelect = 1" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
-	        <panel title="Stock" showIf="productTypeSelect == 'storable'" if-module="axelor-stock">
+	        <panel-related title="Accounting" field="accountManagementList" x-span="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
+	        <panel title="Stock" showIf="productTypeSelect == 'storable'" showTitle="false" if-module="axelor-stock">
             	<panel title="Procurement settings" x-span="12">
 					<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'" x-span="4"/>
 					<field name="isRawMaterial" showIf="productTypeSelect != 'service'" x-span="4"/>
@@ -94,7 +94,7 @@
 <!-- 					<panel-dashlet action="action-stock-history-report-for-product" height="200" x-span="12"/> -->
 				</panel>
 			</panel>
-			<panel title="Production informations" showIf="productTypeSelect != 'service'" if-module="axelor-production">
+			<panel title="Production informations" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-production">
 				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>
 				<field name="lastProductionPrice" readonly="true"/>
 				<panel if-module="axelor-production" x-span="12" colWidths="20%,30%,20%,30%">
@@ -102,7 +102,7 @@
 <!-- 					<panel-dashlet action="action-product-view-show-bill-of-material" x-span="12"/> -->
 				</panel>
 			</panel>
-	        <panel title="Tracking number" showIf="productTypeSelect != 'service'"  colWidths="20%,30%,20%,30%">
+	        <panel title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false"  colWidths="20%,30%,20%,30%">
         		<panel x-span="12">
         			<field name="hasWarranty" />
 	            	<field name="warrantyNbrOfMonths"  showIf="hasWarranty"/>
@@ -113,7 +113,7 @@
 		            <field name="trackingNumberConfiguration"/>
 	            </panel>
 	        </panel>
-	        <panel title="Variants">
+	        <panel title="Variants" showTitle="false">
 	        	<panel name="parentVariant" showIf="!parentProduct" x-span="12">
 	        		<field name="productVariantConfig" showTitle="false" canSelect="false" x-span="12" />
 <!-- 	        			<editor> -->

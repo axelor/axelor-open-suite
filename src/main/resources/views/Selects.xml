@@ -604,5 +604,10 @@
 		<option value="6">6 Months</option>
 		<option value="12">1 Year</option>
 	</selection>	
+	
+	<selection name="account.year.type.select">
+		<option value="0">Civil Year</option>
+		<option value="1">Fiscal Year</option>
+	</selection>
 
 </object-views>

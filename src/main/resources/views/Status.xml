@@ -6,7 +6,6 @@
     <grid name="status-grid" title="All status" model="com.axelor.apps.base.db.Status">
         <field name="name"/>
         <field name="code"/>
-        <field name="invoiceStatusOK"/>
     </grid>
     
     <form name="status-form" title="Status" model="com.axelor.apps.base.db.Status"
@@ -14,7 +13,6 @@
     	<panel>
 	        <field name="name"/>
 	        <field name="code"/>
-	        <field name="invoiceStatusOK"/>
         </panel>
     </form>
     
