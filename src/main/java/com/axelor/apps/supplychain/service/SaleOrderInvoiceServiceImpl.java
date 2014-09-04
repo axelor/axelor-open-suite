@@ -211,7 +211,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		BigDecimal total = BigDecimal.ZERO;
 		
 		for(Invoice invoice : saleOrder.getInvoiceSet())  {
-			if(invoice.getStatus().getCode().equals("dis"))  {
+			if(invoice.getStatusSelect() == IInvoice.STATUS_VENTILATED)  {
 				total = total.add(invoice.getInTaxTotal());
 			}
 		}
