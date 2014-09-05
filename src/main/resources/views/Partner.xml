@@ -26,6 +26,7 @@
 	    <button name="logCall" title="Log Call" colSpan="1" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call" if-module="axelor-crm"/>
 		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
 		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
+		
 	</grid>
     
      <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
@@ -45,6 +46,11 @@
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
 	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null" if-module="axelor-account"/>
+	        <button name="searchGoogle" icon="fa-google-plus" help="Search on google" onClick="save,action-partner-method-search-google" />
+	        <button name="searchFacebook" icon="fa-facebook" help="Search on facebook" onClick="save,action-partner-method-search-facebook" />
+	        <button name="searchTwitter" icon="fa-twitter" help="Search on twitter" onClick="save,action-partner-method-search-twitter" />
+	        <button name="searchLinkedin" icon="fa-linkedin" help="Search on linkedin" onClick="save,action-partner-method-search-linkedin" />
+	        <button name="searchYoutube" icon="fa-youtube" help="Search on youtube" onClick="save,action-partner-method-search-youtube" />
 	    </toolbar>
 	     <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
@@ -336,6 +342,23 @@
     <action-method name="action-partner-method-show-partner-info">
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>
+    
+    
+    <action-method name="action-partner-method-search-google">
+    	<call class="com.axelor.apps.base.web.PartnerController" method="openSearchUrl" />
+    </action-method>
+    <action-method name="action-partner-method-search-facebook">
+    	<call class="com.axelor.apps.base.web.PartnerController" method="openSearchUrl" />
+    </action-method>
+    <action-method name="action-partner-method-search-twitter">
+    	<call class="com.axelor.apps.base.web.PartnerController" method="openSearchUrl" />
+    </action-method>
+    <action-method name="action-partner-method-search-linkedin">
+    	<call class="com.axelor.apps.base.web.PartnerController" method="openSearchUrl" />
+    </action-method>
+    <action-method name="action-partner-method-search-youtube">
+    	<call class="com.axelor.apps.base.web.PartnerController" method="openSearchUrl" />
+    </action-method>
     
 
 	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.socialnetwork.db.SnProfile">

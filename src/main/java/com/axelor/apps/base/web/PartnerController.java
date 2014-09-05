@@ -31,13 +31,16 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -48,10 +51,13 @@ public class PartnerController {
 	private SequenceService sequenceService;
 	
 	@Inject
-	UserService userService;
+	private UserService userService;
 	
 	@Inject
-	AddressService addressService;
+	private AddressService addressService;
+	
+	@Inject
+	private PartnerService partnerService; 
 
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
 
@@ -224,5 +230,21 @@ public class PartnerController {
 		Set<Company> companySet = new HashSet<Company>();
 		companySet.add(userService.getUser().getActiveCompany());	
 		return companySet;
+	}
+	
+	public void openSearchUrl(ActionRequest request, ActionResponse response) {
+		Partner partner = request.getContext().asType(Partner.class);
+		String[] actionName = request.getAction().split("-");
+		String appName = actionName[actionName.length-1];
+		LOG.debug("Search request for app: {}",appName);
+		
+		
+		Map<String,Object> mapView = new HashMap<String,Object>();
+		mapView.put("title", StringTool.toFirstUpper(appName));
+		mapView.put("resource", partnerService.getSearchUrl(appName,partner));
+		mapView.put("viewType", "html");
+		mapView.put("target", "new");
+		response.setView(mapView);
+		
 	}
 }
