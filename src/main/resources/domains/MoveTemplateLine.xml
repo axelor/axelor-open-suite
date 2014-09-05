@@ -8,7 +8,7 @@
   <entity name="MoveTemplateLine" lang="java" cachable="true">
   	<many-to-one name="moveTemplate" title="Move template" ref="MoveTemplate" />
   	<string name="name" title="Label"/>
-  	<string name="debitCreditSelect" title="Debit/Credit" selection="move.template.line.debit.credit.select"/>
+  	<string name="debitCreditSelect" title="Debit/Credit" selection="move.template.line.debit.credit.select" required="true"/>
   	<many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product" help="true"/>
   	<many-to-one name="account" title="Account" ref="Account" help="true"/>
 	<decimal name="percentage" precision="20" scale="2"  min="0" max="100" help="true"/>
