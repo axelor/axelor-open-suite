@@ -17,7 +17,7 @@
 	<!-- PAGE Compte Client -->
     <decimal name="balanceCustAccount" title="Total balance" readonly="true"/>
     <decimal name="balanceDueCustAccount" title="Due balance" readonly="true"/>
-	<decimal name="balanceDueReminderCustAccount" title="Due balance (remindable)" readonly="true"/>
+	<decimal name="balanceDueReminderCustAccount" title="Due balance remindable" readonly="true"/>
 	<boolean name="custAccountMustBeUpdateOk" title="Partner situation must be updated"/>
 
 	<!--  PAGE Relance -->

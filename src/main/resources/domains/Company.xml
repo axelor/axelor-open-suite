@@ -7,7 +7,7 @@
 
   <entity name="Company" lang="java" cachable="true">
 
-	<one-to-one name="accountConfig" ref="com.axelor.apps.account.db.AccountConfig" title="Account config" mappedBy="company"/>
+	<one-to-one name="accountConfig" ref="com.axelor.apps.account.db.AccountConfig" title="Accounting configuration" mappedBy="company"/>
   	
   </entity>
   

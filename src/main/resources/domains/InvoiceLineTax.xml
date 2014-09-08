@@ -9,11 +9,11 @@
   
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
     <decimal name="exTaxBase" scale="2" precision="20" title="Base W.T."/>
-    <decimal name="taxTotal" scale="2" precision="20" title="Amount Tax"/>
+    <decimal name="taxTotal" scale="2" precision="20" title="Tax amount"/>
     <decimal name="inTaxTotal" scale="2" precision="20" title="Amount A.T.I."/>
-    <decimal name="accountingExTaxBase" scale="2" precision="20" title="Base W.T. in Acc. Currency." hidden="true"/>
-    <decimal name="accountingTaxTotal" scale="2" precision="20" title="Amount Tax in Acc. Currency" hidden="true"/>
-    <decimal name="accountingInTaxTotal" scale="2" precision="20" title="Amount A.T.I. in Acc. Currency" hidden="true"/>
+    <decimal name="accountingExTaxBase" scale="2" precision="20" title="Base W.T. in Acc. currency." hidden="true"/>
+    <decimal name="accountingTaxTotal" scale="2" precision="20" title="Amount Tax in Acc. currency" hidden="true"/>
+    <decimal name="accountingInTaxTotal" scale="2" precision="20" title="Amount A.T.I. in Acc. currency" hidden="true"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
   
   </entity>

@@ -12,7 +12,7 @@
     
    	<!-- Export CFONB -->
    	<string name="senderRecordCodeExportCFONB" title="Sender record code" default="03"/>
-   	<string name="senderNumExportCFONB" title="Sender Nbr"/>
+   	<string name="senderNumExportCFONB" title="Sender Nbr."/>
    	<string name="senderNameCodeExportCFONB" title="Sender Name"/>
    	
    	<string name="recipientRecordCodeExportCFONB" title="Recipient record code" default="06"/>
@@ -29,7 +29,7 @@
    	
    	<string name="endingRecordCodeImportCFONB" title="Ending record code" default="39"/>
    	
-   	<string name="transferOperationCodeImportCFONB" title="Rejected Wire transfer operation code" default="21"/>
+   	<string name="transferOperationCodeImportCFONB" title="Rejected wire transfer operation code" default="21"/>
    	<string name="directDebitOperationCodeImportCFONB" title="Unpaid direct debit operation code" default="81"/>
    	<string name="ipoRejectOperationCodeImportCFONB" title="Unpaid IPO operation code" default="71"/>
    	<string name="ipoOperationCodeImportCFONB" title="IPO operation code" default="07"/>

@@ -31,7 +31,7 @@
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax" />
    
     <decimal name="currencyRate" title="Currency Rate"/>
-    <decimal name="currencyAmount" title="Amount in Currency"/>
+    <decimal name="currencyAmount" title="Amount in Acc. currency"/>
     
     <!-- 	Field not displayed, used during the payment voucher input -->
 	<decimal name="maxAmountToReconcile" title="Max Amount to reconcile"/>

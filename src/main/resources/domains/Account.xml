@@ -14,7 +14,7 @@
     <many-to-one name="accountType" ref="AccountType" massUpdate="true" title="Account Type"  help="true"/>
     <boolean name="reconcileOk" massUpdate="true" title="Reconcilable ?" help="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" help="true"/>
-    <string name="label" namecolumn="true" search="code,name,company">
+    <string name="label" namecolumn="true" search="code,name,company" title="Full name">
 	    <![CDATA[
 	    if(company != null)
 	    	return code+"_"+ company.getCode() + " - " + name;    
