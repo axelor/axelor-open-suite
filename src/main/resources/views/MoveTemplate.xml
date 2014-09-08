@@ -51,7 +51,7 @@
         	<field name="moveTemplateType" title="Type" x-type="many-to-one" x-target="com.axelor.apps.account.db.MoveTemplateType" />
 	        <field name="moveTemplate" required="true"  x-type="many-to-one" x-target="com.axelor.apps.account.db.MoveTemplate" readonlyIf="moveTemplateType == null" title="Template" domain="self.moveTemplateType = :moveTemplateType AND self.isValid = true AND self.journal.company = :company AND self.journal.statusSelect = 1"/>
 	        <field name="company"  x-type="many-to-one" x-target="com.axelor.apps.base.db.Company" title="Company" hidden="true" />
-	        <field name="dataInputList"  x-type="one-to-many" readonlyIf="moveTemplate == null || moveTemplateType == null" x-target="com.axelor.apps.base.db.Wizard" title="Saisie des données d'écriture" form-view="wizard-custom-form" grid-view="wizard-custom-grid" x-span="12" />
+	        <panel-related field="dataInputList"  x-type="one-to-many" readonlyIf="moveTemplate == null || moveTemplateType == null" x-target="com.axelor.apps.base.db.Wizard" title="Saisie des données d'écriture" form-view="wizard-custom-form" grid-view="wizard-custom-grid" x-span="12" />
         </panel>
        
     	<panel-side title="Actions">
@@ -68,7 +68,7 @@
         	<form model="com.axelor.apps.base.db.Wizard" name="wizard-custom-form" title="MoveLine content data input" onLoad="action-move-template-wizard-line-set-move-template" onNew="action-move-template-wizard-line-set-move-template">
         		<panel title="Overview">
 	        		<field name="date" x-type="date" title="Date" required="true" onChange="action-move-template-wizard-check-value"/>
-	        		<field name="moveBalance" x-type="DECIMAL" precision="20" scale="2"  min="0" required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value"  />
+	        		<field name="moveBalance" x-type="decimal" precision="20" scale="2"  min="0" required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value"  />
 	        		<field name="debitPartner" title="Partner to Debit"   x-type="many-to-one" domain="self.isContact = false" readonlyIf="moveTemplate.partnerInputSelect == 2 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
 				    <field name="creditPartner" title="Partner to Credit" x-type="many-to-one" domain="self.isContact = false"  readonlyIf="moveTemplate.partnerInputSelect == 1 || moveTemplate.partnerInputSelect == 0" x-target="com.axelor.apps.base.db.Partner"/>
 				    <field name="moveTemplate" x-type="many-to-one" x-target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
@@ -78,13 +78,13 @@
     
     
     <action-validate name="action-move-template-wizard-check-value">
-    	<error if="date != null &amp;&amp; org.joda.time.LocalDate.parse(date).isAfter(__date__)"  message="Date can't be ahead of today" action="action-move-template-wizard-reset-value" />
-    	<error if="moveBalance != null &amp;&amp; moveBalance &lt; 0" message="The Move Balance must be positive" action="action-move-template-wizard-reset-value" />
+    	<error if="date != null &amp;&amp; LocalDate.parse(date) &gt; __date__"  message="Date can't be ahead of today" action="action-move-template-wizard-reset-value" />
+    	<error if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0" message="The Move Balance must be positive" action="action-move-template-wizard-reset-value" />
     </action-validate>
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-reset-value">
-    	<field if="date != null &amp;&amp; org.joda.time.LocalDate.parse(date).isAfter(__date__)" name="date" expr="eval:null"/>
-    	<field name="moveBalance" expr="eval:0" if="moveBalance != null &amp;&amp; moveBalance &lt; 0" />
+    	<field if="date != null &amp;&amp; LocalDate.parse(date) &gt; __date__" name="date" expr="eval:null"/>
+    	<field name="moveBalance" expr="eval:0" if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0" />
     </action-record>
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-set-active-company">
