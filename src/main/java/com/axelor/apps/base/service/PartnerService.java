@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.base.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,38 +52,23 @@ public class PartnerService {
 		}
 	}
 	
-	public String getSearchUrl(String appName, Partner partner){
+	public Map<String,String> getSocialNetworkUrl(String name,String firstName, Integer typeSelect){
 		
-		StringBuilder url = new StringBuilder();
-		String name = partner.getName();
-		if(partner.getPartnerTypeSelect() == 2){
-			name = partner.getFirstName()+"+"+name;
+		Map<String,String> urlMap = new HashMap<String,String>();
+		if(typeSelect == 2){
+			name = firstName != null && name != null ? firstName+"+"+name : name == null ? firstName : name;  
 		}
-
-		switch(appName) {
-			case "google":
-				url.append("https://www.google.com/?gws_rd=cr#q="+name);
-				break;
-			case "facebook":
-				url.append("https://www.facebook.com/search/more/?q="+name+"&init=public");
-				break;
-			case "twitter":	
-				url.append("https://twitter.com/search?q="+name);
-				break;
-			case "linkedin":
-				if(partner.getPartnerTypeSelect() == 2){
-					url.append("http://www.linkedin.com/pub/dir/"+partner.getFirstName()+"/"+partner.getName());
-				}
-				else{ 
-					url.append("https://www.linkedin.com/company/"+name); 
-				}
-				break;
-			case "youtube":
-				url.append("https://www.youtube.com/results?search_query="+name);
-				break;
+		name = name == null ? "" : name;
+		urlMap.put("google","<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="+name+"' target='_blank' />");
+		urlMap.put("facebook","<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="+name+"&init=public"+"' target='_blank'/>");
+		urlMap.put("twitter", "<a class='fa fa-twitter' href='https://twitter.com/search?q="+name+"' target='_blank' />");
+		urlMap.put("linkedin","<a class='fa fa-linkedin' href='https://www.linkedin.com/company/"+name+"' target='_blank' />");
+		if(typeSelect == 2){
+			urlMap.put("linkedin","<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"+name.replace("+","/")+"' target='_blank' />");
 		}
-		LOG.debug("Search URL: {}",url.toString()+"&output=embed");
-		return url.toString()+"&output=embed";
+		urlMap.put("youtube","<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="+name+"' target='_blank' />");
+		
+		return urlMap;
 	}
 	
 }

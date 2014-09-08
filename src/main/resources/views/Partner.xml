@@ -40,17 +40,12 @@
     
     <form name="partner-form" id="base-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-partner-attrs-change-name" 
+    onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" 
     onSave="action-group-base-partner-onsave">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
 	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null" if-module="axelor-account"/>
-	        <button name="searchGoogle" icon="fa-google-plus" help="Search on google" onClick="save,action-partner-method-search-google" />
-	        <button name="searchFacebook" icon="fa-facebook" help="Search on facebook" onClick="save,action-partner-method-search-facebook" />
-	        <button name="searchTwitter" icon="fa-twitter" help="Search on twitter" onClick="save,action-partner-method-search-twitter" />
-	        <button name="searchLinkedin" icon="fa-linkedin" help="Search on linkedin" onClick="save,action-partner-method-search-linkedin" />
-	        <button name="searchYoutube" icon="fa-youtube" help="Search on youtube" onClick="save,action-partner-method-search-youtube" />
 	    </toolbar>
 	     <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
@@ -61,151 +56,160 @@
 	        </menu>
 	    </menubar>
 	    <panel>
-        <field name="picture" showTitle="false" widget="Image" x-span="4"/>
-        <panel x-span="8">
-          <field x-span="12" name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name"/>
-          <field x-span="2" name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility"/>
-          <field x-span="5" name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name"/>
-          <field x-span="5" name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name"/>
-        </panel>
-  </panel>
-  <panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2"  colSpan="4" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
-  <panel-tabs>
-    <panel name="information" title="Informations">
-      <panel hideIf="isContact" x-span="12">
-        <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
-        <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
-      </panel>
-      <panel title="Partner Details" hideIf="partnerTypeSelect == 2" x-span="12" >
-       <panel x-span="6">
-          <field name="partnerCategory" widget="SuggestBox" x-span="6"/>
-          <field name="industrySectorSelect" x-span="6"/>
-          <field name="source" x-span="6"/>
-          <field name="site" domain="self.partner.id = :id" x-span="6"/>
-          <field name="department" x-span="6"/>
-         </panel>
-        <panel  x-span="6">
-          <field name="saleTurnover" x-span="6"/>
-          <field name="nbrEmployees" x-span="6"/>
-          <field name="registrationCode" x-span="6"/>
-          <field name="taxNbr" x-span="6"/>
-          <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" x-span="6"/>
-        </panel>
-      </panel>
-      <panel title="Postal addresses" x-span="12">
-        <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
-        <field name="mainInvoicingAddress"/>
-        <field name="deliveryDelay" showIf="supplierTypeSelect == 2 || supplierTypeSelect == 3"/>
-      </panel>
-      <panel title="Contact" x-span="12">
-        <field name="fixedPhone"/>
-        <field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
-        <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
-        <field name="fax"/>
-        <field name="webSite"/>
-      </panel>
-      <spacer />
-    </panel>
-    <panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" x-span="12">
-      <field name="invoiceSendingFormatSelect"/>
-      <field name="paymentMode"/>
-      <field name="paymentCondition"/>
-      <field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2"/>
-      <field name="fiscalPosition"/>
-      <field name="payerQuality"/>
-      <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
-      <panel x-span="6">
-      <button name="showAllInvoices" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
-      <button name="showUnpaidInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-view-show-unpaid-invoice"/>
-      </panel>
-      <field name="bankDetailsList" >
-          <viewer><![CDATA[
-      <bankDetailsList>
-      {{record.fullName}} 
-      </bankDetailsList>
-      ]]></viewer>
-          <editor>
-            <field name="countryCode" x-span="4"/>
-            <field name="bankAddress" x-span="4"/>
-            <field name="bankCode" x-span="4"/>
-            <field name="accountNbr" x-span="4"/>
-            <field name="iban" x-span="4"/>
-            <field name="bic" x-span="4"/>
-          </editor>
-      </field>      
-    </panel>
-   <panel-related field="accountingSituationList" title="Customer balance" hideIf="isContact" if-module="axelor-account" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account" />
-    <panel-related field="blockingList" widget="MasterDetail" title="Blockings" hideIf="isContact" if-module="axelor-account"/>
-   <panel-related field="reportedBalanceList"  widget="MasterDetail" title="Reported balance" hideIf="isContact" if-module="axelor-account" />
-    <panel title="SEPA Direct Debit" if-module="axelor-account">
-	    	  <field name="activeRum" colSpan="2" canNew="false" domain="self.partner.id = :id"/>
-          <field name="rumList" title="History" readonly="true" x-span="12">
-               <viewer><![CDATA[
-          <rumList>
-          {{record.rumNumber}} {{record.debtorName}} {{record.debtorAddress}} {{record.creationDate}} {{record.mandateSignatureDate}} {{record.mandateSignatureCommune}}
-          </rumList>
-          ]]></viewer>
-          </field>
-	  </panel>
-	<panel title="Activities" showIf="id != null" if-module="axelor-crm">
-		<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project" />
-	</panel>
-	<panel-dashlet x-span="12" title="Sales" showIf="id != null" if-module="axelor-supplychain" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
-	<panel-dashlet x-span="12" title="Events" showIf="id != null" if-module="axelor-crm" action="portal.customer.crm.activities" height="350"/>
-    <panel title="Notes" x-span="12">
-      <field name="description" x-span="12" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
-    </panel>
-    <panel title="Settings" x-span="12">
-      <field name="partnerSeq"/>
-      <field name="languageSelect"/>
-      <panel title="Assigned to" x-span="12">
-        <field name="companySet" colSpan="4" widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
-        <field name="user"/>
-        <field name="team"/>
-      </panel>
-    </panel>
-  </panel-tabs>
-<!-- 		        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" colSpan="4" cols="4"> -->
-<!-- 	            <include view="incl-invoice-payment-partner-form" from="axelor-account"/> -->
-<!-- 	        </page> -->
-<!-- 	        <page name="compteClient" title="Customer balance" hideIf="isContact" if-module="axelor-account"> -->
-<!-- 	    		<include view="incl-customer-balance-partner-form" from="axelor-account" /> -->
-<!-- 	    	</page> -->
-<!-- 	    	<page name="blocking" title="Blockings" hideIf="isContact" if-module="axelor-account"> -->
-<!-- 	    	    <include view="incl-blocking-partner-form" from="axelor-account" /> -->
-<!-- 	    	</page> -->
-<!-- 	    	<page name="reportedBalance" title="Reported balance" hideIf="isContact || id == null" if-module="axelor-account"> -->
-<!-- 	    	   	<include view="incl-reported-balance-partner-form" from="axelor-account" /> -->
-<!-- 	    	</page> -->
-<!-- 	    	<page title="SEPA Direct Debit" cols="4" showIf="paymentMode.typeSelect == 2" if-module="axelor-account"> -->
-<!-- 	    	    <include view="incl-sepa-direct-debit-partner-form" from="axelor-account" /> -->
-<!-- 	    	</page> -->
-<!-- 	        <page name="activities" title="Activities" showIf="id != null" if-module="axelor-crm"> -->
-<!-- 	            <include view="incl-show-project-partner-form" from="axelor-organisation" if-module="axelor-organisation" /> -->
-<!-- 	        	<include view="incl-activities-partner-form" from="axelor-crm" /> -->
-<!-- 	        	<include view="incl-sales-order-portal-form" from="axelor-supplychain" if-module="axelor-supplychain" /> -->
-<!-- 	        </page> -->
-<!-- 			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain"> -->
-<!-- 				<include view="incl-sales-partner-form" from="axelor-supplychain" /> -->
-<!-- 			</page> -->
-<!-- 			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm"> -->
-<!--      			<include view="incl-events-partner-form" from="axelor-crm" /> -->
-<!-- 			</page> -->
-<!-- 			<page title="Notes"> -->
-<!-- 	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/> -->
-<!-- 	        </page> -->
-<!-- 			<page title="Settings" cols="4"> -->
-<!-- 	            <field name="partnerSeq"/> -->
-<!-- 	            <field name="languageSelect"/> -->
-<!-- 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true"> -->
-<!-- 	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/> -->
-<!-- 	                <break/> -->
-<!-- 	                <field name="user"/> -->
-<!-- 	                <field name="team"/> -->
-<!-- 	            </group> -->
-<!-- 	        </page> -->
-
-<!-- 	    </notebook> -->
+	    	<panel x-span="3" >
+	        	<field name="picture" showTitle="false" widget="Image" x-span="12"/>
+	        	<panel x-span="12">
+	           		<label name="google" title="&lt;a href='http://www.google.com' target='_blank'&gt;Google&lt;/a&gt;" x-span="2"/>
+					<label name="facebook" title="&lt;a href='http://www.facebook.com' target='_blank'&gt;Facebook&lt;/a&gt;" x-span="2"/>
+					<label name="twitter" title="&lt;a href='http://www.twitter.com' target='_blank'&gt;Twitter&lt;/a&gt;" x-span="2"/>
+					<label name="linkedin" title="&lt;a href='http://www.linkedin.com' target='_blank'&gt;LinkedIn&lt;/a&gt;" x-span="2"/>
+					<label name="youtube" title="&lt;a href='http://www.youtube.com' target='_blank'&gt;Youtube&lt;/a&gt;" x-span="2"/>
+	           	</panel>
+	        </panel>
+	        <panel x-span="5">
+	          <field x-span="12" name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url"/>
+	          <field x-span="12" name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility"/>
+	          <field x-span="12" name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url"/>
+	          <field x-span="12" name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url"/>
+	        </panel>
+  		</panel>
+  		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2"  colSpan="4" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
+  		<panel-tabs>
+  			<panel name="information" title="Informations">
+				<panel hideIf="isContact" x-span="12">
+					<field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
+					<field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
+				</panel>
+				<panel title="Partner Details" hideIf="partnerTypeSelect == 2" x-span="12" >
+					<panel x-span="6">
+						<field name="partnerCategory" widget="SuggestBox" x-span="6"/>
+						<field name="industrySectorSelect" x-span="6"/>
+						<field name="source" x-span="6"/>
+						<field name="site" domain="self.partner.id = :id" x-span="6"/>
+						<field name="department" x-span="6"/>
+					</panel>
+					<panel  x-span="6">
+						<field name="saleTurnover" x-span="6"/>
+						<field name="nbrEmployees" x-span="6"/>
+						<field name="registrationCode" x-span="6"/>
+						<field name="taxNbr" x-span="6"/>
+						<field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" x-span="6"/>
+					</panel>
+		      	</panel>
+				<panel title="Postal addresses" x-span="12">
+					<field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
+					<field name="mainInvoicingAddress"/>
+					<field name="deliveryDelay" showIf="supplierTypeSelect == 2 || supplierTypeSelect == 3"/>
+				</panel>
+				<panel title="Contact" x-span="12">
+					<field name="fixedPhone"/>
+					<field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
+					<field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
+					<field name="fax"/>
+					<field name="webSite"/>
+				</panel>
+				<spacer />
+	    	</panel>
+			<panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" x-span="12">
+				<field name="invoiceSendingFormatSelect"/>
+				<field name="paymentMode"/>
+				<field name="paymentCondition"/>
+				<field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2"/>
+				<field name="fiscalPosition"/>
+				<field name="payerQuality"/>
+				<field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
+				<panel x-span="6">
+					<button name="showAllInvoices" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
+					<button name="showUnpaidInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-view-show-unpaid-invoice"/>
+				</panel>
+				<field name="bankDetailsList" >
+				    <viewer><![CDATA[
+						<bankDetailsList>
+						{{record.fullName}} 
+						</bankDetailsList>
+						]]></viewer>
+				    <editor>
+						<field name="countryCode" x-span="4"/>
+						<field name="bankAddress" x-span="4"/>
+						<field name="bankCode" x-span="4"/>
+						<field name="accountNbr" x-span="4"/>
+						<field name="iban" x-span="4"/>
+						<field name="bic" x-span="4"/>
+				    </editor>
+				</field>      
+			</panel>
+			<panel-related field="accountingSituationList" title="Customer balance" hideIf="isContact" if-module="axelor-account" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account" />
+			<panel-related field="blockingList" widget="MasterDetail" title="Blockings" hideIf="isContact" if-module="axelor-account"/>
+			<panel-related field="reportedBalanceList"  widget="MasterDetail" title="Reported balance" hideIf="isContact" if-module="axelor-account" />
+			<panel title="SEPA Direct Debit" if-module="axelor-account">
+			 	  <field name="activeRum" colSpan="2" canNew="false" domain="self.partner.id = :id"/>
+			      <field name="rumList" title="History" readonly="true" x-span="12">
+			           <viewer><![CDATA[
+						<rumList>
+						{{record.rumNumber}} {{record.debtorName}} {{record.debtorAddress}} {{record.creationDate}} {{record.mandateSignatureDate}} {{record.mandateSignatureCommune}}
+						</rumList>
+						]]></viewer>
+			      </field>
+			</panel>
+			<panel title="Activities" showIf="id != null" if-module="axelor-crm">
+				<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project" />
+			</panel>
+			<panel-dashlet x-span="12" title="Sales" showIf="id != null" if-module="axelor-supplychain" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
+			<panel-dashlet x-span="12" title="Events" showIf="id != null" if-module="axelor-crm" action="portal.customer.crm.activities" height="350"/>
+			<panel title="Notes" x-span="12">
+				<field name="description" x-span="12" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
+			</panel>
+			<panel title="Settings" x-span="12">
+				<field name="partnerSeq"/>
+				<field name="languageSelect"/>
+				<panel title="Assigned to" x-span="12">
+					<field name="companySet" colSpan="4" widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
+					<field name="user"/>
+					<field name="team"/>
+				</panel>
+			</panel>
+		</panel-tabs>
+	<!-- 		        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" colSpan="4" cols="4"> -->
+	<!-- 	            <include view="incl-invoice-payment-partner-form" from="axelor-account"/> -->
+	<!-- 	        </page> -->
+	<!-- 	        <page name="compteClient" title="Customer balance" hideIf="isContact" if-module="axelor-account"> -->
+	<!-- 	    		<include view="incl-customer-balance-partner-form" from="axelor-account" /> -->
+	<!-- 	    	</page> -->
+	<!-- 	    	<page name="blocking" title="Blockings" hideIf="isContact" if-module="axelor-account"> -->
+	<!-- 	    	    <include view="incl-blocking-partner-form" from="axelor-account" /> -->
+	<!-- 	    	</page> -->
+	<!-- 	    	<page name="reportedBalance" title="Reported balance" hideIf="isContact || id == null" if-module="axelor-account"> -->
+	<!-- 	    	   	<include view="incl-reported-balance-partner-form" from="axelor-account" /> -->
+	<!-- 	    	</page> -->
+	<!-- 	    	<page title="SEPA Direct Debit" cols="4" showIf="paymentMode.typeSelect == 2" if-module="axelor-account"> -->
+	<!-- 	    	    <include view="incl-sepa-direct-debit-partner-form" from="axelor-account" /> -->
+	<!-- 	    	</page> -->
+	<!-- 	        <page name="activities" title="Activities" showIf="id != null" if-module="axelor-crm"> -->
+	<!-- 	            <include view="incl-show-project-partner-form" from="axelor-organisation" if-module="axelor-organisation" /> -->
+	<!-- 	        	<include view="incl-activities-partner-form" from="axelor-crm" /> -->
+	<!-- 	        	<include view="incl-sales-order-portal-form" from="axelor-supplychain" if-module="axelor-supplychain" /> -->
+	<!-- 	        </page> -->
+	<!-- 			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain"> -->
+	<!-- 				<include view="incl-sales-partner-form" from="axelor-supplychain" /> -->
+	<!-- 			</page> -->
+	<!-- 			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm"> -->
+	<!--      			<include view="incl-events-partner-form" from="axelor-crm" /> -->
+	<!-- 			</page> -->
+	<!-- 			<page title="Notes"> -->
+	<!-- 	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/> -->
+	<!-- 	        </page> -->
+	<!-- 			<page title="Settings" cols="4"> -->
+	<!-- 	            <field name="partnerSeq"/> -->
+	<!-- 	            <field name="languageSelect"/> -->
+	<!-- 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true"> -->
+	<!-- 	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/> -->
+	<!-- 	                <break/> -->
+	<!-- 	                <field name="user"/> -->
+	<!-- 	                <field name="team"/> -->
+	<!-- 	            </group> -->
+	<!-- 	        </page> -->
+	
+	<!-- 	    </notebook> -->
 	</form>
 	
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -263,7 +267,7 @@
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" 
 	onNew="action-partner-contact-record-default" 
-	onLoad="action-partner-attrs-change-name" 
+	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" 
 	onSave="save,action-set-partner-seq">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
@@ -279,11 +283,20 @@
 	        </menu>
 	    </menubar>
 	    <panel>
-	    	<field name="picture" widget="Image" showTitle="false" x-span="4"/>
-	        <panel x-span="8">
+	    	<panel x-span="3">
+	    		<field name="picture" widget="Image" showTitle="false" x-span="12"/>
+	    		<panel x-span="12">
+	           		<label name="google" title="&lt;a href='http://www.google.com' target='_blank'&gt;Google&lt;/a&gt;" x-span="2"/>
+					<label name="facebook" title="&lt;a href='http://www.facebook.com' target='_blank'&gt;Facebook&lt;/a&gt;" x-span="2"/>
+					<label name="twitter" title="&lt;a href='http://www.twitter.com' target='_blank'&gt;Twitter&lt;/a&gt;" x-span="2"/>
+					<label name="linkedin" title="&lt;a href='http://www.linkedin.com' target='_blank'&gt;LinkedIn&lt;/a&gt;" x-span="2"/>
+					<label name="youtube" title="&lt;a href='http://www.youtube.com' target='_blank'&gt;Youtube&lt;/a&gt;" x-span="2"/>
+	        	</panel>
+	      	</panel>
+	        <panel x-span="9">
 	            <field name="titleSelect" showTitle="false" placeholder="Civility" x-span="2" />
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange" x-span="5" />
-	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-group-base-partner-contact-name-onchange" x-span="5" />
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange,action-partner-method-set-social-network-url" x-span="5" />
+	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-group-base-partner-contact-name-onchange,action-partner-method-set-social-network-url" x-span="5" />
 	            <panel title="Company" x-span="12" >
 	            	<field name="mainPartner"/>
 	           	</panel>
@@ -344,20 +357,8 @@
 	</action-method>
     
     
-    <action-method name="action-partner-method-search-google">
-    	<call class="com.axelor.apps.base.web.PartnerController" method="openSearchUrl" />
-    </action-method>
-    <action-method name="action-partner-method-search-facebook">
-    	<call class="com.axelor.apps.base.web.PartnerController" method="openSearchUrl" />
-    </action-method>
-    <action-method name="action-partner-method-search-twitter">
-    	<call class="com.axelor.apps.base.web.PartnerController" method="openSearchUrl" />
-    </action-method>
-    <action-method name="action-partner-method-search-linkedin">
-    	<call class="com.axelor.apps.base.web.PartnerController" method="openSearchUrl" />
-    </action-method>
-    <action-method name="action-partner-method-search-youtube">
-    	<call class="com.axelor.apps.base.web.PartnerController" method="openSearchUrl" />
+    <action-method name="action-partner-method-set-social-network-url">
+    	<call class="com.axelor.apps.base.web.PartnerController" method="setSocialNetworkUrl" />
     </action-method>
     
 

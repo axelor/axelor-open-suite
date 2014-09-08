@@ -232,19 +232,14 @@ public class PartnerController {
 		return companySet;
 	}
 	
-	public void openSearchUrl(ActionRequest request, ActionResponse response) {
+	public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {
 		Partner partner = request.getContext().asType(Partner.class);
-		String[] actionName = request.getAction().split("-");
-		String appName = actionName[actionName.length-1];
-		LOG.debug("Search request for app: {}",appName);
-		
-		
-		Map<String,Object> mapView = new HashMap<String,Object>();
-		mapView.put("title", StringTool.toFirstUpper(appName));
-		mapView.put("resource", partnerService.getSearchUrl(appName,partner));
-		mapView.put("viewType", "html");
-		mapView.put("target", "new");
-		response.setView(mapView);
+		Map<String,String> urlMap = partnerService.getSocialNetworkUrl(partner.getName(),partner.getFirstName(),partner.getPartnerTypeSelect());
+		response.setAttr("google", "title", urlMap.get("google"));
+		response.setAttr("facebook", "title", urlMap.get("facebook"));
+		response.setAttr("twitter", "title", urlMap.get("twitter"));
+		response.setAttr("linkedin", "title", urlMap.get("linkedin"));
+		response.setAttr("youtube", "title", urlMap.get("youtube"));
 		
 	}
 }
