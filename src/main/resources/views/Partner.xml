@@ -56,22 +56,28 @@
 	        </menu>
 	    </menubar>
 	    <panel>
-	    	<panel x-span="3" >
-	        	<field name="picture" showTitle="false" widget="Image" x-span="12"/>
-	        	<panel x-span="12">
-	           		<label name="google" title="&lt;a href='http://www.google.com' target='_blank'&gt;Google&lt;/a&gt;" x-span="2"/>
-					<label name="facebook" title="&lt;a href='http://www.facebook.com' target='_blank'&gt;Facebook&lt;/a&gt;" x-span="2"/>
-					<label name="twitter" title="&lt;a href='http://www.twitter.com' target='_blank'&gt;Twitter&lt;/a&gt;" x-span="2"/>
-					<label name="linkedin" title="&lt;a href='http://www.linkedin.com' target='_blank'&gt;LinkedIn&lt;/a&gt;" x-span="2"/>
-					<label name="youtube" title="&lt;a href='http://www.youtube.com' target='_blank'&gt;Youtube&lt;/a&gt;" x-span="2"/>
-	           	</panel>
-	        </panel>
-	        <panel x-span="5">
-	          <field x-span="12" name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url"/>
-	          <field x-span="12" name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility"/>
-	          <field x-span="12" name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url"/>
-	          <field x-span="12" name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url"/>
-	        </panel>
+	    	<panel x-span="2">
+	        	<field name="picture" showTitle="false" widget="Image" x-span="12" x-width="80" x-height="80"/>
+	      	</panel>
+	      	<panel x-span="9">
+	      	<field name="fullName" x-span="12" showTitle="false">
+	      		<hilite strong="true" if="true" color="primary"/>        
+		        <editor>
+		            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url" x-span="4"/>
+		            <spacer x-span="8"/>
+		            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" x-span="4"/>
+		            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" x-span="3"/>            
+		            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" x-span="2"/>
+		        </editor>
+		    </field>
+			<panel x-span="4" showIf="fullName != null">
+			    <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" x-span="2"/>
+			    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" x-span="2"/>
+			    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" x-span="2"/>
+			    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" x-span="2"/>
+			    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" x-span="2"/>
+			</panel>
+		</panel>
   		</panel>
   		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2"  colSpan="4" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
   		<panel-tabs>
@@ -286,11 +292,11 @@
 	    	<panel x-span="3">
 	    		<field name="picture" widget="Image" showTitle="false" x-span="12"/>
 	    		<panel x-span="12">
-	           		<label name="google" title="&lt;a href='http://www.google.com' target='_blank'&gt;Google&lt;/a&gt;" x-span="2"/>
-					<label name="facebook" title="&lt;a href='http://www.facebook.com' target='_blank'&gt;Facebook&lt;/a&gt;" x-span="2"/>
-					<label name="twitter" title="&lt;a href='http://www.twitter.com' target='_blank'&gt;Twitter&lt;/a&gt;" x-span="2"/>
-					<label name="linkedin" title="&lt;a href='http://www.linkedin.com' target='_blank'&gt;LinkedIn&lt;/a&gt;" x-span="2"/>
-					<label name="youtube" title="&lt;a href='http://www.youtube.com' target='_blank'&gt;Youtube&lt;/a&gt;" x-span="2"/>
+	           		<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" x-span="2"/>
+				    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" x-span="2"/>
+				    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" x-span="2"/>
+				    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" x-span="2"/>
+				    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" x-span="2"/>
 	        	</panel>
 	      	</panel>
 	        <panel x-span="9">
