@@ -7,7 +7,7 @@
 
   <entity name="BirtTemplateParameter" lang="java">
   	<string name="importId"/>
-  	<string name="name" title="Name"/>
+  	<string name="name" title="Name" required="true"/>
 	<string name="value" title="Value"/>
 	<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate"/>
     

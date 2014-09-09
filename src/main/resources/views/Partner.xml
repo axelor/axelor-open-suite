@@ -103,8 +103,8 @@
 					</panel>
 		      	</panel>
 				<panel title="Postal addresses" x-span="12">
-					<field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
-					<field name="mainInvoicingAddress"/>
+					<field name="deliveryAddress" canNew="true" onChange="action-partner-record-main-invoicing-address"/>
+					<field name="mainInvoicingAddress" canNew="true"/>
 					<field name="deliveryDelay" showIf="supplierTypeSelect == 2 || supplierTypeSelect == 3"/>
 				</panel>
 				<panel title="Contact" x-span="12">

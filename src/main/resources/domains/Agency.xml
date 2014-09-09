@@ -8,7 +8,7 @@
   <entity name="Agency" lang="java">
  
   	<string name="code" title="Code"/>
-  	<string name="name" title="Name"/>
+  	<string name="name" title="Name" required="true"/>
     
   </entity>
 

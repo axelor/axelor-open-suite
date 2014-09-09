@@ -12,31 +12,35 @@
     
     <form name="blocking-form" title="Blocking" model="com.axelor.apps.base.db.Blocking" cols="8" colWidths="15%,10%,15%,10%,15%,10%,15%,10%">
      	<panel>
-		    <field name="invoicingBlockingOk"/>
-		    <field name="debitBlockingOk"/>
-		    <field name="reimbursementBlockingOk"/>
-		    <field name="reminderBlockingOk"/>
-		    <panel title="Invoicing blocking" showIf="invoicingBlockingOk" x-span="12">
-		        <field name="invoicingBlockingToDate" x-span="4"/>
-		        <field name="invoicingBlockingReason" x-span="4"/>
-		        <field name="invoicingBlockingByUser" x-span="4"/>
-		    </panel>
-		    <panel title="Direct debit blocking" showIf="debitBlockingOk" x-span="12">
-		      <field name="debitBlockingToDate" x-span="4"/>
-		      <field name="debitBlockingReason" x-span="4"/>
-		      <field name="debitBlockingByUser" x-span="4"/>
-		    </panel>
-		    <panel title="Reimbursement blocking" showIf="reimbursementBlockingOk" x-span="12">
-		      <field name="reimbursementBlockingToDate" x-span="4"/>
-		      <field name="reimbursementBlockingReason" x-span="4"/>
-		      <field name="reimbursementBlockingByUser" x-span="4"/>
-		    </panel>
-		    <panel title="Reminder blocking" showIf="reminderBlockingOk" x-span="12">
-		      <field name="reminderBlockingToDate" x-span="4"/>
-		      <field name="reminderBlockingReason" x-span="4"/>
-		      <field name="reminderBlockingByUser" x-span="4"/>
-		    </panel>
- 		</panel>
+		    <field name="invoicingBlockingOk" x-span="3"/>
+		    <field name="debitBlockingOk" x-span="3"/>
+		    <field name="reimbursementBlockingOk" x-span="3"/>
+		    <field name="reminderBlockingOk" x-span="3"/>
+		</panel>
+		
+		<panel title="Invoicing blocking" showIf="invoicingBlockingOk" x-span="12">
+			<field name="invoicingBlockingToDate" x-span="4"/>
+			<field name="invoicingBlockingReason" x-span="4"/>
+			<field name="invoicingBlockingByUser" x-span="4"/>
+		</panel>
+		
+		<panel title="Direct debit blocking" showIf="debitBlockingOk" x-span="12">
+		  <field name="debitBlockingToDate" x-span="4"/>
+		  <field name="debitBlockingReason" x-span="4"/>
+		  <field name="debitBlockingByUser" x-span="4"/>
+		</panel>
+		
+		<panel title="Reimbursement blocking" showIf="reimbursementBlockingOk" x-span="12">
+		  <field name="reimbursementBlockingToDate" x-span="4"/>
+		  <field name="reimbursementBlockingReason" x-span="4"/>
+		  <field name="reimbursementBlockingByUser" x-span="4"/>
+		</panel>
+		
+		<panel title="Reminder blocking" showIf="reminderBlockingOk" x-span="12">
+		  <field name="reminderBlockingToDate" x-span="4"/>
+		  <field name="reminderBlockingReason" x-span="4"/>
+		  <field name="reminderBlockingByUser" x-span="4"/>
+		</panel>
     </form>
 
 </object-views>

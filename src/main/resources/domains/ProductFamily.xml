@@ -6,8 +6,8 @@
   <entity name="ProductFamily" lang="java" cachable="true">
  
  	<integer name="importId"/>
-    <string name="code" title="Family Code" index="true"/>
-    <string name="name" title="Family Name"/>
+    <string name="code" title="Family Code" required="true" unique="true" index="true"/>
+    <string name="name" title="Family Name" required="true" />
     <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="productFamily" title="Accounts Configurations"/>
  
   </entity>

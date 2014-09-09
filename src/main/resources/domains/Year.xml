@@ -8,7 +8,7 @@
   <entity name="Year" lang="java" cachable="true">
   
     <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" unique="true"/>
+    <string name="code" title="Code" required="true" unique="true"/>
     <date name="fromDate" title="From" required="true"/>
     <date name="toDate" title="To" required="true"/>
     <one-to-many name="periodList" ref="com.axelor.apps.base.db.Period" mappedBy="year" title="Periods list"/>

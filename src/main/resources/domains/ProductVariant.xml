@@ -8,7 +8,7 @@
   <entity name="ProductVariant" lang="java">
 	
 	<integer name="importId" />
-	<many-to-one name="productVariantAttr1" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+	<many-to-one name="productVariantAttr1" required="true" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr2" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr3" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr4" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
@@ -19,7 +19,7 @@
 	
 	<boolean name="usedForStock" title="Use for stock only"/>
 	
-	<string name="name" title="Name">
+	<string name="name" title="Name" required="true">
 		<![CDATA[
 		String name = "";
 		if(productVariantAttr1 != null && productVariantValue1 != null)  {  name += productVariantAttr1.getName()+" : "+productVariantValue1.getName();  }

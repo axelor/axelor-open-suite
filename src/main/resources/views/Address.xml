@@ -9,36 +9,37 @@
 		<button name="directions" icon="fa-location-arrow" help="Direction" onClick="com.axelor.apps.base.web.AddressController:directionsMap" />
 	</grid>
 	
-	<form cols="2" colWidths="*,200" onSave="action-group-base-address-onsave" onLoad="action-address-get-general-qas" onNew="default-address-record,action-address-get-general-qas" readonlyIf="id != null &amp;&amp; fromMain == null" name="address-form" title="Address" model="com.axelor.apps.base.db.Address">
-	  <panel name="main" title="Address details" x-span="12">
-	      <field name="addressL2" onChange="action-check-string-capital-case"/>
-	      <field name="addressL3" onChange="action-check-string-capital-case"/>
-	      <field name="addressL4" onChange="action-check-string-capital-case"/>
-	      <field name="addressL5" onChange="action-check-string-capital-case"/>
-	      <field name="commune" onChange="action-address-change-commune"/>
-	      <field name="addressL6" onChange="action-check-string-capital-case" required="true"/>
-	      <field name="addressL7Country" required="true"/>
-	      <field name="inseeCode"/>
-	      <field name="isUsed" hidden="true" widget="BOOLEAN"/>
-	  </panel>
-	  <panel-side title="Actions" hideIf="$popup()">
-	    <field name="latit" x-span="6"/>
-	    <field name="longit" x-span="6"/>
-	    <spacer/>
-	    <panel x-span="8">
-	    <button name="map" title="View map" icon="fa-map-marker" onClick="com.axelor.apps.base.web.AddressController:viewMap,save"/>
-	    <button name="directions" title="Get directions" icon="fa-location-arrow" onClick="com.axelor.apps.base.web.AddressController:directionsMap"/>
-	    </panel> 
-	  </panel-side>
-	  <panel title="QAS certification" x-span="12" showIf="hasQasValidation">
-	    <field name="certifiedOk" x-span="4"/>
-	    <panel x-span="4">
-	    <button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
-	    <button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
-	    </panel>
-	    <panel-related field="pickList" title="Pick list" x-span="12" />
-	    <field name="hasQasValidation" x-type="BOOLEAN" hidden="true"/>
-	  </panel>
+	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
+	onSave="action-group-base-address-onsave" onLoad="action-address-get-general-qas" onNew="default-address-record,action-address-get-general-qas" readonlyIf="id != null &amp;&amp; fromMain == null" >
+		<panel name="main" title="Address details" x-span="12">
+			<field name="addressL2" onChange="action-check-string-capital-case"/>
+			<field name="addressL3" onChange="action-check-string-capital-case"/>
+			<field name="addressL4" onChange="action-check-string-capital-case"/>
+			<field name="addressL5" onChange="action-check-string-capital-case"/>
+			<field name="addressL6" onChange="action-check-string-capital-case" required="true"/>
+			<field name="commune" onChange="action-address-change-commune"/>
+			<field name="addressL7Country" required="true"/>
+			<button-group x-span="6">
+				<button name="map" title="View map" icon="fa-map-marker" onClick="com.axelor.apps.base.web.AddressController:viewMap,save"/>
+				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="com.axelor.apps.base.web.AddressController:directionsMap"/>
+			</button-group>
+			<field name="isUsed" hidden="true" widget="BOOLEAN"/>
+		</panel>
+		<panel title="Localisation" hideIf="$popup()">
+			<field name="latit" x-span="6"/>
+			<field name="longit" x-span="6"/>
+			<spacer/> 
+		</panel>
+		
+		<panel title="QAS certification" x-span="12" showIf="hasQasValidation">
+			<field name="certifiedOk" x-span="4"/>
+			<panel x-span="4">
+				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+				<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+			</panel>
+			<panel-related field="pickList" title="Pick list" x-span="12" />
+			<field name="hasQasValidation" x-type="BOOLEAN" hidden="true"/>
+		</panel>
 	</form>
 	
 	<action-group name="action-group-base-address-onsave">

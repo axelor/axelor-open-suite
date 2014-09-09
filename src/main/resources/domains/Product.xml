@@ -9,7 +9,7 @@
     <string name="name" title="Name" required="true" namecolumn="true" initParam="true"/>
 	
     <string name="code" title="Code" required="true" initParam="true"/>
-	<string name="ean13" title="EAN13 Code"/>
+	<string name="ean13" title="EAN13 Code" unique="true"/>
 	
     <string name="description" large="true" title="Description" initParam="true"/>
     <string name="internalDescription" large="true" title="Internal description" initParam="true"/>
