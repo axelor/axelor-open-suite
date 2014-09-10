@@ -14,7 +14,7 @@
   	<string name="ccRecipients" large="true" multiline="true" title="Cc"/>
   	<string name="bccRecipients" large="true" multiline="true" title="Bcc"/>
   	<string name="target" title="Target receptor"/>
-  	<integer name="mediaTypeSelect" title="Media Type" selection="message.media.type.select"/>
+  	<integer name="mediaTypeSelect" title="Media Type" required="true" selection="message.media.type.select"/>
   	<string name="addressBlock" large="true" multiline="true" title="Address Block"/>
 <!--   	<many-to-one name="templateContext" ref="com.axelor.apps.base.db.TemplateContext" /> -->
 <!--   	<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/> -->
