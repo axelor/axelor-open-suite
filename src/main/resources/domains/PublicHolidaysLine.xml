@@ -9,7 +9,7 @@
   	
   	<string name="name" title="Name"/>
 	<many-to-one name="publicHolidays" ref="com.axelor.apps.organisation.db.PublicHolidays" title="Public holiday"/>
-	<date name="date" title="Date"/>
+	<date name="date" title="Date" required="true"/>
 	<string name="description" title="Description"/>
 		
   </entity>

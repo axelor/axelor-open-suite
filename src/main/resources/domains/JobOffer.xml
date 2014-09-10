@@ -6,8 +6,8 @@
 	<module name="organisation" package="com.axelor.apps.organisation.db"/>
 		<entity name="JobOffer" lang="java">
 		
-			<string name="name" title="Offer title"/>
-			<string name="code" title="Code"/>
+			<string name="name" title="Offer title" required="true"/>
+			<string name="code" title="Code" required="true"/>
 			<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Business"/>
 			<date name="fromDate" title="Open from"/>
 			<date name="toDate" title="To"/>

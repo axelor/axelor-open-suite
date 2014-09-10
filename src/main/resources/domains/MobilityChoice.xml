@@ -6,8 +6,8 @@
 	<module name="organisation" package="com.axelor.apps.organisation.db" />
 
  	<entity name="MobilityChoice" lang="java">
-		<string name="name" title="Name"></string>
-		<string name="code" title="Code"></string>
+		<string name="name" title="Name" required="true"/>
+		<string name="code" title="Code" required="true"/>
 	</entity>
 
 </domain-models>

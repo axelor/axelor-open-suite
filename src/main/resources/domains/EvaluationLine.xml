@@ -7,9 +7,9 @@
 
  	<entity name="EvaluationLine" lang="java">
 		<many-to-one name="candidate" ref="Candidate"/>
-		<string name="label" title="Criteria evaluated"/>
-		<integer name="coefficient" title="Coefficient"/>
-		<integer name="gradeSelect" title="Grade" selection="grade.0.up.to.20.select"/>		
+		<string name="label" required="true" title="Criteria evaluated"/>
+		<integer name="coefficient" required="true" title="Coefficient"/>
+		<integer name="gradeSelect" required="true" title="Grade" selection="grade.0.up.to.20.select"/>		
 	</entity>
 
 </domain-models>

@@ -6,7 +6,7 @@
 	<module name="organisation" package="com.axelor.apps.organisation.db" />
 
 	<entity name="EmployeeLeave" lang="java">
-		<many-to-one name="employee" ref="Employee" title="Employee"/>
+		<many-to-one name="employee" ref="Employee" required="true" title="Employee"/>
 		<many-to-one name="reasonTask" ref="Task" title="Reason"/>
 		<decimal name="leaveBalances" title="Leave balances"/>
 		<decimal name="leaveRequestInProgress" title="Leave request in progress"/>

@@ -7,7 +7,7 @@
 
   <entity name="TimesheetPeriodConfig" lang="java">
 
-    <integer name="typeSelect" title="Type period" selection="organisation.timesheet.period.config.type.select"/>
+    <integer name="typeSelect" title="Type period" required="true" selection="organisation.timesheet.period.config.type.select"/>
     <integer name="firstDayOfWeek" title="First day of week" selection="day.week.select"/>
  	<integer name="lastDayOfWeek" title="Last day of week" selection="day.week.select"/>
   	

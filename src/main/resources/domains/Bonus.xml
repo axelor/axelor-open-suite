@@ -7,9 +7,9 @@
 
  <entity name="Bonus" lang="java">
 		<many-to-one name="employee" ref="Employee"/>
-		<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
-		<string name="name" title="Label"/>
-		<decimal name="amount" title="Amount"/>
+		<many-to-one name="period" ref="com.axelor.apps.base.db.Period" required="true" title="Period"/>
+		<string name="name" required="true" title="Label"/>
+		<decimal name="amount" required="true" title="Amount"/>
 	</entity>
 
 </domain-models>
