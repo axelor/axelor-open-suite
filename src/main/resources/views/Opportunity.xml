@@ -13,7 +13,7 @@
   		<hilite color="primary" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
   		<hilite background="success" if="salesStageSelect == 9"/>
   		<hilite background="danger" if="salesStageSelect == 10"/>
-		<field name="name" width="300"/>
+		<field name="name" required="true"/>
 		<field name="createdOn" hidden="true"/>
         <field name="partner"/>
 		<field name="lead"/>

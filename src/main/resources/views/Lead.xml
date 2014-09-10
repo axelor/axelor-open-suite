@@ -30,104 +30,107 @@
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
-   <form cols="4" onLoad="action-lead-attrs-readonly-other-address" onNew="action-group-crm-lead-onnew" name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead">
-  <toolbar>
-    <button name="convertLead" title="Convert lead" hideIf="statusSelect == 4" readonlyIf="statusSelect == 4 || statusSelect == 6" onClick="save,action-lead-view-convert-lead"/>
-    <button name="sendByEmail" title="Send email" readonlyIf="statusSelect == 4 || statusSelect == 6" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
-    <button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
-  </toolbar>
-  <menubar>
-    <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-      <item title="Create call" action="save,action-lead-view-create-call"/>
-      <item title="Schedule meeting" action="save,action-lead-view-create-meeting"/>
-      <item title="Create task" action="save,action-lead-view-create-task"/>
-      <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
-    </menu>
-  </menubar>
-  <panel readonlyIf="statusSelect == 4 || statusSelect == 6">
-    <panel title="Personal" x-span="12">
-      <panel x-span="4">
-        <field name="picture" showTitle="false" widget="Image"/>
-      </panel>
-      <panel x-span="8">
-        <field name="titleSelect" showTitle="false" placeholder="Civility" x-span="2"/>
-        <field name="name" showTitle="false" css="highlight" placeholder="Name" x-span="5"/>
-        <field name="firstName" showTitle="false" css="highlight" placeholder="First name" x-span="5"/>
-      </panel>
-    </panel>
-    <panel title="Company" x-span="12">
-          <field name="enterpriseName" showIf="partner == null" placeholder="Enterprise name"/>
-          <field name="partner" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-          <field name="jobTitle" placeholder="Function"/>
-    </panel>
-
-    <panel title="Coordonnées">
-      <field name="fixedPhone"/>
-      <field name="fax"/>
-      <field name="mobilePhone"/>
-      <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
-    </panel>
-    <panel title="Assigned to">
-          <field name="contactDate"/>
-          <button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId" colSpan="2" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
-          <field name="user"/>
-          <field name="team"/>
-    </panel>
-  </panel>
-  <panel-tabs>
-     <panel name="information" title="Informations">
-      <panel title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 6" x-span="6">
-        <field name="primaryAddress" x-span="12"/>
-        <field name="primaryCity" x-span="4"/>
-        <field name="primaryState" x-span="4"/>
-        <field name="primaryPostalCode" x-span="4"/>
-        <field name="primaryCountry" x-span="12"/>
-      </panel>
-       <panel title="Other address" readonlyIf="statusSelect == 4 || statusSelect == 6" x-span="6">
-        <field name="otherAddress" x-span="12"/>
-        <field name="otherCity" x-span="4"/>
-        <field name="otherState" x-span="4"/>
-        <field name="otherPostalCode" x-span="4"/>
-        <field name="otherCountry" x-span="12"/>
-        <field name="isCopyAddress" onChange="action-group-crm-lead-iscopyaddress-onchange"/>
-      </panel>
-      <panel title="Extra information" readonlyIf="statusSelect == 4 || statusSelect == 6" x-span="12">
-        <field name="officeName"/>
-        <field name="department"/>
-        <field name="webSite"/>
-        <field name="description" colSpan="6" widget="TEXT" x-height="3"/>
-      </panel>
-     </panel>
-      <panel title="Status details" x-span="12">
-        <field name="statusSelect"/>
-        <field name="statusDescription"/>
-      </panel>
-      <panel title="Source details" readonlyIf="statusSelect == 4 || statusSelect == 6" x-span="12">
-        <field name="source"/>
-        <field name="sourceDescription"/>
-      </panel>
-      <panel title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" x-span="12">
-        <field name="campaign"/>
-        <field name="referredBy"/>
-        <field name="isDoNotCall"/>
-        <field name="isDoNotSendEmail"/>
-         <field name="opportunityAmount" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
-      </panel>
+   <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" 
+		onLoad="action-lead-attrs-readonly-other-address" 
+		onNew="action-group-crm-lead-onnew" >
+		
+		<toolbar>
+			<button name="convertLead" title="Convert lead" hideIf="statusSelect == 4" readonlyIf="statusSelect == 4 || statusSelect == 6" onClick="save,action-lead-view-convert-lead"/>
+			<button name="sendByEmail" title="Send email" readonlyIf="statusSelect == 4 || statusSelect == 6" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
+			<button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
+		</toolbar>
+		<menubar>
+			<menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+			  <item title="Create call" action="save,action-lead-view-create-call"/>
+			  <item title="Schedule meeting" action="save,action-lead-view-create-meeting"/>
+			  <item title="Create task" action="save,action-lead-view-create-task"/>
+			  <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
+			</menu>
+		</menubar>
+		<panel>
+			<panel x-span="2">
+				<field name="picture" showTitle="false" widget="Image" x-span="12" x-width="80" x-height="80"/>
+			</panel>
+			<panel x-span="9" readonlyIf="statusSelect == 4 || statusSelect == 6">
+				<field name="name" showTitle="false" css="highlight" placeholder="Name" x-span="4"/>
+				<field name="firstName" showTitle="false" css="highlight" placeholder="First name" x-span="4"/>            
+				<field name="titleSelect" showTitle="false" placeholder="Civility" x-span="2"/>
+			<panel x-span="12">
+				<field name="enterpriseName" x-span="4" showIf="partner == null" placeholder="Enterprise name"/>
+				<field name="partner" x-span="4" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="jobTitle" x-span="4" placeholder="Function"/>
+			</panel>  
+			<panel x-span="4" showIf="fullName != null">
+				<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" x-span="2"/>
+					<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" x-span="2"/>
+					<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" x-span="2"/>
+					<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" x-span="2"/>
+					<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" x-span="2"/>
+				</panel>
+			</panel>
+		</panel>
+		<panel title="Coordonnées">
+			<field name="mobilePhone" x-span="4"/>
+			<field name="isDoNotCall" x-span="2"/>
+			<field name="emailAddress" canSelect="false" canNew="false" x-span="4" form-view="email-address-simple-form"/>
+			<field name="isDoNotSendEmail" x-span="2"/>
+			<field name="fixedPhone"/>
+			<field name="fax"/>
+			<field name="webSite"/>
+			<spacer x-span="6"/>
+			<panel title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 6" x-span="6">
+				<field name="primaryAddress" x-span="12"/>
+				<field name="primaryCity" x-span="4"/>
+				<field name="primaryState" x-span="4"/>
+				<field name="primaryPostalCode" x-span="4"/>
+				<spacer x-span="8"/>
+				<field name="primaryCountry" x-span="4"/>
+			</panel>
+			<panel title="Other address" readonlyIf="statusSelect == 4 || statusSelect == 6" x-span="6">
+				<field name="otherAddress" x-span="12"/>
+				<field name="otherCity" x-span="4"/>
+				<field name="otherState" x-span="4"/>
+				<field name="otherPostalCode" x-span="4"/>
+				<field name="otherCountry" x-span="4"/>
+				<spacer x-span="8"/> 
+				<field name="isCopyAddress" onChange="action-group-crm-lead-iscopyaddress-onchange"/>
+			</panel>
+		</panel>
+		<panel title="Description" x-span="12">
+				<field name="description" x-span="12" showTitle="false" widget="TEXT" x-height="3"/>
+		</panel> 
+      
+		<panel-side>
+		  <field name="statusSelect" x-span="6"/>    
+		</panel-side>
+	
+		<panel-side title="Follow-up" x-span="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
+			<field name="user" x-span="6"/>
+			<field name="team" x-span="6"/>
+			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
+			<field name="createdBy" x-span="6"/>
+			<field name="createdOn" x-span="6"/>
+			<field name="contactDate" x-span="6"/>
+			<spacer x-span="6"/>
+		</panel-side>
+		
+		<panel-side title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" x-span="12">
+			<field name="source" x-span="6"/>
+			<field name="campaign" x-span="6"/>
+			<field name="referredBy" x-span="6"/>
+			<field name="opportunityAmount" x-span="6"/>
+		</panel-side>
      
-    
-  
-    <!--TODO:Remove this comment when portlet starts working-->
-    <!--<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6">
-      <portlet colSpan="4" action="action-lead-view-upcoming-events"/>
-      <portlet colSpan="4" action="action-lead-view-historical-events-completed"/>
-      <portlet colSpan="4" action="action-lead-view-opportunity"/>
-      <portlet colSpan="4" action="action-lead-view-event-ticket"/>
-    </panel>-->
-  </panel-tabs>
-</form>
+		<!--TODO:Remove this comment when portlet starts working-->
+		<!--<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6">
+		  <portlet colSpan="4" action="action-lead-view-upcoming-events"/>
+		  <portlet colSpan="4" action="action-lead-view-historical-events-completed"/>
+		  <portlet colSpan="4" action="action-lead-view-opportunity"/>
+		  <portlet colSpan="4" action="action-lead-view-event-ticket"/>
+		</panel>-->
 
-	
-	
+	</form>
+
 	<grid name="lead-event-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="enterpriseName">
         <field name="name"/>
         <field name="firstName"/>
