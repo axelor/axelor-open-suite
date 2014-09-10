@@ -8,7 +8,7 @@
   <entity name="Scheduler" lang="java">
   
   	<string name="importId" hashKey="false" unique="true"/>
-    <string name="name" namecolumn="true" title="Label" />
+    <string name="name" namecolumn="true" title="Label" required="true" />
     <boolean name="annually" title="Annually" default="false"/>
     <boolean name="daily" title="Daily" default="false"/>
     <boolean name="monthly" title="Monthly" default="false"/>

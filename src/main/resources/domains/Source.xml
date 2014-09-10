@@ -8,8 +8,8 @@
   <entity name="Source" lang="java" cachable="true">
   	
   	<integer name="importId" />
-    <string name="name" title="Name"/>
-    <string name="code" title="Code"/>
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code" required="true" unique="true"/>
     
     
   </entity>

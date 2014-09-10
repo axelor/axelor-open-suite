@@ -7,7 +7,7 @@
 
  	<entity name="Degree" lang="java">
  		<string name="importId"/>
-		<string name="name" title="Diploma" />
+		<string name="name" title="Diploma" required="true" />
 	</entity>
 
 </domain-models>

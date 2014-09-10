@@ -26,13 +26,13 @@
 			    <field name="filePath" widget="url" x-span="12"/>
   		</panel-side>
 		<panel name="recipientGroup" title="Destinated to" x-span="12">
-			<field name="addressBlock" x-span="12" widget="Html" x-lite="false" />
-			<field name="toRecipients" x-span="12"/>
-			<field name="ccRecipients" x-span="12"/>
-			<field name="bccRecipients" x-span="12"/>
+			<field name="addressBlock" x-span="12" widget="Html" x-lite="false" x-height="5"/>
+			<field name="toRecipients" x-span="12" x-height="2"/>
+			<field name="ccRecipients" x-span="12" x-height="2"/>
+			<field name="bccRecipients" x-span="12" x-height="2"/>
 		</panel>
 		<panel name="recipientGroup" x-span="12">
-			<field name="subject" x-span="12"/>
+			<field name="subject" x-span="12" x-height="2"/>
 			<field name="content" showTitle="false" widget="Html" x-lite="false" x-span="12"/>
 		</panel>
 	</form>

@@ -24,7 +24,7 @@ xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelo
 			<button name="reset" title="Reset" onClick="save,action-sequence-method-reset,save"/>
 		</toolbar>
 		<panel>
-			<field name="code" onChange="action-sequence-attrs"/>
+			<field name="code" x-bind="{{code|uppercase}}" onChange="action-sequence-attrs"/>
 			<spacer/>
 			<field name="company" widget="SuggestBox"/>
 			<spacer/>

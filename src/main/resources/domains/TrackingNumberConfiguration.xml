@@ -22,7 +22,7 @@
 	<decimal name="purchaseQtyByTracking"  title="Purchase Qty by tracking"/>
 	<decimal name="productionQtyByTracking"  title="Production Qty by tracking"/>
 	
-	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
+	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence" required="true"/>
 
   </entity>
 

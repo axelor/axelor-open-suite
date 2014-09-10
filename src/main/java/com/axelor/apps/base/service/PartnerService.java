@@ -17,12 +17,19 @@
  */
 package com.axelor.apps.base.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Partner;
 import com.google.common.base.Strings;
 
 
 public class PartnerService {
 	
+	private static final Logger LOG = LoggerFactory.getLogger(PartnerService.class);
 	
 	public void setPartnerFullName(Partner partner)  {
 		
@@ -45,5 +52,23 @@ public class PartnerService {
 		}
 	}
 	
+	public Map<String,String> getSocialNetworkUrl(String name,String firstName, Integer typeSelect){
+		
+		Map<String,String> urlMap = new HashMap<String,String>();
+		if(typeSelect == 2){
+			name = firstName != null && name != null ? firstName+"+"+name : name == null ? firstName : name;  
+		}
+		name = name == null ? "" : name;
+		urlMap.put("google","<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="+name+"' target='_blank' />");
+		urlMap.put("facebook","<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="+name+"&init=public"+"' target='_blank'/>");
+		urlMap.put("twitter", "<a class='fa fa-twitter' href='https://twitter.com/search?q="+name+"' target='_blank' />");
+		urlMap.put("linkedin","<a class='fa fa-linkedin' href='https://www.linkedin.com/company/"+name+"' target='_blank' />");
+		if(typeSelect == 2){
+			urlMap.put("linkedin","<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"+name.replace("+","/")+"' target='_blank' />");
+		}
+		urlMap.put("youtube","<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="+name+"' target='_blank' />");
+		
+		return urlMap;
+	}
 	
 }

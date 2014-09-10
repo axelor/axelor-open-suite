@@ -7,7 +7,7 @@
 
   <entity name="ReasonExemption" lang="java">
   
-    <string name="name" title="Reason label"/>
+    <string name="name" title="Reason label" required="true"/>
     <string name="code" title="Code"/>
   
   </entity>

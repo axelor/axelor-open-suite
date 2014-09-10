@@ -7,8 +7,8 @@
 
 	<entity name="Keyword" lang="java">
 		<string name="importId"/>
-		<string name="keyWord" namecolumn="true" title="Keyword" />
-		<string name="typeSelect" title="Type" selection="base.keyword.type.select" />
+		<string name="keyWord" namecolumn="true" title="Keyword" required="true"/>
+		<string name="typeSelect" title="Type" selection="base.keyword.type.select" required="true" />
 	</entity>
 
 </domain-models>

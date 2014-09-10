@@ -37,7 +37,7 @@
 	        </panel>
             <panel x-span="8">
 				<field name="name" showTitle="false" colSpan="3" css="highlight" placeholder="Name"	x-span="8"/>
-				<field name="code" showTitle="false" css="highlight" placeholder="Code" x-span="4"/>
+				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="highlight" placeholder="Code" x-span="4"/>
 				<panel title="Product typology" x-span="6" colWidths="30%,70%">
 					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" x-span="12"/>
 					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" x-span="12"/>
