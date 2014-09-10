@@ -95,10 +95,10 @@
 				<spacer x-span="8"/> 
 				<field name="isCopyAddress" onChange="action-group-crm-lead-iscopyaddress-onchange"/>
 			</panel>
-			<panel title="Description" x-span="12">
-				<field name="description" x-span="12" showTitle="false" widget="TEXT" x-height="3"/>
-			</panel> 
 		</panel>
+		<panel title="Description" x-span="12">
+				<field name="description" x-span="12" showTitle="false" widget="TEXT" x-height="3"/>
+		</panel> 
       
 		<panel-side>
 		  <field name="statusSelect" x-span="6"/>    

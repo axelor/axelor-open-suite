@@ -10,7 +10,7 @@
   	<string name="importId"/>
   
  	<string name="titleSelect" title="Title" selection="partner.title.type.select"/>
-    <string name="name" title="Last name"/>
+    <string name="name" required="true" title="Last name"/>
     <string name="firstName" title="First name"/>
     <string name="enterpriseName" title="Enterprise name"/> 
     <string name="officeName" title="Office name"/>
@@ -43,7 +43,7 @@
 	<string name="description" title="Description" large="true"/>
 	<date name="contactDate" title="Contact date" />
 	
-	<integer name="statusSelect" title="Status" selection="crm.lead.status.select" default="1"/>  
+	<integer name="statusSelect" title="Status" selection="crm.lead.status.select" default="1" required="true"/>  
 	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
   	<string name="statusDescription" title="Status description" large="true"/>
     <decimal name="opportunityAmount" title="Opportunity amount"/>
