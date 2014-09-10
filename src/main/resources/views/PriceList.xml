@@ -18,7 +18,7 @@
 		    <field name="title"/>
 			<field name="typeSelect" x-span="4"/>
 			<field name="isActive" x-span="2"/>
-			<field name="partner" onChange="action-price-list-record-title" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="partner" onChange="action-price-list-record-title" onSelect="action-price-list-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="isDisplayed"/>
 			<field name="validFromDate" onChange="action-price-list-record-title"/>
 			<field name="validToDate" onChange="action-price-list-record-title"/>
@@ -51,6 +51,10 @@
    <action-record name="action-price-list-record-title" model="com.axelor.apps.base.db.PriceList">
    		<field name="title" expr="eval: partner?.fullName + ' - ' + validFromDate" if="title == null &amp;&amp; partner != null &amp;&amp; validFromDate != null"/>
    </action-record>
+   <action-attrs name="action-price-list-partner-domain">
+   	<attribute name="domain" for="partner" if="typeSelect == 1" expr="self.isContact = false and self.customerTypeSelect != 1" />
+   	<attribute name="domain" for="partner" if="typeSelect == 2" expr="self.isContact=false and self.supplierTypeSelect != 1"/>
+   </action-attrs>
    
 </object-views>
 
