@@ -7,7 +7,7 @@
 
   <entity name="Schedule" lang="java">
   	<integer name="importId" />
-  	<string name="name" title="Name"/>
+  	<string name="name" title="Name" required="true"/>
   	<one-to-many name="scheduleLineList" ref="com.axelor.apps.organisation.db.ScheduleLine" mappedBy="schedule" title="Shift periods"/>
 	<many-to-one name="publicHolidays" ref="com.axelor.apps.organisation.db.PublicHolidays" title="Public holidays list"/>
 	

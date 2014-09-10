@@ -7,9 +7,9 @@
 
   <entity name="Planning" lang="java">
   	
-  	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
-  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Realized by"/>
-	<date name="date" title="Date"/>
+  	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period" required="true"/>
+  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Realized by" required="true"/>
+	<date name="date" title="Date" required="true"/>
 	
 	<one-to-many name="planningLineList" ref="com.axelor.apps.organisation.db.PlanningLine" mappedBy="planning" title="Planning lines"/>
 

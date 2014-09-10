@@ -9,7 +9,7 @@
 	
 		<string name="reference" title="Reference"/>
 		<date name="date" title="Date"/>
-		<string name="missionPropose" title="Mission propose"/>
+		<string name="missionPurpose" title="Mission purpose"/>
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 		<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Business"/>
 		<many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="Employee"/>

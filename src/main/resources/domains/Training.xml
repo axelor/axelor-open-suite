@@ -7,8 +7,8 @@
 
   <entity name="Training" lang="java">
   
-    <string name="experienceTypeSelect" title="Experience type" selection="training.experience.type.select"/>
-    <date name="startDate" title="Start date"/>
+    <string name="experienceTypeSelect" title="Experience type" required="true" selection="training.experience.type.select"/>
+    <date name="startDate" required="true" title="Start date"/>
     <date name="endDate" title="End date"/>
     <string name="jobTitle" title="Job position"/>
     <string name="service" title="Service"/>

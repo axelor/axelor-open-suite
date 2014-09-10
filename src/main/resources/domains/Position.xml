@@ -8,7 +8,7 @@
  	<entity name="Position" lang="java">
 		<many-to-one name="candidate" ref="Candidate"></many-to-one>
 		<many-to-one name="employee" ref="Employee"></many-to-one>
-		<string name="name" title="Function name" />
+		<string name="name" title="Function name" required="true"/>
 		<date name="startDate" title="From"></date>
 		<date name="endDate" title="To"></date>
 		<many-to-one name="employer" ref="com.axelor.apps.base.db.Partner"

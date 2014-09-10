@@ -8,7 +8,7 @@
   <entity name="ScheduleLine" lang="java">
 	<integer name="importId" />  	
   	<many-to-one name="schedule" ref="com.axelor.apps.organisation.db.Schedule" title="Shift"/>
-  	<date name="startDate" title="Start date"/>
+  	<date name="startDate" title="Start date" required="true"/>
   	<one-to-many name="scheduleSubLineList" ref="com.axelor.apps.organisation.db.ScheduleSubLine" mappedBy="scheduleLine" title="Daily periods"/>
 
   </entity>

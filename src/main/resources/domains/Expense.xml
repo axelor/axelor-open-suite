@@ -15,7 +15,7 @@
     <string name="validationStatusSelect" title="Validation Status" selection="hr.expense.validation.status.select" readonly="true"/>
     <decimal name="progress" title="Progress" />
     <many-to-one name="paymentPeriod" ref="com.axelor.apps.base.db.Period" title="Payment Period" />
-    <integer name="statusSelect" title="Status" selection="hr.expense.status.select" readonly="true"/>
+    <integer name="statusSelect" title="Status" selection="hr.expense.status.select" readonly="true" required="true"/>
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/> 
   	<date name="validationDate" title="Validation date" readonly="true"/>
   	<string name="refusalReason" title="Refusal reason"/>
