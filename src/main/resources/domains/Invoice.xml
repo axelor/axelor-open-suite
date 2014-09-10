@@ -7,7 +7,7 @@
   
  	<integer name="importId" />
     <!-- NOT DISPLAY -->
-  	<many-to-one name="canceledPaymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule"/> <!--  Champs non affiché, utilisé pour le passage en irrécouvrable d'un échéancier de paiement -->
+  	<many-to-one name="canceledPaymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule"/> <!--  Field not displayed, used to shift to irrecoverable a payment schedule -->
   	
     <!-- HEADER -->
     <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true" unique="true"/>
@@ -17,7 +17,7 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" required="true" title="Partner" />
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
- 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" required="true" />
+ 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" required="true" />
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" required="true" />
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account" required="true"/>
@@ -35,7 +35,7 @@
     <date name="subscriptionToDate" title="To"/>
     
     <!-- Accounting informations -->
-    <boolean name="schedulePaymentOk" title="Belonging to a payment schedule" default="false"/>
+    <boolean name="schedulePaymentOk" title="Belong to a payment schedule ?" default="false"/>
     <many-to-one name="paymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule" title="Payment Schedule" readonly="true"/>
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" required="true" title="Journal"/>
     <many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
@@ -74,7 +74,7 @@
     <many-to-one name="directDebitManagement" ref="com.axelor.apps.account.db.DirectDebitManagement" title="Direct debit list"/>
     <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Reject move line"/>
    	<boolean name="usherPassageOk" title="Transfer(ed) to usher"/>
-    <decimal name="amountRejected" title="Reject amount"/> 
+    <decimal name="amountRejected" title="Rejected amount"/> 
     <date name="rejectDate" title="Reject Date"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
     <decimal name="directDebitAmount" title="Debited amount" readonly="true"/> 
@@ -87,18 +87,18 @@
     
 	<!--     Total based on the partner currency in the company accounts -->
 	<!--     TODO : To be renamed with the prefix 'accounting' -->
-    <decimal name="exTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true" help="true"/>
+    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="inTaxTotalRemaining" title="Remaining to pay" readonly="true" />
     
 	<!--     Totals based on the invoice currency -->
-    <decimal name="invoiceExTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true"/>
+    <decimal name="invoiceExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="invoiceTaxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
     <decimal name="invoiceInTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="invoiceAmountPaid" title="Amount paid" readonly="true" />
     
-    <integer name="statusSelect" title="State" selection="iaccount.invoice.status.select" readonly="true" default="1"/>
+    <integer name="statusSelect" title="Status" selection="iaccount.invoice.status.select" readonly="true" default="1"/>
     
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>  
 

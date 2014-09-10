@@ -7,7 +7,7 @@
 
   <entity name="IrrecoverablePaymentScheduleLineLine" lang="java">
   
-  	<many-to-one name="irrecoverableCustomerLine" ref="com.axelor.apps.account.db.IrrecoverableCustomerLine" title="Client"/>
+  	<many-to-one name="irrecoverableCustomerLine" ref="com.axelor.apps.account.db.IrrecoverableCustomerLine" title="Customer"/>
 
   	<many-to-one name="paymentScheduleLine" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Rejected Schedule line"/>
   	<one-to-many name="irrecoverableReportLineList" ref="com.axelor.apps.account.db.IrrecoverableReportLine" mappedBy="irrecoverablePaymentScheduleLineLine" title="Reportings"/>

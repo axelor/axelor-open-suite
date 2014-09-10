@@ -14,9 +14,9 @@
     
 <!--     JOURNAL -->
     <many-to-one name="customerSalesJournal" ref="com.axelor.apps.account.db.Journal" title="Sales Journal"/>
-    <many-to-one name="customerCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title=" Cust. Credit note Journal"/>
+    <many-to-one name="customerCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title="Customer Credit note Journal"/>
     <many-to-one name="supplierPurchaseJournal" ref="com.axelor.apps.account.db.Journal" title="Supplier Purchase Journal"/>
-    <many-to-one name="supplierCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title="Suppl. Credit Note Journal"/>
+    <many-to-one name="supplierCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title="Supplier Credit Note Journal"/>
     <many-to-one name="rejectJournal" ref="com.axelor.apps.account.db.Journal" title="Rejects journal"/>
     <many-to-one name="accountClearanceJournal" ref="com.axelor.apps.account.db.Journal" title="Account clearance journal"/>
    	<many-to-one name="reimbursementJournal" ref="com.axelor.apps.account.db.Journal" title="Reimbursement Journal"/>
@@ -35,7 +35,7 @@
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
     
-    <decimal name="thresholdDistanceFromRegulation" title="Allowed Payment range"/>
+    <decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
    	
    	<many-to-one name="cashRegisterMailModel" ref="com.axelor.apps.base.db.MailModel" title="Cashier email model"/>
    	<string name="cashRegisterAddressEmail" title="Cashier email address"/>
@@ -51,7 +51,7 @@
    	<integer name="threeMonthDebtMontsNumber" title="Short term debt duration (month)" default="3"/>
    	
 	<!-- DebtRecovery -->
-   	<one-to-many name="reminderConfigLineList" ref="com.axelor.apps.account.db.ReminderConfigLine" mappedBy="accountConfig"  title="Reminder Configuration Table"/>
+   	<one-to-many name="reminderConfigLineList" ref="com.axelor.apps.account.db.ReminderConfigLine" mappedBy="accountConfig"  title="Reminder configuration table"/>
    	<integer name="mailTransitTime" title="Mail transit time"/>
 
 	<!-- Reimbursement -->
@@ -81,23 +81,23 @@
    	<!--  Onglet Apurements -->
    	<many-to-many name="clearanceAccountSet" ref="com.axelor.apps.account.db.Account" title="Clearance Accounts"/>
    	<many-to-one name="profitAccount" ref="com.axelor.apps.account.db.Account" title="Profit accounts"/>
-   	<many-to-one name="standardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax Standard rate for clearance"/>
+   	<many-to-one name="standardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax standard rate for clearance"/>
    	
    	<string name="irrecoverableReasonPassage" title="Irrecoverable shifting reason" default="Manual shift into irrecoverable receivables"/>
-   	<many-to-one name="irrecoverableStandardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax Standard rate for irrecoverables"/>
+   	<many-to-one name="irrecoverableStandardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax standard rate for irrecoverables"/>
    	
 	<!--  Onglet Paybox -->
 	<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>
 	  
 	<!-- Onglet Import des paiements par TIP et TIP chèque-->
-   	<string name="interbankPaymentOrderImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments"  help="true"/>
-    <string name="tempInterbankPaymentOrderImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments" help="true"/>
+   	<string name="interbankPaymentOrderImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments"  help="true"/>
+    <string name="tempInterbankPaymentOrderImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments" help="true"/>
   	
-  	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments rejects"  help="true"/>
-    <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments rejects" help="true"/>
+  	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments rejects"  help="true"/>
+    <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments rejects" help="true"/>
   
     <!-- Onglet Facturation -->
-    <boolean name="showDetailsInInvoice" title="Show details in invoice"/>
+    <boolean name="showDetailsInInvoice" title="Show details on invoice"/>
     
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />

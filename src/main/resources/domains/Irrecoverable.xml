@@ -8,9 +8,9 @@
   <entity name="Irrecoverable" lang="java">
   
   	<string name="name" title="Name" readonly="true"/>
-  	<one-to-many name="irrecoverableCustomerLineList" mappedBy="irrecoverable" ref="com.axelor.apps.account.db.IrrecoverableCustomerLine" title="Customer"/>
+  	<one-to-many name="irrecoverableCustomerLineList" mappedBy="irrecoverable" ref="com.axelor.apps.account.db.IrrecoverableCustomerLine" title="Customer(s)"/>
   	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Invoice &amp; Rejects"/>
-  	<many-to-many name="paymentScheduleLineSet" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment schedule rejected"/>
+  	<many-to-many name="paymentScheduleLineSet" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment schedule(s) rejected"/>
   	<many-to-many name="moveSet" ref="com.axelor.apps.account.db.Move" title="Moves generated"/>
   	<integer name="statusSelect" title="Status" selection="iaccount.irrecoverable.status.select" readonly="true" default="1"/>
   	<datetime name="dateTime" title="Date" tz="true" readonly="true"/>

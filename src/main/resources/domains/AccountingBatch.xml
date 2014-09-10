@@ -35,12 +35,12 @@
     <integer name="interbankPaymentOrderTypeSelect" title="Interbank Payment Orders batch type" selection="iinterbank.account.order.batch.type.select"/>
     
     <!--  CUSTOMER ACCOUNT -->
-    <boolean name="updateCustAccountOk" title="Solde client"/>
-    <boolean name="updateDueCustAccountOk" title="Solde exigible"/>
-    <boolean name="updateDueReminderCustAccountOk" title="Solde exigible relançable"/>
+    <boolean name="updateCustAccountOk" title="Customer balance"/>
+    <boolean name="updateDueCustAccountOk" title="Due balance"/>
+    <boolean name="updateDueReminderCustAccountOk" title="Due balance remindable"/>
     
     <!--     MOVE LINE EXPORT -->
-    <integer title="Export type" name="moveLineExportTypeSelect" selection="move.line.report.type.select.export"/>
+    <integer name="moveLineExportTypeSelect" title="Export type" selection="move.line.report.type.select.export"/>
     <date name="startDate" title="Start date"/>
     <date name="endDate" title="End date"/>
     
