@@ -54,10 +54,10 @@
 	  <panel-tabs>
 	    <panel title="Customer information" showTitle="false">
 	      <field name="clientPartner" onChange="action-sale-order-record-partner" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid"/>
-	      <field name="mainInvoicingAddress"/>
+	      <field name="mainInvoicingAddress" canNew="true"/>
 	      <field name="invoicingTypeSelect" if-module="axelor-supplychain"/>
 	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	      <field name="deliveryAddress"/>
+	      <field name="deliveryAddress" canNew="true"/>
 	      <field name="priceList" domain="self.typeSelect = 1 and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
 	      <panel x-span="8">       
 	        <panel name="specificSettings" title="Specific settings" x-span="8">
@@ -149,7 +149,6 @@
       </panel-side>
 	  
 	</form>
-
 	
 	<grid name="sale-order-grid-client" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <field name="saleOrderSeq"/>
