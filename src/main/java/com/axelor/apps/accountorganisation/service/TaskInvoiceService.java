@@ -25,7 +25,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -63,7 +62,7 @@ public class TaskInvoiceService {
 		
 		Project project = task.getProject();
 		
-		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(IInvoice.CLIENT_SALE, project.getCompany(), project.getClientPartner(), 
+		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(Invoice.OPERATION_TYPE_CLIENT_SALE, project.getCompany(), project.getClientPartner(), 
 				project.getContactPartner(), project, null, project.getName(), null) {	
 			@Override
 			public Invoice generate() throws AxelorException {

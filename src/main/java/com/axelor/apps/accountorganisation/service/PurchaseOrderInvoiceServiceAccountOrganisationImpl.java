@@ -20,7 +20,6 @@ package com.axelor.apps.accountorganisation.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.organisation.service.invoice.InvoiceGeneratorOrganisation;
@@ -40,7 +39,7 @@ public class PurchaseOrderInvoiceServiceAccountOrganisationImpl extends Purchase
 			throw new AxelorException(String.format("Veuillez selectionner une devise pour la commande %s ", purchaseOrder.getPurchaseOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 
-		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(IInvoice.SUPPLIER_PURCHASE, purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner(), 
+		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE, purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner(), 
 				purchaseOrder.getContactPartner(), purchaseOrder.getProject(), purchaseOrder.getPriceList(), purchaseOrder.getPurchaseOrderSeq(), purchaseOrder.getExternalReference()) {
 
 			@Override
