@@ -13,8 +13,15 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <date name="fromDate" title="From"/>
     <date name="toDate" title="To"/>
-    <many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
+    <integer name="statusSelect" title="Status" readonly="true" selection="base.period.status.select" default="1"/>
   
+  	<extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_OPENED = 1;
+		public static final int STATUS_CLOSED = 2;
+	
+	]]></extra-code>   
   </entity>
 
 </domain-models>

@@ -23,11 +23,10 @@ import java.util.Map;
 
 import org.joda.time.LocalDate;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
-import com.axelor.apps.base.db.General;
-import com.axelor.apps.base.db.Status;
-import com.axelor.apps.base.db.Company;
 import com.google.inject.persist.Transactional;
 
 
@@ -41,7 +40,6 @@ public class UpdateAll {
 				General general = General.all().fetchOne();
 				company.setAdministration(general);
 				List<? extends Period> periods = Period.all().filter("self.company.id = ?1",company.getId()).fetch();
-				Status opeStatus = Status.all().filter("self.code = 'ope'").fetchOne();
 				if(periods == null || periods.isEmpty()) {
 					for(Year year : Year.all().filter("self.company.id = ?1",company.getId()).fetch()) {
 						for(Integer month : Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12})) {
@@ -50,7 +48,7 @@ public class UpdateAll {
 							period.setToDate(dt.dayOfMonth().withMaximumValue());
 							period.setFromDate(dt.dayOfMonth().withMinimumValue());
 							period.setYear(year);
-							period.setStatus(opeStatus);
+							period.setStatusSelect(Period.STATUS_OPENED);
 							period.setCompany(company);
 							period.setCode(dt.toString().split("-")[1]+"/"+year.getCode().split("_")[0]+"_"+company.getName());
 							period.setName(dt.toString().split("-")[1]+'/'+year.getName());

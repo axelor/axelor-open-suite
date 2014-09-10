@@ -14,8 +14,7 @@
     </grid>
     
     <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" cols="4"
-	    onNew="action-grouop-base-period-onnew"
-	    onLoad="action-period-attrs-button">
+	    onNew="action-period-record-default">
 	    <panel>
 	        <field name="name"/>
 	    	<field name="code"/>
@@ -26,40 +25,23 @@
     	</panel>
     	<panel>
         	<panel x-span="6">
-            	<button name="close" title="Close period" colSpan="2" onClick="action-grouop-base-period-close-click"/>
-            	<button name="reopen" title="Reopen period" colSpan="2" onClick="action-grouop-base-period-reopen-click"/>
+            	<button name="close" title="Close period" colSpan="2" onClick="action-period-record-close,save" showIf="statusSelect == 1"/>
+            	<button name="reopen" title="Reopen period" colSpan="2" onClick="action-period-record-open,save" showIf="statusSelect == 2"/>
         	</panel>
-            <field name="status"/>
+            <field name="statusSelect"/>
     	</panel>
     </form>
-    
-    <action-group name="action-grouop-base-period-onnew">
-    	<action name="action-period-record-open"/>
-    	<action name="action-period-attrs-button"/>
-    </action-group>
-    
-    <action-group name="action-grouop-base-period-close-click">
-    	<action name="action-period-record-close"/>
-    	<action name="action-period-attrs-button,save"/>
-    </action-group>
-    
-    <action-group name="action-grouop-base-period-reopen-click">
-    	<action name="action-period-record-open"/>
-    	<action name="action-period-attrs-button,save"/>
-    </action-group>
     
     <action-record name="action-period-record-close" model="com.axelor.apps.base.db.Period">
     	<field name="status" expr="action:action-status-record-clo"/>
     </action-record>
     
-    <action-record name="action-period-record-open" model="com.axelor.apps.base.db.Period">
-    	<field name="status" expr="action:action-status-record-ope"/>
+    <action-record name="action-period-record-default" model="com.axelor.apps.base.db.Period">
     	<field name="company"  expr="eval:__user__.activeCompany"/>
      </action-record>
     
-	 <action-attrs name="action-period-attrs-button">
-	    <attribute name="hidden" expr="eval : status?.code == 'clo'" for="close"/>
-	    <attribute name="hidden" expr="eval: status?.code == 'ope'" for="reopen"/>
-	</action-attrs>
+     <action-record name="action-period-record-open" model="com.axelor.apps.base.db.Period">
+    	<field name="status" expr="action:action-status-record-ope"/>
+     </action-record>
     
 </object-views>

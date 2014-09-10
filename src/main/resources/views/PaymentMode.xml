@@ -15,9 +15,9 @@
 	        <field name="invoiceLabel" />
 	        <field name="typeSelect"/>
 			<field name="inOutSelect"/>
-	        <field name="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
-	        domain="self.typeSelect = 3" colSpan="4" showTitle="false" if-module="axelor-account"/>
         </panel>
+        <panel-related field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
+	        domain="self.typeSelect = 3" x-span="12" showTitle="false" if-module="axelor-account"/>
        
     </form>
     

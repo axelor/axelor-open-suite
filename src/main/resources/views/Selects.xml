@@ -609,5 +609,15 @@
 		<option value="0">Civil Year</option>
 		<option value="1">Fiscal Year</option>
 	</selection>
-
+	
+	<selection name="base.year.status.select">
+		<option value="1">Opened</option>
+		<option value="2">Closed</option>
+	</selection>
+	
+	<selection name="base.period.status.select">
+		<option value="1">Opened</option>
+		<option value="2">Closed</option>
+	</selection>
+	
 </object-views>

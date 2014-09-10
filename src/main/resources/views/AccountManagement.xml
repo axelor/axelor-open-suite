@@ -6,17 +6,17 @@
     <grid name="account-management-grid" title="Account management list" model="com.axelor.apps.account.db.AccountManagement">
     	<field name="typeSelect" />
         <field name="company"/>
-		<field name="saleAccount"/>
-        <field name="purchaseAccount"/>
-		<field name="cashAccount"/>
+		<field name="saleAccount" if-module="axelor-account"/>
+        <field name="purchaseAccount" if-module="axelor-account"/>
+		<field name="cashAccount" if-module="axelor-account"/>
     </grid>
     
     <grid name="account-management-product-grid" title="Account management" model="com.axelor.apps.account.db.AccountManagement">
         <field name="company"/>
-		<field name="saleAccount"/>
+		<field name="saleAccount" if-module="axelor-account"/>
 		<field name="saleTax"/>
-        <field name="purchaseAccount"/>
-        <field name="purchaseTax"/>
+        <field name="purchaseAccount" if-module="axelor-account"/>
+        <field name="purchaseTax" if-module="axelor-account"/>
     </grid>
     
 	<form name="account-management-product-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement" cols="4"

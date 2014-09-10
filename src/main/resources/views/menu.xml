@@ -463,15 +463,6 @@
 	<menuitem name="admin-conf-general" parent="admin-root-general"
 		title="Configuration" icon="img/Other/parameter_59px.png" />
 
-	<menuitem name="admin-conf-general-status" parent="admin-conf-general"
-		title="All Status" action="admin.conf.general.status" />
-
-	<action-view name="admin.conf.general.status" title="All Status"
-		model="com.axelor.apps.base.db.Status" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-
 	<menuitem name="admin-conf-general-unit" parent="admin-conf-general"
 		title="Units" action="admin.conf.general.unit" />
 
