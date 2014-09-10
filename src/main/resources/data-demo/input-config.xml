@@ -27,14 +27,6 @@
 	
 	<input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" />
 	     
-	<input file="base_status.csv" separator=";" type="com.axelor.apps.base.db.Status">
-		<bind column="statut_id" to="koalaId" />
-		<bind column="statut_libelle" to="name" />
-		<bind column="statut_code" to="code" />
-		<bind column="statut_flag_facture" to="invoiceStatusOK" eval="statut_flag_facture == '1'? true : false" />
-	</input>
-
-
 	<input file="base_template.csv" separator=";" type="com.axelor.apps.base.db.Template"/>
     
 	<input file="base_team.csv" separator=";" type="com.axelor.apps.base.db.Team">
