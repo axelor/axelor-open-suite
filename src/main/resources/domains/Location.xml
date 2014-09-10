@@ -10,9 +10,9 @@
   	<integer name="importId" />
     <string name="name" title="Name" required="true"/>
     <many-to-one name="parent" ref="com.axelor.apps.stock.db.Location" title="Parent"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    <integer name="typeSelect" title="Type" selection="stock.location.type.select"/>
+    <integer name="typeSelect" title="Type" required="true" selection="stock.location.type.select"/>
     <boolean name="isDefaultLocation" title="Default location"/>
     <one-to-many name="locationLineList" ref="com.axelor.apps.stock.db.LocationLine" mappedBy="location" title="Location lines"/>
     <one-to-many name="detailsLocationLineList" ref="com.axelor.apps.stock.db.LocationLine" mappedBy="detailsLocation" title="Details Location lines"/>

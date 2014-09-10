@@ -7,10 +7,8 @@
 
   <entity name="StockConfig" lang="java" cachable="true">
   	<integer name="importId"/>
-    <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" unique="true"/>
     
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" unique="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
    	<many-to-one name="customerVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Customer virtual location"/>
     <many-to-one name="supplierVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Supplier virtual location"/>
