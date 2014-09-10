@@ -19,7 +19,6 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.service.ReimbursementService;
-import com.axelor.apps.base.db.Status;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -27,15 +26,15 @@ import com.google.inject.Inject;
 public class ReimbursementController {
 
 	@Inject
-	private ReimbursementService rs;
+	private ReimbursementService reimbursementService;
 	
 	public void validateReimbursement(ActionRequest request, ActionResponse response) {
 		
 		Reimbursement reimbursement = request.getContext().asType(Reimbursement.class);
-		rs.updatePartnerCurrentRIB(reimbursement);
+		reimbursementService.updatePartnerCurrentRIB(reimbursement);
 		
 		if (reimbursement.getBankDetails() != null) {
-			response.setValue("status", Status.findByCode("val"));
+			response.setValue("statusSelect", Reimbursement.STATUS_VALIDATED);
 		}
 		else {
 			response.setFlash("Vous devez configurer un RIB");

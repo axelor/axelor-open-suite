@@ -32,9 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.IAccount;
-import com.axelor.apps.account.db.IInvoice;
-import com.axelor.apps.account.db.IPaymentSchedule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -56,7 +53,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -137,12 +133,6 @@ public class IrrecoverableService {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
 	/**
 	 * Fonction permettant de récupérer la liste des tiers payeur associés à une liste de factures
 	 * @param invoiceList
@@ -168,7 +158,9 @@ public class IrrecoverableService {
 	 * @return
 	 */
 	public List<Invoice> getInvoiceList(Company company)   {
-		return (List<Invoice>) Invoice.filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.status.code = 'dis' AND self.inTaxTotalRemaining > 0 AND self.rejectMoveLine IS NULL ORDER BY self.dueDate ASC", IInvoice.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
+		return (List<Invoice>) Invoice.filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
+				"AND self.inTaxTotalRemaining > 0 AND self.rejectMoveLine IS NULL ORDER BY self.dueDate ASC", 
+				Invoice.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, Invoice.STATUS_VENTILATED).fetch();
 	}
 	
 	/**
@@ -178,7 +170,9 @@ public class IrrecoverableService {
 	 * @return
 	 */
 	public List<Invoice> getRejectInvoiceList(Company company)   {
-		return (List<Invoice>) Invoice.filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.status.code = 'dis' AND self.inTaxTotalRemaining = 0 AND self.rejectMoveLine IS NOT NULL ORDER BY self.dueDate ASC", IInvoice.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
+		return (List<Invoice>) Invoice.filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
+				"AND self.inTaxTotalRemaining = 0 AND self.rejectMoveLine IS NOT NULL ORDER BY self.dueDate ASC", 
+				Invoice.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, Invoice.STATUS_VENTILATED).fetch();
 	}
 	
 	
@@ -192,7 +186,7 @@ public class IrrecoverableService {
 		return (List<PaymentScheduleLine>) PaymentScheduleLine
 				.filter("self.paymentSchedule.irrecoverableStateSelect = ?1 AND self.paymentSchedule.company = ?2 " +
 						"AND self.paymentSchedule.stateSelect = ?3 AND self.rejectMoveLine.amountRemaining > 0 ORDER BY self.scheduleDate ASC", 
-						IAccount.TO_PASS_IN_IRRECOUVRABLE, company, IPaymentSchedule.STATUS_CONFIRMED).fetch();
+						PaymentSchedule.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, PaymentSchedule.STATUS_CONFIRMED).fetch();
 	}
 	
 	
@@ -424,7 +418,7 @@ public class IrrecoverableService {
 		if (!transaction.isActive())  {
 			transaction.begin();			
 		}
-		irrecoverable.setStatus(Status.findByCode("val"));
+		irrecoverable.setStatusSelect(Irrecoverable.STATUS_VALIDATED);
 		irrecoverable.save();
 		transaction.commit();
 		
@@ -461,10 +455,10 @@ public class IrrecoverableService {
 		moveService.validateMove(move);
 		irrecoverable.getMoveSet().add(move);
 		
-		invoice.setIrrecoverableStateSelect(IInvoice.PASSED_IN_IRRECOUVRABLE);
+		invoice.setIrrecoverableStatusSelect(Invoice.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 		
 		if(invoice.getCanceledPaymentSchedule() != null && this.isAllInvoicePassedInIrrecoverable(invoice.getCanceledPaymentSchedule()))  {
-			invoice.getCanceledPaymentSchedule().setIrrecoverableStateSelect(IInvoice.PASSED_IN_IRRECOUVRABLE);
+			invoice.getCanceledPaymentSchedule().setIrrecoverableStatusSelect(PaymentSchedule.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 		}
 				
 	}
@@ -580,7 +574,7 @@ public class IrrecoverableService {
 	 */
 	public boolean isAllInvoicePassedInIrrecoverable (PaymentSchedule paymentSchedule)  {
 		for(Invoice invoiceScheduled : paymentSchedule.getInvoiceSet())  {
-			if(invoiceScheduled.getIrrecoverableStateSelect().equals(IInvoice.TO_PASS_IN_IRRECOUVRABLE))  {
+			if(invoiceScheduled.getIrrecoverableStatusSelect().equals(Invoice.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE))  {
 				return false;
 			}
 		}
@@ -804,7 +798,7 @@ public class IrrecoverableService {
 			throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
 					GeneralServiceAccount.getExceptionAccountingMsg(), invoice.getInvoiceId()), IException.INCONSISTENCY);
 		}
-		customerMoveLine.setIrrecoverableStateSelect(IAccount.PASSED_IN_IRRECOUVRABLE);
+		customerMoveLine.setIrrecoverableStatusSelect(MoveLine.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 		
 		// Credit MoveLine Customer account (411, 416, ...)
 		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, customerMoveLine.getAccount(), creditAmount, false, false, date, seq, null);
@@ -920,7 +914,7 @@ public class IrrecoverableService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void passInIrrecoverable(Invoice invoice, boolean generateEvent) throws AxelorException  {
-		invoice.setIrrecoverableStateSelect(IInvoice.TO_PASS_IN_IRRECOUVRABLE);
+		invoice.setIrrecoverableStatusSelect(Invoice.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE);
 		
 		if(generateEvent)  {
 			Company company = invoice.getCompany();
@@ -975,7 +969,7 @@ public class IrrecoverableService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void notPassInIrrecoverable(Invoice invoice) throws AxelorException  {
-		invoice.setIrrecoverableStateSelect(IInvoice.NOT_IRRECOUVRABLE);
+		invoice.setIrrecoverableStatusSelect(Invoice.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 		
 		MoveLine moveLine = moveService.getCustomerMoveLineByQuery(invoice);
 		
@@ -1000,7 +994,7 @@ public class IrrecoverableService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void passInIrrecoverable(MoveLine moveLine, boolean generateEvent, boolean passInvoice) throws AxelorException  {
-		moveLine.setIrrecoverableStateSelect(IInvoice.TO_PASS_IN_IRRECOUVRABLE);
+		moveLine.setIrrecoverableStatusSelect(MoveLine.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE);
 		ManagementObject managementObject = null;
 		if(generateEvent)  {
 			Company company = moveLine.getMove().getCompany();
@@ -1048,7 +1042,7 @@ public class IrrecoverableService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void notPassInIrrecoverable(MoveLine moveLine, boolean passInvoice) throws AxelorException  {
-		moveLine.setIrrecoverableStateSelect(IInvoice.NOT_IRRECOUVRABLE);
+		moveLine.setIrrecoverableStatusSelect(MoveLine.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 		
 		if(moveLine.getMove().getInvoice() != null && passInvoice)  {
 			this.notPassInIrrecoverable(moveLine.getMove().getInvoice());
@@ -1071,7 +1065,7 @@ public class IrrecoverableService {
 	public void passInIrrecoverable(PaymentSchedule paymentSchedule) throws AxelorException  {
 		Company company = paymentSchedule.getCompany();
 		
-		paymentSchedule.setIrrecoverableStateSelect(IInvoice.TO_PASS_IN_IRRECOUVRABLE);
+		paymentSchedule.setIrrecoverableStatusSelect(PaymentSchedule.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE);
 		
 		ManagementObject managementObject = this.createManagementObject("IRR", accountConfigService.getIrrecoverableReasonPassage(accountConfigService.getAccountConfig(company)));
 		paymentSchedule.setManagementObject(managementObject);
@@ -1110,7 +1104,7 @@ public class IrrecoverableService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void notPassInIrrecoverable(PaymentSchedule paymentSchedule) throws AxelorException  {
-		paymentSchedule.setIrrecoverableStateSelect(IInvoice.NOT_IRRECOUVRABLE);
+		paymentSchedule.setIrrecoverableStatusSelect(PaymentSchedule.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 		
 		List<MoveLine> paymentScheduleLineRejectMoveLineList = new ArrayList<MoveLine>();
 		

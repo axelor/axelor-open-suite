@@ -53,7 +53,7 @@
     <many-to-one name="previousInvoice" ref="Invoice" title="Previous invoice" />
     <many-to-one name="refundInvoice" ref="Invoice" title="Refund" />
     <one-to-many name="originalInvoiceList" ref="com.axelor.apps.account.db.Invoice" mappedBy="refundInvoice" title="Invoice of origin"/>
-    <integer name="irrecoverableStateSelect" title="Irrecouvrable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.state.select"/>
+    <integer name="irrecoverableStatusSelect" title="Irrecouvrable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
 	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shifting reason"/>
     <many-to-one name="standardInvoice" ref="Invoice" title="Standard Invoice" />
   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
@@ -101,6 +101,30 @@
     <integer name="statusSelect" title="State" selection="iaccount.invoice.status.select" readonly="true" default="1"/>
     
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>  
+
+	<extra-code><![CDATA[
+	
+	   	static final int NONE = 0;
+
+		// OPERATION TYPE SELECT
+		public static final int OPERATION_TYPE_SUPPLIER_PURCHASE = 1;
+		public static final int OPERATION_TYPE_SUPPLIER_REFUND = 2;
+		public static final int OPERATION_TYPE_CLIENT_SALE = 3;
+		public static final int OPERATION_TYPE_CLIENT_REFUND = 4;
+	
+		// IRRECOVERABLE STATUS SELECT
+		public static final int IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE = 0;
+		public static final int IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE = 1;
+		public static final int IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE = 2;
+	
+		// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+		public static final int STATUS_VENTILATED = 3;
+		public static final int STATUS_CANCELED = 4;
+	
+	]]></extra-code>
+
 
   </entity>
   

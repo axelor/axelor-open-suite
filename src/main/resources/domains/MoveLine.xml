@@ -25,7 +25,7 @@
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
     
     <many-to-many name="analyticAccountSet" ref="AnalyticAccount" title="Analytic account"/>
-    <integer name="reimbursementStateSelect" title="Reimbursement status" default="0" selection="move.line.reimbursement.state.select"/>
+    <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0" selection="move.line.reimbursement.state.select"/>
     <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher "/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax" />
@@ -43,7 +43,7 @@
 	<!--  Field not displayed, used for account clearance -->
 	<many-to-one name="accountClearance" ref="com.axelor.apps.account.db.AccountClearance" title="Account clearance"/>
 	
-	<integer name="irrecoverableStateSelect" title="Irrecoverable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.state.select"/>
+	<integer name="irrecoverableStatusSelect" title="Irrecoverable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
 	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shift reason"/>
     
     <string name="name" title="Name" namecolumn="true">
@@ -66,6 +66,21 @@
 		else return BigDecimal.ZERO;
 	    ]]>
     </decimal>
+  
+  	<extra-code><![CDATA[
+
+		// REIMBURSEMENT STATUS
+		public static final int REIMBURSEMENT_STATUS_NULL = 0;
+		public static final int REIMBURSEMENT_STATUS_REIMBURSING = 1;
+		public static final int REIMBURSEMENT_STATUS_REIMBURSED = 2;
+	
+		// IRRECOVERABLE STATUS SELECT
+		public static final int IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE = 0;
+		public static final int IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE = 1;
+		public static final int IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE = 2;
+	
+	]]></extra-code>
+  
   
   </entity>
 

@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CashRegisterLine;
-import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Mail;
@@ -40,7 +39,7 @@ public class CashRegisterLineService {
 	private static final Logger LOG = LoggerFactory.getLogger(CashRegisterLineService.class);
 	
 	@Inject
-	private MailService ms;
+	private MailService mailService;
 	
 	private DateTime todayTime;
 	private User user;
@@ -65,7 +64,7 @@ public class CashRegisterLineService {
 		LOG.debug("In closeCashRegister");
 
 		CashRegisterLine cashRegisterLineFound = CashRegisterLine
-				.filter("self.cashRegister = ?1 and self.cashRegisterDate = ?2 and self.stateSelect = '1'", 
+				.filter("self.cashRegister = ?1 and self.cashRegisterDate = ?2 and self.statusSelect = '1'", 
 						cashRegisterLine.getCashRegister(), cashRegisterLine.getCashRegisterDate()).fetchOne();
 		
 		if(cashRegisterLineFound != null)  {
@@ -82,10 +81,10 @@ public class CashRegisterLineService {
 			
 			cashRegisterLine.setCreateDateTime(this.todayTime);
 			cashRegisterLine.setUser(this.user);
-			cashRegisterLine.setStateSelect(IAccount.CLOSED_CASHREGISTERLINE);
+			cashRegisterLine.setStatusSelect(CashRegisterLine.CLOSED_CASHREGISTERLINE);
 			cashRegisterLine.save();
 			
-			return ms.createCashRegisterLineMail(accountConfig.getCashRegisterAddressEmail(), company, cashRegisterLine).save();
+			return mailService.createCashRegisterLineMail(accountConfig.getCashRegisterAddressEmail(), company, cashRegisterLine).save();
 			
 		}
 	}
@@ -93,8 +92,8 @@ public class CashRegisterLineService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void openCashRegister(CashRegisterLine cashRegisterLine)  {
-		 Mail.filter("cashRegisterLine = ?1", cashRegisterLine).remove();
-		 cashRegisterLine.setStateSelect(IAccount.DRAFT_CASHREGISTERLINE);
+		 Mail.filter("self.cashRegisterLine = ?1", cashRegisterLine).remove();
+		 cashRegisterLine.setStatusSelect(CashRegisterLine.DRAFT_CASHREGISTERLINE);
 		 cashRegisterLine.save();
 	}
 	

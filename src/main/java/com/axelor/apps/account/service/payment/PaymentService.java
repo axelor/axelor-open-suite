@@ -29,10 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
@@ -41,7 +41,6 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -134,7 +133,7 @@ public class PaymentService {
 		 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 		 " AND self.account.reconcileOk = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
 		 " AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
-		 company, IMove.STATUS_VALIDATED, true, invoice.getPartner(), account).fetch();
+		 company, Move.STATUS_VALIDATED, true, invoice.getPartner(), account).fetch();
 		 
 		 LOG.debug("Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
 
@@ -157,14 +156,14 @@ public class PaymentService {
 						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 AND self NOT IN ?5 ORDER BY self.date ASC ",
-						 company, IMove.STATUS_VALIDATED, true, partner, debitMoveLines).fetch();
+						 company, Move.STATUS_VALIDATED, true, partner, debitMoveLines).fetch();
 			}
 			else  {
 				othersDebitMoveLines = MoveLine
 						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 ORDER BY self.date ASC ",
-						 company, IMove.STATUS_VALIDATED, true, partner).fetch();
+						 company, Move.STATUS_VALIDATED, true, partner).fetch();
 			}
 			debitMoveLines.addAll(othersDebitMoveLines);
 		}

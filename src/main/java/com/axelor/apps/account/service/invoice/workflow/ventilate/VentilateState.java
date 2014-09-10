@@ -19,8 +19,6 @@ package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.account.db.IInvoice;
-import com.axelor.apps.account.db.IPaymentCondition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -80,7 +78,7 @@ public class VentilateState extends WorkflowInvoice {
 	protected void checkInvoiceDate() throws AxelorException  {
 		
 		if(Invoice.filter("self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3", 
-				IInvoice.STATUS_VENTILATED, invoice.getInvoiceDate(), invoice.getOperationTypeSelect()).count() > 0)  {
+				Invoice.STATUS_VENTILATED, invoice.getInvoiceDate(), invoice.getOperationTypeSelect()).count() > 0)  {
 			throw new AxelorException(String.format("La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée"), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -92,19 +90,19 @@ public class VentilateState extends WorkflowInvoice {
 		PaymentCondition paymentCondition = invoice.getPaymentCondition();
 		
 		switch (paymentCondition.getTypeSelect()) {
-		case IPaymentCondition.TYPE_NET:
+		case PaymentCondition.TYPE_NET:
 			
 			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime());
 			
-		case IPaymentCondition.TYPE_END_OF_MONTH_N_DAYS:
+		case PaymentCondition.TYPE_END_OF_MONTH_N_DAYS:
 					
 			return invoice.getInvoiceDate().dayOfMonth().withMaximumValue().plusDays(paymentCondition.getPaymentTime());
 					
-		case IPaymentCondition.TYPE_N_DAYS_END_OF_MONTH:
+		case PaymentCondition.TYPE_N_DAYS_END_OF_MONTH:
 			
 			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue();
 			
-		case IPaymentCondition.TYPE_N_DAYS_END_OF_MONTH_AT:
+		case PaymentCondition.TYPE_N_DAYS_END_OF_MONTH_AT:
 			
 			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue().plusDays(paymentCondition.getDaySelect());
 
@@ -136,7 +134,7 @@ public class VentilateState extends WorkflowInvoice {
 	 * @throws AxelorException 
 	 */
 	protected void setStatus( ) {
-		invoice.setStatusSelect(IInvoice.STATUS_VENTILATED);
+		invoice.setStatusSelect(Invoice.STATUS_VENTILATED);
 	}
 	
 	/**
@@ -151,22 +149,22 @@ public class VentilateState extends WorkflowInvoice {
 		switch (invoice.getOperationTypeSelect()) {
 		
 				
-		case IInvoice.SUPPLIER_PURCHASE:
+		case Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE:
 			
 			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.SUPPLIER_INVOICE, invoice.getCompany()));
 			break;
 			
-		case IInvoice.SUPPLIER_REFUND:
+		case Invoice.OPERATION_TYPE_SUPPLIER_REFUND:
 			
 			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.SUPPLIER_REFUND, invoice.getCompany()));
 			break;
 
-		case IInvoice.CLIENT_SALE:
+		case Invoice.OPERATION_TYPE_CLIENT_SALE:
 			
 			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.CUSTOMER_INVOICE, invoice.getCompany()));
 			break;
 			
-		case IInvoice.CLIENT_REFUND:
+		case Invoice.OPERATION_TYPE_CLIENT_REFUND:
 				
 			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.CUSTOMER_REFUND, invoice.getCompany()));
 			break;

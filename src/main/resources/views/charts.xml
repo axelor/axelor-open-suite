@@ -35,9 +35,8 @@
 				DATE_PART('year',_invoice.invoice_date) AS _year
 			FROM
 				account_invoice AS _invoice	
-			JOIN
-				base_status _status ON _status.id = _invoice.status AND  _status.code != 'dra'			
 			WHERE
+				_invoice.status_select != 1
 				_invoice.operation_type_select=3
 				AND DATE_PART('year',_invoice.invoice_date) 
 				IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
@@ -81,10 +80,8 @@
 			auth_user as _user
 			ON _user.id = :_user_id
 			AND _invoice.company = _user.active_company	
-		    LEFT JOIN
-		      base_status AS _status
-		      ON _status.id = _invoice.status AND _status.code != 'dra'        
 		    WHERE
+		      _invoice.status_select != 1
 		      _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
 		      AND _invoice.operation_type_select=3
 		      
@@ -140,10 +137,8 @@
 			auth_user AS _user
 			ON _user.id = :_user_id
 			AND _invoice.company = _user.active_company	  
-	    LEFT JOIN
-	      base_status AS _status
-	      ON _status.id = _invoice.status AND _status.code != 'dra'        
 	     WHERE
+	      _invoice.status_select != 1
 	      _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
 	      AND _invoice.operation_type_select=3
 	      
@@ -193,13 +188,11 @@
 			auth_user AS _user
 			ON _user.id = :_user_id
 			AND _invoice.company = _user.active_company	
-		LEFT JOIN
-	        base_status AS _status
-	        ON _status.id = _invoice.status AND _status.code != 'dra'  		
 		JOIN
 			base_product AS _product ON _line.product = _product.id
 		JOIN
 			base_product_category AS _category ON _category.id = _product.product_category
+		WHERE _invoice.status_select != 1
 		GROUP BY
 			_category.name
 		ORDER BY
@@ -253,10 +246,8 @@
 	        JOIN
 	          account_invoice_line AS _line 
 	          ON _line.invoice=_invoice.id
-	        LEFT JOIN
-	          base_status AS _status
-	          ON _status.id = _invoice.status AND _status.code != 'dra'        
 	        WHERE
+	          _invoice.status_select != 1
 	          _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
 	          AND _invoice.operation_type_select=1
 	          
@@ -303,10 +294,8 @@
 	    JOIN
 	      account_invoice_line AS _line 
 	      ON _line.invoice=_invoice.id
-	    LEFT JOIN
-	      base_status AS _status
-	      ON _status.id = _invoice.status AND _status.code != 'dra'        
 	    WHERE
+	      _invoice.status_select != 1
 	      _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
 	      AND _invoice.operation_type_select=1
 	      
@@ -517,16 +506,13 @@
 	    FROM
 	      account_invoice self
 	    JOIN
-	      base_status AS _status
-	      ON _status.code != 'dra' AND _status.id = self.status
-	    JOIN
 	          auth_user AS _user
 	          ON _user.id = :id
 	    JOIN
 	          base_company AS _company
 	          ON  _company.id = _user.active_company
 	          AND _company.id = self.company
-	    WHERE self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
+	    WHERE self.status_select != 1 self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
 	        AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'  
 	    GROUP BY 
 	          _month
@@ -552,16 +538,13 @@
 						  _invoice.currency AS _currency
 				    FROM account_invoice _invoice
 				    JOIN 
-				        base_status AS _status
-						ON _status.code != 'dra' AND _status.id = _invoice.status
-				 	JOIN 
 				 	    auth_user AS _user
 		        		ON _user.id = :id
 		      		JOIN 
 		      		    base_company AS _company
 		        		ON  _company.id = _user.active_company
 		        		AND _company.id = _invoice.company
-			     	WHERE _invoice.operation_type_select=3 
+			     	WHERE _invoice.operation_type_select = 3 AND _invoice.status_select != 1
 			     		AND _invoice.invoice_date &lt; DATE(:todayDate) 
 			     		AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' 
 			   ) AS _account_invoice
@@ -586,9 +569,6 @@
 	            	(SELECT _invoice.ex_tax_total As _ex_tax_total,
 	                   _invoice.payment_condition AS _payment_condition
 	                FROM account_invoice _invoice
-	                JOIN 
-	                    base_status AS _status
-	                    ON _status.code != 'dra' AND _status.id = _invoice.status
 			        JOIN 
 			            auth_user AS _user
 	                    ON _user.id = :id
@@ -596,7 +576,7 @@
 	                    base_company AS _company
 	                    ON  _company.id = _user.active_company
 	                    AND _company.id = _invoice.company
-	                WHERE _invoice.operation_type_select=3 
+	                WHERE _invoice.operation_type_select = 3 AND _invoice.status_select != 1
 	                	AND _invoice.invoice_date &lt; DATE(:todayDate) 
 	                	AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'
 	            ) AS _account_invoice
@@ -620,9 +600,6 @@
 	     date_part('year',self.invoice_date) || '-' || date_part('mon',self.invoice_date) || '-01' AS _month
 	  FROM
 	      account_invoice self
-	  JOIN 
-	       base_status AS _status
-	       ON _status.code != 'dra' AND _status.id = self.status
 	  JOIN   
 	       auth_user AS _user
 	       ON _user.id = :id
@@ -631,7 +608,8 @@
 	      ON  _company.id = _user.active_company
 	      AND _company.id = self.company
 	  WHERE 
-	     self.operation_type_select=1 AND self.invoice_date &lt; DATE(:todayDate) AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'   
+	     self.status_select != 1 AND self.operation_type_select=1 AND self.invoice_date &lt; DATE(:todayDate) 
+	     AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'   
 	  GROUP BY _month
 	  ORDER BY
     	_month
@@ -657,9 +635,6 @@
     		(SELECT _invoice.ex_tax_total As _ex_tax_total,
 					_invoice.currency AS _currency
 		     FROM account_invoice _invoice
-		     JOIN 
-		          base_status AS _status
-				  ON _status.code != 'dra' AND _status.id = _invoice.status
 			 JOIN
 			        auth_user AS _user
 			        ON _user.id = :id
@@ -667,7 +642,8 @@
 		        base_company AS _company
 		        ON  _company.id = _user.active_company
 		        AND _company.id = _invoice.company
-		    WHERE _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' 
+		    WHERE _invoice.status_select != 1 AND _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) 
+		    AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' 
 		   ) AS _account_invoice
 	   WHERE _currency.id=_account_invoice._currency	 
 	   GROUP BY _currency.name
@@ -690,9 +666,6 @@
 	            (SELECT _invoice.ex_tax_total As _ex_tax_total,
 	                  _invoice.payment_condition AS _payment_condition
 	                FROM account_invoice _invoice
-	                JOIN 
-	                    base_status AS _status
-	                    ON _status.code != 'dra' AND _status.id = _invoice.status
 			        JOIN  
 			             auth_user AS _user
 	                     ON _user.id = :id
@@ -700,7 +673,7 @@
 	                     base_company AS _company
 	                     ON  _company.id = _user.active_company
 	                     AND _company.id = _invoice.company
-	                WHERE _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'
+	                WHERE _invoice.status_select != 1 AND _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'
 	            ) AS _account_invoice
 	    WHERE 
 	        _payment_condition.id=_account_invoice._payment_condition	 
@@ -729,10 +702,6 @@
 	      FROM
 	        account_invoice AS self
 	      JOIN
-	        base_status AS _status
-	        ON _status.code != 'dra'
-	        AND _status.id = self.status
-	      JOIN
 	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
@@ -740,7 +709,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        _invoice.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -750,10 +719,6 @@
 	      FROM
 	        account_invoice AS self
 	      JOIN
-	        base_status AS _status
-	        ON _status.code != 'dra'
-	        AND _status.id = self.status
-	      JOIN
 	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
@@ -761,7 +726,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -771,10 +736,6 @@
 	      FROM
 	        account_invoice AS self
 	      JOIN
-	        base_status AS _status
-	        ON _status.code != 'dra'
-	        AND _status.id = self.status
-	      JOIN
 	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
@@ -782,7 +743,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=4 
 	      )
 	    UNION ALL
@@ -792,10 +753,6 @@
 	      FROM
 	        account_invoice AS self
 	      JOIN
-	        base_status AS _status
-	        ON _status.code != 'dra'
-	        AND _status.id = self.status
-	      JOIN
 	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
@@ -803,7 +760,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=4 
 	      )
 	    ) situation
@@ -837,10 +794,6 @@
 	      FROM
 	        account_invoice AS self
 	      JOIN
-	        base_status AS _status
-	        ON _status.code != 'dra'
-	        AND _status.id = self.status
-	      JOIN
 	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
@@ -848,7 +801,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -858,10 +811,6 @@
 	      FROM
 	        account_invoice AS self
 	      JOIN
-	        base_status AS _status
-	        ON _status.code != 'dra'
-	        AND _status.id = self.status
-	      JOIN
 	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
@@ -869,7 +818,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -879,10 +828,6 @@
 	      FROM
 	        account_invoice AS self
 	      JOIN
-	        base_status AS _status
-	        ON _status.code != 'dra'
-	        AND _status.id = self.status
-	      JOIN
 	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
@@ -890,7 +835,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self..status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.due_date &lt; CURRENT_DATE AND
 	        self.operation_type_select=3
 	      )
@@ -925,10 +870,6 @@
 	      FROM
 	        account_invoice AS self
 	      JOIN
-	        base_status AS _status
-	        ON _status.code != 'dra'
-	        AND _status.id = self.status
-	      JOIN
 	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
@@ -936,7 +877,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
 	        self.operation_type_select=1
 	      )	 
 	    UNION ALL
@@ -946,10 +887,6 @@
 	      FROM
 	        account_invoice AS self
 	      JOIN
-	        base_status AS _status
-	        ON _status.code != 'dra'
-	        AND _status.id = self.status
-	      JOIN
 	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
@@ -957,7 +894,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
 	        self.operation_type_select=1 
 	      )	 
 	    UNION ALL
@@ -967,10 +904,6 @@
 	      FROM
 	        account_invoice AS self
 	      JOIN
-	        base_status AS _status
-	        ON _status.code != 'dra'
-	        AND _status.id = self.status
-	      JOIN
 	        auth_user AS _user
 	        ON _user.id = :id
 	      JOIN
@@ -978,7 +911,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
 	        self.due_date &lt; DATE(:todayDate) AND
 	        self.operation_type_select=1
 	      )

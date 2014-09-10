@@ -13,36 +13,39 @@
             <field name="statusSelect"/> 
      </grid>
   
- <form cols="4" onNew="action-account-bank-statement-onnew-group" readonlyIf="statusSelect == 2" name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.account.db.BankStatement">
-  
-  <panel title="Overview">
-    <field name="name"/>
-    <field name="company" widget="SuggestBox" onChange="action-bank-statement-set-currency"/>
-    <field name="currency"/>
-    <field name="fromDate"/>
-    <field name="toDate"/>
-    <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"/>
-    <field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect='cash'"/>
-  </panel>
-  <panel title="Status" >
-    <field name="statusSelect" title="Status"/>
-    <button name="validated" title="Validated" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-validate-click"/>
-  </panel>
-	<panel title="Balance" >
-		<field name="startingBalance"/>
-		<field name="endingBalance"/>
-		<field name="computedBalance"/>
-	    <button name="compute" title="Compute" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-compute-click"/>
-	</panel>
-    <panel-related field="bankStatementLineList" x-span="12"/>
-</form>
+	<form cols="4" onNew="action-account-bank-statement-onnew-group" readonlyIf="statusSelect == 2" name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.account.db.BankStatement">
+	  
+		<panel title="Overview">
+			<field name="name"/>
+			<field name="company" widget="SuggestBox" onChange="action-bank-statement-set-currency"/>
+			<field name="currency"/>
+			<field name="fromDate"/>
+			<field name="toDate"/>
+			<field name="journal" domain="self.statusSelect = 1 AND self.company = :company"/>
+			<field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect='cash'"/>
+		</panel>
+		
+		<panel title="Status" >
+			<field name="statusSelect" title="Status"/>
+			<button name="validated" title="Validated" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-validate-click"/>
+		</panel>
+		
+		<panel title="Balance" >
+			<field name="startingBalance"/>
+			<field name="endingBalance"/>
+			<field name="computedBalance"/>
+			<button name="compute" title="Compute" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-compute-click"/>
+		</panel>
+		
+		<panel-related field="bankStatementLineList" x-span="12"/>
+		
+	</form>
 
  
    <action-group name="action-account-bank-statement-onnew-group">
 	   <action name="action-bank-statement-active-company"/>
 	   <action name="action-bank-statement-set-months"/>
 	   <action name="action-bank-statement-set-currency"/>
-	   <action name="action-bank-statement-default-status"/>
    </action-group>
  
    <action-group name="action-group-account-bankstatement-validate-click">
@@ -69,10 +72,6 @@
        <field name="currency" expr="eval: company?.currency"/>
    </action-record>
    
-   <action-record model="com.axelor.apps.account.db.BankStatement" name="action-bank-statement-default-status">
-       <field name="statusSelect" expr="1"/>
-   </action-record>
-   	
 	<action-method name="action-bank-statement-method-compute">
 		<call class="com.axelor.apps.account.web.BankStatementController" method="compute"/>
 	</action-method>

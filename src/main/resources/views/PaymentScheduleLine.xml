@@ -13,7 +13,7 @@
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
 		<field name="interbankCodeLine" />
-		<field name="status" />
+		<field name="statusSelect" />
 		<field name="debitNumber" />
 		<field name="fromReject" />
 	</grid>
@@ -29,7 +29,7 @@
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
 		<field name="interbankCodeLine" />
-		<field name="status" />
+		<field name="statusSelect" />
 		<field name="debitNumber" />
 		<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line"/>
 		<field name="rejectMoveLine" />
@@ -48,7 +48,7 @@
 		<field name="rejectDate" />
 		<field name="interbankCodeLine" />
 		<field name="fromReject" />
-		<field name="status" />
+		<field name="statusSelect" />
 	</grid>
 
 	<form name="payment-schedule-line-payment-schedule-form" title="Schedule line"
@@ -68,7 +68,7 @@
 		<field name="advanceOrPaymentMove" />
 		<field name="advanceMoveLine" />
 		<field name="fromReject" />
-		<field name="status" readonly="true" />
+		<field name="statusSelect" readonly="true" />
 		</panel>
 		
 	</form>

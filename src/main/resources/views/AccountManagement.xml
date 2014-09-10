@@ -6,6 +6,8 @@
     <grid name="account-management-payment-mode-grid" title="Les gestions de compte comptable" model="com.axelor.apps.account.db.AccountManagement">
         <field name="company"/>
         <field name="cashAccount"/>
+        <field name="journal"/>
+        <field name="sequence"/>
     </grid>
  
 	 <form name="account-management-payment-mode-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement" cols="4"
@@ -15,7 +17,7 @@
 			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
 			 <field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" />
 			 <field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
-			<field name="sequence" domain="self.company = :company"/>
+			<field name="sequence" domain="self.company = :company" canNew="true"/>
 	 	</panel>
 	 </form>
     

@@ -16,7 +16,15 @@
     <decimal name="endingBalance" title="Ending Balance" /> 
     <one-to-many name="bankStatementLineList" ref="com.axelor.apps.account.db.BankStatementLine" mappedBy="bankStatement" title="Bank Statement Lines"/>
     <decimal name="computedBalance" title="Computed Balance" readonly="true"/> 
-    <integer name="statusSelect" title="Status" selection="account.bank.statement.status.select" readonly="true"/>
+    <integer name="statusSelect" title="Status" selection="account.bank.statement.status.select" readonly="true" default="1"/>
+
+	<extra-code><![CDATA[
+	
+	   	// Status select
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+	
+	]]></extra-code>
 
   </entity>
   

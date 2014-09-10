@@ -46,7 +46,45 @@
     
     <!-- OTHERS INFORMATIONS -->
     <string name="description" title="Description" large="true" />
-<!--     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="accountingBatch" title="Batchs" /> -->
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="accountingBatch" title="Batchs" />
+  
+  	<extra-code><![CDATA[
+	
+	   	// ACTION TYPE
+		public static final int ACTION_REIMBURSEMENT = 11;
+		public static final int ACTION_DIRECT_DEBIT = 12;
+		public static final int ACTION_REMINDER = 14;
+		public static final int ACTION_INTERBANK_PAYMENT_ORDER = 15;
+		public static final int ACTION_DOUBTFUL_CUSTOMER = 16;
+		public static final int ACTION_ACCOUNT_CUSTOMER = 17;
+		public static final int ACTION_MOVE_LINE_EXPORT = 18;
+		
+		// REIMBURSEMENT TYPE
+		public static final int REIMBURSEMENT_TYPE_EXPORT = 1;
+		public static final int REIMBURSEMENT_TYPE_IMPORT = 2;
+		
+		// REIMBURSEMENT EXPORT TYPE
+		public static final int REIMBURSEMENT_EXPORT_TYPE_GENERATE = 1;
+		public static final int REIMBURSEMNT_EXPORT_TYPE_EXPORT = 2;
+	
+		// DIRECT DEBIT TYPE
+		public static final int DIRECT_DEBIT_TYPE_EXPORT = 1;
+		public static final int DIRECT_DEBIT_TYPE_IMPORT = 2;
+		
+		// DIRECT DEBIT EXPORT TYPE
+		public static final int DIRECT_DEBIT_EXPORT_TYPE_MONTHLY = 0;
+		public static final int DIRECT_DEBIT_EXPORT_TYPE_INVOICE = 1;
+		
+		// INTERBANK PAYMENT ORDER TYPE
+		public static final int INTERBANK_PAYMENT_ORDER_TYPE_IMPORT = 1;
+		public static final int INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT = 2;
+
+		// REMINDER TYPE
+		public static final int REMINDER_TYPE = 1;
+	
+	]]></extra-code>
+	
+  
   
   </entity>
 

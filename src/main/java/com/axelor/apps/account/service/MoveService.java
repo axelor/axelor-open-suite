@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.CashRegister;
-import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -915,7 +914,7 @@ public class MoveService {
 				throw new AxelorException(String.format("L'écriture comptable %s comporte un total débit différent du total crédit : %s <> %s", 
 						move.getReference(), totalDebit, totalCredit), IException.INCONSISTENCY);
 			}
-			move.setStatusSelect(IMove.STATUS_VALIDATED);
+			move.setStatusSelect(Move.STATUS_VALIDATED);
 		}
 	}
 	

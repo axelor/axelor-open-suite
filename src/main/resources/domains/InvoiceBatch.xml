@@ -24,6 +24,16 @@
     <string name="description" title="Description" large="true" />
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="invoiceBatch" title="Batches" />
   
+ 	<extra-code><![CDATA[
+	
+	   	// ACTION TYPE
+		public static final int BATCH_INVOICE = 0;
+		public static final int BATCH_STATUS = 1;
+		public static final int BATCH_ALARM = 2;
+	
+	]]></extra-code>
+  
+  
   </entity>
 
 </domain-models>

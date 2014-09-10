@@ -16,11 +16,7 @@
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
     </input>
     
-    <input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year">
-        <bind to="status" search="self.code = :status_code" >
-            <bind to="code" column="status_code"/>
-        </bind>
-    </input>
+    <input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year"/>
     
   	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" />
   	

@@ -263,8 +263,9 @@ public class InvoiceController {
 				
 				Map<String,Object> mapView = new HashMap<String,Object>();
 				mapView.put("title", title);
-				mapView.put("resource", url);
+				mapView.put("resource", "http://www.axelor.com");
 				mapView.put("viewType", "html");
+				mapView.put("target", "new");
 				response.setView(mapView);		
 			}
 			else {

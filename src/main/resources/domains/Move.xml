@@ -28,5 +28,15 @@
     <boolean name="ignoreInReminderOk" title="Ignore in remind process" default="false"/>
     <date name="validationDate" title="Validation date"/>
     
+    <extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_SIMULATED = 2;
+		public static final int STATUS_VALIDATED = 3;
+		public static final int STATUS_CANCELED = 4;
+	
+	]]></extra-code>
+    
   </entity>
 </domain-models>

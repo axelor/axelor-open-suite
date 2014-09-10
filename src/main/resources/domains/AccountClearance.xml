@@ -11,10 +11,19 @@
 	<datetime name="dateTime" title="Account clearance date" tz="true" readonly="true"/>
 	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User" readonly="true"/>
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/> 
-	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
+	<integer name="statusSelect" title="Status" readonly="true" selection="iaccount.account.clearance.status.select" default="1"/>
 	<decimal name="amountThreshold" title="Clearance maximum amount" required="true"/>
 	<date name="dateThreshold" title="Overpayment before" required="true"/>
 	<many-to-many name="moveLineSet" ref="com.axelor.apps.account.db.MoveLine" title="Overpayments collected"/>
+	 
+	
+    <extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+	
+	]]></extra-code> 
 	 
   </entity>
 

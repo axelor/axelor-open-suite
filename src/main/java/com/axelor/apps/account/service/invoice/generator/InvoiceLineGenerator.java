@@ -25,7 +25,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineType;
@@ -208,7 +207,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		if(taxLine == null)  {
 			boolean isPurchase = false;
-			if(invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_REFUND)  {
+			if(invoice.getOperationTypeSelect() == Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == Invoice.OPERATION_TYPE_SUPPLIER_REFUND)  {
 				isPurchase = true;
 			}
 			taxLine =  accountManagementServiceImpl.getTaxLine(invoice.getInvoiceDate(), product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);

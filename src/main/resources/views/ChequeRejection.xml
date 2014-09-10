@@ -11,60 +11,57 @@
         <field name="moveLine"/>
         <field name="rejectionDate"/>
         <field name="interbankCodeLine"/>
-        <field name="status"/>
+        <field name="statusSelect"/>
     </grid>
-    
-   <form cols="4" onLoad="action-cheque-rejection-attrs-hidden-after-validated" onNew="action-account-cheque-rejection-onnew-group" name="cheque-rejection-form" title="Cheque Rejection" model="com.axelor.apps.account.db.ChequeRejection">
-	  <panel title="Overview" colSpan="4" cols="4">
-	    <field name="status"/>
-	    <field name="move"/>
-	    <field name="name"/>
-	    <field name="dateTime"/>
-	    <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
-	    <field name="paymentMode"/>
-	    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-	  </panel>
-	  <panel title="Reject Information" >
-	    <field name="rejectionDate"/>
-	    <field name="interbankCodeLine" domain="self.chequeOk = 't'"/>
-	    <field name="description"/>
-	    <field name="amountRejected"/>
-	  </panel>
 
-	  <panel title="Payment Rejected">
-	  		<!-- TODO:check weather this Editor is working or not -->
-		  <field name="paymentVoucher" onChange="action-group-account-cheque-rejection-paymentvoucher-onchange" onSelect="action-cheque-rejection-attrs-domain-payment-voucher" domain="self.company=:company">
-			<editor x-layout="table"  orderBy="-paymentDateTime" title="Payment voucher">
-			   	<field name="ref"/>
-			   	<field name="user"/>
-			   	<field name="paymentMode"/>
-			   	<field name="paymentDateTime"/>
-			   	<field name="payerPartner"/>
-			   	<field name="paidAmount"/>
-			   	<field name="generatedMove"/>
-			   	<field name="state"/>
-			</editor>
-		 	</field>
-	  </panel>  
-	<panel-side title="Action" >
- 		<button name="validateChequeRejection" title="Validate reject" colSpan="2" onClick="action-group-account-cheque-rejection-validate-click"/>
-	</panel-side>
-</form>
+	<form name="cheque-rejection-form" title="Cheque Rejection"	model="com.axelor.apps.account.db.ChequeRejection" cols="4"
+		onNew="default-cheque-rejection-record">
 
-    
-    <action-group name="action-account-cheque-rejection-onnew-group">
-	    <action name="default-cheque-rejection-record"/>
-	    <action name="action-cheque-rejection-attrs-hidden-after-validated"/>
-    </action-group>
+		<panel title="Overview" colSpan="4" cols="4">
+			<field name="statusSelect" />
+			<field name="move" />
+			<field name="name" />
+			<field name="dateTime" />
+			<field name="company" widget="SuggestBox" form-view="company-lite-form" />
+			<field name="paymentMode" />
+			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
+		</panel>
+		<panel title="Reject Information">
+			<field name="rejectionDate" />
+			<field name="interbankCodeLine" domain="self.chequeOk = 't'" />
+			<field name="description" />
+			<field name="amountRejected" />
+		</panel>
+
+		<panel title="Payment Rejected">
+			<!-- TODO:check weather this Editor is working or not -->
+			<field name="paymentVoucher"
+				onChange="action-group-account-cheque-rejection-paymentvoucher-onchange"
+				onSelect="action-cheque-rejection-attrs-domain-payment-voucher"
+				domain="self.company=:company">
+				<editor x-layout="table" orderBy="-paymentDateTime" title="Payment voucher">
+					<field name="ref" />
+					<field name="user" />
+					<field name="paymentMode" />
+					<field name="paymentDateTime" />
+					<field name="payerPartner" />
+					<field name="paidAmount" />
+					<field name="generatedMove" showIf="statusSelect == 2" />
+					<field name="state" />
+				</editor>
+			</field>
+		</panel>
+		<panel-side title="Action">
+			<button name="validateChequeRejection" title="Validate reject"
+				colSpan="2" onClick="save,action-method-account-cheque-rejection-validate"
+				hideIf="statusSelect == 2" />
+		</panel-side>
+	</form>
+
     
     <action-group name="action-group-account-cheque-rejection-paymentvoucher-onchange">
     	<action name="action-cheque-rejection-record-amount-rejected"/>
     	<action name="action-cheque-rejection-record-partner"/>
-    </action-group>
-    
-    <action-group name="action-group-account-cheque-rejection-validate-click">
-    	<action name="save"/>
-    	<action name="action-method-account-cheque-rejection-validate"/>
     </action-group>
     
     <action-method name="action-method-account-cheque-rejection-validate">
@@ -75,13 +72,7 @@
       	<attribute name="domain" for="paymentVoucher" expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode.id = ${paymentMode?.id} and self.base.id = ${partner?.id}&quot;" if="eval: partner != null"/>
     </action-attrs>
     
-    <action-attrs name="action-cheque-rejection-attrs-hidden-after-validated"> 
-    	<attribute name="hidden" for="validateChequeRejection" expr="eval: status?.code == 'val'"/>
-    	<attribute name="hidden" for="move" expr="eval: status?.code != 'val'"/>
-    </action-attrs>
-    
      <action-record name="default-cheque-rejection-record" model="com.axelor.apps.account.db.ChequeRejection">
-        <field name="status" expr="action:action-status-record-dra"/>
 		<field name="company" expr="eval:__user__.activeCompany"/>
    		<field name="dateTime" expr="action:action-payment-voucher-getDateTime"/>
    		<field name="paymentMode" expr="action:action-payment-mode-record-cheque"/>

@@ -38,7 +38,6 @@ import com.axelor.apps.account.service.PaymentScheduleImportService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Status;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -178,8 +177,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 		
 				this.createRejectMove(Company.find(company.getId()), 
 						paymentScheduleImportService.getPaymentScheduleLineMajorAccountList(), 
-						paymentScheduleImportService.getInvoiceList(), 
-						paymentScheduleImportService.getStatusUpr(), rejectDate);
+						paymentScheduleImportService.getInvoiceList(), rejectDate);
 			}
 		}
 	}
@@ -198,14 +196,12 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 	 * @param pslListMonthlyPaymentAfterVentilateInvoice
 	 * @param invoiceList
 	 * @param invoiceRejectReasonList
-	 * @param statusUpr
-	 * 				Un status 'en cours'
 	 * @return
 	 * 				L'écriture des rejets
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Move createRejectMove(Company company, List<PaymentScheduleLine> pslListGC, 	List<Invoice> invoiceList, Status statusUpr, LocalDate rejectDate)  {
+	public Move createRejectMove(Company company, List<PaymentScheduleLine> pslListGC, 	List<Invoice> invoiceList, LocalDate rejectDate)  {
 	
 		// Création de l'écriture d'extourne par société
 		Move move = this.createRejectMove(company, rejectDate);

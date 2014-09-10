@@ -10,6 +10,25 @@
     <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="paymentMode" title="Accounts by paymentMode"/>
     <string name="invoiceLabel" title="Invoice label" help="true"/>
   
+  	<extra-code><![CDATA[
+	
+	   	// TYPE
+		public static final int TYPE_OTHER = 1;
+		public static final int TYPE_DD = 2;
+		public static final int TYPE_IPO = 3;
+		public static final int TYPE_IPO_CHEQUE = 4;
+		public static final int TYPE_CASH = 5;
+		public static final int TYPE_BANK_CARD = 6;
+		public static final int TYPE_CHEQUE = 7;
+		public static final int TYPE_WEB = 8;
+		public static final int TYPE_TRANSFER = 9;
+	
+		// Sales or purchase
+		public static final int SALES = 1;
+		public static final int PURCHASES = 2;
+	
+	]]></extra-code>
+  
   </entity>
 
 </domain-models>

@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
@@ -83,7 +82,7 @@ public class AccountCustomerService {
 												"AND move.statusSelect = ?3 AND ml.amount_remaining > 0 ")
 												.setParameter(1, partner)
 												.setParameter(2, company)
-												.setParameter(3, IMove.STATUS_VALIDATED);
+												.setParameter(3, Move.STATUS_VALIDATED);
 		
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
 		
@@ -135,7 +134,7 @@ public class AccountCustomerService {
 				.setParameter(1, today.toDate(), TemporalType.DATE)
 				.setParameter(2, partner)
 				.setParameter(3, company)
-				.setParameter(4, IMove.STATUS_VALIDATED);
+				.setParameter(4, Move.STATUS_VALIDATED);
 
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
 		
@@ -189,7 +188,7 @@ public class AccountCustomerService {
 				.setParameter(2, today.toDate(), TemporalType.DATE)
 				.setParameter(3, partner)
 				.setParameter(4, company)
-				.setParameter(5, IMove.STATUS_VALIDATED);
+				.setParameter(5, Move.STATUS_VALIDATED);
 		
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
 		

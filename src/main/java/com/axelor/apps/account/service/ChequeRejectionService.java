@@ -32,7 +32,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -72,7 +71,7 @@ public class ChequeRejectionService {
 		
 		chequeRejection.setMove(move);
 	
-		chequeRejection.setStatus(Status.findByCode("val"));
+		chequeRejection.setStatusSelect(ChequeRejection.STATUS_VALIDATED);
 		
 		chequeRejection.save();
 	}

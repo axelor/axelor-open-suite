@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountClearance;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -41,7 +40,6 @@ import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -97,7 +95,7 @@ public class AccountClearanceService {
 		
 		List<? extends MoveLine> moveLineList = MoveLine.filter("self.company = ?1 AND self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.statusSelect = ?2 AND self.amountRemaining > 0 AND self.amountRemaining <= ?3 AND self.credit > 0 AND self.account in ?4 AND self.date <= ?5",
-				company, IMove.STATUS_VALIDATED , accountClearance.getAmountThreshold(), 
+				company, Move.STATUS_VALIDATED , accountClearance.getAmountThreshold(), 
 				company.getAccountConfig().getClearanceAccountSet(), accountClearance.getDateThreshold()).fetch();
 		
 		LOG.debug("Liste des trop perçus récupérés : {}", moveLineList);
@@ -136,7 +134,7 @@ public class AccountClearanceService {
 			moveService.validateMove(move);
 		}
 		
-		accountClearance.setStatus(Status.findByCode("val"));
+		accountClearance.setStatusSelect(AccountClearance.STATUS_VALIDATED);
 		accountClearance.setDateTime(this.todayTime);
 		accountClearance.setName(sequenceService.getSequenceNumber(IAdministration.ACCOUNT_CLEARANCE, company));
 		accountClearance.save();
@@ -186,7 +184,7 @@ public class AccountClearanceService {
 		accountClearance.setName(name);
 		accountClearance.setDateTime(this.todayTime);
 		accountClearance.setUser(this.user);
-		accountClearance.setStatus(Status.findByCode("val"));
+		accountClearance.setStatusSelect(AccountClearance.STATUS_VALIDATED);
 		return accountClearance;
 		
 	}

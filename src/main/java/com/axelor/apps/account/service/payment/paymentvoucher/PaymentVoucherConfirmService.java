@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.IPaymentVoucher;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -208,7 +207,7 @@ public class PaymentVoucherConfirmService  {
 			moveService.validateMove(move);
 			paymentVoucher.setGeneratedMove(move);
 		}
-		paymentVoucher.setStateSelect(IPaymentVoucher.STATE_CONFIRMED);
+		paymentVoucher.setStatusSelect(PaymentVoucher.STATUS_CONFIRMED);
 		paymentVoucherSequenceService.setReceiptNo(paymentVoucher, company, journal);
 		paymentVoucher.save();
 	}

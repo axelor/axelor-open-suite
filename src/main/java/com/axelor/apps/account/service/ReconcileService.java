@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -93,7 +92,7 @@ public class ReconcileService {
 		Reconcile reconcile =  new Reconcile(
 				amount.setScale(2, RoundingMode.HALF_EVEN), 
 				debitMoveLine, creditMoveLine, 
-				IAccount.RECONCILE_STATUS_DRAFT, 
+				Reconcile.STATUS_DRAFT, 
 				canBeZeroBalanceOk, mustBeZeroBalanceOk);
 		
 		if(inverse)  {
@@ -185,7 +184,7 @@ public class ReconcileService {
 		this.updatePartnerAccountingSituation(reconcile, updateCustomerAccount);
 		this.updateInvoiceRemainingAmount(reconcile);
 		
-		reconcile.setStatusSelect(IAccount.RECONCILE_STATUS_CONFIRMED);
+		reconcile.setStatusSelect(Reconcile.STATUS_CONFIRMED);
 		
 		if(reconcile.getCanBeZeroBalanceOk())  {
 			// Alors nous utilisons la règle de gestion consitant à imputer l'écart sur un compte transitoire si le seuil est respecté
@@ -323,7 +322,7 @@ public class ReconcileService {
 		MoveLine creditMoveLine = reconcile.getCreditMoveLine();
 		
 		// Change the state
-		reconcile.setStatusSelect(IAccount.RECONCILE_STATUS_CANCELED);
+		reconcile.setStatusSelect(Reconcile.STATUS_CANCELED);
 		//Add the reconciled amount to the reconciled amount in the move line
 		creditMoveLine.setAmountPaid(creditMoveLine.getAmountPaid().subtract(reconcile.getAmount()));
 		debitMoveLine.setAmountPaid(debitMoveLine.getAmountPaid().subtract(reconcile.getAmount()));		

@@ -10,43 +10,34 @@
         <field name="amountThreshold"/>
         <field name="dateThreshold"/>
         <field name="company"/>
-        <field name="status"/>
+        <field name="statusSelect"/>
     </grid>
     
-<form  onLoad="action-account-clearance-attrs-hidden-buttons" onNew="action-account-clearance-record-default" name="account-clearance-form" title="Account clearance" model="com.axelor.apps.account.db.AccountClearance">
-	 <panel title="General">
-	   <field name="name"/>
-	   <field name="dateTime"/>
-	   <field name="user"/>
-	   <field name="company" widget="SuggestBox"/>
-	   <field name="status"/>
-	 </panel>
-	<panel title="Clearance settings" >
-	    <field name="amountThreshold"/>
-	    <field name="dateThreshold"/>
-	</panel>
-	<panel-tabs>
-	  <panel-related field="moveLineSet"/>  
-	</panel-tabs>
-	<panel-side title="Actions"> 
-	    <button name="getExcessPayment" title="Get overdue payments"  onClick="action-group-account-account-clearance-excesspayment-click"/>
-	    <button name="validateAccountClearance" title="Validate account clearances" onClick="action-group-account-account-clearance-validate-click"/>
-	    <button name="showAccountClearanceMoveLines" title="Move lines generated"  onClick="action-method-account-clearance-show-move-lines"/> 
-	</panel-side>
-</form>
-    
-    <action-group name="action-group-account-account-clearance-excesspayment-click">
-    	<action name="save"/>
-    	<action name="action-method-account-clearance-get-excesspayment"/>
-    	<action name="save"/>
-    </action-group>
-    
-    <action-group name="action-group-account-account-clearance-validate-click">
-	    <action name="save"/>
-	    <action name="action-method-account-clearance-validate"/>
-	    <action name="action-account-clearance-attrs-hidden-buttons"/>
-	    <action name="save"/>
-    </action-group>
+	<form name="account-clearance-form" title="Account clearance" model="com.axelor.apps.account.db.AccountClearance"
+	onNew="action-account-clearance-record-default">
+		
+		<panel title="General">
+			<field name="name"/>
+			<field name="dateTime"/>
+			<field name="user"/>
+			<field name="company" widget="SuggestBox"/>
+			<field name="statusSelect"/>
+		</panel>
+		
+		<panel title="Clearance settings" >
+			<field name="amountThreshold"/>
+			<field name="dateThreshold"/>
+		</panel>
+		
+		<panel-related field="moveLineSet"/>  
+		
+		<panel-side title="Actions"> 
+			<button name="getExcessPayment" title="Get overdue payments"  onClick="save,action-method-account-clearance-get-excesspayment,save" hideIf="statusSelect == 2"/>
+			<button name="validateAccountClearance" title="Validate account clearances" onClick="save,action-method-account-clearance-validate,save" hideIf="statusSelect == 2"/>
+			<button name="showAccountClearanceMoveLines" title="Move lines generated"  onClick="action-method-account-clearance-show-move-lines" showIf="statusSelect == 2"/> 
+		</panel-side>
+	
+	</form>
     
     <action-method name="action-method-account-clearance-get-excesspayment">
     	<call class="com.axelor.apps.account.web.AccountClearanceController" method="getExcessPayment"/>
@@ -57,16 +48,10 @@
     </action-method>
     
     <action-method name="action-method-account-clearance-show-move-lines">
-    	<call class="com.axelor.apps.account.web.AccountClearanceControllerSimple" method="showAccountClearanceMoveLines"/>
+    	<call class="com.axelor.apps.account.web.AccountClearanceController" method="showAccountClearanceMoveLines"/>
     </action-method>
     
-	<action-attrs name="action-account-clearance-attrs-hidden-buttons">
-	    <attribute name="hidden" expr="eval: status.code == 'val'" for="getExcessPayment"/>
-   	    <attribute name="hidden" expr="eval: status.code == 'val'" for="validateAccountClearance"/>
-	</action-attrs>
-    
     <action-record name="action-account-clearance-record-default" model="com.axelor.apps.account.db.AccountClearance">
-        <field name="status" expr="action:action-status-record-dra"/>
         <field name="user" expr="eval:__user__"/>
    		<field name="company"   expr="eval:__user__.activeCompany"/>
     </action-record>

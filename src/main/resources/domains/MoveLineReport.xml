@@ -27,12 +27,38 @@
     <boolean name="globalByPost" title="Subtotal by cash register" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
     <boolean name="detailed" title="Detailed" default="false"/>
-    <many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
+    <integer name="statusSelect" title="Status" selection="iaccount.move.line.report.status.select" readonly="true" default="1"/>
     
     <decimal name="totalDebit" title="Total Debit" readonly="true"/>
     <decimal name="totalCredit" title="Total Credit" readonly="true"/>
     <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+    
+    <extra-code><![CDATA[
+	
+	   	// TYPE SELECT
+		public static final int REPORT_PAYMENT_COLLECTION_JOURNAL = 1;
+		public static final int REPORT_GENERAL_LEDGER = 2;
+		public static final int REPORT_BALANCE = 3;
+		public static final int REPORT_AGED_BALANCE = 4;
+		public static final int REPORT_CHEQUE_DEPOSIT = 5;
+		public static final int REPORT_CASH_PAYMENTS = 10;
+		public static final int REPORT_JOURNAL = 11;
+		public static final int REPORT_VAT_STATEMENT = 12;
+		public static final int REPORT_PAYMENT_DIFFERENCES = 13;
+		
+		// EXPORT TYPE SELECT
+		public static final int EXPORT_SALES = 6;
+		public static final int EXPORT_REFUNDS = 7;
+		public static final int EXPORT_TREASURY = 8;
+		public static final int EXPORT_PURCHASES = 9;
+	
+		// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+		
+	]]></extra-code>
+    
     
   </entity>
 </domain-models>

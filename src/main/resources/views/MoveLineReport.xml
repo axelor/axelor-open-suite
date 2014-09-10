@@ -19,54 +19,58 @@
         <field name="totalDebit"/>
 		<field name="totalCredit"/>
 		<field name="balance"/>
-		<field name="status"/>
+		<field name="statusSelect"/>
 		<field name="publicationDateTime"/>
     </grid>
-    
-   <form cols="4" onLoad="action-account-moveline-report-onload-group" onSave="action-move-line-report-method-get-sequence" onNew="action-account-moveline-report-onnew-group" name="move-line-report-form" title="Accounting report" model="com.axelor.apps.account.db.MoveLineReport">
-  <panel title="Overview">
-    <field name="ref" readonly="true"/>
-  <field name="date"/>
-  <field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select"/>
-  <field name="exportTypeSelect"/>
-  <field name="company" readonlyIf="ref != null" widget="SuggestBox" onChange="action-move-line-report-method-get-account" form-view="company-lite-form"/>
-  </panel>
-  <panel-side title="Info">
-    <button name="search" title="Search" hideIf="typeSelect == 12"  onClick="action-group-account-moveline-report-search-click"/>
-    <button name="export" title="Print"  icon="fa-print" onClick="action-group-account-moveline-report-export-click"/>
-    <field name="status"/>
-    <field name="publicationDateTime"/>
-  </panel-side> 
-  
-  <panel-tabs>
-    <panel title="Filter">
-      <field name="cashRegister" hideIf="!typeSelect || [0,2,3,4,12].indexOf(typeSelect) != -1"/>
-      <field name="period" onChange="action-group-account-moveline-report-period-onchange" onSelect="action-move-line-report-attrs-period-domain"/>
-      <field name="year" hideIf="typeSelect != 12" onSelect="action-move-line-report-attrs-year-domain" requiredIf="typeSelect == 12"/>
-      <field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" requiredIf="typeSelect == 12"/>
-      <field name="dateTo" requiredIf="typeSelect == 12"/>
-      <field name="journal" hideIf="!typeSelect || [0,2,3,4,5,10,12,13].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company"/>
-      <field name="account" hideIf="!typeSelect || [0,5,10,12].indexOf(typeSelect) != -1" requiredIf="typeSelect == 13"/>
-      <field name="paymentMode" hideIf="!typeSelect || [2,3,4,5,10,12,13].indexOf(typeSelect) != -1"/>
-      <field name="partner" hideIf="!typeSelect || [0,5,10,12,13].indexOf(typeSelect) != -1" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-      <field name="fromPartner" hideIf="!typeSelect || [0,1,5,10,11,12,13].indexOf(typeSelect) != -1" form-view="partner-form" grid-view="partner-grid"/>
-      <field name="toPartner" hideIf="!typeSelect || [0,1,5,10,11,12,13].indexOf(typeSelect) != -1" form-view="partner-form" grid-view="partner-grid"/>
-    </panel>
-    <panel title="Printing informations">
-      <field name="global" hideIf="!typeSelect || [0,3,4,10,12,13].indexOf(typeSelect) != -1" onChange="action-move-line-report-record-global"/>
-      <field name="globalByPost" hideIf="!typeSelect || [0,2,3,4,11,12,13].indexOf(typeSelect) != -1" onChange="action-move-line-report-record-global-by-post"/>
-      <field name="globalByDate" hideIf="!typeSelect || [2,3,4,5,10,11,12,13].indexOf(typeSelect) != -1" onChange="action-move-line-report-record-global-by-date"/>
-      <field name="globalByPartner" hideIf="typeSelect != 3" onChange="action-move-line-report-record-global-by-partner"/>
-      <field name="detailed" hideIf="typeSelect != 4" onChange="action-move-line-report-record-detailed"/>
-    </panel>
-  </panel-tabs>
-  <panel-side title="Balance">
-    <field name="totalDebit"/>
-    <field name="totalCredit"/>
-    <field name="balance"/>
-  </panel-side>
-  
-</form>
+
+	<form name="move-line-report-form" title="Accounting report" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
+		onSave="action-move-line-report-method-get-sequence" onNew="action-move-line-report-default-record"
+		>
+		<panel title="Overview">
+			<field name="ref" readonly="true" />
+			<field name="date" readonlyIf="statusSelect == 2"/>
+			<field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select" />
+			<field name="exportTypeSelect" />
+			<field name="company" readonlyIf="ref != null" widget="SuggestBox" onChange="action-move-line-report-method-get-account" form-view="company-lite-form" />
+		</panel>
+		
+		<panel-side title="Info">
+			<button name="search" title="Search" hideIf="typeSelect == 12 || statusSelect == 2" onClick="save,action-move-line-report-method-search-move-line,save" />
+			<button name="export" title="Print" icon="fa-print" hideIf="statusSelect == 2"	onClick="action-group-account-moveline-report-export-click" />
+			<field name="statusSelect" />
+			<field name="publicationDateTime" />
+		</panel-side>
+
+		<panel-tabs>
+			<panel title="Filter">
+				<field name="cashRegister" hideIf="!typeSelect || [0,2,3,4,12].indexOf(typeSelect) != -1" />
+				<field name="period" onChange="action-group-account-moveline-report-period-onchange" onSelect="action-move-line-report-attrs-period-domain" />
+				<field name="year" hideIf="typeSelect != 12" onSelect="action-move-line-report-attrs-year-domain" requiredIf="typeSelect == 12" />
+				<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" requiredIf="typeSelect == 12" />
+				<field name="dateTo" requiredIf="typeSelect == 12" />
+				<field name="journal" hideIf="!typeSelect || [0,2,3,4,5,10,12,13].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" />
+				<field name="account" hideIf="!typeSelect || [0,5,10,12].indexOf(typeSelect) != -1" requiredIf="typeSelect == 13" />
+				<field name="paymentMode" hideIf="!typeSelect || [2,3,4,5,10,12,13].indexOf(typeSelect) != -1"/>
+				<field name="partner" hideIf="!typeSelect || [0,5,10,12,13].indexOf(typeSelect) != -1" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
+				<field name="fromPartner" hideIf="!typeSelect || [0,1,5,10,11,12,13].indexOf(typeSelect) != -1"	form-view="partner-form" grid-view="partner-grid" />
+				<field name="toPartner" hideIf="!typeSelect || [0,1,5,10,11,12,13].indexOf(typeSelect) != -1" form-view="partner-form" grid-view="partner-grid" />
+			</panel>
+			<panel title="Printing informations">
+				<field name="global" hideIf="!typeSelect || [0,3,4,10,12,13].indexOf(typeSelect) != -1"	onChange="action-move-line-report-record-global" />
+				<field name="globalByPost" hideIf="!typeSelect || [0,2,3,4,11,12,13].indexOf(typeSelect) != -1"	onChange="action-move-line-report-record-global-by-post" />
+				<field name="globalByDate" hideIf="!typeSelect || [2,3,4,5,10,11,12,13].indexOf(typeSelect) != -1" onChange="action-move-line-report-record-global-by-date" />
+				<field name="globalByPartner" hideIf="typeSelect != 3" onChange="action-move-line-report-record-global-by-partner" />
+				<field name="detailed" hideIf="typeSelect != 4" onChange="action-move-line-report-record-detailed" />
+			</panel>
+		</panel-tabs>
+		
+		<panel-side title="Balance">
+			<field name="totalDebit" />
+			<field name="totalCredit" />
+			<field name="balance" />
+		</panel-side>
+
+	</form>
     
     
 <!--     MOVE LINE EXPORT -->
@@ -83,51 +87,42 @@
         <field name="totalDebit"/>
 		<field name="totalCredit"/>
 		<field name="balance"/>
-		<field name="status"/>
+		<field name="statusSelect"/>
     </grid>
     
-    <form cols="4" onLoad="action-account-moveline-report-onload-group" onSave="action-move-line-report-method-get-sequence" onNew="action-account-moveline-report-export-onnew-group" name="move-line-report-export-form" title="Accounting export" model="com.axelor.apps.account.db.MoveLineReport">
-    <panel title="Search">
-      <field name="ref" readonly="true"/>
-      <field name="date"/>
-      <field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select.export"/>
-      <field name="company" readonlyIf="ref != null" widget="SuggestBox" onChange="action-move-line-report-method-get-account"/>
-      <field name="dateFrom" onChange="action-move-Live-report-record-set-date-to"/>
-      <field name="dateTo"/>
-      <field name="period" onChange="action-group-account-moveline-report-period-onchange" onSelect="action-move-line-report-attrs-period-domain"/>
-      <field name="journal"/>
-      
-     </panel>
-    <panel-side title="Info">
-         <field name="status"/>
-        <button name="search" title="Search" colSpan="2" onClick="action-group-account-moveline-report-search-click"/>
-        <button name="export" title="Export" colSpan="2" onClick="action-group-account-moveline-report-export-click"/>
-        <button name="showMoveExported" title="Exported moves" colSpan="2" onClick="save,action-move-line-report-method-show-move-exported"/>
-        <button name="replayExport" title="Run export again" colSpan="2" onClick="save,action-move-line-report-method-replay-export"/>
-    </panel-side>
-      <panel-side title="Balance">
-        <field name="totalDebit"/>
-        <field name="totalCredit"/>
-        <field name="balance"/>
-    </panel-side>
-</form>
+	<form name="move-line-report-export-form" title="Accounting export" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
+	onNew="action-move-line-report-default-record"
+	onSave="action-move-line-report-method-get-sequence">
+		
+		<panel title="Search">
+			<field name="ref" readonly="true"/>
+			<field name="date" readonlyIf="statusSelect == 2"/>
+			<field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select.export"/>
+			<field name="company" readonlyIf="ref != null" widget="SuggestBox" onChange="action-move-line-report-method-get-account"/>
+			<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to"/>
+			<field name="dateTo"/>
+			<field name="period" onChange="action-group-account-moveline-report-period-onchange" onSelect="action-move-line-report-attrs-period-domain"/>
+			<field name="journal"/>
+		</panel>
+		
+		<panel-side title="Info">
+			<field name="statusSelect"/>
+			<button name="search" title="Search" colSpan="2" hideIf="statusSelect == 2" onClick="save,action-move-line-report-method-search-move-line,save"/>
+			<button name="export" title="Export" colSpan="2" hideIf="statusSelect == 2" onClick="action-group-account-moveline-report-export-click"/>
+			<button name="showMoveExported" title="Exported moves" colSpan="2" showIf="statusSelect == 2" onClick="save,action-move-line-report-method-show-move-exported"/>
+			<button name="replayExport" title="Run export again" colSpan="2" showIf="statusSelect == 2" onClick="save,action-move-line-report-method-replay-export"/>
+		</panel-side>
+		
+		<panel-side title="Balance">
+			<field name="totalDebit"/>
+			<field name="totalCredit"/>
+			<field name="balance"/>
+		</panel-side>
+		
+	</form>
+	
+	
 <!-- 	ACTION GROUPs -->    
-    
-    <action-group name="action-account-moveline-report-onnew-group">
-	    <action name="action-move-line-report-default-record"/>
-	    <action name="action-move-line-report-date-readonly"/>
-    </action-group>
-    
-    <action-group name="action-account-moveline-report-onload-group">
-	    <action name="action-move-line-report-button-hidden"/>
-	    <action name="action-move-line-report-date-readonly"/>
-    </action-group>
-    
-    <action-group name="action-account-moveline-report-export-onnew-group">
-	    <action name="action-move-line-report-default-record"/>
-	    <action name="action-move-line-report-button-hidden"/>
-	    <action name="action-move-line-report-date-readonly"/>
-    </action-group>
     
     <action-group name="action-group-account-moveline-report-typeselect-onchange">
     	<action name="action-move-line-report-record"/>
@@ -140,14 +135,6 @@
     	<action name="save"/>
     	<action name="action-move-line-report-method-print-export-moveLine"/>
     	<action name="action-move-line-report-method-get-reload"/>
-    	<action name="action-move-line-report-button-hidden"/>
-    	<action name="action-move-line-report-date-readonly"/>
-    </action-group>
-    
-    <action-group name="action-group-account-moveline-report-search-click">
-    	<action name="save"/>
-    	<action name="action-move-line-report-method-search-move-line"/>
-    	<action name="save"/>
     </action-group>
     
     <action-group name="action-group-account-moveline-report-period-onchange">
@@ -155,26 +142,8 @@
     	<action name="action-move-line-report-record-date-from-and-date-to"/>
     </action-group>
     
-    <action-group name="action-group-account-moveline-report-typeselect-onchange">
-    	<action name="action-move-line-report-record"/>
-    	<action name="action-move-line-report-method-get-journal-type"/>
-    	<action name="action-move-line-report-record-default"/>
-    	<action name="action-move-line-report-method-get-account"/>
-    </action-group>
-    
 <!--     ACTION ATTRS -->
 	    
-	<action-attrs name="action-move-line-report-date-readonly">
-		<attribute name="readonly" for="date" expr="eval: status?.code == 'val'"/>
-	</action-attrs>
-	
-	<action-attrs name="action-move-line-report-button-hidden">
-		<attribute name="hidden" for="search" expr="eval: status?.code == 'val'" if="typeSelect in [null,0,6,7,8,9]"/>
-		<attribute name="hidden" for="export" expr="eval: status?.code == 'val'" if="typeSelect in [null,0,6,7,8,9]"/>
-		<attribute name="hidden" for="showMoveExported" expr="eval: status?.code != 'val'" if="typeSelect in [null,0,6,7,8,9]"/>
-		<attribute name="hidden" for="replayExport" expr="eval: status?.code != 'val'" if="typeSelect in [null,0,6,7,8,9]"/>
-	</action-attrs>
-	
 	<action-attrs name="action-move-line-report-attrs-period-domain">
 		<attribute name="domain" for="period" expr="eval: &quot;self.year.id = ${year?.id}&quot;" if="eval: year != null"/>
 		<attribute name="domain" for="period" expr="" if="eval: year == null"/>
@@ -255,7 +224,6 @@
 	</action-record>
 	
 	<action-record name="action-move-line-report-default-record" model="com.axelor.apps.account.db.MoveLineReport">
-        <field name="status" expr="action:action-status-record-dra"/>
 		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 		<field name="company" expr="eval:__user__.activeCompany"/>
 	</action-record>

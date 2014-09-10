@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.validate;
 
-import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.auth.AuthUtils;
@@ -38,7 +37,7 @@ public class ValidateState extends WorkflowInvoice {
 	@Override
 	public void process( ) throws AxelorException {
 		
-		invoice.setStatusSelect(IInvoice.STATUS_VALIDATED);
+		invoice.setStatusSelect(Invoice.STATUS_VALIDATED);
 		invoice.setValidatedByUser( user );
 		
 	}

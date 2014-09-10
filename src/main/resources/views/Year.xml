@@ -10,7 +10,7 @@
         <field name="toDate"/>
         <field name="reportedBalanceDate"/>
         <field name="company"/>
-        <field name="status"/>
+        <field name="statusSelect"/>
     </grid>
     
     <form cols="4" onSave="action-year-check-date,action-fiscal-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
@@ -25,7 +25,7 @@
 		<panel-related field="periodList"/>
 		<panel-side>
 			<field name="typeSelect" readonly="true"/>
-			<field name="status"/>
+			<field name="statusSelect"/>
 			<button name="close" title="Close fiscal year" colSpan="2" onClick="action-group-account-year-close-click"/>
 			<field name="periodDurationSelect"/>
 			<button name="generatePeriods" title="Generate periods" colSpan="2" onClick="action-group-account-year-generateperiod-click"/>
@@ -54,7 +54,6 @@
     </action-method>
     
     <action-record name="action-year-account-record-new" model="com.axelor.apps.base.db.Year">
-    	<field name="status" expr="action:action-status-record-ope"/>
     	<field name="company"  expr="eval:__user__.activeCompany"/>
     	<field name="typeSelect"  expr="eval:1"/>
     </action-record>

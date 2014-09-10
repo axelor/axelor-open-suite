@@ -17,24 +17,30 @@
  */
 package com.axelor.apps.account.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.axelor.apps.account.db.AccountClearance;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.AccountClearanceService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class AccountClearanceController {
 
 	@Inject
-	private AccountClearanceService acs;
+	private Provider<AccountClearanceService> accountClearanceProvider;
 	
 	public void getExcessPayment(ActionRequest request, ActionResponse response)  {
 		
 		AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
 		
 		try {	
-			acs.setExcessPayment(accountClearance);
+			accountClearanceProvider.get().setExcessPayment(accountClearance);
 			response.setReload(true);		
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }		
@@ -46,9 +52,20 @@ public class AccountClearanceController {
 		accountClearance = AccountClearance.find(accountClearance.getId());
 		
 		try {
-			acs.validateAccountClearance(accountClearance);
+			accountClearanceProvider.get().validateAccountClearance(accountClearance);
 			response.setReload(true);		
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
+	}
+	
+	public void showAccountClearanceMoveLines(ActionRequest request, ActionResponse response)  {
+		
+		Map<String,Object> viewMap = new HashMap<String,Object>();
+		
+		Context context = request.getContext();
+		viewMap.put("title", "Lignes d'écriture générées");
+		viewMap.put("resource", MoveLine.class.getName());
+		viewMap.put("domain", "self.accountClearance.id = "+context.get("id"));
+		response.setView(viewMap);
 	}
 }

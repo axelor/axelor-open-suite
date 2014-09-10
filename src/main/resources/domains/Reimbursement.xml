@@ -8,7 +8,8 @@
   <entity name="Reimbursement" sequential="true" lang="java">
   
   	<string name="ref" title="Ref." namecolumn="true" readonly="true"/>
-	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
+	<integer name="statusSelect" title="Status" selection="iaccount.reimbursement.status.select"/>
+	
 	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
 	<many-to-many name="moveLineSet" ref="com.axelor.apps.account.db.MoveLine" title="Overdue payment"/>
@@ -35,6 +36,17 @@
 	    	return total;
 	    ]]>
     </decimal>
+    
+    <extra-code><![CDATA[
+
+    // STATUS SELECT
+	public static final int STATUS_DRAFT = 1;
+	public static final int STATUS_TO_VALIDATE = 2;
+	public static final int STATUS_VALIDATED = 3;
+	public static final int STATUS_REIMBURSED = 4;
+	public static final int STATUS_CANCELED = 5;
+	
+    ]]></extra-code>
 	
   </entity>
 

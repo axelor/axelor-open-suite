@@ -43,7 +43,6 @@ import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
@@ -129,6 +128,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		accountConfigService.getTempImportPathAndFileName(accountConfig);
 		accountConfigService.getRejectPaymentScheduleMailModel(accountConfig);
 		accountConfigService.getCustomerAccount(accountConfig);
+		accountConfigService.getRejectionPaymentMode(accountConfig);
 		
 		Journal rejectJournal = accountConfigService.getRejectJournal(accountConfig);
 		
@@ -187,8 +187,6 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 				LOG.debug("un échéancier trouvé");
 
 				//Lissage de paiement
-					
-				LOG.debug("Mensu Grand Compte");	
 				
 				// Afin de pouvoir associer le montant rejeté à l'échéance
 				amountReject = this.setAmountRejected(paymentScheduleLine, amountReject, paymentScheduleLine.getInTaxAmount());
@@ -196,12 +194,12 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 				if(paymentScheduleLine.getAmountRejected().compareTo(BigDecimal.ZERO) == 1)  {
 					// Si dérnière échéance, créer juste l'écriture de rejet (extourne)
 					if(pss.isLastSchedule(paymentScheduleLine))  {
-						this.setRejectOnPaymentScheduleLine(paymentScheduleLine, dateReject, causeReject, this.getStatusClo());
+						this.setRejectOnPaymentScheduleLine(paymentScheduleLine, dateReject, causeReject);
 					}
 					else  {
 						// Mise à jour des échéances
-						this.paymentScheduleRejectProcessing(paymentScheduleLine, this.getStatusUpr(), false, paymentScheduleLine.getAmountRejected());
-						this.setRejectOnPaymentScheduleLine(paymentScheduleLine, dateReject, causeReject, this.getStatusClo());
+						this.paymentScheduleRejectProcessing(paymentScheduleLine);
+						this.setRejectOnPaymentScheduleLine(paymentScheduleLine, dateReject, causeReject);
 					}
 				
 					pslListGC.add(paymentScheduleLine);
@@ -263,14 +261,6 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		return invoiceRejectedList;
 	}
 	
-	
-	public Status getStatusUpr()  {
-		return Status.findByCode("upr");
-	}
-	
-	public Status getStatusClo()  {
-		return Status.findByCode("clo");
-	}
 	
 	public BigDecimal setAmountRejected(PaymentScheduleLine paymentScheduleLine, BigDecimal amountReject, BigDecimal amountPaid)  {
 		BigDecimal amountReject2 = amountReject;
@@ -409,33 +399,6 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	}
 	
 	
-	/**
-	 * Récupération d'un échéancier de mensu masse rejeté après la ventilation de la facture
-	 * @param pslListMPAVI
-	 * @param pslMonthlyPaymentAfterVentilateInvoice
-	 * @param causeReject
-	 * @param amountReject
-	 * @return
-	 */
-	public List<PaymentScheduleLine> monthlyPaymentAfterVentilateInvoiceProcess(List<PaymentScheduleLine> pslListMPAVI, PaymentScheduleLine pslMonthlyPaymentAfterVentilateInvoice, InterbankCodeLine causeReject, BigDecimal amountReject)  {
-		
-		if(pslMonthlyPaymentAfterVentilateInvoice != null)  {
-			
-			LOG.debug("Paiement d'un rejet d'une échéance de paiement après que la facture est été ventilé");
-			pslMonthlyPaymentAfterVentilateInvoice.setInterbankCodeLine(causeReject);
-			
-			if(pslMonthlyPaymentAfterVentilateInvoice.getAmountRejected().compareTo(BigDecimal.ZERO) == 1)  {
-				pslListMPAVI.add(pslMonthlyPaymentAfterVentilateInvoice);
-			}
-			
-			// Afin de pouvoir associer le montant rejeté à l'échéance
-			pslMonthlyPaymentAfterVentilateInvoice.setAmountRejected(amountReject);
-		
-		}
-		return pslListMPAVI;
-	}
-
-	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createRejectMove(Company company, LocalDate date) throws AxelorException  {
 		Journal rejectJournal = company.getAccountConfig().getRejectJournal();
@@ -463,9 +426,10 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public MoveLine createRejectOppositeMoveLine(Company company, Move move, int ref, LocalDate rejectDate) throws AxelorException  {
+		
 		//On récupère l'objet mode de paiement pour pouvoir retrouver le numéro de compte associé
-		PaymentMode pm = PaymentMode.findByCode("DD");  //TODO utilsier celui de account config
-		Account paymentModeAccount = pms.getCompanyAccount(pm, company);
+		PaymentMode paymentMode = company.getAccountConfig().getRejectionPaymentMode();  
+		Account paymentModeAccount = pms.getCompanyAccount(paymentMode, company);
 		
 		// Création d'une seule contrepartie
 		LOG.debug("Création d'une seule contrepartie");
@@ -700,50 +664,31 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * Procédure pemrettant de mettre à jour et de créer les lignes d'échéances correspondant à un rejet
 	 * @param psl
 	 * 				Une ligne d'échéancier
-	 * @param valLigne
-	 * 				Un dictionnaire contenant l'ensemble des valeurs d'une ligne de rejet
-	 * @param statusUpr
-	 * 				Le statut "en cours"
-	 * @param statusClo
-	 * 				Le statut "cloturé"
-	 * @param echeancierPaiment
-	 * 				La ligne d'échéancier psl appartient t'elle à un échéancier de paiement
+	 * @param amountReject
+	 * 				le montant rejeté
 	 * @param moveLine
 	 * 				La ligne d'écriture de rejet utilisée si l'on est en présence d'un échéancier de paiment
 	 */
-	public PaymentScheduleLine paymentScheduleRejectProcessing(PaymentScheduleLine psl, Status statusUpr, boolean paymentScheduleOk, BigDecimal amountReject)  {
-		
-		// Création d'une nouvelle ligne identique à l'originale
-		PaymentScheduleLine pslNew = this.paymentScheduleRejectProcessing(psl, statusUpr, paymentScheduleOk, amountReject, psl.getScheduleDate());
-		
-		return pslNew;
-	}
-	
-	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public PaymentScheduleLine paymentScheduleRejectProcessing(PaymentScheduleLine psl, Status statusUpr, boolean paymentScheduleOk, BigDecimal amountReject, LocalDate ScheduleDate)  {
+	public PaymentScheduleLine paymentScheduleRejectProcessing(PaymentScheduleLine paymentScheduleLine)  {
 		
-		LOG.debug("Begin PaymentScheduleRejectProcessing...");
 		LOG.debug("PaymentScheduleRejectProcessing - Création d'une nouvelle ligne identique à l'originale");
 		
 		// Création d'une nouvelle ligne identique à l'originale
-		PaymentScheduleLine pslNew = new PaymentScheduleLine();
-		pslNew.setDebitBlockingOk(psl.getDebitBlockingOk());
-		pslNew.setInTaxAmount(amountReject);
-		pslNew.setInTaxAmountPaid(BigDecimal.ZERO);
-		pslNew.setName(psl.getName());
-		pslNew.setPaymentSchedule(psl.getPaymentSchedule());
-		psl.getPaymentSchedule().getPaymentScheduleLineList().add(pslNew);
-		pslNew.setScheduleDate(ScheduleDate);
-		pslNew.setScheduleLineSeq(psl.getScheduleLineSeq());
-		pslNew.setFromReject(true);
+		PaymentScheduleLine paymentScheduleLineCopy = new PaymentScheduleLine();
+		paymentScheduleLineCopy.setDebitBlockingOk(paymentScheduleLine.getDebitBlockingOk());
+		paymentScheduleLineCopy.setInTaxAmount(paymentScheduleLine.getAmountRejected());
+		paymentScheduleLineCopy.setInTaxAmountPaid(BigDecimal.ZERO);
+		paymentScheduleLineCopy.setName(paymentScheduleLine.getName());
+		paymentScheduleLineCopy.setPaymentSchedule(paymentScheduleLine.getPaymentSchedule());
+		paymentScheduleLine.getPaymentSchedule().getPaymentScheduleLineList().add(paymentScheduleLineCopy);
+		paymentScheduleLineCopy.setScheduleDate(paymentScheduleLine.getScheduleDate());
+		paymentScheduleLineCopy.setScheduleLineSeq(paymentScheduleLine.getScheduleLineSeq());
+		paymentScheduleLineCopy.setFromReject(true);
 		
-		pslNew.setStatus(statusUpr);
-		LOG.debug("PaymentScheduleRejectProcessing - save pslNew");
-		pslNew.save();
+		paymentScheduleLineCopy.setStatusSelect(PaymentScheduleLine.STATUS_IN_PROGRESS);
 		
-		LOG.debug("End PaymentScheduleRejectProcessing");
-		return pslNew;
+		return paymentScheduleLineCopy.save();
 	}
 	
 	
@@ -755,16 +700,14 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * 				Une date de rejet
 	 * @param causeReject
 	 * 				Un motif de rejet
-	 * @param statusClo
-	 * 				Un status 'clo' ie cloturé
 	 */
-	public void setRejectOnPaymentScheduleLine(PaymentScheduleLine paymentScheduleLine, LocalDate dateReject, InterbankCodeLine causeReject, Status statusClo)  {
+	public void setRejectOnPaymentScheduleLine(PaymentScheduleLine paymentScheduleLine, LocalDate dateReject, InterbankCodeLine causeReject)  {
 		// Maj de la ligne originale en rejet
 		paymentScheduleLine.setRejectedOk(true);
 
 		paymentScheduleLine.setRejectDate(dateReject);
 		paymentScheduleLine.setInterbankCodeLine(causeReject);
-		paymentScheduleLine.setStatus(statusClo);
+		paymentScheduleLine.setStatusSelect(PaymentScheduleLine.STATUS_CLOSED);
 	}
 	
 	

@@ -78,7 +78,7 @@ public class AddressController {
 						address.save();
 					}
 					if (address.getLatit() != null && address.getLongit() != null) {
-						//def turnover = Invoice.all().filter("self.partner.id = ? AND self.status.code = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
+						//def turnover = Invoice.all().filter("self.partner.id = ? AND self.statusSelect = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
 						List<Invoice> listInvoice = (List<Invoice>) Invoice.filter("self.partner.id = ?", partner.getId()).fetch();
 						BigDecimal turnover = BigDecimal.ZERO;
 						for(Invoice invoice: listInvoice) {

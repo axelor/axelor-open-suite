@@ -20,7 +20,6 @@ package com.axelor.apps.account.web;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveService;

@@ -35,8 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.IAccount;
-import com.axelor.apps.account.db.IMove;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -48,10 +46,13 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 //import com.axelor.apps.tool.xml.Marschaller;
 //import com.axelor.apps.xsd.sepa.AccountIdentification3Choice;
 //import com.axelor.apps.xsd.sepa.AmountType2Choice;
@@ -73,10 +74,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 //import com.axelor.apps.xsd.sepa.RemittanceInformation1;
 //import com.axelor.apps.xsd.sepa.ServiceLevel1Code;
 //import com.axelor.apps.xsd.sepa.ServiceLevel2Choice;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class ReimbursementExportService {
 	
@@ -119,7 +116,7 @@ public class ReimbursementExportService {
 		
 		for(MoveLine moveLine : moveLineList)  {
 			// On passe les lignes d'écriture (trop perçu) à l'état 'en cours de remboursement'
-			moveLine.setReimbursementStateSelect(IAccount.REIMBURSING);
+			moveLine.setReimbursementStatusSelect(MoveLine.REIMBURSEMENT_STATUS_REIMBURSING);
 		}
 		
 		reimbursement.setMoveLineSet(new HashSet<MoveLine>());
@@ -152,10 +149,10 @@ public class ReimbursementExportService {
 			
 			if(total.compareTo(accountConfig.getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
 			// Seuil haut dépassé	
-				reimbursement.setStatus(Status.findByCode("tov"));
+				reimbursement.setStatusSelect(Reimbursement.STATUS_TO_VALIDATE);
 			}
 			else  {
-				reimbursement.setStatus(Status.findByCode("val"));
+				reimbursement.setStatusSelect(Reimbursement.STATUS_VALIDATED);
 			}
 			
 			reimbursement.save();
@@ -209,7 +206,7 @@ public class ReimbursementExportService {
 					partner = moveLine.getPartner();
 					
 					// On passe les lignes d'écriture (trop perçu) à l'état 'remboursé'
-					moveLine.setReimbursementStateSelect(IAccount.REIMBURSED);
+					moveLine.setReimbursementStatusSelect(MoveLine.REIMBURSEMENT_STATUS_REIMBURSED);
 					
 					if(first)  {
 						newMove = moveService.createMove(accountConfig.getReimbursementJournal(), company, null, partner, null);
@@ -269,7 +266,7 @@ public class ReimbursementExportService {
 	public void reimburse(Reimbursement reimbursement, Company company) throws AxelorException  {
 		reimbursement.setAmountReimbursed(reimbursement.getAmountToReimburse());
 		this.createReimbursementMove(reimbursement, company);
-		reimbursement.setStatus(Status.findByCode("rei"));
+		reimbursement.setStatusSelect(Reimbursement.STATUS_REIMBURSED);
 		reimbursement.save();
 	}
 	
@@ -516,11 +513,11 @@ public class ReimbursementExportService {
 				
 			if(total.compareTo(company.getAccountConfig().getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
 			// Seuil haut dépassé	
-				reimbursement.setStatus(Status.findByCode("tov"));
+				reimbursement.setStatusSelect(Reimbursement.STATUS_TO_VALIDATE);
 			}
 			else  {
 			// Seuil haut non dépassé
-				reimbursement.setStatus(Status.findByCode("val"));
+				reimbursement.setStatusSelect(Reimbursement.STATUS_VALIDATED);
 			}
 			reimbursement.save();
 		}
@@ -541,8 +538,8 @@ public class ReimbursementExportService {
 		
 		// récupération des trop-perçus du tiers
 		List<? extends MoveLine> moveLineList = MoveLine.filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
-				"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStateSelect = ?3 "
-				,IMove.STATUS_VALIDATED , partner, IAccount.NULL).fetch();
+				"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStatusSelect = ?3 ",
+				Move.STATUS_VALIDATED , partner, MoveLine.REIMBURSEMENT_STATUS_NULL).fetch();
 		
 		this.createReimbursementInvoice(partner, company, moveLineList);
 		

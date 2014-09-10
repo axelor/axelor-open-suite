@@ -22,17 +22,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.Year;
-import com.axelor.apps.base.db.General;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.db.Company;
-import com.google.inject.persist.Transactional;
+import com.axelor.apps.base.db.Partner;
 
 
 public class ImportPartner {

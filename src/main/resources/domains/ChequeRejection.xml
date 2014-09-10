@@ -14,10 +14,19 @@
   	<decimal name="amountRejected" title="Rejected amount" readonly="true"/>
   	<date name="rejectionDate" title="Reject Date" required="true"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason" required="true"/>
-  	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
+  	<integer name="statusSelect" title="Status" selection="iaccount.cheque.rejection.status.select" readonly="true" default="1"/>
   	<many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Rejection MoveLine"/>
   	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" hidden="true"/>
     <string title="Description" name="description" default="Cheque rejection"/>
+  
+  	<extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+	
+	]]></extra-code> 
+  
   </entity>
 
 </domain-models>

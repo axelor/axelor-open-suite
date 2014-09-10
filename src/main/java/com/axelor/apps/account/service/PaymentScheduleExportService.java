@@ -32,9 +32,6 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.DirectDebitManagement;
-import com.axelor.apps.account.db.IInvoice;
-import com.axelor.apps.account.db.IMove;
-import com.axelor.apps.account.db.IPaymentSchedule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -50,7 +47,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -211,8 +207,8 @@ public class PaymentScheduleExportService {
 	public PaymentScheduleLine getPaymentScheduleLineRejectOrigin(PaymentScheduleLine paymentScheduleLine)  {
 		
 		return PaymentScheduleLine
-				.filter("self.paymentSchedule = ?1 AND self.scheduleLineSeq = ?2 AND self.status.code = 'clo' ORDER BY self.rejectDate DSC"
-						, paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleLineSeq()).fetchOne();
+				.filter("self.paymentSchedule = ?1 AND self.scheduleLineSeq = ?2 AND self.statusSelect = ?3 ORDER BY self.rejectDate DSC"
+						, paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleLineSeq(), PaymentScheduleLine.STATUS_CLOSED).fetchOne();
 		
 	}
 	
@@ -280,7 +276,7 @@ public class PaymentScheduleExportService {
 		paymentScheduleLine.setInTaxAmountPaid(amount);
 		paymentScheduleLine.setAdvanceOrPaymentMove(Move.find(move.getId()));
 		paymentScheduleLine.setAdvanceMoveLine(moveLine);
-		paymentScheduleLine.setStatus(Status.findByCode("val"));
+		paymentScheduleLine.setStatusSelect(PaymentScheduleLine.STATUS_VALIDATED);
 		return paymentScheduleLine.save();
 	}
 	
@@ -315,7 +311,7 @@ public class PaymentScheduleExportService {
 						"AND self.move.invoice.operationTypeSelect = ?3 " +
 						"AND self.move.invoice.schedulePaymentOk = 'true' " +
 						"AND self.move.invoice.paymentSchedule = ?4 "+
-						"ORDER BY self.date", IMove.STATUS_VALIDATED, true, IInvoice.CLIENT_SALE, paymentSchedule).fetch();
+						"ORDER BY self.date", Move.STATUS_VALIDATED, true, Invoice.OPERATION_TYPE_CLIENT_SALE, paymentSchedule).fetch();
 	}
 	
 	
@@ -365,12 +361,12 @@ public class PaymentScheduleExportService {
 		PaymentMode paymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
 		
 		List<PaymentScheduleLine> paymentScheduleLineList = (List<PaymentScheduleLine>) PaymentScheduleLine
-				.filter("self.status.code = 'upr' AND self.paymentSchedule.stateSelect = ?5 AND self.paymentSchedule.company = ?1 " +
-						"AND self.scheduleDate <= ?2 " +
+				.filter("self.statusSelect = ?1 AND self.paymentSchedule.statusSelect = ?2 AND self.paymentSchedule.company = ?3 " +
+						"AND self.scheduleDate <= ?4 " +
 						"AND self.debitBlockingOk IN ('false',null) " +
-						"AND self.paymentSchedule.currency = ?3 " +
-						"AND self.paymentSchedule.paymentMode = ?4 ORDER BY self.scheduleDate",
-						company, debitDate, currency, paymentMode, IPaymentSchedule.STATUS_CONFIRMED).fetch(); 
+						"AND self.paymentSchedule.currency = ?5 " +
+						"AND self.paymentSchedule.paymentMode = ?6 ORDER BY self.scheduleDate",
+						PaymentScheduleLine.STATUS_IN_PROGRESS, PaymentSchedule.STATUS_CONFIRMED, company, debitDate, currency, paymentMode).fetch(); 
 		
 		if(paymentScheduleLineList.size() < 50)  {
 			LOG.debug("\n Liste des échéances retenues : {} \n", this.toStringPaymentScheduleLineList(paymentScheduleLineList));
@@ -646,7 +642,7 @@ public class PaymentScheduleExportService {
 						"AND self.move.invoice.paymentMode = ?4 " +
 						"AND self.move.invoice.schedulePaymentOk = 'false' " +
 						"AND self.move.invoice.currency = ?5"
-						, IMove.STATUS_VALIDATED, company, true, paymentMode, currency).fetch(); 
+						, Move.STATUS_VALIDATED, company, true, paymentMode, currency).fetch(); 
 		
 		
 		// Ajout des factures
@@ -664,7 +660,7 @@ public class PaymentScheduleExportService {
 						" AND self.rejectMoveLine.account.reconcileOk = 'true' " +
 						" AND self.rejectMoveLine.invoiceReject IS NOT NULL" +
 						" AND self.currency = ?4"
-						, paymentMode, company, IMove.STATUS_VALIDATED, currency).fetch();
+						, paymentMode, company, Move.STATUS_VALIDATED, currency).fetch();
 		
 		// Ajout des factures rejetées
 		for(Invoice invoice : invoiceRejectList)  {

@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.invoice;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import com.axelor.apps.account.db.IInvoice;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceBatch;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchStrategy;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchValidation;
@@ -59,7 +59,7 @@ public class InvoiceBatchService {
 		
 		if (invoiceBatch != null){
 			switch (invoiceBatch.getActionSelect()) {
-			case IInvoice.BATCH_STATUS:
+			case InvoiceBatch.BATCH_STATUS:
 				batch = wkf(invoiceBatch);
 				break;
 			default:
@@ -79,14 +79,14 @@ public class InvoiceBatchService {
 		
 		BatchStrategy strategy = null;
 		
-		if (invoiceBatch.getToStatusSelect().equals(IInvoice.TO_VAL)) { 
+		if (invoiceBatch.getToStatusSelect().equals(Invoice.STATUS_VALIDATED)) { 
 			strategy = validationProvider.get(); 
 		}
-		else if (invoiceBatch.getToStatusSelect().equals(IInvoice.TO_DIS)) { 
+		else if (invoiceBatch.getToStatusSelect().equals(Invoice.STATUS_VENTILATED)) { 
 			strategy = ventilationProvider.get();
 		}
 		else {
-			throw new AxelorException(String.format("Liste de statuts %s inconnu pour le traitement %s", invoiceBatch.getToStatusSelect(), invoiceBatch.getCode()), IException.INCONSISTENCY);
+			throw new AxelorException(String.format("Statut %s inconnu pour le traitement %s", invoiceBatch.getToStatusSelect(), invoiceBatch.getCode()), IException.INCONSISTENCY);
 		}
 
 		return strategy.run(invoiceBatch);

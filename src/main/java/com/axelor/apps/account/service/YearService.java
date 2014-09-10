@@ -34,11 +34,9 @@ import com.axelor.apps.account.db.ReportedBalance;
 import com.axelor.apps.account.db.ReportedBalanceLine;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.db.Year;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -49,9 +47,6 @@ import com.google.inject.persist.Transactional;
 public class YearService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(YearService.class);
-	
-	@Inject
-	private ReminderService rs;
 	
 	@Inject
 	private AccountConfigService accountConfigService;
@@ -65,9 +60,9 @@ public class YearService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void closeYear(Year year) throws AxelorException  {
 		year = Year.find(year.getId());
-		Status status = Status.findByCode("clo");
+
 		for (Period period : year.getPeriodList())  {
-			period.setStatus(status);
+			period.setStatusSelect(Period.STATUS_CLOSED);
 		}
 		Company company = year.getCompany();
 		if(company == null)  {
@@ -130,7 +125,7 @@ public class YearService {
 			
 			partner.save();
 		}
-		year.setStatus(status);
+		year.setStatusSelect(Year.STATUS_CLOSED);
 		year.save();
 	}
 	
@@ -252,7 +247,7 @@ public class YearService {
 			period.setName(String.format("%02d", periodNumber)+"/"+year.getCode());
 			period.setCode(String.format("%02d", periodNumber)+"/"+year.getCode()+"_"+year.getCompany().getCode());
 			period.setCompany(year.getCompany());
-			period.setStatus(year.getStatus());
+			period.setStatusSelect(year.getStatusSelect());
 			periods.add(period);
 			periodNumber ++;
 		}

@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.axelor.apps.account.db.AccountingBatch;
-import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
@@ -46,7 +45,7 @@ public class AccountingBatchController {
 		
 		Batch batch = null;
 		
-		if(accountingBatch.getReminderTypeSelect() == IAccount.REMINDER)  {
+		if(accountingBatch.getReminderTypeSelect() == AccountingBatch.ACTION_REMINDER)  {
 			batch = accountingBatchService.reminder(AccountingBatch.find(accountingBatch.getId()));
 		}
 		if(batch != null)
@@ -85,10 +84,10 @@ public class AccountingBatchController {
 		
 		Batch batch = null;
 		
-		if(accountingBatch.getReimbursementTypeSelect() == IAccount.BATCH_REIMBURSEMENT_EXPORT)  {
+		if(accountingBatch.getReimbursementTypeSelect() == AccountingBatch.REIMBURSEMENT_TYPE_EXPORT)  {
 			batch = accountingBatchService.reimbursementExport(AccountingBatch.find(accountingBatch.getId()));
 		}
-		else if(accountingBatch.getReimbursementTypeSelect() == IAccount.BATCH_REIMBURSEMENT_IMPORT)  {
+		else if(accountingBatch.getReimbursementTypeSelect() == AccountingBatch.REIMBURSEMENT_TYPE_IMPORT)  {
 			batch = accountingBatchService.reimbursementImport(AccountingBatch.find(accountingBatch.getId()));
 		}
 		
@@ -109,10 +108,10 @@ public class AccountingBatchController {
 		
 		Batch batch = null;
 		
-		if(accountingBatch.getDirectDebitTypeSelect() == IAccount.BATCH_DIRECT_DEBIT_EXPORT)  {
+		if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatch.DIRECT_DEBIT_TYPE_EXPORT)  {
 			batch = accountingBatchService.paymentScheduleExport(AccountingBatch.find(accountingBatch.getId()));
 		}
-		else if(accountingBatch.getDirectDebitTypeSelect() == IAccount.BATCH_DIRECT_DEBIT_IMPORT)  {
+		else if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatch.DIRECT_DEBIT_TYPE_IMPORT)  {
 			batch = accountingBatchService.paymentScheduleImport(AccountingBatch.find(accountingBatch.getId()));
 		}
 		
@@ -133,10 +132,10 @@ public class AccountingBatchController {
 		
 		Batch batch = null;
 		
-		if(accountingBatch.getInterbankPaymentOrderTypeSelect() == IAccount.INTERBANK_PAYMENT_ORDER_IMPORT)  {
+		if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatch.INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
 			batch = accountingBatchService.interbankPaymentOrderImport(AccountingBatch.find(accountingBatch.getId()));
 		}
-		else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == IAccount.INTERBANK_PAYMENT_ORDER_REJECT_IMPORT)  {
+		else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatch.INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT)  {
 			batch = accountingBatchService.interbankPaymentOrderRejectImport(AccountingBatch.find(accountingBatch.getId()));
 		}
 		

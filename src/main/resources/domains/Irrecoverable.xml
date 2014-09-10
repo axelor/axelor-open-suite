@@ -12,12 +12,21 @@
   	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Invoice &amp; Rejects"/>
   	<many-to-many name="paymentScheduleLineSet" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment schedule rejected"/>
   	<many-to-many name="moveSet" ref="com.axelor.apps.account.db.Move" title="Moves generated"/>
-  	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
+  	<integer name="statusSelect" title="Status" selection="iaccount.irrecoverable.status.select" readonly="true" default="1"/>
   	<datetime name="dateTime" title="Date" tz="true" readonly="true"/>
   	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User" readonly="true"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
   	<string name="exportTypeSelect" title="Export file type" selection="iadministration.export.type.select"/>
-  
+  	
+  	
+  	<extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+	
+	]]></extra-code>   
+
   </entity>
 
 </domain-models>

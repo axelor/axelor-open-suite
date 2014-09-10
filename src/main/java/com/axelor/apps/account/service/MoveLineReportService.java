@@ -27,14 +27,12 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.db.JPA;
@@ -246,19 +244,19 @@ public class MoveLineReportService {
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		
 		switch (moveLineReport.getTypeSelect()) {
-			case IAccount.EXPORT_SALES:
+			case MoveLineReport.EXPORT_SALES:
 				
 				return accountConfigService.getSaleJournalType(accountConfig);
 				
-			case IAccount.EXPORT_REFUNDS:
+			case MoveLineReport.EXPORT_REFUNDS:
 				
 				return accountConfigService.getCreditNoteJournalType(accountConfig);
 				
-			case IAccount.EXPORT_TREASURY:
+			case MoveLineReport.EXPORT_TREASURY:
 				
 				return accountConfigService.getCashJournalType(accountConfig);
 				
-			case IAccount.EXPORT_PURCHASES:
+			case MoveLineReport.EXPORT_PURCHASES:
 				
 				return accountConfigService.getPurchaseJournalType(accountConfig);
 	
@@ -279,7 +277,7 @@ public class MoveLineReportService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setStatus(MoveLineReport moveLineReport)  {
-		moveLineReport.setStatus(Status.findByCode("val"));
+		moveLineReport.setStatusSelect(MoveLineReport.STATUS_VALIDATED);
 		moveLineReport.save();
 	}
 

@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.BankStatement;
 import com.axelor.apps.account.db.BankStatementLine;
-import com.axelor.apps.account.db.IBankStatement;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -84,7 +83,7 @@ public class BankStatementService {
 			}
 		}
 		
-		bankStatement.setStatusSelect(IBankStatement.STATUS_VALIDATED);
+		bankStatement.setStatusSelect(BankStatement.STATUS_VALIDATED);
 		
 		bankStatement.save();
 	}

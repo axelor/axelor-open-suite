@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingBatch;
-import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
@@ -76,7 +75,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		
 		switch (batch.getAccountingBatch().getDirectDebitExportTypeSelect()) {
 		
-		case IAccount.INVOICE_EXPORT:
+		case AccountingBatch.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
 			try {
 				paymentScheduleExportService.checkDebitDate(batch.getAccountingBatch());
 				paymentScheduleExportService.checkInvoiceExportCompany(company);
@@ -89,7 +88,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			}
 			break;
 			
-		case IAccount.MONTHLY_EXPORT:
+		case AccountingBatch.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
 			try {
 				paymentScheduleExportService.checkDebitDate(batch.getAccountingBatch());
 				paymentScheduleExportService.checkMonthlyExportCompany(company);
@@ -138,7 +137,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			
 			switch (batch.getAccountingBatch().getDirectDebitExportTypeSelect()) {
 				
-				case IAccount.INVOICE_EXPORT:
+				case AccountingBatch.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
 					
 					this.exportInvoice();
 					
@@ -146,7 +145,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 					
 					break;
 					
-				case IAccount.MONTHLY_EXPORT:
+				case AccountingBatch.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
 					
 					this.exportMajorMonthlyPayment();
 					
@@ -166,13 +165,13 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			
 			switch (batch.getAccountingBatch().getDirectDebitExportTypeSelect()) {
 				
-				case IAccount.INVOICE_EXPORT:
+				case AccountingBatch.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
 					
 					this.createInvoiceCfonbFile(batch.getAccountingBatch().getBatchToReExport());
 					
 					break;
 					
-				case IAccount.MONTHLY_EXPORT:
+				case AccountingBatch.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
 					
 					this.createMonthlyCfonbFile(batch.getAccountingBatch().getBatchToReExport());
 					
@@ -231,19 +230,6 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 
 	/**
 	 * Méthode permettant de générer l'ensemble des exports des prélèvements pour Mensu
-	 * @param paymentScheduleExport
-	 * 			Un objet d'export des prélèvements
-	 * @param company
-	 * 			Une société
-	 * @param paymentMode
-	 * 			Un mode de paiement
-	 * @param statusVal
-	 * 			Un status
-	 * @param journal
-	 * 			Un journal
-	 * @param isMajorAccount
-	 * 			Le traitement concerne le prélèvement des échéances de mensu grand compte ?
-	 * @return 
 	 * @return
 	 * @throws AxelorException
 	 */
@@ -422,15 +408,15 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		
 		switch (Batch.find(batch.getId()).getAccountingBatch().getDirectDebitExportTypeSelect()) {
 		
-			case IAccount.INVOICE_EXPORT:
-				comment = "Compte rendu d'export des prélèvements factures et échéances de paiement :\n";
-				comment += String.format("\t* %s prélèvements(s) facture(s) et échéance(s) traité(s)\n", batch.getDone());
+			case AccountingBatch.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
+				comment = "Compte rendu d'export des prélèvements factures :\n";
+				comment += String.format("\t* %s prélèvements(s) facture(s) traité(s)\n", batch.getDone());
 				comment += String.format("\t* Montant total : %s \n", this.totalAmount);
 				comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
 				
 				break;
 				
-			case IAccount.MONTHLY_EXPORT:
+			case AccountingBatch.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
 	            comment = "Compte rendu d'export des prélèvements de mensualité :\n";
 	            comment += String.format("\t* %s prélèvements(s) mensualité(s) traité(s)\n", batch.getDone());
 	            comment += String.format("\t* Montant total : %s \n", this.totalAmount);

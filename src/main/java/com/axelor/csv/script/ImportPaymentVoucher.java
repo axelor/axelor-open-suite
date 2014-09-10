@@ -19,7 +19,6 @@ package com.axelor.csv.script;
 
 import java.util.Map;
 
-import com.axelor.apps.account.db.IPaymentVoucher;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
@@ -39,7 +38,7 @@ public class ImportPaymentVoucher {
 		try{
 			PaymentVoucher paymentVoucher = (PaymentVoucher)bean;
 			paymentVoucherLoadService.loadMoveLines(paymentVoucher);
-			if(paymentVoucher.getStateSelect() == IPaymentVoucher.STATE_CONFIRMED)
+			if(paymentVoucher.getStatusSelect() == PaymentVoucher.STATUS_CONFIRMED)
 				paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher, false);
 			return paymentVoucher;
 		}catch(Exception e){

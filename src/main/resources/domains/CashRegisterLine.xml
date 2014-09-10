@@ -18,9 +18,17 @@
     <date name="cashRegisterDate" title="Cash register date" required="true"/>
     <decimal name="depositedAmount" title="Deposited Amount"/>
     <decimal name="cashRegisterAmount" title="Cash Register Amount"/>
-    <integer name="stateSelect" title="Status" readonly="true" selection="cash.register.state.select"/>
+    <integer name="statusSelect" title="Status" readonly="true" selection="iaccount.cash.register.line.status.select" default="0"/>
     <boolean name="emailSentOk" title="Email sent ?" default="false" readonly="true"/>
   
+  	<extra-code><![CDATA[
+	
+	   	// Status select
+		public static final int DRAFT_CASHREGISTERLINE = 0;
+		public static final int CLOSED_CASHREGISTERLINE = 1;
+	
+	]]></extra-code>
+	
   </entity>
   
 </domain-models>

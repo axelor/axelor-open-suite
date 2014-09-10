@@ -52,48 +52,46 @@
         <field name="amountRemaining"/>
     </grid>
     
-    <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false"
+    <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" canDelete="false"
     onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
     onNew="action-account-move-line-onnew-group">
+    	
+    	<panel title="Informations" readonly="true" >
+   			<field name="name"/>
+	        <field name="move"/>
+	        <field name="date"/>
+	        <field name="dueDate"/>
+	        <field name="partner" onSelect="action-move-line-set-companyid-from-movecompany" domain="self.isContact = false AND :company_id MEMBER OF self.companySet" grid-view="partner-grid" form-view="partner-form"/>
+	        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+	        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
+	        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
+	        <field name="amountPaid"/>
+	        <field name="amountRemaining"/>
+	        <field name="description" showIf="$number(credit) &gt; 0.00"/>
+	        <field name="passageReason" showIf="$number(debit) &gt; 0.00"/>
+	        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
+	        <field name="interbankCodeLine" showIf="interbankCodeLine"/>
+	        <!-- dummy field added for setting domain on partner -->
+	        <field name="company_id" hidden="true"/>
+   		</panel>
+    	
     	<panel-tabs>
-	    	<panel title="Informations" >
-	    		<panel readonly="true">
-	    			<field name="name"/>
-			        <field name="move"/>
-			        <field name="move.company"/>
-			        <field name="date"/>
-			        <field name="dueDate"/>
-			        <field name="partner" onSelect="action-move-line-set-companyid-from-movecompany" domain="self.isContact = false AND :company_id MEMBER OF self.companySet" grid-view="partner-grid" form-view="partner-form"/>
-			        <!-- dummy field added for setting domain on partner -->
-			        <field name="company_id" hidden="true"/>
-			        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
-			        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
-			        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
-			        <field name="amountPaid"/>
-			        <field name="amountRemaining"/>
-			       
-			        <field name="passageReason"/>
-			        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
-			        <field name="description"/>
-			        <field name="reimbursementStateSelect"/>
-	    		</panel>
-	    		</panel>
-	    		 <panel-related field="interbankCodeLine"/>
-		        <panel name="irrecoverable" title="Irrecoverable">
-		        	<field name="irrecoverableStateSelect"/>
-	        		<field name="managementObject"/>
-	        		<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
-	        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
-		        </panel>
-		        
-		        <panel-related field="reconcileList1" canRemove="false" canNew="false"/>
-		        <panel-related field="reconcileList2"  canRemove="false" canNew="false"/>
-		    <panel title="Analytics" readonly="true">
-		    	<field name="analyticAccountSet" x-span="12" />
-		    </panel>
+	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
+	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
+	        
+	    	<panel-related field="analyticAccountSet" title="Analytics" readonly="true" x-span="12" />
+	    	
+	    	<panel name="irrecoverable" title="Irrecoverable">
+	        	<field name="irrecoverablestatusSelect" /> 
+        		<field name="managementObject"/>
+        		<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
+        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
+	        </panel>
+	    	
 		    <panel title="Others" readonly="true">
 		        <field name="taxLine"/>
 		        <field name="exportedDirectDebitOk"/>
+		        <field name="reimbursementstatusSelect"/>
 		    </panel>
         </panel-tabs>
     </form>
@@ -152,12 +150,12 @@
 		        <field name="passageReason"/>
 		        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
 		        <field name="description"/>
-		        <field name="reimbursementStateSelect"/>
+		        <field name="reimbursementstatusSelect"/>
 	        </panel>
 	        </panel>
 	        <panel-related field="interbankCodeLine" readonly="true"/>
 	        <panel name="irrecoverable" title="Irrecoverable" >
-	        	<field name="irrecoverableStateSelect"/>
+	        	<field name="irrecoverablestatusSelect"/>
         		<field name="managementObject"/>
         		<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
         		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
@@ -206,7 +204,7 @@
     </action-method>
     
     <action-attrs name="action-move-line-attrs-collapse-irrecoverable-group">
-		<attribute name="collapse" for="irrecoverable" expr="eval: irrecoverableStateSelect == null || irrecoverableStateSelect == 0"/>
+		<attribute name="collapse" for="irrecoverable" expr="eval: irrecoverablestatusSelect == null || irrecoverablestatusSelect == 0"/>
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-readonly">

@@ -27,7 +27,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.IPaymentSchedule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -39,7 +38,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
@@ -236,7 +234,7 @@ public class PaymentScheduleService {
 		
 		for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()){
 			
-			if (paymentScheduleLine.getStatus() != null && paymentScheduleLine.getStatus().getCode().equals("upr") && !paymentScheduleLine.getRejectedOk()) {
+			if (paymentScheduleLine.getStatusSelect() == PaymentScheduleLine.STATUS_IN_PROGRESS && !paymentScheduleLine.getRejectedOk()) {
 				
 				LOG.debug("Mise à jour de la ligne {} ", paymentScheduleLine.getName());
 
@@ -278,9 +276,9 @@ public class PaymentScheduleService {
 		PaymentSchedule paymentSchedule = this.createPaymentSchedule(partner, invoice, company, date, firstTermDate, nbrTerm, bankDetails, paymentMode);
 			
 		paymentSchedule.setPaymentScheduleLineList(new ArrayList<PaymentScheduleLine>());
-		Status status = Status.findByCode("upr");
+
 		for (int term = 1; term < nbrTerm + 1; term++){
-			paymentSchedule.getPaymentScheduleLineList().add(psls.createPaymentScheduleLine(paymentSchedule, initialInTaxAmount, term, firstTermDate.plusMonths(term-1), status));
+			paymentSchedule.getPaymentScheduleLineList().add(psls.createPaymentScheduleLine(paymentSchedule, initialInTaxAmount, term, firstTermDate.plusMonths(term-1)));
 		}
 		
 		return paymentSchedule;
@@ -328,7 +326,7 @@ public class PaymentScheduleService {
 			
 //		this.updateInvoices(paymentSchedule); //TODO
 
-		paymentSchedule.setStateSelect(IPaymentSchedule.STATUS_CONFIRMED);
+		paymentSchedule.setStatusSelect(PaymentSchedule.STATUS_CONFIRMED);
 		
 		paymentSchedule.save();
 	}
@@ -364,10 +362,9 @@ public class PaymentScheduleService {
 	 * @param paymentSchedule
 	 */
 	public void cancelPaymentSchedule(PaymentSchedule paymentSchedule){
-		Status closedStatus = Status.findByCode("clo");
 		
 		// L'échéancier est passé à annulé
-		paymentSchedule.setStateSelect(IPaymentSchedule.STATUS_CANCELED);
+		paymentSchedule.setStatusSelect(PaymentSchedule.STATUS_CANCELED);
 		
 		for(PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList())  {
 		
@@ -375,7 +372,7 @@ public class PaymentScheduleService {
 			if(paymentScheduleLine.getInTaxAmountPaid().compareTo(paymentScheduleLine.getInTaxAmount()) != 0 ) {
 			
 				// L'échéance est passée à cloturé
-				paymentScheduleLine.setStatus(closedStatus);
+				paymentScheduleLine.setStatusSelect(PaymentScheduleLine.STATUS_CLOSED);
 			}
 		}
 		
@@ -398,7 +395,8 @@ public class PaymentScheduleService {
 	 */
 	public boolean isLastSchedule(PaymentScheduleLine paymentScheduleLine)  {
 		if(paymentScheduleLine != null)  {
-			if(PaymentScheduleLine.filter("paymentSchedule = ?1 and scheduleDate > ?2 and status.code ='upr'", paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleDate()).fetchOne() == null)  {
+			if(PaymentScheduleLine.filter("self.paymentSchedule = ?1 and self.scheduleDate > ?2 and self.statusSelect = ?3", 
+					paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleDate(), PaymentScheduleLine.STATUS_IN_PROGRESS).fetchOne() == null)  {
 				LOG.debug("Dernière échéance");
 				return true;
 			}
@@ -423,12 +421,11 @@ public class PaymentScheduleService {
 		LOG.debug("Cloture de l'échéancier");
 		
 		//On récupère un statut cloturé, afin de pouvoir changer l'état des lignes d'échéanciers
-		Status statusClo = Status.findByCode("clo");
 		
-		for(PaymentScheduleLine psl : paymentSchedule.getPaymentScheduleLineList())  {
-			psl.setStatus(statusClo);
+		for(PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList())  {
+			paymentScheduleLine.setStatusSelect(PaymentScheduleLine.STATUS_CLOSED);
 		}
-		paymentSchedule.setStateSelect(IPaymentSchedule.STATUS_CLOSED);
+		paymentSchedule.setStatusSelect(PaymentSchedule.STATUS_CLOSED);
 		
 	}
   	

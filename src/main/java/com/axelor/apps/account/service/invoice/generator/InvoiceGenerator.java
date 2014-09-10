@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -126,14 +125,14 @@ public abstract class InvoiceGenerator  {
 
 		switch(operationType)  {
 		
-			case IInvoice.SUPPLIER_PURCHASE:
-				return IInvoice.SUPPLIER_REFUND;
-			case IInvoice.SUPPLIER_REFUND:
-				return IInvoice.SUPPLIER_PURCHASE;
-			case IInvoice.CLIENT_SALE:
-				return IInvoice.CLIENT_REFUND;
-			case IInvoice.CLIENT_REFUND:
-				return IInvoice.CLIENT_SALE;
+			case Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE:
+				return Invoice.OPERATION_TYPE_SUPPLIER_REFUND;
+			case Invoice.OPERATION_TYPE_SUPPLIER_REFUND:
+				return Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE;
+			case Invoice.OPERATION_TYPE_CLIENT_SALE:
+				return Invoice.OPERATION_TYPE_CLIENT_REFUND;
+			case Invoice.OPERATION_TYPE_CLIENT_REFUND:
+				return Invoice.OPERATION_TYPE_CLIENT_SALE;
 			default:
 				throw new AxelorException(String.format("%s :\nLe type de facture n'est pas rempli %s", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
@@ -196,11 +195,11 @@ public abstract class InvoiceGenerator  {
 		
 		invoice.setCompany(company);
 		
-		invoice.setPartnerAccount(this.getPartnerAccount(partner, company, operationType == IInvoice.SUPPLIER_PURCHASE || operationType == IInvoice.SUPPLIER_REFUND));
+		invoice.setPartnerAccount(this.getPartnerAccount(partner, company, operationType == Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == Invoice.OPERATION_TYPE_SUPPLIER_REFUND));
 		
 		invoice.setJournal(journalService.getJournal(invoice)); 
 		
-		invoice.setStatusSelect(IInvoice.STATUS_DRAFT);
+		invoice.setStatusSelect(Invoice.STATUS_DRAFT);
 		
 		invoice.setPriceList(priceList);
 		

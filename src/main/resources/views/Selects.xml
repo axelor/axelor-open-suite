@@ -11,7 +11,7 @@
 		<option value='subtype'>Subtype</option>
 	</selection>
 	
-	<selection name='payment.voucher.state.select'>
+	<selection name='iaccount.payment.voucher.status.select'>
 		<option value='1'>Draft</option>
 		<option value='2'>Confirmed</option>
 	</selection>
@@ -34,7 +34,7 @@
 		<option value='view'>View</option>
 	</selection>
 	
-	<selection name='move.line.reimbursement.state.select'>
+	<selection name='move.line.reimbursement.status.select'>
 		<option value='0'></option>
 		<option value='1'>Reimbursement ongoing</option>
 		<option value='2'>Reimbursed</option>
@@ -52,7 +52,7 @@
 		<option value="2">Archived</option>
 	</selection>
 
-	<selection name='payment.schedule.state.select'>
+	<selection name='iaccount.payment.schedule.status.select'>
 		<option value='1'>Draft</option>
 		<option value='2'>Confirmed</option>
 		<option value='3'>Closed</option>
@@ -85,7 +85,7 @@
 		<option value='4'>Canceled</option>
 	</selection>
 	
-	<selection name='cash.register.state.select'>
+	<selection name='iaccount.cash.register.line.status.select'>
 		<option value='0'>Draft</option>
 		<option value='1'>Closed</option>
 	</selection>
@@ -118,7 +118,7 @@
 		<option value='1'>Invoices(DD)</option>
 	</selection>
 	
-	<selection name='iaccount.account.schedule.irrecoverable.state.select'>
+	<selection name='iaccount.account.schedule.irrecoverable.status.select'>
 		<option value="0"></option>
 		<option value="1">To shift as irrecoverable</option>
 		<option value="2">Shifted as irrecoverable</option>
@@ -216,5 +216,41 @@
 		<option value="4">Canceled</option>
 	</selection>
 	
-
+	<selection name="iaccount.reimbursement.status.select">
+		<option value="1">Draft</option>
+		<option value="2">To validate</option>
+		<option value="3">Validated</option>
+		<option value="4">Reimbursed</option>
+		<option value="5">Canceled</option>
+	</selection>
+	
+	<selection name="iaccount.account.clearance.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
+	</selection>
+	
+	<selection name="iaccount.cheque.rejection.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
+	</selection>
+	
+	<selection name="iaccount.move.line.report.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
+	</selection>
+	
+	<selection name="iaccount.payment.schedule.line.status.select">
+		<option value="1">Draft</option>
+		<option value="2">In progress</option>
+		<option value="3">Validated</option>
+		<option value="4">Closed</option>
+	</selection>
+	
+	<selection name="iaccount.irrecoverable.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
+	</selection>
+	
+	
+	
 </object-views>

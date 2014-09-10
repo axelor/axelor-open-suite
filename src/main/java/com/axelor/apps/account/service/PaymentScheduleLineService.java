@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
-import com.axelor.apps.base.db.Status;
 
 public class PaymentScheduleLineService {
 
@@ -49,7 +48,7 @@ public class PaymentScheduleLineService {
 	 * 
 	 * @return
 	 */
-	public PaymentScheduleLine createPaymentScheduleLine(PaymentSchedule paymentSchedule, BigDecimal inTaxAmount, int scheduleLineSeq, LocalDate scheduleDate, Status status) {
+	public PaymentScheduleLine createPaymentScheduleLine(PaymentSchedule paymentSchedule, BigDecimal inTaxAmount, int scheduleLineSeq, LocalDate scheduleDate) {
 		
 		PaymentScheduleLine paymentScheduleLine = new PaymentScheduleLine();
 		
@@ -57,7 +56,7 @@ public class PaymentScheduleLineService {
 		paymentScheduleLine.setScheduleLineSeq(scheduleLineSeq);
 		paymentScheduleLine.setScheduleDate(scheduleDate);
 		paymentScheduleLine.setInTaxAmount(inTaxAmount);
-		paymentScheduleLine.setStatus(status);
+		paymentScheduleLine.setStatusSelect(PaymentScheduleLine.STATUS_IN_PROGRESS);
 		
 		LOG.debug("Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}", 
 				new Object[] {paymentScheduleLine.getScheduleLineSeq(), paymentScheduleLine.getScheduleDate(), paymentScheduleLine.getInTaxAmount()});
@@ -98,7 +97,7 @@ public class PaymentScheduleLineService {
 				
 				paymentScheduleLines.add(
 						this.createPaymentScheduleLine(
-								paymentSchedule, termAmount, i, paymentSchedule.getStartDate().plusMonths(i-1), Status.findByCode("upr")));
+								paymentSchedule, termAmount, i, paymentSchedule.getStartDate().plusMonths(i-1)));
 				
 			}
 		}		

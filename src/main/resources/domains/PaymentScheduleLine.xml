@@ -14,7 +14,7 @@
     <date name="scheduleDate" title="Schedule Date" required="true"/>
     <boolean name="rejectedOk" title="Rejected" default="false"/>
     <boolean name="debitBlockingOk" title="Debit blocking" default="false"/>
-    <many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status"/>
+    <integer name="statusSelect" title="Status" readonly="true" selection="iaccount.payment.schedule.line.status.select" default="1"/>
     <date name="rejectDate" title="Reject Date"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
     <many-to-one name="advanceMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Advance move line"/>
@@ -35,6 +35,16 @@
 	    	else return " - ";
 	    ]]>
     </string>
+    
+   	<extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_IN_PROGRESS = 2;
+		public static final int STATUS_VALIDATED = 3;
+		public static final int STATUS_CLOSED = 4;
+	
+	]]></extra-code>   
     
   </entity>
   
