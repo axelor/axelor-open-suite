@@ -12,7 +12,7 @@
     <form name="product-variant-attr-form" title="Product variant attribute" model="com.axelor.apps.base.db.ProductVariantAttr">
     	<panel>
         	<field name="name" />
-        	<field name="code" />
+        	<field name="code" x-bind="{{code|uppercase}}" />
         	<panel-related  field="productVariantValueList" x-span="12"/>
         </panel>
     </form>   
