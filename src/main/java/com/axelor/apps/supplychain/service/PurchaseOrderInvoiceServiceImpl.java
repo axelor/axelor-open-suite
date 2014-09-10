@@ -24,7 +24,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -77,7 +76,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 			throw new AxelorException(String.format("Veuillez selectionner une devise pour la commande %s ", purchaseOrder.getPurchaseOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.SUPPLIER_PURCHASE, purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner(), 
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE, purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner(), 
 				purchaseOrder.getContactPartner(), purchaseOrder.getPriceList(), purchaseOrder.getPurchaseOrderSeq(), purchaseOrder.getExternalReference()) {
 
 			@Override

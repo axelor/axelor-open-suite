@@ -26,7 +26,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -211,7 +210,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		BigDecimal total = BigDecimal.ZERO;
 		
 		for(Invoice invoice : saleOrder.getInvoiceSet())  {
-			if(invoice.getStatusSelect() == IInvoice.STATUS_VENTILATED)  {
+			if(invoice.getStatusSelect() == Invoice.STATUS_VENTILATED)  {
 				total = total.add(invoice.getInTaxTotal());
 			}
 		}
@@ -268,7 +267,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			throw new AxelorException(String.format("Veuillez selectionner une devise pour le devis %s ", saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, saleOrder.getCompany(),saleOrder.getPaymentCondition(), 
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(Invoice.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(),saleOrder.getPaymentCondition(), 
 				saleOrder.getPaymentMode(), saleOrder.getMainInvoicingAddress(), saleOrder.getClientPartner(), saleOrder.getContactPartner(), 
 				saleOrder.getCurrency(), saleOrder.getPriceList(), saleOrder.getSaleOrderSeq(), saleOrder.getExternalReference()) {
 			
