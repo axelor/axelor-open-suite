@@ -20,7 +20,6 @@ package com.axelor.apps.organisation.service.invoice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
@@ -82,14 +81,14 @@ public class InvoiceGeneratorOrganisation extends InvoiceGenerator  {
 
 		switch(operationType)  {
 		
-			case IInvoice.SUPPLIER_PURCHASE:
-				return IInvoice.SUPPLIER_REFUND;
-			case IInvoice.SUPPLIER_REFUND:
-				return IInvoice.SUPPLIER_PURCHASE;
-			case IInvoice.CLIENT_SALE:
-				return IInvoice.CLIENT_REFUND;
-			case IInvoice.CLIENT_REFUND:
-				return IInvoice.CLIENT_SALE;
+			case Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE:
+				return Invoice.OPERATION_TYPE_SUPPLIER_REFUND;
+			case Invoice.OPERATION_TYPE_SUPPLIER_REFUND:
+				return Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE;
+			case Invoice.OPERATION_TYPE_CLIENT_SALE:
+				return Invoice.OPERATION_TYPE_CLIENT_REFUND;
+			case Invoice.OPERATION_TYPE_CLIENT_REFUND:
+				return Invoice.OPERATION_TYPE_CLIENT_SALE;
 			default:
 				throw new AxelorException(String.format("%s :\nLe type de facture n'est pas rempli %s", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}

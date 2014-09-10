@@ -26,6 +26,7 @@ import javax.persistence.Query;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.db.Unit;
@@ -308,8 +309,13 @@ public class TaskService {
 		
 		/**  REVENUE  **/
 		
-		Query q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 AND (il.invoice.status.code = 'val' OR il.invoice.status.code = 'dis') AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
+		Query q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 " +
+				"AND (il.invoice.statusSelect = ?2 OR il.invoice.statusSelect = ?3) AND (il.invoice.operationTypeSelect = ?4 OR il.invoice.operationTypeSelect = ?5)");
 		q.setParameter(1, task);
+		q.setParameter(2, Invoice.STATUS_VALIDATED);
+		q.setParameter(3, Invoice.STATUS_VENTILATED);
+		q.setParameter(4, Invoice.OPERATION_TYPE_CLIENT_REFUND);
+		q.setParameter(5, Invoice.OPERATION_TYPE_CLIENT_SALE);
 				
 		BigDecimal invoiceLineTurnover = (BigDecimal) q.getSingleResult();
 		
@@ -326,8 +332,13 @@ public class TaskService {
 		
 		/**  COST  **/
 		
-		q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 AND (il.invoice.status.code = 'val' OR il.invoice.status.code = 'dis') AND (il.invoice.operationTypeSelect = 1 OR il.invoice.operationTypeSelect = 2)");
+		q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 " +
+				"AND (il.invoice.statusSelect = ?2 OR il.invoice.statusSelect = ?3) AND (il.invoice.operationTypeSelect = ?4 OR il.invoice.operationTypeSelect = ?5)");
 		q.setParameter(1, task);
+		q.setParameter(2, Invoice.STATUS_VALIDATED);
+		q.setParameter(3, Invoice.STATUS_VENTILATED);
+		q.setParameter(4, Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE);
+		q.setParameter(5, Invoice.OPERATION_TYPE_SUPPLIER_REFUND);
 				
 		BigDecimal supplierInvoiceLineCost = (BigDecimal) q.getSingleResult();
 		
