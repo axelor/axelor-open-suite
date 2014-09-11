@@ -22,14 +22,13 @@
 	    <field name="unit"/>
 	    <field name="prodProcess"/>
 	  </panel>
+	  
 	  <panel-tabs>
 	    <panel-related field="billOfMaterialList" title="Bill of material" x-span="12" domain="self.isRawMaterial = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
-	    <panel-related field="prodRemainsList" title="Remains" x-span="12"/>	    
-	    <!-- TODO: remove this comment if portlet works in panel
-	    <panel title="BOMs Tree">
-	      <portlet colSpan="4" action="action-bill-of-material-view-tree"/>
-	    </panel>
-	    -->
+	    <panel-related field="prodRemainsList" title="Remains" x-span="12"/>	
+	        
+	    <panel-dashlet action="action-bill-of-material-view-tree"/>
+	    
 	    <panel title="Cost">
 	      <button name="computeCostPrice" title="Compute cost price" colSpan="2" onClick="save,action-bill-of-material-method-compute-cost-price"/>
 	      <field name="costPrice" readonly="true"/>
