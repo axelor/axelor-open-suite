@@ -23,5 +23,6 @@ public interface MailAccountService {
 
 	
 	public MailAccount getDefaultMailAccount();
+	public boolean validateSmtpMailAccount(MailAccount account);
 	
 }

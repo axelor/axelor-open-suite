@@ -17,10 +17,16 @@
  */
 package com.axelor.apps.message.service;
 
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+import javax.mail.Session;
+import javax.mail.Transport;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.message.db.MailAccount;
+import com.axelor.mail.SmtpAccount;
 
 public class MailAccountServiceImpl implements MailAccountService {
 
@@ -32,5 +38,22 @@ public class MailAccountServiceImpl implements MailAccountService {
 		return MailAccount.filter("self.isDefault = true").fetchOne();
 		
 	}
-	
+
+
+	@Override
+	public boolean validateSmtpMailAccount(MailAccount account) {
+		String port=account.getPort()<=0?null:account.getPort().toString();
+		SmtpAccount smtpAccount=new SmtpAccount(account.getHost(),port,account.getLogin(),account.getPassword(),account.getSecuritySelect()?SmtpAccount.ENCRYPTION_TLS:null);
+		Session session=smtpAccount.getSession();
+		boolean isvalidated=false;
+		try {
+			Transport transport=session.getTransport("smtp");
+			transport.connect();
+			transport.close();
+			isvalidated=true;
+		} catch (NoSuchProviderException e) {
+		} catch (MessagingException e) {
+		}
+		return isvalidated;	
+	}
 }
