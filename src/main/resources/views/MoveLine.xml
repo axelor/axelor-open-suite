@@ -114,12 +114,10 @@
 		</panel>
 			
 		<panel-tabs>	
-			<panel-related field="reconcileList1" x-span="12"/>
-			<panel-related field="reconcileList2" x-span="12"/>
+			<panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
+	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
 			
-			<panel title="Analytics">
-				<field name="analyticAccountSet" x-span="12"/>
-			</panel>
+			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" x-span="12" />
 			
 			<panel title="Others" >
 				<field name="exportedDirectDebitOk" x-span="12"/>
@@ -130,45 +128,46 @@
     <form name="move-line-accounting-situation-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4" canDelete="false" canNew="false"
     onLoad="action-group-account-moveline-accounting-situation-onload" 
     onNew="action-account-move-line-onnew-group">
-    	<panel-tabs>
-    	<panel name="informations" title="Informations">
-	    	<panel readonly="true">
-		        <field name="name"/>
-		        <field name="move"/>
-	
-		        <field name="date"/>
-		        <field name="dueDate"/>
-		        <field name="customer"/>
+    	
+    	<panel name="informations" title="Informations" readonly="true">
+	        <field name="name"/>
+	        <field name="move"/>
 
-		        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
-	   	     
-		        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
-		        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
-		        <field name="amountPaid"/>
-		        <field name="amountRemaining"/>
-		    
-		        <field name="passageReason"/>
-		        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
-		        <field name="description"/>
-		        <field name="reimbursementstatusSelect"/>
-	        </panel>
-	        </panel>
-	        <panel-related field="interbankCodeLine" readonly="true"/>
-	        <panel name="irrecoverable" title="Irrecoverable" >
+	        <field name="date"/>
+	        <field name="dueDate"/>
+	        <field name="customer"/>
+
+	        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+   	     
+	        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
+	        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
+	        <field name="amountPaid"/>
+	        <field name="amountRemaining"/>
+	    	<field name="interbankCodeLine" readonly="true"/>
+	        <field name="passageReason"/>
+	        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
+	        <field name="description"/>
+	        <field name="reimbursementstatusSelect"/>
+        </panel>
+        
+    	<panel-tabs>
+	        
+	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
+	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
+			
+			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" x-span="12" />
+			
+			<panel name="irrecoverable" title="Irrecoverable" >
 	        	<field name="irrecoverablestatusSelect"/>
         		<field name="managementObject"/>
         		<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
         		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>
-	        <panel-related field="reconcileList1"  canRemove="false" canNew="false"/>
-	        <panel-related field="reconcileList2" colSpan="4" canRemove="false" canNew="false"/>
-	    <panel title="Analytics" readonly="true">
-	    	<field name="analyticAccountSet" x-span="12"/>
-	    </panel>
-	    <panel title="Others"  readonly="true">
-	        <field name="taxLine"/>
-	        <field name="exportedDirectDebitOk"/>
-	    </panel>
+			
+		    <panel title="Others"  readonly="true">
+		        <field name="taxLine"/>
+		        <field name="exportedDirectDebitOk"/>
+		    </panel>
         </panel-tabs>
     </form>
     
