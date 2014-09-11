@@ -15,6 +15,7 @@
 		<integer name="port" title="Port"/>
 		<boolean name="securitySelect" title="SSL/TLS"/>
 		<boolean name="isDefault" title="Default account ?"/>
+		<boolean name="isValid" title="Valid ?"/>
 		<string name="signature" title="Signature"/>
 
 	</entity>

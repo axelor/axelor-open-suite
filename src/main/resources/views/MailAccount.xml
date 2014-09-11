@@ -14,9 +14,11 @@
     onNew="action-mail-account-default-record">
     	<panel title="Informations">
             <field name="name"/>
-            <field name="user" column="user_id"/>
+            <field name="user" column="user_id" x-span="4"/>
+			<field name="isDefault" x-span="2" onChange="action-mail-account-validate-is-default"/>
+			<button name="testConnection" title="Test connection"/>
+			<field name="isValid"/>
         	<field name="signature" widget="Html" x-lite="true" x-span="12"/>
-        	<field name="isDefault" onChange="action-mail-account-validate-is-default"/>
         </panel>
         <panel title="Login" >
        	 	<field name="login"/>
@@ -27,6 +29,7 @@
         	<field name="host"/>
         	<field name="port"/>
         	<field name="securitySelect"/>
+			
         </panel>
     </form>
 
