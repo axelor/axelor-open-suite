@@ -31,7 +31,7 @@
 		</panel>
     </form>
     
-	<grid name="manuf-order-sheet-line-grid" title="ManufOrderSheetLine" model="com.axelor.apps.production.db.ManufOrderSheetLine" edit-icon="true">
+	<grid name="manuf-order-sheet-line-grid" title="ManufOrderSheetLine" model="com.axelor.apps.production.db.ManufOrderSheetLine" >
 	  <field name="operationOrder"/>
 	  <field name="product"/>
 	  <field name="diameter"/>

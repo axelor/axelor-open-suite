@@ -71,16 +71,16 @@
 	    <field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>
 	    <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"/>
 	  </panel>  
-	  <panel-tabs colSpan="4">
+	  <panel-tabs  >
 	    <panel-related field="operationOrderList" readonlyIf="statusSelect == 6" x-span="12" form-view="operation-order-form" grid-view="operation-order-grid"/>
 	    <panel title="Dates" readonlyIf="statusSelect == 6">
 	      <panel title="Planned dates">        
-	        <field name="plannedStartDateT" colSpan="1"/>
-	        <field name="plannedEndDateT" colSpan="1"/>
+	        <field name="plannedStartDateT"  />
+	        <field name="plannedEndDateT"  />
 	      </panel>
 	      <panel title="Real dates">
-	        <field name="realStartDateT" colSpan="1"/>
-	        <field name="realEndDateT" colSpan="1"/>
+	        <field name="realStartDateT"  />
+	        <field name="realEndDateT"  />
 	      </panel>
 	    </panel>
 	    <panel title="Stock moves">

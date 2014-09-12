@@ -17,15 +17,15 @@
 	    <field name="businessProject"/>
 	    -->
 	    <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice"/>
-	    <button name="showManufOrderWizard" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
+	    <button name="showManufOrderWizard" title="Add Manuf. Order"   onClick="action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  
 	  <panel title="Add Manu. Order" hidden="true">
 	    <field name="product" title="Product" widget="ManyToOne" x-target="com.axelor.apps.base.db.Product"/>
 	    <field name="billOfMaterial" title="BOM" widget="ManyToOne" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" x-target="com.axelor.apps.production.db.BillOfMaterial"/>
 	    <field name="qty" title="Quantity" widget="decimal"/>
-	    <button name="AddManufOrder" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-method-add-manuf-order"/>
+	    <button name="AddManufOrder" title="Add Manuf. Order"   onClick="action-production-order-method-add-manuf-order"/>
 	  </panel>
-	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
+	<!--         <button name="generateSaleOrder" title="Generate sale order"   onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
 	  <panel-related field="manufOrderList" x-span="12">
         <field name="manufOrderSeq"/>      
         <field name="product"/>
@@ -36,7 +36,7 @@
         <field name="statusSelect"/>	  	
 	  </panel-related>
 	  <!-- TODO: remove this comment if portlet works with panel
-	  <portlet colSpan="4" action="action-production-order-view-operation-order"/>
+	  <portlet   action="action-production-order-view-operation-order"/>
 	  -->
 	</form>
     

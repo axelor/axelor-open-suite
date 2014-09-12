@@ -84,12 +84,12 @@
 	  <panel-tabs>
 	    <panel title="Dates" readonlyIf="statusSelect == 6">
 	      <panel title="Planned dates">
-	        <field name="plannedStartDateT" colSpan="1" onChange="save,action-operation-order-method-compute-duration,save"/>
-	        <field name="plannedEndDateT" colSpan="1" onChange="save,action-operation-order-method-compute-duration,save"/>
+	        <field name="plannedStartDateT"   onChange="save,action-operation-order-method-compute-duration,save"/>
+	        <field name="plannedEndDateT"   onChange="save,action-operation-order-method-compute-duration,save"/>
 	      </panel>
 	      <panel title="Real dates">
-	        <field name="realStartDateT" colSpan="1" onChange="save,action-operation-order-method-compute-duration,save"/>
-	        <field name="realEndDateT" colSpan="1" onChange="save,action-operation-order-method-compute-duration,save"/>
+	        <field name="realStartDateT"   onChange="save,action-operation-order-method-compute-duration,save"/>
+	        <field name="realEndDateT"   onChange="save,action-operation-order-method-compute-duration,save"/>
 	      </panel>
 	    </panel>
 	    <panel title="Stock moves" readonlyIf="statusSelect == 6">

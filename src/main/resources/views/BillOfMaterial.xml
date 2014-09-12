@@ -30,9 +30,9 @@
 	    <panel-dashlet action="action-bill-of-material-view-tree"/>
 	    
 	    <panel title="Cost">
-	      <button name="computeCostPrice" title="Compute cost price" colSpan="2" onClick="save,action-bill-of-material-method-compute-cost-price"/>
+	      <button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
 	      <field name="costPrice" readonly="true"/>
-	      <button name="updateProductCostPrice" title="update product cost price" colSpan="2" onClick="save,action-bill-of-material-method-update-product-cost-price"/>
+	      <button name="updateProductCostPrice" title="update product cost price"   onClick="save,action-bill-of-material-method-update-product-cost-price"/>
 	    </panel>
 	  </panel-tabs>
 	</form>
