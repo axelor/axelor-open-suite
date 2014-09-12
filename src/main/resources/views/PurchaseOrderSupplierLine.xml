@@ -27,11 +27,11 @@
 	    <field name="comment" x-span="12"/>
 	  </panel>  
 	  <panel-side title="Action(s)">
-	    <button name="accept" title="Accept" showIf="stateSelect == 1 || stateSelect == 2" colSpan="2" onClick="save,action-purchase-order-supplier-line-method-accept,save"/>
-	    <button name="notAccept" title="Not accept" showIf="stateSelect == 1 || stateSelect == 2" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-not-accept,save"/>
-	    <button name="cancel" title="Cancel" hideIf="stateSelect == 5" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-cancel,save"/>
-	    <button name="request" title="Request" showIf="stateSelect == 5" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-request,save"/>
-	    <button name="sendByEmail" title="Write to the supplier" colSpan="2" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
+	    <button name="accept" title="Accept" showIf="stateSelect == 1 || stateSelect == 2"   onClick="save,action-purchase-order-supplier-line-method-accept,save"/>
+	    <button name="notAccept" title="Not accept" showIf="stateSelect == 1 || stateSelect == 2"   onClick="save,action-purchase-order-supplier-line-record-not-accept,save"/>
+	    <button name="cancel" title="Cancel" hideIf="stateSelect == 5"   onClick="save,action-purchase-order-supplier-line-record-cancel,save"/>
+	    <button name="request" title="Request" showIf="stateSelect == 5"   onClick="save,action-purchase-order-supplier-line-record-request,save"/>
+	    <button name="sendByEmail" title="Write to the supplier"   icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 	  </panel-side>
 	</form>
 	
