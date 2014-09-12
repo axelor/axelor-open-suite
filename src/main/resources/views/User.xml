@@ -9,7 +9,7 @@
         <field name="activeCompany"/>
     </grid>
     <form name="user-form" title="User" model="com.axelor.auth.db.User" id="user-form-base"
-    onNew="action-user-language-record">
+    onNew="action-user-language-record" onLoad="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
     	 <panel-side>
 	        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 	        <field name="activeCompany" widget="SuggestBox"/>
