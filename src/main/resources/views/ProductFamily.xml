@@ -3,14 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
-	<form cols="4" name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" id="product-faimly-form">
+	<form   name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" id="product-faimly-form">
 	  <toolbar>
 	    <button name="viewProducts" title="View Products" onClick="action-view-product-by-family"/>
 	  </toolbar>
 	  <panel-include view="product-family-form" from="axelor-base"/>
 	  <panel title="Sales Turnover" hideIf="fromMenu == null" >    
 		<!-- TODO: remove this comment if portlet works in panel
-		<portlet colSpan="3" height="350" action="portal.family.sales.turnover.per.month"/>
+		<portlet   height="350" action="portal.family.sales.turnover.per.month"/>
 		-->
 	  </panel>
 	</form>
