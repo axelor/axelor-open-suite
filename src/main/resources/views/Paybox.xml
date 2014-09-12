@@ -7,7 +7,7 @@
 		<field name="name"/>
     </grid>
     
-    <form name="paybox-form" title="Paybox" model="com.axelor.apps.account.db.Paybox" cols="4" onLoad="action-payment-voucher-checkIfPaidByPaybox">
+    <form name="paybox-form" title="Paybox" model="com.axelor.apps.account.db.Paybox"   onLoad="action-payment-voucher-checkIfPaidByPaybox">
     	<panel title="Overview">
     		<field name="name" hidden="true"/>
     		<label title="Please close this notebook to go back to the payment voucher. Please refresh the payment voucher to see the changes."/>

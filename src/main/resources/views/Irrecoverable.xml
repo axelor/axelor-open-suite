@@ -9,7 +9,7 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="irrecoverable-form" title="Irrecoverable" model="com.axelor.apps.account.db.Irrecoverable" cols="4" 
+    <form name="irrecoverable-form" title="Irrecoverable" model="com.axelor.apps.account.db.Irrecoverable"   
     onNew="action-record-irrecoverable-default-record">
   
 		<panel title="Overview" x-item-span="12">
@@ -34,8 +34,8 @@
 		<panel-related x-sidebar="true" field="irrecoverableCustomerLineList" title="Report execution" x-span="12"/>  
 		
 		<panel showIf="invoiceSet != null || paymentScheduleLineSet != null">
-  			<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="save,action-method-account-irrecoverable-pass-in" showIf="statusSelect == 1"/>
-	 		<button name="showTraceBack" title="Anomalies" colSpan="2" onClick="save,action-irrecoverable-show-trace-back" showIf="statusSelect == 2"/>
+  			<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="save,action-method-account-irrecoverable-pass-in" showIf="statusSelect == 1"/>
+	 		<button name="showTraceBack" title="Anomalies"   onClick="save,action-irrecoverable-show-trace-back" showIf="statusSelect == 2"/>
 	 	</panel>
 		<panel-related field="moveSet" showIf="statusSelect == 2" x-span="12"/>
 	</form>

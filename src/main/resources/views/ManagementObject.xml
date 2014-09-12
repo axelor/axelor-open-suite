@@ -6,7 +6,7 @@
         <field name="code"/>
         <field name="name"/>
     </grid>
-    <form name="management-object-form" title="Management" model="com.axelor.apps.account.db.ManagementObject" cols="4">
+    <form name="management-object-form" title="Management" model="com.axelor.apps.account.db.ManagementObject"  >
         <panel title="Overview">
         	<field name="code"/>
         	<field name="name"/>

@@ -19,7 +19,7 @@
 	</grid>
 
 	<form name="payment-schedule-line-form" title="Schedule line"
-		model="com.axelor.apps.account.db.PaymentScheduleLine" cols="4">
+		model="com.axelor.apps.account.db.PaymentScheduleLine"  >
 		<panel title="Overview">
 		<field name="paymentSchedule" />
 		<field name="scheduleLineSeq" />
@@ -52,7 +52,7 @@
 	</grid>
 
 	<form name="payment-schedule-line-payment-schedule-form" title="Schedule line"
-		model="com.axelor.apps.account.db.PaymentScheduleLine" cols="4">
+		model="com.axelor.apps.account.db.PaymentScheduleLine"  >
 		
 		<panel title="Overview">
 		<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>

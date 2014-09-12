@@ -9,7 +9,7 @@
         <field name="messageTemplate"/>
         <field name="manualValidationOk"/>
     </grid>
-    <form cols="4" colWidths="*,400" name="reminder-method-line-form" title="Reminder method line" model="com.axelor.apps.account.db.ReminderMethodLine">
+    <form   name="reminder-method-line-form" title="Reminder method line" model="com.axelor.apps.account.db.ReminderMethodLine">
 		<panel title="Reminder level" x-span="6">
 			<field name="reminderLevel" widget="NestedEditor" canSelect="true" onChange="action-reminder-level-selected" edit-window="self" form-view="matrix-line-reminder-form" summary-view="true">
 			 <!-- TODO: DONT KNOW WHHERE TO ADD THIS FORM ! -->

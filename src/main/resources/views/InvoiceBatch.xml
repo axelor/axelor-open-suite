@@ -13,7 +13,7 @@
 		<field name="createdBy" title="Created by" />
     </grid>
  
-    <form name="invoice-batch-form" title="Invoice batch" model="com.axelor.apps.account.db.InvoiceBatch" cols="4"
+    <form name="invoice-batch-form" title="Invoice batch" model="com.axelor.apps.account.db.InvoiceBatch"  
     onLoad="action-account-invoice-batch-onload-group" 
     onNew="action-account-invoice-batch-onnew-group">
     	<panel title="Overview">
@@ -33,7 +33,7 @@
 				<field name="onSelectOk" onChange="action-invoice-batch-attrs-on-select-ok"/>
     		</panel>
     		<panel-related field="invoiceSet"  onSelect="action-invoice-batch-method-invoice-set-domain" grid-view="invoice-grid" form-view="invoice-form"/>
-    		<panel title="Informations" cols="4">
+    		<panel title="Informations"  >
     			<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by" />
 		    	<field name="description" showTitle="false" x-span="12"/>

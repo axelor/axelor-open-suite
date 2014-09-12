@@ -16,7 +16,7 @@
         <field name="company"/>
     </grid>
     
-	<form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal" cols="4" 
+	<form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"   
 		onNew="account-journal-record-default" >
 		
 		<panel>

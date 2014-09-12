@@ -9,7 +9,7 @@
         <field name="paymentTime"/>
         <field name="isFree"/>
     </grid>
-    <form name="payment-condition-form" title="Payment Condition" model="com.axelor.apps.account.db.PaymentCondition" cols="4">
+    <form name="payment-condition-form" title="Payment Condition" model="com.axelor.apps.account.db.PaymentCondition"  >
         <panel title="Overview">
         	<field name="name"/>
 	        <field name="code"/>

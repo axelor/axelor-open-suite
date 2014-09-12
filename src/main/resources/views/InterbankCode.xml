@@ -19,7 +19,7 @@
 	    <field name="name"/>
 	</panel>
 	<panel title="Description">
-	    <field name="description" showTitle="false" colSpan="4"/>
+	    <field name="description" showTitle="false"  />
 	    <field name="technicalRejectOk"/>
 	</panel>
 	<panel title="Domain of use">
@@ -30,7 +30,7 @@
 	    <field name="chequeOk"/>
 	</panel>
 </form>
-    <form cols="6" name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
+    <form   name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
 		<panel title="Overview">
 		  <field name="code"/>
 		  <field name="name"/>

@@ -8,7 +8,7 @@
         <field name="paymentScheduleLine"/>
     </grid>
    
-    <form name="irrecoverable-payment-schedule-line-line-form" title="Payment schedue line" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" cols="4">
+    <form name="irrecoverable-payment-schedule-line-line-form" title="Payment schedue line" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine"  >
         <panel title="Overview">
 	       	<field name="name"/>
 	        <field name="paymentScheduleLine"/>

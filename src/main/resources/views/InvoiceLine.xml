@@ -13,7 +13,7 @@
         <field name="taxLine.tax"/>
     </grid>
     
-    <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
+    <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
     onNew="action-account-invoice-line-onnew-group"
     onLoad="action-account-invoice-line-onload-group">
     	<panel-tabs>
@@ -53,7 +53,7 @@
         <field name="taxLine.vat"/>
     </grid>
     
-    <form name="tax-invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
+    <form name="tax-invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
     onLoad="action-invoice-line-method-product-management">
         <panel title="Overview">
         	 <field name="product" required="true" onChange="action-group-account-tax-invoice-line-product-onchange"/>

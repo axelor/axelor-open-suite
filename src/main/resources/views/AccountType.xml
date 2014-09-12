@@ -5,7 +5,7 @@
     <grid name="account-type-grid" title="Account types" model="com.axelor.apps.account.db.AccountType">
         <field name="nameSelect"/>
     </grid>
-    <form name="account-type-form" title="Account type" model="com.axelor.apps.account.db.AccountType" cols="4">
+    <form name="account-type-form" title="Account type" model="com.axelor.apps.account.db.AccountType"  >
         <panel type="Overview">
         	<field name="nameSelect"/>
         </panel>

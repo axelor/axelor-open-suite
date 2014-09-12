@@ -19,7 +19,7 @@
         <field name="statusSelect"/>
     </grid>
     
-	<form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" cols="4"  canDelete="false" 
+	<form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move"    canDelete="false" 
 	onNew="action-account-move-onnew-group" onSave="save,action-move-record-draft-sequence">
 	
 		<toolbar>
@@ -37,12 +37,12 @@
 			</panel>
 		</panel>
 			
-		<panel-related field="moveLineList" readonlyIf="statusSelect == 3" colSpan="4" grid-view="move-line-move-grid" form-view="move-line-move-form"/>
+		<panel-related field="moveLineList" readonlyIf="statusSelect == 3"   grid-view="move-line-move-grid" form-view="move-line-move-form"/>
 		  
 		<panel-side title="Action" x-item-span="6">
 			<field name="statusSelect" readonly="true"/>
 			<field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
-			<button name="validate" title="Validate" colSpan="2" onClick="action-group-account-move-validate-click" hideIf="statusSelect == 3"/>
+			<button name="validate" title="Validate"   onClick="action-group-account-move-validate-click" hideIf="statusSelect == 3"/>
 			<field name="getInfoFromFirstMoveLineOk" hideIf="statusSelect == 3"/>
 		</panel-side>
 		

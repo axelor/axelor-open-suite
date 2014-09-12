@@ -15,7 +15,7 @@
         <field name="statusSelect"/>
     </grid>
     
-	 <form  name="payment-schedule-form" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule" cols="4" 
+	 <form  name="payment-schedule-form" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule"   
 	 onNew="action-account-payment-schedule-onnew-group" 
 	 onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group" 
 	 onSave="action-payment-schedule-payment-schedule-id">
@@ -35,8 +35,8 @@
 		 <panel  title="Irrecoverable">
 			<field name="irrecoverableStatusSelect"/>
 			<field name="managementObject"/>
-			<button name="passInIrrecoverable" title="Shift to irrecoverablePassage en irrécouvrable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable"/>
-			<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable"/>
+			<button name="passInIrrecoverable" title="Shift to irrecoverablePassage en irrécouvrable"   onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable"/>
+			<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable"/>
 		</panel>
 		<panel-tabs>
 		  <panel-related title="Invoices" field="invoiceSet"  domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.statusSelect = 3 and self.inTaxTotalRemaining > 0.0 AND self.currency = :currency" grid-view="invoice-account-grid" form-view="invoice-form" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-in-tax-amount"/>
@@ -47,7 +47,7 @@
 			<panel title="actions">
 			    <button name="validate" title="Validate"  onClick="action-group-account-payment-schedule-validate-click" showIf="statusSelect == 1"/>
 			    <button name="cancel" title="Cancel"  onClick="action-payment-schedule-method-cancel,save" hideIf="statusSelect = 4" />
-			    <button name="createPaymentScheduleLines" title="Create schedule lines" colSpan="2" onClick="action-group-account-payment-schedule-create-click" showIf="statusSelect == 1"/>
+			    <button name="createPaymentScheduleLines" title="Create schedule lines"   onClick="action-group-account-payment-schedule-create-click" showIf="statusSelect == 1"/>
 			</panel>
 		</panel-side>
 	</form>

@@ -13,7 +13,7 @@
     </grid>
 
 
-    <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile" cols="4">
+    <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile"  >
 		
 		<panel>
 			<field name="debitMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onChange="action-reconcile-attrs-domain-credit" domain="self.debit &gt; 0.0"/>
@@ -28,8 +28,8 @@
 		</panel-side>
 		
 		<panel-side title="Actions">
-			<button name="reconcile" title="Reconcile" showIf="statusSelect == 1" colSpan="2" onClick="save,action-reconcile-method-reconcile"/>
-			<button name="unreconcile" title="Unreconcile" showIf="statusSelect == 2" colSpan="2" onClick="save,action-reconcile-method-unreconcile"/>
+			<button name="reconcile" title="Reconcile" showIf="statusSelect == 1"   onClick="save,action-reconcile-method-reconcile"/>
+			<button name="unreconcile" title="Unreconcile" showIf="statusSelect == 2"   onClick="save,action-reconcile-method-unreconcile"/>
 		</panel-side>
 	  
 	</form>

@@ -17,12 +17,12 @@
 	  <field name="code"/>
 	  <field name="company"/>
 	  <field name="accountChart" readonlyIf="hasChartImported" x-span="8"/>
-	  <button name="installTemplate" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" colSpan="1" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
+	  <button name="installTemplate" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null"   icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 	  <field name="hasChartImported"/>
 	  <field name="showDetailsInInvoice"/>
 	</panel>
 	<panel title="CFONB">
-	  <field name="cfonbConfig" showTitle="false" colSpan="4" widget="NestedEditor" form-view="cfonb-config-form" summary-view="true"/>
+	  <field name="cfonbConfig" showTitle="false"   widget="NestedEditor" form-view="cfonb-config-form" summary-view="true"/>
 	</panel>
 	<panel title="Receivables recovery" >
 		<field name="mailTransitTime" x-span="12"/>
@@ -135,8 +135,8 @@
 				<field name="tempInterbankPaymentOrderImportPathCFONB" />
 			</panel>
 			<panel title="Payments rejects by IPO and IPO Cheque" x-span="12">
-				<field name="interbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
-				<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
+				<field name="interbankPaymentOrderRejectImportPathCFONB"  />
+				<field name="tempInterbankPaymentOrderRejectImportPathCFONB"  />
 			</panel>
 		</panel>
 	

@@ -26,7 +26,7 @@
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
-	<form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4"
+	<form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"  
 	onNew="action-account-invoice-onnew-group"
 	onLoad="action-invoice-attrs-collapse-irrecoverable-group" >
 	
@@ -45,7 +45,7 @@
 	  <panel title="Invoicing informations">
 	    <field name="partner" readonlyIf="statusSelect != 1" onChange="action-group-account-invoice-partner-onchange" onSelect="action-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
 	    <field name="contactPartner" onSelect="action-set-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	    <field name="address" colSpan="2"/>
+	    <field name="address"  />
 	    <field name="paymentMode" widget="SuggestBox" onSelect="action-set-payment-mode-domain"/>
 	    <field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date"/>
 	    <field name="bankDetails" hideIf="operationTypeSelect &gt;= 3" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" domain="self.partner = :partner"/>
@@ -65,35 +65,33 @@
 	        <field name="move" readonlyIf="statusSelect != 3"/>
 	      </panel>
 	      <panel title="Refund" showIf="statusSelect == 3"  x-span="12" showTitle="false">
-	        <button name="createRefund" title="Generate refund" colSpan="2" onClick="save,action-invoice-method-create-refund,save"/>
+	        <button name="createRefund" title="Generate refund"   onClick="save,action-invoice-method-create-refund,save"/>
 	        <field name="refundInvoice" showIf="operationTypeSelect == 1 || operationTypeSelect == 3"/>
-	        <panel-related field="originalInvoiceList" showIf="operationTypeSelect == 2 || operationTypeSelect == 4" colSpan="4"/>
+	        <panel-related field="originalInvoiceList" showIf="operationTypeSelect == 2 || operationTypeSelect == 4"  />
 	         <field name="doubtfulCustomerOk" readonly="true" showIf="doubtfulCustomerOk &amp;&amp; statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
 	      <field name="usherPassageOk" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
 	      <field name="oldMove" showIf="oldMove"/>
 	      </panel>
-	      <!--<separator title="Debt Recovery" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" colSpan="6"/>-->
+	      <!--<separator title="Debt Recovery" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  />-->
 	      <panel x-span="12"  title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
 	        <field name="irrecoverablestatusSelect"/>
 	        <field name="managementObject"/>
-	        <button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.InvoiceController:passInIrrecoverable"/>
-	        <button name="notPassInIrrecoverable" title="Do not shit into irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"/>
+	        <button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:passInIrrecoverable"/>
+	        <button name="notPassInIrrecoverable" title="Do not shit into irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"/>
 	      </panel>
 	    </panel>
 	     <panel title="Blockings" showIf="statusSelect == 3" showTitle="false">
 	      <field name="debitBlockingOk"/>
 	      <field name="reminderBlockingOk"/>
-	      <panel name="debitBlockingGroup" showIf="debitBlockingOk" x-span="12">
-	        <!--<separator title="Direct debit blocking" colSpan="4"/>-->
+	      <panel name="debitBlockingGroup" title="Direct debit blocking"  showIf="debitBlockingOk" x-span="12">
 	        <field name="debitBlockingByUser"/>
 	        <field name="debitBlockingToDate"/>
-	        <field name="debitBlockingReason" colSpan="4"/>
+	        <field name="debitBlockingReason"  />
 	      </panel>
-	      <panel showIf="reminderBlockingOk" x-span="12">
-	        <!--<separator title="Reminder blocking" colSpan="4"/>-->
+	      <panel showIf="reminderBlockingOk" x-span="12" title="Reminder blocking">
 	        <field name="reminderBlockingByUser"/>
 	        <field name="reminderBlockingToDate"/>
-	        <field name="reminderBlockingReason" colSpan="4"/>
+	        <field name="reminderBlockingReason"  />
 	      </panel>
 	    </panel>
 	     <panel  title="Payment" showIf="statusSelect == 3" showTitle="false">
@@ -113,7 +111,7 @@
 	      </panel>
 	    </panel>
 	     <panel title="Notes" x-span="12">
-	      <field name="note" showTitle="false" colSpan="4" x-span="12"/>
+	      <field name="note" showTitle="false"   x-span="12"/>
 	    </panel>
 	  </panel-tabs>
 	
@@ -133,11 +131,11 @@
 	  
 	  <panel-side>
 	    <panel  title="Action(s)" >
-	   		<button name="compute" title="Compute" showIf="statusSelect == 1" colSpan="2" onClick="save,action-invoice-method-compute,save"/>
-	        <button name="validate" title="Validate" showIf="statusSelect == 1" colSpan="2" onClick="save,action-invoice-method-compute,action-invoice-method-validate,save"/>
-	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" colSpan="2" onClick="save,action-invoice-method-ventilate,save"/>
-	        <button name="cancel" title="Cancel" showIf="statusSelect == 1" colSpan="2" onClick="save,action-invoice-method-cancel,save"/>
-	        <button name="draft" title="Draft" showIf="statusSelect == 4" colSpan="2" onClick="save,action-invoice-record-draft,save"/>
+	   		<button name="compute" title="Compute" showIf="statusSelect == 1"   onClick="save,action-invoice-method-compute,save"/>
+	        <button name="validate" title="Validate" showIf="statusSelect == 1"   onClick="save,action-invoice-method-compute,action-invoice-method-validate,save"/>
+	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2"   onClick="save,action-invoice-method-ventilate,save"/>
+	        <button name="cancel" title="Cancel" showIf="statusSelect == 1"   onClick="save,action-invoice-method-cancel,save"/>
+	        <button name="draft" title="Draft" showIf="statusSelect == 4"   onClick="save,action-invoice-record-draft,save"/>
 	        <field name="statusSelect"/>
 	        <field name="validatedByUser"/>
 	    </panel>

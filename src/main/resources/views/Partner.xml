@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
-   <!-- <form name="partner-form"  id="account-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
+   <!-- <form name="partner-form"  id="account-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"   colWidths="25*" 
     onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-record-customer-supplier-type,action-partner-attrs-set-readonly"
     onLoad="action-partner-attrs-change-name,action-partner-attrs-set-readonly" 
     onSave="save,action-set-partner-seq,action-create-accounting-situation">
@@ -20,19 +20,19 @@
 	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null"/>
 	        </menu>
 	    </menubar>
-	    <group colSpan="6" cols="6">
-	        <group colSpan="1" cols="1">
-	            <group colSpan="1">
+	    <group    >
+	        <group    >
+	            <group  >
 	                <field name="picture" showTitle="false" widget="Image"/>
 	            </group>
 	            <break/>
-	            <group colSpan="1" showIf="id != null">
+	            <group   showIf="id != null">
 	                <button name="facebook" css="img-button" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
 	                <button name="linkedin" css="img-button" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
 	                <button name="twitter" css="img-button" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
 	            </group>
 	        </group>
-	        <group colSpan="1">
+	        <group  >
 	            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility"/>
 	            <break/>
 	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name"/>
@@ -41,26 +41,26 @@
 	            <break/>
 	            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name"/>
 	        </group>
-	        <group colSpan="4" cols="4">
-	            <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid"/>    
+	        <group    >
+	            <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2"   domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid"/>    
 	        </group>
 	    </group>
 	    <break/>
-	    <notebook colSpan="4">
+	    <notebook  >
 	        <page name="information" title="Informations">
-	            <group colSpan="4" cols="4" hideIf="isContact">
+	            <group     hideIf="isContact">
                     <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
                     <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
 	            </group>
-	            <group title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="4" cols="4">
-	                <group colSpan="2" cols="2">
+	            <group title="Partner Details" hideIf="partnerTypeSelect == 2"    >
+	                <group    >
 	                    <field name="partnerCategory" widget="SuggestBox"/>
 	                    <field name="industrySectorSelect"/>
 	                    <field name="source" hideIf="isContact"/>
 	                    <field name="site" domain="self.partner.id = :id"/>
 	                    <field name="department"/>
 	                </group>
-	                <group colSpan="2" cols="2">
+	                <group    >
 	                    <field name="saleTurnover"/>
 	                    <field name="nbrEmployees"/>
 	                    <field name="registrationCode"/>
@@ -68,17 +68,17 @@
 	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1"/>
 	                </group>
 	            </group>
-	            <group title="Contacts details" hideIf="partnerTypeSelect == 2 || !isContact" colSpan="4" cols="4">
+	            <group title="Contacts details" hideIf="partnerTypeSelect == 2 || !isContact"    >
 	                <field name="mainPartner" hideIf="!isContact"/>
 	                <field name="source" hideIf="!isContact"/>
 	                <field name="reportsTo" hideIf="!isContact"/>
 	                <field name="jobTitle" hideIf="!isContact"/>
 	            </group>
-	            <group title="Postal addresses" colSpan="4" cols="4">
+	            <group title="Postal addresses"    >
 	                <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
 	                <field name="mainInvoicingAddress"/>
 	            </group>
-	            <group title="Contact" colSpan="4" cols="4">
+	            <group title="Contact"    >
 	                <field name="fixedPhone"/>
 	                <field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
 	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
@@ -87,9 +87,9 @@
 	            </group>
 	        </page>
 	        <page title="Notes">
-	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
+	            <field name="description" showTitle="false"   widget="Html" x-lite="true"/>
 	        </page>
-	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" colSpan="4" cols="4">
+	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact"    >
 	            <field name="invoiceSendingFormatSelect"/>
 	            <field name="paymentMode"/>
 	            <field name="paymentCondition"/>
@@ -97,39 +97,39 @@
 	            <field name="fiscalPosition"/>
 	            <field name="payerQuality"/>
 	            <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
-	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
-	            <button name="showAllInvoices" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
-	            <button name="showUnpaidInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-view-show-unpaid-invoice"/>
+	            <field name="bankDetailsList" showTitle="false"   form-view="bank-details-form" grid-view="bank-details-grid"/>
+	            <button name="showAllInvoices" title="Show invoices"   onClick="save,action-partner-view-partner-invoice"/>
+	            <button name="showUnpaidInvoice" title="View all unpaid invoices"   onClick="save,action-partner-view-show-unpaid-invoice"/>
 	        </page>
-	        <page title="Settings" cols="4">
+	        <page title="Settings"  >
 	            <field name="partnerSeq"/>
 	            <field name="languageSelect"/>
-	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
-	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" form-view="company-lite-form" onChange="action-partner-company-set-validate"/>
+	            <group title="Assigned to"     canCollapse="true">
+	                <field name="companySet"   widget="TagSelect" x-create="name" form-view="company-lite-form" onChange="action-partner-company-set-validate"/>
 	                <break/>
 	                <field name="user"/>
 	                <field name="team"/>
 	            </group>
 	        </page>
 	        <page name="compteClient" title="Customer balance" hideIf="isContact">
-	            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+	            <field name="accountingSituationList"   widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 	        </page>
 	        <page name="blocking" title="Blockings" hideIf="isContact">
-	            <field name="blockingList" colSpan="4" widget="MasterDetail" showTitle="false"/>
+	            <field name="blockingList"   widget="MasterDetail" showTitle="false"/>
 	        </page>
 	        <page name="reportedBalance" title="Reported balance" hideIf="isContact || id == null">
-	            <field name="reportedBalanceList" colSpan="4">
+	            <field name="reportedBalanceList"  >
 	                <grid title="Reported balances" >
 	                    <field name="company"/>
 	                </grid>
-	                <form cols="4" title="Reported balance" >
+	                <form   title="Reported balance" >
 	                    <field name="company" widget="SuggestBox"/>
-	                    <field name="reportedBalanceLineList" colSpan="4">
+	                    <field name="reportedBalanceLineList"  >
 	                        <grid title="Reported balance lines" >
 	                            <field name="year"/>
 	                            <field name="amount"/>
 	                        </grid>
-	                        <form cols="4"  title="Reported balance line" >
+	                        <form    title="Reported balance line" >
 	                            <field name="year"/>
 	                            <field name="amount"/>
 	                        </form>
@@ -137,24 +137,24 @@
 	                </form>
 	            </field>
 	        </page>
-         	<page title="SEPA Direct Debit" cols="4" showIf="paymentMode.typeSelect == 2">   
-                 <field name="activeRum" colSpan="2" canNew="false" domain="self.partner.id = :id"/>
-                 <separator title="History" colSpan="4"/>
-                 <field name="rumList" showTitle="false" colSpan="4"/>
+         	<page title="SEPA Direct Debit"   showIf="paymentMode.typeSelect == 2">   
+                 <field name="activeRum"   canNew="false" domain="self.partner.id = :id"/>
+                 <separator title="History"  />
+                 <field name="rumList" showTitle="false"  />
             </page>
 		    <page name="activities" title="Activities" showIf="id != null">
-	        	<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
-			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
-			    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
-			    <portlet colSpan="6" action="action-partner-view-opportunities"/>
-			    <portlet colSpan="6" action="action-partner-view-sale-orders"/>
-			    <portlet colSpan="6" action="action-partner-view-tickets"/>
+	        	<button name="showProject" title="Show projects"   onClick="save,action-partner-view-partner-project"/>
+			    <portlet   action="action-partner-view-upcoming-events"/>
+			    <portlet   action="action-partner-view-historical-events-completed"/>
+			    <portlet   action="action-partner-view-opportunities"/>
+			    <portlet   action="action-partner-view-sale-orders"/>
+			    <portlet   action="action-partner-view-tickets"/>
 	        </page>
 			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain">
-				<portlet colSpan="6" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
+				<portlet   action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
 			</page>
 			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm">
-     			 <portlet colSpan="6" action="portal.customer.crm.activities" height="350"/>
+     			 <portlet   action="portal.customer.crm.activities" height="350"/>
 			</page>
 	    </notebook>
 	</form>  --> 
@@ -197,14 +197,14 @@
 <!-- 	<grid  title="Reported balances" > -->
 <!--         <field name="company"/> -->
 <!--     </grid> -->
-<!--              <form cols="4" title="Reported balance" > -->
+<!--              <form   title="Reported balance" > -->
 <!--                  <field name="company" widget="SuggestBox"/> -->
-<!--                  <field name="reportedBalanceLineList" colSpan="4"> -->
+<!--                  <field name="reportedBalanceLineList"  > -->
 <!--                      <grid title="Reported balance lines" > -->
 <!--                          <field name="year"/> -->
 <!--                          <field name="amount"/> -->
 <!--                      </grid> -->
-<!--                      <form cols="4"  title="Reported balance line" > -->
+<!--                      <form    title="Reported balance line" > -->
 <!--                          <field name="year"/> -->
 <!--                          <field name="amount"/> -->
 <!--                      </form> -->

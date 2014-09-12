@@ -9,7 +9,7 @@
         <field name="label"/>
     </grid>
     
-    <form name="reminderLevel-form" title="Reminder level" model="com.axelor.apps.account.db.ReminderLevel" cols="6">
+    <form name="reminderLevel-form" title="Reminder level" model="com.axelor.apps.account.db.ReminderLevel"  >
      	<panel title="Overview">
      		<field name="name"/>
     		<field name="code"/>

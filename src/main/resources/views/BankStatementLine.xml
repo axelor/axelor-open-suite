@@ -13,7 +13,7 @@
         <field name="amount"/>
     </grid>
   
-     <form cols="4" name="bank-statement-line-form" title="Bank Statement Line" model="com.axelor.apps.account.db.BankStatementLine">
+     <form   name="bank-statement-line-form" title="Bank Statement Line" model="com.axelor.apps.account.db.BankStatementLine">
 	  <panel title="Overview">
 	    <field name="name"/>
 	    <field name="reference"/>

@@ -37,11 +37,11 @@
 				<label title="The payer doesn't have email attached. Please input/provide the email to use."/>
 				<field name="email" widget="Email"/>
 				<field name="toSaveEmailOk"/>
-				<button name="validateEmail" title="Validate" colSpan="2" onClick="save,com.axelor.apps.account.web.PayboxController:addPayboxEmail,save"/>
+				<button name="validateEmail" title="Validate"   onClick="save,com.axelor.apps.account.web.PayboxController:addPayboxEmail,save"/>
 				<field name="defaultEmailOk"/>
 			</panel>
 			<panel>
-				<button name="paybox" title="Paybox" colSpan="2" onClick="action-group-account-payment-voucher-paybox-onclick"/>
+				<button name="paybox" title="Paybox"   onClick="action-group-account-payment-voucher-paybox-onclick"/>
 				<field name="bankCardTransactionNumber"/>
 				<field name="payboxPaidOk" onChange="action-pv-hide-confirm-button,action-attrs-payment-voucher-readonly-status"/>
 			</panel>
@@ -57,8 +57,8 @@
 			<button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
 			<button name="showMoveLines" title="Show move lines" onClick="com.axelor.apps.account.web.PaymentVoucherControllerSimple:showMoveLines" showIf="statusSelect == 2"/>
 			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 2"/>
-			<button name="loadMoveLines" title="Load invoice and display other invoices to pay" colSpan="6" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" showIf="statusSelect == 1"/>
-			<button name="loadSelectedLines" title="Load selected lines" colSpan="4" onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" showIf="statusSelect == 1"/>
+			<button name="loadMoveLines" title="Load invoice and display other invoices to pay"   onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" showIf="statusSelect == 1"/>
+			<button name="loadSelectedLines" title="Load selected lines"   onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" showIf="statusSelect == 1"/>
 		</panel-side>
 		
 		<panel title="Payer" x-item-span="12" readonlyIf="statusSelect == 2">

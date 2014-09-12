@@ -28,7 +28,7 @@
 		<panel name="directDebitPage" title="Direct debit configuration" hideIf="actionSelect != 12">
 			<field name="directDebitTypeSelect"/>
 			<field name="currency" readonly="true"/>
-			<panel name="directDebitExportGroup" hideIf="directDebitTypeSelect != 1" colSpan="4">
+			<panel name="directDebitExportGroup" hideIf="directDebitTypeSelect != 1"  >
 				<field name="directDebitExportTypeSelect"/>
 				<field name="debitDate"/>
 				<field name="hasToReExportCfbonb" showIf="directDebitExportTypeSelect != 2"/>
@@ -36,16 +36,16 @@
 				<field name="isSepaDirectDebit"/>
 			</panel>
 		</panel>
-		<panel name="reminderPage" title="Reminder configuration" hideIf="actionSelect != 14" cols="4">
+		<panel name="reminderPage" title="Reminder configuration" hideIf="actionSelect != 14"  >
 			<field name="reminderTypeSelect"/>
 		</panel>
 		<panel name="interbankPaymentOrderPage" title="Payments by IPO and IPO Cheque configuration" hideIf="actionSelect != 15">
 			<field name="interbankPaymentOrderTypeSelect"/>
 			<field name="currency" readonly="true"/>
 		</panel>
-		<!--<page name="doubtfulCustormerPage" title="Doubtful customers configuration" hideIf="actionSelect != 16" cols="4"/>-->
+		<!--<page name="doubtfulCustormerPage" title="Doubtful customers configuration" hideIf="actionSelect != 16"  />-->
 		<panel name="accountCustomerPage" title="Account calculation configuration" hideIf="actionSelect != 17">
-			<!--<group title="Update" colSpan="4" cols="6">-->
+			<!--<group title="Update"    >-->
 			  <field name="updateCustAccountOk"/>
 			  <field name="updateDueCustAccountOk"/>
 			  <field name="updateDueReminderCustAccountOk"/>
@@ -56,11 +56,11 @@
 			<field name="startDate"/>
 			<field name="endDate"/>
 		</panel>
-		<panel title="Information" cols="4">
+		<panel title="Information"  >
 			<field name="createdOn" title="Created on"/>
 			<field name="createdBy" title="Created by"/>
-			<field name="description" showTitle="false" colSpan="4"/>
-			<field name="batchList" colSpan="4"/>
+			<field name="description" showTitle="false"  />
+			<field name="batchList"  />
 		</panel>
 	</panel-tabs>
 	<panel-side title="Actions">
@@ -68,7 +68,7 @@
 	    <button name="directDebitBatch" title="Direct Debit Batch" hideIf="actionSelect != 12"  onClick="save,action-accounting-batch-method-action-direct-debit"/>
 	    <button name="reminderBatch" title="Reminder Batch" hideIf="actionSelect != 14" onClick="save,action-accounting-batch-method-action-reminder"/>
 	    <button name="interbankPaymentOrderBatch" title="Interbank Payment Order Batch" hideIf="actionSelect != 15"  onClick="save,action-accounting-batch-method-action-interbank-payment-order"/>
-	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" hideIf="actionSelect != 16" colSpan="4" onClick="save,action-accounting-batch-method-action-doubtful-customer"/>
+	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" hideIf="actionSelect != 16"   onClick="save,action-accounting-batch-method-action-doubtful-customer"/>
 	    <button name="accountCustomerBatch" title="Start" hideIf="actionSelect != 17"  onClick="save,action-accounting-batch-method-action-account-customer"/>
 	    <button name="moveLineExportBatch" title="Start" hideIf="actionSelect != 18"  onClick="save,action-accounting-batch-method-action-move-line-export"/>
 	</panel-side>

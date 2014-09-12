@@ -10,7 +10,7 @@
         <field name="sequence"/>
     </grid>
  
-	 <form name="account-management-payment-mode-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement" cols="4"
+	 <form name="account-management-payment-mode-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement"  
 	 onNew="action-account-management-record-payment">
 	 	<panel title="Overview">
 			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>

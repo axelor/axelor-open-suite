@@ -10,7 +10,7 @@
 	    <field name="iban"/>
     </grid>
     
-   <form cols="4" onSave="action-validate-bank-details-bbanKey" onNew="action-set-default-partner" name="bank-details-form" title="Bank details" model="com.axelor.apps.base.db.BankDetails" id="bank-details-form">
+   <form   onSave="action-validate-bank-details-bbanKey" onNew="action-set-default-partner" name="bank-details-form" title="Bank details" model="com.axelor.apps.base.db.BankDetails" id="bank-details-form">
 	  <panel title="Owner">
 	    <field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 	    <field name="ownerName"/>

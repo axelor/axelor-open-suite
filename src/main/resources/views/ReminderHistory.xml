@@ -18,7 +18,7 @@
         <field name="reminderMethodLine"/>
     </grid>
     
-	<form cols="6" name="reminder-history-form" title="Reminder history" model="com.axelor.apps.account.db.ReminderHistory">
+	<form   name="reminder-history-form" title="Reminder history" model="com.axelor.apps.account.db.ReminderHistory">
 		<panel title="Reminder settings">
         	<field name="reminder"/>
         	<field name="reminderMethod" widget="SuggestBox"/>
@@ -51,7 +51,7 @@
     	<field name="reminderDate"/>
         <field name="reminderMethodLine"/>
     </grid>
-    <form name="reminder-history-contract-line-form" title="Reminders history" model="com.axelor.apps.account.db.ReminderHistory" cols="4">
+    <form name="reminder-history-contract-line-form" title="Reminders history" model="com.axelor.apps.account.db.ReminderHistory"  >
 	    <panel title="Overview">
 	    	<field name="reminderMethod" widget="SuggestBox"/>
         <field name="referenceDate"/>

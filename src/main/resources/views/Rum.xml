@@ -12,7 +12,7 @@
         <field name="mandateSignatureCommune"/>
     </grid>
     
-    <form name="rum-form" title="Unique Mandate References" model="com.axelor.apps.account.db.Rum" cols="4"
+    <form name="rum-form" title="Unique Mandate References" model="com.axelor.apps.account.db.Rum"  
     	onNew="action-rum-record-new">
        <panel title="Overview">
        	<field name="rumNumber"/>

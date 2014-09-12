@@ -6,7 +6,7 @@
         <field name="company"/>
         <field name="account"/>
     </grid>
-    <form name="tax-account-form" title="Tax accounting configuration" model="com.axelor.apps.account.db.TaxAccount" cols="4"
+    <form name="tax-account-form" title="Tax accounting configuration" model="com.axelor.apps.account.db.TaxAccount"  
     onNew="action-tax-account-record-new">
        <panel title="Overview">
        	 <field name="company" widget="SuggestBox" onChange="action-group-account-tax-account-common-onchange"/>

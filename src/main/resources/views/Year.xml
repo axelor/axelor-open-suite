@@ -13,7 +13,7 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form cols="4" onSave="action-year-check-date,action-fiscal-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
+    <form   onSave="action-year-check-date,action-fiscal-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
 		<panel title="Overview">
 			<field name="name"/>
 			<field name="code"/>
@@ -28,7 +28,7 @@
 		<panel-side>
 			<field name="typeSelect" readonly="true"/>
 			<field name="statusSelect"/>
-			<button name="close" title="Close fiscal year" colSpan="2" onClick="action-group-account-year-close-click"/>
+			<button name="close" title="Close fiscal year"   onClick="action-group-account-year-close-click"/>
 		</panel-side>
 		<panel-side title="Periods generation assistant">
 			<field name="periodDurationSelect"/>

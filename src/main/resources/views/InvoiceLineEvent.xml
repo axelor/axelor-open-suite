@@ -16,7 +16,7 @@
         <field name="amount"/>
     </grid>
     
-    <form name="invoice-line-event-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLineEvent" cols="4">
+    <form name="invoice-line-event-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLineEvent"  >
         <panel title="Overview">
         	<field name="articleId"/>
 	        <field name="summaryId"/>

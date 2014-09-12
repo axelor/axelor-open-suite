@@ -9,7 +9,7 @@
         <field name="signType"/>
     </grid>
     
-    <form name="account-category-form" title="Account Category" model="com.axelor.apps.account.db.AccountCategory" cols="4">
+    <form name="account-category-form" title="Account Category" model="com.axelor.apps.account.db.AccountCategory"  >
        <panel title="General">
 	        <field name="name"/>
 	        <field name="type"/>

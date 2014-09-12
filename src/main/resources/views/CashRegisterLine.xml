@@ -13,7 +13,7 @@
         <field name="statusSelect"/>
     </grid>
     
-	<form name="cash-register-line-form" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine" cols="4" 
+	<form name="cash-register-line-form" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine"   
 	onNew="action-cash-register-line-record-new">
 	 
 		<panel title="Overview" readonlyIf="emailSentOk">
@@ -34,8 +34,8 @@
 		</panel>
 		
 		<panel-side title="Actions">
-			<button name="closeCashRegister" title="Close cashier" colSpan="2" onClick="save,action-group-account-cash-registerline-close,save" hideIf="emailSentOk || statusSelect == 1"/>
-			<button name="openCashRegister" title="Open cashier" colSpan="2" onClick="save,action-method-account-cash-registerline-open,save" hideIf="emailSentOk || statusSelect == 0"/>
+			<button name="closeCashRegister" title="Close cashier"   onClick="save,action-group-account-cash-registerline-close,save" hideIf="emailSentOk || statusSelect == 1"/>
+			<button name="openCashRegister" title="Open cashier"   onClick="save,action-method-account-cash-registerline-open,save" hideIf="emailSentOk || statusSelect == 0"/>
 		</panel-side>
 		
 	</form>

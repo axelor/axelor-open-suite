@@ -14,10 +14,10 @@
         <field name="statusSelect"/>
     </grid>
 
-	<form name="cheque-rejection-form" title="Cheque Rejection"	model="com.axelor.apps.account.db.ChequeRejection" cols="4"
+	<form name="cheque-rejection-form" title="Cheque Rejection"	model="com.axelor.apps.account.db.ChequeRejection"  
 		onNew="default-cheque-rejection-record">
 
-		<panel title="Overview" colSpan="4" cols="4">
+		<panel title="Overview"    >
 			<field name="statusSelect" />
 			<field name="move" />
 			<field name="name" />
@@ -53,7 +53,7 @@
 		</panel>
 		<panel-side title="Action">
 			<button name="validateChequeRejection" title="Validate reject"
-				colSpan="2" onClick="save,action-method-account-cheque-rejection-validate"
+				  onClick="save,action-method-account-cheque-rejection-validate"
 				hideIf="statusSelect == 2" />
 		</panel-side>
 	</form>

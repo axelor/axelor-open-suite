@@ -23,7 +23,7 @@
 		<field name="publicationDateTime"/>
     </grid>
 
-	<form name="move-line-report-form" title="Accounting report" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
+	<form name="move-line-report-form" title="Accounting report" model="com.axelor.apps.account.db.MoveLineReport"   
 		onSave="action-move-line-report-method-get-sequence" onNew="action-move-line-report-default-record"
 		>
 		<panel title="Overview">
@@ -90,7 +90,7 @@
 		<field name="statusSelect"/>
     </grid>
     
-	<form name="move-line-report-export-form" title="Accounting export" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
+	<form name="move-line-report-export-form" title="Accounting export" model="com.axelor.apps.account.db.MoveLineReport"   
 	onNew="action-move-line-report-default-record"
 	onSave="action-move-line-report-method-get-sequence">
 		
@@ -107,10 +107,10 @@
 		
 		<panel-side title="Info">
 			<field name="statusSelect"/>
-			<button name="search" title="Search" colSpan="2" hideIf="statusSelect == 2" onClick="save,action-move-line-report-method-search-move-line,save"/>
-			<button name="export" title="Export" colSpan="2" hideIf="statusSelect == 2" onClick="action-group-account-moveline-report-export-click"/>
-			<button name="showMoveExported" title="Exported moves" colSpan="2" showIf="statusSelect == 2" onClick="save,action-move-line-report-method-show-move-exported"/>
-			<button name="replayExport" title="Run export again" colSpan="2" showIf="statusSelect == 2" onClick="save,action-move-line-report-method-replay-export"/>
+			<button name="search" title="Search"   hideIf="statusSelect == 2" onClick="save,action-move-line-report-method-search-move-line,save"/>
+			<button name="export" title="Export"   hideIf="statusSelect == 2" onClick="action-group-account-moveline-report-export-click"/>
+			<button name="showMoveExported" title="Exported moves"   showIf="statusSelect == 2" onClick="save,action-move-line-report-method-show-move-exported"/>
+			<button name="replayExport" title="Run export again"   showIf="statusSelect == 2" onClick="save,action-move-line-report-method-replay-export"/>
 		</panel-side>
 		
 		<panel-side title="Balance">

@@ -9,7 +9,7 @@
         <field name="journal"/>
         <field name="isValid"/>
     </grid>
-      <grid model="com.axelor.apps.account.db.MoveTemplateLine" name="move-template-line-cusom-grid" edit-icon="true" title="Move template line">
+      <grid model="com.axelor.apps.account.db.MoveTemplateLine" name="move-template-line-cusom-grid"  title="Move template line">
       <field name="name"/>
       <field name="debitCreditSelect"/>
       <field name="product"/>

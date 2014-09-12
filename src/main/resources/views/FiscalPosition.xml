@@ -8,12 +8,12 @@
         <field name="code"/>
     </grid>
 
-    <form name="fiscal-position-form" title="Fiscal position" model="com.axelor.apps.account.db.FiscalPosition" cols="4">
+    <form name="fiscal-position-form" title="Fiscal position" model="com.axelor.apps.account.db.FiscalPosition"  >
         <panel>
 	        <field name="name"/>
 	        <field name="code"/>
-	        <field name="accountEquivList" colSpan="4"/>
-	        <field name="taxEquivList" colSpan="4"/>
+	        <field name="accountEquivList"  />
+	        <field name="taxEquivList"  />
         </panel>
     </form>
 

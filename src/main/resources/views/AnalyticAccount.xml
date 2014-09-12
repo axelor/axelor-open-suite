@@ -8,7 +8,7 @@
         <field name="analyticAxis"/>
         <field name="parent"/>
     </grid>
-    <form name="analytic-account-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount" cols="4">
+    <form name="analytic-account-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount"  >
         <panel title="Overview">
 	        <field name="code"/>
 	        <field name="name"/>

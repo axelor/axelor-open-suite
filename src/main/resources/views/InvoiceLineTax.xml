@@ -11,7 +11,7 @@
 		<field name="inTaxTotal"/>
     </grid>
     
-    <form name="invoice-line-tax-form" title="Tax Line" model="com.axelor.apps.account.db.InvoiceLineTax" cols="4">
+    <form name="invoice-line-tax-form" title="Tax Line" model="com.axelor.apps.account.db.InvoiceLineTax"  >
     	<panel title="Overview">
     		<field name="taxLine"/>
 			<field name="taxLine.tax.name"/>

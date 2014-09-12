@@ -7,7 +7,7 @@
         <field name="burden"/>
         <field name="description"/>
     </grid>
-    <form name="payer-quality-config-line-form" title="Payer quality configuration line" model="com.axelor.apps.account.db.PayerQualityConfigLine" cols="6">
+    <form name="payer-quality-config-line-form" title="Payer quality configuration line" model="com.axelor.apps.account.db.PayerQualityConfigLine"  >
         <panel title="Overview">
         <field name="incidentTypeSelect"/>
         <field name="reminderLevel"/>

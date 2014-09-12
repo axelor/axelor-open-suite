@@ -8,7 +8,7 @@
         <field name="toTax"/>
     </grid>
 
-    <form name="tax-equiv-form" title="Tax equivalence" model="com.axelor.apps.account.db.TaxEquiv" cols="4">
+    <form name="tax-equiv-form" title="Tax equivalence" model="com.axelor.apps.account.db.TaxEquiv"  >
         <panel>
         	<field name="fromTax"/>
         <field name="toTax"/>

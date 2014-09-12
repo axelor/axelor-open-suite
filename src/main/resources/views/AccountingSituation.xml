@@ -12,7 +12,7 @@
         <field name="balanceDueReminderCustAccount"/>
     </grid>
     
- <form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account" cols="4">
+ <form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account"  >
 	<panel title="Overview">
 		<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
 		<field name="customerAccount"/>
@@ -41,7 +41,7 @@
         <field name="balanceDueReminderCustAccount"/>
     </grid>
     
- <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account" cols="4">
+ <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account"  >
 	<panel title="Overview">
 		<field name="company" widget="SuggestBox"/>
 		<field name="partner"/>
@@ -49,12 +49,12 @@
 		<field name="supplierAccount"/>
 	</panel>
     	
-	<panel title="Customer balance" colSpan="4">
+	<panel title="Customer balance"  >
 		<field name="balanceCustAccount"/>
 		<field name="balanceDueCustAccount"/>
 		<field name="balanceDueReminderCustAccount"/>
 	</panel>
-    <panel title="Reminder process" colSpan="4">
+    <panel title="Reminder process"  >
     	<field name="reminder"/>
     </panel>
      <panel-dashlet action="action-accounting-situation-view-move-lines"/>
