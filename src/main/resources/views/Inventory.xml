@@ -21,11 +21,11 @@
 	  </panel>
 	  <panel title="Export" showIf="statusSelect == 2 || statusSelect == 3">
 	    <field name="formatSelect"/>
-	    <button name="showInventory" title="Print" showIf="formatSelect != null" colSpan="1" icon="fa-print" onClick="save,action-inventory-method-show-inventory"/>
+	    <button name="showInventory" title="Print" showIf="formatSelect != null"   icon="fa-print" onClick="save,action-inventory-method-show-inventory"/>
 	  </panel>
 	  <panel title="Import" hideIf="statusSelect != 2">
 	    <field name="importFilePath"/>    
-	    <button name="importFile" title="Import" showIf="importFilePath != null" colSpan="2" onClick="action-group-stock-inventory-importfile-click"/>
+	    <button name="importFile" title="Import" showIf="importFilePath != null"   onClick="action-group-stock-inventory-importfile-click"/>
 	  </panel>
 	  <panel title="Description">
 	    <field name="description" showTitle="false" x-span="12"/>
@@ -41,9 +41,9 @@
 	  </panel>
 	  <panel-related field="inventoryLineList" readonlyIf="statusSelect == 3" x-span="12"/>
 	  <panel-side title="Action(s)">
-	    <button name="plan" title="Plan" showIf="statusSelect == 1 &amp;&amp; location != null" colSpan="1" onClick="action-group-stock-inventory-plan-click"/>
-	    <button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="action-group-stock-inventory-realize-click"/>
-	    <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="action-group-stock-inventory-cancel-click"/>
+	    <button name="plan" title="Plan" showIf="statusSelect == 1 &amp;&amp; location != null"   onClick="action-group-stock-inventory-plan-click"/>
+	    <button name="realize" title="Realize" showIf="statusSelect == 2"   onClick="action-group-stock-inventory-realize-click"/>
+	    <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3"   onClick="action-group-stock-inventory-cancel-click"/>
 	    <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-inventory-draft-click"/>
 	  </panel-side>
 	</form>

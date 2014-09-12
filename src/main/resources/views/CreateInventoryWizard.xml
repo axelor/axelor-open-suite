@@ -17,7 +17,7 @@
 	    <field name="includeObsolete" title="Include obsolete products ?" widget="Boolean"/>
 	  </panel>
 	  <panel-side title="Action(s)">
-	    <button name="validate" title="Validate" colSpan="4" onClick="action-group-stock-createinventory-wizard-validate-click"/>
+	    <button name="validate" title="Validate"   onClick="action-group-stock-createinventory-wizard-validate-click"/>
 	  </panel-side>
 	</form>
     

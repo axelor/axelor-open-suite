@@ -18,7 +18,7 @@
     
 	<form name="location-form" title="Stock Location" model="com.axelor.apps.stock.db.Location" onNew="action-location-record-new">
 	  <toolbar>
-	    <button name="createInventory" title="Create inventory" colSpan="1" onClick="action-location-view-create-inventory"/>
+	    <button name="createInventory" title="Create inventory"   onClick="action-location-view-create-inventory"/>
 	    <button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
 	  </toolbar>
 	  <panel>

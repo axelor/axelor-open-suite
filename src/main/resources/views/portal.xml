@@ -36,7 +36,7 @@
 
 <!-- 	Stock Dashboard -->
 	
-	<portal title="Dashboard" name="stock.dashboard.portal.sample" cols="2">		
+	<portal title="Dashboard" name="stock.dashboard.portal.sample"  >		
 		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />
 		<portlet action="portal.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />
 		<portlet action="portal.stock.move.upcoming.suppl.arrivals" height="350" canSearch="true" />
@@ -49,7 +49,7 @@
 	    <portlet action="portal.nbr.product.per.family" height="350" canSearch="true" if-module="axelor-supplychain"/>       			
 	</portal>
 
-	<portal title="Dashboard" name="stock.dashboard.portal.one" cols="2">	
+	<portal title="Dashboard" name="stock.dashboard.portal.one"  >	
 		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />	
 		<portlet action="portal.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />	
 		<portlet action="portal.stock.move.upcoming.suppl.arrivals" canSearch="true" height="350" />	
@@ -61,7 +61,7 @@
 		<portlet action="portal.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
 	</portal>
 
-	<portal title="Dashboard" name="stock.dashboard.portal.two" cols="2">
+	<portal title="Dashboard" name="stock.dashboard.portal.two"  >
 	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350"/>  
   	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350"/>  
   	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350"/> 
