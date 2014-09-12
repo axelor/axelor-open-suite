@@ -6,7 +6,7 @@
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
 	onLoad="action-group-supplychain-saleorder-onload" 
-	onSave="action-sale-order-set-sequence">
+	onSave="save,action-method-set-sale-order-draft-sequence,save">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
@@ -14,7 +14,7 @@
 	
 	<form name="sale-order-form-client" id="supplychain-sale-order-form-client" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
 		  onNew="action-group-supplychain-saleorder-onnew"
-		  onSave="action-sale-order-set-sequence" onLoad="action-group-supplychain-saleorder-onload">
+		  onSave="save,action-method-set-sale-order-draft-sequence,save" onLoad="action-group-supplychain-saleorder-onload">
 		<panel-include view="sale-order-form-client" from="axelor-sale"/>
 	</form>
 	
