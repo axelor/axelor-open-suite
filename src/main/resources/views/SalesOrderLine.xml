@@ -40,7 +40,7 @@
 	        <field name="supplierPartner" showIf="saleSupplySelect == 2" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
 	        <field name="task"/>
 	        <field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production"/>
-	        <button name="customizeBOM" title="Customize BOM" colSpan="2" onClick="action-production-method-customize-bill-of-material" if-module="axelor-production"/>
+	        <button name="customizeBOM" title="Customize BOM"   onClick="action-production-method-customize-bill-of-material" if-module="axelor-production"/>
 	    </panel>
 	    <panel title="Notes">
 	      <field name="description" showTitle="false" x-span="12" widget="Html" x-lite="true"/>
@@ -48,7 +48,7 @@
 	    <panel title="Delivery">
 	      <field name="estimatedDelivDate"/>
 	      <!-- TODO: remove this comment if portlet works in panel
-	      <portlet colSpan="4" action="action-sale-order-line-view-stock-move-line"/>
+	      <portlet   action="action-sale-order-line-view-stock-move-line"/>
 	      -->
 	    </panel>
 	    <panel-related title="SO lines" field="saleOrderSubLineList"/>    
