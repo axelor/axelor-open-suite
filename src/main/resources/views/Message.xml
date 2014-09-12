@@ -69,7 +69,7 @@
 	</action-method>
 	
 	<action-record name="action-message-record-default-media-type" model="com.axelor.apps.message.db.Message">
-    	<field name="mediaTypeSelect" expr="3"/>
+    	<field name="mediaTypeSelect" expr="2"/>
     </action-record>
 	
     <action-record model="com.axelor.apps.message.db.Message" name="action-message-record-active-company">
