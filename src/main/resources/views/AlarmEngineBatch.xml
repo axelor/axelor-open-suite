@@ -9,7 +9,7 @@
    		<field name="alarmEngineSet" />
     </grid>
     
-    <form cols="4" name="alarm-engine-batch-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngineBatch">
+    <form   name="alarm-engine-batch-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngineBatch">
 	  <toolbar>
 	    <button name="run" title="Run" onClick="save,alarm-engine-batch-method-run"/>
 	  </toolbar>

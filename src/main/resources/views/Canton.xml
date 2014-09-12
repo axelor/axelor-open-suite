@@ -9,7 +9,7 @@
         <field name="artmin"/>
         <field name="department"/>
     </grid>
-    <form name="canton-form" title="Canton" model="com.axelor.apps.base.db.Canton" cols="4">
+    <form name="canton-form" title="Canton" model="com.axelor.apps.base.db.Canton"  >
     	<panel>
 	        <field name="name"/>
 	        <field name="code"/>

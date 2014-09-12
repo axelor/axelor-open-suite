@@ -8,7 +8,7 @@
         <field name="code"/>
     </grid>
     
-    <form name="partner-category-form" title="Partner category" model="com.axelor.apps.base.db.PartnerCategory" cols="4" colWidths="25*">
+    <form name="partner-category-form" title="Partner category" model="com.axelor.apps.base.db.PartnerCategory"  >
     	<panel>
 			<field name="code"/>
 	        <field name="name"/>

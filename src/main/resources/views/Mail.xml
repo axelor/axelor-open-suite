@@ -16,7 +16,7 @@
         <field name="reminderHistory"/>
     </grid>
     
-    <form name="mail-form" title="Mail" model="com.axelor.apps.base.db.Mail" cols="4" onLoad="action-mail-hidden-attrs">
+    <form name="mail-form" title="Mail" model="com.axelor.apps.base.db.Mail"   onLoad="action-mail-hidden-attrs">
     	<panel title="Informations">
  			<field name="code"/>
         	<field name="name"/>

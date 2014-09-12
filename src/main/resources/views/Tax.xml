@@ -8,7 +8,7 @@
         <field name="name"/>
     </grid>
     
-	<form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" cols="4">
+	<form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax"  >
 		<panel>
 			<field name="code"/>
 			<field name="name"/>
@@ -28,7 +28,7 @@
 		<field name="value"/>
 	</grid>
 	
-	<form name="tax-line-custom-form" model="com.axelor.apps.account.db.TaxLine" title="Tax rate" cols="6">
+	<form name="tax-line-custom-form" model="com.axelor.apps.account.db.TaxLine" title="Tax rate"  >
 	    
     	<field name="value"/>
 	    <field name="startDate"/>

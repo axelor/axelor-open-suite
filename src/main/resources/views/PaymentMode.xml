@@ -8,7 +8,7 @@
         <field name="code"/>
     </grid>
     
-    <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode" cols="4">
+    <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode"  >
         <panel title="Overview">
         	 <field name="name"/>
 	        <field name="code"/>

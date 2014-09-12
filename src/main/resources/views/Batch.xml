@@ -13,7 +13,7 @@
 		<field name="anomaly" />
     </grid>
     
-    <form name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch" cols="4"
+    <form name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch"  
     	onNew="action-batch-attrs" onLoad="action-batch-attrs">
 		<panel>
 		    <field name="createdBy"/>
@@ -23,14 +23,14 @@
 		    <field name="done"/>
 		    <field name="anomaly"/>
 		    <field name="comment" showTitle="false" x-span="12"/>
-		    <button name="showTraceBack" title="Anomalies" colSpan="2" onClick="save,action-batch-show-trace-back"/>
-		    <button name="showInvoice" title="Invoices" hidden="true" colSpan="2" onClick="save,action-batch-show-invoice"/>
-		    <button name="showReimbursement" title="Reimbursements" hidden="true" colSpan="2" onClick="save,action-batch-show-reimbursement"/>
-		    <button name="showPaymentScheduleLine" title="Schedule lines" hidden="true" colSpan="2" onClick="save,action-batch-show-payment-schedule-line"/>
-		    <button name="showPartner" title="Partners" hidden="true" colSpan="2" onClick="save,action-batch-show-partner"/>
-		    <button name="showAccountingSituation" title="Accounting situations" hidden="true" colSpan="2" onClick="save,action-batch-show-accounting-situation"/>
-		    <button name="showPaymentVoucher" title="Payment vouchers" hidden="true" colSpan="2" onClick="save,action-batch-show-payment-voucher"/>
-		    <button name="showMoveLineReport" title="Accounting Export" hidden="true" colSpan="2" onClick="save,action-batch-show-move-line-report"/>
+		    <button name="showTraceBack" title="Anomalies"   onClick="save,action-batch-show-trace-back"/>
+		    <button name="showInvoice" title="Invoices" hidden="true"   onClick="save,action-batch-show-invoice"/>
+		    <button name="showReimbursement" title="Reimbursements" hidden="true"   onClick="save,action-batch-show-reimbursement"/>
+		    <button name="showPaymentScheduleLine" title="Schedule lines" hidden="true"   onClick="save,action-batch-show-payment-schedule-line"/>
+		    <button name="showPartner" title="Partners" hidden="true"   onClick="save,action-batch-show-partner"/>
+		    <button name="showAccountingSituation" title="Accounting situations" hidden="true"   onClick="save,action-batch-show-accounting-situation"/>
+		    <button name="showPaymentVoucher" title="Payment vouchers" hidden="true"   onClick="save,action-batch-show-payment-voucher"/>
+		    <button name="showMoveLineReport" title="Accounting Export" hidden="true"   onClick="save,action-batch-show-move-line-report"/>
 		</panel>
     </form>
     

@@ -13,7 +13,7 @@
 <!--         <field name="name"/> -->
 <!--     </tree> -->
     
-    <form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" cols="4" colWidths="20%,30%,20%,30%">
+    <form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" >
        <panel>
 	    <field name="administration" />
 	    <field name="name"/>
@@ -56,7 +56,7 @@
     </form>
     
     
-    <form name="company-lite-form" title="Company" model="com.axelor.apps.base.db.Company" cols="4"  colWidths="20%,30%,20%,30%">
+    <form name="company-lite-form" title="Company" model="com.axelor.apps.base.db.Company"    >
 	    <panel readonly="true">
 	    	<field name="administration" />
 	        <field name="name"/>

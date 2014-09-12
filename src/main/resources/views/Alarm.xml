@@ -34,7 +34,7 @@
 	  </panel>  
 	</form>
     
-    <form name="alarm-contract-line-form" title="Alarm" model="com.axelor.apps.base.db.Alarm" cols="4">
+    <form name="alarm-contract-line-form" title="Alarm" model="com.axelor.apps.base.db.Alarm"  >
         <panel>
 		    <field name="date" x-span="4"/>
 		    <field name="acquitOk" x-span="2"/>

@@ -10,7 +10,7 @@
         <field name="reminderBlockingOk" />
     </grid>
     
-    <form name="blocking-form" title="Blocking" model="com.axelor.apps.base.db.Blocking" cols="8" colWidths="15%,10%,15%,10%,15%,10%,15%,10%">
+    <form name="blocking-form" title="Blocking" model="com.axelor.apps.base.db.Blocking"   >
      	<panel>
 		    <field name="invoicingBlockingOk" x-span="3"/>
 		    <field name="debitBlockingOk" x-span="3"/>

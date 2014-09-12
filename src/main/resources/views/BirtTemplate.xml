@@ -8,7 +8,7 @@
         <field name="templateLink"/>
     </grid>
     
-    <form name="birt-template-form" title="Birt Template" model="com.axelor.apps.base.db.BirtTemplate" cols="4"
+    <form name="birt-template-form" title="Birt Template" model="com.axelor.apps.base.db.BirtTemplate"  
     onNew="action-birt-template-record-default">
     	<panel>
 	        <field name="name"/>

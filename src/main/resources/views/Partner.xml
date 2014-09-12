@@ -13,9 +13,9 @@
 	    <field name="fixedPhone"/>
 		<field name="emailAddress.address"/>
 	    <field name="partnerCategory"/>
-		<button name="logCall" title="Log Call" colSpan="1" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"  if-module="axelor-crm"/>
-		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
-		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
+		<button name="logCall" title="Log Call"   icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"  if-module="axelor-crm"/>
+		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
+		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
 	</grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -23,9 +23,9 @@
 	    <field name="fixedPhone"/>
 	    <field name="mobilePhone"/>
 	    <field name="emailAddress.address"/>
-	    <button name="logCall" title="Log Call" colSpan="1" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call" if-module="axelor-crm"/>
-		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
-		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
+	    <button name="logCall" title="Log Call"   icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call" if-module="axelor-crm"/>
+		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
+		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
 		
 	</grid>
     
@@ -38,7 +38,7 @@
         <field name="user"/>
     </grid>
     
-    <form name="partner-form" id="base-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
+    <form name="partner-form" id="base-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
     onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" 
     onSave="action-group-base-partner-onsave">
@@ -79,7 +79,7 @@
 			</panel>
 		</panel>
   		</panel>
-  		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2"  colSpan="4" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
+  		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2"    domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
   		<panel-tabs>
   			<panel name="information" title="Informations">
 				<panel hideIf="isContact" x-span="12">
@@ -125,8 +125,8 @@
 				<field name="payerQuality"/>
 				<field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
 				<panel x-span="6">
-					<button name="showAllInvoices" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
-					<button name="showUnpaidInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-view-show-unpaid-invoice"/>
+					<button name="showAllInvoices" title="Show invoices"   onClick="save,action-partner-view-partner-invoice"/>
+					<button name="showUnpaidInvoice" title="View all unpaid invoices"   onClick="save,action-partner-view-show-unpaid-invoice"/>
 				</panel>
 				<field name="bankDetailsList" >
 				    <viewer><![CDATA[
@@ -148,7 +148,7 @@
 			<panel-related field="blockingList" widget="MasterDetail" title="Blockings" hideIf="isContact" if-module="axelor-account"/>
 			<panel-related field="reportedBalanceList"  widget="MasterDetail" title="Reported balance" hideIf="isContact" if-module="axelor-account" />
 			<panel title="SEPA Direct Debit" if-module="axelor-account">
-			 	  <field name="activeRum" colSpan="2" canNew="false" domain="self.partner.id = :id"/>
+			 	  <field name="activeRum"   canNew="false" domain="self.partner.id = :id"/>
 			      <field name="rumList" title="History" readonly="true" x-span="12">
 			           <viewer><![CDATA[
 						<rumList>
@@ -158,24 +158,24 @@
 			      </field>
 			</panel>
 			<panel title="Activities" showIf="id != null" if-module="axelor-crm">
-				<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project" />
+				<button name="showProject" title="Show projects"   onClick="save,action-partner-view-partner-project" />
 			</panel>
 			<panel-dashlet x-span="12" title="Sales" showIf="id != null" if-module="axelor-supplychain" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
 			<panel-dashlet x-span="12" title="Events" showIf="id != null" if-module="axelor-crm" action="portal.customer.crm.activities" height="350"/>
 			<panel title="Notes" x-span="12">
-				<field name="description" x-span="12" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
+				<field name="description" x-span="12" showTitle="false"   widget="Html" x-lite="true"/>
 			</panel>
 			<panel title="Settings" x-span="12">
 				<field name="partnerSeq"/>
 				<field name="languageSelect"/>
 				<panel title="Assigned to" x-span="12">
-					<field name="companySet" colSpan="4" widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
+					<field name="companySet"   widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
 					<field name="user"/>
 					<field name="team"/>
 				</panel>
 			</panel>
 		</panel-tabs>
-	<!-- 		        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" colSpan="4" cols="4"> -->
+	<!-- 		        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account"    > -->
 	<!-- 	            <include view="incl-invoice-payment-partner-form" from="axelor-account"/> -->
 	<!-- 	        </page> -->
 	<!-- 	        <page name="compteClient" title="Customer balance" hideIf="isContact" if-module="axelor-account"> -->
@@ -187,7 +187,7 @@
 	<!-- 	    	<page name="reportedBalance" title="Reported balance" hideIf="isContact || id == null" if-module="axelor-account"> -->
 	<!-- 	    	   	<include view="incl-reported-balance-partner-form" from="axelor-account" /> -->
 	<!-- 	    	</page> -->
-	<!-- 	    	<page title="SEPA Direct Debit" cols="4" showIf="paymentMode.typeSelect == 2" if-module="axelor-account"> -->
+	<!-- 	    	<page title="SEPA Direct Debit"   showIf="paymentMode.typeSelect == 2" if-module="axelor-account"> -->
 	<!-- 	    	    <include view="incl-sepa-direct-debit-partner-form" from="axelor-account" /> -->
 	<!-- 	    	</page> -->
 	<!-- 	        <page name="activities" title="Activities" showIf="id != null" if-module="axelor-crm"> -->
@@ -202,13 +202,13 @@
 	<!--      			<include view="incl-events-partner-form" from="axelor-crm" /> -->
 	<!-- 			</page> -->
 	<!-- 			<page title="Notes"> -->
-	<!-- 	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/> -->
+	<!-- 	            <field name="description" showTitle="false"   widget="Html" x-lite="true"/> -->
 	<!-- 	        </page> -->
-	<!-- 			<page title="Settings" cols="4"> -->
+	<!-- 			<page title="Settings"  > -->
 	<!-- 	            <field name="partnerSeq"/> -->
 	<!-- 	            <field name="languageSelect"/> -->
-	<!-- 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true"> -->
-	<!-- 	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/> -->
+	<!-- 	            <group title="Assigned to"     canCollapse="true"> -->
+	<!-- 	                <field name="companySet"   widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/> -->
 	<!-- 	                <break/> -->
 	<!-- 	                <field name="user"/> -->
 	<!-- 	                <field name="team"/> -->
@@ -232,7 +232,7 @@
 	    onSave="save,action-set-partner-seq">
 	    
 	    <toolbar>
-    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1" readonlyIf="id == null"/>
+    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"   readonlyIf="id == null"/>
     	</toolbar>
 	    <panel>
 	        <field name="picture" widget="Image" x-span="4"/>

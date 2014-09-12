@@ -62,7 +62,7 @@
 	<input file="base_scheduler.csv" separator=";" type="com.axelor.apps.base.db.Scheduler" />
 	
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner">
-		<bind to="emailAddress" search="self.address = :email">
+		<bind to="emailAddress" search="self.address = :email" if="email != null &amp;&amp; !email.empty">
 			<bind to="address" column="email" />
 		</bind>
 	</input>

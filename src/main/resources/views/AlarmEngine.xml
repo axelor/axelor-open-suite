@@ -20,7 +20,7 @@
         <field name="externalOk"/>
     </grid>
 
-    <form cols="4" onLoad="action-alarm-engine-attrs-external" 
+    <form   onLoad="action-alarm-engine-attrs-external" 
     	onSave="action-alarm-engine-method-validate-query" 
     	onNew="action-alarm-engine-attrs-external" 
     	name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine">

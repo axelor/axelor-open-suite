@@ -14,7 +14,7 @@
         <field name="productVariantValue4Set"/>
     </grid>
     
-    <form name="product-variant-config-form" title="Product variant configuration" model="com.axelor.apps.base.db.ProductVariantConfig" cols="4"
+    <form name="product-variant-config-form" title="Product variant configuration" model="com.axelor.apps.base.db.ProductVariantConfig"  
     	onLoad="action-product-variant-config-attrs-domain" onNew="action-product-variant-config-attrs-domain">
     	<panel>
         	<field name="productVariantAttr1" onChange="action-product-variant-config-attrs-domain"/>

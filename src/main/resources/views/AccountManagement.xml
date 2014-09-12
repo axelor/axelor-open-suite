@@ -19,7 +19,7 @@
         <field name="purchaseTax" if-module="axelor-account"/>
     </grid>
     
-	<form name="account-management-product-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement" cols="4"
+	<form name="account-management-product-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement"  
 	onNew="action-account-management-record-product">
 		<panel title="Overview">
 			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
@@ -39,7 +39,7 @@
 		</panel-tabs>
 	</form>
 	
-	<form name="account-management-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement" cols="4"  
+	<form name="account-management-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement"    
 	onNew="action-account-management-record-default" onLoad="action-account-management-attrs-type" >
 		<panel title="Overview">
 			<field name="typeSelect" onChange="action-account-management-attrs-type"/>
@@ -61,7 +61,7 @@
 			  <field name="saleTax"/>
 			</panel>
 			<panel name="paymentModePage" title="Payment mode" showTitle="false">
-			  <field name="paymentMode" colSpan="2"/>
+			  <field name="paymentMode"  />
 			  <field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
 			  <field name="sequence" domain="self.company = :company"/>
 			</panel>

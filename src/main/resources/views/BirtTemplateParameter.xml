@@ -8,7 +8,7 @@
         <field name="value"/>
     </grid>
     
-    <form name="birt-template-parameter-form" title="Birt Template parameter" model="com.axelor.apps.base.db.BirtTemplateParameter" cols="4">
+    <form name="birt-template-parameter-form" title="Birt Template parameter" model="com.axelor.apps.base.db.BirtTemplateParameter"  >
     	<panel>
 	        <field name="name"/>
 	        <field name="value"/>

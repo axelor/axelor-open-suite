@@ -8,7 +8,7 @@
 		<field name="zip"/>
     </grid>
     
-    <form name="commune-form" title="City-Commune" model="com.axelor.apps.base.db.Commune" cols="4">
+    <form name="commune-form" title="City-Commune" model="com.axelor.apps.base.db.Commune"  >
     	<panel>
 			<field name="name"/>
 			<field name="artmin" x-span="2"/>

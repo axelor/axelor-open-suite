@@ -25,7 +25,7 @@
 	    <field name="salePrice" width="120"/>
     </grid>
 
-   <form cols="2" name="product-form" onNew="action-group-base-product-onnew" title="Product" model="com.axelor.apps.base.db.Product" >
+   <form   name="product-form" onNew="action-group-base-product-onnew" title="Product" model="com.axelor.apps.base.db.Product" >
     <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
@@ -36,14 +36,14 @@
 	        	<field name="versionSelect" x-span="12"/>
 	        </panel>
             <panel x-span="8">
-				<field name="name" showTitle="false" colSpan="3" css="highlight" placeholder="Name"	x-span="8"/>
+				<field name="name" showTitle="false"   css="highlight" placeholder="Name"	x-span="8"/>
 				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="highlight" placeholder="Code" x-span="4"/>
-				<panel title="Product typology" x-span="6" colWidths="30%,70%">
+				<panel title="Product typology" x-span="6" >
 					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" x-span="12"/>
 					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" x-span="12"/>
 					<field name="invoiceLineType" x-span="12" if-module="axelor-account"/>
 				</panel>
-				<panel title="Categorization" x-span="6" colWidths="30%,70%">
+				<panel title="Categorization" x-span="6" >
 					<field name="applicationTypeSelect" onChange="action-set-product-type-select" x-span="12"/>
 					<field name="productFamily" x-span="12"/>
 					<field name="productCategory" domain="self.productFamily = :productFamily" x-span="12"/>
@@ -87,7 +87,7 @@
 					<field name="isRawMaterial" showIf="productTypeSelect != 'service'" x-span="4"/>
 				</panel>
 				<panel x-span="12" if-module="axelor-supplychain">
-					<button name="showAllStockMoveLine" title="Show all stock move" colSpan="2" onClick="action-product-view-stock-move-line"/>
+					<button name="showAllStockMoveLine" title="Show all stock move"   onClick="action-product-view-stock-move-line"/>
 					<spacer/>
 <!-- 					<panel-dashlet action="action-product-view-stock" x-span="12"/> -->
 <!-- 					<panel-dashlet action="action-stock-report-for-product" height="200" x-span="12"/> -->
@@ -97,12 +97,12 @@
 			<panel title="Production informations" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-production">
 				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>
 				<field name="lastProductionPrice" readonly="true"/>
-				<panel if-module="axelor-production" x-span="12" colWidths="20%,30%,20%,30%">
+				<panel if-module="axelor-production" x-span="12">
 					<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
 <!-- 					<panel-dashlet action="action-product-view-show-bill-of-material" x-span="12"/> -->
 				</panel>
 			</panel>
-	        <panel title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false"  colWidths="20%,30%,20%,30%">
+	        <panel title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false" >
         		<panel x-span="12">
         			<field name="hasWarranty" />
 	            	<field name="warrantyNbrOfMonths"  showIf="hasWarranty"/>

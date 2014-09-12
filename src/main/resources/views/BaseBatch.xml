@@ -11,7 +11,7 @@
 		<field name="createdBy"/>
     </grid>
  
-    <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch" cols="4"
+    <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch"  
     onLoad="action-base-batch-attrs-action-select" 
     onNew="action-group-base-basebatch-onnew">
     	<panel>

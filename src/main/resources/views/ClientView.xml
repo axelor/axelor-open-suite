@@ -11,9 +11,9 @@
 	<form name="wizard-client-form" title="My space" model="com.axelor.apps.base.db.Wizard">
 		<field name="id" hidden="true"/>
 	    <break/>
-		<button name="mySaleOrder" colSpan="1" title="My sale orders" onClick="wizard-client-form-open-my-sale-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/>
-	    <button name="myInvoices" colSpan="1" title="My invoices" onClick="wizard-client-form-open-my-invoices" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg"/>
-		<button name="myTickets" colSpan="1" title="My tickets" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
+		<button name="mySaleOrder"   title="My sale orders" onClick="wizard-client-form-open-my-sale-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/>
+	    <button name="myInvoices"   title="My invoices" onClick="wizard-client-form-open-my-invoices" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg"/>
+		<button name="myTickets"   title="My tickets" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
 	</form>
 	
 	<action-view name="wizard-client-form-open-my-sale-order" title="My sale orders"

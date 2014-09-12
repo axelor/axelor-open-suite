@@ -9,7 +9,7 @@
         <field name="typeSelect"/>
     </grid>
     
-    <form name="alarm-message-form" title="Alarm Message" model="com.axelor.apps.base.db.AlarmMessage" cols="4">
+    <form name="alarm-message-form" title="Alarm Message" model="com.axelor.apps.base.db.AlarmMessage"  >
     	<panel>
 	        <field name="name"/>
 	        <field name="typeSelect"/>

@@ -8,7 +8,7 @@
         <field name="calendarUser"/>
         <field name="calendarGroup" />
     </grid>
-    <form name="calendar-configuration-form" title="Calendar configuration" model="com.axelor.apps.crm.db.CalendarConfiguration" cols="4">
+    <form name="calendar-configuration-form" title="Calendar configuration" model="com.axelor.apps.crm.db.CalendarConfiguration"  >
         <panel>
 		    <field name="name"/>
 		    <field name="metaAction"/>
