@@ -51,7 +51,7 @@ public class PurchaseOrderController {
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		
-		if(purchaseOrder != null && purchaseOrder.getPurchaseOrderSeq() ==  null && purchaseOrder.getCompany() != null) {
+		if(purchaseOrder != null &&  purchaseOrder.getCompany() != null) {
 			
 			response.setValue("purchaseOrderSeq", purchaseOrderService.getSequence(purchaseOrder.getCompany()));
 		}
@@ -145,5 +145,12 @@ public class PurchaseOrderController {
 		else {
 			response.setFlash(urlNotExist);
 		}
+	}
+	public void setDraftSequence(ActionRequest request,ActionResponse response){
+		PurchaseOrder purchaseOrder=request.getContext().asType(PurchaseOrder.class);
+		if(purchaseOrder.getPurchaseOrderSeq()!=null){
+			return;
+		}
+		response.setValue("purchaseOrderSeq","*"+purchaseOrder.getId().toString());
 	}
 }

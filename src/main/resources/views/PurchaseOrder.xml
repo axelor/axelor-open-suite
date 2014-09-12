@@ -31,7 +31,7 @@
 		  <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
 
-	<form onSave="action-purchase-order-set-sequence" onNew="action-group-purchase-order-on-new-actions"
+	<form onSave="save,action-method-set-purchase-order-draft-sequence,save" onNew="action-group-purchase-order-on-new-actions"
 		name="purchase-order-form" title="Supplier RFQ/PO"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <toolbar>
@@ -115,7 +115,9 @@
 	    </panel>    
 	  </panel-side>        
 	</form>
-    
+	<action-method name="action-method-set-purchase-order-draft-sequence">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="setDraftSequence"/>
+	</action-method>
     <action-group name="action-group-purchase-order-on-new-actions">
     	<action name="action-purchase-order-record-new"/>
     	<action name="action-purchase-order-record-company-configuration"/>
@@ -135,6 +137,8 @@
     	<action name="action-purchase-order-create-stock-move"/>
     	<action name="action-purchase-order-record-validate"/>
     	<action name="action-sale-order-method-validate-supplier"/>
+    	<action name="save"/>
+    	<action name="action-purchase-order-set-sequence"/>
     	<action name="save"/>
     </action-group>
     
