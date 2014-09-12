@@ -7,7 +7,7 @@
         <field name="name"/>
     </grid>
     
-    <form name="meeting-type-form" title="Meeting type" model="com.axelor.apps.crm.db.MeetingType" cols="4">
+    <form name="meeting-type-form" title="Meeting type" model="com.axelor.apps.crm.db.MeetingType"  >
         <panel title="Overview">
         	<field name="name"/>
         	<field name="code"/>

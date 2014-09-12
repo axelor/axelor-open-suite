@@ -10,24 +10,24 @@
        	<field name="team"/>
     </grid>
     
-<!--     <form name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration" cols="4"> -->
-<!-- 	    <group colSpan="4"> -->
+<!--     <form name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration"  > -->
+<!-- 	    <group  > -->
 <!-- 	        <field name="name"/> -->
 <!-- 	        <field name="code"/>     -->
 <!-- 	    </group> -->
-<!-- 	    <group title="Concerns" colSpan="4"> -->
+<!-- 	    <group title="Concerns"  > -->
 <!-- 	        <field name="user" showIf="team == null"/> -->
 <!-- 	        <field name="team" showIf="user == null"/>     -->
 <!-- 	    </group> -->
-<!-- 	    <group title="Period" colSpan="4"> -->
+<!-- 	    <group title="Period"  > -->
 <!-- 	        <field name="periodTypeSelect"/> -->
 <!-- 	        <break/> -->
 <!-- 	        <field name="fromDate"/> -->
 <!-- 	        <field name="toDate"/> -->
 <!-- 	    </group> -->
-<!-- 	    <group title="Targets" colSpan="4" cols="6" > -->
-<!-- 	        <group colSpan="2"> -->
-<!-- 	            <separator title="Opportunities" colSpan="2"/> -->
+<!-- 	    <group title="Targets"     > -->
+<!-- 	        <group  > -->
+<!-- 	            <separator title="Opportunities"  /> -->
 <!-- 	            <break/> -->
 <!-- 	            <field name="opportunityAmountWon"/> -->
 <!-- 	            <break/> -->
@@ -35,24 +35,24 @@
 <!-- 	            <break/> -->
 <!-- 	            <field name="opportunityCreatedWon"/> -->
 <!-- 	        </group> -->
-<!-- 	        <group colSpan="2"> -->
-<!-- 	            <separator title="Calls" colSpan="2"/> -->
+<!-- 	        <group  > -->
+<!-- 	            <separator title="Calls"  /> -->
 <!-- 	            <break/> -->
 <!-- 	            <field name="callEmittedNumber"/> -->
 <!-- 	        </group> -->
-<!-- 	        <group colSpan="2"> -->
-<!-- 	            <separator title="Meetings" colSpan="2"/> -->
+<!-- 	        <group  > -->
+<!-- 	            <separator title="Meetings"  /> -->
 <!-- 	            <break/> -->
 <!-- 	            <field name="meetingNumber"/> -->
 <!-- 	        </group> -->
-	        <!--         <group title="Sales order" colSpan="2"> -->
+	        <!--         <group title="Sales order"  > -->
 <!--         	<field name="saleOrderAmountWon"/> -->
 <!--         	<field name="saleOrderCreatedNumber"/> -->
 <!--         	<field name="saleOrderCreatedWon"/> -->
 <!--         </group> -->
 <!-- 	    </group> -->
 <!-- 	</form> -->
-    <form cols="4" name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration">
+    <form   name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration">
   <panel title="Overview">
     <field name="name"/>
     <field name="code"/>

@@ -30,6 +30,7 @@ import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.report.IReport;
+import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -47,6 +48,8 @@ public class LeadController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(LeadController.class);
 	
+	@Inject
+	private LeadService ls;
 	
 	/**
 	 * Fonction appeler par le bouton imprimer
@@ -143,4 +146,16 @@ public class LeadController {
 		response.setView(mapView);
 	}	
 	
+	
+	public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) throws IOException {
+		
+		Lead lead = request.getContext().asType(Lead.class );
+		Map<String,String> urlMap = ls.getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
+		response.setAttr("google", "title", urlMap.get("google"));
+		response.setAttr("facebook", "title", urlMap.get("facebook"));
+		response.setAttr("twitter", "title", urlMap.get("twitter"));
+		response.setAttr("linkedin", "title", urlMap.get("linkedin"));
+		response.setAttr("youtube", "title", urlMap.get("youtube"));
+		
+	}
 }

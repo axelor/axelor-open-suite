@@ -11,7 +11,7 @@
 		<field name="createdBy"/>
     </grid>
  
- <form cols="4" onLoad="action-crm-batch-attrs-action-select" onNew="action-group-crm-crmbatch-onnew" name="crm-batch-form" title="CRM Batch" model="com.axelor.apps.crm.db.CrmBatch">
+ <form   onLoad="action-crm-batch-attrs-action-select" onNew="action-group-crm-crmbatch-onnew" name="crm-batch-form" title="CRM Batch" model="com.axelor.apps.crm.db.CrmBatch">
   <panel title="Overview">
     <field name="actionSelect" onChange="action-crm-batch-attrs-action-select"/>
     <field name="code"/>
@@ -20,16 +20,16 @@
   <panel-tabs>
     <panel name="eventReminderPage" title="Event reminder page">
       <field name="durationTypeSelect"/>
-      <button name="eventReminderBatch" title="Event reminder batch" colSpan="4" onClick="save,action-crm-batch-method-action-event-reminder"/>
+      <button name="eventReminderBatch" title="Event reminder batch"   onClick="save,action-crm-batch-method-action-event-reminder"/>
     </panel>
     <panel name="targetPage" title="Target page">
       <field name="targetConfigurationSet" x-span="12"/>
-      <button name="targetBatch" title="Target batch" colSpan="4" onClick="save,action-crm-batch-method-action-target"/>
+      <button name="targetBatch" title="Target batch"   onClick="save,action-crm-batch-method-action-target"/>
     </panel>
     <panel title="Information" >
       <field name="createdOn" title="Created on"/>
       <field name="createdBy" title="Created by"/>
-      <field name="description" x-span="12" colSpan="4"/>
+      <field name="description" x-span="12"  />
       <field name="batchList"  x-span="12"/>
     </panel>
   </panel-tabs>

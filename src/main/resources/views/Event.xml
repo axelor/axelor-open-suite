@@ -5,9 +5,9 @@
     
     <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="startDateTime">
     	<toolbar>
-    		<button name="exportCalendar" title="Export calendar" onClick="com.axelor.apps.crm.web.CalendarController:exportCalendar" colSpan="1"/>
-    		<button name="importCalendar" title="Import calendar" onClick="com.axelor.apps.crm.web.CalendarController:importCalendar" colSpan="1"/>
-    		<button name="synchronizeCalendars" title="Synchronize calendar" onClick="com.axelor.apps.crm.web.CalendarController:synchronizeCalendars" colSpan="1"/>
+    		<button name="exportCalendar" title="Export calendar" onClick="com.axelor.apps.crm.web.CalendarController:exportCalendar"  />
+    		<button name="importCalendar" title="Import calendar" onClick="com.axelor.apps.crm.web.CalendarController:importCalendar"  />
+    		<button name="synchronizeCalendars" title="Synchronize calendar" onClick="com.axelor.apps.crm.web.CalendarController:synchronizeCalendars"  />
     	</toolbar>
     	<field name="subject"/>
         <field name="typeSelect"/>
@@ -29,18 +29,18 @@
     	<field name="subject" />
  	</calendar>
     
-    <grid orderBy="startDateTime" edit-icon="true" name="my-event-grid" title="Events" model="com.axelor.apps.crm.db.Event">
+    <grid orderBy="startDateTime"  name="my-event-grid" title="Events" model="com.axelor.apps.crm.db.Event">
 		<field name="subject"/>
 		<field name="typeSelect"/>
 		<field name="startDateTime"/>
 		<field name="duration" widget="duration" x-big="true"/>
 	</grid>
     
-	<form cols="4" colWidths="800,*" onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" name="event-form" title="Events" model="com.axelor.apps.crm.db.Event">
+	<form  onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" name="event-form" title="Events" model="com.axelor.apps.crm.db.Event">
 		<toolbar>
-			<button name="exportCalendar" title="Export calendar" colSpan="1" onClick="com.axelor.apps.crm.web.CalendarController:exportCalendar"/>
-			<button name="importCalendar" title="Import calendar" colSpan="1" onClick="com.axelor.apps.crm.web.CalendarController:importCalendar"/>
-			<button name="synchronizeCalendars" title="Synchronize calendars" colSpan="1" onClick="com.axelor.apps.crm.web.CalendarController:synchronizeCalendars"/>
+			<button name="exportCalendar" title="Export calendar"   onClick="com.axelor.apps.crm.web.CalendarController:exportCalendar"/>
+			<button name="importCalendar" title="Import calendar"   onClick="com.axelor.apps.crm.web.CalendarController:importCalendar"/>
+			<button name="synchronizeCalendars" title="Synchronize calendars"   onClick="com.axelor.apps.crm.web.CalendarController:synchronizeCalendars"/>
 		</toolbar>
 		<panel x-span="12">
 			<field name="calendar" widget="SuggestBox"/>
@@ -158,8 +158,8 @@
 		</panel>
 		
 		<panel-side title="Attributes">
-			<field name="callStatusSelect" readonlyIf="statusSelect == 2" colSpan="2"/>
-			<field name="statusSelect" showTitle="false" colSpan="1"/>
+			<field name="callStatusSelect" readonlyIf="statusSelect == 2"  />
+			<field name="statusSelect" showTitle="false"  />
 		</panel-side>
 		
 		<panel-side title="Linked to" readonlyIf="statusSelect == 2" >
@@ -346,7 +346,7 @@
 	    <button name="stop" icon="fa-power-off" help="Finish" onClick="action-group-crm-ticket-stop-click" readonlyIf="ticketStatusSelect &gt; 4" />
 	</grid>
     
-    <form cols="6" colWidths="*,400" onLoad="action-event-ticket-attrs-default" onSave="action-event-set-sequence" onNew="action-group-crm-ticket-onnew" name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event">
+    <form   onLoad="action-event-ticket-attrs-default" onSave="action-event-set-sequence" onNew="action-group-crm-ticket-onnew" name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event">
 	<toolbar>
 		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome"/>
 		<button name="start" help="Start" readonlyIf="ticketStatusSelect &gt; 1" icon="fa-play" onClick="action-set-ticket-status-select-2,save"/>
@@ -381,21 +381,21 @@
 		<field name="progressSelect" x-span="12" readonlyIf="ticketStatusSelect == 5" widget="SelectProgress"/>
     </panel-side>
 	<panel-side title="Followers/Comments" readonlyIf="ticketStatusSelect == 5">
-		<field name="userSet" colSpan="6" widget="TagSelect" onSelect="action-event-attrs-watchers-domain"/>
-		<!--<field name="messageList" showTitle="false" colSpan="6" x-span="12"/>-->
+		<field name="userSet"   widget="TagSelect" onSelect="action-event-attrs-watchers-domain"/>
+		<!--<field name="messageList" showTitle="false"   x-span="12"/>-->
 		<!--TODO:messageList field have been commented in domain. please check and correct this here-->
 		<!--<grid edit-icon="true" title="Comments">
 			<field name="sentDate"/>
 			<field name="sender"/>
-			<field name="content" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
+			<field name="content" showTitle="false"   widget="Html" x-lite="true"/>
         </grid>
         <form title="Comment">
-			<group title="Informations" readonly="true" colSpan="4">
+			<group title="Informations" readonly="true"  >
 				<field name="sentDate"/>
 				<field name="sender"/>
 			</group>
-			<group title="Content" colSpan="4">
-			<field name="content" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
+			<group title="Content"  >
+			<field name="content" showTitle="false"   widget="Html" x-lite="true"/>
 			</group>
         </form>-->
     </panel-side>

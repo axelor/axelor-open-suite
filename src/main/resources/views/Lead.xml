@@ -31,7 +31,7 @@
     </grid>
     
    <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" 
-		onLoad="action-lead-attrs-readonly-other-address" 
+		onLoad="action-lead-attrs-readonly-other-address,action-lead-method-set-social-network-url" 
 		onNew="action-group-crm-lead-onnew" >
 		
 		<toolbar>
@@ -51,17 +51,24 @@
 			<panel x-span="2">
 				<field name="picture" showTitle="false" widget="Image" x-span="12" x-width="80" x-height="80"/>
 			</panel>
-			<panel x-span="9" readonlyIf="statusSelect == 4 || statusSelect == 6">
-				<field name="name" showTitle="false" css="highlight" placeholder="Name" x-span="4"/>
-				<field name="firstName" showTitle="false" css="highlight" placeholder="First name" x-span="4"/>            
-				<field name="titleSelect" showTitle="false" placeholder="Civility" x-span="2"/>
-			<panel x-span="12">
-				<field name="enterpriseName" x-span="4" showIf="partner == null" placeholder="Enterprise name"/>
-				<field name="partner" x-span="4" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-				<field name="jobTitle" x-span="4" placeholder="Function"/>
-			</panel>  
-			<panel x-span="4" showIf="fullName != null">
-				<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" x-span="2"/>
+			
+			<panel x-span="9" >
+				<field name="fullName" showTitle="false" x-span="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
+					<editor>
+						<field name="name" showTitle="false" css="highlight" placeholder="Name" x-span="4" onChange="action-lead-method-set-social-network-url"/>
+						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" x-span="4" onChange="action-lead-method-set-social-network-url"/>            
+						<field name="titleSelect" showTitle="false" placeholder="Civility" x-span="2"/>
+					</editor>
+				</field>
+				<field name="companyName" showTitle="false" x-span="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
+					<editor>
+						<field name="enterpriseName" x-span="4" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
+						<field name="partner" x-span="4" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+						<field name="jobTitle" x-span="4" placeholder="Function"/>
+					</editor>
+				</field>
+				<panel x-span="4" showIf="fullName != null">
+					<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" x-span="2"/>
 					<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" x-span="2"/>
 					<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" x-span="2"/>
 					<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" x-span="2"/>
@@ -123,10 +130,10 @@
      
 		<!--TODO:Remove this comment when portlet starts working-->
 		<!--<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6">
-		  <portlet colSpan="4" action="action-lead-view-upcoming-events"/>
-		  <portlet colSpan="4" action="action-lead-view-historical-events-completed"/>
-		  <portlet colSpan="4" action="action-lead-view-opportunity"/>
-		  <portlet colSpan="4" action="action-lead-view-event-ticket"/>
+		  <portlet   action="action-lead-view-upcoming-events"/>
+		  <portlet   action="action-lead-view-historical-events-completed"/>
+		  <portlet   action="action-lead-view-opportunity"/>
+		  <portlet   action="action-lead-view-event-ticket"/>
 		</panel>-->
 
 	</form>
@@ -143,7 +150,7 @@
 		<button name="add" title="Add" icon="fa-plus" onClick="action-lead-event-add-attendee"/>
     </grid>
 	
-	<grid orderBy="-contactDate,statusSelect" edit-icon="true" name="my-lead-grid" title="My Leads" model="com.axelor.apps.crm.db.Lead">
+	<grid orderBy="-contactDate,statusSelect"  name="my-lead-grid" title="My Leads" model="com.axelor.apps.crm.db.Lead">
 		<hilite color="warning" if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
 	    <hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="(statusSelect == 2 || statusSelect == 3) &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
@@ -274,6 +281,10 @@
 	  <call method="showLeadsOnMap" class="com.axelor.apps.crm.web.LeadController"/>
 	</action-method>	
 	
+	<action-method name="action-lead-method-set-social-network-url">
+    	<call class="com.axelor.apps.crm.web.LeadController" method="setSocialNetworkUrl" />
+    </action-method>
+	
    	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">
 		<filter title="My Leads">
 			<domain>self.user = :__user__</domain>
@@ -285,5 +296,7 @@
 			<domain>self.team = :_myActiveTeam</domain>
 		</filter>
 	</search-filters>
+	
+	
 	
 </object-views>

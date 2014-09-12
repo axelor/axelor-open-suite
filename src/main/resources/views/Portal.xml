@@ -145,7 +145,7 @@
 	</action-view>
 
 
-	<portal title="Dashboard" name="crm.opportunities.dashboard.1.portal" cols="2">
+	<portal title="Dashboard" name="crm.opportunities.dashboard.1.portal"  >
 		<portlet action="portal.salesman.dashboard.opportunities" height="350" canSearch="true"/>
 		<portlet action="portal.closed.opportunities" height="350" canSearch="true"/>
 		<portlet action="portal.open.opportunities" height="350" canSearch="true"/>
@@ -158,7 +158,7 @@
 		<portlet action="portal.opportunities.by.saletage" height="350" canSearch="true"/>
 	</portal>
 	
-	<portal title="Dashboard" name="crm.opportunities.dashboard.2.portal" cols="2">
+	<portal title="Dashboard" name="crm.opportunities.dashboard.2.portal"  >
 		<portlet action="portal.opportunities.by.type" height="350" />
 		<portlet action="portal.opportunities.byStage.byType" height="350" />
 		<portlet action="portal.opportunities.won.by.partner" height="350" canSearch="true"/>
@@ -171,7 +171,7 @@
 		<portlet action="portal.opportunities.lost.deals" height="350" canSearch="true"/>
 	</portal>
 	
-	<portal title="Dashboard" name="crm.opportunities.dashboard.3.portal" cols="2">
+	<portal title="Dashboard" name="crm.opportunities.dashboard.3.portal"  >
 		<portlet action="portal.opportunities.pipeline.next.90d" height="350" />
 		<portlet action="portal.opportunities.my.top.deals" height="350" canSearch="true"/>
 		<portlet action="portal.opportunities.my.team.top.deals" height="350" canSearch="true"/>
@@ -225,7 +225,7 @@
 
 	<!-- Lead Dashboard 1 -->
 
-	<portal title="Lead Dashboard 1" name="crm.lead.dashboard.portal.one" cols="2">
+	<portal title="Lead Dashboard 1" name="crm.lead.dashboard.portal.one"  >
 		<portlet action="portal.salesman.dashboard.leads" height="350" canSearch="true"/>
 		<portlet action="portal.leads.by.source" height="350" />
 		<portlet action="portal.leads.by.country" height="350" />
@@ -291,7 +291,7 @@
 
 	<!-- Event Call Dashboard -->
 	
-	<portal title="Calls Dashboard" name="crm.calls.dashboard.portal" cols="2">
+	<portal title="Calls Dashboard" name="crm.calls.dashboard.portal"  >
 		<portlet action="portal.calls.types.by.user" height="350" />
 		<portlet action="portal.calls.types.by.team" height="350" />
 		<portlet action="portal.calls.by.team.by.user" height="350" />
@@ -299,7 +299,7 @@
 	
 	<!-- Event Tickets Dashboard -->
 	
-	<portal title="Tickets Dashboard" name="crm.tickets.dashboard.1.portal" cols="2">
+	<portal title="Tickets Dashboard" name="crm.tickets.dashboard.1.portal"  >
 		<portlet action="portal.open.tickets.by.priority" height="350" />
 		<portlet action="portal.open.ticket.priority.distribution" height="350" />
 		<portlet action="portal.open.tickets.by.status" height="350" />
@@ -312,7 +312,7 @@
 		<portlet action="portal.my.new.tickets" height="350" />
 	</portal>
 	
-	<portal title="Tickets Dashboard" name="crm.tickets.dashboard.2.portal" cols="2">
+	<portal title="Tickets Dashboard" name="crm.tickets.dashboard.2.portal"  >
 		<portlet action="portal.new.tickets" height="350" />
 		<portlet action="portal.new.urgent.tickets" height="350" />
 		<portlet action="portal.my.new.urgent.tickets" height="350" />
@@ -327,7 +327,7 @@
 	<!-- Event Dashboard 1 -->
 
 
-	<portal title="Event Dashboard 1" name="crm.event.dashboard.portal.one" cols="2">
+	<portal title="Event Dashboard 1" name="crm.event.dashboard.portal.one"  >
 		<portlet action="portal.salesman.dashboard.activities" height="350" canSearch="true" />
 		<portlet action="portal.my.today.support.activities" height="350" canSearch="true" />
 	</portal>
@@ -470,7 +470,7 @@
 
 	<!-- Target User Graph Dashboard -->
 
-	<portal title="Target User Dashboard" name="crm.target.user.dashboard.portal" cols="2">
+	<portal title="Target User Dashboard" name="crm.target.user.dashboard.portal"  >
 		<portlet action="portal.user.call.target.gauge" height="350" />
 		<portlet action="portal.user.call.target.bar" height="350"/>
 		<portlet action="portal.user.meeting.target.gauge" height="350"/>
@@ -531,7 +531,7 @@
 	
 	<!-- Target Team Graph Dashboard -->
 	
-	<portal title="Target team Dashboard" name="crm.target.team.dashboard.portal" cols="2">
+	<portal title="Target team Dashboard" name="crm.target.team.dashboard.portal"  >
 		<portlet action="portal.team.call.target.gauge" height="350" />
 		<portlet action="portal.team.call.target.bar" height="350"/>
 		<portlet action="portal.team.meeting.target.gauge" height="350"/>

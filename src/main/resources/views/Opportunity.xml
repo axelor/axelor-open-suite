@@ -28,7 +28,7 @@
         <button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 8" />
     </grid>
 
-   <grid orderBy="salesStageSelect,expectedCloseDate" edit-icon="true" name="my-opportunity-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+   <grid orderBy="salesStageSelect,expectedCloseDate" name="my-opportunity-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<hilite color="danger" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
   		<hilite color="warning" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
   		<hilite color="primary" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
@@ -70,7 +70,7 @@
         <field name="amount" aggregate="sum"/>
     </grid>
 	 
-    <form cols="6" onNew="action-opportunity-group-new" name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
+    <form   onNew="action-opportunity-group-new" name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
   <toolbar>
     <button name="previous-stage" help="Previous Stage" readonlyIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
     <button name="next-stage" help="Next Stage" readonlyIf="salesStageSelect &gt; 7" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
@@ -96,7 +96,7 @@
       <field name="worstCase"/>
     </panel>
    <panel title="Description">
-    <field name="description" x-span="12" showTitle="false" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" colSpan="6"/>
+    <field name="description" x-span="12" showTitle="false" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"  />
   </panel>
   <panel-tabs readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
     <panel title="Linked to">
@@ -107,7 +107,7 @@
     <panel title="Assigned to">
       <field name="user"/>
       <label title=""/>
-      <button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId" colSpan="1" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
+      <button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
       <field name="team"/>
       <field name="company" widget="SuggestBox"/>
     </panel>
