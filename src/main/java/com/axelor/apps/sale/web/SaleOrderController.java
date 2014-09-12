@@ -238,7 +238,7 @@ public class SaleOrderController {
 		
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		if(saleOrder != null && saleOrder.getSaleOrderSeq() ==  null && saleOrder.getCompany() != null) {
+		if(saleOrder != null &&  saleOrder.getCompany() != null) {
 			
 			response.setValue("saleOrderSeq", saleOrderProvider.get().getSequence(saleOrder.getCompany()));
 			
@@ -254,5 +254,11 @@ public class SaleOrderController {
 		response.setValue("clientPartner", saleOrderProvider.get().validateCustomer(saleOrder));
 		
 	}
-	
+	public void setDraftSequence(ActionRequest request,ActionResponse response){
+		SaleOrder saleOrder=request.getContext().asType(SaleOrder.class);
+		if(saleOrder.getSaleOrderSeq()!=null){
+			return;
+		}
+		response.setValue("saleOrderSeq","*"+saleOrder.getId().toString());
+	}
 }

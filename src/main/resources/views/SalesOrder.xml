@@ -28,7 +28,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
 		onNew="action-group-sale-saleorder-onnew"
 		onLoad="action-group-sale-saleorder-onload"
-		onSave="action-sale-order-set-sequence">
+		onSave="save,action-method-set-sale-order-draft-sequence,save">
 	  <toolbar>
 <!-- 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SaleOrderController:saveDocumentForOrder"/> -->	  
 	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
@@ -165,7 +165,7 @@
 
 	<form name="sale-order-form-client" title="Sale order"
 		model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form-client"
-		onLoad="action-group-sale-saleorder-onload" onSave="action-sale-order-set-sequence"
+		onLoad="action-group-sale-saleorder-onload" onSave="save,action-method-set-sale-order-draft-sequence,save"
 		onNew="action-group-sale-saleorder-onnew">
 	  <toolbar>
 	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
@@ -212,7 +212,9 @@
 	    <panel-related field="invoiceSet" showTitle="false" title="Invoicing" form-view="invoice-client-form" grid-view="invoice-client-grid" showIf="statusSelect == 3" if-module="axelor-supplychain"/>      
 	  </panel-tabs>
 	</form>
-	
+	<action-method name="action-method-set-sale-order-draft-sequence">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="setDraftSequence"></call>
+	</action-method>
 	<action-record name="action-sale-order-record-first-execution-date" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="schedulerInstance" expr="action: action-scheduler-instance-record-first-execution-date" if="schedulerInstance != null"/>
 	</action-record>
@@ -258,6 +260,7 @@
     	<action name="action-sale-order-method-validate-customer"/>
     	<action name="action-sale-order-record-validate"/>
     	<action name="action-sale-order-attrs-validated-read-only"/>
+    	<action name="action-sale-order-set-sequence"/>
     </action-group>
     
     <action-group name="action-group-sale-saleorder-onnew">
