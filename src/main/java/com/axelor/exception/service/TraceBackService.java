@@ -28,7 +28,9 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.TraceBack;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
 /**
  * Classe implémentant l'ensemble des services pouvant être utiles dans la gestion des exceptions Axelor.
@@ -37,6 +39,8 @@ public class TraceBackService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TraceBackService.class);
 	
+	@Inject
+	private static TraceBackRepository traceBackRepo;
 	/**
 	 * Créer un log des exceptions en tant qu'anomalie.
 	 * 
@@ -68,8 +72,9 @@ public class TraceBackService {
 		if (e.getMessage() != null) { traceBack.setMessage(e.getMessage()); }
 		
 		traceBack.setTrace(sw.toString());
-
-		return traceBack.persist();
+		traceBackRepo.persist(traceBack);
+		
+		return traceBack;
 
 	}
 
