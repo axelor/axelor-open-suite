@@ -28,16 +28,20 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantValue;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.google.inject.Inject;
 
-public class ProductVariantService {
+public class ProductVariantService extends ProductVariantRepository{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ProductVariantService.class); 
 
 	@Inject
 	private SequenceService sequenceService;
 	
+	@Inject
+	private ProductRepository productRepo;
 	
 	public ProductVariant createProductVariant(ProductVariantAttr productVariantAttr1, ProductVariantAttr productVariantAttr2, 
 			ProductVariantAttr productVariantAttr3, ProductVariantAttr productVariantAttr4, ProductVariantValue productVariantValue1, 
@@ -116,7 +120,7 @@ public class ProductVariantService {
 			ProductVariantAttr productVariantAttr3, ProductVariantAttr productVariantAttr4,	ProductVariantValue productVariantValue1, 
 			ProductVariantValue productVariantValue2, ProductVariantValue productVariantValue3, ProductVariantValue productVariantValue4, boolean usedForStock)  {
 		
-		return  ProductVariant.filter("self.productVariantAttr1 = ?1 AND self.productVariantAttr2 = ?2 AND self.productVariantAttr3 = ?3 AND " +
+		return  all().filter("self.productVariantAttr1 = ?1 AND self.productVariantAttr2 = ?2 AND self.productVariantAttr3 = ?3 AND " +
 				"self.productVariantAttr4 = ?4 AND self.productVariantValue1 = ?5 AND self.productVariantValue2 = ?6 AND self.productVariantValue3 = ?7 AND " +
 				"self.productVariantValue4 = ?8 AND self.usedForStock = 'true'", productVariantAttr1, productVariantAttr2, productVariantAttr3, 
 				productVariantAttr4, productVariantValue1, productVariantValue2, productVariantValue3, productVariantValue4, usedForStock).fetchOne();
@@ -199,7 +203,7 @@ public class ProductVariantService {
 			LOG.debug("Recherche d'un variant de produit ayant au moins comme attributs {} : {}", 
 					productVariantValue1.getProductVariantAttr().getCode(), productVariantValue1.getCode());
 			
-			List<? extends Product> productList = Product.filter("self.parentProduct = ?1 " +
+			List<? extends Product> productList = productRepo.all().filter("self.parentProduct = ?1 " +
 					"AND ((self.productVariant.productVariantAttr1.code = ?2 AND self.productVariant.productVariantValue1.code = ?3) " +
 					"OR (self.productVariant.productVariantAttr2.code = ?2 AND self.productVariant.productVariantValue2.code = ?3) " + 
 					"OR (self.productVariant.productVariantAttr3.code = ?2 AND self.productVariant.productVariantValue3.code = ?3) " + 

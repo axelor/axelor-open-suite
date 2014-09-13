@@ -28,6 +28,8 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Scheduler;
 import com.axelor.apps.base.db.SchedulerInstance;
 import com.axelor.apps.base.db.SchedulerInstanceHistory;
+import com.axelor.apps.base.db.repo.SchedulerInstanceRepository;
+import com.axelor.apps.base.db.repo.SchedulerRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -43,11 +45,14 @@ import com.google.inject.persist.Transactional;
  * @version 1.0
  * 
  */
-public class SchedulerService {
+public class SchedulerService extends SchedulerRepository{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SchedulerService.class);
 	
 	private LocalDate today;
+	
+	@Inject
+	private SchedulerInstanceRepository schedulerInstanceRepo;
 	
 	@Inject
 	public SchedulerService(){
@@ -339,7 +344,7 @@ public class SchedulerService {
 		
 		schedulerI.getSchedulerInstanceHistoryList().add(history);
 		
-		schedulerI.save();
+		schedulerInstanceRepo.save(schedulerI);
 	}
 	
 	/**

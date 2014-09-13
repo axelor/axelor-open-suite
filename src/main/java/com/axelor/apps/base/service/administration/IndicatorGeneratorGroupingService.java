@@ -23,16 +23,18 @@ import java.util.List;
 
 import com.axelor.apps.base.db.IndicatorGenerator;
 import com.axelor.apps.base.db.IndicatorGeneratorGrouping;
+import com.axelor.apps.base.db.repo.IndicatorGeneratorGroupingRepository;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class IndicatorGeneratorGroupingService {
+public class IndicatorGeneratorGroupingService extends IndicatorGeneratorGroupingRepository{
 
 	@Inject
 	private IndicatorGeneratorService indicatorGeneratorService;
 
+	
 	@Transactional
 	public void run(IndicatorGeneratorGrouping indicatorGeneratorGrouping) throws AxelorException  {
 		
@@ -55,7 +57,7 @@ public class IndicatorGeneratorGroupingService {
 		
 		indicatorGeneratorGrouping.setLog(log);
 		
-		indicatorGeneratorGrouping.save();
+		save(indicatorGeneratorGrouping);
 	}
 	
 	
@@ -103,7 +105,7 @@ public class IndicatorGeneratorGroupingService {
 			indicatorGeneratorGrouping.setLog(log2);
 		}
 		
-		indicatorGeneratorGrouping.save();
+		save(indicatorGeneratorGrouping);
 	}
 	
 	

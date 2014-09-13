@@ -38,7 +38,7 @@ public class AlarmEngineController {
 				aes.results(alarmEngine.getQuery(), Class.forName(alarmEngine.getMetaModel().getFullName())); 
 			}
 		} catch (Exception e){
-			response.setValue("query", alarmEngine.getId() != null ? AlarmEngine.find(alarmEngine.getId()).getQuery() : null);
+			response.setValue("query", alarmEngine.getId() != null ? aes.find(alarmEngine.getId()).getQuery() : null);
 			TraceBackService.trace(response, e);
 		}
 	}

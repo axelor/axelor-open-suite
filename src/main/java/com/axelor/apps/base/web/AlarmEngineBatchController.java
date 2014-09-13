@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.axelor.apps.base.db.AlarmEngineBatch;
+import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
 import com.axelor.apps.base.service.alarm.AlarmEngineBatchService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -33,10 +34,13 @@ public class AlarmEngineBatchController {
 	@Inject
 	private AlarmEngineBatchService alarmEngineBatchService;
 	
+	@Inject
+	private AlarmEngineBatchRepository alarmEngineBatchRepo;
+	
 	public void launch(ActionRequest request, ActionResponse response) {
 		
 		AlarmEngineBatch alarmEngineBatch = request.getContext().asType(AlarmEngineBatch.class);
-		alarmEngineBatch = AlarmEngineBatch.find(alarmEngineBatch.getId());
+		alarmEngineBatch = alarmEngineBatchRepo.find(alarmEngineBatch.getId());
 		
 		response.setFlash(alarmEngineBatchService.run(alarmEngineBatch).getComment());
 		response.setReload(true);	
@@ -45,7 +49,7 @@ public class AlarmEngineBatchController {
 	// WS
 	public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 		
-		AlarmEngineBatch alarmEngineBatch = AlarmEngineBatch.findByCode("code");
+		AlarmEngineBatch alarmEngineBatch = alarmEngineBatchRepo.findByCode("code");
 		
 		if (alarmEngineBatch == null) {
 			TraceBackService.trace(new AxelorException("Batch d'alarme "+request.getContext().get("code"), 3));

@@ -26,6 +26,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.AddressRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.MapService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -41,6 +43,11 @@ public class MapRest {
 	@Inject
 	private Provider<MapService> mapProvider;
 	
+	@Inject
+	private PartnerRepository partnerRepo;
+	
+	@Inject
+	private AddressRepository addressRepo;
 	
 	@Transactional
 	@Path("/partner")
@@ -48,7 +55,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getPartners() {
 		
-		List<? extends Partner> customers = Partner.all().filter("self.customerTypeSelect IN (?, ?) OR self.supplierTypeSelect IN (?, ?) AND self.isContact=?", 2,3,2,3, false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.customerTypeSelect IN (?, ?) OR self.supplierTypeSelect IN (?, ?) AND self.isContact=?", 2,3,2,3, false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -66,7 +73,7 @@ public class MapRest {
 			if (partner.getMainInvoicingAddress() != null) {
 				Address address = partner.getMainInvoicingAddress();
 				String addressString = mapProvider.get().makeAddressString(address, objectNode);
-				address.save();
+				addressRepo.save(address);
 				objectNode.put("address", addressString);				
 			}
 			
@@ -89,7 +96,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getCustomers() {
 		
-		List<? extends Partner> customers = Partner.all().filter("self.customerTypeSelect=? AND self.isContact=?", 3, false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.customerTypeSelect=? AND self.isContact=?", 3, false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -107,7 +114,7 @@ public class MapRest {
 			if (customer.getMainInvoicingAddress() != null) {
 				Address address = customer.getMainInvoicingAddress();
 				String addressString = mapProvider.get().makeAddressString(address, objectNode);
-				address.save();
+				addressRepo.save(address);
 				objectNode.put("address", addressString);							
 			}
 			
@@ -126,7 +133,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getProspects() {
 		
-		List<? extends Partner> customers = Partner.all().filter("self.customerTypeSelect=? AND self.isContact=?", 2, false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.customerTypeSelect=? AND self.isContact=?", 2, false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -144,7 +151,7 @@ public class MapRest {
 			if (prospect.getMainInvoicingAddress() != null) {
 				Address address = prospect.getMainInvoicingAddress();
 				String addressString = mapProvider.get().makeAddressString(address, objectNode);
-				address.save();
+				addressRepo.save(address);
 				objectNode.put("address", addressString);							
 			}
 			
@@ -163,7 +170,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getSuppliers() {
 		
-		List<? extends Partner> customers = Partner.all().filter("self.supplierTypeSelect=? AND self.isContact=?", 2, 3 , false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.supplierTypeSelect=? AND self.isContact=?", 2, 3 , false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -181,7 +188,7 @@ public class MapRest {
 			if (supplier.getMainInvoicingAddress() != null) {
 				Address address = supplier.getMainInvoicingAddress();
 				String addressString = mapProvider.get().makeAddressString(address, objectNode);
-				address.save();
+				addressRepo.save(address);
 				objectNode.put("address", addressString);								
 			}
 			

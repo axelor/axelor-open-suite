@@ -22,13 +22,13 @@ import java.math.BigInteger;
 import javax.persistence.Query;
 
 import com.axelor.apps.base.db.IndicatorGenerator;
+import com.axelor.apps.base.db.repo.IndicatorGeneratorRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public class IndicatorGeneratorService {
-
-
+public class IndicatorGeneratorService extends IndicatorGeneratorRepository{
+	
 	@Transactional
 	public String run(IndicatorGenerator indicatorGenerator) throws AxelorException  {
 		
@@ -69,7 +69,7 @@ public class IndicatorGeneratorService {
 		
 		indicatorGenerator.setResult(result);
 		
-		indicatorGenerator.save();
+		save(indicatorGenerator);
 		
 		return result;
 	}

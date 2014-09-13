@@ -28,21 +28,26 @@ import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.google.inject.Inject;
 
-public class PriceListService {
+public class PriceListService extends PriceListRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PriceListService.class); 
 
+	@Inject
+	private PriceListLineRepository priceListLineRepo;
 	
 	public PriceListLine getPriceListLine(Product product, BigDecimal qty, PriceList priceList)  {
 		
 		PriceListLine priceListLine = null;
 		
 		if(product != null && priceList != null)  {
-			priceListLine = PriceListLine.filter("self.product = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product, qty).fetchOne();
+			priceListLine = priceListLineRepo.all().filter("self.product = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product, qty).fetchOne();
 			
 			if(priceListLine == null && product.getProductCategory() != null)  {
-				priceListLine = PriceListLine.filter("self.productCategory = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product.getProductCategory(), qty).fetchOne();
+				priceListLine = priceListLineRepo.all().filter("self.productCategory = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product.getProductCategory(), qty).fetchOne();
 			}
 		}
 		

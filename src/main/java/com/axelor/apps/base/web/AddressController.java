@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Import;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PickListEntry;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -42,6 +43,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.data.Importer;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.xml.XMLImporter;
+import com.axelor.db.JpaRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -241,7 +243,7 @@ public class AddressController {
 	public void viewMap(ActionRequest request, ActionResponse response)  {
 		Address address = request.getContext().asType(Address.class);
 		if(address.getId() != null)
-			address = Address.find(address.getId());
+			address = ((JpaRepository<Address>) addressProvider).find(address.getId());
 		String qString = address.getAddressL4()+" ,"+address.getAddressL6();
 		BigDecimal latitude = address.getLatit();
 		BigDecimal longitude = address.getLongit();
@@ -269,7 +271,7 @@ public class AddressController {
 		if (departureAddress != null) {
 			Address arrivalAddress = request.getContext().asType(Address.class);
 			if(arrivalAddress.getId() != null)
-				arrivalAddress = Address.find(arrivalAddress.getId());
+				arrivalAddress = ((JpaRepository<Address>) addressProvider).find(arrivalAddress.getId());
 			String aString = arrivalAddress.getAddressL4()+" ,"+arrivalAddress.getAddressL6();
 			String dString = departureAddress.getAddressL4()+" ,"+departureAddress.getAddressL6();
 			if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {

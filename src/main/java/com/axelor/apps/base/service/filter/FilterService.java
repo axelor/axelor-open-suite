@@ -22,15 +22,21 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.Filter;
 import com.axelor.apps.base.db.FilterList;
+import com.axelor.apps.base.db.repo.FilterListRepository;
+import com.axelor.apps.base.db.repo.FilterRepository;
 import com.axelor.db.JPA;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class FilterService {
+public class FilterService extends FilterRepository{
+	
+	@Inject
+	private FilterListRepository filterListRepo;
 	
 	@Transactional
 	public void createFilter(String code) {
 		Filter filter = new Filter(code);
-		filter.save();
+		save(filter);
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -42,11 +48,11 @@ public class FilterService {
 			
 			@Override
 			public void run() {
-				filter.save();
+				save(filter);
 			}
 		});
 		
-		final List<Map> list = FilterList.all().filter("self.filterCode = ?1", otherFilter.getCode()).select("recordId","redordModel").fetch(0, 0);
+		final List<Map> list = filterListRepo.all().filter("self.filterCode = ?1", otherFilter.getCode()).select("recordId","redordModel").fetch(0, 0);
 		
 		JPA.runInTransaction(new Runnable() {
 			@Override
@@ -57,7 +63,7 @@ public class FilterService {
 					list.setRecordModel(map.get("redordModel").toString());
 					list.setFilterCode(filter.getCode());
 					list.setFilterId(filter.getId());
-					list.save();
+					filterListRepo.save(list);
 				}
 			}
 		});

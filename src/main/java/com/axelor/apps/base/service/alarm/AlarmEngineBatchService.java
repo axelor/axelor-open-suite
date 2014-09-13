@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.AlarmEngine;
+import com.axelor.apps.base.db.repo.AlarmRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -40,6 +41,9 @@ public class AlarmEngineBatchService extends AbstractBatch {
 			.getLogger(AlarmEngineBatchService.class);
 	
 	protected AlarmEngineService<Model> alarmEngineService;
+	
+	@Inject
+	private AlarmRepository alarmRepo;
 	
 	@Inject
 	public AlarmEngineBatchService (AlarmEngineService<Model> alarmEngineService) {
@@ -98,7 +102,7 @@ public class AlarmEngineBatchService extends AbstractBatch {
 		for (T t : alarms.keySet()) {
 			
 			alarm = alarms.get(t); associateAlarm(alarm, t);
-			alarm.save(); incrementDone();
+			alarmRepo.save(alarm); incrementDone();
 		}
 		
 	}

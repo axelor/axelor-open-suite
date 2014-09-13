@@ -23,11 +23,12 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public class TaxService {
+public class TaxService extends TaxRepository {
 
 	
 	/**

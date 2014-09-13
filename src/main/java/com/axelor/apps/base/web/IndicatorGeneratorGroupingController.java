@@ -34,7 +34,7 @@ public class IndicatorGeneratorGroupingController {
 		IndicatorGeneratorGrouping indicatorGeneratorGrouping = request.getContext().asType(IndicatorGeneratorGrouping.class);
 		
 		try {	
-			indicatorGeneratorGroupingService.run(IndicatorGeneratorGrouping.find(indicatorGeneratorGrouping.getId()));
+			indicatorGeneratorGroupingService.run(indicatorGeneratorGroupingService.find(indicatorGeneratorGrouping.getId()));
 			response.setReload(true);
 			response.setFlash("Requête exécutée");		
 		}
@@ -46,7 +46,7 @@ public class IndicatorGeneratorGroupingController {
 		IndicatorGeneratorGrouping indicatorGeneratorGrouping = request.getContext().asType(IndicatorGeneratorGrouping.class);
 		
 		try {
-			indicatorGeneratorGroupingService.export(IndicatorGeneratorGrouping.find(indicatorGeneratorGrouping.getId()));
+			indicatorGeneratorGroupingService.export(indicatorGeneratorGroupingService.find(indicatorGeneratorGrouping.getId()));
 			response.setReload(true);
 			response.setFlash("Resultat exporté");
 		}

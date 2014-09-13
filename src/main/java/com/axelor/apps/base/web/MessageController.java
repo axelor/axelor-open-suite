@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -42,6 +43,8 @@ public class MessageController {
 	@Inject
 	private Provider<MessageServiceBaseImpl> messageServiceBaseImpl;
 	
+	@Inject
+	private MessageRepository messageRepo;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MessageController.class);
 	
@@ -83,7 +86,7 @@ public class MessageController {
 			
 		if(!messageIds.equals("")){
 			messageIds = messageIds.substring(0, messageIds.length()-1);	
-			message = Message.find(new Long(lstSelectedMessages.get(0)));
+			message = messageRepo.find(new Long(lstSelectedMessages.get(0)));
 		}else if(message.getId() != null){
 			messageIds = message.getId().toString();			
 		}

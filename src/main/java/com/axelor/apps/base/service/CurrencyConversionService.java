@@ -20,7 +20,6 @@ package com.axelor.apps.base.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -29,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
+import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
@@ -39,22 +40,19 @@ import wslite.http.HTTPMethod;
 import wslite.http.HTTPRequest;
 import wslite.http.HTTPResponse;
 
-public class CurrencyConversionService {
+public class CurrencyConversionService extends CurrencyConversionLineRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CurrencyConversionService.class);
 	
 	@Inject
-	private TraceBackService tb;
-	
-	@Inject
-	private GeneralService gs;
+	private CurrencyRepository currencyRepo;
 	 
 
 	public BigDecimal convert(Currency currencyFrom, Currency currencyTo){
 		BigDecimal rate = new BigDecimal(-1); 
 		
 		LOG.debug("Currerncy conversion From: {} To: {}",new Object[] { currencyFrom,currencyTo});
-		String wsUrl = gs.getGeneral().getCurrencyWsURL();
+		String wsUrl = GeneralService.getGeneral().getCurrencyWsURL();
 		if(wsUrl == null){
 			LOG.info("Currency WS URL not configured");
 			return rate;
@@ -75,7 +73,7 @@ public class CurrencyConversionService {
 		        Float rt = Float.parseFloat(response.getContentAsString());
 		        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
 			} catch (Exception e) {
-				tb.trace(e);
+				TraceBackService.trace(e);
 				e.printStackTrace();
 			}
 		}
@@ -112,13 +110,13 @@ public class CurrencyConversionService {
 		ccl.setExchangeRate(rate);
 		ccl.setGeneral(general);
 		ccl.setVariations(variations);
-		ccl.save();
+		save(ccl);
 		
 	}
 	
 	@Transactional 
 	public void saveCurrencyConversionLine(CurrencyConversionLine ccl){
-		ccl.save();
+		save(ccl);
 	}
 	
 	
@@ -129,9 +127,9 @@ public class CurrencyConversionService {
 		BigDecimal rate = null;
 		
 		if(currencyFrom != null && currencyTo != null && rateDate != null){
-			currencyFrom = Currency.find(currencyFrom.getId());
-			currencyTo = Currency.find(currencyTo.getId());
-			CurrencyConversionLine ccl = CurrencyConversionLine.filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
+			currencyFrom = currencyRepo.find(currencyFrom.getId());
+			currencyTo = currencyRepo.find(currencyTo.getId());
+			CurrencyConversionLine ccl = all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
 			if(ccl != null)
 				rate =  ccl.getExchangeRate();
 		}

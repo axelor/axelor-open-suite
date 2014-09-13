@@ -50,7 +50,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.file.CsvTool;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAction;

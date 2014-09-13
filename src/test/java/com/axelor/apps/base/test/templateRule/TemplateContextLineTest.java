@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import com.axelor.apps.base.service.template.TemplateContextLineService;
 import com.axelor.apps.base.test.TestModule;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.Model;
 import com.axelor.test.GuiceModules;
 import com.axelor.test.GuiceRunner;
@@ -42,6 +43,9 @@ public class TemplateContextLineTest {
 	
 	@Inject
 	private TemplateContextLineService tcls;
+	
+	@Inject
+	private UserRepository userRepo;
 
 	@Test
 	public void test() {
@@ -74,7 +78,7 @@ public class TemplateContextLineTest {
 	@Test
 	public void test1() {
 		String query = "select self from User self WHERE self.createdBy = ?";
-		Model bean = User.find(Long.valueOf("1"));
+		Model bean = userRepo.find(Long.valueOf("1"));
 		
 		Object o = tcls.evaluate(query, bean);
 		

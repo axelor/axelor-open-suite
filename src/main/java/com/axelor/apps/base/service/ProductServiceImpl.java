@@ -29,12 +29,13 @@ import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl extends ProductRepository implements ProductService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
 		
@@ -47,7 +48,7 @@ public class ProductServiceImpl implements ProductService{
 		
 		this.updateSalePrice(product);
 		
-		product.save();
+		save(product);
 		
 	}
 	
@@ -102,7 +103,7 @@ public class ProductServiceImpl implements ProductService{
 	
 	private void updateSalePriceOfVariant(Product product)  {
 		
-		List<? extends Product> productVariantList = Product.filter("self.parentProduct = ?1", product).fetch();
+		List<? extends Product> productVariantList = all().filter("self.parentProduct = ?1", product).fetch();
 		
 		for(Product productVariant : productVariantList)  {
 			
@@ -126,9 +127,9 @@ public class ProductServiceImpl implements ProductService{
 		
 		for(ProductVariant productVariant : productVariantList)  {
 			
-			productVariant.save();
+			productVariantService.save(productVariant);
 			
-			this.createProduct(productModel, productVariant).save();
+			save(this.createProduct(productModel, productVariant));
 			
 		}
 		

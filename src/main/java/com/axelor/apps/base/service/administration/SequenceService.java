@@ -24,15 +24,19 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class SequenceService {
+public class SequenceService extends SequenceRepository{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Sequence.class); 
 
 	private LocalDate today;
+	
+	@Inject
+	private SequenceRepository sequenceRepo;
 
 	@Inject
 	public SequenceService() {
@@ -55,7 +59,7 @@ public class SequenceService {
 	@Transactional(rollbackOn = {Exception.class})
 	public void resetSequenceAll()  {
 
-		for( Sequence seq : Sequence.all().fetch() )  { 
+		for( Sequence seq : sequenceRepo.all().fetch() )  { 
 			if(seq.getYearlyResetOk())  { resetSequence(seq); }
 		}
 	
@@ -69,7 +73,8 @@ public class SequenceService {
 	@Transactional(rollbackOn = {Exception.class})
 	public void resetSequence( Sequence seq )  {
 		
-			seq.setNextNum(1); seq.save();
+			seq.setNextNum(1); 
+			sequenceRepo.save(seq);
 		
 	}
 	
@@ -94,10 +99,10 @@ public class SequenceService {
 		}	
 			
 		if (company == null)  {
-			return Sequence.findByCode(code);
+			return sequenceRepo.findByCode(code);
 		}
 		else {
-			return Sequence.filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
+			return sequenceRepo.all().filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
 		}
 	
 	}
@@ -191,7 +196,7 @@ public class SequenceService {
 		LOG.debug("nextSeq : : : : {}",nextSeq);	
 		
 		seq.setNextNum(seq.getNextNum() + seq.getToBeAdded());
-		seq.save();
+		sequenceRepo.save(seq);
 		return nextSeq;
 	}
 }

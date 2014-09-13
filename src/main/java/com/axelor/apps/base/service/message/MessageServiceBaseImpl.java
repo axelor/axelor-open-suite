@@ -19,39 +19,31 @@ package com.axelor.apps.base.service.message;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Locale;
 
 import javax.mail.MessagingException;
 
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.BirtTemplate;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.IMessage;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageServiceImpl;
-import com.axelor.apps.message.service.TemplateMessageService;
-import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MessageServiceBaseImpl.class);
-	
 	private DateTime todayTime;
 	
 	@Inject
 	private UserService userService;
+	
+	@Inject
+	private MessageRepository messageRepo;
 	
 	@Inject
 	public MessageServiceBaseImpl(UserService userService) {
@@ -66,7 +58,7 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath, String addressBlock, int mediaTypeSelect)  {
 		
-		Message message = super.createMessage(
+		Message message = messageRepo.save(super.createMessage(
 				content, 
 				null, 
 				model, 
@@ -84,8 +76,7 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 				mailAccount,
 				linkPath,
 				addressBlock,
-				mediaTypeSelect)
-				.save();
+				mediaTypeSelect));
 		
 		message.setCompany(userService.getUserActiveCompany());
 		message.setSenderUser(userService.getUser());
@@ -117,7 +108,7 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 		if(!message.getSentByEmail() && message.getRecipientUser()!=null)  {
 			message.setStatusSelect(IMessage.STATUS_SENT);
 			message.setSentByEmail(false);
-			message.save();
+			messageRepo.save(message);
 		}
 	}
 	
