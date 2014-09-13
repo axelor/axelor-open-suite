@@ -19,6 +19,7 @@ package com.axelor.apps.accountorganisation.web;
 
 import com.axelor.apps.accountorganisation.service.TaskSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,12 +30,14 @@ public class TaskSaleOrderController {
 	@Inject
 	private TaskSaleOrderService taskSaleOrderService;
 	
+	@Inject
+	private SaleOrderRepository saleOrderRepo;
 	
 	public void createTasks(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		
-		taskSaleOrderService.createTasks(SaleOrder.find(saleOrder.getId()));
+		taskSaleOrderService.createTasks(saleOrderRepo.find(saleOrder.getId()));
 	
 	}
 }

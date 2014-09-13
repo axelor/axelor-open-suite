@@ -29,6 +29,7 @@ import com.axelor.apps.accountorganisation.db.ISaleOrder;
 import com.axelor.apps.accountorganisation.exceptions.IExceptionMessage;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -38,11 +39,13 @@ import com.axelor.apps.organisation.db.ITask;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.organisation.db.repo.TaskRepository;
 import com.axelor.apps.organisation.service.ProjectService;
 import com.axelor.apps.organisation.service.TaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderSubLine;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -69,6 +72,14 @@ public class TaskSaleOrderService {
 	@Inject
 	private ProjectService projectService;
 	
+	@Inject
+	private SaleOrderRepository saleOrderRepo;
+	
+	@Inject
+	private TaskRepository taskRepo;
+	
+	@Inject
+	private UnitRepository unitRepo;
 	
 	private LocalDateTime todayTime;
 	
@@ -122,7 +133,7 @@ public class TaskSaleOrderService {
 			
 			this.createTasks(saleOrder.getSaleOrderLineList());
 			
-			saleOrder.save();
+			saleOrderRepo.save(saleOrder);
 		}
 	}
 	
@@ -156,7 +167,7 @@ public class TaskSaleOrderService {
 					
 					this.updateTask(saleOrderLine);
 					
-					task.save();
+					taskRepo.save(task);
 				}
 			}
 		}		
@@ -298,7 +309,7 @@ public class TaskSaleOrderService {
 				planningLine.getFromDateTime().plusMinutes(
 						unitConversionService.convert(
 								saleOrderSubLine.getUnit(), 
-								Unit.findByCode("MIN"),
+								unitRepo.findByCode("MIN"),
 								saleOrderSubLine.getQty()).intValue()));
 		return planningLine;
 		

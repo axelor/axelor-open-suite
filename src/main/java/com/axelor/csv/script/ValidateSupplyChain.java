@@ -26,14 +26,18 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.accountorganisation.service.TaskSaleOrderService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.InventoryRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
@@ -89,6 +93,18 @@ public class ValidateSupplyChain {
 	@Inject
 	SaleOrderPurchaseService saleOrderPurchaseService;
 	
+	@Inject
+	private StockMoveRepository stockMoveRepo;
+	
+	@Inject
+	private InventoryRepository inventoryRepo;
+	
+	@Inject
+	private PurchaseOrderRepository purchaseOrderRepo;
+	
+	@Inject
+	private SaleOrderRepository saleOrderRepo;
+	
 //	@Inject
 //	ProductionOrderSaleOrderService productionOrderSaleOrderService;
 	
@@ -113,12 +129,12 @@ public class ValidateSupplyChain {
 	@Transactional
 	void validateInventory(Long inventoryId){
 		try{
-			Inventory inventory = Inventory.find(inventoryId);
+			Inventory inventory = inventoryRepo.find(inventoryId);
 			StockMove stockMove = inventoryService.generateStockMove(inventory);
 			stockMove.setRealDate(inventory.getDateT().toLocalDate());
-			stockMove.save();
+			stockMoveRepo.save(stockMove);
 			inventory.setStatusSelect(3);
-			inventory.save();
+			inventoryRepo.save(inventory);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -127,11 +143,11 @@ public class ValidateSupplyChain {
 	@Transactional
 	void validatePurchaseOrder(Long poId){
 		try{
-			PurchaseOrder purchaseOrder = PurchaseOrder.find(poId);
+			PurchaseOrder purchaseOrder = purchaseOrderRepo.find(poId);
 			purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 			if(purchaseOrder.getStatusSelect() == 4 || purchaseOrder.getStatusSelect() == 5 && purchaseOrder.getLocation() == null){
 				purchaseOrderServiceSupplychainImpl.createStocksMoves(purchaseOrder);
-				StockMove stockMove = StockMove.all().filter("purchaseOrder.id = ?1",purchaseOrder.getId()).fetchOne();
+				StockMove stockMove = stockMoveRepo.all().filter("purchaseOrder.id = ?1",purchaseOrder.getId()).fetchOne();
 				if(stockMove != null){
 					stockMoveService.copyQtyToRealQty(stockMove);
 					stockMoveService.realize(stockMove);
@@ -146,7 +162,7 @@ public class ValidateSupplyChain {
 				invoiceService.validate(invoice);
 				invoiceService.ventilate(invoice);
 			}
-			purchaseOrder.save();
+			purchaseOrderRepo.save(purchaseOrder);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -155,7 +171,7 @@ public class ValidateSupplyChain {
 	@Transactional
 	void validateSaleOrder(Long soId){
 		try{
-			SaleOrder saleOrder = SaleOrder.find(soId);
+			SaleOrder saleOrder = saleOrderRepo.find(soId);
 			for(SaleOrderLine line : saleOrder.getSaleOrderLineList())
 				line.setTaxLine(saleOrderLineService.getTaxLine(saleOrder, line));
 			saleOrderService.computeSaleOrder(saleOrder);
@@ -172,7 +188,7 @@ public class ValidateSupplyChain {
 					invoiceService.validate(invoice);
 					invoiceService.ventilate(invoice);
 				}
-				StockMove stockMove = StockMove.all().filter("saleOrder = ?1",saleOrder).fetchOne();
+				StockMove stockMove = stockMoveRepo.all().filter("saleOrder = ?1",saleOrder).fetchOne();
 				if(stockMove != null && stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 					stockMoveService.copyQtyToRealQty(stockMove);
 					stockMoveService.validate(stockMove);
@@ -186,7 +202,7 @@ public class ValidateSupplyChain {
 					}
 				}
 			}
-			saleOrder.save();
+			saleOrderRepo.save(saleOrder);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

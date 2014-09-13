@@ -24,6 +24,7 @@ import java.util.List;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
@@ -37,10 +38,12 @@ import com.axelor.apps.sale.db.SaleOrderSubLine;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.google.inject.Inject;
 
 public class SaleOrderInvoiceServiceAccountOrganisationImpl extends SaleOrderInvoiceServiceImpl {
 
-	
+	@Inject
+	private InvoiceRepository invoiceRepo;
 	
 	@Override
 	public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException  {
@@ -49,7 +52,7 @@ public class SaleOrderInvoiceServiceAccountOrganisationImpl extends SaleOrderInv
 			throw new AxelorException(String.format("Veuillez selectionner une devise pour le devis %s ", saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 		
-		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(Invoice.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(),saleOrder.getPaymentCondition(), 
+		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(invoiceRepo.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(),saleOrder.getPaymentCondition(), 
 				saleOrder.getPaymentMode(), saleOrder.getMainInvoicingAddress(), saleOrder.getClientPartner(), saleOrder.getContactPartner(), 
 				saleOrder.getCurrency(), saleOrder.getProject(), saleOrder.getPriceList(), saleOrder.getSaleOrderSeq(), saleOrder.getExternalReference()) {
 			

@@ -26,9 +26,11 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.IMinStockRules;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
@@ -46,6 +48,12 @@ public class MinStockRulesServiceAccountOrganisationImpl extends MinStockRulesSe
 	protected PurchaseOrderServiceAccountOrganisationImpl purchaseOrderServiceAccountOrganisationImpl;
 	
 	protected Project project;
+	
+	@Inject
+	private PriceListRepository priceListRepo;
+	
+	@Inject
+	private PurchaseOrderRepository purchaseOrderRepo;
 	
 	public void setProject(Project project)  {
 		
@@ -102,8 +110,9 @@ public class MinStockRulesServiceAccountOrganisationImpl extends MinStockRulesSe
 							saleConfigService.getSaleConfig(company).getSaleOrderInvoicingTypeSelect(), 
 							location, 
 							this.today, 
-							PriceList.filter("self.partner = ?1", supplierPartner).fetchOne(), 
-							supplierPartner).save();
+							priceListRepo.all().filter("self.partner = ?1", supplierPartner).fetchOne(), 
+							supplierPartner);
+					purchaseOrderRepo.save(purchaseOrder);
 					
 					purchaseOrder.addPurchaseOrderLineListItem(
 							purchaseOrderLineService.createPurchaseOrderLine(
@@ -116,7 +125,7 @@ public class MinStockRulesServiceAccountOrganisationImpl extends MinStockRulesSe
 						
 					purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 					
-					purchaseOrder.save();
+					purchaseOrderRepo.save(purchaseOrder);
 					
 				}
 				

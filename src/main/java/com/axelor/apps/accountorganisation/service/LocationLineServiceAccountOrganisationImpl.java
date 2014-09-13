@@ -30,6 +30,7 @@ import com.axelor.apps.stock.db.IMinStockRules;
 import com.axelor.apps.stock.service.LocationLineServiceImpl;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -37,7 +38,10 @@ import com.google.inject.persist.Transactional;
 
 public class LocationLineServiceAccountOrganisationImpl extends LocationLineServiceImpl {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(LocationLineServiceAccountOrganisationImpl.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(LocationLineServiceAccountOrganisationImpl.class);
+	
+	@Inject
+	private LocationLineRepository locationLineRepo;
 	
 	@Inject
 	private MinStockRulesServiceAccountOrganisationImpl minStockRulesServiceAccountOrganisationImpl;
@@ -73,7 +77,7 @@ public class LocationLineServiceAccountOrganisationImpl extends LocationLineServ
 		
 		this.checkStockMin(locationLine, false);
 		
-		locationLine.save();
+		locationLineRepo.save(locationLine);
 		
 	}
 	

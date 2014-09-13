@@ -25,6 +25,7 @@ import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -36,6 +37,9 @@ public class StockMoveServiceAccountOrganisationImpl extends StockMoveServiceImp
 
 	@Inject
 	private StockMoveLineServiceAccountOrganisationImpl stockMoveLineServiceAccountOrganisationImpl;
+	
+	@Inject
+	private StockMoveRepository stockMoveRepo;
 	
 	public Project getBusinessProject(StockMove stockMove)  {
 		
@@ -103,7 +107,7 @@ public class StockMoveServiceAccountOrganisationImpl extends StockMoveServiceImp
 		
 		stockMove.setStatusSelect(IStockMove.STATUS_PLANNED);
 		
-		stockMove.save();
+		stockMoveRepo.save(stockMove);
 		
 	}
 	
@@ -125,7 +129,7 @@ public class StockMoveServiceAccountOrganisationImpl extends StockMoveServiceImp
 		
 		stockMove.setStatusSelect(IStockMove.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
-		stockMove.save();
+		stockMoveRepo.save(stockMove);
 		if(!stockMove.getIsWithBackorder() && !stockMove.getIsWithReturnSurplus())
 			return null;
 		if(stockMove.getIsWithBackorder() && this.mustBeSplit(stockMove.getStockMoveLineList()))  {
@@ -162,7 +166,7 @@ public class StockMoveServiceAccountOrganisationImpl extends StockMoveServiceImp
 		
 		stockMove.setStatusSelect(IStockMove.STATUS_CANCELED);
 		stockMove.setRealDate(this.today);
-		stockMove.save();
+		stockMoveRepo.save(stockMove);
 	}
 	
 }

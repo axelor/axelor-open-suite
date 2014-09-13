@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.accountorganisation.exceptions.IExceptionMessage;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
@@ -38,23 +39,34 @@ import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.db.Timesheet;
 import com.axelor.apps.organisation.db.TimesheetLine;
+import com.axelor.apps.organisation.db.repo.ExpenseLineRepository;
+import com.axelor.apps.organisation.db.repo.TimesheetLineRepository;
 import com.axelor.apps.organisation.service.invoice.InvoiceGeneratorOrganisation;
 import com.axelor.apps.organisation.service.invoice.InvoiceLineGeneratorOrganisation;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class TaskInvoiceService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(TaskInvoiceService.class);
 	
+	@Inject
+	private InvoiceRepository invoiceRepo;
+	
+	@Inject
+	private TimesheetLineRepository timesheetLineRepo;
+	
+	@Inject
+	private ExpenseLineRepository expenseLineRepo;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(Task task) throws AxelorException {
 		
 		Invoice invoice = this.createInvoice(task);
-		invoice.save();
+		invoiceRepo.save(invoice);
 		return invoice;
 	}
 			
@@ -62,7 +74,7 @@ public class TaskInvoiceService {
 		
 		Project project = task.getProject();
 		
-		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(Invoice.OPERATION_TYPE_CLIENT_SALE, project.getCompany(), project.getClientPartner(), 
+		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(invoiceRepo.OPERATION_TYPE_CLIENT_SALE, project.getCompany(), project.getClientPartner(), 
 				project.getContactPartner(), project, null, project.getName(), null) {	
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -149,14 +161,14 @@ public class TaskInvoiceService {
 	
 	public List<TimesheetLine> getTimesheetLineToInvoice(Task task)  {
 		
-		return (List<TimesheetLine>) TimesheetLine.all().filter("self.timesheet.statusSelect = 3 AND self.task.id = ?1 AND self.isToInvoice = true", task.getId()).fetch();
+		return (List<TimesheetLine>) timesheetLineRepo.all().filter("self.timesheet.statusSelect = 3 AND self.task.id = ?1 AND self.isToInvoice = true", task.getId()).fetch();
 		
 	}
 	
 	
 	public List<ExpenseLine> getExpenseLineToInvoice(Task task)  {
 		
-		return (List<ExpenseLine>) ExpenseLine.all().filter("self.expense.statusSelect = 3 AND self.task.id = ?1 AND self.isToInvoice = true", task.getId()).fetch();
+		return (List<ExpenseLine>) expenseLineRepo.all().filter("self.expense.statusSelect = 3 AND self.task.id = ?1 AND self.isToInvoice = true", task.getId()).fetch();
 		
 	}
 	

@@ -24,9 +24,11 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
@@ -40,6 +42,12 @@ public class SaleOrderPurchaseServiceAccountOrganisationImpl extends SaleOrderPu
 	
 	@Inject
 	protected PurchaseOrderServiceAccountOrganisationImpl purchaseOrderServiceAccountOrganisationImpl;
+	
+	@Inject
+	private PriceListRepository priceListRepo;
+	
+	@Inject
+	private PurchaseOrderRepository purchaseOrderRepo;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -60,7 +68,7 @@ public class SaleOrderPurchaseServiceAccountOrganisationImpl extends SaleOrderPu
 				IPurchaseOrder.INVOICING_FREE, 
 				purchaseOrderServiceAccountOrganisationImpl.getLocation(saleOrder.getCompany()), 
 				today, 
-				PriceList.filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
+				priceListRepo.all().filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
 				supplierPartner);
 		
 		
@@ -72,7 +80,7 @@ public class SaleOrderPurchaseServiceAccountOrganisationImpl extends SaleOrderPu
 		
 		purchaseOrderServiceAccountOrganisationImpl.computePurchaseOrder(purchaseOrder);
 		
-		purchaseOrder.save();
+		purchaseOrderRepo.save(purchaseOrder);
 	}
 }
 
