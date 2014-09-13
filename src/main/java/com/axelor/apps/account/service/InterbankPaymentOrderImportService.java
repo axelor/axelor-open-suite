@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -36,6 +37,7 @@ import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCrea
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
@@ -61,6 +63,12 @@ public class InterbankPaymentOrderImportService {
 	
 	@Inject
 	private AccountConfigService accountConfigService;
+	
+	@Inject
+	private PartnerRepository partnerRepo;
+	
+	@Inject
+	private InvoiceRepository invoiceRepo;
 	
 	private DateTime dateTime;
 
@@ -124,13 +132,13 @@ public class InterbankPaymentOrderImportService {
 		partner.getBankDetailsList().add(bankDetails);
 		
 		partner.setPaymentMode(paymentMode);
-		partner.save();
+		partnerRepo.save(partner);
 		
 	}
 	
 	
 	public Invoice getInvoice(String ref, Company company) throws AxelorException  {
-		Invoice invoice = Invoice.filter("UPPER(self.invoiceId) = ?1", ref).fetchOne();
+		Invoice invoice = invoiceRepo.all().filter("UPPER(self.invoiceId) = ?1", ref).fetchOne();
 		if(invoice == null)  {
 			throw new AxelorException(String.format("%s :\n La facture n°%s n'a pas été trouvée pour la société %s",
 					GeneralServiceAccount.getExceptionAccountingMsg(), ref, company.getName()), IException.INCONSISTENCY);

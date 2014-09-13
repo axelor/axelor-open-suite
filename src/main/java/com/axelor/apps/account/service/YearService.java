@@ -32,25 +32,41 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReportedBalance;
 import com.axelor.apps.account.db.ReportedBalanceLine;
+import com.axelor.apps.account.db.repo.ReportedBalanceLineRepository;
+import com.axelor.apps.account.db.repo.ReportedBalanceRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class YearService {
+public class YearService extends YearRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(YearService.class);
 	
 	@Inject
 	private AccountConfigService accountConfigService;
 	
+	@Inject
+	private PartnerService partnerService;
+	
+	@Inject
+	private ReportedBalanceRepository reportedBalanceRepo;
+	
+	@Inject
+	private ReportedBalanceLineRepository reportedBalanceLineRepo;
+	
+	@Inject
+	private MoveLineService moveLineService;
 	/**
 	 * Procédure permettant de cloturer un exercice comptable
 	 * @param year
@@ -59,10 +75,10 @@ public class YearService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void closeYear(Year year) throws AxelorException  {
-		year = Year.find(year.getId());
+		year = find(year.getId());
 
 		for (Period period : year.getPeriodList())  {
-			period.setStatusSelect(Period.STATUS_CLOSED);
+			period.setStatusSelect(PeriodService.STATUS_CLOSED);
 		}
 		Company company = year.getCompany();
 		if(company == null)  {
@@ -78,7 +94,7 @@ public class YearService {
 		@SuppressWarnings("unchecked")
 		List<Partner> partnerList = q.getResultList();
 		
-		List<? extends Partner> partnerListAll = Partner.all().fetch();
+		List<? extends Partner> partnerListAll = partnerService.all().fetch();
 
 		
 		LOG.debug("Nombre total de tiers : {}", partnerListAll.size());
@@ -89,7 +105,7 @@ public class YearService {
 		Account doubtfulCustomerAccount = accountConfigService.getDoubtfulCustomerAccount(accountConfig);
 		
 		for(Partner partner : partnerList)  {
-			partner = Partner.find(partner.getId());
+			partner = partnerService.find(partner.getId());
 			LOG.debug("Tiers en cours de traitement : {}", partner.getName());
 			boolean find = false;
 			for(ReportedBalance reportedBalance : partner.getReportedBalanceList())  {
@@ -104,7 +120,7 @@ public class YearService {
 					LOG.debug("ReportedBalanceLine : {}",reportedBalanceLine);
 					reportedBalance.getReportedBalanceLineList().add(reportedBalanceLine);
 //					year.getReportedBalanceLineList().add(reportedBalanceLine);
-					reportedBalance.save();
+//					reportedBalance.save();
 					find = true;
 				}
 				
@@ -120,13 +136,13 @@ public class YearService {
 //				year.getReportedBalanceLineList().add(reportedBalanceLine);
 				LOG.debug("ReportedBalanceLine : {}",reportedBalanceLine);
 				reportedBalance.getReportedBalanceLineList().add(reportedBalanceLine);
-				reportedBalance.save();
+				reportedBalanceRepo.save(reportedBalance);
 			}
 			
-			partner.save();
+			partnerService.save(partner);
 		}
-		year.setStatusSelect(Year.STATUS_CLOSED);
-		year.save();
+		year.setStatusSelect(STATUS_CLOSED);
+		save(year);
 	}
 	
 	
@@ -143,7 +159,7 @@ public class YearService {
 		reportedBalance.setCompany(company);
 		reportedBalance.setPartner(partner);
 		reportedBalance.setReportedBalanceLineList(new ArrayList<ReportedBalanceLine>());
-		reportedBalance.save();
+		reportedBalanceRepo.save(reportedBalance);
 		return reportedBalance;
 	}
 	
@@ -159,7 +175,7 @@ public class YearService {
 		reportedBalanceLine.setReportedBalance(reportedBalance);
 		reportedBalanceLine.setAmount(amount);
 		reportedBalanceLine.setYear(year);
-		reportedBalanceLine.save();
+		reportedBalanceLineRepo.save(reportedBalanceLine);
 		return reportedBalanceLine;
 	}
 	
@@ -202,7 +218,7 @@ public class YearService {
 	@Deprecated
 	public BigDecimal computeReportedBalance2(LocalDate fromDate, LocalDate toDate, Partner partner, Account account)  {
 		
-		List<? extends MoveLine> moveLineList = MoveLine.all()
+		List<? extends MoveLine> moveLineList = moveLineService.all()
 				.filter("self.partner = ?1 AND self.ignoreInAccountingOk = 'false' AND self.date >= ?2 AND self.date <= ?3 AND self.account = ?4", 
 						partner, fromDate, toDate, account).fetch();
 		

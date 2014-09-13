@@ -33,7 +33,6 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -50,13 +49,13 @@ public class ReimbursementImportService {
 	private MoveLineService mls;
 	
 	@Inject
-	private SequenceService sgs;
-	
-	@Inject
 	private RejectImportService ris;
 	
 	@Inject
 	private AccountConfigService accountConfigService;
+	
+	@Inject
+	private ReimbursementService reimbursementService;
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -99,7 +98,7 @@ public class ReimbursementImportService {
 	//	String amountReject = reject[2];
 		InterbankCodeLine causeReject = ris.getInterbankCodeLine(reject[3], 0);
 		
-		Reimbursement reimbursement = Reimbursement.filter("UPPER(self.ref) = ?1 AND self.company = ?2", refReject, company).fetchOne();
+		Reimbursement reimbursement = reimbursementService.all().filter("UPPER(self.ref) = ?1 AND self.company = ?2", refReject, company).fetchOne();
 		if(reimbursement == null)  {
 			throw new AxelorException(String.format("Aucun remboursement trouvé pour la ref %s et la société %s",
 					refReject, company.getName()), IException.INCONSISTENCY);
@@ -112,23 +111,23 @@ public class ReimbursementImportService {
 		MoveLine creditMoveLine = mls.createMoveLine(move , partner, company.getAccountConfig().getCustomerAccount(), amount, false, false, rejectDate, seq, refReject);
 		move.getMoveLineList().add(creditMoveLine);	
 		
-		creditMoveLine.save(); 
+		mls.save(creditMoveLine); 
 
-		move.save();
+		ms.save(move);
 		creditMoveLine.setInterbankCodeLine(causeReject);
 		
 		reimbursement.setRejectedOk(true);
 		reimbursement.setRejectDate(rejectDate);
 		reimbursement.setRejectMoveLine(creditMoveLine);
 		reimbursement.setInterbankCodeLine(causeReject);
-		reimbursement.save();
+		reimbursementService.save(reimbursement);
 		
 		return reimbursement;
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createMoveReject(Company company, LocalDate date) throws AxelorException  {
-		return ms.createMove(company.getAccountConfig().getRejectJournal(), company, null, null, date, null).save();
+		return ms.save(ms.createMove(company.getAccountConfig().getRejectJournal(), company, null, null, date, null));
 
 	}
 	
@@ -148,7 +147,7 @@ public class ReimbursementImportService {
 		// Création d'une ligne au débit
 		MoveLine debitMoveLine = mls.createMoveLine(move , null, move.getCompany().getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, false, rejectDate, seq, null);
 		move.getMoveLineList().add(debitMoveLine);	
-		move.save();
+		ms.save(move);
 		return debitMoveLine;
 	}
 	
@@ -156,12 +155,12 @@ public class ReimbursementImportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validateMove(Move move) throws AxelorException  {
 		ms.validateMove(move);
-		move.save();
+		ms.save(move);
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void deleteMove(Move move) throws AxelorException  {
-		move.remove();
+		ms.remove(move);
 	}
 	
 	

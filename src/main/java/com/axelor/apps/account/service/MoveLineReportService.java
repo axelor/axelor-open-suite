@@ -29,6 +29,8 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.MoveLineReportRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -42,7 +44,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 
-public class MoveLineReportService {
+public class MoveLineReportService extends MoveLineReportRepository {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MoveLineReportService.class);
 
@@ -52,6 +54,10 @@ public class MoveLineReportService {
 	private DateTime dateTime;
 	
 	private String query;
+	
+	@Inject
+	private AccountRepository accountRepo;
+	
 
 	@Inject
 	public MoveLineReportService() {
@@ -207,7 +213,7 @@ public class MoveLineReportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setSequence(MoveLineReport moveLineReport, String sequence)  {
 		moveLineReport.setRef(sequence);
-		moveLineReport.save();
+		save(moveLineReport);
 	}
 
 	public String getSequence(MoveLineReport moveLineReport) throws AxelorException  {
@@ -244,19 +250,19 @@ public class MoveLineReportService {
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		
 		switch (moveLineReport.getTypeSelect()) {
-			case MoveLineReport.EXPORT_SALES:
+			case EXPORT_SALES:
 				
 				return accountConfigService.getSaleJournalType(accountConfig);
 				
-			case MoveLineReport.EXPORT_REFUNDS:
+			case EXPORT_REFUNDS:
 				
 				return accountConfigService.getCreditNoteJournalType(accountConfig);
 				
-			case MoveLineReport.EXPORT_TREASURY:
+			case EXPORT_TREASURY:
 				
 				return accountConfigService.getCashJournalType(accountConfig);
 				
-			case MoveLineReport.EXPORT_PURCHASES:
+			case EXPORT_PURCHASES:
 				
 				return accountConfigService.getPurchaseJournalType(accountConfig);
 	
@@ -269,7 +275,7 @@ public class MoveLineReportService {
 	
 	public Account getAccount(MoveLineReport moveLineReport)  {
 		if(moveLineReport.getTypeSelect() ==  13 && moveLineReport.getCompany() != null)  {
-			return Account.filter("self.company = ?1 AND self.code LIKE '58%'", moveLineReport.getCompany()).fetchOne();
+			return accountRepo.all().filter("self.company = ?1 AND self.code LIKE '58%'", moveLineReport.getCompany()).fetchOne();
 		}
 		return null;
 	}
@@ -277,8 +283,8 @@ public class MoveLineReportService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setStatus(MoveLineReport moveLineReport)  {
-		moveLineReport.setStatusSelect(MoveLineReport.STATUS_VALIDATED);
-		moveLineReport.save();
+		moveLineReport.setStatusSelect(STATUS_VALIDATED);
+		save(moveLineReport);
 	}
 
 	/**
@@ -287,7 +293,7 @@ public class MoveLineReportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setPublicationDateTime(MoveLineReport moveLineReport)  {
 		moveLineReport.setPublicationDateTime(this.dateTime);
-		moveLineReport.save();
+		save(moveLineReport);
 	}
 
 

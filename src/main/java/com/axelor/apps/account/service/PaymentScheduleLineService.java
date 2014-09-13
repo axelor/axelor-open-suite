@@ -28,8 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 
-public class PaymentScheduleLineService {
+public class PaymentScheduleLineService extends PaymentScheduleLineRepository{
 
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleLineService.class);
 	
@@ -56,7 +57,7 @@ public class PaymentScheduleLineService {
 		paymentScheduleLine.setScheduleLineSeq(scheduleLineSeq);
 		paymentScheduleLine.setScheduleDate(scheduleDate);
 		paymentScheduleLine.setInTaxAmount(inTaxAmount);
-		paymentScheduleLine.setStatusSelect(PaymentScheduleLine.STATUS_IN_PROGRESS);
+		paymentScheduleLine.setStatusSelect(STATUS_IN_PROGRESS);
 		
 		LOG.debug("Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}", 
 				new Object[] {paymentScheduleLine.getScheduleLineSeq(), paymentScheduleLine.getScheduleDate(), paymentScheduleLine.getInTaxAmount()});

@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -38,7 +39,7 @@ import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ChequeRejectionService {
+public class ChequeRejectionService extends ChequeRejectionRepository{
 	
 	@Inject
 	private MoveService moveService;
@@ -71,9 +72,9 @@ public class ChequeRejectionService {
 		
 		chequeRejection.setMove(move);
 	
-		chequeRejection.setStatusSelect(ChequeRejection.STATUS_VALIDATED);
+		chequeRejection.setStatusSelect(ChequeRejectionRepository.STATUS_VALIDATED);
 		
-		chequeRejection.save();
+		save(chequeRejection);
 	}
 	
 	/**

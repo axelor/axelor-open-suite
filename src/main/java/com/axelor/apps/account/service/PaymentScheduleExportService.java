@@ -38,9 +38,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.repo.DirectDebitManagementRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.BankDetails;
@@ -56,7 +58,7 @@ import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PaymentScheduleExportService {
+public class PaymentScheduleExportService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleExportService.class);
 
@@ -86,6 +88,15 @@ public class PaymentScheduleExportService {
 	
 	@Inject
 	private AccountConfigService accountConfigService;
+	
+	@Inject
+	private PaymentScheduleLineService paymentScheduleLineService;
+	
+	@Inject
+	private DirectDebitManagementRepository directDebitManagementRepo;
+	
+	@Inject
+	private InvoiceService invoiceService;
 
 	private LocalDate today;
 	
@@ -109,7 +120,7 @@ public class PaymentScheduleExportService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void deleteMove(Move move) throws AxelorException  {
-		move.remove();
+		moveService.remove(move);
 	}
 	
 	
@@ -120,7 +131,7 @@ public class PaymentScheduleExportService {
 		MoveLine moveLine = moveLineServices.createMoveLine(move, null, bankAccount, this.totalAmount(move), true, false, today, ref, null);
 		
 		move.getMoveLineList().add(moveLine);
-		moveLine.save();
+		moveLineServices.save(moveLine);
 		return move;
 	}
 
@@ -206,9 +217,9 @@ public class PaymentScheduleExportService {
 	 */
 	public PaymentScheduleLine getPaymentScheduleLineRejectOrigin(PaymentScheduleLine paymentScheduleLine)  {
 		
-		return PaymentScheduleLine
+		return paymentScheduleLineService.all()
 				.filter("self.paymentSchedule = ?1 AND self.scheduleLineSeq = ?2 AND self.statusSelect = ?3 ORDER BY self.rejectDate DSC"
-						, paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleLineSeq(), PaymentScheduleLine.STATUS_CLOSED).fetchOne();
+						, paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleLineSeq(), PaymentScheduleLineService.STATUS_CLOSED).fetchOne();
 		
 	}
 	
@@ -250,7 +261,7 @@ public class PaymentScheduleExportService {
 		
 		this.setDebitNumber(paymentScheduleLineList, paymentScheduleLine, company);
 		
-		MoveLine moveLine = moveLineServices.createMoveLine(move , partner, account, amount, false, false, today, 1, paymentScheduleLine.getName()).save();
+		MoveLine moveLine = moveLineServices.save(moveLineServices.createMoveLine(move , partner, account, amount, false, false, today, 1, paymentScheduleLine.getName()));
 		
 		move.addMoveLineListItem(moveLine);
 		
@@ -274,10 +285,10 @@ public class PaymentScheduleExportService {
 		
 		paymentScheduleLine.setDirectDebitAmount(amount);
 		paymentScheduleLine.setInTaxAmountPaid(amount);
-		paymentScheduleLine.setAdvanceOrPaymentMove(Move.find(move.getId()));
+		paymentScheduleLine.setAdvanceOrPaymentMove(moveService.find(move.getId()));
 		paymentScheduleLine.setAdvanceMoveLine(moveLine);
-		paymentScheduleLine.setStatusSelect(PaymentScheduleLine.STATUS_VALIDATED);
-		return paymentScheduleLine.save();
+		paymentScheduleLine.setStatusSelect(PaymentScheduleLineService.STATUS_VALIDATED);
+		return paymentScheduleLineService.save(paymentScheduleLine);
 	}
 	
 	
@@ -305,13 +316,13 @@ public class PaymentScheduleExportService {
 	 * @return
 	 */
 	public List<MoveLine> getInvoiceMoveLineListToReconcile(PaymentSchedule paymentSchedule)  {
-		return (List<MoveLine>) MoveLine
+		return (List<MoveLine>) moveLineServices.all()
 				.filter("self.move.statusSelect = ?1 AND self.exportedDirectDebitOk = 'false' " +
 						"AND self.account.reconcileOk = ?2 AND self.amountRemaining > 0 " +
 						"AND self.move.invoice.operationTypeSelect = ?3 " +
 						"AND self.move.invoice.schedulePaymentOk = 'true' " +
 						"AND self.move.invoice.paymentSchedule = ?4 "+
-						"ORDER BY self.date", Move.STATUS_VALIDATED, true, Invoice.OPERATION_TYPE_CLIENT_SALE, paymentSchedule).fetch();
+						"ORDER BY self.date", MoveService.STATUS_VALIDATED, true, InvoiceService.OPERATION_TYPE_CLIENT_SALE, paymentSchedule).fetch();
 	}
 	
 	
@@ -360,13 +371,13 @@ public class PaymentScheduleExportService {
 		
 		PaymentMode paymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
 		
-		List<PaymentScheduleLine> paymentScheduleLineList = (List<PaymentScheduleLine>) PaymentScheduleLine
+		List<PaymentScheduleLine> paymentScheduleLineList = (List<PaymentScheduleLine>) paymentScheduleLineService.all()
 				.filter("self.statusSelect = ?1 AND self.paymentSchedule.statusSelect = ?2 AND self.paymentSchedule.company = ?3 " +
 						"AND self.scheduleDate <= ?4 " +
 						"AND self.debitBlockingOk IN ('false',null) " +
 						"AND self.paymentSchedule.currency = ?5 " +
 						"AND self.paymentSchedule.paymentMode = ?6 ORDER BY self.scheduleDate",
-						PaymentScheduleLine.STATUS_IN_PROGRESS, PaymentSchedule.STATUS_CONFIRMED, company, debitDate, currency, paymentMode).fetch(); 
+						PaymentScheduleLineService.STATUS_IN_PROGRESS, PaymentScheduleService.STATUS_CONFIRMED, company, debitDate, currency, paymentMode).fetch(); 
 		
 		if(paymentScheduleLineList.size() < 50)  {
 			LOG.debug("\n Liste des échéances retenues : {} \n", this.toStringPaymentScheduleLineList(paymentScheduleLineList));
@@ -424,7 +435,7 @@ public class PaymentScheduleExportService {
 	public boolean hasOtherPaymentScheduleLine(List<PaymentScheduleLine> pslList, PaymentScheduleLine psl)  {
 		int i = 0;
 		for(PaymentScheduleLine paymentScheduleLine : pslList)  {
-			paymentScheduleLine = PaymentScheduleLine.find(paymentScheduleLine.getId());
+			paymentScheduleLine = paymentScheduleLineService.find(paymentScheduleLine.getId());
 			if(psl.getPaymentSchedule().equals(paymentScheduleLine.getPaymentSchedule()))  {
 				i++;
 			}
@@ -487,7 +498,7 @@ public class PaymentScheduleExportService {
 	 */
 	public DirectDebitManagement getDirectDebitManagement(List<PaymentScheduleLine> pslList, PaymentScheduleLine psl)  {
 		for(PaymentScheduleLine paymentScheduleLine : pslList)  {
-			paymentScheduleLine = PaymentScheduleLine.find(paymentScheduleLine.getId());
+			paymentScheduleLine = paymentScheduleLineService.find(paymentScheduleLine.getId());
 			if(psl.getPaymentSchedule().equals(paymentScheduleLine.getPaymentSchedule()))  {
 				if(paymentScheduleLine.getDirectDebitManagement() != null)  {
 					return paymentScheduleLine.getDirectDebitManagement();
@@ -513,7 +524,7 @@ public class PaymentScheduleExportService {
 		
 		LOG.debug("Récupération de l'objet de prélèvement du tiers {}", partner.getFullName());
 		
-		List<MoveLine> moveLineListResult = (List<MoveLine>) MoveLine.filter("self IN (?1) and self.partner = ?2", moveLineList, partner).fetch();
+		List<MoveLine> moveLineListResult = (List<MoveLine>) moveLineServices.all().filter("self IN (?1) and self.partner = ?2", moveLineList, partner).fetch();
 		
 		for(MoveLine moveLine : moveLineListResult)  {
 			Invoice invoice = cfonbExportService.getInvoice(moveLine);
@@ -609,7 +620,7 @@ public class PaymentScheduleExportService {
 				amountExported,
 				directDebitManagementMaxId);
 		
-		invoice.save();
+		invoiceService.save(invoice);
 		
 		return invoice;
 	}
@@ -633,7 +644,7 @@ public class PaymentScheduleExportService {
 		 * - la facture est remplie sur l'écriture
 		 * - la facture n'est pas selectionnée sur un échéancier
 		 */
-		List<MoveLine> moveLineList = (List<MoveLine>) MoveLine
+		List<MoveLine> moveLineList = (List<MoveLine>) moveLineServices.all()
 				.filter("self.move.statusSelect = ?1 AND self.exportedDirectDebitOk = 'false' " +
 						"AND self.move.company = ?2 " +
 						"AND self.account.reconcileOk = ?3 AND self.amountRemaining > 0 " +
@@ -642,7 +653,7 @@ public class PaymentScheduleExportService {
 						"AND self.move.invoice.paymentMode = ?4 " +
 						"AND self.move.invoice.schedulePaymentOk = 'false' " +
 						"AND self.move.invoice.currency = ?5"
-						, Move.STATUS_VALIDATED, company, true, paymentMode, currency).fetch(); 
+						, MoveService.STATUS_VALIDATED, company, true, paymentMode, currency).fetch(); 
 		
 		
 		// Ajout des factures
@@ -654,13 +665,13 @@ public class PaymentScheduleExportService {
 		
 		
 		// Récupération des factures rejetées
-		List<Invoice> invoiceRejectList = (List<Invoice>) Invoice
+		List<Invoice> invoiceRejectList = (List<Invoice>) invoiceService.all()
 				.filter("self.rejectMoveLine IS NOT NULL AND self.rejectMoveLine.amountRemaining > 0 AND self.rejectMoveLine.debit > 0" +
 						" AND self.paymentMode = ?1 AND self.company = ?2 AND self.rejectMoveLine.exportedDirectDebitOk = 'false' AND self.move.statusSelect = ?3" +
 						" AND self.rejectMoveLine.account.reconcileOk = 'true' " +
 						" AND self.rejectMoveLine.invoiceReject IS NOT NULL" +
 						" AND self.currency = ?4"
-						, paymentMode, company, Move.STATUS_VALIDATED, currency).fetch();
+						, paymentMode, company, MoveService.STATUS_VALIDATED, currency).fetch();
 		
 		// Ajout des factures rejetées
 		for(Invoice invoice : invoiceRejectList)  {
@@ -709,10 +720,10 @@ public class PaymentScheduleExportService {
 				true, false, today, 2, invoiceName);
 		
 		paymentMove.getMoveLineList().add(moveLineGenerated2);
-		moveLineGenerated2.save();
+		moveLineServices.save(moveLineGenerated2);
 			
 		moveService.validateMove(paymentMove);
-		paymentMove.save();
+		moveService.save(paymentMove);
 		
 		return paymentMove;
 	}
@@ -736,7 +747,7 @@ public class PaymentScheduleExportService {
 	
 		paymentMove.getMoveLineList().add(moveLineGenerated);
 
-		moveLineGenerated.save();
+		moveLineServices.save(moveLineGenerated);
 		
 		// Lettrage de la ligne 411 avec la ligne 411 de la facture
 		LOG.debug("Creation du lettrage de la ligne 411 avec la ligne 411 de la facture");
@@ -745,7 +756,7 @@ public class PaymentScheduleExportService {
 		
 		LOG.debug("generateAllExportInvoice - Sauvegarde de l'écriture");
 		
-		paymentMove.save();
+		moveService.save(paymentMove);
 		
 	}
 	
@@ -786,7 +797,7 @@ public class PaymentScheduleExportService {
 			invoice.setDirectDebitManagement(directDebitManagement);
 			invoice.setDebitNumber(null);
 			directDebitManagement.getInvoiceSet().add(invoice);
-			directDebitManagement.save();
+			directDebitManagementRepo.save(directDebitManagement);
 		}
 		else  {
 			invoice.setDebitNumber(this.getDirectDebitSequence(company));
@@ -809,7 +820,7 @@ public class PaymentScheduleExportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move validateMove(Move move) throws AxelorException  {
 		moveService.validateMove(move);
-		move.save();
+		moveService.save(move);
 		return move;
 	}
 	

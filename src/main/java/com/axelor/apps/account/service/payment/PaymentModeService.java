@@ -24,13 +24,14 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public class PaymentModeService {
+public class PaymentModeService extends PaymentModeRepository{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentModeService.class);
 	

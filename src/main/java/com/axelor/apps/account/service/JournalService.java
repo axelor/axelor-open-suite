@@ -19,20 +19,16 @@ package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public class JournalService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(JournalService.class);
+public class JournalService extends JournalRepository{
 	
 	private AccountConfigService accountConfigService;
 	
