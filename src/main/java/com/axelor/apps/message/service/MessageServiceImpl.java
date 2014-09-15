@@ -28,23 +28,20 @@ import javax.mail.Transport;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.IMessage;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.mail.MailSender;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MessageServiceImpl implements MessageService {
+public class MessageServiceImpl extends MessageRepository implements MessageService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MessageServiceImpl.class);
-	
 	private DateTime todayTime;
 	
 	@Inject
@@ -58,7 +55,7 @@ public class MessageServiceImpl implements MessageService {
 	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath,String addressBlock,int mediaTypeSelect)  {
 		
-		return this.createMessage(
+		return save(this.createMessage(
 				content, 
 				null, 
 				model, 
@@ -76,8 +73,7 @@ public class MessageServiceImpl implements MessageService {
 				mailAccount,
 				linkPath,
 				addressBlock,
-				mediaTypeSelect)
-				.save();
+				mediaTypeSelect));
 	}	
 	
 	
@@ -202,7 +198,7 @@ public class MessageServiceImpl implements MessageService {
 			
 			message.setSentByEmail(true);
 			message.setStatusSelect(IMessage.STATUS_SENT);
-			message.save();
+			save(message);
 			
 		}
 	

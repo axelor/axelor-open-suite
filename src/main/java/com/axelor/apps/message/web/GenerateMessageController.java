@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Template;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.TemplateRepository;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.tool.ObjectTool;
@@ -42,12 +43,11 @@ public class GenerateMessageController {
 
 	@Inject
 	private TemplateMessageService templateMessageService;
-
+	
+	@Inject
+	private TemplateRepository templateRepo;
 
 	private static final Logger LOG = LoggerFactory.getLogger(GenerateMessageController.class);
-	
-	
-	
 	
 	public void callMessageWizard(ActionRequest request, ActionResponse response)   {
 		
@@ -55,7 +55,7 @@ public class GenerateMessageController {
 
 		try {		
 		
-			long templateNumber = Template.filter("self.metaModel.fullName = ?1", 
+			long templateNumber = templateRepo.all().filter("self.metaModel.fullName = ?1", 
 					object.getClass().getCanonicalName()).count();
 			
 			LOG.debug("Template number : {} ", templateNumber);
@@ -98,7 +98,7 @@ public class GenerateMessageController {
 								id,
 								object.getClass().getCanonicalName(),
 								object.getClass().getSimpleName(),
-								Template.filter("self.metaModel.fullName = ?1", 
+								templateRepo.all().filter("self.metaModel.fullName = ?1", 
 										object.getClass().getCanonicalName()).fetchOne()));
 			}
 			
@@ -122,7 +122,7 @@ public class GenerateMessageController {
 		
 		String tag = (String) context.get("_tag");
 		
-		Template template = Template.find(((Integer)templateContext.get("id")).longValue());
+		Template template = templateRepo.find(((Integer)templateContext.get("id")).longValue());
 		try {		
 		
 			response.setView(

@@ -22,20 +22,15 @@ import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.message.db.MailAccount;
+import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.mail.SmtpAccount;
 
-public class MailAccountServiceImpl implements MailAccountService {
+public class MailAccountServiceImpl extends MailAccountRepository implements MailAccountService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MailAccountServiceImpl.class);
-	
-	
 	public MailAccount getDefaultMailAccount()  {
 		
-		return MailAccount.filter("self.isDefault = true").fetchOne();
+		return all().filter("self.isDefault = true").fetchOne();
 		
 	}
 
