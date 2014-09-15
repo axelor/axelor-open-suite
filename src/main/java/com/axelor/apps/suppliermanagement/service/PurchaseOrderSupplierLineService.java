@@ -19,20 +19,16 @@ package com.axelor.apps.suppliermanagement.service;
 
 import java.math.BigDecimal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.suppliermanagement.db.IPurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
+import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public class PurchaseOrderSupplierLineService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderSupplierLineService.class);
+public class PurchaseOrderSupplierLineService extends PurchaseOrderSupplierLineRepository {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void accept(PurchaseOrderSupplierLine purchaseOrderSupplierLine)  {
@@ -47,7 +43,7 @@ public class PurchaseOrderSupplierLineService {
 		
 		purchaseOrderSupplierLine.setStateSelect(IPurchaseOrderSupplierLine.ACCEPTED);
 		
-		purchaseOrderSupplierLine.save();
+		save(purchaseOrderSupplierLine);
 		
 	}
 	

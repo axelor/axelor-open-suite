@@ -27,23 +27,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PurchaseOrderSupplierService {
+public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderSupplierService.class);
 	
@@ -76,7 +79,7 @@ public class PurchaseOrderSupplierService {
 			this.generateSuppliersRequests(purchaseOrderLine);
 			
 		}
-		purchaseOrder.save();
+		save(purchaseOrder);
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -93,7 +96,7 @@ public class PurchaseOrderSupplierService {
 			}
 		}
 		
-		purchaseOrderLine.save();
+		Beans.get(PurchaseOrderLineRepository.class).save(purchaseOrderLine);
 	}
 	
 	
@@ -111,7 +114,7 @@ public class PurchaseOrderSupplierService {
 		}
 		
 
-		purchaseOrder.save();
+		save(purchaseOrder);
 	
 	}
 	
@@ -159,7 +162,7 @@ public class PurchaseOrderSupplierService {
 				parentPurchaseOrder.getInvoicingTypeSelect(), 
 				purchaseOrderServiceSupplychainImpl.getLocation(parentPurchaseOrder.getCompany()), 
 				today, 
-				PriceList.filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
+				Beans.get(PriceListRepository.class).all().filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
 				supplierPartner);
 		
 		purchaseOrder.setParentPurchaseOrder(parentPurchaseOrder);
@@ -175,7 +178,7 @@ public class PurchaseOrderSupplierService {
 		
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_RECEIVED);
 		
-		purchaseOrder.save();
+		save(purchaseOrder);
 	}
 	
 	
