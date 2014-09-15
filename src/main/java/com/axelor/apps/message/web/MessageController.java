@@ -20,7 +20,6 @@ package com.axelor.apps.message.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.message.db.IMessage;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.rpc.ActionRequest;
@@ -45,7 +44,7 @@ public class MessageController {
 		
 		response.setReload(true);
 		
-		if(message.getStatusSelect() == IMessage.STATUS_SENT)  {
+		if(message.getStatusSelect() == Message.STATUS_SENT)  {
 			if(message.getSentByEmail())  {
 				response.setFlash("Email envoyé");
 			}

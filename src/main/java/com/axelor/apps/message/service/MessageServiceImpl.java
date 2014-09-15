@@ -17,14 +17,12 @@
  */
 package com.axelor.apps.message.service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.mail.MessagingException;
-import javax.mail.Transport;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
@@ -32,11 +30,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.IMessage;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.mail.MailSender;
-import com.google.common.collect.Maps;
+import com.axelor.mail.MailBuilder;
+import com.axelor.mail.MailSender;
+import com.axelor.mail.SmtpAccount;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -52,11 +53,14 @@ public class MessageServiceImpl implements MessageService {
 
 		this.todayTime = new DateTime();
 	}
+
+	@Inject
+	protected MailAccountService mailAccoutService;
 	
 	
 	@Transactional
 	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
-			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath,String addressBlock,int mediaTypeSelect)  {
+			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath, String addressBlock, int mediaTypeSelect)  {
 		
 		return this.createMessage(
 				content, 
@@ -67,9 +71,9 @@ public class MessageServiceImpl implements MessageService {
 				0, 
 				todayTime.toLocalDateTime(), 
 				false, 
-				IMessage.STATUS_DRAFT, 
+				Message.STATUS_DRAFT, 
 				subject, 
-				IMessage.TYPE_SENT,
+				Message.TYPE_SENT,
 				toEmailAddressList,
 				ccEmailAddressList,
 				bccEmailAddressList,
@@ -85,40 +89,31 @@ public class MessageServiceImpl implements MessageService {
 			String relatedTo2Select, int relatedTo2SelectId, LocalDateTime sentDate, boolean sentByEmail, int statusSelect, 
 			String subject, int typeSelect, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, 
 			MailAccount mailAccount, String filePath,String addressBlock,int mediaTypeSelect)  {
-		Message message = new Message();
-		message.setContent(content);
-		message.setFromEmailAddress(fromEmailAddress);
-		message.setRelatedTo1Select(relatedTo1Select);
-		message.setRelatedTo1SelectId(relatedTo1SelectId);
-		message.setRelatedTo2Select(relatedTo2Select);
-		message.setRelatedTo2SelectId(relatedTo2SelectId);
-		message.setSentDateT(sentDate);
-		message.setSentByEmail(sentByEmail);
-		message.setStatusSelect(statusSelect);
-		message.setSubject(subject);
-		message.setTypeSelect(typeSelect);
-		message.setAddressBlock(addressBlock);
-		message.setMediaTypeSelect(mediaTypeSelect);
+		
 		
 		Set<EmailAddress> toEmailAddressSet = Sets.newHashSet();
 		if(toEmailAddressList != null)  {
 			toEmailAddressSet.addAll(toEmailAddressList);
 		}
-		message.setToEmailAddressSet(toEmailAddressSet);
 		
 		Set<EmailAddress> ccEmailAddressSet = Sets.newHashSet();
 		if(ccEmailAddressList != null)  {
 			ccEmailAddressSet.addAll(ccEmailAddressList);
 		}
-		message.setCcEmailAddressSet(ccEmailAddressSet);
 		
 		Set<EmailAddress> bccEmailAddressSet = Sets.newHashSet();
 		if(bccEmailAddressList != null)  {
 			bccEmailAddressSet.addAll(bccEmailAddressList);
 		}
-		message.setBccEmailAddressSet(bccEmailAddressSet);
 		
-		message.setMailAccount(mailAccount);
+		Message message = new Message(typeSelect, subject, content, statusSelect, mediaTypeSelect, addressBlock, toEmailAddressSet, ccEmailAddressSet, bccEmailAddressSet, 
+                fromEmailAddress, sentByEmail, mailAccount);
+
+		message.setRelatedTo1Select(relatedTo1Select);
+		message.setRelatedTo1SelectId(relatedTo1SelectId);
+		message.setRelatedTo2Select(relatedTo2Select);
+		message.setRelatedTo2SelectId(relatedTo2SelectId);
+		message.setSentDateT(sentDate);
 		
 		message.setFilePath(filePath);
 		
@@ -132,94 +127,81 @@ public class MessageServiceImpl implements MessageService {
 			
 			this.sendByEmail(message);
 			
-			
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return message;
 		
 	}
 	
-	protected void sendByEmail(Message message) throws MessagingException, UnsupportedEncodingException  {
+	
+	protected void sendByEmail(Message message) throws MessagingException, IOException  {
 		
 		MailAccount mailAccount = message.getMailAccount();
 		
 		if(mailAccount != null)  {
-		
-			List<String> toRecipients = new ArrayList<String>();
-			List<String> ccRecipients = new ArrayList<String>();
-			List<String> bccRecipients = new ArrayList<String>();
 			
-			/** Ajout des destinataires  **/
-			for(EmailAddress emailAddress : message.getToEmailAddressSet())  {
-				
-				if(emailAddress.getAddress() != null && !emailAddress.getAddress().isEmpty())  {
-				
-					toRecipients.add(emailAddress.getAddress());
-				}
+			com.axelor.mail.MailAccount account = new SmtpAccount(
+					mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), mailAccoutService.getSmtpSecurity(mailAccount));
+					                               
+			MailSender sender = new MailSender(account);
+
+			List<String> toRecipients = this.getEmailAddresses(message.getToEmailAddressSet());
+			List<String> ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet());
+			List<String> bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
+
+			MailBuilder mailBuilder = sender.compose();
+
+			mailBuilder.subject(message.getSubject());
+
+			if(!Strings.isNullOrEmpty(message.getContent()))  {
+				mailBuilder.text(message.getContent());
 			}
 			
-			/** Ajout des destinataires en copie **/
-			for(EmailAddress emailAddress : message.getBccEmailAddressSet())  {
-				
-				if(emailAddress.getAddress() != null && !emailAddress.getAddress().isEmpty())  {
-				
-					ccRecipients.add(emailAddress.getAddress());
-				}
+			if(!Strings.isNullOrEmpty(message.getFilePath()))  {
+				mailBuilder.attach("File", message.getFilePath());
 			}
-			
-			/** Ajout des destinataires  en copie privée **/
-			for(EmailAddress emailAddress : message.getCcEmailAddressSet())  {
-				
-				if(emailAddress.getAddress() != null && !emailAddress.getAddress().isEmpty())  {
-				
-					bccRecipients.add(emailAddress.getAddress());
-				}
+
+			if(toRecipients != null && !toRecipients.isEmpty())  {
+				mailBuilder.to(Joiner.on(",").join(toRecipients));
 			}
-			
+
+			if(ccRecipients != null && !ccRecipients.isEmpty())  {
+				mailBuilder.cc(Joiner.on(",").join(ccRecipients));
+			}
+
+			if(bccRecipients != null && !bccRecipients.isEmpty())  {
+				mailBuilder.bcc(Joiner.on(",").join(bccRecipients));
+			}
 				
-			Map<String, String> attachment = Maps.newHashMap();
-			if(message.getFilePath() != null && !message.getFilePath().isEmpty())   {
-				attachment.put("File 1", message.getFilePath());
-			}	
-				
-			// Init the sender
-			MailSender sender = new MailSender(
-					"smtp", 
-					mailAccount.getHost(), 
-					mailAccount.getPort().toString(), 
-					mailAccount.getLogin(),
-					mailAccount.getName(),
-					mailAccount.getPassword());
-			
-			
-			// Create the Message
-			javax.mail.Message msg = sender.createMessage(message.getContent(), message.getSubject(), toRecipients, ccRecipients, bccRecipients, attachment);
-			// Send
-			Transport.send(msg);
+			mailBuilder.send();
 			
 			message.setSentByEmail(true);
-			message.setStatusSelect(IMessage.STATUS_SENT);
+			message.setStatusSelect(Message.STATUS_SENT);
 			message.save();
 			
 		}
 	
-	
 	}
 	
 	
-	
-	
-	public String getSignature(MailAccount mailAccount)  {
-		
-		if(mailAccount != null && mailAccount.getSignature() != null)  {
-			return "\n "+mailAccount.getSignature();
-		}
-		
-		return "";
+	public List<String> getEmailAddresses(Set<EmailAddress> emailAddressSet)  {
+		               
+	   List<String> recipients = Lists.newArrayList();
+	   
+	   for(EmailAddress emailAddress : emailAddressSet)  {
+	           
+	           if(!Strings.isNullOrEmpty(emailAddress.getAddress()))  {
+	           
+	                   recipients.add(emailAddress.getAddress());
+	           }
+	   }
+	   
+	   return recipients;
 	}
-	
-	
+
 }

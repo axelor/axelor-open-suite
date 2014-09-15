@@ -23,6 +23,11 @@ public interface MailAccountService {
 
 	
 	public MailAccount getDefaultMailAccount();
+	
 	public boolean validateSmtpMailAccount(MailAccount account);
+	
+	public String getSmtpSecurity(MailAccount mailAccount);
+	
+	public String getSignature(MailAccount mailAccount);
 	
 }

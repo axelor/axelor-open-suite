@@ -78,8 +78,6 @@
     
 	<action-record name="action-message-record-default" model="com.axelor.apps.message.db.Message">
     	<field name="sentDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
-    	<field name="statusSelect" expr="eval: 1"/>
-    	<field name="typeSelect" expr="eval: 2"/>
     	<field name="senderUser" expr="eval:__user__"/>
     </action-record>
     

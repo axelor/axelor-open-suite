@@ -29,14 +29,21 @@
 	</selection>
 				
 	<selection name="mail.account.server.type.select">
-		<option value="1">POP</option>
-		<option value="2">IMAP</option>
+		<option value="1">SMTP</option>
+<!-- 		<option value="2">POP</option> Not implemented yet -->
+<!-- 		<option value="3">IMAP</option> Not implemented yet -->
 	</selection>			
 	
 	<selection name="message.media.type.select">
 		<option value="1">Mail</option>
 		<option value="2">Email</option>
 		<option value="3">Chat</option>
+	</selection>
+	
+	<selection name="mail.account.security.select">
+		<option value="0">NONE</option>
+		<option value="1">SSL</option>
+		<option value="2">TLS</option>
 	</selection>
 
 </object-views>

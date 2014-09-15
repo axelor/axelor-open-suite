@@ -43,7 +43,7 @@ public class MailAccountServiceImpl implements MailAccountService {
 	@Override
 	public boolean validateSmtpMailAccount(MailAccount account) {
 		String port=account.getPort()<=0?null:account.getPort().toString();
-		SmtpAccount smtpAccount=new SmtpAccount(account.getHost(),port,account.getLogin(),account.getPassword(),account.getSecuritySelect()?SmtpAccount.ENCRYPTION_TLS:null);
+		SmtpAccount smtpAccount=new SmtpAccount(account.getHost(), port, account.getLogin(), account.getPassword(), this.getSmtpSecurity(account));
 		Session session=smtpAccount.getSession();
 		boolean isvalidated=false;
 		try {
@@ -55,5 +55,29 @@ public class MailAccountServiceImpl implements MailAccountService {
 		} catch (MessagingException e) {
 		}
 		return isvalidated;	
+	}
+	
+	
+	public String getSmtpSecurity(MailAccount mailAccount)  {
+		
+		if(mailAccount.getSecuritySelect() == MailAccount.SECURITY_SSL)  {
+			return SmtpAccount.ENCRYPTION_SSL;
+		}
+		else if(mailAccount.getSecuritySelect() == MailAccount.SECURITY_TLS)  {
+			return SmtpAccount.ENCRYPTION_TLS;
+		}
+		else  {
+			return null;
+		}
+		
+	}
+	
+	public String getSignature(MailAccount mailAccount)  {
+		
+		if(mailAccount != null && mailAccount.getSignature() != null)  {
+			return "\n "+mailAccount.getSignature();
+		}
+		
+		return "";
 	}
 }

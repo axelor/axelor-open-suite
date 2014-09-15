@@ -80,7 +80,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		}
 		
 		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
-		content += messageService.getSignature(mailAccount);
+		content += mailAccountService.getSignature(mailAccount);
 		
 		if(template.getSubject() != null)  {
 			this.maker.setTemplate(template.getSubject());
