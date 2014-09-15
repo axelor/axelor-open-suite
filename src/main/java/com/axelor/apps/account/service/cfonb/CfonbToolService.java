@@ -19,25 +19,13 @@ package com.axelor.apps.account.service.cfonb;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
-import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.google.inject.Inject;
 
 public class CfonbToolService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(CfonbToolService.class);
-	
-	
-	@Inject
-	private CfonbConfigService cfonbConfigService;
-	
 	
 	
 	/**

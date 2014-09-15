@@ -42,7 +42,7 @@ public class IrrecoverableController {
 	public void getIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
-		irrecoverable = Irrecoverable.find(irrecoverable.getId());
+		irrecoverable = is.find(irrecoverable.getId());
 
 		try {
 			is.getIrrecoverable(irrecoverable);
@@ -54,7 +54,7 @@ public class IrrecoverableController {
 	public void createIrrecoverableReport(ActionRequest request, ActionResponse response)  {
 
 		Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
-		irrecoverable = Irrecoverable.find(irrecoverable.getId());
+		irrecoverable = is.find(irrecoverable.getId());
 
 		try {
 			is.createIrrecoverableReport(irrecoverable);
@@ -66,7 +66,7 @@ public class IrrecoverableController {
 	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
-		irrecoverable = Irrecoverable.find(irrecoverable.getId());
+		irrecoverable = is.find(irrecoverable.getId());
 
 		try {
 			int anomaly = is.passInIrrecoverable(irrecoverable);

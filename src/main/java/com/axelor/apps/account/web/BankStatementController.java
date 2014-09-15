@@ -37,7 +37,7 @@ public class BankStatementController {
 	
 		try {
 			
-			BankStatementProvider.get().compute(BankStatement.find(bankStatement.getId()));
+			BankStatementProvider.get().compute(BankStatementProvider.get().find(bankStatement.getId()));
 			response.setReload(true);
 			
 		}
@@ -50,7 +50,7 @@ public class BankStatementController {
 	
 		try {
 			
-			BankStatementProvider.get().validate(BankStatement.find(bankStatement.getId()));
+			BankStatementProvider.get().validate(BankStatementProvider.get().find(bankStatement.getId()));
 			response.setReload(true);
 			
 		}

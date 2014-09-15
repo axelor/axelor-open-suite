@@ -64,7 +64,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 		
 		Company company = batch.getAccountingBatch().getCompany();
 		
-		company = Company.find(company.getId());
+		company = companyRepo.find(company.getId());
 				
 		try {
 			reimbursementImportService.testCompanyField(company);
@@ -83,7 +83,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 		
 			Company company = batch.getAccountingBatch().getCompany();
 			
-			company = Company.find(company.getId());
+			company = companyRepo.find(company.getId());
 			
 			AccountConfig accountConfig = company.getAccountConfig();
 			
@@ -126,7 +126,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 					
 					try  {
 						
-						Reimbursement reimbursement = reimbursementImportService.createReimbursementRejectMoveLine(reject, Company.find(company.getId()), seq, Move.find(move.getId()), rejectDate);
+						Reimbursement reimbursement = reimbursementImportService.createReimbursementRejectMoveLine(reject, companyRepo.find(company.getId()), seq, moveService.find(move.getId()), rejectDate);
 						if(reimbursement != null)  {
 							LOG.debug("Remboursement n° {} traité", reimbursement.getRef());
 							seq++;
@@ -168,7 +168,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 		Move move = null;
 		
 		try  {
-			move = reimbursementImportService.createMoveReject(Company.find(company.getId()), rejectDate);
+			move = reimbursementImportService.createMoveReject(companyRepo.find(company.getId()), rejectDate);
 			
 			
 		} catch (AxelorException e) {
@@ -197,12 +197,12 @@ public class BatchReimbursementImport extends BatchStrategy {
 	public void validateMove(Move move, LocalDate rejectDate, int seq)  {
 		try  {
 			if(seq != 1)  {
-				MoveLine oppositeMoveLine = reimbursementImportService.createOppositeRejectMoveLine(Move.find(move.getId()), seq, rejectDate);
-				reimbursementImportService.validateMove(Move.find(move.getId()));
-				this.totalAmount = this.totalAmount.add(MoveLine.find(oppositeMoveLine.getId()).getDebit());
+				MoveLine oppositeMoveLine = reimbursementImportService.createOppositeRejectMoveLine(moveService.find(move.getId()), seq, rejectDate);
+				reimbursementImportService.validateMove(moveService.find(move.getId()));
+				this.totalAmount = this.totalAmount.add(moveLineService.find(oppositeMoveLine.getId()).getDebit());
 			}
 			else {
-				reimbursementImportService.deleteMove(Move.find(move.getId()));
+				reimbursementImportService.deleteMove(moveService.find(move.getId()));
 			}
 		} catch (AxelorException e) {
 			

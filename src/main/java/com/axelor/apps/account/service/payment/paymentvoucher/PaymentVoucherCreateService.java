@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -41,9 +42,8 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.axelor.auth.db.User;
-import com.axelor.auth.AuthUtils;
 
-public class PaymentVoucherCreateService  {
+public class PaymentVoucherCreateService extends PaymentVoucherRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherCreateService.class); 
 	
@@ -106,7 +106,7 @@ public class PaymentVoucherCreateService  {
 		
 		paymentVoucher.setPaymentInvoiceToPayList(lines);
 		
-		paymentVoucher.save();
+		save(paymentVoucher);
 		
 		paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher, false);
 		return paymentVoucher;

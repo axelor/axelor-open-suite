@@ -38,7 +38,7 @@ public class ImportPaymentVoucher {
 		try{
 			PaymentVoucher paymentVoucher = (PaymentVoucher)bean;
 			paymentVoucherLoadService.loadMoveLines(paymentVoucher);
-			if(paymentVoucher.getStatusSelect() == PaymentVoucher.STATUS_CONFIRMED)
+			if(paymentVoucher.getStatusSelect() == PaymentVoucherConfirmService.STATUS_CONFIRMED)
 				paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher, false);
 			return paymentVoucher;
 		}catch(Exception e){

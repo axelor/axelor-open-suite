@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -45,7 +46,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public abstract class InvoiceGenerator  {
+public abstract class InvoiceGenerator {
 	
 	// Logger
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceGenerator.class);
@@ -65,8 +66,6 @@ public abstract class InvoiceGenerator  {
 	protected PriceList priceList;
 	protected String internalReference;
 	protected String externalReference;
-	
-	
 	
 	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress, 
 			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference) throws AxelorException {
@@ -125,14 +124,14 @@ public abstract class InvoiceGenerator  {
 
 		switch(operationType)  {
 		
-			case Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE:
-				return Invoice.OPERATION_TYPE_SUPPLIER_REFUND;
-			case Invoice.OPERATION_TYPE_SUPPLIER_REFUND:
-				return Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE;
-			case Invoice.OPERATION_TYPE_CLIENT_SALE:
-				return Invoice.OPERATION_TYPE_CLIENT_REFUND;
-			case Invoice.OPERATION_TYPE_CLIENT_REFUND:
-				return Invoice.OPERATION_TYPE_CLIENT_SALE;
+			case InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE:
+				return InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND;
+			case InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND:
+				return InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE;
+			case InvoiceService.OPERATION_TYPE_CLIENT_SALE:
+				return InvoiceService.OPERATION_TYPE_CLIENT_REFUND;
+			case InvoiceService.OPERATION_TYPE_CLIENT_REFUND:
+				return InvoiceService.OPERATION_TYPE_CLIENT_SALE;
 			default:
 				throw new AxelorException(String.format("%s :\nLe type de facture n'est pas rempli %s", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
@@ -195,11 +194,11 @@ public abstract class InvoiceGenerator  {
 		
 		invoice.setCompany(company);
 		
-		invoice.setPartnerAccount(this.getPartnerAccount(partner, company, operationType == Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == Invoice.OPERATION_TYPE_SUPPLIER_REFUND));
+		invoice.setPartnerAccount(this.getPartnerAccount(partner, company, operationType == InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND));
 		
 		invoice.setJournal(journalService.getJournal(invoice)); 
 		
-		invoice.setStatusSelect(Invoice.STATUS_DRAFT);
+		invoice.setStatusSelect(InvoiceService.STATUS_DRAFT);
 		
 		invoice.setPriceList(priceList);
 		

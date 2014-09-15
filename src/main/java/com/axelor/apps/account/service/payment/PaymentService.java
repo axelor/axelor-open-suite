@@ -129,11 +129,11 @@ public class PaymentService {
 	public List<? extends MoveLine> getExcessPayment(Invoice invoice, Account account) throws AxelorException {
 		 Company company = invoice.getCompany();
 		
-		 List<? extends MoveLine> creditMoveLines =  MoveLine
+		 List<? extends MoveLine> creditMoveLines =  mls.all()
 		 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 		 " AND self.account.reconcileOk = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
 		 " AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
-		 company, Move.STATUS_VALIDATED, true, invoice.getPartner(), account).fetch();
+		 company, MoveService.STATUS_VALIDATED, true, invoice.getPartner(), account).fetch();
 		 
 		 LOG.debug("Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
 
@@ -152,18 +152,18 @@ public class PaymentService {
 		List<? extends MoveLine> othersDebitMoveLines = null;
 		if(useOthersInvoiceDue)  {
 			if(debitMoveLines != null && debitMoveLines.size() != 0)  {
-				othersDebitMoveLines = MoveLine
+				othersDebitMoveLines = mls.all()
 						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 AND self NOT IN ?5 ORDER BY self.date ASC ",
-						 company, Move.STATUS_VALIDATED, true, partner, debitMoveLines).fetch();
+						 company, MoveService.STATUS_VALIDATED, true, partner, debitMoveLines).fetch();
 			}
 			else  {
-				othersDebitMoveLines = MoveLine
+				othersDebitMoveLines = mls.all()
 						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 ORDER BY self.date ASC ",
-						 company, Move.STATUS_VALIDATED, true, partner).fetch();
+						 company, MoveService.STATUS_VALIDATED, true, partner).fetch();
 			}
 			debitMoveLines.addAll(othersDebitMoveLines);
 		}

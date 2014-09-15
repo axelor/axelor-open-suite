@@ -45,10 +45,10 @@ public class ReminderSessionService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ReminderSessionService.class); 
 	
-	@Inject
-	private ReminderActionService ras;
-
 	private LocalDate today;
+	
+	@Inject
+	private ReminderService reminderService;
 
 	@Inject
 	public ReminderSessionService() {
@@ -194,7 +194,7 @@ public class ReminderSessionService {
 
 		LOG.debug("End ReminderInitialisation service");
 		
-		reminder.save();
+		reminderService.save(reminder);
 	}
 	
 	

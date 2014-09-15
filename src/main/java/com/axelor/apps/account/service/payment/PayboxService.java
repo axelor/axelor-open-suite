@@ -47,30 +47,31 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PayboxConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.PayboxRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.PayboxConfigService;
-import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PayboxService {
+public class PayboxService extends PayboxRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PayboxService.class);
-	
-	@Inject
-	private ReminderService rs;
 	
 	@Inject
 	private AccountCustomerService acs;
 	
 	@Inject
 	private PayboxConfigService payboxConfigService;
+	
+	@Inject
+	private PartnerService partnerService;
 	
 	private final String CHARSET = "UTF-8";
 	
@@ -352,7 +353,7 @@ public class PayboxService {
 		if(toSaveOk)  {
 			
 			partner.getEmailAddress().setAddress(email);
-			partner.save();
+			partnerService.save(partner);
 		}
 	}
 	

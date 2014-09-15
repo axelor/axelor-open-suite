@@ -26,8 +26,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.PaymentInvoiceToPayRepository;
 
-public class PaymentInvoiceToPayService {
+public class PaymentInvoiceToPayService extends PaymentInvoiceToPayRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentInvoiceToPayService.class); 
 	

@@ -32,7 +32,7 @@ public class ChequeRejectionController {
 	public void validateChequeRejection(ActionRequest request, ActionResponse response)  {
 		
 		ChequeRejection chequeRejection = request.getContext().asType(ChequeRejection.class);
-		chequeRejection = ChequeRejection.find(chequeRejection.getId());
+		chequeRejection = crs.find(chequeRejection.getId());
 		
 		try {
 			crs.validateChequeRejection(chequeRejection);

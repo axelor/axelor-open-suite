@@ -40,7 +40,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -58,9 +57,6 @@ public class DoubtfulCustomerService {
 	
 	@Inject
 	private ReconcileService rs;
-	
-	@Inject
-	private SequenceService sgs;
 	
 	@Inject
 	private AccountConfigService accountConfigService;
@@ -164,7 +160,7 @@ public class DoubtfulCustomerService {
 		debitMoveLine.setPassageReason(debtPassReason);
 		
 		ms.validateMove(newMove);
-		newMove.save();
+		ms.save(newMove);
 		
 		for(Reconcile reconcile : reconcileList)  {
 			rs.confirmReconcile(reconcile, false);
@@ -225,7 +221,7 @@ public class DoubtfulCustomerService {
 		debitMoveLine.setPassageReason(debtPassReason);
 		
 		ms.validateMove(newMove);
-		newMove.save();
+		ms.save(newMove);
 
 		this.invoiceRejectProcess(debitMoveLine, doubtfulCustomerAccount, debtPassReason);
 		
@@ -251,7 +247,7 @@ public class DoubtfulCustomerService {
 				if(moveLine.getAccount().equals(doubtfulCustomerAccount) && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)  {
 					
 					moveLine.setPassageReason(debtPassReason);
-					moveLine.save();
+					mls.save(moveLine);
 					
 					break;
 				}
@@ -384,7 +380,7 @@ public class DoubtfulCustomerService {
 			//Créance de + 6 mois			
 			case 0 :
 				date = this.today.minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
-				moveLineList = MoveLine.filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
+				moveLineList = mls.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
 						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
 						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
 				break;
@@ -392,7 +388,7 @@ public class DoubtfulCustomerService {
 			//Créance de + 3 mois
 			case 1 : 
 				date = this.today.minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
-				moveLineList = MoveLine.filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
+				moveLineList = mls.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
 						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
 						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
 				break;

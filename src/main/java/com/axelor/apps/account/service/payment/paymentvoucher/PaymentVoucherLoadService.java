@@ -31,8 +31,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoice;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.PaymentInvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.service.MoveLineService;
+import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
@@ -41,7 +44,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PaymentVoucherLoadService  {
+public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherLoadService.class); 
 	
@@ -52,14 +55,16 @@ public class PaymentVoucherLoadService  {
 	private PaymentVoucherSequenceService paymentVoucherSequenceService;
 	
 	@Inject
-	private PaymentVoucherControlService paymentVoucherControlService;
-	
-	@Inject
 	private PaymentVoucherToolService paymentVoucherToolService;
 	
 	@Inject
-	private AccountConfigService accountConfigService;
-
+	private MoveLineService moveLineService;
+	
+	@Inject
+	private PaymentInvoiceRepository paymentInvoiceRepo;
+	
+	@Inject
+	private PaymentInvoiceToPayService paymentInvoiceToPayService;
 	
 	/**
 	 * Searching move lines to pay
@@ -85,7 +90,7 @@ public class PaymentVoucherLoadService  {
 			query += " and self.credit > 0 ";
 		}
 		
-		moveLines = MoveLine.filter(query, paymentVoucher.getPartner(), paymentVoucher.getCompany(), Move.STATUS_VALIDATED).fetch();
+		moveLines = moveLineService.all().filter(query, paymentVoucher.getPartner(), paymentVoucher.getCompany(), MoveService.STATUS_VALIDATED).fetch();
 		
 		moveLines.remove(excludeMoveLine);
 		
@@ -221,7 +226,7 @@ public class PaymentVoucherLoadService  {
 		}
 		
 		paymentVoucherSequenceService.setReference(paymentVoucher);
-		paymentVoucher.save();
+		save(paymentVoucher);
 		
 		
 	}
@@ -257,7 +262,7 @@ public class PaymentVoucherLoadService  {
 				int lineSeq = 1;
 				List<PaymentInvoice> paymentInvoiceSelectedList = new ArrayList<PaymentInvoice>();
 				for (PaymentInvoice pilContext : paymentVoucherContext.getPaymentInvoiceList())  {
-					PaymentInvoice paymentInvoiceFromContext = PaymentInvoice.find(pilContext.getId());
+					PaymentInvoice paymentInvoiceFromContext = paymentInvoiceRepo.find(pilContext.getId());
 					LOG.debug("Selected line : : : : {}",paymentInvoiceFromContext);
 					LOG.debug("pilContext.isSelected() : : : : {}",pilContext.isSelected());
 					if (pilContext.isSelected()){
@@ -284,7 +289,7 @@ public class PaymentVoucherLoadService  {
 					// + initialiser la sequence
 					if (paymentVoucherContext.getPaymentInvoiceToPayList() != null)  {
 						for (PaymentInvoiceToPay pToPay : paymentVoucherContext.getPaymentInvoiceToPayList())  {
-							PaymentInvoiceToPay piToPayFromContext = PaymentInvoiceToPay.find(pToPay.getId());
+							PaymentInvoiceToPay piToPayFromContext = paymentInvoiceToPayService.find(pToPay.getId());
 							PaymentInvoiceToPay piToPayOld = new PaymentInvoiceToPay();
 							piToPayOld.setSequence(piToPayFromContext.getSequence());
 							piToPayOld.setMoveLine(piToPayFromContext.getMoveLine());
@@ -372,7 +377,7 @@ public class PaymentVoucherLoadService  {
 			}
 		}
 		
-		paymentVoucher.save();
+		save(paymentVoucher);
 		LOG.debug("End loadSelectedLinesService.");
 		return paymentVoucher;
 	}

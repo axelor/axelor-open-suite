@@ -22,16 +22,12 @@ import java.util.List;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class PartnerController {
-
-	@Inject
-	private SequenceService sequenceService;
 
 	@Inject
 	private AccountingSituationService accountingSituationService;

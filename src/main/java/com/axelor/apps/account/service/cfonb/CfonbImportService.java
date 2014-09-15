@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.CfonbConfigService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.file.FileTool;
@@ -54,6 +55,9 @@ public class CfonbImportService {
 	
 	@Inject
 	private CfonbToolService cfonbToolService;
+	
+	@Inject
+	private PaymentModeService paymentModeService;
 	
 	
 	private void init(CfonbConfig cfonbConfig)  {
@@ -407,10 +411,10 @@ public class CfonbImportService {
 		LOG.debug("Récupération du mode de paiement depuis l'enregistrement CFONB : Société = {} , code CFONB = {}", new Object[]{company.getName(),code});
 		
 		if(code.equals(this.cfonbConfig.getIpoOperationCodeImportCFONB()))  {
-			return PaymentMode.findByCode("TIP");
+			return paymentModeService.findByCode("TIP");
 		}
 		else if(code.equals(this.cfonbConfig.getIpoAndChequeOperationCodeImportCFONB()))  {
-			return PaymentMode.findByCode("TIC");
+			return paymentModeService.findByCode("TIC");
 		}
 		throw new AxelorException(String.format("%s :\n Aucun mode de paiement trouvé pour le code %s et la société %s",
 				GeneralServiceAccount.getExceptionAccountingMsg(), code, company.getName()), IException.INCONSISTENCY);

@@ -49,7 +49,7 @@ public class AccountClearanceController {
 	public void validateAccountClearance(ActionRequest request, ActionResponse response)  {
 		
 		AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
-		accountClearance = AccountClearance.find(accountClearance.getId());
+		accountClearance = accountClearanceProvider.get().find(accountClearance.getId());
 		
 		try {
 			accountClearanceProvider.get().validateAccountClearance(accountClearance);

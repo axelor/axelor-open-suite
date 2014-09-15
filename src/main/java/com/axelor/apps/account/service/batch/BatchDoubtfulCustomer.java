@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
@@ -42,6 +43,9 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 	private boolean stop = false;
 	
 	private String updateCustomerAccountLog = "";
+	
+	@Inject
+	private AccountRepository accountRepo;
 	
 	@Inject
 	public BatchDoubtfulCustomer(DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {
@@ -103,7 +107,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 			LOG.debug("Nombre de lignes d'écriture de rejet concernées (Créance de + 3 mois) au 411 : {} ",moveLineList.size());
 			this.createDoubtFulCustomerRejectMove(moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
 	
-			updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(Company.find(company.getId()));
+			updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(companyRepo.find(company.getId()));
 		}
 		
 	}
@@ -128,8 +132,8 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 		for(Move move : moveList)  {
 			try {
 				
-				doubtfulCustomerService.createDoubtFulCustomerMove(Move.find(move.getId()), Account.find(doubtfulCustomerAccount.getId()), debtPassReason);
-				updateInvoice(Move.find(move.getId()).getInvoice()); 
+				doubtfulCustomerService.createDoubtFulCustomerMove(moveService.find(move.getId()), accountRepo.find(doubtfulCustomerAccount.getId()), debtPassReason);
+				updateInvoice(moveService.find(move.getId()).getInvoice()); 
 			
 			} catch (AxelorException e) {
 				
@@ -142,7 +146,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", Move.find(move.getId()).getInvoice().getInvoiceId());
+				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", moveService.find(move.getId()).getInvoice().getInvoiceId());
 				
 			} finally {
 				
@@ -172,8 +176,8 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 			
 			try {
 				
-				doubtfulCustomerService.createDoubtFulCustomerRejectMove(MoveLine.find(moveLine.getId()), Account.find(doubtfulCustomerAccount.getId()), debtPassReason);
-				updateInvoice(MoveLine.find(moveLine.getId()).getInvoiceReject()); 
+				doubtfulCustomerService.createDoubtFulCustomerRejectMove(moveLineService.find(moveLine.getId()), accountRepo.find(doubtfulCustomerAccount.getId()), debtPassReason);
+				updateInvoice(moveLineService.find(moveLine.getId()).getInvoiceReject()); 
 				i++;
 				
 			} catch (AxelorException e) {
@@ -187,7 +191,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", MoveLine.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
+				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", moveLineService.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
 				
 			} finally {
 				

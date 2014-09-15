@@ -38,7 +38,7 @@ public class CashRegisterLineController {
 	public void closeCashRegister(ActionRequest request, ActionResponse response)  {
 		
 		CashRegisterLine cashRegisterLine = request.getContext().asType(CashRegisterLine.class);
-		cashRegisterLine = CashRegisterLine.find(cashRegisterLine.getId());
+		cashRegisterLine = cashRegisterLineProvider.get().find(cashRegisterLine.getId());
 		
 		try  {
 			Mail mail = cashRegisterLineProvider.get().closeCashRegister(cashRegisterLine);
@@ -51,7 +51,7 @@ public class CashRegisterLineController {
 	public void openCashRegister(ActionRequest request, ActionResponse response)  {
 		
 		CashRegisterLine cashRegisterLine = request.getContext().asType(CashRegisterLine.class);
-		cashRegisterLine = CashRegisterLine.find(cashRegisterLine.getId());
+		cashRegisterLine = cashRegisterLineProvider.get().find(cashRegisterLine.getId());
 		
 		try  {
 			cashRegisterLineProvider.get().openCashRegister(cashRegisterLine);

@@ -88,13 +88,13 @@ public class BatchReminder extends BatchStrategy {
 	public void reminderPartner()  {
 		
 		int i = 0;
-		List<Partner> partnerList = (List<Partner>) Partner.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", batch.getAccountingBatch().getCompany()).fetch();
+		List<Partner> partnerList = (List<Partner>) partnerService.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", batch.getAccountingBatch().getCompany()).fetch();
 		
 		for (Partner partner : partnerList) {
 
 			try {
 				
-				boolean remindedOk = reminderService.reminderGenerate(Partner.find(partner.getId()), batch.getAccountingBatch().getCompany());
+				boolean remindedOk = reminderService.reminderGenerate(partnerService.find(partner.getId()), batch.getAccountingBatch().getCompany());
 				
 				if(remindedOk == true)  {  updatePartner(partner); i++; }
 
@@ -125,13 +125,13 @@ public class BatchReminder extends BatchStrategy {
 	
 	public void generateMail()  {
 		
-		List<Mail> mailList = (List<Mail>) Mail.all().filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
+		List<Mail> mailList = (List<Mail>) mailService.all().filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
 		
 		LOG.debug("Nombre de fichiers à générer : {}",mailList.size());
 		for(Mail mail : mailList)  {
 			try {
 				
-				mailService.generatePdfMail(Mail.find(mail.getId()));
+				mailService.generatePdfMail(mailService.find(mail.getId()));
 				mailDone++;
 				
 			} catch (AxelorException e) {

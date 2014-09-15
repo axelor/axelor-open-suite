@@ -20,8 +20,8 @@ package com.axelor.apps.account.service.invoice;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceBatch;
+import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchStrategy;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchValidation;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchVentilation;
@@ -33,7 +33,7 @@ import com.axelor.exception.db.IException;
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
  * facturations.
  */
-public class InvoiceBatchService {
+public class InvoiceBatchService extends InvoiceBatchRepository{
 
 	@Inject
 	private Provider<BatchValidation> validationProvider;
@@ -41,7 +41,6 @@ public class InvoiceBatchService {
 	@Inject
 	private Provider<BatchVentilation> ventilationProvider;
 	
-
 	// Appel 	
 	
 	/**
@@ -55,11 +54,11 @@ public class InvoiceBatchService {
 	public Batch run(String batchCode) throws AxelorException {
 				
 		Batch batch;
-		InvoiceBatch invoiceBatch = InvoiceBatch.findByCode(batchCode);
+		InvoiceBatch invoiceBatch = findByCode(batchCode);
 		
 		if (invoiceBatch != null){
 			switch (invoiceBatch.getActionSelect()) {
-			case InvoiceBatch.BATCH_STATUS:
+			case BATCH_STATUS:
 				batch = wkf(invoiceBatch);
 				break;
 			default:
@@ -79,10 +78,10 @@ public class InvoiceBatchService {
 		
 		BatchStrategy strategy = null;
 		
-		if (invoiceBatch.getToStatusSelect().equals(Invoice.STATUS_VALIDATED)) { 
+		if (invoiceBatch.getToStatusSelect().equals(InvoiceService.STATUS_VALIDATED)) { 
 			strategy = validationProvider.get(); 
 		}
-		else if (invoiceBatch.getToStatusSelect().equals(Invoice.STATUS_VENTILATED)) { 
+		else if (invoiceBatch.getToStatusSelect().equals(InvoiceService.STATUS_VENTILATED)) { 
 			strategy = ventilationProvider.get();
 		}
 		else {
