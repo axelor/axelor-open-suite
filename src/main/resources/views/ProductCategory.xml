@@ -16,7 +16,7 @@
 		</toolbar>
 		<panel>
         	<field name="name"/>
-        	<field name="code"/>
+        	<field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="productFamily"/>
 	        <field name="parentProductCategory"/>
 		</panel>

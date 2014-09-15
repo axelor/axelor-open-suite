@@ -14,7 +14,7 @@
 	    <button name="run" title="Run" onClick="save,alarm-engine-batch-method-run"/>
 	  </toolbar>
 	  <panel x-stack="true">
-	    <field name="code" x-span="4"/>
+	    <field name="code" x-bind="{{code|uppercase}}" x-span="4"/>
 	  </panel>
 	  <panel-tabs>
 	    <panel title="Configuration">

@@ -12,7 +12,7 @@
     <form name="department-form" title="Departement" model="com.axelor.apps.base.db.Department" >
     	<panel>
 	        <field name="name"/>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="region"/>
         </panel>
         <panel-related field="communeList" x-span="12" />

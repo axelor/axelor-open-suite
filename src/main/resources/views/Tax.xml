@@ -10,7 +10,7 @@
     
 	<form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax"  >
 		<panel>
-			<field name="code"/>
+			<field name="code" x-bind="{{code|uppercase}}"/>
 			<field name="name"/>
 		</panel>
 	    <panel-tabs>

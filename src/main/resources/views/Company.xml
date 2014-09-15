@@ -17,7 +17,7 @@
        <panel>
 	    <field name="administration" />
 	    <field name="name"/>
-	    <field name="code"/>
+	    <field name="code" x-bind="{{code|uppercase}}"/>
 	    <field name="parent"/>
 	    <field name="logoPath"/>
 	    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
@@ -60,7 +60,7 @@
 	    <panel readonly="true">
 	    	<field name="administration" />
 	        <field name="name"/>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="parent"/>
 	        <field name="logoPath" />
 	        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>

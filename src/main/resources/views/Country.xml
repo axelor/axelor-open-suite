@@ -9,7 +9,7 @@
     <form name="country-form" title="Country" model="com.axelor.apps.base.db.Country" >
     	<panel>
 	        <field name="name" onChange="action-check-string-capital-case"/>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
 	    </panel>
 		<panel title="Attributes">
 			<field name="cog" />

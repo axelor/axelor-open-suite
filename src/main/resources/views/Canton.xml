@@ -12,7 +12,7 @@
     <form name="canton-form" title="Canton" model="com.axelor.apps.base.db.Canton"  >
     	<panel>
 	        <field name="name"/>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="artmin"/>
 	        <field name="department"/>
 	    	<field name="inhabitantsNbr" />

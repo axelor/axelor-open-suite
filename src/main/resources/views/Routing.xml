@@ -13,7 +13,7 @@
 	<form name="routing-form" title="Routing rule" model="com.axelor.apps.base.db.Routing" >
 		<panel>
 			<field name="name"/>
-			<field name="code"/>
+			<field name="code" x-bind="{{code|uppercase}}"/>
 			<field name="priority"/>
 			<field name="isActive"/>
 		</panel>

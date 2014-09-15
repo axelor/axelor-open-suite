@@ -13,7 +13,7 @@
     <form name="mailModel-form" title="Email model" model="com.axelor.apps.base.db.MailModel" 
     onLoad="action-mail-model-attrs-hidden">
     	<panel>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="name"/>
 	        <field name="typeSelect"/>
 	        <field name="objectConcernedSelect" onChange="action-mail-model-attrs-hidden"/>

@@ -15,7 +15,7 @@
     onNew="action-year-record-new" onSave="action-year-check-date,action-civil-year-check-date">
     	<panel>
 	        <field name="name"/>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="fromDate"/>
 	        <field name="toDate"/>
 	        <field name="company" widget="SuggestBox"/>

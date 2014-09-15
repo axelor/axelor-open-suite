@@ -11,7 +11,7 @@
 	
 	<form name="indicator-generator-grouping-form" title="Indicators groups" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping">
 		<panel>
-			<field name="code"/>
+			<field name="code" x-bind="{{code|uppercase}}"/>
 			<field name="name" x-span="12"/>
 			<panel-related field="indicatorGeneratorSet" x-span="12" />
 			<button name="run" title="Execute" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:run" />

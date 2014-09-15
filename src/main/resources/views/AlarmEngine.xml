@@ -25,7 +25,7 @@
     	onNew="action-alarm-engine-attrs-external" 
     	name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine">
 	    <panel>
-		    <field name="code"/>
+		    <field name="code" x-bind="{{code|uppercase}}"/>
 		    <field name="metaModel"/>
 		    <field name="alarmMessage"/>
 		    <field name="managerTypeSelect"/>

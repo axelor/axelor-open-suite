@@ -12,7 +12,7 @@
     	<panel>
         	<field name="name"/>
         	<spacer/>
-        	<field name="code"/>
+        	<field name="code" x-bind="{{code|uppercase}}"/>
         </panel>
     </form>
     

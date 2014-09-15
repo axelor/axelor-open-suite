@@ -16,7 +16,7 @@
     onNew="action-group-base-basebatch-onnew">
     	<panel>
 		    <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
-		    <field name="code"/>
+		    <field name="code" x-bind="{{code|uppercase}}"/>
 		    <field name="company" widget="SuggestBox"/>
 		</panel>
 	  	<panel-tabs>
