@@ -15,8 +15,8 @@
         <field name="company"/>
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
-        <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move"/>
-<!--         <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/> -->
+        <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
     
      <grid name="stock-move-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
@@ -33,8 +33,8 @@
         <field name="partner"/>
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
-        <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move"/>
-        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" readonlyIf="typeSelect != 2"/>
+        <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
     
     <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
@@ -51,8 +51,8 @@
         <field name="partner"/>
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
-        <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move"/>
-        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" readonlyIf="typeSelect != 2"/>
+        <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
     
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
@@ -80,11 +80,7 @@
 	    </panel>
 	  </panel>  
 	  <panel-tabs>
-	    <panel title="Split/Ship/Receive">
-	      <button name="splitByUnit" title="Split by unit" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-method-split-stock-move-lines-unit"/>
-	      <button name="specialSplit" title="Special split" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-wizard-special-split"/>
-	      <button name="shipReciveAllProducts" title="Ship/Receive all products" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-ship-recieve-all-products"/>
-	    </panel>
+	   
 	    <panel-related field="stockMoveLineList" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
 	    <panel title="Configuration">
 	      <field name="saleOrder" if-module="axelor-supplychain"/>
@@ -92,16 +88,23 @@
 	      <field name="invoice" if-module="axelor-supplychain"/>
 	    </panel>
 	  </panel-tabs>
+	  
 	  <panel-side title="Action(s)">
-	    <button name="plan" title="Plan" showIf="statusSelect == 1"   onClick="action-group-stock-stockmove-plan-click"/>
-	    <button name="realize" title="Realize" showIf="statusSelect == 2"   onClick="action-group-stock-stockmove-realize-click"/>
-	    <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3"   onClick="action-group-stock-stockmove-cancel-click"/>
-	    <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
-	    <button name="generateInvoice" title="Generate invoice" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain"/>
-	    <button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion"/>
-	    <button name="printStockMove" title=" Print" icon="fa-print" onClick="save,action-print-stock-move"/>
-	    <button name="viewDirection" title="View Direction" help="View Direction" showIf="typeSelect == 2"   icon="fa-location-arrow" onClick="action-stock-move-method-view-direction"/>
+			<button name="plan" title="Plan" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
+			<button name="realize" title="Realize" showIf="statusSelect == 2" onClick="action-group-stock-stockmove-realize-click"/>
+			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" onClick="action-group-stock-stockmove-cancel-click"/>
+			<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
+			<button name="generateInvoice" title="Generate invoice" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
+			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect &gt;= 2"/>
+			<button name="printStockMove" title=" Print" icon="fa-print" onClick="save,action-print-stock-move" showIf="statusSelect != 1"/>
+			<button name="viewDirection" title="View Direction" help="View Direction" showIf="typeSelect == 2 || statusSelect != 1"   icon="fa-location-arrow" onClick="action-stock-move-method-view-direction"/>
 	  </panel-side>
+	  
+	   <panel-side title="Split/Ship/Receive" >
+	      <button name="splitByUnit" title="Split by unit" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-method-split-stock-move-lines-unit"/>
+	      <button name="specialSplit" title="Special split" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-wizard-special-split"/>
+	      <button name="shipReciveAllProducts" title="Ship/Receive all products" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-ship-recieve-all-products"/>
+	    </panel-side>
 	</form>
     
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
