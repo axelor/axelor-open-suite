@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.SaleOrderService;
@@ -45,9 +44,6 @@ public class SaleOrderController {
 	@Inject
 	private Provider<SaleOrderService> saleOrderProvider;
 	
-	@Inject
-	private Provider<SequenceService> sequenceProvider;
-
 //	@Inject 
 //	private Provider<DocumentService> documentSeriveObj;
 //

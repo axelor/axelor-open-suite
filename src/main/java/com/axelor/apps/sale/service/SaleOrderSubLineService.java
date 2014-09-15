@@ -33,10 +33,11 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderSubLine;
+import com.axelor.apps.sale.db.repo.SaleOrderSubLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public class SaleOrderSubLineService {
+public class SaleOrderSubLineService extends SaleOrderSubLineRepository {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderSubLineService.class); 
 	
