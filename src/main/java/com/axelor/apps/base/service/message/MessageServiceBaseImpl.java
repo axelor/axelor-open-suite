@@ -43,7 +43,7 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	private UserService userService;
 	
 	@Inject
-	private MessageRepository messageRepo;
+	protected MessageRepository messageRepo;
 	
 	@Inject
 	public MessageServiceBaseImpl(UserService userService) {

@@ -45,7 +45,7 @@ public abstract class AbstractBatch {
 	private int done, anomaly;
 	
 	@Inject
-	private BatchRepository batchRepo;
+	protected BatchRepository batchRepo;
 	
 	protected AbstractBatch(  ){
 	
