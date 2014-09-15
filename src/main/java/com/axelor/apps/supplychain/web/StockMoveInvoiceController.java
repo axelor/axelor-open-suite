@@ -19,8 +19,10 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -35,7 +37,7 @@ public class StockMoveInvoiceController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 		Invoice invoice = null;
 		try {
-			stockMove = StockMove.find(stockMove.getId());
+			stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
 			
 			if(stockMove.getSaleOrder() != null) {
 				invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());

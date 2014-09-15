@@ -20,16 +20,14 @@ package com.axelor.apps.supplychain.service;
 import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.auth.db.User;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.stock.db.IMinStockRules;
@@ -38,13 +36,12 @@ import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.MinStockRules;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImpl  {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(MinStockRulesServiceImpl.class); 
-
 	@Inject
 	protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 	
@@ -57,6 +54,9 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 	protected LocalDate today;
 	
 	protected User user;
+	
+	@Inject
+	private PurchaseOrderRepository purchaseOrderRepo;
 	
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -94,7 +94,7 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 					
 					Company company = location.getCompany();
 					
-					PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+					PurchaseOrder purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
 							this.user, 
 							company, 
 							null, 
@@ -105,8 +105,8 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 							saleConfigService.getSaleConfig(company).getSaleOrderInvoicingTypeSelect(), 
 							location, 
 							this.today, 
-							PriceList.filter("self.partner = ?1", supplierPartner).fetchOne(), 
-							supplierPartner).save();
+							Beans.get(PriceListRepository.class).all().filter("self.partner = ?1", supplierPartner).fetchOne(), 
+							supplierPartner));
 					
 					purchaseOrder.addPurchaseOrderLineListItem(
 							purchaseOrderLineService.createPurchaseOrderLine(
@@ -119,7 +119,7 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 						
 					purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 					
-					purchaseOrder.save();
+					purchaseOrderRepo.save(purchaseOrder);
 					
 				}
 				

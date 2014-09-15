@@ -29,16 +29,19 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -122,7 +125,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				IPurchaseOrder.INVOICING_FREE, 
 				purchaseOrderServiceSupplychainImpl.getLocation(saleOrder.getCompany()), 
 				today, 
-				PriceList.filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
+				Beans.get(PriceListRepository.class).all().filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
 				supplierPartner);
 		
 		
@@ -134,7 +137,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 		
 		purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 		
-		purchaseOrder.save();
+		Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
 	}
 }
 

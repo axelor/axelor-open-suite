@@ -43,9 +43,13 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
@@ -55,13 +59,16 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	private PurchaseOrderLineService purchaseOrderLineService;
 	
 	@Inject
-	private StockMoveService stockMoveService;
+	private Provider<StockMoveService> stockMoveServicProvider;
 	
 	@Inject
 	private StockMoveLineService stockMoveLineService;
 	
 	@Inject
 	private StockConfigService stockConfigService;
+	
+	@Inject
+	private LocationRepository locationRepo;
 	
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
@@ -94,7 +101,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			
 			StockConfig stockConfig = stockConfigService.getStockConfig(company);
 			
-			Location startLocation = Location.findByPartner(purchaseOrder.getSupplierPartner());
+			Location startLocation = locationRepo.findByPartner(purchaseOrder.getSupplierPartner());
 			
 			if(startLocation == null)  {
 				startLocation = stockConfigService.getSupplierVirtualLocation(stockConfig);
@@ -106,7 +113,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			
 			Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
-			StockMove stockMove = stockMoveService.createStockMove(supplierPartner.getDeliveryAddress(), null, company, supplierPartner, startLocation, purchaseOrder.getLocation(), purchaseOrder.getDeliveryDate());
+			StockMove stockMove = stockMoveServicProvider.get().createStockMove(supplierPartner.getDeliveryAddress(), null, company, supplierPartner, startLocation, purchaseOrder.getLocation(), purchaseOrder.getDeliveryDate());
 			stockMove.setPurchaseOrder(purchaseOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			
@@ -128,7 +135,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				}	
 			}
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMoveService.plan(stockMove);
+				stockMoveServicProvider.get().plan(stockMove);
 			}
 		}
 	}
@@ -136,17 +143,17 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	
 	public Location getLocation(Company company)  {
 		
-		return Location.filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, ILocation.INTERNAL).fetchOne();
+		return locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, ILocation.INTERNAL).fetchOne();
 	}
 	
 	
 	public void clearPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  {
 		
-		List<StockMove> stockMoveList = (List<StockMove>) StockMove.filter("self.purchaseOrder = ?1 AND self.statusSelect = 2", purchaseOrder).fetch();
+		List<StockMove> stockMoveList = (List<StockMove>) Beans.get(StockMoveRepository.class).all().filter("self.purchaseOrder = ?1 AND self.statusSelect = 2", purchaseOrder).fetch();
 		
 		for(StockMove stockMove : stockMoveList)  {
 			
-			stockMoveService.cancel(stockMove);
+			stockMoveServicProvider.get().cancel(stockMove);
 			
 		}
 		

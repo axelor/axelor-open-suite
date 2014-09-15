@@ -17,13 +17,11 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -32,14 +30,7 @@ import com.google.inject.Provider;
 public class PurchaseOrderController {
 
 	@Inject
-	private SequenceService sequenceService;
-	
-	@Inject
 	private Provider<PurchaseOrderServiceSupplychainImpl> purchaseOrderServiceSupplychainProvider;
-	
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderController.class);
-
 	
 	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
 		
@@ -47,7 +38,7 @@ public class PurchaseOrderController {
 		
 		if(purchaseOrder.getId() != null) {
 
-			purchaseOrderServiceSupplychainProvider.get().createStocksMoves(PurchaseOrder.find(purchaseOrder.getId()));
+			purchaseOrderServiceSupplychainProvider.get().createStocksMoves(Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
 		}
 	}
 	
