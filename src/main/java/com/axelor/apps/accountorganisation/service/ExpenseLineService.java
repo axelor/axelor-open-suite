@@ -24,11 +24,12 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.organisation.db.Expense;
 import com.axelor.apps.organisation.db.ExpenseLine;
+import com.axelor.apps.organisation.db.repo.ExpenseLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 
-public class ExpenseLineService {
+public class ExpenseLineService extends ExpenseLineRepository{
 
 	private static final Logger LOG = LoggerFactory.getLogger(ExpenseLineService.class);
 	
