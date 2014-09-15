@@ -55,7 +55,7 @@ public class ManufOrderController {
 
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderProvider.get().propagateIsToInvoice(ManufOrder.find(manufOrder.getId()));
+		manufOrderProvider.get().propagateIsToInvoice(manufOrderProvider.get().find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -88,7 +88,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().start(ManufOrder.find(manufOrder.getId()));
+		manufOrderWorkflowProvider.get().start(manufOrderProvider.get().find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -98,7 +98,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().pause(ManufOrder.find(manufOrder.getId()));
+		manufOrderWorkflowProvider.get().pause(manufOrderProvider.get().find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -108,7 +108,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().resume(ManufOrder.find(manufOrder.getId()));
+		manufOrderWorkflowProvider.get().resume(manufOrderProvider.get().find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -118,7 +118,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().finish(ManufOrder.find(manufOrder.getId()));
+		manufOrderWorkflowProvider.get().finish(manufOrderProvider.get().find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -128,7 +128,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().cancel(ManufOrder.find(manufOrder.getId()));
+		manufOrderWorkflowProvider.get().cancel(manufOrderProvider.get().find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -138,7 +138,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().plan(ManufOrder.find(manufOrder.getId()));
+		manufOrderWorkflowProvider.get().plan(manufOrderProvider.get().find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -169,7 +169,7 @@ public class ManufOrderController {
 			
 		if(!manufOrderIds.equals("")){
 			manufOrderIds = manufOrderIds.substring(0, manufOrderIds.length()-1);	
-			manufOrder = ManufOrder.find(new Long(lstSelectedManufOrder.get(0)));
+			manufOrder = manufOrderProvider.get().find(new Long(lstSelectedManufOrder.get(0)));
 		}else if(manufOrder.getId() != null){
 			manufOrderIds = manufOrder.getId().toString();			
 		}

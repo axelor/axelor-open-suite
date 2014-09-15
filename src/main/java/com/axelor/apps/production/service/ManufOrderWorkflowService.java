@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-
 import java.util.List;
 
 import org.joda.time.LocalDateTime;
@@ -28,20 +27,18 @@ import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ManufOrderWorkflowService {
+public class ManufOrderWorkflowService extends ManufOrderRepository{
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
 	@Inject
 	private OperationOrderWorkflowService operationOrderWorkflowService;
 	
 	@Inject
 	private ManufOrderStockMoveService manufOrderStockMoveService;
-	
 	
 	
 
@@ -50,9 +47,9 @@ public class ManufOrderWorkflowService {
 		
 		if(manufOrder.getOperationOrderList() != null)  {
 			
-			OperationOrder operationOrderPriority = OperationOrder.filter("self.manufOrder = ?1", manufOrder).order("priority").fetchOne();
+			OperationOrder operationOrderPriority = operationOrderWorkflowService.all().filter("self.manufOrder = ?1", manufOrder).order("priority").fetchOne();
 			
-			List<OperationOrder> operationOrderList = (List<OperationOrder>)OperationOrder.filter("self.manufOrder = ?1 AND self.priority = ?2", manufOrder, operationOrderPriority.getPriority()).fetch();
+			List<OperationOrder> operationOrderList = (List<OperationOrder>)operationOrderWorkflowService.all().filter("self.manufOrder = ?1 AND self.priority = ?2", manufOrder, operationOrderPriority.getPriority()).fetch();
 			
 			for(OperationOrder operationOrder : operationOrderList)  {
 				
@@ -64,7 +61,7 @@ public class ManufOrderWorkflowService {
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
 		
-		manufOrder.save();
+		save(manufOrder);
 		
 	}
 	
@@ -88,7 +85,7 @@ public class ManufOrderWorkflowService {
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_STANDBY);
 		
-		manufOrder.save();
+		save(manufOrder);
 		
 	}
 	
@@ -112,7 +109,7 @@ public class ManufOrderWorkflowService {
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
 		
-		manufOrder.save();
+		save(manufOrder);
 		
 	}
 	
@@ -139,7 +136,7 @@ public class ManufOrderWorkflowService {
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
 		
-		manufOrder.save();
+		save(manufOrder);
 		
 	}
 	
@@ -162,7 +159,7 @@ public class ManufOrderWorkflowService {
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_CANCELED);
 		
-		manufOrder.save();
+		save(manufOrder);
 		
 	}
 	
@@ -190,13 +187,13 @@ public class ManufOrderWorkflowService {
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_PLANNED);
 		
-		return manufOrder.save();
+		return save(manufOrder);
 	}
 	
 	
 	public LocalDateTime computePlannedEndDateT(ManufOrder manufOrder)  {
 		
-		OperationOrder lastOperationOrder = OperationOrder.filter("self.manufOrder = ?1 ORDER BY self.plannedEndDateT DESC", manufOrder).fetchOne();
+		OperationOrder lastOperationOrder = operationOrderWorkflowService.all().filter("self.manufOrder = ?1 ORDER BY self.plannedEndDateT DESC", manufOrder).fetchOne();
 		
 		if(lastOperationOrder != null)  {
 			

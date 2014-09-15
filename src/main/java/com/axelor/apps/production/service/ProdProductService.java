@@ -20,16 +20,11 @@ package com.axelor.apps.production.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.db.repo.ProdProductRepository;
 
-public class ProdProductService {
+public class ProdProductService extends ProdProductRepository {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
-	
 	//TODO add conversion unit
 	public BigDecimal computeQuantity(List<ProdProduct> prodProductList)  {
 		

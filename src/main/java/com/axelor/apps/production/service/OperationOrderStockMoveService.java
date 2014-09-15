@@ -17,12 +17,10 @@
  */
 package com.axelor.apps.production.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -31,13 +29,12 @@ import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public class OperationOrderStockMoveService {
+public class OperationOrderStockMoveService extends OperationOrderRepository {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
 	@Inject
 	private StockMoveService stockMoveService;
 	
@@ -46,6 +43,9 @@ public class OperationOrderStockMoveService {
 	
 	@Inject
 	private ProductionConfigService productionConfigService;
+	
+	@Inject
+	private LocationRepository locationRepo;
 	
 	
 	public void createToConsumeStockMove(OperationOrder operationOrder) throws AxelorException {
@@ -85,7 +85,7 @@ public class OperationOrderStockMoveService {
 			fromLocation = operationOrder.getProdProcessLine().getProdProcess().getLocation();
 		}
 		else  {
-			fromLocation = Location.filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
+			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
 					company, true, ILocation.INTERNAL).fetchOne();
 		}
 		

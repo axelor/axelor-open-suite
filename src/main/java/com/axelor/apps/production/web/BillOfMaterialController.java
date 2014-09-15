@@ -34,7 +34,7 @@ public class BillOfMaterialController {
 
 		BillOfMaterial billOfMaterial = request.getContext().asType( BillOfMaterial.class );
 
-		billOfMaterialService.computeCostPrice(BillOfMaterial.find(billOfMaterial.getId()));
+		billOfMaterialService.computeCostPrice(billOfMaterialService.find(billOfMaterial.getId()));
 		
 		response.setReload(true);
 		
@@ -45,7 +45,7 @@ public class BillOfMaterialController {
 
 		BillOfMaterial billOfMaterial = request.getContext().asType( BillOfMaterial.class );
 
-		billOfMaterialService.updateProductCostPrice(BillOfMaterial.find(billOfMaterial.getId()));
+		billOfMaterialService.updateProductCostPrice(billOfMaterialService.find(billOfMaterial.getId()));
 		
 		response.setReload(true);
 		

@@ -39,6 +39,7 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdRemains;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -46,7 +47,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ManufOrderService {
+public class ManufOrderService extends ManufOrderRepository {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -59,9 +60,6 @@ public class ManufOrderService {
 	
 	@Inject
 	private OperationOrderService operationOrderService;
-	
-	@Inject
-	private ManufOrderStockMoveService manufOrderStockMoveService;
 	
 	@Inject
 	private ManufOrderWorkflowService manufOrderWorkflowService;
@@ -86,7 +84,7 @@ public class ManufOrderService {
 			}
 		}
 		
-		manufOrder.save();
+		save(manufOrder);
 		
 	}
 
@@ -99,7 +97,7 @@ public class ManufOrderService {
 		
 		manufOrder = manufOrderWorkflowService.plan(manufOrder);
 		
-		return manufOrder.save();
+		return save(manufOrder);
 		
 	}
 	

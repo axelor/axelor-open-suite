@@ -31,7 +31,6 @@ import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -39,15 +38,9 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ProductionOrderSaleOrderService {
+public class ProductionOrderSaleOrderService{
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
-	@Inject
-	private ProductionOrderService productionOrderService;
-	
-	@Inject
-	private SaleOrderServiceStockImpl saleOrderServiceStockImpl;
 	
 	private LocalDate today;
 	

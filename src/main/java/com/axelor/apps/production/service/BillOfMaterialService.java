@@ -25,21 +25,20 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.app.production.db.IProdResource;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdResource;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class BillOfMaterialService {
+public class BillOfMaterialService extends BillOfMaterialRepository {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -56,7 +55,7 @@ public class BillOfMaterialService {
 	
 	public List<BillOfMaterial> getBillOfMaterialList(Product product)  {
 		
-		return(List<BillOfMaterial>) BillOfMaterial.filter("self.product = ?1", product).fetch();
+		return(List<BillOfMaterial>) all().filter("self.product = ?1", product).fetch();
 		
 		
 	}
@@ -68,7 +67,7 @@ public class BillOfMaterialService {
 		
 		billOfMaterial.getProduct().setCostPrice(billOfMaterial.getCostPrice());
 		
-		billOfMaterial.save();
+		save(billOfMaterial);
 	}
 	
 	
@@ -81,7 +80,7 @@ public class BillOfMaterialService {
 		
 		productService.updateSalePrice(product);
 		
-		billOfMaterial.save();
+		save(billOfMaterial);
 	}
 	
 	

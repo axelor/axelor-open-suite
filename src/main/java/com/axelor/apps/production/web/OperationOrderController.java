@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
@@ -95,7 +94,7 @@ public class OperationOrderController {
 
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 
-		operationOrderWorkflowProvider.get().plan(OperationOrder.find(operationOrder.getId()));
+		operationOrderWorkflowProvider.get().plan(operationOrderWorkflowProvider.get().find(operationOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -106,7 +105,7 @@ public class OperationOrderController {
 
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 
-		operationOrderWorkflowProvider.get().finish(OperationOrder.find(operationOrder.getId()));
+		operationOrderWorkflowProvider.get().finish(operationOrderWorkflowProvider.get().find(operationOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -118,7 +117,7 @@ public class OperationOrderController {
 //	TODO A SUPPRIMER UNE FOIS BUG FRAMEWORK CORRIGE
 	public void saveOperationOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		OperationOrder persistOperationOrder = OperationOrder.find(operationOrder.getId());
+		OperationOrder persistOperationOrder = operationOrderWorkflowProvider.get().find(operationOrder.getId());
 		persistOperationOrder.setStatusSelect(operationOrder.getStatusSelect());
 		persistOperationOrder.setRealStartDateT(operationOrder.getRealStartDateT());
 		persistOperationOrder.setRealEndDateT(operationOrder.getRealEndDateT());
@@ -129,7 +128,7 @@ public class OperationOrderController {
 	
 	@Transactional
 	public void saveOperationOrder(OperationOrder operationOrder){
-		operationOrder.save();
+		operationOrderWorkflowProvider.get().save(operationOrder);
 	}
 	
 	
@@ -157,15 +156,13 @@ public class OperationOrderController {
 			
 		if(!operationOrderIds.equals("")){
 			operationOrderIds = operationOrderIds.substring(0, operationOrderIds.length()-1);	
-			operationOrder = OperationOrder.find(new Long(lstSelectedOperationOrder.get(0)));
+			operationOrder = operationOrderWorkflowProvider.get().find(new Long(lstSelectedOperationOrder.get(0)));
 		}else if(operationOrder.getId() != null){
 			operationOrderIds = operationOrder.getId().toString();			
 		}
 		
 		if(!operationOrderIds.equals("")){
 			StringBuilder url = new StringBuilder();			
-			AppSettings appSettings = AppSettings.get();
-			
 			User user = AuthUtils.getUser();
 			
 			Company company = null;
