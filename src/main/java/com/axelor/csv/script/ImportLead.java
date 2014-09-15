@@ -17,15 +17,21 @@
  */
 package com.axelor.csv.script;
 
+import javax.inject.Inject;
+
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 
 public class ImportLead{
 	
+	@Inject
+	private UserRepository userRepo;
+	
 	public User importCreatedBy(String importId){
-		User user = User.all().filter("self.importId = ?1",importId).fetchOne();
+		User user = userRepo.all().filter("self.importId = ?1",importId).fetchOne();
 		if(user != null)
 			return user;
-		return User.all().filter("self.code = 'democrm'").fetchOne();
+		return userRepo.all().filter("self.code = 'democrm'").fetchOne();
 	}
 
 }

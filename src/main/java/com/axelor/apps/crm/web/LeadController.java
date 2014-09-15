@@ -30,6 +30,7 @@ import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.report.IReport;
+import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -44,6 +45,9 @@ public class LeadController {
 
 	@Inject
 	private Provider<MapService> mapProvider;
+	
+	@Inject
+	private Provider<LeadService> leadProvider;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(LeadController.class);
 	
@@ -71,7 +75,7 @@ public class LeadController {
 			
 		if(!leadIds.equals("")){
 			leadIds = leadIds.substring(0, leadIds.length()-1);	
-			lead = Lead.find(new Long(lstSelectedleads.get(0)));
+			lead = leadProvider.get().find(new Long(lstSelectedleads.get(0)));
 		}else if(lead.getId() != null){
 			leadIds = lead.getId().toString();			
 		}

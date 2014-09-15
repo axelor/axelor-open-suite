@@ -23,7 +23,9 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventReminderService {
+import com.axelor.apps.crm.db.repo.EventReminderRepository;
+
+public class EventReminderService extends EventReminderRepository {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EventReminderService.class);
 	

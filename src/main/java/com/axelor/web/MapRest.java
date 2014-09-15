@@ -28,9 +28,12 @@ import javax.ws.rs.core.MediaType;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.service.LeadService;
+import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -45,12 +48,21 @@ public class MapRest {
 
 	@Inject MapService mapService;
 	
+	@Inject
+	private LeadService leadService;
+	
+	@Inject
+	private OpportunityService opportunityService;
+	
+	@Inject
+	private AddressRepository addressRepo;
+	
 	@Path("/lead")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getLeads() {
 
-		List<? extends Lead> leads = Lead.all().fetch();
+		List<? extends Lead> leads = leadService.all().fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -114,7 +126,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getOpportunities() {
 
-		List<? extends Opportunity> opportunities = Opportunity.all().fetch();
+		List<? extends Opportunity> opportunities = opportunityService.all().fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -147,7 +159,7 @@ public class MapRest {
 			if (partner.getMainInvoicingAddress() != null) {
 				Address address = partner.getMainInvoicingAddress();
 				String addressString = mapService.makeAddressString(address, objectNode);
-				address.save();
+				addressRepo.save(address);
 				objectNode.put("address", addressString);							
 			}
 			

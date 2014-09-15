@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
+import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -38,6 +39,9 @@ public class BatchEventReminderMessage extends BatchStrategy {
 	private static final Logger LOG = LoggerFactory.getLogger(BatchEventReminderMessage.class);
 
 	private boolean stop = false;
+	
+	@Inject
+	private EventService eventService;
 	
 	@Inject
 	public BatchEventReminderMessage(MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
@@ -73,11 +77,11 @@ public class BatchEventReminderMessage extends BatchStrategy {
 				} catch (Exception e) {
 					
 					TraceBackService.trace(new Exception(String.format("Event %s", 
-							Event.find(event.getId()).getSubject()), e), IException.CRM, batch.getId());
+							eventService.find(event.getId()).getSubject()), e), IException.CRM, batch.getId());
 					
 					incrementAnomaly();
 					
-					LOG.error("Bug(Anomalie) généré(e) pour l'évènement {}", Event.find(event.getId()).getSubject());
+					LOG.error("Bug(Anomalie) généré(e) pour l'évènement {}", eventService.find(event.getId()).getSubject());
 					
 				} finally {
 					

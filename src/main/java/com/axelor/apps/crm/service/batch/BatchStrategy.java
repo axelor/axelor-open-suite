@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.crm.service.batch;
 
-import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
@@ -52,7 +51,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 	
 	protected void updateEventReminder( EventReminder eventReminder ){
 		
-		eventReminder.addBatchSetItem( Batch.find( batch.getId() ) );
+		eventReminder.addBatchSetItem( batchRepo.find( batch.getId() ) );
 			
 		incrementDone();
 	}

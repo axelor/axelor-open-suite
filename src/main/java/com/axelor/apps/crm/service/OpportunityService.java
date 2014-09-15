@@ -18,13 +18,14 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.google.inject.persist.Transactional;
 
-public class OpportunityService {
+public class OpportunityService extends OpportunityRepository{
 	
 	@Transactional
 	public void saveOpportunity(Opportunity opportunity){
-		opportunity.save();
+		save(opportunity);
 	}
 
 }

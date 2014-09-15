@@ -19,10 +19,8 @@ package com.axelor.apps.crm.service;
 
 import java.util.HashSet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.crm.db.CalendarConfiguration;
+import com.axelor.apps.crm.db.repo.CalendarConfigurationRepository;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -30,9 +28,7 @@ import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaMenu;
 import com.google.inject.persist.Transactional;
 
-public class CalendarConfigurationService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(CalendarConfigurationService.class);
+public class CalendarConfigurationService extends CalendarConfigurationRepository{
 	
 	private final String NAME = "crm-root-event-calendar-";
 	
@@ -48,7 +44,7 @@ public class CalendarConfigurationService {
 		metaMenu.save();
 		
 		calendarConfiguration.setMetaAction(metaAction);
-		calendarConfiguration.save();
+		save(calendarConfiguration);
 		
 	}
 	

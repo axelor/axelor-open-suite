@@ -43,7 +43,7 @@ public class CrmBatchController {
 		
 		CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
 		
-		Batch batch = crmBatchService.eventReminder(CrmBatch.find(crmBatch.getId()));
+		Batch batch = crmBatchService.eventReminder(crmBatchService.find(crmBatch.getId()));
 		
 		if(batch != null)
 			response.setFlash(batch.getComment());
@@ -60,7 +60,7 @@ public class CrmBatchController {
 		
 		CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
 		
-		Batch batch = crmBatchService.target(CrmBatch.find(crmBatch.getId()));
+		Batch batch = crmBatchService.target(crmBatchService.find(crmBatch.getId()));
 		
 		if(batch != null)
 			response.setFlash(batch.getComment());

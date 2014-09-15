@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.crm.service.batch.BatchStrategy;
 import com.axelor.apps.crm.db.CrmBatch;
 import com.axelor.apps.crm.db.ICrmBatch;
+import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -35,7 +36,7 @@ import com.axelor.exception.db.IException;
  * 
  * @version 0.1
  */
-public class CrmBatchService {
+public class CrmBatchService extends CrmBatchRepository{
 
 	@Inject
 	private Provider<BatchEventReminder> eventReminderProvider;
@@ -57,7 +58,7 @@ public class CrmBatchService {
 	public Batch run(String batchCode) throws AxelorException {
 				
 		Batch batch;
-		CrmBatch crmBatch = CrmBatch.findByCode(batchCode);
+		CrmBatch crmBatch = findByCode(batchCode);
 		
 		if (crmBatch != null){
 			switch (crmBatch.getActionSelect()) {

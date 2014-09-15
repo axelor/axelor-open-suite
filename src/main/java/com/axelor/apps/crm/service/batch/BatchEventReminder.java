@@ -25,7 +25,6 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.IEventReminder;
@@ -79,7 +78,7 @@ public class BatchEventReminder extends BatchStrategy {
 			
 			int durationTypeSelect = batch.getCrmBatch().getDurationTypeSelect();
 			
-			List<? extends EventReminder> eventReminderList = EventReminder.all()
+			List<? extends EventReminder> eventReminderList = eventReminderService.all()
 					.filter("self.event.startDateTime > ?1 AND self.durationTypeSelect = ?2", today, durationTypeSelect).fetch();
 			
 			
@@ -87,7 +86,7 @@ public class BatchEventReminder extends BatchStrategy {
 				
 				try {
 					
-					eventReminder = EventReminder.find(eventReminder.getId());
+					eventReminder = eventReminderService.find(eventReminder.getId());
 					
 					if(this.isExpired(eventReminder, durationTypeSelect))  {
 						eventReminder.setIsReminded(true);
@@ -99,11 +98,11 @@ public class BatchEventReminder extends BatchStrategy {
 				} catch (Exception e) {
 					
 					TraceBackService.trace(new Exception(String.format("Event reminder %s", 
-							EventReminder.find(eventReminder.getId()).getEvent().getSubject()), e), IException.CRM, batch.getId());
+							eventReminderService.find(eventReminder.getId()).getEvent().getSubject()), e), IException.CRM, batch.getId());
 					
 					incrementAnomaly();
 					
-					LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", EventReminder.find(eventReminder.getId()).getEvent().getSubject());
+					LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", eventReminderService.find(eventReminder.getId()).getEvent().getSubject());
 					
 				} finally {
 					
@@ -155,7 +154,7 @@ public class BatchEventReminder extends BatchStrategy {
 	protected void generateMessageProcess() {
 		
 		if(!stop)  {
-			EventReminderThread thread = new EventReminderThread(Batch.find(batch.getId()), injector);
+			EventReminderThread thread = new EventReminderThread(batchRepo.find(batch.getId()), injector);
 			thread.start();
 		}
 	}

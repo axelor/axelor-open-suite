@@ -19,10 +19,8 @@ package com.axelor.apps.crm.web;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
@@ -42,7 +40,9 @@ public class ConvertLeadWizardController {
 	@Inject
 	private ConvertLeadWizardService convertLeadWizardService;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ConvertLeadWizardController.class);
+	@Inject
+	private PartnerService partnerService;
+	
 	
 	@SuppressWarnings("unchecked")
 	public void convertLead(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -51,7 +51,7 @@ public class ConvertLeadWizardController {
 		
 		Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
 		
-		Lead lead = Lead.find(((Integer)leadContext.get("id")).longValue());
+		Lead lead = leadService.find(((Integer)leadContext.get("id")).longValue());
 		
 		Partner partner = null;
 		Partner contactPartner = null;
@@ -65,7 +65,7 @@ public class ConvertLeadWizardController {
 		}
 		else  if(context.get("selectContact") != null) {
 			Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
-			contactPartner = Partner.find(((Integer) selectContactContext.get("id")).longValue());
+			contactPartner = partnerService.find(((Integer) selectContactContext.get("id")).longValue());
 		}
 		
 		if(context.get("hasConvertIntoPartner") != null && (Boolean) context.get("hasConvertIntoPartner")) {
@@ -73,7 +73,7 @@ public class ConvertLeadWizardController {
 		}
 		else  if(context.get("selectPartner") != null) {
 			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
-			partner = Partner.find(((Integer) selectPartnerContext.get("id")).longValue());
+			partner = partnerService.find(((Integer) selectPartnerContext.get("id")).longValue());
 		}
 		
 		if(context.get("hasConvertIntoOpportunity") != null && (Boolean) context.get("hasConvertIntoOpportunity")) {

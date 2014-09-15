@@ -19,12 +19,11 @@ package com.axelor.apps.crm.service;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
@@ -50,9 +49,9 @@ public class ConvertLeadWizardService {
 	@Inject 
 	private PartnerService partnerService;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ConvertLeadWizardService.class);
-	
-	
+	@Inject
+	private CountryRepository countryRepo;
+
 	/**
 	 * Create a partner from a lead
 	 * @param lead
@@ -110,7 +109,7 @@ public class ConvertLeadWizardService {
 		Country addressL7Country = null;
 		Map<String, Object> countryContext = (Map<String, Object>) context.get("primaryCountry");
 		if(countryContext!= null)  {
-			addressL7Country = Country.find(((Integer) countryContext.get("id")).longValue());
+			addressL7Country = countryRepo.find(((Integer) countryContext.get("id")).longValue());
 		}
 		
 		Address address = addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
@@ -132,7 +131,7 @@ public class ConvertLeadWizardService {
 		Country addressL7Country = null;
 		Map<String, Object> countryContext = (Map<String, Object>) context.get("otherCountry");
 		if(countryContext!= null)  {
-			addressL7Country = Country.find(((Integer) countryContext.get("id")).longValue());
+			addressL7Country = countryRepo.find(((Integer) countryContext.get("id")).longValue());
 		}
 		
 		Address address = addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);

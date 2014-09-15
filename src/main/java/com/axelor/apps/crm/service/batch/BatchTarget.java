@@ -26,20 +26,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.crm.db.TargetConfiguration;
+import com.axelor.apps.crm.db.repo.TargetConfigurationRepository;
 import com.axelor.apps.crm.service.TargetService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
-import com.google.inject.Injector;
 
 public class BatchTarget extends BatchStrategy {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BatchTarget.class);
-
-	@Inject
-	private Injector injector;
 	
+	@Inject
+	private TargetConfigurationRepository targetConfigurationRepo;
+
 	@Inject
 	public BatchTarget(TargetService targetService) {
 		
@@ -76,11 +76,11 @@ public class BatchTarget extends BatchStrategy {
 			} catch (Exception e) {
 				
 				TraceBackService.trace(new Exception(String.format("Event reminder %s", 
-						TargetConfiguration.find(targetConfiguration.getId()).getCode()), e), IException.CRM, batch.getId());  //TODO
+						targetConfigurationRepo.find(targetConfiguration.getId()).getCode()), e), IException.CRM, batch.getId());  //TODO
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", TargetConfiguration.find(targetConfiguration.getId()).getCode());
+				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", targetConfigurationRepo.find(targetConfiguration.getId()).getCode());
 				
 			} finally {
 				
