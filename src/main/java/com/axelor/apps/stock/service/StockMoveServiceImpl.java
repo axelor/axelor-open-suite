@@ -36,13 +36,15 @@ import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class StockMoveServiceImpl implements StockMoveService {
+public class StockMoveServiceImpl extends StockMoveRepository implements StockMoveService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(StockMoveServiceImpl.class); 
 
@@ -53,6 +55,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 	private SequenceService sequenceService;
 	
 	protected LocalDate today;
+	
+	@Inject
+	private  StockMoveLineRepository stockMoveLineRepo;
 	
 	@Inject
 	public StockMoveServiceImpl() {
@@ -222,7 +227,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		
 		stockMove.setStatusSelect(IStockMove.STATUS_PLANNED);
 		
-		stockMove.save();
+		save(stockMove);
 		
 	}
 	
@@ -242,7 +247,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		
 		stockMove.setStatusSelect(IStockMove.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
-		stockMove.save();
+		save(stockMove);
 		if(!stockMove.getIsWithBackorder() && !stockMove.getIsWithReturnSurplus())
 			return null;
 		if(stockMove.getIsWithBackorder() && this.mustBeSplit(stockMove.getStockMoveLineList()))  {
@@ -298,7 +303,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
 		newStockMove.setName(newStockMove.getStockMoveSeq() + " Partial stock move (From " + stockMove.getStockMoveSeq() + " )" );
 		
-		return newStockMove.save();
+		return save(newStockMove);
 		
 	}
 	
@@ -344,7 +349,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
 		newStockMove.setName(newStockMove.getStockMoveSeq() + " Reverse stock move (From " + stockMove.getStockMoveSeq() + " )" );
 		
-		return newStockMove.save();
+		return save(newStockMove);
 		
 	}
 	
@@ -365,7 +370,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		
 		stockMove.setStatusSelect(IStockMove.STATUS_CANCELED);
 		stockMove.setRealDate(this.today);
-		stockMove.save();
+		save(stockMove);
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -376,23 +381,23 @@ public class StockMoveServiceImpl implements StockMoveService {
 		for(StockMoveLine moveLine : stockMoveLines){
 			if(moveLine.isSelected()){
 				selected = true;
-				StockMoveLine line = StockMoveLine.find(moveLine.getId());
+				StockMoveLine line = stockMoveLineRepo.find(moveLine.getId());
 				BigDecimal totalQty = line.getQty();
 				LOG.debug("Move Line selected: {}, Qty: {}",new Object[]{line,totalQty});
 				while(splitQty.compareTo(totalQty) < 0){
 					totalQty = totalQty.subtract(splitQty);
 					StockMoveLine newLine = JPA.copy(line, false);
 					newLine.setQty(splitQty);
-					newLine.save();
+					stockMoveLineRepo.save(newLine);
 				}
 				LOG.debug("Qty remains: {}",totalQty);
 				if(totalQty.compareTo(BigDecimal.ZERO) > 0){
 					StockMoveLine newLine = JPA.copy(line, false);
 					newLine.setQty(totalQty);
-					newLine.save();
-					LOG.debug("New line created: {}",newLine.save());
+					stockMoveLineRepo.save(newLine);
+					LOG.debug("New line created: {}",newLine);
 				}
-				line.remove();
+				stockMoveLineRepo.remove(line);
 			}
 		}
 		
@@ -409,23 +414,23 @@ public class StockMoveServiceImpl implements StockMoveService {
 			LOG.debug("Move line: {}",new Object[]{moveLine});
 			if((Boolean)(moveLine.get("selected"))){
 				selected = true;
-				StockMoveLine line = StockMoveLine.find(Long.parseLong(moveLine.get("id").toString()));
+				StockMoveLine line = stockMoveLineRepo.find(Long.parseLong(moveLine.get("id").toString()));
 				BigDecimal totalQty = line.getQty();
 				LOG.debug("Move Line selected: {}, Qty: {}",new Object[]{line,totalQty});
 				while(splitQty.compareTo(totalQty) < 0){
 					totalQty = totalQty.subtract(splitQty);
 					StockMoveLine newLine = JPA.copy(line, false);
 					newLine.setQty(splitQty);
-					newLine.save();
+					stockMoveLineRepo.save(newLine);
 				}
 				LOG.debug("Qty remains: {}",totalQty);
 				if(totalQty.compareTo(BigDecimal.ZERO) > 0){
 					StockMoveLine newLine = JPA.copy(line, false);
 					newLine.setQty(totalQty);
-					newLine.save();
-					LOG.debug("New line created: {}",newLine.save());
+					stockMoveLineRepo.save(newLine);
+					LOG.debug("New line created: {}",newLine);
 				}
-				line.remove();
+				stockMoveLineRepo.remove(line);
 			}
 		}
 		
@@ -436,7 +441,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	public void copyQtyToRealQty(StockMove stockMove){
 		for(StockMoveLine line : stockMove.getStockMoveLineList())
 			line.setRealQty(line.getQty());
-		stockMove.save();
+		save(stockMove);
 	}
 	
 	
@@ -445,7 +450,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	
 		LOG.debug("Creation d'un mouvement de stock inverse pour le mouvement de stock: {} ", new Object[] { stockMove.getStockMoveSeq() });
 		
-		this.copyAndSplitStockMoveReverse(stockMove, false).save();
+		save(this.copyAndSplitStockMoveReverse(stockMove, false));
 		
 	}
 	

@@ -17,16 +17,15 @@
  */
 package com.axelor.apps.stock.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.service.AddressServiceImpl;
-import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.google.inject.Inject;
 
 
 public class AddressServiceStockImpl extends AddressServiceImpl  {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(AddressServiceStockImpl.class);
+	@Inject
+	private StockMoveRepository stockMoveRepo;
 	
 	@Override
 	public boolean checkAddressUsed(Long addressId){
@@ -34,7 +33,7 @@ public class AddressServiceStockImpl extends AddressServiceImpl  {
 		super.checkAddressUsed(addressId);
 
 		if(addressId != null){
-			if(StockMove.all().filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1",addressId).fetchOne() != null)
+			if(stockMoveRepo.all().filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
 		}
 		return false;

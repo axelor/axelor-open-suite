@@ -29,13 +29,17 @@ import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
+import com.axelor.apps.base.db.repo.ProductCategoryRepository;
+import com.axelor.apps.base.db.repo.ProductFamilyRepository;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -48,13 +52,16 @@ public class LocationController {
 	private InventoryService inventoryService;
 	private static final Logger LOG = LoggerFactory.getLogger(LocationController.class);
 	
+	@Inject
+	private LocationRepository locationRepo;
+	
 	public void checkIsDefaultLocation(ActionRequest request, ActionResponse response){
 		
 		Location location = request.getContext().asType(Location.class);
 		
 		if(location != null && location.getIsDefaultLocation() && location.getCompany() != null && location.getTypeSelect() != null) {
 			
-			Location findLocation = Location.filter("company = ? and typeSelect = ? and isDefaultLocation = ?", location.getCompany(),location.getTypeSelect(),location.getIsDefaultLocation()).fetchOne();
+			Location findLocation = locationRepo.all().filter("company = ? and typeSelect = ? and isDefaultLocation = ?", location.getCompany(),location.getTypeSelect(),location.getIsDefaultLocation()).fetchOne();
 			
 			if(findLocation != null) {
 				response.setFlash("Il existe déjà un entrepot par défaut, veuillez d'abord désactiver l'entrepot "+findLocation.getName());
@@ -77,7 +84,7 @@ public class LocationController {
 		Location location = null;
 		
 		if(locationContext != null)  {
-			location = Location.find(((Integer)locationContext.get("id")).longValue());
+			location = locationRepo.find(((Integer)locationContext.get("id")).longValue());
 		}
 		
 		// Récupération de la famille de produit
@@ -86,7 +93,7 @@ public class LocationController {
 		ProductFamily productFamily = null;
 		
 		if (productFamilyContext != null) {
-			productFamily = ProductFamily.find(((Integer)productFamilyContext.get("id")).longValue());
+			productFamily = Beans.get(ProductFamilyRepository.class).find(((Integer)productFamilyContext.get("id")).longValue());
 		}
 		
 		// Récupération de la catégorie de produit
@@ -95,7 +102,7 @@ public class LocationController {
 		ProductCategory productCategory = null;
 		
 		if (productCategoryContext != null) {
-			productCategory = ProductCategory.find(((Integer)productCategoryContext.get("id")).longValue());
+			productCategory = Beans.get(ProductCategoryRepository.class).find(((Integer)productCategoryContext.get("id")).longValue());
 		}
 		
 		
@@ -127,7 +134,7 @@ public class LocationController {
 			
 		if(!locationIds.equals("")){
 			locationIds = locationIds.substring(0, locationIds.length()-1);	
-			location = Location.find(new Long(lstSelectedLocations.get(0)));
+			location = locationRepo.find(new Long(lstSelectedLocations.get(0)));
 		}else if(location.getId() != null){
 			locationIds = location.getId().toString();			
 		}

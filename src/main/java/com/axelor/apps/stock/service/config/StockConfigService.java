@@ -17,19 +17,15 @@
  */
 package com.axelor.apps.stock.service.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public class StockConfigService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(StockConfigService.class);
-
+public class StockConfigService extends StockConfigRepository
+{
 	
 	public StockConfig getStockConfig(Company company) throws AxelorException  {
 		

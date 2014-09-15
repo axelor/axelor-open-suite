@@ -34,6 +34,7 @@ import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
@@ -51,12 +52,15 @@ public class StockMoveController {
 	@Inject
 	private Provider<MapService> mapProvider;
 	
+	@Inject
+	private StockMoveRepository stockMoveRepo;
+	
 	public void plan(ActionRequest request, ActionResponse response) {
 		
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveProvider.get().plan(StockMove.find(stockMove.getId()));
+			stockMoveProvider.get().plan(stockMoveRepo.find(stockMove.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -67,7 +71,7 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			String newSeq = stockMoveProvider.get().realize(StockMove.find(stockMove.getId()));
+			String newSeq = stockMoveProvider.get().realize(stockMoveRepo.find(stockMove.getId()));
 			
 			response.setReload(true);
 			
@@ -85,7 +89,7 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveProvider.get().cancel(StockMove.find(stockMove.getId()));		
+			stockMoveProvider.get().cancel(stockMoveRepo.find(stockMove.getId()));		
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -115,7 +119,7 @@ public class StockMoveController {
 			
 		if(!stockMoveIds.equals("")){
 			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);	
-			stockMove = StockMove.find(new Long(lstSelectedMove.get(0)));
+			stockMove = stockMoveRepo.find(new Long(lstSelectedMove.get(0)));
 		}else if(stockMove.getId() != null){
 			stockMoveIds = stockMove.getId().toString();			
 		}
@@ -236,7 +240,7 @@ public class StockMoveController {
 	
 	public void shipReciveAllProducts(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		stockMoveProvider.get().copyQtyToRealQty(StockMove.find(stockMove.getId()));
+		stockMoveProvider.get().copyQtyToRealQty(stockMoveRepo.find(stockMove.getId()));
 		response.setReload(true);
 	}
 	
@@ -245,7 +249,7 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveProvider.get().generateReversion(StockMove.find(stockMove.getId()));		
+			stockMoveProvider.get().generateReversion(stockMoveRepo.find(stockMove.getId()));		
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

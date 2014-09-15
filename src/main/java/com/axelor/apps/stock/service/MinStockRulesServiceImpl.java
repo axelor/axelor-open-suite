@@ -20,28 +20,21 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.stock.db.IMinStockRules;
-import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.MinStockRules;
+import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MinStockRulesServiceImpl implements MinStockRulesService  {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(MinStockRulesServiceImpl.class); 
-
-	@Inject
-	private StockConfigService stockConfigService;
+public class MinStockRulesServiceImpl extends MinStockRulesRepository implements MinStockRulesService  {
 	
 	private LocalDate today;
 	
@@ -111,7 +104,7 @@ public class MinStockRulesServiceImpl implements MinStockRulesService  {
 	
 	public MinStockRules getMinStockRules(Product product, Location location, int type)  {
 		
-		return MinStockRules.filter("self.product = ?1 AND self.location = ?2 AND self.typeSelect = ?3", product, location, type).fetchOne();
+		return all().filter("self.product = ?1 AND self.location = ?2 AND self.typeSelect = ?3", product, location, type).fetchOne();
 		
 		//TODO , plusieurs régles min de stock par produit (achat a 500 et production a 100)...
 		
