@@ -11,7 +11,7 @@
     <form name="language-form" title="Language" model="com.axelor.apps.base.db.Language"  >
     	<panel>
 	        <field name="name"/>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
         </panel>
     </form>
     

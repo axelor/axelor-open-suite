@@ -11,7 +11,7 @@
     
     <form name="jpql-query-form" title="Query" model="com.axelor.apps.base.db.JpqlQuery" >
     	<panel>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="description"/>
 	        <field name="queryString" widget="CodeEditor" x-syntax="sql" x-span="12"/>
         </panel>

@@ -10,7 +10,7 @@
     
     <form name="company-department-form" title="Departement" model="com.axelor.apps.base.db.CompanyDepartment">
     	<panel>
-        	<field name="code"/>
+        	<field name="code" x-bind="{{code|uppercase}}"/>
         	<field name="name"/>
         </panel>
     </form>

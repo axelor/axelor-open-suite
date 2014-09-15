@@ -12,7 +12,7 @@
 	
 	<form name="indicator-generator-form" title="Indicator generator" model="com.axelor.apps.base.db.IndicatorGenerator">
 		<panel>
-			<field name="code"/>
+			<field name="code" x-bind="{{code|uppercase}}"/>
 			<field name="name" x-span="12"/>
 			<field name="requestLanguage" />
 			<field name="request" x-span="12" widget="CodeEditor" x-syntax="sql"/>

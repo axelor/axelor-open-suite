@@ -13,7 +13,7 @@
     <form name="product-variant-value-form" title="Product variant value" model="com.axelor.apps.base.db.ProductVariantValue">
     	<panel>
 	        <field name="name"/>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="priceExtra"/>
 	        <field name="applicationPriceSelect"/>
         </panel>

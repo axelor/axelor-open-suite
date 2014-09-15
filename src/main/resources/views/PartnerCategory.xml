@@ -10,7 +10,7 @@
     
     <form name="partner-category-form" title="Partner category" model="com.axelor.apps.base.db.PartnerCategory"  >
     	<panel>
-			<field name="code"/>
+			<field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="name"/>
         </panel>
     </form>

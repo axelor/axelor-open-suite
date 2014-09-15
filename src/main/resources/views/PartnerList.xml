@@ -8,7 +8,7 @@
     </grid>
     <form name="partner-list-form" title="Partner list" model="com.axelor.apps.base.db.PartnerList">
     	<panel>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="description" x-span="12"/>
 	        <panel-related field="partnerSet" x-span="12"/>
         </panel>
@@ -21,7 +21,7 @@
     </grid>
 	<form   name="partner-list-map-form" title="Sales map" model="com.axelor.apps.base.db.PartnerList">
 	    <panel>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="description" x-span="12"/>
 	        <field name="partnerSet" x-span="12" domain="self.partnerTypeSelect = 1" showTitle="false"/>
 	    </panel>

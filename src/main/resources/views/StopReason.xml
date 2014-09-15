@@ -9,7 +9,7 @@
     <form name="stop-reason-form" title="Blocking reason" model="com.axelor.apps.base.db.StopReason">
     	<panel>
         	<field name="name"/>
-        	<field name="code"/>
+        	<field name="code" x-bind="{{code|uppercase}}"/>
         </panel>
     </form>
 </object-views>

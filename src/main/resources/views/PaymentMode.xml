@@ -11,7 +11,7 @@
     <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode"  >
         <panel title="Overview">
         	 <field name="name"/>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="invoiceLabel" />
 	        <field name="typeSelect"/>
 			<field name="inOutSelect"/>
