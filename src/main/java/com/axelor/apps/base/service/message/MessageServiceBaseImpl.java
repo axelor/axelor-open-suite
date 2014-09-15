@@ -17,30 +17,18 @@
  */
 package com.axelor.apps.base.service.message;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Locale;
-
-import javax.mail.MessagingException;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.BirtTemplate;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.IMessage;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.MessageServiceImpl;
-import com.axelor.apps.message.service.TemplateMessageService;
-import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -75,9 +63,9 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 				0, 
 				todayTime.toLocalDateTime(), 
 				false, 
-				IMessage.STATUS_DRAFT, 
+				Message.STATUS_DRAFT, 
 				subject, 
-				IMessage.TYPE_SENT,
+				Message.TYPE_SENT,
 				toEmailAddressList,
 				ccEmailAddressList,
 				bccEmailAddressList,
@@ -96,17 +84,10 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	@Override
 	@Transactional
 	public Message sendMessageByEmail(Message message)  {
-		try {
 			
-			super.sendByEmail(message);
-			this.sendToUser(message);
+		super.sendMessageByEmail(message);
+		this.sendToUser(message);
 			
-			
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
 		return message;
 		
 	}
@@ -115,7 +96,7 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	private void sendToUser(Message message)  {
 		
 		if(!message.getSentByEmail() && message.getRecipientUser()!=null)  {
-			message.setStatusSelect(IMessage.STATUS_SENT);
+			message.setStatusSelect(Message.STATUS_SENT);
 			message.setSentByEmail(false);
 			message.save();
 		}
