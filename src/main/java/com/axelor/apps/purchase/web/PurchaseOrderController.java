@@ -25,8 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.tool.net.URLService;
@@ -35,16 +35,17 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class PurchaseOrderController {
 
 	@Inject
-	private SequenceService sequenceService;
-	
-	@Inject
-	private PurchaseOrderService purchaseOrderService;
+	private Provider<PurchaseOrderService> purchaseOrderProvider;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderController.class);
+	
+	@Inject
+	private PurchaseOrderRepository purchaseOrderRepo;
 
 	
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -53,7 +54,7 @@ public class PurchaseOrderController {
 		
 		if(purchaseOrder != null &&  purchaseOrder.getCompany() != null) {
 			
-			response.setValue("purchaseOrderSeq", purchaseOrderService.getSequence(purchaseOrder.getCompany()));
+			response.setValue("purchaseOrderSeq", purchaseOrderProvider.get().getSequence(purchaseOrder.getCompany()));
 		}
 	}
 	
@@ -63,7 +64,7 @@ public class PurchaseOrderController {
 
 		if(purchaseOrder != null) {
 			try {
-				purchaseOrderService.computePurchaseOrder(purchaseOrder);
+				purchaseOrderProvider.get().computePurchaseOrder(purchaseOrder);
 				response.setReload(true);
 			}
 			catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -75,7 +76,7 @@ public class PurchaseOrderController {
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 			
-		response.setValue("supplierPartner", purchaseOrderService.validateSupplier(purchaseOrder));
+		response.setValue("supplierPartner", purchaseOrderProvider.get().validateSupplier(purchaseOrder));
 		
 	}
 	
@@ -105,7 +106,7 @@ public class PurchaseOrderController {
 			
 		if(!purchaseOrderIds.equals("")){
 			purchaseOrderIds = purchaseOrderIds.substring(0,purchaseOrderIds.length()-1);
-			purchaseOrder = purchaseOrder.find(new Long(lstSelectedPurchaseOrder.get(0)));
+			purchaseOrder = purchaseOrderRepo.find(new Long(lstSelectedPurchaseOrder.get(0)));
 		}else if(purchaseOrder.getId() != null){
 			purchaseOrderIds = purchaseOrder.getId().toString();
 		}

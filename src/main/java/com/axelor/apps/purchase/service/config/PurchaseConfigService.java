@@ -17,18 +17,13 @@
  */
 package com.axelor.apps.purchase.service.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.purchase.db.PurchaseConfig;
+import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public class PurchaseConfigService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseConfigService.class);
-
+public class PurchaseConfigService extends PurchaseConfigRepository{
 	
 	public PurchaseConfig getPurchaseConfig(Company company) throws AxelorException  {
 		

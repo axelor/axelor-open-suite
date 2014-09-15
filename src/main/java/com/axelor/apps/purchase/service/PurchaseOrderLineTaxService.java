@@ -30,9 +30,10 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineTaxRepository;
 import com.google.inject.Inject;
 
-public class PurchaseOrderLineTaxService {
+public class PurchaseOrderLineTaxService extends PurchaseOrderLineTaxRepository{
 
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineTaxService.class); 
 	

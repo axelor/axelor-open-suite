@@ -20,9 +20,6 @@ package com.axelor.apps.purchase.web;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.service.PriceListService;
@@ -36,8 +33,6 @@ import com.google.inject.Inject;
 
 public class PurchaseOrderLineController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineController.class); 
-	
 	@Inject
 	private PurchaseOrderLineService purchaseOrderLineService;
 	
