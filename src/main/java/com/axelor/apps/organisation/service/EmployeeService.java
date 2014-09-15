@@ -23,9 +23,10 @@ import com.axelor.apps.base.db.Keyword;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.organisation.db.Candidate;
 import com.axelor.apps.organisation.db.Employee;
+import com.axelor.apps.organisation.db.repo.EmployeeRepository;
 import com.google.inject.persist.Transactional;
 
-public class EmployeeService {
+public class EmployeeService extends EmployeeRepository{
 
 	@Transactional
 	public Employee createEmployee(Candidate candidate)  {
@@ -55,7 +56,7 @@ public class EmployeeService {
 		employee.setToolKeywordSet(new HashSet<Keyword>());
 		employee.getToolKeywordSet().addAll(candidate.getToolKeywordSet());
 		
-		return employee.save();
+		return save(employee);
 		
 		
 	}

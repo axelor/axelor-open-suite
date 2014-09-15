@@ -21,20 +21,17 @@ import java.math.BigDecimal;
 
 import org.joda.time.LocalDateTime;
 
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.organisation.db.FinancialInformationHistoryLine;
 import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.organisation.db.repo.FinancialInformationHistoryLineRepository;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 
 
-public class FinancialInformationHistoryLineService {
+public class FinancialInformationHistoryLineService extends FinancialInformationHistoryLineRepository{
 
-	@Inject
-	private UnitConversionService unitConversionService;
-	
 	private LocalDateTime todayTime;
 	private User user;
 

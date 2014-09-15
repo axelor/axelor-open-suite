@@ -26,12 +26,11 @@ import javax.persistence.Query;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
-import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.Employee;
@@ -40,6 +39,7 @@ import com.axelor.apps.organisation.db.ITaskUpdateLine;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.organisation.db.repo.TaskRepository;
 import com.axelor.apps.organisation.exceptions.IExceptionMessage;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.db.JPA;
@@ -50,18 +50,15 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class TaskService {
+public class TaskService extends TaskRepository{
 
 	@Inject
 	private UnitConversionService unitConversionService;
 	
-	@Inject
-	private CurrencyService currencyService;
-	
-	@Inject
-	private PriceListService priceListService;
-	
 	private LocalDateTime todayTime;
+	
+	@Inject
+	private UnitRepository unitRepo;
 	
 	@Inject
 	public TaskService() {
@@ -312,10 +309,10 @@ public class TaskService {
 		Query q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 " +
 				"AND (il.invoice.statusSelect = ?2 OR il.invoice.statusSelect = ?3) AND (il.invoice.operationTypeSelect = ?4 OR il.invoice.operationTypeSelect = ?5)");
 		q.setParameter(1, task);
-		q.setParameter(2, Invoice.STATUS_VALIDATED);
-		q.setParameter(3, Invoice.STATUS_VENTILATED);
-		q.setParameter(4, Invoice.OPERATION_TYPE_CLIENT_REFUND);
-		q.setParameter(5, Invoice.OPERATION_TYPE_CLIENT_SALE);
+		q.setParameter(2, InvoiceService.STATUS_VALIDATED);
+		q.setParameter(3, InvoiceService.STATUS_VENTILATED);
+		q.setParameter(4, InvoiceService.OPERATION_TYPE_CLIENT_REFUND);
+		q.setParameter(5, InvoiceService.OPERATION_TYPE_CLIENT_SALE);
 				
 		BigDecimal invoiceLineTurnover = (BigDecimal) q.getSingleResult();
 		
@@ -335,10 +332,10 @@ public class TaskService {
 		q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 " +
 				"AND (il.invoice.statusSelect = ?2 OR il.invoice.statusSelect = ?3) AND (il.invoice.operationTypeSelect = ?4 OR il.invoice.operationTypeSelect = ?5)");
 		q.setParameter(1, task);
-		q.setParameter(2, Invoice.STATUS_VALIDATED);
-		q.setParameter(3, Invoice.STATUS_VENTILATED);
-		q.setParameter(4, Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE);
-		q.setParameter(5, Invoice.OPERATION_TYPE_SUPPLIER_REFUND);
+		q.setParameter(2, InvoiceService.STATUS_VALIDATED);
+		q.setParameter(3, InvoiceService.STATUS_VENTILATED);
+		q.setParameter(4, InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE);
+		q.setParameter(5, InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND);
 				
 		BigDecimal supplierInvoiceLineCost = (BigDecimal) q.getSingleResult();
 		
@@ -470,7 +467,7 @@ public class TaskService {
 									multiply(unitConversionService.
 											convert(
 													planningLine.getUnit(), 
-													Unit.findByCode("JR"), 
+													unitRepo.findByCode("JR"), 
 													planningLine.getDuration())));
 				}
 				else if(profil != null)  {
@@ -552,7 +549,7 @@ public class TaskService {
 		if(task.getTaskProgress() == 100)  {
 			task.setStatusSelect(ITask.STATUS_COMPLETED);
 		}
-		task.save();
+		save(task);
 		
 	}
 	

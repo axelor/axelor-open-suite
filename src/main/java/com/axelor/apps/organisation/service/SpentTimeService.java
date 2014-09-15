@@ -20,10 +20,11 @@ package com.axelor.apps.organisation.service;
 import java.math.BigDecimal;
 
 import com.axelor.apps.base.db.SpentTime;
+import com.axelor.apps.base.db.repo.SpentTimeRepository;
 import com.axelor.apps.organisation.db.TimesheetLine;
 
 
-public class SpentTimeService {
+public class SpentTimeService extends SpentTimeRepository {
 
 
 	public SpentTime createSpentTime (TimesheetLine timesheetLine)  {

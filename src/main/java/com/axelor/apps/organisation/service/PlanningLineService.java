@@ -25,18 +25,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.organisation.db.repo.PlanningLineRepository;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public class PlanningLineService {
+public class PlanningLineService extends PlanningLineRepository {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PlanningLineService.class);
 	
 	@Inject
 	private UnitConversionService unitConversionService;
 	
+	@Inject
+	private UnitRepository unitRepo;
 	
 	public int getMinutesDuration(Duration duration)  {
 		
@@ -56,14 +60,14 @@ public class PlanningLineService {
 
 	public LocalDateTime computeStartDateTime(BigDecimal duration, LocalDateTime endDateTime, Unit unit) throws AxelorException  {
 			
-		return endDateTime.minusMinutes(unitConversionService.convert(unit, Unit.findByCode("MIN"), duration).intValue());
+		return endDateTime.minusMinutes(unitConversionService.convert(unit, unitRepo.findByCode("MIN"), duration).intValue());
 		
 	}
 	
 	
 	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, BigDecimal duration, Unit unit) throws AxelorException  {
 		
-		return startDateTime.plusMinutes(unitConversionService.convert(unit, Unit.findByCode("MIN"), duration).intValue());
+		return startDateTime.plusMinutes(unitConversionService.convert(unit, unitRepo.findByCode("MIN"), duration).intValue());
 		
 	}
 	
@@ -71,7 +75,7 @@ public class PlanningLineService {
 	public BigDecimal getDuration(LocalDateTime startDateTime, LocalDateTime endDateTime, Unit unit) throws AxelorException  {
 		
 		return unitConversionService.convert(
-				Unit.findByCode("MIN"), 
+				unitRepo.findByCode("MIN"), 
 				unit, 
 				new BigDecimal(
 						DurationTool.getMinutesDuration(

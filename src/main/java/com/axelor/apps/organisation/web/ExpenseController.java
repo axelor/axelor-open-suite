@@ -21,25 +21,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportSettings;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.organisation.db.Expense;
 import com.axelor.apps.organisation.db.ExpenseLine;
-import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.report.IReport;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 
 public class ExpenseController {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(ExpenseController.class);
 	
 	public void checkValidationStatus(ActionRequest request, ActionResponse response) {
 	

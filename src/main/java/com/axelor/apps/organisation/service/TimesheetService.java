@@ -21,14 +21,12 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.db.Timesheet;
 import com.axelor.apps.organisation.db.TimesheetLine;
+import com.axelor.apps.organisation.db.repo.TimesheetRepository;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -37,12 +35,13 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 
-public class TimesheetService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(TimesheetService.class); 
+public class TimesheetService extends TimesheetRepository{
 	
 	@Inject
 	private Injector injector;
+	
+	@Inject
+	private SpentTimeService spentTimeService;
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -61,7 +60,7 @@ public class TimesheetService {
 			timesheet.getTimesheetLineList().addAll(this.createTimesheetLines(timesheet, task));
 			
 		}
-		timesheet.save();
+		save(timesheet);
 		
 	}
 	
@@ -69,14 +68,14 @@ public class TimesheetService {
 		
 		List<TimesheetLine> timesheetLineList = Lists.newArrayList();
 		
-		List<SpentTime> spentTimeList = (List<SpentTime>) SpentTime.all().filter("self.user = ?1 AND self.task = ?2  AND self.timesheetImputed IN (false,null)", timesheet.getUser(), task).fetch();
+		List<SpentTime> spentTimeList = (List<SpentTime>) spentTimeService.all().filter("self.user = ?1 AND self.task = ?2  AND self.timesheetImputed IN (false,null)", timesheet.getUser(), task).fetch();
 		
 		for(SpentTime spentTime : spentTimeList)  {
 			
 			timesheetLineList.add(this.createTimesheetLine(timesheet, task, spentTime));
 			
 			spentTime.setTimesheetImputed(true);
-			spentTime.save();
+			spentTimeService.save(spentTime);
 		}
 		
 		return timesheetLineList;
@@ -119,7 +118,7 @@ public class TimesheetService {
 			}
 		}
 		
-		timesheet.save();
+		save(timesheet);
 
 		if(!taskList.isEmpty())  {
 			injector.getInstance(TaskService.class).updateTaskProgress(taskList);

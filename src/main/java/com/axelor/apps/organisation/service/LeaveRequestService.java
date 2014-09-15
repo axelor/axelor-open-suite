@@ -25,13 +25,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.organisation.db.IEvent;
 import com.axelor.apps.organisation.db.LeaveRequest;
+import com.axelor.apps.organisation.db.repo.LeaveRequestRepository;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class LeaveRequestService {
+public class LeaveRequestService extends LeaveRequestRepository {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LeaveRequestService.class);
+	
+	@Inject
+	private EventService eventService;
 	
 	@Transactional
 	public Event createHolidayEvent(LeaveRequest leaveRequest)  {
@@ -44,7 +50,7 @@ public class LeaveRequestService {
 		if(leaveRequest.getReasonTask()!= null)  {
 			event.setDescription(leaveRequest.getReasonTask().getName());
 		}
-		return event.save();
+		return eventService.save(event);
 		
 	}
 	
