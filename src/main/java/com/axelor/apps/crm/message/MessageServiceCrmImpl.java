@@ -24,14 +24,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.auth.db.User;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.IMessage;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.auth.db.User;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -70,15 +69,15 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 		Message message = super.createMessage(
 				event.getDescription(), 
 				null, 
-				IMessage.RELATED_TO_EVENT, 
+				Message.RELATED_TO_EVENT, 
 				event.getId().intValue(), 
 				event.getRelatedToSelect(), 
 				event.getRelatedToSelectId(), 
 				todayTime.toLocalDateTime(), 
 				false, 
-				IMessage.STATUS_SENT, 
+				Message.STATUS_SENT, 
 				"Remind : "+event.getSubject(), 
-				IMessage.TYPE_RECEIVED,
+				Message.TYPE_RECEIVED,
 				toEmailAddressList,
 				null,
 				null,
