@@ -381,6 +381,53 @@
 		<view type="portal" name="human.resources.dashboard.2.portal" />
 		<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
-
-
+	
+	<!-- TOP MENU -->
+	
+	<menuitem name="top-hr" title="HR" left="false" top="true" groups="admins,erp"/>
+	<menuitem name="top-hr-profile" title="My HR Profile" parent="top-hr" priority="100" action="top.hr.my.profile"/>
+	<action-view name="top.hr.my.profile" title="My HR Profile"
+		model="com.axelor.apps.organisation.db.Employee" icon="img/16px/organisationSmall_16px.png">
+		<view type="grid" name="employee-grid" />
+		<view type="form" name="employee-form" />
+		<domain>self.id = :_employeeId</domain>
+  		<context name="_employeeId" expr="eval: __user__?.employee?.id"/>
+  		<context name="_showSingle" expr="true"/>
+	</action-view>
+	
+	<action-view name="top.hr.my.profile" title="My HR Profile"></action-view>
+	<menuitem name="top-hr-employees" title="View Employees" parent="top-hr" priority="90" action="hr.root.employee"/>
+	<menuitem name="top-hr-create-timesheet" title="Create Timesheet" parent="top-hr" priority="80" action="top.hr.create.timesheet"/>
+	<action-view name="top.hr.create.timesheet" title="Create Timesheet" model="com.axelor.apps.organisation.db.Timesheet">
+		<view type="form" name="timesheet-form"/>
+	</action-view>
+	<menuitem name="top-hr-timsheet-all" title="View Timesheets" parent="top-hr" priority="80" action="hr.root.inputforms.timesheet"/>
+	<menuitem name="top-hr-create-leave-request" title="Create Leave Request" parent="top-hr" priority="70" action="top.hr.create.leave.request"/>
+	<action-view name="top.hr.create.leave.request" title="Create Leave Request" model="com.axelor.apps.organisation.db.LeaveRequest">
+		<view type="form" name="leave-request-form"/>
+	</action-view>
+	<menuitem name="top-hr-leave-request-all" title="View Leave Requests" parent="top-hr" priority="60" action="hr.root.inputforms.leave.request"/>
+	<menuitem name="top-hr-create-expense" title="Create Expense" parent="top-hr" priority="50" action="top.hr.create.expense"/>
+	
+	<action-view name="top.hr.create.expense" title="Create Expense" model="com.axelor.apps.organisation.db.Expense">
+		<view type="form" name="expense-form"/>
+	</action-view>
+	<menuitem name="top-hr-expense-all" title="View Expenses" parent="top-hr" priority="40" action="hr.root.inputforms.expenses"/>
+	<menuitem name="top-hr-create-job-offer" title="Create Job Offer" parent="top-hr" priority="30" action="top.hr.create.job.offer"/>
+	<action-view name="top.hr.create.job.offer" title="Create Job Offer" model="com.axelor.apps.organisation.db.JobOffer" >
+		<view type="form" name="job-offer-form" />
+	</action-view>
+	<menuitem name="top-hr-job-offer-all" title="View Job Offers" parent="top-hr" priority="20" action="hr.root.recruitment.jobOffer"/>
+	
+	<menuitem name="top-project" title="Project" left="false" top="true" groups="admins,erp"/>
+	<menuitem name="top-project-create-project" title="Create Project" priority="100" parent="top-project" action="top.project.create.project"/>
+	<action-view name="top.project.create.project" title="Create Project" model="com.axelor.apps.organisation.db.Project">
+		<view type="form" name="project-form"/>
+	</action-view>
+	<menuitem name="top-project-project-all" title="View Projects" priority="90" parent="top-project" action="project.root.project"/>
+	<menuitem name="top-project-create-task" title="Create Task" parent="top-project" priority="80" action="top.project.create.task"/>
+	<action-view name="top.project.create.task" title="Create Task" model="com.axelor.apps.organisation.db.Task">
+		<view type="form" name="task-form"/>
+	</action-view>
+	<menuitem name="top-project-task-all" title="View Tasks" priority="70" parent="top-project" action="project.root.task"/>
 </object-views>
