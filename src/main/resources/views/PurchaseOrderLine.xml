@@ -68,14 +68,14 @@
 	      <field name="desiredDelivDate"/>
 	      <field name="estimatedDelivDate"/>	      
 	      <!-- TODO: remove this comment if portlet works well in panel
-	      <portlet colSpan="4" action="action-purchase-order-line-view-stock-move-line"/>
+	      <portlet   action="action-purchase-order-line-view-stock-move-line"/>
 	      -->
 	    </panel>
 	    <panel title="Links">
 	      <field name="task" if-module="axelor-account-organisation"/>
 	    </panel>
 	    <panel title="Suppliers requests" if-module="axelor-supplier-management">
-	      <button name="generateSuppliersRequests" title="Generate suppliers requests" colSpan="2" onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
+	      <button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
 	      <field name="supplierPartner"/>
 	      <panel-related field="purchaseOrderSupplierLineList" x-span="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
 	    </panel>

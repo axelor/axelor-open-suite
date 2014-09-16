@@ -5,7 +5,7 @@
 	
 <!--   	Purchase Buyer Dashboard -->
 	
-	<portal title="Dashboard" name="purchase.buyer.dashboard.portal.sample" cols="2">
+	<portal title="Dashboard" name="purchase.buyer.dashboard.portal.sample"  >
 		<portlet action="portal.purchase.buyer.dashboard.validated.orders" height="350" canSearch="true" />
 		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
 		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
@@ -87,7 +87,7 @@
 	<!-- 	Purchase Manager Dashboard -->
 	
 	
-	<portal title="Dashboard" name="purchase.manager.dashboard.portal.sample" cols="2">
+	<portal title="Dashboard" name="purchase.manager.dashboard.portal.sample"  >
 		<portlet action="portal.purchase.manager.dashboard.validated.orders" height="350" canSearch="true" />
 		<portlet action="portal.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" />
 		<portlet action="portal.purchase.order.volume.by.buyer.by.family" height="350"/>
