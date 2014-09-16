@@ -49,7 +49,7 @@
 	  </panel>
 	  <panel-tabs>    
 	    <panel title="PO information">
-	      <panel title="Contacts" readonlyIf="statusSelect == 5" x-span="12">
+	      <panel title="Contacts" readonlyIf="statusSelect == 5" colSpan="12">
 	        <field name="supplierPartner" onChange="action-purchase-order-record-partner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" form-view="partner-form"/>
 	        <field name="buyerUser"/>
 			<field name="contactPartner"
@@ -60,13 +60,13 @@
 	        <field name="invoicingTypeSelect" if-module="axelor-account"/>
 	        <field name="invoice" if-module="axelor-account"/>
 	      </panel>
-	      <panel title="Delivery" x-span="12">
+	      <panel title="Delivery" colSpan="12">
 	        <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain"/>
 	        <field name="location.address" if-module="axelor-supplychain"/>
 	        <field name="deliveryDate"/>
 	      </panel>
-	      <panel x-span="12">
-	        <field name="statusSelect" showTitle="false" widget="NavSelect" x-span="12"/>  
+	      <panel colSpan="12">
+	        <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>  
 	      </panel>
 	    </panel>
 	    <panel-related field="purchaseOrderLineList" title="PO Lines"/>    
@@ -76,7 +76,7 @@
 	      <field name="paymentCondition" if-module="axelor-account"/>
 	    </panel>
 	    <panel title="Notes">
-	      <field name="notes" showTitle="false" x-span="12" widget="Html" x-lite="true"/>
+	      <field name="notes" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 	    </panel>	    
 	  </panel-tabs>
 	  <panel if-module="axelor-supplier-management">

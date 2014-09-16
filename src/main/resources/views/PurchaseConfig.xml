@@ -11,9 +11,9 @@
 
     <form name="purchase-config-form" title="Purchase configuration" model="com.axelor.apps.purchase.db.PurchaseConfig">
 		<panel title="Basic">
-		  <field name="name" x-span="4"/>
-		  <field name="code" x-span="4"/>
-		  <field name="company" form-view="company-lite-form" x-span="4"/>
+		  <field name="name" colSpan="4"/>
+		  <field name="code" colSpan="4"/>
+		  <field name="company" form-view="company-lite-form" colSpan="4"/>
 		</panel>
 		<panel title="Invoicing Information">
 		  <field name="purchaseOrderInvoicingTypeSelect"/>

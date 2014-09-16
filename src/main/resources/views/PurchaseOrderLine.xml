@@ -77,7 +77,7 @@
 	    <panel title="Suppliers requests" if-module="axelor-supplier-management">
 	      <button name="generateSuppliersRequests" title="Generate suppliers requests" colSpan="2" onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
 	      <field name="supplierPartner"/>
-	      <panel-related field="purchaseOrderSupplierLineList" x-span="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
+	      <panel-related field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
 	    </panel>
 	    <panel title="Account" if-module="axelor-account">
 	      <field name="isInvoiced"/>
