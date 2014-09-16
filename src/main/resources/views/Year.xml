@@ -23,7 +23,7 @@
 			<field name="company" widget="SuggestBox" form-view="company-lite-form" required="true"/>
 		</panel>
 		<panel>
-			<panel-related field="periodList" x-span="12"/>
+			<panel-related field="periodList" colSpan="12"/>
 		</panel>
 		<panel-side>
 			<field name="typeSelect" readonly="true"/>

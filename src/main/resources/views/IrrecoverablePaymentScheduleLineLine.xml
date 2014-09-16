@@ -14,7 +14,7 @@
 	        <field name="paymentScheduleLine"/>
         </panel>
         <panel-tabs>
-        	<panel-related field="irrecoverableReportLineList" x-span="12"/>
+        	<panel-related field="irrecoverableReportLineList" colSpan="12"/>
         </panel-tabs>
     </form>
     

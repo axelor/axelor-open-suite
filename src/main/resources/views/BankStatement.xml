@@ -37,7 +37,7 @@
 			<button name="compute" title="Compute" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-compute-click"/>
 		</panel>
 		
-		<panel-related field="bankStatementLineList" x-span="12"/>
+		<panel-related field="bankStatementLineList" colSpan="12"/>
 		
 	</form>
 

@@ -79,7 +79,7 @@
 	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
 	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
 	        
-	    	<panel-related field="analyticAccountSet" title="Analytics" readonly="true" x-span="12" />
+	    	<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" />
 	    	
 	    	<panel name="irrecoverable" title="Irrecoverable">
 	        	<field name="irrecoverablestatusSelect" /> 
@@ -117,10 +117,10 @@
 			<panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
 	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
 			
-			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" x-span="12" />
+			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" />
 			
 			<panel title="Others" >
-				<field name="exportedDirectDebitOk" x-span="12"/>
+				<field name="exportedDirectDebitOk" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 	</form>
@@ -155,7 +155,7 @@
 	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
 	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
 			
-			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" x-span="12" />
+			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" />
 			
 			<panel name="irrecoverable" title="Irrecoverable" >
 	        	<field name="irrecoverablestatusSelect"/>

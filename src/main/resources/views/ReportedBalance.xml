@@ -13,7 +13,7 @@
 		<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 	</panel>
 
-	<panel-related field="reportedBalanceLineList" x-span="12" form-view="reported-balance-line-custom-from" grid-view="reported-balance-line-custom-grid"/>
+	<panel-related field="reportedBalanceLineList" colSpan="12" form-view="reported-balance-line-custom-from" grid-view="reported-balance-line-custom-grid"/>
 	
  </form>
 <grid name="reported-balance-line-custom-grid" model="com.axelor.apps.account.db.ReportedBalanceLine"  title="Reported balance lines" >

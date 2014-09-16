@@ -26,8 +26,8 @@
 			<button name="reverse" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
 		</toolbar>
 		
-		<panel readonlyIf="statusSelect == 3" x-span="12">
-			<panel x-span="12" x-item-span="4">
+		<panel readonlyIf="statusSelect == 3" colSpan="12">
+			<panel colSpan="12" itemSpan="4">
 				<field name="reference"/>
 				<field name="period"/>
 				<field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
@@ -39,14 +39,14 @@
 			
 		<panel-related field="moveLineList" readonlyIf="statusSelect == 3" colSpan="4" grid-view="move-line-move-grid" form-view="move-line-move-form"/>
 		  
-		<panel-side title="Action" x-item-span="6">
+		<panel-side title="Action" itemSpan="6">
 			<field name="statusSelect" readonly="true"/>
 			<field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 			<button name="validate" title="Validate" colSpan="2" onClick="action-group-account-move-validate-click" hideIf="statusSelect == 3"/>
 			<field name="getInfoFromFirstMoveLineOk" hideIf="statusSelect == 3"/>
 		</panel-side>
 		
-		<panel-tabs title="Configuration" x-sidebar="true">
+		<panel-tabs title="Configuration" sidebar="true">
 			<panel title="Related to" readonly="true">
 				<field name="invoice" domain="self.company = :company AND self.statusSelect = 3" form-view="invoice-form" grid-view="invoice-grid" canNew="false"/>
 				<field name="paymentVoucher" domain="self.company = :company" canNew="false"/>

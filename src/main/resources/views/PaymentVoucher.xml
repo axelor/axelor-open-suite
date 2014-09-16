@@ -22,14 +22,14 @@
 	onLoad="action-account-payment-voucher-onload-group" 
 	onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum">
 	
-		<panel title="Overview" readonlyIf="statusSelect == 2" x-item-span="12">
-			 <field name="ref" readonly="true" x-span="4"/>
-			 <field name="operationTypeSelect" x-span="4" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
-			 <field name="user" x-span="4"/>
-			 <field name="paymentDateTime" x-span="4"/>
-			 <field name="company" widget="SuggestBox" x-span="4" form-view="company-lite-form"/>
-			 <field name="cashRegister" x-span="4"/>
-			 <field name="hasAutoInput" x-span="4" hidden="true"/>
+		<panel title="Overview" readonlyIf="statusSelect == 2" itemSpan="12">
+			 <field name="ref" readonly="true" colSpan="4"/>
+			 <field name="operationTypeSelect" colSpan="4" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
+			 <field name="user" colSpan="4"/>
+			 <field name="paymentDateTime" colSpan="4"/>
+			 <field name="company" widget="SuggestBox" colSpan="4" form-view="company-lite-form"/>
+			 <field name="cashRegister" colSpan="4"/>
+			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
 		</panel>
 		
 		<panel-side name="payboxGroup" title="Paybox" readonlyIf="statusSelect == 2">
@@ -47,7 +47,7 @@
 			</panel>
 		</panel-side>
 		
-		<panel-side title="Info" x-item-span="6" readonly="true">
+		<panel-side title="Info" itemSpan="6" readonly="true">
 			<field name="statusSelect"/>
 			<field name="generatedMove" showIf="statusSelect == 2"/>
 			<field name="receiptNo" showIf="statusSelect == 2"/>
@@ -61,28 +61,28 @@
 			<button name="loadSelectedLines" title="Load selected lines" colSpan="4" onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" showIf="statusSelect == 1"/>
 		</panel-side>
 		
-		<panel title="Payer" x-item-span="12" readonlyIf="statusSelect == 2">
-			<field name="partner" x-span="4" onChange="action-pv-moveLine-domain-4" onSelect="action-payment-voucher-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="paymentMode" x-span="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
-			<field name="currency" x-span="4"/>
+		<panel title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
+			<field name="partner" colSpan="4" onChange="action-pv-moveLine-domain-4" onSelect="action-payment-voucher-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="paymentMode" colSpan="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
+			<field name="currency" colSpan="4"/>
 		</panel>
 		
-		<panel title="To pay" x-item-span="12" readonlyIf="statusSelect == 2">
-		    <field name="invoiceToPay" onChange="action-group-account-payment-voucher-invoicetopay-onchange" onSelect="action-payment-voucher-domain-on-invoice-to-pay" form-view="invoice-form" grid-view="invoice-grid" x-span="5"/>
-		    <label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" x-span="2"/>
-		    <field name="rejectToPay" title="Reject to pay" onChange="action-group-account-payment-voucher-rejecttopay-onchange" onSelect="action-payment-voucher-domain-on-reject-to-pay" x-span="5"/>
+		<panel title="To pay" itemSpan="12" readonlyIf="statusSelect == 2">
+		    <field name="invoiceToPay" onChange="action-group-account-payment-voucher-invoicetopay-onchange" onSelect="action-payment-voucher-domain-on-invoice-to-pay" form-view="invoice-form" grid-view="invoice-grid" colSpan="5"/>
+		    <label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="2"/>
+		    <field name="rejectToPay" title="Reject to pay" onChange="action-group-account-payment-voucher-rejecttopay-onchange" onSelect="action-payment-voucher-domain-on-reject-to-pay" colSpan="5"/>
 		</panel>
 		
-		<panel readonlyIf="statusSelect == 2 || payboxPaidOk" x-span="12">
-		 	<field name="paidAmount" x-span="3"/>
-			<label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" x-span="3"/>
-			<field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs" x-span="3"/>
-			<field name="remainingAmount" readonly="true" x-span="3"/>
+		<panel readonlyIf="statusSelect == 2 || payboxPaidOk" colSpan="12">
+		 	<field name="paidAmount" colSpan="3"/>
+			<label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="3"/>
+			<field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs" colSpan="3"/>
+			<field name="remainingAmount" readonly="true" colSpan="3"/>
 		</panel>
 		
 		<panel-stack readonlyIf="statusSelect == 2">
-			<panel-related x-span="12" field="paymentInvoiceList"  form-view="payment-invoice-form" grid-view="payment-invoice-grid" showIf="statusSelect == 1"/>
-			<panel-related x-span="12" field="paymentInvoiceToPayList"/>
+			<panel-related colSpan="12" field="paymentInvoiceList"  form-view="payment-invoice-form" grid-view="payment-invoice-grid" showIf="statusSelect == 1"/>
+			<panel-related colSpan="12" field="paymentInvoiceToPayList"/>
 		</panel-stack>
 		
 	</form>

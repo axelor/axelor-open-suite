@@ -27,15 +27,15 @@
 		</panel>
 
 		<panel title="Configurations" hideIf="$popup()">
-			<panel title="MoveLine" x-span="12">
+			<panel title="MoveLine" colSpan="12">
 				<field name="sequence" domain="self.code = 'move' and self.company = :company"/>
 				<field name="descriptionModel"/>
 				<field name="descriptionIdentificationOk"/>
 			</panel>  
 			<spacer/>
-			<panel title="Payments" x-span="12">
-				<field name="editReceiptOk" x-span="6"/>
-				<field name="excessPaymentOk" x-span="6"/>
+			<panel title="Payments" colSpan="12">
+				<field name="editReceiptOk" colSpan="6"/>
+				<field name="excessPaymentOk" colSpan="6"/>
 			</panel>
 		</panel>
 		
@@ -48,8 +48,8 @@
 		</panel-side>
 		
 		<panel-side title="Exports">
-			<field name="exportCode" x-span="4"/>
-			<field name="notExportOk" x-span="2" onChange="account-journal-on-change-not-export-ok"/>
+			<field name="exportCode" colSpan="4"/>
+			<field name="notExportOk" colSpan="2" onChange="account-journal-on-change-not-export-ok"/>
 		</panel-side>
 
 	</form>

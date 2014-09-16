@@ -458,8 +458,8 @@
 	<chart onInit="action.account.active.fiscal.year" name="chart.moveLines.revenues.vs.expenses" title="Revenues vs Expenses">
 	  
 	  <search-fields>
-	    <field name="year" type="reference" x-target="com.axelor.apps.base.db.Year" widget="many-to-one" title="Year" />
-	    <field name="period" type="reference" x-target="com.axelor.apps.base.db.Period" widget="many-to-one" title="Period" domain="self.year=:year"/>    
+	    <field name="year" type="reference" target="com.axelor.apps.base.db.Year" widget="many-to-one" title="Year" />
+	    <field name="period" type="reference" target="com.axelor.apps.base.db.Period" widget="many-to-one" title="Period" domain="self.year=:year"/>    
 	  </search-fields>
 	  
 	  <dataset type="jpql">

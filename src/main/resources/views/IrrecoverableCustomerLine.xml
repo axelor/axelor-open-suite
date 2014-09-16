@@ -9,11 +9,11 @@
     
     <form name="irrecoverable-customer-line-form" title="Customer" model="com.axelor.apps.account.db.IrrecoverableCustomerLine" cols="4" >
         <panel title="Overview">
-        	<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" x-span="12"/>
+        	<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" colSpan="12"/>
         </panel>
         <panel-tabs>
-        	<panel-related field="irrecoverablePaymentScheduleLineLineList" x-span="12"/>
-        	<panel-related field="irrecoverableInvoiceLineList" x-span="12"/>
+        	<panel-related field="irrecoverablePaymentScheduleLineLineList" colSpan="12"/>
+        	<panel-related field="irrecoverableInvoiceLineList" colSpan="12"/>
         </panel-tabs>
         
     </form>
