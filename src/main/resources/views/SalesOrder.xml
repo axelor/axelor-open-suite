@@ -122,11 +122,11 @@
 	  </panel-side>    
 	  <panel-side title="Info." showIf="id">
 	    <field name="creationDate" readonly="true" x-span="6"/>
-	    <field name="validatedByUser" readonly="true" x-span="6" showIf="state == 3"/>
-	    <field name="validationDate" readonly="true" x-span="6" showIf="state == 3"/>
-	    <field name="orderDate" x-span="6" showIf="state == 3"/>
-	    <field name="orderNumber" x-span="6" showIf="state == 3"/>
-	    <field name="shipmentDate" x-span="6" showIf="state == 3" if-module="axelor-supplychain"/>
+	    <field name="validatedByUser" readonly="true" x-span="6" showIf="statusSelect == 3"/>
+	    <field name="validationDate" readonly="true" x-span="6" showIf="statusSelect == 3"/>
+	    <field name="orderDate" x-span="6" showIf="statusSelect == 3"/>
+	    <field name="orderNumber" x-span="6" showIf="statusSelect == 3"/>
+	    <field name="shipmentDate" x-span="6" showIf="statusSelect == 3" if-module="axelor-supplychain"/>
 	  </panel-side>
 	  <panel-side readonly="true"  x-span="4" showIf="id">  
 	  	<panel>
