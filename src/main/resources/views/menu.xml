@@ -57,9 +57,10 @@
 
 	<menuitem name="top-purchase" title="Purchases" groups="admins,erp" top="true" left="false" priority="150"/>
 	
-	<menuitem name="top-purchase-orders-all" title="All Purchases Docs" action="sc.root.purchase.orders" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-purchase-create-rfq" title="Create RFQ" priority="100" parent="top-purchase" action="sc.root.purchase.order.new"/>
+	<menuitem name="top-purchase-orders-all" title="RFQs &amp; Orders" priority="70" action="sc.root.purchase.orders" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
 	
-	<menuitem name="top-purchase-quotes" title="RFQ" action="top.purchase.quotes" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-purchase-quotes" title="View RFQ" priority="90" action="top.purchase.quotes" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.purchase.quotes" title="RFQ"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" >
@@ -69,7 +70,7 @@
 		<domain>self.statusSelect in (2,3) </domain>
 	</action-view>	
 	
-	<menuitem name="top-purchase-orders" title="Orders" action="top.purchase.orders" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-purchase-orders" priority="80" title="View Orders" action="top.purchase.orders" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.purchase.orders" title="Orders"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" >
