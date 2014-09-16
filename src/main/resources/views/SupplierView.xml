@@ -65,22 +65,22 @@
     
 	<form name="stock-move-supplier-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" canNew="false" canDelete="false" canCopy="false">
 	  <panel>
-	    <field name="statusSelect" readonly="true" widget="NavSelect" x-span="12"/>
+	    <field name="statusSelect" readonly="true" widget="NavSelect" colSpan="12"/>
 	  </panel>
 	  <panel readonly="true">
 	    <panel title="Stock move reference">
-	      <field name="stockMoveSeq" x-span="12"/>
-	      <field name="name" x-span="12"/>
-	      <field name="company" widget="SuggestBox" form-view="company-lite-form" x-span="12"/>
-	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" x-span="12"/>
+	      <field name="stockMoveSeq" colSpan="12"/>
+	      <field name="name" colSpan="12"/>
+	      <field name="company" widget="SuggestBox" form-view="company-lite-form" colSpan="12"/>
+	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12"/>
 	    </panel>
 	    <panel title="Stock move informations">
-	      <field name="estimatedDate" x-span="12"/>
-	      <field name="realDate" title="Receipt date" x-span="12"/>
-	      <field name="fromAddress" showIf="typeSelect == 3" x-span="12"/>
+	      <field name="estimatedDate" colSpan="12"/>
+	      <field name="realDate" title="Receipt date" colSpan="12"/>
+	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12"/>
 	    </panel>
 	  </panel>
-	  <panel-related field="stockMoveLineList" x-span="12" canNew="false" canRemove="false" form-view="stock-move-line-supplier-form" grid-view="stock-move-line-supplier-grid"/>
+	  <panel-related field="stockMoveLineList" colSpan="12" canNew="false" canRemove="false" form-view="stock-move-line-supplier-form" grid-view="stock-move-line-supplier-grid"/>
 	</form>
     
     <grid name="stock-move-line-supplier-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
