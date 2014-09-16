@@ -12,7 +12,7 @@
         <panel>
 	        <field name="name"/>
 	        <field name="publicHolidays"/>
-	        <panel-related field="scheduleLineList" x-span="12"/>
+	        <panel-related field="scheduleLineList" colSpan="12"/>
         </panel>
     </form>
     

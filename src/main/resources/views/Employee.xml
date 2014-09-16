@@ -21,25 +21,25 @@
 			<button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 		</toolbar>
 		<panel>
-			<panel x-span="3">
+			<panel colSpan="3">
 				<field name="picture" showTitle="false" widget="image"/>
 			</panel>
-			<panel title="Contact" x-span="3">
-				<field name="titleSelect" showTitle="false" placeholder="Civility" x-span="12"/>
-				<field name="name" showTitle="false" css="highlight" placeholder="Name" x-span="12"/>
-				<field name="firstName" showTitle="false" css="highlight" placeholder="First Name" x-span="12"/>
-				<field name="function" placeholder="Function" x-span="12"/>
-				<field name="companyDepartment" x-span="12"/>
+			<panel title="Contact" colSpan="3">
+				<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="12"/>
+				<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="12"/>
+				<field name="firstName" showTitle="false" css="highlight" placeholder="First Name" colSpan="12"/>
+				<field name="function" placeholder="Function" colSpan="12"/>
+				<field name="companyDepartment" colSpan="12"/>
 			</panel>
-			<panel title="Main Contact details" x-span="6" colWidths="30%,20%,30%,20%">
+			<panel title="Main Contact details" colSpan="6" colWidths="30%,20%,30%,20%">
 				<field name="internalContact"/>
 				<field name="internalContact.mobilePhone"/>
 				<field name="internalContact.fixedPhone"/>
 				<field name="phoneAtCustomer"/>
 				<field name="internalContact.emailAddress.address" widget="Email" title="Email"/>
 				<spacer/>
-				<field name="internalContact.mainInvoicingAddress" x-span="12"/>
-				<panel title="Emergency" x-span="12">
+				<field name="internalContact.mainInvoicingAddress" colSpan="12"/>
+				<panel title="Emergency" colSpan="12">
 					<field name="emergencyContact" domain="self.isContact = True"/>
 					<field name="emergencyNumber"/>
 				</panel>
@@ -47,29 +47,29 @@
 		</panel>
 		<panel-tabs>
 			<panel title="Additionnal information">
-				<panel title="Contract Details" x-span="12">
-					<field name="contractTypeSelect" x-span="4"/>
-					<field name="contractDuration" showIf="contractTypeSelect == 2" onChange="action-employee-set-exit-date" x-span="4"/>
-					<field name="functionRanking" x-span="4"/>
-					<field name="entryDate" onChange="action-employee-set-exit-date" x-span="4"/>
-					<field name="macroCategorySelect" x-span="4"/>
-					<field name="categorySelect" x-span="4"/>
-					<field name="exitDate" x-span="4"/>
-					<panel title="Advantages" x-span="12">
-						<field name="advantages" x-span="12" showTitle="false"/>
+				<panel title="Contract Details" colSpan="12">
+					<field name="contractTypeSelect" colSpan="4"/>
+					<field name="contractDuration" showIf="contractTypeSelect == 2" onChange="action-employee-set-exit-date" colSpan="4"/>
+					<field name="functionRanking" colSpan="4"/>
+					<field name="entryDate" onChange="action-employee-set-exit-date" colSpan="4"/>
+					<field name="macroCategorySelect" colSpan="4"/>
+					<field name="categorySelect" colSpan="4"/>
+					<field name="exitDate" colSpan="4"/>
+					<panel title="Advantages" colSpan="12">
+						<field name="advantages" colSpan="12" showTitle="false"/>
 					</panel>
 				</panel>
-				<panel title="Hierarchy" x-span="12">
+				<panel title="Hierarchy" colSpan="12">
 					<field name="supervisedBySelect"/>
 					<field name="profileProduct" domain="self.applicationTypeSelect = 2" colSpan="2"/>
 					<field name="managerUser" showIf="supervisedBySelect == 1"/>
 					<spacer/>
 					<field name="managerProfileProduct" showIf="supervisedBySelect == 2" domain="self.applicationTypeSelect = 2"/>        
 				</panel>
-				<field name="personalInfo" showTitle="false" widget="NestedEditor" canSelect="false" form-view="personal-info-edit-form" summary-view="true" x-span="12"/>
+				<field name="personalInfo" showTitle="false" widget="NestedEditor" canSelect="false" form-view="personal-info-edit-form" summary-view="true" colSpan="12"/>
 			</panel>
 			<panel title="Profile">
-				<panel x-span="12">
+				<panel colSpan="12">
 					<panel title="Keywords">
 						<field name="toolKeywordSet" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid"/>
 						<field name="fieldKeywordSet" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid"/>
@@ -79,25 +79,25 @@
 						<field name="competence"/>
 					</panel>
 				</panel>
-				<panel-related field="positionList" x-span="12"/>
+				<panel-related field="positionList" colSpan="12"/>
 			</panel>
 			<panel title="Salary">
-				<field name="salaryFromDate" x-span="4"/>
-				<field name="salaryAmount" x-span="4"/>
-				<field name="dailySalaryCost" x-span="4"/>
-				<panel-related field="bonusList"  grid-view="bonus-grid" x-span="6"/>
-				<panel-related field="advanceList" colSpan="3" grid-view="advance-grid" x-span="6"/>
-				<panel-related field="paySheetList" colSpan="6" form-view="pay-sheet-employee-form" grid-view="pay-sheet-employee-grid" x-span="12"/>
+				<field name="salaryFromDate" colSpan="4"/>
+				<field name="salaryAmount" colSpan="4"/>
+				<field name="dailySalaryCost" colSpan="4"/>
+				<panel-related field="bonusList"  grid-view="bonus-grid" colSpan="6"/>
+				<panel-related field="advanceList" grid-view="advance-grid" colSpan="6"/>
+				<panel-related field="paySheetList" form-view="pay-sheet-employee-form" grid-view="pay-sheet-employee-grid" colSpan="12"/>
 			</panel>
 			<panel title="Expenses">
-				<field name="vehicleFiscalPower" x-span="4"/>
-				<field name="commuteFee" x-span="4"/>
-				<field name="commuteFeeRefundPerc" x-span="4"/>
-				<panel-related field="expenseList" grid-view="expense-edit-grid" x-span="12"/>
+				<field name="vehicleFiscalPower" colSpan="4"/>
+				<field name="commuteFee" colSpan="4"/>
+				<field name="commuteFeeRefundPerc" colSpan="4"/>
+				<panel-related field="expenseList" grid-view="expense-edit-grid" colSpan="12"/>
 			</panel>
 			<panel-related title="Leaves" field="employeeLeaveList" />
 			<panel title="History">
-				<panel title="Recruitment" x-span="12">
+				<panel title="Recruitment" colSpan="12">
 					<field name="candidate"/>
 				</panel>    
 			</panel>

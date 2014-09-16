@@ -11,13 +11,13 @@
     
 	<form name="planning-form" title="Planning" model="com.axelor.apps.organisation.db.Planning" onNew="action-planning-record-default">
 	  <panel>
-	    <field name="period" x-span="4"/>
-	    <field name="user" x-span="4"/>
-	    <field name="date" x-span="4"/>
+	    <field name="period" colSpan="4"/>
+	    <field name="user" colSpan="4"/>
+	    <field name="date" colSpan="4"/>
 	  </panel>  
-	  <panel title="Configuration" x-span="12">
-	    <field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default" x-span="12"/>
-	    <panel title="Complete time sheet configuration" showIf="hasCompleteTimesheetLines == true"  x-span="12">
+	  <panel title="Configuration" colSpan="12">
+	    <field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default" colSpan="12"/>
+	    <panel title="Complete time sheet configuration" showIf="hasCompleteTimesheetLines == true"  colSpan="12">
 	      <field name="completeFromDate"/>
 	      <field name="completeToDate"/>
 	      <field name="completeDefaultTask"/>
@@ -25,7 +25,7 @@
 	    </panel>
 	    <button name="completeTimeSheetButton" title="Complete time sheet" showIf="hasCompleteTimesheetLines == true" colSpan="1" onClick="save"/>
 	  </panel>
-	  <panel-related field="planningLineList"  x-span="12" form-view="planning-line-form" grid-view="planning-line-grid"/>
+	  <panel-related field="planningLineList"  colSpan="12" form-view="planning-line-form" grid-view="planning-line-grid"/>
 	</form>
     
     <action-record name="action-planning-record-complete-group-default" model="com.axelor.apps.organisation.db.Planning">

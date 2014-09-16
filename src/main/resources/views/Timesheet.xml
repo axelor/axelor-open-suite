@@ -22,33 +22,33 @@
 	  </toolbar>
 	  <panel>
 	    <field name="user" readonlyIf="statusSelect &gt;= 3"/>
-	    <field name="statusSelect" showTitle="false" widget="NavSelect" x-span="12"/>
+	    <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
 	    <field name="fromDate" readonlyIf="statusSelect &gt;= 3" onChange="action-timesheet-getPeriod"/>
 	    <field name="toDate" readonlyIf="statusSelect &gt;= 3"/>
 	    <field name="unit" readonlyIf="statusSelect &gt;= 3"/>
 	    <field name="project" readonlyIf="statusSelect &gt;= 3" domain="self.isBusiness = true"/>
 	  </panel>
 	  <panel title="Satisfaction">
-	    <panel title="Project" x-span="12">
+	    <panel title="Project" colSpan="12">
 	      <field name="projectSatisfactionSelect" widget="SelectProgress"/>
 	      <field name="projectComment"/>
 	    </panel>
-	    <panel title="Company" x-span="12">
+	    <panel title="Company" colSpan="12">
 	      <field name="companySatisfactionSelect" widget="SelectProgress"/>
 	      <field name="companyComment"/>
 	    </panel>
 	  </panel>
 	  <panel title="Details of time spent on project/tasks">
-	    <panel title="Configuration" readonlyIf="statusSelect &gt;= 3" x-span="12">
-	      <panel x-span="12">
-	        <field name="hasToGetLeaveRequests" x-span="4"/>
-	        <field name="hasToGetSpentTimeFromTask" x-span="4"/>
-	        <field name="hasToGetPlanningLine" x-span="4"/>
+	    <panel title="Configuration" readonlyIf="statusSelect &gt;= 3" colSpan="12">
+	      <panel colSpan="12">
+	        <field name="hasToGetLeaveRequests" colSpan="4"/>
+	        <field name="hasToGetSpentTimeFromTask" colSpan="4"/>
+	        <field name="hasToGetPlanningLine" colSpan="4"/>
 	        <button name="getSpentTimeButton" title="Get past time" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true)" colSpan="1" onClick="save,action-timesheet-method-get-task-spent-time"/>
 	      </panel>        
-	      <panel x-span="12">
-	        <field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default" x-span="4"/>
-	        <panel title="Complete time sheet configuration" showIf="hasCompleteTimesheetLines == true" x-span="8">
+	      <panel colSpan="12">
+	        <field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default" colSpan="4"/>
+	        <panel title="Complete time sheet configuration" showIf="hasCompleteTimesheetLines == true" colSpan="8">
 	          <field name="completeFromDate"/>
 	          <field name="completeToDate"/>
 	          <field name="completeDefaultTask"/>
@@ -57,11 +57,11 @@
 	        <button name="completeTimeSheetButton" title="Complete time sheet" showIf="statusSelect != 3 &amp;&amp; hasCompleteTimesheetLines == true" colSpan="6" onClick="save"/>
 	      </panel>
 	    </panel>
-	    <panel-related field="timesheetLineList" readonlyIf="statusSelect &gt;= 3" x-span="12" form-view="timesheet-line-form" grid-view="timesheet-line-grid"/>
+	    <panel-related field="timesheetLineList" readonlyIf="statusSelect &gt;= 3" colSpan="12" form-view="timesheet-line-form" grid-view="timesheet-line-grid"/>
 	  </panel>
 	  <panel title="Totals" readonlyIf="statusSelect &gt;= 3">
 	    <field name="timesheetInputTotal"/>
-	    <panel-related field="timesheetTotalByTypeList" x-span="12"/>
+	    <panel-related field="timesheetTotalByTypeList" colSpan="12"/>
 	  </panel>
 	  <panel-side title="Action(s)">
 	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="action-group-organisation-timesheet-confirm-click"/>

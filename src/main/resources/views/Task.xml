@@ -27,27 +27,27 @@
     </grid>
     
 	<form name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task" onLoad="action-group-organisation-task-onload" onNew="action-group-organisation-task-onnew">
-	  <panel x-span="12">
+	  <panel colSpan="12">
 	    <field name="name" showTitle="false" css="highlight" placeholder="Task name"/>
-	    <field name="statusSelect" showTitle="false" x-span="12" widget="NavSelect" onChange="action-task-attrs-status-select"/>
+	    <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect" onChange="action-task-attrs-status-select"/>
 	  </panel>
-	  <panel name="context" title="Context" x-span="12">
-	    <field name="project" onChange="action-group-organisation-project-onchange" x-span="4"/>
-	    <field name="startDateT" x-span="4"/>
-	    <field name="endDateT" x-span="4"/>
-	    <field name="user" x-span="4"/>
-	    <field name="totalTime" x-span="4"/>
-	    <field name="project.unit" x-span="4"/>
+	  <panel name="context" title="Context" colSpan="12">
+	    <field name="project" onChange="action-group-organisation-project-onchange" colSpan="4"/>
+	    <field name="startDateT" colSpan="4"/>
+	    <field name="endDateT" colSpan="4"/>
+	    <field name="user" colSpan="4"/>
+	    <field name="totalTime" colSpan="4"/>
+	    <field name="project.unit" colSpan="4"/>
 	  </panel>
-	  <panel title="Times" x-span="12">
-	    <field name="plannedTime" x-span="4"/>
-	    <field name="spentTime" x-span="4"/>
-	    <field name="remainingTime" x-span="4"/>
+	  <panel title="Times" colSpan="12">
+	    <field name="plannedTime" colSpan="4"/>
+	    <field name="spentTime" colSpan="4"/>
+	    <field name="remainingTime" colSpan="4"/>
 	  </panel>
-	  <panel title="Progress" x-span="12">
-	    <field name="taskProgress" widget="SelectProgress" onChange="action-group-organisation-taskprogress-onchange" x-span="4"/>
-	    <field name="delays" x-span="4"/>
-	    <field name="advance" x-span="4"/>
+	  <panel title="Progress" colSpan="12">
+	    <field name="taskProgress" widget="SelectProgress" onChange="action-group-organisation-taskprogress-onchange" colSpan="4"/>
+	    <field name="delays" colSpan="4"/>
+	    <field name="advance" colSpan="4"/>
 	  </panel>
 	
 	  <panel-tabs>
@@ -64,41 +64,41 @@
 	      <button name="generateDraftInvoice" title="Generate draft invoice" showIf="isToInvoice == true &amp;&amp; statusSelect == 4" colSpan="2" onClick="save,action-task-method-create-invoice"/>
 	    </panel>
 	    <panel title="Notes">
-	      <field name="notes" showTitle="false" x-span="12"/>
+	      <field name="notes" showTitle="false" colSpan="12"/>
 	    </panel>
 	    <panel name="financialInformation" title="Financial information">
-	      <panel x-span="12">
+	      <panel colSpan="12">
 	        <field name="realEstimatedMethodSelect"/>
 	        <field name="estimatedAmount"/>
 	        <field name="project.company.currency"/>
 	        <field name="exportTypeSelect"/>
 	        <button name="printTask" title="View forecast report" icon="fa-print" onClick="action-print-task-report"/>
 	      </panel>
-	      <panel title="Initial estimated" hideIf="realEstimatedMethodSelect == 1" x-span="12">
-	        <panel x-span="12">
-	          <field name="initialEstimatedTurnover" x-span="4"/>
-	          <field name="initialEstimatedCost" x-span="4"/>
-	          <field name="initialEstimatedMargin" x-span="4"/>
+	      <panel title="Initial estimated" hideIf="realEstimatedMethodSelect == 1" colSpan="12">
+	        <panel colSpan="12">
+	          <field name="initialEstimatedTurnover" colSpan="4"/>
+	          <field name="initialEstimatedCost" colSpan="4"/>
+	          <field name="initialEstimatedMargin" colSpan="4"/>
 	        </panel>
-	        <panel title="History" x-span="12" showIf="statusSelect &gt;= 3">
+	        <panel title="History" colSpan="12" showIf="statusSelect &gt;= 3">
 	          <button name="updateInitialEstimatedAmounts" title="Update and historize" showIf="statusSelect &gt;= 3" colSpan="1" onClick="action-task-method-update-initial-estimated-amounts"/>
-	          <field name="financialInformationHistoryLineList" showIf="statusSelect &gt;= 3" x-span="12"/>
+	          <field name="financialInformationHistoryLineList" showIf="statusSelect &gt;= 3" colSpan="12"/>
 	        </panel>  
 	      </panel>
-	      <panel title="Real estimated" x-span="12">
-	        <field name="realEstimatedTurnover" x-span="4"/>
-	        <field name="realEstimatedCost" x-span="4"/>
-	        <field name="realEstimatedMargin" x-span="4"/>
+	      <panel title="Real estimated" colSpan="12">
+	        <field name="realEstimatedTurnover" colSpan="4"/>
+	        <field name="realEstimatedCost" colSpan="4"/>
+	        <field name="realEstimatedMargin" colSpan="4"/>
 	      </panel>
-	      <panel title="Real invoiced" x-span="12">
-	        <field name="realInvoicedTurnover" x-span="4"/>
-	        <field name="realInvoicedCost" x-span="4"/>
-	        <field name="realInvoicedMargin" x-span="4"/>
+	      <panel title="Real invoiced" colSpan="12">
+	        <field name="realInvoicedTurnover" colSpan="4"/>
+	        <field name="realInvoicedCost" colSpan="4"/>
+	        <field name="realInvoicedMargin" colSpan="4"/>
 	      </panel>
 	    </panel>
 	    <panel name="links" title="Links">
-	      <panel title="Update financial information" x-span="12" canCollapse="true" collapseIf="financialInformationUpdateList == null || financialInformationUpdateList.isEmpty()">
-	        <panel-related field="financialInformationUpdateList" showTitle="false" x-span="12"/>
+	      <panel title="Update financial information" colSpan="12" canCollapse="true" collapseIf="financialInformationUpdateList == null || financialInformationUpdateList.isEmpty()">
+	        <panel-related field="financialInformationUpdateList" showTitle="false" colSpan="12"/>
 	      </panel>
 	      <!-- TODO: remove this comment if portlet works in panel
 	      <panel title="Initial estimated" hideIf="realEstimatedMethodSelect == 1">
@@ -122,8 +122,8 @@
 	      -->
 	    </panel>
 	    <panel name="elementToInvoice" title="Elements to invoice">
-	      <panel x-span="12">
-	        <field name="amountToInvoice" readonly="true" x-span="4"/>
+	      <panel colSpan="12">
+	        <field name="amountToInvoice" readonly="true" colSpan="4"/>
 	        <button name="generateDraftInvoice" title="Generate draft invoice" showIf="statusSelect == 4" colSpan="2" onClick="save,action-task-method-create-invoice"/>
 	        <button name="showInvoices" title="Show invoices" showIf="statusSelect == 4" colSpan="2" onClick="action-task-view-invoice"/>
 	      </panel>
@@ -133,7 +133,7 @@
 	      -->
 	    </panel>
 	    <panel title="Description">
-	      <field name="description" showTitle="false" x-span="12"/>
+	      <field name="description" showTitle="false" colSpan="12"/>
 	    </panel>
 	    <panel-related title="Spent times" field="spentTimeList" showTitle="false" colSpan="4" onChange="action-group-organisation-spenttimelist-onchange" form-view="spent-time-task-form" grid-view="spent-time-task-grid"/>
 	  </panel-tabs>
@@ -149,25 +149,25 @@
 	<form name="task-leave-reason-form" title="Task" model="com.axelor.apps.organisation.db.Task" onNew="action-task-default-record">
 	  <panel>
 	    <field name="name" showTitle="false" css="highlight" placeholder="Task name"/>
-	    <field name="statusSelect" showTitle="false" x-span="12" widget="NavSelect"/>
+	    <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
 	    <field name="hasCummulation"/>
 	    <field name="accountingDay"/>
 	  </panel>
 	  <panel title="Context">
-	    <field name="project" onChange="action-task-attrs-project-title,action-task-attrs-hide-financial" x-span="4"/>
-	    <field name="user" x-span="4"/>
-	    <field name="taskProgress" widget="Progress" x-span="4"/>
-	    <field name="startDateT" x-span="4"/>
-	    <field name="endDateT" x-span="4"/>
-	    <field name="totalTime" x-span="4"/>
+	    <field name="project" onChange="action-task-attrs-project-title,action-task-attrs-hide-financial" colSpan="4"/>
+	    <field name="user" colSpan="4"/>
+	    <field name="taskProgress" widget="Progress" colSpan="4"/>
+	    <field name="startDateT" colSpan="4"/>
+	    <field name="endDateT" colSpan="4"/>
+	    <field name="totalTime" colSpan="4"/>
 	  </panel>
 	  <panel-tabs>
-	    <panel-related title="Planification and realization" field="planningLineList"  x-span="12" onChange="action-task-compute-total-planned-qty" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
+	    <panel-related title="Planification and realization" field="planningLineList"  colSpan="12" onChange="action-task-compute-total-planned-qty" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
 	    <panel title="Notes">
-	      <field name="notes"  x-span="12"/>
+	      <field name="notes"  colSpan="12"/>
 	    </panel>
 	    <panel title="Description">
-	      <field name="description" showTitle="false" x-span="12"/>
+	      <field name="description" showTitle="false" colSpan="12"/>
 	    </panel>
 	    <panel-related title="Spent times" field="spentTimeList" showTitle="false" colSpan="4" form-view="spent-time-task-form" grid-view="spent-time-task-grid"/>
 	  </panel-tabs>

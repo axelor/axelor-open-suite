@@ -11,7 +11,7 @@
     <form name="schedule-line-form" title="Working Time shift" model="com.axelor.apps.organisation.db.ScheduleLine" >
         <panel>
 	        <field name="startDate"/>
-	        <panel-related field="scheduleSubLineList" x-span="12"/>
+	        <panel-related field="scheduleSubLineList" colSpan="12"/>
         </panel>
     </form>
     

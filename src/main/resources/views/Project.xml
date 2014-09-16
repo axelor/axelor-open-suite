@@ -22,45 +22,45 @@
 	  <toolbar>
 	    <button name="printProject" title="Print" colSpan="2" icon="fa-print" onClick="action-print-project"/>
 	  </toolbar>
-	  <panel x-span="12">
+	  <panel colSpan="12">
 	    <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
-	    <field name="projectStatusSelect" showTitle="false"  x-span="12" widget="NavSelect"/>
+	    <field name="projectStatusSelect" showTitle="false"  colSpan="12" widget="NavSelect"/>
 	    <field name="responsibleUser"/>
 	    <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	    <field name="clientPartner"/>
 	    <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	    <field name="company" readonlyIf="projectStatusSelect &gt;= 3 || businessStatusSelect &gt;= 2" widget="SuggestBox" form-view="company-lite-form"/>
 	  </panel>
-	  <panel title="Times" x-span="12">
-	    <panel x-span="12">
-	      <field name="totalTime" x-span="4"/>
-	      <field name="unit" x-span="4"/>
+	  <panel title="Times" colSpan="12">
+	    <panel colSpan="12">
+	      <field name="totalTime" colSpan="4"/>
+	      <field name="unit" colSpan="4"/>
 	    </panel>
-	    <panel x-span="12">
-	      <field name="plannedTime" x-span="4"/>
-	      <field name="spentTime" x-span="4"/>
-	      <field name="remainingTime" x-span="4"/>
+	    <panel colSpan="12">
+	      <field name="plannedTime" colSpan="4"/>
+	      <field name="spentTime" colSpan="4"/>
+	      <field name="remainingTime" colSpan="4"/>
 	    </panel>
 	  </panel>
-	  <panel title="Description" x-span="12">
-	    <field name="description" showTitle="false" x-span="12" widget="html"/>
+	  <panel title="Description" colSpan="12">
+	    <field name="description" showTitle="false" colSpan="12" widget="html"/>
 	  </panel>
-	  <panel title="Specific settings" x-span="12">
-	    <field name="isProject" x-span="4"/>
-	    <field name="isBusiness" x-span="4"/>
-	    <field name="parentProject" onChange="action-project-unit" x-span="4"/>
-	    <panel title="Project model" x-span="4">
-	      <field name="isModel" x-span="12"/>
-	      <field name="modelProject" hideIf="isModel" domain="self.isModel = true" x-span="12"/>
+	  <panel title="Specific settings" colSpan="12">
+	    <field name="isProject" colSpan="4"/>
+	    <field name="isBusiness" colSpan="4"/>
+	    <field name="parentProject" onChange="action-project-unit" colSpan="4"/>
+	    <panel title="Project model" colSpan="4">
+	      <field name="isModel" colSpan="12"/>
+	      <field name="modelProject" hideIf="isModel" domain="self.isModel = true" colSpan="12"/>
 	    </panel>
-	    <panel title="Expense" x-span="4">
-	      <field name="imputExpense" x-span="12"/>
-	      <field name="typeProjectSelect" showIf="imputExpense == true" onChange="action-project-attrs-domain-task-project" x-span="12"/>
-	      <field name="isReinvoicingExpense" x-span="12"/>
+	    <panel title="Expense" colSpan="4">
+	      <field name="imputExpense" colSpan="12"/>
+	      <field name="typeProjectSelect" showIf="imputExpense == true" onChange="action-project-attrs-domain-task-project" colSpan="12"/>
+	      <field name="isReinvoicingExpense" colSpan="12"/>
 	    </panel>
-	    <panel title="Timesheet" x-span="4">
-	      <field name="isReinvoicingTime" x-span="12"/>
-	      <field name="isTimeSheetImputable" x-span="12"/>
+	    <panel title="Timesheet" colSpan="4">
+	      <field name="isReinvoicingTime" colSpan="12"/>
+	      <field name="isTimeSheetImputable" colSpan="12"/>
 	    </panel>
 	  </panel>
 	  <panel-tabs>
