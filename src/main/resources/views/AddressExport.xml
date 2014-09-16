@@ -11,8 +11,8 @@
 		model="com.axelor.apps.base.db.AddressExport"
 		onNew="action-default-address-export-record">
 		<panel>
-		<field name="date" x-span="4" />
-		<field name="path" x-span="8"/>
+		<field name="date" colSpan="4" />
+		<field name="path" colSpan="8"/>
 		<button name="export" title="Export" onClick="com.axelor.apps.base.web.AddressController:export"/>
 		<spacer/>
 		<field name="log" />

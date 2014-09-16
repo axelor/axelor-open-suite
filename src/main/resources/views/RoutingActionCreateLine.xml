@@ -10,8 +10,8 @@
 	
 	<form name="routing-action-create-line-form" title="Creation" model="com.axelor.apps.base.db.RoutingActionCreateLine" >
 		<panel>
-			<field name="metaField" x-span="12"/>
-			<field name="value" x-span="12"/>
+			<field name="metaField" colSpan="12"/>
+			<field name="value" colSpan="12"/>
 		</panel>
 	</form>
 

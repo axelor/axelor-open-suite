@@ -34,11 +34,11 @@
     <form onNew="action-group-base-checkcurrencyrate-wizard-onnew" 
     name="wizard-check-currency-rate-form" title="Check currency exhange rates" model="com.axelor.apps.base.db.Wizard" cols="4">
       <panel>
-    	<field name="startCurrency" title="Source Currency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code"/>
-    	<field name="endCurrency" title="Destination Currency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code"/>
-    	<field name="general" title="General" hidden="true" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.General" x-targetName="today"/>
+    	<field name="startCurrency" title="Source Currency" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.Currency" target-name="code"/>
+    	<field name="endCurrency" title="Destination Currency" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.Currency" target-name="code"/>
+    	<field name="general" title="General" hidden="true" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.General" target-name="today"/>
   	  </panel>    
-	  <panel title="System active rate" x-span="12">
+	  <panel title="System active rate" colSpan="12">
 	    <field name="date" title="Rate Date" readonly="true" widget="DATE"/>
 	    <field name="exchangeRate" title="Exchange rate" readonly="true" widget="DECIMAL"/>
 	  </panel>

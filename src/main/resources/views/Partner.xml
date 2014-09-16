@@ -56,58 +56,58 @@
 	        </menu>
 	    </menubar>
 	    <panel>
-	    	<panel x-span="2">
-	        	<field name="picture" showTitle="false" widget="Image" x-span="12" x-width="80" x-height="80"/>
+	    	<panel colSpan="2">
+	        	<field name="picture" showTitle="false" widget="Image" colSpan="12" width="80" height="80"/>
 	      	</panel>
-	      	<panel x-span="9">
-	      	<field name="fullName" x-span="12" showTitle="false">
+	      	<panel colSpan="9">
+	      	<field name="fullName" colSpan="12" showTitle="false">
 	      		<hilite strong="true" if="true" color="primary"/>        
 		        <editor>
-		            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url" x-span="4"/>
-		            <spacer x-span="8"/>
-		            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" x-span="4"/>
-		            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" x-span="3"/>            
-		            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" x-span="2"/>
+		            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url" colSpan="4"/>
+		            <spacer colSpan="8"/>
+		            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
+		            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>            
+		            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
 		        </editor>
 		    </field>
-			<panel x-span="4" showIf="fullName != null">
-			    <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" x-span="2"/>
-			    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" x-span="2"/>
-			    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" x-span="2"/>
-			    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" x-span="2"/>
-			    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" x-span="2"/>
+			<panel colSpan="4" showIf="fullName != null">
+			    <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+			    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+			    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+			    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+			    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 			</panel>
 		</panel>
   		</panel>
   		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2"  colSpan="4" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
   		<panel-tabs>
   			<panel name="information" title="Informations">
-				<panel hideIf="isContact" x-span="12">
+				<panel hideIf="isContact" colSpan="12">
 					<field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
 					<field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
 				</panel>
-				<panel title="Partner Details" hideIf="partnerTypeSelect == 2" x-span="12" >
-					<panel x-span="6">
-						<field name="partnerCategory" widget="SuggestBox" x-span="6"/>
-						<field name="industrySectorSelect" x-span="6"/>
-						<field name="source" x-span="6"/>
-						<field name="site" domain="self.partner.id = :id" x-span="6"/>
-						<field name="department" x-span="6"/>
+				<panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12" >
+					<panel colSpan="6">
+						<field name="partnerCategory" widget="SuggestBox" colSpan="6"/>
+						<field name="industrySectorSelect" colSpan="6"/>
+						<field name="source" colSpan="6"/>
+						<field name="site" domain="self.partner.id = :id" colSpan="6"/>
+						<field name="department" colSpan="6"/>
 					</panel>
-					<panel  x-span="6">
-						<field name="saleTurnover" x-span="6"/>
-						<field name="nbrEmployees" x-span="6"/>
-						<field name="registrationCode" x-span="6"/>
-						<field name="taxNbr" x-span="6"/>
-						<field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" x-span="6"/>
+					<panel  colSpan="6">
+						<field name="saleTurnover" colSpan="6"/>
+						<field name="nbrEmployees" colSpan="6"/>
+						<field name="registrationCode" colSpan="6"/>
+						<field name="taxNbr" colSpan="6"/>
+						<field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" colSpan="6"/>
 					</panel>
 		      	</panel>
-				<panel title="Postal addresses" x-span="12">
+				<panel title="Postal addresses" colSpan="12">
 					<field name="deliveryAddress" canNew="true" onChange="action-partner-record-main-invoicing-address"/>
 					<field name="mainInvoicingAddress" canNew="true"/>
 					<field name="deliveryDelay" showIf="supplierTypeSelect == 2 || supplierTypeSelect == 3"/>
 				</panel>
-				<panel title="Contact" x-span="12">
+				<panel title="Contact" colSpan="12">
 					<field name="fixedPhone"/>
 					<field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
 					<field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
@@ -116,7 +116,7 @@
 				</panel>
 				<spacer />
 	    	</panel>
-			<panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" x-span="12">
+			<panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" colSpan="12">
 				<field name="invoiceSendingFormatSelect"/>
 				<field name="paymentMode"/>
 				<field name="paymentCondition"/>
@@ -124,7 +124,7 @@
 				<field name="fiscalPosition"/>
 				<field name="payerQuality"/>
 				<field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
-				<panel x-span="6">
+				<panel colSpan="6">
 					<button name="showAllInvoices" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
 					<button name="showUnpaidInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-view-show-unpaid-invoice"/>
 				</panel>
@@ -135,12 +135,12 @@
 						</bankDetailsList>
 						]]></viewer>
 				    <editor>
-						<field name="countryCode" x-span="4"/>
-						<field name="bankAddress" x-span="4"/>
-						<field name="bankCode" x-span="4"/>
-						<field name="accountNbr" x-span="4"/>
-						<field name="iban" x-span="4"/>
-						<field name="bic" x-span="4"/>
+						<field name="countryCode" colSpan="4"/>
+						<field name="bankAddress" colSpan="4"/>
+						<field name="bankCode" colSpan="4"/>
+						<field name="accountNbr" colSpan="4"/>
+						<field name="iban" colSpan="4"/>
+						<field name="bic" colSpan="4"/>
 				    </editor>
 				</field>      
 			</panel>
@@ -149,7 +149,7 @@
 			<panel-related field="reportedBalanceList"  widget="MasterDetail" title="Reported balance" hideIf="isContact" if-module="axelor-account" />
 			<panel title="SEPA Direct Debit" if-module="axelor-account">
 			 	  <field name="activeRum" colSpan="2" canNew="false" domain="self.partner.id = :id"/>
-			      <field name="rumList" title="History" readonly="true" x-span="12">
+			      <field name="rumList" title="History" readonly="true" colSpan="12">
 			           <viewer><![CDATA[
 						<rumList>
 						{{record.rumNumber}} {{record.debtorName}} {{record.debtorAddress}} {{record.creationDate}} {{record.mandateSignatureDate}} {{record.mandateSignatureCommune}}
@@ -160,15 +160,15 @@
 			<panel title="Activities" showIf="id != null" if-module="axelor-crm">
 				<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project" />
 			</panel>
-			<panel-dashlet x-span="12" title="Sales" showIf="id != null" if-module="axelor-supplychain" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
-			<panel-dashlet x-span="12" title="Events" showIf="id != null" if-module="axelor-crm" action="portal.customer.crm.activities" height="350"/>
-			<panel title="Notes" x-span="12">
-				<field name="description" x-span="12" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
+			<panel-dashlet colSpan="12" title="Sales" showIf="id != null" if-module="axelor-supplychain" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
+			<panel-dashlet colSpan="12" title="Events" showIf="id != null" if-module="axelor-crm" action="portal.customer.crm.activities" height="350"/>
+			<panel title="Notes" colSpan="12">
+				<field name="description" colSpan="12" showTitle="false"  widget="Html" x-lite="true"/>
 			</panel>
-			<panel title="Settings" x-span="12">
+			<panel title="Settings" colSpan="12">
 				<field name="partnerSeq"/>
 				<field name="languageSelect"/>
-				<panel title="Assigned to" x-span="12">
+				<panel title="Assigned to" colSpan="12">
 					<field name="companySet" colSpan="4" widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
 					<field name="user"/>
 					<field name="team"/>
@@ -235,8 +235,8 @@
     		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1" readonlyIf="id == null"/>
     	</toolbar>
 	    <panel>
-	        <field name="picture" widget="Image" x-span="4"/>
-		    <panel x-span="8">
+	        <field name="picture" widget="Image" colSpan="4"/>
+		    <panel colSpan="8">
 		        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight" />
 		        <spacer/>
 		        <field name="name" css="highlight" onChange="action-partner-record-full-name"/>
@@ -250,16 +250,16 @@
 		</panel>
 	    <panel-tabs>
 	        <panel name="information" title="Informations">
-	            <panel title="Partner details" x-span="12"  hideIf="partnerTypeSelect == 2">
+	            <panel title="Partner details" colSpan="12"  hideIf="partnerTypeSelect == 2">
 	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
 	            </panel>
-	            <panel x-span="12" title="Postal addresses" hideIf="isContact">
+	            <panel colSpan="12" title="Postal addresses" hideIf="isContact">
 	                <field name="mainInvoicingAddress" onChange="action-partner-record-main-invoicing-address"/>
 	                <field name="deliveryAddress"/>
 	            </panel>
-	            <panel title="Contact" x-span="12">
+	            <panel title="Contact" colSpan="12">
 	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
 	                <field name="fax"/>
 	                <field name="fixedPhone"/>
@@ -289,21 +289,21 @@
 	        </menu>
 	    </menubar>
 	    <panel>
-	    	<panel x-span="3">
-	    		<field name="picture" widget="Image" showTitle="false" x-span="12"/>
-	    		<panel x-span="12">
-	           		<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" x-span="2"/>
-				    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" x-span="2"/>
-				    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" x-span="2"/>
-				    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" x-span="2"/>
-				    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" x-span="2"/>
+	    	<panel colSpan="3">
+	    		<field name="picture" widget="Image" showTitle="false" colSpan="12"/>
+	    		<panel colSpan="12">
+	           		<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 	        	</panel>
 	      	</panel>
-	        <panel x-span="9">
-	            <field name="titleSelect" showTitle="false" placeholder="Civility" x-span="2" />
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange,action-partner-method-set-social-network-url" x-span="5" />
-	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-group-base-partner-contact-name-onchange,action-partner-method-set-social-network-url" x-span="5" />
-	            <panel title="Company" x-span="12" >
+	        <panel colSpan="9">
+	            <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2" />
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange,action-partner-method-set-social-network-url" colSpan="5" />
+	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-group-base-partner-contact-name-onchange,action-partner-method-set-social-network-url" colSpan="5" />
+	            <panel title="Company" colSpan="12" >
 	            	<field name="mainPartner"/>
 	           	</panel>
 	        </panel>
@@ -318,13 +318,13 @@
             <field name="mainInvoicingAddress" title="Address"/>     
         </panel>
         <panel title="Notes">
-            <field name="description" showTitle="false" x-span="12" widget="Html" x-lite="true"/>
+            <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
         <panel-side title="Settings">
             <field name="partnerSeq"/>
             <field name="languageSelect"/>
-            <panel title="Assigned to" canCollapse="true" x-span="12">
-                <field name="companySet" x-span="12" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate" />
+            <panel title="Assigned to" canCollapse="true" colSpan="12">
+                <field name="companySet" colSpan="12" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate" />
                 <field name="user"/>
                 <field name="team"/>
             </panel>

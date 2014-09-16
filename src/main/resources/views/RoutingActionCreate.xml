@@ -10,7 +10,7 @@
 	<form name="routing-action-create-form" title="Creation" model="com.axelor.apps.base.db.RoutingActionCreate">
 		<panel>
 			<field name="metaModel"/>
-			<panel-related field="routingActionCreateLineList" x-span="12"/>
+			<panel-related field="routingActionCreateLineList" colSpan="12"/>
 		</panel>
 	</form>
 

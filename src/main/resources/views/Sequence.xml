@@ -29,7 +29,7 @@ xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelo
 			<field name="company" widget="SuggestBox"/>
 			<spacer/>
 			<field name="name"/>
-			<panel title="Sequence Definition" x-span="8">
+			<panel title="Sequence Definition" colSpan="8">
 				<field name="prefixe"/>
 				<field name="suffixe"/>
 				<field name="padding"/>
@@ -37,12 +37,12 @@ xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelo
 				<field name="nextNum"/>
 				<field name="yearlyResetOk" onChange="action-sequence-attrs-tool-bar"/>
 			</panel>
-			<panel title="Tips"  x-span="4">
-				<label title="The tags below can be used as a prefix or a suffix :" x-span="12"/>
-				<label title="%Y : Year" x-span="12"/>
-				<label title="%M : Month" x-span="12"/>
-				<label title="%D : Day" x-span="12"/>
-				<label title="%WY : Week number" x-span="12"/>
+			<panel title="Tips"  colSpan="4">
+				<label title="The tags below can be used as a prefix or a suffix :" colSpan="12"/>
+				<label title="%Y : Year" colSpan="12"/>
+				<label title="%M : Month" colSpan="12"/>
+				<label title="%D : Day" colSpan="12"/>
+				<label title="%WY : Week number" colSpan="12"/>
 			</panel>
 		</panel>
 	</form>

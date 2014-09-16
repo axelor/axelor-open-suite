@@ -8,12 +8,12 @@
         <field name="endUnit"/>
     </grid>
     <form name="unit-conversion-form" title="Unit conversion" model="com.axelor.apps.base.db.UnitConversion">
-    	<panel x-span="10">
-			<field name="startUnit" x-span="3"/>
-			<label title="=" x-span="1"/>
-			<field name="coef" x-span="3"/>
-			<label title="X" x-span="1"/>
-			<field name="endUnit" x-span="3"/>
+    	<panel colSpan="10">
+			<field name="startUnit" colSpan="3"/>
+			<label title="=" colSpan="1"/>
+			<field name="coef" colSpan="3"/>
+			<label title="X" colSpan="1"/>
+			<field name="endUnit" colSpan="3"/>
 		</panel>
     </form>
 </object-views>

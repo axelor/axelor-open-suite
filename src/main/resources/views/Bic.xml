@@ -17,7 +17,7 @@
 	        <field name="sortCode" />
 	        <field name="bankName"/>
 	        <field name="bankCode"/>
-	        <field name="code" x-bind="{{code|uppercase}}" x-span="12"/>
+	        <field name="code" x-bind="{{code|uppercase}}" colSpan="12"/>
        	</panel>
     </form>
 

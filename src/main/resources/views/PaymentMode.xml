@@ -17,7 +17,7 @@
 			<field name="inOutSelect"/>
         </panel>
         <panel-related field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
-	        domain="self.typeSelect = 3" x-span="12" showTitle="false" if-module="axelor-account"/>
+	        domain="self.typeSelect = 3" colSpan="12" showTitle="false" if-module="axelor-account"/>
        
     </form>
     

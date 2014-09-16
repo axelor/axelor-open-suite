@@ -9,8 +9,8 @@
     <form name="partner-list-form" title="Partner list" model="com.axelor.apps.base.db.PartnerList">
     	<panel>
 	        <field name="code"/>
-	        <field name="description" x-span="12"/>
-	        <panel-related field="partnerSet" x-span="12"/>
+	        <field name="description" colSpan="12"/>
+	        <panel-related field="partnerSet" colSpan="12"/>
         </panel>
     </form>
 
@@ -22,8 +22,8 @@
 	<form cols="2" colWidths="*,200" name="partner-list-map-form" title="Sales map" model="com.axelor.apps.base.db.PartnerList">
 	    <panel>
 	        <field name="code"/>
-	        <field name="description" x-span="12"/>
-	        <field name="partnerSet" x-span="12" domain="self.partnerTypeSelect = 1" showTitle="false"/>
+	        <field name="description" colSpan="12"/>
+	        <field name="partnerSet" colSpan="12" domain="self.partnerTypeSelect = 1" showTitle="false"/>
 	    </panel>
 	    <panel-side name="action_buttons" title="Actions" hideIf="$popup()">
 	        <button name="map" title="Sales map" onClick="save,com.axelor.apps.base.web.AddressController:viewSalesMap"/>

@@ -16,7 +16,7 @@
 	        <field name="format"/>
 	        <field name="generatedFilePath"/>
 	        <panel title="Parameters">
-		        <field name="birtTemplateParameterList" showTitle="false" x-span="12">
+		        <field name="birtTemplateParameterList" showTitle="false" colSpan="12">
 		        	<viewer><![CDATA[                                         
 	        				<birtTemplateParameterList>{{record.name}} : {{record.value}}
 	        				</birtTemplateParameterList>

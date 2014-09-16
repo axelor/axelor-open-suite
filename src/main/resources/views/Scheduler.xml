@@ -11,41 +11,41 @@
 		<panel>
 	    	<field name="name"/>
 	    	<spacer/>
-    		<panel title="Frequency" x-span="12">
-	    		<field name="daily"  onChange="scheduler-onChange-daily" x-span="3"/>
-	    		<field name="weekly" onChange="scheduler-onChange-weekly" x-span="3"/>
-	    		<field name="monthly" onChange="scheduler-onChange-monthly" x-span="3"/>
-	    		<field name="annually" onChange="scheduler-onChange-annually" x-span="3"/>
+    		<panel title="Frequency" colSpan="12">
+	    		<field name="daily"  onChange="scheduler-onChange-daily" colSpan="3"/>
+	    		<field name="weekly" onChange="scheduler-onChange-weekly" colSpan="3"/>
+	    		<field name="monthly" onChange="scheduler-onChange-monthly" colSpan="3"/>
+	    		<field name="annually" onChange="scheduler-onChange-annually" colSpan="3"/>
 	    	</panel>
-	    	<panel name="dailyGroup" title="Daily" showTitle="false" hideIf="!daily"  x-span="12">
+	    	<panel name="dailyGroup" title="Daily" showTitle="false" hideIf="!daily"  colSpan="12">
 			    <field title="Every" name="dayDaily"  />
-		    	<label title="day(s)" x-span="2"/>
+		    	<label title="day(s)" colSpan="2"/>
 		    </panel>
-    		<panel title="Weekly" name="weeklyGroup" showTitle="false" hideIf="!weekly" x-span="12">
+    		<panel title="Weekly" name="weeklyGroup" showTitle="false" hideIf="!weekly" colSpan="12">
     			<field title="Every" name="weekWeekly" />
-    			<label title="week(s)" x-span="2"/>
+    			<label title="week(s)" colSpan="2"/>
     			<spacer />
 	    		<label title="On :"/>
-	    		<panel showTitle="false" x-span="12" >
-	    			<field name="monday" x-span="4" />
-			    	<field name="tuesday" x-span="4" />
-			    	<field name="wednesday" x-span="4" />
-			    	<field name="thursday" x-span="4" />
-			    	<field name="friday" x-span="4" />
-			   		<field name="saturday" x-span="4" />
-			    	<field name="sunday" x-span="4" />
+	    		<panel showTitle="false" colSpan="12" >
+	    			<field name="monday" colSpan="4" />
+			    	<field name="tuesday" colSpan="4" />
+			    	<field name="wednesday" colSpan="4" />
+			    	<field name="thursday" colSpan="4" />
+			    	<field name="friday" colSpan="4" />
+			   		<field name="saturday" colSpan="4" />
+			    	<field name="sunday" colSpan="4" />
 		    	</panel>
     		</panel>
-    		<panel title="Monthly" name="monthlyGroup" showTitle="false" hideIf="!monthly" x-span="12">
-	    		<field title="On" name="dayMonthly" x-span="5"/>
-	    		<field title="Every" name="monthMonthly" x-span="5"/>
-	    		<label title="month" x-span="2"/>
+    		<panel title="Monthly" name="monthlyGroup" showTitle="false" hideIf="!monthly" colSpan="12">
+	    		<field title="On" name="dayMonthly" colSpan="5"/>
+	    		<field title="Every" name="monthMonthly" colSpan="5"/>
+	    		<label title="month" colSpan="2"/>
 	    	</panel>
-	    	<panel title="Annually" name="annuallyGroup" showTitle="false" hideIf="!annually" x-span="12">
+	    	<panel title="Annually" name="annuallyGroup" showTitle="false" hideIf="!annually" colSpan="12">
 	    		<field title="Every" name="yearAnnually"/>
-	    		<label title="year(s)" x-span="2"/>
+	    		<label title="year(s)" colSpan="2"/>
 	    		<field name="dayAnnually" title="Le"/>
-	    		<field showTitle="false" name="monthAnnuallySelect" x-span="4"/>
+	    		<field showTitle="false" name="monthAnnuallySelect" colSpan="4"/>
 	    	</panel>
 	    </panel>
 	</form>

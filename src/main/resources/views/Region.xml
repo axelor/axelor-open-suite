@@ -9,7 +9,7 @@
     <form name="region-form" title="Region" model="com.axelor.apps.base.db.Region">
     	<panel>
 	        <field name="name"/>
-	        <field name="code" x-bind="{{code|uppercase}}" x-span="2"/>
+	        <field name="code" x-bind="{{code|uppercase}}" colSpan="2"/>
 	        <field name="country"/>
         </panel>
     </form>

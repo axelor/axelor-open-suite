@@ -31,106 +31,106 @@
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel>
-	    	<panel x-span="4">
-	        	<field name="picture" showTitle="false" widget="Image" x-span="12"/>
-	        	<field name="versionSelect" x-span="12"/>
+	    	<panel colSpan="4">
+	        	<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
+	        	<field name="versionSelect" colSpan="12"/>
 	        </panel>
-            <panel x-span="8">
-				<field name="name" showTitle="false" colSpan="3" css="highlight" placeholder="Name"	x-span="8"/>
-				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="highlight" placeholder="Code" x-span="4"/>
-				<panel title="Product typology" x-span="6" colWidths="30%,70%">
-					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" x-span="12"/>
-					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" x-span="12"/>
-					<field name="invoiceLineType" x-span="12" if-module="axelor-account"/>
+            <panel colSpan="8">
+				<field name="name" showTitle="false" css="highlight" placeholder="Name"	colSpan="8"/>
+				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="highlight" placeholder="Code" colSpan="4"/>
+				<panel title="Product typology" colSpan="6" colWidths="30%,70%">
+					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" colSpan="12"/>
+					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" colSpan="12"/>
+					<field name="invoiceLineType" colSpan="12" if-module="axelor-account"/>
 				</panel>
-				<panel title="Categorization" x-span="6" colWidths="30%,70%">
-					<field name="applicationTypeSelect" onChange="action-set-product-type-select" x-span="12"/>
-					<field name="productFamily" x-span="12"/>
-					<field name="productCategory" domain="self.productFamily = :productFamily" x-span="12"/>
+				<panel title="Categorization" colSpan="6" colWidths="30%,70%">
+					<field name="applicationTypeSelect" onChange="action-set-product-type-select" colSpan="12"/>
+					<field name="productFamily" colSpan="12"/>
+					<field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12"/>
 				</panel>
 			</panel>
 	    </panel>
 	    <panel-tabs title="Product specific attributes">
 			<panel title="Sale" showTitle="false">	
-				<panel x-span="6" title="Sales">
-					<field name="salePrice" x-span="12"/>
-					<field name="saleCurrency" x-span="12"/>
-					<field name="unit" x-span="12"/>
+				<panel colSpan="6" title="Sales">
+					<field name="salePrice" colSpan="12"/>
+					<field name="saleCurrency" colSpan="12"/>
+					<field name="unit" colSpan="12"/>
 				</panel>
-				<panel x-span="6" title="Product dates">
-					<field name="startDate" x-span="12"/>
-					<field name="endDate" onChange="action-group-base-product-enddate-onchange" x-span="12"/>
+				<panel colSpan="6" title="Product dates">
+					<field name="startDate" colSpan="12"/>
+					<field name="endDate" onChange="action-group-base-product-enddate-onchange" colSpan="12"/>
 				</panel>
-				<panel x-span="6" title="Description">
-					<field name="description" showTitle="false" x-span="12" widget="html"/>
+				<panel colSpan="6" title="Description">
+					<field name="description" showTitle="false" colSpan="12" widget="html"/>
 				</panel>
-				<panel x-span="6" title="Internal description" >
-					<field name="internalDescription" showTitle="false" x-span="12" widget="html"/>
+				<panel colSpan="6" title="Internal description" >
+					<field name="internalDescription" showTitle="false" colSpan="12" widget="html"/>
 				</panel>
 			</panel>
 			<panel title="Purchase/Costs" showTitle="false">
-				<panel title="Purchases" x-span="6">
-					<field name="purchasePrice" x-span="12"/>
-					<field name="purchaseCurrency" x-span="12"/>
-					<field name="defaultSupplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" x-span="12"/>
+				<panel title="Purchases" colSpan="6">
+					<field name="purchasePrice" colSpan="12"/>
+					<field name="purchaseCurrency" colSpan="12"/>
+					<field name="defaultSupplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" colSpan="12"/>
 				</panel>
-				<panel title="Costs" x-span="6">
-					<field name="costPrice" onChange="action-product-record-compute-sale-price" x-span="12"/>
-					<field name="managPriceCoef" onChange="action-product-record-compute-sale-price" x-span="12"/>
+				<panel title="Costs" colSpan="6">
+					<field name="costPrice" onChange="action-product-record-compute-sale-price" colSpan="12"/>
+					<field name="managPriceCoef" onChange="action-product-record-compute-sale-price" colSpan="12"/>
 				</panel>
-				<panel-related title="Suppliers catalog" field="supplierCatalogList" x-span="12"/>        
+				<panel-related title="Suppliers catalog" field="supplierCatalogList" colSpan="12"/>        
 			</panel>
-	        <panel-related title="Accounting" field="accountManagementList" x-span="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
+	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
 	        <panel title="Stock" showIf="productTypeSelect == 'storable'" showTitle="false" if-module="axelor-stock">
-            	<panel title="Procurement settings" x-span="12">
-					<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'" x-span="4"/>
-					<field name="isRawMaterial" showIf="productTypeSelect != 'service'" x-span="4"/>
+            	<panel title="Procurement settings" colSpan="12">
+					<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'" colSpan="4"/>
+					<field name="isRawMaterial" showIf="productTypeSelect != 'service'" colSpan="4"/>
 				</panel>
-				<panel x-span="12" if-module="axelor-supplychain">
+				<panel colSpan="12" if-module="axelor-supplychain">
 					<button name="showAllStockMoveLine" title="Show all stock move" colSpan="2" onClick="action-product-view-stock-move-line"/>
 					<spacer/>
-<!-- 					<panel-dashlet action="action-product-view-stock" x-span="12"/> -->
-<!-- 					<panel-dashlet action="action-stock-report-for-product" height="200" x-span="12"/> -->
-<!-- 					<panel-dashlet action="action-stock-history-report-for-product" height="200" x-span="12"/> -->
+<!-- 					<panel-dashlet action="action-product-view-stock" colSpan="12"/> -->
+<!-- 					<panel-dashlet action="action-stock-report-for-product" height="200" colSpan="12"/> -->
+<!-- 					<panel-dashlet action="action-stock-history-report-for-product" height="200" colSpan="12"/> -->
 				</panel>
 			</panel>
 			<panel title="Production informations" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-production">
 				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>
 				<field name="lastProductionPrice" readonly="true"/>
-				<panel if-module="axelor-production" x-span="12" colWidths="20%,30%,20%,30%">
+				<panel if-module="axelor-production" colSpan="12" colWidths="20%,30%,20%,30%">
 					<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
-<!-- 					<panel-dashlet action="action-product-view-show-bill-of-material" x-span="12"/> -->
+<!-- 					<panel-dashlet action="action-product-view-show-bill-of-material" colSpan="12"/> -->
 				</panel>
 			</panel>
 	        <panel title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false"  colWidths="20%,30%,20%,30%">
-        		<panel x-span="12">
+        		<panel colSpan="12">
         			<field name="hasWarranty" />
 	            	<field name="warrantyNbrOfMonths"  showIf="hasWarranty"/>
         	 		<field name="isPerishable" />
 	            	<field name="perishableNbrOfMonths" showIf="isPerishable"/>
         	 	</panel>
-        	 	<panel x-span="12" if-module="axelor-stock">
+        	 	<panel colSpan="12" if-module="axelor-stock">
 		            <field name="trackingNumberConfiguration"/>
 	            </panel>
 	        </panel>
 	        <panel title="Variants" showTitle="false">
-	        	<panel name="parentVariant" showIf="!parentProduct" x-span="12">
-	        		<field name="productVariantConfig" showTitle="false" canSelect="false" x-span="12" />
+	        	<panel name="parentVariant" showIf="!parentProduct" colSpan="12">
+	        		<field name="productVariantConfig" showTitle="false" canSelect="false" colSpan="12" />
 <!-- 	        			<editor> -->
 <!-- 				        	<field name="productVariantAttr1" onChange="action-product-variant-config-attrs-domain"/> -->
-<!-- 				        	<panel-related field="productVariantValue1Set" widget="TagSelect" canNew="false" showIf="productVariantAttr1" x-span="12"/> -->
+<!-- 				        	<panel-related field="productVariantValue1Set" widget="TagSelect" canNew="false" showIf="productVariantAttr1" colSpan="12"/> -->
 <!-- 					        <field name="productVariantAttr2" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr1"/> -->
-<!-- 				    	    <panel-related field="productVariantValue2Set" widget="TagSelect" canNew="false" showIf="productVariantAttr2" x-span="12"/> -->
+<!-- 				    	    <panel-related field="productVariantValue2Set" widget="TagSelect" canNew="false" showIf="productVariantAttr2" colSpan="12"/> -->
 <!-- 					        <field name="productVariantAttr3" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr2"/> -->
-<!-- 				    	    <panel-related field="productVariantValue3Set" widget="TagSelect" canNew="false" showIf="productVariantAttr3" x-span="12"/> -->
+<!-- 				    	    <panel-related field="productVariantValue3Set" widget="TagSelect" canNew="false" showIf="productVariantAttr3" colSpan="12"/> -->
 <!-- 					        <field name="productVariantAttr4" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr3"/> -->
-<!-- 				    	    <panel-related field="productVariantValue4Set" widget="TagSelect" canNew="false" showIf="productVariantAttr4" x-span="12"/> -->
+<!-- 				    	    <panel-related field="productVariantValue4Set" widget="TagSelect" canNew="false" showIf="productVariantAttr4" colSpan="12"/> -->
 <!-- 				        </editor> -->
 <!-- 	        		</field> -->
 	            	<button name="generateProductVariant" title="Generate product variants" onClick="save,action-product-method-generate-product-variant"/>
-<!-- 	        		<panel-dashlet action="action-product-view-product-variant" x-span="12"/> -->
+<!-- 	        		<panel-dashlet action="action-product-view-product-variant" colSpan="12"/> -->
 	        	</panel>
-	            <panel name="childVariant" showIf="parentProduct" x-span="12">
+	            <panel name="childVariant" showIf="parentProduct" colSpan="12">
 	            <field name="productVariant" showTitle="false" canSelect="false" >
             		<editor>
 	            		<field name="productVariantAttr1" showTitle="false" readonly="true"/>
@@ -149,13 +149,13 @@
             	<button name="updateProductsPrices" title="Update products prices"  onClick="save,action-product-method-update-products-prices" help="Update current product prices and variants"/>
 	        </panel>
 <!--  			<panel title="Links" if-module="axelor-supplychain"> -->
-<!--  				<panel-dashlet action="action-product-view-stock-move-line-incoming-planned" x-span="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-stock-move-line-consumption-planned" x-span="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-stock-move-line" x-span="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-supplier-requests-historical" x-span="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-purchase-order-line-in-progress" x-span="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" x-span="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-stock-move-line-consumption-historical" x-span="12"/> -->
+<!--  				<panel-dashlet action="action-product-view-stock-move-line-incoming-planned" colSpan="12"/> -->
+<!--  				<panel-dashlet action="action-product-view-stock-move-line-consumption-planned" colSpan="12"/> -->
+<!--  				<panel-dashlet action="action-product-view-stock-move-line" colSpan="12"/> -->
+<!--  				<panel-dashlet action="action-product-view-supplier-requests-historical" colSpan="12"/> -->
+<!--  				<panel-dashlet action="action-product-view-purchase-order-line-in-progress" colSpan="12"/> -->
+<!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12"/> -->
+<!--  				<panel-dashlet action="action-product-view-stock-move-line-consumption-historical" colSpan="12"/> -->
 <!-- 	        </panel> -->
 	  	</panel-tabs>
 	</form>    

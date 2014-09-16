@@ -15,16 +15,16 @@
     
 	<form name="price-list-line-form" title="Price list line" model="com.axelor.apps.base.db.PriceListLine"
 	onNew="action-group-base-pricelistline-onnew">
-		<panel name="application" title="Apply on" x-span="11">
-			<field name="product" x-span="5" onChange="action-price-list-line-record-product" />
-			<label title="Or" x-span="1"/>
-			<field name="productCategory" x-span="5"/>
+		<panel name="application" title="Apply on" colSpan="11">
+			<field name="product" colSpan="5" onChange="action-price-list-line-record-product" />
+			<label title="Or" colSpan="1"/>
+			<field name="productCategory" colSpan="5"/>
 		</panel>
-		<panel title="Calculation method" x-span="12" >
-			<field name="typeSelect" x-span="12" onChange="action-price-list-line-record-type-select" />
-			<field name="amountTypeSelect" x-span="12" hideIf="typeSelect == 3" />
-			<field name="amount" x-span="12"/>
-			<field name="minQty" x-span="12"/>
+		<panel title="Calculation method" colSpan="12" >
+			<field name="typeSelect" colSpan="12" onChange="action-price-list-line-record-type-select" />
+			<field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3" />
+			<field name="amount" colSpan="12"/>
+			<field name="minQty" colSpan="12"/>
 		</panel>
 	</form>
 	

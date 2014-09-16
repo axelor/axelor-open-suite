@@ -22,7 +22,7 @@
 		    <field name="endDate"/>
 		    <field name="done"/>
 		    <field name="anomaly"/>
-		    <field name="comment" showTitle="false" x-span="12"/>
+		    <field name="comment" showTitle="false" colSpan="12"/>
 		    <button name="showTraceBack" title="Anomalies" colSpan="2" onClick="save,action-batch-show-trace-back"/>
 		    <button name="showInvoice" title="Invoices" hidden="true" colSpan="2" onClick="save,action-batch-show-invoice"/>
 		    <button name="showReimbursement" title="Reimbursements" hidden="true" colSpan="2" onClick="save,action-batch-show-reimbursement"/>

@@ -15,13 +15,13 @@
 		<panel>
 	    	<field name="name"/>
 	    	<spacer/>
-	    	<field name="scheduler" x-span="12"/>
-	    	<panel x-span="12">
-	    		<field name="firstExecutionDate" required="true" readonlyIf="lastExecutionDate" x-span="4"/>
-		    	<field name="lastTheoreticalExecutionDate" readonly="true" x-span="4"/>
-		    	<field name="lastExecutionDate" readonly="true" x-span="4"/>
+	    	<field name="scheduler" colSpan="12"/>
+	    	<panel colSpan="12">
+	    		<field name="firstExecutionDate" required="true" readonlyIf="lastExecutionDate" colSpan="4"/>
+		    	<field name="lastTheoreticalExecutionDate" readonly="true" colSpan="4"/>
+		    	<field name="lastExecutionDate" readonly="true" colSpan="4"/>
 		    </panel>
-		    <panel-related field="schedulerInstanceHistoryList" x-span="12"/>
+		    <panel-related field="schedulerInstanceHistoryList" colSpan="12"/>
 		</panel>
 	</form>
 	

@@ -21,19 +21,19 @@
 	    <field name="parent"/>
 	    <field name="logoPath"/>
 	    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-	    <field name="address" x-span="12"/>
+	    <field name="address" colSpan="12"/>
 	    <field name="currency"/>
 	  </panel>
 	  <panel-tabs>
 	    <panel title="Notes">
-	      <field name="notes" showTitle="false" x-span="12"/>
+	      <field name="notes" showTitle="false" colSpan="12"/>
 	    </panel>
 	    <panel title="Account configuration">
-	      <field name="accountConfig" showTitle="false" x-span="12" widget="NestedEditor" canSelect="false" form-view="account-config-form" summary-view="true"/>
+	      <field name="accountConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="account-config-form" summary-view="true"/>
 	    </panel>
 	    <panel title="Bank details">
 	      <field name="defaultBankDetails"/>
-	      <panel-related field="bankDetailsSet" showTitle="false" x-span="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	      <panel-related field="bankDetailsSet" showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    </panel>
 	    <panel title="Mails / Emails">
 	      <field name="generatedMailFilePath" />
@@ -42,9 +42,9 @@
 	      <field name="generatedEmailFileName"/>
 	    </panel>
 	    <panel title="Supply chain configuration">
-	      <field name="saleConfig" showTitle="false" x-span="12" widget="NestedEditor" canSelect="false" form-view="sale-config-form" summary-view="true" if-module="axelor-sale"/>
-	      <field name="stockConfig" showTitle="false" x-span="12" widget="NestedEditor" canSelect="false" form-view="stock-config-form" summary-view="true" if-module="axelor-stock"/>
-	      <field name="purchaseConfig" showTitle="false" x-span="12" widget="NestedEditor" canSelect="false" form-view="purchase-config-form" summary-view="true" if-module="axelor-purchase"/>
+	      <field name="saleConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="sale-config-form" summary-view="true" if-module="axelor-sale"/>
+	      <field name="stockConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="stock-config-form" summary-view="true" if-module="axelor-stock"/>
+	      <field name="purchaseConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="purchase-config-form" summary-view="true" if-module="axelor-purchase"/>
 	    </panel>
 	    <panel title="Organisation">
 	      <field name="taskProduct"/>
@@ -64,10 +64,10 @@
 	        <field name="parent"/>
 	        <field name="logoPath" />
 	        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-	        <field name="address" x-span="12"/>
+	        <field name="address" colSpan="12"/>
 	        <field name="currency"/>
-	        <panel title="Notes" x-span="12">
-	        	<field name="notes" showTitle="false" x-span="12"/>
+	        <panel title="Notes" colSpan="12">
+	        	<field name="notes" showTitle="false" colSpan="12"/>
 	        </panel>
 	    </panel>
     </form>

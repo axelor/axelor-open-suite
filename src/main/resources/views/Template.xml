@@ -13,27 +13,27 @@
 		onSave="action-template-check-receptor" 
 		onNew="action-template-record-new"
 		onLoad="action-template-attrs-showhide-by-media-type">
-		<panel x-span="12">
+		<panel colSpan="12">
 			<field name="name"/>
-			<field name="mediaTypeSelect" x-span="4" onChange="action-template-attrs-showhide-by-media-type" />
-			<field name="isDefault" x-span="2"/>
+			<field name="mediaTypeSelect" colSpan="4" onChange="action-template-attrs-showhide-by-media-type" />
+			<field name="isDefault" colSpan="2"/>
 			<field name="metaModel"/>
 			<field name="target"/>
-			<field name="templateContext" x-span="12"/>
+			<field name="templateContext" colSpan="12"/>
 		</panel>
-		<panel-side name="attachedFiles" title="Attached files" x-span="12">
-			    <field name="birtTemplate" x-span="12"/>
-			    <field name="filePath" widget="url" x-span="12"/>
+		<panel-side name="attachedFiles" title="Attached files" colSpan="12">
+			    <field name="birtTemplate" colSpan="12"/>
+			    <field name="filePath" widget="url" colSpan="12"/>
   		</panel-side>
-		<panel name="recipientGroup" title="Destinated to" x-span="12">
-			<field name="addressBlock" x-span="12" widget="Html" x-lite="false" x-height="5"/>
-			<field name="toRecipients" x-span="12" x-height="2"/>
-			<field name="ccRecipients" x-span="12" x-height="2"/>
-			<field name="bccRecipients" x-span="12" x-height="2"/>
+		<panel name="recipientGroup" title="Destinated to" colSpan="12">
+			<field name="addressBlock" colSpan="12" widget="Html" x-lite="false" height="5"/>
+			<field name="toRecipients" colSpan="12" height="2"/>
+			<field name="ccRecipients" colSpan="12" height="2"/>
+			<field name="bccRecipients" colSpan="12" height="2"/>
 		</panel>
-		<panel name="recipientGroup" x-span="12">
-			<field name="subject" x-span="12" x-height="2"/>
-			<field name="content" showTitle="false" widget="Html" x-lite="false" x-span="12"/>
+		<panel name="recipientGroup" colSpan="12">
+			<field name="subject" colSpan="12" height="2"/>
+			<field name="content" showTitle="false" widget="Html" x-lite="false" colSpan="12"/>
 		</panel>
 	</form>
 	

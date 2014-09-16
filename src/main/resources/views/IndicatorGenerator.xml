@@ -13,12 +13,12 @@
 	<form name="indicator-generator-form" title="Indicator generator" model="com.axelor.apps.base.db.IndicatorGenerator">
 		<panel>
 			<field name="code"/>
-			<field name="name" x-span="12"/>
+			<field name="name" colSpan="12"/>
 			<field name="requestLanguage" />
-			<field name="request" x-span="12" widget="CodeEditor" x-syntax="sql"/>
+			<field name="request" colSpan="12" widget="CodeEditor" x-syntax="sql"/>
 			<button name="run" title="Execute" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorController:run" />
-			<field name="result" x-span="12" />
-			<field name="log" x-span="12" />
+			<field name="result" colSpan="12" />
+			<field name="log" colSpan="12" />
 		</panel>
 	</form>
 

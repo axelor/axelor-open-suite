@@ -16,8 +16,8 @@
    onNew="action-price-list-record-default,action-price-list-record-title">
    		<panel>
 		    <field name="title"/>
-			<field name="typeSelect" x-span="4"/>
-			<field name="isActive" x-span="2"/>
+			<field name="typeSelect" colSpan="4"/>
+			<field name="isActive" colSpan="2"/>
 			<field name="partner" onChange="action-price-list-record-title" onSelect="action-price-list-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="isDisplayed"/>
 			<field name="validFromDate" onChange="action-price-list-record-title"/>
@@ -25,11 +25,11 @@
     	</panel>
 		<panel name="priceListLine" title="Price list lines" >
 			<field name="generalDiscount"/>
-			<label name="or" title="Or" x-span="12"/>
-			<panel-related field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" x-span="12"/>
+			<label name="or" title="Or" colSpan="12"/>
+			<panel-related field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="12"/>
 		 </panel>
 		<panel name="comments" title="Comments">
-			<field name="comments" x-span="12" x-height="3"/>    					
+			<field name="comments" colSpan="12" height="3"/>    					
 		</panel>
    </form>
    

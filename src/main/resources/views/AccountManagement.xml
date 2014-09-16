@@ -30,7 +30,7 @@
 		
 		<panel-tabs>
 			<panel name="analyticAccountManagementPage" title="Comptes analytiques" showTitle="false" if-module="axelor-account">
-				<panel-related field="analyticAccountManagementList" x-span="12"/>
+				<panel-related field="analyticAccountManagementList" colSpan="12"/>
 			</panel>
 			<panel name="taxPage" title="Tax" showTitle="false">
 				<field name="purchaseTax"/>
@@ -51,10 +51,10 @@
 	  
 		<panel-tabs>
 			<panel name="analyticAccountManagementPage" title="Analytic account" showTitle="false" if-module="axelor-account">
-			  <panel-related field="analyticAccountManagementList" x-span="12"/>
+			  <panel-related field="analyticAccountManagementList" colSpan="12"/>
 			</panel>
 			<panel name="productPage" title="Product" showTitle="false">
-			  <field name="product"  x-span="12"/>
+			  <field name="product"  colSpan="12"/>
 			</panel>
 			<panel name="taxPage" title="Tax" showTitle="false">
 			  <field name="purchaseTax"/>

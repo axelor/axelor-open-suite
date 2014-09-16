@@ -6,9 +6,9 @@
 	<form name="import-permission-form" title="Import permission" model="com.axelor.apps.base.db.Import" onNew="action-default-import-permission-record">
 		<panel>
 			<field name="typeSelect" readonly="true"/>
-			<field name="configPath" x-span="12" required="true"/>
-			<field name="path" x-span="12" required="true"/>
-			<field name="log" x-span="12"/>
+			<field name="configPath" colSpan="12" required="true"/>
+			<field name="path" colSpan="12" required="true"/>
+			<field name="log" colSpan="12"/>
 			<button name="import" title="Importer"
 				onClick="save,com.axelor.apps.base.web.ImportController:launchImport" />
 		</panel>
