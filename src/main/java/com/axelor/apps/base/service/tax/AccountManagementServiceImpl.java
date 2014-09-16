@@ -30,8 +30,10 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductFamily;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class AccountManagementServiceImpl  implements  AccountManagementService{
 	
@@ -59,11 +61,17 @@ public class AccountManagementServiceImpl  implements  AccountManagementService{
 		}
 		
 		if (accountManagement == null)  {
-			throw new AxelorException(String.format("Configuration comptable absente du produit : %s (société : %s)", product.getCode(), company.getName()), IException.CONFIGURATION_ERROR);
+			this.generateAccountManagementException(product, company);
 		}
 		
 		return accountManagement;
 		
+	}
+	
+	public void generateAccountManagementException(Product product, Company company) throws AxelorException  {
+		
+		throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1), product.getCode(), company.getName()), IException.CONFIGURATION_ERROR);
+	
 	}
 	
 	

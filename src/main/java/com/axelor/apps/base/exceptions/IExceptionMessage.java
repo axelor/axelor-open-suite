@@ -31,8 +31,8 @@ public interface IExceptionMessage {
 	 * Currency service
 	 */
 	
-	static final String CURRENCY_1 = "Aucune conversion trouvée de la devise '%s' à la devise '%s' à la date du %s";
-	static final String CURRENCY_2 = "Le taux de conversion de la devise '%s' à la devise '%s' à la date du %s doit être différent de zéro";
+	static final String CURRENCY_1 = /*$$(*/ "Aucune conversion trouvée de la devise '%s' à la devise '%s' à la date du %s" /*)*/ ;
+	static final String CURRENCY_2 = /*$$(*/ "Le taux de conversion de la devise '%s' à la devise '%s' à la date du %s doit être différent de zéro" /*)*/ ;
 	
 	
 
@@ -40,10 +40,17 @@ public interface IExceptionMessage {
 	 * Unit conversion service
 	 */
 	
-	static final String UNIT_CONVERSION_1 = "Veuillez configurer les conversions d'unités de '%s' à '%s'.";
-	static final String UNIT_CONVERSION_2 = "Veuillez configurer les conversions d'unités.";
+	static final String UNIT_CONVERSION_1 = /*$$(*/ "Veuillez configurer les conversions d'unités de '%s' à '%s'." /*)*/ ;
+	static final String UNIT_CONVERSION_2 = /*$$(*/ "Veuillez configurer les conversions d'unités." /*)*/ ;
 	
-	static final String CURRENCY_CONVERSION_1 = "WARNING : Please close the current conversion period before creating new one";
-	static final String CURRENCY_CONVERSION_2 = "WARNING : To Date must be after or equals to From Date";
+	static final String CURRENCY_CONVERSION_1 = /*$$(*/ "WARNING : Please close the current conversion period before creating new one" /*)*/ ;
+	static final String CURRENCY_CONVERSION_2 = /*$$(*/ "WARNING : To Date must be after or equals to From Date" /*)*/ ;
+	
+	
+	/**
+	 * Account management service
+	 */
+	
+	public  String ACCOUNT_MANAGEMENT_1 = /*$$(*/ "Tax configuration is missing for Product: %s (company: %s)" /*)*/ ;
 	
 }

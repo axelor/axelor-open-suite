@@ -43,6 +43,17 @@ public interface AccountManagementService {
 	public AccountManagement getAccountManagement(Product product, Company company) throws AxelorException;
 	
 	
+	
+	/**
+	 * Generate an exception if account management is missing
+	 * @param product
+	 * @param company
+	 * @throws AxelorException
+	 */
+	public void generateAccountManagementException(Product product, Company company) throws AxelorException;
+	
+	
+	
 	/**
 	 * Obtenir la bonne configuration comptable en fonction de la famille de produit et de la société
 	 * 
