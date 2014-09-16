@@ -46,7 +46,7 @@
     </action-record>
     
 	<action-validate name="action-mail-account-validate-is-default">
-		<error message="There is already a default mail account" if="com.axelor.apps.message.db.MailAccount.all().filter('self.isDefault = true and self.user = :user').count() > 0 &amp;&amp; isDefault = true"/>
+		<error message="There is already a default mail account" if="__repo__.of(MailAccount).all().filter('self.isDefault = true AND self.user = ?1',user).count() &gt; 0 &amp;&amp; isDefault"/>
 	</action-validate>
     
 </object-views>
