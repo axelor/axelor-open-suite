@@ -43,7 +43,7 @@
 	        <button name="customizeBOM" title="Customize BOM" colSpan="2" onClick="action-production-method-customize-bill-of-material" if-module="axelor-production"/>
 	    </panel>
 	    <panel title="Notes">
-	      <field name="description" showTitle="false" x-span="12" widget="Html" x-lite="true"/>
+	      <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 	    </panel>
 	    <panel title="Delivery">
 	      <field name="estimatedDelivDate"/>
@@ -53,8 +53,8 @@
 	    </panel>
 	    <panel-related title="SO lines" field="saleOrderSubLineList"/>    
 	    <panel title="Invoicing follow-up" if-module="axelor-supplychain">
-	      <field name="isToInvoice" x-span="3"/>
-	      <field name="isInvoiced" x-span="3"/>
+	      <field name="isToInvoice" colSpan="3"/>
+	      <field name="isInvoiced" colSpan="3"/>
 	      <field name="invoicingDate"/>
 	      <field name="amountInvoiced"/>
 	      <field name="amountRemainingToBeInvoiced"/>      
