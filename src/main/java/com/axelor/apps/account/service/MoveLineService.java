@@ -40,6 +40,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
@@ -65,7 +66,7 @@ public class MoveLineService extends MoveLineRepository{
 	private FiscalPositionServiceAccountImpl fiscalPositionService;
 	
 	@Inject
-	private InvoiceService invoiceService;
+	private InvoiceRepository invoiceRepo;
 	
 	private LocalDate toDay;
 	
@@ -436,7 +437,7 @@ public class MoveLineService extends MoveLineRepository{
 			else  {
 				invoice.setUsherPassageOk(false);
 			}
-			invoiceService.save(invoice);
+			invoiceRepo.save(invoice);
 		}
 	}
 }

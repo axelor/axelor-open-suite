@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -78,7 +79,7 @@ public class MoveService extends MoveRepository {
 	private AccountConfigService accountConfigService;
 	
 	@Inject
-	private InvoiceService invoiceService;
+	private InvoiceRepository invoiceRepo;
 	
 	private LocalDate toDay;
 	
@@ -935,7 +936,7 @@ public class MoveService extends MoveRepository {
 			boolean isMinus = this.isMinus(invoice);
 			
 			LOG.debug("Methode 1 : debut"); //TODO
-			invoiceService.save(invoice);
+			invoiceRepo.save(invoice);
 			LOG.debug("Methode 1 : milieu");
 			MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
 			LOG.debug("Methode 1 : fin");
