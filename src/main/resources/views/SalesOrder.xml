@@ -330,7 +330,7 @@
  		<field name="paymentMode" expr="eval: clientPartner?.paymentMode"/>
  		<field name="mainInvoicingAddress" expr="eval: clientPartner?.mainInvoicingAddress"/>
 		<field name="deliveryAddress" expr="eval: clientPartner?.deliveryAddress"/>
-		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 1 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',clientPartner, __date__).fetchOne()"/>
+		<field name="priceList" expr="eval: __repo__.of(PriceList).all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 1 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',clientPartner, __date__).fetchOne()"/>
     </action-record>
     
     <action-method name="action-sale-order-method-compute">
@@ -380,19 +380,19 @@
 	
 	<action-view name="action-sale-order-view-plan-meeting" title="Plan a meeting" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="meeting-form"/>
-    	<context name="_saleOrder" expr="eval:_ids != null ? com.axelor.apps.sale.db.SaleOrder.find(_ids.get(0)) : __this__"/>
+    	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
     	<context name="_typeSelect" expr="2"/>
     </action-view>
     
     <action-view name="action-sale-order-view-plan-call" title="Plan a call" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="call-form"/>
-    	<context name="_saleOrder" expr="eval:_ids != null ? com.axelor.apps.sale.db.SaleOrder.find(_ids.get(0)) : __this__"/>
+    	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
     	<context name="_typeSelect" expr="1"/>
     </action-view>
     
     <action-view name="action-sale-order-view-plan-task" title="Plan a task" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="crm-task-form"/>
-    	<context name="_saleOrder" expr="eval:_ids != null ? com.axelor.apps.sale.db.SaleOrder.find(_ids.get(0)) : __this__"/>
+    	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
     	<context name="_typeSelect" expr="3"/>
     </action-view>
 	
