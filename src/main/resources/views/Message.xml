@@ -26,20 +26,20 @@
             <field name="mediaTypeSelect" onChange="action-message-attrs-showhide-by-media-type"/>
         </panel>
         <panel title="Recipients" readonlyIf="statusSelect == 2 || statusSelect == 3">
-        	<field name="toEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" x-span="12"/>
-        	<field name="ccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" x-span="12"/>
-        	<field name="bccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" x-span="12"/>
-        	<field name="addressBlock" x-span="12" widget="html"/>
-        	<field name="recipientUser" widget="TagSelect" x-create="name" help="Internal Message" x-span="12"/>
+        	<field name="toEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
+        	<field name="ccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
+        	<field name="bccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
+        	<field name="addressBlock" colSpan="12" widget="html"/>
+        	<field name="recipientUser" widget="TagSelect" x-create="name" help="Internal Message" colSpan="12"/>
         </panel>
         <panel title="Content" readonlyIf="statusSelect == 2 || statusSelect == 3">
-        	<field name="subject" title="Subject" x-span="12"/>
-       	 	<field name="content" x-span="12" showTitle="false" widget="html"/>
+        	<field name="subject" title="Subject" colSpan="12"/>
+       	 	<field name="content" colSpan="12" showTitle="false" widget="html"/>
         </panel>
         <panel title="Related to"  readonlyIf="statusSelect == 3">
-	        <field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" x-span="4"/>
-	        <field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId" x-span="4"/>
-	        <field name="filePath" widget="url" x-span="4"/>
+	        <field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" colSpan="4"/>
+	        <field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId" colSpan="4"/>
+	        <field name="filePath" widget="url" colSpan="4"/>
         </panel>
     </form>
     
