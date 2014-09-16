@@ -18,14 +18,14 @@
 
 	<action-record name="action-production-order-wizard-record-default" model="com.axelor.apps.base.db.Wizard">
     	<field name="product_id" expr="eval: _productId"/>
-    	<field name="product" expr="eval: com.axelor.apps.base.db.Product.find(_productId?.id)" if="_productId"/>
+    	<field name="product" expr="eval: __repo__.of(Product).find(_productId?.id)" if="_productId"/>
     	<field name="business_id" expr="eval: _businessId?.id"/>
 		<field name="qty" expr="eval: 1.0"/>
 	</action-record>
 	
 	<action-record name="action-production-order-wizard-record-default-bom" model="com.axelor.apps.base.db.Wizard">
-		<field name="billOfMaterial" expr="eval: com.axelor.apps.production.db.BillOfMaterial.find(product.parentProduct.defaultBillOfMaterial.id)" if="product?.parentProduct?.defaultBillOfMaterial?.id"/>
-		<field name="billOfMaterial" expr="eval: com.axelor.apps.production.db.BillOfMaterial.find(product.defaultBillOfMaterial.id)" if="product.defaultBillOfMaterial?.id"/>
+		<field name="billOfMaterial" expr="eval: __repo__.of(BillOfMaterial).find(product.parentProduct.defaultBillOfMaterial.id)" if="product?.parentProduct?.defaultBillOfMaterial?.id"/>
+		<field name="billOfMaterial" expr="eval: __repo__.of(BillOfMaterial).find(product.defaultBillOfMaterial.id)" if="product.defaultBillOfMaterial?.id"/>
 	</action-record>
 	
 	<action-record name="action-production-order-wizard-record-product" model="com.axelor.apps.base.db.Wizard">
