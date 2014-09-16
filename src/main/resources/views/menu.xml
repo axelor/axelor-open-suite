@@ -142,5 +142,16 @@
 		<view type="portal" name="manufacturing.dashboard.portal" />
 	    <context name="_today" expr="eval: __date__.toDate()"/>
 	</action-view>
+	
+	<!-- TOP MENU -->
+	
+	<menuitem name="top-manufacturing" title="Manufacturing" left="false" top="true" groups="admins,erp"/>
+	<menuitem name="top-manufacturing-create-manufacturing-order" title="Create Manuf. Order" parent="top-manufacturing" priority="100" action="top.manufacturing.order.new"/>
+	<action-view name="top.manufacturing.order.new" title="New Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
+		<view type="form" name="manuf-order-form"/>
+	</action-view>
+	<menuitem name="top-manufacturing-manufacturing-orders" title="View Manuf. Orders" priority="90" parent="top-manufacturing" action="manufacturing.root.manuf.order"/>
+	<menuitem name="top-manufacturing-operation-orders" title="View Operation Orders" parent="top-manufacturing" priority="80" action="manufacturing.root.operation.order"/>
+	<menuitem name="top-manufacturing-bill-of-material" title="View Bill Of Materials" parent="top-manufacturing" priority="70" action="manufacturing.root.bill.of.material" />
 
 </object-views>
