@@ -38,19 +38,19 @@
 	        <field name="categorySelect"/>
         </panel>
         <panel name="exceptionGroup" title="Anomaly">
-        	<field name="exception" showTitle="false" x-span="12"/>
+        	<field name="exception" showTitle="false" colSpan="12"/>
         </panel>
         <panel name="errorGroup" title="Error">
-            <field name="error" showTitle="false" x-span="12"/>
+            <field name="error" showTitle="false" colSpan="12"/>
         </panel>
         <panel name="causeGroup" title="Cause">
-            <field name="cause" showTitle="false" x-span="12"/>
+            <field name="cause" showTitle="false" colSpan="12"/>
         </panel>
         <panel name="messageGroup" title="Message">
-            <field name="message" showTitle="false" x-span="12"/>
+            <field name="message" showTitle="false" colSpan="12"/>
         </panel>
         <panel name="traceGroup" title="Trace" >
-            <field name="trace" showTitle="false" x-span="12"/>
+            <field name="trace" showTitle="false" colSpan="12"/>
         </panel>
     </form>
     
