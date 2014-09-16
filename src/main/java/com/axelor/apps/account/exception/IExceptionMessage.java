@@ -44,4 +44,9 @@ public interface IExceptionMessage {
 	public final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
 	
 	
+	/**
+	 * Account management service
+	 */
+	public  String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/ "Accounting configuration is missing for Product: %s (company: %s)" /*)*/ ;
+	
 }

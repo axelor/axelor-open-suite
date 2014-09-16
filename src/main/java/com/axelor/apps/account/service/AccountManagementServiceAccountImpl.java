@@ -24,8 +24,11 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class AccountManagementServiceAccountImpl extends AccountManagementServiceImpl {
 	
@@ -69,6 +72,12 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 	}
 	
 	
+	@Override
+	public void generateAccountManagementException(Product product, Company company) throws AxelorException  {
+		
+		throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT), product.getCode(), company.getName()), IException.CONFIGURATION_ERROR);
+	
+	}
 	
 	
 	
