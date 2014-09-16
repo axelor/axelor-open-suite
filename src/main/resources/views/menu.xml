@@ -649,28 +649,30 @@
 
 	<menuitem name="top-menu-utility" priority="200"  title="Create" groups="admins,erp" top="true" left="false"/> 	
 
-	<menuitem name="top-menu-create-partner" parent="top-menu-utility" title="Create Partner" action="top.new.partner.view" top="true" left="false"/> 	
+	<menuitem name="top-menu-create-partner" priority="100" parent="top-menu-utility" title="Create Account" action="top.new.partner.view" top="true" left="false"/> 	
 		
-	<action-view name="top.new.partner.view" title="Create Partner" model="com.axelor.apps.base.db.Partner" >
+	<action-view name="top.new.partner.view" title="Create Account" model="com.axelor.apps.base.db.Partner" >
 		<view type="form" name="partner-form"/>
 		<view type="grid" name="partner-grid" />
 		<context name="_partnerTypeSelect" expr="eval:1" />
 	</action-view>
 	
-	<menuitem name="top-new-partner-individual" parent="top-menu-utility" title="Create Individual Partner" action="top.new.partner.individual" top="true" left="false"/> 	
+<!-- 	<menuitem name="top-new-partner-individual" parent="top-menu-utility" title="Create Individual Partner" action="top.new.partner.individual" top="true" left="false"/> 	 -->
 		
-	<action-view name="top.new.partner.individual" title="Create Individual Partner" model="com.axelor.apps.base.db.Partner" >
-		<view type="form" name="partner-form"/>
-		<context name="_partnerTypeSelect" expr="eval:2" />
-	</action-view>
+<!-- 	<action-view name="top.new.partner.individual" title="Create Individual Partner" model="com.axelor.apps.base.db.Partner" > -->
+<!-- 		<view type="form" name="partner-form"/> -->
+<!-- 		<context name="_partnerTypeSelect" expr="eval:2" /> -->
+<!-- 	</action-view> -->
 	
-	<menuitem name="top-menu-create-contact" parent="top-menu-utility" title="Create Contact" action="top.new.contact.view" />
+	<menuitem name="top-menu-create-contact" priority="90" parent="top-menu-utility" title="Create Contact" action="top.new.contact.view" />
 		
 	<action-view name="top.new.contact.view" title="Create Contact" model="com.axelor.apps.base.db.Partner" >
 		<view type="form" name="partner-form"/>
 	</action-view>
 
 	<menuitem name="top-relations" title="Relations" groups="admins,erp" top="true" left="false" priority="190"/>
-	<menuitem name="top-relations-partners" title="Accounts" action="contact.root.partner" parent="top-relations" groups="admins,erp" top="true" left="false"/> 	
-	<menuitem name="top-relations-contacts" title="Contacts" action="contact.root.contact" parent="top-relations" groups="admins,erp" top="true" left="false"/>		  
+	<menuitem name="top-relations-create-partner" priority="100" parent="top-relations" title="Create Account" action="top.new.partner.view" top="true" left="false"/> 	
+	<menuitem name="top-relations-partners" priority="90" title="View Accounts" action="contact.root.partner" parent="top-relations" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-relations-create-contact" priority="80" parent="top-relations" title="Create Contact" action="top.new.contact.view" /> 	
+	<menuitem name="top-relations-contacts" priority="70" title="View Contacts" action="contact.root.contact" parent="top-relations" groups="admins,erp" top="true" left="false"/>		  
 </object-views>
