@@ -58,25 +58,25 @@
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
 		 onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
 	  <panel>
-		  <field name="typeSelect" title="Type" x-span="4"/>
-		  <field name="statusSelect" widget="NavSelect" x-span="8"/>
+		  <field name="typeSelect" title="Type" colSpan="4"/>
+		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
 	  </panel>
 	  <panel>
 	    <panel title="Stock move reference">
-	      <field name="stockMoveSeq" x-span="12"/>
-	      <field name="name" x-span="12"/>
-	      <field name="company" widget="SuggestBox" form-view="company-lite-form" x-span="12"/>
-	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" x-span="12"/>
+	      <field name="stockMoveSeq" colSpan="12"/>
+	      <field name="name" colSpan="12"/>
+	      <field name="company" widget="SuggestBox" form-view="company-lite-form" colSpan="12"/>
+	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12"/>
 	    </panel>
 	    <panel title="Stock move informations">
-	      <field name="fromLocation" onChange="action-stock-move-set-from-address" x-span="12"/>
-	      <field name="toLocation" onChange="action-stock-move-set-to-address" x-span="12"/>
-	      <field name="estimatedDate" x-span="6"/>
-	      <field name="realDate" x-span="6"/>
-	      <field name="fromAddress" showIf="typeSelect == 3" x-span="12"/>
-	      <field name="toAddress" showIf="typeSelect == 2" x-span="12"/>
-	      <field name="isWithReturnSurplus" showIf="typeSelect &gt;= 2" x-span="6"/>
-	      <field name="isWithBackorder" x-span="6"/>
+	      <field name="fromLocation" onChange="action-stock-move-set-from-address" colSpan="12"/>
+	      <field name="toLocation" onChange="action-stock-move-set-to-address" colSpan="12"/>
+	      <field name="estimatedDate" colSpan="6"/>
+	      <field name="realDate" colSpan="6"/>
+	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12"/>
+	      <field name="toAddress" showIf="typeSelect == 2" colSpan="12"/>
+	      <field name="isWithReturnSurplus" showIf="typeSelect &gt;= 2" colSpan="6"/>
+	      <field name="isWithBackorder" colSpan="6"/>
 	    </panel>
 	  </panel>  
 	  <panel-tabs>

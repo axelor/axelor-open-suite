@@ -14,10 +14,10 @@
 		model="com.axelor.apps.stock.db.Inventory" onSave="action-set-inventory-seq"
 		onNew="action-inventory-record-new">
 	  <panel>
-	    <field name="inventorySeq" x-span="4"/>    
-	    <field name="statusSelect" showTitle="false" widget="NavSelect" x-span="8"/>
-	    <field name="dateT" x-span="4"/>
-	    <field name="location" domain="self.typeSelect = 1 OR self.typeSelect = 2" x-span="8"/>    
+	    <field name="inventorySeq" colSpan="4"/>    
+	    <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
+	    <field name="dateT" colSpan="4"/>
+	    <field name="location" domain="self.typeSelect = 1 OR self.typeSelect = 2" colSpan="8"/>    
 	  </panel>
 	  <panel title="Export" showIf="statusSelect == 2 || statusSelect == 3">
 	    <field name="formatSelect"/>
@@ -28,7 +28,7 @@
 	    <button name="importFile" title="Import" showIf="importFilePath != null" colSpan="2" onClick="action-group-stock-inventory-importfile-click"/>
 	  </panel>
 	  <panel title="Description">
-	    <field name="description" showTitle="false" x-span="12"/>
+	    <field name="description" showTitle="false" colSpan="12"/>
 	  </panel>  
 	  <panel title="Fill inventory with">
 	    <field name="productFamily"/>
@@ -39,7 +39,7 @@
 	  <panel showIf="location != null">
 	    <button name="fillInventory" title="Fill inventory" onClick="action-group-stock-inventory-fillinventory-click"/>
 	  </panel>
-	  <panel-related field="inventoryLineList" readonlyIf="statusSelect == 3" x-span="12"/>
+	  <panel-related field="inventoryLineList" readonlyIf="statusSelect == 3" colSpan="12"/>
 	  <panel-side title="Action(s)">
 	    <button name="plan" title="Plan" showIf="statusSelect == 1 &amp;&amp; location != null" colSpan="1" onClick="action-group-stock-inventory-plan-click"/>
 	    <button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="action-group-stock-inventory-realize-click"/>
