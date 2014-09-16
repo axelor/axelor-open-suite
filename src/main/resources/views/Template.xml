@@ -39,7 +39,7 @@
 	
     
     <action-record name="action-template-record-new" model="com.axelor.apps.base.db.Template">
-    	<field name="metaModel" expr="eval: _parent?.targetSelect == 1 ? com.axelor.meta.db.MetaModel.all().filter('self.name = \'Partner\'').fetchOne() : (_parent?.targetSelect == 2 ? com.axelor.meta.db.MetaModel.all().filter('self.name = \'Lead\'').fetchOne() : null)" if="_parent?.targetSelect"/>
+    	<field name="metaModel" expr="eval: _parent?.targetSelect == 1 ? __repo__.of(MetaModel).all().filter('self.name = \'Partner\'').fetchOne() : (_parent?.targetSelect == 2 ? __repo__.of(MetaModel).all().filter('self.name = \'Lead\'').fetchOne() : null)" if="_parent?.targetSelect"/>
     	<field name="metaModel" expr="eval: _parent?.metaModel" if="_parent?.metaModel"/>
     	<field name="metaModel" expr="eval: _parent?._parent?.metaModel" if="_parent?._parent?.metaModel"/>
     </action-record>

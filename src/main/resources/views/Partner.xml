@@ -354,7 +354,7 @@
 	</action-group>
 	
 	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
-		<field name="name" expr="eval: com.axelor.apps.crm.db.Lead.find(_parent._lead).name"/>
+		<field name="name" expr="eval:__repo__.of(Lead).find(_parent._lead).name"/>
 	</action-record>
 	
     
