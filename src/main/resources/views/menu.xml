@@ -676,8 +676,11 @@
 	</action-view>	
 	
 	<menuitem name="top-invoice" title="Invoices/Refunds" groups="admins,erp" top="true" left="false" priority="130"/>
-	
-	<menuitem name="top-invoice-all" title="Invoices/Refunds" action="top.invoice.all" parent="top-invoice" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-invoice-create-invoice" title="Create Invoice" parent="top-invoice" priority="100" action="top.invoice.new"/>
+	<action-view name="top.invoice.new" title="New Invoice" model="com.axelor.apps.account.db.Invoice">
+		<view type="form" name="invoice-form"/>
+	</action-view>
+	<menuitem name="top-invoice-all" priority="90" title="View Invoices/Refunds" action="top.invoice.all" parent="top-invoice" groups="admins,erp" top="true" left="false"/>
 	
 	<action-view name="top.invoice.all" title="Invoices/Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
@@ -685,7 +688,7 @@
 		<view type="form" name="invoice-form" />
 	</action-view>
 		
-	<menuitem name="top-invoice-custinvoices" title="Cust. Invoices" action="top.invoice.custinvoices" parent="top-invoice" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-invoice-custinvoices" priority="80" title="View Cust. Invoices" action="top.invoice.custinvoices" parent="top-invoice" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.invoice.custinvoices" title="Cust. Invoices"
 		model="com.axelor.apps.account.db.Invoice" >
@@ -696,7 +699,7 @@
 		<context name="_operationTypeSelect" expr="eval:3"/>
 	</action-view>	
 	
-	<menuitem name="top-invoice-custrefunds" title="Cust. Refunds" action="top.invoice.custrefunds" parent="top-invoice" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-invoice-custrefunds" priority="70" title="View Cust. Refunds" action="top.invoice.custrefunds" parent="top-invoice" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.invoice.custrefunds" title="Cust. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
@@ -707,7 +710,7 @@
 		<context name="_operationTypeSelect" expr="eval:4"/>
 	</action-view>	
 	
-	<menuitem name="top-invoice-supplinvoices" title="Suppl. Invoices" action="top.invoice.supplinvoices" parent="top-invoice" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-invoice-supplinvoices" priority="60" title="View Suppl. Invoices" action="top.invoice.supplinvoices" parent="top-invoice" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.invoice.supplinvoices" title="Suppl. Invoices"
 		model="com.axelor.apps.account.db.Invoice" >
@@ -718,7 +721,7 @@
 		<context name="_operationTypeSelect" expr="eval:1"/>
 	</action-view>	
 	
-	<menuitem name="top-invoice-supplrefunds" title="Suppl. Refunds" action="top.invoice.supplrefunds" parent="top-invoice" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-invoice-supplrefunds" priority="" title="View Suppl. Refunds" action="top.invoice.supplrefunds" parent="top-invoice" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.invoice.supplrefunds" title="Suppl. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
@@ -794,9 +797,13 @@
 	
 	<menuitem name="top-payments" title="Payments" groups="admins,erp" top="true" left="false"/>
 	
-	<menuitem name="top-payments-all" title="All Payments" groups="admins,erp"  parent="top-payments" action="account.root.payments.payment.voucher" top="true" left="false"/>
+	<menuitem name="top-payments-create-payment" title="Create Payment" parent="top-payments" priority="100" action="top.payments.new"/>
+	<action-view name="top.payments.new" title="Create Payment" model="com.axelor.apps.account.db.PaymentVoucher">
+		<view type="form"/>
+	</action-view>
+	<menuitem name="top-payments-all" priority="90" title="View Payments" groups="admins,erp"  parent="top-payments" action="account.root.payments.payment.voucher" top="true" left="false"/>
 			
-	<menuitem name="top-payments-customers" title="Cust. Payments" parent="top-payments" action="top.payments.customers" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-payments-customers" priority="80" title="View Cust. Payments" parent="top-payments" action="top.payments.customers" groups="admins,erp" top="true" left="false"/>
 	
 	<action-view name="top.payments.customers"
 		title="Cust. Payments" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/16px/paymentSmall_16px.png">
@@ -806,7 +813,7 @@
 		<domain>self.operationTypeSelect in (3,4)</domain>
 	</action-view>
 	
-	<menuitem name="top-payments-suppliers" title="Supplier Payments" parent="top-payments" action="top.payments.suppliers" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-payments-suppliers" priority="70" title="View Supplier Payments" parent="top-payments" action="top.payments.suppliers" groups="admins,erp" top="true" left="false"/>
 	
 	<action-view name="top.payments.suppliers"
 		title="Supplier Payments" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/16px/paymentSmall_16px.png">
