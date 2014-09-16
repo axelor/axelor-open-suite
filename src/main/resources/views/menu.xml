@@ -59,7 +59,7 @@
 
 <!-- TOP MENU -->
 
-	<menuitem name="top-menu-create-so" parent="top-menu-utility" title="Create SO" action="supply.chain.root.sale.order" icon="img/16px/create_16px.png"/>
+	<menuitem name="top-menu-create-so" priority="60" parent="top-menu-utility" title="Create SO" action="supply.chain.root.sale.order" icon="img/16px/create_16px.png"/>
 	
 	<action-view name="supply.chain.root.sale.order" title="Sales order"
 		model="com.axelor.apps.sale.db.SaleOrder" >
@@ -70,10 +70,11 @@
 
 	<menuitem name="top-sale" title="Sales" groups="admins,erp,crm" top="true" left="false" priority="160"/>
 	
-	<menuitem name="top-sale-orders-all" title="All Sales Docs" action="sc.root.sale.orders" parent="top-sale" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-sale-create-quote" priority="100" title="Create Quote" parent="top-sale" action="sc.root.sale.new.so"/>
+	<menuitem name="top-sale-orders-all" title="Quotes &amp; Orders" priority="70" action="sc.root.sale.orders" parent="top-sale" groups="admins,erp" top="true" left="false"/>
 	
 	
-	<menuitem name="top-sale-offers" title="Quotes" action="top.sale.offers" parent="top-sale" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-sale-offers" title="View Quotes" priority="90" action="top.sale.offers" parent="top-sale" groups="admins,erp" top="true" left="false"/>
 	<action-view name="top.sale.offers" title="Quotes"
 		model="com.axelor.apps.sale.db.SaleOrder" >
 		<view type="grid" name="sale-order-grid" />
@@ -85,7 +86,7 @@
 	</action-view>	
 	
 	
-	<menuitem name="top-sale-orders" title="Orders" action="top.sale.orders" parent="top-sale" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-sale-orders" title="View Orders" priority="80" action="top.sale.orders" parent="top-sale" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.sale.orders" title="Orders"
 		model="com.axelor.apps.sale.db.SaleOrder" >
