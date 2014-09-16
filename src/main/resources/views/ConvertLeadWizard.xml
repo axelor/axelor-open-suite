@@ -340,7 +340,7 @@
     	<field name="typeSelect" expr="eval: 1"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="user" expr="eval: com.axelor.auth.db.User.find(_lead.user.id)"/>
+    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
@@ -374,7 +374,7 @@
     	<field name="typeSelect" expr="eval: 2"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="user" expr="eval: com.axelor.auth.db.User.find(_lead.user.id)"/>
+    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
@@ -407,7 +407,7 @@
     	<field name="typeSelect" expr="eval: 3"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="user" expr="eval: com.axelor.auth.db.User.find(_lead.user.id)"/>
+    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="taskStatusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>

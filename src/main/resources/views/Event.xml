@@ -97,9 +97,9 @@
 	</action-record>
 	
 	<action-attrs name="action-event-attrs-yes-no-attendee-button">
-		<attribute name="readonly" for="yes" expr="eval: com.axelor.apps.crm.db.EventAttendee.filter(&quot; self.event = ?1 AND self.contact.id = ?2 &quot;, :id,:__user__?.partner?.id).fetchOne().statusSelect == 1"/>
-		<attribute name="readonly" for="no" expr="eval: com.axelor.apps.crm.db.EventAttendee.filter(&quot; self.event = ?1 AND self.contact.id = ?2 &quot;, :id,:__user__?.partner?.id).fetchOne().statusSelect == 2"/>
-		<attribute name="readonly" for="perhaps" expr="eval: com.axelor.apps.crm.db.EventAttendee.filter(&quot; self.event = ?1 AND self.contact.id = ?2 &quot;, :id,:__user__?.partner?.id).fetchOne().statusSelect == 3"/>
+		<attribute name="readonly" for="yes" expr="eval: __repo__.of(EventAttendee).all().filter(&quot; self.event = ?1 AND self.contact.id = ?2 &quot;, :id,:__user__?.partner?.id).fetchOne().statusSelect == 1"/>
+		<attribute name="readonly" for="no" expr="eval: __repo__.of(EventAttendee).all().filter(&quot; self.event = ?1 AND self.contact.id = ?2 &quot;, :id,:__user__?.partner?.id).fetchOne().statusSelect == 2"/>
+		<attribute name="readonly" for="perhaps" expr="eval: __repo__.of(EventAttendee).all().filter(&quot; self.event = ?1 AND self.contact.id = ?2 &quot;, :id,:__user__?.partner?.id).fetchOne().statusSelect == 3"/>
 	</action-attrs>
 	
     <action-view name="action-event-view-lead" title="Leads" model="com.axelor.apps.crm.db.Lead">
@@ -506,8 +506,8 @@
     </action-record>
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">
-	    <field name="clientPartner" expr="eval:_saleOrder.clientPartner?.id != null ? com.axelor.apps.base.db.Partner.find(_saleOrder.clientPartner.id) : _saleOrder.clientPartner"/>
-	    <field name="contactPartner" expr="eval:_saleOrder.contactPartner?.id != null ? com.axelor.apps.base.db.Partner.find(_saleOrder.contactPartner.id) : _saleOrder.contactPartner"/>
+	    <field name="clientPartner" expr="eval:_saleOrder.clientPartner?.id != null ? __repo__.of(Partner).find(_saleOrder.clientPartner.id) : _saleOrder.clientPartner"/>
+	    <field name="contactPartner" expr="eval:_saleOrder.contactPartner?.id != null ? __repo__.of(Partner).find(_saleOrder.contactPartner.id) : _saleOrder.contactPartner"/>
 	    <field if="_saleOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-record>
     
