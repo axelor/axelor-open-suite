@@ -102,7 +102,7 @@
     	<field name="fromDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="fromDate == null"/>
     	<field name="toDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="toDate == null"/>
     	<field name="statusSelect" expr="eval: _statusSelect ? _statusSelect : 1"/> 
-    	<field name="unit" expr="eval: com.axelor.apps.base.db.Unit.findByCode(&quot;JR&quot;)"/>	
+    	<field name="unit" expr="eval: __repo__.of(Unit).findByCode(&quot;JR&quot;)"/>	
     </action-record>
     
     <action-record name="action-timesheet-record-validate" model="com.axelor.apps.organisation.db.Timesheet">
