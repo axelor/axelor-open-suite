@@ -31,10 +31,10 @@
 </form>
     
    <action-record model="com.axelor.apps.account.db.BankStatementLine" name="action-bank-statement-line-set-account">
-       <field name="account" expr="eval: com.axelor.apps.account.db.AccountingSituation.filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; _parent"/>
-       <field name="account" expr="eval: com.axelor.apps.account.db.AccountingSituation.filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; _parent"/>
-       <field name="account" expr="eval: com.axelor.apps.account.db.AccountingSituation.filter('self.partner = ?1 AND self.company = ?2', partner, bankStatement?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; bankStatement"/>
-       <field name="account" expr="eval: com.axelor.apps.account.db.AccountingSituation.filter('self.partner = ?1 AND self.company = ?2', partner, bankStatement?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; bankStatement"/>
+       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; _parent"/>
+       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; _parent"/>
+       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankStatement?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; bankStatement"/>
+       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankStatement?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; bankStatement"/>
    </action-record>
  
 	<action-attrs name="action-bank-statement-line-move-line-domain">

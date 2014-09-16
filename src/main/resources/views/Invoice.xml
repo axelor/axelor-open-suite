@@ -229,7 +229,7 @@
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
         <field name="invoiceDate" expr="eval: __date__"/>
         <field name="company" expr="eval:__user__.activeCompany"/>
-        <field name="currency" expr="eval:com.axelor.auth.db.User.find(__user__.id)?.activeCompany?.currency" />
+        <field name="currency" expr="eval:__repo__.of(User).find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect"/>
         <field name="dueDate" expr="eval: __date__"/>
     </action-record>
@@ -241,12 +241,12 @@
     <action-record name="action-invoice-record-partner-change" model="com.axelor.apps.account.db.Invoice">
     	<field name="paymentMode" expr="eval: partner?.paymentMode"/>
     	<field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
-    	<field name="partnerAccount" expr="eval: com.axelor.apps.account.db.AccountingSituation.all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,partner,company).fetchOne()?.supplierAccount"  if="operationTypeSelect == 1 || operationTypeSelect == 2" />
-    	<field name="partnerAccount" expr="eval: com.axelor.apps.account.db.AccountingSituation.all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,partner,company).fetchOne()?.customerAccount"  if="operationTypeSelect == 3 || operationTypeSelect == 4" />
+    	<field name="partnerAccount" expr="eval: __repo__.of(AccountingSituation).all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,partner,company).fetchOne()?.supplierAccount"  if="operationTypeSelect == 1 || operationTypeSelect == 2" />
+    	<field name="partnerAccount" expr="eval: __repo__.of(AccountingSituation).all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,partner,company).fetchOne()?.customerAccount"  if="operationTypeSelect == 3 || operationTypeSelect == 4" />
     	<field name="address" expr="eval: partner?.mainInvoicingAddress "/>
     	<field name="currency" expr="eval: partner?.currency"/>
-		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 1 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',partner, __date__).fetchOne()" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 2 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',partner, __date__).fetchOne()" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+		<field name="priceList" expr="eval: __repo__.of(PriceList).all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 1 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',partner, __date__).fetchOne()" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+		<field name="priceList" expr="eval: __repo__.of(PriceList).all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 2 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',partner, __date__).fetchOne()" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     </action-record>
     
     
@@ -258,7 +258,7 @@
     </action-record>
     
     <action-record name="action-invoice-record-draft" model="com.axelor.apps.account.db.Invoice">
-    	<field name="statusSelect" expr="eval: com.axelor.apps.account.db.STATUS_DRAFT"/>
+    	<field name="statusSelect" expr="eval: __repo__.of(Invoice).STATUS_DRAFT"/>
     </action-record>
     
     

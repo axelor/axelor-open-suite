@@ -33,9 +33,9 @@
     
     <action-record name="action-move-template-line-get-account" model="com.axelor.apps.account.db.MoveTemplateLine">
     	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.journal.company,true)" if="product != null &amp;&amp; moveTemplate != null &amp;&amp; moveTemplate.journal.company != null &amp;&amp; debitCreditSelect == '0' "/>
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,com.axelor.apps.base.db.Company.find(_parent.journal.company.id),true)" if="product != null &amp;&amp; _parent != null &amp;&amp; _parent.journal.company != null &amp;&amp; debitCreditSelect == '0' "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__.of(Company).find(_parent.journal.company.id),true)" if="product != null &amp;&amp; _parent != null &amp;&amp; _parent.journal.company != null &amp;&amp; debitCreditSelect == '0' "/>
     	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.joural.company,false)" if="product != null &amp;&amp; moveTemplate != null &amp;&amp; moveTemplate.journal.company != null &amp;&amp; debitCreditSelect == '1' "/>
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,com.axelor.apps.base.db.Company.find(_parent.journal.company.id),false)" if="product != null &amp;&amp; _parent != null &amp;&amp; _parent.journal.company != null &amp;&amp; debitCreditSelect == '1' "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__.of(Company).find(_parent.journal.company.id),false)" if="product != null &amp;&amp; _parent != null &amp;&amp; _parent.journal.company != null &amp;&amp; debitCreditSelect == '1' "/>
     </action-record>
     
     <action-validate name="action-template-move-line-check-percent">

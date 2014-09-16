@@ -108,7 +108,7 @@
     </action-attrs>
     
 	<action-record name="action-move-template-wizard-line-set-move-template" model="com.axelor.apps.base.db.Wizard">
-	  <field name="moveTemplate" expr="eval:com.axelor.apps.account.db.MoveTemplate.find(_parent.moveTemplate.id)" />
+	  <field name="moveTemplate" expr="eval:__repo__of.(MoveTemplate).find(_parent.moveTemplate.id)" />
 	</action-record>
     
     

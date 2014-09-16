@@ -452,14 +452,14 @@
 	  </chart>
 
 	<action-record name="action.account.active.fiscal.year" model="com.axelor.apps.account.db.Move">
-	  <field name="year" expr="eval:com.axelor.apps.base.db.Year.all().filter('self.company=?1 AND ?2 BETWEEN self.fromDate AND self.toDate',activeCompany,todayDate).fetchOne()" />  
+	  <field name="year" expr="eval:__repo__.of(Year).all().filter('self.company=?1 AND ?2 BETWEEN self.fromDate AND self.toDate',activeCompany,todayDate).fetchOne()" />  
 	</action-record>
 	
 	<chart onInit="action.account.active.fiscal.year" name="chart.moveLines.revenues.vs.expenses" title="Revenues vs Expenses">
 	  
 	  <search-fields>
-	    <field name="year" type="reference" target="com.axelor.apps.base.db.Year" title="Year" />
-	    <field name="period" type="reference" target="com.axelor.apps.base.db.Period" title="Period" domain="self.year=:year"/>    
+	    <field name="year" type="reference" x-target="com.axelor.apps.base.db.Year" widget="many-to-one" title="Year" />
+	    <field name="period" type="reference" x-target="com.axelor.apps.base.db.Period" widget="many-to-one" title="Period" domain="self.year=:year"/>    
 	  </search-fields>
 	  
 	  <dataset type="jpql">
