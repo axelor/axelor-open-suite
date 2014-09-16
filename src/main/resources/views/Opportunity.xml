@@ -96,7 +96,7 @@
       <field name="worstCase"/>
     </panel>
    <panel title="Description">
-    <field name="description" x-span="12" showTitle="false" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" colSpan="6"/>
+    <field name="description" colSpan="12" showTitle="false" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" />
   </panel>
   <panel-tabs readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
     <panel title="Linked to">

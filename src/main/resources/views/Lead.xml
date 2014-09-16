@@ -48,77 +48,77 @@
 			</menu>
 		</menubar>
 		<panel>
-			<panel x-span="2">
-				<field name="picture" showTitle="false" widget="Image" x-span="12" x-width="80" x-height="80"/>
+			<panel colSpan="2">
+				<field name="picture" showTitle="false" widget="Image" colSpan="12" width="80" height="80"/>
 			</panel>
-			<panel x-span="9" readonlyIf="statusSelect == 4 || statusSelect == 6">
-				<field name="name" showTitle="false" css="highlight" placeholder="Name" x-span="4"/>
-				<field name="firstName" showTitle="false" css="highlight" placeholder="First name" x-span="4"/>            
-				<field name="titleSelect" showTitle="false" placeholder="Civility" x-span="2"/>
-			<panel x-span="12">
-				<field name="enterpriseName" x-span="4" showIf="partner == null" placeholder="Enterprise name"/>
-				<field name="partner" x-span="4" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-				<field name="jobTitle" x-span="4" placeholder="Function"/>
+			<panel colSpan="9" readonlyIf="statusSelect == 4 || statusSelect == 6">
+				<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4"/>
+				<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="4"/>            
+				<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
+			<panel colSpan="12">
+				<field name="enterpriseName" colSpan="4" showIf="partner == null" placeholder="Enterprise name"/>
+				<field name="partner" colSpan="4" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="jobTitle" colSpan="4" placeholder="Function"/>
 			</panel>  
-			<panel x-span="4" showIf="fullName != null">
-				<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" x-span="2"/>
-					<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" x-span="2"/>
-					<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" x-span="2"/>
-					<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" x-span="2"/>
-					<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" x-span="2"/>
+			<panel colSpan="4" showIf="fullName != null">
+				<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 				</panel>
 			</panel>
 		</panel>
 		<panel title="Coordonnées">
-			<field name="mobilePhone" x-span="4"/>
-			<field name="isDoNotCall" x-span="2"/>
-			<field name="emailAddress" canSelect="false" canNew="false" x-span="4" form-view="email-address-simple-form"/>
-			<field name="isDoNotSendEmail" x-span="2"/>
+			<field name="mobilePhone" colSpan="4"/>
+			<field name="isDoNotCall" colSpan="2"/>
+			<field name="emailAddress" canSelect="false" canNew="false" colSpan="4" form-view="email-address-simple-form"/>
+			<field name="isDoNotSendEmail" colSpan="2"/>
 			<field name="fixedPhone"/>
 			<field name="fax"/>
 			<field name="webSite"/>
-			<spacer x-span="6"/>
-			<panel title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 6" x-span="6">
-				<field name="primaryAddress" x-span="12"/>
-				<field name="primaryCity" x-span="4"/>
-				<field name="primaryState" x-span="4"/>
-				<field name="primaryPostalCode" x-span="4"/>
-				<spacer x-span="8"/>
-				<field name="primaryCountry" x-span="4"/>
+			<spacer colSpan="6"/>
+			<panel title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="6">
+				<field name="primaryAddress" colSpan="12"/>
+				<field name="primaryCity" colSpan="4"/>
+				<field name="primaryState" colSpan="4"/>
+				<field name="primaryPostalCode" colSpan="4"/>
+				<spacer colSpan="8"/>
+				<field name="primaryCountry" colSpan="4"/>
 			</panel>
-			<panel title="Other address" readonlyIf="statusSelect == 4 || statusSelect == 6" x-span="6">
-				<field name="otherAddress" x-span="12"/>
-				<field name="otherCity" x-span="4"/>
-				<field name="otherState" x-span="4"/>
-				<field name="otherPostalCode" x-span="4"/>
-				<field name="otherCountry" x-span="4"/>
-				<spacer x-span="8"/> 
+			<panel title="Other address" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="6">
+				<field name="otherAddress" colSpan="12"/>
+				<field name="otherCity" colSpan="4"/>
+				<field name="otherState" colSpan="4"/>
+				<field name="otherPostalCode" colSpan="4"/>
+				<field name="otherCountry" colSpan="4"/>
+				<spacer colSpan="8"/> 
 				<field name="isCopyAddress" onChange="action-group-crm-lead-iscopyaddress-onchange"/>
 			</panel>
 		</panel>
-		<panel title="Description" x-span="12">
-				<field name="description" x-span="12" showTitle="false" widget="TEXT" x-height="3"/>
+		<panel title="Description" colSpan="12">
+				<field name="description" colSpan="12" showTitle="false" widget="TEXT" height="3"/>
 		</panel> 
       
 		<panel-side>
-		  <field name="statusSelect" x-span="6"/>    
+		  <field name="statusSelect" colSpan="6"/>    
 		</panel-side>
 	
-		<panel-side title="Follow-up" x-span="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-			<field name="user" x-span="6"/>
-			<field name="team" x-span="6"/>
+		<panel-side title="Follow-up" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
+			<field name="user" colSpan="6"/>
+			<field name="team" colSpan="6"/>
 			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
-			<field name="createdBy" x-span="6"/>
-			<field name="createdOn" x-span="6"/>
-			<field name="contactDate" x-span="6"/>
-			<spacer x-span="6"/>
+			<field name="createdBy" colSpan="6"/>
+			<field name="createdOn" colSpan="6"/>
+			<field name="contactDate" colSpan="6"/>
+			<spacer colSpan="6"/>
 		</panel-side>
 		
-		<panel-side title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" x-span="12">
-			<field name="source" x-span="6"/>
-			<field name="campaign" x-span="6"/>
-			<field name="referredBy" x-span="6"/>
-			<field name="opportunityAmount" x-span="6"/>
+		<panel-side title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="12">
+			<field name="source" colSpan="6"/>
+			<field name="campaign" colSpan="6"/>
+			<field name="referredBy" colSpan="6"/>
+			<field name="opportunityAmount" colSpan="6"/>
 		</panel-side>
      
 		<!--TODO:Remove this comment when portlet starts working-->

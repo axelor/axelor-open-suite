@@ -9,31 +9,31 @@
   </toolbar>
   <panel title="Overview">
     <field name="hasConvertIntoContact" title="Convert into Contact ?" widget="Boolean"/>
-    <field name="selectContactPartner" title="Or Select Contact" widget="ManyToOne" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" x-target="com.axelor.apps.base.db.Partner"/>
+    <field name="selectContactPartner" title="Or Select Contact" widget="ManyToOne" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" target="com.axelor.apps.base.db.Partner"/>
     <field name="hasConvertIntoPartner" title="Convert into Partner ?" widget="Boolean"/>
-    <field name="selectPartner" title="Or Select Partner" widget="ManyToOne" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid" x-target="com.axelor.apps.base.db.Partner"/>
+    <field name="selectPartner" title="Or Select Partner" widget="ManyToOne" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid" target="com.axelor.apps.base.db.Partner"/>
    <field name="hasConvertIntoOpportunity" title="Create into Opportunity ?" widget="Boolean"/>
      <field name="hasConvertIntoCall" title="Log a call ?" widget="Boolean"/>
     <field name="hasConvertIntoMeeting" title="Schedule a meeting ?" widget="Boolean"/>
     <field name="hasConvertIntoTask" title="Create a task ?" widget="Boolean"/>
  </panel>
   <panel showTitle="false" showIf="hasConvertIntoContact">
-    <field name="contactPartner" title="Contact" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="contact-lead-converted-form" summary-view="true" x-target="com.axelor.apps.base.db.Partner" x-type="MANY_TO_ONE"/>
+    <field name="contactPartner" title="Contact" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="contact-lead-converted-form" summary-view="true" target="com.axelor.apps.base.db.Partner" type="MANY_TO_ONE"/>
   </panel>
   <panel showTitle="false" showIf="hasConvertIntoPartner">
-    <field name="partner" title="Partner" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="partner-lead-converted-form" summary-view="true" x-target="com.axelor.apps.base.db.Partner" x-type="MANY_TO_ONE"/>
+    <field name="partner" title="Partner" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="partner-lead-converted-form" summary-view="true" target="com.axelor.apps.base.db.Partner" type="MANY_TO_ONE"/>
   </panel>
   <panel showTitle="false" showIf="hasConvertIntoOpportunity" colSpan="4">
-    <field name="opportunity" title="Opportunity" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="opportunity-lead-converted-form" summary-view="true" x-target="com.axelor.apps.crm.db.Opportunity" x-type="MANY_TO_ONE"/>
+    <field name="opportunity" title="Opportunity" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="opportunity-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Opportunity" type="MANY_TO_ONE"/>
   </panel>
   <panel showTitle="false" showIf="hasConvertIntoCall">
-    <field name="callEvent" title="Call" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="call-lead-converted-form" summary-view="true" x-target="com.axelor.apps.crm.db.Event" x-type="MANY_TO_ONE"/>
+    <field name="callEvent" title="Call" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="call-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/>
   </panel>
   <panel showTitle="false" showIf="hasConvertIntoMeeting">
-    <field name="meetingEvent" title="Meeting" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="meeting-lead-converted-form" summary-view="true" x-target="com.axelor.apps.crm.db.Event" x-type="MANY_TO_ONE"/>
+    <field name="meetingEvent" title="Meeting" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="meeting-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/>
   </panel>
   <panel showIf="hasConvertIntoTask" colSpan="4">
-    <field name="taskEvent" title="Task" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="crm-task-lead-converted-form" summary-view="true" x-target="com.axelor.apps.crm.db.Event" x-type="MANY_TO_ONE"/>
+    <field name="taskEvent" title="Task" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="crm-task-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/>
   </panel>
 </form>
 
@@ -58,23 +58,23 @@
 	<form onLoad="action-convert-lead-wizard-attrs-default-contact-address" onNew="action-partner-contact-record-default" name="contact-lead-converted-form" title="Contact" model="com.axelor.apps.base.db.Partner">
   
 		<panel title="Personal">
-			<panel x-span="4">
-			  <field name="picture" x-span="12" widget="Image" showTitle="false"/>
+			<panel colSpan="4">
+			  <field name="picture" colSpan="12" widget="Image" showTitle="false"/>
 			</panel>
-			<panel x-span="8">
-			  <field name="fullName" title="Name" x-span="12">
+			<panel colSpan="8">
+			  <field name="fullName" title="Name" colSpan="12">
 			    <editor>
-			      <field name="titleSelect"  showTitle="false" placeholder="Civility" x-span="2"/>
-			      <field name="name" showTitle="false" css="highlight" placeholder="Name" x-span="5"/>
-			       <field name="firstName" showTitle="false" css="highlight" placeholder="First name" x-span="5"/>
+			      <field name="titleSelect"  showTitle="false" placeholder="Civility" colSpan="2"/>
+			      <field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5"/>
+			       <field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="5"/>
 			    </editor>
 			  </field>
 			</panel>
 		</panel>  
-		<panel title="Company" x-span="6">
+		<panel title="Company" colSpan="6">
 		   <field name="mainPartner"/> 
 		 </panel> 
-		<panel title="Contact"  x-span="6">
+		<panel title="Contact"  colSpan="6">
 			<field name="jobTitle"/>
 			<field name="reportsTo"/>
 			<field name="fixedPhone"/>
@@ -82,16 +82,16 @@
 			<field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
 			<field name="fax"/>
 			<panel title="Address" css="address-list">
-				<field name="primaryAddress" title="Address" widget="STRING" x-type="STRING" x-span="12"/>
-				<field name="primaryCity" title="City" x-span="4"/>
-				<field name="primaryState" title="State" x-span="4"/>
-				<field name="primaryPostalCode" title="Postal code" x-span="4"/>
-				<field x-span="12" name="primaryCountry" title="Country" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name"/>
+				<field name="primaryAddress" title="Address" widget="STRING" type="STRING" colSpan="12"/>
+				<field name="primaryCity" title="City" colSpan="4"/>
+				<field name="primaryState" title="State" colSpan="4"/>
+				<field name="primaryPostalCode" title="Postal code" colSpan="4"/>
+				<field colSpan="12" name="primaryCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
 			</panel>
 		</panel>
 		<panel-tabs>
 			<panel title="Notes">
-			  <field x-span="12" name="description" showTitle="false" widget="Html" x-lite="true"/>
+			  <field colSpan="12" name="description" showTitle="false" widget="Html" x-lite="true"/>
 			</panel>
 			<panel title="Settings" cols="4">
 			  <field name="languageSelect"/>
@@ -108,13 +108,13 @@
 <form cols="6" colWidths="25*" onLoad="action-convert-lead-wizard-record-default-partner-address" onNew="action-partner-record-set-default" name="partner-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner">
 
 	<panel title="Personal">
-	  <panel x-span="4">
+	  <panel colSpan="4">
 	    <field name="picture" widget="Image" showTitle="false"/>
 	  </panel>
-	  <panel x-span="8">
-	    <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" x-span="2"/>
-	    <field name="name" showTitle="false" css="highlight" placeholder="Name" x-span="5"/>
-	    <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" x-span="5"/>
+	  <panel colSpan="8">
+	    <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
+	    <field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5"/>
+	    <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" colSpan="5"/>
 	  </panel>
 	  <panel title="Partner">
 	    <field name="partnerTypeSelect" showTitle="false" onChange="action-group-crm-convlead-partnertype-onchange"/>
@@ -122,11 +122,11 @@
 	</panel>
 	<panel-tabs>
 	  <panel  title="Informations">
-	    <panel hideIf="isContact" x-span="12" >
+	    <panel hideIf="isContact" colSpan="12" >
 	      <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
 	      <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
 	    </panel>
-	    <panel title="Partner Details" hideIf="partnerTypeSelect == 2" x-span="12">
+	    <panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12">
 	        <field name="partnerCategory" widget="SuggestBox"/>
 	        <field name="industrySectorSelect"/>
 	        <field name="site"/>
@@ -137,23 +137,23 @@
 	        <field name="taxNbr"/>
 	        <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.iscontact = false AND self.partnerTypeSelect = 1"/>
 	    </panel>
-	    <panel title="Postal addresses" x-span="12">
+	    <panel title="Postal addresses" colSpan="12">
 	      <panel title="Invoicing address">
-	        <field name="primaryAddress" title="Address" x-span="6"/>
+	        <field name="primaryAddress" title="Address" colSpan="6"/>
 	        <field name="primaryCity" title="City"/>
 	        <field name="primaryState" title="State"/>
 	        <field name="primaryPostalCode" title="Postal code"/>
-	        <field name="primaryCountry" title="Country" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name"/>
+	        <field name="primaryCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
 	      </panel>
-	      <panel x-span="6" title="Delivery address">
+	      <panel colSpan="6" title="Delivery address">
 	        <field name="otherAddress" title="Address"/>
 	        <field name="otherCity" title="City"/>
 	        <field name="otherState" title="State"/>
 	        <field name="otherPostalCode" title="Postal code"/>
-	        <field name="otherCountry" title="Country" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name"/>
+	        <field name="otherCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
 	      </panel>
 	    </panel>
-	    <panel title="Contact" x-span="12">
+	    <panel title="Contact" colSpan="12">
 	      <field name="fixedPhone"/>
 	      <field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
 	      <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
@@ -162,7 +162,7 @@
 	    </panel>
 	  </panel>
 	  <panel title="Notes">
-	    <field name="description" showTitle="false" x-span="12" widget="Html" x-lite="true"/>
+	    <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 	  </panel>
 	  <panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact">
 	    <field name="invoiceSendingFormatSelect"/>
@@ -170,11 +170,11 @@
 	    <field name="paymentCondition"/>
 	    <field name="currency"/>
 	    <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
-	    <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid" x-span="12"/>
+	    <field name="bankDetailsList" showTitle="false" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="12"/>
 	  </panel>
 	  <panel title="Settings" >
-	    <field name="languageSelect" x-span="12"/>
-	    <panel title="Assigned to" x-span="12" >
+	    <field name="languageSelect" colSpan="12"/>
+	    <panel title="Assigned to" colSpan="12" >
 	      <field name="companySet" widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
 	      <field name="user"/>
 	      <field name="team"/>
@@ -280,11 +280,11 @@
 	
 	<form cols="4" name="opportunity-lead-converted-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
   <panel title="Informations">
-    <panel title="Context" x-span="12">
+    <panel title="Context" colSpan="12">
       <field name="name"/>
       <field name="opportunityType" widget="SuggestBox"/>
     </panel>
-    <panel title="Follow-up" x-span="12">
+    <panel title="Follow-up" colSpan="12">
       <field name="saleStageSelect"/>
       <field name="source"/>
       <field name="expectedCloseDate"/>
@@ -293,14 +293,14 @@
       <field name="campaign"/>
     </panel>
     <panel>
-      <panel title="Financial terms" x-span="12">
+      <panel title="Financial terms" colSpan="12">
         <field name="amount"/>
         <field name="currency"/>
         <field name="bestCase"/>
         <field name="worstCase"/>
       </panel>
-      <panel x-span="12">
-        <field name="description" x-span="12"/>
+      <panel colSpan="12">
+        <field name="description" colSpan="12"/>
       </panel>
     </panel>
   </panel>
@@ -320,7 +320,7 @@
     <field name="statusSelect" showTitle="false"/>
   </panel>
     <panel title="Description"  css="groupTitle" >
-      <field name="description" showTitle="false"  widget="TEXT" x-height="4" x-span="12"/>
+      <field name="description" showTitle="false"  widget="TEXT" height="4" colSpan="12"/>
     </panel>
     <panel title="Dates"  css="groupTitle">
       <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
@@ -356,7 +356,7 @@
   </panel>
   
     <panel title="Description"  css="groupTitle">
-      <field name="description" showTitle="false" x-span="12" widget="TEXT" x-height="4"/>
+      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
     </panel>
     <panel title="Dates"  css="groupTitle">
       <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
@@ -388,7 +388,7 @@
     <field name="prioritySelect"/>
   </panel>
     <panel title="Description" css="groupTitle">
-      <field name="description" showTitle="false" x-span="12" widget="TEXT" x-height="4"/>
+      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
     </panel>
     <panel title="Dates"  css="groupTitle">
       <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
