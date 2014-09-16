@@ -9,15 +9,15 @@
     </grid>
     
 	<form name="manuf-order-sheet-form" title="Manufacturing order" model="com.axelor.apps.production.db.OperationOrder">
-	  <panel x-span="12">
+	  <panel colSpan="12">
 	    <field name="picture" showTitle="false" widget="Image"/>
 	  </panel>  
-	  <panel title="Observations (état des filetages, aspect général, état des surfaces d'appuis...) :" x-span="12">
-	    <field name="observation" showTitle="false" x-span="12"/>
+	  <panel title="Observations (état des filetages, aspect général, état des surfaces d'appuis...) :" colSpan="12">
+	    <field name="observation" showTitle="false" colSpan="12"/>
 	  </panel>
 	  <panel-related field="manufOrderSheetLineList" title="Conformité" form-view="manuf-order-sheet-line-form" grid-view="manuf-order-sheet-line-grid" />
-	  <panel x-span="12">
-	    <label title="Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord." x-span="12"/>
+	  <panel colSpan="12">
+	    <label title="Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord." colSpan="12"/>
 	  </panel>  
 	</form>
     

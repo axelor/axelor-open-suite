@@ -19,7 +19,7 @@
 	  </panel>  
 	  <panel-tabs>
 	    <panel title="Default Machine informations" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3">
-	        <panel title="Capacity information" x-span="12">
+	        <panel title="Capacity information" colSpan="12">
 	          <field name="capacityPerCycle"/>
 	          <field name="maxCapacityPerCycle"/>
 	          <field name="durationPerCycle" widget="duration" x-big="true" x-seconds="true"/>
@@ -27,7 +27,7 @@
 	          <field name="setupDuration" widget="duration" x-big="true" x-seconds="true"/>
 	          <field name="endingDuration" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
-	        <panel title="Costing information" x-span="12">
+	        <panel title="Costing information" colSpan="12">
 	          <field name="product"/>
 	          <field name="costTypeSelect"/>
 	          <field name="costAmount"/>
@@ -52,7 +52,7 @@
         </panel>
         <panel-tabs>
         	<panel title="Default Machine informations">
-	        	<panel title="Capacity information" x-span="6">
+	        	<panel title="Capacity information" colSpan="6">
 	        		<field name="capacityPerCycle"/>
 			        <field name="maxCapacityPerCycle"/>
 			        <field name="durationPerCycle" widget="duration" x-big="true" x-seconds="true"/>
@@ -60,7 +60,7 @@
 			        <field name="setupDuration" widget="duration" x-big="true" x-seconds="true"/>
 			        <field name="endingDuration" widget="duration" x-big="true" x-seconds="true"/>
 	        	</panel>
-	        	<panel title="Costing information" x-span="6">
+	        	<panel title="Costing information" colSpan="6">
 	        		<field name="product"/>
 			        <field name="costTypeSelect"/>
 			        <field name="costAmount"/>

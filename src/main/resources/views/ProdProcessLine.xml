@@ -19,10 +19,10 @@
     	</panel>
     	<panel-tabs>
     		<panel title="Description">
-    			<field name="description" showTitle="false" x-span="12"/>
+    			<field name="description" showTitle="false" colSpan="12"/>
     		</panel>
     		<panel title="To consume products">
-    			<panel-related  field="toConsumeProdProductList" x-span="12"/>
+    			<panel-related  field="toConsumeProdProductList" colSpan="12"/>
     		</panel>
     	</panel-tabs>        
     </form>

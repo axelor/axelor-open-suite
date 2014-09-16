@@ -20,13 +20,13 @@
 	    <button name="showManufOrderWizard" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  
 	  <panel title="Add Manu. Order" hidden="true">
-	    <field name="product" title="Product" widget="ManyToOne" x-target="com.axelor.apps.base.db.Product"/>
-	    <field name="billOfMaterial" title="BOM" widget="ManyToOne" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" x-target="com.axelor.apps.production.db.BillOfMaterial"/>
+	    <field name="product" title="Product" widget="ManyToOne" target="com.axelor.apps.base.db.Product"/>
+	    <field name="billOfMaterial" title="BOM" widget="ManyToOne" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" target="com.axelor.apps.production.db.BillOfMaterial"/>
 	    <field name="qty" title="Quantity" widget="decimal"/>
 	    <button name="AddManufOrder" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-method-add-manuf-order"/>
 	  </panel>
 	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
-	  <panel-related field="manufOrderList" x-span="12">
+	  <panel-related field="manufOrderList" colSpan="12">
         <field name="manufOrderSeq"/>      
         <field name="product"/>
         <field name="qty"/>

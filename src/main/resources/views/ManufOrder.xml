@@ -62,7 +62,7 @@
 	  <panel>
 	    <field name="manufOrderSeq" readonlyIf="statusSelect &gt; 1"/>
 	    <field name="priority" readonlyIf="statusSelect == 6"/>
-	    <field name="statusSelect" showTitle="false" readonly="true" x-span="12" widget="NavSelect"/>
+	    <field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 	    <field name="company" readonlyIf="statusSelect &gt; 1"/>
 	    <field name="billOfMaterial" readonlyIf="statusSelect &gt; 1" domain="self.isRawMaterial = false"/>
 	    <field name="product"/>
@@ -72,7 +72,7 @@
 	    <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"/>
 	  </panel>  
 	  <panel-tabs colSpan="4">
-	    <panel-related field="operationOrderList" readonlyIf="statusSelect == 6" x-span="12" form-view="operation-order-form" grid-view="operation-order-grid"/>
+	    <panel-related field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" form-view="operation-order-form" grid-view="operation-order-grid"/>
 	    <panel title="Dates" readonlyIf="statusSelect == 6">
 	      <panel title="Planned dates">        
 	        <field name="plannedStartDateT" colSpan="1"/>
@@ -84,33 +84,33 @@
 	      </panel>
 	    </panel>
 	    <panel title="Stock moves">
-	      <panel title="Moves In/Out" readonlyIf="statusSelect == 6" x-span="12">
+	      <panel title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
 	        <field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 	        <field name="outStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 	      </panel>
-	      <panel title="Production waste" x-span="12">
+	      <panel title="Production waste" colSpan="12">
 	        <button name="generateWasteStockMove" title="Generate waste stock move" onClick="Non implemented yet"/>
 	        <field name="wasteStockMove"/>
 	      </panel>
 	    </panel>
 	    <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-consumed">
-	      <panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" x-span="12"/>
-	      <panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" x-span="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
-	      <panel-related field="diffConsumeProdProductList" x-span="12"/>
+	      <panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
+	      <panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
+	      <panel-related field="diffConsumeProdProductList" colSpan="12"/>
 	    </panel>
 	    <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
 	      <!-- TODO: remove this comment if portlet works in panel
-	      <portlet readonlyIf="statusSelect &gt;= 4" x-span="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
-	      <portlet x-span="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
-	      <portlet readonlyIf="statusSelect == 6" x-span="12" action="action-manuf-order-view-operation-order-consumed-product"/>
+	      <portlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
+	      <portlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
+	      <portlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
 	      -->
 	    </panel>
 	    <panel title="Finished products">
-	      <panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" x-span="12"/>
-	      <panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" x-span="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
-	      <panel-related field="wasteProdProductList" x-span="12"/>
-	      <panel title="Description" x-span="12">
-	        <field name="wasteProdDescription" showTitle="false" x-span="12"/>
+	      <panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
+	      <panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
+	      <panel-related field="wasteProdProductList" colSpan="12"/>
+	      <panel title="Description" colSpan="12">
+	        <field name="wasteProdDescription" showTitle="false" colSpan="12"/>
 	      </panel>
 	    </panel>
 	  </panel-tabs>

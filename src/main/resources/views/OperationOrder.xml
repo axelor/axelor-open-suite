@@ -70,13 +70,13 @@
 	  <panel>
 	    <field name="priority" readonlyIf="statusSelect == 6"/>
 	    <field name="manufOrder" readonlyIf="statusSelect == 6" onChange="action-operation-order-name"/>
-	    <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" x-span="12"/>
+	    <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
 	    <field name="manufOrder.company" readonlyIf="statusSelect == 6"/>
 	    <field name="prodResource" readonlyIf="statusSelect == 6"/>
 	    <field name="operationName" readonlyIf="statusSelect == 6"/>
 	    <field name="machineProdResource" readonlyIf="statusSelect == 6"/>
 	  </panel>
-	  <panel-related field="prodHumanResourceList" readonlyIf="statusSelect == 6" x-span="12"/>
+	  <panel-related field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12"/>
 	  <panel>
 	    <field name="prodProcessLine" readonlyIf="statusSelect == 6"/>
 	    <field name="isToInvoice"/>
@@ -96,12 +96,12 @@
 	      <field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 	    </panel>
 	    <panel title="Consumed products" readonlyIf="statusSelect == 6">
-	      <panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" x-span="12"/>
-	      <panel-related field="consumedStockMoveLineList" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid" x-span="12"/>
-	      <panel-related field="diffConsumeProdProductList" x-span="12"/>
+	      <panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
+	      <panel-related field="consumedStockMoveLineList" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid" colSpan="12"/>
+	      <panel-related field="diffConsumeProdProductList" colSpan="12"/>
 	    </panel>
 	    <panel title="Timesheet lines">
-	      <panel-related field="timesheetLineList" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" x-span="12"/>
+	      <panel-related field="timesheetLineList" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>
 	    </panel>    
 	  </panel-tabs>
 	  <!-- MUST BE DELETED AFTER DEMO COEFLY -->
