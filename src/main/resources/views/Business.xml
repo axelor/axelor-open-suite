@@ -22,7 +22,7 @@
 	  </toolbar>
 	  <panel>
 	    <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
-	    <field name="businessStatusSelect" showTitle="false" widget="NavSelect" x-span="12"/>
+	    <field name="businessStatusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
 	  </panel>
 	  <panel>
 	    <field name="company" readonlyIf="projectStatusSelect &gt;= 3 || businessStatusSelect &gt;= 2" widget="SuggestBox" form-view="company-lite-form"/>
@@ -32,19 +32,19 @@
 	    <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	  </panel>  
 	  <panel title="Times">
-	    <panel x-span="12">
-	      <field name="totalTime" x-span="4"/>
-	      <field name="unit" x-span="4"/>
-	      <field name="progress" widget="SelectProgress" x-span="4"/>
+	    <panel colSpan="12">
+	      <field name="totalTime" colSpan="4"/>
+	      <field name="unit" colSpan="4"/>
+	      <field name="progress" widget="SelectProgress" colSpan="4"/>
 	    </panel>
-	    <panel x-span="12">
-	      <field name="plannedTime" x-span="4"/>
-	      <field name="spentTime" x-span="4"/>
-	      <field name="remainingTime" x-span="4"/>
+	    <panel colSpan="12">
+	      <field name="plannedTime" colSpan="4"/>
+	      <field name="spentTime" colSpan="4"/>
+	      <field name="remainingTime" colSpan="4"/>
 	    </panel>  
 	  </panel>
 	  <panel title="Description">
-	    <field name="description" showTitle="false" widget="Html" x-lite="true" x-span="12"/>
+	    <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
 	  </panel>
 	  <panel title="Specific settings" canCollapse="true">
 	    <field name="isProject"/>
@@ -61,28 +61,28 @@
 	  <panel-tabs>
 	    <panel title="Tasks">
 	      <field name="preSalesTask"/>
-	      <panel-related field="taskList" x-span="12" form-view="task-form" grid-view="task-project-grid"/>
+	      <panel-related field="taskList" colSpan="12" form-view="task-form" grid-view="task-project-grid"/>
 	    </panel>
 	    <panel title="Financial information">
-	      <field name="realEstimatedMethodSelect" x-span="4"/>
-	      <field name="company.currency" x-span="4"/>
-	      <field name="marginCoef" x-span="4"/>
+	      <field name="realEstimatedMethodSelect" colSpan="4"/>
+	      <field name="company.currency" colSpan="4"/>
+	      <field name="marginCoef" colSpan="4"/>
 	<!-- 	        	<field name="exportTypeSelect"/> -->
 	<!--            <button name="printProject" colSpan="2" title="View forecast report" onClick="action-print-project-report" icon="fa-print"/> -->
-	      <panel title="Initial estimated" hideIf="realEstimatedMethodSelect == 1" x-span="12">
-	        <field name="initialEstimatedTurnover" x-span="4"/>
-	        <field name="initialEstimatedCost" x-span="4"/>
-	        <field name="initialEstimatedMargin" x-span="4"/>
+	      <panel title="Initial estimated" hideIf="realEstimatedMethodSelect == 1" colSpan="12">
+	        <field name="initialEstimatedTurnover" colSpan="4"/>
+	        <field name="initialEstimatedCost" colSpan="4"/>
+	        <field name="initialEstimatedMargin" colSpan="4"/>
 	      </panel>
-	      <panel title="Real estimated" x-span="12">
-	        <field name="realEstimatedTurnover" x-span="4"/>
-	        <field name="realEstimatedCost" x-span="4"/>
-	        <field name="realEstimatedMargin" x-span="4"/>
+	      <panel title="Real estimated" colSpan="12">
+	        <field name="realEstimatedTurnover" colSpan="4"/>
+	        <field name="realEstimatedCost" colSpan="4"/>
+	        <field name="realEstimatedMargin" colSpan="4"/>
 	      </panel>
-	      <panel title="Real invoiced" x-span="12">
-	        <field name="realInvoicedTurnover" x-span="4"/>
-	        <field name="realInvoicedCost" x-span="4"/>
-	        <field name="realInvoicedMargin" x-span="4"/>
+	      <panel title="Real invoiced" colSpan="12">
+	        <field name="realInvoicedTurnover" colSpan="4"/>
+	        <field name="realInvoicedCost" colSpan="4"/>
+	        <field name="realInvoicedMargin" colSpan="4"/>
 	      </panel>
 	    </panel>
 	    <!-- TODO: remove this comment if portlet is allowed in panel
@@ -111,7 +111,7 @@
 	<!-- 	        	<include view="business-project-production-form" from="axelor-production"/> -->      
 	      <field name="prodInvTypeSelect" if-module="axelor-production"/>
 	      <!-- TODO: remove this comment if portlet is allowed in panel
-	      <portlet x-span="12" action="action-business-project-view-production-manuf-order"/>
+	      <portlet colSpan="12" action="action-business-project-view-production-manuf-order"/>
 	      -->
 	    </panel>
 	    <panel-related title="members" field="memberUserSet"/>    

@@ -34,27 +34,27 @@
 	</grid>
 
 	<form name="expense-line-form" title="Expense Line" model="com.axelor.apps.organisation.db.ExpenseLine" onNew="action-expense-line-default-record">
-	  <panel title="Date" x-span="12">
+	  <panel title="Date" colSpan="12">
 	    <field name="date"/>    
 	  </panel>
-	  <panel title="Context" x-span="12">
+	  <panel title="Context" colSpan="12">
 	    <field name="expenseTypeSelect"/>
 	    <field name="task" onSelect="action-attrs-expense-line-task-domain"/>
 	  </panel>
-	  <panel title="Details" x-span="12">
+	  <panel title="Details" colSpan="12">
 	    <field name="product" widget="SuggestBox" onChange="action-group-organisation-expenseline-product-onchange" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
-	    <field name="shortDescription" x-span="12"/>
+	    <field name="shortDescription" colSpan="12"/>
 	    <field name="qty" onChange="action-expense-line-method-compute"/>
 	    <field name="unit"/>
 	    <field name="price" onChange="action-expense-line-method-compute"/>
 	    <field name="inTaxTotal"/>
 	    <field name="taxLine"/>
 	  </panel>  
-	  <panel title="Proofs" x-span="12">
+	  <panel title="Proofs" colSpan="12">
 	    <field name="file"/>
 	    <field name="fileReceived" onChange="action-expense-line-record-validation-date"/>
 	  </panel>
-	  <panel title="Validation/Invoicing" x-span="12">
+	  <panel title="Validation/Invoicing" colSpan="12">
 	    <field name="validationDate"/>
 	    <field name="isToInvoice" hideIf="expenseTypeSelect == 1"/>
 	    <field name="isInvoiced" hideIf="expenseTypeSelect == 1"/>

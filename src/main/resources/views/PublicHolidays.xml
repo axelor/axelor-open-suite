@@ -10,7 +10,7 @@
     <form name="public-holidays-form" title="Public holidays" model="com.axelor.apps.organisation.db.PublicHolidays">
         <panel>
 	        <field name="name"/>
-	        <panel-related field="publicHolidaysLineList" x-span="12"/>
+	        <panel-related field="publicHolidaysLineList" colSpan="12"/>
         </panel>
     </form>
     

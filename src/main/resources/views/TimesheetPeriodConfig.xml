@@ -17,18 +17,18 @@
     	<panel>
 	    	<field name="typeSelect"/>
 	   	</panel>
-    	<panel title="Weekly" showIf="typeSelect == 1" x-span="12">
-        	<panel title="Period" x-span="12">
+    	<panel title="Weekly" showIf="typeSelect == 1" colSpan="12">
+        	<panel title="Period" colSpan="12">
             	<field name="firstDayOfWeek"/>
             	<field name="lastDayOfWeek"/>
         	</panel>
-        	<panel title="Day/Hour of generation" x-span="12">
+        	<panel title="Day/Hour of generation" colSpan="12">
             	<field name="dayOfGeneration"/>
             	<field name="hourOfGeneration"/>
         	</panel>
     	</panel>
-    	<panel title="Monthly" showIf="typeSelect == 2" x-span="12">
-        	<panel title="Day/Hour of generation" x-span="12">
+    	<panel title="Monthly" showIf="typeSelect == 2" colSpan="12">
+        	<panel title="Day/Hour of generation" colSpan="12">
             	<field name="dayOfMonth"/>
             	<field name="isLastDayOfMonth" onChange="action-timesheet-period-config-attrs-day-of-month"/>            
             	<field name="hourOfGeneration"/>
@@ -36,11 +36,11 @@
         	</panel>
     	</panel>
     	<panel-side>
-    		<panel name="reminderDelay" title="Reminder delay" x-span="12">
+    		<panel name="reminderDelay" title="Reminder delay" colSpan="12">
 	       		<field name="hourReminderDelay"/>
 	        	<field name="dayReminderDelay"/>
 	    	</panel>
-	    	<panel title="Limit" x-span="12">
+	    	<panel title="Limit" colSpan="12">
 	        	<field name="hourLimitDelay"/>
 	        	<field name="dayLimitDelay"/>
 	   		</panel>

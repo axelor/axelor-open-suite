@@ -20,9 +20,6 @@ package com.axelor.apps.organisation.service.invoice;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineType;
@@ -38,9 +35,6 @@ import com.axelor.exception.AxelorException;
  * 
  */
 public class InvoiceLineGeneratorOrganisation extends InvoiceLineGenerator {
-	
-	// Logger
-	private static final Logger LOG = LoggerFactory.getLogger(InvoiceLineGeneratorOrganisation.class);
 	
 	protected Task task; 
 	

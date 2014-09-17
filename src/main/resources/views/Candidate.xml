@@ -26,48 +26,48 @@
 	    <button name="transformInEmployee" title="Transform into employee" onClick="save,action-candidate-method-transform-in-employee"/>
 	  </toolbar>
 	  <panel>
-	    <panel x-span="3">
+	    <panel colSpan="3">
 	      <field name="picture" showTitle="false" widget="image"/>
 	    </panel>
-	    <panel x-span="8">
-	      <panel title="Contact" x-span="4">
-	        <field name="titleSelect" showTitle="false" placeholder="Civility" x-span="12"/>        
-	        <field name="name" showTitle="false" css="highlight" placeholder="Name" x-span="12"/>        
-	        <field name="firstName" showTitle="false" css="highlight" placeholder="First Name" x-span="12"/>        
-	        <field name="currentJobKeyword" placeholder="Function" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid" x-span="12"/>
+	    <panel colSpan="8">
+	      <panel title="Contact" colSpan="4">
+	        <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="12"/>        
+	        <field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="12"/>        
+	        <field name="firstName" showTitle="false" css="highlight" placeholder="First Name" colSpan="12"/>        
+	        <field name="currentJobKeyword" placeholder="Function" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid" colSpan="12"/>
 	      </panel>
-	      <panel title="Main Contact details" x-span="8">
+	      <panel title="Main Contact details" colSpan="8">
 	        <field name="mobilePhone"/>
 	        <field name="fixedPhone"/>
 	        <field name="email" widget="Email"/>        
-	        <field name="address" x-span="12"/>
+	        <field name="address" colSpan="12"/>
 	      </panel>
 	    </panel>
 	  </panel>
 	  <panel-tabs>
 	    <panel title="General">
-	      <panel title="Search criterias" x-span="12">
-	        <field name="contractTypeSelect" x-span="4"/>
-	        <field name="searchedJobKeyword" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid" x-span="4"/>
-	        <field name="salaryExpectation" x-span="4"/>
-	        <field name="relocationSelect" x-span="4"/>
-	        <field name="resume" x-span="4"/>
-	        <field name="coverLetter" x-span="4"/>
+	      <panel title="Search criterias" colSpan="12">
+	        <field name="contractTypeSelect" colSpan="4"/>
+	        <field name="searchedJobKeyword" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid" colSpan="4"/>
+	        <field name="salaryExpectation" colSpan="4"/>
+	        <field name="relocationSelect" colSpan="4"/>
+	        <field name="resume" colSpan="4"/>
+	        <field name="coverLetter" colSpan="4"/>
 	      </panel>
-	      <panel title="Availability and Decision" x-span="12">
-	        <field name="availabilitySelect" x-span="4"/>
-	        <field name="availabilityDate" x-span="4"/>
-	        <field name="decisionDate" x-span="4"/>
+	      <panel title="Availability and Decision" colSpan="12">
+	        <field name="availabilitySelect" colSpan="4"/>
+	        <field name="availabilityDate" colSpan="4"/>
+	        <field name="decisionDate" colSpan="4"/>
 	      </panel>
-	      <panel title="Follow-up"  x-span="12">
-	        <panel x-span="12">
+	      <panel title="Follow-up"  colSpan="12">
+	        <panel colSpan="12">
 	          <field name="user"/>
 	          <field name="recruitmentStatusSelect" readonly="true"/>
 	          <field name="globalEvaluation"/>
 	          <field name="createdOn" readonly="true"/>
 	        </panel>
-	        <panel  x-span="12">
-	          <panel hideIf="recruitmentStatusSelect == 8" x-span="12">
+	        <panel  colSpan="12">
+	          <panel hideIf="recruitmentStatusSelect == 8" colSpan="12">
 	            <button name="newCandidate" title="New candidate" showIf="recruitmentStatusSelect == 6 || recruitmentStatusSelect == 9" colSpan="6" onClick="action-group-organisation-candidate-button-click-common"/>
 	            <button name="preSelection" title="Pre-selected" showIf="recruitmentStatusSelect == 1" colSpan="6" onClick="action-group-organisation-candidate-button-click-common"/>
 	            <button name="firstInterview" title="1st Interview" showIf="recruitmentStatusSelect == 2" onClick="action-group-organisation-candidate-button-click-common"/>
@@ -80,30 +80,30 @@
 	          </panel>          
 	          <field name="recruitementDate" showIf="recruitmentStatusSelect == 2 || recruitmentStatusSelect == 3 || recruitmentStatusSelect == 4"/>
 	        </panel>
-	        <field name="note" x-span="12"/>
-	        <panel-related field="recruitmentProcessAdvancementList" readonly="true" x-span="12" grid-view="recruitment-candidate-process-advancement-grid"/>
+	        <field name="note" colSpan="12"/>
+	        <panel-related field="recruitmentProcessAdvancementList" readonly="true" colSpan="12" grid-view="recruitment-candidate-process-advancement-grid"/>
 	      </panel>
 	    </panel>
-	    <panel title="Profile" x-span="12">
+	    <panel title="Profile" colSpan="12">
 	      <panel title="Keywords">
-	        <field name="toolKeywordSet" widget="TagSelect" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid" x-create="keyWord" x-span="12"/>
-	        <field name="fieldKeywordSet" widget="TagSelect" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid" x-create="keyWord" x-span="12"/>
-	        <field name="jobKeywordSet" widget="TagSelect" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid" x-create="keyWord" x-span="12"/>
+	        <field name="toolKeywordSet" widget="TagSelect" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid" x-create="keyWord" colSpan="12"/>
+	        <field name="fieldKeywordSet" widget="TagSelect" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid" x-create="keyWord" colSpan="12"/>
+	        <field name="jobKeywordSet" widget="TagSelect" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid" x-create="keyWord" colSpan="12"/>
 	      </panel>
 	      <panel title="Recruitment Type">
-	        <field name="recruitmentTypeSelect" x-span="12"/>
-	        <field name="macroCategorySelect" x-span="12"/>
-	        <field name="categorySelect" x-span="12"/>
+	        <field name="recruitmentTypeSelect" colSpan="12"/>
+	        <field name="macroCategorySelect" colSpan="12"/>
+	        <field name="categorySelect" colSpan="12"/>
 	      </panel>
-	      <panel-related field="positionList" x-span="12"/>
-	      <panel title="Education/Trainings" x-span="12">
+	      <panel-related field="positionList" colSpan="12"/>
+	      <panel title="Education/Trainings" colSpan="12">
 	        <field name="degree"/>
 	        <field name="educationLevel"/>
-	        <panel-related field="trainingLineList" x-span="12"/>
+	        <panel-related field="trainingLineList" colSpan="12"/>
 	      </panel>
 	    </panel>
 	    <panel title="Evaluation">
-	      <panel-related field="evaluationLineList"  x-span="12" form-view="evaluation-line-form" grid-view="evaluation-line-grid"/>
+	      <panel-related field="evaluationLineList"  colSpan="12" form-view="evaluation-line-form" grid-view="evaluation-line-grid"/>
 	      <panel>
 	        <field name="evaluationGrade" readonly="true"/>
 	        <button name="compute" title="Compute" onClick="save,action-organisation-candidate-evaluation-record"/>
@@ -115,9 +115,13 @@
 	    <panel title="Additionnal information">
 	      <field name="drivingLicence"/>
 	      <field name="source"/>
-	      <field name="personalInfo" hidden="true" widget="NestedEditor" form-view="personal-info-edit-form" summary-view="true"/>      
+<!-- 	      <field name="personalInfo" hidden="true" widget="NestedEditor" form-view="personal-info-edit-form" summary-view="true"/> -->
+	      <field name="personalInfo" hidden="true" form-view="personal-info-edit-form"/>      
 	    </panel>
-	    <panel-related title="Competences" field="competence" hidden="true" widget="NestedEditor" form-view="competence-edit-form" summary-view="true"/>
+<!-- 	    <panel-related title="Competences" field="competence" hidden="true" widget="NestedEditor" form-view="competence-edit-form" summary-view="true"/> -->
+	    <panel title="Competences">
+	    	<field name="competence" hidden="true" form-view="competence-edit-form"/>
+	    </panel>
 	    <panel-related title="Other opportunities" field="candidateOtherOpportunityList" form-view="candidate-other-opportunity-form" grid-view="candidate-other-opportunity-grid"/>      
 	  </panel-tabs>
 	</form>

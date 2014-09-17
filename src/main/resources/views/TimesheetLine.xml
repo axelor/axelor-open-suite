@@ -161,7 +161,7 @@
     </action-record>
     
     <action-record name="action-timesheet-line-record-default-production-timesheet" model="com.axelor.apps.organisation.db.TimesheetLine">
-	    <field name="timesheet" expr="eval: com.axelor.apps.organisation.db.Timesheet.filter('self.user.employee = ?1 and fromDate &lt;= ?2 and toDate &gt;= ?3',employee,date,date ).fetchOne()"/>
+	    <field name="timesheet" expr="eval: __repo__.of(Timesheet).all().filter('self.user.employee = ?1 and fromDate &lt;= ?2 and toDate &gt;= ?3',employee,date,date ).fetchOne()"/>
     </action-record>
     
     

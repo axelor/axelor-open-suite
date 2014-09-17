@@ -26,15 +26,15 @@
 	  <panel>
 	    <field name="user"/>
 	    <field name="date"/>
-	    <field name="statusSelect" widget="NavSelect" x-span="12"/>
+	    <field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	    <field name="totalAmount"/>
 	    <field name="currency"/>
-	    <panel-related field="overtimeLineList" x-span="12"/>
+	    <panel-related field="overtimeLineList" colSpan="12"/>
 	    <field name="period"/>
 	    <field name="motif" showIf="statusSelect == 6"/>
 	  </panel>
 	  <panel-side title="Action(s)">
-	    <panel x-span="12">
+	    <panel colSpan="12">
 	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="2" onClick="save,action-overtime-record-draft,save"/>
 	      <button name="submit" title="Submit" showIf="statusSelect == 1" colSpan="2" onClick="save,action-overtime-record-submit,save"/>
 	      <button name="validateManager" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-overtime-record-validate-manager,save"/>
@@ -42,7 +42,7 @@
 	      <button name="confirm" title="Confirm" showIf="statusSelect == 4" colSpan="1" onClick="save,action-overtime-record-confirm,save"/>
 	      <button name="refuse" title="Refuse" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-overtime-record-refuse"/>
 	    </panel>
-	    <panel readonly="true" x-span="12">
+	    <panel readonly="true" colSpan="12">
 	      <field name="validatedByUser"/>
 	      <field name="validationDate"/>
 	    </panel>

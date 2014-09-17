@@ -44,7 +44,7 @@
 			<field name="requestDate" required="true"/>
 			<field name="reasonTask" domain="self.isLeaveRequest = true" form-view="task-leave-reason-form" grid-view="task-leave-reason-grid"/>
 			<field name="accounted"/>
-			<field name="statusSelect" widget="NavSelect" showTitle="false" x-span="12"/>
+			<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
         </panel>
         <panel title="Leave period">
         	<field name="startDateT" onChange="action-leave-request-method-compute-start-date-time" required="true" />

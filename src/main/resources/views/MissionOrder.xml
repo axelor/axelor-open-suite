@@ -22,11 +22,11 @@
         	<field name="project" domain="self.isBusiness = true" grid-view="business-project-grid" form-view="business-project-form"/>
        		<field name="employee"/>
         	<field name="qualificationKeyword"  domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
-	        <panel title="Mission information" x-span="12">
-	           	<field name="missionPropose" x-span="12"/>
-	           	<field name="missionStartDate" x-span="5"/>
-	           	<field name="missionEndDate" x-span="5"/>
-	           	<field name="dateTypeSelect" title="*" x-span="2"/>
+	        <panel title="Mission information" colSpan="12">
+	           	<field name="missionPropose" colSpan="12"/>
+	           	<field name="missionStartDate" colSpan="5"/>
+	           	<field name="missionEndDate" colSpan="5"/>
+	           	<field name="dateTypeSelect" title="*" colSpan="2"/>
 	           	<field name="address"/>
 	           	<field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	           	<field name="user"/>

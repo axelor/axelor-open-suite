@@ -24,7 +24,6 @@ import com.axelor.apps.ReportSettings;
 import com.axelor.apps.organisation.db.ITask;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.report.IReport;
-import com.axelor.apps.organisation.service.FinancialInformationHistoryLineService;
 import com.axelor.apps.organisation.service.FinancialInformationHistoryService;
 import com.axelor.apps.organisation.service.TaskService;
 import com.axelor.apps.tool.net.URLService;
@@ -44,8 +43,6 @@ public class TaskController {
 	@Inject
 	private Provider<FinancialInformationHistoryService> financialInformationHistoryService;
 	
-	@Inject
-	private Provider<FinancialInformationHistoryLineService> financialInformationHistoryLineService;
 	
 	public void updateFinancialInformation(ActionRequest request, ActionResponse response) throws AxelorException {
 		

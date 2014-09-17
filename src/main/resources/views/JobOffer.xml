@@ -23,13 +23,13 @@
 			<field name="nbrOfPositions"/>
 		</panel>	
 		<panel title="Offer details" canCollapse="true">
-           	<field name="description" x-span="12"/>
+           	<field name="description" colSpan="12"/>
            	<field name="contractTypeSelect"/>
            	<field name="remunerationTypeSelect"/>
            	<field name="geoZoneCompl"/>
            	<field name="domainTypeSelect"/>
            	<field name="jobTitle"/>
-            <field name="advantages" x-span="12"/>
+            <field name="advantages" colSpan="12"/>
     	</panel>
 		<panel title="Profil candidat" canCollapse="true">
 			<field name="educationLevelSelect"/>

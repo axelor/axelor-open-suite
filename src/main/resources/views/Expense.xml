@@ -38,18 +38,18 @@
 	  </toolbar>
 	  <panel>
 	    <field name="user"/>
-	    <field name="statusSelect" showTitle="false" x-span="12" widget="NavSelect"/>
+	    <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
 	    <field name="date"/>
 	    <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
 	    <field name="totalAmount" title="Total (TTC)"/>
 	    <field name="currency"/>
 	    <field name="project"/>
-	    <panel-related field="expenseLineList" x-span="12"/>    
+	    <panel-related field="expenseLineList" colSpan="12"/>    
 	    <field name="paymentPeriod"/>
 	    <field name="refusalReason" showIf="statusSelect == 6"/>
 	  </panel>
 	  <panel-side title="Action(s)">
-	    <panel x-span="12">
+	    <panel colSpan="12">
 	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="2" onClick="action-group-organisation-expense-draft-click"/>
 	      <button name="submit" title="Submit" showIf="statusSelect == 1" colSpan="2" onClick="action-group-organisation-expense-submit-click"/>
 	      <button name="validateManager" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="action-group-organisation-expense-validatemanager-click"/>
@@ -58,10 +58,10 @@
 	      <button name="refuse" title="Refuse" showIf="statusSelect == 2" colSpan="1" onClick="save,action-expense-record-refuse"/>
 	      <button name="compute" title="Compute" colSpan="2" onClick="action-expense-compute-expense-line"/>
 	    </panel>
-	    <panel readonly="true" x-span="12">
-	      <field name="validatedByUser"  x-span="12"/>
-	      <field name="validationDate"  x-span="12"/>
-	      <field name="validationStatusSelect" hideIf="statusSelect == 1 || statusSelect == 6"  x-span="12"/>
+	    <panel readonly="true" colSpan="12">
+	      <field name="validatedByUser"  colSpan="12"/>
+	      <field name="validationDate"  colSpan="12"/>
+	      <field name="validationStatusSelect" hideIf="statusSelect == 1 || statusSelect == 6"  colSpan="12"/>
 	    </panel>
 	  </panel-side>
 	</form>

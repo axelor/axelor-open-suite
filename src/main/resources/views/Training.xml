@@ -18,7 +18,7 @@
 	        <field name="endDate" onChange="action-training-method-compute-duration"/>
 	        <field name="service"/>
 	        <field name="duration" onChange="action-group-organisation-training-"/>
-	        <field name="jobDescription" x-span="12"/>
+	        <field name="jobDescription" colSpan="12"/>
 	        <field name="referencePosition" />
 	        <spacer/>
 	        <field name="context" />

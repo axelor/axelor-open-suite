@@ -50,7 +50,7 @@ public class ProjectController {
 		Project project = request.getContext().asType(Project.class);
 		
 		if(project.getId() != null && project.getDefaultTask() == null) {			
-			projectService.createDefaultTask(Project.find(project.getId()));
+			projectService.createDefaultTask(projectService.find(project.getId()));
 			response.setReload(true);
 		}
 	}
@@ -152,7 +152,7 @@ public class ProjectController {
 			
 		if(!businessIds.equals("")){
 			businessIds = businessIds.substring(0, businessIds.length()-1);	
-			business = Project.find(new Long(lstSelectedBusiness.get(0)));
+			business = projectService.find(new Long(lstSelectedBusiness.get(0)));
 		}else if(business.getId() != null){
 			businessIds = business.getId().toString();			
 		}

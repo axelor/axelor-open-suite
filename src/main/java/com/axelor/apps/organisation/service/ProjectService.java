@@ -25,7 +25,7 @@ import javax.persistence.Query;
 
 import org.joda.time.LocalDateTime;
 
-import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -34,13 +34,14 @@ import com.axelor.apps.organisation.db.ITask;
 import com.axelor.apps.organisation.db.ITaskUpdateLine;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.organisation.db.repo.ProjectRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 
-public class ProjectService {
+public class ProjectService extends ProjectRepository{
 	
 	static final String DEFAULT_EXPORT_TYPE = "pdf";
 	
@@ -49,6 +50,9 @@ public class ProjectService {
 
 	
 	private LocalDateTime todayTime;
+	
+	@Inject
+	private TaskService taskService;
 	
 	@Inject
 	public ProjectService() {
@@ -86,7 +90,7 @@ public class ProjectService {
 		}
 		project.addTaskListItem(defaultTask);
 		project.setDefaultTask(defaultTask);
-		defaultTask.save();
+		taskService.save(defaultTask);
 		
 		return defaultTask;
 		
@@ -97,7 +101,7 @@ public class ProjectService {
 	public Task createPreSalesTask(Project project) {
 
 		if(project.getName() != null && !project.getName().isEmpty()) {
-			Task findTask = Task.filter("self.project = ?1 AND self.name = ?2", project, "Avant vente "+project.getName()).fetchOne();
+			Task findTask = taskService.all().filter("self.project = ?1 AND self.name = ?2", project, "Avant vente "+project.getName()).fetchOne();
 			if(findTask == null) {
 				Task preSalestask = new Task();
 
@@ -105,7 +109,7 @@ public class ProjectService {
 				preSalestask.setName("Avant vente "+project.getName());
 				preSalestask.setRealEstimatedMethodSelect(project.getRealEstimatedMethodSelect());
 				project.getTaskList().add(preSalestask);
-				preSalestask.save();
+				taskService.save(preSalestask);
 				
 				return preSalestask;
 			}
@@ -264,10 +268,10 @@ public class ProjectService {
 		Query q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task.project = ?1 " +
 				"AND (il.invoice.statusSelect = ?2 OR il.invoice.statusSelect = ?3) AND (il.invoice.operationTypeSelect = ?4 OR il.invoice.operationTypeSelect = ?5)");
 		q.setParameter(1, project);
-		q.setParameter(2, Invoice.STATUS_VALIDATED);
-		q.setParameter(3, Invoice.STATUS_VENTILATED);
-		q.setParameter(4, Invoice.OPERATION_TYPE_CLIENT_REFUND);
-		q.setParameter(5, Invoice.OPERATION_TYPE_CLIENT_SALE);
+		q.setParameter(2, InvoiceService.STATUS_VALIDATED);
+		q.setParameter(3, InvoiceService.STATUS_VENTILATED);
+		q.setParameter(4, InvoiceService.OPERATION_TYPE_CLIENT_REFUND);
+		q.setParameter(5, InvoiceService.OPERATION_TYPE_CLIENT_SALE);
 				
 		BigDecimal invoiceLineTurnover = (BigDecimal) q.getSingleResult();
 		
@@ -287,10 +291,10 @@ public class ProjectService {
 		q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task.project = ?1 " +
 				"AND (il.invoice.statusSelect = ?2 OR il.invoice.statusSelect = ?3) AND (il.invoice.operationTypeSelect = ?4 OR il.invoice.operationTypeSelect = ?5)");
 		q.setParameter(1, project);
-		q.setParameter(2, Invoice.STATUS_VALIDATED);
-		q.setParameter(3, Invoice.STATUS_VENTILATED);
-		q.setParameter(4, Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE);
-		q.setParameter(5, Invoice.OPERATION_TYPE_SUPPLIER_REFUND);
+		q.setParameter(2, InvoiceService.STATUS_VALIDATED);
+		q.setParameter(3, InvoiceService.STATUS_VENTILATED);
+		q.setParameter(4, InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE);
+		q.setParameter(5, InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND);
 				
 		BigDecimal supplierInvoiceLineCost = (BigDecimal) q.getSingleResult();
 		

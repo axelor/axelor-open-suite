@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.Candidate;
 import com.axelor.apps.organisation.db.EvaluationLine;
 import com.axelor.apps.organisation.db.RecuitmentProcessAdvancement;
+import com.axelor.apps.organisation.db.repo.CandidateRepository;
 import com.axelor.apps.organisation.report.IReport;
 import com.axelor.apps.organisation.service.EmployeeService;
 import com.axelor.apps.tool.net.URLService;
@@ -48,6 +49,9 @@ public class CandidateController {
 
 	@Inject
 	private Provider<EmployeeService> employeeService;
+	
+	@Inject
+	private CandidateRepository candidateRepo;
 	
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CandidateController.class);
@@ -96,7 +100,7 @@ public class CandidateController {
 		
 		Candidate candidate = request.getContext().asType(Candidate.class);
 		
-		employeeService.get().createEmployee(Candidate.find(candidate.getId()));
+		employeeService.get().createEmployee(candidateRepo.find(candidate.getId()));
 		
 		response.setReload(true);
 	}
@@ -159,7 +163,7 @@ public class CandidateController {
 			recruitmentProcessAdvancement.setRecruitmentDate(candidate.getRecruitementDate());
 			recruitmentProcessAdvancement.setNote(candidate.getNote());
 			candidate.getRecruitmentProcessAdvancementList().add(recruitmentProcessAdvancement);
-			candidate.save();
+			candidateRepo.save(candidate);
 			response.setReload(true);
 		}
 	}
