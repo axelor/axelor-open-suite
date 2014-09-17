@@ -115,9 +115,13 @@
 	    <panel title="Additionnal information">
 	      <field name="drivingLicence"/>
 	      <field name="source"/>
-	      <field name="personalInfo" hidden="true" widget="NestedEditor" form-view="personal-info-edit-form" summary-view="true"/>      
+<!-- 	      <field name="personalInfo" hidden="true" widget="NestedEditor" form-view="personal-info-edit-form" summary-view="true"/> -->
+	      <field name="personalInfo" hidden="true" form-view="personal-info-edit-form"/>      
 	    </panel>
-	    <panel-related title="Competences" field="competence" hidden="true" widget="NestedEditor" form-view="competence-edit-form" summary-view="true"/>
+<!-- 	    <panel-related title="Competences" field="competence" hidden="true" widget="NestedEditor" form-view="competence-edit-form" summary-view="true"/> -->
+	    <panel title="Competences">
+	    	<field name="competence" hidden="true" form-view="competence-edit-form"/>
+	    </panel>
 	    <panel-related title="Other opportunities" field="candidateOtherOpportunityList" form-view="candidate-other-opportunity-form" grid-view="candidate-other-opportunity-grid"/>      
 	  </panel-tabs>
 	</form>

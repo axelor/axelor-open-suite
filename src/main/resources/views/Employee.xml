@@ -66,7 +66,8 @@
 					<spacer/>
 					<field name="managerProfileProduct" showIf="supervisedBySelect == 2" domain="self.applicationTypeSelect = 2"/>        
 				</panel>
-				<field name="personalInfo" showTitle="false" widget="NestedEditor" canSelect="false" form-view="personal-info-edit-form" summary-view="true" colSpan="12"/>
+<!-- 				<field name="personalInfo" showTitle="false" widget="NestedEditor" canSelect="false" form-view="personal-info-edit-form" summary-view="true" colSpan="12"/> -->
+				<field name="personalInfo" form-view="personal-info-edit-form" colSpan="12"/>
 			</panel>
 			<panel title="Profile">
 				<panel colSpan="12">
