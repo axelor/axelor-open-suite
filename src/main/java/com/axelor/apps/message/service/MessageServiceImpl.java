@@ -30,18 +30,13 @@ import org.joda.time.LocalDateTime;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
-<<<<<<< HEAD
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailSender;
 import com.axelor.mail.SmtpAccount;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-=======
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.mail.MailSender;
-import com.google.common.collect.Maps;
->>>>>>> repo
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -73,9 +68,9 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 				0, 
 				todayTime.toLocalDateTime(), 
 				false, 
-				MessageRepository.STATUS_DRAFT, 
+				STATUS_DRAFT, 
 				subject, 
-				MessageRepository.TYPE_SENT,
+				TYPE_SENT,
 				toEmailAddressList,
 				ccEmailAddressList,
 				bccEmailAddressList,
@@ -182,8 +177,8 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 			mailBuilder.send();
 			
 			message.setSentByEmail(true);
-			message.setStatusSelect(MessageRepository.STATUS_SENT);
-			message.save();
+			message.setStatusSelect(STATUS_SENT);
+			save(message);
 			
 		}
 	

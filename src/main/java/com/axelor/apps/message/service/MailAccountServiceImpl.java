@@ -55,10 +55,10 @@ public class MailAccountServiceImpl extends MailAccountRepository implements Mai
 	
 	public String getSmtpSecurity(MailAccount mailAccount)  {
 		
-		if(mailAccount.getSecuritySelect() == MailAccount.SECURITY_SSL)  {
+		if(mailAccount.getSecuritySelect() == SECURITY_SSL)  {
 			return SmtpAccount.ENCRYPTION_SSL;
 		}
-		else if(mailAccount.getSecuritySelect() == MailAccount.SECURITY_TLS)  {
+		else if(mailAccount.getSecuritySelect() == SECURITY_TLS)  {
 			return SmtpAccount.ENCRYPTION_TLS;
 		}
 		else  {
