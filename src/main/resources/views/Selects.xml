@@ -109,8 +109,10 @@
 	</selection>
 	
 	<selection name='ipayment.operation.type.select'>
-		<option value='1'>Supplier</option>
-		<option value='2'>Customer</option>
+		<option value='1'>Supplier purchase</option>
+		<option value='2'>Supplier refund</option>
+		<option value='3'>Customer sale</option>
+		<option value='4'>Customer refund</option>
 	</selection>
 	
 	<selection name='iaccount.account.schedule.export.type.select'>

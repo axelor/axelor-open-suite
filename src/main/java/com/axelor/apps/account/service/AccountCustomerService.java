@@ -28,18 +28,22 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.administration.GeneralServiceAccount;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -49,20 +53,17 @@ public class AccountCustomerService {
 	
 	private LocalDate today;
 	
-	@Inject
-	private MoveRepository moveRepo;
+	private AccountingSituationService  accountingSituationService;
 	
 	@Inject
-	private MoveLineRepository moveLineRepo;
-	
-	@Inject
-	private AccountingSituationRepository  accountingSituationRepo;
-	
-	@Inject
-	public AccountCustomerService() {
+	public AccountCustomerService(AccountingSituationService  accountingSituationService) {
 
 		this.today = GeneralService.getTodayDate();
-		
+		this.accountingSituationService = accountingSituationService;
+	}
+	
+	public AccountingSituationService getAccountingSituationService()  {
+		return this.accountingSituationService;
 	}
 	
 	
@@ -94,7 +95,7 @@ public class AccountCustomerService {
 												"AND move.status_select = ?3 AND ml.amount_remaining > 0 ")
 												.setParameter(1, partner)
 												.setParameter(2, company)
-												.setParameter(3, moveRepo.STATUS_VALIDATED);
+												.setParameter(3, MoveRepository.STATUS_VALIDATED);
 		
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
 		
@@ -224,7 +225,7 @@ public class AccountCustomerService {
 	 */
 	public List<? extends MoveLine> getMoveLine(Partner partner, Company company)  {
 		
-		return moveLineRepo.all().filter("self.partner = ?1 AND self.move.company = ?2", partner, company).fetch();
+		return Beans.get(MoveLineRepository.class).all().filter("self.partner = ?1 AND self.move.company = ?2", partner, company).fetch();
 
 	}
 	
@@ -238,21 +239,11 @@ public class AccountCustomerService {
 	 */
 	public void updatePartnerAccountingSituation(List<Partner> partnerList, Company company, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount)  {
 		for(Partner partner : partnerList)  {
-			AccountingSituation accountingSituation = this.getAccountingSituation(partner, company);
+			AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
 			if(accountingSituation != null)  {
 				this.updateAccountingSituationCustomerAccount(accountingSituation, updateCustAccount, updateDueCustAccount, updateDueReminderCustAccount);
 			}
 		}
-	}
-	
-	
-	public AccountingSituation getAccountingSituation(Partner partner, Company company)  {
-		for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
-			if(accountingSituation.getCompany().equals(company))  {
-				return accountingSituation;
-			}
-		}
-		return null;
 	}
 	
 	
@@ -277,9 +268,9 @@ public class AccountCustomerService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void flagPartners(List<Partner> partnerList, Company company)  {
 		for(Partner partner : partnerList)  {
-			AccountingSituation accountingSituation = this.getAccountingSituation(partner, company);
+			AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
 			accountingSituation.setCustAccountMustBeUpdateOk(true);
-			accountingSituationRepo.save(accountingSituation);
+			accountingSituationService.save(accountingSituation);
 		}
 	}
 	
@@ -289,7 +280,7 @@ public class AccountCustomerService {
 	 * @param accountingSituation
 	 * 				Un compte client
 	 */
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateCustomerAccount(AccountingSituation accountingSituation)  {
 		
 		LOG.debug("Begin updateCustomerAccount service ...");
@@ -301,13 +292,13 @@ public class AccountCustomerService {
 		accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
 		accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
 		
-		accountingSituationRepo.save(accountingSituation);
+		accountingSituationService.save(accountingSituation);
 		
 		LOG.debug("End updateCustomerAccount service");
 	}
 	
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public AccountingSituation updateAccountingSituationCustomerAccount(AccountingSituation accountingSituation, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount)  {
 		Partner partner = accountingSituation.getPartner();
 		Company company = accountingSituation.getCompany();
@@ -325,8 +316,80 @@ public class AccountCustomerService {
 			accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
 		}	
 		accountingSituation.setCustAccountMustBeUpdateOk(false);
-		accountingSituationRepo.save(accountingSituation);
+		accountingSituationService.save(accountingSituation);
 		return accountingSituation;
+	}
+	
+	
+
+	public Account getPartnerAccount(Partner partner, Company company, boolean isSupplierInvoice) throws AxelorException  {
+			
+		if(isSupplierInvoice)  {  return this.getSupplierAccount(partner, company);  }
+		
+		else  {  return this.getCustomerAccount(partner, company);  }
+			
+	}
+	
+	
+	protected Account getCustomerAccount(Partner partner, Company company) throws AxelorException  {
+		
+		Account customerAccount = null;
+		
+		AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
+		
+		if(accountingSituation != null)   {
+			
+			customerAccount = accountingSituation.getCustomerAccount();
+		}
+		
+		if(customerAccount == null)  {
+			
+			AccountConfigService accountConfigService = new AccountConfigService();
+			
+			customerAccount = accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company));
+			
+		}
+		
+		if(customerAccount == null)  {
+			
+			throw new AxelorException(String.format("%s :\nCompte comptable Client manquant pour la société %s", 
+					GeneralServiceAccount.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
+			
+		}
+		
+		return customerAccount;
+			
+	}
+	
+	
+	protected Account getSupplierAccount(Partner partner, Company company) throws AxelorException  {
+		
+		Account supplierAccount = null;
+		
+		AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
+		
+		if(accountingSituation != null)   {
+			
+			supplierAccount = accountingSituation.getSupplierAccount();
+		}
+		
+		if(supplierAccount == null)  {
+			
+			AccountConfigService accountConfigService = new AccountConfigService();
+			
+			supplierAccount = accountConfigService.getSupplierAccount(accountConfigService.getAccountConfig(company));
+			
+		}
+		
+		if(supplierAccount == null)  {
+			
+			throw new AxelorException(String.format("%s :\nCompte comptable Fournisseur manquant pour la société %s", 
+					GeneralServiceAccount.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
+			
+		}
+		
+		return supplierAccount;
+			
 	}
 	
 	

@@ -48,7 +48,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PayboxConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PayboxRepository;
-import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.PayboxConfigService;
 import com.axelor.apps.base.db.Company;
@@ -57,6 +57,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -64,8 +65,6 @@ public class PayboxService extends PayboxRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PayboxService.class);
 	
-	@Inject
-	private AccountCustomerService acs;
 	
 	@Inject
 	private PayboxConfigService payboxConfigService;
@@ -264,7 +263,7 @@ public class PayboxService extends PayboxRepository {
 	 * @throws AxelorException
 	 */
 	public void checkPaidAmount(Partner partner, Company company, BigDecimal paidAmount) throws AxelorException  {
-		AccountingSituation accountingSituation = acs.getAccountingSituation(partner, company);
+		AccountingSituation accountingSituation = Beans.get(AccountingSituationService.class).getAccountingSituation(partner, company);
 			
 		BigDecimal partnerBalance = accountingSituation.getBalanceCustAccount();
 		

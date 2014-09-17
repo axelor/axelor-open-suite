@@ -32,7 +32,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class AccountingSituationService extends AccountingSituationRepository{
+public class AccountingSituationService extends AccountingSituationRepository  {
 
 	@Inject
 	private AccountConfigService accountConfigService;
@@ -93,4 +93,22 @@ public class AccountingSituationService extends AccountingSituationRepository{
 			
 		return accountingSituation;
 	}
+	
+	public AccountingSituation getAccountingSituation(Partner partner, Company company)  {
+		
+		if(partner.getAccountingSituationList() == null)  {  return null;  }
+		
+		for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
+			
+			if(accountingSituation.getCompany().equals(company))  {
+				
+				return accountingSituation;
+				
+			}
+		}
+		
+		return null;
+		
+	}
+	
 }

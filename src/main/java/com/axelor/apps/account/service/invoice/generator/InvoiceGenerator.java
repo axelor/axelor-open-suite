@@ -25,16 +25,14 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.base.db.Address;
@@ -45,6 +43,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 
 public abstract class InvoiceGenerator {
 	
@@ -194,7 +193,7 @@ public abstract class InvoiceGenerator {
 		
 		invoice.setCompany(company);
 		
-		invoice.setPartnerAccount(this.getPartnerAccount(partner, company, operationType == InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND));
+		invoice.setPartnerAccount(Beans.get(AccountCustomerService.class).getPartnerAccount(partner, company, operationType == InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND));
 		
 		invoice.setJournal(journalService.getJournal(invoice)); 
 		
@@ -211,94 +210,6 @@ public abstract class InvoiceGenerator {
 		return invoice;
 	}
 	
-
-	protected Account getPartnerAccount(Partner partner, Company company, boolean isSupplierInvoice) throws AxelorException  {
-			
-		if(isSupplierInvoice)  {  return this.getSupplierAccount(partner, company);  }
-		
-		else  {  return this.getCustomerAccount(partner, company);  }
-			
-	}
-	
-	
-	protected Account getCustomerAccount(Partner partner, Company company) throws AxelorException  {
-		
-		Account customerAccount = null;
-		
-		AccountingSituation accountingSituation = this.getAccountingSituation(company);
-		
-		if(accountingSituation != null)   {
-			
-			customerAccount = accountingSituation.getCustomerAccount();
-		}
-		
-		if(customerAccount == null)  {
-			
-			AccountConfigService accountConfigService = new AccountConfigService();
-			
-			customerAccount = accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company));
-			
-		}
-		
-		if(customerAccount == null)  {
-			
-			throw new AxelorException(String.format("%s :\nCompte comptable Client manquant pour la société %s", 
-					GeneralServiceAccount.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
-			
-		}
-		
-		return customerAccount;
-			
-	}
-	
-	
-	protected Account getSupplierAccount(Partner partner, Company company) throws AxelorException  {
-		
-		Account supplierAccount = null;
-		
-		AccountingSituation accountingSituation = this.getAccountingSituation(company);
-		
-		if(accountingSituation != null)   {
-			
-			supplierAccount = accountingSituation.getSupplierAccount();
-		}
-		
-		if(supplierAccount == null)  {
-			
-			AccountConfigService accountConfigService = new AccountConfigService();
-			
-			supplierAccount = accountConfigService.getSupplierAccount(accountConfigService.getAccountConfig(company));
-			
-		}
-		
-		if(supplierAccount == null)  {
-			
-			throw new AxelorException(String.format("%s :\nCompte comptable Fournisseur manquant pour la société %s", 
-					GeneralServiceAccount.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
-			
-		}
-		
-		return supplierAccount;
-			
-	}
-	
-	
-	protected AccountingSituation getAccountingSituation(Company company)  {
-		
-		if(partner.getAccountingSituationList() == null)  {  return null;  }
-		
-		for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
-			
-			if(accountingSituation.getCompany().equals(company))  {
-				
-				return accountingSituation;
-				
-			}
-		}
-		
-		return null;
-		
-	}
 	
 	
 	/**

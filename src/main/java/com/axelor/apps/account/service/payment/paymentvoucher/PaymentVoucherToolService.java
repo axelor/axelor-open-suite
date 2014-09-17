@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -39,16 +40,16 @@ public class PaymentVoucherToolService  {
 		boolean isDebitToPay;
 		
 		switch(paymentVoucher.getOperationTypeSelect())  {
-		case 1:
+		case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
 			isDebitToPay = false;
 			break;
-		case 2:
+		case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND:
 			isDebitToPay = true;
 			break;
-		case 3:
+		case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_SALE:
 			isDebitToPay = true;
 			break;
-		case 4:
+		case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_REFUND:
 			isDebitToPay = false;
 			break;
 		
@@ -78,16 +79,16 @@ public class PaymentVoucherToolService  {
 		boolean isPurchase;
 		
 		switch(paymentVoucher.getOperationTypeSelect())  {
-		case 1:
+		case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
 			isPurchase = true;
 			break;
-		case 2:
+		case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND:
 			isPurchase = true;
 			break;
-		case 3:
+		case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_SALE:
 			isPurchase = false;
 			break;
-		case 4:
+		case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_REFUND:
 			isPurchase = false;
 			break;
 		

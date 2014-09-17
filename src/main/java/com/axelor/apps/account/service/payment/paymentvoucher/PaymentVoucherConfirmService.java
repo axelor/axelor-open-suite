@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.PaymentInvoiceToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -47,10 +48,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PaymentVoucherConfirmService extends PaymentVoucherRepository{
+public class PaymentVoucherConfirmService extends PaymentVoucherRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherConfirmService.class); 
 	
@@ -180,6 +182,7 @@ public class PaymentVoucherConfirmService extends PaymentVoucherRepository{
 				reconcileService.confirmReconcile(reconcile, updateCustomerAccount);
 			}
 			else{
+				
 				moveLine = moveLineService.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, false, paymentDate, moveLineNo, null);
 			}
 			move.getMoveLineList().add(moveLine);
@@ -196,8 +199,10 @@ public class PaymentVoucherConfirmService extends PaymentVoucherRepository{
 //							paymentVoucher.getPayerPartner(), company, contractLine, null, paymentDate, updateCustomerAccount);
 //				}
 //				else  {
-				moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(), company.getAccountConfig().getCustomerAccount(),
-						remainingPaidAmount,!isDebitToPay, false, paymentDate, moveLineNo++, null);
+				
+				Account partnerAccount = Beans.get(AccountCustomerService.class).getPartnerAccount(payerPartner, company, paymentVoucherToolService.isPurchase(paymentVoucher));
+				
+				moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(), partnerAccount, remainingPaidAmount,!isDebitToPay, false, paymentDate, moveLineNo++, null);
 				move.getMoveLineList().add(moveLine);
 				
 				if(isDebitToPay)  {

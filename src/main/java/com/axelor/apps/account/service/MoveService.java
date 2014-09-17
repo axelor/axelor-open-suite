@@ -39,7 +39,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -50,6 +49,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -77,9 +77,6 @@ public class MoveService extends MoveRepository {
 	
 	@Inject
 	private AccountConfigService accountConfigService;
-	
-	@Inject
-	private InvoiceRepository invoiceRepo;
 	
 	private LocalDate toDay;
 	
@@ -546,7 +543,7 @@ public class MoveService extends MoveRepository {
 	
 	public Account getCustomerAccount(Partner partner, Company company, boolean isSupplierAccount) throws AxelorException  {
 		
-		AccountingSituation accountingSituation = accountCustomerService.getAccountingSituation(partner, company);
+		AccountingSituation accountingSituation = accountCustomerService.getAccountingSituationService().getAccountingSituation(partner, company);
 		
 		if(accountingSituation != null)  {
 			
@@ -936,7 +933,7 @@ public class MoveService extends MoveRepository {
 			boolean isMinus = this.isMinus(invoice);
 			
 			LOG.debug("Methode 1 : debut"); //TODO
-			invoiceRepo.save(invoice);
+			Beans.get(InvoiceRepository.class).save(invoice);
 			LOG.debug("Methode 1 : milieu");
 			MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
 			LOG.debug("Methode 1 : fin");

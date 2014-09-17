@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -36,9 +35,6 @@ public class PaymentVoucherControlService  {
 	
 	@Inject
 	private PaymentVoucherSequenceService paymentVoucherSequenceService;
-	
-	@Inject
-	private AccountConfigService accountConfigService;
 	
 	
 	/**
@@ -61,8 +57,6 @@ public class PaymentVoucherControlService  {
 		if(!paymentVoucher.getHasAutoInput() && (paymentVoucher.getPaymentInvoiceToPayList() == null || paymentVoucher.getPaymentInvoiceToPayList().size() == 0))  {
 			throw new AxelorException(String.format("%s :\n Aucune ligne à payer.", GeneralServiceAccount.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}	
-		
-		accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company));
 		
 		if(journal == null || paymentModeAccount == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez renseigner un journal et un compte de trésorerie dans le mode de règlement.", 
