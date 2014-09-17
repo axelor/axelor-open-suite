@@ -18,11 +18,6 @@
 package com.axelor.apps.base.service.message;
 
 import java.util.List;
-<<<<<<< HEAD
-=======
-
-import javax.mail.MessagingException;
->>>>>>> repo
 
 import org.joda.time.DateTime;
 
@@ -68,9 +63,9 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 				0, 
 				todayTime.toLocalDateTime(), 
 				false, 
-				Message.STATUS_DRAFT, 
+				STATUS_DRAFT, 
 				subject, 
-				Message.TYPE_SENT,
+				TYPE_SENT,
 				toEmailAddressList,
 				ccEmailAddressList,
 				bccEmailAddressList,
@@ -100,7 +95,7 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	private void sendToUser(Message message)  {
 		
 		if(!message.getSentByEmail() && message.getRecipientUser()!=null)  {
-			message.setStatusSelect(Message.STATUS_SENT);
+			message.setStatusSelect(STATUS_SENT);
 			message.setSentByEmail(false);
 			messageRepo.save(message);
 		}
