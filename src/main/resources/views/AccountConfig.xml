@@ -22,7 +22,8 @@
 	  <field name="showDetailsInInvoice"/>
 	</panel>
 	<panel title="CFONB">
-	  <field name="cfonbConfig" showTitle="false" colSpan="4" widget="NestedEditor" form-view="cfonb-config-form" summary-view="true"/>
+<!-- 	  <field name="cfonbConfig" showTitle="false" colSpan="4" widget="NestedEditor" form-view="cfonb-config-form" summary-view="true"/> -->
+	  <field name="cfonbConfig" showTitle="false" colSpan="4" />
 	</panel>
 	<panel title="Receivables recovery" >
 		<field name="mailTransitTime" colSpan="12"/>
@@ -35,7 +36,8 @@
 		</field>
 	</panel>
 	<panel title="Paybox">
-	  <field name="payboxConfig" showTitle="false"  widget="NestedEditor" form-view="paybox-config-form" summary-view="true"/>
+<!-- 	  <field name="payboxConfig" showTitle="false"  widget="NestedEditor" form-view="paybox-config-form" summary-view="true"/> -->
+	  <field name="payboxConfig" showTitle="false" />
 	</panel>
 	<panel-tabs>
 		<panel title="Accounting">
