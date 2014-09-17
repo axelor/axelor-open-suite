@@ -23,9 +23,10 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
@@ -36,6 +37,12 @@ public class ProductionOrderWizardController {
 
 	@Inject
 	ProductionOrderService productionOrderService;
+	
+	@Inject
+	private BillOfMaterialService billOfMaterialService;
+	
+	@Inject
+	private ProductRepository productRepo;
 	
 	@SuppressWarnings("unchecked")
 	public void validate (ActionRequest request, ActionResponse response) throws AxelorException {
@@ -50,7 +57,7 @@ public class ProductionOrderWizardController {
 		}
 		else  {
 			Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
-			BillOfMaterial billOfMaterial = BillOfMaterial.find(((Integer) bomContext.get("id")).longValue());
+			BillOfMaterial billOfMaterial = billOfMaterialService.find(((Integer) bomContext.get("id")).longValue());
 			
 			BigDecimal qty = new BigDecimal((String)context.get("qty"));
 			
@@ -58,7 +65,7 @@ public class ProductionOrderWizardController {
 			
 			if(context.get("product") != null)  {
 				Map<String, Object> productContext = (Map<String, Object>) context.get("product");
-				product = Product.find(((Integer) productContext.get("id")).longValue());
+				product = productRepo.find(((Integer) productContext.get("id")).longValue());
 			}
 			else  {
 				product = billOfMaterial.getProduct();

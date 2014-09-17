@@ -25,24 +25,17 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdHumanResource;
+//import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResource;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class OperationOrderService {
+public class OperationOrderService extends OperationOrderRepository{
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
-	@Inject
-	private OperationOrderStockMoveService operationOrderStockMoveService;
-	
-	@Inject
-	private ProdProductService prodProductService;
-	
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -56,7 +49,7 @@ public class OperationOrderService {
 				prodProcessLine.getProdResource(), 
 				prodProcessLine);
 		
-		return operationOrder.save();
+		return save(operationOrder);
 	}
 	
 	
@@ -85,7 +78,7 @@ public class OperationOrderService {
 		
 		this._createHumanResourceList(operationOrder, machineProdResource);
 		
-		return operationOrder.save();
+		return save(operationOrder);
 	}
 	
 	
@@ -94,12 +87,12 @@ public class OperationOrderService {
 		
 		if(prodResource != null && prodResource.getProdHumanResourceList() != null)  {
 			
-			for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
+//			for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
 				
 //				operationOrder.addProdHumanResourceListItem(
 //						new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getEmployee(), prodHumanResource.getDuration()));
-				
-			}
+//				
+//			}
 			
 		}
 		

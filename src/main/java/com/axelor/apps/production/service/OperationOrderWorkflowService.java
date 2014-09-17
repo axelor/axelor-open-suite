@@ -22,8 +22,6 @@ import java.math.BigDecimal;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IProdResource;
@@ -31,14 +29,13 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdResource;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class OperationOrderWorkflowService {
+public class OperationOrderWorkflowService extends OperationOrderRepository{
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
 	@Inject
 	private OperationOrderStockMoveService operationOrderStockMoveService;
 	
@@ -67,14 +64,14 @@ public class OperationOrderWorkflowService {
 		
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_PLANNED);
 		
-		return operationOrder.save();
+		return save(operationOrder);
 		
 	}
 	
 	
 	public LocalDateTime getLastOperationOrder(OperationOrder operationOrder)  {
 		
-		OperationOrder lastOperationOrder = OperationOrder.filter("self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6", 
+		OperationOrder lastOperationOrder = all().filter("self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6", 
 				operationOrder.getManufOrder(), operationOrder.getPriority()).order("-self.priority").order("-self.plannedEndDateT").fetchOne();
 		
 		if(lastOperationOrder != null)  {
@@ -110,7 +107,7 @@ public class OperationOrderWorkflowService {
 		
 		operationOrder.setRealStartDateT(today);
 		
-		operationOrder.save();
+		save(operationOrder);
 		
 	}
 	
@@ -122,7 +119,7 @@ public class OperationOrderWorkflowService {
 		
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
 		
-		operationOrder.save();
+		save(operationOrder);
 		
 	}
 	
@@ -136,7 +133,7 @@ public class OperationOrderWorkflowService {
 			
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
 			
-		operationOrder.save();
+		save(operationOrder);
 		
 	}
 	

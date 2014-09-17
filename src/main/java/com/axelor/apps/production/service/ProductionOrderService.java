@@ -30,6 +30,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -37,7 +38,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ProductionOrderService {
+public class ProductionOrderService extends ProductionOrderRepository{
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -63,7 +64,7 @@ public class ProductionOrderService {
 			}
 		}
 		
-		productionOrder.save();
+		save(productionOrder);
 		
 	}
 
@@ -129,7 +130,7 @@ public class ProductionOrderService {
 		
 		productionOrder.addManufOrderListItem(manufOrder);
 		
-		return productionOrder.save();
+		return save(productionOrder);
 		
 	}
 	

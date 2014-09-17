@@ -17,25 +17,20 @@
  */
 package com.axelor.apps.production.service.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ProductionConfig;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public class ProductionConfigService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(ProductionConfigService.class);
-
+public class ProductionConfigService extends ProductionConfigRepository {
 	
 	public ProductionConfig getProductionConfig(Company company) throws AxelorException  {
 		
 //		ProductionConfig productionConfig = company.getProductionConfig();  // TODO après heritage
 		
-		ProductionConfig productionConfig = ProductionConfig.findByCompany(company);
+		ProductionConfig productionConfig = findByCompany(company);
 		
 		if(productionConfig == null)  {
 			throw new AxelorException(String.format("Veuillez configurer la production pour la société %s",

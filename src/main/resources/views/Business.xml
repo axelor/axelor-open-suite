@@ -8,8 +8,8 @@
        		<field name="prodInvTypeSelect"/>
        	</panel>
        	<!-- TODO: remove this comment if portlet works in panel 
-       	<panel x-span="12">
-       		<portlet x-span="12" action="action-business-project-view-production-manuf-order"/>
+       	<panel colSpan="12">
+       		<portlet colSpan="12" action="action-business-project-view-production-manuf-order"/>
        	</panel>
        	 -->
 	</form>

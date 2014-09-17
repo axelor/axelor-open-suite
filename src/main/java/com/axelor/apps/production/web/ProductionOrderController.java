@@ -23,8 +23,10 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
 import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.exception.AxelorException;
@@ -40,11 +42,17 @@ public class ProductionOrderController {
 	@Inject
 	ProductionOrderSaleOrderService productionOrderSaleOrderService;
 	
+	@Inject
+	private BillOfMaterialService billOfMaterialService;
+	
+	@Inject
+	private ProductRepository productRepo;
+	
 	public void propagateIsToInvoice (ActionRequest request, ActionResponse response) {
 
 		ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
 
-		productionOrderService.propagateIsToInvoice(ProductionOrder.find(productionOrder.getId()));
+		productionOrderService.propagateIsToInvoice(productionOrderService.find(productionOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -54,7 +62,7 @@ public class ProductionOrderController {
 
 		ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
 
-		productionOrderSaleOrderService.createSaleOrder(ProductionOrder.find(productionOrder.getId()));
+		productionOrderSaleOrderService.createSaleOrder(productionOrderService.find(productionOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -72,7 +80,7 @@ public class ProductionOrderController {
 		}
 		else  {
 			Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
-			BillOfMaterial billOfMaterial = BillOfMaterial.find(((Integer) bomContext.get("id")).longValue());
+			BillOfMaterial billOfMaterial = billOfMaterialService.find(((Integer) bomContext.get("id")).longValue());
 			
 			BigDecimal qty = new BigDecimal((String)context.get("qty"));
 			
@@ -80,7 +88,7 @@ public class ProductionOrderController {
 			
 			if(context.get("product") != null)  {
 				Map<String, Object> productContext = (Map<String, Object>) context.get("product");
-				product = Product.find(((Integer) productContext.get("id")).longValue());
+				product = productRepo.find(((Integer) productContext.get("id")).longValue());
 			}
 			else  {
 				product = billOfMaterial.getProduct();
@@ -89,7 +97,7 @@ public class ProductionOrderController {
 			
 			ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
 			
-			productionOrderService.addManufOrder(ProductionOrder.find(productionOrder.getId()), product, billOfMaterial, qty);
+			productionOrderService.addManufOrder(productionOrderService.find(productionOrder.getId()), product, billOfMaterial, qty);
 			
 			response.setReload(true);
 		}

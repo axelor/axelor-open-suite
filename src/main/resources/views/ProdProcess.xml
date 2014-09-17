@@ -17,7 +17,7 @@
 	    	<field name="code"/>
 	        <field name="location"/>
         </panel>
-        <panel-related field="prodProcessLineList" x-span="12"/>        
+        <panel-related field="prodProcessLineList" colSpan="12"/>        
     </form>
     
 </object-views>
