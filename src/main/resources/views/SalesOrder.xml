@@ -113,12 +113,12 @@
 	  </panel-tabs>
 	  
 	  <panel-side title="Action(s)">      
-	    <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="1" onClick="save,action-sale-order-method-compute,save"/>
-	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-sale-group-confirm,save"/>
-	    <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-sale-group-validate,save"/>
-	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="1" onClick="save,action-sale-order-record-cancel"/>
-	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="2" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
-	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="4" onClick="action-sale-order-view-invoice" if-module="axelor-supplychain"/>
+	    <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
+	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-group-confirm,save"/>
+	    <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-validate,save"/>
+	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
+	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="12" onClick="action-sale-order-view-invoice" if-module="axelor-supplychain"/>
 	  </panel-side>    
 	  <panel-side title="Info." showIf="id">
 	    <field name="creationDate" readonly="true" colSpan="6"/>
@@ -129,7 +129,6 @@
 	    <field name="shipmentDate" colSpan="6" showIf="state == 3" if-module="axelor-supplychain"/>
 	  </panel-side>
 	  <panel-side readonly="true"  colSpan="4" showIf="id">  
-	  	<panel>
 	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
 	          <viewer>
 	            &lt;dl class="dl-horizontal"&gt;
@@ -144,8 +143,6 @@
 	            &lt;/dl&gt;
 	          </viewer>
 	        </field>
-	  	</panel>   
-        
       </panel-side>
 	  
 	</form>
