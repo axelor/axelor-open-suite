@@ -14,7 +14,6 @@
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
   	<string name="name" title="Name" required="true" namecolumn="true"/>
   	<string name="description" large="true" multiline="true" title="Description"/>
-  	<boolean name="isModel" title="Model ?"/>
   	<boolean name="isProject" title="Project ?"/>
   	<boolean name="isBusiness" title="Business ?"/>
   	<boolean name="isTimeSheetImputable" title="Timesheet input required ?"/>
@@ -51,7 +50,6 @@
   	<many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="Responsible"/>
   	<many-to-many name="memberUserSet" ref="com.axelor.auth.db.User" title="Members"/>
   	
-  	<many-to-one name="modelProject" ref="com.axelor.apps.organisation.db.Project" title="Project model"/>
   	<many-to-one name="preSalesTask" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
   	<boolean name="imputExpense" title="Allow expenses input ?"/>
   	<integer name="typeProjectSelect" title="Type select" selection="organisation.project.type.project.select"/>
@@ -60,7 +58,7 @@
   	
   	<integer name="progress" title="Progress" selection="grade.0.up.to.100.select"/>
   	
-  	
+  	<!-- 	TODO : MOVE INTO NEW MODULE : CONSULTANCY SERVICES -->
     <!-- Need -->
     <date name="consultationDate" title="Consultation Date"/>
     <string name="needTypeSelect" title="Type" selection="organisation.project.need.type.select"/>
@@ -74,12 +72,9 @@
     <integer name="marketTypeSelect" title="Market Type" selection="organisation.project.business.market.type.select"/>
     <string name="exportTypeSelect" title="Export Type" selection="organisation.project.report.type.select"/>
 
-<!-- 	TODO : A DEPLACER DANS LE MODULE PRODUCTION -->
+<!-- 	TODO : MOVE INTO NEW MODULE : BUSINESS MANUFACTURING -->
 	<integer name="prodInvTypeSelect" title="Production invoicing type" selection="iproduction.project.prod.inv.type.select"/>
 	
-<!-- TODO : COMPTA	 -->
-    <many-to-many name="analyticAxisSet" ref="com.axelor.apps.account.db.AnalyticAxis" title="Analytic axis"/>
-
 	
   </entity>
 
