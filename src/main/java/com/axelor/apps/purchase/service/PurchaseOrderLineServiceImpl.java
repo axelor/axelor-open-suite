@@ -34,7 +34,6 @@ import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -52,9 +51,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 	
 	@Inject
 	private PriceListService priceListService;
-	
-	@Inject 
-	private ProductVariantService productVariantService;
 	
 	private int sequence = 0;
 	

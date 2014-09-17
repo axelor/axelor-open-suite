@@ -31,18 +31,19 @@ import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.auth.db.User;
-import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PurchaseOrderServiceImpl implements PurchaseOrderService {
+public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements PurchaseOrderService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceImpl.class); 
 
@@ -50,13 +51,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	private PurchaseOrderLineService purchaseOrderLineService;
 	
 	@Inject
-	private CurrencyService currencyService;
-	
-	@Inject
 	private PurchaseOrderLineTaxService purchaseOrderLineVatService;
 	
 	@Inject
 	private SequenceService sequenceService;
+	
+	@Inject
+	private PartnerService partnerService;
 	
 	@Override
 	public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder) throws AxelorException  {
@@ -83,7 +84,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		
 		this._computePurchaseOrder(purchaseOrder);
 		
-		purchaseOrder.save();
+		save(purchaseOrder);
 	}
 	
 	/**
@@ -193,10 +194,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateSupplier(PurchaseOrder purchaseOrder)  {
 		
-		Partner supplierPartner = Partner.find(purchaseOrder.getSupplierPartner().getId());
+		Partner supplierPartner = partnerService.find(purchaseOrder.getSupplierPartner().getId());
 		supplierPartner.setSupplierTypeSelect(IPartner.SUPPLIER_TYPE_SELECT_APPROVED);
 		
-		return supplierPartner.save();
+		return partnerService.save(supplierPartner);
 	}
 	
 	
