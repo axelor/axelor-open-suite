@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.suppliermanagement.web;
 
-import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierLineService;
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -31,14 +31,14 @@ public class PurchaseOrderController {
 	private PurchaseOrderSupplierService purchaseOrderSupplierService;
 	
 	@Inject
-	private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
+	private PurchaseOrderRepository purchaseOrderRepo;
 	
 	public void generateSuppliersPurchaseOrder(ActionRequest request, ActionResponse response){
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		
 		try {
-			purchaseOrderSupplierService.generateSuppliersPurchaseOrder(PurchaseOrder.find(purchaseOrder.getId()));
+			purchaseOrderSupplierService.generateSuppliersPurchaseOrder(purchaseOrderRepo.find(purchaseOrder.getId()));
 			response.setFlash("Demande de consultations fournisseurs créées");
 			response.setReload(true);
 		}
@@ -51,7 +51,7 @@ public class PurchaseOrderController {
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		
 		try {
-			purchaseOrderSupplierService.generateAllSuppliersRequests(PurchaseOrder.find(purchaseOrder.getId()));
+			purchaseOrderSupplierService.generateAllSuppliersRequests(purchaseOrderRepo.find(purchaseOrder.getId()));
 			response.setFlash("Génération des devis fournisseurs terminée");
 			response.setReload(true);
 		}
