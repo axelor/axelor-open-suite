@@ -24,24 +24,35 @@ import java.util.Map;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class LeadService {
+public class LeadService extends LeadRepository {
 
 	@Inject
 	private SequenceService sequenceService;
 	
 	@Inject
 	private UserService userService;
+	
+	@Inject
+	private PartnerService partnerService;
+	
+	@Inject
+	private OpportunityService opportunityService;
+	
+	@Inject
+	private EventService  eventService;
 	
 	
 	/**
@@ -71,27 +82,27 @@ public class LeadService {
 		
 		if(partner != null)  {
 			lead.setPartner(partner);
-			partner.save();
+			partnerService.save(partner);
 		}
 		if(contactPartner!=null)  {
-			contactPartner.save();
+			partnerService.save(contactPartner);
 		}
 		if(opportunity!=null)  {
-			opportunity.save();
+			opportunityService.save(opportunity);
 		}
 		if(callEvent!=null)  {
-			callEvent.save();
+			eventService.save(callEvent);
 		}
 		if(meetingEvent!=null)  {
-			meetingEvent.save();
+			eventService.save(meetingEvent);
 		}
 		if(taskEvent!=null)  {
-			taskEvent.save();
+			eventService.save(taskEvent);
 		}
 		
 		lead.setPartner(partner);
 		lead.setStatusSelect(ILead.STATUS_CONVERTED);
-		lead.save();
+		save(lead);
 		
 		return lead;
 		
@@ -147,6 +158,11 @@ public class LeadService {
 			urlMap.put("google","<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="+searchName+"' target='_blank' />");
 		}
 		return urlMap;
+	}
+
+	@Transactional
+	public void saveLead(Lead lead){
+		save(lead);
 	}
 	
 }

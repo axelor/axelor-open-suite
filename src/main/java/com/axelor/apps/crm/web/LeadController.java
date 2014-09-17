@@ -46,6 +46,9 @@ public class LeadController {
 	@Inject
 	private Provider<MapService> mapProvider;
 	
+	@Inject
+	private Provider<LeadService> leadProvider;
+	
 	private static final Logger LOG = LoggerFactory.getLogger(LeadController.class);
 	
 	@Inject
@@ -74,7 +77,7 @@ public class LeadController {
 			
 		if(!leadIds.equals("")){
 			leadIds = leadIds.substring(0, leadIds.length()-1);	
-			lead = Lead.find(new Long(lstSelectedleads.get(0)));
+			lead = leadProvider.get().find(new Long(lstSelectedleads.get(0)));
 		}else if(lead.getId() != null){
 			leadIds = lead.getId().toString();			
 		}

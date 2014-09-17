@@ -34,7 +34,7 @@ public class TargetController {
 		Target target = request.getContext().asType(Target.class);
 		
 		try {
-			targetService.update(Target.find(target.getId()));
+			targetService.update(targetService.find(target.getId()));
 			response.setValue("opportunityAmountWon", target.getOpportunityAmountWon());
 			response.setValue("opportunityCreatedNumber", target.getOpportunityCreatedNumber());
 			response.setValue("opportunityCreatedWon", target.getOpportunityCreatedWon());

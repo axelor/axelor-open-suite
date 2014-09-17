@@ -27,13 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.service.EventService;
+import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.rpc.ActionRequest;
@@ -53,10 +53,10 @@ public class EventController {
 	private Provider<SequenceService> sequenceProvider;
 	
 	@Inject
-	private Provider<AddressService> addressProvider;
+	private Provider<MapService> mapProvider;
 	
 	@Inject
-	private Provider<MapService> mapProvider;
+	private Provider<LeadService> leadProvider;
 	
 	
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
@@ -146,7 +146,7 @@ public class EventController {
 	//TODO : replace by XML action
 	public void saveEventStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 		Event event = request.getContext().asType(Event.class);
-		Event persistEvent = Event.find(event.getId());
+		Event persistEvent = eventProvider.get().find(event.getId());
 		persistEvent.setStatusSelect(event.getStatusSelect());
 		eventProvider.get().saveEvent(persistEvent);
 	}
@@ -154,7 +154,7 @@ public class EventController {
 	//TODO : replace by XML action
 	public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 		Event event = request.getContext().asType(Event.class);
-		Event persistEvent = Event.find(event.getId());
+		Event persistEvent = eventProvider.get().find(event.getId());
 		persistEvent.setTaskStatusSelect(event.getTaskStatusSelect());
 		eventProvider.get().saveEvent(persistEvent);
 	}
@@ -162,7 +162,7 @@ public class EventController {
 	//TODO : replace by XML action
 	public void saveEventTicketStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 		Event event = request.getContext().asType(Event.class);
-		Event persistEvent = Event.find(event.getId());
+		Event persistEvent = eventProvider.get().find(event.getId());
 		persistEvent.setTicketStatusSelect(event.getTicketStatusSelect());
 		eventProvider.get().saveEvent(persistEvent);
 	}
@@ -205,18 +205,18 @@ public class EventController {
 	
 	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
 		if(request.getContext().get("id") != null){
-			Lead lead = Lead.find((Long)request.getContext().get("id"));
+			Lead lead = leadProvider.get().find((Long)request.getContext().get("id"));
 			lead.setUser(AuthUtils.getUser());
 			if(lead.getStatusSelect() == 1)
 				lead.setStatusSelect(2);
-			eventProvider.get().saveLead(lead);
+			leadProvider.get().saveLead(lead);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Lead lead : Lead.filter("id in ?1",request.getContext().get("_ids")).fetch()){
+			for(Lead lead : leadProvider.get().all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				lead.setUser(AuthUtils.getUser());
 				if(lead.getStatusSelect() == 1)
 					lead.setStatusSelect(2);
-				eventProvider.get().saveLead(lead);
+				leadProvider.get().saveLead(lead);
 			}
 		}
 		response.setReload(true);
@@ -225,12 +225,12 @@ public class EventController {
 	
 	public void assignToMeEvent(ActionRequest request, ActionResponse response)  {
 		if(request.getContext().get("id") != null){
-			Event event = Event.find((Long)request.getContext().get("id"));
+			Event event = eventProvider.get().find((Long)request.getContext().get("id"));
 			event.setUser(AuthUtils.getUser());
 			eventProvider.get().saveEvent(event);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Event event : Event.filter("id in ?1",request.getContext().get("_ids")).fetch()){
+			for(Event event : eventProvider.get().all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				event.setUser(AuthUtils.getUser());
 				eventProvider.get().saveEvent(event);
 			}

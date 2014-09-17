@@ -67,15 +67,15 @@
     <field name="toDate"/>
   </panel>
   <panel title="Targets">
-      <panel title="Opportunities" x-span="4">
-        <field name="opportunityAmountWon" x-span="12"/>
-        <field name="opportunityCreatedNumber" x-span="12"/>
-        <field name="opportunityCreatedWon" x-span="12"/>
+      <panel title="Opportunities" colSpan="4">
+        <field name="opportunityAmountWon" colSpan="12"/>
+        <field name="opportunityCreatedNumber" colSpan="12"/>
+        <field name="opportunityCreatedWon" colSpan="12"/>
       </panel>
-      <panel title="Calls" x-span="4">
+      <panel title="Calls" colSpan="4">
         <field name="callEmittedNumber"/>
      </panel>
-     <panel title="Meetings" x-span="4">
+     <panel title="Meetings" colSpan="4">
       <field name="meetingNumber"/>
     </panel>
   </panel>

@@ -82,32 +82,32 @@
   </panel>
   <panel-tabs>
     <panel title="Opportunity">
-    <panel title="Target" x-span="6">
-     <field name="opportunityAmountWonTarget" x-span="10"/>
-     <label title="Vs" x-span="2"/>
-     <field name="opportunityCreatedNumberTarget" x-span="10"/>
-     <label title="Vs" x-span="2"/>
-    <field name="opportunityCreatedWonTarget" x-span="10"/>
-      <label title="Vs" x-span="2"/>
+    <panel title="Target" colSpan="6">
+     <field name="opportunityAmountWonTarget" colSpan="10"/>
+     <label title="Vs" colSpan="2"/>
+     <field name="opportunityCreatedNumberTarget" colSpan="10"/>
+     <label title="Vs" colSpan="2"/>
+    <field name="opportunityCreatedWonTarget" colSpan="10"/>
+      <label title="Vs" colSpan="2"/>
     </panel>
     
-    <panel title="Real" x-span="6">
-        <field name="opportunityAmountWon" showTitle="false" x-span="12"/>
-        <field name="opportunityCreatedNumber" showTitle="false" x-span="12"/>
-      <field name="opportunityCreatedWon" showTitle="false" x-span="12"/>
+    <panel title="Real" colSpan="6">
+        <field name="opportunityAmountWon" showTitle="false" colSpan="12"/>
+        <field name="opportunityCreatedNumber" showTitle="false" colSpan="12"/>
+      <field name="opportunityCreatedWon" showTitle="false" colSpan="12"/>
     </panel>
   </panel>  
   
   <panel title="Events">
-    <panel title="Target" x-span="6">
-        <field name="callEmittedNumberTarget" x-span="10"/>
-        <label title="Vs" x-span="2"/>
-      <field name="meetingNumberTarget" x-span="10"/>
-      <label title="Vs" x-span="2"/>
+    <panel title="Target" colSpan="6">
+        <field name="callEmittedNumberTarget" colSpan="10"/>
+        <label title="Vs" colSpan="2"/>
+      <field name="meetingNumberTarget" colSpan="10"/>
+      <label title="Vs" colSpan="2"/>
     </panel>
-    <panel title="Real" x-span="6">
-        <field name="callEmittedNumber" showTitle="false" x-span="12"/>
-       <field name="meetingNumber" showTitle="false" x-span="12"/>
+    <panel title="Real" colSpan="6">
+        <field name="callEmittedNumber" showTitle="false" colSpan="12"/>
+       <field name="meetingNumber" showTitle="false" colSpan="12"/>
     </panel>
     
    </panel>

@@ -767,7 +767,7 @@
 		</chart>
 		
 		<action-record name="action.chart.crm.chart.set.active.user" model="com.axelor.apps.crm.db.Event">
-		    <field name="activeUser" expr="eval:com.axelor.auth.db.User.find(__user__.id)" />
+		    <field name="activeUser" expr="eval:__repo__.of(User).find(__user__.id)" />
 		</action-record>
 		
 		<chart name="chart.user.meeting.target.gauge" title="Meetings number target completed (%)">

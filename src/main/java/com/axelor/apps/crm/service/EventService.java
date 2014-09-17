@@ -24,14 +24,15 @@ import org.joda.time.LocalDateTime;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.repo.EventRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class EventService {
+public class EventService extends EventRepository {
 	
 	@Inject
 	private EventAttendeeService eventAttendeeService;
-
+	
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 		
 		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
@@ -58,7 +59,7 @@ public class EventService {
 	
 	@Transactional
 	public void saveEvent(Event event){
-		event.save();
+		save(event);
 	}
 	
 	
@@ -66,16 +67,9 @@ public class EventService {
 	public void addLeadAttendee(Event event, Lead lead, Partner contactPartner)  {
 		
 		event.addEventAttendeeListItem(eventAttendeeService.createEventAttendee(event, lead, contactPartner));
-		event.save();
+		save(event);
 		
 	}
-	
-	
-	@Transactional
-	public void saveLead(Lead lead){
-		lead.save();
-	}
-	
 	
 	
 }
