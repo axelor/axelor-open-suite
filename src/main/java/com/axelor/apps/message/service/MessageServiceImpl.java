@@ -26,26 +26,28 @@ import javax.mail.MessagingException;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+<<<<<<< HEAD
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailSender;
 import com.axelor.mail.SmtpAccount;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+=======
+import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.mail.MailSender;
+import com.google.common.collect.Maps;
+>>>>>>> repo
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MessageServiceImpl implements MessageService {
+public class MessageServiceImpl extends MessageRepository implements MessageService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MessageServiceImpl.class);
-	
 	private DateTime todayTime;
 	
 	@Inject
@@ -62,7 +64,7 @@ public class MessageServiceImpl implements MessageService {
 	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath, String addressBlock, int mediaTypeSelect)  {
 		
-		return this.createMessage(
+		return save(this.createMessage(
 				content, 
 				null, 
 				model, 
@@ -71,17 +73,16 @@ public class MessageServiceImpl implements MessageService {
 				0, 
 				todayTime.toLocalDateTime(), 
 				false, 
-				Message.STATUS_DRAFT, 
+				MessageRepository.STATUS_DRAFT, 
 				subject, 
-				Message.TYPE_SENT,
+				MessageRepository.TYPE_SENT,
 				toEmailAddressList,
 				ccEmailAddressList,
 				bccEmailAddressList,
 				mailAccount,
 				linkPath,
 				addressBlock,
-				mediaTypeSelect)
-				.save();
+				mediaTypeSelect));
 	}	
 	
 	
@@ -181,7 +182,7 @@ public class MessageServiceImpl implements MessageService {
 			mailBuilder.send();
 			
 			message.setSentByEmail(true);
-			message.setStatusSelect(Message.STATUS_SENT);
+			message.setStatusSelect(MessageRepository.STATUS_SENT);
 			message.save();
 			
 		}

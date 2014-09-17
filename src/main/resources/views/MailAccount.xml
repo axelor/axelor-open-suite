@@ -14,11 +14,11 @@
     onNew="action-mail-account-default-record">
     	<panel title="Informations">
             <field name="name"/>
-            <field name="user" column="user_id" x-span="4"/>
-			<field name="isDefault" x-span="2" onChange="action-mail-account-validate-is-default"/>
+            <field name="user" column="user_id" colSpan="4"/>
+			<field name="isDefault" colSpan="2" onChange="action-mail-account-validate-is-default"/>
 			<button name="testConnection" onClick="save,action-method-mail-account-validate,save" title="Test connection"/>
 			<field name="isValid" onChange="action-panel-validate"/>
-        	<field name="signature" widget="Html" x-lite="true" x-span="12"/>
+        	<field name="signature" widget="Html" x-lite="true" colSpan="12"/>
         </panel>
         <panel name="loginPanel" title="Login" >
        	 	<field name="login"/>
@@ -49,7 +49,7 @@
     </action-record>
     
 	<action-validate name="action-mail-account-validate-is-default">
-		<error message="There is already a default mail account" if="com.axelor.apps.message.db.MailAccount.all().filter('self.isDefault = true and self.user = :user').count() > 0 &amp;&amp; isDefault = true"/>
+		<error message="There is already a default mail account" if="__repo__.of(MailAccount).all().filter('self.isDefault = true AND self.user = ?1',user).count() &gt; 0 &amp;&amp; isDefault"/>
 	</action-validate>
     
 </object-views>

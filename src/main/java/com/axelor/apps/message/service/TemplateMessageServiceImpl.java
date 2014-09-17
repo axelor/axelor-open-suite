@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Template;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -45,6 +46,9 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	private MailAccountService mailAccountService;
 	
 	protected TemplateMaker maker;
+	
+	@Inject
+	private EmailAddressRepository emailAddressRepo;
 	
 	
 	
@@ -157,7 +161,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		if(recipients!=null && !recipients.isEmpty())  {
 			String[] toTab = recipients.split(";");
 			for(String s : toTab)  {
-				EmailAddress emailAddress = EmailAddress.findByAddress(s);
+				EmailAddress emailAddress = emailAddressRepo.findByAddress(s);
 				if(emailAddress != null)  {
 					emailAddressList.add(emailAddress);
 				}

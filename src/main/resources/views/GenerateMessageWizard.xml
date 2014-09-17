@@ -7,7 +7,7 @@
     <form name="generate-message-wizard-form"  model="com.axelor.apps.base.db.Wizard" title="Generate message" 
     onNew="action-group-message-generate-wizard-onnew">
     	<panel>
-	      	<field name="template" title="Template" widget="SuggestBox" x-type="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Template" x-targetName="name"/>
+	      	<field name="template" title="Template" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.Template" target-name="name"/>
 	      	<spacer/>
 	      	<button name="validate" title="Validate" onClick="action-generate-message-method-generate-message"/>
       	</panel>
@@ -19,7 +19,7 @@
     </action-group>
     
     <action-record name="action-generate-message-record-on-new" model="com.axelor.apps.base.db.Wizard">
-    	<field name="template" expr="eval:  com.axelor.apps.base.db.Template.filter('self.metaModel.fullName = ?1 and self.isDefault = true',_templateContextModel).fetchOne()"/> 
+    	<field name="template" expr="eval:__repo__.of(Template).all().filter('self.metaModel.fullName = ?1 and self.isDefault = true',_templateContextModel).fetchOne()"/> 
    	</action-record>
     
     <action-method name="action-generate-message-method-generate-message">

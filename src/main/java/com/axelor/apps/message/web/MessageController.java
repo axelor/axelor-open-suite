@@ -21,30 +21,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-public class MessageController {
+public class MessageController extends MessageRepository {
 
 	@Inject
 	private Provider<MessageService> messageService;
 	
-	
-	private static final Logger LOG = LoggerFactory.getLogger(MessageController.class);
-	
+	@Inject
+	private MessageRepository messageRepo;
 	
 	public void sendByEmail(ActionRequest request, ActionResponse response) {
 		
 		Message message = request.getContext().asType(Message.class);
 		
-		message = messageService.get().sendMessageByEmail(Message.find(message.getId()));
+		message = messageService.get().sendMessageByEmail(messageRepo.find(message.getId()));
 		
 		response.setReload(true);
 		
-		if(message.getStatusSelect() == Message.STATUS_SENT)  {
+		if(message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 			if(message.getSentByEmail())  {
 				response.setFlash("Email envoyé");
 			}
