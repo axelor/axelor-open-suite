@@ -27,7 +27,7 @@
 	    <panel-related field="billOfMaterialList" title="Bill of material" colSpan="12" domain="self.isRawMaterial = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 	    <panel-related field="prodRemainsList" title="Remains" colSpan="12"/>	
 	        
-	    <panel-dashlet action="action-bill-of-material-view-tree"/>
+	    <panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
 	    
 	    <panel title="Cost">
 	      <button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
