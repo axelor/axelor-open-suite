@@ -7,8 +7,6 @@
 
   <entity name="AccountConfig" lang="java" cachable="true">
   	<integer name="importId" />
-    <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" unique="true"/>
     
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     
