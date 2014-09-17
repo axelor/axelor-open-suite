@@ -23,24 +23,7 @@
 	  <field name="hasChartImported"/>
 	  <field name="showDetailsInInvoice"/>
 	</panel>
-	<panel title="CFONB">
-<!-- 	  <field name="cfonbConfig" showTitle="false" colSpan="4" widget="NestedEditor" form-view="cfonb-config-form" summary-view="true"/> -->
-	  <field name="cfonbConfig" showTitle="false" colSpan="4" />
-	</panel>
-	<panel title="Receivables recovery" >
-		<field name="mailTransitTime" colSpan="12"/>
-		<field name="reminderConfigLineList" showTitle="false" colSpan="12">
-		<!-- TODO:Check weather editor works or not -->
-		<editor x-layout="table">
-			<field name="partnerCategory"/>
-		    <field name="reminderMethod"/>
-		</editor>
-		</field>
-	</panel>
-	<panel title="Paybox">
-<!-- 	  <field name="payboxConfig" showTitle="false"  widget="NestedEditor" form-view="paybox-config-form" summary-view="true"/> -->
-	  <field name="payboxConfig" showTitle="false" />
-	</panel>
+	
 	<panel-tabs>
 		<panel title="Accounting">
 			<panel title="Journals" colSpan="12">
@@ -82,6 +65,24 @@
 			 <panel title="Tax payment" colSpan="12">
 			    <field name="payingBackTax"/>
 			</panel>
+		</panel>
+		<panel title="CFONB">
+<!-- 	  <field name="cfonbConfig" showTitle="false" colSpan="4" widget="NestedEditor" form-view="cfonb-config-form" summary-view="true"/> -->
+		  <field name="cfonbConfig" showTitle="false" colSpan="4" />
+		</panel>
+		<panel title="Receivables recovery" >
+			<field name="mailTransitTime" colSpan="12"/>
+			<field name="reminderConfigLineList" showTitle="false" colSpan="12">
+			<!-- TODO:Check weather editor works or not -->
+			<editor x-layout="table">
+				<field name="partnerCategory"/>
+			    <field name="reminderMethod"/>
+			</editor>
+			</field>
+		</panel>
+		<panel title="Paybox">
+	<!-- 	  <field name="payboxConfig" showTitle="false"  widget="NestedEditor" form-view="paybox-config-form" summary-view="true"/> -->
+		  <field name="payboxConfig" showTitle="false" />
 		</panel>
 	
 		<panel title="Reimbursement">

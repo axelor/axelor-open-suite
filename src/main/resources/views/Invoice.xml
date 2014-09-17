@@ -75,7 +75,7 @@
 
 	      <!--<separator title="Debt Recovery" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" colSpan="6"/>-->
 	      <panel colSpan="12"  title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
-	        <field name="irrecoverablestatusSelect"/>
+	        <field name="irrecoverableStatusSelect"/>
 	        <field name="managementObject"/>
 	        <button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:passInIrrecoverable"/>
 	        <button name="notPassInIrrecoverable" title="Do not shit into irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"/>

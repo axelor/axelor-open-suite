@@ -91,7 +91,7 @@ public class AccountCustomerService {
 												"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
 												"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
 												"WHERE ml.partner = ?1 AND move.company = ?2 AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
-												"AND move.statusSelect = ?3 AND ml.amount_remaining > 0 ")
+												"AND move.status_select = ?3 AND ml.amount_remaining > 0 ")
 												.setParameter(1, partner)
 												.setParameter(2, company)
 												.setParameter(3, moveRepo.STATUS_VALIDATED);
@@ -142,7 +142,7 @@ public class AccountCustomerService {
 				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
 				"WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_reminder_ok IN ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
-				"AND move.statusSelect = ?4 AND ml.amount_remaining > 0 ")
+				"AND move.status_select = ?4 AND ml.amount_remaining > 0 ")
 				.setParameter(1, today.toDate(), TemporalType.DATE)
 				.setParameter(2, partner)
 				.setParameter(3, company)
@@ -195,7 +195,7 @@ public class AccountCustomerService {
 				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
 				"WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_reminder_ok in ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
-				"AND move.statusSelect = ?5 AND ml.amount_remaining > 0 ")
+				"AND move.status_select = ?5 AND ml.amount_remaining > 0 ")
 				.setParameter(1, mailTransitTime)
 				.setParameter(2, today.toDate(), TemporalType.DATE)
 				.setParameter(3, partner)
