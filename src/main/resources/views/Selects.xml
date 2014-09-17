@@ -111,8 +111,8 @@
 	<selection name="crm.event.task.status.select">
 		<option value="1">Not started</option>
 		<option value="2">On going</option>
-		<option value="3">Finished</option>
-		<option value="4">Pending</option>
+		<option value="3">Pending</option>
+		<option value="4">Finished</option>
 		<option value="5">Reported</option>
 	</selection>
 	

@@ -68,7 +68,7 @@
 			<field name="callStatusSelect" colSpan="6" showIf="typeSelect == 1"/>
 			<field name="statusSelect" showIf="statusSelect != 3" colSpan="6"/>
 			<field name="meetingType" colSpan="6" hideIf="statusSelect != 2" widget="SuggestBox"/>
-			<field name="taskStatusSelect" showIf="typeSelect == 3"/>
+			<field name="taskStatusSelect" showIf="typeSelect == 4"/>
 			<field name="prioritySelect" showIf="typeSelect == 3"/>
 			
 		</panel-side>
@@ -263,21 +263,21 @@
 	    <field name="taskStatusSelect"/>    
 	    <field name="prioritySelect"/>
 	    <field name="user"/>
-	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-task-start-click" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 3"/>
+	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-task-start-click" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 4"/>
 	    <button name="pause" icon="fa-pause" help="Pause" onClick="action-group-crm-task-pause-click" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3"/>
-	    <button name="accept" icon="fa-power-off" help="Finish" onClick="action-group-crm-task-accept-click" readonlyIf="taskStatusSelect == 3"/>
+	    <button name="accept" icon="fa-power-off" help="Finish" onClick="action-group-crm-task-accept-click" readonlyIf="taskStatusSelect == 4"/>
 	</grid>
     
 	
 	<form name="crm-task-form" title="Task" model="com.axelor.apps.crm.db.Event" 
 		onNew="action-event-new-record">
 		<toolbar>
-			<button name="start" help="Start" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 3" icon="fa-play" onClick="action-set-task-status-select-2,save"/>
-			<button name="pause" help="Pause" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3" icon="fa-pause" onClick="action-set-task-status-select-4,save"/>
-			<button name="accept" help="Finish" readonlyIf="taskStatusSelect == 3" icon="fa-power-off" onClick="action-set-task-status-select-3,save"/>
+			<button name="start" help="Start" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 4" icon="fa-play" onClick="action-set-task-status-select-2,save"/>
+			<button name="pause" help="Pause" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3" icon="fa-pause" onClick="action-set-task-status-select-3,save"/>
+			<button name="accept" help="Finish" readonlyIf="taskStatusSelect == 4" icon="fa-power-off" onClick="action-set-task-status-select-4,save"/>
 		</toolbar>
 		
-		<panel readonlyIf="taskStatusSelect == 3">
+		<panel readonlyIf="taskStatusSelect == 4">
 			<field name="subject"/>
 			<field name="limitDateT" colSpan="3"/>
 			<field name="user"/>
@@ -297,10 +297,10 @@
 		
 		<panel-side title="Attributes">
 			<field name="taskStatusSelect"/>
-			<field name="prioritySelect" readonlyIf="taskStatusSelect == 3"/>	
+			<field name="prioritySelect" readonlyIf="taskStatusSelect == 4"/>	
 		</panel-side>
 		
-		<panel-side title="Linked to" readonlyIf="taskStatusSelect == 3" >
+		<panel-side title="Linked to" readonlyIf="taskStatusSelect == 4" >
 			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead"/>
@@ -314,12 +314,12 @@
     </action-group>
     
     <action-group name="action-group-crm-task-pause-click">
-    	<action name="action-set-task-status-select-4"/>
+    	<action name="action-set-task-status-select-3"/>
     	<action name="action-save-event-task-status-select"/>
     </action-group>
     
     <action-group name="action-group-crm-task-accept-click">
-    	<action name="action-set-task-status-select-3"/>
+    	<action name="action-set-task-status-select-4"/>
     	<action name="action-save-event-task-status-select"/>
     </action-group>
     
@@ -470,7 +470,7 @@
     </action-record>
     
     <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">
-    	<field name="taskStatusSelect" expr="1" if="typeSelect == 3"/>
+    	<field name="taskStatusSelect" expr="1" if="typeSelect == 4"/>
     	<field name="progressSelect" expr="0"/>
     	<field name="prioritySelect" expr="2" />
     </action-record>

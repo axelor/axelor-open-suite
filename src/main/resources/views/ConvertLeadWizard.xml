@@ -18,22 +18,28 @@
     <field name="hasConvertIntoTask" title="Create a task ?" widget="Boolean"/>
  </panel>
   <panel showTitle="false" showIf="hasConvertIntoContact">
-    <field name="contactPartner" title="Contact" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="contact-lead-converted-form" summary-view="true" target="com.axelor.apps.base.db.Partner" type="MANY_TO_ONE"/>
+<!--     <field name="contactPartner" title="Contact" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="contact-lead-converted-form" summary-view="true" target="com.axelor.apps.base.db.Partner" type="MANY_TO_ONE"/> -->
+		<field name="contactPartner" title="Contact" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one"/>
   </panel>
   <panel showTitle="false" showIf="hasConvertIntoPartner">
-    <field name="partner" title="Partner" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="partner-lead-converted-form" summary-view="true" target="com.axelor.apps.base.db.Partner" type="MANY_TO_ONE"/>
+<!--     <field name="partner" title="Partner" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="partner-lead-converted-form" summary-view="true" target="com.axelor.apps.base.db.Partner" type="MANY_TO_ONE"/> -->
+   <field name="partner" title="Partner" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one"/>
   </panel>
   <panel showTitle="false" showIf="hasConvertIntoOpportunity" colSpan="4">
-    <field name="opportunity" title="Opportunity" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="opportunity-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Opportunity" type="MANY_TO_ONE"/>
+<!--     <field name="opportunity" title="Opportunity" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="opportunity-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Opportunity" type="MANY_TO_ONE"/> -->
+    	<field name="opportunity" title="Opportunity" form-view="opportunity-lead-converted-form" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one"/>
   </panel>
   <panel showTitle="false" showIf="hasConvertIntoCall">
-    <field name="callEvent" title="Call" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="call-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/>
+<!--     <field name="callEvent" title="Call" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="call-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/> -->
+    	<field name="callEvent" title="Call" form-view="call-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one"/>
   </panel>
   <panel showTitle="false" showIf="hasConvertIntoMeeting">
-    <field name="meetingEvent" title="Meeting" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="meeting-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/>
+<!--     <field name="meetingEvent" title="Meeting" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="meeting-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/> -->
+     <field name="meetingEvent" title="Meeting" showTitle="false" canSelect="false" canNew="true" canRemove="false" form-view="meeting-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one"/>
   </panel>
   <panel showIf="hasConvertIntoTask" colSpan="4">
-    <field name="taskEvent" title="Task" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="crm-task-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/>
+<!--     <field name="taskEvent" title="Task" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="crm-task-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/> -->
+    	<field name="taskEvent" title="Task" canSelect="false" canNew="true" canRemove="false" canView="true" form-view="crm-task-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one"/>
   </panel>
 </form>
 
