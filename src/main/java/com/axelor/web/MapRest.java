@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -42,13 +43,16 @@ public class MapRest {
 
 	@Inject MapService mapService;
 	
+	@Inject
+	private SaleOrderRepository saleOrderRepo;
+	
 	@Path("/geomap/turnover")
 	@GET	
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getGeoMapData() {
 		
 		Map<String, BigDecimal> data = new HashMap<String, BigDecimal>();		
-		List<? extends SaleOrder> orders = SaleOrder.all().filter("self.statusSelect=?", 3).fetch();
+		List<? extends SaleOrder> orders = saleOrderRepo.all().filter("self.statusSelect=?", 3).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();

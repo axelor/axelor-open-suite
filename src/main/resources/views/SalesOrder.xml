@@ -59,13 +59,13 @@
 	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field name="deliveryAddress" canNew="true"/>
 	      <field name="priceList" domain="self.typeSelect = 1 and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
-	      <panel x-span="8">       
-	        <panel name="specificSettings" title="Specific settings" x-span="8">
+	      <panel colSpan="8">       
+	        <panel name="specificSettings" title="Specific settings" colSpan="8">
 	          <field name="isToPrintLineSubTotal"/>
 	          <field name="hasGlobalTask" if-module="axelor-organisation"/>
 	        </panel>
-	        <panel x-span="12">
-	          <field name="statusSelect" widget="NavSelect" showTitle="false" x-span="12"/>
+	        <panel colSpan="12">
+	          <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
 	        </panel>
 	      </panel>      
 	    </panel>
@@ -74,23 +74,23 @@
 	    <panel-related field="saleOrderLineTaxList" showTitle="false"/>
 	    
 	    <panel title="Other informations" showTitle="false">
-	      <panel title="Sales follow-up" x-span="12">
+	      <panel title="Sales follow-up" colSpan="12">
 	        <field name="salemanUser"/>
 	        <field name="team" onSelect="action-sale-order-domain-on-team"/>
 	      </panel>
-	      <panel title="Financial terms" x-span="12">
+	      <panel title="Financial terms" colSpan="12">
 	        <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-supplychain"/>
 	        <field name="paymentCondition" if-module="axelor-supplychain"/>
 	      </panel>
-	      <panel title="Marketing" x-span="12">
+	      <panel title="Marketing" colSpan="12">
 	        <field name="source"/>
 	      </panel>
-	      <panel title="Invoicing" if-module="axelor-supplychain" x-span="12">
+	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
 	        <field name="showDetailsInInvoice"/>
 	        <field name="invoicingMomentSelect" showIf="invoicingTypeSelect == 2"/>
 	      </panel>
-	      <panel title="Description" x-span="12">
-	        <field name="description" showTitle="false" widget="Html" x-lite="true" x-span="12"/>
+	      <panel title="Description" colSpan="12">
+	        <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
 	      </panel>        
 	    </panel>
 	    
@@ -98,11 +98,11 @@
 	    <panel-related field="invoiceSet" title="Invoicing" showIf="statusSelect == 3" showTitle="false" if-module="axelor-supplychain"/>      
 	    
 	    <panel title="Subscription" showIf="invoicingTypeSelect == 6" showTitle="false" if-module="axelor-supplychain">
-	      <panel title="Subscription dates" x-span="12">
+	      <panel title="Subscription dates" colSpan="12">
 	        <field name="subscriptionStartDate" onChange="action-sale-order-record-subscription-start-date"/>
 	        <field name="subscriptionEndDate"/>
 	      </panel>
-	      <panel title="Invoices dates" x-span="12">
+	      <panel title="Invoices dates" colSpan="12">
 	        <field name="invoicedFirstDate" onChange="action-scheduler-instance-record-first-execution-date"/>
 	        <field name="nextInvPeriodStartDate"/>
 <!-- 	        	<field name="scheduler"/> -->	        
@@ -113,24 +113,23 @@
 	  </panel-tabs>
 	  
 	  <panel-side title="Action(s)">      
-	    <button name="compute" title="Compute" hideIf="statusSelect == 3"  onClick="save,action-sale-order-method-compute,save"/>
-	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" onClick="save,action-sale-group-confirm,save"/>
-	    <button name="validate" title="Validate" showIf="statusSelect == 2"  onClick="save,action-sale-group-validate,save"/>
-	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" onClick="save,action-sale-order-record-cancel"/>
-	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
-	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3"  onClick="action-sale-order-view-invoice" if-module="axelor-supplychain"/>
+	    <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
+	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-group-confirm,save"/>
+	    <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-validate,save"/>
+	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
+	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="12" onClick="action-sale-order-view-invoice" if-module="axelor-supplychain"/>
 	  </panel-side>    
 	  <panel-side title="Info." showIf="id">
-	    <field name="creationDate" readonly="true" x-span="6"/>
-	    <field name="validatedByUser" readonly="true" x-span="6" showIf="statusSelect == 3"/>
-	    <field name="validationDate" readonly="true" x-span="6" showIf="statusSelect == 3"/>
-	    <field name="orderDate" x-span="6" showIf="statusSelect == 3"/>
-	    <field name="orderNumber" x-span="6" showIf="statusSelect == 3"/>
-	    <field name="shipmentDate" x-span="6" showIf="statusSelect == 3" if-module="axelor-supplychain"/>
+	    <field name="creationDate" readonly="true" colSpan="6"/>
+	    <field name="validatedByUser" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
+	    <field name="validationDate" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
+	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
+	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
+	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain"/>
 	  </panel-side>
-	  <panel-side readonly="true"  x-span="4" showIf="id">  
-	  	<panel>
-	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" x-span="12">
+	  <panel-side readonly="true"  colSpan="4" showIf="id">  
+	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
 	          <viewer>
 	            &lt;dl class="dl-horizontal"&gt;
 	              &lt;dt&gt;Total W.T.&lt;/dt&gt;
@@ -144,8 +143,6 @@
 	            &lt;/dl&gt;
 	          </viewer>
 	        </field>
-	  	</panel>   
-        
       </panel-side>
 	  
 	</form>
@@ -182,16 +179,16 @@
 	      <field name="mainInvoicingAddress"/>
 	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field name="deliveryAddress"/>      
-	      <panel x-span="8">
+	      <panel colSpan="8">
 	        <field name="validationDate" readonly="true"/>
 	        <field name="creationDate" readonly="true"/>
 	        <field name="orderDate" readonly="true"/>
 	        <field name="shipmentDate" readonly="true" if-module="axelor-supplychain"/>  
-	        <field name="salemanUser" x-span="10"/>
-	        <field name="statusSelect" widget="NavSelect" x-span="12"/>
+	        <field name="salemanUser" colSpan="10"/>
+	        <field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	      </panel>      
-	      <panel readonly="true"  css="order-subtotal" x-span="4">     
-	        <field name="inTaxTotal" showTitle="false" x-span="12">
+	      <panel readonly="true"  css="order-subtotal" colSpan="4">     
+	        <field name="inTaxTotal" showTitle="false" colSpan="12">
 	          <viewer>
 	            &lt;dl class="dl-horizontal"&gt;
 	              &lt;dt&gt;Total W.T.&lt;/dt&gt;
@@ -330,7 +327,7 @@
  		<field name="paymentMode" expr="eval: clientPartner?.paymentMode"/>
  		<field name="mainInvoicingAddress" expr="eval: clientPartner?.mainInvoicingAddress"/>
 		<field name="deliveryAddress" expr="eval: clientPartner?.deliveryAddress"/>
-		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 1 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',clientPartner, __date__).fetchOne()"/>
+		<field name="priceList" expr="eval: __repo__.of(PriceList).all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 1 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',clientPartner, __date__).fetchOne()"/>
     </action-record>
     
     <action-method name="action-sale-order-method-compute">
@@ -380,19 +377,19 @@
 	
 	<action-view name="action-sale-order-view-plan-meeting" title="Plan a meeting" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="meeting-form"/>
-    	<context name="_saleOrder" expr="eval:_ids != null ? com.axelor.apps.sale.db.SaleOrder.find(_ids.get(0)) : __this__"/>
+    	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
     	<context name="_typeSelect" expr="2"/>
     </action-view>
     
     <action-view name="action-sale-order-view-plan-call" title="Plan a call" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="call-form"/>
-    	<context name="_saleOrder" expr="eval:_ids != null ? com.axelor.apps.sale.db.SaleOrder.find(_ids.get(0)) : __this__"/>
+    	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
     	<context name="_typeSelect" expr="1"/>
     </action-view>
     
     <action-view name="action-sale-order-view-plan-task" title="Plan a task" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="crm-task-form"/>
-    	<context name="_saleOrder" expr="eval:_ids != null ? com.axelor.apps.sale.db.SaleOrder.find(_ids.get(0)) : __this__"/>
+    	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
     	<context name="_typeSelect" expr="3"/>
     </action-view>
 	

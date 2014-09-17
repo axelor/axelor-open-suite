@@ -17,18 +17,14 @@
  */
 package com.axelor.apps.sale.service.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleConfig;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public class SaleConfigService {
+public class SaleConfigService extends SaleConfigRepository {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(SaleConfigService.class);
-
 	
 	public SaleConfig getSaleConfig(Company company) throws AxelorException  {
 		

@@ -17,16 +17,15 @@
  */
 package com.axelor.apps.sale.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.service.AddressServiceImpl;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.google.inject.Inject;
 
 
 public class AddressServiceSaleImpl extends AddressServiceImpl  {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(AddressServiceSaleImpl.class);
+	@Inject
+	private SaleOrderRepository saleOrderRepo;
 	
 	@Override
 	public boolean checkAddressUsed(Long addressId){
@@ -34,7 +33,7 @@ public class AddressServiceSaleImpl extends AddressServiceImpl  {
 		super.checkAddressUsed(addressId);
 		
 		if(addressId != null){
-			if(SaleOrder.all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+			if(saleOrderRepo.all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
 		}
 		return false;

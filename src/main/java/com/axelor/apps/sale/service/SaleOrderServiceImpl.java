@@ -31,18 +31,19 @@ import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.auth.db.User;
-import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class SaleOrderServiceImpl implements SaleOrderService {
+public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOrderService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceImpl.class); 
 
@@ -50,13 +51,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	private SaleOrderLineService saleOrderLineService;
 
 	@Inject
-	private CurrencyService currencyService;
-
-	@Inject
 	private SaleOrderLineTaxService saleOrderLineTaxService;
 	
 	@Inject
 	private SequenceService sequenceService;
+	
+	@Inject
+	private PartnerService partnerService;
 
 
 	public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException  {
@@ -83,7 +84,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 		this._computeSaleOrder(saleOrder);
 
-		saleOrder.save();
+		save(saleOrder);
 	}
 
 
@@ -153,10 +154,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateCustomer(SaleOrder saleOrder)  {
 		
-		Partner clientPartner = Partner.find(saleOrder.getClientPartner().getId());
+		Partner clientPartner = partnerService.find(saleOrder.getClientPartner().getId());
 		clientPartner.setCustomerTypeSelect(IPartner.CUSTOMER_TYPE_SELECT_YES);
 		
-		return clientPartner.save();
+		return partnerService.save(clientPartner);
 	}
 	
 	
