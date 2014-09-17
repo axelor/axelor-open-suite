@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
@@ -42,10 +43,12 @@ import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderSubLine;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -53,15 +56,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderInvoiceServiceImpl.class); 
 
-	@Inject
-	private SaleOrderLineService saleOrderLineService;
-	
-	@Inject
-	private CurrencyService currencyService;
-	
-	@Inject
-	private SaleOrderLineTaxService saleOrderLineVatService;
-	
 	@Inject
 	private SchedulerService schedulerService;
 	
@@ -115,7 +109,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		
 		this.assignInvoice(saleOrder, invoice);
 		
-		this.fillSaleOrder(saleOrder, invoice).save();
+		Beans.get(SaleOrderRepository.class).save(fillSaleOrder(saleOrder, invoice));
 		
 		return invoice;
 	}
@@ -210,7 +204,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		BigDecimal total = BigDecimal.ZERO;
 		
 		for(Invoice invoice : saleOrder.getInvoiceSet())  {
-			if(invoice.getStatusSelect() == Invoice.STATUS_VENTILATED)  {
+			if(invoice.getStatusSelect() == InvoiceService.STATUS_VENTILATED)  {
 				total = total.add(invoice.getInTaxTotal());
 			}
 		}
@@ -267,7 +261,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			throw new AxelorException(String.format("Veuillez selectionner une devise pour le devis %s ", saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(Invoice.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(),saleOrder.getPaymentCondition(), 
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceService.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(),saleOrder.getPaymentCondition(), 
 				saleOrder.getPaymentMode(), saleOrder.getMainInvoicingAddress(), saleOrder.getClientPartner(), saleOrder.getContactPartner(), 
 				saleOrder.getCurrency(), saleOrder.getPriceList(), saleOrder.getSaleOrderSeq(), saleOrder.getExternalReference()) {
 			

@@ -24,10 +24,11 @@ import javax.inject.Provider;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.sale.db.ISaleBatch;
 import com.axelor.apps.sale.db.SaleBatch;
+import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public class SaleBatchService {
+public class SaleBatchService extends SaleBatchRepository {
 
 	@Inject
 	private Provider<BatchInvoicing> invoicingProvider;
@@ -45,7 +46,7 @@ public class SaleBatchService {
 	 */
 	public Batch run(String batchCode) throws AxelorException {
 				
-		SaleBatch saleBatch = SaleBatch.findByCode(batchCode);
+		SaleBatch saleBatch = findByCode(batchCode);
 		
 		if (saleBatch != null){
 			switch (saleBatch.getActionSelect()) {

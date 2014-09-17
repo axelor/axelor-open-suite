@@ -19,19 +19,14 @@ package com.axelor.apps.supplychain.service;
 
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderLineService;
-import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.ILocation;
 import com.axelor.apps.stock.db.StockConfig;
@@ -41,14 +36,13 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
-
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceStockImpl.class); 
 
 	@Inject
 	private SaleOrderLineService saleOrderLineService;
@@ -62,11 +56,13 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 	@Inject
 	private StockConfigService stockConfigService;
 
+	@Inject
+	private LocationRepository locationRepo;
 
 
 	public Location getLocation(Company company)  {
 		
-		return Location.filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
+		return locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
 				company, true, ILocation.INTERNAL).fetchOne();
 	}
 	
@@ -101,7 +97,7 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 	
 	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException  {
 		
-		Location toLocation = Location.filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.EXTERNAL).fetchOne();
+		Location toLocation = locationRepo.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.EXTERNAL).fetchOne();
 		
 		if(toLocation == null)  {
 			

@@ -30,6 +30,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -42,6 +43,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 	
 	@Inject
 	private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+	
+	@Inject
+	private StockMoveRepository stockMoveRepo;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder) throws AxelorException  {
@@ -57,7 +61,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 			this.extendInternalReference(stockMove, invoice);
 			
 			stockMove.setInvoice(invoice);
-			stockMove.save();
+			stockMoveRepo.save(stockMove);
 		}
 		return invoice;
 		
@@ -77,7 +81,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 			this.extendInternalReference(stockMove, invoice);
 			
 			stockMove.setInvoice(invoice);
-			stockMove.save();
+			stockMoveRepo.save(stockMove);
 		}
 		return invoice;	
 	}

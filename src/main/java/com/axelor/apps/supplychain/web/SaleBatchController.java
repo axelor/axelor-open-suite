@@ -43,7 +43,7 @@ public class SaleBatchController {
 		
 		SaleBatch saleBatch = request.getContext().asType(SaleBatch.class);
 		
-		Batch batch = saleBatchService.invoicing(SaleBatch.find(saleBatch.getId()));
+		Batch batch = saleBatchService.invoicing(saleBatchService.find(saleBatch.getId()));
 		
 		if(batch != null)
 			response.setFlash(batch.getComment());

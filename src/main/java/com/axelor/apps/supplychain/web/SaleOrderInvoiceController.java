@@ -19,8 +19,10 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -35,7 +37,7 @@ public class SaleOrderInvoiceController {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		
 		try {
-			saleOrder = SaleOrder.find(saleOrder.getId());
+			saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 			Invoice invoice = saleOrdeInvoicerService.generateInvoice(saleOrder);
 			
 			if(invoice != null)  {

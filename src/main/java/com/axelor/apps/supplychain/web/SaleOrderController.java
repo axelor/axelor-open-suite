@@ -17,11 +17,8 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
@@ -33,8 +30,6 @@ import com.google.inject.Provider;
 
 public class SaleOrderController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderController.class);
-	
 	@Inject
 	private Provider<SaleOrderServiceStockImpl> saleOrderStockProvider;
 	
@@ -42,8 +37,7 @@ public class SaleOrderController {
 	private Provider<SaleOrderPurchaseService> saleOrderPurchaseProvider;
 	
 	@Inject
-	private Provider<SequenceService> sequenceProvider;
-	
+	private SaleOrderRepository saleOrderRepo;
 	
 	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
 		
@@ -51,7 +45,7 @@ public class SaleOrderController {
 		
 		if(saleOrder.getId() != null) {
 			
-			saleOrderStockProvider.get().createStocksMovesFromSaleOrder(SaleOrder.find(saleOrder.getId()));
+			saleOrderStockProvider.get().createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 		}
 	}
 	
@@ -76,7 +70,7 @@ public class SaleOrderController {
 		
 		if(saleOrder.getId() != null) {
 			
-			saleOrderPurchaseProvider.get().createPurchaseOrders(SaleOrder.find(saleOrder.getId()));
+			saleOrderPurchaseProvider.get().createPurchaseOrders(saleOrderRepo.find(saleOrder.getId()));
 		}
 	}
 	

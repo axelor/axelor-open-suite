@@ -20,10 +20,11 @@ package com.axelor.apps.supplychain.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.inject.Beans;
 
 
 public class AddressServiceSupplychainImpl extends AddressServiceImpl  {
@@ -34,11 +35,11 @@ public class AddressServiceSupplychainImpl extends AddressServiceImpl  {
 	public boolean checkAddressUsed(Long addressId){
 		LOG.debug("Address Id to be checked = {}",addressId);
 		if(addressId != null){
-			if(Partner.all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+			if(Beans.get(PartnerRepository.class).all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
-			if(SaleOrder.all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+			if(Beans.get(SaleOrderRepository.class).all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
-			if(StockMove.all().filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1",addressId).fetchOne() != null)
+			if(Beans.get(StockMoveRepository.class).all().filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
 		}
 		return false;
