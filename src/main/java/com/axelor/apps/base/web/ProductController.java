@@ -26,16 +26,19 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.db.User;
+import com.axelor.db.JpaRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class ProductController {
 	
@@ -44,15 +47,14 @@ public class ProductController {
 	@Inject UserService userService;
 	
 	@Inject
-	private ProductService productService;
-	
+	private Provider<ProductService> productService;
 	
 	public void generateProductVariants(ActionRequest request, ActionResponse response) throws AxelorException {
 		Product product = request.getContext().asType(Product.class);
-		product = Product.find(product.getId());
+		product = ((JpaRepository<Product>) productService.get()).find(product.getId());
 		
 		if(product.getProductVariantConfig() != null)  {
-			productService.generateProductVariants(product);
+			productService.get().generateProductVariants(product);
 			
 			response.setFlash("Variants generated");
 			response.setReload(true);
@@ -61,9 +63,9 @@ public class ProductController {
 	
 	public void updateProductsPrices(ActionRequest request, ActionResponse response) throws AxelorException {
 		Product product = request.getContext().asType(Product.class);
-		product = Product.find(product.getId());
+		product = ((JpaRepository<Product>) productService.get()).find(product.getId());
 		
-		productService.updateProductPrice(product);
+		productService.get().updateProductPrice(product);
 		
 		response.setFlash("Prices updated");
 		response.setReload(true);

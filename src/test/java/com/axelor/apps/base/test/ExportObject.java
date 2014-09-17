@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -96,7 +97,7 @@ public class ExportObject {
 				
 			}
 			updateMenuGraph(xmlHandler,null);
-			menuList.sort(new MenuComparator());
+			Collections.sort(menuList,new MenuComparator());
 			updateObjectMap(modules,parser,xmlHandler);			
 			writeCsv();
 			
@@ -134,7 +135,7 @@ public class ExportObject {
 			}
 		}
 		
-		children.sort(new MenuComparator());
+		Collections.sort(children,new MenuComparator());
 
 		return children;
 	}

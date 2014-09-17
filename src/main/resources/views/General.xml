@@ -33,48 +33,48 @@
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>
 				<field name="isInvoiceMoveConsolidated"/>
-				<panel title="Rejects reasons and codes list" x-span="12">
+				<panel title="Rejects reasons and codes list" colSpan="12">
 					<field name="transferAndDirectDebitInterbankCode"/>
 					<field name="chequeInterbankCode"/>
 				</panel>
-				<panel title="Payer quality" x-span="12">
-					<button name="payerQualityProcess" title="Compute payers quality"   onClick="action-general-method-payer-quality-process"/>
-					<panel-related field="payerQualityConfigLineList" x-span="12"/>
+				<panel title="Payer quality" colSpan="12">
+					<button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
+					<panel-related field="payerQualityConfigLineList" colSpan="12"/>
 				</panel>
-				<panel title="Currency conversion" x-span="12">
+				<panel title="Currency conversion" colSpan="12">
 					<button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate"  onClick="save,action-general-method-update-currency-conversion"/>
-					<panel-related field="currencyConversionLineList" x-span="12"/>
+					<panel-related field="currencyConversionLineList" colSpan="12"/>
 				</panel>
 		    </panel>
 		    <panel title="Interfaces">
-				<panel name="map" title="Mapping"  x-span="12">
+				<panel name="map" title="Mapping"  colSpan="12">
 					<field name="mapApiSelect"/>
 					<button name="checkMapApi" title="Test mapping service connection"   onClick="com.axelor.apps.base.web.AddressController:checkMapApi"/>
 				</panel>
-				<panel name="qas" title="Addresses validation"  x-span="12">
+				<panel name="qas" title="Addresses validation"  colSpan="12">
 					<field name="qasWsdlUrl"/>
 					<button name="checkQasWsdl" title="Test connection to QAS webservice"   onClick="com.axelor.apps.base.web.AddressController:check"/>
 					<field name="hasQasValidation" />
 				</panel>
-				<panel name="ws" title="Webservices"  x-span="12">
-					<field name="currencyWsURL" x-span="12"/>
+				<panel name="ws" title="Webservices"  colSpan="12">
+					<field name="currencyWsURL" colSpan="12"/>
 				</panel>
 		    </panel>
 		    <panel title="Exceptions">
-				<field name="exceptionDefaultMsg" x-span="12"/>
-				<field name="exceptionInvoiceMsg" x-span="12"/>
-				<field name="exceptionAccountingMsg" x-span="12"/>
-				<field name="exceptionReminderMsg" x-span="12"/>
-				<field name="exceptionMailMsg" x-span="12"/>
-				<field name="exceptionSupplychainMsg" x-span="12"/>
+				<field name="exceptionDefaultMsg" colSpan="12"/>
+				<field name="exceptionInvoiceMsg" colSpan="12"/>
+				<field name="exceptionAccountingMsg" colSpan="12"/>
+				<field name="exceptionReminderMsg" colSpan="12"/>
+				<field name="exceptionMailMsg" colSpan="12"/>
+				<field name="exceptionSupplychainMsg" colSpan="12"/>
 		    </panel>
 		</panel-tabs>
 	</form>
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-general-check-duplicate-set-fields-set">
 		<panel>
-			<field name="fieldsSet" title="Fields" widget="MANY_TO_MANY" x-target="com.axelor.meta.db.MetaField" x-span="12" readonly="true" help="Key fields to check duplicate records" />
-			<button name="showDuplicate" onClick="action-general-method-show-duplicate" title="Show"  />
+			<field name="fieldsSet" title="Fields" widget="MANY_TO_MANY" target="com.axelor.meta.db.MetaField" colSpan="12" readonly="true" help="Key fields to check duplicate records" />
+			<button name="showDuplicate" onClick="action-general-method-show-duplicate" title="Show" colSpan="1"/>
 		</panel>
 	</form>
 	

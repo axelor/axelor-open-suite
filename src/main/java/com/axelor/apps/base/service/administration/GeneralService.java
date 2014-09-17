@@ -28,11 +28,13 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 
 @Singleton
-public class GeneralService {
+public class GeneralService extends GeneralRepository{
 
 	protected static final String EXCEPTION = "Warning !";
 	
@@ -43,9 +45,9 @@ public class GeneralService {
 	@Inject
 	protected GeneralService() {
 	
-		General general = General.all().fetchOne();
+		General general = all().fetchOne();
 		if(general != null)  {
-			administrationId = General.all().fetchOne().getId();
+			administrationId = all().fetchOne().getId();
 		}
 		else  {
 			throw new RuntimeException("Veuillez configurer l'administration générale.");
@@ -68,7 +70,7 @@ public class GeneralService {
 	 * @return
 	 */
 	public static General getGeneral() {
-		return General.find(get().administrationId);
+		return Beans.get(GeneralRepository.class).find(get().administrationId);
 	}
 
 // Date du jour

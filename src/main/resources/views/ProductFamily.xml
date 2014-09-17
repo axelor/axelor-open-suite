@@ -16,7 +16,7 @@
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <panel-related field="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form"
-	        domain="self.typeSelect = 1" x-span="12"/>
+	        domain="self.typeSelect = 1" colSpan="12"/>
         </panel>
     </form>
     

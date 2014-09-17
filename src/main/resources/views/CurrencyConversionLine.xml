@@ -34,11 +34,11 @@
     <form onNew="action-group-base-checkcurrencyrate-wizard-onnew" 
     name="wizard-check-currency-rate-form" title="Check currency exhange rates" model="com.axelor.apps.base.db.Wizard"  >
       <panel>
-    	<field name="startCurrency" title="Source Currency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code"/>
-    	<field name="endCurrency" title="Destination Currency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code"/>
-    	<field name="general" title="General" hidden="true" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.General" x-targetName="today"/>
+    	<field name="startCurrency" title="Source Currency" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.Currency" target-name="code"/>
+    	<field name="endCurrency" title="Destination Currency" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.Currency" target-name="code"/>
+    	<field name="general" title="General" hidden="true" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.General" target-name="today"/>
   	  </panel>    
-	  <panel title="System active rate" x-span="12">
+	  <panel title="System active rate" colSpan="12">
 	    <field name="date" title="Rate Date" readonly="true" widget="DATE"/>
 	    <field name="exchangeRate" title="Exchange rate" readonly="true" widget="DECIMAL"/>
 	  </panel>
@@ -83,13 +83,13 @@
     </action-record>
     
     <action-record name="action-currency-conversion-line-set-exchange-rate" model="com.axelor.apps.base.db.Wizard">
-    	<field name="exchangeRate" if="startCurrency != null &amp;&amp; endCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(Currency.find(startCurrency.id),Currency.find(endCurrency.id), new LocalDate(date))" />
+    	<field name="exchangeRate" if="startCurrency != null &amp;&amp; endCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(__repo__.of(Currency).find(startCurrency.id),__repo__.of(Currency).find(endCurrency.id), new LocalDate(date))" />
     </action-record>
     
      <action-record name="action-currency-conversion-line-wizard-set-date" model="com.axelor.apps.base.db.Wizard">
     	<field name="date" expr="eval:_date" />
-    	<field name="startCurrency" expr="eval:Currency.find(_startCurrency.id)" if="_startCurrency != null"/>
-    	<field name="endCurrency" expr="eval:Currency.find(_endCurrency.id)" if="_endCurrency != null"/>
+    	<field name="startCurrency" expr="eval:__repo__.of(Currency).find(_startCurrency.id)" if="_startCurrency != null"/>
+    	<field name="endCurrency" expr="eval:__repo__.of(Currency).find(_endCurrency.id)" if="_endCurrency != null"/>
     	<field name="general" expr="eval:_general"  />
     </action-record>
     

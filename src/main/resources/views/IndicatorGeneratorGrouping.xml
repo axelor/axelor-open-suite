@@ -12,11 +12,11 @@
 	<form name="indicator-generator-grouping-form" title="Indicators groups" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping">
 		<panel>
 			<field name="code" x-bind="{{code|uppercase}}"/>
-			<field name="name" x-span="12"/>
-			<panel-related field="indicatorGeneratorSet" x-span="12" />
+			<field name="name" colSpan="12"/>
+			<panel-related field="indicatorGeneratorSet" colSpan="12" />
 			<button name="run" title="Execute" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:run" />
-			<field name="result" x-span="12"/>
-			<field name="log" x-span="12" />
+			<field name="result" colSpan="12"/>
+			<field name="log" colSpan="12" />
 			<field name="path"/>
 			<button name="export" title="Export indicators"  onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:export" />
 		</panel>

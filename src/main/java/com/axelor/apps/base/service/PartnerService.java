@@ -24,10 +24,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.google.common.base.Strings;
 
 
-public class PartnerService {
+public class PartnerService extends PartnerRepository{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerService.class);
 	

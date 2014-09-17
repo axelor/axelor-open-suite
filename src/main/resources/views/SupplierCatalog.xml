@@ -13,7 +13,7 @@
     </grid>
     
     <form name="supplier-catalog-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog">
-    	<panel x-span="12">
+    	<panel colSpan="12">
 			<field name="supplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
 			<field name="updateDate"/>
         	<field name="productSupplierName"/>
@@ -21,8 +21,8 @@
         	<field name="minQty"/>
         	<field name="price"/>
        	</panel>
-		<panel title="Description" x-span="12">
-			<field name="description" showTitle="false" x-span="12"/>
+		<panel title="Description" colSpan="12">
+			<field name="description" showTitle="false" colSpan="12"/>
 		</panel>
     </form>
         

@@ -24,6 +24,7 @@ import java.util.Set;
 
 import com.axelor.apps.base.db.IQuerie;
 import com.axelor.apps.base.db.Querie;
+import com.axelor.apps.base.db.repo.QuerieRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -33,7 +34,7 @@ import com.axelor.meta.db.MetaModel;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class QuerieService {
+public class QuerieService extends QuerieRepository{
 	
 	public List<Long> getQuerieResult(Set<Querie> querieSet) throws AxelorException {
 		Set<Long> idList = Sets.newHashSet();

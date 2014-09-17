@@ -31,16 +31,16 @@
 		    <field name="managerTypeSelect"/>
 	  	</panel>
 	  	<panel>
-		    <field name="activeOk" x-span="2"/>
-		    <field name="lockingOk" x-span="2"/>
-		    <field name="externalOk" onChange="action-alarm-engine-attrs-external" x-span="2"/>
+		    <field name="activeOk" colSpan="2"/>
+		    <field name="lockingOk" colSpan="2"/>
+		    <field name="externalOk" onChange="action-alarm-engine-attrs-external" colSpan="2"/>
 	    </panel>
 	    <panel-tabs>
 		    <panel name="queryPage" title="Query">
-		      <field name="query" showTitle="false" x-span="12" widget="CodeEditor" x-syntax="sql"/>
+		      <field name="query" showTitle="false" colSpan="12" widget="CodeEditor" x-syntax="sql"/>
 		    </panel>
 		    <panel title="Description">
-		      <field name="description" showTitle="false" x-span="12"/>
+		      <field name="description" showTitle="false" colSpan="12"/>
 		    </panel>
 	  </panel-tabs>    
 	</form>

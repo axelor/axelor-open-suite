@@ -22,11 +22,10 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
@@ -34,9 +33,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class CurrencyService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
+public class CurrencyService extends CurrencyRepository{
 	
 	private LocalDate today;
 

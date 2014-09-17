@@ -30,27 +30,16 @@ import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.db.Template;
-import com.axelor.apps.message.service.MailAccountService;
-import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.tool.template.TemplateMaker;
-import com.google.inject.Inject;
 
 public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TemplateMessageServiceBaseImpl.class); 
 
-	@Inject
-	private MessageService messageService;
-	
-	@Inject
-	private MailAccountService mailAccountService;
-	
-	
-	
 	@Override
 	protected String getFilePath(Template template)  throws AxelorException  {
 

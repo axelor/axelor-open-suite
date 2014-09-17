@@ -23,14 +23,15 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
+import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 
-public class UnitConversionService {
+public class UnitConversionService extends UnitConversionRepository{
 	
-
 	/**
 	 * Obtenir le coefficient entre deux unités dans une liste de conversion. Si l'unité de départ et l'unité
 	 * d'arrivée ne se trouve pas dans la liste alors on inverse l'unité de départ avec l'unité d'arrivée.
@@ -123,7 +124,7 @@ public class UnitConversionService {
 		if (startUnit.equals(endUnit))
 			return value; 
 		else { 		
-			BigDecimal coefficient = this.getCoefficient(UnitConversion.all().fetch(), startUnit, endUnit);		
+			BigDecimal coefficient = this.getCoefficient(all().fetch(), startUnit, endUnit);		
 			
 			return value.multiply(coefficient).setScale(6, RoundingMode.HALF_EVEN);		
 		}	

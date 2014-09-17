@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductFamily;
@@ -35,7 +36,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
-public class AccountManagementServiceImpl  implements  AccountManagementService{
+public class AccountManagementServiceImpl extends AccountManagementRepository implements  AccountManagementService{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AccountManagementServiceImpl.class);
 

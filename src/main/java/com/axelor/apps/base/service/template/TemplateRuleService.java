@@ -25,6 +25,7 @@ import java.util.Map;
 import com.axelor.apps.base.db.Template;
 import com.axelor.apps.base.db.TemplateRule;
 import com.axelor.apps.base.db.TemplateRuleLine;
+import com.axelor.apps.base.db.repo.TemplateRuleRepository;
 import com.axelor.db.Model;
 import com.axelor.meta.ActionHandler;
 import com.axelor.meta.MetaStore;
@@ -35,12 +36,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.Resource;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
-public class TemplateRuleService {
-	
-	@Inject
-	private Injector injector;
+public class TemplateRuleService extends TemplateRuleRepository{
 	
 	@Inject
 	private TemplateService ts;

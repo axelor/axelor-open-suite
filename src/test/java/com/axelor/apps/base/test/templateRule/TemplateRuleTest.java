@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Template;
 import com.axelor.apps.base.db.TemplateRule;
 import com.axelor.apps.base.db.TemplateRuleLine;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.template.TemplateRuleService;
 import com.axelor.apps.base.test.TestModule;
 import com.axelor.db.Model;
@@ -43,6 +44,9 @@ public class TemplateRuleTest {
 	private TemplateRule tr;
 	private Model bean;
 	
+	@Inject
+	private PartnerRepository partnerRepo;
+	
 	@Before
 	public void before() {
 		tr = new TemplateRule();
@@ -58,7 +62,7 @@ public class TemplateRuleTest {
 		line2.setTemplate(new Template("Template 2"));
 		tr.addTemplateRuleLineListItem(line2);
 		
-		bean = Partner.find(Long.valueOf("1"));
+		bean = partnerRepo.find(Long.valueOf("1"));
 	}
 	
 	@Test

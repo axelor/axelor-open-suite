@@ -26,11 +26,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public abstract class AbstractBatch {
@@ -41,6 +43,9 @@ public abstract class AbstractBatch {
 	protected Model model;
 	
 	private int done, anomaly;
+	
+	@Inject
+	protected BatchRepository batchRepo;
 	
 	protected AbstractBatch(  ){
 	
@@ -110,7 +115,7 @@ public abstract class AbstractBatch {
 	 */
 	protected void stop(){
 
-		batch = Batch.find( batch.getId() );
+		batch = batchRepo.find( batch.getId() );
 
 		batch.setEndDate( new DateTime() );
 		batch.setDuration( getDuring() );
@@ -125,7 +130,7 @@ public abstract class AbstractBatch {
 	
 	protected void incrementDone(){
 
-		batch = Batch.find( batch.getId() );
+		batch = batchRepo.find( batch.getId() );
 		
 		done += 1;
 		batch.setDone( done );
@@ -137,7 +142,7 @@ public abstract class AbstractBatch {
 	
 	protected void incrementAnomaly(){
 
-		batch = Batch.find( batch.getId() );
+		batch = batchRepo.find( batch.getId() );
 		
 		anomaly += 1;
 		batch.setAnomaly(anomaly);
@@ -149,7 +154,7 @@ public abstract class AbstractBatch {
 	
 	protected void addComment(String comment){
 		
-		batch = Batch.find( batch.getId() );
+		batch = batchRepo.find( batch.getId() );
 		
 		batch.setComment(comment);
 		
@@ -160,7 +165,7 @@ public abstract class AbstractBatch {
 	@Transactional
 	protected Batch checkPoint(){
 		
-		return batch.save();
+		return batchRepo.save(batch);
 		
 	}
 

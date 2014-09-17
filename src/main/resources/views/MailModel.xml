@@ -18,9 +18,9 @@
 	        <field name="typeSelect"/>
 	        <field name="objectConcernedSelect" onChange="action-mail-model-attrs-hidden"/>
 	        <field name="reminderTypeSelect" onChange="action-mail-model-attrs-hidden"/>
-	        <field name="subject" x-span="12"/>
-	        <field name="content" x-span="12"/>
-	        <field name="pdfModelPath" x-span="12"/>
+	        <field name="subject" colSpan="12"/>
+	        <field name="content" colSpan="12"/>
+	        <field name="pdfModelPath" colSpan="12"/>
         </panel>
     </form>
     

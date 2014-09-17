@@ -24,12 +24,13 @@ import java.util.regex.Pattern;
 import javax.persistence.TypedQuery;
 
 import com.axelor.apps.base.db.TemplateContextLine;
+import com.axelor.apps.base.db.repo.TemplateContextLineRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaModel;
 import com.google.common.base.Strings;
 
-public class TemplateContextLineService {
+public class TemplateContextLineService extends TemplateContextLineRepository{
 
 	public Object evaluate(TemplateContextLine line, Model bean) {
 		

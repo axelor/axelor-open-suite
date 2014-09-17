@@ -20,8 +20,9 @@ package com.axelor.apps.base.service.tax;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.repo.FiscalPositionRepository;
 
-public class FiscalPositionServiceImpl implements FiscalPositionService  {
+public class FiscalPositionServiceImpl extends FiscalPositionRepository implements FiscalPositionService  {
 	
 
 	public Tax getTax(FiscalPosition fiscalPosition, Tax tax)  {

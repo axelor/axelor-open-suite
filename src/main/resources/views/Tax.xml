@@ -16,7 +16,7 @@
 	    <panel-tabs>
 			<panel title="Tax rate list">
 				<field name="activeTaxLine"/>
-			 	<field name="taxLineList" x-span="12"/>
+			 	<field name="taxLineList" colSpan="12"/>
 			</panel>
 	    	<panel-related title="Accounting configuration" field="taxAccountList" if-module="axelor-account"/>
 	    </panel-tabs>

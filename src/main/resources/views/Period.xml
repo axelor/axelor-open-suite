@@ -24,9 +24,9 @@
 	    	<field name="company" widget="SuggestBox"/>
     	</panel>
     	<panel>
-        	<panel x-span="6">
-            	<button name="close" title="Close period"   onClick="action-period-record-close,save" showIf="statusSelect == 1"/>
-            	<button name="reopen" title="Reopen period"   onClick="action-period-record-open,save" showIf="statusSelect == 2"/>
+        	<panel colSpan="6">
+            	<button name="close" title="Close period" colSpan="2" onClick="action-period-record-close,save" showIf="statusSelect == 1"/>
+            	<button name="reopen" title="Reopen period" colSpan="2" onClick="action-period-record-open,save" showIf="statusSelect == 2"/>
         	</panel>
             <field name="statusSelect"/>
     	</panel>

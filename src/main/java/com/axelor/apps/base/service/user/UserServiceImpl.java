@@ -22,13 +22,15 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Team;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
+import com.google.inject.Inject;
 
 /**
  * UserService est une classe implémentant l'ensemble des services pour
  * les informations utilisateur.
  * 
  */
-public class UserServiceImpl implements UserService  {
+public class UserServiceImpl extends UserRepository implements UserService  {
 
 	/**
 	 * Méthode qui retourne le User de l'utilisateur connecté
@@ -36,6 +38,10 @@ public class UserServiceImpl implements UserService  {
 	 * @return User
 	 * 		Le user de l'utilisateur
 	 */
+	
+	@Inject
+	private UserRepository userRepo;
+	
 	public User getUser() {
 		User user = null;
 		try{
@@ -43,7 +49,7 @@ public class UserServiceImpl implements UserService  {
 		}
 		catch(Exception ex){}
 		if(user == null) {
-			user = User.findByCode("admin");			
+			user = userRepo.findByCode("admin");			
 		}
 		return user;
 	}

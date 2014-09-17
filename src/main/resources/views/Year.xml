@@ -30,7 +30,8 @@
     </action-record>
     
     <action-validate name="action-civil-year-check-date">
-		<error message="Civil year already exist for 'From' and 'To' date." if="Year.all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND id != ?6 AND typeSelect = 0',fromDate,toDate,fromDate,toDate,company,id).count() > 0 &amp;&amp; typeSelect == 0" />
+		<error message="Civil year already exist for 'From' and 'To' date." if="id == null &amp;&amp; __repo__.of(Year).all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND typeSelect = 0',fromDate,toDate,fromDate,toDate,company).count() > 0 &amp;&amp; typeSelect == 0" />
+		<error message="Civil year already exist for 'From' and 'To' date." if="id != null &amp;&amp; __repo__.of(Year).all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND id != ?6 AND typeSelect = 0',fromDate,toDate,fromDate,toDate,company,id).count() > 0 &amp;&amp; typeSelect == 0" />
 	</action-validate>
     
 </object-views>

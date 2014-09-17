@@ -7,10 +7,11 @@
 		<field name="code"/>
     </grid>
     <form name="team-form" title="Team" model="com.axelor.apps.base.db.Team">
-    	<panel x-span="12">
+        	
+    	<panel colSpan="12">
         	<field name="code" x-bind="{{code|uppercase}}"/>
         	<field name="name"/>
-			<panel-related field="userSet" x-span="12"/>
+			<panel-related field="userSet" colSpan="12"/>
         </panel>
     </form>
 </object-views>

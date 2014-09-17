@@ -11,9 +11,9 @@
 	
 	<form name="routing-action-form" title="Routing action" model="com.axelor.apps.base.db.RoutingAction">
 		<panel>
-			<field name="relatedToFilter1" x-span="12"/>
-			<field name="relatedToFilter2" x-span="12"/>
-			<field name="routingActionCreate" x-span="12"/>
+			<field name="relatedToFilter1" colSpan="12"/>
+			<field name="relatedToFilter2" colSpan="12"/>
+			<field name="routingActionCreate" colSpan="12"/>
 		</panel>
 	</form>
 

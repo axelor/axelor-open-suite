@@ -22,10 +22,10 @@
     
     <form name="alarm-form" title="Alarm" model="com.axelor.apps.base.db.Alarm">
 	  <panel>
-	    <field name="date" x-span="4"/>
-	    <field name="acquitOk" x-span="2"/>
-	    <field name="alarmEngine" edit-window="self" form-view="alarm-message-form" summary-view="alarm-message-form" x-span="4"/>
-	    <field name="content" showTitle="false" x-span="12"/>
+	    <field name="date" colSpan="4"/>
+	    <field name="acquitOk" colSpan="2"/>
+	    <field name="alarmEngine" edit-window="self" form-view="alarm-message-form" summary-view="alarm-message-form" colSpan="4"/>
+	    <field name="content" showTitle="false" colSpan="12"/>
 	  </panel>
 	  <panel title="Details">
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
@@ -36,10 +36,10 @@
     
     <form name="alarm-contract-line-form" title="Alarm" model="com.axelor.apps.base.db.Alarm"  >
         <panel>
-		    <field name="date" x-span="4"/>
-		    <field name="acquitOk" x-span="2"/>
-		    <field name="alarmEngine" edit-window="self" form-view="alarm-message-form" summary-view="alarm-message-form" x-span="4"/>
-		    <field name="content" showTitle="false" x-span="12"/>
+		    <field name="date" colSpan="4"/>
+		    <field name="acquitOk" colSpan="2"/>
+		    <field name="alarmEngine" edit-window="self" form-view="alarm-message-form" summary-view="alarm-message-form" colSpan="4"/>
+		    <field name="content" showTitle="false" colSpan="12"/>
 		</panel>
 	  	<panel title="Details">
 	      <field name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
@@ -52,7 +52,7 @@
 	        <field name="date"/>
 	        <field name="acquitOk" onChange="save,action-alarm-method-acquit-invoice" />
 	        <field name="alarmEngine" summary-view="alarm-message-form" form-view="alarm-message-form" edit-window="self" />
-	        <field name="content" x-span="12" showTitle="false" />
+	        <field name="content" colSpan="12" showTitle="false" />
         </panel>
     </form>
     

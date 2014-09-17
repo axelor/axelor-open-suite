@@ -7,11 +7,11 @@
 		<panel>
 			<field name="languageSelect"/>
 			<field name="defaultMailBirtTemplate" />
-			<panel title="Company Header" x-span="12">
-				<field name="pdfHeader" x-span="12" widget="html" showTitle="false"/>
+			<panel title="Company Header" colSpan="12">
+				<field name="pdfHeader" colSpan="12" widget="html" showTitle="false"/>
 			</panel>
-			<panel title="Company Footer" x-span="12">
-	       		<field name="pdfFooter" x-span="12" widget="html" showTitle="false"/>
+			<panel title="Company Footer" colSpan="12">
+	       		<field name="pdfFooter" colSpan="12" widget="html" showTitle="false"/>
 	       	</panel>
        	</panel>
     </form>

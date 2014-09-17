@@ -13,7 +13,7 @@
     	<panel>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="description"/>
-	        <field name="queryString" widget="CodeEditor" x-syntax="sql" x-span="12"/>
+	        <field name="queryString" widget="CodeEditor" x-syntax="sql" colSpan="12"/>
         </panel>
     </form>
 </object-views>

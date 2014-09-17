@@ -20,9 +20,15 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Bic;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.db.repo.BicRepository;
 import com.axelor.apps.tool.StringTool;
+import com.google.inject.Inject;
 
-public class BankDetailsService {
+public class BankDetailsService extends BankDetailsRepository{
+	
+	@Inject
+	private BicRepository bicRepo;
 	
 	/**
 	 * Méthode qui permet d'extraire les informations de l'iban
@@ -48,7 +54,7 @@ public class BankDetailsService {
 			bankDetails.setAccountNbr(StringTool.extractStringFromRight(bankDetails.getIban(),13,11));
 			bankDetails.setBbanKey(StringTool.extractStringFromRight(bankDetails.getIban(),2,2));
 			bankDetails.setCountryCode(StringTool.extractStringFromRight(bankDetails.getIban(),27,2));
-			Bic bic = Bic.filter(
+			Bic bic = bicRepo.all().filter(
 					"self.countryCode = ?1 " +
 					"AND self.sortCode = ?2 " +
 					"AND self.bankCode = ?3", bankDetails.getCountryCode(), bankDetails.getSortCode(), bankDetails.getBankCode()).fetchOne();

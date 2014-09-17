@@ -23,17 +23,17 @@
         	 <panel-related title="Internal companies" field="companySet" showTitle="false"/>
         	 <panel title="Teams">
         		<field name="activeTeam"/>
-        		<panel-related field="teamSet" x-span="12"/>
+        		<panel-related field="teamSet" colSpan="12"/>
         	 </panel>
-        	 <panel-related title="Projects" field="projectSet" showTitle="false"/>
-        	 <panel title="Social Network">
-        		<field name="fbPersonalCredential" grid-view="fb-credential-grid" form-view="fb-credential-form" x-span="12"/>
-        		<field name="twtPersonalCredential" grid-view="twt-credential-grid" form-view="twt-credential-form" x-span="12"/>
-        		<field name="lnPersonalCredential" grid-view="ln-credential-grid" form-view="ln-credential-form" x-span="12"/>
-        	 </panel>
+        	 <panel-related title="Projects" field="projectSet" showTitle="false" colSpan="4"/>
+<!--         	 <panel title="Social Network"> TO DO MOVE TO SOCIAL NETWORK MODULE-->
+<!--         		<field name="fbPersonalCredential" grid-view="fb-credential-grid" form-view="fb-credential-form" colSpan="12"/> -->
+<!--         		<field name="twtPersonalCredential" grid-view="twt-credential-grid" form-view="twt-credential-form" colSpan="12"/> -->
+<!--         		<field name="lnPersonalCredential" grid-view="ln-credential-grid" form-view="ln-credential-form" colSpan="12"/> -->
+<!--         	 </panel> -->
         	<panel title="Calendars">
-        		<panel-related field="followersCalUserSet" x-span="12"/>
-        		<panel-related field="authorizeCalUserSet" x-span="12"/>
+        		<panel-related field="followersCalUserSet" colSpan="12"/>
+        		<panel-related field="authorizeCalUserSet" colSpan="12"/>
         	</panel>
         </panel-tabs>
     </form>

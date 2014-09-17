@@ -27,8 +27,8 @@
             <field name="company" widget="SuggestBox"/>
         </panel>
         <panel title="Content">
-        	<field name="subject" x-span="12" />
-       	 	<field name="content" x-span="12" />
+        	<field name="subject" colSpan="12" />
+       	 	<field name="content" colSpan="12" />
         </panel>
         <panel title="Sending dates">
        	 	<field name="sendScheduleDate"/>

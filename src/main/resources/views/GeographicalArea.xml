@@ -12,7 +12,7 @@
    	   <panel> 
 	   		<field name="name"/>
 	   </panel>
-	   <panel-related x-span="12" field="departmentSet" grid-view="department-grid" form-view="department-form"/>
+	   <panel-related colSpan="12" field="departmentSet" grid-view="department-grid" form-view="department-form"/>
    </form>
    
 </object-views>

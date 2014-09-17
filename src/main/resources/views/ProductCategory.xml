@@ -24,7 +24,7 @@
 		<!-- for the time it has only one page so I have added if-module to notebook, -->
 		<!-- if it has multiple pages, we should add if-module to pages with valid module-name -->
 		<panel-tabs if-module="axelor-supplychain">
-      		<panel-dashlet  title="Sales Turnover"   action="portal.category.sales.turnover.per.month" x-span="12" height="350" />
+      		<panel-dashlet  title="Sales Turnover" action="portal.category.sales.turnover.per.month" colSpan="12" height="350" />
 		</panel-tabs>
     </form>    
 </object-views>

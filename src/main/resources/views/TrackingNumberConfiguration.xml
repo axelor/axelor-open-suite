@@ -21,25 +21,25 @@
     	onNew="action-tracking-number-config-record-default">
     	<panel>
 	        <field name="isPurchaseTrackingManaged"/>
-		    <panel title="Purchase tracking management" showIf="isPurchaseTrackingManaged" x-span="12">
-		        <field name="generatePurchaseAutoTrackingNbr" x-span="12"/>
-		        <field name="purchaseQtyByTracking" help="0 --&gt; infinite" x-span="12"/>
+		    <panel title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
+		        <field name="generatePurchaseAutoTrackingNbr" colSpan="12"/>
+		        <field name="purchaseQtyByTracking" help="0 --&gt; infinite" colSpan="12"/>
 		    </panel>
 	   </panel>
 	   <panel>
 		    <field name="isProductionTrackingManaged"/>
-		    <panel title="Production tracking management" showIf="isProductionTrackingManaged" x-span="12" >
-		        <field name="generateProductionAutoTrackingNbr" x-span="12"/>
-		        <field name="productionQtyByTracking" help="0 --&gt; infinite" x-span="12"/>
+		    <panel title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="12">
+		        <field name="generateProductionAutoTrackingNbr" colSpan="12"/>
+		        <field name="productionQtyByTracking" help="0 --&gt; infinite" colSpan="12"/>
 		    </panel>
 		</panel>
 		<panel>
 		    <field name="isSaleTrackingManaged"/>
-		    <panel title="Sale tracking management" showIf="isSaleTrackingManaged" x-span="12" >
-		        <field name="generateSaleAutoTrackingNbr"  x-span="12"/>
-		        <field name="hasSaleAutoSelectTrackingNbr" showIf="isSaleTrackingManaged" x-span="12"/>
-		        <field name="saleAutoTrackingNbrOrderSelect" showIf="hasSaleAutoSelectTrackingNbr" x-span="12"/>
-		        <field name="saleQtyByTracking" help="0 --&gt; infinite" x-span="12" readonlyIf="hasSaleAutoSelectTrackingNbr"/>
+		    <panel title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="12">
+		        <field name="generateSaleAutoTrackingNbr"  colSpan="12"/>
+		        <field name="hasSaleAutoSelectTrackingNbr" showIf="isSaleTrackingManaged" colSpan="12"/>
+		        <field name="saleAutoTrackingNbrOrderSelect" showIf="hasSaleAutoSelectTrackingNbr" colSpan="12"/>
+		        <field name="saleQtyByTracking" help="0 --&gt; infinite" colSpan="12" readonlyIf="hasSaleAutoSelectTrackingNbr"/>
 		    </panel>
 		</panel>
 		<panel>

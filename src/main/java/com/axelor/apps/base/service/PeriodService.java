@@ -23,12 +23,17 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.google.inject.Inject;
 
-public class PeriodService {
+public class PeriodService extends PeriodRepository{
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PeriodService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(PeriodService.class);
+	
+	@Inject
+	private PeriodRepository periodRepo;
 	
 	/**
 	 * Recupère la bonne période pour la date passée en paramètre
@@ -39,8 +44,8 @@ public class PeriodService {
 	 */
 	public Period rightPeriod(LocalDate date, Company company) throws AxelorException {
 	
-		Period period = Period.filter("company = ?1 and fromDate <= ?2 and toDate >= ?3",company,date,date).fetchOne();
-		if (period == null || period.getStatusSelect() == Period.STATUS_CLOSED)  {
+		Period period = periodRepo.all().filter("company = ?1 and fromDate <= ?2 and toDate >= ?3",company,date,date).fetchOne();
+		if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
 			throw new AxelorException(String.format("Aucune période trouvée ou celle-ci clôturée pour la société %s", company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		else  {

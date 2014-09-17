@@ -29,15 +29,19 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.AddressRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.google.inject.Inject;
 
 
-public class AddressServiceImpl implements AddressService  {
+public class AddressServiceImpl extends AddressRepository implements AddressService  {
 	
 	
 	@Inject
 	private com.axelor.apps.tool.address.AddressTool ads;
+	
+	@Inject
+	private PartnerRepository partnerRepo;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AddressServiceImpl.class);
 	
@@ -54,7 +58,7 @@ public class AddressServiceImpl implements AddressService  {
 	}
 	
 	public int export(String path) throws IOException {
-		List<Address> addresses = (List<Address>) Address.filter("self.certifiedOk IS FALSE").fetch();
+		List<Address> addresses = (List<Address>) all().filter("self.certifiedOk IS FALSE").fetch();
 		
 		CSVWriter csv = new CSVWriter(new java.io.FileWriter(path), "|".charAt(0), CSVWriter.NO_QUOTE_CHARACTER);
 		List<String> header = new ArrayList<String>();
@@ -105,7 +109,7 @@ public class AddressServiceImpl implements AddressService  {
 	
 	public Address getAddress(String addressL2, String addressL3, String addressL4, String addressL5, String addressL6, Country addressL7Country)  {
 		
-		return Address.filter("self.addressL2 = ?1 AND self.addressL3 = ?2 AND self.addressL4 = ?3 " +
+		return all().filter("self.addressL2 = ?1 AND self.addressL3 = ?2 AND self.addressL4 = ?3 " +
 				"AND self.addressL5 = ?4 AND self.addressL6 = ?5 AND self.addressL7Country = ?6",
 				addressL2,
 				addressL3,
@@ -119,7 +123,7 @@ public class AddressServiceImpl implements AddressService  {
 	public boolean checkAddressUsed(Long addressId){
 		LOG.debug("Address Id to be checked = {}",addressId);
 		if(addressId != null){
-			if(Partner.all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+			if(partnerRepo.all().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
 				return true;
 		}
 		return false;

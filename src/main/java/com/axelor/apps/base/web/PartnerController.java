@@ -30,17 +30,14 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.report.IReport;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -54,16 +51,13 @@ public class PartnerController {
 	private UserService userService;
 	
 	@Inject
-	private AddressService addressService;
-	
-	@Inject
 	private PartnerService partnerService; 
-
+	
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
 
 	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
-		partner = Partner.find(partner.getId());
+		partner = partnerService.find(partner.getId());
 		if(partner.getPartnerSeq() ==  null) {
 			String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
 			if (seq == null)  

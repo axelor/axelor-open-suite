@@ -11,7 +11,7 @@
     <form name="template-context-form" title="Template Context" model="com.axelor.apps.base.db.TemplateContext">
     	<panel>
         	<field name="name"/>
-        	<panel-related field="templateContextLineList" x-span="12"/>
+        	<panel-related field="templateContextLineList" colSpan="12"/>
         </panel>
     </form>
     

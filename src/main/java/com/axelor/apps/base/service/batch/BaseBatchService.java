@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.BaseBatch;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -30,8 +31,7 @@ import com.axelor.exception.db.IException;
  * 
  * @version 0.1
  */
-public class BaseBatchService {
-
+public class BaseBatchService extends BaseBatchRepository{
 
 // Appel 	
 	
@@ -45,8 +45,7 @@ public class BaseBatchService {
 	 */
 	public Batch run(String batchCode) throws AxelorException {
 				
-		Batch batch;
-		BaseBatch baseBatch = BaseBatch.findByCode(batchCode);
+		BaseBatch baseBatch = findByCode(batchCode);
 		
 		if (baseBatch != null){
 			switch (baseBatch.getActionSelect()) {

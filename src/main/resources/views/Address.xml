@@ -11,7 +11,7 @@
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
 	onSave="action-group-base-address-onsave" onLoad="action-address-get-general-qas" onNew="default-address-record,action-address-get-general-qas" readonlyIf="id != null &amp;&amp; fromMain == null" >
-		<panel name="main" title="Address details" x-span="12">
+		<panel name="main" title="Address details" colSpan="12">
 			<field name="addressL2" onChange="action-check-string-capital-case"/>
 			<field name="addressL3" onChange="action-check-string-capital-case"/>
 			<field name="addressL4" onChange="action-check-string-capital-case"/>
@@ -19,26 +19,26 @@
 			<field name="addressL6" onChange="action-check-string-capital-case" required="true"/>
 			<field name="commune" onChange="action-address-change-commune"/>
 			<field name="addressL7Country" required="true"/>
-			<button-group x-span="6">
+			<button-group colSpan="6">
 				<button name="map" title="View map" icon="fa-map-marker" onClick="com.axelor.apps.base.web.AddressController:viewMap,save"/>
 				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="com.axelor.apps.base.web.AddressController:directionsMap"/>
 			</button-group>
 			<field name="isUsed" hidden="true" widget="BOOLEAN"/>
 		</panel>
 		<panel title="Localisation" hideIf="$popup()">
-			<field name="latit" x-span="6"/>
-			<field name="longit" x-span="6"/>
+			<field name="latit" colSpan="6"/>
+			<field name="longit" colSpan="6"/>
 			<spacer/> 
 		</panel>
 		
-		<panel title="QAS certification" x-span="12" showIf="hasQasValidation">
-			<field name="certifiedOk" x-span="4"/>
-			<panel x-span="4">
+		<panel title="QAS certification" colSpan="12" showIf="hasQasValidation">
+			<field name="certifiedOk" colSpan="4"/>
+			<panel colSpan="4">
 				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
 				<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
 			</panel>
-			<panel-related field="pickList" title="Pick list" x-span="12" />
-			<field name="hasQasValidation" x-type="BOOLEAN" hidden="true"/>
+			<panel-related field="pickList" title="Pick list" colSpan="12" />
+			<field name="hasQasValidation" type="BOOLEAN" hidden="true"/>
 		</panel>
 	</form>
 	

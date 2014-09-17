@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import com.axelor.apps.base.db.IImports;
+import com.axelor.apps.base.db.repo.ImportRepository;
 import com.axelor.data.Listener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.xml.XMLImporter;
@@ -30,14 +31,10 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.name.Names;
 
-public class ImportService {
-	
-	@Inject
-	private Injector injector;
+public class ImportService extends ImportRepository{
 	
 	private String log;
 	

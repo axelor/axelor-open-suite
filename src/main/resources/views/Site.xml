@@ -20,9 +20,9 @@
 	    <panel title="Sales attributes">
 	    	<field name="commercialLevelSelect"/>
 	    	<field name="geographicalArea"/>
-	    	<panel title="Keywords" x-span="12">
-	        	<panel-related field="toolKeyWordSet"  x-span="6" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid" widget="TagSelect" x-create="name"/>
-	        	<panel-related field="sectorKeyWordSet" x-span="6" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid" widget="TagSelect" x-create="name"/>
+	    	<panel title="Keywords" colSpan="12">
+	        	<panel-related field="toolKeyWordSet"  colSpan="6" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid" widget="TagSelect" x-create="name"/>
+	        	<panel-related field="sectorKeyWordSet" colSpan="6" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid" widget="TagSelect" x-create="name"/>
 	        </panel>
 	    </panel>
 	</form>
