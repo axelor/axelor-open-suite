@@ -67,7 +67,7 @@ public class PaymentVoucherController {
 	public void loadMoveLines(ActionRequest request, ActionResponse response) {
 
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-		paymentVoucher = PaymentVoucher.find(paymentVoucher.getId());
+		paymentVoucher = paymentVoucherLoadProvider.get().find(paymentVoucher.getId());
 		
 		try {
 			paymentVoucherLoadProvider.get().loadMoveLines(paymentVoucher);
@@ -80,7 +80,7 @@ public class PaymentVoucherController {
 	public void loadSelectedLines(ActionRequest request, ActionResponse response) {
 				
 		PaymentVoucher paymentVoucherContext = request.getContext().asType(PaymentVoucher.class);
-		PaymentVoucher paymentVoucher = PaymentVoucher.find(paymentVoucherContext.getId());
+		PaymentVoucher paymentVoucher = paymentVoucherLoadProvider.get().find(paymentVoucherContext.getId());
 			
 		try {
 			paymentVoucherLoadProvider.get().loadSelectedLines(paymentVoucher,paymentVoucherContext);
@@ -93,7 +93,7 @@ public class PaymentVoucherController {
 	public void confirmPaymentVoucher(ActionRequest request, ActionResponse response) {
 				
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-		paymentVoucher = PaymentVoucher.find(paymentVoucher.getId());
+		paymentVoucher = paymentVoucherLoadProvider.get().find(paymentVoucher.getId());
 		
 		try{				
 			paymentVoucherConfirmProvider.get().confirmPaymentVoucher(paymentVoucher, false);

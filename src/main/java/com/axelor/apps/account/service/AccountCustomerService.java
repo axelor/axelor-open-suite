@@ -32,6 +32,9 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -45,6 +48,15 @@ public class AccountCustomerService {
 
 	
 	private LocalDate today;
+	
+	@Inject
+	private MoveRepository moveRepo;
+	
+	@Inject
+	private MoveLineRepository moveLineRepo;
+	
+	@Inject
+	private AccountingSituationRepository  accountingSituationRepo;
 	
 	@Inject
 	public AccountCustomerService() {
@@ -82,7 +94,7 @@ public class AccountCustomerService {
 												"AND move.statusSelect = ?3 AND ml.amount_remaining > 0 ")
 												.setParameter(1, partner)
 												.setParameter(2, company)
-												.setParameter(3, Move.STATUS_VALIDATED);
+												.setParameter(3, moveRepo.STATUS_VALIDATED);
 		
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
 		
@@ -134,7 +146,7 @@ public class AccountCustomerService {
 				.setParameter(1, today.toDate(), TemporalType.DATE)
 				.setParameter(2, partner)
 				.setParameter(3, company)
-				.setParameter(4, Move.STATUS_VALIDATED);
+				.setParameter(4, MoveRepository.STATUS_VALIDATED);
 
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
 		
@@ -188,7 +200,7 @@ public class AccountCustomerService {
 				.setParameter(2, today.toDate(), TemporalType.DATE)
 				.setParameter(3, partner)
 				.setParameter(4, company)
-				.setParameter(5, Move.STATUS_VALIDATED);
+				.setParameter(5, MoveRepository.STATUS_VALIDATED);
 		
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
 		
@@ -212,7 +224,7 @@ public class AccountCustomerService {
 	 */
 	public List<? extends MoveLine> getMoveLine(Partner partner, Company company)  {
 		
-		return MoveLine.filter("self.partner = ?1 AND self.move.company = ?2", partner, company).fetch();
+		return moveLineRepo.all().filter("self.partner = ?1 AND self.move.company = ?2", partner, company).fetch();
 
 	}
 	
@@ -267,7 +279,7 @@ public class AccountCustomerService {
 		for(Partner partner : partnerList)  {
 			AccountingSituation accountingSituation = this.getAccountingSituation(partner, company);
 			accountingSituation.setCustAccountMustBeUpdateOk(true);
-			accountingSituation.save();
+			accountingSituationRepo.save(accountingSituation);
 		}
 	}
 	
@@ -289,7 +301,7 @@ public class AccountCustomerService {
 		accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
 		accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
 		
-		accountingSituation.save();
+		accountingSituationRepo.save(accountingSituation);
 		
 		LOG.debug("End updateCustomerAccount service");
 	}
@@ -313,7 +325,7 @@ public class AccountCustomerService {
 			accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
 		}	
 		accountingSituation.setCustAccountMustBeUpdateOk(false);
-		accountingSituation.save();
+		accountingSituationRepo.save(accountingSituation);
 		return accountingSituation;
 	}
 	

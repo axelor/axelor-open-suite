@@ -33,7 +33,10 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountChart;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.repo.AccountChartRepository;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.data.Listener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.Model;
@@ -42,11 +45,17 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 
-public class AccountChartService {
+public class AccountChartService extends AccountChartRepository{
 	private static final Logger LOG = LoggerFactory.getLogger(AccountChartService.class);
 	
 	@Inject
 	private Injector injector;
+	
+	@Inject
+	private AccountConfigRepository accountConfigRepo;
+	
+	@Inject
+	private CompanyRepository companyRepo;
 	
 	public Boolean installAccountChart(AccountChart act, Company company, AccountConfig accountConfig){
 		try {
@@ -98,15 +107,15 @@ public class AccountChartService {
 	
 	@Transactional
 	public void updateChartCompany(AccountChart act, Company company, AccountConfig accountConfig){
-		accountConfig = AccountConfig.find(accountConfig.getId());
+		accountConfig = accountConfigRepo.find(accountConfig.getId());
 		accountConfig.setHasChartImported(true);
-		accountConfig.save();
-		act = AccountChart.find(act.getId());
-		company = Company.find(company.getId());
+		accountConfigRepo.save(accountConfig);
+		act = find(act.getId());
+		company = companyRepo.find(company.getId());
 		Set<Company> companySet = act.getCompanySet();
 		companySet.add(company);
 		act.setCompanySet(companySet);
-		act.save();
+		save(act);
 	}
 	
 	public void importAccountChartData(String configPath, String dataDir,HashMap<String,Object> context) throws IOException {

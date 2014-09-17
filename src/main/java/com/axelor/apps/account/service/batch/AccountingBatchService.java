@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -33,7 +34,7 @@ import com.axelor.exception.db.IException;
  * 
  * @version 0.1
  */
-public class AccountingBatchService {
+public class AccountingBatchService  extends AccountingBatchRepository {
 
 	@Inject
 	private Provider<BatchReminder> reminderProvider;
@@ -78,47 +79,48 @@ public class AccountingBatchService {
 	public Batch run(String batchCode) throws AxelorException {
 				
 		Batch batch;
-		AccountingBatch accountingBatch = AccountingBatch.findByCode(batchCode);
+		AccountingBatch accountingBatch = findByCode(batchCode);
 		
 		if (accountingBatch != null){
 			switch (accountingBatch.getActionSelect()) {
-			case AccountingBatch.ACTION_REIMBURSEMENT:
-				if(accountingBatch.getReimbursementTypeSelect() == AccountingBatch.REIMBURSEMENT_TYPE_EXPORT)  {
+			case ACTION_REIMBURSEMENT:
+				if(accountingBatch.getReimbursementTypeSelect() == REIMBURSEMENT_TYPE_EXPORT)  {
 					batch = reimbursementExport(accountingBatch);
 				}
-				else if(accountingBatch.getReimbursementTypeSelect() == AccountingBatch.REIMBURSEMENT_TYPE_IMPORT)  {
+				else if(accountingBatch.getReimbursementTypeSelect() == 
+						REIMBURSEMENT_TYPE_IMPORT)  {
 					batch = reimbursementImport(accountingBatch);
 				}
 				batch = null;
 				break;
-			case AccountingBatch.ACTION_DIRECT_DEBIT:
-				if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatch.DIRECT_DEBIT_TYPE_EXPORT)  {
+			case ACTION_DIRECT_DEBIT:
+				if(accountingBatch.getDirectDebitTypeSelect() == DIRECT_DEBIT_TYPE_EXPORT)  {
 					batch = paymentScheduleExport(accountingBatch);
 				}
-				else if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatch.DIRECT_DEBIT_TYPE_IMPORT)  {
+				else if(accountingBatch.getDirectDebitTypeSelect() == DIRECT_DEBIT_TYPE_IMPORT)  {
 					batch = paymentScheduleImport(accountingBatch);
 				}
 				batch = null;
 				break;
-			case AccountingBatch.ACTION_REMINDER:
+			case ACTION_REMINDER:
 				batch = reminder(accountingBatch);
 				break;
-			case AccountingBatch.ACTION_INTERBANK_PAYMENT_ORDER:
-				if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatch.INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
+			case ACTION_INTERBANK_PAYMENT_ORDER:
+				if(accountingBatch.getInterbankPaymentOrderTypeSelect() == INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
 					batch = interbankPaymentOrderImport(accountingBatch);
 				}
-				else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatch.INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT)  {
+				else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT)  {
 					batch = interbankPaymentOrderRejectImport(accountingBatch);
 				}
 				batch = null;
 				break;
-			case AccountingBatch.ACTION_DOUBTFUL_CUSTOMER:
+			case ACTION_DOUBTFUL_CUSTOMER:
 				batch = doubtfulCustomer(accountingBatch);
 				break;
-			case AccountingBatch.ACTION_ACCOUNT_CUSTOMER:
+			case ACTION_ACCOUNT_CUSTOMER:
 				batch = accountCustomer(accountingBatch);
 				break;
-			case AccountingBatch.ACTION_MOVE_LINE_EXPORT:
+			case ACTION_MOVE_LINE_EXPORT:
 				batch = moveLineExport(accountingBatch);
 				break;
 			default:

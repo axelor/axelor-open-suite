@@ -23,7 +23,7 @@
 			<field name="company" widget="SuggestBox" form-view="company-lite-form" required="true"/>
 		</panel>
 		<panel>
-			<panel-related field="periodList" x-span="12"/>
+			<panel-related field="periodList" colSpan="12"/>
 		</panel>
 		<panel-side>
 			<field name="typeSelect" readonly="true"/>
@@ -77,7 +77,8 @@
 	</action-validate>
 	
 	<action-validate name="action-fiscal-year-check-date">
-		<error message="Fiscal year already exist for 'From' and 'To' date." if="Year.all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND id != ?6 AND typeSelect = 1',fromDate,toDate,fromDate,toDate,company,id).count() > 0 &amp;&amp; typeSelect == 1" />
+		<error message="Fiscal year already exist for 'From' and 'To' date." if="id == null &amp;&amp; __repo__.of(Year).all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND typeSelect = 1',fromDate,toDate,fromDate,toDate,company).count() > 0 &amp;&amp; typeSelect == 1" />
+		<error message="Fiscal year already exist for 'From' and 'To' date." if="id != null &amp;&amp; __repo__.of(Year).all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND id != ?6 AND typeSelect = 1',fromDate,toDate,fromDate,toDate,company,id).count() > 0 &amp;&amp; typeSelect == 1" />
 	</action-validate>
 	
 	<action-record name="action-year-set-empty-date" model="com.axelor.apps.base.db.Year">

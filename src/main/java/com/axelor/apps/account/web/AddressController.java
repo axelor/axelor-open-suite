@@ -28,10 +28,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerList;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.rpc.ActionRequest;
@@ -47,6 +49,12 @@ public class AddressController {
 	
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
+	
+	@Inject
+	private AddressRepository addressRepo;
+	
+	@Inject
+	private InvoiceService invoiceService;
 
 
 	@SuppressWarnings("unchecked")
@@ -67,7 +75,7 @@ public class AddressController {
 				//def address = partner.mainInvoicingAddress
 				if (partner.getMainInvoicingAddress() != null) {
 					partner.getMainInvoicingAddress().getId();
-					Address address = Address.find(partner.getMainInvoicingAddress().getId());
+					Address address = addressRepo.find(partner.getMainInvoicingAddress().getId());
 					if (!(address.getLatit() != null && address.getLongit() != null)) {
 						String qString = address.getAddressL4()+" ,"+address.getAddressL6();
 						LOG.debug("qString = {}", qString);
@@ -75,11 +83,11 @@ public class AddressController {
 						Map<String,Object> googleResponse = mapProvider.get().geocodeGoogle(qString);
 						address.setLatit((BigDecimal) googleResponse.get("lat"));
 						address.setLongit((BigDecimal) googleResponse.get("lng"));
-						address.save();
+						addressRepo.save(address);
 					}
 					if (address.getLatit() != null && address.getLongit() != null) {
 						//def turnover = Invoice.all().filter("self.partner.id = ? AND self.statusSelect = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
-						List<Invoice> listInvoice = (List<Invoice>) Invoice.filter("self.partner.id = ?", partner.getId()).fetch();
+						List<Invoice> listInvoice = (List<Invoice>) invoiceService.all().filter("self.partner.id = ?", partner.getId()).fetch();
 						BigDecimal turnover = BigDecimal.ZERO;
 						for(Invoice invoice: listInvoice) {
 							turnover.add(invoice.getInTaxTotal());

@@ -30,7 +30,7 @@
     	<field name="creationDate"  expr="eval: com.axelor.apps.administration.service.GeneralService.getTodayDate()"/>
     	<field name="mandateSignatureDate"  expr="eval: com.axelor.apps.base.service.GeneralService.getTodayDate()"/>
 <!--     	<field name="mandateSignatureCommune"  expr="eval: com.axelor.apps.base.db.Commune.findByInseeCode(&quot;86194&quot;)"/> -->
-    	<field name="rumNumber"  expr="call: com.axelor.apps.account.service.rum.RumNumberService:getRumNumber(Partner.find(_parent?.id))" if="_parent?._model == 'com.axelor.apps.base.db.Partner'" />
+    	<field name="rumNumber"  expr="call: com.axelor.apps.account.service.rum.RumNumberService:getRumNumber(__repo__.of(Partner).find(_parent?.id))" if="_parent?._model == 'com.axelor.apps.base.db.Partner'" />
     </action-record>
     
 </object-views>

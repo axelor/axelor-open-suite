@@ -34,7 +34,7 @@ public class ReimbursementController {
 		reimbursementService.updatePartnerCurrentRIB(reimbursement);
 		
 		if (reimbursement.getBankDetails() != null) {
-			response.setValue("statusSelect", Reimbursement.STATUS_VALIDATED);
+			response.setValue("statusSelect", ReimbursementService.STATUS_VALIDATED);
 		}
 		else {
 			response.setFlash("Vous devez configurer un RIB");

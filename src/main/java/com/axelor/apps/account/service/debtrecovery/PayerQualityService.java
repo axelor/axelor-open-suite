@@ -32,8 +32,10 @@ import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderHistory;
 import com.axelor.apps.account.db.ReminderLevel;
 import com.axelor.apps.account.db.ReminderMethodLine;
+import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -45,6 +47,12 @@ public class PayerQualityService {
 	private static final Logger LOG = LoggerFactory.getLogger(PayerQualityService.class); 
 
 	private LocalDate today;
+	
+	@Inject
+	private MoveLineService moveLineService;
+	
+	@Inject
+	private PartnerService partnerService;
 
 	@Inject
 	public PayerQualityService() {
@@ -73,7 +81,7 @@ public class PayerQualityService {
 	
 	
 	public List<MoveLine> getMoveLineRejectList(Partner partner)  {
-		return (List<MoveLine>) MoveLine.filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, today.minusYears(1)).fetch();
+		return (List<MoveLine>) moveLineService.all().filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, today.minusYears(1)).fetch();
 	}
 	
 	
@@ -141,7 +149,7 @@ public class PayerQualityService {
 	
 	
 	public List<Partner> getPartnerList()  {
-		return  (List<Partner>) Partner.filter("self.customerTypeSelect = 3").fetch();
+		return  (List<Partner>) partnerService.all().filter("self.customerTypeSelect = 3").fetch();
 	}
 	
 	
@@ -160,7 +168,7 @@ public class PayerQualityService {
 				
 				if(burden.compareTo(BigDecimal.ZERO) == 1)  {
 					partner.setPayerQuality(burden);
-					partner.save();
+					partnerService.save(partner);
 					LOG.debug("Tiers payeur {} : Qualité payeur : {}",partner.getName(), burden);
 				}
 			}

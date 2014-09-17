@@ -43,7 +43,7 @@ public class MoveController {
 	public void validate(ActionRequest request, ActionResponse response) {
 
 		Move move = request.getContext().asType(Move.class);
-		move = Move.find(move.getId());
+		move = moveService.get().find(move.getId());
 		
 		try {
 			moveService.get().validate(move);
@@ -73,7 +73,7 @@ public class MoveController {
 		Move move = request.getContext().asType(Move.class);
 		
 		try {
-			Move newMove = moveService.get().generateReverse(Move.find(move.getId()));
+			Move newMove = moveService.get().generateReverse(moveService.get().find(move.getId()));
 			Map<String, Object> viewMap = Maps.newHashMap();
 			viewMap.put("title", "Account move");
 			viewMap.put("resource", "com.axelor.apps.account.db.Move");
@@ -87,7 +87,7 @@ public class MoveController {
 	public void validateMultipleMoves(ActionRequest request, ActionResponse response){
 		List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
 		if(!moveIds.isEmpty()){
-			List<? extends Move> moveList = Move.all().filter("self.id in ?1 AND self.state NOT IN ('validated','canceled')", moveIds).fetch();
+			List<? extends Move> moveList = moveService.get().all().filter("self.id in ?1 AND self.state NOT IN ('validated','canceled')", moveIds).fetch();
 			if(!moveList.isEmpty()){
 				boolean error = moveService.get().validateMultiple(moveList);
 				if(error)

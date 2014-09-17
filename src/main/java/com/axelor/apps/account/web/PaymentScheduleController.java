@@ -44,7 +44,7 @@ public class PaymentScheduleController {
 	public void validate(ActionRequest request, ActionResponse response) {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
-		paymentSchedule = PaymentSchedule.find(paymentSchedule.getId());
+		paymentSchedule = paymentScheduleProvider.get().find(paymentSchedule.getId());
 		
 		try {
 			paymentScheduleProvider.get().validatePaymentSchedule(paymentSchedule);
@@ -57,7 +57,7 @@ public class PaymentScheduleController {
 	public void cancel(ActionRequest request, ActionResponse response) {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
-		paymentSchedule = PaymentSchedule.find(paymentSchedule.getId());
+		paymentSchedule = paymentScheduleProvider.get().find(paymentSchedule.getId());
 		
 		try {
 			paymentScheduleProvider.get().toCancelPaymentSchedule(paymentSchedule);
@@ -89,7 +89,7 @@ public class PaymentScheduleController {
 	public void createPaymentScheduleLines(ActionRequest request, ActionResponse response) {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
-		paymentSchedule = PaymentSchedule.find(paymentSchedule.getId());
+		paymentSchedule = paymentScheduleProvider.get().find(paymentSchedule.getId());
 		
 		paymentScheduleProvider.get().createPaymentScheduleLines(paymentSchedule);
 		response.setReload(true);
@@ -98,7 +98,7 @@ public class PaymentScheduleController {
 	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
-		paymentSchedule = PaymentSchedule.find(paymentSchedule.getId());
+		paymentSchedule = paymentScheduleProvider.get().find(paymentSchedule.getId());
 		
 		try  {
 			irrecoverableProvider.get().passInIrrecoverable(paymentSchedule);
@@ -110,7 +110,7 @@ public class PaymentScheduleController {
 	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
-		paymentSchedule = PaymentSchedule.find(paymentSchedule.getId());
+		paymentSchedule = paymentScheduleProvider.get().find(paymentSchedule.getId());
 		
 		try  {
 			irrecoverableProvider.get().notPassInIrrecoverable(paymentSchedule);

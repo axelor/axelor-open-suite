@@ -12,7 +12,7 @@
     <form name="irrecoverable-form" title="Irrecoverable" model="com.axelor.apps.account.db.Irrecoverable"   
     onNew="action-record-irrecoverable-default-record">
   
-		<panel title="Overview" x-item-span="12">
+		<panel title="Overview" itemSpan="12">
 			 <field name="name"/>
 			 <field name="user"/>
 			 <field name="dateTime"/>
@@ -22,22 +22,22 @@
 	 		<button name="getIrrecoverable" title="Get invoices and schedule lines to set as irrecoverable" onClick="save,com.axelor.apps.account.web.IrrecoverableController:getIrrecoverable"/>
 		</panel>
 		<panel-tabs showIf="statusSelect == 1">
-			<panel-related field="invoiceSet"  form-view="invoice-form" grid-view="invoice-grid" x-span="12"/>
+			<panel-related field="invoiceSet"  form-view="invoice-form" grid-view="invoice-grid" colSpan="12"/>
 			<panel-related field="paymentScheduleLineSet"/>
 		</panel-tabs>
 		
 		<panel-side showIf="invoiceSet != null || paymentScheduleLineSet != null">
 			<button name="createIrrecoverableReport" title="Generate irrecoverable report"  onClick="save,com.axelor.apps.account.web.IrrecoverableController:createIrrecoverableReport" showIf="statusSelect == 1"/>
-			<field name="exportTypeSelect" x-span="4"/>
+			<field name="exportTypeSelect" colSpan="4"/>
 			<button name="printReport" title="Print" icon="fa-print" onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>  		
 		</panel-side>
-		<panel-related x-sidebar="true" field="irrecoverableCustomerLineList" title="Report execution" x-span="12"/>  
+		<panel-related sidebar="true" field="irrecoverableCustomerLineList" title="Report execution" colSpan="12"/>  
 		
 		<panel showIf="invoiceSet != null || paymentScheduleLineSet != null">
   			<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="save,action-method-account-irrecoverable-pass-in" showIf="statusSelect == 1"/>
 	 		<button name="showTraceBack" title="Anomalies"   onClick="save,action-irrecoverable-show-trace-back" showIf="statusSelect == 2"/>
 	 	</panel>
-		<panel-related field="moveSet" showIf="statusSelect == 2" x-span="12"/>
+		<panel-related field="moveSet" showIf="statusSelect == 2" colSpan="12"/>
 	</form>
 
     <action-method name="action-method-account-irrecoverable-pass-in">

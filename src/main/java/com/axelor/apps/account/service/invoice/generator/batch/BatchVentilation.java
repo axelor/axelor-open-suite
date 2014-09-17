@@ -47,8 +47,8 @@ public class BatchVentilation extends BatchWkf {
 
 			try {
 				
-				invoiceService.ventilate( Invoice.find(invoice.getId()) );
-				updateInvoice( Invoice.find(invoice.getId()) );
+				invoiceService.ventilate( invoiceService.find(invoice.getId()) );
+				updateInvoice( invoiceService.find(invoice.getId()) );
 
 			} catch (AxelorException e) {
 

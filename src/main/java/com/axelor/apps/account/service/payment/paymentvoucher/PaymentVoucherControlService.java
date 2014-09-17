@@ -20,9 +20,6 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
@@ -36,8 +33,6 @@ import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 
 public class PaymentVoucherControlService  {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherControlService.class); 
 	
 	@Inject
 	private PaymentVoucherSequenceService paymentVoucherSequenceService;

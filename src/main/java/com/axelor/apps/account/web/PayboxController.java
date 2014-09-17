@@ -97,7 +97,7 @@ public class PayboxController {
             
             LOG.debug("idPaymentVoucher :"+idPaymentVoucher);
             
-            PaymentVoucher paymentVoucher = PaymentVoucher.find(Long.parseLong(idPaymentVoucher));
+            PaymentVoucher paymentVoucher = paymentVoucherPayboxProvider.get().find(Long.parseLong(idPaymentVoucher));
             LOG.debug("paymentVoucher :"+paymentVoucher);
             
             boolean verified = false;

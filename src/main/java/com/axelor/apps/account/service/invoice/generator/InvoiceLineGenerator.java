@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineType;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
@@ -38,12 +39,14 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.tool.date.Period;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.google.inject.Inject;
 
 /**
  * Classe de création de ligne de facture abstraite.
@@ -72,6 +75,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected BigDecimal discountAmount;
 	protected int discountTypeSelect;
 	protected BigDecimal exTaxTotal;
+	
+	@Inject
+	protected UnitConversionService unitConversionService;
 	
 	protected InvoiceLineGenerator() { }
 	
@@ -207,7 +213,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		if(taxLine == null)  {
 			boolean isPurchase = false;
-			if(invoice.getOperationTypeSelect() == Invoice.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == Invoice.OPERATION_TYPE_SUPPLIER_REFUND)  {
+			if(invoice.getOperationTypeSelect() == InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND)  {
 				isPurchase = true;
 			}
 			taxLine =  accountManagementServiceImpl.getTaxLine(invoice.getInvoiceDate(), product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
@@ -341,7 +347,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	 */
 	protected BigDecimal convertCoef(Unit startUnit, Unit endUnit){
 		
-		UnitConversion unitConversion = UnitConversion.filter("self.startUnit = ?1 AND self.endUnit = ?2", startUnit, endUnit).fetchOne();
+		UnitConversion unitConversion = unitConversionService.all().filter("self.startUnit = ?1 AND self.endUnit = ?2", startUnit, endUnit).fetchOne();
 		
 		if (unitConversion != null){ return unitConversion.getCoef(); }
 		else { return BigDecimal.ONE; }

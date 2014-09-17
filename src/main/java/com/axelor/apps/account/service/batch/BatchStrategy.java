@@ -29,10 +29,13 @@ import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.InterbankPaymentOrderRejectImportService;
 import com.axelor.apps.account.service.MailService;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.account.service.MoveLineService;
+import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.PaymentScheduleExportService;
 import com.axelor.apps.account.service.PaymentScheduleImportService;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.ReimbursementImportService;
+import com.axelor.apps.account.service.ReimbursementService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
@@ -40,11 +43,14 @@ import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
@@ -65,6 +71,23 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected MoveLineExportService moveLineExportService;
 	protected BatchAccountCustomer batchAccountCustomer;
 
+	@Inject
+	protected BatchRepository batchRepo;
+	
+	@Inject
+	protected PartnerService  partnerService;
+	
+	@Inject
+	protected CompanyRepository companyRepo;
+	
+	@Inject
+	protected MoveService moveService;
+	
+	@Inject
+	protected MoveLineService moveLineService;
+	
+	@Inject
+	protected ReimbursementService reimbursementService;
 
 	
 	protected BatchStrategy(ReminderService reminderService, MailService mailService) {
@@ -137,49 +160,49 @@ public abstract class BatchStrategy extends AbstractBatch {
 	
 	protected void updateInvoice( Invoice invoice ){
 		
-		invoice.addBatchSetItem( Batch.find( batch.getId() ) );
+		invoice.addBatchSetItem( batchRepo.find( batch.getId() ) );
 			
 		incrementDone();
 	}
 	
 	protected void updateReimbursement( Reimbursement reimbursement ){
 		
-		reimbursement.addBatchSetItem( Batch.find( batch.getId() ) );
+		reimbursement.addBatchSetItem( batchRepo.find( batch.getId() ) );
 			
 		incrementDone();
 	}
 	
 	protected void updatePaymentScheduleLine( PaymentScheduleLine paymentScheduleLine ){
 		
-		paymentScheduleLine.addBatchSetItem( Batch.find( batch.getId() ) );
+		paymentScheduleLine.addBatchSetItem( batchRepo.find( batch.getId() ) );
 			
 		incrementDone();
 	}
 	
 	protected void updatePaymentVoucher( PaymentVoucher paymentVoucher ){
 		
-		paymentVoucher.addBatchSetItem( Batch.find( batch.getId() ) );
+		paymentVoucher.addBatchSetItem( batchRepo.find( batch.getId() ) );
 			
 		incrementDone();
 	}
 	
 	protected void updatePartner( Partner partner ){
 		
-		partner.addBatchSetItem( Batch.find( batch.getId() ) );
+		partner.addBatchSetItem( batchRepo.find( batch.getId() ) );
 			
 		incrementDone();
 	}
 	
 	protected void updateAccountingSituation( AccountingSituation accountingSituation ){
 		
-		accountingSituation.addBatchSetItem( Batch.find( batch.getId() ) );
+		accountingSituation.addBatchSetItem( batchRepo.find( batch.getId() ) );
 			
 		incrementDone();
 	}
 	
 	protected void updateMoveLineReport( MoveLineReport moveLineReport){
 		
-		moveLineReport.addBatchSetItem( Batch.find( batch.getId() ) );
+		moveLineReport.addBatchSetItem( batchRepo.find( batch.getId() ) );
 			
 		incrementDone();
 	}

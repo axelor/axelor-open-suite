@@ -26,7 +26,9 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceBatch;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.inject.Beans;
 
 public abstract class BatchWkf extends BatchStrategy {
 
@@ -68,7 +70,7 @@ public abstract class BatchWkf extends BatchStrategy {
 	
 			LOG.debug("Query: {}", query);
 			
-			return Invoice.filter(query, params.toArray()).fetch();
+			return Beans.get(InvoiceRepository.class).all().filter(query, params.toArray()).fetch();
 			
 		} else { return new ArrayList<Invoice>(); }
 

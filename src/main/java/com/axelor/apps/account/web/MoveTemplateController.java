@@ -42,7 +42,7 @@ public class MoveTemplateController {
 	
 	public void checkValidity(ActionRequest request, ActionResponse response){
 		MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
-		moveTemplate = MoveTemplate.find(moveTemplate.getId());
+		moveTemplate = mts.find(moveTemplate.getId());
 		BigDecimal creditPercent = BigDecimal.ZERO;
 		BigDecimal debitPercent = BigDecimal.ZERO;
 		Boolean partnerDebit = false;
@@ -79,7 +79,7 @@ public class MoveTemplateController {
 	
 	public void generateMove(ActionRequest request, ActionResponse response){
 		HashMap<String,Object> moveTemplateMap = (HashMap<String, Object>) request.getContext().get("moveTemplate");
-		MoveTemplate moveTemplate = MoveTemplate.find(Long.parseLong(moveTemplateMap.get("id").toString()));
+		MoveTemplate moveTemplate = mts.find(Long.parseLong(moveTemplateMap.get("id").toString()));
 		List<HashMap<String,Object>> dataList = (List<HashMap<String, Object>>) request.getContext().get("dataInputList");
 		LOG.debug("MoveTemplate : {}",moveTemplate);
 		LOG.debug("Data inputlist : {}",dataList);

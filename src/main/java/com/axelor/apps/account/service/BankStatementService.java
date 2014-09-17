@@ -18,15 +18,13 @@
 package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
-
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.BankStatement;
 import com.axelor.apps.account.db.BankStatementLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Partner;
@@ -36,16 +34,13 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class BankStatementService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(BankStatementService.class);
+public class BankStatementService extends BankStatementRepository {
 	
 	@Inject
 	private MoveService moveService;
 	
 	@Inject
 	private MoveLineService moveLineService;
-	
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -61,7 +56,7 @@ public class BankStatementService {
 		
 		bankStatement.setComputedBalance(computedBalance);
 		
-		bankStatement.save();
+		save(bankStatement);
 	}
 	
 	
@@ -83,9 +78,9 @@ public class BankStatementService {
 			}
 		}
 		
-		bankStatement.setStatusSelect(BankStatement.STATUS_VALIDATED);
+		bankStatement.setStatusSelect(BankStatementRepository.STATUS_VALIDATED);
 		
-		bankStatement.save();
+		save(bankStatement);
 	}
 	
 	public void checkBalance(BankStatement bankStatement) throws AxelorException  {
@@ -130,7 +125,7 @@ public class BankStatementService {
 				moveLineService.createMoveLine(move, partner, bankStatement.getCashAccount(), amount, 
 						!isNegate, isNegate, effectDate, effectDate, 1, name));
 
-		move.save();
+		moveService.save(move);
 		
 		moveService.validateMove(move);
 		

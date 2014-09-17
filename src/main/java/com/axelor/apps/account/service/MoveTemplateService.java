@@ -23,21 +23,18 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
+import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.service.PartnerService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MoveTemplateService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(MoveTemplateService.class);
+public class MoveTemplateService extends MoveTemplateRepository{
 	
 	@Inject
 	MoveService moveService;
@@ -45,12 +42,15 @@ public class MoveTemplateService {
 	@Inject
 	MoveLineService moveLineService;
 	
+	@Inject
+	PartnerService partnerService;
+	
 	@Transactional
 	public void validateMoveTemplateLine(MoveTemplate moveTemplate){
 		moveTemplate.setIsValid(true);
 		for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList())
 			line.setIsValid(true);
-		moveTemplate.save();
+		save(moveTemplate);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -66,11 +66,11 @@ public class MoveTemplateService {
 				BigDecimal moveBalance = new BigDecimal(data.get("moveBalance").toString());
 				Partner partner = null;
 				if(data.get("debitPartner") != null){
-					debitPartner = Partner.find(Long.parseLong(((HashMap<String,Object>) data.get("debitPartner")).get("id").toString()));
+					debitPartner = partnerService.find(Long.parseLong(((HashMap<String,Object>) data.get("debitPartner")).get("id").toString()));
 					partner = debitPartner;
 				}	
 				if(data.get("creditPartner") != null){
-					creditPartner = Partner.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
+					creditPartner = partnerService.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
 					partner = creditPartner;
 				}
 				Move move = moveService.createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null);
@@ -89,7 +89,7 @@ public class MoveTemplateService {
 						move.getMoveLineList().add(moveLine);
 					}
 				}
-				move.save();
+				moveService.save(move);
 				moveList.add(move.getId());
 			}
 			return moveList;

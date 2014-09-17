@@ -46,7 +46,7 @@ public class InvoiceBatchController {
 		
 		InvoiceBatch invoiceBatch = request.getContext().asType(InvoiceBatch.class);
 		
-		Batch batch = invoiceBatchService.wkf(InvoiceBatch.find(invoiceBatch.getId()));
+		Batch batch = invoiceBatchService.wkf(invoiceBatchService.find(invoiceBatch.getId()));
 		
 		response.setFlash(batch.getComment());
 		response.setReload(true);

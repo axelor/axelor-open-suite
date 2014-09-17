@@ -16,17 +16,20 @@
 	  <field name="name"/>
 	  <field name="code"/>
 	  <field name="company"/>
-	  <field name="accountChart" readonlyIf="hasChartImported" x-span="8"/>
-	  <button name="installTemplate" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null"   icon="fa-import" onClick="action-group-account-config-installchart-click"/>
+
+	  <field name="accountChart" readonlyIf="hasChartImported" colSpan="8"/>
+	  <button name="installTemplate" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" colSpan="1" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
+
 	  <field name="hasChartImported"/>
 	  <field name="showDetailsInInvoice"/>
 	</panel>
 	<panel title="CFONB">
-	  <field name="cfonbConfig" showTitle="false"   widget="NestedEditor" form-view="cfonb-config-form" summary-view="true"/>
+<!-- 	  <field name="cfonbConfig" showTitle="false" colSpan="4" widget="NestedEditor" form-view="cfonb-config-form" summary-view="true"/> -->
+	  <field name="cfonbConfig" showTitle="false" colSpan="4" />
 	</panel>
 	<panel title="Receivables recovery" >
-		<field name="mailTransitTime" x-span="12"/>
-		<field name="reminderConfigLineList" showTitle="false" x-span="12">
+		<field name="mailTransitTime" colSpan="12"/>
+		<field name="reminderConfigLineList" showTitle="false" colSpan="12">
 		<!-- TODO:Check weather editor works or not -->
 		<editor x-layout="table">
 			<field name="partnerCategory"/>
@@ -35,11 +38,12 @@
 		</field>
 	</panel>
 	<panel title="Paybox">
-	  <field name="payboxConfig" showTitle="false"  widget="NestedEditor" form-view="paybox-config-form" summary-view="true"/>
+<!-- 	  <field name="payboxConfig" showTitle="false"  widget="NestedEditor" form-view="paybox-config-form" summary-view="true"/> -->
+	  <field name="payboxConfig" showTitle="false" />
 	</panel>
 	<panel-tabs>
 		<panel title="Accounting">
-			<panel title="Journals" x-span="12">
+			<panel title="Journals" colSpan="12">
 				<field name="saleJournalType"/>
 				<field name="purchaseJournalType"/>
 				<field name="cashJournalType"/>
@@ -54,34 +58,34 @@
 				<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 				<field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 			</panel>
-			<panel title="Accounts" x-span="12">
+			<panel title="Accounts" colSpan="12">
 				<field name="customerAccount" domain="self.company = :company"/>
 				<field name="supplierAccount" domain="self.company = :company"/>
 				<field name="doubtfulCustomerAccount" domain="self.company = :company"/>
 				<field name="irrecoverableAccount" domain="self.company = :company"/>
 			</panel>
-			<panel title="Payment differences" x-span="12">
+			<panel title="Payment differences" colSpan="12">
 				<field name="thresholdDistanceFromRegulation"/>
 				<field name="cashPositionVariationAccount" domain="self.company = :company"/>
 			</panel>
-			<panel title="Exports" x-span="12">
+			<panel title="Exports" colSpan="12">
 				<field name="exportPath"/>
 			</panel>
-			<panel title="Cashiers" x-span="12">
+			<panel title="Cashiers" colSpan="12">
 				<field name="cashRegisterMailModel"/>
 				<field name="cashRegisterAddressEmail"/>
 			</panel>
-			<panel title="Shift to irrecoverable" x-span="12">
+			<panel title="Shift to irrecoverable" colSpan="12">
 				<field name="irrecoverableReasonPassage"/>
 				<field name="irrecoverableStandardRateTax"/>
 			</panel>
-			 <panel title="Tax payment" x-span="12">
+			 <panel title="Tax payment" colSpan="12">
 			    <field name="payingBackTax"/>
 			</panel>
 		</panel>
 	
 		<panel title="Reimbursement">
-			<panel title="Reimbursements" x-span="12">
+			<panel title="Reimbursements" colSpan="12">
 				<field name="reimbursementExportFolderPath" />
 				<field name="reimbursementExportFolderPathCFONB"/>
 				<field name="lowerThresholdReimbursement"/>
@@ -89,7 +93,7 @@
 				<field name="reimbursementAccount" domain="self.company = :company"/>
 				<field name="reimbursementMailModel"/>
 			</panel>
-			<panel title="Reimbursement rejects" x-span="12">
+			<panel title="Reimbursement rejects" colSpan="12">
 				<field name="reimbursementImportFolderPathCFONB"/>
 				<field name="tempReimbImportFolderPathCFONB"/>
 			</panel>
@@ -101,11 +105,11 @@
 			<field name="threeMonthDebtPassReason"/>
 		</panel>
 		<panel title="Direct debit">
-			<panel title="Direct debits" x-span="12">
+			<panel title="Direct debits" colSpan="12">
 				<field name="paymentScheduleExportFolderPathCFONB"/>
 				<field name="directDebitPaymentMode"/>
 			</panel>
-			<panel title="Direct debit rejects" x-span="12">
+			<panel title="Direct debit rejects" colSpan="12">
 				<field name="rejectionPaymentMode"/>
 				<field name="paymentScheduleRejectNumLimit"/>
 				<field name="invoiceRejectNumLimit"/>
@@ -117,26 +121,26 @@
 		<panel title="Acc. Clearance">
 			<field name="profitAccount" domain="self.company = :company"/>
 			<field name="standardRateTax"/>
-			<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" x-span="12">
+			<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" colSpan="12">
 				<!-- TODO:Check weather this Editor works or not -->
 				<editor x-layout="table">
-					<field name="code" x-span="12"/>
-					<field name="name" x-span="6"/>
-					<field name="accountType" x-span="6"/>
-					<field name="reconcileOk" x-span="6"/>
-					<field name="parent" x-span="6"/>
-					<field name="company" x-span="6"/>
+					<field name="code" colSpan="12"/>
+					<field name="name" colSpan="6"/>
+					<field name="accountType" colSpan="6"/>
+					<field name="reconcileOk" colSpan="6"/>
+					<field name="parent" colSpan="6"/>
+					<field name="company" colSpan="6"/>
 			    </editor>
 			</field>
 		</panel>
 		<panel title="IPO Payments and IPO Cheque">
-			<panel title="Payments by IPO and IPO Cheque" x-span="12">
+			<panel title="Payments by IPO and IPO Cheque" colSpan="12">
 				<field name="interbankPaymentOrderImportPathCFONB" />
 				<field name="tempInterbankPaymentOrderImportPathCFONB" />
 			</panel>
-			<panel title="Payments rejects by IPO and IPO Cheque" x-span="12">
-				<field name="interbankPaymentOrderRejectImportPathCFONB"  />
-				<field name="tempInterbankPaymentOrderRejectImportPathCFONB"  />
+			<panel title="Payments rejects by IPO and IPO Cheque" colSpan="12">
+				<field name="interbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
+				<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
 			</panel>
 		</panel>
 	

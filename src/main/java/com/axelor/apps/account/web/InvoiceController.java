@@ -61,7 +61,7 @@ public class InvoiceController {
 	public void compute(ActionRequest request, ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = Invoice.find(invoice.getId());
+		invoice = is.get().find(invoice.getId());
 
 		try{
 			is.get().compute(invoice);
@@ -82,7 +82,7 @@ public class InvoiceController {
 	public void validate(ActionRequest request, ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = Invoice.find(invoice.getId());
+		invoice = is.get().find(invoice.getId());
 
 		try{
 			is.get().validate(invoice);
@@ -103,7 +103,7 @@ public class InvoiceController {
 	public void ventilate(ActionRequest request, ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = Invoice.find(invoice.getId());
+		invoice = is.get().find(invoice.getId());
 
 		try {
 			is.get().ventilate(invoice);
@@ -123,7 +123,7 @@ public class InvoiceController {
 	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = Invoice.find(invoice.getId());
+		invoice = is.get().find(invoice.getId());
 
 		is.get().cancel(invoice);
 		response.setFlash("Facture annulée");
@@ -141,7 +141,7 @@ public class InvoiceController {
 		Invoice invoice = request.getContext().asType(Invoice.class);
 
 		try {
-			is.get().createRefund(Invoice.find(invoice.getId()));
+			is.get().createRefund(is.get().find(invoice.getId()));
 			response.setReload(true);
 			response.setFlash("Avoir créé"); 
 		}
@@ -153,7 +153,7 @@ public class InvoiceController {
 	public void usherProcess(ActionRequest request, ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = Invoice.find(invoice.getId());
+		invoice = is.get().find(invoice.getId());
 
 		try {
 			is.get().usherProcess(invoice);
@@ -166,7 +166,7 @@ public class InvoiceController {
 	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = Invoice.find(invoice.getId());
+		invoice = is.get().find(invoice.getId());
 
 		try  {
 			ics.get().passInIrrecoverable(invoice, true);
@@ -180,7 +180,7 @@ public class InvoiceController {
 	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = Invoice.find(invoice.getId());
+		invoice = is.get().find(invoice.getId());
 
 		try  {
 			ics.get().notPassInIrrecoverable(invoice);
@@ -227,14 +227,12 @@ public class InvoiceController {
 			
 		if(!invoiceIds.equals("")){
 			invoiceIds = invoiceIds.substring(0, invoiceIds.length()-1);	
-			invoice = Invoice.find(new Long(lstSelectedPartner.get(0)));
+			invoice = is.get().find(new Long(lstSelectedPartner.get(0)));
 		}else if(invoice.getId() != null){
 			invoiceIds = invoice.getId().toString();			
 		}
 		
-		System.out.println("SS" +invoiceIds);
 		if(!invoiceIds.equals("")){
-			System.out.println("INvoice ids. "+ invoiceIds);
 			StringBuilder url = new StringBuilder();			
 			String language;
 			try{

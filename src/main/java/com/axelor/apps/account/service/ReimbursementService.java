@@ -18,12 +18,17 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ReimbursementService {
+public class ReimbursementService extends  ReimbursementRepository{
 	
+	@Inject
+	private PartnerService partnerService;
 	
 	/**
 	 * Procédure permettant de mettre à jour la liste des RIBs du tiers
@@ -37,7 +42,7 @@ public class ReimbursementService {
 
 		if(bankDetails != null && partner != null && !bankDetails.equals(partner.getBankDetails()))  {
 			partner.setBankDetails(bankDetails);
-			partner.save();
+			partnerService.save(partner);
 		}
 	}
 	

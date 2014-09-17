@@ -19,12 +19,16 @@ package com.axelor.apps.account.service.invoice.generator.batch;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
 	protected InvoiceService invoiceService;
+	
+	@Inject
+	private BatchRepository batchRepo;
 
 	
 	protected BatchStrategy( InvoiceService invoiceService ) {
@@ -40,7 +44,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 		
 		if (invoice != null) {
 			
-			invoice.addBatchSetItem( Batch.find( batch.getId() ) );
+			invoice.addBatchSetItem( batchRepo.find( batch.getId() ) );
 			incrementDone();
 			
 		}

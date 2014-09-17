@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
@@ -45,6 +46,9 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 	private BigDecimal totalAmount = BigDecimal.ZERO;
 	
 	private String updateCustomerAccountLog = "";
+	
+	@Inject
+	private PaymentVoucherRepository paymentVoucherRepo;
 
 	
 	@Inject
@@ -112,7 +116,7 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 				
 			}
 			
-			updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(Company.find(company.getId()));
+			updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(companyRepo.find(company.getId()));
 		}
 	}
 	
@@ -123,11 +127,11 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 		for(String[] payment : paymentFile)  {
 			try {
 				
-				PaymentVoucher paymentVoucher = interbankPaymentOrderImportService.runInterbankPaymentOrder(payment, Company.find(company.getId()));
+				PaymentVoucher paymentVoucher = interbankPaymentOrderImportService.runInterbankPaymentOrder(payment, companyRepo.find(company.getId()));
 				
 				if(paymentVoucher != null)  {
 					updatePaymentVoucher(paymentVoucher);
-					this.totalAmount = this.totalAmount.add(PaymentVoucher.find(paymentVoucher.getId()).getPaidAmount());
+					this.totalAmount = this.totalAmount.add(paymentVoucherRepo.find(paymentVoucher.getId()).getPaidAmount());
 				}
 				
 			} catch (AxelorException e) {

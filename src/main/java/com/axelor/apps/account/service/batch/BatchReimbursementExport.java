@@ -26,13 +26,13 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.AccountingBatch;
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.service.MoveLineService;
+import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.ReimbursementExportService;
+import com.axelor.apps.account.service.ReimbursementService;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
-import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.JPA;
@@ -50,6 +50,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 	
 	private String updateCustomerAccountLog = "";
 	
+	
 	@Inject
 	public BatchReimbursementExport(ReimbursementExportService reimbursementExportService, CfonbExportService cfonbExportService, BatchAccountCustomer batchAccountCustomer) {
 		
@@ -66,7 +67,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 		switch (batch.getAccountingBatch().getReimbursementExportTypeSelect()) {
 		
-		case AccountingBatch.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
+		case AccountingBatchService.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
 			try {
 				this.testAccountingBatchBankDetails(batch.getAccountingBatch());
 				reimbursementExportService.testCompanyField(company);
@@ -77,7 +78,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			}
 			break;
 			
-		case AccountingBatch.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
+		case AccountingBatchService.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
 			try {
 				this.testAccountingBatchBankDetails(batch.getAccountingBatch());
 				reimbursementExportService.testCompanyField(company);
@@ -105,17 +106,17 @@ public class BatchReimbursementExport extends BatchStrategy {
 			Company company = batch.getAccountingBatch().getCompany();
 			
 			switch (batch.getAccountingBatch().getReimbursementExportTypeSelect()) {
-			case AccountingBatch.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
+			case AccountingBatchService.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
 				
 				this.runCreateReimbursementExport(company);
 				
 				break;
 				
-			case AccountingBatch.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
+			case AccountingBatchService.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
 				
 				this.runReimbursementExportProcess(company);
 				
-				updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(Company.find(company.getId()));
+				updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(companyRepo.find(company.getId()));
 				
 				break;
 			
@@ -128,8 +129,8 @@ public class BatchReimbursementExport extends BatchStrategy {
 	
 	public void runCreateReimbursementExport(Company company)  {
 		
-		List<Reimbursement> reimbursementList = (List<Reimbursement>) Reimbursement.filter("self.statusSelect != ?1 AND self.statusSelect != ?2 AND self.company = ?3", 
-				Reimbursement.STATUS_REIMBURSED, Reimbursement.STATUS_CANCELED, company).fetch();
+		List<Reimbursement> reimbursementList = (List<Reimbursement>) reimbursementService.all().filter("self.statusSelect != ?1 AND self.statusSelect != ?2 AND self.company = ?3", 
+				ReimbursementService.STATUS_REIMBURSED, ReimbursementService.STATUS_CANCELED, company).fetch();
 		
 		int i=0;
 
@@ -137,50 +138,50 @@ public class BatchReimbursementExport extends BatchStrategy {
 			
 			LOG.debug("Remboursement n° {}", reimbursement.getRef());
 			
-			updateReimbursement(Reimbursement.find(reimbursement.getId()));
+			updateReimbursement(reimbursementService.find(reimbursement.getId()));
 		}
 		
-		List<Partner> partnerList = (List<Partner>) Partner.filter("?1 IN self.companySet = ?1", company).fetch();
+		List<Partner> partnerList = (List<Partner>) partnerService.all().filter("?1 IN self.companySet = ?1", company).fetch();
 		
 		for(Partner partner : partnerList)  {
 			
 			try {
-				partner = Partner.find(partner.getId());
+				partner = partnerService.find(partner.getId());
 				
 				LOG.debug("Tiers n° {}", partner.getName());
 				
-				if(reimbursementExportService.canBeReimbursed(partner, Company.find(company.getId())))  {
+				if(reimbursementExportService.canBeReimbursed(partner, companyRepo.find(company.getId())))  {
 				
-					List<MoveLine> moveLineList = (List<MoveLine>) MoveLine.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+					List<MoveLine> moveLineList = (List<MoveLine>) moveLineService.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 							"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND " +
 							"self.reimbursementStatusSelect = ?4 ",
-							Move.STATUS_VALIDATED ,Partner.find(partner.getId()), Company.find(company.getId()), MoveLine.REIMBURSEMENT_STATUS_NULL).fetch();
+							MoveService.STATUS_VALIDATED ,partnerService.find(partner.getId()), companyRepo.find(company.getId()), MoveLineService.REIMBURSEMENT_STATUS_NULL).fetch();
 					
 					LOG.debug("Liste des trop perçus : {}", moveLineList);
 					
 					if(moveLineList != null && moveLineList.size() != 0)  {
 						
-						Reimbursement reimbursement = reimbursementExportService.runCreateReimbursement(moveLineList, Company.find(company.getId()), Partner.find(partner.getId()));
+						Reimbursement reimbursement = reimbursementExportService.runCreateReimbursement(moveLineList, companyRepo.find(company.getId()), partnerService.find(partner.getId()));
 						if(reimbursement != null)  {
-							updateReimbursement(Reimbursement.find(reimbursement.getId()));
-							this.totalAmount = this.totalAmount.add(Reimbursement.find(reimbursement.getId()).getAmountToReimburse());
+							updateReimbursement(reimbursementService.find(reimbursement.getId()));
+							this.totalAmount = this.totalAmount.add(reimbursementService.find(reimbursement.getId()).getAmountToReimburse());
 							i++;
 						}
 					}
 				}
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Tiers %s", Partner.find(partner.getId()).getName()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format("Tiers %s", partnerService.find(partner.getId()).getName()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Tiers %s", Partner.find(partner.getId()).getName()), e), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new Exception(String.format("Tiers %s", partnerService.find(partner.getId()).getName()), e), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le tiers {}", Partner.find(partner.getId()).getName());
+				LOG.error("Bug(Anomalie) généré(e) pour le tiers {}", partnerService.find(partner.getId()).getName());
 				
 			} finally {
 				
@@ -196,46 +197,46 @@ public class BatchReimbursementExport extends BatchStrategy {
 		int i=0;
 		
 		// On récupère les remboursements dont les trop perçu ont été annulés
-		List<Reimbursement> reimbursementToCancelList = (List<Reimbursement>) Reimbursement
-				.filter("self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse = 0", Reimbursement.STATUS_VALIDATED, company).fetch();
+		List<Reimbursement> reimbursementToCancelList = (List<Reimbursement>) reimbursementService.all()
+				.filter("self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse = 0", ReimbursementService.STATUS_VALIDATED, company).fetch();
 		
 		// On annule les remboursements
 		for(Reimbursement reimbursement : reimbursementToCancelList)  {
-			reimbursement.setStatusSelect(Reimbursement.STATUS_CANCELED);
+			reimbursement.setStatusSelect(ReimbursementService.STATUS_CANCELED);
 		}
 		
 		// On récupère les remboursement à rembourser
-		List<Reimbursement> reimbursementList = (List<Reimbursement>) Reimbursement
-				.filter("self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse > 0", company, Reimbursement.STATUS_VALIDATED).fetch();
+		List<Reimbursement> reimbursementList = (List<Reimbursement>) reimbursementService.all()
+				.filter("self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse > 0", company, ReimbursementService.STATUS_VALIDATED).fetch();
 		
 		List<Reimbursement> reimbursementToExport = new ArrayList<Reimbursement>();
 		
 		for(Reimbursement reimbursement : reimbursementList)  {
 			try {
-				reimbursement = Reimbursement.find(reimbursement.getId());
+				reimbursement = reimbursementService.find(reimbursement.getId());
 				
 				if(reimbursementExportService.canBeReimbursed(reimbursement.getPartner(), reimbursement.getCompany()))  {
 				
 					reimbursementExportService.reimburse(reimbursement, company);
-					updateReimbursement(Reimbursement.find(reimbursement.getId()));
+					updateReimbursement(reimbursementService.find(reimbursement.getId()));
 					reimbursementToExport.add(reimbursement);
-					this.totalAmount = this.totalAmount.add(Reimbursement.find(reimbursement.getId()).getAmountReimbursed());
+					this.totalAmount = this.totalAmount.add(reimbursementService.find(reimbursement.getId()).getAmountReimbursed());
 					i++;
 				}
 				
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Remboursement %s", Reimbursement.find(reimbursement.getId()).getRef()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format("Remboursement %s", reimbursementService.find(reimbursement.getId()).getRef()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Remboursement %s", Reimbursement.find(reimbursement.getId()).getRef()), e), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new Exception(String.format("Remboursement %s", reimbursementService.find(reimbursement.getId()).getRef()), e), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour l'export du remboursement {}", Reimbursement.find(reimbursement.getId()).getRef());
+				LOG.error("Bug(Anomalie) généré(e) pour l'export du remboursement {}", reimbursementService.find(reimbursement.getId()).getRef());
 				
 			} finally {
 				
@@ -248,7 +249,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 		
 			try {
 				
-				reimbursementExportService.exportSepa(Company.find(company.getId()), Batch.find(batch.getId()).getStartDate(), reimbursementToExport, Batch.find(batch.getId()).getAccountingBatch().getBankDetails());
+				reimbursementExportService.exportSepa(companyRepo.find(company.getId()), batchRepo.find(batch.getId()).getStartDate(), reimbursementToExport, batchRepo.find(batch.getId()).getAccountingBatch().getBankDetails());
 				
 			} catch (Exception e) {
 				
@@ -262,7 +263,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			
 			try {
 				
-				cfonbExportService.exportCFONB(Company.find(company.getId()), Batch.find(batch.getId()).getStartDate(), reimbursementToExport, Batch.find(batch.getId()).getAccountingBatch().getBankDetails());
+				cfonbExportService.exportCFONB(companyRepo.find(company.getId()), batchRepo.find(batch.getId()).getStartDate(), reimbursementToExport, batchRepo.find(batch.getId()).getAccountingBatch().getBankDetails());
 				
 			} catch (Exception e) {
 				
@@ -285,16 +286,16 @@ public class BatchReimbursementExport extends BatchStrategy {
 	@Override
 	protected void stop() {
 		String comment = "";
-		batch = Batch.find(batch.getId());
+		batch = batchRepo.find(batch.getId());
 		switch (batch.getAccountingBatch().getReimbursementExportTypeSelect()) {
-		case AccountingBatch.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
+		case AccountingBatchService.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
 			comment = "Compte rendu de création de remboursement :\n";
 			comment += String.format("\t* %s remboursement(s) créé(s)\n", batch.getDone());
 			comment += String.format("\t* Montant total : %s \n", this.totalAmount);
 
 			break;
 			
-		case AccountingBatch.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
+		case AccountingBatchService.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
 			
 			comment = "Compte rendu d'export de remboursement :\n";
 			comment += String.format("\t* %s remboursement(s) traité(s)\n", batch.getDone());

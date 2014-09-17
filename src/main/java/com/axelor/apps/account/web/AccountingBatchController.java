@@ -45,8 +45,8 @@ public class AccountingBatchController {
 		
 		Batch batch = null;
 		
-		if(accountingBatch.getReminderTypeSelect() == AccountingBatch.ACTION_REMINDER)  {
-			batch = accountingBatchService.reminder(AccountingBatch.find(accountingBatch.getId()));
+		if(accountingBatch.getReminderTypeSelect() == AccountingBatchService.ACTION_REMINDER)  {
+			batch = accountingBatchService.reminder(accountingBatchService.find(accountingBatch.getId()));
 		}
 		if(batch != null)
 			response.setFlash(batch.getComment());
@@ -65,7 +65,7 @@ public class AccountingBatchController {
 		
 		Batch batch = null;
 		
-		batch = accountingBatchService.doubtfulCustomer(AccountingBatch.find(accountingBatch.getId()));
+		batch = accountingBatchService.doubtfulCustomer(accountingBatchService.find(accountingBatch.getId()));
 		
 		if(batch != null)
 			response.setFlash(batch.getComment());
@@ -84,11 +84,11 @@ public class AccountingBatchController {
 		
 		Batch batch = null;
 		
-		if(accountingBatch.getReimbursementTypeSelect() == AccountingBatch.REIMBURSEMENT_TYPE_EXPORT)  {
-			batch = accountingBatchService.reimbursementExport(AccountingBatch.find(accountingBatch.getId()));
+		if(accountingBatch.getReimbursementTypeSelect() == AccountingBatchService.REIMBURSEMENT_TYPE_EXPORT)  {
+			batch = accountingBatchService.reimbursementExport(accountingBatchService.find(accountingBatch.getId()));
 		}
-		else if(accountingBatch.getReimbursementTypeSelect() == AccountingBatch.REIMBURSEMENT_TYPE_IMPORT)  {
-			batch = accountingBatchService.reimbursementImport(AccountingBatch.find(accountingBatch.getId()));
+		else if(accountingBatch.getReimbursementTypeSelect() == AccountingBatchService.REIMBURSEMENT_TYPE_IMPORT)  {
+			batch = accountingBatchService.reimbursementImport(accountingBatchService.find(accountingBatch.getId()));
 		}
 		
 		if(batch != null)
@@ -108,11 +108,11 @@ public class AccountingBatchController {
 		
 		Batch batch = null;
 		
-		if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatch.DIRECT_DEBIT_TYPE_EXPORT)  {
-			batch = accountingBatchService.paymentScheduleExport(AccountingBatch.find(accountingBatch.getId()));
+		if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatchService.DIRECT_DEBIT_TYPE_EXPORT)  {
+			batch = accountingBatchService.paymentScheduleExport(accountingBatchService.find(accountingBatch.getId()));
 		}
-		else if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatch.DIRECT_DEBIT_TYPE_IMPORT)  {
-			batch = accountingBatchService.paymentScheduleImport(AccountingBatch.find(accountingBatch.getId()));
+		else if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatchService.DIRECT_DEBIT_TYPE_IMPORT)  {
+			batch = accountingBatchService.paymentScheduleImport(accountingBatchService.find(accountingBatch.getId()));
 		}
 		
 		if(batch != null)
@@ -132,11 +132,11 @@ public class AccountingBatchController {
 		
 		Batch batch = null;
 		
-		if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatch.INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
-			batch = accountingBatchService.interbankPaymentOrderImport(AccountingBatch.find(accountingBatch.getId()));
+		if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchService.INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
+			batch = accountingBatchService.interbankPaymentOrderImport(accountingBatchService.find(accountingBatch.getId()));
 		}
-		else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatch.INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT)  {
-			batch = accountingBatchService.interbankPaymentOrderRejectImport(AccountingBatch.find(accountingBatch.getId()));
+		else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchService.INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT)  {
+			batch = accountingBatchService.interbankPaymentOrderRejectImport(accountingBatchService.find(accountingBatch.getId()));
 		}
 		
 		if(batch != null)
@@ -157,7 +157,7 @@ public class AccountingBatchController {
 		
 		Batch batch = null;
 
-		batch = accountingBatchService.accountCustomer(AccountingBatch.find(accountingBatch.getId()));
+		batch = accountingBatchService.accountCustomer(accountingBatchService.find(accountingBatch.getId()));
 
 		if(batch != null)
 			response.setFlash(batch.getComment());
@@ -179,7 +179,7 @@ public class AccountingBatchController {
 		
 		Batch batch = null;
 
-		batch = accountingBatchService.moveLineExport(AccountingBatch.find(accountingBatch.getId()));
+		batch = accountingBatchService.moveLineExport(accountingBatchService.find(accountingBatch.getId()));
 
 		if(batch != null)
 			response.setFlash(batch.getComment());

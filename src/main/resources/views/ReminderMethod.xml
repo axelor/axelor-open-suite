@@ -12,7 +12,7 @@
     		<field name="name"/>
     		<field name="code"/>
        	</panel>
-       	<panel-related field="reminderMethodLineList" x-span="12"/>
+       	<panel-related field="reminderMethodLineList" colSpan="12"/>
     </form>
 
 </object-views>

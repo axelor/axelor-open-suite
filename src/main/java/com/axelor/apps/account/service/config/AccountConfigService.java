@@ -17,25 +17,21 @@
  */
 package com.axelor.apps.account.service.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.MailModel;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public class AccountConfigService {
+public class AccountConfigService extends AccountConfigRepository{
 	
-	private static final Logger LOG = LoggerFactory.getLogger(AccountConfigService.class);
-
 	
 	public AccountConfig getAccountConfig(Company company) throws AxelorException  {
 		

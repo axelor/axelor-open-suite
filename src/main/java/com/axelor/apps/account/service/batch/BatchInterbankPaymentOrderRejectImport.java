@@ -43,7 +43,7 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 	private BigDecimal totalAmount = BigDecimal.ZERO;
 	
 	private String updateCustomerAccountLog = "";
-
+	
 	
 	@Inject
 	public BatchInterbankPaymentOrderRejectImport(InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService, 
@@ -89,7 +89,7 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 				
 		try {
 			
-			rejectFile = interbankPaymentOrderRejectImportService.getCFONBFile(Company.find(company.getId()));	
+			rejectFile = interbankPaymentOrderRejectImportService.getCFONBFile(companyRepo.find(company.getId()));	
 			
 			if(rejectFile != null)  {
 				this.runProcessCreateRejectMove(rejectFile, company);
@@ -122,7 +122,7 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 			
 			try {
 				
-				Invoice invoice = interbankPaymentOrderRejectImportService.createInterbankPaymentOrderRejectMove(reject, Company.find(company.getId()));
+				Invoice invoice = interbankPaymentOrderRejectImportService.createInterbankPaymentOrderRejectMove(reject, companyRepo.find(company.getId()));
 				
 				if(invoice != null)  {
 					updateInvoice(invoice);

@@ -61,7 +61,7 @@ public class MoveLineReportController {
 		try  {
 			MoveLineReportService moveLineReportService = moveLineReportProvider.get();
 			
-			moveLineReport = MoveLineReport.find(moveLineReport.getId());
+			moveLineReport = moveLineReportProvider.get().find(moveLineReport.getId());
 			
 			String queryFilter = moveLineReportService.getMoveLineList(moveLineReport);
 			BigDecimal debitBalance = moveLineReportService.getDebitBalance(queryFilter);
@@ -156,7 +156,7 @@ public class MoveLineReportController {
 	public void replayExport(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
-		moveLineReport = MoveLineReport.find(moveLineReport.getId());		
+		moveLineReport = moveLineReportProvider.get().find(moveLineReport.getId());		
 		
 		try {
 			switch(moveLineReport.getTypeSelect()) {
@@ -187,7 +187,7 @@ public class MoveLineReportController {
 	public void printExportMoveLine(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
-		moveLineReport = MoveLineReport.find(moveLineReport.getId());
+		moveLineReport = moveLineReportProvider.get().find(moveLineReport.getId());
 
 		try {	
 			if(moveLineReport.getExportTypeSelect() == null || moveLineReport.getExportTypeSelect().isEmpty() || moveLineReport.getTypeSelect() == 0) {

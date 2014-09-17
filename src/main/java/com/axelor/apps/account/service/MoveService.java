@@ -35,8 +35,11 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -50,7 +53,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MoveService {
+public class MoveService extends MoveRepository {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MoveService.class);
 	
@@ -74,6 +77,9 @@ public class MoveService {
 	
 	@Inject
 	private AccountConfigService accountConfigService;
+	
+	@Inject
+	private InvoiceRepository invoiceRepo;
 	
 	private LocalDate toDay;
 	
@@ -169,7 +175,7 @@ public class MoveService {
 		}	
 		move.setPaymentMode(paymentMode);
 		
-		move.save();
+		save(move);
 		move.setReference("*"+move.getId());
 		
 		return move;
@@ -213,7 +219,7 @@ public class MoveService {
 				
 				move.getMoveLineList().addAll(moveLineService.createMoveLines(invoice, move, company, partner, account, consolidate, isPurchase, isDebitCustomer, isMinus));
 				
-				move.save();
+				save(move);
 
 				invoice.setMove(move);
 				
@@ -381,11 +387,11 @@ public class MoveService {
 	public MoveLine getInvoiceCustomerMoveLineByQuery(Invoice invoice) throws AxelorException  {
 		
 		if(this.isDebitCustomer(invoice))  {
-			return MoveLine.filter("self.move = ?1 AND self.account = ?2 AND self.debit > 0 AND self.amountRemaining > 0", 
+			return moveLineService.all().filter("self.move = ?1 AND self.account = ?2 AND self.debit > 0 AND self.amountRemaining > 0", 
 					invoice.getMove(), invoice.getPartnerAccount()).fetchOne();
 		}
 		else  {
-			return MoveLine.filter("self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0", 
+			return moveLineService.all().filter("self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0", 
 				invoice.getMove(), invoice.getPartnerAccount()).fetchOne();
 		}
 	}
@@ -793,7 +799,7 @@ public class MoveService {
 		}
 		
 		this.validateMove(move);
-		move.save();
+		save(move);
 	}
 	
 	
@@ -846,7 +852,7 @@ public class MoveService {
 		
 		this.validateEquiponderanteMove(move);
 		
-		move.save();
+		save(move);
 		
 		if(updateCustomerAccount)  {
 			this.updateCustomerAccount(move);
@@ -914,7 +920,7 @@ public class MoveService {
 				throw new AxelorException(String.format("L'écriture comptable %s comporte un total débit différent du total crédit : %s <> %s", 
 						move.getReference(), totalDebit, totalCredit), IException.INCONSISTENCY);
 			}
-			move.setStatusSelect(Move.STATUS_VALIDATED);
+			move.setStatusSelect(STATUS_VALIDATED);
 		}
 	}
 	
@@ -930,13 +936,13 @@ public class MoveService {
 			boolean isMinus = this.isMinus(invoice);
 			
 			LOG.debug("Methode 1 : debut"); //TODO
-			invoice.save();
+			invoiceRepo.save(invoice);
 			LOG.debug("Methode 1 : milieu");
 			MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
 			LOG.debug("Methode 1 : fin");
 			
 			LOG.debug("Methode 2 : debut");
-			MoveLine moveLine2 = this.getCustomerMoveLineByQuery(invoice);
+//			MoveLine moveLine2 = this.getCustomerMoveLineByQuery(invoice);
 			LOG.debug("Methode 2 : fin");
 			
 			if(moveLine != null)  {
@@ -998,7 +1004,7 @@ public class MoveService {
 			moveLines.add(moveLineService.createMoveLine(newMove, newMove.getPartner(), line.getAccount(), amount, isDebit, false, null, 0, null));
 		}
 		newMove.setMoveLineList(moveLines);
-		return newMove.save();
+		return save(newMove);
 	}
 	
 	public boolean validateMultiple(List<? extends Move> moveList){

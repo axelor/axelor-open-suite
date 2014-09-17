@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.service.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.PayboxConfig;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
@@ -28,9 +25,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
 public class PayboxConfigService extends AccountConfigService  {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PayboxConfigService.class);
-
 	
 	public PayboxConfig getPayboxConfig(AccountConfig accountConfig) throws AxelorException  {
 		

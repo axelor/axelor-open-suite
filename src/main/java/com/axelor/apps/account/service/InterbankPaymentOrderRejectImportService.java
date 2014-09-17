@@ -21,9 +21,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InterbankCodeLine;
@@ -31,6 +28,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -44,8 +42,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class InterbankPaymentOrderRejectImportService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(InterbankPaymentOrderRejectImportService.class); 
 	
 	@Inject
 	private RejectImportService rejectImportService;
@@ -64,6 +60,9 @@ public class InterbankPaymentOrderRejectImportService {
 	
 	@Inject
 	private AccountConfigService accountConfigService;
+	
+	@Inject
+	private InvoiceRepository invoiceRepo;
 	
 
 	public List<String[]> getCFONBFile(Company company) throws AxelorException, IOException  {
@@ -93,7 +92,7 @@ public class InterbankPaymentOrderRejectImportService {
 			BigDecimal amountReject = new BigDecimal(reject[2]);
 			InterbankCodeLine causeReject = rejectImportService.getInterbankCodeLine(reject[3], 0);
 			
-			Invoice invoice = Invoice.filter("UPPER(self.invoiceId) = ?1 AND self.company = ?2", refReject, company).fetchOne();
+			Invoice invoice = invoiceRepo.all().filter("UPPER(self.invoiceId) = ?1 AND self.company = ?2", refReject, company).fetchOne();
 			if(invoice == null)  {
 				throw new AxelorException(String.format("%s \nAucune facture trouvée pour le numéro de facture %s et la société %s",
 						GeneralServiceAccount.getExceptionAccountingMsg(), refReject, company.getName()), IException.INCONSISTENCY);
@@ -120,7 +119,7 @@ public class InterbankPaymentOrderRejectImportService {
 			MoveLine creditMoveLine = moveLineService.createMoveLine(move , partner, bankAccount, amountReject, false, false, rejectImportService.createRejectDate(dateReject), 2, null);
 			move.getMoveLineList().add(creditMoveLine);		
 			moveService.validateMove(move);
-			move.save();
+			moveService.save(move);
 			
 			return invoice;
 	}
@@ -139,14 +138,14 @@ public class InterbankPaymentOrderRejectImportService {
 		PaymentMode paymentMode = null;
 		
 		if(isTIPCheque)  {
-			paymentMode = PaymentMode.findByCode("TIC");
+			paymentMode = paymentModeService.findByCode("TIC");
 			if(paymentMode == null)  {
 				throw new AxelorException(String.format("%s :\n Le mode de paiement dont le code est 'TIC' n'a pas été trouvé",
 						GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 			}
 		}
 		else  {
-			paymentMode = PaymentMode.findByCode("TIP");
+			paymentMode = paymentModeService.findByCode("TIP");
 			if(paymentMode == null)  {
 				throw new AxelorException(String.format("%s :\n Le mode de paiement dont le code est 'TIP' n'a pas été trouvé",
 						GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);

@@ -44,7 +44,9 @@ import com.axelor.apps.base.db.Mail;
 import com.axelor.apps.base.db.MailModel;
 import com.axelor.apps.base.db.MailModelTag;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Template;
+//import com.axelor.apps.base.db.Template;
+import com.axelor.apps.base.db.repo.MailModelTagRepository;
+import com.axelor.apps.base.db.repo.MailRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.ObjectTool;
 import com.axelor.apps.tool.net.URLService;
@@ -54,7 +56,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MailService {
+public class MailService extends MailRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MailService.class); 
 	
@@ -64,7 +66,13 @@ public class MailService {
 	 * Le numéro de mail généré
 	 */
 	private int number = 0;
-
+	
+	@Inject
+	private AccountingSituationService accountingSituationService;
+	
+	@Inject
+	private MailModelTagRepository mailModelTagRepo;
+	
 	@Inject
 	public MailService() {
 
@@ -290,7 +298,7 @@ public class MailService {
 	public Mail runMailStandard(ReminderMethodLine reminderMethodLine, Partner partner, Company company) throws AxelorException  {
 		LOG.debug("Begin runMailStandard service ...");	
 		if(reminderMethodLine.getMessageTemplate() != null )  {
-			Template messageTemplate = reminderMethodLine.getMessageTemplate();
+//			Template messageTemplate = reminderMethodLine.getMessageTemplate();
 //			Mail reminderMail = this.createGenericMail(messageTemplate, null, today.plusDays(reminderMethodLine.getStandardDeadline()), partner.getMainInvoicingAddress(), company);
 //			
 //			reminderMail.setReminderHistory(this.getReminderHistory(partner, company));
@@ -309,7 +317,7 @@ public class MailService {
 	public List<ReminderHistory> getReminderHistoryList(Partner partner, Company company)  {
 		
 		
-		AccountingSituation accountingSituation = AccountingSituation.filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
+		AccountingSituation accountingSituation = accountingSituationService.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
 		if(accountingSituation != null && accountingSituation.getReminder() != null)  {
 			return accountingSituation.getReminder().getReminderHistoryList();
 		}
@@ -337,7 +345,7 @@ public class MailService {
 	 */
 	public Mail replaceTag(Mail mail)  {
 		
-		List<? extends MailModelTag> mailModelTagList = MailModelTag.all().fetch();
+		List<? extends MailModelTag> mailModelTagList = mailModelTagRepo.all().fetch();
 
 		String content = mail.getContent();
 		String subject = mail.getSubject();
@@ -395,7 +403,7 @@ public class MailService {
 	public void generateAllPdfMail()  {
 		LOG.debug("Génération en masse des emails et courriers au format Pdf");
 		
-		List<? extends Mail> mailList = Mail.filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
+		List<? extends Mail> mailList = all().filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
 		
 		LOG.debug("Nombre de fichiers à générer : {}",mailList.size());
 		for(Mail mail : mailList)  {
@@ -570,7 +578,7 @@ public class MailService {
 	 * @return
 	 */
 	public List<? extends Mail> getMailList(Partner partner)  {
-		return Mail.filter("self.partner = ?1", partner).fetch();
+		return all().filter("self.partner = ?1", partner).fetch();
 	}
 	
 }

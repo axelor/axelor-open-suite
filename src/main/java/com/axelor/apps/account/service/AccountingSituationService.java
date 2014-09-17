@@ -23,6 +23,7 @@ import java.util.Set;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -31,7 +32,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class AccountingSituationService {
+public class AccountingSituationService extends AccountingSituationRepository{
 
 	@Inject
 	private AccountConfigService accountConfigService;
@@ -88,7 +89,7 @@ public class AccountingSituationService {
 		accountingSituation.setCompany(company);
 		accountingSituation.setCustomerAccount(accountConfigService.getCustomerAccount(accountConfig));
 		accountingSituation.setSupplierAccount(accountConfigService.getSupplierAccount(accountConfig));
-		accountingSituation.save();
+		save(accountingSituation);
 			
 		return accountingSituation;
 	}

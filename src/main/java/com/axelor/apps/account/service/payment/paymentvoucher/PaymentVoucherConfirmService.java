@@ -33,9 +33,10 @@ import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.PaymentInvoiceToPayRepository;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
-import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -49,7 +50,7 @@ import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PaymentVoucherConfirmService  {
+public class PaymentVoucherConfirmService extends PaymentVoucherRepository{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherConfirmService.class); 
 	
@@ -66,9 +67,6 @@ public class PaymentVoucherConfirmService  {
 	private PaymentService paymentService;
 
 	@Inject
-	private PaymentScheduleService paymentScheduleService;
-
-	@Inject
 	private PaymentModeService paymentModeService;
 
 	@Inject
@@ -82,6 +80,9 @@ public class PaymentVoucherConfirmService  {
 	
 	@Inject
 	private CurrencyService currencyService;
+	
+	@Inject
+	private PaymentInvoiceToPayRepository paymentInvoiceToPayRepo;
 	
 	
 	/**
@@ -123,7 +124,7 @@ public class PaymentVoucherConfirmService  {
 		// TODO VEIRIFER QUE LES ELEMENTS A PAYER NE CONCERNE QU'UNE SEULE DEVISE
 		
 		// TODO RECUPERER DEVISE DE LA PREMIERE DETTE
-		Currency currencyToPay = null;
+//		Currency currencyToPay = null;
 			
 		// If paid by a moveline check if all the lines selected have the same account + company
 		// Excess payment
@@ -207,9 +208,9 @@ public class PaymentVoucherConfirmService  {
 			moveService.validateMove(move);
 			paymentVoucher.setGeneratedMove(move);
 		}
-		paymentVoucher.setStatusSelect(PaymentVoucher.STATUS_CONFIRMED);
+		paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
 		paymentVoucherSequenceService.setReceiptNo(paymentVoucher, company, journal);
-		paymentVoucher.save();
+		save(paymentVoucher);
 	}
 	
 	
@@ -219,7 +220,7 @@ public class PaymentVoucherConfirmService  {
 	 */
 	public List<? extends PaymentInvoiceToPay>  getPaymentInvoiceToPayList(PaymentVoucher paymentVoucher)  {
 		
-		return PaymentInvoiceToPay.	filter("self.paymentVoucher = ?1 ORDER by self.sequence ASC", paymentVoucher).fetch();
+		return paymentInvoiceToPayRepo.all().filter("self.paymentVoucher = ?1 ORDER by self.sequence ASC", paymentVoucher).fetch();
 		
 	}
 	

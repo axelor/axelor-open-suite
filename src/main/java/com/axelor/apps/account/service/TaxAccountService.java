@@ -17,18 +17,14 @@
  */
 package com.axelor.apps.account.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxAccount;
+import com.axelor.apps.account.db.repo.TaxAccountRepository;
 import com.axelor.apps.base.db.Company;
 
-public class TaxAccountService {
+public class TaxAccountService extends TaxAccountRepository {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(TaxAccountService.class);
-
 	
 	public Account getAccount(Tax tax, Company company)  {
 		

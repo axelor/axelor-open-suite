@@ -19,16 +19,12 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import java.math.BigDecimal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public class PaymentVoucherPayboxService  {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherPayboxService.class); 
+public class PaymentVoucherPayboxService extends PaymentVoucherRepository {
 	
 	/**
 	 * Procédure permettant d'autauriser la confirmation de la saisie paiement
@@ -42,7 +38,7 @@ public class PaymentVoucherPayboxService  {
 		paymentVoucher.setBankCardTransactionNumber(bankCardTransactionNumber);
 		paymentVoucher.setPayboxAmountPaid(new BigDecimal(payboxAmountPaid).divide(new BigDecimal("100")));
 		
-		paymentVoucher.save();
+		save(paymentVoucher);
 	}
 	
 }

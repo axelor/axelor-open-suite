@@ -22,28 +22,36 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
+import com.google.inject.Inject;
 
 
 public class ImportPartner {
 		
+		@Inject
+		private PartnerService partnerService;
+		
+		@Inject
+		private AccountRepository accountRepo;
+	
 		public Object importAccountingSituation(Object bean, Map values) {
 			assert bean instanceof Partner;
 	        try{
 	            Partner partner = (Partner) bean;
 				partner.setContactPartnerSet(new HashSet<Partner>());
-				List<? extends Partner> partnerList = Partner.all().filter("self.mainPartner.id = ?1",partner.getId()).fetch();
+				List<? extends Partner> partnerList = partnerService.all().filter("self.mainPartner.id = ?1",partner.getId()).fetch();
 				for(Partner pt : partnerList)
 					partner.getContactPartnerSet().add(pt);
 				for(Company company : partner.getCompanySet())  {
 					AccountingSituation accountingSituation = new AccountingSituation();
 					accountingSituation.setPartner(partner);
 					accountingSituation.setCompany(company);
-					accountingSituation.setCustomerAccount(Account.all().filter("self.code = ?1 AND self.company = ?2",values.get("customerAccount_code").toString(),company).fetchOne());
-					accountingSituation.setSupplierAccount(Account.all().filter("self.code = ?1 AND self.company = ?2",values.get("supplierAccount_code").toString(),company).fetchOne());
+					accountingSituation.setCustomerAccount(accountRepo.all().filter("self.code = ?1 AND self.company = ?2",values.get("customerAccount_code").toString(),company).fetchOne());
+					accountingSituation.setSupplierAccount(accountRepo.all().filter("self.code = ?1 AND self.company = ?2",values.get("supplierAccount_code").toString(),company).fetchOne());
 					if(partner.getAccountingSituationList() == null)  {
 						partner.setAccountingSituationList(new ArrayList<AccountingSituation>());
 					}

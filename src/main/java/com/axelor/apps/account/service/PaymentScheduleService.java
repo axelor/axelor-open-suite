@@ -32,21 +32,20 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
-import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PaymentScheduleService {
+public class PaymentScheduleService extends PaymentScheduleRepository {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleService.class);
 	
@@ -54,19 +53,7 @@ public class PaymentScheduleService {
 	private PaymentScheduleLineService psls;
 	
 	@Inject
-	private MoveService ms;
-	
-	@Inject
-	private MoveLineService mls;
-	
-	@Inject
 	private SequenceService sequenceService;
-	
-	@Inject
-	private AlarmEngineService<Partner> aes;
-
-	@Inject
-	private DoubtfulCustomerService dcs;
 	
 	private LocalDate date;
 
@@ -234,7 +221,7 @@ public class PaymentScheduleService {
 		
 		for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()){
 			
-			if (paymentScheduleLine.getStatusSelect() == PaymentScheduleLine.STATUS_IN_PROGRESS && !paymentScheduleLine.getRejectedOk()) {
+			if (paymentScheduleLine.getStatusSelect() == PaymentScheduleLineService.STATUS_IN_PROGRESS && !paymentScheduleLine.getRejectedOk()) {
 				
 				LOG.debug("Mise à jour de la ligne {} ", paymentScheduleLine.getName());
 
@@ -242,7 +229,7 @@ public class PaymentScheduleService {
 			}
 		}
 		
-		paymentSchedule.save();
+		save(paymentSchedule);
 		
 	}
 	
@@ -326,9 +313,9 @@ public class PaymentScheduleService {
 			
 //		this.updateInvoices(paymentSchedule); //TODO
 
-		paymentSchedule.setStatusSelect(PaymentSchedule.STATUS_CONFIRMED);
+		paymentSchedule.setStatusSelect(STATUS_CONFIRMED);
 		
-		paymentSchedule.save();
+		save(paymentSchedule);
 	}
 	
 	
@@ -364,7 +351,7 @@ public class PaymentScheduleService {
 	public void cancelPaymentSchedule(PaymentSchedule paymentSchedule){
 		
 		// L'échéancier est passé à annulé
-		paymentSchedule.setStatusSelect(PaymentSchedule.STATUS_CANCELED);
+		paymentSchedule.setStatusSelect(STATUS_CANCELED);
 		
 		for(PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList())  {
 		
@@ -372,7 +359,7 @@ public class PaymentScheduleService {
 			if(paymentScheduleLine.getInTaxAmountPaid().compareTo(paymentScheduleLine.getInTaxAmount()) != 0 ) {
 			
 				// L'échéance est passée à cloturé
-				paymentScheduleLine.setStatusSelect(PaymentScheduleLine.STATUS_CLOSED);
+				paymentScheduleLine.setStatusSelect(PaymentScheduleLineService.STATUS_CLOSED);
 			}
 		}
 		
@@ -395,8 +382,8 @@ public class PaymentScheduleService {
 	 */
 	public boolean isLastSchedule(PaymentScheduleLine paymentScheduleLine)  {
 		if(paymentScheduleLine != null)  {
-			if(PaymentScheduleLine.filter("self.paymentSchedule = ?1 and self.scheduleDate > ?2 and self.statusSelect = ?3", 
-					paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleDate(), PaymentScheduleLine.STATUS_IN_PROGRESS).fetchOne() == null)  {
+			if(psls.all().filter("self.paymentSchedule = ?1 and self.scheduleDate > ?2 and self.statusSelect = ?3", 
+					paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleDate(), PaymentScheduleLineService.STATUS_IN_PROGRESS).fetchOne() == null)  {
 				LOG.debug("Dernière échéance");
 				return true;
 			}
@@ -423,9 +410,9 @@ public class PaymentScheduleService {
 		//On récupère un statut cloturé, afin de pouvoir changer l'état des lignes d'échéanciers
 		
 		for(PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList())  {
-			paymentScheduleLine.setStatusSelect(PaymentScheduleLine.STATUS_CLOSED);
+			paymentScheduleLine.setStatusSelect(PaymentScheduleLineService.STATUS_CLOSED);
 		}
-		paymentSchedule.setStatusSelect(PaymentSchedule.STATUS_CLOSED);
+		paymentSchedule.setStatusSelect(STATUS_CLOSED);
 		
 	}
   	
@@ -470,7 +457,7 @@ public class PaymentScheduleService {
 		this.initCollection(paymentSchedule);
 		
 		paymentSchedule.getPaymentScheduleLineList().addAll(psls.createPaymentScheduleLines(paymentSchedule));
-		paymentSchedule.save();
+		save(paymentSchedule);
 		
 	}
 	
@@ -491,7 +478,7 @@ public class PaymentScheduleService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void toCancelPaymentSchedule(PaymentSchedule paymentSchedule){
 		this.cancelPaymentSchedule(paymentSchedule);
-		paymentSchedule.save();
+		save(paymentSchedule);
 	}
 	
 }

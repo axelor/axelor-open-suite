@@ -28,17 +28,16 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderHistory;
 import com.axelor.apps.account.db.ReminderMethodLine;
+import com.axelor.apps.account.db.repo.ReminderHistoryRepository;
 import com.axelor.apps.account.service.MailService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Mail;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Template;
+//import com.axelor.apps.base.db.Template;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -52,15 +51,15 @@ public class ReminderActionService {
 	private UserService userService;
 	
 	@Inject
-	private AlarmEngineService<Partner> aes;
-	
-	@Inject
-	private TemplateMessageService templateMessageService;
-	
-	@Inject
 	private MailService ms;
 
 	private LocalDate today;
+	
+	@Inject
+	private ReminderService reminderService;
+	
+	@Inject
+	private ReminderHistoryRepository reminderHistoryRepository;
 
 	@Inject
 	public ReminderActionService() {
@@ -83,11 +82,11 @@ public class ReminderActionService {
 		    Object valeur = entry.getValue();
 		    if(cle.equals("ReminderMailSocial1") || cle.equals("ReminderMailSocial2") || cle.equals("ReminderMailStandard1")  || cle.equals("ReminderMailStandard2"))  {
 		    	Mail reminderMail = (Mail) valeur;
-		    	reminderMail.save();
+		    	ms.save(reminderMail);
 		    }
 		    else if(cle.equals("ReminderEmailSocialDept")  || cle.equals("ReminderEmailSocialMun")) {
 		    	Mail reminderEmail = (Mail) valeur;
-		    	reminderEmail.save();
+		    	ms.save(reminderEmail);
 		    }
 		}
 		
@@ -157,7 +156,7 @@ public class ReminderActionService {
 		}
 			
 			
-		Template template = reminderMethodLine.getMessageTemplate();
+//		Template template = reminderMethodLine.getMessageTemplate();
 		
 		return null; //TODO
 		
@@ -200,7 +199,7 @@ public class ReminderActionService {
 			this.saveReminder(reminder);
 						
 			
-			Mail mail = ms.runMailStandard(reminder.getReminderMethodLine(), reminder.getAccountingSituation().getPartner(), reminder.getAccountingSituation().getCompany()).save();
+			Mail mail = ms.save(ms.runMailStandard(reminder.getReminderMethodLine(), reminder.getAccountingSituation().getPartner(), reminder.getAccountingSituation().getCompany()));
 			
 			this.updateReminderHistory(reminder, mail);
 				
@@ -222,7 +221,7 @@ public class ReminderActionService {
 		
 		LOG.debug("Begin MoveReminderMatrixLine service ...");
 		reminder.setWaitReminderMethodLine(reminderMethodLine);	
-		reminder.save();
+		reminderService.save(reminder);
 		LOG.debug("End MoveReminderMatrixLine service");
 		
 	}
@@ -268,7 +267,7 @@ public class ReminderActionService {
 		
 		reminderHistory.setUserReminder(userService.getUser());
 		reminder.getReminderHistoryList().add(reminderHistory);
-		reminderHistory.save();
+		reminderHistoryRepository.save(reminderHistory);
 		LOG.debug("End saveReminder service");	
 	}
 	

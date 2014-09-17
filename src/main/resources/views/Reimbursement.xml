@@ -11,7 +11,7 @@
     
 	<form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement"  >
 		<panel title="Overview">
-			<field name="ref" x-span="12"/>
+			<field name="ref" colSpan="12"/>
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
 		</panel>
@@ -23,7 +23,7 @@
 		</panel>
 		
 		<panel title="Reason">
-			<field name="description" x-span="12" showTitle="false"/>
+			<field name="description" colSpan="12" showTitle="false"/>
 		</panel>
 		
 		<panel  title="Reject Information" showIf="rejectedOk">
@@ -33,7 +33,7 @@
 			<field name="rejectMoveLine"/>
 		</panel> 
 		
-		<panel-related field="moveLineSet" hideIf="statusSelect == 1" x-span="12"/>
+		<panel-related field="moveLineSet" hideIf="statusSelect == 1" colSpan="12"/>
 		
 		<panel-side title="Info">
 			<field name="statusSelect"/>

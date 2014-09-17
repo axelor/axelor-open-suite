@@ -17,16 +17,11 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
 public class PaymentVoucherToolService  {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherToolService.class); 
 	
 	/**
 	 * 

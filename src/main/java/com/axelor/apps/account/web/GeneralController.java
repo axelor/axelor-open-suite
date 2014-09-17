@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.service.debtrecovery.PayerQualityService;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -43,10 +44,15 @@ public class GeneralController {
 	private Injector injector;
 	
 	@Inject
-	GeneralService gs;
+	private GeneralService gs;
 	
 	@Inject 
-	CurrencyConversionService ccs;
+	private CurrencyConversionService ccs;
+	
+	@Inject
+	private CurrencyConversionLineRepository cclRepo;
+	
+	
 	
 	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
 		
@@ -62,7 +68,7 @@ public class GeneralController {
 		 LocalDate today = GeneralService.getTodayDate();
 		 
 		 for(CurrencyConversionLine ccl : general.getCurrencyConversionLineList()){
-			CurrencyConversionLine cclCoverd = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",ccl.getStartCurrency(),ccl.getEndCurrency(),today).fetchOne();
+			CurrencyConversionLine cclCoverd = cclRepo.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",ccl.getStartCurrency(),ccl.getEndCurrency(),today).fetchOne();
 			LOG.info("Currency Conversion Line for {} already covered : {}",today,ccl);
 			if(ccl.isSelected() && ccl.getToDate() == null & cclCoverd == null){
 				BigDecimal currentRate = ccs.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
@@ -70,12 +76,12 @@ public class GeneralController {
 					response.setFlash("Currency conversion webservice not working");
 					break;
 				}
-				ccl = CurrencyConversionLine.find(ccl.getId());
+				ccl = cclRepo.find(ccl.getId());
 				ccl.setToDate(today.minusDays(1));
 				ccs.saveCurrencyConversionLine(ccl);
 				BigDecimal previousRate = ccl.getExchangeRate();
 				String variations = ccs.getVariations(currentRate, previousRate);
-				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, General.find(general.getId()), variations);
+				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, gs.find(general.getId()), variations);
 			}
 		 }
 		 response.setReload(true);

@@ -31,10 +31,13 @@ public class MoveLineController {
 	@Inject
 	private Injector injector;
 	
+	@Inject
+	private MoveLineService moveLineService;
+	
 	public void usherProcess(ActionRequest request, ActionResponse response) {
 		
 		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = MoveLine.find(moveLine.getId());
+		moveLine = moveLineService.find(moveLine.getId());
 		
 		MoveLineService mls = injector.getInstance(MoveLineService.class);
 		
@@ -47,7 +50,7 @@ public class MoveLineController {
 	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
 		
 		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = MoveLine.find(moveLine.getId());
+		moveLine = moveLineService.find(moveLine.getId());
 		
 		IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
 		
@@ -61,7 +64,7 @@ public class MoveLineController {
 	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)  {
 		
 		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = MoveLine.find(moveLine.getId());
+		moveLine = moveLineService.find(moveLine.getId());
 		
 		IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
 		

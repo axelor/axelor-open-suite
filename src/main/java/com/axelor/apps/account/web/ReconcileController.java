@@ -33,7 +33,7 @@ public class ReconcileController {
 	public void unreconcile(ActionRequest request, ActionResponse response) {
 		
 		Reconcile reconcile = request.getContext().asType(Reconcile.class);
-		reconcile = Reconcile.find(reconcile.getId());
+		reconcile = rs.find(reconcile.getId());
 				
 		try {	
 			rs.unreconcile(reconcile);
