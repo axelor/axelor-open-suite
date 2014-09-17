@@ -29,7 +29,8 @@
 	      <field name="notes" showTitle="false" colSpan="12"/>
 	    </panel>
 	    <panel title="Account configuration">
-	      <field name="accountConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="account-config-form" summary-view="true"/>
+<!-- 	      <field name="accountConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="account-config-form" summary-view="true"/> -->
+	      <field name="accountConfig" showTitle="false" colSpan="12" />
 	    </panel>
 	    <panel title="Bank details">
 	      <field name="defaultBankDetails"/>
@@ -42,15 +43,19 @@
 	      <field name="generatedEmailFileName"/>
 	    </panel>
 	    <panel title="Supply chain configuration">
-	      <field name="saleConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="sale-config-form" summary-view="true" if-module="axelor-sale"/>
-	      <field name="stockConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="stock-config-form" summary-view="true" if-module="axelor-stock"/>
-	      <field name="purchaseConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="purchase-config-form" summary-view="true" if-module="axelor-purchase"/>
+<!-- 	      <field name="saleConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="sale-config-form" summary-view="true" if-module="axelor-sale"/> -->
+	      <field name="saleConfig" showTitle="false" colSpan="12" if-module="axelor-sale"/>
+<!-- 	      <field name="stockConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="stock-config-form" summary-view="true" if-module="axelor-stock"/> -->
+	      <field name="stockConfig" showTitle="false" colSpan="12" if-module="axelor-stock"/>
+<!-- 	      <field name="purchaseConfig" showTitle="false" colSpan="12" widget="NestedEditor" canSelect="false" form-view="purchase-config-form" summary-view="true" if-module="axelor-purchase"/> -->
+	      <field name="purchaseConfig" showTitle="false" colSpan="12" if-module="axelor-purchase"/>
 	    </panel>
 	    <panel title="Organisation">
 	      <field name="taskProduct"/>
 	    </panel>
 	    <panel title="Printing">
-	      <field name="printingSettings" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="printing-setting-form" summary-view="true"/>
+<!-- 	      <field name="printingSettings" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="printing-setting-form" summary-view="true"/> -->
+	      <field name="printingSettings" showTitle="false"/>
 	    </panel>
 	  </panel-tabs>
     </form>
