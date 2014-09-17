@@ -20,24 +20,21 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
+import com.axelor.apps.base.db.repo.TrackingNumberRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class TrackingNumberService {
+public class TrackingNumberService extends TrackingNumberRepository{
 	
-	private static final Logger LOG = LoggerFactory.getLogger(TrackingNumberService.class); 
-
 	@Inject
 	private SequenceService sequenceService;	
 	
@@ -45,10 +42,10 @@ public class TrackingNumberService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public TrackingNumber getTrackingNumber(Product product, BigDecimal sizeOfLot, Company company, LocalDate date) throws AxelorException  {
 		
-		TrackingNumber trackingNumber = TrackingNumber.filter("self.product = ?1 AND self.counter < ?2", product, sizeOfLot).fetchOne();
+		TrackingNumber trackingNumber = all().filter("self.product = ?1 AND self.counter < ?2", product, sizeOfLot).fetchOne();
 	
 		if(trackingNumber == null)  {
-			trackingNumber = this.createTrackingNumber(product, company, date).save();
+			trackingNumber = save(this.createTrackingNumber(product, company, date));
 		}
 		
 		trackingNumber.setCounter(trackingNumber.getCounter().add(sizeOfLot));

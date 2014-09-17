@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -34,6 +32,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.TrackingNumber;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TrackingNumberRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.IInventory;
 import com.axelor.apps.stock.db.IStockMove;
@@ -44,16 +44,17 @@ import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.InventoryRepository;
+import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class InventoryService {
+public class InventoryService extends InventoryRepository{
 	
-	private static final Logger LOG = LoggerFactory.getLogger(InventoryService.class); 
-
 	@Inject
 	private InventoryLineService inventoryLineService;
 	
@@ -68,13 +69,16 @@ public class InventoryService {
 	
 	@Inject
 	private StockConfigService stockConfigService;
-
+	
+	@Inject
+	private ProductRepository productRepo;
+	
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Inventory createInventoryFromWizard(LocalDate date, String description, Location location, boolean excludeOutOfStock, 
 			boolean includeObsolete, ProductFamily productFamily, ProductCategory productCategory) throws Exception {
 		
-		Inventory inventory = this.createInventory(date, description, location, excludeOutOfStock, includeObsolete, productFamily, productCategory).save();
+		Inventory inventory = save(this.createInventory(date, description, location, excludeOutOfStock, includeObsolete, productFamily, productCategory));
 		
 		this.fillInventoryLineList(inventory);
 		
@@ -166,7 +170,7 @@ public class InventoryService {
 				}
 
 				InventoryLine inventoryLine = new InventoryLine();
-				Product product = Product.findByCode(code);
+				Product product = productRepo.findByCode(code);
 				if (product == null || product.getApplicationTypeSelect() != IProduct.APPLICATION_TYPE_PRODUCT || !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE))
 					throw new AxelorException("An error occurred while importing the file data, product not found with code : "+code, IException.CONFIGURATION_ERROR);
 				inventoryLine.setProduct(product);
@@ -180,7 +184,7 @@ public class InventoryService {
 		}
 		inventory.setInventoryLineList(inventoryLineList);
 
-		inventory.save();
+		save(inventory);
 	}
 
 
@@ -225,7 +229,7 @@ public class InventoryService {
 	public TrackingNumber getTrackingNumber(String sequence)  {
 
 		if(sequence != null && !sequence.isEmpty())  {
-			return TrackingNumber.findBySeq(sequence);
+			return Beans.get(TrackingNumberRepository.class).findBySeq(sequence);
 		}
 
 		return null;
@@ -303,7 +307,7 @@ public class InventoryService {
 				
 			}
 			inventory.setInventoryLineList(inventoryLineList);
-			inventory.save();
+			save(inventory);
 			return inventoryLineList;
 		}
 		return null;
@@ -337,7 +341,7 @@ public class InventoryService {
 			params.add(inventory.getProductCategory());
 		}
 		
-		return LocationLine.filter(query, params.toArray()).fetch();
+		return Beans.get(LocationLineRepository.class).all().filter(query, params.toArray()).fetch();
 		
 	}
 	

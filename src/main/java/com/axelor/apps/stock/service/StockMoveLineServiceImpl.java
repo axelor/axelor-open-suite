@@ -21,8 +21,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
@@ -35,15 +33,16 @@ import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(StockMoveLineServiceImpl.class); 
-
 	@Inject 
-	private LocationLineService locationLineService;
+	private Provider<LocationLineService> locationLineProvider;
 	
 	@Inject
 	private TrackingNumberService trackingNumberService;
@@ -180,7 +179,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	
 	public List<? extends LocationLine> getLocationLines(Product product, Location location) throws AxelorException  {
 		
-		List<? extends LocationLine> locationLineList = LocationLine.
+		List<? extends LocationLine> locationLineList = Beans.get(LocationLineRepository.class).all().
 				filter("self.product = ?1 AND self.futureQty > 0 AND self.trackingNumber IS NOT NULL AND self.detailsLocation = ?2"
 						+trackingNumberService.getOrderMethod(product.getTrackingNumberConfiguration()), product, location).fetch();
 		
@@ -242,13 +241,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		
 		switch(fromStatus)  {
 			case IStockMove.STATUS_PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber);
+				locationLineProvider.get().updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber);
+				locationLineProvider.get().updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber);
 				break;
 				
 			case IStockMove.STATUS_REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber);
+				locationLineProvider.get().updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber);
+				locationLineProvider.get().updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber);
 				break;
 			
 			default:
@@ -257,13 +256,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		
 		switch(toStatus)  {
 			case IStockMove.STATUS_PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber);
+				locationLineProvider.get().updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber);
+				locationLineProvider.get().updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber);
 				break;
 				
 			case IStockMove.STATUS_REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber);
+				locationLineProvider.get().updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber);
+				locationLineProvider.get().updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber);
 				break;
 			
 			default:

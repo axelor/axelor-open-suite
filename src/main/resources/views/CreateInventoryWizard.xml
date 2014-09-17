@@ -6,13 +6,13 @@
     
 	<form onNew="action-create-inventory-wizard-record-default" name="create-inventory-wizard-form" title="Create inventory" model="com.axelor.apps.base.db.Wizard">
 	  <panel title="Basic">
-	    <field name="location" title="Location" widget="ManyToOne" x-target="com.axelor.apps.stock.db.Location"/>
+	    <field name="location" title="Location" widget="ManyToOne" target="com.axelor.apps.stock.db.Location"/>
 	    <field name="inventoryDate" title="Inventory date" widget="Date"/>        
-	    <field name="description" title="Description" x-span="12" max="600"/>
+	    <field name="description" title="Description" colSpan="12" max="600"/>
 	  </panel>
 	  <panel title="Fill inventory with">
-	    <field name="productFamily" title="Product family" widget="ManyToOne" x-target="com.axelor.apps.base.db.ProductFamily"/>
-	    <field name="productCategory" title="Product category" widget="ManyToOne" x-target="com.axelor.apps.base.db.ProductCategory"/>
+	    <field name="productFamily" title="Product family" widget="ManyToOne" target="com.axelor.apps.base.db.ProductFamily"/>
+	    <field name="productCategory" title="Product category" widget="ManyToOne" target="com.axelor.apps.base.db.ProductCategory"/>
 	    <field name="excludeOutOfStock" title="Exclude out of stock products ?" widget="Boolean"/>
 	    <field name="includeObsolete" title="Include obsolete products ?" widget="Boolean"/>
 	  </panel>
