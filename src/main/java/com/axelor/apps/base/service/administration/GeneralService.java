@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.service.user.UserServiceImpl;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 
@@ -87,8 +88,7 @@ public class GeneralService extends GeneralRepository{
 		
 		DateTime todayDateTime = new DateTime();
 		
-		UserServiceImpl userService = new UserServiceImpl();
-		User user = userService.getUser();
+		User user = AuthUtils.getUser();
 		
 		if (user != null && user.getToday() != null){
 			todayDateTime = user.getToday();
