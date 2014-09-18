@@ -86,7 +86,7 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 		
 		message.setRecipientUser(event.getResponsibleUser());
 		
-		return messageRepo.save(message);
+		return save(message);
 	}	
 	
 	
