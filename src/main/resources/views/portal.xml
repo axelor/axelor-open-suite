@@ -6,15 +6,15 @@
 <!--   	Purchase Buyer Dashboard -->
 	
 	<portal title="Dashboard" name="purchase.buyer.dashboard.portal.sample"  >
-		<portlet action="portal.purchase.buyer.dashboard.validated.orders" height="350" canSearch="true" />
-		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.my.purchase.per.product.family.volume" height="350"/>
-	    <portlet action="portal.my.purchase.amount.per.product.family" height="350"/>
-		<portlet action="portal.purchase.amount.per.product.family" canSearch="true" height="350"/>
-		<portlet action="portal.nbr.of.po.per.month"  canSearch="true" height="350" />
-		<portlet action="portal.total.purchase.amount" canSearch="true" height="350"/>
-		<portlet action="portal.total.purchase.qty" canSearch="true" height="350"/>
+		<portlet action="portal.purchase.buyer.dashboard.validated.orders" x-height="350" canSearch="true" />
+		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" x-height="350" />
+		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" x-height="350" />
+		<portlet action="portal.my.purchase.per.product.family.volume" x-height="350"/>
+	    <portlet action="portal.my.purchase.amount.per.product.family" x-height="350"/>
+		<portlet action="portal.purchase.amount.per.product.family" canSearch="true" x-height="350"/>
+		<portlet action="portal.nbr.of.po.per.month"  canSearch="true" x-height="350" />
+		<portlet action="portal.total.purchase.amount" canSearch="true" x-height="350"/>
+		<portlet action="portal.total.purchase.qty" canSearch="true" x-height="350"/>
 	</portal>
 
 
@@ -88,12 +88,12 @@
 	
 	
 	<portal title="Dashboard" name="purchase.manager.dashboard.portal.sample"  >
-		<portlet action="portal.purchase.manager.dashboard.validated.orders" height="350" canSearch="true" />
-		<portlet action="portal.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.purchase.order.volume.by.buyer.by.family" height="350"/>
-	    <portlet action="portal.purchase.order.amount.by.family" height="350"/>
-	    <portlet action="portal.purchase.order.amount.distribution.by.family" height="350"/>
-		<portlet action="portal.50.latest.supplier.orders" canSearch="true" height="350"/>
+		<portlet action="portal.purchase.manager.dashboard.validated.orders" x-height="350" canSearch="true" />
+		<portlet action="portal.purchase.manager.dashboard.order.to.validate" canSearch="true" x-height="350" />
+		<portlet action="portal.purchase.order.volume.by.buyer.by.family" x-height="350"/>
+	    <portlet action="portal.purchase.order.amount.by.family" x-height="350"/>
+	    <portlet action="portal.purchase.order.amount.distribution.by.family" x-height="350"/>
+		<portlet action="portal.50.latest.supplier.orders" canSearch="true" x-height="350"/>
 	</portal>
 
 	<action-view name="portal.purchase.manager.dashboard.validated.orders" title="Current Purchase Orders"
@@ -137,11 +137,11 @@
 	<!-- Purchase Order Dashboard -->
 		
 	<portal name="purchase.order.dashboard.portal.sample" title="Dashboard">
-		<portlet action="portal.my.purchase.orders.to.execute" canSearch="true" height="350" />
-		<portlet action="portal.ongoing.purchase.orders" canSearch="true" height="350" />
-		<portlet action="portal.my.ongoing.purchase.orders" canSearch="true" height="350" />
-		<portlet action="portal.closed.purchase.orders" canSearch="true" height="350" />
-		<portlet action="portal.my.closed.purchase.orders" canSearch="true" height="350" />
+		<portlet action="portal.my.purchase.orders.to.execute" canSearch="true" x-height="350" />
+		<portlet action="portal.ongoing.purchase.orders" canSearch="true" x-height="350" />
+		<portlet action="portal.my.ongoing.purchase.orders" canSearch="true" x-height="350" />
+		<portlet action="portal.closed.purchase.orders" canSearch="true" x-height="350" />
+		<portlet action="portal.my.closed.purchase.orders" canSearch="true" x-height="350" />
 	</portal>
 	
 	<action-view title="My Orders to process" model="com.axelor.apps.purchase.db.PurchaseOrder" name="portal.my.purchase.orders.to.execute">
@@ -178,34 +178,34 @@
 	<!-- 	Purchases Dashboard -->
 	
 	<portal name="purchase.dashboard.1.portal" title="Purchases Dashboard 1">
-		<portlet action="portal.purchase.buyer.dashboard.validated.orders" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.my.purchase.per.product.family.volume" canSearch="true" height="350" />
-		<portlet action="portal.my.purchase.amount.per.product.family" canSearch="true" height="350" />
-		<portlet action="portal.purchase.amount.per.product.family" canSearch="true" height="350" />
-		<portlet action="portal.nbr.of.po.per.month" canSearch="true" height="350" />
-		<portlet action="portal.total.purchase.amount" canSearch="true" height="350" />
-		<portlet action="portal.total.purchase.qty" canSearch="true" height="350" />
-		<portlet action="portal.purchase.manager.dashboard.validated.orders" canSearch="true" height="350" />
+		<portlet action="portal.purchase.buyer.dashboard.validated.orders" canSearch="true" x-height="350" />
+		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" x-height="350" />
+		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" x-height="350" />
+		<portlet action="portal.my.purchase.per.product.family.volume" canSearch="true" x-height="350" />
+		<portlet action="portal.my.purchase.amount.per.product.family" canSearch="true" x-height="350" />
+		<portlet action="portal.purchase.amount.per.product.family" canSearch="true" x-height="350" />
+		<portlet action="portal.nbr.of.po.per.month" canSearch="true" x-height="350" />
+		<portlet action="portal.total.purchase.amount" canSearch="true" x-height="350" />
+		<portlet action="portal.total.purchase.qty" canSearch="true" x-height="350" />
+		<portlet action="portal.purchase.manager.dashboard.validated.orders" canSearch="true" x-height="350" />
 		</portal>
 	
 	<portal name="purchase.dashboard.2.portal" title="Purchases Dashboard 2">
-		<portlet action="portal.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.purchase.order.volume.by.buyer.by.family" canSearch="true" height="350" />
-		<portlet action="portal.purchase.order.amount.by.family" canSearch="true" height="350" />
-		<portlet action="portal.purchase.order.amount.distribution.by.family" canSearch="true" height="350" />
-		<portlet action="portal.ongoing.supplier.rfq" canSearch="true" height="350" />
-		<portlet action="portal.my.ongoing.supplier.rfq" canSearch="true" height="350" />
-		<portlet action="portal.purchase.orders.to.execute" canSearch="true" height="350" />
-		<portlet action="portal.my.purchase.orders.to.execute" canSearch="true" height="350" />
-		<portlet action="portal.ongoing.purchase.orders" canSearch="true" height="350" />
-		<portlet action="portal.my.ongoing.purchase.orders" canSearch="true" height="350" />
+		<portlet action="portal.purchase.manager.dashboard.order.to.validate" canSearch="true" x-height="350" />
+		<portlet action="portal.purchase.order.volume.by.buyer.by.family" canSearch="true" x-height="350" />
+		<portlet action="portal.purchase.order.amount.by.family" canSearch="true" x-height="350" />
+		<portlet action="portal.purchase.order.amount.distribution.by.family" canSearch="true" x-height="350" />
+		<portlet action="portal.ongoing.supplier.rfq" canSearch="true" x-height="350" />
+		<portlet action="portal.my.ongoing.supplier.rfq" canSearch="true" x-height="350" />
+		<portlet action="portal.purchase.orders.to.execute" canSearch="true" x-height="350" />
+		<portlet action="portal.my.purchase.orders.to.execute" canSearch="true" x-height="350" />
+		<portlet action="portal.ongoing.purchase.orders" canSearch="true" x-height="350" />
+		<portlet action="portal.my.ongoing.purchase.orders" canSearch="true" x-height="350" />
 	</portal>
 	
 	<portal name="purchase.dashboard.3.portal" title="Purchases Dashboard 3">
-		<portlet action="portal.closed.purchase.orders" canSearch="true" height="350" />
-		<portlet action="portal.my.closed.purchase.orders" canSearch="true" height="350" />
+		<portlet action="portal.closed.purchase.orders" canSearch="true" x-height="350" />
+		<portlet action="portal.my.closed.purchase.orders" canSearch="true" x-height="350" />
 	</portal>
 	
 	
