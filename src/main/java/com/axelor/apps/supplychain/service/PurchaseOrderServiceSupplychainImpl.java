@@ -56,13 +56,13 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class); 
 
 	@Inject
-	private PurchaseOrderLineService purchaseOrderLineService;
+	private Provider<PurchaseOrderLineService> purchaseOrderLineServiceProvider;
 	
 	@Inject
-	private Provider<StockMoveService> stockMoveServicProvider;
+	private Provider<StockMoveService> stockMoveServiceProvider;
 	
 	@Inject
-	private StockMoveLineService stockMoveLineService;
+	private Provider<StockMoveLineService> stockMoveLineServiceProvider;
 	
 	@Inject
 	private StockConfigService stockConfigService;
@@ -113,7 +113,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			
 			Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
-			StockMove stockMove = stockMoveServicProvider.get().createStockMove(supplierPartner.getDeliveryAddress(), null, company, supplierPartner, startLocation, purchaseOrder.getLocation(), purchaseOrder.getDeliveryDate());
+			StockMove stockMove = stockMoveServiceProvider.get().createStockMove(supplierPartner.getDeliveryAddress(), null, company, supplierPartner, startLocation, purchaseOrder.getLocation(), purchaseOrder.getDeliveryDate());
 			stockMove.setPurchaseOrder(purchaseOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			
@@ -124,8 +124,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				if(product != null && ((stockConfig.getHasInSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)) 
 						|| (stockConfig.getHasInSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)))) {
 
-					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), 
-							purchaseOrderLineService.computeDiscount(purchaseOrderLine), stockMove, 2);
+					StockMoveLine stockMoveLine = stockMoveLineServiceProvider.get().createStockMoveLine(product, purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), 
+							purchaseOrderLineServiceProvider.get().computeDiscount(purchaseOrderLine), stockMove, 2);
 					if(stockMoveLine != null) {
 						
 						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
@@ -135,7 +135,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				}	
 			}
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMoveServicProvider.get().plan(stockMove);
+				stockMoveServiceProvider.get().plan(stockMove);
 			}
 		}
 	}
@@ -153,7 +153,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		
 		for(StockMove stockMove : stockMoveList)  {
 			
-			stockMoveServicProvider.get().cancel(stockMove);
+			stockMoveServiceProvider.get().cancel(stockMove);
 			
 		}
 		
