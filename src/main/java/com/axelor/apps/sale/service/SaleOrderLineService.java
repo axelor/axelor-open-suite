@@ -36,6 +36,7 @@ import com.axelor.apps.sale.db.SaleOrderSubLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class SaleOrderLineService extends SaleOrderLineRepository{
 
@@ -45,7 +46,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 	private CurrencyService currencyService;
 	
 	@Inject
-	private AccountManagementService accountManagementService;
+	private Provider<AccountManagementService> accountManagementServiceProvider;
 	
 	@Inject
 	private PriceListService priceListService;
@@ -87,7 +88,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 	
 	public TaxLine getTaxLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException  {
 		
-		return accountManagementService.getTaxLine(
+		return accountManagementServiceProvider.get().getTaxLine(
 				saleOrder.getCreationDate(), saleOrderLine.getProduct(), saleOrder.getCompany(), saleOrder.getClientPartner().getFiscalPosition(), false);
 		
 	}
