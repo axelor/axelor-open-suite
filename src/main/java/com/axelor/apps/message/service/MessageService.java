@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.message.service;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.axelor.apps.message.db.EmailAddress;

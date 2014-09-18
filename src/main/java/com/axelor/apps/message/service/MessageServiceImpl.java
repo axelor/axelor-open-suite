@@ -155,7 +155,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 			mailBuilder.subject(message.getSubject());
 
 			if(!Strings.isNullOrEmpty(message.getContent()))  {
-				mailBuilder.text(message.getContent());
+				mailBuilder.html(message.getContent());
 			}
 			
 			if(!Strings.isNullOrEmpty(message.getFilePath()))  {

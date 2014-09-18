@@ -86,7 +86,7 @@
     </action-record>
     
     <action-record name="action-message-record-get-signature" model="com.axelor.apps.message.db.Message">
-    	<field name="content" expr="eval: mailAccount?.signature" if="content == null"/>
+    	<field name="content" expr="eval: '&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;' + mailAccount?.signature" if="content == null &amp;&amp; mailAccount?.signature != null"/>
     </action-record>
     
     <action-record name="action-message-record-delete-status" model="com.axelor.apps.message.db.Message">
