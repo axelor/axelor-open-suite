@@ -24,7 +24,6 @@ import javax.persistence.Query;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.accountorganisation.service.TaskSaleOrderService;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -44,8 +43,10 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 //import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
 
@@ -58,31 +59,25 @@ public class ValidateSupplyChain {
 	PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 	
 	@Inject
-	StockMoveService stockMoveSerivce;
-	
-	@Inject
-	PurchaseOrderInvoiceService purchaseOrderInvoiceService;
-	
-	@Inject
-	UserService userSerivce;
+	Provider<PurchaseOrderInvoiceService> purchaseOrderInvoiceServiceProvider;
 	
 	@Inject
 	InvoiceService invoiceService;
 	
 	@Inject
-	SaleOrderService saleOrderService;
+	Provider<SaleOrderService> saleOrderServiceProvider;
 	
 	@Inject
 	SaleOrderServiceStockImpl saleOrderServiceStockImpl;
 	
 	@Inject
-	SaleOrderInvoiceService saleOrderInvoiceService;
+	Provider<SaleOrderInvoiceService> saleOrderInvoiceServiceProvider;
 	
 	@Inject
-	StockMoveService stockMoveService;
+	Provider<StockMoveService> stockMoveServiceProvider;
 	
 	@Inject
-	StockMoveInvoiceService stockMoveInvoiceService;
+	Provider<StockMoveInvoiceService> stockMoveInvoiceServiceProvider;
 	
 	@Inject
 	SaleOrderLineService saleOrderLineService;
@@ -91,7 +86,7 @@ public class ValidateSupplyChain {
 	TaskSaleOrderService taskSaleOrderService;
 	
 	@Inject
-	SaleOrderPurchaseService saleOrderPurchaseService;
+	Provider<SaleOrderPurchaseService> saleOrderPurchaseServiceProvider;
 	
 	@Inject
 	private StockMoveRepository stockMoveRepo;
@@ -149,14 +144,14 @@ public class ValidateSupplyChain {
 				purchaseOrderServiceSupplychainImpl.createStocksMoves(purchaseOrder);
 				StockMove stockMove = stockMoveRepo.all().filter("purchaseOrder.id = ?1",purchaseOrder.getId()).fetchOne();
 				if(stockMove != null){
-					stockMoveService.copyQtyToRealQty(stockMove);
-					stockMoveService.realize(stockMove);
+					stockMoveServiceProvider.get().copyQtyToRealQty(stockMove);
+					stockMoveServiceProvider.get().realize(stockMove);
 					stockMove.setRealDate(purchaseOrder.getDeliveryDate());
 				}
 				purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
-				purchaseOrder.setValidatedByUser(userSerivce.getUser());
+				purchaseOrder.setValidatedByUser(AuthUtils.getUser());
 				purchaseOrder.setSupplierPartner(purchaseOrderServiceSupplychainImpl.validateSupplier(purchaseOrder));
-				Invoice invoice = purchaseOrderInvoiceService.generateInvoice(purchaseOrder);
+				Invoice invoice = purchaseOrderInvoiceServiceProvider.get().generateInvoice(purchaseOrder);
 				invoice.setInvoiceDate(purchaseOrder.getValidationDate());
 				invoiceService.compute(invoice);
 				invoiceService.validate(invoice);
@@ -174,15 +169,15 @@ public class ValidateSupplyChain {
 			SaleOrder saleOrder = saleOrderRepo.find(soId);
 			for(SaleOrderLine line : saleOrder.getSaleOrderLineList())
 				line.setTaxLine(saleOrderLineService.getTaxLine(saleOrder, line));
-			saleOrderService.computeSaleOrder(saleOrder);
+			saleOrderServiceProvider.get().computeSaleOrder(saleOrder);
 			if(saleOrder.getStatusSelect() == 3){
 				taskSaleOrderService.createTasks(saleOrder);
 				saleOrderServiceStockImpl.createStocksMovesFromSaleOrder(saleOrder);
-				saleOrderPurchaseService.createPurchaseOrders(saleOrder);
+				saleOrderPurchaseServiceProvider.get().createPurchaseOrders(saleOrder);
 //				productionOrderSaleOrderService.generateProductionOrder(saleOrder);
-				saleOrder.setClientPartner(saleOrderService.validateCustomer(saleOrder));
+				saleOrder.setClientPartner(saleOrderServiceProvider.get().validateCustomer(saleOrder));
 				if(saleOrder.getInvoicingTypeSelect() == 1 || saleOrder.getInvoicingTypeSelect() == 5){
-					Invoice invoice = saleOrderInvoiceService.generatePerOrderInvoice(saleOrder);
+					Invoice invoice = saleOrderInvoiceServiceProvider.get().generatePerOrderInvoice(saleOrder);
 					invoice.setInvoiceDate(saleOrder.getValidationDate());
 					invoiceService.compute(invoice);
 					invoiceService.validate(invoice);
@@ -190,11 +185,11 @@ public class ValidateSupplyChain {
 				}
 				StockMove stockMove = stockMoveRepo.all().filter("saleOrder = ?1",saleOrder).fetchOne();
 				if(stockMove != null && stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-					stockMoveService.copyQtyToRealQty(stockMove);
-					stockMoveService.validate(stockMove);
+					stockMoveServiceProvider.get().copyQtyToRealQty(stockMove);
+					stockMoveServiceProvider.get().validate(stockMove);
 					stockMove.setRealDate(saleOrder.getValidationDate());
 					if(saleOrder.getInvoicingTypeSelect() == 4){
-						Invoice invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, saleOrder);
+						Invoice invoice = stockMoveInvoiceServiceProvider.get().createInvoiceFromSaleOrder(stockMove, saleOrder);
 						invoice.setInvoiceDate(saleOrder.getValidationDate());
 						invoiceService.compute(invoice);
 						invoiceService.validate(invoice);
