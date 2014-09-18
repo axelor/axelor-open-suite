@@ -9,14 +9,14 @@
         <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
     </input>
     
-    <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" >
+    <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId">
     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
     </input>
     
-    <input file="sale_saleConfig.csv" separator=";" type="com.axelor.apps.sale.db.SaleConfig"/>
+    <input file="sale_saleConfig.csv" separator=";" type="com.axelor.apps.sale.db.SaleConfig"  search="self.importId = :importId"/>
   	
 </csv-inputs>
 
