@@ -3,45 +3,73 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
-<form   onNew="action-group-crm-convlead-wizard-onnew" name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard">
-  <toolbar>
-    <button name="validate" title="Validate" onClick="action-lead-method-convert-lead"/>
-  </toolbar>
-  <panel title="Overview">
-    <field name="hasConvertIntoContact" title="Convert into Contact ?" widget="Boolean"/>
-    <field name="selectContactPartner" title="Or Select Contact" widget="ManyToOne" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" target="com.axelor.apps.base.db.Partner"/>
-    <field name="hasConvertIntoPartner" title="Convert into Partner ?" widget="Boolean"/>
-    <field name="selectPartner" title="Or Select Partner" widget="ManyToOne" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid" target="com.axelor.apps.base.db.Partner"/>
-   <field name="hasConvertIntoOpportunity" title="Create into Opportunity ?" widget="Boolean"/>
-     <field name="hasConvertIntoCall" title="Log a call ?" widget="Boolean"/>
-    <field name="hasConvertIntoMeeting" title="Schedule a meeting ?" widget="Boolean"/>
-    <field name="hasConvertIntoTask" title="Create a task ?" widget="Boolean"/>
- </panel>
-  <panel showTitle="false" showIf="hasConvertIntoContact">
-<!--     <field name="contactPartner" title="Contact" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="contact-lead-converted-form" summary-view="true" target="com.axelor.apps.base.db.Partner" type="MANY_TO_ONE"/> -->
-		<field name="contactPartner" title="Contact" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one"/>
-  </panel>
-  <panel showTitle="false" showIf="hasConvertIntoPartner">
-<!--     <field name="partner" title="Partner" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="partner-lead-converted-form" summary-view="true" target="com.axelor.apps.base.db.Partner" type="MANY_TO_ONE"/> -->
-   <field name="partner" title="Partner" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one"/>
-  </panel>
-  <panel showTitle="false" showIf="hasConvertIntoOpportunity" colSpan="4">
-<!--     <field name="opportunity" title="Opportunity" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="opportunity-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Opportunity" type="MANY_TO_ONE"/> -->
-    	<field name="opportunity" title="Opportunity" form-view="opportunity-lead-converted-form" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one"/>
-  </panel>
-  <panel showTitle="false" showIf="hasConvertIntoCall">
-<!--     <field name="callEvent" title="Call" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="call-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/> -->
-    	<field name="callEvent" title="Call" form-view="call-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one"/>
-  </panel>
-  <panel showTitle="false" showIf="hasConvertIntoMeeting">
-<!--     <field name="meetingEvent" title="Meeting" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="meeting-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/> -->
-     <field name="meetingEvent" title="Meeting" showTitle="false" canSelect="false" canNew="true" canRemove="false" form-view="meeting-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one"/>
-  </panel>
-  <panel showIf="hasConvertIntoTask" colSpan="4">
-<!--     <field name="taskEvent" title="Task" showTitle="false" widget="NestedEditor" canSelect="false" canNew="true" canRemove="false" canView="true" edit-window="self" form-view="crm-task-lead-converted-form" summary-view="true" target="com.axelor.apps.crm.db.Event" type="MANY_TO_ONE"/> -->
-    	<field name="taskEvent" title="Task" canSelect="false" canNew="true" canRemove="false" canView="true" form-view="crm-task-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one"/>
-  </panel>
-</form>
+	<form onNew="action-group-crm-convlead-wizard-onnew" name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard">
+	  	<toolbar>
+		    <button name="validate" title="Validate" onClick="action-lead-method-convert-lead"/>
+	  	</toolbar>
+	  	<panel title="Overview">
+		    <field name="hasConvertIntoContact" title="Convert into Contact ?" widget="Boolean"/>
+		    <field name="selectContactPartner" title="Or Select Contact" widget="ManyToOne" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" target="com.axelor.apps.base.db.Partner"/>
+		    <field name="hasConvertIntoPartner" title="Convert into Partner ?" widget="Boolean"/>
+		    <field name="selectPartner" title="Or Select Partner" widget="ManyToOne" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid" target="com.axelor.apps.base.db.Partner"/>
+		   	<field name="hasConvertIntoOpportunity" title="Create into Opportunity ?" widget="Boolean"/>
+	     	<field name="hasConvertIntoCall" title="Log a call ?" widget="Boolean"/>
+		    <field name="hasConvertIntoMeeting" title="Schedule a meeting ?" widget="Boolean"/>
+		    <field name="hasConvertIntoTask" title="Create a task ?" widget="Boolean"/>
+	 	</panel>
+	 	<panel-tabs showIf="hasConvertIntoContact || hasConvertIntoPartner || hasConvertIntoOpportunity || hasConvertIntoCall || hasConvertIntoMeeting || hasConvertIntoTask">
+			<panel title="Convert into Contact" showIf="hasConvertIntoContact">
+				<field name="contactPartner" title="Contact" canSelect="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+					<editor >
+						<label title="Personal"/>
+						<field name="fullName" title="Name" colSpan="12"/>
+						<field name="titleSelect"  showTitle="false" placeholder="Civility" colSpan="2"/>
+						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5"/>
+						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="5"/>
+			
+					</editor>
+				</field>
+			</panel>
+			<panel title="Convert into Partner" showIf="hasConvertIntoPartner" showTitle="false">
+				<field name="partner" title="Partner" canSelect="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one"/>
+			</panel>
+			<panel title="Create into Opportunity" showIf="hasConvertIntoOpportunity" showTitle="false">
+				<field name="opportunity" title="Opportunity" canSelect="false" form-view="opportunity-lead-converted-form" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one"/>
+			</panel>
+			<panel title="Log a call" showIf="hasConvertIntoCall" showTitle="false">
+				<field name="callEvent" title="Call" canSelect="false" form-view="call-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one"/>
+			</panel>
+			<panel title="Schedule a meeting" showIf="hasConvertIntoMeeting" showTitle="false">
+				<field name="meetingEvent" title="Meeting" canSelect="false" form-view="meeting-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one"/>
+			</panel>
+			<panel title="Create a task" showIf="hasConvertIntoTask" showTitle="false">
+				<field name="taskEvent" showTitle="false" colSpan="12" canSelect="false" form-view="crm-task-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
+					<editor>
+					  	<label title="Informations" css="label-bold"/>
+					  	<spacer/>
+					    <field name="subject" colSpan="12" css="bold"/>
+					    <field name="taskStatusSelect"/>
+					    <field name="prioritySelect"/>
+					    <spacer/>
+					    <label title="Description" css="label-bold"/>
+						<field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
+					    <label title="Dates" css="label-bold"/>
+					    <spacer/>
+					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
+					    <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration" colSpan="3"/>
+					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
+					    <field name="limitDateT" colSpan="3"/>
+					    <label title="Assigned to" css="label-bold"/>
+					    <spacer/>
+					    <field name="user"/>
+					    <field name="team" onSelect="action-event-attrs-team-domain"/>
+					</editor>
+				</field>
+			</panel>
+		 
+		 </panel-tabs>
+		 
+	</form>
 
 	
 	<action-group name="action-group-crm-convlead-wizard-onnew">
