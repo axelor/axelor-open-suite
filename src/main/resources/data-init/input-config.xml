@@ -25,55 +25,48 @@
       <bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
     </input>
     
-    <input file="base_birtTemplate.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplate" />
+    <input file="base_birtTemplate.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId"  />
 	
-	<input file="base_birtTemplateParameter.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplateParameter" />
+	<input file="base_birtTemplateParameter.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"  />
 	
-	<input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" />
+	<input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" search="self.importId = :importId"  />
 	     
-	<input file="base_template.csv" separator=";" type="com.axelor.apps.base.db.Template"/>
+	<input file="base_template.csv" separator=";" type="com.axelor.apps.base.db.Template"  search="self.name = :name"  />
     
-	<input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source">
-	    <bind column="name" to="name"/>
-	    <bind column="code" to="code"/>
-	</input>
+	<input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source" search="self.code = :code"/>
 	
-	<input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country" />
+	<input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country" search="self.importId = :importId"  />
 	
-	<input file="base_commune.csv" separator=";" type="com.axelor.apps.base.db.Commune" />
+	<input file="base_commune.csv" separator=";" type="com.axelor.apps.base.db.Commune" search="self.importId = :importId"  />
 	
-	<input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address" />
+	<input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address" search="self.importId = :importId"  />
 	
-	<input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency" />
+	<input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency" search="self.code = :code"  />
 	
-	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" />
+	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" search="self.importId = :importId"  />
 	
-	<input file="base_unit.csv" separator=";" type="com.axelor.apps.base.db.Unit">
-		<bind column="name" to="name" />
-		<bind column="code" to="code" />
-	</input>
+	<input file="base_unit.csv" separator=";" type="com.axelor.apps.base.db.Unit" search="self.importId = :importId"  />
 	
 	<input file="base_unitConversion.csv" separator=";" type="com.axelor.apps.base.db.UnitConversion"/>
 	
-	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory">
-		<bind column="name" to="name"/>	
-	</input>
+	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory" search="self.importId = :importId"  />
 	
-	<input file="base_scheduler.csv" separator=";" type="com.axelor.apps.base.db.Scheduler" />
+	<input file="base_scheduler.csv" separator=";" type="com.axelor.apps.base.db.Scheduler" search="self.importId = :importId"  />
 	
-	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner">
+	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId"  >
+		<bind to="partnerSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.PARTNER)" />
 		<bind to="emailAddress" search="self.address = :email" if="email != null &amp;&amp; !email.empty">
 			<bind to="address" column="email" />
 		</bind>
 	</input>
 	
-	<input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year" />
+	<input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year" search="self.code = :code"  />
     
-    <input file="base_productFamily.csv" separator=";" type="com.axelor.apps.base.db.ProductFamily" />
+    <input file="base_productFamily.csv" separator=";" type="com.axelor.apps.base.db.ProductFamily" search="self.code = :code" />
     
-    <input file="base_productCategory.csv" separator=";" type="com.axelor.apps.base.db.ProductCategory" />
+    <input file="base_productCategory.csv" separator=";" type="com.axelor.apps.base.db.ProductCategory" search="self.code = :code" />
     
-    <input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product">
+    <input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId">
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 	</input>
