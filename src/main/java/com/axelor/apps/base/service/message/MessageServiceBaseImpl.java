@@ -39,9 +39,6 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	private UserService userService;
 	
 	@Inject
-	protected MessageRepository messageRepo;
-	
-	@Inject
 	public MessageServiceBaseImpl(UserService userService) {
 
 		this.todayTime = GeneralService.getTodayDateTime();
@@ -54,7 +51,7 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath, String addressBlock, int mediaTypeSelect)  {
 		
-		Message message = messageRepo.save(super.createMessage(
+		Message message = save(super.createMessage(
 				content, 
 				null, 
 				model, 
@@ -97,7 +94,7 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 		if(!message.getSentByEmail() && message.getRecipientUser()!=null)  {
 			message.setStatusSelect(STATUS_SENT);
 			message.setSentByEmail(false);
-			messageRepo.save(message);
+			save(message);
 		}
 	}
 	
