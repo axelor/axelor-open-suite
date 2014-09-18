@@ -11,7 +11,7 @@
 	</form>
 	
     <form name="incl-events-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <panel-dashlet colSpan="12" action="portal.customer.crm.activities" height="350"/>
+	    <panel-dashlet colSpan="12" action="portal.customer.crm.activities" x-height="350"/>
 	</form>
 	
     <form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">

@@ -52,7 +52,7 @@
 					    <field name="prioritySelect"/>
 					    <spacer/>
 					    <label title="Description" css="label-bold"/>
-						<field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
+						<field name="description" showTitle="false" colSpan="12" widget="TEXT" x-height=""/>
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
 					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
@@ -354,7 +354,7 @@
     <field name="statusSelect" showTitle="false"/>
   </panel>
     <panel title="Description"  css="groupTitle" >
-      <field name="description" showTitle="false"  widget="TEXT" height="4" colSpan="12"/>
+      <field name="description" showTitle="false"  widget="TEXT" x-height="4" colSpan="12"/>
     </panel>
     <panel title="Dates"  css="groupTitle">
       <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
@@ -390,7 +390,7 @@
   </panel>
   
     <panel title="Description"  css="groupTitle">
-      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
+      <field name="description" showTitle="false" colSpan="12" widget="TEXT" x-height="4"/>
     </panel>
     <panel title="Dates"  css="groupTitle">
       <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
@@ -422,7 +422,7 @@
     <field name="prioritySelect"/>
   </panel>
     <panel title="Description" css="groupTitle">
-      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
+      <field name="description" showTitle="false" colSpan="12" widget="TEXT" x-height="4"/>
     </panel>
     <panel title="Dates"  css="groupTitle">
       <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
