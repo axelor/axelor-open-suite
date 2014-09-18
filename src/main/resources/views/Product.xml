@@ -90,8 +90,8 @@
 					<button name="showAllStockMoveLine" title="Show all stock move" colSpan="2" onClick="action-product-view-stock-move-line"/>
 					<spacer/>
 <!-- 					<panel-dashlet action="action-product-view-stock" colSpan="12"/> -->
-<!-- 					<panel-dashlet action="action-stock-report-for-product" height="200" colSpan="12"/> -->
-<!-- 					<panel-dashlet action="action-stock-history-report-for-product" height="200" colSpan="12"/> -->
+<!-- 					<panel-dashlet action="action-stock-report-for-product" x-height="200" colSpan="12"/> -->
+<!-- 					<panel-dashlet action="action-stock-history-report-for-product" x-height="200" colSpan="12"/> -->
 				</panel>
 			</panel>
 			<panel title="Production informations" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-production">

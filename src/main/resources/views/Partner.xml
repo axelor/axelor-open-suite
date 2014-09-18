@@ -57,7 +57,7 @@
 	    </menubar>
 	    <panel>
 	    	<panel colSpan="2">
-	        	<field name="picture" showTitle="false" widget="Image" colSpan="12" width="80" height="80"/>
+	        	<field name="picture" showTitle="false" widget="Image" colSpan="12" width="80" x-height="80"/>
 	      	</panel>
 	      	<panel colSpan="9">
 	      	<field name="fullName" colSpan="12" showTitle="false">
@@ -160,8 +160,8 @@
 			<panel title="Activities" showIf="id != null" if-module="axelor-crm">
 				<button name="showProject" title="Show projects"   onClick="save,action-partner-view-partner-project" />
 			</panel>
-			<panel-dashlet colSpan="12" title="Sales" showIf="id != null" if-module="axelor-supplychain" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
-			<panel-dashlet colSpan="12" title="Events" showIf="id != null" if-module="axelor-crm" action="portal.customer.crm.activities" height="350"/>
+			<panel-dashlet colSpan="12" title="Sales" showIf="id != null" if-module="axelor-supplychain" action="portal.customer.sales.lastYear.vs.ytd.by.family" x-height="350"/>
+			<panel-dashlet colSpan="12" title="Events" showIf="id != null" if-module="axelor-crm" action="portal.customer.crm.activities" x-height="350"/>
 			<panel title="Notes" colSpan="12">
 				<field name="description" colSpan="12" showTitle="false"  widget="Html" x-lite="true"/>
 			</panel>
