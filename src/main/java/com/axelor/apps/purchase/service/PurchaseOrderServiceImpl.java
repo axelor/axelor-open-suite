@@ -41,6 +41,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements PurchaseOrderService {
@@ -48,7 +49,7 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceImpl.class); 
 
 	@Inject
-	private PurchaseOrderLineService purchaseOrderLineService;
+	private Provider<PurchaseOrderLineService> purchaseOrderLineProvider;
 	
 	@Inject
 	private PurchaseOrderLineTaxService purchaseOrderLineVatService;
@@ -64,8 +65,8 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 		
 		if(purchaseOrder.getPurchaseOrderLineList() != null)  {
 			for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList())  {
-				purchaseOrderLine.setExTaxTotal(purchaseOrderLineService.computePurchaseOrderLine(purchaseOrderLine));
-				purchaseOrderLine.setCompanyExTaxTotal(purchaseOrderLineService.getCompanyExTaxTotal(purchaseOrderLine.getExTaxTotal(), purchaseOrder));
+				purchaseOrderLine.setExTaxTotal(purchaseOrderLineProvider.get().computePurchaseOrderLine(purchaseOrderLine));
+				purchaseOrderLine.setCompanyExTaxTotal(purchaseOrderLineProvider.get().getCompanyExTaxTotal(purchaseOrderLine.getExTaxTotal(), purchaseOrder));
 			}
 		}
 		
