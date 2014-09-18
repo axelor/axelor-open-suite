@@ -35,7 +35,7 @@
 	    <panel-related title="Stock Details" field="detailsLocationLineList" form-view="location-line-details-form" grid-view="location-line-details-grid"/>
 	    <panel title="Stock Value">    
 	      <!-- TODO: remove this comment if portlet is allowed in panel
-	      <portlet height="350" action="portal.locationLine.location.value"/>      
+	      <portlet x-height="350" action="portal.locationLine.location.value"/>      
 	      -->
 	    </panel>
 	  </panel-tabs>    
