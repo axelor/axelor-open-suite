@@ -4,19 +4,19 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
 	
 	<portal name="supplychain.products.dashboard.1.portal.view" title="Products DB 1">
-		<portlet action="portal.nbr.product.per.family" height="350" />
-		<portlet action="portal.nbr.product.per.category" height="350" />
-		<portlet action="portal.product.type.distribution" height="350"/>
-		<portlet action="portal.product.launches.withdrawal.each.month" height="350"/>
-		<portlet action="portal.product.sale.turnover.last.12.month" height="350"/>		
+		<portlet action="portal.nbr.product.per.family" x-height="350" />
+		<portlet action="portal.nbr.product.per.category" x-height="350" />
+		<portlet action="portal.product.type.distribution" x-height="350"/>
+		<portlet action="portal.product.launches.withdrawal.each.month" x-height="350"/>
+		<portlet action="portal.product.sale.turnover.last.12.month" x-height="350"/>		
 	</portal>
 	
 	<portal name="supplychain.products.family.dashboard.1.portal.view" title="Family Dashboard">
-		<portlet action="portal.nbr.product.per.family" canSearch="true" height="350" />
+		<portlet action="portal.nbr.product.per.family" canSearch="true" x-height="350" />
 	</portal>
 	
 	<portal name="supplychain.products.category.dashboard.1.portal.view" title="Family Dashboard">
-		<portlet action="portal.nbr.product.per.category" canSearch="true" height="350" />
+		<portlet action="portal.nbr.product.per.category" canSearch="true" x-height="350" />
 	</portal>
 	
 	<action-view name="portal.product.type.distribution" title="Product type distribution" model="com.axelor.apps.base.db.Product">
