@@ -152,9 +152,7 @@
 				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
 				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			</panel>
-			<panel title=" " colSpan="12">
-					<field name="eventReminderList" colSpan="12" showTitle="false"/>
-			</panel>
+			<panel-related field="eventReminderList" colSpan="12" showTitle="false"/>
 		</panel>
 		
 		<panel-side title="Attributes">
@@ -224,9 +222,7 @@
 				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
 				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			</panel>
-			<panel title=" " colSpan="12">
-					<field name="eventReminderList" colSpan="12" showTitle="false"/>
-			</panel>
+			<panel-related field="eventReminderList" colSpan="12" showTitle="false"/>
 		</panel>
 		<panel-side title="Attributes">
 			<field name="statusSelect"/>
@@ -289,9 +285,7 @@
 				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
 				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
 				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
-				<panel colSpan="12">
-					<field name="eventReminderList" colSpan="12" showTitle="false"/>
-				</panel>
+				<panel-related field="eventReminderList" colSpan="12" showTitle="false" />
 			</panel>
 		</panel>
 		
