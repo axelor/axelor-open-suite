@@ -51,6 +51,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class InventoryService extends InventoryRepository{
@@ -59,10 +60,10 @@ public class InventoryService extends InventoryRepository{
 	private InventoryLineService inventoryLineService;
 	
 	@Inject
-	private StockMoveService stockMoveService;
+	private Provider<StockMoveService> stockMoveServiceProvider;
 
 	@Inject
-	private StockMoveLineService stockMoveLineService;
+	private Provider<StockMoveLineService> stockMoveLineServiceProvider;
 
 	@Inject
 	private SequenceService sequenceService;
@@ -257,7 +258,7 @@ public class InventoryService extends InventoryRepository{
 			if (currentQty.compareTo(realQty) != 0) {
 				BigDecimal diff = realQty.subtract(currentQty);
 
-				StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, diff, product.getUnit(), null, stockMove, 0);
+				StockMoveLine stockMoveLine = stockMoveLineServiceProvider.get().createStockMoveLine(product, diff, product.getUnit(), null, stockMove, 0);
 				if (stockMoveLine == null)  {
 					throw new AxelorException("Produit incorrect dans la ligne de l'inventaire "+inventorySeq, IException.CONFIGURATION_ERROR);
 				}
@@ -267,9 +268,9 @@ public class InventoryService extends InventoryRepository{
 		}
 		if (stockMove.getStockMoveLineList() != null) {
 			
-			stockMoveService.plan(stockMove);
-			stockMoveService.copyQtyToRealQty(stockMove);
-			stockMoveService.realize(stockMove);
+			stockMoveServiceProvider.get().plan(stockMove);
+			stockMoveServiceProvider.get().copyQtyToRealQty(stockMove);
+			stockMoveServiceProvider.get().realize(stockMove);
 		}
 		return stockMove;
 	}
@@ -277,7 +278,7 @@ public class InventoryService extends InventoryRepository{
 	
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, Location toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
-		StockMove stockMove = stockMoveService.createStockMove(null, null, company, null, 
+		StockMove stockMove = stockMoveServiceProvider.get().createStockMove(null, null, company, null, 
 				stockConfigService.getInventoryVirtualLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate);
 		
 		stockMove.setTypeSelect(IStockMove.TYPE_INTERNAL);
