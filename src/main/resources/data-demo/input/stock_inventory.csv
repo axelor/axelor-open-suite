@@ -1,2 +1,2 @@
-"location.importId";"statusSelect";"dateT";"description"
-1;2;"TODAY[-6M]";"Starting inventory to initialise the qty available in stock."
+"importId";"location.importId";"statusSelect";"dateT";"description"
+1;1;2;"TODAY[-6M]";"Starting inventory to initialise the qty available in stock."
