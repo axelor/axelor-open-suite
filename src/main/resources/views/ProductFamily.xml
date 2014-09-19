@@ -10,7 +10,7 @@
 	  <panel-include view="product-family-form" from="axelor-base"/>
 	  <panel title="Sales Turnover" hideIf="fromMenu == null" >    
 		<!-- TODO: remove this comment if portlet works in panel
-		<portlet   x-height="350" action="portal.family.sales.turnover.per.month"/>
+		<portlet   height="350" action="portal.family.sales.turnover.per.month"/>
 		-->
 	  </panel>
 	</form>
