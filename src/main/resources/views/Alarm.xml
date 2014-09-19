@@ -12,7 +12,7 @@
 	    <field name="acquitOk"/>
 	</grid>
     
-    <grid name="alarm-portal-grid" title="Alarm" model="com.axelor.apps.base.db.Alarm">
+    <grid name="alarm-dashlet-grid" title="Alarm" model="com.axelor.apps.base.db.Alarm">
         <field name="date"/>
         <field name="partner"/>
         <field name="invoice" />

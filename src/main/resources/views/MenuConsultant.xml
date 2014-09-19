@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	<menuitem name="menu-consultant-dashbord" title="My DashBord" groups="consultant" 
 		action="menu.consultant.dashbord" icon="img/16px/chart_16px.png"/>
 	
 	<action-view name="menu.consultant.dashbord" title="My DashBord"
 		icon="img/16px/chart_16px.png">
-		<view type="portal" name="consultant.dashboard.portal" />
+		<view type="dashboard" name="consultant.dashboard" />
     	<context name="_user" expr="eval:__user__"/>
 	</action-view>
 	
-	<portal name="consultant.dashboard.portal" title="Dashboard">
-		<portlet action="consultant.dashbord.portal.time.sheet" canSearch="true" height="400" />
-		<portlet action="consultant.dashboard.portal.expense" canSearch="true" height="400" />
-		<portlet action="consultant.dashboard.portal.tasks" canSearch="true" height="400" />
-		<portlet action="consultant.dashboard.portal.leave.request" canSearch="true" height="400" />
-	</portal>
+	<dashboard name="consultant.dashboard" title="Dashboard">
+		<dashlet action="consultant.dashbord.dashlet.time.sheet" canSearch="true" height="400" />
+		<dashlet action="consultant.dashboard.dashlet.expense" canSearch="true" height="400" />
+		<dashlet action="consultant.dashboard.dashlet.expense" canSearch="true" height="400" />
+		<dashlet action="consultant.dashboard.dashlet.expense" canSearch="true" height="400" />
+	</dashboard>
 	
-	<action-view name="consultant.dashbord.portal.time.sheet" title="My Timesheets to complete"
+	<action-view name="consultant.dashbord.dashlet.time.sheet" title="My Timesheets to complete"
 		model="com.axelor.apps.organisation.db.Timesheet">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
@@ -27,7 +27,7 @@
 		<context name="_user" expr="eval:__user__"/>
 	</action-view>	
 	
-	<action-view name="consultant.dashboard.portal.expense" title="My expenses to complete"
+	<action-view name="consultant.dashboard.dashlet.expense" title="My expenses to complete"
 		model="com.axelor.apps.organisation.db.Expense">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
@@ -35,7 +35,7 @@
 		<context name="_user" expr="eval:__user__"/>
 	</action-view>
 	
-	<action-view name="consultant.dashboard.portal.tasks" title="My Tasks"
+	<action-view name="consultant.dashboard.dashlet.expense" title="My Tasks"
 		model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="crm-task-grid"/>
 		<view type="form" name="crm-task-form"/>
@@ -44,7 +44,7 @@
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>	
 	
-	<action-view name="consultant.dashboard.portal.leave.request" title="My leave requests"
+	<action-view name="consultant.dashboard.dashlet.expense" title="My leave requests"
 		model="com.axelor.apps.organisation.db.LeaveRequest">
 		<view type="grid" name="leave-request-grid" />
 		<view type="form" name="leave-request-form" />

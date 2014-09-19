@@ -17,7 +17,7 @@
     	title="Partner"  groups="admins,erp" />
 	
 	<menuitem name="menu-dashboards-partner-1"  parent="menu-dashboards-partner"
-    	title="Partner Db" icon="img/16px/chart_16px.png"  action="portal.base.partner.list.dashboard.view"/>
+    	title="Partner Db" icon="img/16px/chart_16px.png"  action="dashlet.base.partner.list.dashboard.view"/>
 	
 	<menuitem name="menu-dashboards-contact" priority="90" parent="menu-dashboards-partner-contact"
     	title="Contacts"  groups="admins,erp"/>	
@@ -25,8 +25,8 @@
 	<menuitem name="menu-dashboards-contact-1"  parent="menu-dashboards-contact" icon="img/16px/chart_16px.png"
     	title="Contacts Db"  />		
 	
-	<action-view name="portal.base.partner.list.dashboard.view" title="Partner List Report">
-		<view type="portal" name="base.partner.list.portal" />
+	<action-view name="dashlet.base.partner.list.dashboard.view" title="Partner List Report">
+		<view type="dashboard" name="base.partner.list.dashboard" />
 	</action-view>
 	
 	<menuitem name="menu-dashboards-products-goods" priority="40" parent="menu-dashboards"
