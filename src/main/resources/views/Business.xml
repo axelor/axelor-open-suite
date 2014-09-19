@@ -9,7 +9,7 @@
        	</panel>
        	<!-- TODO: remove this comment if portlet works in panel 
        	<panel colSpan="12">
-       		<portlet colSpan="12" action="action-business-project-view-production-manuf-order"/>
+       		<dashlet colSpan="12" action="action-business-project-view-production-manuf-order"/>
        	</panel>
        	 -->
 	</form>

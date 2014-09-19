@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
 	
 	<menuitem name="manufacturing-root" title="Manufacturing" priority="84"
@@ -84,7 +84,7 @@
 
 	<action-view name="manufacturing.root.charge.by.machine.dashboardr" title="Charge by machine"
 		icon="img/16px/chart_16px.png">
-		<view type="portal" name="charge.by.machine.dashboard.portal" />
+		<view type="dashboard" name="charge.by.machine.dashboard" />
 		<context name="today" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
 
@@ -122,11 +122,11 @@
 	</action-view>
 	
 	<menuitem name="menu-manufacturing-dashboard-sample" parent="menu-dashboards-sample" priority="155"
-		title="Manufacturing Dashboard" icon="img/16px/chart_16px.png" action="portal.manufacturing.dashboard.view.sample" groups="admins,axelordemo"/>	
+		title="Manufacturing Dashboard" icon="img/16px/chart_16px.png" action="dashlet.manufacturing.dashboard.view.sample" groups="admins,axelordemo"/>	
 
-	<action-view name="portal.manufacturing.dashboard.view.sample" title="Manufacturing Dashboard"
+	<action-view name="dashlet.manufacturing.dashboard.view.sample" title="Manufacturing Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="manufacturing.dashboard.portal.sample" />
+		<view type="dashboard" name="manufacturing.dashboard.sample" />
 	    <context name="_today" expr="eval: __date__.toDate()"/>
 	</action-view>
 
@@ -135,11 +135,11 @@
 		title="Manufacturing" groups="admins,axelordemo" priority="90"/>	
 		
 	<menuitem name="menu-manufacturing-dashboard-1" parent="menu-manufacturing-dashboard" 
-		title="Manufacturing Db" icon="img/16px/chart_16px.png" action="portal.manufacturing.dashboard.view" />	
+		title="Manufacturing Db" icon="img/16px/chart_16px.png" action="dashlet.manufacturing.dashboard.view" />	
 
-	<action-view name="portal.manufacturing.dashboard.view" title="Manufacturing Dashboard"
+	<action-view name="dashlet.manufacturing.dashboard.view" title="Manufacturing Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="manufacturing.dashboard.portal" />
+		<view type="dashboard" name="manufacturing.dashboard" />
 	    <context name="_today" expr="eval: __date__.toDate()"/>
 	</action-view>
 	

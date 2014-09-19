@@ -100,9 +100,9 @@
 	    </panel>
 	    <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
 	      <!-- TODO: remove this comment if portlet works in panel
-	      <portlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
-	      <portlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
-	      <portlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
+	      <dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
+	      <dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
+	      <dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
 	      -->
 	    </panel>
 	    <panel title="Finished products">
