@@ -102,22 +102,22 @@
 	      </panel>
 	      <!-- TODO: remove this comment if portlet works in panel
 	      <panel title="Initial estimated" hideIf="realEstimatedMethodSelect == 1">
-	        <portlet colSpan="4" action="action-task-view-validated-sale-order-line"/>
-	        <portlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
-	        <portlet colSpan="4" action="action-task-view-initial-estimated-financial-information-update"/>
+	        <dashlet colSpan="4" action="action-task-view-validated-sale-order-line"/>
+	        <dashlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
+	        <dashlet colSpan="4" action="action-task-view-initial-estimated-financial-information-update"/>
 	      </panel>
 	      <panel title="Real estimated">
-	        <portlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
-	        <portlet colSpan="4" action="action-task-view-timesheet-line"/>
-	        <portlet colSpan="4" action="action-task-view-expense-line"/>
-	        <portlet colSpan="4" action="action-task-view-real-estimated-financial-information-update"/>
+	        <dashlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
+	        <dashlet colSpan="4" action="action-task-view-timesheet-line"/>
+	        <dashlet colSpan="4" action="action-task-view-expense-line"/>
+	        <dashlet colSpan="4" action="action-task-view-real-estimated-financial-information-update"/>
 	      </panel>
 	      <panel title="Real invoiced">
-	        <portlet colSpan="4" action="action-task-view-customer-invoice-line"/>
-	        <portlet colSpan="4" action="action-task-view-supplier-invoice-line"/>
-	        <portlet colSpan="4" action="action-task-view-timesheet-line"/>
-	        <portlet colSpan="4" action="action-task-view-expense-line"/>
-	        <portlet colSpan="4" action="action-task-view-real-invoiced-financial-information-update"/>
+	        <dashlet colSpan="4" action="action-task-view-customer-invoice-line"/>
+	        <dashlet colSpan="4" action="action-task-view-supplier-invoice-line"/>
+	        <dashlet colSpan="4" action="action-task-view-timesheet-line"/>
+	        <dashlet colSpan="4" action="action-task-view-expense-line"/>
+	        <dashlet colSpan="4" action="action-task-view-real-invoiced-financial-information-update"/>
 	      </panel>
 	      -->
 	    </panel>
@@ -128,8 +128,8 @@
 	        <button name="showInvoices" title="Show invoices" showIf="statusSelect == 4" colSpan="2" onClick="action-task-view-invoice"/>
 	      </panel>
 	      <!-- TODO: remove this comment if portlet works in panel
-	      <portlet colSpan="4" action="action-task-view-expense-line-to-invoice"/>
-	      <portlet colSpan="4" action="action-task-view-timesheet-line-to-invoice"/>
+	      <dashlet colSpan="4" action="action-task-view-expense-line-to-invoice"/>
+	      <dashlet colSpan="4" action="action-task-view-timesheet-line-to-invoice"/>
 	      -->
 	    </panel>
 	    <panel title="Description">

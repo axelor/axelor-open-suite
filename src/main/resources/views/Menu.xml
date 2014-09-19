@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
 	
 
@@ -335,29 +335,29 @@
 	</action-view>
 	
 	<menuitem name="menu-organisation-dashboard-sample" parent="menu-dashboards-sample" priority="165"
-		title="Organisation Dashboard" icon="img/16px/chart_16px.png" action="portal.organisation.dashboard.view.sample"/>	
+		title="Organisation Dashboard" icon="img/16px/chart_16px.png" action="dashlet.organisation.dashboard.view.sample"/>	
 
-	<action-view name="portal.organisation.dashboard.view.sample" title="Organisation Dashboard"
+	<action-view name="dashlet.organisation.dashboard.view.sample" title="Organisation Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="org.project.dashboard.portal.sample" />	    
+		<view type="dashboard" name="org.project.dashboard.sample" />	    
 	</action-view>
 	
 	<menuitem name="menu-project-business-dashboard" parent="menu-dashboards" priority="120"
 		title="Project/Business" />	
 	
 	<menuitem name="menu-project-business-dashboard-1" parent="menu-project-business-dashboard" 
-		title="Project/Business Db" icon="img/16px/chart_16px.png" action="portal.project.business.dashboard.view"/>	
+		title="Project/Business Db" icon="img/16px/chart_16px.png" action="dashlet.project.business.dashboard.view"/>	
 	
-	<action-view title="Project/Business Db"  name="portal.project.business.dashboard.view">
-	  <view type="portal" name="org.project.dashboard.portal"/>
+	<action-view title="Project/Business Db"  name="dashlet.project.business.dashboard.view">
+	  <view type="dashboard" name="org.project.dashboard"/>
 	</action-view>
 	
 	<menuitem name="menu-human-resources-dashboard-sample" parent="menu-dashboards-sample" priority="160"
-		title="Human Resources Db" icon="img/16px/chart_16px.png" action="portal.human.resources.dashboard.view.sample" />	
+		title="Human Resources Db" icon="img/16px/chart_16px.png" action="dashlet.human.resources.dashboard.view.sample" />	
 
-	<action-view name="portal.human.resources.dashboard.view.sample" title="Human Resources Dashboard"
+	<action-view name="dashlet.human.resources.dashboard.view.sample" title="Human Resources Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="human.resources.dashboard.portal.sample" />
+		<view type="dashboard" name="human.resources.dashboard.sample" />
 		<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -365,20 +365,20 @@
 		title="Human Resources" priority="100" />	
 	
 	<menuitem name="menu-human-resources-dashboard-db-1" parent="menu-human-resources-dashboard" 
-		title="Human Resources Db 1" icon="img/16px/chart_16px.png" action="portal.human.resources.dashboard.db1.view" />	
+		title="Human Resources Db 1" icon="img/16px/chart_16px.png" action="dashlet.human.resources.dashboard.db1.view" />	
 	
-	<action-view name="portal.human.resources.dashboard.db1.view" title="Human Resources Db 1"
+	<action-view name="dashlet.human.resources.dashboard.db1.view" title="Human Resources Db 1"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="human.resources.dashboard.1.portal" />
+		<view type="dashboard" name="human.resources.dashboard.1" />
 		<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 	
 	<menuitem name="menu-human-resources-dashboard-db-2" parent="menu-human-resources-dashboard" 
-		title="Human Resources Db 2" icon="img/16px/chart_16px.png" action="portal.human.resources.dashboard.db2.view" />	
+		title="Human Resources Db 2" icon="img/16px/chart_16px.png" action="dashlet.human.resources.dashboard.db2.view" />	
 
-	<action-view name="portal.human.resources.dashboard.db2.view" title="Human Resources Db 2"
+	<action-view name="dashlet.human.resources.dashboard.db2.view" title="Human Resources Db 2"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="human.resources.dashboard.2.portal" />
+		<view type="dashboard" name="human.resources.dashboard.2" />
 		<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 	

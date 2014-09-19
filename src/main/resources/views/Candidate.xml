@@ -109,7 +109,7 @@
 	        <button name="compute" title="Compute" onClick="save,action-organisation-candidate-evaluation-record"/>
 	      </panel>
 	      <!-- TODO: remove this comment if portlet works in panel
-	      <portlet colSpan="2" action="chart:chart.candidate.evaluation"/>
+	      <dashlet colSpan="2" action="chart:chart.candidate.evaluation"/>
 	      -->
 	    </panel>
 	    <panel title="Additionnal information">

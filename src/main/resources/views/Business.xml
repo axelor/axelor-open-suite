@@ -88,22 +88,22 @@
 	    <!-- TODO: remove this comment if portlet is allowed in panel
 	    <panel title="Links">      
 	        <panel title="Initial estimated" hideIf="realEstimatedMethodSelect == 1">
-	          <portlet colSpan="4" action="action-business-project-view-validated-sale-order-line"/>
-	          <portlet colSpan="4" action="action-business-project-view-validated-purchase-order-line"/>
-	          <portlet colSpan="4" action="action-business-project-view-initial-estimated-financial-information-update"/>
+	          <dashlet colSpan="4" action="action-business-project-view-validated-sale-order-line"/>
+	          <dashlet colSpan="4" action="action-business-project-view-validated-purchase-order-line"/>
+	          <dashlet colSpan="4" action="action-business-project-view-initial-estimated-financial-information-update"/>
 	        </panel>
 	        <panel title="Real estimated">
-	          <portlet colSpan="4" action="action-business-project-view-validated-purchase-order-line"/>
-	          <portlet colSpan="4" action="action-business-project-view-timesheet-line"/>
-	          <portlet colSpan="4" action="action-business-project-view-expense-line"/>
-	          <portlet colSpan="4" action="action-business-project-view-real-estimated-financial-information-update"/>
+	          <dashlet colSpan="4" action="action-business-project-view-validated-purchase-order-line"/>
+	          <dashlet colSpan="4" action="action-business-project-view-timesheet-line"/>
+	          <dashlet colSpan="4" action="action-business-project-view-expense-line"/>
+	          <dashlet colSpan="4" action="action-business-project-view-real-estimated-financial-information-update"/>
 	        </panel>
 	        <panel title="Real invoiced">
-	          <portlet colSpan="4" action="action-business-project-view-customer-invoice-line"/>
-	          <portlet colSpan="4" action="action-business-project-view-supplier-invoice-line"/>
-	          <portlet colSpan="4" action="action-business-project-view-timesheet-line"/>
-	          <portlet colSpan="4" action="action-business-project-view-expense-line"/>
-	          <portlet colSpan="4" action="action-business-project-view-real-invoiced-financial-information-update"/>
+	          <dashlet colSpan="4" action="action-business-project-view-customer-invoice-line"/>
+	          <dashlet colSpan="4" action="action-business-project-view-supplier-invoice-line"/>
+	          <dashlet colSpan="4" action="action-business-project-view-timesheet-line"/>
+	          <dashlet colSpan="4" action="action-business-project-view-expense-line"/>
+	          <dashlet colSpan="4" action="action-business-project-view-real-invoiced-financial-information-update"/>
 	        </panel>      
 	    </panel>
 	    -->
@@ -111,7 +111,7 @@
 	<!-- 	        	<include view="business-project-production-form" from="axelor-production"/> -->      
 	      <field name="prodInvTypeSelect" if-module="axelor-production"/>
 	      <!-- TODO: remove this comment if portlet is allowed in panel
-	      <portlet colSpan="12" action="action-business-project-view-production-manuf-order"/>
+	      <dashlet colSpan="12" action="action-business-project-view-production-manuf-order"/>
 	      -->
 	    </panel>
 	    <panel-related title="members" field="memberUserSet"/>    
