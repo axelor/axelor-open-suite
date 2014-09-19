@@ -146,8 +146,8 @@
 	<!-- TOP MENU -->
 	
 	<menuitem name="top-manufacturing" title="Manufacturing" left="false" top="true" groups="admins,erp"/>
-	<menuitem name="top-manufacturing-create-manufacturing-order" title="Create Manuf. Order" parent="top-manufacturing" priority="100" action="top.manufacturing.order.new"/>
-	<action-view name="top.manufacturing.order.new" title="New Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
+	<menuitem name="top-manufacturing-create-manufacturing-order" title="Create Manuf. Order" parent="top-manufacturing" priority="100" action="top.manufacturing.create.manufacturing.order"/>
+	<action-view name="top.manufacturing.create.manufacturing.order" title="New Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="form" name="manuf-order-form"/>
 	</action-view>
 	<menuitem name="top-manufacturing-manufacturing-orders" title="View Manuf. Orders" priority="90" parent="top-manufacturing" action="manufacturing.root.manuf.order"/>
