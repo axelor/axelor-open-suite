@@ -48,7 +48,7 @@
 	    <panel title="Delivery">
 	      <field name="estimatedDelivDate"/>
 	      <!-- TODO: remove this comment if portlet works in panel
-	      <portlet   action="action-sale-order-line-view-stock-move-line"/>
+	      <dashlet   action="action-sale-order-line-view-stock-move-line"/>
 	      -->
 	    </panel>
 	    <panel-related title="SO lines" field="saleOrderSubLineList"/>    

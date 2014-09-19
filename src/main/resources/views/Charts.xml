@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	  
-	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.portal.set.dates.this.last.year">
+	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.dates.this.last.year">
 	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
 	  <field name="toDateLY" expr="eval:LocalDate.parse(todayDate).minusYears(1).withMonthOfYear(12).withDayOfMonth(31)"/>  
 	</action-record>
 	
-	<chart onInit="action.general.portal.set.date.6m" name="chart.family.sale.turnover.per.month" title="Family sale turnover (Excl. Tax) per month">
+	<chart onInit="action.general.chart.set.date.6m" name="chart.family.sale.turnover.per.month" title="Family sale turnover (Excl. Tax) per month">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date" widget="required" x-required="true" />
 	    <field type="date" name="toDate" title="To Date" widget="required" x-required="true" />
@@ -34,7 +34,7 @@
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
-	<chart onInit="action.sale.portal.set.dates.this.last.year" name="chart.sale.turnover.ytd.vs.previous.years.by.month" title="Sales turnover comparison per month this year vs past years">
+	<chart onInit="action.sale.chart.set.dates.this.last.year" name="chart.sale.turnover.ytd.vs.previous.years.by.month" title="Sales turnover comparison per month this year vs past years">
 	  <search-fields>
 	    <field name="toDateLY" type="date" title="Year 1 To Date"/>
 	    <field name="toDate" type="date" title="Year 2 To Date"/>
@@ -162,7 +162,7 @@
 	  <series key="_turn_over" groupBy="_product_family" type="bar" title="Turnover"/>
 	</chart>
 	
-	<chart onInit="action.sale.portal.set.dates.this.last.year" name="chart.sale.turnover.ytd.vs.past.year" title="Sales turnover this year vs past years">
+	<chart onInit="action.sale.chart.set.dates.this.last.year" name="chart.sale.turnover.ytd.vs.past.year" title="Sales turnover this year vs past years">
 	  <search-fields>
 	    <field name="toDate" type="date" title="This Year To Date"/>
 	    <field name="toDateLY" type="date" title="Last Year To Date"/>
@@ -231,18 +231,18 @@
 	  <series key="_turn_over" groupBy="_year" type="bar" title="Turnover"/>
 	</chart>
 	
-	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.portal.set.date">
+	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.date">
 	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)" />
 	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)" />
 	  <field name="monthSelect" expr="eval:12" />
 	</action-record>
 	  
-	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.portal.set.date.1m">
+	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.date.1m">
 	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)" />
 	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(1)" />	  
 	</action-record>
 	
-	<chart onInit="action.sale.portal.set.date.1m" name="chart.sale.manager.dashboard.turnover.per.team" title="Turnover (excl. Tax) per team">
+	<chart onInit="action.sale.chart.set.date.1m" name="chart.sale.manager.dashboard.turnover.per.team" title="Turnover (excl. Tax) per team">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -274,7 +274,7 @@
 	  <series key="amount" type="bar" title="Amount"/>
 	</chart>
 	  
-	<chart onInit="action.sale.portal.set.date.1m" name="chart.sale.manager.dashboard.turnover.per.saleman" title="Turnover (excl. Tax) per saleman">
+	<chart onInit="action.sale.chart.set.date.1m" name="chart.sale.manager.dashboard.turnover.per.saleman" title="Turnover (excl. Tax) per saleman">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -305,12 +305,12 @@
 	  <series key="amount" type="bar" title="Amount"/>
 	</chart>
 	
-	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.portal.set.date">
+	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.date">
 	  <field name="toDate" expr="eval:todayDate" />
 	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)" />
 	</action-record>
 	  
-	<chart onInit="action.sale.portal.set.date" name="chart.sale.manager.dashboard.sale.distribution.per.family" title="Sales distribution per product family">
+	<chart onInit="action.sale.chart.set.date" name="chart.sale.manager.dashboard.sale.distribution.per.family" title="Sales distribution per product family">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -348,7 +348,7 @@
 	  <series key="amount" type="donut" title="Amount"/>
 	</chart>
 
-	<chart onInit="action.sale.portal.set.date" name="chart.sale.manager.dashboard.product.sale.per.category" title="Sales distribution per product category">
+	<chart onInit="action.sale.chart.set.date" name="chart.sale.manager.dashboard.product.sale.per.category" title="Sales distribution per product category">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -384,7 +384,7 @@
 	  <series key="amount" type="donut" title="Amount"/>
 	</chart>
 	  
-	<chart onInit="action.sale.portal.set.date" name="chart.sale.manager.dashboard.sale.per.country" title="Sales per country">
+	<chart onInit="action.sale.chart.set.date" name="chart.sale.manager.dashboard.sale.per.country" title="Sales per country">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -418,7 +418,7 @@
 	  <series key="amount" type="donut" title="Amount"/>
 	</chart>
 	   
-	<chart stacked="true" onInit="action.general.portal.set.date.6m" name="chart.my.turnover.per.month" title="My Turnover per month">
+	<chart stacked="true" onInit="action.general.chart.set.date.6m" name="chart.my.turnover.per.month" title="My Turnover per month">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -448,7 +448,7 @@
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
-	<chart stacked="true" onInit="action.sale.portal.set.date" name="chart.turnover.sale.by.month.by.category" title="Sales Turnover (Orders) by month by category">
+	<chart stacked="true" onInit="action.sale.chart.set.date" name="chart.turnover.sale.by.month.by.category" title="Sales Turnover (Orders) by month by category">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -502,7 +502,7 @@
 	</chart>
 
 	
-	<chart stacked="true" onInit="action.sale.portal.set.date" name="chart.units.sold.on.cust.sale.by.category" title="Nbr of Units sold (Orders) by category">
+	<chart stacked="true" onInit="action.sale.chart.set.date" name="chart.units.sold.on.cust.sale.by.category" title="Nbr of Units sold (Orders) by category">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -556,7 +556,7 @@
 	
 	<!-- This chart is used in product-form (base)  -->
 	
-	<chart onInit="action.general.portal.set.date.6m" name="chart.product.sale.turnover.per.month" title="Product sale turnover (Excl. Tax) per month">
+	<chart onInit="action.general.chart.set.date.6m" name="chart.product.sale.turnover.per.month" title="Product sale turnover (Excl. Tax) per month">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -583,7 +583,7 @@
 
 	
 		
-	<chart onInit="action.general.portal.set.date.6m" name="chart.product.sale.turnover.last.12.month" title="Product sale turnover (Excl. Tax) last 12 month">
+	<chart onInit="action.general.chart.set.date.6m" name="chart.product.sale.turnover.last.12.month" title="Product sale turnover (Excl. Tax) last 12 month">
 	  <search-fields>
 	    <field type="date" name="toDate" title="To Date"/>
 	    <field type="reference" target="com.axelor.apps.base.db.Product" name="product" title="Product"/>
@@ -610,7 +610,7 @@
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
-	<chart onInit="action.sale.portal.set.from.date.and.saleman.6m" name="chart.turnover.per.month.per.saleman.over.6mth" title="Turnover per month per saleman (6 month)">
+	<chart onInit="action.sale.chart.set.from.date.and.saleman.6m" name="chart.turnover.per.month.per.saleman.over.6mth" title="Turnover per month per saleman (6 month)">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="SalesMan" widget="[required=true]"/>
@@ -637,14 +637,14 @@
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
-	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.portal.set.from.date.and.saleman.6m">
+	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.from.date.and.saleman.6m">
 		   <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)" />
 		   <field name="salemanUser" expr="eval:__user__"/>
 	</action-record>
 	
 	
 	
-	<chart onInit="action.sale.portal.set.from.date.and.saleman.4m" name="chart.turnover.per.month.per.saleman.over.4mth" title="Turnover per month per saleman (4 month)">
+	<chart onInit="action.sale.chart.set.from.date.and.saleman.4m" name="chart.turnover.per.month.per.saleman.over.4mth" title="Turnover per month per saleman (4 month)">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="Salesman" widget="[required=true]"/>
@@ -672,13 +672,13 @@
 	</chart>
 
 	
-	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.portal.set.from.date.and.saleman.4m">
+	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.from.date.and.saleman.4m">
 		   <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(4)" />
 		   <field name="salemanUser" expr="eval:__user__"/>
 	</action-record>
 	
 	
-	<chart onInit="action.sale.portal.set.date" name="chart.sale.turnover.per.customer.type" title="Turnover per customer type">
+	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.type" title="Turnover per customer type">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date" />
@@ -704,7 +704,7 @@
 	</chart>
 	
 	
-	<chart onInit="action.sale.portal.set.date" name="chart.sale.turnover.per.customer.category" title="Turnover per customer category">
+	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.category" title="Turnover per customer category">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -726,7 +726,7 @@
 	  <series key="_amount" type="bar" title="Turnover"/>
 	</chart>
 	
-	<chart onInit="action.sale.portal.set.date" name="chart.sale.turnover.per.customer.sector" title="Turnover per customer sector">
+	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.sector" title="Turnover per customer sector">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date" />
@@ -752,7 +752,7 @@
 	</chart>
 	
 	
-	<chart onInit="action.general.portal.set.date.6m" name="chart.category.sale.turnover.per.month" title="Category sale turnover (Excl. Tax) per month">
+	<chart onInit="action.general.chart.set.date.6m" name="chart.category.sale.turnover.per.month" title="Category sale turnover (Excl. Tax) per month">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date" widget="required" x-required="true"/>
 	    <field type="date" name="toDate" title="To Date" widget="required" x-required="true"/>
@@ -777,7 +777,7 @@
 	</chart>
 	
 		
-	<chart onInit="action.sale.portal.set.dates.this.last.year" name="chart.customer.sale.lastYear.vs.ytd.by.family" 
+	<chart onInit="action.sale.chart.set.dates.this.last.year" name="chart.customer.sale.lastYear.vs.ytd.by.family" 
 			title="Sales turnover comparison per month this year vs past years by family" stacked="true">
 	  <search-fields>
 	    <field type="date" name="toDateLY" title="Year 1 To Date"/>

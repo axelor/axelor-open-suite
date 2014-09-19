@@ -9,10 +9,10 @@
 		
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/axelor-test" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/axelor-erp" />
 			
 			<property name="javax.persistence.jdbc.user" value="axelor" />
-			<property name="javax.persistence.jdbc.password" value="" />
+			<property name="javax.persistence.jdbc.password" value="lmpdlaa" />
 
 	        <!--  
 	        	value="create" to build a new database on each run;

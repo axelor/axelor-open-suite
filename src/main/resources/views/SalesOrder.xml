@@ -272,10 +272,6 @@
     	<action name="action-sale-order-attrs-validated-read-only"/>
     </action-group>
     
-	<action-validate name="action-supplychain-sale-order-validate-check-location">
-		<error message="The location must be filled." if="location == null"/>
-	</action-validate>
-	
     <action-method name="action-sale-order-method-show-sale-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="showSaleOrder"/>
 	</action-method>

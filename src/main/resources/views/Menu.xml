@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	
 	
 	<menuitem name="sc-root-sale" title="Sales" priority="150"
@@ -100,22 +100,22 @@
 	
 	
 	<menuitem name="menu-saleman-dashboard-sample" parent="menu-dashboards-sample" priority="205"
-		title="Salesman Db" icon="img/16px/chart_16px.png" action="portal.saleman.dashboard.view.sample" />
+		title="Salesman Db" icon="img/16px/chart_16px.png" action="dashlet.saleman.dashboard.view.sample" />
 		
-	<action-view name="portal.saleman.dashboard.view.sample" title="Salesman Dashboard" 
+	<action-view name="dashlet.saleman.dashboard.view.sample" title="Salesman Dashboard" 
 	icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="sale.saleman.dashboard.portal.sample" />
+		<view type="dashboard" name="sale.saleman.dashboard.sample" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
 	</action-view>
 		
 	<menuitem name="menu-sale-manager-dashboard-sample" parent="menu-dashboards-sample" priority="200"
-		title="Sales Manager Db" icon="img/16px/chart_16px.png" action="portal.sale.manager.dashboard.view.sample" />	
+		title="Sales Manager Db" icon="img/16px/chart_16px.png" action="dashlet.sale.manager.dashboard.view.sample" />	
 
-	<action-view name="portal.sale.manager.dashboard.view.sample" title="Sales Manager Dashboard"
+	<action-view name="dashlet.sale.manager.dashboard.view.sample" title="Sales Manager Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="sale.manager.dashboard.portal.sample" />
+		<view type="dashboard" name="sale.manager.dashboard.sample" />
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
 	</action-view>
 		
@@ -123,22 +123,22 @@
 		title="Sales" priority="50" />	
 	
 	<menuitem name="menu-sale-dashboard-1" parent="menu-sale-dashboard"  
-		title="Sales Db 1" icon="img/16px/chart_16px.png" action="sale.dashboard.1.portal" />	
+		title="Sales Db 1" icon="img/16px/chart_16px.png" action="sale.dashboard.1" />	
 		
-	<action-view name="sale.dashboard.1.portal" title="Sales Db 1"
+	<action-view name="sale.dashboard.1" title="Sales Db 1"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="sale.dashboard.1.portal.view" />	 
+		<view type="dashboard" name="sale.dashboard.view.1" />	 
 		<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>  
 	</action-view>
 	
 	<menuitem name="menu-sale-dashboard-2" parent="menu-sale-dashboard"  
-		title="Sales Db 2" icon="img/16px/chart_16px.png" action="sale.dashboard.2.portal" />	
+		title="Sales Db 2" icon="img/16px/chart_16px.png" action="sale.dashboard.2" />	
 		
-	<action-view name="sale.dashboard.2.portal" title="Sales Db 2"
+	<action-view name="sale.dashboard.2" title="Sales Db 2"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="sale.dashboard.2.portal.view" />	 
+		<view type="dashboard" name="sale.dashboard.view.2" />	 
 		<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> 
 	</action-view>
 	
