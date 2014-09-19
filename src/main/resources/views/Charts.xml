@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	  
-	<action-record model="com.axelor.apps.purchase.db.PurchaseOrder" name="action.purchase.portal.set.date.6m">
+	<action-record model="com.axelor.apps.purchase.db.PurchaseOrder" name="action.purchase.chart.set.date.6m">
 	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
 	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)"/>
 	  <field name="monthSelect" expr="eval:6" />
 	</action-record>
 	
-	<action-record model="com.axelor.apps.purchase.db.PurchaseOrder" name="action.purchase.portal.set.date">
+	<action-record model="com.axelor.apps.purchase.db.PurchaseOrder" name="action.purchase.chart.set.date">
 	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)" />
 	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)" />
 	  <field name="monthSelect" expr="eval:12" />
 	</action-record>
 	  
-	<chart onInit="action.purchase.portal.set.date.6m" name="chart.my.purchase.per.product.family.volume" title="My purchased qty by product family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.my.purchase.per.product.family.volume" title="My purchased qty by product family">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -48,7 +48,7 @@
 	</chart>
 	  
 	  
-	<chart onInit="action.purchase.portal.set.date.6m" name="chart.my.purchase.amount.per.product.family" title="My purchased amount by product family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.my.purchase.amount.per.product.family" title="My purchased amount by product family">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
@@ -80,7 +80,7 @@
 	</chart>
 	  
 	   
-	<chart onInit="action.purchase.portal.set.date.6m" name="chart.purchase.order.volume.by.buyer.by.family" title="POs Volume by buyer by family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.volume.by.buyer.by.family" title="POs Volume by buyer by family">
 	
 	  <search-fields>
 	    <field name="fromDate" type="date" title="From Date" />
@@ -115,7 +115,7 @@
 	</chart>
 	  
 	  
-	<chart onInit="action.purchase.portal.set.date.6m" name="chart.purchase.order.amount.by.family" title="Purchased amount by family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.amount.by.family" title="Purchased amount by family">
 	  <search-fields>
 	    <field name="fromDate" type="date" title="From Date" />
 	    <field name="toDate" type="date" title="To Date" />
@@ -153,7 +153,7 @@
 	</chart>
 	  
 	  
-	<chart onInit="action.purchase.portal.set.date.6m" name="chart.purchase.order.amount.distribution.by.family" title="Purchased amount distribution by family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.amount.distribution.by.family" title="Purchased amount distribution by family">
 	  <search-fields>
 	    <field name="fromDate" type="date" title="From Date" />
 	    <field name="toDate" type="date" title="To Date" />
@@ -204,7 +204,7 @@
 	  <series key="_percent" type="donut" title="Percent"/>
 	</chart>	  
 	
-	<chart onInit="action.purchase.portal.set.date" name="chart.total.purchase.amount" title="Total Purchased Amount by month">
+	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.amount" title="Total Purchased Amount by month">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
@@ -235,7 +235,7 @@
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
-	<chart onInit="action.purchase.portal.set.date" name="chart.total.purchase.qty" title="Total Purchased Qty by month">
+	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.qty" title="Total Purchased Qty by month">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
@@ -269,7 +269,7 @@
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	  
-	<chart onInit="action.purchase.portal.set.date.6m" name="chart.nbr.of.po.per.month" title="Nbr of PO by month">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.nbr.of.po.per.month" title="Nbr of PO by month">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
@@ -300,7 +300,7 @@
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
-	<chart onInit="action.purchase.portal.set.date.6m" name="chart.purchase.amount.per.product.family" title="Purchased amount by product family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.amount.per.product.family" title="Purchased amount by product family">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
 	    <field type="date" name="toDate" title="To Date"/>
