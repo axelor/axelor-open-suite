@@ -57,7 +57,7 @@
 			<field name="user"/>
 			<field name="team" onSelect="action-event-attrs-team-domain"/>
 			<panel colSpan="12">
-				<field name="description" widget="TEXT" x-height="3" colSpan="12"/>
+				<field name="description" widget="TEXT" height="3" colSpan="12"/>
 			</panel>
 			
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false"/>
@@ -145,7 +145,7 @@
 			<field name="user"/>
 			<field name="team" onSelect="action-event-attrs-team-domain"/>
 			<panel colSpan="12">
-				<field name="description" widget="TEXT" x-height="3" colSpan="12"/>
+				<field name="description" widget="TEXT" height="3" colSpan="12"/>
 			</panel>
 			<panel title="Dates" colSpan="12">
 				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
@@ -215,7 +215,7 @@
 			<field name="user"/>
 			<field name="team" onSelect="action-event-attrs-team-domain"/>
 			<panel colSpan="12">
-				<field name="description" widget="TEXT" x-height="3" colSpan="12"/>
+				<field name="description" widget="TEXT" height="3" colSpan="12"/>
 			</panel>
 			<panel title="Dates" colSpan="12">
 				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
@@ -279,7 +279,7 @@
 			<field name="user"/>
 			<field name="team" onSelect="action-event-attrs-team-domain"/>
 			<panel colSpan="12">
-				<field name="description" widget="TEXT" x-x-height="3" colSpan="12"/>
+				<field name="description" widget="TEXT" x-height="3" colSpan="12"/>
 			</panel>
 			<panel title="Dates" colSpan="12">
 				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
@@ -365,7 +365,7 @@
 			<field name="limitDateT" colSpan="3"/>
 		</panel>
 		<panel title=" " colSpan="12">
-			<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true" x-height="3"/>
+			<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true" height="3"/>
 		</panel>
 	</panel>
 	<panel-side title="Attributes">

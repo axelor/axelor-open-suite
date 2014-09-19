@@ -146,37 +146,37 @@
 
 
 	<portal title="Dashboard" name="crm.opportunities.dashboard.1.portal"  >
-		<portlet action="portal.salesman.dashboard.opportunities" x-height="350" canSearch="true"/>
-		<portlet action="portal.closed.opportunities" x-height="350" canSearch="true"/>
-		<portlet action="portal.open.opportunities" x-height="350" canSearch="true"/>
-		<portlet action="portal.my.closed.opportunities" x-height="350" canSearch="true"/>
-		<portlet action="portal.my.open.opportunities" x-height="350" canSearch="true"/>
-		<portlet action="portal.unassigned.opportunities" x-height="350" canSearch="true"/>
-		<portlet action="portal.team.closed.opportunities" x-height="350" canSearch="true"/>
-		<portlet action="portal.team.open.opportunities" x-height="350" canSearch="true"/>
-		<portlet action="portal.opportunities.by.source" x-height="350" canSearch="true"/>
-		<portlet action="portal.opportunities.by.saletage" x-height="350" canSearch="true"/>
+		<portlet action="portal.salesman.dashboard.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.closed.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.open.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.my.closed.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.my.open.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.unassigned.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.team.closed.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.team.open.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.by.source" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.by.saletage" height="350" canSearch="true"/>
 	</portal>
 	
 	<portal title="Dashboard" name="crm.opportunities.dashboard.2.portal"  >
-		<portlet action="portal.opportunities.by.type" x-height="350" />
-		<portlet action="portal.opportunities.byStage.byType" x-height="350" />
-		<portlet action="portal.opportunities.won.by.partner" x-height="350" canSearch="true"/>
-		<portlet action="portal.opportunities.won.by.leadsource" x-height="350" />
-		<portlet action="portal.opportunities.won.by.saleman" x-height="350" />
-		<portlet action="portal.opportunities.by.origin.by.stage" x-height="350" />
-		<portlet action="portal.opportunities.recent.opps" x-height="350" canSearch="true"/>
-		<portlet action="portal.opportunities.top.deals" x-height="350" canSearch="true"/>
-		<portlet action="portal.opportunities.key.account" x-height="350" canSearch="true"/>
-		<portlet action="portal.opportunities.lost.deals" x-height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.by.type" height="350" />
+		<portlet action="portal.opportunities.byStage.byType" height="350" />
+		<portlet action="portal.opportunities.won.by.partner" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.won.by.leadsource" height="350" />
+		<portlet action="portal.opportunities.won.by.saleman" height="350" />
+		<portlet action="portal.opportunities.by.origin.by.stage" height="350" />
+		<portlet action="portal.opportunities.recent.opps" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.top.deals" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.key.account" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.lost.deals" height="350" canSearch="true"/>
 	</portal>
 	
 	<portal title="Dashboard" name="crm.opportunities.dashboard.3.portal"  >
-		<portlet action="portal.opportunities.pipeline.next.90d" x-height="350" />
-		<portlet action="portal.opportunities.my.top.deals" x-height="350" canSearch="true"/>
-		<portlet action="portal.opportunities.my.team.top.deals" x-height="350" canSearch="true"/>
-		<portlet action="portal.opportunities.my.key.account" x-height="350" canSearch="true"/>
-		<portlet action="portal.opportunities.my.team.key.account" x-height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.pipeline.next.90d" height="350" />
+		<portlet action="portal.opportunities.my.top.deals" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.my.team.top.deals" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.my.key.account" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.my.team.key.account" height="350" canSearch="true"/>
 	</portal>
 
 	<action-view name="portal.opportunities.by.source" title="Chart">
@@ -226,15 +226,15 @@
 	<!-- Lead Dashboard 1 -->
 
 	<portal title="Lead Dashboard 1" name="crm.lead.dashboard.portal.one"  >
-		<portlet action="portal.salesman.dashboard.leads" x-height="350" canSearch="true"/>
-		<portlet action="portal.leads.by.source" x-height="350" />
-		<portlet action="portal.leads.by.country" x-height="350" />
-		<portlet action="portal.leads.by.team.by.status" x-height="350" />
-		<portlet action="portal.leads.by.saleman.by.status" x-height="350" />
-		<portlet action="portal.my.leads" x-height="350" />
-		<portlet action="portal.unassigned.leads" x-height="350" />		
-		<portlet action="portal.team.leads" x-height="350" />		
-		<portlet action="portal.created.leads.per.month" x-height="350" />
+		<portlet action="portal.salesman.dashboard.leads" height="350" canSearch="true"/>
+		<portlet action="portal.leads.by.source" height="350" />
+		<portlet action="portal.leads.by.country" height="350" />
+		<portlet action="portal.leads.by.team.by.status" height="350" />
+		<portlet action="portal.leads.by.saleman.by.status" height="350" />
+		<portlet action="portal.my.leads" height="350" />
+		<portlet action="portal.unassigned.leads" height="350" />		
+		<portlet action="portal.team.leads" height="350" />		
+		<portlet action="portal.created.leads.per.month" height="350" />
 	</portal>
 
 	<action-view name="portal.leads.by.source" title="Leads by Source">
@@ -292,44 +292,44 @@
 	<!-- Event Call Dashboard -->
 	
 	<portal title="Calls Dashboard" name="crm.calls.dashboard.portal"  >
-		<portlet action="portal.calls.types.by.user" x-height="350" />
-		<portlet action="portal.calls.types.by.team" x-height="350" />
-		<portlet action="portal.calls.by.team.by.user" x-height="350" />
+		<portlet action="portal.calls.types.by.user" height="350" />
+		<portlet action="portal.calls.types.by.team" height="350" />
+		<portlet action="portal.calls.by.team.by.user" height="350" />
 	</portal>
 	
 	<!-- Event Tickets Dashboard -->
 	
 	<portal title="Tickets Dashboard" name="crm.tickets.dashboard.1.portal"  >
-		<portlet action="portal.open.tickets.by.priority" x-height="350" />
-		<portlet action="portal.open.ticket.priority.distribution" x-height="350" />
-		<portlet action="portal.open.tickets.by.status" x-height="350" />
-		<portlet action="portal.user.by.open.cases" x-height="350" />
-		<portlet action="portal.customers.by.open.cases" x-height="350" />
-		<portlet action="portal.due.open.ticket.gauge" x-height="350" />
-		<portlet action="portal.my.urgent.tickets" x-height="350" />
-		<portlet action="portal.my.active.tickets" x-height="350" />
-		<portlet action="portal.urgent.tickets" x-height="350" />
-		<portlet action="portal.my.new.tickets" x-height="350" />
+		<portlet action="portal.open.tickets.by.priority" height="350" />
+		<portlet action="portal.open.ticket.priority.distribution" height="350" />
+		<portlet action="portal.open.tickets.by.status" height="350" />
+		<portlet action="portal.user.by.open.cases" height="350" />
+		<portlet action="portal.customers.by.open.cases" height="350" />
+		<portlet action="portal.due.open.ticket.gauge" height="350" />
+		<portlet action="portal.my.urgent.tickets" height="350" />
+		<portlet action="portal.my.active.tickets" height="350" />
+		<portlet action="portal.urgent.tickets" height="350" />
+		<portlet action="portal.my.new.tickets" height="350" />
 	</portal>
 	
 	<portal title="Tickets Dashboard" name="crm.tickets.dashboard.2.portal"  >
-		<portlet action="portal.new.tickets" x-height="350" />
-		<portlet action="portal.new.urgent.tickets" x-height="350" />
-		<portlet action="portal.my.new.urgent.tickets" x-height="350" />
-		<portlet action="portal.my.today.support.activities" x-height="350" />
-		<portlet action="portal.my.late.tickets" x-height="350" />
-		<portlet action="portal.late.tickets" x-height="350" />
-		<portlet action="portal.created.tickets.by.month.by.priority" x-height="350" />
-		<portlet action="portal.created.tickets.by.month.by.status" x-height="350" />
-		<portlet action="portal.open.tickets.by.month.by.agent" x-height="350" />
+		<portlet action="portal.new.tickets" height="350" />
+		<portlet action="portal.new.urgent.tickets" height="350" />
+		<portlet action="portal.my.new.urgent.tickets" height="350" />
+		<portlet action="portal.my.today.support.activities" height="350" />
+		<portlet action="portal.my.late.tickets" height="350" />
+		<portlet action="portal.late.tickets" height="350" />
+		<portlet action="portal.created.tickets.by.month.by.priority" height="350" />
+		<portlet action="portal.created.tickets.by.month.by.status" height="350" />
+		<portlet action="portal.open.tickets.by.month.by.agent" height="350" />
 	</portal>
 
 	<!-- Event Dashboard 1 -->
 
 
 	<portal title="Event Dashboard 1" name="crm.event.dashboard.portal.one"  >
-		<portlet action="portal.salesman.dashboard.activities" x-height="350" canSearch="true" />
-		<portlet action="portal.my.today.support.activities" x-height="350" canSearch="true" />
+		<portlet action="portal.salesman.dashboard.activities" height="350" canSearch="true" />
+		<portlet action="portal.my.today.support.activities" height="350" canSearch="true" />
 	</portal>
 
 	<action-view name="portal.calls.types.by.user" title="Calls type by user">
@@ -471,22 +471,22 @@
 	<!-- Target User Graph Dashboard -->
 
 	<portal title="Target User Dashboard" name="crm.target.user.dashboard.portal"  >
-		<portlet action="portal.user.call.target.gauge" x-height="350" />
-		<portlet action="portal.user.call.target.bar" x-height="350"/>
-		<portlet action="portal.user.meeting.target.gauge" x-height="350"/>
-		<portlet action="portal.user.meeting.target.bar" x-height="350"/>
-		<portlet action="portal.user.opportunity.amount.won.target.gauge" x-height="350"/>
-		<portlet action="portal.user.opportunity.amount.won.target.bar" x-height="350"/>
-		<portlet action="portal.user.opportunity.created.number.target.gauge" x-height="350"/>
-		<portlet action="portal.user.opportunity.created.number.target.bar" x-height="350"/>
-		<portlet action="portal.user.opportunity.created.won.target.gauge" x-height="350"/>
-		<portlet action="portal.user.opportunity.created.won.target.bar" x-height="350"/>
-<!-- 		<portlet action="chart:chart.user.sale.order.amount.won.target.gauge" x-height="350"/> -->
-<!-- 		<portlet action="chart:chart.user.sale.order.amount.won.target.bar" x-height="350"/> -->
-<!-- 		<portlet action="chart:chart.user.sale.order.created.number.target.gauge" x-height="350"/> -->
-<!-- 		<portlet action="chart:chart.user.sale.order.created.number.target.bar" x-height="350"/> -->
-<!-- 		<portlet action="chart:chart.user.sale.order.created.won.target.gauge" x-height="350"/> -->
-<!-- 		<portlet action="chart:chart.user.sale.order.created.won.target.bar" x-height="350"/> -->
+		<portlet action="portal.user.call.target.gauge" height="350" />
+		<portlet action="portal.user.call.target.bar" height="350"/>
+		<portlet action="portal.user.meeting.target.gauge" height="350"/>
+		<portlet action="portal.user.meeting.target.bar" height="350"/>
+		<portlet action="portal.user.opportunity.amount.won.target.gauge" height="350"/>
+		<portlet action="portal.user.opportunity.amount.won.target.bar" height="350"/>
+		<portlet action="portal.user.opportunity.created.number.target.gauge" height="350"/>
+		<portlet action="portal.user.opportunity.created.number.target.bar" height="350"/>
+		<portlet action="portal.user.opportunity.created.won.target.gauge" height="350"/>
+		<portlet action="portal.user.opportunity.created.won.target.bar" height="350"/>
+<!-- 		<portlet action="chart:chart.user.sale.order.amount.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sale.order.amount.won.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sale.order.created.number.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sale.order.created.number.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sale.order.created.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sale.order.created.won.target.bar" height="350"/> -->
 	</portal>
 
 	<action-view name="portal.user.call.target.gauge" title="Calls emitted target completed (%)" model="com.axelor.apps.crm.db.Target">
@@ -532,22 +532,22 @@
 	<!-- Target Team Graph Dashboard -->
 	
 	<portal title="Target team Dashboard" name="crm.target.team.dashboard.portal"  >
-		<portlet action="portal.team.call.target.gauge" x-height="350" />
-		<portlet action="portal.team.call.target.bar" x-height="350"/>
-		<portlet action="portal.team.meeting.target.gauge" x-height="350"/>
-		<portlet action="portal.team.meeting.target.bar" x-height="350"/>
-		<portlet action="portal.team.opportunity.amount.won.target.gauge" x-height="350"/>
-		<portlet action="portal.team.opportunity.amount.won.target.bar" x-height="350"/>
-		<portlet action="portal.team.opportunity.created.number.target.gauge" x-height="350"/>
-		<portlet action="portal.team.opportunity.created.number.target.bar" x-height="350"/>
-		<portlet action="portal.team.opportunity.created.won.target.gauge" x-height="350"/>
-		<portlet action="portal.team.opportunity.created.won.target.bar" x-height="350"/>
-<!-- 		<portlet action="chart:chart.team.sale.order.amount.won.target.gauge" x-height="350"/> -->
-<!-- 		<portlet action="chart:chart.team.sale.order.amount.won.target.bar" x-height="350"/> -->
-<!-- 		<portlet action="chart:chart.team.sale.order.created.number.target.gauge" x-height="350"/> -->
-<!-- 		<portlet action="chart:chart.team.sale.order.created.number.target.bar" x-height="350"/> -->
-<!-- 		<portlet action="chart:chart.team.sale.order.created.won.target.gauge" x-height="350"/> -->
-<!-- 		<portlet action="chart:chart.team.sale.order.created.won.target.bar" x-height="350"/> -->
+		<portlet action="portal.team.call.target.gauge" height="350" />
+		<portlet action="portal.team.call.target.bar" height="350"/>
+		<portlet action="portal.team.meeting.target.gauge" height="350"/>
+		<portlet action="portal.team.meeting.target.bar" height="350"/>
+		<portlet action="portal.team.opportunity.amount.won.target.gauge" height="350"/>
+		<portlet action="portal.team.opportunity.amount.won.target.bar" height="350"/>
+		<portlet action="portal.team.opportunity.created.number.target.gauge" height="350"/>
+		<portlet action="portal.team.opportunity.created.number.target.bar" height="350"/>
+		<portlet action="portal.team.opportunity.created.won.target.gauge" height="350"/>
+		<portlet action="portal.team.opportunity.created.won.target.bar" height="350"/>
+<!-- 		<portlet action="chart:chart.team.sale.order.amount.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sale.order.amount.won.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sale.order.created.number.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sale.order.created.number.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sale.order.created.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sale.order.created.won.target.bar" height="350"/> -->
 	</portal>
 
 

@@ -49,7 +49,7 @@
 		</menubar>
 		<panel>
 			<panel colSpan="2">
-				<field name="picture" showTitle="false" widget="Image" colSpan="12" width="80" x-height="80"/>
+				<field name="picture" showTitle="false" widget="Image" colSpan="12" width="80" height="80"/>
 			</panel>
 			
 			<panel x-span="9" >
@@ -105,7 +105,7 @@
 			</panel>
 		</panel>
 		<panel title="Description" colSpan="12">
-				<field name="description" colSpan="12" showTitle="false" widget="TEXT" x-height="3"/>
+				<field name="description" colSpan="12" showTitle="false" widget="TEXT" height="3"/>
 		</panel> 
       
 		<panel-side>
