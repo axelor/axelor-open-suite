@@ -385,8 +385,8 @@
 	<!-- TOP MENU -->
 	
 	<menuitem name="top-hr" title="HR" left="false" top="true" groups="admins,erp"/>
-	<menuitem name="top-hr-profile" title="My HR Profile" parent="top-hr" priority="100" action="top.hr.my.profile"/>
-	<action-view name="top.hr.my.profile" title="My HR Profile"
+	<menuitem name="top-hr-profile" title="My HR Profile" parent="top-hr" priority="100" action="top.hr.profile"/>
+	<action-view name="top.hr.profile" title="My HR Profile"
 		model="com.axelor.apps.organisation.db.Employee" icon="img/16px/organisationSmall_16px.png">
 		<view type="grid" name="employee-grid" />
 		<view type="form" name="employee-form" />
@@ -394,8 +394,6 @@
   		<context name="_employeeId" expr="eval: __user__?.employee?.id"/>
   		<context name="_showSingle" expr="true"/>
 	</action-view>
-	
-	<action-view name="top.hr.my.profile" title="My HR Profile"></action-view>
 	<menuitem name="top-hr-employees" title="View Employees" parent="top-hr" priority="90" action="hr.root.employee"/>
 	<menuitem name="top-hr-create-timesheet" title="Create Timesheet" parent="top-hr" priority="80" action="top.hr.create.timesheet"/>
 	<action-view name="top.hr.create.timesheet" title="Create Timesheet" model="com.axelor.apps.organisation.db.Timesheet">
