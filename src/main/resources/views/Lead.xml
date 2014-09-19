@@ -131,10 +131,10 @@
      
 		<!--TODO:Remove this comment when portlet starts working-->
 		<!--<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6">
-		  <portlet   action="action-lead-view-upcoming-events"/>
-		  <portlet   action="action-lead-view-historical-events-completed"/>
-		  <portlet   action="action-lead-view-opportunity"/>
-		  <portlet   action="action-lead-view-event-ticket"/>
+		  <dashlet   action="action-lead-view-upcoming-events"/>
+		  <dashlet   action="action-lead-view-historical-events-completed"/>
+		  <dashlet   action="action-lead-view-opportunity"/>
+		  <dashlet   action="action-lead-view-event-ticket"/>
 		</panel>-->
 
 	</form>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 	  
 	  
 		
@@ -194,12 +194,12 @@
 	    <series key="amount" groupBy="stage" type="bar" title="Amount"/>
 	</chart>
 	
-	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.portal.set.date">
+	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.chart.set.date">
 	  <field name="toDateT" expr="eval:LocalDateTime.parse(todayDate).withHourOfDay(23).withMinuteOfHour(59)"/>
 	  <field name="fromDateT" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
 	</action-record>
 	
-	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.source.bar" title="Leads by Source">
+	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.source.bar" title="Leads by Source">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" />
 		    <field type="datetime" name="toDateT" title="To Date" />
@@ -224,7 +224,7 @@
 	    <series key="leads"  type="bar" title="Leads"/>
 	</chart>
 	
-	 <chart onInit="action.crm.portal.set.date" name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
+	 <chart onInit="action.crm.chart.set.date" name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" />
 		    <field type="datetime" name="toDateT" title="To Date" />
@@ -258,7 +258,7 @@
 	    <series key="_leads" groupBy="_status" type="bar" title="Leads"/>
 	</chart>
 	
-	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.saleman.by.status.bar" title="Leads by Salesman by Status" stacked="true">
+	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.saleman.by.status.bar" title="Leads by Salesman by Status" stacked="true">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" />
 		    <field type="datetime" name="toDateT" title="To Date" />
@@ -292,7 +292,7 @@
 	    <series key="_leads" groupBy="_status" type="bar" title="Leads"/>
 	</chart>
 	
-	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.user.bar" title="Calls type by user" stacked="true">
+	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.user.bar" title="Calls type by user" stacked="true">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" />
 		    <field type="datetime" name="toDateT" title="To Date" />
@@ -335,7 +335,7 @@
 	    <series key="_total_calls" groupBy="_call_status" type="bar" title="Calls"/>
 	</chart>
 	  	
-	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.team.bar" title="Calls type by team" stacked="true">
+	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.team.bar" title="Calls type by team" stacked="true">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" />
 		    <field type="datetime" name="toDateT" title="To Date" />
@@ -378,7 +378,7 @@
 	    <series key="_total_calls" groupBy="_call_status" type="bar" title="Calls"/>
 	</chart>  	
 	  	
-	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.team.by.user.bar" title="Calls by team by user">
+	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.team.by.user.bar" title="Calls by team by user">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" />
 		    <field type="reference" name="team" target="com.axelor.apps.base.db.Team" widget="[required=true]" title="Team" />
@@ -519,7 +519,7 @@
 	  <series key="_cases" type="bar" groupBy="_status" title="Cases"/>
 	</chart>
 	
-	<chart onInit="action.crm.portal.set.date" name="chart.customer.by.open.cases.bar" title="New Cases by Customer" stacked="true">
+	<chart onInit="action.crm.chart.set.date" name="chart.customer.by.open.cases.bar" title="New Cases by Customer" stacked="true">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" />
 		    <field type="datetime" name="toDateT" title="To Date" />
@@ -551,7 +551,7 @@
 	  <series key="_cases" groupBy="_status" type="bar" title="Cases"/>
 	</chart>	
 	
-	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.country.bar" title="Leads by Country">
+	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.country.bar" title="Leads by Country">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" />
 		    <field type="datetime" name="toDateT" title="To Date" />
@@ -577,11 +577,11 @@
 	    <series key="_total_leads"  type="bar" title="Leads"/>
 	</chart>  		
 	
-	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.portal.default.month.value.6m">
+	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.chart.default.month.value.6m">
 	  <field name="monthSelect" expr="eval:6"/>
 	</action-record>
 	
-	<chart onInit="action.crm.portal.default.month.value.6m" name="chart.created.leads.per.month" title="Created leads per month">
+	<chart onInit="action.crm.chart.default.month.value.6m" name="chart.created.leads.per.month" title="Created leads per month">
 	  <search-fields>
 	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>

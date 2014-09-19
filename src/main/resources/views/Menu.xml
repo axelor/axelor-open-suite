@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
 
 
@@ -355,38 +355,38 @@
 	
  	<menuitem name="menu-event-dashboard" parent="menu-crm-dashboards" title="Event" priority="5"/> 
 		
- 	<menuitem name="menu-event-dashboard-one" parent="menu-event-dashboard" title="Event Db" icon="img/16px/chart_16px.png" action="crm.event.dashboard.portal.one.view" /> 
+ 	<menuitem name="menu-event-dashboard-one" parent="menu-event-dashboard" title="Event Db" icon="img/16px/chart_16px.png" action="crm.event.dashboard.one.view" /> 
 
- 	<action-view name="crm.event.dashboard.portal.one.view" title="Event Dashboard 1" icon="img/16px/calendar_16px.png"> 
- 		<view type="portal" name="crm.event.dashboard.portal.one" />
+ 	<action-view name="crm.event.dashboard.one.view" title="Event Dashboard 1" icon="img/16px/calendar_16px.png"> 
+ 		<view type="dashboard" name="crm.event.dashboard.one" />
 	</action-view>
 	 
 	<menuitem name="menu-lead-dashboard" parent="menu-crm-dashboards" title="Lead" priority="10"/>
 	
-	<menuitem name="menu-lead-dashboard-one" parent="menu-lead-dashboard" title="Lead Db" icon="img/16px/chart_16px.png" action="crm.lead.dashboard.portal.one.view" />
+	<menuitem name="menu-lead-dashboard-one" parent="menu-lead-dashboard" title="Lead Db" icon="img/16px/chart_16px.png" action="crm.lead.dashboard.one.view" />
 
-	<action-view name="crm.lead.dashboard.portal.one.view" title="Lead Db 1" icon="img/16px/calendar_16px.png">
-		<view type="portal" name="crm.lead.dashboard.portal.one" />
+	<action-view name="crm.lead.dashboard.one.view" title="Lead Db 1" icon="img/16px/calendar_16px.png">
+		<view type="dashboard" name="crm.lead.dashboard.one" />
 	</action-view>
 	
 	<menuitem name="menu-target-dashboard" parent="menu-crm-dashboards"	title="Target" />
 		
 	<menuitem name="menu-target-user-dashboard" parent="menu-target-dashboard"
-		title="Target User Db" icon="img/16px/chart_16px.png" action="crm.portal.target.user.dashboard.view"/>	
+		title="Target User Db" icon="img/16px/chart_16px.png" action="crm.target.user.dashboard.view"/>	
 	
-	<action-view name="crm.portal.target.user.dashboard.view" title="Target user Dashboard"
+	<action-view name="crm.target.user.dashboard.view" title="Target user Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="crm.target.user.dashboard.portal" />
+		<view type="dashboard" name="crm.target.user.dashboard" />
 		<context name="date" expr="eval: __date__"/>
 		<context name="user" expr="eval:__user__"/>
 	</action-view>
 	
 	<menuitem name="menu-target-team-dashboard" parent="menu-target-dashboard"
-		title="Target Team Db" icon="img/16px/chart_16px.png" action="crm.portal.target.team.dashboard.view"/>	
+		title="Target Team Db" icon="img/16px/chart_16px.png" action="crm.target.team.dashboard.view"/>	
 
-	<action-view name="crm.portal.target.team.dashboard.view" title="Target team Dashboard"
+	<action-view name="crm.target.team.dashboard.view" title="Target team Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="crm.target.team.dashboard.portal" />
+		<view type="dashboard" name="crm.target.team.dashboard" />
 		<context name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
 		<context name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
@@ -396,27 +396,27 @@
 		title="Opportunities" priority="20" />	
 	
 	<menuitem name="menu-opportunities-dashboard-1" parent="menu-opportunities-dashboard"
-		title="Opportunities Db 1" icon="img/16px/chart_16px.png" action="crm.portal.opportunities.dashboard.1.view"/>	
+		title="Opportunities Db 1" icon="img/16px/chart_16px.png" action="crm.opportunities.dashboard.1.view"/>	
 
-	<action-view name="crm.portal.opportunities.dashboard.1.view" title="Opportunities Db 1"
+	<action-view name="crm.opportunities.dashboard.1.view" title="Opportunities Db 1"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="crm.opportunities.dashboard.1.portal" />
+		<view type="dashboard" name="crm.opportunities.dashboard.1" />
 	</action-view>
 	
 	<menuitem name="menu-opportunities-dashboard-2" parent="menu-opportunities-dashboard"
-		title="Opportunities Db 2" icon="img/16px/chart_16px.png" action="crm.portal.opportunities.dashboard.2.view"/>	
+		title="Opportunities Db 2" icon="img/16px/chart_16px.png" action="crm.opportunities.dashboard.2.view"/>	
 
-	<action-view name="crm.portal.opportunities.dashboard.2.view" title="Opportunities Db 2"
+	<action-view name="crm.opportunities.dashboard.2.view" title="Opportunities Db 2"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="crm.opportunities.dashboard.2.portal" />
+		<view type="dashboard" name="crm.opportunities.dashboard.2" />
 	</action-view>
 	
 	<menuitem name="menu-opportunities-dashboard-3" parent="menu-opportunities-dashboard"
-		title="Opportunities Db 3" icon="img/16px/chart_16px.png" action="crm.portal.opportunities.dashboard.3.view"/>	
+		title="Opportunities Db 3" icon="img/16px/chart_16px.png" action="crm.opportunities.dashboard.3.view"/>	
 
-	<action-view name="crm.portal.opportunities.dashboard.3.view" title="Opportunities Db 3"
+	<action-view name="crm.opportunities.dashboard.3.view" title="Opportunities Db 3"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="crm.opportunities.dashboard.3.portal" />
+		<view type="dashboard" name="crm.opportunities.dashboard.3" />
 	</action-view>
 	
 	<menuitem name="menu-tasks-dashboard" parent="menu-crm-dashboards"
@@ -435,30 +435,30 @@
 		title="Calls" priority="50" />	
 		
 	<menuitem name="menu-calls-dashboard-1" parent="menu-calls-dashboard"
-		title="Calls Db" icon="img/16px/chart_16px.png" action="crm.portal.calls.dashboard.view"/>	
+		title="Calls Db" icon="img/16px/chart_16px.png" action="crm.calls.dashboard.view"/>	
 	
-	<action-view name="crm.portal.calls.dashboard.view" title="calls Db"
+	<action-view name="crm.calls.dashboard.view" title="calls Db"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="crm.calls.dashboard.portal" />
+		<view type="dashboard" name="crm.calls.dashboard" />
 	</action-view>	
 	
 	<menuitem name="menu-tickets-dashboard" parent="menu-crm-dashboards"
 		title="Tickets" priority="60"   />
 		
 	<menuitem name="menu-tickets-dashboard-1" parent="menu-tickets-dashboard"
-		title="Tickets Db 1" icon="img/16px/chart_16px.png" action="crm.portal.tickets.dashboard.1.view"/>	
+		title="Tickets Db 1" icon="img/16px/chart_16px.png" action="crm.tickets.dashboard.1.view"/>	
 
-	<action-view name="crm.portal.tickets.dashboard.1.view" title="Tickets Db 1"
+	<action-view name="crm.tickets.dashboard.1.view" title="Tickets Db 1"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="crm.tickets.dashboard.1.portal" />
+		<view type="dashboard" name="crm.tickets.dashboard.1" />
 	</action-view>
 	
 	<menuitem name="menu-tickets-dashboard-2" parent="menu-tickets-dashboard"
-		title="Tickets Db 2" icon="img/16px/chart_16px.png" action="crm.portal.tickets.dashboard.2.view"/>	
+		title="Tickets Db 2" icon="img/16px/chart_16px.png" action="crm.tickets.dashboard.2.view"/>	
 
-	<action-view name="crm.portal.tickets.dashboard.2.view" title="Tickets Db 2"
+	<action-view name="crm.tickets.dashboard.2.view" title="Tickets Db 2"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="crm.tickets.dashboard.2.portal" />
+		<view type="dashboard" name="crm.tickets.dashboard.2" />
 	</action-view>
 	
 	<menuitem name="menu-holidays-dashboard" parent="menu-crm-dashboards"

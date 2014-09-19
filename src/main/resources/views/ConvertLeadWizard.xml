@@ -56,7 +56,7 @@
 				        <field name="bestCase" colSpan="3"/>
 				        <field name="worstCase" colSpan="3"/>
 					    <label title="Description" css="label-bold"/>
-						<field name="description" showTitle="false" colSpan="12" widget="TEXT" height=""/>
+						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
 					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="4"/>
@@ -81,7 +81,7 @@
 					    <field name="statusSelect" colSpan="4" showTitle="false"/>
 					    <spacer/>
 					    <label title="Description" css="label-bold"/>
-						<field name="description" showTitle="false" colSpan="12" widget="TEXT" height=""/>
+						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
 					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
@@ -104,7 +104,7 @@
 					    <field name="meetingType" widget="SuggestBox"/>
 					    <spacer/>
 					    <label title="Description" css="label-bold"/>
-						<field name="description" showTitle="false" colSpan="12" widget="TEXT" height=""/>
+						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
 					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
@@ -127,7 +127,7 @@
 					    <field name="prioritySelect"/>
 					    <spacer/>
 					    <label title="Description" css="label-bold"/>
-						<field name="description" showTitle="false" colSpan="12" widget="TEXT" height=""/>
+						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
 					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
@@ -141,9 +141,7 @@
 					</editor>
 				</field>
 			</panel>
-		 
 		 </panel-tabs>
-		 
 	</form>
 
 	
