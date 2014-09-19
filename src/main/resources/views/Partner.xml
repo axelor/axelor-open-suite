@@ -151,10 +151,10 @@
 			    <portlet   action="action-partner-view-tickets"/>
 	        </page>
 			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain">
-				<portlet   action="portal.customer.sales.lastYear.vs.ytd.by.family" x-height="350"/>
+				<portlet   action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
 			</page>
 			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm">
-     			 <portlet   action="portal.customer.crm.activities" x-height="350"/>
+     			 <portlet   action="portal.customer.crm.activities" height="350"/>
 			</page>
 	    </notebook>
 	</form>  --> 

@@ -6,71 +6,71 @@
     <!--  Account Invoice Dashboard  -->    
     
 	<portal title="Invoice Dashboard" name="account.invoice.dashboard.portal.sample"  >
-		 <portlet action="portal.account.invoice.summary"   x-height="350" canSearch="true"/>
-		 <portlet action="portal.invoiced.turnover.ytd.vs.lastyear"   x-height="350" canSearch="true"/>    	
-		 <portlet action="portal.invoice.turnover.cust.history"   x-height="350" canSearch="true"/>
-		 <portlet action="portal.invoice.prod.qty.sold.history"   x-height="350" canSearch="true"/>
-		 <portlet action="portal.invoice.total.revenue.by.product"   x-height="350" canSearch="true"/>
-		 <portlet action="portal.total.revenue.by.geo.region"   x-height="350" canSearch="true"/>
-		 <portlet action="portal.prod.qty.suppl.invoices.last.12m" canSearch="true" x-height="350"/>
-		 <portlet action="portal.prod.turnover.suppl.invoices.last.12m" canSearch="true" x-height="350"/>
-		 <portlet action="portal.supplier.invoices.per.month" canSearch="true" x-height="350"/>
-	   	 <portlet action="portal.supplier.invoices.unpaid" canSearch="true" x-height="350" />
-	   	 <portlet action="portal.supplier.invoices.due" canSearch="true" x-height="350" />
-		 <portlet action="portal.customer.invoices.to.collect"   x-height="350" canSearch="true"/>
-		 <portlet action="portal.invoice.sale.amount.by.month"  x-height="350"/>
-		 <portlet action="portal.invoice.sale.amount.by.currency"  x-height="350"/>
-		 <portlet action="portal.invoice.sale.paymentCondition.distribution"  x-height="350"/>
-		 <portlet action="portal.invoice.purchase.amount.by.month"  x-height="350"/>
-		 <portlet action="portal.invoice.purchase.amount.by.currency"  x-height="350"/>
-		 <portlet action="portal.invoice.purchase.paymentCondition.distribution"  x-height="350"/>
-		 <portlet action="portal.invoice.sale.refund.situation"   x-height="350"/>
-		 <portlet action="portal.invoice.sale.situation"   x-height="350"/>   
-		 <portlet action="portal.invoice.purchase.situation"   x-height="350"/>
-		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.nbr"   x-height="350" canSearch="true"/>
-		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.amount"   x-height="350" canSearch="true"/>
-		 <portlet action="portal.paymentVoucher.customer.paymentMode.by.amount"   x-height="350" canSearch="true"/>
+		 <portlet action="portal.account.invoice.summary"   height="350" canSearch="true"/>
+		 <portlet action="portal.invoiced.turnover.ytd.vs.lastyear"   height="350" canSearch="true"/>    	
+		 <portlet action="portal.invoice.turnover.cust.history"   height="350" canSearch="true"/>
+		 <portlet action="portal.invoice.prod.qty.sold.history"   height="350" canSearch="true"/>
+		 <portlet action="portal.invoice.total.revenue.by.product"   height="350" canSearch="true"/>
+		 <portlet action="portal.total.revenue.by.geo.region"   height="350" canSearch="true"/>
+		 <portlet action="portal.prod.qty.suppl.invoices.last.12m" canSearch="true" height="350"/>
+		 <portlet action="portal.prod.turnover.suppl.invoices.last.12m" canSearch="true" height="350"/>
+		 <portlet action="portal.supplier.invoices.per.month" canSearch="true" height="350"/>
+	   	 <portlet action="portal.supplier.invoices.unpaid" canSearch="true" height="350" />
+	   	 <portlet action="portal.supplier.invoices.due" canSearch="true" height="350" />
+		 <portlet action="portal.customer.invoices.to.collect"   height="350" canSearch="true"/>
+		 <portlet action="portal.invoice.sale.amount.by.month"  height="350"/>
+		 <portlet action="portal.invoice.sale.amount.by.currency"  height="350"/>
+		 <portlet action="portal.invoice.sale.paymentCondition.distribution"  height="350"/>
+		 <portlet action="portal.invoice.purchase.amount.by.month"  height="350"/>
+		 <portlet action="portal.invoice.purchase.amount.by.currency"  height="350"/>
+		 <portlet action="portal.invoice.purchase.paymentCondition.distribution"  height="350"/>
+		 <portlet action="portal.invoice.sale.refund.situation"   height="350"/>
+		 <portlet action="portal.invoice.sale.situation"   height="350"/>   
+		 <portlet action="portal.invoice.purchase.situation"   height="350"/>
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.nbr"   height="350" canSearch="true"/>
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.amount"   height="350" canSearch="true"/>
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.by.amount"   height="350" canSearch="true"/>
 	</portal>    
 
 	
 	<portal title="Invoice Dashboard" name="account.sale.invoice.dashboard.1.portal"  >
-		<portlet action="portal.customer.invoices.to.collect"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoice.turnover.cust.history"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoice.prod.qty.sold.history"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoice.total.revenue.by.product"   x-height="350" canSearch="true" />
-		<portlet action="portal.total.revenue.by.geo.region"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoiced.turnover.ytd.vs.lastyear"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoice.sale.refund.situation"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoice.sale.situation"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoice.sale.amount.by.month"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoice.sale.amount.by.currency"   x-height="350" canSearch="true" />
+		<portlet action="portal.customer.invoices.to.collect"   height="350" canSearch="true" />
+		<portlet action="portal.invoice.turnover.cust.history"   height="350" canSearch="true" />
+		<portlet action="portal.invoice.prod.qty.sold.history"   height="350" canSearch="true" />
+		<portlet action="portal.invoice.total.revenue.by.product"   height="350" canSearch="true" />
+		<portlet action="portal.total.revenue.by.geo.region"   height="350" canSearch="true" />
+		<portlet action="portal.invoiced.turnover.ytd.vs.lastyear"   height="350" canSearch="true" />
+		<portlet action="portal.invoice.sale.refund.situation"   height="350" canSearch="true" />
+		<portlet action="portal.invoice.sale.situation"   height="350" canSearch="true" />
+		<portlet action="portal.invoice.sale.amount.by.month"   height="350" canSearch="true" />
+		<portlet action="portal.invoice.sale.amount.by.currency"   height="350" canSearch="true" />
 	</portal>    
 	
 	<portal title="Invoice Dashboard" name="account.sale.invoice.dashboard.2.portal"  >
-		 <portlet action="portal.invoice.sale.paymentCondition.distribution"   x-height="350" canSearch="true"/>
+		 <portlet action="portal.invoice.sale.paymentCondition.distribution"   height="350" canSearch="true"/>
 	</portal> 
 	
 	<portal title="Invoice Dashboard" name="account.purchase.invoice.dashboard.1.portal"  >
-	   	<portlet action="portal.supplier.invoices.unpaid"   x-height="350" canSearch="true" />
-		<portlet action="portal.supplier.invoices.due"   x-height="350" canSearch="true" />
-		<portlet action="portal.prod.qty.suppl.invoices.last.12m"   x-height="350" canSearch="true" />
-		<portlet action="portal.prod.turnover.suppl.invoices.last.12m"   x-height="350" canSearch="true" />
-		<portlet action="portal.supplier.invoices.per.month"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoice.purchase.situation"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoice.purchase.amount.by.month"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoice.purchase.amount.by.currency"   x-height="350" canSearch="true" />
-		<portlet action="portal.invoice.purchase.paymentCondition.distribution"   x-height="350" canSearch="true" />
+	   	<portlet action="portal.supplier.invoices.unpaid"   height="350" canSearch="true" />
+		<portlet action="portal.supplier.invoices.due"   height="350" canSearch="true" />
+		<portlet action="portal.prod.qty.suppl.invoices.last.12m"   height="350" canSearch="true" />
+		<portlet action="portal.prod.turnover.suppl.invoices.last.12m"   height="350" canSearch="true" />
+		<portlet action="portal.supplier.invoices.per.month"   height="350" canSearch="true" />
+		<portlet action="portal.invoice.purchase.situation"   height="350" canSearch="true" />
+		<portlet action="portal.invoice.purchase.amount.by.month"   height="350" canSearch="true" />
+		<portlet action="portal.invoice.purchase.amount.by.currency"   height="350" canSearch="true" />
+		<portlet action="portal.invoice.purchase.paymentCondition.distribution"   height="350" canSearch="true" />
 	</portal>  
 	
 	<portal title="Invoice Dashboard" name="account.mix.invoice.dashboard.portal"  >
-		 <portlet action="portal.account.invoice.summary"   x-height="350"/>
+		 <portlet action="portal.account.invoice.summary"   height="350"/>
 	</portal>    
 	
 	<portal title="Accounting Dashboard" name="accounting.dashboard.portal.sample"  >
-		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.nbr"   x-height="350" canSearch="true"/>
-		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.amount"   x-height="350" canSearch="true"/>
-		 <portlet action="portal.paymentVoucher.customer.paymentMode.by.amount"   x-height="350" canSearch="true"/>
-		 <portlet action="portal.moveLines.revenues.vs.expenses"   x-height="350"  />
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.nbr"   height="350" canSearch="true"/>
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.amount"   height="350" canSearch="true"/>
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.by.amount"   height="350" canSearch="true"/>
+		 <portlet action="portal.moveLines.revenues.vs.expenses"   height="350"  />
 	</portal>    
 
 	<action-view name="portal.account.invoice.summary" title="Account Invoice Summary" model="com.axelor.apps.account.db.Invoice">
