@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
     
    	<chart name="chart.account.invoice.summary" title="Account Invoice Summary">
 		<dataset type="sql">
@@ -52,7 +52,7 @@
     
 	
 	
-	<chart stacked="true" name="chart.invoice.turnover.cust.history" title="Customer Turnover history by month (on invoices)" onInit="action.account.portal.set.from.to.date.month">	
+	<chart stacked="true" name="chart.invoice.turnover.cust.history" title="Customer Turnover history by month (on invoices)" onInit="action.account.chart.set.from.to.date.month">	
 	  	    <search-fields>
 			  <field type="date" name="fromDate" title="From Date"/>
 	 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
@@ -111,7 +111,7 @@
 
 
 	
-	<chart stacked="true" name="chart.invoice.prod.qty.sold.history" title="Total Product Qty sold history by month by category" onInit="action.account.portal.set.from.to.date.month">
+	<chart stacked="true" name="chart.invoice.prod.qty.sold.history" title="Total Product Qty sold history by month by category" onInit="action.account.chart.set.from.to.date.month">
 	   <search-fields>
 			<field type="date" name="fromDate" title="From Date"/>
  	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
@@ -168,7 +168,7 @@
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
       
-	<chart name="chart.invoice.total.revenue.by.product" title="Total Revenue Distribution by Product" onInit="action.account.portal.set.from.to.date.month">
+	<chart name="chart.invoice.total.revenue.by.product" title="Total Revenue Distribution by Product" onInit="action.account.chart.set.from.to.date.month">
 	 <search-fields>
 		<field type="date" name="fromDate" title="From Date"/>
 		<field type="date" name="toDate" title="To Date"/>
@@ -351,7 +351,7 @@
 	</chart>
 
 	  
- 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.nbr" onInit="action.account.portal.default.month.value" title="Customer Payment mode distribution by transactions">
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.nbr" onInit="action.account.chart.default.month.value" title="Customer Payment mode distribution by transactions">
  	    <search-fields>
  	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
  	    </search-fields>
@@ -379,22 +379,22 @@
 	    <series key="total" type="donut" title="Amount" />
 	  </chart>
 	  
- 	  <action-record name="action.account.portal.set.date" model="com.axelor.apps.account.db.Account">
+ 	  <action-record name="action.account.chart.set.date" model="com.axelor.apps.account.db.Account">
  	      <field name="toDate" expr="eval:todayDate" />
  	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
  	  </action-record>
  	  
- 	  <action-record name="action.account.portal.set.from.to.date.month" model="com.axelor.apps.account.db.Account">
+ 	  <action-record name="action.account.chart.set.from.to.date.month" model="com.axelor.apps.account.db.Account">
  	      <field name="toDate" expr="eval:todayDate" />
  	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)"/>
  	      <field name="monthSelect" expr="eval:12"/>
  	  </action-record>
  	  
-	  <action-record model="com.axelor.apps.account.db.Account" name="action.account.portal.default.month.value">
+	  <action-record model="com.axelor.apps.account.db.Account" name="action.account.chart.default.month.value">
 	      <field name="monthSelect" expr="eval:12"/>
 	  </action-record>
  	  
- 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.amount" onInit="action.account.portal.default.month.value" title="Customer Payment mode distribution by amount">
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.amount" onInit="action.account.chart.default.month.value" title="Customer Payment mode distribution by amount">
  	    <search-fields> 	        
  	         <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
  	    </search-fields>
@@ -423,7 +423,7 @@
 	  </chart>
 	  
  	  
- 	  <chart name="chart.paymentVoucher.customer.paymentMode.by.amount" onInit="action.account.portal.default.month.value" title="Customer Payment mode by amount">
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.by.amount" onInit="action.account.chart.default.month.value" title="Customer Payment mode by amount">
  	    <search-fields>
  	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
  	    </search-fields>
@@ -495,7 +495,7 @@
 	  <series key="_amount" type="bar" title="Amount"/>
 	</chart>
 	     
-	 <chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
+	 <chart onInit="action.account.chart.default.month.value" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
 	  <search-fields>
 	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
@@ -524,7 +524,7 @@
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
-	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.sale.amount.by.currency" title="Invoice Sale by currency (tax excl.)">
+	<chart onInit="action.account.chart.default.month.value"  name="chart.invoice.sale.amount.by.currency" title="Invoice Sale by currency (tax excl.)">
 	  <search-fields>
 	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
@@ -555,7 +555,7 @@
 	  <series key="ex_tax_total" type="bar" title="Amount"/>
 	</chart>
 	
-	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.sale.paymentCondition.distribution" title="Invoice Sale Payment Condition distribution">
+	<chart onInit="action.account.chart.default.month.value"  name="chart.invoice.sale.paymentCondition.distribution" title="Invoice Sale Payment Condition distribution">
 	  <search-fields>
 	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
@@ -589,7 +589,7 @@
 	  <series key="ex_tax_total" type="donut" title="Amount"/>
 	</chart>
 	
-	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
+	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
 	  <search-fields>
 	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
@@ -620,7 +620,7 @@
 	</chart>
 
 	
-	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.purchase.amount.by.currency" title="Invoice Purchase by currency (tax excl.)">
+	<chart onInit="action.account.chart.default.month.value"  name="chart.invoice.purchase.amount.by.currency" title="Invoice Purchase by currency (tax excl.)">
 	  <search-fields>
 	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
@@ -652,7 +652,7 @@
 	  <series key="ex_tax_total" type="bar" title="Amount"/>
 	</chart>
 	
-	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.purchase.paymentCondition.distribution" title="Invoice Purchase Payment Condition distribution">
+	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.purchase.paymentCondition.distribution" title="Invoice Purchase Payment Condition distribution">
 	  <search-fields>
 	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
@@ -683,7 +683,7 @@
 	  <category key="_payment_condition" type="text" title="Payment Condition"/>
 	  <series key="ex_tax_total" type="donut" title="Amount"/>
 	</chart>
-	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
+	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
 	
 	  <search-fields>
 	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
@@ -775,7 +775,7 @@
 	  <series key="_amount" type="bar" title="Amount" />
 	</chart>
 
-	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
+	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
 	
 	  <search-fields>
 	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
@@ -851,7 +851,7 @@
 	  <series key="_amount" type="bar" title="Amount" />
 	</chart>	
 	
-	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
+	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
 	
 	  <search-fields>
 	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>

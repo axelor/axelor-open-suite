@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
 
 
@@ -733,11 +733,11 @@
 	</action-view>	
 	
 	<menuitem name="menu-account-invoice-dashboard-sample" parent="menu-dashboards-sample" priority="145"
-    title="Account Db" icon="img/16px/chart_16px.png" action="portal.account.invoice.dashboard.view.sample"/>    
+    title="Account Db" icon="img/16px/chart_16px.png" action="dashlet.account.invoice.dashboard.view.sample"/>    
 
-    <action-view name="portal.account.invoice.dashboard.view.sample" title="Account Dashboard"
+    <action-view name="dashlet.account.invoice.dashboard.view.sample" title="Account Dashboard"
         icon="img/16px/crmSmall_16px.png">
-        <view type="portal" name="account.invoice.dashboard.portal.sample" />        
+        <view type="dahsboard" name="account.invoice.dashboard.sample" />        
     </action-view>
 
 	<menuitem name="menu-account-invoice-dashboard" parent="menu-dashboards" 
@@ -747,52 +747,52 @@
 		    title="Sales Invoice" priority="15" /> 
 		    
 			<menuitem name="menu-account-sale-invoice-dashboard-1" parent="menu-account-sale-invoice-dashboard" 
-		    title="Sales Invoice Db 1" icon="img/16px/chart_16px.png" action="portal.account.sale.invoice.dashboard.1.view" />    
+		    title="Sales Invoice Db 1" icon="img/16px/chart_16px.png" action="dashlet.account.sale.invoice.dashboard.1.view" />    
 			
-		    <action-view name="portal.account.sale.invoice.dashboard.1.view" title="Sales Invoice Db 1"
+		    <action-view name="dashlet.account.sale.invoice.dashboard.1.view" title="Sales Invoice Db 1"
 		        icon="img/16px/crmSmall_16px.png">
-		        <view type="portal" name="account.sale.invoice.dashboard.1.portal" />        
+		        <view type="dahsboard" name="account.sale.invoice.dashboard.1" />        
 		    </action-view>
 		    
 		    <menuitem name="menu-account-sale-invoice-dashboard-2" parent="menu-account-sale-invoice-dashboard" 
-		    title="Sales Invoice Db 2" icon="img/16px/chart_16px.png" action="portal.account.sale.invoice.dashboard.2.view" />    
+		    title="Sales Invoice Db 2" icon="img/16px/chart_16px.png" action="dashlet.account.sale.invoice.dashboard.2.view" />    
 			
-		    <action-view name="portal.account.sale.invoice.dashboard.2.view" title="Sales Invoice Db 2"
+		    <action-view name="dashlet.account.sale.invoice.dashboard.2.view" title="Sales Invoice Db 2"
 		        icon="img/16px/crmSmall_16px.png">
-		        <view type="portal" name="account.sale.invoice.dashboard.2.portal" />        
+		        <view type="dahsboard" name="account.sale.invoice.dashboard.2" />        
 		    </action-view>
 		    
 		    <menuitem name="menu-account-purchase-invoice-dashboard" parent="menu-account-invoice-dashboard"
 		    title="Purchase Invoice" priority="10" />    
 			
 		    <menuitem name="menu-account-purchase-invoice-dashboard-1" parent="menu-account-purchase-invoice-dashboard"
-		    title="Purchase Invoice Db" icon="img/16px/chart_16px.png" action="portal.account.purchase.invoice.dashboard.2.view"/>    
+		    title="Purchase Invoice Db" icon="img/16px/chart_16px.png" action="dashlet.account.purchase.invoice.dashboard.2.view"/>    
 			
-		    <action-view name="portal.account.purchase.invoice.dashboard.2.view" title="Purchase Invoice Db"
+		    <action-view name="dashlet.account.purchase.invoice.dashboard.2.view" title="Purchase Invoice Db"
 		        icon="img/16px/crmSmall_16px.png">
-		        <view type="portal" name="account.purchase.invoice.dashboard.1.portal" />        
+		        <view type="dahsboard" name="account.purchase.invoice.dashboard.1" />        
 		    </action-view>
 		    
 		    <menuitem name="menu-account-mix-invoice-dashboard" parent="menu-account-invoice-dashboard" 
 		    title="Invoices" priority="5"/>    
 			
 		    <menuitem name="menu-account-mix-invoice-dashboard-1" parent="menu-account-mix-invoice-dashboard" 
-		    title="Invoice Db" icon="img/16px/chart_16px.png" action="portal.account.mix.invoice.dashboard.1.view"/>    
+		    title="Invoice Db" icon="img/16px/chart_16px.png" action="dashlet.account.mix.invoice.dashboard.1.view"/>    
 			
-		    <action-view name="portal.account.mix.invoice.dashboard.1.view" title="Invoice Db"
+		    <action-view name="dashlet.account.mix.invoice.dashboard.1.view" title="Invoice Db"
 		        icon="img/16px/crmSmall_16px.png">
-		        <view type="portal" name="account.mix.invoice.dashboard.portal" />        
+		        <view type="dahsboard" name="account.mix.invoice.dashboard" />        
 		    </action-view>
 	
 	<menuitem name="menu-accounting-dashboard" parent="menu-dashboards" 
     title="Accounting"  priority="110"/>    
 	
 	 <menuitem name="menu-accounting-dashboard-1" parent="menu-accounting-dashboard" 
-        title="Accounting Db" icon="img/16px/chart_16px.png" action="portal.accounting.dashboard.view" />    
+        title="Accounting Db" icon="img/16px/chart_16px.png" action="dashlet.accounting.dashboard.view" />    
 
-	    <action-view name="portal.accounting.dashboard.view" title="Accounting"
+	    <action-view name="dashlet.accounting.dashboard.view" title="Accounting"
 	        icon="img/16px/crmSmall_16px.png">
-	        <view type="portal" name="accounting.dashboard.portal.sample" />        
+	        <view type="dahsboard" name="accounting.dashboard.sample" />        
 	    </action-view>
 	
 	<menuitem name="top-payments" title="Payments" groups="admins,erp" top="true" left="false"/>

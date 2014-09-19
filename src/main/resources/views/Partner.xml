@@ -144,23 +144,23 @@
             </page>
 		    <page name="activities" title="Activities" showIf="id != null">
 	        	<button name="showProject" title="Show projects"   onClick="save,action-partner-view-partner-project"/>
-			    <portlet   action="action-partner-view-upcoming-events"/>
-			    <portlet   action="action-partner-view-historical-events-completed"/>
-			    <portlet   action="action-partner-view-opportunities"/>
-			    <portlet   action="action-partner-view-sale-orders"/>
-			    <portlet   action="action-partner-view-tickets"/>
+			    <dashlet   action="action-partner-view-upcoming-events"/>
+			    <dashlet   action="action-partner-view-historical-events-completed"/>
+			    <dashlet   action="action-partner-view-opportunities"/>
+			    <dashlet   action="action-partner-view-sale-orders"/>
+			    <dashlet   action="action-partner-view-tickets"/>
 	        </page>
 			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain">
 				<portlet   action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
 			</page>
 			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm">
-     			 <portlet   action="portal.customer.crm.activities" height="350"/>
+     			 <dashlet   action="dashlet.customer.crm.activities" height="350"/>
 			</page>
 	    </notebook>
 	</form>  --> 
 	
 	<form name="incl-invoice-payment-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner">
-	    <panel title="Overview">
+	    <panel colSpan="12">
 	    	<field name="invoiceSendingFormatSelect"/>
 	        <field name="paymentMode"/>
 	        <field name="paymentCondition"/>
@@ -168,19 +168,15 @@
 	        <field name="fiscalPosition"/>
 	        <field name="payerQuality"/>
 	        <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
+	        <panel colSpan="6">
+	    		<button name="showAllInvoices" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
+        		<button name="showUnpaidInvoice" title="View all unpaid invoices"  onClick="save,action-partner-view-show-unpaid-invoice"/>
+	    	</panel>
 	    </panel>
 	    <panel-related field="bankDetailsList" showTitle="false"  form-view="bank-details-form" grid-view="bank-details-grid" colSpan="12"/>
-	    <panel-side title="Actions">
-	    	<button name="showAllInvoices" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
-        	<button name="showUnpaidInvoice" title="View all unpaid invoices"  onClick="save,action-partner-view-show-unpaid-invoice"/>
-	    </panel-side>
-	    
-       
-        
 	</form>
 	
 	<form name="incl-customer-balance-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    
 	    <panel-related field="accountingSituationList" colSpan="12" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 	</form>
 	
