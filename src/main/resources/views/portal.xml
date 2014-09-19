@@ -6,11 +6,11 @@
 		<!-- SALES MAN DASHBOARD -->
 		
 	<portal title="Dashboard" name="sale.saleman.dashboard.portal.sample"  >
-		<portlet action="portal.salesman.dashboard.orders" x-height="350" canSearch="true" />
-		<portlet action="portal.my.turnover.per.month" x-height="350" />
-		<portlet action="portal.salesman.dashboard.leads" canSearch="true" x-height="350" />
-		<portlet action="portal.salesman.dashboard.activities" canSearch="true" x-height="350" />
-		<portlet action="portal.salesman.dashboard.opportunities" canSearch="true" x-height="350" />
+		<portlet action="portal.salesman.dashboard.orders" height="350" canSearch="true" />
+		<portlet action="portal.my.turnover.per.month" height="350" />
+		<portlet action="portal.salesman.dashboard.leads" canSearch="true" height="350" />
+		<portlet action="portal.salesman.dashboard.activities" canSearch="true" height="350" />
+		<portlet action="portal.salesman.dashboard.opportunities" canSearch="true" height="350" />
 	</portal>
 	
 	<action-view name="portal.salesman.dashboard.orders" title="My Sales Orders" model="com.axelor.apps.sale.db.SaleOrder">
@@ -54,23 +54,23 @@
 	<!-- 	SALES MANAGER DASHBOARD -->
 	
 	<portal title="Dashboard" name="sale.manager.dashboard.portal.sample"  >
-		<portlet action="portal.sales.turnover.ytd.vs.previous.years.by.month" x-height="350"/>
-		<portlet action="portal.sales.turnover.ytd.vs.past.year" x-height="350"/>  	
-		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" x-height="350"/>
-		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" x-height="350" />
-		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" x-height="350" />		
-		<portlet action="portal.sales.manager.dashboard.turnover.per.team" x-height="350" />
-		<portlet action="portal.sales.manager.dashboard.turnover.per.salesman" x-height="350" />
-		<portlet action="portal.sales.manager.dashboard.sales.distribution.per.family" x-height="350" />
-		<portlet action="portal.sales.manager.dashboard.product.sales.per.category" x-height="350" />
-		<portlet action="portal.sales.manager.dashboard.sales.per.country" x-height="350" />
-		<portlet action="portal.turnover.sales.by.month.by.category" x-height="350" />    
-   	    <portlet action="portal.units.sold.on.cust.sales.by.category" x-height="350" />
-   	    <portlet action="portal.stockMove.nbr.delivery.by.country" x-height="350" if-module="axelor-stock"/>  
-   	    <portlet action="portal.stockMoveLine.product.delivery.by.country" x-height="350" if-module="axelor-stock"/>  
-   	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" x-height="350" if-module="axelor-stock"/> 
-   	    <portlet action="portal.stockMove.deliveries.time.delay.in.nbr" x-height="350" if-module="axelor-stock"/>
-   	    <portlet action="portal.stockMove.average.delivery.time.delay" x-height="350" if-module="axelor-stock"/> 
+		<portlet action="portal.sales.turnover.ytd.vs.previous.years.by.month" height="350"/>
+		<portlet action="portal.sales.turnover.ytd.vs.past.year" height="350"/>  	
+		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" height="350" />
+		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" height="350" />		
+		<portlet action="portal.sales.manager.dashboard.turnover.per.team" height="350" />
+		<portlet action="portal.sales.manager.dashboard.turnover.per.salesman" height="350" />
+		<portlet action="portal.sales.manager.dashboard.sales.distribution.per.family" height="350" />
+		<portlet action="portal.sales.manager.dashboard.product.sales.per.category" height="350" />
+		<portlet action="portal.sales.manager.dashboard.sales.per.country" height="350" />
+		<portlet action="portal.turnover.sales.by.month.by.category" height="350" />    
+   	    <portlet action="portal.units.sold.on.cust.sales.by.category" height="350" />
+   	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350" if-module="axelor-stock"/>  
+   	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350" if-module="axelor-stock"/>  
+   	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350" if-module="axelor-stock"/> 
+   	    <portlet action="portal.stockMove.deliveries.time.delay.in.nbr" height="350" if-module="axelor-stock"/>
+   	    <portlet action="portal.stockMove.average.delivery.time.delay" height="350" if-module="axelor-stock"/> 
 	</portal>
 	
 	<action-view title="Sales turnover comparison per month this year vs past years" model="com.axelor.apps.sale.db.SaleOrder" name="portal.sales.turnover.ytd.vs.previous.years.by.month">
@@ -169,29 +169,29 @@
 	<!-- Sales DashBoard -->
 	
 	<portal name="sale.dashboard.1.portal.view" title="Sales Dashboard 1">
-		<portlet action="portal.salesman.dashboard.orders" canSearch="true" x-height="350" />
-		<portlet action="portal.my.turnover.per.month"  x-height="350" />
-		<portlet action="portal.sales.manager.dashboard.turnover.per.team"  x-height="350" />
-		<portlet action="portal.sales.manager.dashboard.turnover.per.salesman"  x-height="350" />
-		<portlet action="portal.sales.manager.dashboard.sales.distribution.per.family"  x-height="350" />
-		<portlet action="portal.sales.manager.dashboard.product.sales.per.category"  x-height="350" />
-		<portlet action="portal.sales.manager.dashboard.sales.per.country"  x-height="350" />
-		<portlet action="portal.turnover.sales.by.month.by.category"  x-height="350" />
-		<portlet action="portal.units.sold.on.cust.sales.by.category"  x-height="350" />
+		<portlet action="portal.salesman.dashboard.orders" canSearch="true" height="350" />
+		<portlet action="portal.my.turnover.per.month"  height="350" />
+		<portlet action="portal.sales.manager.dashboard.turnover.per.team"  height="350" />
+		<portlet action="portal.sales.manager.dashboard.turnover.per.salesman"  height="350" />
+		<portlet action="portal.sales.manager.dashboard.sales.distribution.per.family"  height="350" />
+		<portlet action="portal.sales.manager.dashboard.product.sales.per.category"  height="350" />
+		<portlet action="portal.sales.manager.dashboard.sales.per.country"  height="350" />
+		<portlet action="portal.turnover.sales.by.month.by.category"  height="350" />
+		<portlet action="portal.units.sold.on.cust.sales.by.category"  height="350" />
 	</portal>
 	
 	<portal name="sale.dashboard.2.portal.view" title="Sales Dashboard 2">
-		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" canSearch="true" x-height="350" />
-		<portlet action="portal.sales.turnover.ytd.vs.previous.years.by.month" x-height="350"/>
-		<portlet action="portal.sales.turnover.ytd.vs.lastyear" canSearch="true" x-height="350" />
-		<portlet action="portal.sales.turnover.ytd.vs.past.year" x-height="350" />
-		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" canSearch="true" x-height="350" />
-		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" canSearch="true" x-height="350" />
-		<portlet action="portal.turnover.per.month.per.salesman.over.6mth" canSearch="true" x-height="350"/>
-	    <portlet action="portal.turnover.per.month.per.salesman.over.6mth" canSearch="true" x-height="350"/>
-	    <portlet action="portal.sales.turnover.per.customer.type" canSearch="true" x-height="350"/>
-	    <portlet action="portal.sales.turnover.per.customer.category" canSearch="true" x-height="350"/>
-	    <portlet action="portal.sales.turnover.per.customer.sector" canSearch="true" x-height="350"/>
+		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.ytd.vs.previous.years.by.month" height="350"/>
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.ytd.vs.past.year" height="350" />
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" canSearch="true" height="350" />
+		<portlet action="portal.turnover.per.month.per.salesman.over.6mth" canSearch="true" height="350"/>
+	    <portlet action="portal.turnover.per.month.per.salesman.over.6mth" canSearch="true" height="350"/>
+	    <portlet action="portal.sales.turnover.per.customer.type" canSearch="true" height="350"/>
+	    <portlet action="portal.sales.turnover.per.customer.category" canSearch="true" height="350"/>
+	    <portlet action="portal.sales.turnover.per.customer.sector" canSearch="true" height="350"/>
 	</portal>
 	
     <action-view title="Turnover per month per saleman (6 month)" model="com.axelor.apps.sale.db.SaleOrder" name="portal.turnover.per.month.per.salesman.over.6mth">
