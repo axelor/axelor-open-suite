@@ -9,13 +9,11 @@
 	  </toolbar>
 	  <panel-include view="product-family-form" from="axelor-base"/>
 	  <panel title="Sales Turnover" hideIf="fromMenu == null" >    
-		<!-- TODO: remove this comment if portlet works in panel
-		<portlet   height="350" action="portal.family.sales.turnover.per.month"/>
-		-->
+		<panel-dashlet height="350" action="dashlet.family.sales.turnover.per.month"/>
 	  </panel>
 	</form>
     
-	<action-view title="Family sale turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="portal.family.sales.turnover.per.month">
+	<action-view title="Family sale turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="dashlet.family.sales.turnover.per.month">
 		  <view type="chart" name="chart.family.sale.turnover.per.month"/>
 		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>

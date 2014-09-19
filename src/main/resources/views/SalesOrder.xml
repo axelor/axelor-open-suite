@@ -55,5 +55,9 @@
 		<call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController" method="createProductionOrders"/>
 	</action-method>
 	
+	<action-validate name="action-supplychain-sale-order-validate-check-location">
+		<error message="The location must be filled." if="location == null"/>
+	</action-validate>
+	
 	
 </object-views>	
