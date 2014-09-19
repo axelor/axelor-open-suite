@@ -37,36 +37,36 @@
 <!-- 	Stock Dashboard -->
 	
 	<portal title="Dashboard" name="stock.dashboard.portal.sample"  >		
-		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" x-height="350" />
-		<portlet action="portal.stock.move.late.cust.late.deliveries" canSearch="true" x-height="350" />
-		<portlet action="portal.stock.move.upcoming.suppl.arrivals" x-height="350" canSearch="true" />
-		<portlet action="portal.stock.move.late.suppl.arrivals" canSearch="true" x-height="350" />
-		<portlet action="portal.location.line.product.out.stock.bylocation" canSearch="true" x-height="350" />
-	    <portlet action="portal.production.stock.move.in.planned"  x-height="350" canSearch="true"/>    
-	    <portlet action="portal.production.stock.move.out.planned" x-height="350" canSearch="true"/>       			
-	    <portlet action="portal.production.stock.move.in.realized" x-height="350" canSearch="true"/>
-	    <portlet action="portal.production.stock.move.out.realized" x-height="350" canSearch="true"/>  
-	    <portlet action="portal.nbr.product.per.family" x-height="350" canSearch="true" if-module="axelor-supplychain"/>       			
+		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />
+		<portlet action="portal.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />
+		<portlet action="portal.stock.move.upcoming.suppl.arrivals" height="350" canSearch="true" />
+		<portlet action="portal.stock.move.late.suppl.arrivals" canSearch="true" height="350" />
+		<portlet action="portal.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
+	    <portlet action="portal.production.stock.move.in.planned"  height="350" canSearch="true"/>    
+	    <portlet action="portal.production.stock.move.out.planned" height="350" canSearch="true"/>       			
+	    <portlet action="portal.production.stock.move.in.realized" height="350" canSearch="true"/>
+	    <portlet action="portal.production.stock.move.out.realized" height="350" canSearch="true"/>  
+	    <portlet action="portal.nbr.product.per.family" height="350" canSearch="true" if-module="axelor-supplychain"/>       			
 	</portal>
 
 	<portal title="Dashboard" name="stock.dashboard.portal.one"  >	
-		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" x-height="350" />	
-		<portlet action="portal.stock.move.late.cust.late.deliveries" canSearch="true" x-height="350" />	
-		<portlet action="portal.stock.move.upcoming.suppl.arrivals" canSearch="true" x-height="350" />	
-		<portlet action="portal.stock.move.late.suppl.arrivals" canSearch="true" x-height="350" />	
-		<portlet action="portal.production.stock.move.in.planned" canSearch="true" x-height="350" />	
-		<portlet action="portal.production.stock.move.in.realized" canSearch="true" x-height="350" />	
-		<portlet action="portal.production.stock.move.out.planned" canSearch="true" x-height="350" />	
-		<portlet action="portal.production.stock.move.out.realized" canSearch="true" x-height="350" />	
-		<portlet action="portal.location.line.product.out.stock.bylocation" canSearch="true" x-height="350" />
+		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />	
+		<portlet action="portal.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />	
+		<portlet action="portal.stock.move.upcoming.suppl.arrivals" canSearch="true" height="350" />	
+		<portlet action="portal.stock.move.late.suppl.arrivals" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.in.planned" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.in.realized" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.out.planned" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.out.realized" canSearch="true" height="350" />	
+		<portlet action="portal.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
 	</portal>
 
 	<portal title="Dashboard" name="stock.dashboard.portal.two"  >
-	    <portlet action="portal.stockMove.nbr.delivery.by.country" x-height="350"/>  
-  	    <portlet action="portal.stockMoveLine.product.delivery.by.country" x-height="350"/>  
-  	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" x-height="350"/> 
-  	    <portlet action="portal.stockMove.deliveries.time.delay.in.nbr" x-height="350"/>
-  	    <portlet action="portal.stockMove.average.delivery.time.delay" x-height="350"/>
+	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350"/>  
+  	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350"/>  
+  	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350"/> 
+  	    <portlet action="portal.stockMove.deliveries.time.delay.in.nbr" height="350"/>
+  	    <portlet action="portal.stockMove.average.delivery.time.delay" height="350"/>
 	</portal>
 	
 	<action-view name="portal.stock.dashboard.upcoming.deliveries" title="Upcoming deliveries"
