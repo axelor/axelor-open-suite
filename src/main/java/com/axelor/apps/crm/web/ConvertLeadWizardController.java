@@ -62,6 +62,7 @@ public class ConvertLeadWizardController {
 		
 		if(context.get("hasConvertIntoContact") != null && (Boolean) context.get("hasConvertIntoContact")) {
 			contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("contactPartner"));
+			//TODO check all required fields...
 		}
 		else  if(context.get("selectContact") != null) {
 			Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
@@ -70,6 +71,7 @@ public class ConvertLeadWizardController {
 		
 		if(context.get("hasConvertIntoPartner") != null && (Boolean) context.get("hasConvertIntoPartner")) {
 			partner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("partner"));
+			//TODO check all required fields...
 		}
 		else  if(context.get("selectPartner") != null) {
 			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
@@ -78,15 +80,19 @@ public class ConvertLeadWizardController {
 		
 		if(context.get("hasConvertIntoOpportunity") != null && (Boolean) context.get("hasConvertIntoOpportunity")) {
 			opportunity = convertLeadWizardService.createOpportunity((Map<String, Object>) context.get("opportunity"));
+			//TODO check all required fields...
 		}
 		if(context.get("hasConvertIntoCall") != null && (Boolean) context.get("hasConvertIntoCall")) {
 			callEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("callEvent"));
+			//TODO check all required fields...
 		}
 		if(context.get("hasConvertIntoMeeting") != null && (Boolean) context.get("hasConvertIntoMeeting")) {
 			meetingEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("meetingEvent"));
+			//TODO check all required fields...
 		}
 		if(context.get("hasConvertIntoTask") != null && (Boolean) context.get("hasConvertIntoTask")) {
 			taskEvent = convertLeadWizardService.createEvent((Map<String, Object>)context.get("taskEvent"));
+			//TODO check all required fields...
 		}
 		
 		leadService.convertLead(lead, partner, contactPartner, opportunity, callEvent, meetingEvent, taskEvent);
