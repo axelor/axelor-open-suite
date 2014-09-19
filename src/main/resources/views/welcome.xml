@@ -5,8 +5,8 @@
 
     	
   <portal title="Dashboard" name="welcome.portal"  >
-    <portlet action="portal.opportunity" x-height="350"/>
-    <portlet action="demo.chart1" x-height="350"/>
+    <portlet action="portal.opportunity" height="350"/>
+    <portlet action="demo.chart1" height="350"/>
     <portlet action="portal.meeting"   canSearch="true"/>
     <portlet action="portal.task"   canSearch="true"/>
   </portal>

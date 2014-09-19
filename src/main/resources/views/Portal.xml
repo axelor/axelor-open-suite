@@ -6,16 +6,16 @@
 	<!--  Partner Dashboard  -->
 	
 	<portal title="Partner Dashboard" name="base.partner.list.portal"  >
-	    <portlet action="portal.customers.by.country" x-height="350"   canSearch="true"/>
-	    <portlet action="portal.customers.by.industrySector" x-height="350"   canSearch="true"/>
-	    <portlet action="portal.suppliers.by.country"   x-height="350"/>
-		<portlet action="portal.my.recent.customers" x-height="350"   canSearch="true"/> 
-	    <portlet action="portal.partner.by.saleman" x-height="350"   canSearch="true"/>
-		<portlet action="portal.partner.recent.partners" x-height="350"   canSearch="true"/>	
-		<portlet action="portal.my.customers" x-height="350"   canSearch="true"/>	
-		<portlet   x-height="350" action="portal.prospects.by.country" canSearch="true"/> 
-		<portlet   x-height="350" action="portal.prospects.by.industrySector" canSearch="true"/>
-		<portlet   x-height="350" action="portal.my.prospects" canSearch="true"/>
+	    <portlet action="portal.customers.by.country" height="350"   canSearch="true"/>
+	    <portlet action="portal.customers.by.industrySector" height="350"   canSearch="true"/>
+	    <portlet action="portal.suppliers.by.country"   height="350"/>
+		<portlet action="portal.my.recent.customers" height="350"   canSearch="true"/> 
+	    <portlet action="portal.partner.by.saleman" height="350"   canSearch="true"/>
+		<portlet action="portal.partner.recent.partners" height="350"   canSearch="true"/>	
+		<portlet action="portal.my.customers" height="350"   canSearch="true"/>	
+		<portlet   height="350" action="portal.prospects.by.country" canSearch="true"/> 
+		<portlet   height="350" action="portal.prospects.by.industrySector" canSearch="true"/>
+		<portlet   height="350" action="portal.my.prospects" canSearch="true"/>
   	</portal>
 			
 	<action-view name="portal.my.recent.customers" title="My Recent Customers" model="com.axelor.apps.base.db.Partner">

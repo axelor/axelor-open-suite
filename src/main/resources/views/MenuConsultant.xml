@@ -13,10 +13,10 @@
 	</action-view>
 	
 	<portal name="consultant.dashboard.portal" title="Dashboard">
-		<portlet action="consultant.dashbord.portal.time.sheet" canSearch="true" x-height="400" />
-		<portlet action="consultant.dashboard.portal.expense" canSearch="true" x-height="400" />
-		<portlet action="consultant.dashboard.portal.tasks" canSearch="true" x-height="400" />
-		<portlet action="consultant.dashboard.portal.leave.request" canSearch="true" x-height="400" />
+		<portlet action="consultant.dashbord.portal.time.sheet" canSearch="true" height="400" />
+		<portlet action="consultant.dashboard.portal.expense" canSearch="true" height="400" />
+		<portlet action="consultant.dashboard.portal.tasks" canSearch="true" height="400" />
+		<portlet action="consultant.dashboard.portal.leave.request" canSearch="true" height="400" />
 	</portal>
 	
 	<action-view name="consultant.dashbord.portal.time.sheet" title="My Timesheets to complete"
