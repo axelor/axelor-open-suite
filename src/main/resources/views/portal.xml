@@ -5,24 +5,24 @@
 
 
 	<portal title="Dashboard" name="human.resources.dashboard.portal.sample" cols="2">
-		<portlet action="portal.human.resources.dashboard.upcoming.holidays" x-height="350" canSearch="true" />
-		<portlet action="portal.human.resources.dashboard.candidates" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.timesheets" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.travel.expenses" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.overtimes" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.leaverequest" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.my.timesheets" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.my.travel.expenses" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.my.overtimes" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.my.leaverequest" canSearch="true" x-height="350" />
-		<portlet action="portal.hr.employees.gender.distribution" x-height="350" />
-		<portlet action="portal.hr.nbr.of.employees.by.gender" x-height="350" />
-		<portlet action="portal.hr.employees.by.category.distribution" x-height="350" />
-		<portlet action="portal.hr.nbr.of.employees.by.category" x-height="350" />	
-		<portlet action="portal.hr.employees.contract.type.distribution" x-height="350" />	
-		<portlet action="portal.hr.employees.turnover.ytd.vs.lastYear" x-height="350" />
-		<portlet action="portal.hr.nbr.of.employees.evolution" x-height="350" />
-		<portlet action="portal.employees.age.pyramid" x-height="350" />		
+		<portlet action="portal.human.resources.dashboard.upcoming.holidays" height="350" canSearch="true" />
+		<portlet action="portal.human.resources.dashboard.candidates" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.timesheets" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.travel.expenses" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.overtimes" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.leaverequest" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.timesheets" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.travel.expenses" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.overtimes" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.leaverequest" canSearch="true" height="350" />
+		<portlet action="portal.hr.employees.gender.distribution" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.gender" height="350" />
+		<portlet action="portal.hr.employees.by.category.distribution" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.category" height="350" />	
+		<portlet action="portal.hr.employees.contract.type.distribution" height="350" />	
+		<portlet action="portal.hr.employees.turnover.ytd.vs.lastYear" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.evolution" height="350" />
+		<portlet action="portal.employees.age.pyramid" height="350" />		
 	</portal>
 
 	
@@ -121,11 +121,11 @@
 	</action-view>
 	
 	<portal title="Project Dashboard" name="org.project.dashboard.portal.sample" cols="2">
-	    <portlet action="portal.projects.by.client.partner" colSpan="1" x-height="350" canSearch="true"/>	    
+	    <portlet action="portal.projects.by.client.partner" colSpan="1" height="350" canSearch="true"/>	    
  	</portal>
  	
 	<portal cols="2" name="org.project.dashboard.portal" title="Project/Business Dashboard">
-	  <portlet colSpan="1" x-height="350" action="portal.projects.by.client.partner" canSearch="true"/>
+	  <portlet colSpan="1" height="350" action="portal.projects.by.client.partner" canSearch="true"/>
 	</portal>
 	
 	<action-view title="Projects by Client Partner" model="com.axelor.apps.organisation.db.Project" name="portal.projects.by.client.partner">
@@ -136,27 +136,27 @@
 	</action-view>
 
     <portal title="Human Resources DB 1" name="human.resources.dashboard.1.portal" cols="2">
-		<portlet action="portal.human.resources.dashboard.upcoming.holidays" x-height="350" canSearch="true" />
-		<portlet action="portal.human.resources.dashboard.candidates" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.timesheets" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.travel.expenses" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.overtimes" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.leaverequest" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.my.timesheets" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.my.travel.expenses" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.my.overtimes" canSearch="true" x-height="350" />
-		<portlet action="portal.human.resources.dashboard.my.leaverequest" canSearch="true" x-height="350" />
+		<portlet action="portal.human.resources.dashboard.upcoming.holidays" height="350" canSearch="true" />
+		<portlet action="portal.human.resources.dashboard.candidates" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.timesheets" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.travel.expenses" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.overtimes" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.leaverequest" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.timesheets" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.travel.expenses" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.overtimes" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.leaverequest" canSearch="true" height="350" />
 	</portal>
 		
 	<portal title="Human Resources DB 2" name="human.resources.dashboard.2.portal" cols="2">
-		<portlet action="portal.hr.employees.gender.distribution" x-height="350" />
-		<portlet action="portal.hr.nbr.of.employees.by.gender" x-height="350" />
-		<portlet action="portal.hr.employees.by.category.distribution" x-height="350" />
-		<portlet action="portal.hr.nbr.of.employees.by.category" x-height="350" />	
-		<portlet action="portal.hr.employees.contract.type.distribution" x-height="350" />	
-		<portlet action="portal.hr.employees.turnover.ytd.vs.lastYear" x-height="350" />
-		<portlet action="portal.hr.nbr.of.employees.evolution" x-height="350" />
-		<portlet action="portal.employees.age.pyramid" x-height="350" />		
+		<portlet action="portal.hr.employees.gender.distribution" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.gender" height="350" />
+		<portlet action="portal.hr.employees.by.category.distribution" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.category" height="350" />	
+		<portlet action="portal.hr.employees.contract.type.distribution" height="350" />	
+		<portlet action="portal.hr.employees.turnover.ytd.vs.lastYear" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.evolution" height="350" />
+		<portlet action="portal.employees.age.pyramid" height="350" />		
 	</portal>
 
 
