@@ -30,23 +30,20 @@
     </form>
     
     <form onLoad="action-move-template-set-domain" onNew="action-move-template-set-domain" name="move-template-form" title="Move template" model="com.axelor.apps.account.db.MoveTemplate">
-  <panel title="Overview">
-    <field name="name" readonlyIf="isValid"/>
-    <field name="code" readonlyIf="isValid" required="true"/>
-    <field name="moveTemplateType" readonlyIf="isValid" required="true"/>
-    <field name="journal" readonlyIf="isValid"/>
+  		<panel title="Overview">
+		    <field name="name" readonlyIf="isValid"/>
+		    <field name="code" readonlyIf="isValid" required="true"/>
+		    <field name="moveTemplateType" readonlyIf="isValid" required="true"/>
+		    <field name="journal" readonlyIf="isValid"/>
+	 	</panel>
+ 	 	<panel-related field="moveTemplateLineList" readonlyIf="isValid" colSpan="12" form-view="move-template-line-cusom-form" grid-view="move-template-line-cusom-grid"/>
+     	<panel-side title="Actions">
+    		<field name="isValid" readonlyIf="!isValid" onChange="action-move-template-method-set-is-valid"/>
+    		<button name="checkValidity" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity"/>
+ 	 	</panel-side>
+	</form>
     
-  </panel>
-  <panel-related field="moveTemplateLineList" readonlyIf="isValid" colSpan="12" form-view="move-template-line-custom-form" grid-view="move-template-line-custom-grid"/>
-  
-  <panel-side title="Actions">
-    <field name="isValid" readonlyIf="!isValid" onChange="action-move-template-method-set-is-valid"/>
-    <button name="checkValidity" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity"/>
-  </panel-side>
-</form>
-
-    
-     <form name="move-template-wizard-form" title="Generate move from template" model="com.axelor.apps.base.db.Wizard" onNew="action-move-template-wizard-set-active-company" onLoad="action-move-template-wizard-set-active-company" >
+    <form name="move-template-wizard-form" title="Generate move from template" model="com.axelor.apps.base.db.Wizard" onNew="action-move-template-wizard-set-active-company" onLoad="action-move-template-wizard-set-active-company" >
         <panel title="Overview">
         	<field name="moveTemplateType" title="Type" target-name="name" type="many-to-one" target="com.axelor.apps.account.db.MoveTemplateType" />
 	        <field name="moveTemplate" required="true"  target-name="name" type="many-to-one" target="com.axelor.apps.account.db.MoveTemplate" readonlyIf="moveTemplateType == null" title="Template" domain="self.moveTemplateType = :moveTemplateType AND self.isValid = true AND self.journal.company = :company AND self.journal.statusSelect = 1"/>

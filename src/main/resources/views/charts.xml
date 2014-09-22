@@ -37,7 +37,7 @@
 				account_invoice AS _invoice	
 			WHERE
 				_invoice.status_select != 1
-				_invoice.operation_type_select=3
+				AND _invoice.operation_type_select=3
 				AND DATE_PART('year',_invoice.invoice_date) 
 				IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
 			GROUP BY
@@ -82,7 +82,7 @@
 			AND _invoice.company = _user.active_company	
 		    WHERE
 		      _invoice.status_select != 1
-		      _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
+		      AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
 		      AND _invoice.operation_type_select=3
 		      
 		    GROUP BY 
@@ -139,7 +139,7 @@
 			AND _invoice.company = _user.active_company	  
 	     WHERE
 	      _invoice.status_select != 1
-	      _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
+	      AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
 	      AND _invoice.operation_type_select=3
 	      
 	    GROUP BY 
@@ -229,8 +229,6 @@
    
 	<chart stacked="true" name="chart.purchase.buyer.dashboard.prod.qty.suppl.invoices.last.12m" title="Number Of Units On Supplier Invoices On Last 12 Month">
 	  <dataset type="sql">
-	   
-	     
 	      SELECT 
 	        date_part('year',_invoice._invoice_date) || '-' || date_part('mon',_invoice._invoice_date) || '-01' AS _month,
 	        coalesce(_product._product_type,'other') AS _product,
@@ -248,9 +246,8 @@
 	          ON _line.invoice=_invoice.id
 	        WHERE
 	          _invoice.status_select != 1
-	          _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
+	          AND _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
 	          AND _invoice.operation_type_select=1
-	          
 	        GROUP BY 
 	          _invoice_id, _line_product, _qty, _invoice_date
 	        ORDER BY 
@@ -267,7 +264,6 @@
 	      ON _invoice._line_product=_product._product_id
 	      GROUP BY _product._product_type,_month
 	      ORDER BY _month  
-	  
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_qty" groupBy="_product" type="bar" title="Units"/>
@@ -277,8 +273,6 @@
 	  
 	<chart stacked="true" name="chart.purchase.buyer.dashboard.prod.turnover.suppl.invoices.last.12m" title="Turnover On Supplier Invoices On Last 12 Month">
 	  <dataset type="sql">
-	   
-	     
 	  SELECT 
 	     date_part('year',_invoice._invoice_date) || '-' || date_part('mon',_invoice._invoice_date) || '-01' AS _month,
 	    coalesce(_product._product_type,'other') AS _product,
@@ -296,7 +290,7 @@
 	      ON _line.invoice=_invoice.id
 	    WHERE
 	      _invoice.status_select != 1
-	      _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
+	      AND _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
 	      AND _invoice.operation_type_select=1
 	      
 	    GROUP BY 
@@ -315,7 +309,6 @@
 	  ON _invoice._line_product=_product._product_id
 	  GROUP BY _product._product_type,_month 
 	  ORDER BY _month    
-	  
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_turn_over" groupBy="_product" type="bar" title="Units"/>
@@ -512,7 +505,7 @@
 	          base_company AS _company
 	          ON  _company.id = _user.active_company
 	          AND _company.id = self.company
-	    WHERE self.status_select != 1 self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
+	    WHERE self.status_select != 1 AND self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
 	        AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'  
 	    GROUP BY 
 	          _month
@@ -709,7 +702,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        _invoice.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -835,7 +828,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self..status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.due_date &lt; CURRENT_DATE AND
 	        self.operation_type_select=3
 	      )
