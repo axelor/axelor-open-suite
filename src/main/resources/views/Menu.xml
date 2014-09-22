@@ -437,7 +437,7 @@
 	<menuitem name="menu-calls-dashboard-1" parent="menu-calls-dashboard"
 		title="Calls Db" icon="img/16px/chart_16px.png" action="crm.calls.dashboard.view"/>	
 	
-	<action-view name="crm.calls.dashboard.view" title="calls Db"
+	<action-view name="crm.calls.dashboard.view" title="Calls Db"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="crm.calls.dashboard" />
 	</action-view>	
