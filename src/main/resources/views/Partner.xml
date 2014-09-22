@@ -47,14 +47,7 @@
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
 	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null" if-module="axelor-account"/>
 	    </toolbar>
-	     <menubar>
-	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
-	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null" />
-	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null" />
-	            <item title="Create task" action="save,action-partner-view-create-task" readonlyIf="id == null" />
-	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null" />
-	        </menu>
-	    </menubar>
+	    <panel-include view="incl-event-actions-partner-form" from="axelor-crm" />
 	    <panel>
 	    	<panel colSpan="2">
 	        	<field name="picture" showTitle="false" widget="Image" colSpan="12" width="80" height="80"/>
@@ -77,6 +70,7 @@
 			    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
 			    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 			</panel>
+			<field name="isContact" hidden="true" colSpan="12" />
 		</panel>
   		</panel>
   		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2"    domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
@@ -116,52 +110,20 @@
 				</panel>
 				<spacer />
 	    	</panel>
-			<panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" colSpan="12">
-				<field name="invoiceSendingFormatSelect"/>
-				<field name="paymentMode"/>
-				<field name="paymentCondition"/>
-				<field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2"/>
-				<field name="fiscalPosition"/>
-				<field name="payerQuality"/>
-				<field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
-				<panel colSpan="6">
-					<button name="showAllInvoices" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
-					<button name="showUnpaidInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-view-show-unpaid-invoice"/>
-				</panel>
-				<field name="bankDetailsList" >
-				    <viewer><![CDATA[
-						<bankDetailsList>
-						{{record.fullName}} 
-						</bankDetailsList>
-						]]></viewer>
-				    <editor>
-						<field name="countryCode" colSpan="4"/>
-						<field name="bankAddress" colSpan="4"/>
-						<field name="bankCode" colSpan="4"/>
-						<field name="accountNbr" colSpan="4"/>
-						<field name="iban" colSpan="4"/>
-						<field name="bic" colSpan="4"/>
-				    </editor>
-				</field>      
-			</panel>
-			<panel-related field="accountingSituationList" title="Customer balance" hideIf="isContact" if-module="axelor-account" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account" />
-			<panel-related field="blockingList" widget="MasterDetail" title="Blockings" hideIf="isContact" if-module="axelor-account"/>
-			<panel-related field="reportedBalanceList"  widget="MasterDetail" title="Reported balance" hideIf="isContact" if-module="axelor-account" />
-			<panel title="SEPA Direct Debit" if-module="axelor-account">
-			 	  <field name="activeRum" colSpan="2" canNew="false" domain="self.partner.id = :id"/>
-			      <field name="rumList" title="History" readonly="true" colSpan="12">
-			           <viewer><![CDATA[
-						<rumList>
-						{{record.rumNumber}} {{record.debtorName}} {{record.debtorAddress}} {{record.creationDate}} {{record.mandateSignatureDate}} {{record.mandateSignatureCommune}}
-						</rumList>
-						]]></viewer>
-			      </field>
-			</panel>
+			<panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" >
+		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
+		    </panel>
+			<panel-include if-module="axelor-account" view="incl-customer-balance-partner-form" from="axelor-account"  />
+			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account" />
+			<panel-include if-module="axelor-account" view="incl-reported-balance-partner-form" from="axelor-account" />
+			<panel-include if-module="axelor-account" view="incl-sepa-direct-debit-partner-form" from="axelor-account" />
 			<panel title="Activities" showIf="id != null" if-module="axelor-crm">
-				<button name="showProject" title="Show projects"   onClick="save,action-partner-view-partner-project" />
+				<panel-include view="incl-show-project-partner-form" from="axelor-organisation" if-module="axelor-organisation" />
+		        <panel-include view="incl-activities-partner-form" from="axelor-crm" />
+		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/>
 			</panel>
-			<panel-dashlet colSpan="12" title="Sales" showIf="id != null" if-module="axelor-supplychain" action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350"/>
-			<panel-dashlet colSpan="12" title="Events" showIf="id != null" if-module="axelor-crm" action="portal.customer.crm.activities" height="350"/>
+			<panel-include view="incl-sales-order-dashelt-form" from="axelor-supplychain" if-module="axelor-supplychain" />
+			<panel-include if-module="axelor-crm"  view="incl-events-partner-form" from="axelor-crm"/>
 			<panel title="Notes" colSpan="12">
 				<field name="description" colSpan="12" showTitle="false"  widget="Html" x-lite="true"/>
 			</panel>
@@ -175,47 +137,6 @@
 				</panel>
 			</panel>
 		</panel-tabs>
-	<!-- 		        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account"    > -->
-	<!-- 	            <include view="incl-invoice-payment-partner-form" from="axelor-account"/> -->
-	<!-- 	        </page> -->
-	<!-- 	        <page name="compteClient" title="Customer balance" hideIf="isContact" if-module="axelor-account"> -->
-	<!-- 	    		<include view="incl-customer-balance-partner-form" from="axelor-account" /> -->
-	<!-- 	    	</page> -->
-	<!-- 	    	<page name="blocking" title="Blockings" hideIf="isContact" if-module="axelor-account"> -->
-	<!-- 	    	    <include view="incl-blocking-partner-form" from="axelor-account" /> -->
-	<!-- 	    	</page> -->
-	<!-- 	    	<page name="reportedBalance" title="Reported balance" hideIf="isContact || id == null" if-module="axelor-account"> -->
-	<!-- 	    	   	<include view="incl-reported-balance-partner-form" from="axelor-account" /> -->
-	<!-- 	    	</page> -->
-	<!-- 	    	<page title="SEPA Direct Debit"   showIf="paymentMode.typeSelect == 2" if-module="axelor-account"> -->
-	<!-- 	    	    <include view="incl-sepa-direct-debit-partner-form" from="axelor-account" /> -->
-	<!-- 	    	</page> -->
-	<!-- 	        <page name="activities" title="Activities" showIf="id != null" if-module="axelor-crm"> -->
-	<!-- 	            <include view="incl-show-project-partner-form" from="axelor-organisation" if-module="axelor-organisation" /> -->
-	<!-- 	        	<include view="incl-activities-partner-form" from="axelor-crm" /> -->
-	<!-- 	        	<include view="incl-sales-order-portal-form" from="axelor-supplychain" if-module="axelor-supplychain" /> -->
-	<!-- 	        </page> -->
-	<!-- 			<page name="turnover" title="Sales" showIf="id != null" if-module="axelor-supplychain"> -->
-	<!-- 				<include view="incl-sales-partner-form" from="axelor-supplychain" /> -->
-	<!-- 			</page> -->
-	<!-- 			<page name="events" title="Events" showIf="id != null" if-module="axelor-crm"> -->
-	<!--      			<include view="incl-events-partner-form" from="axelor-crm" /> -->
-	<!-- 			</page> -->
-	<!-- 			<page title="Notes"> -->
-	<!-- 	            <field name="description" showTitle="false"   widget="Html" x-lite="true"/> -->
-	<!-- 	        </page> -->
-	<!-- 			<page title="Settings"  > -->
-	<!-- 	            <field name="partnerSeq"/> -->
-	<!-- 	            <field name="languageSelect"/> -->
-	<!-- 	            <group title="Assigned to"     canCollapse="true"> -->
-	<!-- 	                <field name="companySet"   widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/> -->
-	<!-- 	                <break/> -->
-	<!-- 	                <field name="user"/> -->
-	<!-- 	                <field name="team"/> -->
-	<!-- 	            </group> -->
-	<!-- 	        </page> -->
-	
-	<!-- 	    </notebook> -->
 	</form>
 	
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -230,7 +151,6 @@
 	    onNew="action-partner-record-partner-type-select" 
 	    onLoad="action-partner-attrs-change-name" 
 	    onSave="save,action-set-partner-seq">
-	    
 	    <toolbar>
     		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"   readonlyIf="id == null"/>
     	</toolbar>
@@ -280,14 +200,7 @@
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
 	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"  readonlyIf="id == null" if-module="axelor-account"/>
 	    </toolbar>
-	     <menubar>
-	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null" />
-	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null" />
-	            <item title="Create task" action="save,action-partner-view-create-task" readonlyIf="id == null" />
-	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null" />
-	        </menu>
-	    </menubar>
+	    <panel-include view="incl-event-actions-partner-form" from="axelor-crm" />
 	    <panel>
 	    	<panel colSpan="3">
 	    		<field name="picture" widget="Image" showTitle="false" colSpan="12"/>
@@ -306,6 +219,7 @@
 	            <panel title="Company" colSpan="12" >
 	            	<field name="mainPartner"/>
 	           	</panel>
+	           	<field name="isContact" hidden="true" colSpan="12" />
 	        </panel>
          </panel>
         <panel title="Contact">
@@ -329,11 +243,11 @@
                 <field name="team"/>
             </panel>
         </panel-side>
-<!-- 		    <page name="activities" title="Activities" showIf="id != null" if-module="axelor-crm"> -->
-<!-- 	        	<include view="incl-show-project-partner-form" from="axelor-organisation" /> -->
-<!-- 	        	<include view="incl-activities-partner-form" from="axelor-crm" /> -->
-<!-- 	        	<include view="incl-sales-order-portal-form" from="axelor-sale" /> -->
-<!-- 	        </page> -->
+<!--         <panel title="Activities" showIf="id != null" if-module="axelor-crm"> -->
+<!-- 			<panel-include view="incl-show-project-partner-form" from="axelor-organisation" if-module="axelor-organisation" /> -->
+<!-- 	        <panel-include view="incl-activities-partner-form" from="axelor-crm" /> -->
+<!-- 	        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/> -->
+<!-- 		</panel> -->
 	</form>
 	
 	<action-group name="action-group-base-partner-onnew">
