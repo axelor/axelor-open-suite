@@ -3,8 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.1.xsd">
 
-	
-
 	<menuitem name="hr-root" title="Human Resources" priority="130"
 		icon="img/Other/organisation_70px.png" groups="admins,erp"/>
 
@@ -335,9 +333,9 @@
 	</action-view>
 	
 	<menuitem name="menu-organisation-dashboard-sample" parent="menu-dashboards-sample" priority="165"
-		title="Organisation Dashboard" icon="img/16px/chart_16px.png" action="dashlet.organisation.dashboard.view.sample"/>	
+		title="Organisation Dashboard" icon="img/16px/chart_16px.png" action="organisation.dashboard.view.sample"/>	
 
-	<action-view name="dashlet.organisation.dashboard.view.sample" title="Organisation Dashboard"
+	<action-view name="organisation.dashboard.view.sample" title="Organisation Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="org.project.dashboard.sample" />	    
 	</action-view>

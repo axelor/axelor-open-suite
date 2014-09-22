@@ -118,11 +118,11 @@
 	</action-view>
 	
 	<dashboard title="Project Dashboard" name="org.project.dashboard.sample">
-	    <dashlet action="dashlet.projects.by.client.partner" colSpan="1" height="350" canSearch="true"/>	    
+	    <dashlet action="dashlet.projects.by.client.partner" height="350" canSearch="true"/>	    
  	</dashboard>
  	
 	<dashboard name="org.project.dashboard" title="Project/Business Dashboard">
-	  <dashlet colSpan="1" height="350" action="dashlet.projects.by.client.partner" canSearch="true"/>
+	  <dashlet height="350" action="dashlet.projects.by.client.partner" canSearch="true"/>
 	</dashboard>
 	
 	<action-view title="Projects by Client Partner" model="com.axelor.apps.organisation.db.Project" name="dashlet.projects.by.client.partner">
