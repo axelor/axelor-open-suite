@@ -122,9 +122,9 @@
 	</action-view>
 	
 	<menuitem name="menu-manufacturing-dashboard-sample" parent="menu-dashboards-sample" priority="155"
-		title="Manufacturing Dashboard" icon="img/16px/chart_16px.png" action="dashlet.manufacturing.dashboard.view.sample" groups="admins,axelordemo"/>	
+		title="Manufacturing Dashboard" icon="img/16px/chart_16px.png" action="manufacturing.dashboard.view.sample" groups="admins,axelordemo"/>	
 
-	<action-view name="dashlet.manufacturing.dashboard.view.sample" title="Manufacturing Dashboard"
+	<action-view name="manufacturing.dashboard.view.sample" title="Manufacturing Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="manufacturing.dashboard.sample" />
 	    <context name="_today" expr="eval: __date__.toDate()"/>
@@ -135,9 +135,9 @@
 		title="Manufacturing" groups="admins,axelordemo" priority="90"/>	
 		
 	<menuitem name="menu-manufacturing-dashboard-1" parent="menu-manufacturing-dashboard" 
-		title="Manufacturing Db" icon="img/16px/chart_16px.png" action="dashlet.manufacturing.dashboard.view" />	
+		title="Manufacturing Db" icon="img/16px/chart_16px.png" action="manufacturing.dashboard.view" />	
 
-	<action-view name="dashlet.manufacturing.dashboard.view" title="Manufacturing Dashboard"
+	<action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="manufacturing.dashboard" />
 	    <context name="_today" expr="eval: __date__.toDate()"/>
