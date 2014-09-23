@@ -67,12 +67,12 @@
 	    <panel-related title="Tasks" field="taskList" form-view="task-form" grid-view="task-project-grid"/>
 	    <panel-related title="Members" field="memberUserSet"/>    
 	  </panel-tabs>  
-	  <panel-side title="Action(s)">
+	  <panel sidebar="true" title="Action(s)">
 	    <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
 	    <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="action-group-organisation-generate-draftinvoice-click"/>
 	    <button name="showTask" title="Show tasks" colSpan="1" onClick="action-project-view-task"/>
 	    <button name="updateTaskProgression" title="Update task progress" colSpan="1" onClick="action-project-method-update-task-progress"/>
-	  </panel-side>
+	  </panel>
 	</form>
 
 	<action-method name="action-print-project">

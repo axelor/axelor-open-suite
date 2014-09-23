@@ -63,15 +63,15 @@
 	    <field name="timesheetInputTotal"/>
 	    <panel-related field="timesheetTotalByTypeList" colSpan="12"/>
 	  </panel>
-	  <panel-side title="Action(s)">
+	  <panel sidebar="true" title="Action(s)">
 	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="action-group-organisation-timesheet-confirm-click"/>
 	    <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="action-group-organisation-timesheet-validate-click"/>
 	    <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-timesheet-record-cancel"/>
-	  </panel-side>
-	  <panel-side title="Info.">
+	  </panel>
+	  <panel sidebar="true" title="Info.">
 	    <field name="validatedByUser"/>
 	    <field name="validationDate"/>
-	  </panel-side>
+	  </panel>
 	</form>    
 	
     <action-group name="action-group-organisation-timesheet-onnew">

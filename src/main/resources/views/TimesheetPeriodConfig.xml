@@ -35,7 +35,7 @@
             	<field name="lastDayAdjustement" showIf="isLastDayOfMonth == true"/>
         	</panel>
     	</panel>
-    	<panel-side>
+    	<panel sidebar="true">
     		<panel name="reminderDelay" title="Reminder delay" colSpan="12">
 	       		<field name="hourReminderDelay"/>
 	        	<field name="dayReminderDelay"/>
@@ -46,7 +46,7 @@
 	   		</panel>
 	    	<field name="isReminderAtTimesheetCreation"/>
 	    	<button name="generateTimesheets" title="Generate Timesheets" colSpan="1"/>
-    	</panel-side>
+    	</panel>
 	</form>       
 	
 	<action-attrs name="action-timesheet-period-config-attrs-day-of-month">

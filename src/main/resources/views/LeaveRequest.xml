@@ -52,7 +52,7 @@
         	<field name="nbrOfDayOff" onChange="action-leave-request-method-compute-duration"/>
         	<field name="remainingDaysOnPeriod" readonly="true"/>
         </panel>
-        <panel-side>
+        <panel sidebar="true">
 	        <field name="managerUser"/>
 	        <field name="approvalDate"/>
 	        <button name="confirm" title="Confirm" colSpan="2" showIf="statusSelect == 1" onClick="action-leave-request-group-wkf"/>
@@ -60,7 +60,7 @@
 	        <button name="validate" title="Validate" colSpan="2" showIf="statusSelect == 2" onClick="action-leave-request-group-wkf"/>
 	        <button name="refuse" title="Refuse" colSpan="2" showIf="statusSelect == 2" onClick="action-leave-request-group-wkf"/>
 	        <button name="backToDraft" title="Back to draft" colSpan="2" showIf="statusSelect == 5" onClick="action-leave-request-group-wkf"/>
-        </panel-side>
+        </panel>
     </form>
     
     <!-- ACTION WORKFLOW -->

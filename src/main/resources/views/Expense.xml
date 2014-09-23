@@ -48,7 +48,7 @@
 	    <field name="paymentPeriod"/>
 	    <field name="refusalReason" showIf="statusSelect == 6"/>
 	  </panel>
-	  <panel-side title="Action(s)">
+	  <panel sidebar="true" title="Action(s)">
 	    <panel colSpan="12">
 	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="2" onClick="action-group-organisation-expense-draft-click"/>
 	      <button name="submit" title="Submit" showIf="statusSelect == 1" colSpan="2" onClick="action-group-organisation-expense-submit-click"/>
@@ -63,7 +63,7 @@
 	      <field name="validationDate"  colSpan="12"/>
 	      <field name="validationStatusSelect" hideIf="statusSelect == 1 || statusSelect == 6"  colSpan="12"/>
 	    </panel>
-	  </panel-side>
+	  </panel>
 	</form>
     
     <action-group name="action-expense-group-default">
