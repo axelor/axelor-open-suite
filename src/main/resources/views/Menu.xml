@@ -100,9 +100,9 @@
 	
 	
 	<menuitem name="menu-saleman-dashboard-sample" parent="menu-dashboards-sample" priority="205"
-		title="Salesman Db" icon="img/16px/chart_16px.png" action="dashlet.saleman.dashboard.view.sample" />
+		title="Salesman Db" icon="img/16px/chart_16px.png" action="saleman.dashboard.view.sample" />
 		
-	<action-view name="dashlet.saleman.dashboard.view.sample" title="Salesman Dashboard" 
+	<action-view name="saleman.dashboard.view.sample" title="Salesman Dashboard" 
 	icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="sale.saleman.dashboard.sample" />
     	<context name="_user" expr="eval:__user__"/>
@@ -111,9 +111,9 @@
 	</action-view>
 		
 	<menuitem name="menu-sale-manager-dashboard-sample" parent="menu-dashboards-sample" priority="200"
-		title="Sales Manager Db" icon="img/16px/chart_16px.png" action="dashlet.sale.manager.dashboard.view.sample" />	
+		title="Sales Manager Db" icon="img/16px/chart_16px.png" action="sale.manager.dashboard.view.sample" />	
 
-	<action-view name="dashlet.sale.manager.dashboard.view.sample" title="Sales Manager Dashboard"
+	<action-view name="sale.manager.dashboard.view.sample" title="Sales Manager Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="sale.manager.dashboard.sample" />
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
