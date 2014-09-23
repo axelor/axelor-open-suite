@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
  
   <module name="base" package="com.axelor.apps.base.db"/>
  
@@ -36,9 +36,7 @@
     
     <date name="startDate" title="Product launch Date" initParam="true"/>
     <date name="endDate" title="Product pulled off market Date" initParam="true"/>
-   
-  	<one-to-many name="priceList" ref="com.axelor.apps.base.db.Price" mappedBy="product" title="Prices" />
-  	
+     	
   	<one-to-many name="supplierCatalogList" ref="com.axelor.apps.base.db.SupplierCatalog" mappedBy="product" title="Supplier Catalog Lines"/>
   	
     <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.base.db.TrackingNumberConfiguration" title="Tracking Nbr. Config."/>
