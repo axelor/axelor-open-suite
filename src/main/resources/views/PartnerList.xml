@@ -25,10 +25,10 @@
 	        <field name="description" colSpan="12"/>
 	        <field name="partnerSet" colSpan="12" domain="self.partnerTypeSelect = 1" showTitle="false"/>
 	    </panel>
-	    <panel-side name="action_buttons" title="Actions" hideIf="$popup()">
+	    <panel sidebar="true" name="action_buttons" title="Actions" hideIf="$popup()">
 	        <button name="map" title="Sales map" onClick="save,com.axelor.apps.base.web.AddressController:viewSalesMap"/>
 	        <field name="isCluster"/>
-	    </panel-side>
+	    </panel>
 	</form>
 </object-views>
 

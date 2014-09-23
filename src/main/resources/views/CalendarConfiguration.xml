@@ -15,10 +15,10 @@
 		    <field name="calendarUser"/>
 		    <field name="calendarGroup"/>    
 	  	</panel>
-	  	<panel-side name="action" title="Action(s)">
+	  	<panel sidebar="true" name="action" title="Action(s)">
 	    	<button name="createAction" title="Create menu entrie" onClick="save,action-calendar-configuration-method-create-Action"/>
 	    	<button name="deleteAction" title="Delete menu entrie" onClick="save,action-calendar-configuration-method-delete-Action"/>
-	  	</panel-side>
+	  	</panel>
 	  	<panel-related field="calendarSet" />
     </form>
     

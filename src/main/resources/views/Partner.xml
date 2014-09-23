@@ -234,7 +234,7 @@
         <panel title="Notes">
             <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
-        <panel-side title="Settings">
+        <panel sidebar="true" title="Settings">
             <field name="partnerSeq"/>
             <field name="languageSelect"/>
             <panel title="Assigned to" canCollapse="true" colSpan="12">
@@ -242,7 +242,7 @@
                 <field name="user"/>
                 <field name="team"/>
             </panel>
-        </panel-side>
+        </panel>
 <!--         <panel title="Activities" showIf="id != null" if-module="axelor-crm"> -->
 <!-- 			<panel-include view="incl-show-project-partner-form" from="axelor-organisation" if-module="axelor-organisation" /> -->
 <!-- 	        <panel-include view="incl-activities-partner-form" from="axelor-crm" /> -->

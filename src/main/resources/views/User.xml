@@ -10,14 +10,14 @@
     </grid>
     <form name="user-form" title="User" model="com.axelor.auth.db.User" id="user-form-base"
     onNew="action-user-language-record" onLoad="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
-    	 <panel-side>
+    	 <panel sidebar="true">
 	        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 	        <field name="activeCompany" widget="SuggestBox"/>
 	        <field name="today"/>
 	        <field name="activeCashRegister"/>
 	        <field name="timesheetPeriodConfig"/>
 	        <field name="employee"/>
-        </panel-side>
+        </panel>
         <panel-include view="user-form" from="axelor-core"/>
         <panel-tabs>
         	 <panel-related title="Internal companies" field="companySet" showTitle="false"/>

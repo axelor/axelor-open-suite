@@ -21,10 +21,10 @@
 			<field name="target"/>
 			<field name="templateContext" colSpan="12"/>
 		</panel>
-		<panel-side name="attachedFiles" title="Attached files" colSpan="12">
+		<panel sidebar="true" name="attachedFiles" title="Attached files" colSpan="12">
 			    <field name="birtTemplate" colSpan="12"/>
 			    <field name="filePath" widget="url" colSpan="12"/>
-  		</panel-side>
+  		</panel>
 		<panel name="recipientGroup" title="Destinated to" colSpan="12">
 			<field name="addressBlock" colSpan="12" widget="Html" x-lite="false" height="5"/>
 			<field name="toRecipients" colSpan="12" height="2"/>
