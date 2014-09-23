@@ -63,7 +63,7 @@
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false"/>
 		</panel>
 		
-		<panel-side title="Attributes">
+		<panel sidebar="true" title="Attributes">
 			<field name="typeSelect" colSpan="6" domain="self.value IN ('1','2','3')"/>
 			<field name="callStatusSelect" colSpan="6" showIf="typeSelect == 1"/>
 			<field name="statusSelect" showIf="statusSelect != 3" colSpan="6"/>
@@ -71,14 +71,14 @@
 			<field name="taskStatusSelect" showIf="typeSelect == 4"/>
 			<field name="prioritySelect" showIf="typeSelect == 3"/>
 			
-		</panel-side>
+		</panel>
 		
-		<panel-side title="Linked to" readonlyIf="statusSelect == 2" >
+		<panel sidebar="true" title="Linked to" readonlyIf="statusSelect == 2" >
 			<field name="clientPartner" onChange="action-meeting-set-location-partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" onChange="action-meeting-set-location-lead"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
-		</panel-side>
+		</panel>
 	</form>
 	
 	<action-group name="action-group-crm-event-onnew">
@@ -155,17 +155,17 @@
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false"/>
 		</panel>
 		
-		<panel-side title="Attributes">
+		<panel sidebar="true" title="Attributes">
 			<field name="callStatusSelect" readonlyIf="statusSelect == 2"  />
 			<field name="statusSelect" showTitle="false"  />
-		</panel-side>
+		</panel>
 		
-		<panel-side title="Linked to" readonlyIf="statusSelect == 2" >
+		<panel sidebar="true" title="Linked to" readonlyIf="statusSelect == 2" >
 			<field name="clientPartner" onChange="action-meeting-set-location-partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" onChange="action-meeting-set-location-lead"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
-		</panel-side>
+		</panel>
 		
 	</form>
     
@@ -224,16 +224,16 @@
 			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false"/>
 		</panel>
-		<panel-side title="Attributes">
+		<panel sidebar="true" title="Attributes">
 			<field name="statusSelect"/>
 			<field name="meetingType" readonlyIf="statusSelect == 2" widget="SuggestBox"/>
-		</panel-side>
-		<panel-side title="Linked to" readonlyIf="statusSelect == 2" >
+		</panel>
+		<panel sidebar="true" title="Linked to" readonlyIf="statusSelect == 2" >
 			<field name="clientPartner" onChange="action-meeting-set-location-partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" onChange="action-meeting-set-location-lead"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
-		</panel-side>
+		</panel>
 	</form>
     
     <action-group name="action-group-crm-meeting-accept-click">
@@ -289,17 +289,17 @@
 			</panel>
 		</panel>
 		
-		<panel-side title="Attributes">
+		<panel sidebar="true" title="Attributes">
 			<field name="taskStatusSelect"/>
 			<field name="prioritySelect" readonlyIf="taskStatusSelect == 4"/>	
-		</panel-side>
+		</panel>
 		
-		<panel-side title="Linked to" readonlyIf="taskStatusSelect == 4" >
+		<panel sidebar="true" title="Linked to" readonlyIf="taskStatusSelect == 4" >
 			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
-		</panel-side>	
+		</panel>	
 	</form>
 	
     <action-group name="action-group-crm-task-start-click">
@@ -368,13 +368,13 @@
 			<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true" height="3"/>
 		</panel>
 	</panel>
-	<panel-side title="Attributes">
+	<panel sidebar="true" title="Attributes">
 		<field name="ticketStatusSelect" colSpan="3"/>
 		<field name="prioritySelect" colSpan="3" readonlyIf="ticketStatusSelect == 5"/>
 		<field name="eventCategory" colSpan="6" widget="SuggestBox" domain="self.typeSelect = :typeSelect"/>
 		<field name="progressSelect" colSpan="12" readonlyIf="ticketStatusSelect == 5" widget="SelectProgress"/>
-    </panel-side>
-	<panel-side title="Followers/Comments" readonlyIf="ticketStatusSelect == 5">
+    </panel>
+	<panel sidebar="true" title="Followers/Comments" readonlyIf="ticketStatusSelect == 5">
 		<field name="userSet" colSpan="6" widget="TagSelect" onSelect="action-event-attrs-watchers-domain"/>
 		<!--<field name="messageList" showTitle="false" colSpan="6" colSpan="12"/>-->
 		<!--TODO:messageList field have been commented in domain. please check and correct this here-->
@@ -392,7 +392,7 @@
 			<field name="content" showTitle="false"   widget="Html" x-lite="true"/>
 			</group>
         </form>-->
-    </panel-side>
+    </panel>
 </form>
     
 

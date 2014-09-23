@@ -108,11 +108,11 @@
 				<field name="description" colSpan="12" showTitle="false" widget="TEXT" height="3"/>
 		</panel> 
       
-		<panel-side>
+		<panel sidebar="true">
 		  <field name="statusSelect" colSpan="6"/>    
-		</panel-side>
+		</panel>
 	
-		<panel-side title="Follow-up" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
+		<panel sidebar="true" title="Follow-up" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
 			<field name="user" colSpan="6"/>
 			<field name="team" colSpan="6"/>
 			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
@@ -120,14 +120,14 @@
 			<field name="createdOn" colSpan="6"/>
 			<field name="contactDate" colSpan="6"/>
 			<spacer colSpan="6"/>
-		</panel-side>
+		</panel>
 		
-		<panel-side title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="12">
+		<panel sidebar="true" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="12">
 			<field name="source" colSpan="6"/>
 			<field name="campaign" colSpan="6"/>
 			<field name="referredBy" colSpan="6"/>
 			<field name="opportunityAmount" colSpan="6"/>
-		</panel-side>
+		</panel>
      
 		<!--TODO:Remove this comment when portlet starts working-->
 		<!--<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6">
