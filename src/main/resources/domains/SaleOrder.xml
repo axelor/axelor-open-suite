@@ -9,13 +9,13 @@
   	
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
   	<integer name="importId" />
-  		<string name="fullName" namecolumn="true">
-  	<![CDATA[
-  		if(saleOrderSeq == null && clientPartner == null){
-  			return " ";
-  		}
-  		return saleOrderSeq + "-" + clientPartner.getName();
-  	]]>
+	<string name="fullName" namecolumn="true">
+	  	<![CDATA[
+	  		if(saleOrderSeq == null && clientPartner == null){
+	  			return " ";
+	  		}
+	  		return saleOrderSeq + "-" + clientPartner.getName();
+	  	]]>
   	</string>
   	<string name="saleOrderSeq"  title="Reference" readonly="true" unique="true"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>

@@ -34,8 +34,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-//import com.axelor.googleapps.connector.utils.Utils;
-//import com.axelor.googleapps.service.DocumentService;
 
 public class SaleOrderController {
 
@@ -43,35 +41,6 @@ public class SaleOrderController {
 	
 	@Inject
 	private Provider<SaleOrderService> saleOrderProvider;
-	
-//	@Inject 
-//	private Provider<DocumentService> documentSeriveObj;
-//
-//	@Inject 
-//	private Provider<Utils> userUtils;
-
-	
-	
-	/**
-	 * saves the document for any type of entity using template
-	 * @param request
-	 * @param response
-	 * @throws Exception 
-	 */
-	public void saveDocumentForOrder(ActionRequest request,ActionResponse response) throws Exception {
-
-//		userUtils.get().validAppsConfig(request, response);
-
-		// in this line change the Class as per the Module requirement i.e SaleOrder class here used
-//		SaleOrder dataObject = request.getContext().asType(SaleOrder.class);
-
-//		GoogleFile documentData = documentSeriveObj.get().createDocumentWithTemplate(dataObject);
-//		if(documentData == null) {
-//			response.setFlash("The Document Can't be created because the template for this type of Entity not Found..!");
-//			return;
-//		}
-//		response.setFlash("Document Created in Your Root Directory");
-	}
 	
 	
 	public void compute(ActionRequest request, ActionResponse response)  {
