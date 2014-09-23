@@ -83,7 +83,7 @@
 	  	<label title="Suppliers managements"/>
 	  </panel>
 	  <panel-include view="purchase-order-supplier-form" from="axelor-supplier-management" if-module="axelor-supplier-management"/>
-	  <panel-side title="Action(s)">
+	  <panel sidebar="true" title="Action(s)">
 	    <panel>
 	      <button name="compute" title="Compute" hideIf="statusSelect == 4 || statusSelect == 5"   onClick="action-group-purchase-purchase-order-compute-click"/>
 	      <button name="draft" title="Draft" showIf="statusSelect == 6"   onClick="action-purchase-order-record-draft,save"/>
@@ -96,8 +96,8 @@
 	      <button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
 	      <button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect &gt;= 4"   onClick="save,action-purchase-order-method-clear-purchase-order"/>
 	    </panel>
-	  </panel-side>
-	  <panel-side title="Info.">
+	  </panel>
+	  <panel sidebar="true" title="Info.">
 	    <panel readonly="true">
 	      <field name="validatedByUser"/>
 	      <field name="validationDate"/>
@@ -113,7 +113,7 @@
 	      <spacer/>
 	      <field name="amountRemainingToBeInvoiced" if-module="axelor-account"/>          
 	    </panel>    
-	  </panel-side>        
+	  </panel>        
 	</form>
 	<action-method name="action-method-set-purchase-order-draft-sequence">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="setDraftSequence"/>
