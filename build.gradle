@@ -5,36 +5,12 @@ module {
 	title "Axelor :: Tool"
 }
 
-configurations {
-	xjc
-}
-
 dependencies {
 	compile "commons-net:commons-net:2.0"
 	compile "org.apache.commons:commons-io:1.3.2"
 	compile "org.apache.commons:commons-lang3:3.1"
 	compile "com.sun.xml.bind:jaxb-impl:2.2.2"
 
-	xjc 'com.sun.xml.bind:jaxb-xjc:2.2.2'
-	xjc 'com.sun.xml.bind:jaxb-impl:2.2.2'
-	xjc 'javax.xml.bind:jaxb-api:2.2.2'
-
 	compile libs.ST4
 }
 
-task "xjc" << {
-
-	def source = "${projectDir}/src/main/resources/xsd"
-	def target = "${buildDir}/src-gen"
-
-	file(target).mkdirs()
-
-	ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.xjc.asPath)
- 	ant.xjc	(
-		destdir: target,
-		schema: "${source}/pain.001.001.02.xsd",
-		"package": "com.axelor.apps.xsd.sepa"
-	)
-}
-
-compileJava.dependsOn "xjc"
