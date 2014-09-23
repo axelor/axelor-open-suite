@@ -32,7 +32,7 @@
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
 		</panel>
 		
-		<panel-side name="payboxGroup" title="Paybox" readonlyIf="statusSelect == 2">
+		<panel sidebar="true" name="payboxGroup" title="Paybox" readonlyIf="statusSelect == 2">
 			<panel name="payboxEmail" title="Add an email for payment through Paybox" hidden="true">
 				<label title="The payer doesn't have email attached. Please input/provide the email to use."/>
 				<field name="email" widget="Email"/>
@@ -45,21 +45,21 @@
 				<field name="bankCardTransactionNumber"/>
 				<field name="payboxPaidOk" onChange="action-pv-hide-confirm-button,action-attrs-payment-voucher-readonly-status"/>
 			</panel>
-		</panel-side>
+		</panel>
 		
-		<panel-side title="Info" itemSpan="6" readonly="true">
+		<panel sidebar="true" title="Info" itemSpan="6" readonly="true">
 			<field name="statusSelect"/>
 			<field name="generatedMove" showIf="statusSelect == 2"/>
 			<field name="receiptNo" showIf="statusSelect == 2"/>
-		</panel-side>
+		</panel>
 		
-		<panel-side title="Actions">
+		<panel sidebar="true" title="Actions">
 			<button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
 			<button name="showMoveLines" title="Show move lines" onClick="com.axelor.apps.account.web.PaymentVoucherControllerSimple:showMoveLines" showIf="statusSelect == 2"/>
 			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 2"/>
 			<button name="loadMoveLines" title="Load invoice and display other invoices to pay"   onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" showIf="statusSelect == 1"/>
 			<button name="loadSelectedLines" title="Load selected lines"   onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" showIf="statusSelect == 1"/>
-		</panel-side>
+		</panel>
 		
 		<panel title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
 			<field name="partner" colSpan="4" onChange="action-pv-moveLine-domain-4" onSelect="action-payment-voucher-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>

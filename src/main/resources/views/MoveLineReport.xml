@@ -34,12 +34,12 @@
 			<field name="company" readonlyIf="ref != null" widget="SuggestBox" onChange="action-move-line-report-method-get-account" form-view="company-lite-form" />
 		</panel>
 		
-		<panel-side title="Info">
+		<panel sidebar="true" title="Info">
 			<button name="search" title="Search" hideIf="typeSelect == 12 || statusSelect == 2" onClick="save,action-move-line-report-method-search-move-line,save" />
 			<button name="export" title="Print" icon="fa-print" hideIf="statusSelect == 2"	onClick="action-group-account-moveline-report-export-click" />
 			<field name="statusSelect" />
 			<field name="publicationDateTime" />
-		</panel-side>
+		</panel>
 
 		<panel-tabs>
 			<panel title="Filter">
@@ -64,11 +64,11 @@
 			</panel>
 		</panel-tabs>
 		
-		<panel-side title="Balance">
+		<panel sidebar="true" title="Balance">
 			<field name="totalDebit" />
 			<field name="totalCredit" />
 			<field name="balance" />
-		</panel-side>
+		</panel>
 
 	</form>
     
@@ -105,19 +105,19 @@
 			<field name="journal"/>
 		</panel>
 		
-		<panel-side title="Info">
+		<panel sidebar="true" title="Info">
 			<field name="statusSelect"/>
 			<button name="search" title="Search"   hideIf="statusSelect == 2" onClick="save,action-move-line-report-method-search-move-line,save"/>
 			<button name="export" title="Export"   hideIf="statusSelect == 2" onClick="action-group-account-moveline-report-export-click"/>
 			<button name="showMoveExported" title="Exported moves"   showIf="statusSelect == 2" onClick="save,action-move-line-report-method-show-move-exported"/>
 			<button name="replayExport" title="Run export again"   showIf="statusSelect == 2" onClick="save,action-move-line-report-method-replay-export"/>
-		</panel-side>
+		</panel>
 		
-		<panel-side title="Balance">
+		<panel sidebar="true" title="Balance">
 			<field name="totalDebit"/>
 			<field name="totalCredit"/>
 			<field name="balance"/>
-		</panel-side>
+		</panel>
 		
 	</form>
 	

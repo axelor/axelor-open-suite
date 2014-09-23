@@ -43,13 +43,13 @@
 		  <panel-related title="PaymentSchduleLine" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form" readonlyIf="statusSelect != 3"/>
 		</panel-tabs>  
 	
-		 <panel-side >
+		 <panel sidebar="true" >
 			<panel title="actions">
 			    <button name="validate" title="Validate"  onClick="action-group-account-payment-schedule-validate-click" showIf="statusSelect == 1"/>
 			    <button name="cancel" title="Cancel"  onClick="action-payment-schedule-method-cancel,save" hideIf="statusSelect = 4" />
 			    <button name="createPaymentScheduleLines" title="Create schedule lines"   onClick="action-group-account-payment-schedule-create-click" showIf="statusSelect == 1"/>
 			</panel>
-		</panel-side>
+		</panel>
 	</form>
     
     <!-- ACTION GROUPs -->

@@ -747,17 +747,17 @@
 		    title="Sales Invoice" priority="15" /> 
 		    
 			<menuitem name="menu-account-sale-invoice-dashboard-1" parent="menu-account-sale-invoice-dashboard" 
-		    title="Sales Invoice Db 1" icon="img/16px/chart_16px.png" action="dashlet.account.sale.invoice.dashboard.1.view" />    
+		    title="Sales Invoice Db 1" icon="img/16px/chart_16px.png" action="account.sale.invoice.dashboard.1.view" />    
 			
-		    <action-view name="dashlet.account.sale.invoice.dashboard.1.view" title="Sales Invoice Db 1"
+		    <action-view name="account.sale.invoice.dashboard.1.view" title="Sales Invoice Db 1"
 		        icon="img/16px/crmSmall_16px.png">
 		        <view type="dashboard" name="account.sale.invoice.dashboard.1" />        
 		    </action-view>
 		    
 		    <menuitem name="menu-account-sale-invoice-dashboard-2" parent="menu-account-sale-invoice-dashboard" 
-		    title="Sales Invoice Db 2" icon="img/16px/chart_16px.png" action="dashlet.account.sale.invoice.dashboard.2.view" />    
+		    title="Sales Invoice Db 2" icon="img/16px/chart_16px.png" action="account.sale.invoice.dashboard.2.view" />    
 			
-		    <action-view name="dashlet.account.sale.invoice.dashboard.2.view" title="Sales Invoice Db 2"
+		    <action-view name="account.sale.invoice.dashboard.2.view" title="Sales Invoice Db 2"
 		        icon="img/16px/crmSmall_16px.png">
 		        <view type="dashboard" name="account.sale.invoice.dashboard.2" />        
 		    </action-view>
@@ -766,9 +766,9 @@
 		    title="Purchase Invoice" priority="10" />    
 			
 		    <menuitem name="menu-account-purchase-invoice-dashboard-1" parent="menu-account-purchase-invoice-dashboard"
-		    title="Purchase Invoice Db" icon="img/16px/chart_16px.png" action="dashlet.account.purchase.invoice.dashboard.2.view"/>    
+		    title="Purchase Invoice Db" icon="img/16px/chart_16px.png" action="account.purchase.invoice.dashboard.2.view"/>    
 			
-		    <action-view name="dashlet.account.purchase.invoice.dashboard.2.view" title="Purchase Invoice Db"
+		    <action-view name="account.purchase.invoice.dashboard.2.view" title="Purchase Invoice Db"
 		        icon="img/16px/crmSmall_16px.png">
 		        <view type="dashboard" name="account.purchase.invoice.dashboard.1" />        
 		    </action-view>
@@ -777,9 +777,9 @@
 		    title="Invoices" priority="5"/>    
 			
 		    <menuitem name="menu-account-mix-invoice-dashboard-1" parent="menu-account-mix-invoice-dashboard" 
-		    title="Invoice Db" icon="img/16px/chart_16px.png" action="dashlet.account.mix.invoice.dashboard.1.view"/>    
+		    title="Invoice Db" icon="img/16px/chart_16px.png" action="account.mix.invoice.dashboard.1.view"/>    
 			
-		    <action-view name="dashlet.account.mix.invoice.dashboard.1.view" title="Invoice Db"
+		    <action-view name="account.mix.invoice.dashboard.1.view" title="Invoice Db"
 		        icon="img/16px/crmSmall_16px.png">
 		        <view type="dashboard" name="account.mix.invoice.dashboard" />        
 		    </action-view>
@@ -788,9 +788,9 @@
     title="Accounting"  priority="110"/>    
 	
 	 <menuitem name="menu-accounting-dashboard-1" parent="menu-accounting-dashboard" 
-        title="Accounting Db" icon="img/16px/chart_16px.png" action="dashlet.accounting.dashboard.view" />    
+        title="Accounting Db" icon="img/16px/chart_16px.png" action="accounting.dashboard.view" />    
 
-	    <action-view name="dashlet.accounting.dashboard.view" title="Accounting"
+	    <action-view name="accounting.dashboard.view" title="Accounting"
 	        icon="img/16px/crmSmall_16px.png">
 	        <view type="dashboard" name="accounting.dashboard.sample" />        
 	    </action-view>

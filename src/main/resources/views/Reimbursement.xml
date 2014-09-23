@@ -35,10 +35,10 @@
 		
 		<panel-related field="moveLineSet" hideIf="statusSelect == 1" colSpan="12"/>
 		
-		<panel-side title="Info">
+		<panel sidebar="true" title="Info">
 			<field name="statusSelect"/>
 			<button name="validateReimbursement" title="Validate" onClick="save,action-group-account-reimbursement-validate,save" showIf="statusSelect == 2"/>
-		</panel-side>
+		</panel>
 	</form>
     
     <action-method name="action-method-account-reimbursement-validate">
