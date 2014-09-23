@@ -239,9 +239,9 @@
 	</action-view>	
 
 	<menuitem name="menu-stock-dashboard-sample" parent="menu-dashboards-sample" priority="150" 
-		title="Stock Db" icon="img/16px/chart_16px.png"  action="dashlet.stock.dashboard.view.sample"/>	
+		title="Stock Db" icon="img/16px/chart_16px.png"  action="stock.dashboard.view.sample"/>	
 
-	<action-view name="dashlet.stock.dashboard.view.sample" title="Stock Dashboard"
+	<action-view name="stock.dashboard.view.sample" title="Stock Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="stock.dashboard.sample" />
 	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
@@ -252,18 +252,18 @@
 		title="Stock"  priority="80" />	
 		
 	<menuitem name="menu-stock-dashboard-1" parent="menu-stock-dashboard" 
-		title="Stock Db 1" icon="img/16px/chart_16px.png" action="dashlet.stock.dashboard.one.view" />	
+		title="Stock Db 1" icon="img/16px/chart_16px.png" action="stock.dashboard.one.view" />	
 
-	<action-view name="dashlet.stock.dashboard.one.view" title="Stock Dashboard 1"
+	<action-view name="stock.dashboard.one.view" title="Stock Dashboard 1"
 		icon="img/16px/crmSmall_16px.png"  >
 		<view type="dashboard" name="stock.dashboard.one" />
 	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
 	</action-view>
 	
 	<menuitem name="menu-stock-dashboard-2" parent="menu-stock-dashboard" 
-		title="Stock Db 2" icon="img/16px/chart_16px.png" action="dashlet.stock.dashboard.two.view" />	
+		title="Stock Db 2" icon="img/16px/chart_16px.png" action="stock.dashboard.two.view" />	
 
-	<action-view name="dashlet.stock.dashboard.two.view" title="Stock Dashboard 2"
+	<action-view name="stock.dashboard.two.view" title="Stock Dashboard 2"
 		icon="img/16px/crmSmall_16px.png"  >
 		<view type="dashboard" name="stock.dashboard.two" />	    
 	</action-view>
