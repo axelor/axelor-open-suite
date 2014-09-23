@@ -344,16 +344,16 @@
 		title="Project/Business" />	
 	
 	<menuitem name="menu-project-business-dashboard-1" parent="menu-project-business-dashboard" 
-		title="Project/Business Db" icon="img/16px/chart_16px.png" action="dashlet.project.business.dashboard.view"/>	
+		title="Project/Business Db" icon="img/16px/chart_16px.png" action="project.business.dashboard.view"/>	
 	
-	<action-view title="Project/Business Db"  name="dashlet.project.business.dashboard.view">
+	<action-view title="Project/Business Db"  name="project.business.dashboard.view">
 	  <view type="dashboard" name="org.project.dashboard"/>
 	</action-view>
 	
 	<menuitem name="menu-human-resources-dashboard-sample" parent="menu-dashboards-sample" priority="160"
-		title="Human Resources Db" icon="img/16px/chart_16px.png" action="dashlet.human.resources.dashboard.view.sample" />	
+		title="Human Resources Db" icon="img/16px/chart_16px.png" action="human.resources.dashboard.view.sample" />	
 
-	<action-view name="dashlet.human.resources.dashboard.view.sample" title="Human Resources Dashboard"
+	<action-view name="human.resources.dashboard.view.sample" title="Human Resources Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="human.resources.dashboard.sample" />
 		<context name="_user_id" expr="eval:__user__.id"/>
@@ -363,18 +363,18 @@
 		title="Human Resources" priority="100" />	
 	
 	<menuitem name="menu-human-resources-dashboard-db-1" parent="menu-human-resources-dashboard" 
-		title="Human Resources Db 1" icon="img/16px/chart_16px.png" action="dashlet.human.resources.dashboard.db1.view" />	
+		title="Human Resources Db 1" icon="img/16px/chart_16px.png" action="human.resources.dashboard.db1.view" />	
 	
-	<action-view name="dashlet.human.resources.dashboard.db1.view" title="Human Resources Db 1"
+	<action-view name="human.resources.dashboard.db1.view" title="Human Resources Db 1"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="human.resources.dashboard.1" />
 		<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 	
 	<menuitem name="menu-human-resources-dashboard-db-2" parent="menu-human-resources-dashboard" 
-		title="Human Resources Db 2" icon="img/16px/chart_16px.png" action="dashlet.human.resources.dashboard.db2.view" />	
+		title="Human Resources Db 2" icon="img/16px/chart_16px.png" action="human.resources.dashboard.db2.view" />	
 
-	<action-view name="dashlet.human.resources.dashboard.db2.view" title="Human Resources Db 2"
+	<action-view name="human.resources.dashboard.db2.view" title="Human Resources Db 2"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="human.resources.dashboard.2" />
 		<context name="_user_id" expr="eval:__user__.id"/>
