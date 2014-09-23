@@ -24,14 +24,14 @@
 		title="Family" priority="30"  />	
 	
 	<menuitem name="menu-family-dashboard-1" parent="menu-family-dashboard"  
-		title="Family Db" icon="img/16px/chart_16px.png" action="supplychain.products.category.dashboard" />	
+		title="Family Db" icon="img/16px/chart_16px.png" action="supplychain.products.family.dashboard" />	
 		
 	<action-view name="supplychain.products.category.dashboard" title="Category Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="supplychain.products.category.dashboard.view.1" />	 
 	</action-view>
 	
-	<action-view name="supplychain.products.category.dashboard" title="Family Dashboard"
+	<action-view name="supplychain.products.family.dashboard" title="Family Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="supplychain.products.family.dashboard.view.1" />	 
 	</action-view>
