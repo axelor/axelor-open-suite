@@ -37,9 +37,9 @@
 	      <panel-dashlet height="350" action="dashlet.locationLine.location.value"/>      
 	    </panel>
 	  </panel-tabs>    
-	  <panel-side title="Action(s)">
+	  <panel sidebar="true" title="Action(s)">
 	    <button name="viewContent" title="View location content" onClick="action-location-view-location-content"/>
-	  </panel-side>
+	  </panel>
 	</form>
     
     <action-method name="action-stock-location-method-print">
