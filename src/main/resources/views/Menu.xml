@@ -81,9 +81,9 @@
 	</action-view>		
 	
 	<menuitem name="menu-purchase-buyer-dashboard-sample" parent="menu-dashboards-sample" priority="190"
-		title="Purchase Buyer Db" icon="img/16px/chart_16px.png" action="dashlet.purchase.buyer.dashboard.view.sample" />	
+		title="Purchase Buyer Db" icon="img/16px/chart_16px.png" action="purchase.buyer.dashboard.view.sample" />	
 
-	<action-view name="dashlet.purchase.buyer.dashboard.view.sample" title="Purchase Buyer Dashboard"
+	<action-view name="purchase.buyer.dashboard.view.sample" title="Purchase Buyer Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="purchase.buyer.dashboard.sample" />
     	<context name="_user" expr="eval:__user__"/>
@@ -91,9 +91,9 @@
 	</action-view>
 	
 	<menuitem name="menu-purchase-manager-dashboard-sample" parent="menu-dashboards-sample" priority="180"
-		title="Purchase Manager Db" icon="img/16px/chart_16px.png" action="dashlet.purchase.manager.dashboard.view.sample" />	
+		title="Purchase Manager Db" icon="img/16px/chart_16px.png" action="purchase.manager.dashboard.view.sample" />	
 
-	<action-view name="dashlet.purchase.manager.dashboard.view.sample" title="Purchase Manager Dashboard"
+	<action-view name="purchase.manager.dashboard.view.sample" title="Purchase Manager Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="dashboard" name="purchase.manager.dashboard.sample" />
 	</action-view>
