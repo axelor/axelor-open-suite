@@ -63,7 +63,7 @@
 			<field name="batchList"  />
 		</panel>
 	</panel-tabs>
-	<panel-side title="Actions">
+	<panel sidebar="true" title="Actions">
 	    <button name="reimbursementBatch" title="Reimbursement Batch" hideIf="actionSelect != 11"  onClick="save,action-accounting-batch-method-action-reimbursement"/>
 	    <button name="directDebitBatch" title="Direct Debit Batch" hideIf="actionSelect != 12"  onClick="save,action-accounting-batch-method-action-direct-debit"/>
 	    <button name="reminderBatch" title="Reminder Batch" hideIf="actionSelect != 14" onClick="save,action-accounting-batch-method-action-reminder"/>
@@ -71,7 +71,7 @@
 	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" hideIf="actionSelect != 16"   onClick="save,action-accounting-batch-method-action-doubtful-customer"/>
 	    <button name="accountCustomerBatch" title="Start" hideIf="actionSelect != 17"  onClick="save,action-accounting-batch-method-action-account-customer"/>
 	    <button name="moveLineExportBatch" title="Start" hideIf="actionSelect != 18"  onClick="save,action-accounting-batch-method-action-move-line-export"/>
-	</panel-side>
+	</panel>
 </form>
 
     

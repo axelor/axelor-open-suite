@@ -51,11 +51,11 @@
 				</editor>
 			</field>
 		</panel>
-		<panel-side title="Action">
+		<panel sidebar="true" title="Action">
 			<button name="validateChequeRejection" title="Validate reject"
 				  onClick="save,action-method-account-cheque-rejection-validate"
 				hideIf="statusSelect == 2" />
-		</panel-side>
+		</panel>
 	</form>
 
     

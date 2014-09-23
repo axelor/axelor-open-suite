@@ -41,16 +41,16 @@
 		
 		<panel-dashlet title="General" action="action-journal-view-move-line" hideIf="$popup()"/>
 		
-		<panel-side title="Status">
+		<panel sidebar="true" title="Status">
 			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"/>
 			<field name="isObsolete" onChange="account-journal-record-status-archived"/>
 			<button name="activeStatus" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save"/>
-		</panel-side>
+		</panel>
 		
-		<panel-side title="Exports">
+		<panel sidebar="true" title="Exports">
 			<field name="exportCode" colSpan="4"/>
 			<field name="notExportOk" colSpan="2" onChange="account-journal-on-change-not-export-ok"/>
-		</panel-side>
+		</panel>
 
 	</form>
     

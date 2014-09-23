@@ -37,10 +37,10 @@
 		    <field name="journal" readonlyIf="isValid"/>
 	 	</panel>
  	 	<panel-related field="moveTemplateLineList" readonlyIf="isValid" colSpan="12" form-view="move-template-line-cusom-form" grid-view="move-template-line-cusom-grid"/>
-     	<panel-side title="Actions">
+     	<panel sidebar="true" title="Actions">
     		<field name="isValid" readonlyIf="!isValid" onChange="action-move-template-method-set-is-valid"/>
     		<button name="checkValidity" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity"/>
- 	 	</panel-side>
+ 	 	</panel>
 	</form>
     
     <form name="move-template-wizard-form" title="Generate move from template" model="com.axelor.apps.base.db.Wizard" onNew="action-move-template-wizard-set-active-company" onLoad="action-move-template-wizard-set-active-company" >
@@ -51,9 +51,9 @@
 	        <panel-related field="dataInputList"  type="one-to-many" readonlyIf="moveTemplate == null || moveTemplateType == null" target="com.axelor.apps.base.db.Wizard" title="Saisie des données d'écriture" form-view="wizard-custom-form" grid-view="wizard-custom-grid" colSpan="12" />
         </panel>
        
-    	<panel-side title="Actions">
+    	<panel sidebar="true" title="Actions">
     		<button name="generateMoves" readonlyIf="dataInputList == null || dataInputList.isEmpty()" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" />
-    	</panel-side>
+    	</panel>
         
     </form>
     <grid model="com.axelor.apps.base.db.Wizard" name="wizard-custom-grid" title="MoveLines content data input" >

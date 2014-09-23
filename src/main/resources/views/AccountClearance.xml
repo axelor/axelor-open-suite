@@ -31,11 +31,11 @@
 		
 		<panel-related field="moveLineSet"/>  
 		
-		<panel-side title="Actions"> 
+		<panel sidebar="true" title="Actions"> 
 			<button name="getExcessPayment" title="Get overdue payments"  onClick="save,action-method-account-clearance-get-excesspayment,save" hideIf="statusSelect == 2"/>
 			<button name="validateAccountClearance" title="Validate account clearances" onClick="save,action-method-account-clearance-validate,save" hideIf="statusSelect == 2"/>
 			<button name="showAccountClearanceMoveLines" title="Move lines generated"  onClick="action-method-account-clearance-show-move-lines" showIf="statusSelect == 2"/> 
-		</panel-side>
+		</panel>
 	
 	</form>
     

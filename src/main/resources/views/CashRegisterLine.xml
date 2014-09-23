@@ -33,10 +33,10 @@
 			<field name="emailSentOk"/>
 		</panel>
 		
-		<panel-side title="Actions">
+		<panel sidebar="true" title="Actions">
 			<button name="closeCashRegister" title="Close cashier"   onClick="save,action-group-account-cash-registerline-close,save" hideIf="emailSentOk || statusSelect == 1"/>
 			<button name="openCashRegister" title="Open cashier"   onClick="save,action-method-account-cash-registerline-open,save" hideIf="emailSentOk || statusSelect == 0"/>
-		</panel-side>
+		</panel>
 		
 	</form>
     

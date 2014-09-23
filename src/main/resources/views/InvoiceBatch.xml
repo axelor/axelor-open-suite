@@ -40,9 +40,9 @@
     		</panel>
     		<panel-related field="batchList" colSpan="12"/>
     	</panel-tabs>
-    	<panel-side title="Actions">
+    	<panel sidebar="true" title="Actions">
     		<button name="statusBatch" title="Run"  onClick="save,action-invoice-batch-method-action-status" />
-    	</panel-side>
+    	</panel>
     </form>
     
     <!-- ACTION GROUPs -->
