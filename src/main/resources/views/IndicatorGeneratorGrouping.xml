@@ -17,8 +17,8 @@
 			<button name="run" title="Execute" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:run" />
 			<field name="result" colSpan="12"/>
 			<field name="log" colSpan="12" />
-			<field name="path"/>
-			<button name="export" title="Export indicators"  onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:export" />
+			<field name="path" colSpan="10" />
+			<button name="export" title="Export indicators"  onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:export" colSpan="2" />
 		</panel>
 	</form>
 
