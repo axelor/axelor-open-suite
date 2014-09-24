@@ -38,7 +38,7 @@
 				<field name="createdBy" title="Created by" />
 		    	<field name="description" showTitle="false" colSpan="12"/>
     		</panel>
-    		<panel-related field="batchList" colSpan="12"/>
+	      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
     	</panel-tabs>
     	<panel sidebar="true" title="Actions">
     		<button name="statusBatch" title="Run"  onClick="save,action-invoice-batch-method-action-status" />
