@@ -41,7 +41,9 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.rpc.Resource;
 import com.beust.jcommander.internal.Maps;
 import com.google.common.base.Charsets;
@@ -183,7 +185,7 @@ public class TemplateMaker {
 			if(value == null) {
 				return "";
 			}
-			MetaSelectItem item = MetaSelectItem
+			MetaSelectItem item = Beans.get(MetaSelectItemRepository.class).all()
 					.filter("self.select.name = ?1 AND self.value = ?2",
 							prop.getSelection(), value).fetchOne();
 			
