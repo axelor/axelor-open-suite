@@ -2,6 +2,7 @@ apply plugin: 'axelor-module'
 
 module {
 	name "axelor-demo-en"
+	version "3.0.0"
 	title "Axelor :: Demo EN"
 	
 	removable true
