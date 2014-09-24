@@ -3,7 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
-    <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch" orderBy="-id">
+    <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch" orderBy="-id"
+    canEdit="false" canDelete="false" canNew="false" canSave="false">
     	<field name="id" />
 		<field name="createdBy"/>
 		<field name="duration" />
@@ -13,8 +14,8 @@
 		<field name="anomaly" />
     </grid>
     
-    <form name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch"  
-    	onNew="action-batch-attrs" onLoad="action-batch-attrs">
+    <form name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch" onNew="action-batch-attrs" onLoad="action-batch-attrs" 
+    canEdit="false" canDelete="false" canNew="false" canCopy="false" canSave="false">
 		<panel>
 		    <field name="createdBy"/>
 		    <field name="duration"/>

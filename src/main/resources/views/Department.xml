@@ -3,16 +3,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
-    <grid name="department-grid" title="Departments" model="com.axelor.apps.base.db.Department">
-        <field name="region"/>
+    <grid name="department-grid" title="Departments" model="com.axelor.apps.base.db.Department" orderBy="code">
         <field name="code"/>
+        <field name="region"/>
         <field name="name"/>
     </grid>
     
     <form name="department-form" title="Departement" model="com.axelor.apps.base.db.Department" >
     	<panel>
-	        <field name="name"/>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
+	        <field name="name"/>
 	        <field name="region"/>
         </panel>
         <panel-related field="communeList" colSpan="12" />

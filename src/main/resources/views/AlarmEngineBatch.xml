@@ -3,37 +3,38 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-    <grid name="alarm-engine-batch-grid" title="Alarm engine batches" model="com.axelor.apps.base.db.AlarmEngineBatch">
-    	<field name="code" />
-   		<field name="metaModelSet" />
-   		<field name="alarmEngineSet" />
-    </grid>
-    
-    <form   name="alarm-engine-batch-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngineBatch">
-	  <toolbar>
-	    <button name="run" title="Run" onClick="save,alarm-engine-batch-method-run"/>
-	  </toolbar>
-	  <panel x-stack="true">
-	    <field name="code" x-bind="{{code|uppercase}}" colSpan="4"/>
-	  </panel>
-	  <panel-tabs>
-	    <panel title="Configuration">
-	      <panel-related  field="metaModelSet" colSpan="12"/>
-	      <panel-related field="alarmEngineSet" onSelect="alarm-engine-batch-attrs-alarm-engine-domain" colSpan="12"/>
-	    </panel>
-	    <panel title="Batches">
-	      <field name="description" showTitle="false" colSpan="12"/>
-	      <panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid"/>
-	    </panel>
-	  </panel-tabs>
+	<grid name="alarm-engine-batch-grid" title="Alarm engine batches" model="com.axelor.apps.base.db.AlarmEngineBatch">
+		<field name="code" />
+		<field name="metaModelSet" />
+		<field name="alarmEngineSet" />
+	</grid>
+
+	<form name="alarm-engine-batch-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngineBatch">
+		<toolbar>
+			<button name="run" title="Run" onClick="save,alarm-engine-batch-method-run" />
+		</toolbar>
+		<panel x-stack="true">
+			<field name="code" x-bind="{{code|uppercase}}" colSpan="4" />
+		</panel>
+		<panel-tabs>
+			<panel title="Configuration">
+				<panel-related field="metaModelSet" colSpan="12" />
+				<panel-related field="alarmEngineSet" onSelect="alarm-engine-batch-attrs-alarm-engine-domain" colSpan="12" />
+			</panel>
+			<panel title="Batches">
+				<field name="description" showTitle="false" colSpan="12" />
+				<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true" />
+			</panel>
+		</panel-tabs>
 	</form>
-    
-    <action-method name="alarm-engine-batch-method-run">
-    	<call class="com.axelor.apps.base.web.AlarmEngineBatchController" method="launch"/>
-    </action-method>
-    
-    <action-attrs name="alarm-engine-batch-attrs-alarm-engine-domain">
-    	<attribute name="domain" for="alarmEngineSet" expr="eval: &quot;self.externalOk = false AND self.metaModel.id IN (${metaModelSet?.collect{it.id}?.join(',')})&quot;" if="metaModelSet"/>
-    </action-attrs>
-    
+
+	<action-method name="alarm-engine-batch-method-run">
+		<call class="com.axelor.apps.base.web.AlarmEngineBatchController" method="launch" />
+	</action-method>
+
+	<action-attrs name="alarm-engine-batch-attrs-alarm-engine-domain">
+		<attribute name="domain" for="alarmEngineSet" if="metaModelSet"
+			expr="eval: &quot;self.externalOk = false AND self.metaModel.id IN (${metaModelSet?.collect{it.id}?.join(',')})&quot;" />
+	</action-attrs>
+
 </object-views>

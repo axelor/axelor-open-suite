@@ -2,6 +2,14 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="alarm-dashlet-grid" title="Alarm" model="com.axelor.apps.base.db.Alarm">
+        <field name="date"/>
+        <field name="partner"/>
+        <field name="invoice" />
+        <field name="alarmEngine.alarmMessage" />
+        <field name="acquitOk"/>
+    </grid>
 	
 	<grid name="alarm-grid" title="Alarms" model="com.axelor.apps.base.db.Alarm">
 	    <field name="date"/>
@@ -12,20 +20,12 @@
 	    <field name="acquitOk"/>
 	</grid>
     
-    <grid name="alarm-dashlet-grid" title="Alarm" model="com.axelor.apps.base.db.Alarm">
-        <field name="date"/>
-        <field name="partner"/>
-        <field name="invoice" />
-        <field name="alarmEngine.alarmMessage" />
-        <field name="acquitOk"/>
-    </grid>
-    
     <form name="alarm-form" title="Alarm" model="com.axelor.apps.base.db.Alarm">
 	  <panel>
-	    <field name="date" colSpan="4"/>
+	    <field name="date" colSpan="5"/>
+	    <field name="alarmEngine" colSpan="5" edit-window="self" form-view="alarm-message-form" summary-view="alarm-message-form"/>
 	    <field name="acquitOk" colSpan="2"/>
-	    <field name="alarmEngine" edit-window="self" form-view="alarm-message-form" summary-view="alarm-message-form" colSpan="4"/>
-	    <field name="content" showTitle="false" colSpan="12"/>
+	    <field name="content" showTitle="false" colSpan="12" widget="html"/>
 	  </panel>
 	  <panel title="Details">
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
@@ -33,28 +33,6 @@
 	      <field name="balanceDueReminder"/>
 	  </panel>  
 	</form>
-    
-    <form name="alarm-contract-line-form" title="Alarm" model="com.axelor.apps.base.db.Alarm"  >
-        <panel>
-		    <field name="date" colSpan="4"/>
-		    <field name="acquitOk" colSpan="2"/>
-		    <field name="alarmEngine" edit-window="self" form-view="alarm-message-form" summary-view="alarm-message-form" colSpan="4"/>
-		    <field name="content" showTitle="false" colSpan="12"/>
-		</panel>
-	  	<panel title="Details">
-	      <field name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
-	      <field name="balanceDueReminder"/>
-	  	</panel>  
-    </form>
-	
-    <form name="alarm-invoice-form" title="Alarm" model="com.axelor.apps.base.db.Alarm">
-    	<panel>
-	        <field name="date"/>
-	        <field name="acquitOk" onChange="save,action-alarm-method-acquit-invoice" />
-	        <field name="alarmEngine" summary-view="alarm-message-form" form-view="alarm-message-form" edit-window="self" />
-	        <field name="content" colSpan="12" showTitle="false" />
-        </panel>
-    </form>
     
     <action-method name="action-alarm-method-acquit-invoice">
     	<call class="com.axelor.apps.base.web.AlarmController" method="acquitAlarms"/>

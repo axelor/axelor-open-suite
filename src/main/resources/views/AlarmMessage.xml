@@ -13,7 +13,7 @@
     	<panel>
 	        <field name="name"/>
 	        <field name="typeSelect"/>
-	        <field name="message" colSpan="12"/>
+	        <field name="message" colSpan="12" widget="html"/>
        	</panel>
     </form>
     
