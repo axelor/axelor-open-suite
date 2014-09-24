@@ -60,7 +60,7 @@
 			<field name="createdOn" title="Created on"/>
 			<field name="createdBy" title="Created by"/>
 			<field name="description" showTitle="false"  />
-			<field name="batchList"  />
+	      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
 		</panel>
 	</panel-tabs>
 	<panel sidebar="true" title="Actions">
