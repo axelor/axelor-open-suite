@@ -65,7 +65,7 @@
 	    <panel title="Stock move reference">
 	      <field name="stockMoveSeq" colSpan="12"/>
 	      <field name="name" colSpan="12"/>
-	      <field name="company" widget="SuggestBox" form-view="company-lite-form" colSpan="12"/>
+	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12"/>
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12"/>
 	    </panel>
 	    <panel title="Stock move informations">

@@ -7,9 +7,9 @@
         <field name="company"/>
     </grid>
 
-	<form name="stock-config-form" title="Stock configuration" model="com.axelor.apps.stock.db.StockConfig">
+	<form name="stock-config-form" title="Stock configuration" model="com.axelor.apps.stock.db.StockConfig" onNew="action-stock-config-record-default">
 	  <panel >
-	    <field name="company" form-view="company-lite-form" colSpan="4"/>
+	    <field name="company" form-view="company-form" colSpan="4"/>
 	  </panel>
 	  <panel title="Virtual locations informations">
 	    <field name="customerVirtualLocation" domain="self.typeSelect = 3" colSpan="4"/>
@@ -23,5 +23,10 @@
 	    <field name="hasInSmForNonStorableProduct"/>
 	  </panel>
 	</form>	
+	
+	<action-record name="action-stock-config-record-default" model="com.axelor.apps.stock.db.StockConfig">
+		<field name="company" expr="eval: _company" if="_company"/>
+		<field name="company" expr="eval:__user__.activeCompany" if="!_company"/>
+	</action-record>
 	
 </object-views>
