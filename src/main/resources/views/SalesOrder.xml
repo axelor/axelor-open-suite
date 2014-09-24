@@ -46,7 +46,7 @@
 	  <panel>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="6"/>
-	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-lite-form"/>
+	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form"/>
 	    <field name="currency"/>
 	  </panel>
 	  
@@ -122,6 +122,7 @@
 	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="12" onClick="action-sale-order-view-invoice" if-module="axelor-supplychain"/>
 	  </panel>    
+	  
 	  <panel sidebar="true" title="Info." showIf="id">
 	    <field name="creationDate" readonly="true" colSpan="6"/>
 	    <field name="validatedByUser" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
@@ -130,6 +131,7 @@
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain"/>
 	  </panel>
+	  
 	  <panel sidebar="true" readonly="true"  colSpan="4" showIf="id">  
 	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
 	          <viewer>
@@ -171,7 +173,7 @@
 	  </toolbar>
 	  <panel>
 	    <field name="saleOrderSeq" css="highlight"/>
-	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-lite-form"/>
+	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form"/>
 	    <field name="externalReference"/>
 	    <field name="currency"/>
 	  </panel>

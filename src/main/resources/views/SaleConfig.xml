@@ -7,13 +7,18 @@
         <field name="company"/>
     </grid>
 
-	<form name="sale-config-form" title="Sale configuration" model="com.axelor.apps.sale.db.SaleConfig">
+	<form name="sale-config-form" title="Sale configuration" model="com.axelor.apps.sale.db.SaleConfig" onNew="action-sale-config-record-default">
 	  <panel >
-	    <field name="company" form-view="company-lite-form" colSpan="4"/>
+	    <field name="company" form-view="company-form" colSpan="4"/>
 	  </panel>
 	  <panel title="Invoicing informations">
 	    <field name="saleOrderInvoicingTypeSelect"/>
 	  </panel>
 	</form>
+	
+	<action-record name="action-sale-config-record-default" model="com.axelor.apps.sale.db.SaleConfig">
+		<field name="company" expr="eval: _company" if="_company"/>
+		<field name="company" expr="eval:__user__.activeCompany" if="!_company"/>
+	</action-record>
 	
 </object-views>
