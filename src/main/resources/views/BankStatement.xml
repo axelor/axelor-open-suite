@@ -15,7 +15,7 @@
   
 	<form   onNew="action-account-bank-statement-onnew-group" readonlyIf="statusSelect == 2" name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.account.db.BankStatement">
 	  
-		<panel title="Overview">
+		<panel >
 			<field name="name"/>
 			<field name="company" widget="SuggestBox" onChange="action-bank-statement-set-currency"/>
 			<field name="currency"/>

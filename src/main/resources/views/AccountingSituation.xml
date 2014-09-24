@@ -13,7 +13,7 @@
     </grid>
     
 	 <form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account"  >
-		<panel title="Overview" itemSpan="4">
+		<panel  itemSpan="4">
 			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
 			<field name="customerAccount"/>
 			 <field name="supplierAccount"/>
@@ -42,7 +42,7 @@
     </grid>
     
 	 <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account"  >
-		<panel title="Overview">
+		<panel >
 			<field name="company" widget="SuggestBox"/>
 			<field name="partner"/>
 			<field name="customerAccount"/>

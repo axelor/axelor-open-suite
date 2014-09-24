@@ -8,7 +8,7 @@
         <field name="description"/>
     </grid>
     <form name="payer-quality-config-line-form" title="Payer quality configuration line" model="com.axelor.apps.account.db.PayerQualityConfigLine"  >
-        <panel title="Overview">
+        <panel >
         <field name="incidentTypeSelect"/>
         <field name="reminderLevel"/>
         <field name="rejectType"/>

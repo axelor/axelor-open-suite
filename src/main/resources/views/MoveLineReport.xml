@@ -26,7 +26,7 @@
 	<form name="move-line-report-form" title="Accounting report" model="com.axelor.apps.account.db.MoveLineReport"   
 		onSave="action-move-line-report-method-get-sequence" onNew="action-move-line-report-default-record"
 		>
-		<panel title="Overview">
+		<panel >
 			<field name="ref" readonly="true" />
 			<field name="date" readonlyIf="statusSelect == 2"/>
 			<field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select" />

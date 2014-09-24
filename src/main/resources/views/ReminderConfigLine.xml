@@ -9,7 +9,7 @@
     </grid>
     
     <form name="reminder-config-line-form" title="Reminder method configuration line" model="com.axelor.apps.account.db.ReminderConfigLine"  >
-        <panel title="Overview">
+        <panel >
         	<field name="partnerCategory"/>
         	<field name="reminderMethod"/>
         </panel>

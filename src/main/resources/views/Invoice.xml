@@ -35,7 +35,7 @@
 	    <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 	  </toolbar>
 	  
-	  <panel title="Overview" readonlyIf="statusSelect != 1">
+	  <panel  readonlyIf="statusSelect != 1">
 	    <field name="invoiceId"/>
 	    <field name="operationTypeSelect" onChange="action-group-account-invoice-operationtype-onchange"/>
 	    <field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-lite-form"/>

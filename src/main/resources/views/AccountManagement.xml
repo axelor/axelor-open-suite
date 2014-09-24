@@ -12,7 +12,7 @@
  
 	 <form name="account-management-payment-mode-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement"  
 	 onNew="action-account-management-record-payment">
-	 	<panel title="Overview">
+	 	<panel >
 			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
 			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
 			 <field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" />

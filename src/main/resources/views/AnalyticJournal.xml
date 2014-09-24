@@ -8,7 +8,7 @@
         <field name="company"/>
     </grid>
     <form name="analytic-journal-form" title="Analytic Journal" model="com.axelor.apps.account.db.AnalyticJournal"  >
-        <panel title="Overview">
+        <panel >
         	<field name="name"/>
         	<field name="type"/>
         	<field name="company" widget="SuggestBox"/>

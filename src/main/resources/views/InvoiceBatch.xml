@@ -16,7 +16,7 @@
     <form name="invoice-batch-form" title="Invoice batch" model="com.axelor.apps.account.db.InvoiceBatch"  
     onLoad="action-account-invoice-batch-onload-group" 
     onNew="action-account-invoice-batch-onnew-group">
-    	<panel title="Overview">
+    	<panel >
     		<field name="actionSelect" onChange="action-invoice-batch-attrs-action-select"/>
     		<field name="code" />
     		<field name="company" widget="SuggestBox" form-view="company-lite-form"/>

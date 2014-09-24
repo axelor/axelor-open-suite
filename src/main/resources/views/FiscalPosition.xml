@@ -12,8 +12,8 @@
         <panel>
 	        <field name="name"/>
 	        <field name="code"/>
-	        <field name="accountEquivList"  />
-	        <field name="taxEquivList"  />
+	        <panel-related field="accountEquivList" form-view="account-equiv-form" grid-view="account-equiv-grid" />
+	        <panel-related field="taxEquivList" form-view="tax-equiv-form" grid-view="tax-equiv-grid" />
         </panel>
     </form>
 

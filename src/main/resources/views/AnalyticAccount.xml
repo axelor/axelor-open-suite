@@ -9,7 +9,7 @@
         <field name="parent"/>
     </grid>
     <form name="analytic-account-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount"  >
-        <panel title="Overview">
+        <panel >
 	        <field name="code"/>
 	        <field name="name"/>
 	        <field name="analyticAxis"/>

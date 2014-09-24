@@ -16,7 +16,7 @@
 	<form name="cash-register-line-form" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine"   
 	onNew="action-cash-register-line-record-new">
 	 
-		<panel title="Overview" readonlyIf="emailSentOk">
+		<panel  readonlyIf="emailSentOk">
 			<field name="statusSelect"/>
 			<field name="user"/>
 			<field name="createDateTime"/>

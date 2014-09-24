@@ -9,7 +9,7 @@
         <field name="value"/>
     </grid>
     <form name="tax-line-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine"  >
-        <panel title="Overview">
+        <panel >
         	<field name="tax"/>
         <field name="value"/>
         <field name="startDate"/>

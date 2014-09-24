@@ -22,7 +22,7 @@
 	onLoad="action-account-payment-voucher-onload-group" 
 	onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum">
 	
-		<panel title="Overview" readonlyIf="statusSelect == 2" itemSpan="12">
+		<panel  readonlyIf="statusSelect == 2" itemSpan="12">
 			 <field name="ref" readonly="true" colSpan="4"/>
 			 <field name="operationTypeSelect" colSpan="4" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
 			 <field name="user" colSpan="4"/>

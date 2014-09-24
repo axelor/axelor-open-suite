@@ -17,7 +17,7 @@
 	<form name="cheque-rejection-form" title="Cheque Rejection"	model="com.axelor.apps.account.db.ChequeRejection"  
 		onNew="default-cheque-rejection-record">
 
-		<panel title="Overview"    >
+		<panel     >
 			<field name="statusSelect" />
 			<field name="move" />
 			<field name="name" />

@@ -52,7 +52,7 @@
         <field name="reminderMethodLine"/>
     </grid>
     <form name="reminder-history-contract-line-form" title="Reminders history" model="com.axelor.apps.account.db.ReminderHistory"  >
-	    <panel title="Overview">
+	    <panel >
 	    	<field name="reminderMethod" widget="SuggestBox"/>
         <field name="referenceDate"/>
         <field name="balanceDue"/>

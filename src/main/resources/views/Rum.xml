@@ -14,7 +14,7 @@
     
     <form name="rum-form" title="Unique Mandate References" model="com.axelor.apps.account.db.Rum"  
     	onNew="action-rum-record-new">
-       <panel title="Overview">
+       <panel >
        	<field name="rumNumber"/>
         <field name="debtorName"/>
         <field name="debtorAddress"/>

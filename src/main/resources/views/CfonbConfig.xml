@@ -10,7 +10,7 @@
     
     <form name="cfonb-config-form" title="Cfonb configuration" model="com.axelor.apps.account.db.CfonbConfig"   >
 	    
-	   <panel title="Overview">
+	   <panel >
 	     <field name="name"/>
         <field name="code"/>
 	   </panel> 

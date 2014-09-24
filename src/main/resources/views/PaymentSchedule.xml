@@ -19,7 +19,7 @@
 	 onNew="action-account-payment-schedule-onnew-group" 
 	 onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group" 
 	 onSave="action-payment-schedule-payment-schedule-id">
-		<panel title="Overview">
+		<panel >
 			<field name="scheduleId" readonlyIf="statusSelect != 1"/>
 			<field name="creationDate" readonlyIf="statusSelect != 1"/>
 			<field name="startDate" readonlyIf="statusSelect != 1" required="true"/>

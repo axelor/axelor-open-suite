@@ -13,7 +13,7 @@
     </grid>
     
     <form name="move-template-line-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine" onNew="action-move-template-line-set-domain" onLoad="action-move-template-line-set-domain">
-        <panel title="Overview"  readonlyIf="isValid">
+        <panel   readonlyIf="isValid">
 	        <field name="moveTemplate"  onChange="action-move-template-line-get-account" required="true"/>
 	        <field name="name"/>
 	        <field name="debitCreditSelect" onChange="action-move-template-line-get-account"/>

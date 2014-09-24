@@ -11,7 +11,7 @@
 	<toolbar>
 	  <button name="showInvoice" title="Invoices" onClick="save,action-company-view-invoice"/>
 	</toolbar>
-	<panel title="Overview">
+	<panel >
 	  <field name="company"/>
 
 	  <field name="accountChart" readonlyIf="hasChartImported" colSpan="8"/>

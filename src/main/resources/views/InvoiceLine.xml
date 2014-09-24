@@ -55,7 +55,7 @@
     
     <form name="tax-invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
     onLoad="action-invoice-line-method-product-management">
-        <panel title="Overview">
+        <panel >
         	 <field name="product" required="true" onChange="action-group-account-tax-invoice-line-product-onchange"/>
 	        <field name="invoiceLineType"/>
 	        <field name="productName"/>

@@ -20,7 +20,7 @@
 
 	<form name="payment-schedule-line-form" title="Schedule line"
 		model="com.axelor.apps.account.db.PaymentScheduleLine"  >
-		<panel title="Overview">
+		<panel >
 		<field name="paymentSchedule" />
 		<field name="scheduleLineSeq" />
 		<field name="inTaxAmount" readonlyIf="fromReject"/>
@@ -54,7 +54,7 @@
 	<form name="payment-schedule-line-payment-schedule-form" title="Schedule line"
 		model="com.axelor.apps.account.db.PaymentScheduleLine"  >
 		
-		<panel title="Overview">
+		<panel >
 		<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
 		<field name="scheduleLineSeq" />
 		<field name="inTaxAmount" readonlyIf="fromReject"/>

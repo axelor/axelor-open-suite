@@ -10,7 +10,7 @@
         <field name="interbankCode"/>
     </grid>
     <form name="interbank-code-line-form" title="Blocking reason/reject codes list" model="com.axelor.apps.account.db.InterbankCodeLine"  >
-        <panel title="Overview">
+        <panel >
             <field name="code"/>
             <field name="name"/>
         	<field name="interbankCode"/>

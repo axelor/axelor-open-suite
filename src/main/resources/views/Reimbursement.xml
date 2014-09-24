@@ -10,7 +10,7 @@
     </grid>
     
 	<form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement"  >
-		<panel title="Overview">
+		<panel >
 			<field name="ref" colSpan="12"/>
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>

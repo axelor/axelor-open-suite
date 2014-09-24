@@ -12,7 +12,7 @@
     </grid>
  
 <form  onNew="action-accounting-batch-record-on-new" name="accounting-batch-form" title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch">
-	<panel title="Overview">
+	<panel >
 		<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
 		<field name="code"/>
 		<field name="company" widget="SuggestBox"/>

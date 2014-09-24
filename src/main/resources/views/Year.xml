@@ -14,7 +14,7 @@
     </grid>
     
     <form   onSave="action-year-check-date,action-fiscal-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
-		<panel title="Overview">
+		<panel >
 			<field name="name"/>
 			<field name="code"/>
 			<field name="fromDate"/>

@@ -12,7 +12,7 @@
         <field name="moveLine.amountRemaining"/>
     </grid>
     <form name="payment-invoice-form" title="Invoices to pay" model="com.axelor.apps.account.db.PaymentInvoice"  >
-        <panel title="Overview">
+        <panel >
         	 <field name="moveLine"/>
 	        <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
 	        <field name="moveLine.dueDate"/>
