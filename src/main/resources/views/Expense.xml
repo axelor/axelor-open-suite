@@ -50,13 +50,13 @@
 	  </panel>
 	  <panel sidebar="true" title="Action(s)">
 	    <panel colSpan="12">
-	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="2" onClick="action-group-organisation-expense-draft-click"/>
-	      <button name="submit" title="Submit" showIf="statusSelect == 1" colSpan="2" onClick="action-group-organisation-expense-submit-click"/>
-	      <button name="validateManager" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="action-group-organisation-expense-validatemanager-click"/>
-	      <button name="validateCommercial" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-group-organisation-expense-validatecommercial-click"/>
-	      <button name="confirm" title="Confirm" showIf="statusSelect == 4" colSpan="1" onClick="action-group-organisation-expense-confirm-click"/>
-	      <button name="refuse" title="Refuse" showIf="statusSelect == 2" colSpan="1" onClick="save,action-expense-record-refuse"/>
-	      <button name="compute" title="Compute" colSpan="2" onClick="action-expense-compute-expense-line"/>
+	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="6" onClick="action-group-organisation-expense-draft-click"/>
+	      <button name="submit" title="Submit" showIf="statusSelect == 1" colSpan="6" onClick="action-group-organisation-expense-submit-click"/>
+	      <button name="validateManager" title="Validate" showIf="statusSelect == 2" colSpan="6" onClick="action-group-organisation-expense-validatemanager-click"/>
+	      <button name="validateCommercial" title="Validate" showIf="statusSelect == 3" colSpan="6" onClick="action-group-organisation-expense-validatecommercial-click"/>
+	      <button name="confirm" title="Confirm" showIf="statusSelect == 4" colSpan="6" onClick="action-group-organisation-expense-confirm-click"/>
+	      <button name="refuse" title="Refuse" showIf="statusSelect == 2" colSpan="6" onClick="save,action-expense-record-refuse"/>
+	      <button name="compute" title="Compute" colSpan="6" onClick="action-expense-compute-expense-line"/>
 	    </panel>
 	    <panel readonly="true" colSpan="12">
 	      <field name="validatedByUser"  colSpan="12"/>
