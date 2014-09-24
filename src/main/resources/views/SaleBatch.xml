@@ -15,7 +15,7 @@
 	  <panel>
 	    <field name="actionSelect" onChange="action-sale-batch-attrs-action-select"/>
 	    <field name="code"/>
-	    <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+	    <field name="company" widget="SuggestBox" form-view="company-form"/>
 	  </panel>
 	  <panel>
 	    <field name="createdOn" title="Created on"/>
