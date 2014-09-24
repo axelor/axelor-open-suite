@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
+ * Copyright (C) 2014 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,5 +53,6 @@ public interface IException {
 	public static final String MOVE_LINE_EXPORT_ORIGIN = "moveLineExport";
 	public static final String IRRECOVERABLE = "irrecoverable";
 	public static final String CRM = "crm";
+	public static final String IMPORT = "import";
 	
 }
