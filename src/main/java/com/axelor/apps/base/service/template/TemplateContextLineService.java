@@ -28,7 +28,9 @@ import com.axelor.apps.base.db.repo.TemplateContextLineRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.base.Strings;
+import com.axelor.inject.Beans;
 
 public class TemplateContextLineService extends TemplateContextLineRepository{
 
@@ -80,7 +82,7 @@ public class TemplateContextLineService extends TemplateContextLineRepository{
 			klassName = matcher.group(3).trim();
 		}
 		
-		MetaModel model = MetaModel.findByName(klassName);
+		MetaModel model = Beans.get(MetaModelRepository.class).findByName(klassName);
 		try {
 			return Class.forName(model.getFullName());
 		}

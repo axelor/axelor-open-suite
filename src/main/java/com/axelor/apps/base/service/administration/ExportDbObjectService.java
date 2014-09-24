@@ -51,13 +51,18 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.db.Group;
+import com.axelor.auth.db.repo.GroupRepository;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
+import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.MetaTranslation;
+import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.axelor.inject.Beans;
 
 public class ExportDbObjectService {
 	
@@ -82,7 +87,7 @@ public class ExportDbObjectService {
 	public MetaFile exportObject() {
 		
 		//group = AuthUtils.getUser().getGroup();
-		group = Group.filter("self.code = 'admins'").fetchOne();
+		group = Beans.get(GroupRepository.class).all().filter("self.code = 'admins'").fetchOne();
 		try {
 			log.debug("Attachment dir: {}",AppSettings.get().get("file.upload.dir"));
 			if(!new File(AppSettings.get().get("file.upload.dir")).exists()) { return null; }
@@ -94,7 +99,7 @@ public class ExportDbObjectService {
 			String fileName = "ExportObject-"+DateTime.now().toString("yyyMMddHHmmSS")+".csv";
 			metaFile.setFileName(fileName);
 			metaFile.setFilePath(fileName);
-			metaFile = metaFile.save();
+			metaFile = Beans.get(MetaFileRepository.class).save(metaFile);
 			
 			SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 			updateObjectMap(Arrays.asList(moduleDir.listFiles()), saxParserFactory.newSAXParser(), new XmlHandler());
@@ -111,7 +116,7 @@ public class ExportDbObjectService {
 
 	private void writeObjects(File objectFile) {
 		try {
-			List<? extends MetaMenu> menuList = MetaMenu.all().filter("self.parent = null AND self.left = true AND ?1 MEMBER OF self.groups",group).order("-priority").order("id").fetch();
+			List<? extends MetaMenu> menuList = Beans.get(MetaMenuRepository.class).all().filter("self.parent = null AND self.left = true AND ?1 MEMBER OF self.groups",group).order("-priority").order("id").fetch();
 			log.debug("Total root menus: {}",menuList.size());
 			generateMenuGraph(menuList);
 			CsvTool.csvWriter(objectFile.getParent(), objectFile.getName(), ';', csvHeaders, fieldDataList);
@@ -129,7 +134,7 @@ public class ExportDbObjectService {
 				updateFieldData(menu.getAction());
 			}
 			//List<? extends MetaMenu> childList = MetaMenu.all().filter("self.parent = ?1 AND self.left = true AND ?2 MEMBER OF self.groups", menu,group).order("-priority").order("id").fetch();
-			List<? extends MetaMenu> childList = MetaMenu.all().filter("self.parent = ?1 AND self.left = true",menu).order("-priority").order("id").fetch();
+			List<? extends MetaMenu> childList = Beans.get(MetaMenuRepository.class).all().filter("self.parent = ?1 AND self.left = true",menu).order("-priority").order("id").fetch();
 			generateMenuGraph(childList);
 		}
 		
@@ -142,6 +147,9 @@ public class ExportDbObjectService {
 		Map<String,Object> moduleMap  = (Map<String, Object>)objectMap.get(objName);
 		if(moduleMap == null){return;} 
 		boolean addObject = true;
+		
+		MetaTranslationRepository metaTranslationRepo = Beans.get(MetaTranslationRepository.class);
+		
 		//log.debug("Adding object: {}",objName);
 		for(Entry<String, Object> module : moduleMap.entrySet()){
 			boolean addModule = true;
@@ -157,11 +165,11 @@ public class ExportDbObjectService {
 				fields[2] = field.get("name");
 				fields[3] = field.get("type");
 				fields[4] = field.get("title");
-				MetaTranslation mts = MetaTranslation.findByKey(field.get("title"), "fr");
+				MetaTranslation mts = metaTranslationRepo.findByKey(field.get("title"), "fr");
 				if(mts != null) { fields[5] = mts.getMessage(); }
-				mts = MetaTranslation.findByKey("help:"+objName+"."+field.get("name"), "en"); 
+				mts = metaTranslationRepo.findByKey("help:"+objName+"."+field.get("name"), "en"); 
 				if(mts != null) { fields[6] = mts.getMessage().replace(";", "\n"); }
-				mts = MetaTranslation.findByKey("help:"+objName+"."+field.get("name"), "fr");
+				mts = metaTranslationRepo.findByKey("help:"+objName+"."+field.get("name"), "fr");
 				if(mts != null) { fields[7] = mts.getMessage().replace(";", "\n"); }
 				fieldDataList.add(fields);
 				addObject = false;

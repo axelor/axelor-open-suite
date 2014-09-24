@@ -33,12 +33,14 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.db.JPA;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.axelor.inject.Beans;
 
 public class GeneralController {
 	
@@ -51,7 +53,10 @@ public class GeneralController {
 		LOG.debug("Model: {}",model);
 		Set<MetaField> fieldSet = new HashSet<MetaField>();
 		List<String> fields = new ArrayList<String>();
-		for(MetaField field :MetaField.all().filter("metaModel.fullName = ?1 AND (relationship = null OR relationship = 'ManyToOne')",model).fetch()){
+		
+		MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
+		
+		for(MetaField field : metaFieldRepository.all().filter("metaModel.fullName = ?1 AND (relationship = null OR relationship = 'ManyToOne')",model).fetch()){
 			fieldSet.add(field);
 			fields.add(field.getName());
 		}
