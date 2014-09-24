@@ -18,7 +18,7 @@
 		<panel title="Mission order">
         	<field name="reference"/>
         	<field name="date"/>
-        	<field name="company" form-view="company-lite-form" widget="SuggestBox"/>
+        	<field name="company" form-view="company-form" widget="SuggestBox"/>
         	<field name="project" domain="self.isBusiness = true" grid-view="business-project-grid" form-view="business-project-form"/>
        		<field name="employee"/>
         	<field name="qualificationKeyword"  domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>

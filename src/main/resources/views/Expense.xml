@@ -40,7 +40,7 @@
 	    <field name="user"/>
 	    <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
 	    <field name="date"/>
-	    <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+	    <field name="company" widget="SuggestBox" form-view="company-form"/>
 	    <field name="totalAmount" title="Total (TTC)"/>
 	    <field name="currency"/>
 	    <field name="project"/>

@@ -332,6 +332,21 @@
 		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
 	</action-view>
 	
+	
+	
+	<menuitem name="admin-root-conf-organisation-config" parent="admin-root-conf"
+		title="Organisation configurations" action="admin.root.conf.organisation.config" icon="img/Other/parameter_59px.png"/>
+		
+	<action-view name="admin.root.conf.organisation.config" title="Organisation configurations"
+		model="com.axelor.apps.organisation.db.OrganisationConfig" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	
+	
+	
+	
 	<menuitem name="menu-organisation-dashboard-sample" parent="menu-dashboards-sample" priority="165"
 		title="Organisation Dashboard" icon="img/16px/chart_16px.png" action="organisation.dashboard.view.sample"/>	
 

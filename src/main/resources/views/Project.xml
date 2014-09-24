@@ -29,7 +29,7 @@
 	    <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	    <field name="clientPartner"/>
 	    <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	    <field name="company" readonlyIf="projectStatusSelect &gt;= 3 || businessStatusSelect &gt;= 2" widget="SuggestBox" form-view="company-lite-form"/>
+	    <field name="company" readonlyIf="projectStatusSelect &gt;= 3 || businessStatusSelect &gt;= 2" widget="SuggestBox" form-view="company-form"/>
 	  </panel>
 	  <panel title="Times" colSpan="12">
 	    <panel colSpan="12">

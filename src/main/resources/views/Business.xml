@@ -25,7 +25,7 @@
 	    <field name="businessStatusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
 	  </panel>
 	  <panel>
-	    <field name="company" readonlyIf="projectStatusSelect &gt;= 3 || businessStatusSelect &gt;= 2" widget="SuggestBox" form-view="company-lite-form"/>
+	    <field name="company" readonlyIf="projectStatusSelect &gt;= 3 || businessStatusSelect &gt;= 2" widget="SuggestBox" form-view="company-form"/>
 	    <field name="responsibleUser"/>
 	    <field name="clientPartner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 	    <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
