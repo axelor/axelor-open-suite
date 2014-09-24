@@ -7,7 +7,7 @@
 	  	<toolbar>
 		    <button name="validate" title="Validate" onClick="action-lead-method-convert-lead"/>
 	  	</toolbar>
-	  	<panel title="Overview">
+	  	<panel >
 		    <field name="hasConvertIntoContact" title="Convert into Contact ?" widget="Boolean"/>
 		    <field name="selectContactPartner" title="Or Select Contact" widget="ManyToOne" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" target="com.axelor.apps.base.db.Partner"/>
 		    <field name="hasConvertIntoPartner" title="Convert into Partner ?" widget="Boolean"/>

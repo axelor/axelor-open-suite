@@ -53,7 +53,7 @@
 <!-- 	    </group> -->
 <!-- 	</form> -->
     <form   name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration">
-  <panel title="Overview">
+  <panel >
     <field name="name"/>
     <field name="code"/>
   </panel>
