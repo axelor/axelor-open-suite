@@ -17,7 +17,7 @@
 	  <panel>
 	    <field name="name"/>
 	    <field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"/>
-	    <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+	    <field name="company" widget="SuggestBox" form-view="company-form"/>
 	    <field name="qty"/>
 	    <field name="unit"/>
 	    <field name="prodProcess"/>

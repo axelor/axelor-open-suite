@@ -8,7 +8,7 @@
   <entity name="ProductionConfig" lang="java" cachable="true">
   	<integer name="importId"/>
     
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" unique="true"/>
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
    	<many-to-one name="productionVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Production virtual location"/>
     <many-to-one name="prodResourceProduct" ref="com.axelor.apps.base.db.Product" title="Default resource product"/>
