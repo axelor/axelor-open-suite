@@ -180,8 +180,8 @@
 
 	<action-view name="product.root.product" title="Products"
 		model="com.axelor.apps.base.db.Product" icon="img/16px/productSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="product-grid" />
+		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = false</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
@@ -403,15 +403,6 @@
 		<view type="grid" name="company-grid"/>
 		<view type="form" name="company-form"/>
 	</action-view>
-	
-	<menuitem name="admin-root-import-permission" parent="admin-root-user"
-		title="Import permissions" action="admin.root.import.permission" />
-
-	<action-view name="admin.root.import.permission" title="Import permissions"
-		model="com.axelor.apps.base.db.Import" >
-		<view type="grid" name="import-permission-grid"/>
-		<view type="form" name="import-permission-form"/>
-	</action-view>
 
 	<menuitem name="admin-root-templating" parent="admin-root"
 		title="Templating"/>
@@ -557,13 +548,11 @@
 		title="Imports" action="admin.root.import" />
 
 	<action-view name="admin.root.import" title="Imports"
-		model="com.axelor.apps.base.db.Import" icon="img/16px/organisationSmall_16px.png">
-		<view type="grid" name="import-grid" />
-		<view type="form" name="import-form" />
-		<domain>self.typeSelect != 'bdd'</domain>
+		model="com.axelor.apps.base.db.ImportConfiguration" icon="img/16px/organisationSmall_16px.png">
+		<view type="grid" name="import-configuration-grid" />
+		<view type="form" name="import-configuration-form" />
 	</action-view>
 
-	
 	<menuitem name="admin-root-indicator-generator-grouping" parent="admin-root-maintenance"
 		title="Indicators groups" action="admin.root.indicator.generator.grouping" />
 
@@ -581,9 +570,7 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
-	
-	
-	
+
 	<menuitem name="admin-root-batch" parent="admin-root"
 		title="Batches" />
 	

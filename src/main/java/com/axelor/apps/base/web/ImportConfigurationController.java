@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
+ * Copyright (C) 2014 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,42 +17,32 @@
  */
 package com.axelor.apps.base.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.base.db.Import;
+import com.axelor.apps.base.db.ImportConfiguration;
+import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.ImportService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class ImportController {
+public class ImportConfigurationController {
 
 	@Inject
-	private ImportService is;
-	
-	private static final Logger LOG = LoggerFactory.getLogger(ImportController.class);
-	
-	public void launchImport(ActionRequest request,ActionResponse response){
-		
-		Import context = request.getContext().asType(Import.class);
-		
-		String path = context.getPath();
-		String configPath = context.getConfigPath();
-		String type = context.getTypeSelect();
-		
-		LOG.debug("Using {} importer for config file: {} on directory: {}",type,configPath, path);
+	private ImportService importService;
+
+	public void run(ActionRequest request,ActionResponse response){
+
+		ImportConfiguration importConfiguration = request.getContext().asType( ImportConfiguration.class );
 		
 		try{
-			String log = is.importer(type, configPath, path);
 			
-			response.setFlash("Import terminé");
-			response.setValue("log", log);			
-		}
-		catch(Exception ex){ 
-			TraceBackService.trace(response,ex);
-		}
+			ImportHistory importHistory = importService.run(importConfiguration);
+			response.setAttr("importHistoryList", "value:add", importHistory);
+			response.setNotify( importHistory.getLog().replaceAll("(\r\n|\n\r|\r|\n)", "<br />") );
+			
+			
+		} catch( Exception e ){ TraceBackService.trace( response, e ); }
+
 	}
-	
+
 }

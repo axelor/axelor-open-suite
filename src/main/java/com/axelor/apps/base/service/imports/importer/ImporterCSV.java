@@ -15,27 +15,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.imports;
+package com.axelor.apps.base.service.imports.importer;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
 
-import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
-import com.axelor.apps.base.service.imports.importer.FactoryImporter;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.service.imports.listener.ImporterListener;
+import com.axelor.data.csv.CSVImporter;
+import com.google.inject.Injector;
 
-public class ImportService extends ImportConfigurationRepository {
+class ImporterCSV extends Importer {
 
 	@Inject
-	private FactoryImporter factoryImporter;
-	
-	public ImportHistory run( ImportConfiguration configuration ) throws AxelorException, IOException {
+	public ImporterCSV( Injector injector ) { super( injector ); }
+
+	@Override
+	protected ImportHistory process( String bind, String data ) throws IOException {
+
+		CSVImporter importer = new CSVImporter( injector, bind, data );
 		
-		 return factoryImporter.createImporter( find( configuration.getId() ) ).run();
+		ImporterListener listener = new ImporterListener( getConfiguration().getName() ); 		
+		importer.addListener( listener );
+		importer.run(null);
+		
+		return addHistory( listener );
 		
 	}
+
 
 }

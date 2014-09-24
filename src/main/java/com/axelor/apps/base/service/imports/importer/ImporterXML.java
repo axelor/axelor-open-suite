@@ -15,23 +15,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.test;
+package com.axelor.apps.base.service.imports.importer;
 
-import net.sf.ehcache.CacheManager; 
+import javax.inject.Inject;
 
-import com.axelor.auth.AuthModule;
-import com.axelor.db.JpaModule;
-import com.google.inject.AbstractModule;
+import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.service.imports.listener.ImporterListener;
+import com.axelor.data.xml.XMLImporter;
+import com.google.inject.Injector;
 
-public class TestModule extends AbstractModule {
+class ImporterXML extends Importer {
+
+	@Inject
+	public ImporterXML( Injector injector ) { super( injector ); }
 
 	@Override
-	protected void configure() {
-		// shutdown the cache manager if running : Breaking the test
-		if (CacheManager.ALL_CACHE_MANAGERS.size() > 0) {
-			CacheManager.getInstance().shutdown();
-		}
-        install(new JpaModule("testUnit", true, true));
-        install(new AuthModule.Simple());
+	protected ImportHistory process( String bind, String data ) {
+
+		XMLImporter importer = new XMLImporter(injector, bind, data);
+		
+		ImporterListener listener = new ImporterListener( getConfiguration().getName() ); 		
+		importer.addListener( listener );
+		importer.run(null);
+		
+		return addHistory( listener );
+		
 	}
+
+
 }
