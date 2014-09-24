@@ -9,7 +9,7 @@
     </grid>
     
     <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode"  >
-        <panel title="Overview">
+        <panel >
         	 <field name="name"/>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="invoiceLabel" />
