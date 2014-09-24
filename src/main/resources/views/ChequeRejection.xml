@@ -22,7 +22,7 @@
 			<field name="move" />
 			<field name="name" />
 			<field name="dateTime" />
-			<field name="company" widget="SuggestBox" form-view="company-lite-form" />
+			<field name="company" widget="SuggestBox" form-view="company-form" />
 			<field name="paymentMode" />
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 		</panel>

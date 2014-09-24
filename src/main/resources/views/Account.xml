@@ -30,7 +30,7 @@
 	  <field name="code"/>
 	  <field name="name"/>
 	  <field name="accountType"/>
-	  <field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-lite-form"/>
+	  <field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form"/>
 	  <field name="parent" onChange="action-group-account-account-onchange-common" domain="self.company = :company"/>
 	  <field name="reconcileOk"/>
    </panel>

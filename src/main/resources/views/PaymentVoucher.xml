@@ -27,7 +27,7 @@
 			 <field name="operationTypeSelect" colSpan="4" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
 			 <field name="user" colSpan="4"/>
 			 <field name="paymentDateTime" colSpan="4"/>
-			 <field name="company" widget="SuggestBox" colSpan="4" form-view="company-lite-form"/>
+			 <field name="company" widget="SuggestBox" colSpan="4" form-view="company-form"/>
 			 <field name="cashRegister" colSpan="4"/>
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
 		</panel>

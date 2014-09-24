@@ -14,7 +14,7 @@
     
 	 <form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account"  >
 		<panel  itemSpan="4">
-			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+			<field name="company" widget="SuggestBox" form-view="company-form"/>
 			<field name="customerAccount"/>
 			 <field name="supplierAccount"/>
 		</panel>

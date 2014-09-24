@@ -9,7 +9,7 @@
  <form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance"  >
 
 	<panel >
-		<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+		<field name="company" widget="SuggestBox" form-view="company-form"/>
 		<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 	</panel>
 

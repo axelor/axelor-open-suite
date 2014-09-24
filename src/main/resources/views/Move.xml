@@ -31,7 +31,7 @@
 				<field name="reference"/>
 				<field name="period"/>
 				<field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
-				<field name="company" widget="SuggestBox" onSelect="action-move-attrs-set-domain-company" onChange="action-move-method-get-period" form-view="company-lite-form"/>
+				<field name="company" widget="SuggestBox" onSelect="action-move-attrs-set-domain-company" onChange="action-move-method-get-period" form-view="company-form"/>
 				<field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canNew="false"/>
 				<field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false"/>
 			</panel>

@@ -13,7 +13,7 @@
 		<panel >
 			<field name="ref" colSpan="12"/>
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+			<field name="company" widget="SuggestBox" form-view="company-form"/>
 		</panel>
 		
 		<panel title="Reimbursement details">

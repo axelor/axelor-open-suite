@@ -8,7 +8,7 @@
   <entity name="AccountConfig" lang="java" cachable="true">
   	<integer name="importId" />
     
-    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
     
 <!--     JOURNAL -->
     <many-to-one name="customerSalesJournal" ref="com.axelor.apps.account.db.Journal" title="Sales Journal"/>

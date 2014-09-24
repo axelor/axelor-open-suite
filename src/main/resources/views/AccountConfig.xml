@@ -6,145 +6,149 @@
     <grid name="account-config-grid" title="Account configurations" model="com.axelor.apps.account.db.AccountConfig">
         <field name="company"/>
     </grid>
-    
-<form  name="account-config-form" title="Account configuration" model="com.axelor.apps.account.db.AccountConfig">
-	<toolbar>
-	  <button name="showInvoice" title="Invoices" onClick="save,action-company-view-invoice"/>
-	</toolbar>
-	<panel >
-	  <field name="company"/>
-
-	  <field name="accountChart" readonlyIf="hasChartImported" colSpan="8"/>
-	  <button name="installTemplate" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" colSpan="1" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
-
-	  <field name="hasChartImported"/>
-	  <field name="showDetailsInInvoice"/>
-	</panel>
+	    
+	<form  name="account-config-form" title="Account configuration" model="com.axelor.apps.account.db.AccountConfig" onNew="action-account-config-record-default">
+		<toolbar>
+		  <button name="showInvoice" title="Invoices" onClick="save,action-company-view-invoice"/>
+		</toolbar>
+		<panel >
+		  <field name="company"/>
 	
-	<panel-tabs>
-		<panel title="Accounting">
-			<panel title="Journals" colSpan="12">
-				<field name="saleJournalType"/>
-				<field name="purchaseJournalType"/>
-				<field name="cashJournalType"/>
-				<field name="creditNoteJournalType"/>
-				<field name="customerSalesJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-				<field name="customerCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-				<field name="supplierPurchaseJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-				<field name="supplierCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-				<field name="rejectJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-				<field name="reimbursementJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-				<field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-				<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-				<field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-			</panel>
-			<panel title="Accounts" colSpan="12">
-				<field name="customerAccount" domain="self.company = :company"/>
-				<field name="supplierAccount" domain="self.company = :company"/>
-				<field name="doubtfulCustomerAccount" domain="self.company = :company"/>
-				<field name="irrecoverableAccount" domain="self.company = :company"/>
-			</panel>
-			<panel title="Payment differences" colSpan="12">
-				<field name="thresholdDistanceFromRegulation"/>
-				<field name="cashPositionVariationAccount" domain="self.company = :company"/>
-			</panel>
-			<panel title="Exports" colSpan="12">
-				<field name="exportPath"/>
-			</panel>
-			<panel title="Cashiers" colSpan="12">
-				<field name="cashRegisterMailModel"/>
-				<field name="cashRegisterAddressEmail"/>
-			</panel>
-			<panel title="Shift to irrecoverable" colSpan="12">
-				<field name="irrecoverableReasonPassage"/>
-				<field name="irrecoverableStandardRateTax"/>
-			</panel>
-			 <panel title="Tax payment" colSpan="12">
-			    <field name="payingBackTax"/>
-			</panel>
-		</panel>
-		<panel title="CFONB">
-<!-- 	  <field name="cfonbConfig" showTitle="false" colSpan="4" widget="NestedEditor" form-view="cfonb-config-form" summary-view="true"/> -->
-		  <field name="cfonbConfig" showTitle="false" colSpan="4" />
-		</panel>
-		<panel title="Receivables recovery" >
-			<field name="mailTransitTime" colSpan="12"/>
-			<field name="reminderConfigLineList" showTitle="false" colSpan="12">
-			<!-- TODO:Check weather editor works or not -->
-			<editor x-layout="table">
-				<field name="partnerCategory"/>
-			    <field name="reminderMethod"/>
-			</editor>
-			</field>
-		</panel>
-		<panel title="Paybox">
-	<!-- 	  <field name="payboxConfig" showTitle="false"  widget="NestedEditor" form-view="paybox-config-form" summary-view="true"/> -->
-		  <field name="payboxConfig" showTitle="false" />
-		</panel>
+		  <field name="accountChart" readonlyIf="hasChartImported" colSpan="8"/>
+		  <button name="installTemplate" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" colSpan="4" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 	
-		<panel title="Reimbursement">
-			<panel title="Reimbursements" colSpan="12">
-				<field name="reimbursementExportFolderPath" />
-				<field name="reimbursementExportFolderPathCFONB"/>
-				<field name="lowerThresholdReimbursement"/>
-				<field name="upperThresholdReimbursement"/>
-				<field name="reimbursementAccount" domain="self.company = :company"/>
-				<field name="reimbursementMailModel"/>
-			</panel>
-			<panel title="Reimbursement rejects" colSpan="12">
-				<field name="reimbursementImportFolderPathCFONB"/>
-				<field name="tempReimbImportFolderPathCFONB"/>
-			</panel>
+		  <field name="hasChartImported"/>
+		  <field name="showDetailsInInvoice"/>
 		</panel>
-		<panel title="Doubtful receivables">
-			<field name="sixMonthDebtMonthNumber"/>
-			<field name="threeMonthDebtMontsNumber"/>
-			<field name="sixMonthDebtPassReason"/>
-			<field name="threeMonthDebtPassReason"/>
-		</panel>
-		<panel title="Direct debit">
-			<panel title="Direct debits" colSpan="12">
-				<field name="paymentScheduleExportFolderPathCFONB"/>
-				<field name="directDebitPaymentMode"/>
+		
+		<panel-tabs>
+			<panel title="Accounting">
+				<panel title="Journals" colSpan="12">
+					<field name="saleJournalType"/>
+					<field name="purchaseJournalType"/>
+					<field name="cashJournalType"/>
+					<field name="creditNoteJournalType"/>
+					<field name="customerSalesJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+					<field name="customerCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+					<field name="supplierPurchaseJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+					<field name="supplierCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+					<field name="rejectJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+					<field name="reimbursementJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+					<field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+					<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+					<field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+				</panel>
+				<panel title="Accounts" colSpan="12">
+					<field name="customerAccount" domain="self.company = :company"/>
+					<field name="supplierAccount" domain="self.company = :company"/>
+					<field name="doubtfulCustomerAccount" domain="self.company = :company"/>
+					<field name="irrecoverableAccount" domain="self.company = :company"/>
+				</panel>
+				<panel title="Payment differences" colSpan="12">
+					<field name="thresholdDistanceFromRegulation"/>
+					<field name="cashPositionVariationAccount" domain="self.company = :company"/>
+				</panel>
+				<panel title="Exports" colSpan="12">
+					<field name="exportPath"/>
+				</panel>
+				<panel title="Cashiers" colSpan="12">
+					<field name="cashRegisterMailModel"/>
+					<field name="cashRegisterAddressEmail"/>
+				</panel>
+				<panel title="Shift to irrecoverable" colSpan="12">
+					<field name="irrecoverableReasonPassage"/>
+					<field name="irrecoverableStandardRateTax"/>
+				</panel>
+				 <panel title="Tax payment" colSpan="12">
+				    <field name="payingBackTax"/>
+				</panel>
 			</panel>
-			<panel title="Direct debit rejects" colSpan="12">
-				<field name="rejectionPaymentMode"/>
-				<field name="paymentScheduleRejectNumLimit"/>
-				<field name="invoiceRejectNumLimit"/>
-				<field name="rejectPaymentScheduleMailModel"/>
-				<field name="rejectImportPathAndFileName"/>
-				<field name="tempImportPathAndFileName"/>
+			<panel title="CFONB">
+			  <field name="cfonbConfig" showTitle="false" colSpan="4" />
 			</panel>
-	   </panel>
-		<panel title="Acc. Clearance">
-			<field name="profitAccount" domain="self.company = :company"/>
-			<field name="standardRateTax"/>
-			<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" colSpan="12">
-				<!-- TODO:Check weather this Editor works or not -->
+			<panel title="Receivables recovery" >
+				<field name="mailTransitTime" colSpan="12"/>
+				<field name="reminderConfigLineList" showTitle="false" colSpan="12">
+				<!-- TODO:Check weather editor works or not -->
 				<editor x-layout="table">
-					<field name="code" colSpan="12"/>
-					<field name="name" colSpan="6"/>
-					<field name="accountType" colSpan="6"/>
-					<field name="reconcileOk" colSpan="6"/>
-					<field name="parent" colSpan="6"/>
-					<field name="company" colSpan="6"/>
-			    </editor>
-			</field>
-		</panel>
-		<panel title="IPO Payments and IPO Cheque">
-			<panel title="Payments by IPO and IPO Cheque" colSpan="12">
-				<field name="interbankPaymentOrderImportPathCFONB" />
-				<field name="tempInterbankPaymentOrderImportPathCFONB" />
+					<field name="partnerCategory"/>
+				    <field name="reminderMethod"/>
+				</editor>
+				</field>
 			</panel>
-			<panel title="Payments rejects by IPO and IPO Cheque" colSpan="12">
-				<field name="interbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
-				<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
+			<panel title="Paybox">
+			  <field name="payboxConfig" showTitle="false" />
 			</panel>
-		</panel>
-	
-	</panel-tabs>
- 
-</form>
+		
+			<panel title="Reimbursement">
+				<panel title="Reimbursements" colSpan="12">
+					<field name="reimbursementExportFolderPath" />
+					<field name="reimbursementExportFolderPathCFONB"/>
+					<field name="lowerThresholdReimbursement"/>
+					<field name="upperThresholdReimbursement"/>
+					<field name="reimbursementAccount" domain="self.company = :company"/>
+					<field name="reimbursementMailModel"/>
+				</panel>
+				<panel title="Reimbursement rejects" colSpan="12">
+					<field name="reimbursementImportFolderPathCFONB"/>
+					<field name="tempReimbImportFolderPathCFONB"/>
+				</panel>
+			</panel>
+			<panel title="Doubtful receivables">
+				<field name="sixMonthDebtMonthNumber"/>
+				<field name="threeMonthDebtMontsNumber"/>
+				<field name="sixMonthDebtPassReason"/>
+				<field name="threeMonthDebtPassReason"/>
+			</panel>
+			<panel title="Direct debit">
+				<panel title="Direct debits" colSpan="12">
+					<field name="paymentScheduleExportFolderPathCFONB"/>
+					<field name="directDebitPaymentMode"/>
+				</panel>
+				<panel title="Direct debit rejects" colSpan="12">
+					<field name="rejectionPaymentMode"/>
+					<field name="paymentScheduleRejectNumLimit"/>
+					<field name="invoiceRejectNumLimit"/>
+					<field name="rejectPaymentScheduleMailModel"/>
+					<field name="rejectImportPathAndFileName"/>
+					<field name="tempImportPathAndFileName"/>
+				</panel>
+		   </panel>
+			<panel title="Acc. Clearance">
+				<field name="profitAccount" domain="self.company = :company"/>
+				<field name="standardRateTax"/>
+				<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" colSpan="12">
+					<!-- TODO:Check weather this Editor works or not -->
+					<editor x-layout="table">
+						<field name="code" colSpan="12"/>
+						<field name="name" colSpan="6"/>
+						<field name="accountType" colSpan="6"/>
+						<field name="reconcileOk" colSpan="6"/>
+						<field name="parent" colSpan="6"/>
+						<field name="company" colSpan="6"/>
+				    </editor>
+				</field>
+			</panel>
+			<panel title="IPO Payments and IPO Cheque">
+				<panel title="Payments by IPO and IPO Cheque" colSpan="12">
+					<field name="interbankPaymentOrderImportPathCFONB" />
+					<field name="tempInterbankPaymentOrderImportPathCFONB" />
+				</panel>
+				<panel title="Payments rejects by IPO and IPO Cheque" colSpan="12">
+					<field name="interbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
+					<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
+				</panel>
+			</panel>
+		
+		</panel-tabs>
+	 
+	</form>
+
+	<action-record name="action-account-config-record-default" model="com.axelor.apps.account.db.AccountConfig">
+		<field name="company" expr="eval: _company" if="_company"/>
+		<field name="company" expr="eval:__user__.activeCompany" if="!_company"/>
+	</action-record>
+
 	<action-group name="action-group-account-config-installchart-click">
 		<action name="save"/>
 		<action name="action-method-account-config-install-chart"/>

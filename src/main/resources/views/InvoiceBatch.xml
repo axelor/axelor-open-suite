@@ -19,7 +19,7 @@
     	<panel >
     		<field name="actionSelect" onChange="action-invoice-batch-attrs-action-select"/>
     		<field name="code" />
-    		<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
+    		<field name="company" widget="SuggestBox" form-view="company-form"/>
     		<field name="usage" />
     		<field name="pricingOption" />
     	</panel>
