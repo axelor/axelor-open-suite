@@ -19,13 +19,16 @@ package com.axelor.apps.crm.service;
 
 import java.util.HashSet;
 
+import com.axelor.inject.Beans;
 import com.axelor.apps.crm.db.CalendarConfiguration;
 import com.axelor.apps.crm.db.repo.CalendarConfigurationRepository;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAction;
+import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.MetaMenu;
+import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.google.inject.persist.Transactional;
 
 public class CalendarConfigurationService extends CalendarConfigurationRepository{
@@ -41,7 +44,7 @@ public class CalendarConfigurationService extends CalendarConfigurationRepositor
 		
 		MetaAction metaAction = this.createMetaAction(menuName.replaceAll("-", "."), title);
 		MetaMenu metaMenu = this.createMetaMenu(menuName, title, calendarConfiguration.getCalendarGroup(), calendarConfiguration.getCalendarUser(), metaAction);
-		metaMenu.save();
+		Beans.get(MetaMenuRepository.class).save(metaMenu);
 		
 		calendarConfiguration.setMetaAction(metaAction);
 		save(calendarConfiguration);
@@ -56,13 +59,17 @@ public class CalendarConfigurationService extends CalendarConfigurationRepositor
 		
 		String menuName = NAME+calendarConfiguration.getId();
 		
-		MetaMenu metaMenu = MetaMenu.findByName(menuName);
+		MetaMenuRepository metaMenuRepository = Beans.get(MetaMenuRepository.class);
 		
-		metaMenu.remove();
+		MetaMenu metaMenu = metaMenuRepository.findByName(menuName);
 		
-		MetaAction metaAction = MetaAction.findByName(menuName.replaceAll("-", "."));
+		metaMenuRepository.remove(metaMenu);
 		
-		metaAction.remove();
+		MetaActionRepository metaActionRepository = Beans.get(MetaActionRepository.class);
+		
+		MetaAction metaAction = metaActionRepository.findByName(menuName.replaceAll("-", "."));
+		
+		metaActionRepository.remove(metaAction);
 		
 	}
 	
