@@ -34,9 +34,6 @@
 	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
 	
 	<boolean name="hasForceEmailSending" default="false" title="Ignore mailing rejection ?"/>
-	
-	<!-- NOT DISPLAYED -->
-    <many-to-one name="filter" ref="com.axelor.apps.base.db.Filter" title="Filter"/>
     
   </entity>
 
