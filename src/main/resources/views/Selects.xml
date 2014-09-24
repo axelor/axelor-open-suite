@@ -279,7 +279,6 @@
 	<selection name='iimport.type.select'>
 		<option value='csv'>CSV File</option>
 		<option value='xml'>XML File</option>
-		<option value='bdd'>Database</option>
 	</selection>
 
 	<selection name='iadministration.month.select'>

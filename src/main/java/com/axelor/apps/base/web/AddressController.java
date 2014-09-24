@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
+ * Copyright (C) 2014 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.base.web;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressExport;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.Import;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.db.repo.AddressRepository;
@@ -40,9 +38,6 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.data.Importer;
-import com.axelor.data.csv.CSVImporter;
-import com.axelor.data.xml.XMLImporter;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -202,46 +197,6 @@ public class AddressController {
 
 		response.setValue("log", size+" adresses exportées");
 	}
-
-	public void importAddress(ActionRequest request, ActionResponse response) throws IOException{
-		Import context = request.getContext().asType(Import.class);
-
-		String path = context.getPath();
-		String configPath = context.getConfigPath();
-		String type = context.getTypeSelect();
-
-		LOG.debug("using {} importer for config file: {} on directory: {}",type,configPath, path);
-
-
-		File folder = new File(path);
-		File xmlFile = new File(configPath);
-
-		if (!folder.exists()) {
-			response.setFlash("Dossier inacessible.");
-		} else if (!xmlFile.exists()) {
-			response.setFlash("Fichier de mapping inacessible.");
-		} else { 
-			Importer importer = null;
-
-			if (type.equals("xml")) {
-				LOG.debug("using XMLImporter");
-				importer = new XMLImporter(injectorProvider.get(), configPath, path);
-			}
-			else {
-				LOG.debug("using CSVImporter");
-				importer = new CSVImporter(injectorProvider.get(), configPath, path);
-			}
-			Map<String,String[]> mappings = new HashMap<String,String[]>();
-			String[] array = new String[1];
-			array[1] = "Address.csv";
-			mappings.put("contact.address", array);
-			importer.run(mappings);
-			//importer.run()
-
-			response.setFlash("Import terminé.");
-		}
-	}
-
 
 	public void viewMap(ActionRequest request, ActionResponse response)  {
 		Address address = request.getContext().asType(Address.class);

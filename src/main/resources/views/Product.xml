@@ -5,7 +5,7 @@
     
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="name">
    		<toolbar>
-        	<button name="catalog" title="Catalog" onClick="action-print-product-catalog"/>
+        	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>
 	    <field name="code"/>
 	    <field name="name" width="400"/>
