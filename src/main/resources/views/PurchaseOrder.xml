@@ -41,7 +41,7 @@
 	  <panel readonlyIf="statusSelect == 5">
 	    <field name="purchaseOrderSeq" css="highlight"/>
 	    <field name="orderDate"/>
-	    <field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-lite-form"/>
+	    <field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form"/>
 	    <field name="internalReference"/>
 	    <field name="externalReference"/>
 	    <field name="currency"/>

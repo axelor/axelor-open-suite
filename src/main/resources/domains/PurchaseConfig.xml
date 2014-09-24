@@ -8,7 +8,7 @@
   <entity name="PurchaseConfig" lang="java" cachable="true">
   	<integer name="importId"/>
    
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
   	<integer name="purchaseOrderInvoicingTypeSelect" title="Purchases order invoicing type" selection="purchase.purchase.order.invoicing.type.select"/>
   	
