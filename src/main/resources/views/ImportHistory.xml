@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	
+	<grid name="import-history-grid" title="Historiques" model="com.axelor.apps.base.db.ImportHistory" orderBy="-createdOn">
+		<field name="user"/>
+		<field name="dataMetaFile"/>
+        <field name="createdOn" title="Créé le"/>
+	</grid>
+	
+	<form name="import-history-form" cols="6" title="Historiques" model="com.axelor.apps.base.db.ImportHistory">
+        <field name="user" />
+		<field name="dataMetaFile" />
+        <field name="createdOn" title="Créé le" />
+        <field name="log" colSpan="6" showTitle="false" />
+	</form>
+
+</object-views>
