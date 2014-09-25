@@ -2,12 +2,15 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
     <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
         <field name="name"/>
         <field name="fullName"/>
         <field name="partner"/>
         <field name="activeCompany"/>
     </grid>
+    
+    
     <form name="user-form" title="User" model="com.axelor.auth.db.User" id="user-form-base"
     onNew="action-user-language-record" onLoad="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
     	 <panel sidebar="true">
@@ -26,19 +29,12 @@
         		<panel-related field="teamSet" colSpan="12"/>
         	 </panel>
         	 <panel-related title="Projects" field="projectSet" showTitle="false" colSpan="4"/>
-<!--         	 <panel title="Social Network"> TO DO MOVE TO SOCIAL NETWORK MODULE-->
-<!--         		<field name="fbPersonalCredential" grid-view="fb-credential-grid" form-view="fb-credential-form" colSpan="12"/> -->
-<!--         		<field name="twtPersonalCredential" grid-view="twt-credential-grid" form-view="twt-credential-form" colSpan="12"/> -->
-<!--         		<field name="lnPersonalCredential" grid-view="ln-credential-grid" form-view="ln-credential-form" colSpan="12"/> -->
-<!--         	 </panel> -->
         	<panel title="Calendars">
         		<panel-related field="followersCalUserSet" colSpan="12"/>
         		<panel-related field="authorizeCalUserSet" colSpan="12"/>
         	</panel>
         </panel-tabs>
     </form>
-    
-    
     
     
     <action-record name="action-user-language-record" model="com.axelor.auth.db.User">
