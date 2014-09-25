@@ -50,7 +50,6 @@
   	<many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="Responsible"/>
   	<many-to-many name="memberUserSet" ref="com.axelor.auth.db.User" title="Members"/>
   	
-  	<many-to-one name="preSalesTask" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
   	<boolean name="imputExpense" title="Allow expenses input ?"/>
   	<integer name="typeProjectSelect" title="Type select" selection="organisation.project.type.project.select"/>
   	
@@ -58,18 +57,6 @@
   	
   	<integer name="progress" title="Progress" selection="grade.0.up.to.100.select"/>
   	
-  	<!-- 	TODO : MOVE INTO NEW MODULE : CONSULTANCY SERVICES -->
-    <!-- Need -->
-    <date name="consultationDate" title="Consultation Date"/>
-    <string name="needTypeSelect" title="Type" selection="organisation.project.need.type.select"/>
-    <date name="deadline" title="Deadline"/>
-    <string name="complexity" title="Complexity" selection="grade.0.up.to.5.select"/>
-	<string name="competition" title="Competition" selection="grade.0.up.to.5.select"/>
-    <decimal name="plannedBudget" title="Planned budget"/>
-    <string name="needDescription" title="Need Description" large="true"/>
-    <binary name="specificationFile" title="Attach specification"/> 
-    <datetime name="answerDate" title="Answer Date"/>
-    <integer name="marketTypeSelect" title="Market Type" selection="organisation.project.business.market.type.select"/>
     <string name="exportTypeSelect" title="Export Type" selection="organisation.project.report.type.select"/>
 
 <!-- 	TODO : MOVE INTO NEW MODULE : BUSINESS MANUFACTURING -->

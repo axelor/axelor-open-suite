@@ -55,14 +55,6 @@ public class ProjectController {
 		}
 	}
 	
-	public void createPreSalesTask(ActionRequest request, ActionResponse response) {
-		
-		Project project = request.getContext().asType(Project.class);
-		
-		if(projectService.createPreSalesTask(project) != null)  {
-			response.setReload(true);
-		}
-	}
 	
 	public void updateFinancialInformation(ActionRequest request, ActionResponse response) throws AxelorException {
 		

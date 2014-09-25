@@ -95,30 +95,7 @@ public class ProjectService extends ProjectRepository{
 		return defaultTask;
 		
 	}
-	
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Task createPreSalesTask(Project project) {
-
-		if(project.getName() != null && !project.getName().isEmpty()) {
-			Task findTask = taskService.all().filter("self.project = ?1 AND self.name = ?2", project, "Avant vente "+project.getName()).fetchOne();
-			if(findTask == null) {
-				Task preSalestask = new Task();
-
-				preSalestask.setProject(project);
-				preSalestask.setName("Avant vente "+project.getName());
-				preSalestask.setRealEstimatedMethodSelect(project.getRealEstimatedMethodSelect());
-				project.getTaskList().add(preSalestask);
-				taskService.save(preSalestask);
-				
-				return preSalestask;
-			}
-		}
-		
-		return null;
-	}
-	
-	
 	public void updateFinancialInformation(Project project) throws AxelorException  {
 		
 		this.updateInitialEstimatedAmount(project);
