@@ -181,8 +181,6 @@
 "Mail MANAGE","com.axelor.apps.base.db.Mail","true","true","true","true","true","SALE|PURCH|ACCO|HRSC|OPTS"
 "MailModel MANAGE","com.axelor.apps.base.db.MailModel","true","true","true","true","true","SALE|PURCH|ACCO|HRSC|OPTS"
 "MailModelTag READ","com.axelor.apps.base.db.MailModelTag","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
-"ObjectList READ","com.axelor.apps.base.db.ObjectList","true",,,,,
-"ObjectList MANAGE","com.axelor.apps.base.db.ObjectList","true","true","true","true","true",
 "Partner READ","com.axelor.apps.base.db.Partner","true",,,,,"OPTS"
 "Partner MANAGE","com.axelor.apps.base.db.Partner","true","true","true","true","true","SALE|PURCH|ACCO|HRSC|"
 "PartnerCategory READ","com.axelor.apps.base.db.PartnerCategory","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
