@@ -12,7 +12,6 @@
         <field name="contactPartner"/>
         <field name="company"/>
         <field name="name"/>
-        <field name="isModel"/>
     </grid>
     
 	<form name="business-project-form" title="Business" model="com.axelor.apps.organisation.db.Project"
@@ -46,18 +45,7 @@
 	  <panel title="Description">
 	    <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
 	  </panel>
-	  <panel title="Specific settings" canCollapse="true">
-	    <field name="isProject"/>
-	    <field name="isBusiness"/>
-	    <field name="isModel"/>
-	    <field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
-	    <field name="parentProject"/>
-	    <field name="imputExpense"/>
-	    <field name="typeProjectSelect" showIf="imputExpense == true"/>
-	    <field name="isReinvoicingExpense"/>
-	    <field name="isReinvoicingTime"/>
-	    <field name="isTimeSheetImputable"/>
-	  </panel>
+	 
 	  <panel-tabs>
 	    <panel title="Tasks">
 	      <panel-related field="taskList" colSpan="12" form-view="task-form" grid-view="task-project-grid"/>
@@ -106,6 +94,17 @@
 	        </panel>      
 	    </panel>
 	    
+		<panel title="Specific settings" canCollapse="true">
+			<field name="isProject"/>
+			<field name="isBusiness"/>
+			<field name="parentProject"/>
+			<field name="imputExpense"/>
+			<field name="typeProjectSelect" showIf="imputExpense == true"/>
+			<field name="isReinvoicingExpense"/>
+			<field name="isReinvoicingTime"/>
+			<field name="isTimeSheetImputable"/>
+		</panel>
+	    
 	    <panel title="Production informations">
 	<!-- 	        	<include view="business-project-production-form" from="axelor-production"/> -->      
 	      <field name="prodInvTypeSelect" if-module="axelor-production"/>
@@ -115,18 +114,6 @@
 	    </panel>
 	    
 	    <panel-related title="members" field="memberUserSet"/>    
-	    <panel title="Need">
-	      <field name="needTypeSelect"/>
-	      <field name="marketTypeSelect"/>
-	      <field name="consultationDate"/>
-	      <field name="deadline"/>
-	      <field name="complexity"/>
-	      <field name="competition"/>
-	      <field name="plannedBudget"/>
-	      <field name="answerDate"/>
-	      <field name="specificationFile"/>
-	      <field name="needDescription"/>
-	    </panel>
 	  </panel-tabs>  
 	  <panel sidebar="true" title="Actions">
 	    <button name="transformToProject" title="Transform to project" showIf="isProject == false" colSpan="1" onClick="action-business-project-record-transform-in-project,save"/>

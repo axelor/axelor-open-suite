@@ -8,14 +8,12 @@
         <field name="contactPartner"/>
         <field name="company"/>
         <field name="name"/>
-        <field name="isModel"/>
     </grid>
     <grid name="project-byclient-grid" title="Projects by Client Partner" model="com.axelor.apps.organisation.db.Project" groupBy='clientPartner'>
 	    <field name="clientPartner"/>
 	    <field name="contactPartner"/>
 	    <field name="company"/>
 	    <field name="name"/>
-	    <field name="isModel"/>
 	</grid>
 	
 	<form name="project-form" title="Project" model="com.axelor.apps.organisation.db.Project" onSave="action-project-method-create-default-task-on-save" onNew="action-project-group-default">
@@ -26,7 +24,6 @@
 	    <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
 	    <field name="projectStatusSelect" showTitle="false"  colSpan="12" widget="NavSelect"/>
 	    <field name="responsibleUser"/>
-	    <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	    <field name="clientPartner"/>
 	    <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	    <field name="company" readonlyIf="projectStatusSelect &gt;= 3 || businessStatusSelect &gt;= 2" widget="SuggestBox" form-view="company-form"/>
@@ -49,10 +46,6 @@
 	    <field name="isProject" colSpan="4"/>
 	    <field name="isBusiness" colSpan="4"/>
 	    <field name="parentProject" onChange="action-project-unit" colSpan="4"/>
-	    <panel title="Project model" colSpan="4">
-	      <field name="isModel" colSpan="12"/>
-	      <field name="modelProject" hideIf="isModel" domain="self.isModel = true" colSpan="12"/>
-	    </panel>
 	    <panel title="Expense" colSpan="4">
 	      <field name="imputExpense" colSpan="12"/>
 	      <field name="typeProjectSelect" showIf="imputExpense == true" onChange="action-project-attrs-domain-task-project" colSpan="12"/>
@@ -68,7 +61,6 @@
 	    <panel-related title="Members" field="memberUserSet"/>    
 	  </panel-tabs>  
 	  <panel sidebar="true" title="Action(s)">
-	    <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
 	    <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="action-group-organisation-generate-draftinvoice-click"/>
 	    <button name="showTask" title="Show tasks" colSpan="1" onClick="action-project-view-task"/>
 	    <button name="updateTaskProgression" title="Update task progress" colSpan="1" onClick="action-project-method-update-task-progress"/>
@@ -139,9 +131,6 @@
 	<search-filters name="project-filters" model="com.axelor.apps.organisation.db.Project" title="Project filters">
 		<filter title="My Projects">
 			<domain>self.exitDate IS NULL</domain>
-		</filter>
-		<filter title="Models">
-			<domain>self.isModel = true</domain>
 		</filter>
 		<filter title="Billable">
 			<domain>self.isReinvoicingTime = true OR self.isReinvoicingExpense = true</domain>
