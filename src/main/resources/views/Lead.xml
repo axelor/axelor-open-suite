@@ -128,7 +128,7 @@
 			<field name="opportunityAmount" colSpan="6"/>
 		</panel>
      
- 		<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6">
+ 		<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6" itemSpan="12">
 			<panel-dashlet action="action-lead-view-upcoming-events"/>
 			<panel-dashlet action="action-lead-view-historical-events-completed"/>
 			<panel-dashlet action="action-lead-view-opportunity"/>
