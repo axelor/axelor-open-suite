@@ -21,7 +21,7 @@
 	  	</panel>
 	  
 	  	<panel sidebar="true" title="Modules configurations" hideIf="$popup()">
-	  		<button name="accountConfigButton"  title="Account config" width="100%" colSpan="6" onClick="action-company-view-account-config" if-module="axelor-account"/>
+	  		<button name="accountConfigButton" title="Account config" width="100%" colSpan="6" onClick="action-company-view-account-config" if-module="axelor-account"/>
 	    	<button name="saleConfigButton" title="Sale config" width="100%" colSpan="6" onClick="action-company-view-sale-config" if-module="axelor-sale"/>
 	    	<button name="stockConfigButton" title="Stock config" width="100%" colSpan="6" onClick="action-company-view-stock-config" if-module="axelor-stock"/>
 	    	<button name="purchaseConfigButton" title="Purchase config" width="100%" colSpan="6" onClick="action-company-view-purchase-config" if-module="axelor-purchase"/>
