@@ -10,7 +10,7 @@
 		<integer name="titleSelect" title="Civility" selection="partner.title.type.select" massUpdate="true" />
 		<string name="name" title="Surname" required="true" />
 		<string name="firstName" title="First Name" required="true" />
-    	<binary name="picture" image="true" title="Photo"/>
+    	<many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" />
 		<string name="function" title="Function"/>
 		<date name="entryDate" title="Entry Date" />
 		<date name="exitDate" title="Departure Date"/>

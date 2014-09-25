@@ -9,7 +9,7 @@
 		<string name="importId"/>
 		
 		<!-- Header Candidate -->
-		<binary name="picture" image="true" title="Photo"/>
+		<many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" />
 		<integer name="titleSelect" title="Civility" selection="partner.title.type.select"/>
 		<string name="name" title="Last Name" required="true"/>
 		<string name="firstName" title="First Name" required="true"/>

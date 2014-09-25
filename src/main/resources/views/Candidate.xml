@@ -27,7 +27,7 @@
 	  </toolbar>
 	  <panel>
 	    <panel colSpan="3">
-	      <field name="picture" showTitle="false" widget="image"/>
+	      <field name="picture" showTitle="false" widget="Image" colSpan="12" width="80" height="80"/>
 	    </panel>
 	    <panel colSpan="8">
 	      <panel title="Contact" colSpan="4">
