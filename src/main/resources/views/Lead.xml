@@ -149,7 +149,7 @@
 		<button name="add" title="Add" icon="fa-plus" onClick="action-lead-event-add-attendee"/>
     </grid>
 	
-	<grid orderBy="-contactDate,statusSelect"  name="my-lead-grid" title="My Leads" model="com.axelor.apps.crm.db.Lead">
+	<grid name="my-lead-grid" title="My Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
 		<hilite color="warning" if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
 	    <hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="(statusSelect == 2 || statusSelect == 3) &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
