@@ -64,13 +64,13 @@
 		</panel>
 	</panel-tabs>
 	<panel sidebar="true" title="Actions">
-	    <button name="reimbursementBatch" title="Reimbursement Batch" hideIf="actionSelect != 11"  onClick="save,action-accounting-batch-method-action-reimbursement"/>
-	    <button name="directDebitBatch" title="Direct Debit Batch" hideIf="actionSelect != 12"  onClick="save,action-accounting-batch-method-action-direct-debit"/>
-	    <button name="reminderBatch" title="Reminder Batch" hideIf="actionSelect != 14" onClick="save,action-accounting-batch-method-action-reminder"/>
-	    <button name="interbankPaymentOrderBatch" title="Interbank Payment Order Batch" hideIf="actionSelect != 15"  onClick="save,action-accounting-batch-method-action-interbank-payment-order"/>
-	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" hideIf="actionSelect != 16"   onClick="save,action-accounting-batch-method-action-doubtful-customer"/>
-	    <button name="accountCustomerBatch" title="Start" hideIf="actionSelect != 17"  onClick="save,action-accounting-batch-method-action-account-customer"/>
-	    <button name="moveLineExportBatch" title="Start" hideIf="actionSelect != 18"  onClick="save,action-accounting-batch-method-action-move-line-export"/>
+	    <button name="reimbursementBatch" title="Reimbursement Batch" showIf="actionSelect == 11"  onClick="save,action-accounting-batch-method-action-reimbursement" colSpan="12"/>
+	    <button name="directDebitBatch" title="Direct Debit Batch" showIf="actionSelect == 12"  onClick="save,action-accounting-batch-method-action-direct-debit" colSpan="12"/>
+	    <button name="reminderBatch" title="Reminder Batch" showIf="actionSelect == 14" onClick="save,action-accounting-batch-method-action-reminder" colSpan="12"/>
+	    <button name="interbankPaymentOrderBatch" title="Interbank Payment Order Batch" showIf="actionSelect == 15" onClick="save,action-accounting-batch-method-action-interbank-payment-order" colSpan="12"/>
+	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" showIf="actionSelect == 16" onClick="save,action-accounting-batch-method-action-doubtful-customer" colSpan="12"/>
+	    <button name="accountCustomerBatch" title="Start" showIf="actionSelect == 17"  onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
+	    <button name="moveLineExportBatch" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
 	</panel>
 </form>
 

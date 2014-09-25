@@ -41,7 +41,7 @@
 	      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
     	</panel-tabs>
     	<panel sidebar="true" title="Actions">
-    		<button name="statusBatch" title="Run"  onClick="save,action-invoice-batch-method-action-status" />
+    		<button name="statusBatch" title="Run"  onClick="save,action-invoice-batch-method-action-status" colSpan="12"/>
     	</panel>
     </form>
     

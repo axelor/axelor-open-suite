@@ -38,8 +38,8 @@
 	 	</panel>
  	 	<panel-related field="moveTemplateLineList" readonlyIf="isValid" colSpan="12" form-view="move-template-line-cusom-form" grid-view="move-template-line-cusom-grid"/>
      	<panel sidebar="true" title="Actions">
-    		<field name="isValid" readonlyIf="!isValid" onChange="action-move-template-method-set-is-valid"/>
-    		<button name="checkValidity" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity"/>
+    		<button name="checkValidity" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity" colSpan="4"/>
+    		<field name="isValid" readonlyIf="!isValid" onChange="action-move-template-method-set-is-valid" colSpan="8"/>
  	 	</panel>
 	</form>
     
@@ -52,7 +52,7 @@
         </panel>
        
     	<panel sidebar="true" title="Actions">
-    		<button name="generateMoves" readonlyIf="dataInputList == null || dataInputList.isEmpty()" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" />
+    		<button name="generateMoves" readonlyIf="dataInputList == null || dataInputList.isEmpty()" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" colSpan="12" />
     	</panel>
         
     </form>
