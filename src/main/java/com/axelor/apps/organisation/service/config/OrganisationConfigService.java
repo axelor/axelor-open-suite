@@ -20,8 +20,10 @@ package com.axelor.apps.organisation.service.config;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.apps.organisation.db.OrganisationConfig;
 
-public class OrganisationConfigService extends OrganisationConfigRepository{
+
+public class OrganisationConfigService {
 	
 	public OrganisationConfig getOrganisationConfig(Company company) throws AxelorException  {
 		
