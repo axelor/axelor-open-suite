@@ -102,7 +102,6 @@
     <panel title="Linked to">
       <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
       <field name="lead"/>
-      <field name="campaign"/>
     </panel>
     <panel title="Assigned to">
       <field name="user"/>
@@ -159,7 +158,6 @@
     	<field name="amount" expr="eval: _lead.opportunityAmount"/>
     	<field name="description" expr="eval: _lead.description"/>
     	<field name="source" expr="eval: _lead.source"/>
-    	<field name="campaign" expr="eval: _lead.campaign"/>
     	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="salesStageSelect" expr="1"/>

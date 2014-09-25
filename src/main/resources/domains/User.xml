@@ -7,10 +7,6 @@
 
   <entity name="User" sequential="true" lang="java">
   
-   	<many-to-one name="fbPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential" title="Facebook Personal Credential"/>
-   	<many-to-one name="twtPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential" title="Twitter Personal Credential"/>
-   	<many-to-one name="lnPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential" title="LinkedIn Personal Credential"/>
-    
 <!--     Calendar -->
     <many-to-many name="followersCalUserSet" ref="com.axelor.auth.db.User" title="Followers users"/>
     <many-to-many name="authorizeCalUserSet" ref="com.axelor.auth.db.User" title="Authorized users to follow me"/>

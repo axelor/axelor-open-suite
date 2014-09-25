@@ -30,7 +30,7 @@
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
-   <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" 
+   	<form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" 
 		onLoad="action-lead-attrs-readonly-other-address,action-lead-method-set-social-network-url" 
 		onNew="action-group-crm-lead-onnew" >
 		
@@ -124,18 +124,16 @@
 		
 		<panel sidebar="true" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="12">
 			<field name="source" colSpan="6"/>
-			<field name="campaign" colSpan="6"/>
 			<field name="referredBy" colSpan="6"/>
 			<field name="opportunityAmount" colSpan="6"/>
 		</panel>
      
-		<!--TODO:Remove this comment when portlet starts working-->
-		<!--<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6">
-		  <dashlet   action="action-lead-view-upcoming-events"/>
-		  <dashlet   action="action-lead-view-historical-events-completed"/>
-		  <dashlet   action="action-lead-view-opportunity"/>
-		  <dashlet   action="action-lead-view-event-ticket"/>
-		</panel>-->
+ 		<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6">
+			<panel-dashlet action="action-lead-view-upcoming-events"/>
+			<panel-dashlet action="action-lead-view-historical-events-completed"/>
+			<panel-dashlet action="action-lead-view-opportunity"/>
+			<panel-dashlet action="action-lead-view-event-ticket"/>
+ 		</panel>
 
 	</form>
 

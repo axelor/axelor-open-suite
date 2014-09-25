@@ -48,7 +48,6 @@
   	<string name="statusDescription" title="Status description" large="true"/>
     <decimal name="opportunityAmount" title="Opportunity amount"/>
  	<string name="sourceDescription" title="Source description" large="true"/>
-  	<many-to-one name="campaign" ref="com.axelor.apps.marketing.db.Campaign" title="Marketing Campaign"/> 
     <string name="referredBy" title="Referred by"/>
     <boolean name="isDoNotCall" title="Allow calls ?"/>
     <boolean name="isDoNotSendEmail" title="Allow emails ?"/>
@@ -59,8 +58,6 @@
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" />
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"  />
   	
-	<!--   	Social Network -->
-	<one-to-one name="snProfile" ref="com.axelor.apps.socialnetwork.db.SnProfile"/>
     
     <string name="fullName" title="Contact name" namecolumn="true">
 	    <![CDATA[

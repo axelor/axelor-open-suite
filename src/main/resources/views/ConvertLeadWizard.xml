@@ -21,11 +21,36 @@
 			<panel title="Convert into Contact" showIf="hasConvertIntoContact">
 				<field name="contactPartner" title="Contact" colSpan="12" canSelect="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor >
-						<label title="Personal"/>
-						<field name="fullName" title="Name" colSpan="12"/>
+						<label title="Personal" colSpan="12"/>
+						<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
 						<field name="titleSelect"  showTitle="false" placeholder="Civility" colSpan="2"/>
-						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5"/>
-						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="5"/>
+						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
+						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
+						<label title="Contact"/>
+						<field name="jobTitle"/>
+						<field name="reportsTo"/>
+						<field name="fixedPhone"/>
+						<field name="mobilePhone"/>
+						<field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
+						<field name="fax"/>
+						
+			<!-- 			<field name="mainInvoicingAddress" title="Address"/>    -->
+						<label title="Address"/>
+						<field name="primaryAddress" title="Address" widget="STRING" type="STRING" colSpan="12"/>
+						<field name="primaryCity" title="City" colSpan="4"/>
+						<field name="primaryState" title="State" colSpan="4"/>
+						<field name="primaryPostalCode" title="Postal code" colSpan="4"/>
+						<field colSpan="12" name="primaryCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+						
+						<label title="Notes"/>
+					  	<field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12" />
+						<label title="Settings"/>
+					  	<field name="languageSelect"/>
+					  	<label title="Assigned to"/>
+					    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
+					    <field name="user"/>
+					    <field name="team"/>
+		
 			
 					</editor>
 				</field>
@@ -162,7 +187,9 @@
     
 	
 	
-	<form onLoad="action-convert-lead-wizard-attrs-default-contact-address" onNew="action-partner-contact-record-default" name="contact-lead-converted-form" title="Contact" model="com.axelor.apps.base.db.Partner">
+	<form name="contact-lead-converted-form" title="Contact" model="com.axelor.apps.base.db.Partner"
+		onNew="action-partner-contact-record-default"
+		onLoad="action-convert-lead-wizard-attrs-default-contact-address,action-partner-attrs-change-name" >
   
 		<panel title="Personal">
 			<panel colSpan="4">
@@ -172,8 +199,8 @@
 			  <field name="fullName" title="Name" colSpan="12">
 			    <editor>
 			      <field name="titleSelect"  showTitle="false" placeholder="Civility" colSpan="2"/>
-			      <field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5"/>
-			       <field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="5"/>
+			      <field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
+			       <field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
 			    </editor>
 			  </field>
 			</panel>
@@ -188,6 +215,8 @@
 			<field name="mobilePhone"/>
 			<field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
 			<field name="fax"/>
+			
+<!-- 			<field name="mainInvoicingAddress" title="Address"/>    -->
 			<panel title="Address" css="address-list">
 				<field name="primaryAddress" title="Address" widget="STRING" type="STRING" colSpan="12"/>
 				<field name="primaryCity" title="City" colSpan="4"/>
@@ -198,7 +227,7 @@
 		</panel>
 		<panel-tabs>
 			<panel title="Notes">
-			  <field colSpan="12" name="description" showTitle="false" widget="Html" x-lite="true"/>
+			  <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12" />
 			</panel>
 			<panel title="Settings"  >
 			  <field name="languageSelect"/>
@@ -209,10 +238,12 @@
 			  </panel>
 			</panel>
 		</panel-tabs>
-</form>
+	</form>
 
 	
-	<form  onLoad="action-convert-lead-wizard-record-default-partner-address" onNew="action-partner-record-set-default" name="partner-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner">
+	<form name="partner-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner"
+	onNew="action-partner-record-set-default" 
+	onLoad="action-convert-lead-wizard-record-default-partner-address">
 	
 		<panel title="Personal">
 		  <panel colSpan="4">
@@ -419,7 +450,6 @@
 	</form>
 
 	
-	
 	<form   name="call-lead-converted-form" title="Call" model="com.axelor.apps.crm.db.Event">
 	  <panel title="Informations">
 	    <field name="subject"/>
@@ -455,26 +485,26 @@
     	<field name="callStatusSelect" expr="2"/>
     </action-record>
 	
-<form   name="meeting-lead-converted-form" title="Meeting" model="com.axelor.apps.crm.db.Event">
-  <panel title="Informations">
-    <field name="subject"  />
-    <field name="statusSelect"/>
-    <field name="meetingType" widget="SuggestBox"/>
-  </panel>
-  
-    <panel title="Description"  css="groupTitle">
-      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
-    </panel>
-    <panel title="Dates"  css="groupTitle">
-      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
-      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
-      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
-    </panel>
-  <panel title="Assignment">
-    <field name="user"/>
-    <field name="team" onSelect="action-event-attrs-team-domain"/>
-  </panel>
-</form>
+	<form   name="meeting-lead-converted-form" title="Meeting" model="com.axelor.apps.crm.db.Event">
+	  <panel title="Informations">
+	    <field name="subject"  />
+	    <field name="statusSelect"/>
+	    <field name="meetingType" widget="SuggestBox"/>
+	  </panel>
+	  
+	    <panel title="Description"  css="groupTitle">
+	      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
+	    </panel>
+	    <panel title="Dates"  css="groupTitle">
+	      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+	    </panel>
+	  <panel title="Assignment">
+	    <field name="user"/>
+	    <field name="team" onSelect="action-event-attrs-team-domain"/>
+	  </panel>
+	</form>
 
     
      <action-record name="action-convert-lead-wizard-default-meeting-event" model="com.axelor.apps.crm.db.Event">
@@ -488,28 +518,27 @@
     	<field name="duration" expr="0"/>
     </action-record>
     
-<form   name="crm-task-lead-converted-form" title="Task" model="com.axelor.apps.crm.db.Event">
-  <panel title="Informations">
-    <field name="subject" />
-    <field name="taskStatusSelect"/>
-    <field name="prioritySelect"/>
-  </panel>
-    <panel title="Description" css="groupTitle">
-      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
-    </panel>
-    <panel title="Dates"  css="groupTitle">
-      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
-      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
-      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
-      <field name="limitDateT"/>
-    </panel>
-  <panel title="Assigned to">
-    <field name="user"/>
-    <field name="team" onSelect="action-event-attrs-team-domain"/>
-  </panel>
-</form>
+	<form   name="crm-task-lead-converted-form" title="Task" model="com.axelor.apps.crm.db.Event">
+	  <panel title="Informations">
+	    <field name="subject" />
+	    <field name="taskStatusSelect"/>
+	    <field name="prioritySelect"/>
+	  </panel>
+	    <panel title="Description" css="groupTitle">
+	      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
+	    </panel>
+	    <panel title="Dates"  css="groupTitle">
+	      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+	      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	      <field name="limitDateT"/>
+	    </panel>
+	  <panel title="Assigned to">
+	    <field name="user"/>
+	    <field name="team" onSelect="action-event-attrs-team-domain"/>
+	  </panel>
+	</form>
 
-    
     <action-record name="action-convert-lead-wizard-default-task-event" model="com.axelor.apps.crm.db.Event">
     	<field name="typeSelect" expr="eval: 3"/>
     	<field name="lead" expr="eval: _lead"/>
