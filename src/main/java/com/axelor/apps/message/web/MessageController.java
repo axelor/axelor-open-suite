@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.message.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
@@ -28,7 +25,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-public class MessageController extends MessageRepository {
+public class MessageController {
 
 	@Inject
 	private Provider<MessageService> messageService;

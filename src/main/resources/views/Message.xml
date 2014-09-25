@@ -65,7 +65,7 @@
     </action-group>
     
     <action-method name="action-message-method-print-pdf-email">
-		<call class="com.axelor.apps.message.web.MessageController" method="printMessage"/>
+		<call class="com.axelor.apps.base.web.MessageController" method="printMessage"/>
 	</action-method>
 	
 	<action-record name="action-message-record-default-media-type" model="com.axelor.apps.message.db.Message">
