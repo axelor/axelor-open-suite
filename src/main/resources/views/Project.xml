@@ -61,9 +61,9 @@
 	    <panel-related title="Members" field="memberUserSet"/>    
 	  </panel-tabs>  
 	  <panel sidebar="true" title="Action(s)">
-	    <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="action-group-organisation-generate-draftinvoice-click"/>
-	    <button name="showTask" title="Show tasks" colSpan="1" onClick="action-project-view-task"/>
-	    <button name="updateTaskProgression" title="Update task progress" colSpan="1" onClick="action-project-method-update-task-progress"/>
+	    <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="12" onClick="action-group-organisation-generate-draftinvoice-click"/>
+	    <button name="showTask" title="Show tasks" colSpan="12" onClick="action-project-view-task"/>
+	    <button name="updateTaskProgression" title="Update task progress" colSpan="12" onClick="action-project-method-update-task-progress"/>
 	  </panel>
 	</form>
 
