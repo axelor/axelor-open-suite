@@ -25,6 +25,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -38,6 +39,8 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -81,12 +84,14 @@ public class PartnerController {
 		User user = AuthUtils.getUser();
 
 		StringBuilder url = new StringBuilder();
-		
+		String attachmentPath = AppSettings.get().getPath("file.upload.dir","");
+		attachmentPath = attachmentPath.endsWith("/") ? attachmentPath : attachmentPath+"/";
 		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect(); 
 		
 		url.append(new ReportSettings(IReport.PARTNER)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
+					.addParam("AttachmentPath",attachmentPath)
 					.addParam("PartnerId", partner.getId().toString())
 					.getUrl());
 		
@@ -120,11 +125,14 @@ public class PartnerController {
 		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+		String attachmentPath = AppSettings.get().getPath("file.upload.dir","");
+		attachmentPath = attachmentPath.endsWith("/") ? attachmentPath : attachmentPath+"/";
 		
 		url.append(new ReportSettings(IReport.PHONE_BOOK)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
 					.addParam("UserId", user.getId().toString())
+					.addParam("AttachmentPath",attachmentPath)
 					.getUrl());
 		
 		LOG.debug("URL : {}", url);
@@ -156,12 +164,15 @@ public class PartnerController {
 		StringBuilder url = new StringBuilder();
 
 		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
+		String attachmentPath = AppSettings.get().getPath("file.upload.dir","");
+		attachmentPath = attachmentPath.endsWith("/") ? attachmentPath : attachmentPath+"/";
 
 		url.append(new ReportSettings(IReport.COMPANY_PHONE_BOOK)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
 					.addParam("UserId", user.getId().toString())
+					.addParam("AttachmentPath",attachmentPath)
 					.getUrl());
 		
 		LOG.debug("URL : {}", url);
@@ -201,6 +212,7 @@ public class PartnerController {
 		.addParam("__locale", "fr_FR")
 		.addParam("UserId", user.getId().toString())
 		.addParam("PartnerId", partner.getId().toString())
+		.addParam("PartnerPic",partner.getPicture() != null ? MetaFiles.getPath(partner.getPicture()).toString() : "")
 		.getUrl());
 		
 		LOG.debug("URL : {}", url);

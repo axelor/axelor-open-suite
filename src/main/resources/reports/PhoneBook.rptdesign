@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140225-1404></property>
     <list-property name="propertyBindings">
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">231</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">231</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">231</property>
+        </structure>
         <structure>
             <property name="name">odaURL</property>
             <property name="id">230</property>
@@ -13,33 +25,9 @@
             <expression name="value" type="javascript">params["UserName"].value</expression>
         </structure>
         <structure>
-            <property name="name">odaDriverClass</property>
-            <property name="id">230</property>
-        </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">230</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">230</property>
-        </structure>
-        <structure>
             <property name="name">odaPassword</property>
             <property name="id">230</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">230</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">230</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">230</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -110,6 +98,21 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="4745">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="230">
@@ -131,6 +134,8 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -140,65 +145,72 @@
                 <structure>
                     <property name="columnName">partner_type_select</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">partner_type_select</text-property>
                     <text-property name="heading">partner_type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">CompanyName</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">CompanyName</text-property>
                     <text-property name="heading">CompanyName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">email</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">email</text-property>
                     <text-property name="heading">email</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PartnerName</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">PartnerName</text-property>
                     <text-property name="heading">PartnerName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">FirstChar</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">FirstChar</text-property>
                     <text-property name="heading">FirstChar</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PartnerFirstName</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">PartnerFirstName</text-property>
                     <text-property name="heading">PartnerFirstName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">is_contact</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">is_contact</text-property>
                     <text-property name="heading">is_contact</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">fixed_phone</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">fixed_phone</text-property>
                     <text-property name="heading">fixed_phone</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">fax</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">fax</text-property>
                     <text-property name="heading">fax</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">mobile_phone</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">mobile_phone</text-property>
                     <text-property name="heading">mobile_phone</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">contact_picture</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">contact_picture</text-property>
+                    <text-property name="heading">contact_picture</text-property>
+                </structure>
             </list-property>
-            <list-property name="parameters"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">1</property>
+                    <expression name="defaultValue" type="javascript">params["AttachmentPath"].value</expression>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -249,6 +261,11 @@
                     <structure>
                         <property name="position">10</property>
                         <property name="name">mobile_phone</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">contact_picture</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -325,22 +342,47 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">contact_picture</property>
+                    <property name="nativeName">contact_picture</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select ContactPartner.partner_type_select, string_agg(Partner.name, ', ') as "CompanyName",
 EmailAddress.address as email, ContactPartner.name as "PartnerName", Upper(SUBSTRING (ContactPartner.name, 1, 1)) as "FirstChar", 
 ContactPartner.first_name as "PartnerFirstName", ContactPartner.is_contact, ContactPartner.fixed_phone,
-ContactPartner.fax, ContactPartner.mobile_phone
+ContactPartner.fax, ContactPartner.mobile_phone, TEXTCAT(?,MetaFile.file_path) as contact_picture
 from base_partner as Partner
 left outer join base_partner_contact_partner_set as ContactSet on (ContactSet.base_partner = Partner.id)
 left outer join base_partner as ContactPartner on (ContactSet.contact_partner_set = ContactPartner.id and ContactPartner.partner_type_select = 2)
 left join message_email_address as EmailAddress on (ContactPartner.email_address = EmailAddress.id)
+left join meta_file as MetaFile on (MetaFile.id = ContactPartner.picture)
 where ContactPartner.name != '' and Partner.partner_type_select = 1
 group by ContactPartner.partner_type_select,  EmailAddress.address, ContactPartner.name, "FirstChar", 
 ContactPartner.first_name, ContactPartner.is_contact, ContactPartner.fixed_phone, ContactPartner.mobile_phone,
-ContactPartner.fax order by ContactPartner.name]]></xml-property>
+ContactPartner.fax,contact_picture order by ContactPartner.name]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -2174,6 +2216,13 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                         <expression name="expression" type="javascript">dataSetRow["mobile_phone"]</expression>
                                         <property name="dataType">string</property>
                                     </structure>
+                                    <structure>
+                                        <property name="name">ContactPicture</property>
+                                        <text-property name="displayName">ContactPicture</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["contact_picture"]</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">false</property>
+                                    </structure>
                                 </list-property>
                                 <property name="pageBreakInterval">0</property>
                                 <list-property name="filter">
@@ -2215,30 +2264,20 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                         <property name="pageBreakInside">avoid</property>
                                         <property name="height">1.3020833333333333in</property>
                                         <cell id="4110">
-                                            <grid id="4706">
-                                                <property name="height">1.21875in</property>
-                                                <property name="width">1.21875in</property>
-                                                <column id="4707">
-                                                    <property name="width">1.21875in</property>
-                                                </column>
-                                                <row id="4708">
-                                                    <property name="height">1.21875in</property>
-                                                    <cell id="4709">
-                                                        <property name="borderBottomColor">#606062</property>
-                                                        <property name="borderBottomStyle">solid</property>
-                                                        <property name="borderBottomWidth">thin</property>
-                                                        <property name="borderLeftColor">#606062</property>
-                                                        <property name="borderLeftStyle">solid</property>
-                                                        <property name="borderLeftWidth">thin</property>
-                                                        <property name="borderRightColor">#606062</property>
-                                                        <property name="borderRightStyle">solid</property>
-                                                        <property name="borderRightWidth">thin</property>
-                                                        <property name="borderTopColor">#606062</property>
-                                                        <property name="borderTopStyle">solid</property>
-                                                        <property name="borderTopWidth">thin</property>
-                                                    </cell>
-                                                </row>
-                                            </grid>
+                                            <image id="4744">
+                                                <property name="borderBottomStyle">solid</property>
+                                                <property name="borderBottomWidth">thin</property>
+                                                <property name="borderLeftStyle">solid</property>
+                                                <property name="borderLeftWidth">thin</property>
+                                                <property name="borderRightStyle">solid</property>
+                                                <property name="borderRightWidth">thin</property>
+                                                <property name="borderTopStyle">solid</property>
+                                                <property name="borderTopWidth">thin</property>
+                                                <property name="height">116px</property>
+                                                <property name="width">115px</property>
+                                                <property name="source">file</property>
+                                                <expression name="uri" type="javascript">row["ContactPicture"]</expression>
+                                            </image>
                                         </cell>
                                         <cell id="4115">
                                             <grid id="4710">
@@ -2538,6 +2577,13 @@ if(row["fax"] != null){row["fax"]}}</VALUE-OF>]]></text-property>
                                         <expression name="expression" type="javascript">dataSetRow["mobile_phone"]</expression>
                                         <property name="dataType">string</property>
                                     </structure>
+                                    <structure>
+                                        <property name="name">ContactPicture</property>
+                                        <text-property name="displayName">ContactPicture</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["contact_picture"]</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">false</property>
+                                    </structure>
                                 </list-property>
                                 <property name="pageBreakInterval">0</property>
                                 <list-property name="filter">
@@ -2579,30 +2625,47 @@ if(row["fax"] != null){row["fax"]}}</VALUE-OF>]]></text-property>
                                         <property name="pageBreakInside">avoid</property>
                                         <property name="height">1.3020833333333333in</property>
                                         <cell id="4514">
-                                            <grid id="4515">
-                                                <property name="height">1.21875in</property>
-                                                <property name="width">1.21875in</property>
-                                                <column id="4516">
-                                                    <property name="width">1.21875in</property>
-                                                </column>
-                                                <row id="4517">
-                                                    <property name="height">1.21875in</property>
-                                                    <cell id="4518">
-                                                        <property name="borderBottomColor">#606062</property>
-                                                        <property name="borderBottomStyle">solid</property>
-                                                        <property name="borderBottomWidth">thin</property>
-                                                        <property name="borderLeftColor">#606062</property>
-                                                        <property name="borderLeftStyle">solid</property>
-                                                        <property name="borderLeftWidth">thin</property>
-                                                        <property name="borderRightColor">#606062</property>
-                                                        <property name="borderRightStyle">solid</property>
-                                                        <property name="borderRightWidth">thin</property>
-                                                        <property name="borderTopColor">#606062</property>
-                                                        <property name="borderTopStyle">solid</property>
-                                                        <property name="borderTopWidth">thin</property>
-                                                    </cell>
-                                                </row>
-                                            </grid>
+                                            <image id="4746">
+                                                <property name="fontFamily">sans-serif</property>
+                                                <property name="fontSize">10pt</property>
+                                                <property name="fontWeight">normal</property>
+                                                <property name="fontStyle">normal</property>
+                                                <property name="fontVariant">normal</property>
+                                                <property name="color">#FFFFFF</property>
+                                                <property name="textLineThrough">none</property>
+                                                <property name="textOverline">none</property>
+                                                <property name="textUnderline">none</property>
+                                                <property name="borderBottomColor">black</property>
+                                                <property name="borderBottomStyle">solid</property>
+                                                <property name="borderBottomWidth">thin</property>
+                                                <property name="borderLeftColor">black</property>
+                                                <property name="borderLeftStyle">solid</property>
+                                                <property name="borderLeftWidth">thin</property>
+                                                <property name="borderRightColor">black</property>
+                                                <property name="borderRightStyle">solid</property>
+                                                <property name="borderRightWidth">thin</property>
+                                                <property name="borderTopColor">black</property>
+                                                <property name="borderTopStyle">solid</property>
+                                                <property name="borderTopWidth">thin</property>
+                                                <property name="marginTop">0pt</property>
+                                                <property name="marginLeft">0pt</property>
+                                                <property name="marginBottom">0pt</property>
+                                                <property name="marginRight">0pt</property>
+                                                <property name="paddingTop">1pt</property>
+                                                <property name="paddingLeft">1pt</property>
+                                                <property name="paddingBottom">1pt</property>
+                                                <property name="paddingRight">1pt</property>
+                                                <property name="display">block</property>
+                                                <property name="pageBreakAfter">auto</property>
+                                                <property name="pageBreakBefore">auto</property>
+                                                <property name="pageBreakInside">avoid</property>
+                                                <property name="showIfBlank">false</property>
+                                                <property name="overflow">hidden</property>
+                                                <property name="height">116px</property>
+                                                <property name="width">115px</property>
+                                                <property name="source">file</property>
+                                                <expression name="uri" type="javascript">row["ContactPicture"]</expression>
+                                            </image>
                                         </cell>
                                         <cell id="4519">
                                             <grid id="4640">

@@ -18,16 +18,24 @@
 package com.axelor.apps.base.service.message;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageServiceImpl;
+import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -37,6 +45,11 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	
 	@Inject
 	private UserService userService;
+	
+	@Inject
+	private TemplateMessageServiceBaseImpl templateMessageServiceBaseImpl;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(MessageServiceBaseImpl.class);
 	
 	@Inject
 	public MessageServiceBaseImpl(UserService userService) {
@@ -100,23 +113,22 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	
 	
 	public String printMessage(Message message){
-//		Company company = message.getCompany();
-//		if(company == null)
-//			return null;
-//		PrintingSettings printSettings = company.getPrintingSettings();
-//		printSettings = company.getPrintingSettings();
-//		if(printSettings == null || printSettings.getDefaultMailBirtTemplate() == null)
-//			return null;
-//		BirtTemplate birtTemplate = printSettings.getDefaultMailBirtTemplate();
-//		LOG.debug("Default BirtTemplate : {}",birtTemplate);
-//		TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
-//		maker.setContext(JPA.find(message.getClass(), message.getId()), "Message");
-//		try {
-//			return templateMessageService.generatePdfFromBirtTemplate(maker, birtTemplate, "url");
-//		} catch (AxelorException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		Company company = message.getCompany();
+		if(company == null)
+			return null;
+		PrintingSettings printSettings = company.getPrintingSettings();
+		printSettings = company.getPrintingSettings();
+		if(printSettings == null || printSettings.getDefaultMailBirtTemplate() == null)
+			return null;
+		BirtTemplate birtTemplate = printSettings.getDefaultMailBirtTemplate();
+		LOG.debug("Default BirtTemplate : {}",birtTemplate);
+		TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
+		maker.setContext(JPA.find(message.getClass(), message.getId()), "Message");
+		try {
+			return templateMessageServiceBaseImpl.generatePdfFromBirtTemplate(maker, birtTemplate, "url");
+		} catch (AxelorException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
