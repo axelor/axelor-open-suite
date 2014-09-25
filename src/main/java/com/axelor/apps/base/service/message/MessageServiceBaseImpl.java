@@ -35,6 +35,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -45,9 +46,6 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	
 	@Inject
 	private UserService userService;
-	
-	@Inject
-	private TemplateMessageServiceBaseImpl templateMessageServiceBaseImpl;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MessageServiceBaseImpl.class);
 	
@@ -125,7 +123,7 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 		TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
 		maker.setContext(JPA.find(message.getClass(), message.getId()), "Message");
 		try {
-			return templateMessageServiceBaseImpl.generatePdfFromBirtTemplate(maker, birtTemplate, "url");
+			return Beans.get(TemplateMessageServiceBaseImpl.class).generatePdfFromBirtTemplate(maker, birtTemplate, "url");
 		} catch (AxelorException e) {
 			e.printStackTrace();
 		}
