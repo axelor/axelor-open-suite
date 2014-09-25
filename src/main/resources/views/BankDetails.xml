@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="bank-details-grid" id="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
+		<field name="ownerName" />
+		<field name="bankAddress" />
+		<field name="iban" />
+		<field name="bic" />
+	</grid>
+
+	<form onSave="action-validate-bank-details-bbanKey" onNew="action-set-default-partner" name="bank-details-form" title="Bank details" 
+	model="com.axelor.apps.base.db.BankDetails" id="bank-details-form">
+		<panel title="Owner">
+			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
+			<field name="ownerName" />
+		</panel>
+		<panel title="Bank">
+			<field name="countryCode" />
+			<field name="bankAddress" />
+		</panel>
+		<panel title="BBAN">
+			<field name="bankCode" />
+			<field name="sortCode" />
+			<field name="accountNbr" />
+			<field name="bbanKey" />
+		</panel>
+		<panel title="IBAN">
+			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
+			<field name="bic" />
+			<field name="ibanBic" readonly="true" />
+		</panel>
+	</form>
+
+	<action-group name="action-group-account-bankdetails-iban-onchange">
+		<action name="save" />
+		<action name="action-method_bank-details-validIban" />
+		<action name="save" />
+	</action-group>
+
+	<action-method name="action-method_bank-details-validIban">
+		<call class="com.axelor.apps.base.web.BankDetailsController" method="onChangeIban" />
+	</action-method>
+
+	<action-record name="action-set-owner-name" model="com.axelor.apps.base.db.BankDetails">
+		<field name="ownerName" expr="eval:partner != null?(partner.name != null?partner.name:'')+' '+(partner.firstName != null?partner.firstName:''):''" />
+	</action-record>
+
+	<action-record name="action-set-default-partner" model="com.axelor.apps.base.db.BankDetails">
+		<field name="partner" expr="eval:_parent" if="_parent != null &amp;&amp; _parent.get('_model') == 'com.axelor.apps.base.db.Partner'" />
+		<field name="ownerName" if="_parent != null &amp;&amp; _parent.get('_model') == 'com.axelor.apps.base.db.Partner'"
+			expr="eval:_parent != null?(_parent.name != null?_parent.name:'')+' '+(_parent.firstName != null?_parent.firstName:''):''" />
+	</action-record>
+
+	<action-record name="action-record-bank-details-bbanKey" model="com.axelor.apps.contact.db.BankDetails">
+		<field name="bbanKey" 
+			expr="eval: ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) )"/>
+	</action-record>
+
+	<action-validate name="action-validate-bank-details-bbanKey">
+		<error message="Clé RIB incorrecte"
+			if="( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) ) != Long.parseLong( bbanKey )" />
+	</action-validate>
+
+
+
+</object-views>
