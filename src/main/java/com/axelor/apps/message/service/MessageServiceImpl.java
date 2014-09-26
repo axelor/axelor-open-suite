@@ -20,7 +20,6 @@ package com.axelor.apps.message.service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.mail.MessagingException;
@@ -32,8 +31,6 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.db.Query;
-import com.axelor.db.mapper.Property;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailSender;
 import com.axelor.mail.SmtpAccount;
@@ -44,7 +41,7 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MessageServiceImpl implements MessageService {
+public class MessageServiceImpl extends MessageRepository implements MessageService {
 
 	private DateTime todayTime;
 	
@@ -62,6 +59,7 @@ public class MessageServiceImpl implements MessageService {
 	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath, String addressBlock, int mediaTypeSelect)  {
 		
+		
 		return save(this.createMessage(
 				content, 
 				null, 
@@ -71,9 +69,9 @@ public class MessageServiceImpl implements MessageService {
 				0, 
 				todayTime.toLocalDateTime(), 
 				false, 
-				MessageRepository.STATUS_DRAFT, 
+				STATUS_DRAFT, 
 				subject, 
-				MessageRepository.TYPE_SENT,
+				TYPE_SENT,
 				toEmailAddressList,
 				ccEmailAddressList,
 				bccEmailAddressList,
@@ -205,72 +203,10 @@ public class MessageServiceImpl implements MessageService {
 
 
 	@Override
-	public Query<Message> all() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public Message copy(Message arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public Message create(Map<String, Object> arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public List<Property> fields() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public Message find(Long arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void flush() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void refresh(Message arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void remove(Message arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public Message save(Message arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
 	public String printMessage(Message message) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }
