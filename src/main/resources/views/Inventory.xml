@@ -10,9 +10,7 @@
         <field name="statusSelect"/>
     </grid>
 
-	<form name="inventory-form" title="Inventory"
-		model="com.axelor.apps.stock.db.Inventory" onSave="action-set-inventory-seq"
-		onNew="action-inventory-record-new">
+	<form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory" onSave="action-set-inventory-seq" onNew="action-inventory-record-new">
 	  <panel>
 	    <field name="inventorySeq" colSpan="4"/>    
 	    <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
@@ -40,7 +38,7 @@
 	    <button name="fillInventory" title="Fill inventory" onClick="action-group-stock-inventory-fillinventory-click"/>
 	  </panel>
 	  <panel-related field="inventoryLineList" readonlyIf="statusSelect == 3" colSpan="12"/>
-	  <panel sidebar="true" title="Action(s)">
+	  <panel sidebar="true" title="Actions">
 	    <button name="plan" title="Plan" showIf="statusSelect == 1 &amp;&amp; location != null"   onClick="action-group-stock-inventory-plan-click"/>
 	    <button name="realize" title="Realize" showIf="statusSelect == 2"   onClick="action-group-stock-inventory-realize-click"/>
 	    <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3"   onClick="action-group-stock-inventory-cancel-click"/>

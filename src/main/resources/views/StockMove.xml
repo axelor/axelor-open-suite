@@ -89,7 +89,7 @@
 	    </panel>
 	  </panel-tabs>
 	  
-	  <panel sidebar="true" title="Action(s)">
+	  <panel sidebar="true" title="Actions">
 			<button name="plan" title="Plan" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
 			<button name="realize" title="Realize" showIf="statusSelect == 2" onClick="action-group-stock-stockmove-realize-click"/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" onClick="action-group-stock-stockmove-cancel-click"/>
@@ -100,10 +100,10 @@
 			<button name="viewDirection" title="View Direction" help="View Direction" showIf="typeSelect == 2 || statusSelect != 1"   icon="fa-location-arrow" onClick="action-stock-move-method-view-direction"/>
 	  </panel>
 	  
-	   <panel sidebar="true" title="Split/Ship/Receive" >
-	      <button name="splitByUnit" title="Split by unit" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-method-split-stock-move-lines-unit"/>
-	      <button name="specialSplit" title="Special split" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-wizard-special-split"/>
-	      <button name="shipReciveAllProducts" title="Ship/Receive all products" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-stock-move-ship-recieve-all-products"/>
+	   <panel sidebar="true" title="Split/Ship/Receive" showIf="statusSelect == 1 || statusSelect == 2" >
+	      <button name="splitByUnit" title="Split by unit" onClick="save,action-stock-move-method-split-stock-move-lines-unit"/>
+	      <button name="specialSplit" title="Special split"  onClick="save,action-stock-move-wizard-special-split"/>
+	      <button name="shipReciveAllProducts" title="Ship/Receive all products" onClick="save,action-stock-move-ship-recieve-all-products"/>
 	    </panel>
 	</form>
     

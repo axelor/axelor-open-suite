@@ -16,7 +16,7 @@
 	    <field name="excludeOutOfStock" title="Exclude out of stock products ?" widget="Boolean"/>
 	    <field name="includeObsolete" title="Include obsolete products ?" widget="Boolean"/>
 	  </panel>
-	  <panel sidebar="true" title="Action(s)">
+	  <panel sidebar="true" title="Actions">
 	    <button name="validate" title="Validate"   onClick="action-group-stock-createinventory-wizard-validate-click"/>
 	  </panel>
 	</form>
