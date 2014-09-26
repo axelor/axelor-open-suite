@@ -22,9 +22,10 @@ import java.util.List;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.db.Repository;
 import com.google.inject.persist.Transactional;
 
-public interface MessageService {
+public interface MessageService extends Repository<Message>  {
 
 	
 	
