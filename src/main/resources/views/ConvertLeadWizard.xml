@@ -19,7 +19,7 @@
 	 	</panel>
 	 	<panel-tabs showIf="hasConvertIntoContact || hasConvertIntoPartner || hasConvertIntoOpportunity || hasConvertIntoCall || hasConvertIntoMeeting || hasConvertIntoTask">
 			<panel title="Convert into Contact" showIf="hasConvertIntoContact">
-				<field name="contactPartner" title="Contact" colSpan="12" canSelect="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+				<field name="contactPartner" showTitle="false" colSpan="12" canSelect="false" canEdit="false"  form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor >
 						<label title="Personal" colSpan="12"/>
 						<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
@@ -55,11 +55,75 @@
 					</editor>
 				</field>
 			</panel>
-			<panel title="Convert into Partner" showIf="hasConvertIntoPartner" showTitle="false">
-				<field name="partner" title="Partner" colSpan="12" canSelect="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one"/>
+			<panel title="Convert into Partner" showIf="hasConvertIntoPartner">
+				<field name="partner" showTitle="false" colSpan="12" canSelect="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+					<editor>
+						<label title="Personal" colSpan="12"/>
+						<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
+					    <field name="partnerTypeSelect" showTitle="false" onChange="action-group-crm-convlead-partnertype-onchange"/>
+						<field name="titleSelect"  showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
+						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
+						<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
+						
+						<label title="Informations" colSpan="12"/>
+		      			<field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
+		      			<field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
+		      			
+		    			<label title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12"/>
+				        <field name="partnerCategory" widget="SuggestBox" hideIf="partnerTypeSelect == 2"/>
+				        <field name="industrySectorSelect" hideIf="partnerTypeSelect == 2"/>
+				        <field name="site" hideIf="partnerTypeSelect == 2"/>
+				        <field name="department" hideIf="partnerTypeSelect == 2"/>
+				        <field name="saleTurnover" hideIf="partnerTypeSelect == 2"/>
+				        <field name="nbrEmployees" hideIf="partnerTypeSelect == 2"/>
+				        <field name="registrationCode" hideIf="partnerTypeSelect == 2"/>
+				        <field name="taxNbr" hideIf="partnerTypeSelect == 2"/>
+				        <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.iscontact = false AND self.partnerTypeSelect = 1"/>
+
+<!-- 		    <panel title="Postal addresses" colSpan="12"> -->
+<!-- 		      <panel title="Invoicing address"> -->
+<!-- 		        <field name="primaryAddress" title="Address" colSpan="6"/> -->
+<!-- 		        <field name="primaryCity" title="City"/> -->
+<!-- 		        <field name="primaryState" title="State"/> -->
+<!-- 		        <field name="primaryPostalCode" title="Postal code"/> -->
+<!-- 		        <field name="primaryCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/> -->
+<!-- 		      </panel> -->
+<!-- 		      <panel colSpan="6" title="Delivery address"> -->
+<!-- 		        <field name="otherAddress" title="Address"/> -->
+<!-- 		        <field name="otherCity" title="City"/> -->
+<!-- 		        <field name="otherState" title="State"/> -->
+<!-- 		        <field name="otherPostalCode" title="Postal code"/> -->
+<!-- 		        <field name="otherCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/> -->
+<!-- 		      </panel> -->
+<!-- 		    </panel> -->
+		   				<label title="Contact" colSpan="12"/>
+						<field name="fixedPhone"/>
+						<field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
+		      			<field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
+		      			<field name="fax"/>
+		     			<field name="webSite"/>
+		     			
+				  		<label title="Notes" colSpan="12"/>
+					  	<field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12" height="7"/>
+					  	
+						<label title="Settings" colSpan="12"/>
+					  	<field name="languageSelect"/>
+					  	
+					  	<label title="Assigned to" colSpan="12"/>
+					    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
+					    <field name="user"/>
+					    <field name="team"/>
+							
+					
+					
+					
+					
+					
+					</editor>
+				</field>
 			</panel>
-			<panel title="Create into Opportunity" showIf="hasConvertIntoOpportunity" showTitle="false">
-				<field name="opportunity" title="Opportunity" colSpan="12" canSelect="false" form-view="opportunity-lead-converted-form" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one">
+			<panel title="Create into Opportunity" showIf="hasConvertIntoOpportunity">
+				<field name="opportunity" showTitle="false" colSpan="12" canSelect="false" form-view="opportunity-lead-converted-form" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one">
 					<editor>
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
@@ -95,8 +159,8 @@
 					</editor>
 				</field>
 			</panel>
-			<panel title="Log a call" showIf="hasConvertIntoCall" showTitle="false">
-				<field name="callEvent" title="Call" colSpan="12" canSelect="false" form-view="call-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
+			<panel title="Log a call" showIf="hasConvertIntoCall">
+				<field name="callEvent" showTitle="false" colSpan="12" canSelect="false" form-view="call-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
 					<editor>
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
@@ -119,8 +183,8 @@
 					</editor>
 				</field>
 			</panel>
-			<panel title="Schedule a meeting" showIf="hasConvertIntoMeeting" showTitle="false">
-				<field name="meetingEvent" title="Meeting" colSpan="12" canSelect="false" form-view="meeting-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
+			<panel title="Schedule a meeting" showIf="hasConvertIntoMeeting">
+				<field name="meetingEvent" showTitle="false" colSpan="12" canSelect="false" form-view="meeting-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
 					<editor>
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
@@ -142,7 +206,7 @@
 					</editor>
 				</field>
 			</panel>
-			<panel title="Create a task" showIf="hasConvertIntoTask" showTitle="false">
+			<panel title="Create a task" showIf="hasConvertIntoTask">
 				<field name="taskEvent" showTitle="false" colSpan="12" canSelect="false" form-view="crm-task-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
 					<editor>
 					  	<label title="Informations" css="label-bold"/>
@@ -243,7 +307,7 @@
 	
 	<form name="partner-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner"
 	onNew="action-partner-record-set-default" 
-	onLoad="action-convert-lead-wizard-record-default-partner-address">
+	onLoad="action-convert-lead-wizard-record-default-partner-address,action-partner-attrs-change-name">
 	
 		<panel title="Personal">
 		  <panel colSpan="4">
@@ -251,8 +315,8 @@
 		  </panel>
 		  <panel colSpan="8">
 		    <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
-		    <field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5"/>
-		    <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" colSpan="5"/>
+		    <field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
+		    <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
 		  </panel>
 		  <panel title="Partner">
 		    <field name="partnerTypeSelect" showTitle="false" onChange="action-group-crm-convlead-partnertype-onchange"/>
