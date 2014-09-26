@@ -30,6 +30,7 @@ import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.db.User;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -69,15 +70,15 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 		Message message = super.createMessage(
 				event.getDescription(), 
 				null, 
-				RELATED_TO_EVENT, 
+				MessageRepository.RELATED_TO_EVENT, 
 				event.getId().intValue(), 
 				event.getRelatedToSelect(), 
 				event.getRelatedToSelectId(), 
 				todayTime.toLocalDateTime(), 
 				false, 
-				STATUS_SENT, 
+				MessageRepository.STATUS_SENT, 
 				"Remind : "+event.getSubject(), 
-				TYPE_RECEIVED,
+				MessageRepository.TYPE_RECEIVED,
 				toEmailAddressList,
 				null,
 				null,

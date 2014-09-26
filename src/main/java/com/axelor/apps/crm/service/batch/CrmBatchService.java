@@ -17,16 +17,14 @@
  */
 package com.axelor.apps.crm.service.batch;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.crm.service.batch.BatchStrategy;
 import com.axelor.apps.crm.db.CrmBatch;
 import com.axelor.apps.crm.db.ICrmBatch;
 import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
@@ -38,12 +36,6 @@ import com.axelor.exception.db.IException;
  */
 public class CrmBatchService extends CrmBatchRepository{
 
-	@Inject
-	private Provider<BatchEventReminder> eventReminderProvider;
-	
-	@Inject
-	private Provider<BatchTarget> targetProvider;
-	
 
 // Appel 	
 	
@@ -85,15 +77,13 @@ public class CrmBatchService extends CrmBatchRepository{
 	
 	public Batch eventReminder(CrmBatch crmBatch) {
 		
-		BatchStrategy strategy = eventReminderProvider.get(); 
-		return strategy.run(crmBatch);
+		return Beans.get(BatchEventReminder.class).run(crmBatch);
 		
 	}
 	
 	public Batch target(CrmBatch crmBatch) {
 		
-		BatchStrategy strategy = targetProvider.get(); 
-		return strategy.run(crmBatch);
+		return Beans.get(BatchTarget.class).run(crmBatch);
 		
 	}
 

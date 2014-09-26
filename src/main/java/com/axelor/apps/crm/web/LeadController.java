@@ -34,21 +34,15 @@ import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 
 public class LeadController {
 
-	@Inject
-	private Provider<MapService> mapProvider;
-	
-	@Inject
-	private Provider<LeadService> leadProvider;
-	
 	private static final Logger LOG = LoggerFactory.getLogger(LeadController.class);
 	
 	@Inject
@@ -77,7 +71,7 @@ public class LeadController {
 			
 		if(!leadIds.equals("")){
 			leadIds = leadIds.substring(0, leadIds.length()-1);	
-			lead = leadProvider.get().find(new Long(lstSelectedleads.get(0)));
+			lead = Beans.get(LeadService.class).find(new Long(lstSelectedleads.get(0)));
 		}else if(lead.getId() != null){
 			leadIds = lead.getId().toString();			
 		}
@@ -137,7 +131,7 @@ public class LeadController {
 			response.setFlash("Can not open map, Please Configure Application Home First.");
 			return;
 		}
-		if (!mapProvider.get().isInternetAvailable()) {
+		if (!Beans.get(MapService.class).isInternetAvailable()) {
 			response.setFlash("Can not open map, Please Check your Internet connection.");
 			return;			
 		}		

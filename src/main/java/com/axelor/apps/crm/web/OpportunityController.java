@@ -28,38 +28,34 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class OpportunityController {
 	
-	@Inject
-	Provider<OpportunityService> OpportunityProvider;
-	
-	
-	@Inject
-	Provider<MapService> mapProvider;
-	
 	public void saveOpportunitySalesStage(ActionRequest request, ActionResponse response) throws AxelorException {
+		
 		Opportunity opportunity = request.getContext().asType(Opportunity.class);
-		Opportunity persistOpportunity = OpportunityProvider.get().find(opportunity.getId());
+		OpportunityService opportunityService = Beans.get(OpportunityService.class);
+		Opportunity persistOpportunity = opportunityService.find(opportunity.getId());
 		persistOpportunity.setSalesStageSelect(opportunity.getSalesStageSelect());
-		OpportunityProvider.get().saveOpportunity(persistOpportunity);
+		opportunityService.saveOpportunity(persistOpportunity);
+		
 	}
 	
 	public void assignToMe(ActionRequest request, ActionResponse response)  {
+		OpportunityService opportunityService = Beans.get(OpportunityService.class);
 		if(request.getContext().get("id") != null){
-			Opportunity opportunity = OpportunityProvider.get().find((Long)request.getContext().get("id"));
+			Opportunity opportunity = opportunityService.find((Long)request.getContext().get("id"));
 			opportunity.setUser(AuthUtils.getUser());
-			OpportunityProvider.get().saveOpportunity(opportunity);
+			opportunityService.saveOpportunity(opportunity);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Opportunity opportunity : OpportunityProvider.get().all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+			for(Opportunity opportunity : opportunityService.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				opportunity.setUser(AuthUtils.getUser());
-				OpportunityProvider.get().saveOpportunity(opportunity);
+				opportunityService.saveOpportunity(opportunity);
 			}
 		}
 		response.setReload(true);
@@ -72,7 +68,7 @@ public class OpportunityController {
 			response.setFlash("Can not open map, Please Configure Application Home First.");
 			return;
 		}
-		if (!mapProvider.get().isInternetAvailable()) {
+		if (!Beans.get(MapService.class).isInternetAvailable()) {
 			response.setFlash("Can not open map, Please Check your Internet connection.");
 			return;			
 		}		
