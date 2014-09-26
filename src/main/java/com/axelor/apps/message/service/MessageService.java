@@ -25,8 +25,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.db.Repository;
 import com.google.inject.persist.Transactional;
 
-public interface MessageService extends Repository<Message>  {
-
+public interface MessageService extends Repository<Message> {
 	
 	
 	@Transactional
@@ -36,6 +35,9 @@ public interface MessageService extends Repository<Message>  {
 	
 	@Transactional
 	public Message sendMessageByEmail(Message message);
+
+
+	public String printMessage(Message message);
 	
 	
 	
