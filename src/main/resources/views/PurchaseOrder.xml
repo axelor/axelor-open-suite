@@ -31,9 +31,8 @@
 		  <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
 
-	<form onSave="save,action-method-set-purchase-order-draft-sequence,save" onNew="action-group-purchase-order-on-new-actions"
-		name="purchase-order-form" title="Supplier RFQ/PO"
-		model="com.axelor.apps.purchase.db.PurchaseOrder">
+	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder"
+	 onSave="save,action-method-set-purchase-order-draft-sequence,save" onNew="action-group-purchase-order-on-new-actions" >
 	  <toolbar>
 	    <button name="print" title="Print" icon="fa-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
 	    <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
@@ -83,9 +82,8 @@
 	  	<label title="Suppliers managements"/>
 	  </panel>
 	  <panel-include view="purchase-order-supplier-form" from="axelor-supplier-management" if-module="axelor-supplier-management"/>
-	  <panel sidebar="true" title="Action(s)">
-	    <panel>
-	      <button name="compute" title="Compute" hideIf="statusSelect == 4 || statusSelect == 5"   onClick="action-group-purchase-purchase-order-compute-click"/>
+	  <panel sidebar="true" title="Actions">
+	      <button name="compute" title="Compute" hideIf="statusSelect == 4 || statusSelect == 5"  onClick="action-group-purchase-purchase-order-compute-click"/>
 	      <button name="draft" title="Draft" showIf="statusSelect == 6"   onClick="action-purchase-order-record-draft,save"/>
 	      <button name="requested" title="Requested" showIf="statusSelect == 1"   onClick="action-purchase-order-record-requested,save"/>
 	      <button name="receipt" title="Receipt" showIf="statusSelect == 2"   onClick="action-purchase-order-record-receipt,save"/>
@@ -95,7 +93,6 @@
 	      <button name="showInvoice" title="Show invoice" showIf="statusSelect == 4 || statusSelect == 5"   onClick="action-purchase-order-show-invoice"/>
 	      <button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
 	      <button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect &gt;= 4"   onClick="save,action-purchase-order-method-clear-purchase-order"/>
-	    </panel>
 	  </panel>
 	  <panel sidebar="true" title="Info.">
 	    <panel readonly="true">
@@ -194,11 +191,9 @@
     	<field name="statusSelect" expr="6"/>
     </action-record>
     
-    
     <action-method name="action-sale-order-method-validate-supplier">
     	<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="validateSupplier"/>
     </action-method>
-    
     
     <action-method name="action-purchase-order-method-compute">
     	<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="compute"/>
@@ -211,8 +206,6 @@
     <action-method name="action-purchase-order-method-show-purchase-order">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="showPurchaseOrder"/>
 	</action-method>
-    
-    
     
     <action-view name="action-purchase-order-show-invoice" title="Supplier invoices"
 		model="com.axelor.apps.account.db.Invoice">
