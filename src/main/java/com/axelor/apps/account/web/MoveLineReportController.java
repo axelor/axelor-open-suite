@@ -34,19 +34,12 @@ import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class MoveLineReportController {
-
-	@Inject
-	private Provider<MoveLineReportService> moveLineReportProvider;
-	
-	@Inject
-	private Provider<MoveLineExportService> moveLineExportProvider;
 
 	private static final Logger LOG = LoggerFactory.getLogger(MoveLineReportController.class);
 
@@ -57,11 +50,10 @@ public class MoveLineReportController {
 	public void searchMoveLine(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
+		MoveLineReportService moveLineReportService = Beans.get(MoveLineReportService.class);
 
 		try  {
-			MoveLineReportService moveLineReportService = moveLineReportProvider.get();
-			
-			moveLineReport = moveLineReportProvider.get().find(moveLineReport.getId());
+			moveLineReport = moveLineReportService.find(moveLineReport.getId());
 			
 			String queryFilter = moveLineReportService.getMoveLineList(moveLineReport);
 			BigDecimal debitBalance = moveLineReportService.getDebitBalance(queryFilter);
@@ -99,7 +91,7 @@ public class MoveLineReportController {
 
 				response.setValue(
 						"ref", 
-						moveLineReportProvider.get().getSequence(moveLineReport));				
+						Beans.get(MoveLineReportService.class).getSequence(moveLineReport));				
 			}
 		}
 		catch(Exception e) { TraceBackService.trace(response, e); }
@@ -112,10 +104,10 @@ public class MoveLineReportController {
 	public void getJournalType(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
-
+		
 		try  {
 
-			JournalType journalType = moveLineReportProvider.get().getJournalType(moveLineReport);
+			JournalType journalType = Beans.get(MoveLineReportService.class).getJournalType(moveLineReport);
 			if(journalType != null)  {
 				String domainQuery = "self.type.id = "+journalType.getId();
 				response.setAttr("journal", "domain", domainQuery);
@@ -133,7 +125,7 @@ public class MoveLineReportController {
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
 
 		try  {
-			Account account = moveLineReportProvider.get().getAccount(moveLineReport);
+			Account account = Beans.get(MoveLineReportService.class).getAccount(moveLineReport);
 			LOG.debug("Compte : {}", account);
 			response.setValue("account", account);			
 		}
@@ -156,22 +148,23 @@ public class MoveLineReportController {
 	public void replayExport(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
-		moveLineReport = moveLineReportProvider.get().find(moveLineReport.getId());		
+		moveLineReport = Beans.get(MoveLineReportService.class).find(moveLineReport.getId());		
+		MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 		
 		try {
 			switch(moveLineReport.getTypeSelect()) {
 			
 				case 6:
-					moveLineExportProvider.get().exportMoveLineTypeSelect6(moveLineReport, true);
+					moveLineExportService.exportMoveLineTypeSelect6(moveLineReport, true);
 					break;
 				case 7:
-					moveLineExportProvider.get().exportMoveLineTypeSelect7(moveLineReport, true);
+					moveLineExportService.exportMoveLineTypeSelect7(moveLineReport, true);
 					break;
 				case 8:
-					moveLineExportProvider.get().exportMoveLineTypeSelect8(moveLineReport, true);
+					moveLineExportService.exportMoveLineTypeSelect8(moveLineReport, true);
 					break;
 				case 9:
-					moveLineExportProvider.get().exportMoveLineTypeSelect9(moveLineReport, true);
+					moveLineExportService.exportMoveLineTypeSelect9(moveLineReport, true);
 					break;
 				default:
 					break;
@@ -187,7 +180,8 @@ public class MoveLineReportController {
 	public void printExportMoveLine(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
-		moveLineReport = moveLineReportProvider.get().find(moveLineReport.getId());
+		MoveLineReportService moveLineReportService = Beans.get(MoveLineReportService.class);
+		moveLineReport = moveLineReportService.find(moveLineReport.getId());
 
 		try {	
 			if(moveLineReport.getExportTypeSelect() == null || moveLineReport.getExportTypeSelect().isEmpty() || moveLineReport.getTypeSelect() == 0) {
@@ -198,8 +192,6 @@ public class MoveLineReportController {
 
 			LOG.debug("Type selected : {}" , moveLineReport.getTypeSelect());
 
-			MoveLineReportService moveLineReportService = moveLineReportProvider.get();
-			
 			if (moveLineReport.getRef() == null) {
 
 				String seq = moveLineReportService.getSequence(moveLineReport);
@@ -210,7 +202,7 @@ public class MoveLineReportController {
 
 			if(moveLineReport.getTypeSelect() >= 6 && moveLineReport.getTypeSelect() <= 9) {
 				
-				MoveLineExportService moveLineExportService = moveLineExportProvider.get();
+				MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
 				switch(moveLineReport.getTypeSelect()) {
 					case 6:

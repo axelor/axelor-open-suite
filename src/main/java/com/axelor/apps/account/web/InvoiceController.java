@@ -33,22 +33,12 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class InvoiceController {
 
-	@Inject
-	private Provider<InvoiceService> is;
-
-	@Inject
-	private Provider<IrrecoverableService> ics;
-	
-	@Inject
-	private Provider<JournalService> js;
-	
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceController.class);
 	
 	/**
@@ -61,10 +51,11 @@ public class InvoiceController {
 	public void compute(ActionRequest request, ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = is.get().find(invoice.getId());
+		InvoiceService is = Beans.get(InvoiceService.class);
+		invoice = is.find(invoice.getId());
 
 		try{
-			is.get().compute(invoice);
+			is.compute(invoice);
 			response.setReload(true);
 		}
 		catch(Exception e)  {
@@ -80,12 +71,13 @@ public class InvoiceController {
 	 * @return
 	 */
 	public void validate(ActionRequest request, ActionResponse response) {
-
+		
+		InvoiceService is = Beans.get(InvoiceService.class);
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = is.get().find(invoice.getId());
+		invoice = is.find(invoice.getId());
 
 		try{
-			is.get().validate(invoice);
+			is.validate(invoice);
 			response.setReload(true);
 		}
 		catch(Exception e)  {
@@ -101,12 +93,13 @@ public class InvoiceController {
 	 * @return
 	 */
 	public void ventilate(ActionRequest request, ActionResponse response) {
-
+		
+		InvoiceService is = Beans.get(InvoiceService.class);
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = is.get().find(invoice.getId());
+		invoice = is.find(invoice.getId());
 
 		try {
-			is.get().ventilate(invoice);
+			is.ventilate(invoice);
 			response.setReload(true);
 		}
 		catch(Exception e)  {
@@ -121,11 +114,12 @@ public class InvoiceController {
 	 * @throws AxelorException 
 	 */
 	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
-
+		
+		InvoiceService is = Beans.get(InvoiceService.class);
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = is.get().find(invoice.getId());
+		invoice = is.find(invoice.getId());
 
-		is.get().cancel(invoice);
+		is.cancel(invoice);
 		response.setFlash("Facture annulée");
 		response.setReload(true);
 	}
@@ -139,9 +133,10 @@ public class InvoiceController {
 	public void createRefund(ActionRequest request, ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-
+		InvoiceService is = Beans.get(InvoiceService.class);
+		
 		try {
-			is.get().createRefund(is.get().find(invoice.getId()));
+			is.createRefund(is.find(invoice.getId()));
 			response.setReload(true);
 			response.setFlash("Avoir créé"); 
 		}
@@ -153,10 +148,11 @@ public class InvoiceController {
 	public void usherProcess(ActionRequest request, ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = is.get().find(invoice.getId());
+		InvoiceService is = Beans.get(InvoiceService.class);
+		invoice = is.find(invoice.getId());
 
 		try {
-			is.get().usherProcess(invoice);
+			is.usherProcess(invoice);
 		}
 		catch (Exception e){
 			TraceBackService.trace(response, e);
@@ -166,10 +162,10 @@ public class InvoiceController {
 	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = is.get().find(invoice.getId());
+		invoice = Beans.get(InvoiceService.class).find(invoice.getId());
 
 		try  {
-			ics.get().passInIrrecoverable(invoice, true);
+			Beans.get(IrrecoverableService.class).passInIrrecoverable(invoice, true);
 			response.setReload(true);
 		}
 		catch(Exception e)  {
@@ -180,10 +176,10 @@ public class InvoiceController {
 	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = is.get().find(invoice.getId());
+		invoice = Beans.get(InvoiceService.class).find(invoice.getId());
 
 		try  {
-			ics.get().notPassInIrrecoverable(invoice);
+			Beans.get(IrrecoverableService.class).notPassInIrrecoverable(invoice);
 			response.setReload(true);
 		}
 		catch(Exception e)  {
@@ -196,7 +192,7 @@ public class InvoiceController {
 		Invoice invoice = request.getContext().asType(Invoice.class);
 
 		try  {
-			response.setValue("journal", js.get().getJournal(invoice));
+			response.setValue("journal", Beans.get(JournalService.class).getJournal(invoice));
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
@@ -227,7 +223,7 @@ public class InvoiceController {
 			
 		if(!invoiceIds.equals("")){
 			invoiceIds = invoiceIds.substring(0, invoiceIds.length()-1);	
-			invoice = is.get().find(new Long(lstSelectedPartner.get(0)));
+			invoice = Beans.get(InvoiceService.class).find(new Long(lstSelectedPartner.get(0)));
 		}else if(invoice.getId() != null){
 			invoiceIds = invoice.getId().toString();			
 		}
@@ -261,7 +257,7 @@ public class InvoiceController {
 				
 				Map<String,Object> mapView = new HashMap<String,Object>();
 				mapView.put("title", title);
-				mapView.put("resource", "http://www.axelor.com");
+				mapView.put("resource", url);
 				mapView.put("viewType", "html");
 				mapView.put("target", "new");
 				response.setView(mapView);		

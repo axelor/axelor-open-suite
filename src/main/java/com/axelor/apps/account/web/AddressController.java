@@ -36,17 +36,14 @@ import com.axelor.apps.base.db.PartnerList;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class AddressController {
 
-	@Inject
-	private Provider<MapService> mapProvider;
-	
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
 	
@@ -80,7 +77,7 @@ public class AddressController {
 						String qString = address.getAddressL4()+" ,"+address.getAddressL6();
 						LOG.debug("qString = {}", qString);
 
-						Map<String,Object> googleResponse = mapProvider.get().geocodeGoogle(qString);
+						Map<String,Object> googleResponse = Beans.get(MapService.class).geocodeGoogle(qString);
 						address.setLatit((BigDecimal) googleResponse.get("lat"));
 						address.setLongit((BigDecimal) googleResponse.get("lng"));
 						addressRepo.save(address);

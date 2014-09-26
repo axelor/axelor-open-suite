@@ -22,27 +22,21 @@ import com.axelor.apps.account.service.CashRegisterLineService;
 import com.axelor.apps.account.service.MailService;
 import com.axelor.apps.base.db.Mail;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class CashRegisterLineController {
 
-	@Inject 
-	private Provider<CashRegisterLineService> cashRegisterLineProvider;
-	
-	@Inject
-	private Provider<MailService> mailProvider;
-	
 	public void closeCashRegister(ActionRequest request, ActionResponse response)  {
 		
+		CashRegisterLineService cashRegisterLineService = Beans.get(CashRegisterLineService.class);
 		CashRegisterLine cashRegisterLine = request.getContext().asType(CashRegisterLine.class);
-		cashRegisterLine = cashRegisterLineProvider.get().find(cashRegisterLine.getId());
+		cashRegisterLine = cashRegisterLineService.find(cashRegisterLine.getId());
 		
 		try  {
-			Mail mail = cashRegisterLineProvider.get().closeCashRegister(cashRegisterLine);
-			mailProvider.get().generatePdfMail(mail);
+			Mail mail = cashRegisterLineService.closeCashRegister(cashRegisterLine);
+			Beans.get(MailService.class).generatePdfMail(mail);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }	
@@ -50,11 +44,12 @@ public class CashRegisterLineController {
 	
 	public void openCashRegister(ActionRequest request, ActionResponse response)  {
 		
+		CashRegisterLineService cashRegisterLineService = Beans.get(CashRegisterLineService.class);
 		CashRegisterLine cashRegisterLine = request.getContext().asType(CashRegisterLine.class);
-		cashRegisterLine = cashRegisterLineProvider.get().find(cashRegisterLine.getId());
+		cashRegisterLine = cashRegisterLineService.find(cashRegisterLine.getId());
 		
 		try  {
-			cashRegisterLineProvider.get().openCashRegister(cashRegisterLine);
+			cashRegisterLineService.openCashRegister(cashRegisterLine);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

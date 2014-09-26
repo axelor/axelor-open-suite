@@ -31,25 +31,14 @@ import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoad
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class PaymentVoucherController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherController.class);
-	
-	@Inject
-	private Provider<PaymentVoucherLoadService> paymentVoucherLoadProvider;
-	
-	@Inject
-	private Provider<PaymentVoucherConfirmService> paymentVoucherConfirmProvider;
-	
-	@Inject
-	private Provider<PaymentVoucherSequenceService> paymentVoucherSequenceProvider;
-
 	
 	//Called on onSave event
 	public void paymentVoucherSetNum(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -58,7 +47,7 @@ public class PaymentVoucherController {
 
 		if (Strings.isNullOrEmpty(paymentVoucher.getRef()))  {
 
-			response.setValue("ref", paymentVoucherSequenceProvider.get().getReference(paymentVoucher));
+			response.setValue("ref", Beans.get(PaymentVoucherSequenceService.class).getReference(paymentVoucher));
 
 		}
 	}
@@ -67,10 +56,11 @@ public class PaymentVoucherController {
 	public void loadMoveLines(ActionRequest request, ActionResponse response) {
 
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-		paymentVoucher = paymentVoucherLoadProvider.get().find(paymentVoucher.getId());
+		PaymentVoucherLoadService paymentVoucherLoadService = Beans.get(PaymentVoucherLoadService.class); 
+		paymentVoucher = paymentVoucherLoadService.find(paymentVoucher.getId());
 		
 		try {
-			paymentVoucherLoadProvider.get().loadMoveLines(paymentVoucher);
+			paymentVoucherLoadService.loadMoveLines(paymentVoucher);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -80,10 +70,11 @@ public class PaymentVoucherController {
 	public void loadSelectedLines(ActionRequest request, ActionResponse response) {
 				
 		PaymentVoucher paymentVoucherContext = request.getContext().asType(PaymentVoucher.class);
-		PaymentVoucher paymentVoucher = paymentVoucherLoadProvider.get().find(paymentVoucherContext.getId());
+		PaymentVoucherLoadService paymentVoucherLoadService = Beans.get(PaymentVoucherLoadService.class);
+		PaymentVoucher paymentVoucher = paymentVoucherLoadService.find(paymentVoucherContext.getId());
 			
 		try {
-			paymentVoucherLoadProvider.get().loadSelectedLines(paymentVoucher,paymentVoucherContext);
+			paymentVoucherLoadService.loadSelectedLines(paymentVoucher,paymentVoucherContext);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -93,10 +84,10 @@ public class PaymentVoucherController {
 	public void confirmPaymentVoucher(ActionRequest request, ActionResponse response) {
 				
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-		paymentVoucher = paymentVoucherLoadProvider.get().find(paymentVoucher.getId());
+		paymentVoucher = Beans.get(PaymentVoucherLoadService.class).find(paymentVoucher.getId());
 		
 		try{				
-			paymentVoucherConfirmProvider.get().confirmPaymentVoucher(paymentVoucher, false);
+			Beans.get(PaymentVoucherConfirmService.class).confirmPaymentVoucher(paymentVoucher, false);
 			response.setReload(true);	
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

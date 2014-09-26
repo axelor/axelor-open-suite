@@ -24,23 +24,20 @@ import com.axelor.apps.account.db.AccountClearance;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.AccountClearanceService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class AccountClearanceController {
 
-	@Inject
-	private Provider<AccountClearanceService> accountClearanceProvider;
 	
 	public void getExcessPayment(ActionRequest request, ActionResponse response)  {
 		
 		AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
 		
 		try {	
-			accountClearanceProvider.get().setExcessPayment(accountClearance);
+			Beans.get(AccountClearanceService.class).setExcessPayment(accountClearance);
 			response.setReload(true);		
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }		
@@ -48,11 +45,12 @@ public class AccountClearanceController {
 	
 	public void validateAccountClearance(ActionRequest request, ActionResponse response)  {
 		
+		AccountClearanceService accountClearanceService = Beans.get(AccountClearanceService.class);
 		AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
-		accountClearance = accountClearanceProvider.get().find(accountClearance.getId());
+		accountClearance = accountClearanceService.find(accountClearance.getId());
 		
 		try {
-			accountClearanceProvider.get().validateAccountClearance(accountClearance);
+			accountClearanceService.validateAccountClearance(accountClearance);
 			response.setReload(true);		
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

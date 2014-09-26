@@ -20,24 +20,21 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.BankStatement;
 import com.axelor.apps.account.service.BankStatementService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class BankStatementController {
 
-	@Inject
-	private Provider<BankStatementService> BankStatementProvider;
-	
 
 	public void compute(ActionRequest request, ActionResponse response) {
 		
 		BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+		BankStatementService bankStatementService = Beans.get(BankStatementService.class);
 	
 		try {
 			
-			BankStatementProvider.get().compute(BankStatementProvider.get().find(bankStatement.getId()));
+			bankStatementService.compute(bankStatementService.find(bankStatement.getId()));
 			response.setReload(true);
 			
 		}
@@ -47,10 +44,11 @@ public class BankStatementController {
 	public void validate(ActionRequest request, ActionResponse response) {
 		
 		BankStatement bankStatement = request.getContext().asType(BankStatement.class);
-	
+		BankStatementService bankStatementService = Beans.get(BankStatementService.class);
+		
 		try {
 			
-			BankStatementProvider.get().validate(BankStatementProvider.get().find(bankStatement.getId()));
+			bankStatementService.validate(bankStatementService.find(bankStatement.getId()));
 			response.setReload(true);
 			
 		}

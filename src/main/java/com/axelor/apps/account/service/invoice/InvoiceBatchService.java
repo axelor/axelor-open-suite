@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import com.axelor.apps.account.db.InvoiceBatch;
 import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchStrategy;
@@ -28,6 +25,7 @@ import com.axelor.apps.account.service.invoice.generator.batch.BatchVentilation;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
@@ -35,12 +33,6 @@ import com.axelor.exception.db.IException;
  */
 public class InvoiceBatchService extends InvoiceBatchRepository{
 
-	@Inject
-	private Provider<BatchValidation> validationProvider;
-	
-	@Inject
-	private Provider<BatchVentilation> ventilationProvider;
-	
 	// Appel 	
 	
 	/**
@@ -79,10 +71,10 @@ public class InvoiceBatchService extends InvoiceBatchRepository{
 		BatchStrategy strategy = null;
 		
 		if (invoiceBatch.getToStatusSelect().equals(InvoiceService.STATUS_VALIDATED)) { 
-			strategy = validationProvider.get(); 
+			strategy = Beans.get(BatchValidation.class); 
 		}
 		else if (invoiceBatch.getToStatusSelect().equals(InvoiceService.STATUS_VENTILATED)) { 
-			strategy = ventilationProvider.get();
+			strategy = Beans.get(BatchVentilation.class);
 		}
 		else {
 			throw new AxelorException(String.format("Statut %s inconnu pour le traitement %s", invoiceBatch.getToStatusSelect(), invoiceBatch.getCode()), IException.INCONSISTENCY);

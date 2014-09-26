@@ -30,20 +30,13 @@ import com.axelor.apps.account.service.payment.PayboxService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherPayboxService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class PayboxController {
 
-	@Inject
-	private Provider<PaymentVoucherPayboxService> paymentVoucherPayboxProvider;
-	
-	@Inject
-	private Provider<PayboxService> ps;
-	
 	private static final Logger LOG = LoggerFactory.getLogger(PayboxController.class);
 	
 	public void paybox(ActionRequest request, ActionResponse response)  {
@@ -57,7 +50,7 @@ public class PayboxController {
 			    (paymentVoucher.getEmail() != null && !paymentVoucher.getEmail().isEmpty())  || 
 				paymentVoucher.getDefaultEmailOk()) {
 			
-				String url = ps.get().paybox(paymentVoucher);
+				String url = Beans.get(PayboxService.class).paybox(paymentVoucher);
 				
 				Map<String,Object> mapView = new HashMap<String,Object>();
 				mapView.put("title", "Paiement par Paybox");
@@ -74,7 +67,7 @@ public class PayboxController {
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 		
 		try {	
-			ps.get().addPayboxEmail(paymentVoucher.getPartner(), paymentVoucher.getEmail(), paymentVoucher.getToSaveEmailOk());
+			Beans.get(PayboxService.class).addPayboxEmail(paymentVoucher.getPartner(), paymentVoucher.getEmail(), paymentVoucher.getToSaveEmailOk());
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
@@ -89,6 +82,7 @@ public class PayboxController {
         
         Context context = request.getContext();
         
+        PaymentVoucherPayboxService paymentVoucherPayboxService = Beans.get(PaymentVoucherPayboxService.class);
         String idPaymentVoucher = (String) context.get("idPV");
         String operation = (String) context.get("retour");
         String signature = (String) context.get("sign");
@@ -97,7 +91,7 @@ public class PayboxController {
             
             LOG.debug("idPaymentVoucher :"+idPaymentVoucher);
             
-            PaymentVoucher paymentVoucher = paymentVoucherPayboxProvider.get().find(Long.parseLong(idPaymentVoucher));
+            PaymentVoucher paymentVoucher = paymentVoucherPayboxService.find(Long.parseLong(idPaymentVoucher));
             LOG.debug("paymentVoucher :"+paymentVoucher);
             
             boolean verified = false;
@@ -122,12 +116,12 @@ public class PayboxController {
                         varList.add(varBuilt);
                     }
                 }
-                verified = ps.get().checkPaybox(signature, varList, paymentVoucher.getCompany());
+                verified = Beans.get(PayboxService.class).checkPaybox(signature, varList, paymentVoucher.getCompany());
                 LOG.debug("L'adresse URL est-elle correcte ? : {}", verified);
             }
             if(verified) {       
                 if(operation == "1" && (String) context.get("idtrans") != null && (String) context.get("montant") != null ) {
-                        paymentVoucherPayboxProvider.get().authorizeConfirmPaymentVoucher(paymentVoucher, (String) context.get("idtrans"), (String) context.get("montant"));
+                	    paymentVoucherPayboxService.authorizeConfirmPaymentVoucher(paymentVoucher, (String) context.get("idtrans"), (String) context.get("montant"));
                         response.setFlash("Paiement réalisé"); 
                         LOG.debug("Paiement réalisé");
                 }

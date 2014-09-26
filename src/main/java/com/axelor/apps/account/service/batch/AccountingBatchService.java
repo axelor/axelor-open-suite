@@ -17,14 +17,12 @@
  */
 package com.axelor.apps.account.service.batch;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
@@ -35,36 +33,6 @@ import com.axelor.exception.db.IException;
  * @version 0.1
  */
 public class AccountingBatchService  extends AccountingBatchRepository {
-
-	@Inject
-	private Provider<BatchReminder> reminderProvider;
-	
-	@Inject
-	private Provider<BatchDoubtfulCustomer> doubtfulCustomerProvider;
-	
-	@Inject
-	private Provider<BatchReimbursementExport> reimbursementExportProvider;
-	
-	@Inject
-	private Provider<BatchReimbursementImport> reimbursementImportProvider;
-	
-	@Inject
-	private Provider<BatchPaymentScheduleExport> paymentScheduleExportProvider;
-	
-	@Inject
-	private Provider<BatchPaymentScheduleImport> paymentScheduleImportProvider;
-	
-	@Inject
-	private Provider<BatchInterbankPaymentOrderImport> interbankPaymentOrderImportProvider;
-	
-	@Inject
-	private Provider<BatchInterbankPaymentOrderRejectImport> interbankPaymentOrderRejectImportProvider;
-	
-	@Inject
-	private Provider<BatchAccountCustomer> accountCustomerProvider;
-	
-	@Inject
-	private Provider<BatchMoveLineExport> moveLineExportProvider;
 
 // Appel 	
 	
@@ -137,72 +105,60 @@ public class AccountingBatchService  extends AccountingBatchRepository {
 	
 	public Batch reminder(AccountingBatch accountingBatch) {
 		
-		BatchStrategy strategy = reminderProvider.get(); 
-		return strategy.run(accountingBatch);
+		return Beans.get(BatchReminder.class).run(accountingBatch);
 		
 	}
 
 	
 	public Batch doubtfulCustomer(AccountingBatch accountingBatch) {
 		
-		BatchStrategy strategy = doubtfulCustomerProvider.get();
-		return strategy.run(accountingBatch);
-		
+		return Beans.get(BatchDoubtfulCustomer.class).run(accountingBatch);
 	}
 	
 	public Batch reimbursementExport(AccountingBatch accountingBatch) {
 		
-		BatchStrategy strategy = reimbursementExportProvider.get();
-		return strategy.run(accountingBatch);
-		
+		return Beans.get(BatchReimbursementExport.class).run(accountingBatch);
 	}
 	
 	public Batch reimbursementImport(AccountingBatch accountingBatch) {
 		
-		BatchStrategy strategy = reimbursementImportProvider.get();
-		return strategy.run(accountingBatch);
+		return Beans.get(BatchReimbursementImport.class).run(accountingBatch);
 		
 	}
 	
 	public Batch paymentScheduleExport(AccountingBatch accountingBatch) {
 		
-		BatchStrategy strategy = paymentScheduleExportProvider.get();
-		return strategy.run(accountingBatch);
+		return Beans.get(BatchPaymentScheduleExport.class).run(accountingBatch);
 		
 	}
 	
 	public Batch paymentScheduleImport(AccountingBatch accountingBatch) {
 		
-		BatchStrategy strategy = paymentScheduleImportProvider.get();
-		return strategy.run(accountingBatch);
+		return Beans.get(BatchPaymentScheduleImport.class).run(accountingBatch);
 		
 	}
 	
 	public Batch interbankPaymentOrderImport(AccountingBatch accountingBatch) {
 		
-		BatchStrategy strategy = interbankPaymentOrderImportProvider.get();
-		return strategy.run(accountingBatch);
+		return Beans.get(BatchInterbankPaymentOrderImport.class).run(accountingBatch);
 		
 	}
 	
 	public Batch interbankPaymentOrderRejectImport(AccountingBatch accountingBatch) {
 		
-		BatchStrategy strategy = interbankPaymentOrderRejectImportProvider.get();
-		return strategy.run(accountingBatch);
+		return Beans.get(BatchInterbankPaymentOrderRejectImport.class).run(accountingBatch);
 		
 	}
 	
 	public Batch accountCustomer(AccountingBatch accountingBatch) {
 
-		BatchStrategy strategy = accountCustomerProvider.get();
-		return strategy.run(accountingBatch);
+		return Beans.get(BatchAccountCustomer.class).run(accountingBatch);
 
 	}
 
 	public Batch moveLineExport(AccountingBatch accountingBatch) {
 
-		BatchStrategy strategy = moveLineExportProvider.get();
-		return strategy.run(accountingBatch);
+		return Beans.get(BatchMoveLineExport.class).run(accountingBatch);
 
 	}
 	

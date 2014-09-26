@@ -22,16 +22,13 @@ import com.axelor.apps.base.db.Mail;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class ReminderController {
 
-	@Inject
-	private Provider<MailService> mailProvider;
-	
 	@Inject
 	private PartnerService partnerService;
 
@@ -41,7 +38,7 @@ public class ReminderController {
 			Partner partner = request.getContext().asType(Partner.class);
 			partner = partnerService.find(partner.getId());
 
-			MailService mailService = mailProvider.get();
+			MailService mailService = Beans.get(MailService.class);
 			for(Mail mail : mailService.getMailList(partner))  {
 				mailService.generatePdfMail(mail);
 			}

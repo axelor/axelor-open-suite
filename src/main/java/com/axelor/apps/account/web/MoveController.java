@@ -26,27 +26,21 @@ import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class MoveController {
-	
-	@Inject
-	private Provider<MoveService> moveService;
-	
-	@Inject
-	private Provider<PeriodService> periodService;
 	
 	public void validate(ActionRequest request, ActionResponse response) {
 
 		Move move = request.getContext().asType(Move.class);
-		move = moveService.get().find(move.getId());
+		MoveService  moveService = Beans.get(MoveService.class);
+		move = moveService.find(move.getId());
 		
 		try {
-			moveService.get().validate(move);
+			moveService.validate(move);
 			response.setReload(true);
 		}
 		catch (Exception e){ TraceBackService.trace(response, e); }
@@ -59,7 +53,7 @@ public class MoveController {
 		try {
 			if(move.getDate() != null && move.getCompany() != null) {
 				
-				response.setValue("period", periodService.get().rightPeriod(move.getDate(), move.getCompany()));				
+				response.setValue("period", Beans.get(PeriodService.class).rightPeriod(move.getDate(), move.getCompany()));				
 			}
 			else {
 				response.setValue("period", null);
@@ -71,9 +65,10 @@ public class MoveController {
 	public void generateReverse(ActionRequest request, ActionResponse response) {
 		
 		Move move = request.getContext().asType(Move.class);
+		MoveService  moveService = Beans.get(MoveService.class);
 		
 		try {
-			Move newMove = moveService.get().generateReverse(moveService.get().find(move.getId()));
+			Move newMove = moveService.generateReverse(moveService.find(move.getId()));
 			Map<String, Object> viewMap = Maps.newHashMap();
 			viewMap.put("title", "Account move");
 			viewMap.put("resource", "com.axelor.apps.account.db.Move");
@@ -85,11 +80,12 @@ public class MoveController {
 	
 	@SuppressWarnings("unchecked")
 	public void validateMultipleMoves(ActionRequest request, ActionResponse response){
+		MoveService  moveService = Beans.get(MoveService.class);
 		List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
 		if(!moveIds.isEmpty()){
-			List<? extends Move> moveList = moveService.get().all().filter("self.id in ?1 AND self.state NOT IN ('validated','canceled')", moveIds).fetch();
+			List<? extends Move> moveList = moveService.all().filter("self.id in ?1 AND self.state NOT IN ('validated','canceled')", moveIds).fetch();
 			if(!moveList.isEmpty()){
-				boolean error = moveService.get().validateMultiple(moveList);
+				boolean error = moveService.validateMultiple(moveList);
 				if(error)
 					response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
 				else{
