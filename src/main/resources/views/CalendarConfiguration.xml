@@ -2,32 +2,34 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_3.0.xsd">
-    <grid name="calendar-configuration-grid" title="Calendar configurations" model="com.axelor.apps.crm.db.CalendarConfiguration">
-        <field name="name"/>
-        <field name="metaAction"/>
-        <field name="calendarUser"/>
-        <field name="calendarGroup" />
-    </grid>
-    <form name="calendar-configuration-form" title="Calendar configuration" model="com.axelor.apps.crm.db.CalendarConfiguration"  >
-        <panel>
-		    <field name="name"/>
-		    <field name="metaAction"/>
-		    <field name="calendarUser"/>
-		    <field name="calendarGroup"/>    
-	  	</panel>
-	  	<panel sidebar="true" name="action" title="Action(s)">
-	    	<button name="createAction" title="Create menu entrie" onClick="save,action-calendar-configuration-method-create-Action"/>
-	    	<button name="deleteAction" title="Delete menu entrie" onClick="save,action-calendar-configuration-method-delete-Action"/>
-	  	</panel>
-	  	<panel-related field="calendarSet" />
-    </form>
-    
-    <action-method name="action-calendar-configuration-method-create-Action">
-    	<call class="com.axelor.apps.crm.web.CalendarConfigurationController" method="createAction"/>
-    </action-method>
-    
-    <action-method name="action-calendar-configuration-method-delete-Action">
-    	<call class="com.axelor.apps.crm.web.CalendarConfigurationController" method="deleteAction"/>
-    </action-method>
-    
+
+	<grid name="calendar-configuration-grid" title="Calendar configurations" model="com.axelor.apps.crm.db.CalendarConfiguration">
+		<field name="name" />
+		<field name="metaAction" />
+		<field name="calendarUser" />
+		<field name="calendarGroup" />
+	</grid>
+
+	<form name="calendar-configuration-form" title="Calendar configuration" model="com.axelor.apps.crm.db.CalendarConfiguration">
+		<panel>
+			<field name="name" />
+			<field name="metaAction" />
+			<field name="calendarUser" />
+			<field name="calendarGroup" />
+		</panel>
+		<panel sidebar="true" name="action" title="Actions">
+			<button name="createAction" title="Create menu entrie" onClick="save,action-calendar-configuration-method-create-Action" />
+			<button name="deleteAction" title="Delete menu entrie" onClick="save,action-calendar-configuration-method-delete-Action" />
+		</panel>
+		<panel-related field="calendarSet" />
+	</form>
+
+	<action-method name="action-calendar-configuration-method-create-Action">
+		<call class="com.axelor.apps.crm.web.CalendarConfigurationController" method="createAction" />
+	</action-method>
+
+	<action-method name="action-calendar-configuration-method-delete-Action">
+		<call class="com.axelor.apps.crm.web.CalendarConfigurationController" method="deleteAction" />
+	</action-method>
+
 </object-views>
