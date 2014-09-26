@@ -33,14 +33,14 @@
 	    <field name="period"/>
 	    <field name="motif" showIf="statusSelect == 6"/>
 	  </panel>
-	  <panel sidebar="true" title="Action(s)">
+	  <panel sidebar="true" title="Actions">
 	    <panel colSpan="12">
-	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="2" onClick="save,action-overtime-record-draft,save"/>
-	      <button name="submit" title="Submit" showIf="statusSelect == 1" colSpan="2" onClick="save,action-overtime-record-submit,save"/>
-	      <button name="validateManager" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-overtime-record-validate-manager,save"/>
-	      <button name="validateCommercial" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="save,action-overtime-record-validate-commercial,save"/>
-	      <button name="confirm" title="Confirm" showIf="statusSelect == 4" colSpan="1" onClick="save,action-overtime-record-confirm,save"/>
-	      <button name="refuse" title="Refuse" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-overtime-record-refuse"/>
+	      <button name="submit" title="Submit" showIf="statusSelect == 1" onClick="save,action-overtime-record-submit,save" colSpan="12"/>
+	      <button name="validateManager" title="Validate" showIf="statusSelect == 2" onClick="save,action-overtime-record-validate-manager,save" colSpan="12"/>
+	      <button name="refuse" title="Refuse" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-overtime-record-refuse" colSpan="12"/>
+	      <button name="validateCommercial" title="Validate" showIf="statusSelect == 3" onClick="save,action-overtime-record-validate-commercial,save" colSpan="12"/>
+	      <button name="confirm" title="Confirm" showIf="statusSelect == 4" onClick="save,action-overtime-record-confirm,save" colSpan="12"/>
+	      <button name="draft" title="Draft" showIf="statusSelect == 6" onClick="save,action-overtime-record-draft,save" colSpan="12"/>
 	    </panel>
 	    <panel readonly="true" colSpan="12">
 	      <field name="validatedByUser"/>

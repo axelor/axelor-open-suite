@@ -3,8 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<grid name="expense-edit-grid" title="Expenses" editable="true"
-		model="com.axelor.apps.organisation.db.Expense">
+	<grid name="expense-edit-grid" title="Expenses" editable="true" model="com.axelor.apps.organisation.db.Expense">
 		<field name="date" />
 		<field name="company"/>
 		<field name="expenseLineList" grid-view="expense-line-edit-grid" />
@@ -21,7 +20,6 @@
         <field name="statusSelect"/>
     </grid>
     
-    
 	<grid edit-icon="true" name="my-expense-grid" title="My Expenses" model="com.axelor.apps.organisation.db.Expense">
 	  <field name="date"/>
 	  <field name="company"/>
@@ -31,7 +29,6 @@
 	  <field name="statusSelect"/>
 	</grid>
 	    
-    
 	<form name="expense-form" title="Expense" model="com.axelor.apps.organisation.db.Expense" onLoad="action-expense-method-check-validation-status" onNew="action-expense-group-default">
 	  <toolbar>
 	    <button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="action-print-expenses"/>
@@ -48,15 +45,15 @@
 	    <field name="paymentPeriod"/>
 	    <field name="refusalReason" showIf="statusSelect == 6"/>
 	  </panel>
-	  <panel sidebar="true" title="Action(s)">
+	  <panel sidebar="true" title="Actions">
 	    <panel colSpan="12">
-	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="6" onClick="action-group-organisation-expense-draft-click"/>
+	      <button name="compute" title="Compute" colSpan="6" onClick="action-expense-compute-expense-line"/>
 	      <button name="submit" title="Submit" showIf="statusSelect == 1" colSpan="6" onClick="action-group-organisation-expense-submit-click"/>
 	      <button name="validateManager" title="Validate" showIf="statusSelect == 2" colSpan="6" onClick="action-group-organisation-expense-validatemanager-click"/>
+	      <button name="refuse" title="Refuse" showIf="statusSelect == 2" colSpan="6" onClick="save,action-expense-record-refuse"/>
 	      <button name="validateCommercial" title="Validate" showIf="statusSelect == 3" colSpan="6" onClick="action-group-organisation-expense-validatecommercial-click"/>
 	      <button name="confirm" title="Confirm" showIf="statusSelect == 4" colSpan="6" onClick="action-group-organisation-expense-confirm-click"/>
-	      <button name="refuse" title="Refuse" showIf="statusSelect == 2" colSpan="6" onClick="save,action-expense-record-refuse"/>
-	      <button name="compute" title="Compute" colSpan="6" onClick="action-expense-compute-expense-line"/>
+	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="6" onClick="action-group-organisation-expense-draft-click"/>
 	    </panel>
 	    <panel readonly="true" colSpan="12">
 	      <field name="validatedByUser"  colSpan="12"/>
