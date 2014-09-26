@@ -18,23 +18,16 @@
 package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.base.db.IProductVariant;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
-import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
+import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
-import com.beust.jcommander.internal.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public interface ProductService {
+public interface ProductService extends Repository<Product> {
 
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

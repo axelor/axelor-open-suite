@@ -26,35 +26,29 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.db.User;
-import com.axelor.db.JpaRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class ProductController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
 	
-	@Inject UserService userService;
-	
-	@Inject
-	private Provider<ProductService> productService;
 	
 	public void generateProductVariants(ActionRequest request, ActionResponse response) throws AxelorException {
 		Product product = request.getContext().asType(Product.class);
-		product = ((JpaRepository<Product>) productService.get()).find(product.getId());
+		ProductService productService = Beans.get(ProductService.class);
+		product = productService.find(product.getId());
 		
 		if(product.getProductVariantConfig() != null)  {
-			productService.get().generateProductVariants(product);
+			productService.generateProductVariants(product);
 			
 			response.setFlash("Variants generated");
 			response.setReload(true);
@@ -63,9 +57,11 @@ public class ProductController {
 	
 	public void updateProductsPrices(ActionRequest request, ActionResponse response) throws AxelorException {
 		Product product = request.getContext().asType(Product.class);
-		product = ((JpaRepository<Product>) productService.get()).find(product.getId());
+		ProductService productService = Beans.get(ProductService.class);
 		
-		productService.get().updateProductPrice(product);
+		product = productService.find(product.getId());
+		
+		productService.updateProductPrice(product);
 		
 		response.setFlash("Prices updated");
 		response.setReload(true);
@@ -76,7 +72,7 @@ public class ProductController {
 	public void printProductCatelog(ActionRequest request, ActionResponse response) {
 
 		StringBuilder url = new StringBuilder();
-		User user =  userService.getUser();
+		User user =  Beans.get(UserService.class).getUser();
 		
 		int currentYear = GeneralService.getTodayDateTime().getYear();
 		String productIds = "";
@@ -120,7 +116,7 @@ public class ProductController {
 	public void printProductSheet(ActionRequest request, ActionResponse response) {
 
 		Product product = request.getContext().asType(Product.class);
-		User user =  userService.getUser();
+		User user =  Beans.get(UserService.class).getUser();
 	
 		StringBuilder url = new StringBuilder();
 		 

@@ -35,7 +35,7 @@ import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ProductServiceImpl extends ProductRepository implements ProductService{
+public class ProductServiceImpl extends ProductRepository implements ProductService  {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
 		
