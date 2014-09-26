@@ -41,7 +41,7 @@ import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
+public class MessageServiceBaseImpl extends MessageServiceImpl {
 
 	private DateTime todayTime;
 	
@@ -72,9 +72,9 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 				0, 
 				todayTime.toLocalDateTime(), 
 				false, 
-				MessageRepository.STATUS_DRAFT, 
+				STATUS_DRAFT, 
 				subject, 
-				MessageRepository.TYPE_SENT,
+				TYPE_SENT,
 				toEmailAddressList,
 				ccEmailAddressList,
 				bccEmailAddressList,
