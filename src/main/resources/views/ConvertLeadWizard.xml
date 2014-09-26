@@ -113,12 +113,6 @@
 					    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
 					    <field name="user"/>
 					    <field name="team"/>
-							
-					
-					
-					
-					
-					
 					</editor>
 				</field>
 			</panel>
