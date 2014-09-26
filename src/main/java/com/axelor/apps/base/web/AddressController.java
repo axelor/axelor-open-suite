@@ -38,11 +38,10 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Provider;
 import com.qas.web_2005_02.AddressLineType;
 import com.qas.web_2005_02.PicklistEntryType;
 import com.qas.web_2005_02.QAAddressType;
@@ -51,19 +50,6 @@ import com.qas.web_2005_02.VerifyLevelType;
 
 public class AddressController {
 
-	@Inject
-	private Provider<Injector> injectorProvider;
-	
-	@Inject
-	private Provider<AddressService> addressProvider;
-	
-	@Inject
-	private Provider<MapService> mapProvider;
-	
-	@Inject
-	private Provider<UserService> UserProvider;
-	
-	
 	@Inject
 	private AddressRepository addressRepo;
 	
@@ -76,7 +62,7 @@ public class AddressController {
 		LOG.debug("validate g = {}", g);
 		LOG.debug("validate g.qasWsdlUrl = {}", g.getQasWsdlUrl());
 
-		String msg = addressProvider.get().check(g.getQasWsdlUrl())? g.getQasWsdlUrl()+" Ok":"Service indisponible, veuillez contacter votre adminstrateur";
+		String msg = Beans.get(AddressService.class).check(g.getQasWsdlUrl())? g.getQasWsdlUrl()+" Ok":"Service indisponible, veuillez contacter votre adminstrateur";
 		response.setFlash(msg);		
 	}
 
@@ -85,7 +71,7 @@ public class AddressController {
 		Address a = request.getContext().asType(Address.class);
 		LOG.debug("validate a = {}", a);
 		String search = a.getAddressL4()+" "+a.getAddressL6();
-		Map<String,Object> retDict = (Map<String, Object>) addressProvider.get().validate(GeneralService.getGeneral().getQasWsdlUrl(), search);
+		Map<String,Object> retDict = (Map<String, Object>) Beans.get(AddressService.class).validate(GeneralService.getGeneral().getQasWsdlUrl(), search);
 		LOG.debug("validate retDict = {}", retDict);
 
 		VerifyLevelType verifyLevel = (VerifyLevelType) retDict.get("verifyLevel");
@@ -159,7 +145,7 @@ public class AddressController {
 			LOG.debug("select pickedEntry = {}", pickedEntry);
 			String moniker = pickedEntry.getMoniker();
 			if (moniker != null) {
-				com.qas.web_2005_02.Address address = addressProvider.get().select(GeneralService.getGeneral().getQasWsdlUrl(), moniker);
+				com.qas.web_2005_02.Address address = Beans.get(AddressService.class).select(GeneralService.getGeneral().getQasWsdlUrl(), moniker);
 				LOG.debug("select address = {}", address);
 				//addressL4: title="N° et Libellé de la voie"
 				//addressL6: title="Code Postal - Commune"/>
@@ -193,7 +179,7 @@ public class AddressController {
 
 		AddressExport addressExport = request.getContext().asType(AddressExport.class);
 
-		int size = (Integer) addressProvider.get().export(addressExport.getPath());
+		int size = (Integer) Beans.get(AddressService.class).export(addressExport.getPath());
 
 		response.setValue("log", size+" adresses exportées");
 	}
@@ -207,7 +193,7 @@ public class AddressController {
 		BigDecimal longitude = address.getLongit();
 		LOG.debug("latitude...."+latitude);
 		LOG.debug("longitude...."+longitude);
-		Map<String,Object> result = mapProvider.get().getMap(qString, latitude, longitude);
+		Map<String,Object> result = Beans.get(MapService.class).getMap(qString, latitude, longitude);
 		if(result != null){
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", "Map");
@@ -224,7 +210,7 @@ public class AddressController {
 	}
 
 	public void directionsMap(ActionRequest request, ActionResponse response)  {
-		Partner currPartner = UserProvider.get().getUserPartner();
+		Partner currPartner = Beans.get(UserService.class).getUserPartner();
 		Address departureAddress = currPartner.getDeliveryAddress();
 		if (departureAddress != null) {
 			Address arrivalAddress = request.getContext().asType(Address.class);
@@ -237,7 +223,7 @@ public class AddressController {
 				BigDecimal dLon = departureAddress.getLongit();
 				BigDecimal aLat = arrivalAddress.getLatit();
 				BigDecimal aLon =  arrivalAddress.getLongit();
-				Map<String, Object> result = mapProvider.get().getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
+				Map<String, Object> result = Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
 				if(result != null){
 					Map<String,Object> mapView = new HashMap<String,Object>();
 					mapView.put("title", "Map");

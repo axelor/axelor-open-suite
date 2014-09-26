@@ -25,26 +25,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.report.IReport;
-import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class MessageController {
 
-	@Inject
-	private Provider<MessageServiceBaseImpl> messageServiceBaseImpl;
-	
-	@Inject
-	private MessageRepository messageRepo;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MessageController.class);
 	
@@ -58,7 +50,7 @@ public class MessageController {
 	 */
 	public void printMessage(ActionRequest request, ActionResponse response) {
 		Message message = request.getContext().asType(Message.class);
-		String pdfPath = messageServiceBaseImpl.get().printMessage(message);
+		String pdfPath = Beans.get(MessageService.class).printMessage(message);
 		if(pdfPath != null){
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", "Message "+message.getSubject());
@@ -86,7 +78,7 @@ public class MessageController {
 			
 		if(!messageIds.equals("")){
 			messageIds = messageIds.substring(0, messageIds.length()-1);	
-			message = messageRepo.find(new Long(lstSelectedMessages.get(0)));
+			message = Beans.get(MessageService.class).find(new Long(lstSelectedMessages.get(0)));
 		}else if(message.getId() != null){
 			messageIds = message.getId().toString();			
 		}

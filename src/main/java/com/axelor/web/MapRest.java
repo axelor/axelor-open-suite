@@ -29,20 +29,17 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 @Path("/map")
 public class MapRest {
 
-	@Inject
-	private Provider<MapService> mapProvider;
-	
 	@Inject
 	private PartnerRepository partnerRepo;
 	
@@ -72,7 +69,7 @@ public class MapRest {
 			
 			if (partner.getMainInvoicingAddress() != null) {
 				Address address = partner.getMainInvoicingAddress();
-				String addressString = mapProvider.get().makeAddressString(address, objectNode);
+				String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
 				addressRepo.save(address);
 				objectNode.put("address", addressString);				
 			}
@@ -113,7 +110,7 @@ public class MapRest {
 			
 			if (customer.getMainInvoicingAddress() != null) {
 				Address address = customer.getMainInvoicingAddress();
-				String addressString = mapProvider.get().makeAddressString(address, objectNode);
+				String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
 				addressRepo.save(address);
 				objectNode.put("address", addressString);							
 			}
@@ -150,7 +147,7 @@ public class MapRest {
 			
 			if (prospect.getMainInvoicingAddress() != null) {
 				Address address = prospect.getMainInvoicingAddress();
-				String addressString = mapProvider.get().makeAddressString(address, objectNode);
+				String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
 				addressRepo.save(address);
 				objectNode.put("address", addressString);							
 			}
@@ -187,7 +184,7 @@ public class MapRest {
 			
 			if (supplier.getMainInvoicingAddress() != null) {
 				Address address = supplier.getMainInvoicingAddress();
-				String addressString = mapProvider.get().makeAddressString(address, objectNode);
+				String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
 				addressRepo.save(address);
 				objectNode.put("address", addressString);								
 			}

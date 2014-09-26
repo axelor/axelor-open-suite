@@ -19,28 +19,21 @@ package com.axelor.apps.base.service.imports.importer;
 
 import java.io.File;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import com.axelor.apps.base.db.IImports;
 import com.axelor.apps.base.db.ImportConfiguration;
+import com.axelor.inject.Beans;
 
 public class FactoryImporter {
 
-	@Inject
-	protected Provider<ImporterXML> providerXML;
-	
-	@Inject
-	protected Provider<ImporterCSV> providerCSV;
 
 	public Importer createImporter(ImportConfiguration importConfiguration) {
 
 		Importer importer;
 
 		if (importConfiguration.getTypeSelect().equals(IImports.XML)) {
-			importer = providerXML.get();
+			importer = Beans.get(ImporterXML.class);
 		} else {
-			importer = providerCSV.get();
+			importer = Beans.get(ImporterCSV.class);
 		}
 
 		return importer.init(importConfiguration);
@@ -52,9 +45,9 @@ public class FactoryImporter {
 		Importer importer;
 
 		if (importConfiguration.getTypeSelect().equals(IImports.XML)) {
-			importer = providerXML.get();
+			importer = Beans.get(ImporterXML.class);
 		} else {
-			importer = providerCSV.get();
+			importer = Beans.get(ImporterCSV.class);
 		}
 
 		return importer.init(importConfiguration, workspace);

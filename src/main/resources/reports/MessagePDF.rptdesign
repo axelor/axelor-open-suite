@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140225-1404></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -742,7 +742,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'Message.subject'</value>
+                                                                <value type="javascript">'Subject'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>

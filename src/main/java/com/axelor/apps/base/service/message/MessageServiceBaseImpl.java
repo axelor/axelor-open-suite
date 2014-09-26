@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -71,9 +72,9 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 				0, 
 				todayTime.toLocalDateTime(), 
 				false, 
-				STATUS_DRAFT, 
+				MessageRepository.STATUS_DRAFT, 
 				subject, 
-				TYPE_SENT,
+				MessageRepository.TYPE_SENT,
 				toEmailAddressList,
 				ccEmailAddressList,
 				bccEmailAddressList,
@@ -103,7 +104,7 @@ public abstract class MessageServiceBaseImpl extends MessageServiceImpl {
 	private void sendToUser(Message message)  {
 		
 		if(!message.getSentByEmail() && message.getRecipientUser()!=null)  {
-			message.setStatusSelect(STATUS_SENT);
+			message.setStatusSelect(MessageRepository.STATUS_SENT);
 			message.setSentByEmail(false);
 			save(message);
 		}
