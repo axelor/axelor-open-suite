@@ -114,8 +114,8 @@
 	    </panel>
 	  </panel-tabs>
 	  
-	  <panel sidebar="true" title="Action(s)">      
-	    <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
+	  <panel sidebar="true" title="Actions">      
+	    <button name="compute" title="Compute" showIf="statusSelect != 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
 	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-group-confirm,save"/>
 	    <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-validate,save"/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
