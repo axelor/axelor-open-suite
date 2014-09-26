@@ -30,7 +30,6 @@ import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.db.User;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
