@@ -30,25 +30,20 @@ import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class SaleOrderController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderController.class);
-	
-	@Inject
-	private Provider<SaleOrderService> saleOrderProvider;
-	
 	
 	public void compute(ActionRequest request, ActionResponse response)  {
 		
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		try {		
-			saleOrderProvider.get().computeSaleOrder(saleOrder);
+			Beans.get(SaleOrderService.class).computeSaleOrder(saleOrder);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -205,7 +200,7 @@ public class SaleOrderController {
 
 		if(saleOrder != null &&  saleOrder.getCompany() != null) {
 			
-			response.setValue("saleOrderSeq", saleOrderProvider.get().getSequence(saleOrder.getCompany()));
+			response.setValue("saleOrderSeq", Beans.get(SaleOrderService.class).getSequence(saleOrder.getCompany()));
 			
 		}
 	}
@@ -216,7 +211,7 @@ public class SaleOrderController {
 		
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		
-		response.setValue("clientPartner", saleOrderProvider.get().validateCustomer(saleOrder));
+		response.setValue("clientPartner", Beans.get(SaleOrderService.class).validateCustomer(saleOrder));
 		
 	}
 	public void setDraftSequence(ActionRequest request,ActionResponse response){
