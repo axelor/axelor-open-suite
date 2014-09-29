@@ -28,9 +28,10 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductFamily;
+import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 
-public interface AccountManagementService {
+public interface AccountManagementService extends Repository<AccountManagement>{
 	
 	/**
 	 * Obtenir la bonne configuration comptable en fonction du produit et de la société.
