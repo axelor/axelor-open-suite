@@ -110,7 +110,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		}
 	}
 	
-	
+	@Override
 	public String printMessage(Message message){
 		Company company = message.getCompany();
 		if(company == null)

@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
+import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -31,6 +32,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
+import com.axelor.apps.message.service.MessageServiceImpl;
 
 @AxelorModuleInfo(name = "axelor-base")
 public class BaseModule extends AxelorModule {
@@ -39,7 +41,7 @@ public class BaseModule extends AxelorModule {
     protected void configure() {
         bind(AddressService.class).to(AddressServiceImpl.class);
         bind(UserService.class).to(UserServiceImpl.class);
-//        bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
+        bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
         bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);
         bind(AccountManagementService.class).to(AccountManagementServiceImpl.class);
         bind(FiscalPositionService.class).to(FiscalPositionServiceImpl.class);
