@@ -20,24 +20,19 @@ package com.axelor.apps.message.web;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class MessageController {
 
-	@Inject
-	private Provider<MessageService> messageService;
-	
-	@Inject
-	private MessageRepository messageRepo;
 	
 	public void sendByEmail(ActionRequest request, ActionResponse response) {
 		
 		Message message = request.getContext().asType(Message.class);
+		MessageService messageService =  Beans.get(MessageService.class);
 		
-		message = messageService.get().sendMessageByEmail(messageRepo.find(message.getId()));
+		message = messageService.sendMessageByEmail(messageService.find(message.getId()));
 		
 		response.setReload(true);
 		

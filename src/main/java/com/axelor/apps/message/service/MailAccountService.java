@@ -18,8 +18,9 @@
 package com.axelor.apps.message.service;
 
 import com.axelor.apps.message.db.MailAccount;
+import com.axelor.db.Repository;
 
-public interface MailAccountService {
+public interface MailAccountService extends Repository<MailAccount> {
 
 	
 	public MailAccount getDefaultMailAccount();
