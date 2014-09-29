@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,16 +33,13 @@ import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class OperationOrderController {
-
-	@Inject
-	private Provider<OperationOrderWorkflowService> operationOrderWorkflowProvider;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
 	
@@ -74,7 +69,7 @@ public class OperationOrderController {
 		
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		
-		OperationOrderWorkflowService operationOrderWorkflowService = operationOrderWorkflowProvider.get();
+		OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
 		
 		if(operationOrder.getPlannedStartDateT() != null && operationOrder.getPlannedEndDateT() != null) {
 			response.setValue("plannedDuration", 
@@ -93,8 +88,9 @@ public class OperationOrderController {
 	public void plan (ActionRequest request, ActionResponse response) throws AxelorException {
 
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+		OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
 
-		operationOrderWorkflowProvider.get().plan(operationOrderWorkflowProvider.get().find(operationOrder.getId()));
+		operationOrderWorkflowService.plan(operationOrderWorkflowService.find(operationOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -104,8 +100,9 @@ public class OperationOrderController {
 	public void finish (ActionRequest request, ActionResponse response) throws AxelorException {
 
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+		OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
 
-		operationOrderWorkflowProvider.get().finish(operationOrderWorkflowProvider.get().find(operationOrder.getId()));
+		operationOrderWorkflowService.finish(operationOrderWorkflowService.find(operationOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -117,7 +114,7 @@ public class OperationOrderController {
 //	TODO A SUPPRIMER UNE FOIS BUG FRAMEWORK CORRIGE
 	public void saveOperationOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		OperationOrder persistOperationOrder = operationOrderWorkflowProvider.get().find(operationOrder.getId());
+		OperationOrder persistOperationOrder =  Beans.get(OperationOrderWorkflowService.class).find(operationOrder.getId());
 		persistOperationOrder.setStatusSelect(operationOrder.getStatusSelect());
 		persistOperationOrder.setRealStartDateT(operationOrder.getRealStartDateT());
 		persistOperationOrder.setRealEndDateT(operationOrder.getRealEndDateT());
@@ -128,7 +125,7 @@ public class OperationOrderController {
 	
 	@Transactional
 	public void saveOperationOrder(OperationOrder operationOrder){
-		operationOrderWorkflowProvider.get().save(operationOrder);
+		 Beans.get(OperationOrderWorkflowService.class).save(operationOrder);
 	}
 	
 	
@@ -156,7 +153,7 @@ public class OperationOrderController {
 			
 		if(!operationOrderIds.equals("")){
 			operationOrderIds = operationOrderIds.substring(0, operationOrderIds.length()-1);	
-			operationOrder = operationOrderWorkflowProvider.get().find(new Long(lstSelectedOperationOrder.get(0)));
+			operationOrder =  Beans.get(OperationOrderWorkflowService.class).find(new Long(lstSelectedOperationOrder.get(0)));
 		}else if(operationOrder.getId() != null){
 			operationOrderIds = operationOrder.getId().toString();			
 		}

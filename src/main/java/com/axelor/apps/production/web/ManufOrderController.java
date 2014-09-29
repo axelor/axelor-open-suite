@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,26 +34,22 @@ import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.Provider;
 
 public class ManufOrderController {
 
-	@Inject
-	private Provider<ManufOrderService> manufOrderProvider;
-
-	@Inject
-	private Provider<ManufOrderWorkflowService> manufOrderWorkflowProvider;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
 	
 	public void propagateIsToInvoice (ActionRequest request, ActionResponse response) {
-
+		
+		ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderProvider.get().propagateIsToInvoice(manufOrderProvider.get().find(manufOrder.getId()));
+		manufOrderService.propagateIsToInvoice(manufOrderService.find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -88,7 +82,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().start(manufOrderProvider.get().find(manufOrder.getId()));
+		Beans.get(ManufOrderWorkflowService.class).start(Beans.get(ManufOrderService.class).find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -98,7 +92,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().pause(manufOrderProvider.get().find(manufOrder.getId()));
+		Beans.get(ManufOrderWorkflowService.class).pause(Beans.get(ManufOrderService.class).find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -108,7 +102,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().resume(manufOrderProvider.get().find(manufOrder.getId()));
+		Beans.get(ManufOrderWorkflowService.class).resume(Beans.get(ManufOrderService.class).find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -118,7 +112,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().finish(manufOrderProvider.get().find(manufOrder.getId()));
+		Beans.get(ManufOrderWorkflowService.class).finish(Beans.get(ManufOrderService.class).find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -128,7 +122,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().cancel(manufOrderProvider.get().find(manufOrder.getId()));
+		Beans.get(ManufOrderWorkflowService.class).cancel(Beans.get(ManufOrderService.class).find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -138,7 +132,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderWorkflowProvider.get().plan(manufOrderProvider.get().find(manufOrder.getId()));
+		Beans.get(ManufOrderWorkflowService.class).plan(Beans.get(ManufOrderService.class).find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -169,7 +163,7 @@ public class ManufOrderController {
 			
 		if(!manufOrderIds.equals("")){
 			manufOrderIds = manufOrderIds.substring(0, manufOrderIds.length()-1);	
-			manufOrder = manufOrderProvider.get().find(new Long(lstSelectedManufOrder.get(0)));
+			manufOrder = Beans.get(ManufOrderService.class).find(new Long(lstSelectedManufOrder.get(0)));
 		}else if(manufOrder.getId() != null){
 			manufOrderIds = manufOrder.getId().toString();			
 		}
