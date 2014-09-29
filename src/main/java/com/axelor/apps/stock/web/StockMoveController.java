@@ -34,33 +34,24 @@ import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class StockMoveController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(StockMoveController.class);
 
-	@Inject
-	private Provider<StockMoveService> stockMoveProvider;
-	
-	@Inject
-	private Provider<MapService> mapProvider;
-	
-	@Inject
-	private StockMoveRepository stockMoveRepo;
 	
 	public void plan(ActionRequest request, ActionResponse response) {
 		
 		StockMove stockMove = request.getContext().asType(StockMove.class);
+		StockMoveService sotckMoveService = Beans.get(StockMoveService.class);
 
 		try {
-			stockMoveProvider.get().plan(stockMoveRepo.find(stockMove.getId()));
+			sotckMoveService.plan(sotckMoveService.find(stockMove.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -69,9 +60,10 @@ public class StockMoveController {
 	public void realize(ActionRequest request, ActionResponse response)  {
 		
 		StockMove stockMove = request.getContext().asType(StockMove.class);
+		StockMoveService sotckMoveService = Beans.get(StockMoveService.class);
 
 		try {
-			String newSeq = stockMoveProvider.get().realize(stockMoveRepo.find(stockMove.getId()));
+			String newSeq = sotckMoveService.realize(sotckMoveService.find(stockMove.getId()));
 			
 			response.setReload(true);
 			
@@ -87,9 +79,10 @@ public class StockMoveController {
 	public void cancel(ActionRequest request, ActionResponse response)  {
 		
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-
+		StockMoveService sotckMoveService = Beans.get(StockMoveService.class);
+		
 		try {
-			stockMoveProvider.get().cancel(stockMoveRepo.find(stockMove.getId()));		
+			sotckMoveService.cancel(sotckMoveService.find(stockMove.getId()));		
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -119,7 +112,7 @@ public class StockMoveController {
 			
 		if(!stockMoveIds.equals("")){
 			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);	
-			stockMove = stockMoveRepo.find(new Long(lstSelectedMove.get(0)));
+			stockMove = Beans.get(StockMoveService.class).find(new Long(lstSelectedMove.get(0)));
 		}else if(stockMove.getId() != null){
 			stockMoveIds = stockMove.getId().toString();			
 		}
@@ -193,7 +186,7 @@ public class StockMoveController {
 			BigDecimal dLon = fromAddress.getLongit();
 			BigDecimal aLat = toAddress.getLatit();
 			BigDecimal aLon =  toAddress.getLongit();
-			Map<String, Object> result = mapProvider.get().getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
+			Map<String, Object> result = Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
 			if(result != null){
 				Map<String,Object> mapView = new HashMap<String,Object>();
 				mapView.put("title", "Map");
@@ -212,7 +205,7 @@ public class StockMoveController {
 			response.setFlash("No move lines to split");
 			return;
 		}
-		Boolean selected = stockMoveProvider.get().splitStockMoveLinesUnit(stockMoveLines, new BigDecimal(1));
+		Boolean selected = Beans.get(StockMoveService.class).splitStockMoveLinesUnit(stockMoveLines, new BigDecimal(1));
 		
 		if(!selected)
 			response.setFlash("Please select lines to split");
@@ -231,7 +224,7 @@ public class StockMoveController {
 			response.setFlash("Please entry proper split qty");
 			return ;
 		}
-		Boolean selected = stockMoveProvider.get().splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
+		Boolean selected = Beans.get(StockMoveService.class).splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
 		if(!selected)
 			response.setFlash("Please select lines to split");
 		response.setReload(true);
@@ -240,16 +233,18 @@ public class StockMoveController {
 	
 	public void shipReciveAllProducts(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		stockMoveProvider.get().copyQtyToRealQty(stockMoveRepo.find(stockMove.getId()));
+		StockMoveService sotckMoveService = Beans.get(StockMoveService.class);
+		sotckMoveService.copyQtyToRealQty(sotckMoveService.find(stockMove.getId()));
 		response.setReload(true);
 	}
 	
 	public void generateReversion(ActionRequest request, ActionResponse response)  {
 		
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-
+		StockMoveService sotckMoveService = Beans.get(StockMoveService.class);
+		
 		try {
-			stockMoveProvider.get().generateReversion(stockMoveRepo.find(stockMove.getId()));		
+			sotckMoveService.generateReversion(sotckMoveService.find(stockMove.getId()));		
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

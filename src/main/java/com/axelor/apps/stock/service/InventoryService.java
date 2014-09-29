@@ -51,7 +51,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class InventoryService extends InventoryRepository{
@@ -59,12 +58,6 @@ public class InventoryService extends InventoryRepository{
 	@Inject
 	private InventoryLineService inventoryLineService;
 	
-	@Inject
-	private Provider<StockMoveService> stockMoveServiceProvider;
-
-	@Inject
-	private Provider<StockMoveLineService> stockMoveLineServiceProvider;
-
 	@Inject
 	private SequenceService sequenceService;
 	
@@ -241,6 +234,7 @@ public class InventoryService extends InventoryRepository{
 
 		Location toLocation = inventory.getLocation();
 		Company company = toLocation.getCompany();
+		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 
 		if (company == null) {
 			throw new AxelorException(String.format("Société manquante pour l'entrepot {}", toLocation.getName()), IException.CONFIGURATION_ERROR);
@@ -258,7 +252,7 @@ public class InventoryService extends InventoryRepository{
 			if (currentQty.compareTo(realQty) != 0) {
 				BigDecimal diff = realQty.subtract(currentQty);
 
-				StockMoveLine stockMoveLine = stockMoveLineServiceProvider.get().createStockMoveLine(product, diff, product.getUnit(), null, stockMove, 0);
+				StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(product, diff, product.getUnit(), null, stockMove, 0);
 				if (stockMoveLine == null)  {
 					throw new AxelorException("Produit incorrect dans la ligne de l'inventaire "+inventorySeq, IException.CONFIGURATION_ERROR);
 				}
@@ -268,9 +262,9 @@ public class InventoryService extends InventoryRepository{
 		}
 		if (stockMove.getStockMoveLineList() != null) {
 			
-			stockMoveServiceProvider.get().plan(stockMove);
-			stockMoveServiceProvider.get().copyQtyToRealQty(stockMove);
-			stockMoveServiceProvider.get().realize(stockMove);
+			stockMoveService.plan(stockMove);
+			stockMoveService.copyQtyToRealQty(stockMove);
+			stockMoveService.realize(stockMove);
 		}
 		return stockMove;
 	}
@@ -278,7 +272,7 @@ public class InventoryService extends InventoryRepository{
 	
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, Location toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
-		StockMove stockMove = stockMoveServiceProvider.get().createStockMove(null, null, company, null, 
+		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company, null, 
 				stockConfigService.getInventoryVirtualLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate);
 		
 		stockMove.setTypeSelect(IStockMove.TYPE_INTERNAL);

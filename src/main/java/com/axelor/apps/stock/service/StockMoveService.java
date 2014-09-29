@@ -29,10 +29,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface StockMoveService {
+public interface StockMoveService extends Repository<StockMove> {
 	
 	/**
 	 * Méthode permettant d'obtenir la séquence du StockMove.

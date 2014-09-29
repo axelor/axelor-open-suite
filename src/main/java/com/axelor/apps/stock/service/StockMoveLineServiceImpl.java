@@ -19,6 +19,7 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.LocalDate;
 
@@ -34,15 +35,13 @@ import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.db.Query;
+import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class StockMoveLineServiceImpl implements StockMoveLineService  {
-	
-	@Inject 
-	private Provider<LocationLineService> locationLineProvider;
 	
 	@Inject
 	private TrackingNumberService trackingNumberService;
@@ -239,15 +238,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate 
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException  {
 		
+		LocationLineService locationLineService = Beans.get(LocationLineService.class);
+		
 		switch(fromStatus)  {
 			case IStockMove.STATUS_PLANNED:
-				locationLineProvider.get().updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber);
-				locationLineProvider.get().updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber);
+				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber);
 				break;
 				
 			case IStockMove.STATUS_REALIZED:
-				locationLineProvider.get().updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber);
-				locationLineProvider.get().updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber);
+				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber);
 				break;
 			
 			default:
@@ -256,19 +257,82 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		
 		switch(toStatus)  {
 			case IStockMove.STATUS_PLANNED:
-				locationLineProvider.get().updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber);
-				locationLineProvider.get().updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber);
+				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber);
 				break;
 				
 			case IStockMove.STATUS_REALIZED:
-				locationLineProvider.get().updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber);
-				locationLineProvider.get().updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber);
+				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber);
 				break;
 			
 			default:
 				break;
 		}
 		
+	}
+
+
+	@Override
+	public Query<StockMoveLine> all() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public StockMoveLine copy(StockMoveLine arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public StockMoveLine create(Map<String, Object> arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<Property> fields() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public StockMoveLine find(Long arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void flush() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void refresh(StockMoveLine arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void remove(StockMoveLine arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public StockMoveLine save(StockMoveLine arg0) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

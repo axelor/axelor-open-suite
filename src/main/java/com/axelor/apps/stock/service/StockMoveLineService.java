@@ -30,9 +30,10 @@ import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 
-public interface StockMoveLineService {
+public interface StockMoveLineService extends Repository<StockMoveLine>{
 	
 	public static final int TYPE_SALES = 1;
 	public static final int TYPE_PURCHASES = 2;
