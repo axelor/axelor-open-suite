@@ -20,15 +20,11 @@ package com.axelor.apps.organisation.web;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.organisation.db.Planning;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class PlanningController {
-
-	@Inject
-	private Provider<PeriodService> periodService;
 	
 	
 	
@@ -39,7 +35,7 @@ public class PlanningController {
 		try {
 			if(planning.getDate() != null && planning.getUser() != null && planning.getUser().getActiveCompany() != null) {
 				
-				response.setValue("period", periodService.get().rightPeriod(planning.getDate(), planning.getUser().getActiveCompany()));				
+				response.setValue("period", Beans.get(PeriodService.class).rightPeriod(planning.getDate(), planning.getUser().getActiveCompany()));				
 			}
 			else {
 				response.setValue("period", null);

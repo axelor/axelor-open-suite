@@ -39,21 +39,13 @@ import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class CandidateController {
 
-	@Inject
-	private Provider<EmployeeService> employeeService;
-	
-	@Inject
-	private CandidateRepository candidateRepo;
-	
-	
 	private static final Logger LOG = LoggerFactory.getLogger(CandidateController.class);
 	
 	public void updateKeywordSet(Set<Keyword> keywordSet, String typeSelect) {
@@ -100,7 +92,7 @@ public class CandidateController {
 		
 		Candidate candidate = request.getContext().asType(Candidate.class);
 		
-		employeeService.get().createEmployee(candidateRepo.find(candidate.getId()));
+		Beans.get(EmployeeService.class).createEmployee(Beans.get(CandidateRepository.class).find(candidate.getId()));
 		
 		response.setReload(true);
 	}
@@ -163,7 +155,7 @@ public class CandidateController {
 			recruitmentProcessAdvancement.setRecruitmentDate(candidate.getRecruitementDate());
 			recruitmentProcessAdvancement.setNote(candidate.getNote());
 			candidate.getRecruitmentProcessAdvancementList().add(recruitmentProcessAdvancement);
-			candidateRepo.save(candidate);
+			Beans.get(CandidateRepository.class).save(candidate);
 			response.setReload(true);
 		}
 	}

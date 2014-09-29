@@ -30,26 +30,19 @@ import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class TaskController {
 
-	@Inject
-	private Provider<TaskService> taskService;
-	
-	@Inject
-	private Provider<FinancialInformationHistoryService> financialInformationHistoryService;
-	
 	
 	public void updateFinancialInformation(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Task task = request.getContext().asType(Task.class);
 		
 		if(task.getId() != null)  {
-			taskService.get().updateFinancialInformation(task);
+			Beans.get(TaskService.class).updateFinancialInformation(task);
 			
 			// Les montants sont figés dès le commencement de la tache
 			if(task.getStatusSelect() < ITask.STATUS_STARTED && task.getRealEstimatedMethodSelect() != ITask.REAL_ESTIMATED_METHOD_NONE)  {
@@ -73,9 +66,9 @@ public class TaskController {
 		
 		if(task.getId() != null)  {
 			
-			financialInformationHistoryService.get().updateFinancialInformationInitialEstimatedHistory(task);
+			Beans.get(FinancialInformationHistoryService.class).updateFinancialInformationInitialEstimatedHistory(task);
 			
-			taskService.get().updateInitialEstimatedAmount(task);
+			Beans.get(TaskService.class).updateInitialEstimatedAmount(task);
 			
 			response.setValue("initialEstimatedTurnover", task.getInitialEstimatedTurnover());
 			response.setValue("initialEstimatedCost", task.getInitialEstimatedCost());
@@ -91,7 +84,7 @@ public class TaskController {
 		Task task = request.getContext().asType(Task.class);
 		
 		if(task.getId() != null)  {
-				response.setValue("spentTime", taskService.get().getSpentTime(task));
+				response.setValue("spentTime", Beans.get(TaskService.class).getSpentTime(task));
 		}
 	}
 	
@@ -101,7 +94,7 @@ public class TaskController {
 		Task task = request.getContext().asType(Task.class);
 		
 		if(task.getId() != null)  {
-				response.setValue("plannedTime", taskService.get().getPlannedTime(task));
+				response.setValue("plannedTime", Beans.get(TaskService.class).getPlannedTime(task));
 		}
 	}
 

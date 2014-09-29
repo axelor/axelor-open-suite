@@ -32,20 +32,13 @@ import com.axelor.apps.organisation.service.TimesheetService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class TimesheetController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeController.class);
-	
-	@Inject
-	private Provider<PeriodService> periodService;
-	
-	@Inject
-	private Provider<TimesheetService> timesheetService;
 	
 	public void getPeriod(ActionRequest request, ActionResponse response) {
 
@@ -56,7 +49,7 @@ public class TimesheetController {
 			
 			if(timesheet.getFromDate() != null && company != null)  {
 
-				response.setValue("period", periodService.get().rightPeriod(timesheet.getFromDate(), company));
+				response.setValue("period", Beans.get(PeriodService.class).rightPeriod(timesheet.getFromDate(), company));
 			}
 			else {
 				response.setValue("period", null);
@@ -69,7 +62,7 @@ public class TimesheetController {
 		
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		
-		timesheetService.get().getTaskSpentTime(timesheet);
+		Beans.get(TimesheetService.class).getTaskSpentTime(timesheet);
 		
 		response.setReload(true);
 		
@@ -79,7 +72,7 @@ public class TimesheetController {
 		
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		
-		timesheetService.get().validate(timesheet);
+		Beans.get(TimesheetService.class).validate(timesheet);
 		
 		response.setReload(true);
 	}
