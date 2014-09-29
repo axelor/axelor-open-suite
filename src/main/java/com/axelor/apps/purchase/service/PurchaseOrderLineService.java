@@ -29,9 +29,10 @@ import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 
-public interface PurchaseOrderLineService {
+public interface PurchaseOrderLineService extends Repository<PurchaseOrderLine>{
 	
 	
 	public BigDecimal getUnitPrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;

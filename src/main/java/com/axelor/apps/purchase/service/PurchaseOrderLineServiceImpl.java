@@ -19,6 +19,7 @@ package com.axelor.apps.purchase.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -37,6 +38,8 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.db.Query;
+import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -229,6 +232,69 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 		}
 		return null;
 		
+	}
+
+
+	@Override
+	public Query<PurchaseOrderLine> all() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public PurchaseOrderLine copy(PurchaseOrderLine arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public PurchaseOrderLine create(Map<String, Object> arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<Property> fields() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public PurchaseOrderLine find(Long arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void flush() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void refresh(PurchaseOrderLine arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void remove(PurchaseOrderLine arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public PurchaseOrderLine save(PurchaseOrderLine arg0) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

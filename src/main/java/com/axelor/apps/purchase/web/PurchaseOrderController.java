@@ -32,21 +32,13 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class PurchaseOrderController {
 
-	@Inject
-	private Provider<PurchaseOrderService> purchaseOrderProvider;
-	
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderController.class);
-	
-	@Inject
-	private PurchaseOrderRepository purchaseOrderRepo;
-
 	
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		
@@ -54,7 +46,7 @@ public class PurchaseOrderController {
 		
 		if(purchaseOrder != null &&  purchaseOrder.getCompany() != null) {
 			
-			response.setValue("purchaseOrderSeq", purchaseOrderProvider.get().getSequence(purchaseOrder.getCompany()));
+			response.setValue("purchaseOrderSeq", Beans.get(PurchaseOrderService.class).getSequence(purchaseOrder.getCompany()));
 		}
 	}
 	
@@ -64,7 +56,7 @@ public class PurchaseOrderController {
 
 		if(purchaseOrder != null) {
 			try {
-				purchaseOrderProvider.get().computePurchaseOrder(purchaseOrder);
+				Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
 				response.setReload(true);
 			}
 			catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -76,7 +68,7 @@ public class PurchaseOrderController {
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 			
-		response.setValue("supplierPartner", purchaseOrderProvider.get().validateSupplier(purchaseOrder));
+		response.setValue("supplierPartner", Beans.get(PurchaseOrderService.class).validateSupplier(purchaseOrder));
 		
 	}
 	
@@ -106,7 +98,7 @@ public class PurchaseOrderController {
 			
 		if(!purchaseOrderIds.equals("")){
 			purchaseOrderIds = purchaseOrderIds.substring(0,purchaseOrderIds.length()-1);
-			purchaseOrder = purchaseOrderRepo.find(new Long(lstSelectedPurchaseOrder.get(0)));
+			purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(new Long(lstSelectedPurchaseOrder.get(0)));
 		}else if(purchaseOrder.getId() != null){
 			purchaseOrderIds = purchaseOrder.getId().toString();
 		}
