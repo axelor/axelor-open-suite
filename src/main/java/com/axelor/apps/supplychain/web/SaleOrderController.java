@@ -23,19 +23,13 @@ import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class SaleOrderController {
 
-	@Inject
-	private Provider<SaleOrderServiceStockImpl> saleOrderStockProvider;
-	
-	@Inject
-	private Provider<SaleOrderPurchaseService> saleOrderPurchaseProvider;
-	
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
 	
@@ -45,7 +39,7 @@ public class SaleOrderController {
 		
 		if(saleOrder.getId() != null) {
 			
-			saleOrderStockProvider.get().createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+			Beans.get(SaleOrderServiceStockImpl.class).createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 		}
 	}
 	
@@ -55,7 +49,7 @@ public class SaleOrderController {
 		
 		if(saleOrder != null) {
 			
-			Location location = saleOrderStockProvider.get().getLocation(saleOrder.getCompany());
+			Location location = Beans.get(SaleOrderServiceStockImpl.class).getLocation(saleOrder.getCompany());
 			
 			if(location != null) {
 				response.setValue("location", location);
@@ -70,7 +64,7 @@ public class SaleOrderController {
 		
 		if(saleOrder.getId() != null) {
 			
-			saleOrderPurchaseProvider.get().createPurchaseOrders(saleOrderRepo.find(saleOrder.getId()));
+			Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrderRepo.find(saleOrder.getId()));
 		}
 	}
 	

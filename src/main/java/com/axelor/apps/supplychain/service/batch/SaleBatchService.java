@@ -17,23 +17,16 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.sale.db.ISaleBatch;
 import com.axelor.apps.sale.db.SaleBatch;
 import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 
 public class SaleBatchService extends SaleBatchRepository {
 
-	@Inject
-	private Provider<BatchInvoicing> invoicingProvider;
-	
-	
 // Appel 	
 	
 	/**
@@ -67,8 +60,7 @@ public class SaleBatchService extends SaleBatchRepository {
 	
 	public Batch invoicing(SaleBatch saleBatch) {
 		
-		BatchStrategy strategy = invoicingProvider.get(); 
-		return strategy.run(saleBatch);
+		return Beans.get(BatchInvoicing.class).run(saleBatch);
 		
 	}
 	

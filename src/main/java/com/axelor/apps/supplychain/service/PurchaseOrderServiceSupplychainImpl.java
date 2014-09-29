@@ -48,28 +48,11 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class); 
 
-	@Inject
-	private Provider<PurchaseOrderLineService> purchaseOrderLineServiceProvider;
-	
-	@Inject
-	private Provider<StockMoveService> stockMoveServiceProvider;
-	
-	@Inject
-	private Provider<StockMoveLineService> stockMoveLineServiceProvider;
-	
-	@Inject
-	private StockConfigService stockConfigService;
-	
-	@Inject
-	private LocationRepository locationRepo;
-	
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
@@ -96,12 +79,12 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	public void createStocksMoves(PurchaseOrder purchaseOrder) throws AxelorException {
 		
 		if(purchaseOrder.getPurchaseOrderLineList() != null && purchaseOrder.getCompany() != null) {
-
+			StockConfigService stockConfigService = Beans.get(StockConfigService.class);
 			Company company = purchaseOrder.getCompany();
 			
 			StockConfig stockConfig = stockConfigService.getStockConfig(company);
 			
-			Location startLocation = locationRepo.findByPartner(purchaseOrder.getSupplierPartner());
+			Location startLocation = Beans.get(LocationRepository.class).findByPartner(purchaseOrder.getSupplierPartner());
 			
 			if(startLocation == null)  {
 				startLocation = stockConfigService.getSupplierVirtualLocation(stockConfig);
@@ -113,7 +96,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			
 			Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
-			StockMove stockMove = stockMoveServiceProvider.get().createStockMove(supplierPartner.getDeliveryAddress(), null, company, supplierPartner, startLocation, purchaseOrder.getLocation(), purchaseOrder.getDeliveryDate());
+			StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(supplierPartner.getDeliveryAddress(), null, company, supplierPartner, startLocation, purchaseOrder.getLocation(), purchaseOrder.getDeliveryDate());
 			stockMove.setPurchaseOrder(purchaseOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			
@@ -124,8 +107,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				if(product != null && ((stockConfig.getHasInSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)) 
 						|| (stockConfig.getHasInSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)))) {
 
-					StockMoveLine stockMoveLine = stockMoveLineServiceProvider.get().createStockMoveLine(product, purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), 
-							purchaseOrderLineServiceProvider.get().computeDiscount(purchaseOrderLine), stockMove, 2);
+					StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(product, purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), 
+							Beans.get(PurchaseOrderLineService.class).computeDiscount(purchaseOrderLine), stockMove, 2);
 					if(stockMoveLine != null) {
 						
 						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
@@ -135,7 +118,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				}	
 			}
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMoveServiceProvider.get().plan(stockMove);
+				Beans.get(StockMoveService.class).plan(stockMove);
 			}
 		}
 	}
@@ -143,7 +126,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	
 	public Location getLocation(Company company)  {
 		
-		return locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, ILocation.INTERNAL).fetchOne();
+		return Beans.get(LocationRepository.class).all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, ILocation.INTERNAL).fetchOne();
 	}
 	
 	
@@ -153,7 +136,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		
 		for(StockMove stockMove : stockMoveList)  {
 			
-			stockMoveServiceProvider.get().cancel(stockMove);
+			Beans.get(StockMoveService.class).cancel(stockMove);
 			
 		}
 		

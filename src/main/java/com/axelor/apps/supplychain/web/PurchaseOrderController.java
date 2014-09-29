@@ -24,13 +24,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class PurchaseOrderController {
 
-	@Inject
-	private Provider<PurchaseOrderServiceSupplychainImpl> purchaseOrderServiceSupplychainProvider;
 	
 	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
 		
@@ -38,7 +34,7 @@ public class PurchaseOrderController {
 		
 		if(purchaseOrder.getId() != null) {
 
-			purchaseOrderServiceSupplychainProvider.get().createStocksMoves(Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
+			Beans.get(PurchaseOrderServiceSupplychainImpl.class).createStocksMoves(Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
 		}
 	}
 	
@@ -48,7 +44,7 @@ public class PurchaseOrderController {
 		
 		if(purchaseOrder.getCompany() != null) {
 			
-			response.setValue("location", purchaseOrderServiceSupplychainProvider.get().getLocation(purchaseOrder.getCompany()));
+			response.setValue("location", Beans.get(PurchaseOrderServiceSupplychainImpl.class).getLocation(purchaseOrder.getCompany()));
 		}
 	}
 	
@@ -57,7 +53,7 @@ public class PurchaseOrderController {
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 			
-		purchaseOrderServiceSupplychainProvider.get().clearPurchaseOrder(purchaseOrder);
+		Beans.get(PurchaseOrderServiceSupplychainImpl.class).clearPurchaseOrder(purchaseOrder);
 		
 	}
 	
