@@ -193,8 +193,8 @@
 
 	<action-view name="product.root.product.model" title="Products models"
 		model="com.axelor.apps.base.db.Product" icon="img/16px/productSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="product-grid" />
+		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = true</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
