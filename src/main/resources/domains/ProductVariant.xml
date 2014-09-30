@@ -8,7 +8,7 @@
   <entity name="ProductVariant" lang="java">
 	
 	<integer name="importId" />
-	<many-to-one name="productVariantAttr1" required="true" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+	<many-to-one name="productVariantAttr1" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr2" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr3" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr4" ref="com.axelor.apps.base.db.ProductVariantAttr"/>

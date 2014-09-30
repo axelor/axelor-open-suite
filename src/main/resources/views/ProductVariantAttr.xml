@@ -13,8 +13,8 @@
     	<panel>
         	<field name="name" />
         	<field name="code" x-bind="{{code|uppercase}}" />
-        	<panel-related  field="productVariantValueList" colSpan="12"/>
         </panel>
+        <panel-related  field="productVariantValueList" colSpan="12"/>
     </form>   
 
 </object-views>
