@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140225-1404></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -16,6 +16,18 @@
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">210</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">210</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">210</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -206,10 +218,10 @@
             <list-property name="filter">
                 <structure>
                     <property name="operator">in</property>
-                    <expression name="expr" type="javascript">if(params["ProductIds"].value != null){
+                    <expression name="expr" type="javascript">if(!params["ProductIds"].value.equals("")){
 row["id"]}</expression>
                     <simple-property-list name="value1">
-                        <value>if(params["ProductIds"].value != null){
+                        <value>if(!params["ProductIds"].value.equals("")){
 params["ProductIds"].value.split(",")
 }</value>
                     </simple-property-list>
