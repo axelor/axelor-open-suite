@@ -31,7 +31,7 @@
 		  <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
 
-	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder"
+	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-purchase-order-attrs-hide-contact-partner"
 	 onSave="save,action-method-set-purchase-order-draft-sequence,save" onNew="action-group-purchase-order-on-new-actions" >
 	  <toolbar>
 	    <button name="print" title="Print" icon="fa-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
@@ -49,9 +49,9 @@
 	  <panel-tabs>    
 	    <panel title="PO information">
 	      <panel title="Contacts" readonlyIf="statusSelect == 5" colSpan="12">
-	        <field name="supplierPartner" onChange="action-purchase-order-record-partner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" form-view="partner-form"/>
+	        <field name="supplierPartner" onChange="action-purchase-order-record-partner,action-purchase-order-attrs-hide-contact-partner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" form-view="partner-form"/>
 	        <field name="buyerUser"/>
-			<field name="contactPartner"
+			<field name="contactPartner" 
 				domain="self.isContact = true AND self.mainPartner = :supplierPartner"
 				form-view="partner-contact-form" grid-view="partner-contact-grid" />
 			<field name="priceList"
@@ -206,6 +206,10 @@
     <action-method name="action-purchase-order-method-show-purchase-order">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="showPurchaseOrder"/>
 	</action-method>
+	
+    <action-attrs name="action-purchase-order-attrs-hide-contact-partner">
+        <attribute name="hidden" for="contactPartner" expr="eval:supplierPartner != null &amp;&amp; supplierPartner.partnerTypeSelect == 2" />
+    </action-attrs>
     
     <action-view name="action-purchase-order-show-invoice" title="Supplier invoices"
 		model="com.axelor.apps.account.db.Invoice">
