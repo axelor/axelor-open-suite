@@ -22,10 +22,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.eclipse.persistence.sessions.Project;
+
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.exception.AxelorException;
@@ -36,7 +39,7 @@ import com.axelor.rpc.Context;
 public class ProductionOrderWizardController {
 
 	@Inject
-	ProductionOrderService productionOrderService;
+	private ProductionOrderService productionOrderService;
 	
 	@Inject
 	private BillOfMaterialService billOfMaterialService;
@@ -77,13 +80,14 @@ public class ProductionOrderWizardController {
 //			}
 			
 //			ProductionOrder productionOrder = productionOrderService.generateProductionOrder(product, billOfMaterial, qty, businessProject);
+			ProductionOrder productionOrder = productionOrderService.generateProductionOrder(product, billOfMaterial, qty);
 			
-//			if(productionOrder != null)  {
-//				response.setFlash("Ordre de production créé ("+productionOrder.getProductionOrderSeq()+")");
-//			}
-//			else  {
-//				response.setFlash("Erreur lors de la création de l'ordre de production");
-//			}
+			if(productionOrder != null)  {
+				response.setFlash("Ordre de production créé ("+productionOrder.getProductionOrderSeq()+")");
+			}
+			else  {
+				response.setFlash("Erreur lors de la création de l'ordre de production");
+			}
 		}
 		
 	}

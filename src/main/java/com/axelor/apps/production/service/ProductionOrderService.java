@@ -69,6 +69,17 @@ public class ProductionOrderService extends ProductionOrderRepository{
 	}
 
 	
+	public ProductionOrder createProductionOrder(boolean isToInvoice) throws AxelorException  {
+		
+		return new ProductionOrder(
+				this.getProductionOrderSeq(), 
+				isToInvoice);
+		
+		
+	}
+	
+	
+//	TODO Should be move into the business manufacturing module
 //	public ProductionOrder createProductionOrder(Project businessProject, boolean isToInvoice) throws AxelorException  {
 //		
 //		return new ProductionOrder(
@@ -102,6 +113,18 @@ public class ProductionOrderService extends ProductionOrderRepository{
 	 * @return
 	 * @throws AxelorException
 	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested) throws AxelorException  {
+		
+		ProductionOrder productionOrder = this.createProductionOrder(false);
+		
+		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested);
+		
+		return save(productionOrder);
+		
+	}
+	
+//	TODO Should be move into the business manufacturing module
 //	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 //	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, Project businessProject) throws AxelorException  {
 //		
