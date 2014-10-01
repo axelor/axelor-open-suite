@@ -29,6 +29,7 @@
 	<action-group name="action-group-supplychain-saleorder-onload">
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
 		<action name="action-sale-order-attrs-validated-read-only"/>
+		<action name="action-partner-attrs-hide-contact-partner" />
 	</action-group>
 	
 	<action-method name="action-supplychain-sale-order-method-get-location">
