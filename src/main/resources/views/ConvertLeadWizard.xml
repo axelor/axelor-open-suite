@@ -19,7 +19,7 @@
 	 	</panel>
 	 	<panel-tabs showIf="hasConvertIntoContact || hasConvertIntoPartner || hasConvertIntoOpportunity || hasConvertIntoCall || hasConvertIntoMeeting || hasConvertIntoTask">
 			<panel title="Convert into Contact" showIf="hasConvertIntoContact">
-				<field name="contactPartner" showTitle="false" colSpan="12" canSelect="false" canEdit="false"  form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+				<field name="contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor >
 						<label title="Personal" colSpan="12"/>
 						<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
@@ -56,7 +56,7 @@
 				</field>
 			</panel>
 			<panel title="Convert into Partner" showIf="hasConvertIntoPartner">
-				<field name="partner" showTitle="false" colSpan="12" canSelect="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+				<field name="partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor>
 						<label title="Personal" colSpan="12"/>
 						<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
@@ -117,7 +117,7 @@
 				</field>
 			</panel>
 			<panel title="Create into Opportunity" showIf="hasConvertIntoOpportunity">
-				<field name="opportunity" showTitle="false" colSpan="12" canSelect="false" form-view="opportunity-lead-converted-form" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one">
+				<field name="opportunity" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="opportunity-lead-converted-form" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one">
 					<editor>
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
@@ -154,7 +154,7 @@
 				</field>
 			</panel>
 			<panel title="Log a call" showIf="hasConvertIntoCall">
-				<field name="callEvent" showTitle="false" colSpan="12" canSelect="false" form-view="call-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
+				<field name="callEvent" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="call-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
 					<editor>
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
@@ -178,7 +178,7 @@
 				</field>
 			</panel>
 			<panel title="Schedule a meeting" showIf="hasConvertIntoMeeting">
-				<field name="meetingEvent" showTitle="false" colSpan="12" canSelect="false" form-view="meeting-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
+				<field name="meetingEvent" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="meeting-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
 					<editor>
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
@@ -201,7 +201,7 @@
 				</field>
 			</panel>
 			<panel title="Create a task" showIf="hasConvertIntoTask">
-				<field name="taskEvent" showTitle="false" colSpan="12" canSelect="false" form-view="crm-task-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
+				<field name="taskEvent" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="crm-task-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
 					<editor>
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
