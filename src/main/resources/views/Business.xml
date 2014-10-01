@@ -15,7 +15,7 @@
     </grid>
     
 	<form name="business-project-form" title="Business" model="com.axelor.apps.organisation.db.Project"
-		 onLoad="action-project-method-update-financial-information,save" onSave="save,action-business-project-method-create-default-task-on-save" onNew="action-business-project-group-default">
+		 onLoad="action-partner-attrs-hide-contact-partner,action-project-method-update-financial-information,save" onSave="save,action-business-project-method-create-default-task-on-save" onNew="action-business-project-group-default">
 	  <toolbar>
 	    <button name="printBusiness" title="Business Situation" colSpan="2" icon="fa-print" onClick="action-print-business-situation"/>
 	  </toolbar>
@@ -26,7 +26,7 @@
 	  <panel>
 	    <field name="company" readonlyIf="projectStatusSelect &gt;= 3 || businessStatusSelect &gt;= 2" widget="SuggestBox" form-view="company-form"/>
 	    <field name="responsibleUser"/>
-	    <field name="clientPartner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+	    <field name="clientPartner" domain="self.isContact = false" onChange="action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
 	    <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	    <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	  </panel>  
