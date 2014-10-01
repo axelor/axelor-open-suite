@@ -72,7 +72,7 @@
 	</input>
 	
     <input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true" >
-        <bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code">
+        <bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
           	<bind column="defaultExemptionTax_code" to="code"/>
       	</bind>
 		<bind to="qasWsdlUrl" column="qas_url"/>

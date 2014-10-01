@@ -293,6 +293,10 @@
 		<attribute name="required" for="name" expr="true"/>	
 	</action-attrs>
 	
+	<action-attrs name="action-partner-attrs-hide-contact-partner">
+        <attribute name="hidden" for="contactPartner" expr="eval: clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2" />
+    </action-attrs>
+    
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
     	<field name="partnerTypeSelect" expr="eval:_partnerTypeSelect"/>
     </action-record>
