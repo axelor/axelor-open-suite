@@ -15,7 +15,7 @@
     </grid>
     
     <form name="product-variant-form" title="Product variant" model="com.axelor.apps.base.db.ProductVariant"
-    	onLoad="action-product-variant-attrs-domain" onNew="action-group-base-productvariant-onnew">
+    	onLoad="action-product-variant-attrs-domain" onNew="action-product-variant-record-on-new">
     	<panel>
         	<field name="productVariantAttr1" showTitle="false" readonly="true"/>
         	<field name="productVariantValue1" showTitle="false" widget="SuggestBox" showIf="productVariantAttr1"/>
