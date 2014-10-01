@@ -83,15 +83,15 @@
 	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
 	        <panel title="Stock" showIf="productTypeSelect == 'storable'" showTitle="false" if-module="axelor-stock">
             	<panel title="Procurement settings" colSpan="12">
-					<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'" colSpan="4"/>
-					<field name="isRawMaterial" showIf="productTypeSelect != 'service'" colSpan="4"/>
+					<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'" colSpan="6"/>
+					<field name="isRawMaterial" showIf="productTypeSelect != 'service'" colSpan="6"/>
 				</panel>
 				<panel colSpan="12" if-module="axelor-supplychain">
-					<button name="showAllStockMoveLine" title="Show all stock move" colSpan="2" onClick="action-product-view-stock-move-line"/>
+					<button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
 					<spacer/>
-<!-- 					<panel-dashlet action="action-product-view-stock" colSpan="12"/> -->
-<!-- 					<panel-dashlet action="action-stock-report-for-product" height="200" colSpan="12"/> -->
-<!-- 					<panel-dashlet action="action-stock-history-report-for-product" height="200" colSpan="12"/> -->
+					<panel-dashlet action="action-product-view-stock" colSpan="12"/>
+					<panel-dashlet action="action-stock-report-for-product" height="200" colSpan="12"/>
+					<panel-dashlet action="action-stock-history-report-for-product" height="200" colSpan="12"/>
 				</panel>
 			</panel>
 			<panel title="Production informations" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-production">
@@ -99,7 +99,7 @@
 				<field name="lastProductionPrice" readonly="true"/>
 				<panel if-module="axelor-production" colSpan="12">
 					<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
-<!-- 					<panel-dashlet action="action-product-view-show-bill-of-material" colSpan="12"/> -->
+					<panel-dashlet action="action-product-view-show-bill-of-material" colSpan="12"/>
 				</panel>
 			</panel>
 	        <panel title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false">
@@ -148,15 +148,15 @@
 	            </panel>
             	<button name="updateProductsPrices" title="Update products prices"  onClick="save,action-product-method-update-products-prices" help="Update current product prices and variants"/>
 	        </panel>
-<!--  			<panel title="Links" if-module="axelor-supplychain"> -->
-<!--  				<panel-dashlet action="action-product-view-stock-move-line-incoming-planned" colSpan="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-stock-move-line-consumption-planned" colSpan="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-stock-move-line" colSpan="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-supplier-requests-historical" colSpan="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-purchase-order-line-in-progress" colSpan="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12"/> -->
-<!--  				<panel-dashlet action="action-product-view-stock-move-line-consumption-historical" colSpan="12"/> -->
-<!-- 	        </panel> -->
+ 			<panel title="Links" if-module="axelor-stock">
+ 				<panel-dashlet action="action-product-view-stock-move-line-incoming-planned" colSpan="12"/>
+ 				<panel-dashlet action="action-product-view-stock-move-line-consumption-planned" colSpan="12"/>
+ 				<panel-dashlet action="action-product-view-stock-move-line" colSpan="12"/>
+<!--  				<panel-dashlet action="action-product-view-supplier-requests-historical" colSpan="12" if-module="axelor-supplier-management"/> -->
+<!--  				<panel-dashlet action="action-product-view-purchase-order-line-in-progress" colSpan="12" if-module="axelor-purchase"/> -->
+<!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
+ 				<panel-dashlet action="action-product-view-stock-move-line-consumption-historical" colSpan="12"/>
+	        </panel>
 	  	</panel-tabs>
 	</form>    
     
