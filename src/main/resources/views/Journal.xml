@@ -21,35 +21,39 @@
 		
 		<panel>
 			<field name="name"/>
-			<field name="code"/>
+			<field name="code" x-bind="{{code|uppercase}}"/>
 			<field name="company"/>
 			<field name="type"/>
 		</panel>
-
-		<panel title="Configurations" hideIf="$popup()">
-			<panel title="MoveLine" colSpan="12">
-				<field name="sequence" domain="self.code = 'move' and self.company = :company"/>
-				<field name="descriptionModel"/>
-				<field name="descriptionIdentificationOk"/>
-			</panel>  
-			<spacer/>
-			<panel title="Payments" colSpan="12">
-				<field name="editReceiptOk" colSpan="6"/>
-				<field name="excessPaymentOk" colSpan="6"/>
+		
+		<panel-tabs>
+		
+			<panel-dashlet title="General" action="action-journal-view-move-line" height="400" hideIf="$popup()"/>
+		
+			<panel title="Configurations" hideIf="$popup()">
+				<panel title="MoveLine" colSpan="12">
+					<field name="sequence" domain="self.code = 'move' and self.company = :company"/>
+					<field name="descriptionModel"/>
+					<field name="descriptionIdentificationOk"/>
+				</panel>  
+				<spacer/>
+				<panel title="Payments" colSpan="12">
+					<field name="editReceiptOk" colSpan="6"/>
+					<field name="excessPaymentOk" colSpan="6"/>
+				</panel>
 			</panel>
-		</panel>
+			
+		</panel-tabs>
 		
-		<panel-dashlet title="General" action="action-journal-view-move-line" hideIf="$popup()"/>
-		
-		<panel sidebar="true" title="Status">
-			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"/>
+		<panel sidebar="true" title="Status" itemSpan="12">
+			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
 			<field name="isObsolete" onChange="account-journal-record-status-archived"/>
 			<button name="activeStatus" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save"/>
 		</panel>
 		
-		<panel sidebar="true" title="Exports">
-			<field name="exportCode" colSpan="4"/>
-			<field name="notExportOk" colSpan="2" onChange="account-journal-on-change-not-export-ok"/>
+		<panel sidebar="true" title="Exports" itemSpan="12">
+			<field name="exportCode"/>
+			<field name="notExportOk" onChange="account-journal-on-change-not-export-ok"/>
 		</panel>
 
 	</form>
