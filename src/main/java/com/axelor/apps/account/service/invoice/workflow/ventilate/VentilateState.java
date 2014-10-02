@@ -22,7 +22,6 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -31,7 +30,6 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 
 public class VentilateState extends WorkflowInvoice {
@@ -80,7 +78,7 @@ public class VentilateState extends WorkflowInvoice {
 	
 	protected void checkInvoiceDate() throws AxelorException  {
 		
-		if(Beans.get(InvoiceRepository.class).all().filter("self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3", 
+		if(all().filter("self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3", 
 				InvoiceService.STATUS_VENTILATED, invoice.getInvoiceDate(), invoice.getOperationTypeSelect()).count() > 0)  {
 			throw new AxelorException(String.format("La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée"), IException.CONFIGURATION_ERROR);
 		}

@@ -130,7 +130,7 @@
 	    <panel sidebar="true" title="Actions" >
 	   		<button name="compute" title="Compute" showIf="statusSelect == 1"   onClick="save,action-invoice-method-compute,save"/>
 	        <button name="validate" title="Validate" showIf="statusSelect == 1"   onClick="save,action-invoice-method-compute,action-invoice-method-validate,save"/>
-	        <button name="cancel" title="Cancel" showIf="statusSelect == 1"   onClick="save,action-invoice-method-cancel,save"/>
+	        <button name="cancel" title="Cancel" showIf="statusSelect != 4"   onClick="save,action-invoice-method-cancel,save"/>
 	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2"   onClick="save,action-invoice-method-ventilate,save"/>
 	        <button name="draft" title="Draft" showIf="statusSelect == 4"   onClick="save,action-invoice-record-draft,save"/>
 	        <field name="statusSelect"/>
