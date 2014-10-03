@@ -36,7 +36,7 @@
 	    <button name="wordExport" title="Word Export" icon="fa-file-text" onClick="save,action-sale-order-method-export-sale-order-word"/>
 	  </toolbar>
 	  <menubar>
-	    <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+	    <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
 	      <item title="Plan a meeting" action="action-sale-order-view-plan-meeting"/>
 	      <item title="Plan a call" action="action-sale-order-view-plan-call"/>
 	      <item title="Plan a task" action="action-sale-order-view-plan-task"/>
