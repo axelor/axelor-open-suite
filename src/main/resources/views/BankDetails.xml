@@ -59,7 +59,7 @@
 	</action-record>
 
 	<action-validate name="action-validate-bank-details-bbanKey">
-		<error message="Clé RIB incorrecte"
+		<error message="Incorrect BBAN Key"
 			if="( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) ) != Long.parseLong( bbanKey )" />
 	</action-validate>
 
