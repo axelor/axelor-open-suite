@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views"
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
     <grid name="location-grid" title="Stock Locations" model="com.axelor.apps.stock.db.Location">
         <toolbar>
@@ -17,29 +17,27 @@
     </grid>
     
 	<form name="location-form" title="Stock Location" model="com.axelor.apps.stock.db.Location" onNew="action-location-record-new">
-	  <toolbar>
-	    <button name="createInventory" title="Create inventory"   onClick="action-location-view-create-inventory"/>
-	    <button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
-	  </toolbar>
-	  <panel>
-	    <field name="name"/>
-	    <field name="parent"/>
-	    <field name="typeSelect" onChange="action-location-is-default-location"/>
-	    <field name="company" widget="SuggestBox" onChange="action-location-is-default-location" form-view="company-form"/>
-	    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-	    <field name="address"/>
-	    <field name="isDefaultLocation" onChange="action-location-is-default-location"/>
-	  </panel>    
-	  <panel-tabs>
-	    <panel-related title="Location Lines" field="locationLineList" form-view="location-line-form" grid-view="location-line-grid"/>    
-	    <panel-related title="Stock Details" field="detailsLocationLineList" form-view="location-line-details-form" grid-view="location-line-details-grid"/>
-	    <panel title="Stock Value">    
-	      <panel-dashlet height="350" action="dashlet.locationLine.location.value"/>      
-	    </panel>
-	  </panel-tabs>    
-	  <panel sidebar="true" title="Actions">
-	    <button name="viewContent" title="View location content" onClick="action-location-view-location-content"/>
-	  </panel>
+		<toolbar>
+			<button name="createInventory" title="Create inventory"   onClick="action-location-view-create-inventory"/>
+			<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
+		</toolbar>
+		<panel>
+			<field name="name"/>
+			<field name="typeSelect" onChange="action-location-is-default-location" colSpan="3"/>
+			<field name="isDefaultLocation" onChange="action-location-is-default-location" colSpan="3"/>
+			<field name="parent"/>
+			<field name="company" widget="SuggestBox" onChange="action-location-is-default-location" form-view="company-lite-form"/>
+			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="address"/>
+		</panel>    
+		<panel-tabs>
+			<panel title="Location Content">
+				<button name="viewContent" title="View location content" onClick="action-location-view-location-content"/>
+				<panel-related title="Location Lines" field="locationLineList" canNew="false" colSpan="12" form-view="location-line-form" grid-view="location-line-grid"/>
+			</panel> 
+			<panel-related title="Stock Details" field="detailsLocationLineList" form-view="location-line-details-form" grid-view="location-line-details-grid"/>
+		</panel-tabs>   
+		<panel-dashlet height="350" hideIf="$popup()" colSpan="12" action="dashlet.locationLine.location.value"/>      
 	</form>
     
     <action-method name="action-stock-location-method-print">

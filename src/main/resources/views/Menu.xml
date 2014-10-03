@@ -72,7 +72,7 @@
 	<menuitem name="stock-root-incoming-supplier" parent="stock-root-planned"
 		title="Supplier deliveries" action="stock.root.incoming.supplier" />
 
-	<action-view name="stock.root.incoming.supplier" title="Receptions fournisseurs"
+	<action-view name="stock.root.incoming.supplier" title="Supplier deliveries"
 		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
@@ -82,7 +82,7 @@
 	<menuitem name="stock-root-outcoming-supplier" parent="stock-root-planned"
 		title="Supplier returns" action="stock.root.outcoming.supplier" />
 
-	<action-view name="stock.root.outcoming.supplier" title="Retours fournisseurs"
+	<action-view name="stock.root.outcoming.supplier" title="Supplier returns"
 		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
@@ -92,7 +92,7 @@
 	<menuitem name="stock-root-outcoming-client" parent="stock-root-planned"
 		title="Customer deliveries" action="stock.root.outcoming.client" />
 
-	<action-view name="stock.root.outcoming.client" title="Expéditions clients"
+	<action-view name="stock.root.outcoming.client" title="Customer deliveries"
 		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
@@ -102,7 +102,7 @@
 	<menuitem name="stock-root-incoming-client" parent="stock-root-planned"
 		title="Customer returns" action="stock.root.incoming.client" />
 
-	<action-view name="stock.root.incoming.client" title="Retours clients"
+	<action-view name="stock.root.incoming.client" title="Customer returns"
 		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
