@@ -796,10 +796,10 @@ Invoice sending format,Format d'envoi des factures,,resources/domains/Partner.xm
 Invoice.bankDetails,Coordonnées bancaires,,java/com/axelor/apps/account/report/ITranslation.java:40
 Invoice.bankingInfo,Informations bancaires,,java/com/axelor/apps/account/report/ITranslation.java:41
 Invoice.base,Assiette,,java/com/axelor/apps/account/report/ITranslation.java:33
-Invoice.cheque,Chèque,,java/com/axelor/apps/account/report/ITranslation.java:39
+Invoice.cheque,Règlement par virement bancaire ou par Chèque à l'ordre d',,java/com/axelor/apps/account/report/ITranslation.java:39
 Invoice.clientRef,Réf. Client,,java/com/axelor/apps/account/report/ITranslation.java:42
 Invoice.date,Date facture,,java/com/axelor/apps/account/report/ITranslation.java:23
-Invoice.documentRef,Document de référence,,java/com/axelor/apps/account/report/ITranslation.java:26
+Invoice.documentRef,Référence interne,,java/com/axelor/apps/account/report/ITranslation.java:26
 Invoice.dueDate,Date d'échéance ,,java/com/axelor/apps/account/report/ITranslation.java:25
 Invoice.invoiceNo,FACTURE N°,,java/com/axelor/apps/account/report/ITranslation.java:46
 Invoice.note,Remarques,,java/com/axelor/apps/account/report/ITranslation.java:38
@@ -811,6 +811,7 @@ Invoice.purchaseRefundNo,AVOIR FOURNISSEUR N°,,java/com/axelor/apps/account/rep
 Invoice.qtyUnit,Qté / Unité,,java/com/axelor/apps/account/report/ITranslation.java:30
 Invoice.refundNo,AVOIR N°,,java/com/axelor/apps/account/report/ITranslation.java:47
 Invoice.supplier,Fournisseur,,java/com/axelor/apps/account/report/ITranslation.java:27
+Invoice.client,Client,,java/com/axelor/apps/account/report/ITranslation.java:27
 Invoice.supplyRef,Réf. Fournisseur,,java/com/axelor/apps/account/report/ITranslation.java:43
 Invoice.tax,TVA,,java/com/axelor/apps/account/report/ITranslation.java:29
 Invoice.taxAmount,Montant T.V.A.,,java/com/axelor/apps/account/report/ITranslation.java:34
