@@ -22,8 +22,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.eclipse.persistence.sessions.Project;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 //import com.axelor.apps.organisation.db.Project;
