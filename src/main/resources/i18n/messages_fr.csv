@@ -793,7 +793,7 @@ resources/views/InvoiceLineEvent.xml:6"
 Invoice of origin,Factures d'origine,,resources/domains/Invoice.xml:55
 Invoice rejected,Facture rejetée,,resources/domains/MoveLine.xml:23
 Invoice sending format,Format d'envoi des factures,,resources/domains/Partner.xml:13
-Invoice.bankDetails,Coordonnées bancaires,,java/com/axelor/apps/account/report/ITranslation.java:40
+Invoice.bankDetails,Coord. bancaires,,java/com/axelor/apps/account/report/ITranslation.java:40
 Invoice.bankingInfo,Informations bancaires,,java/com/axelor/apps/account/report/ITranslation.java:41
 Invoice.base,Assiette,,java/com/axelor/apps/account/report/ITranslation.java:33
 Invoice.cheque,Règlement par virement bancaire ou par Chèque à l'ordre d',,java/com/axelor/apps/account/report/ITranslation.java:39
@@ -819,6 +819,7 @@ Invoice.totalExclTax,Total H.T.,,java/com/axelor/apps/account/report/ITranslatio
 Invoice.totalInclTax,Total T.T.C.,,java/com/axelor/apps/account/report/ITranslation.java:37
 Invoice.totalTax,Total T.V.A.,,java/com/axelor/apps/account/report/ITranslation.java:36
 Invoice.unitPrice,Prix unitaire,,java/com/axelor/apps/account/report/ITranslation.java:31
+Invoice.law,Dans le cadre de la loi N°92-1442 du décembre 1992 nous vous précisons que tout retard de paiement donnera lieu à une application d'une pénalité égale à une fois et demi le taux d'intérêt légal.,
 Invoice/Refund,Facture/Avoir,,resources/domains/PaymentVoucher.xml:24
 Invoiced ?,Facturé ?,,resources/domains/PurchaseOrderLine.xml:10
 Invoiced Turnover This year vs Last year,CA facturé année N vs N-1,,"resources/views/portal.xml:80
