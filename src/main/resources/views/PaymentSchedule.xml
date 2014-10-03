@@ -39,7 +39,7 @@
 			domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.statusSelect = 3 and self.inTaxTotalRemaining > 0.0 AND self.currency = :currency"
 			readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-in-tax-amount" />
 			
-		<panel-related title="Payment Schdule Line" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form"
+		<panel-related title="Payment Schedule Line" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form"
 			readonlyIf="statusSelect != 3" />
 
 		<panel title="actions" sidebar="true">
