@@ -96,6 +96,8 @@
   
     <!-- Onglet Facturation -->
     <boolean name="showDetailsInInvoice" title="Show details on invoice"/>
+    <boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
+    <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
     
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
