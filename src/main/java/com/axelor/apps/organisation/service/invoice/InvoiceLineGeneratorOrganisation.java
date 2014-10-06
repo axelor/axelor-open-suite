@@ -67,7 +67,7 @@ public class InvoiceLineGeneratorOrganisation extends InvoiceLineGenerator {
 			TaxLine taxLine, Task task, InvoiceLineType invoiceLineType, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
 
 		super(invoice, product, productName, price, description, qty,
-				unit, taxLine, invoiceLineType, discountAmount, discountTypeSelect, exTaxTotal, isTaxInvoice);
+				unit, taxLine, invoiceLineType, DEFAULT_SEQUENCE, discountAmount, discountTypeSelect, exTaxTotal, isTaxInvoice);
 		
 		this.task = task;
         
@@ -77,7 +77,7 @@ public class InvoiceLineGeneratorOrganisation extends InvoiceLineGenerator {
 			Unit unit, Task task, InvoiceLineType invoiceLineType, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
 
 		super(invoice, product, productName, price, description, qty,
-				unit, invoiceLineType, discountAmount, discountTypeSelect, exTaxTotal, isTaxInvoice);
+				unit, invoiceLineType, DEFAULT_SEQUENCE, discountAmount, discountTypeSelect, exTaxTotal, isTaxInvoice);
 		
 		this.task = task;
 		
