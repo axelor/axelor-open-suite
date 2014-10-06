@@ -93,7 +93,6 @@ resources/views/Charts.xml:157
 resources/views/Charts.xml:80",,,
 Import,Import,,"resources/views/Inventory.xml:23
 resources/views/Inventory.xml:25
-=======
 ""key",message,comment,context
 Accordance,Accord,,resources/domains/StockMoveLine.xml:22,,,
 Action(s),Action(s),,"resources/views/Location.xml:42
@@ -190,12 +189,10 @@ resources/views/Charts.xml:9
 resources/views/Charts.xml:121
 resources/views/Charts.xml:157",,,
 Import,Import,,"resources/views/Inventory.xml:26
->>>>>>> 8df1f1101ae7b752bf0a5fabe71460340766202d
 resources/domains/Location.xml:10
 resources/views/Inventory.xml:28
 resources/domains/StockMove.xml:10
 resources/domains/StockConfig.xml:9
-<<<<<<< HEAD
 resources/domains/StockMove.xml:10",,,
 Incl. obsolete products ?,Inclure produits obsolètes,,resources/domains/Inventory.xml:22,,,
 Include obsolete products ?,Inclure les produits obsolètes ?,,resources/views/CreateInventoryWizard.xml:23,,,
@@ -235,7 +232,6 @@ Late customer deliveries,Livraisons clients en retard,,resources/views/portal.xm
 Late supplier arrivals,Livraisons fournisseurs en retard,,resources/views/portal.xml:93,,,
 Location,Emplacement,,"resources/views/CreateInventoryWizard.xml:13
 resources/domains/Inventory.xml:11
-=======
 resources/domains/StockMoveLine.xml:12",,,
 Incl. obsolete products ?,Inclure produits obsolètes,,resources/domains/Inventory.xml:22,,,
 Include obsolete products ?,Inclure les produits obsolètes ?,,resources/views/CreateInventoryWizard.xml:17,,,
@@ -274,7 +270,6 @@ Late Deliveries,Livraisons en retard,,resources/views/StockMove.xml:270,,,
 Late customer deliveries,Livraisons clients en retard,,resources/views/portal.xml:79,,,
 Late supplier arrivals,Livraisons fournisseurs en retard,,resources/views/portal.xml:93,,,
 Location,Emplacement,,"resources/domains/MinStockRules.xml:12
->>>>>>> 8df1f1101ae7b752bf0a5fabe71460340766202d
 resources/domains/LocationLine.xml:10
 resources/domains/Inventory.xml:11
 resources/views/CreateInventoryWizard.xml:9
@@ -352,7 +347,6 @@ Purchase order,Devis fournisseurs,,resources/views/Selects.xml:47,,,
 Qty,Qté,,resources/domains/StockMoveLine.xml:15,,,
 Quantity,Quantité,,"resources/views/Charts.xml:73
 resources/views/Charts.xml:390
-=======
 ""Location Details",Produits présents dans l'emplacement (vue non-consolidée),,resources/domains/LocationLine.xml:18
 Location Lines,Ligne d'emplacement,,resources/views/Location.xml:34,,,
 Location content,Contenu de l'emplacement,,resources/views/Location.xml:64,,,
@@ -425,7 +419,6 @@ Production stock move out realized,Mvt. De sortie de production réalisé,,resou
 Purchase order,Devis fournisseurs,,resources/views/Selects.xml:47,,,
 Qty,Qté.,,resources/domains/StockMoveLine.xml:15,,,
 Quantity,Quantité,,"resources/views/Charts.xml:73
->>>>>>> 8df1f1101ae7b752bf0a5fabe71460340766202d
 resources/views/Charts.xml:306
 resources/views/Charts.xml:114
 resources/views/Charts.xml:390
