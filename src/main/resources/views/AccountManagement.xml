@@ -24,8 +24,8 @@
 		<panel >
 			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
 		   	<field name="company" widget="SuggestBox" form-view="company-form" onChange="action-group-account-account-management-onchange-common"/>
-		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'payable'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account"/>
-		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'receivable'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account"/>
+		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account"/>
+		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'income'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account"/>
 		</panel>
 		
 		<panel-tabs>
