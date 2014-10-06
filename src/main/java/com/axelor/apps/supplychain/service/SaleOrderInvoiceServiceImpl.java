@@ -306,10 +306,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 	
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal) throws AxelorException  {
+			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, int sequence) throws AxelorException  {
 		
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, taxLine, product.getInvoiceLineType(), 
-				discountAmount, discountTypeSelect, exTaxTotal, false)  {
+				sequence, discountAmount, discountTypeSelect, exTaxTotal, false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				
@@ -330,7 +330,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		
 		return this.createInvoiceLine(invoice, saleOrderLine.getProduct(), saleOrderLine.getProductName(), 
 				saleOrderLine.getPrice(), saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(), saleOrderLine.getTaxLine(), 
-				saleOrderLine.getProductVariant(), saleOrderLine.getDiscountAmount(), saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getExTaxTotal());
+				saleOrderLine.getProductVariant(), saleOrderLine.getDiscountAmount(), saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getExTaxTotal(), saleOrderLine.getSequence());
 		
 		
 	}
@@ -341,7 +341,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		return this.createInvoiceLine(invoice, saleOrderSubLine.getProduct(), saleOrderSubLine.getProductName(), 
 				saleOrderSubLine.getPrice(), saleOrderSubLine.getDescription(), saleOrderSubLine.getQty(), saleOrderSubLine.getUnit(), 
 				saleOrderSubLine.getTaxLine(), saleOrderSubLine.getProductVariant(), 
-				saleOrderSubLine.getDiscountAmount(), saleOrderSubLine.getDiscountTypeSelect(), saleOrderSubLine.getExTaxTotal());
+				saleOrderSubLine.getDiscountAmount(), saleOrderSubLine.getDiscountTypeSelect(), saleOrderSubLine.getExTaxTotal(), saleOrderSubLine.getSequence());
 		
 	}
 	

@@ -114,7 +114,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 			throw new AxelorException(String.format("Produit incorrect dans le mouvement de stock %s ", stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), stockMoveLine.getPrice(), 
-				product.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), product.getInvoiceLineType(), BigDecimal.ZERO, 0, null, false)  {
+				product.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), product.getInvoiceLineType(), 
+				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO, 0, null, false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				
