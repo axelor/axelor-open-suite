@@ -69,12 +69,15 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected BigDecimal qty;
 	protected Unit unit; 
 	protected TaxLine taxLine; 
+	protected int sequence;
 	protected LocalDate today;
 	protected boolean isTaxInvoice; 
 	protected InvoiceLineType invoiceLineType;
 	protected BigDecimal discountAmount;
 	protected int discountTypeSelect;
 	protected BigDecimal exTaxTotal;
+	
+	public static final int DEFAULT_SEQUENCE = 10;
 	
 	@Inject
 	protected UnitConversionService unitConversionService;
@@ -94,7 +97,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 	
 	protected InvoiceLineGenerator( Invoice invoice, int type ) {
-
+		
         this.invoice = invoice;
         this.type = type;
         
@@ -102,7 +105,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	
 
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, InvoiceLineType invoiceLineType, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
+			Unit unit, TaxLine taxLine, InvoiceLineType invoiceLineType, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -115,6 +118,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.invoiceLineType = invoiceLineType;
         this.discountTypeSelect = discountTypeSelect;
         this.discountAmount = discountAmount;
+        this.sequence = sequence;
         this.exTaxTotal = exTaxTotal;
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
@@ -123,7 +127,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 	
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, InvoiceLineType invoiceLineType, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
+			Unit unit, InvoiceLineType invoiceLineType, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -133,6 +137,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.qty = qty;
         this.unit = unit;
         this.invoiceLineType = invoiceLineType;
+        this.sequence = sequence;
         this.discountTypeSelect = discountTypeSelect;
         this.discountAmount = discountAmount;
         this.exTaxTotal = exTaxTotal;
@@ -221,10 +226,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setTaxLine(taxLine);
 		
 		invoiceLine.setInvoiceLineType(invoiceLineType);
+		invoiceLine.setSequence(sequence);
 		
 		invoiceLine.setDiscountTypeSelect(discountTypeSelect);
 		invoiceLine.setDiscountAmount(discountAmount);
-		
 		
 		return invoiceLine;
 		

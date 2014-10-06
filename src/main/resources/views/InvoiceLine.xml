@@ -18,6 +18,8 @@
     onLoad="action-account-invoice-line-onload-group">
     	<panel-tabs>
     		<panel title="Informations">
+    			<field name="sequence"/>
+    			<spacer/>
 		        <field name="product" required="true" onChange="action-group-account-invoice-line-product-onchange"/>
 		        <field name="invoiceLineType"/>
 		        <field name="productName"/>
@@ -70,9 +72,11 @@
        
     </form>
     
+    
     <!-- ACTION GROUPs -->
     <action-group name="action-account-invoice-line-onnew-group">
 	    <action name="action-invoice-line-record-new"/>
+	    <action name="action-invoice-line-record-sequence"/>
 	    <action name="action-invoice-line-attrs-hide-product-variant"/>
     </action-group>
     
@@ -99,6 +103,13 @@
     	<action name="action-invoice-line-method-get-discount"/>
     	<action name="action-invoice-line-method-compute"/>
     </action-group>
+    
+    <!--     ACTION RECORDS -->
+    
+    <action-record name="action-invoice-line-record-sequence" model="com.axelor.apps.account.db.InvoiceLine">
+    	<field name="sequence" expr="10" if="eval: _parent?.invoiceLineList == null"/>
+    	<field name="sequence" expr="eval: (_parent?.invoiceLineList.size()+1)*10" if="eval: _parent?.invoiceLineList != null"/>
+    </action-record>
     
     <action-record name="action-invoice-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>

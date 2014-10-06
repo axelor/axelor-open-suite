@@ -7,6 +7,8 @@
   
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
 
+  	<integer name="sequence" title="Seq."/>
+
     <many-to-one name="invoiceLineType" ref="InvoiceLineType" title="Invoice line type"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <string name="productName"  title="Product Name"/>
