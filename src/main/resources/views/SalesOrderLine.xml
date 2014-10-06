@@ -105,8 +105,8 @@
     </action-record>
     
 	<action-record name="action-sale-order-line-record-sequence" model="com.axelor.apps.sale.db.SaleOrderLine">
-    	<field name="sequence" expr="1" if="eval: _parent?.saleOrderLineList == null"/>
-    	<field name="sequence" expr="eval: _parent?.saleOrderLineList.size()+1" if="eval: _parent?.saleOrderLineList != null"/>
+    	<field name="sequence" expr="10" if="eval: _parent?.saleOrderLineList == null"/>
+    	<field name="sequence" expr="eval: (_parent?.saleOrderLineList.size()+1)*10" if="eval: _parent?.saleOrderLineList != null"/>
     </action-record>
     
     <action-record name="action-sale-order-line-get-production-information" model="com.axelor.apps.sale.db.SaleOrderLine">
