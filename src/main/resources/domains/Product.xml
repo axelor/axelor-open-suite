@@ -25,12 +25,12 @@
     <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select" initParam="true"/>
     <boolean name="isRawMaterial" title="Raw material" initParam="true"/>
     
-    <decimal name="salePrice" title="Sale price W.T." precision="20" scale="5" massUpdate="true"/>
+    <decimal name="salePrice" title="Sale price W.T." precision="20" scale="2" massUpdate="true"/>
     <many-to-one name="saleCurrency" ref="com.axelor.apps.base.db.Currency" title="Sale currency" initParam="true"  />
-    <decimal name="purchasePrice" title="Purchase price W.T." precision="20" scale="5" massUpdate="true"/>
+    <decimal name="purchasePrice" title="Purchase price W.T." precision="20" scale="2" massUpdate="true"/>
     <many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency" title="Purchase / Cost currency" initParam="true" />
     
-    <decimal name="costPrice" title="Cost price" precision="20" scale="5" massUpdate="true"/>
+    <decimal name="costPrice" title="Cost price" precision="20" scale="2" massUpdate="true"/>
     
     <decimal name="managPriceCoef" title="Management coef."/>
     
