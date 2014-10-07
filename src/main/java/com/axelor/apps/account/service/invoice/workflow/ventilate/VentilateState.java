@@ -31,6 +31,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 public class VentilateState extends WorkflowInvoice {
 
@@ -147,9 +148,10 @@ public class VentilateState extends WorkflowInvoice {
 	 */
 	protected void setInvoiceId( ) throws AxelorException{
 		
+		if(!Strings.isNullOrEmpty(invoice.getInvoiceId()))  {  return;  }
+		
 		switch (invoice.getOperationTypeSelect()) {
 		
-				
 		case InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE:
 			
 			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.SUPPLIER_INVOICE, invoice.getCompany()));
