@@ -10,6 +10,7 @@
 		<datetime name="today" title="Today date" tz="true" help="true" />
 		<boolean name="logOk" title="Activate Logs ?" default="true" />
 		<many-to-one name="defaultProjectUnit" title="Project unit" ref="com.axelor.apps.base.db.Unit"/>
+		<string name="defaultPartnerLanguage" title="Default partner language" selection="select.language"/>
 		
 		<!-- Exception -->
 		<string name="exceptionDefaultMsg" multiline="true" title="Default Message" required="true" />

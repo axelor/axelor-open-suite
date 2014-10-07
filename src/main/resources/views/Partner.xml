@@ -319,13 +319,14 @@
     	<field name="user"  expr="eval:__user__"/>
     	<field name="team"  expr="eval:__user__.activeTeam"/>
     	<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
+    	<field name="languageSelect" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getDefaultPartnerLanguage()" />
     </action-record>
     
     <action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">
     	<field name="partnerTypeSelect" expr="2" />
     	<field name="isContact" expr="true"/>
     	<field name="companySet" expr="eval: _parent?.companySet"/>
-    	<field name="languageSelect" expr="eval: _parent?.languageSelect"/>
+    	<field name="languageSelect" expr="eval: _parent != null ? _parent.languageSelect : com.axelor.apps.base.service.administration.GeneralService.getGeneral().getDefaultPartnerLanguage()"/>
     	<field name="user"  expr="eval: _parent.user" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
     	<field name="team"  expr="eval: _parent.team" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
     	<field name="user"  expr="eval:__user__" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
