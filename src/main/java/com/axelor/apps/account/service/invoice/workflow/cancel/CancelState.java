@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.cancel;
 
+import java.math.BigDecimal;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -68,6 +70,7 @@ public class CancelState extends WorkflowInvoice {
 			Move move = invoice.getMove();
 			
 			invoice.setMove(null);
+			invoice.setInTaxTotalRemaining(BigDecimal.ZERO);
 
 			if(invoice.getCompany().getAccountConfig().getAllowRemovalValidatedMove())  {
 				Beans.get(MoveRepository.class).remove(move);
