@@ -28,6 +28,7 @@
 		    <field name="today"/>
 		    <field name="logOk"/>
 		    <field name="defaultProjectUnit"/>
+		    <field name="defaultPartnerLanguage" />
 		</panel>
 		<panel-tabs>
 		    <panel title="Accounting">
