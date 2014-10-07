@@ -27,7 +27,7 @@
     </grid>
     
 	<form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"  
-	onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group" >
+	onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group" onSave="action-account-invoice-onsave-group">
 	
 		<toolbar>
 		  <button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
@@ -71,7 +71,6 @@
 					<field name="usherPassageOk" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
 					<field name="oldMove" showIf="oldMove"/>
 				</panel>
-				<!--<separator title="Debt Recovery" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" colSpan="6"/>-->
 				<panel colSpan="12"  title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
 					<field name="irrecoverableStatusSelect"/>
 					<field name="managementObject"/>
@@ -209,6 +208,13 @@
 	    <action name="action-invoice-attrs-hide-contact-partner"/>
     </action-group>
     
+     <action-group name="action-account-invoice-onsave-group">
+     	<action name="save"/>
+	    <action name="action-invoice-method-compute" if="statusSelect == 1"/>
+	    <action name="save"/>
+    </action-group>
+    
+    
     <action-group name="action-group-account-invoice-operationtype-onchange">
     	<action name="action-invoice-method-get-journal"/>
     	<action name="action-invoice-record-partner-change"/>
@@ -231,7 +237,7 @@
         <field name="invoiceDate" expr="eval: __date__"/>
         <field name="company" expr="eval:__user__.activeCompany"/>
         <field name="currency" expr="eval:__repo__.of(User).find(__user__.id)?.activeCompany?.currency" />
-        <field name="operationTypeSelect" expr="eval: _operationTypeSelect"/>
+        <field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect != null &amp;&amp; _operationTypeSelect != 0"/>
         <field name="dueDate" expr="eval: __date__"/>
     </action-record>
     
@@ -321,7 +327,7 @@
     </action-method>
     
     <action-method name="action-invoice-method-get-journal">
-        <call class="com.axelor.apps.account.web.InvoiceController" method="getJournal"/>
+        <call class="com.axelor.apps.account.web.InvoiceController" method="getJournal" if="operationTypeSelect != 0"/>
     </action-method>
 
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
