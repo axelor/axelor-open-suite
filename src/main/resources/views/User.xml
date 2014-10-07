@@ -12,7 +12,7 @@
     
     
     <form name="user-form" title="User" model="com.axelor.auth.db.User" id="user-form-base"
-    onNew="action-user-language-record" onLoad="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
+    onNew="action-user-default-record,action-user-check-company" onLoad="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
     	 <panel sidebar="true">
 	        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 	        <field name="activeCompany" widget="SuggestBox"/>
@@ -37,8 +37,13 @@
     </form>
     
     
-    <action-record name="action-user-language-record" model="com.axelor.auth.db.User">
+    <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
     	<field name="language" expr="fr"/>
+    	<field name="activeCompany" if="__repo__.of(Company).all().fetch().size == 1"  expr="eval:__repo__.of(Company).all().fetchOne()" />
     </action-record>
+    
+    <action-validate name="action-user-check-company">
+        <notify message="Please select active company"  if="__repo__.of(Company).all().fetch().size != 1"/>
+    </action-validate>
     
 </object-views>
