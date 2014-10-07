@@ -305,11 +305,6 @@
 	  <series key="amount" type="bar" title="Amount"/>
 	</chart>
 	
-	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.date">
-	  <field name="toDate" expr="eval:todayDate" />
-	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)" />
-	</action-record>
-	  
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.manager.dashboard.sale.distribution.per.family" title="Sales distribution per product family">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>

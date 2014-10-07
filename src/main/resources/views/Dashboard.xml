@@ -188,7 +188,7 @@
 		<dashlet action="dashlet.sales.turnover.ytd.vs.lastyear.by.family" canSearch="true" height="350" />
 		<dashlet action="dashlet.sales.turnover.by.family.ytd.vs.lastyear" canSearch="true" height="350" />
 		<dashlet action="dashlet.turnover.per.month.per.salesman.over.6mth" canSearch="true" height="350"/>
-	    <dashlet action="dashlet.turnover.per.month.per.salesman.over.6mth" canSearch="true" height="350"/>
+	    <dashlet action="dashlet.turnover.per.month.per.salesman.over.4mth" canSearch="true" height="350"/>
 	    <dashlet action="dashlet.sales.turnover.per.customer.type" canSearch="true" height="350"/>
 	    <dashlet action="dashlet.sales.turnover.per.customer.category" canSearch="true" height="350"/>
 	    <dashlet action="dashlet.sales.turnover.per.customer.sector" canSearch="true" height="350"/>
@@ -200,7 +200,7 @@
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 	
-	<action-view title="Turnover per month per saleman (4 month)" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.turnover.per.month.per.salesman.over.6mth">
+	<action-view title="Turnover per month per saleman (4 month)" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.turnover.per.month.per.salesman.over.4mth">
 		  <view type="chart" name="chart.turnover.per.month.per.saleman.over.4mth"/>
 		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
