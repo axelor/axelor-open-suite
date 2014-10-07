@@ -190,12 +190,6 @@
 		<option value="7">Lost</option>
 	</selection>
 
-	<selection name="organisation.project.type.duration.select">
-		<option value="1">Day</option>
-		<option value="2">Month</option>
-		<option value="3">Year</option>
-	</selection>
-	
 	<selection name="organisation.working.contract.type.select">
 		<option value="1">Permanent</option>
 		<option value="2">Fixed-term</option>
