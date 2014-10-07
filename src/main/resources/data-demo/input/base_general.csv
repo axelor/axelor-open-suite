@@ -1,2 +1,2 @@
-"importId";"today";"axelorVersion";"defaultProjectUnit.importId";"isInvoiceMoveConsolidated";"transferAndDirectDebitInterbankCode.code";"chequeInterbankCode.code";"exceptionDefaultMsg";"exceptionInvoiceMsg";"exceptionAccountingMsg";"exceptionReminderMsg";"exceptionMailMsg";"defaultExemptionTax_code";"qasWsdlUrl";"currencyWsURL"
-1;;"2.0.0";7;"false";"REJET1";"REJET2";"Problème de configuration !";;;;;"X_C";;"http://quote.yahoo.com/d/quotes.csv?s=%s%s=X&f=l1&e=.csv"
+"importId";"today";"axelorVersion";"defaultProjectUnit.importId";"isInvoiceMoveConsolidated";"transferAndDirectDebitInterbankCode.code";"chequeInterbankCode.code";"exceptionDefaultMsg";"exceptionInvoiceMsg";"exceptionAccountingMsg";"exceptionReminderMsg";"exceptionMailMsg";"defaultExemptionTax_code";"qasWsdlUrl";"currencyWsURL";"defaultPartnerLanguage"
+1;;"2.0.0";7;"false";"REJET1";"REJET2";"Problème de configuration !";;;;;"X_C";;"http://quote.yahoo.com/d/quotes.csv?s=%s%s=X&f=l1&e=.csv";"en"
