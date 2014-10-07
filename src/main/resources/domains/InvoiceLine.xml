@@ -12,7 +12,7 @@
     <many-to-one name="invoiceLineType" ref="InvoiceLineType" title="Invoice line type"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <string name="productName"  title="Product Name"/>
-    <decimal name="price" title="Unit price" precision="20" scale="6"/>
+    <decimal name="price" title="Unit price" precision="20" scale="2"/>
 <!--     <many-to-one ref="com.axelor.apps.sale.db.Unit" title="Unité" name="unit"/> -->
     <many-to-one name="pricingListUnit" ref="com.axelor.apps.base.db.Unit" title="Pricinglist unit"/>
     <decimal name="qty" title="Qty" precision="20" scale="2"/>
