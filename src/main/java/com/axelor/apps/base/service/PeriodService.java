@@ -44,7 +44,7 @@ public class PeriodService extends PeriodRepository{
 	 */
 	public Period rightPeriod(LocalDate date, Company company) throws AxelorException {
 	
-		Period period = periodRepo.all().filter("company = ?1 and fromDate <= ?2 and toDate >= ?3",company,date,date).fetchOne();
+		Period period = this.getPeriod(date, company);
 		if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
 			throw new AxelorException(String.format("Aucune période trouvée ou celle-ci clôturée pour la société %s", company.getName()), IException.CONFIGURATION_ERROR);
 		}
@@ -53,6 +53,12 @@ public class PeriodService extends PeriodRepository{
 			return period;
 		}
 		
+	}
+	
+	public Period getPeriod(LocalDate date, Company company)  {
+		
+		return periodRepo.all().filter("company = ?1 and fromDate <= ?2 and toDate >= ?3",company,date,date).fetchOne();
+
 	}
 	
 }
