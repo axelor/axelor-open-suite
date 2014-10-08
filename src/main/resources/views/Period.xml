@@ -25,15 +25,15 @@
     	</panel>
     	<panel>
         	<panel colSpan="6">
-            	<button name="close" title="Close period" colSpan="2" onClick="action-period-record-close,save" showIf="statusSelect == 1"/>
-            	<button name="reopen" title="Reopen period" colSpan="2" onClick="action-period-record-open,save" showIf="statusSelect == 2"/>
+            	<button name="close" title="Close period" colSpan="6" onClick="action-period-record-close,save" showIf="statusSelect == 1"/>
+            	<button name="reopen" title="Reopen period" colSpan="6" onClick="action-period-record-open,save" showIf="statusSelect == 2"/>
         	</panel>
             <field name="statusSelect"/>
     	</panel>
     </form>
     
     <action-record name="action-period-record-close" model="com.axelor.apps.base.db.Period">
-    	<field name="status" expr="action:action-status-record-clo"/>
+    	<field name="statusSelect" expr="eval: __repo__.of(Period).STATUS_CLOSED"/>
     </action-record>
     
     <action-record name="action-period-record-default" model="com.axelor.apps.base.db.Period">
@@ -41,7 +41,7 @@
      </action-record>
     
      <action-record name="action-period-record-open" model="com.axelor.apps.base.db.Period">
-    	<field name="status" expr="action:action-status-record-ope"/>
+    	<field name="statusSelect" expr="eval: __repo__.of(Period).STATUS_OPENED"/>
      </action-record>
     
 </object-views>
