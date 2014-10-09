@@ -12,7 +12,7 @@
 		  <button name="showInvoice" title="Invoices" onClick="save,action-company-view-invoice"/>
 		</toolbar>
 		<panel >
-		  <field name="company"/>
+		  <field name="company" widget="SuggestBox"/>
 	
 		  <field name="accountChart" readonlyIf="hasChartImported" colSpan="8"/>
 		  <button name="installTemplate" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" colSpan="4" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
@@ -128,7 +128,7 @@
 						<field name="accountType" colSpan="6"/>
 						<field name="reconcileOk" colSpan="6"/>
 						<field name="parent" colSpan="6"/>
-						<field name="company" colSpan="6"/>
+						<field name="company" widget="SuggestBox" colSpan="6"/>
 				    </editor>
 				</field>
 			</panel>
