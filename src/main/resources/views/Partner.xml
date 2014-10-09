@@ -58,7 +58,7 @@
          </panel>
 	</form>
 	
-	<action-method name="action-create-accounting-situation" >
+	<action-method name="action-create-accounting-situation" if-module="axelor-account">
 		<call class="com.axelor.apps.account.web.PartnerController" method="createAccountingSituations" />
 	</action-method>
 	
@@ -76,7 +76,7 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
-	<action-record name="action-partner-record-main-invoicing-address" model="com.axelor.apps.base.db.Partner">
+	<action-record name="action-partner-record-main-invoicing-address" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
     	<field name="mainInvoicingAddress" expr="eval: deliveryAddress" if="mainInvoicingAddress == null"/>
     </action-record>
 	
