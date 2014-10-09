@@ -5,6 +5,7 @@
     
 	<form name="printing-setting-form" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings">
 		<panel>
+			<field name="name"/>
 			<field name="languageSelect"/>
 			<field name="defaultMailBirtTemplate" />
 			<panel title="Company Header" colSpan="12">
@@ -15,5 +16,10 @@
 	       	</panel>
        	</panel>
     </form>
+    
+    <grid name="printing-setting-grid" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings">
+    	<field name="name"/>
+    	<field name="languageSelect"/>
+    </grid>
 
 </object-views>
