@@ -23,7 +23,7 @@
         </panel>
         <panel-include view="user-form" from="axelor-core"/>
         <panel-tabs>
-        	 <panel-related title="Internal companies" field="companySet" showTitle="false"/>
+        	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
         	 <panel title="Teams">
         		<field name="activeTeam"/>
         		<panel-related field="teamSet" colSpan="12"/>

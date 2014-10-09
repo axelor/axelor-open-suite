@@ -131,7 +131,7 @@
 				<field name="partnerSeq"/>
 				<field name="languageSelect"/>
 				<panel title="Assigned to" colSpan="12">
-					<field name="companySet" colSpan="4" widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
+					<field name="companySet" colSpan="4" widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false"/>
 					<field name="user"/>
 					<field name="team"/>
 				</panel>
@@ -238,7 +238,7 @@
             <field name="partnerSeq"/>
             <field name="languageSelect"/>
             <panel title="Assigned to" canCollapse="true" colSpan="12">
-                <field name="companySet" colSpan="12" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate" />
+                <field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false" />
                 <field name="user"/>
                 <field name="team"/>
             </panel>
