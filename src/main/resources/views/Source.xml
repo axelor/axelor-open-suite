@@ -11,7 +11,6 @@
     <form name="source-form" title="Source" model="com.axelor.apps.base.db.Source">
     	<panel>
         	<field name="name"/>
-        	<spacer/>
         	<field name="code" x-bind="{{code|uppercase}}"/>
         </panel>
     </form>
