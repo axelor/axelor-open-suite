@@ -47,7 +47,7 @@
 						<label title="Settings"/>
 					  	<field name="languageSelect"/>
 					  	<label title="Assigned to"/>
-					    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
+					    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false"/>
 					    <field name="user"/>
 					    <field name="team"/>
 		
@@ -110,7 +110,7 @@
 					  	<field name="languageSelect"/>
 					  	
 					  	<label title="Assigned to" colSpan="12"/>
-					    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
+					    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false"/>
 					    <field name="user"/>
 					    <field name="team"/>
 					</editor>
@@ -290,7 +290,7 @@
 			<panel title="Settings"  >
 			  <field name="languageSelect"/>
 			  <panel title="Assigned to">
-			    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
+			    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false"/>
 			    <field name="user"/>
 			    <field name="team"/>
 			  </panel>
@@ -371,7 +371,7 @@
 		  <panel title="Settings" >
 		    <field name="languageSelect" colSpan="12"/>
 		    <panel title="Assigned to" colSpan="12" >
-		      <field name="companySet" widget="TagSelect" onChange="action-partner-company-set-validate" x-create="name"/>
+		      <field name="companySet" widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false"/>
 		      <field name="user"/>
 		      <field name="team"/>
 		    </panel>
