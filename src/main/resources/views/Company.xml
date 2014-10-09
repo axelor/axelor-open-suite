@@ -40,7 +40,7 @@
 	    	<panel title="Configurations">
 	  			<field name="logoPath"/>
 	  			<field name="currency"/>
-	  			<field name="printingSettings" showTitle="false"/>
+	  			<field name="printingSettings"/>
 	  		</panel>
 	    	<panel title="Bank details">
 	      		<field name="defaultBankDetails"/>
@@ -63,31 +63,31 @@
     
     <action-view name="action-company-view-purchase-config" title="Purchase config" model="com.axelor.apps.purchase.db.PurchaseConfig">
     	<view type="form" name="purchase-config-form"/>
-    	<context name="_showRecord" expr="eval: purchaseConfig.id"/>
+    	<context name="_showRecord" expr="eval: purchaseConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     
     <action-view name="action-company-view-sale-config" title="Sale config" model="com.axelor.apps.sale.db.SaleConfig">
     	<view type="form" name="sale-config-form"/>
-    	<context name="_showRecord" expr="eval: saleConfig.id"/>
+    	<context name="_showRecord" expr="eval: saleConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     
     <action-view name="action-company-view-stock-config" title="Stock config" model="com.axelor.apps.stock.db.StockConfig">
     	<view type="form" name="stock-config-form"/>
-    	<context name="_showRecord" expr="eval: stockConfig.id"/>
+    	<context name="_showRecord" expr="eval: stockConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     
     <action-view name="action-company-view-production-config" title="Production config" model="com.axelor.apps.production.db.ProductionConfig">
     	<view type="form" name="production-config-form"/>
-    	<context name="_showRecord" expr="eval: productionConfig.id"/>
+    	<context name="_showRecord" expr="eval: productionConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     
     <action-view name="action-company-view-organisation-config" title="Organisation config" model="com.axelor.apps.organisation.db.OrganisationConfig">
     	<view type="form" name="organisation-config-form"/>
-    	<context name="_showRecord" expr="eval: organisationConfig.id"/>
+    	<context name="_showRecord" expr="eval: organisationConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     
