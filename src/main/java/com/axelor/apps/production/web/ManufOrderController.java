@@ -34,6 +34,7 @@ import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -194,7 +195,7 @@ public class ManufOrderController {
 			if (urlNotExist == null){
 				LOG.debug("Impression de l'O.F.  "+manufOrder.getManufOrderSeq()+" : "+url.toString());
 				
-				String title = " ";
+				String title = I18n.get("Print");
 				if(manufOrder.getManufOrderSeq() != null)  {
 					title += lstSelectedManufOrder == null ? "OF "+manufOrder.getManufOrderSeq():"OFs";
 				}
