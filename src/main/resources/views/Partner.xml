@@ -38,7 +38,7 @@
         <field name="user"/>
     </grid>
     
-    <form name="partner-form" id="base-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"    
+    <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
     onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" 
     onSave="action-group-base-partner-onsave">
