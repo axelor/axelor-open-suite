@@ -173,7 +173,7 @@ public class VentilateState extends WorkflowInvoice {
 			break;
 			
 		default:
-			break;
+			throw new AxelorException(String.format("Type de facture absent de la facture"), IException.MISSING_FIELD);
 		}
 		
 		if (invoice.getInvoiceId() == null) {
