@@ -57,7 +57,7 @@
     
     <action-view name="action-company-view-account-config" title="Account config" model="com.axelor.apps.account.db.AccountConfig">
     	<view type="form" name="account-config-form"/>
-    	<context name="_showRecord" expr="eval: accountConfig.id"/>
+    	<context name="_showRecord" expr="eval: accountConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     
