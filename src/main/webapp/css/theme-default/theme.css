@@ -1,0 +1,654 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+.font-italic{
+	font-style:italic;
+}
+
+.font-normal{
+	font-weight:normal !important;
+}
+
+.font-bold{
+	font-weight:bold !important;
+}
+
+.font-10px{
+	font-size:10px; 
+}
+
+.font-11px{
+	font-size:11px; 
+}
+
+.font-12px{
+	font-size:12px; 
+}
+
+.font-13px{
+	font-size:13px; 
+}
+
+.font-14px{
+	font-size:14px; 
+}
+
+.font-15px{
+	font-size:15px; 
+}
+
+.font-16px{
+	font-size:16px; 
+}
+
+.font-18px{
+	font-size:18px; 
+}
+
+.font-20px{
+	font-size:20px !important; 
+}
+
+.font-22px{
+	font-size:22px; 
+}
+
+.font-24px{
+	font-size:24px; 
+}
+
+.font-verdana{
+	font-family:Verdana;
+}
+
+.font-times{
+	font-family: Times New Roman;
+}
+
+.font-arial{
+	font-family: Arial;
+}
+.font-courier{
+	font-family: Courier;
+}
+.font-sans-serif{
+	font-family: sans-sarif;
+}
+.font-georgia{
+	font-family: Aeorgia;
+}
+.font-trebuchet{
+	font-family: Trebuchet;
+}
+.font-lucida-console{
+	font-family: Lucida Console;
+}
+.font-tahoma{
+	font-family: Tahoma;
+}
+.font-impact{
+	font-family: Impact;
+}
+
+.font-black{
+	color: black !important;
+}
+
+.font-blue{
+	color: blue !important;
+}
+
+.font-grey{
+	color: grey !important;
+}
+
+.font-green{
+	color: green !important;
+}
+
+.font-lime{
+	color: lime !important;
+}
+
+.font-maroon{
+	color: maroon !important;
+}
+
+.font-navy{
+	color: navy !important;
+}
+
+.font-olive{
+	color: olive !important;
+}
+
+.font-orange{
+	color: orange !important;
+}
+
+.font-purple{
+	color: purple !important;
+}
+
+.font-red{
+	color: red !important;
+}
+
+.font-silver{
+	color: silver !important;
+}
+
+.font-white{
+	color: white !important;
+}
+
+.font-yellow{
+	color: yellow !important;
+}
+
+.text-overline{
+	text-decoration:overline;	
+}
+
+.text-line-through{
+	text-decoration: line-through;
+}
+
+.text-underline{
+	text-decoration: underline;
+}
+
+.text-left{
+	text-align:left;
+}
+
+.text-right{
+	text-align:right;
+}
+
+.text-center{
+	text-align: center;
+}
+
+.text-justify{
+	text-align:justify;
+}
+
+.text-upper{
+	text-transform:uppercase;
+	
+}
+.text-lower{
+	text-transform:lowercase;
+}
+
+.text-capital{
+	text-transform:capitalize;
+}
+
+.text-direction-ltr{
+	direction:ltr;	
+}
+
+.text-direction-rtl{
+	direction:rtl;
+}
+
+
+
+.button-yellow, .button-yellow:hover, .button-yellow:focus{
+	border : 1px solid #FFCC00;
+	color : #333333;
+	background-image: -webkit-linear-gradient(bottom, #FFCC00, #FFE680);
+	background-image: -moz-linear-gradient(bottom, #FFCC00, #FFE680);
+ 	background-image: linear-gradient(bottom, #FFCC00, #FFE680);
+	background-color: #FFCC00;	
+	
+	
+}
+.button-blue, .button-blue:hover, .button-blue:focus{
+	border : 1px solid #3366CC;
+	color :white;
+	background-image: -webkit-linear-gradient(bottom, #3366CC, #85A3E0);
+	background-image: -moz-linear-gradient(bottom, #3366CC, #99B2E6);
+ 	background-image: linear-gradient(bottom, #3366CC, #99B2E6);
+	background-color: #3366CC;	
+}
+.button-black, .button-black:focus, .button-black:hover{
+	border : 1px solid #00000;
+	color :white;
+	background-image: -webkit-linear-gradient(bottom, #000000, #808080);
+	background-image: -moz-linear-gradient(bottom, #000000, #808080);
+ 	background-image: linear-gradient(bottom, #000000, #808080);
+	background-color: #000000;	
+}
+
+.button-purple, .button-purple:hover, .button-purple:focus{
+	border : 1px solid #B280B2;
+	color :white !important;
+	background-image: -webkit-linear-gradient(bottom, #660066, #B280B2);
+	background-image: -moz-linear-gradient(bottom, #660066, #B280B2);
+ 	background-image: linear-gradient(bottom, #660066, #B280B2);
+	background-color: #660066;	
+}
+
+.button-green, .button-green:focus, .button-green:hover{
+	border : 1px solid #80CC80;
+	color :white !important;
+	background-image: -webkit-linear-gradient(bottom, #009900, #80CC80);
+	background-image: -moz-linear-gradient(bottom, #009900, #80CC80);
+ 	background-image: linear-gradient(bottom, #009900, #80CC80);
+	background-color: #009900;
+}
+
+.button-red, .button-red:focus, .button-red:hover{
+	border : 1px solid #FF8080;
+	color :white !important;
+	background-image: -webkit-linear-gradient(bottom, #FF0000, #FF8080);
+	background-image: -moz-linear-gradient(bottom, #FF0000, #FF8080);
+ 	background-image: linear-gradient(bottom, #FF0000, #FF8080);
+	background-color: #FF0000;
+
+}
+
+.button-brown, .button-brown:focus, .button-brown:hover{
+	border : 1px solid #B29980;
+	color :white;
+	background-image: -webkit-linear-gradient(bottom, #663300, #B29980);
+	background-image: -moz-linear-gradient(bottom, #663300, #B29980);
+ 	background-image: linear-gradient(bottom, #663300, #B29980);
+	background-color: #663300;
+}
+
+.button-grey, .button-grey:focus, .button-grey:hover{
+	border : 1px solid #B2B2B2;
+	color : white !important;
+	background-image: -webkit-linear-gradient(bottom, grey, #B2B2B2);
+	background-image: -moz-linear-gradient(bottom, grey, #B29980);
+ 	background-image: linear-gradient(bottom, grey, #B29980);
+	background-color: grey;
+}
+.button-pink, .button-pink:focus, .button-pink:hover{
+	border : 1px solid #E680B2;
+	color : white !important;
+	background-image: -webkit-linear-gradient(bottom, #CC0066, #E680B2);
+	background-image: -moz-linear-gradient(bottom, #CC0066, #E680B2);
+ 	background-image: linear-gradient(bottom, #CC0066, #E680B2);
+	background-color: #CC0066;
+}
+
+.border-solid{
+	border-style: solid !important;
+}
+
+.border-dotted{
+	border-style: dotted !important;
+}
+.border-dashed{
+	border-style: dashed !important;
+}
+.border-double{
+	border-style: double !important;
+}
+.border-inset{
+	border-style: inset !important;
+}
+.border-outset{
+	border-style: outset !important;
+}
+.border-hidden{
+	border-style: hidden !important;
+}
+.border-red{
+	border-color: red !important;
+}
+.border-black{
+	border-color: black !important;
+}
+.border-blue{
+	border-color: blue !important;
+}
+.border-grey{
+	border-color: grey !important;
+}
+.border-green{
+	border-color: green !important;
+}
+.border-white{
+	border-color: white !important;
+}
+.border-yellow{
+	border-color: yellow !important;
+}
+.border-navy{
+	border-color: navy !important;
+}
+
+.border-top{
+	border-top: 1px solid;	 
+}
+
+.border-bottom{
+	border-bottom: 1px solid;	
+}
+
+.border-left{
+	border-left: 1px solid;	
+}
+
+.border-right{
+	border-right: 1px solid;	
+}
+
+.group-bg-green{
+	background-color: green !important;
+}
+.group-bg-gray{
+	background-color: gray !important;
+}
+.group-bg-blue{
+	background-color: blue !important;
+}
+.group-bg-white{
+	background-color: white !important;
+}
+.group-bg-red{
+	background-color: red !important;
+}
+.group-bg-yellow{
+	background-color: yellow !important;
+}
+.group-bg-olive{
+	background-color: olive !important;
+}
+
+.group-title-green span.ng-binding{
+	color: green !important;
+}
+.group-title-gray span.ng-binding{
+	color: gray !important;
+}
+.group-title-blue span.ng-binding{
+	color: blue !important;
+}
+.group-title-white span.ng-binding{
+	color: white !important;
+}
+.group-title-red span.ng-binding{
+	color: red !important;
+}
+.group-title-yellow span.ng-binding{
+	color: yellow !important;
+}
+.group-title-olive span.ng-binding{
+	color: olive !important;
+}
+
+.group-border-1px{
+	border : 1px solid;
+}
+.group-border-2px{
+	border: 2px solid;
+}
+.group-border-3px{
+	border: 3px solid;
+}
+.group-border-4px{
+	border: 4px solid;
+}
+.group-border-5px{
+	border: 5px solid;
+}
+
+
+
+
+.separator-bg-red{
+	color : white;
+	background : red;
+	padding-top: 4px;
+	padding-left: 5px;
+	border-bottom: 2px solid red;
+}
+.separator-bg-yellow{
+	color : white;
+	background : yellow;
+	padding-top: 4px;
+	padding-left: 5px;
+	border-bottom: 2px solid yellow;
+}
+}
+.separator-bg-green{
+	color : white;
+	background : green;
+	padding-top: 4px;
+	padding-left: 5px;
+	border-bottom: 2px solid green;
+}
+.separator-bg-blue{
+	color : white;
+	background : blue;
+	padding-top: 4px;
+	padding-left: 5px;
+	border-bottom: 1px solid blue;
+}
+.separator-bg-white{
+	color : #333333 !important;
+	padding-top: 5px;
+	padding-left: 5px;
+	border-bottom: 2px solid #333333;
+}
+
+.separator-bg{
+	color : white;
+	background : #80B2B2;
+	padding-top: 5px;
+	padding-left: 5px;
+	border-bottom: 2px solid #80B2B2;
+}
+.separator-bg-theme{
+	color : white;
+	background : #006666;
+	padding-top: 5px;
+	padding-left: 5px;
+	border-bottom: 2px solid #006666;
+}
+
+.separator-bg-grey{
+	color : white;
+	background : grey;
+	padding-top: 5px;
+	padding-left: 5px;
+	border-bottom: 2px solid grey;
+}
+.separator-bg-purple{
+	color : white;
+	background : purple;
+	padding-top: 5px;
+	padding-left: 5px;
+	border-bottom: 2px solid purple;
+}
+.separator-bg-black{
+	color : white;
+	background : #333333;
+	padding-top: 5px;
+	padding-left: 5px;
+	border-bottom: 2px solid #333333;
+}
+.separator-bg-pink{
+	color : white;
+	background : #CC0066;
+	padding-top: 5px;
+	padding-left: 5px;
+	border-bottom: 2px solid #CC0066;
+}
+.separator-bg-brown{
+	color : white;
+	background : #663300;
+	padding-top: 5px;
+	padding-left: 5px;
+	border-bottom: 2px solid #663300;
+}
+.rounded-corner{
+	border-radius : 5px !important;
+}
+.separator-1px{
+	border-bottom: 1px solid !important;
+}
+.separator-2px{
+	border-bottom: 2px solid !important;
+}
+.separator-3px{
+	border-bottom: 3px solid !important;
+}
+.separator-4px{
+	border-bottom: 4px solid !important;
+}
+.separator-5px{
+	border-bottom: 5px solid !important;
+}
+
+.separator-1px-dotted{
+	border-bottom: 1px dotted !important;
+}
+.separator-2px-dotted{
+	border-bottom: 2px dotted !important;
+}
+.separator-3px-dotted{
+	border-bottom: 3px dotted !important;
+}
+.separator-4px-dotted{
+	border-bottom: 4px dotted !important;
+}
+.separator-5px-dotted{
+	border-bottom: 5px dotted !important;
+}
+
+.separator-1px-dashed{
+	border-bottom: 1px dashed !important;
+}
+.separator-2px-dashed{
+	border-bottom: 2px dashed !important;
+}
+.separator-3px-dashed{
+	border-bottom: 3px dashed !important;
+}
+.separator-4px-dashed{
+	border-bottom: 4px dashed !important;
+}
+.separator-5px-dashed{
+	border-bottom: 5px dashed !important;
+}
+
+.content-bold input {
+	font-weight:bold;
+}
+
+.content-italic input {
+	font-style:italic;
+}
+
+.content-10px input {
+	font-size:10px;
+}
+.content-11px input {
+	font-size:11px;
+}
+.content-12px input {
+	font-size:12px;
+}
+.content-13px input {
+	font-size:13px;
+}
+.content-14px input {
+	font-size:14px;
+}
+.content-15px input {
+	font-size:15px;
+}
+.content-16px input {
+	font-size:16px;
+}
+.content-18px input {
+	font-size:18px;
+}
+.content-20px input {
+	font-size:20px;
+}
+.content-22px input {
+	font-size:22px;
+}
+.content-24px input {
+	font-size:24px;
+}
+
+
+.content-black input{
+	color: black !important;
+}
+
+.content-blue input{
+	color: blue !important;
+}
+
+.content-grey input{
+	color: grey !important;
+}
+
+.content-green input{
+	color: green !important;
+}
+
+.content-lime input{
+	color: lime !important;
+}
+
+.content-maroon input{
+	color: maroon !important;
+}
+
+.content-navy input{
+	color: navy !important;
+}
+
+.content-olive input{
+	color: olive !important;
+}
+
+.content-orange input{
+	color: orange !important;
+}
+
+.content-purple input{
+	color: purple !important;
+}
+
+.content-red input{
+	color: red !important;
+}
+
+.content-silver input{
+	color: silver !important;
+}
+
+.content-white input{
+	color: white !important;
+}
+
+.content-yellow input{
+	color: yellow !important;
+}

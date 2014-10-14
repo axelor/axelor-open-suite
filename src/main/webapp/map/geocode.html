@@ -1,0 +1,68 @@
+<!--
+
+    Axelor Business Solutions
+
+    Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
+
+    This program is free software: you can redistribute it and/or  modify
+    it under the terms of the GNU Affero General Public License, version 3,
+    as published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Geocoding service</title>
+    <link href="/maps/documentation/javascript/examples/default.css" rel="stylesheet">
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script>
+var geocoder;
+var map;
+function initialize() {
+  geocoder = new google.maps.Geocoder();
+  var latlng = new google.maps.LatLng(-34.397, 150.644);
+  var mapOptions = {
+    zoom: 8,
+    center: latlng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
+  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+}
+
+function codeAddress() {
+  var address = document.getElementById('address').value;
+  geocoder.geocode( { 'address': address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      map.setCenter(results[0].geometry.location);
+      var marker = new google.maps.Marker({
+          map: map,
+          position: results[0].geometry.location
+      });
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="panel">
+      <input id="address" type="textbox" value="Sydney, NSW">
+      <input type="button" value="Geocode" onclick="codeAddress()">
+    </div>
+    <div id="map-canvas"></div>
+  </body>
+</html>

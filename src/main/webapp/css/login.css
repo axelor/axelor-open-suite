@@ -1,0 +1,127 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+html, body {
+	height: 100%;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body, label, button, .btn {
+	font-size: 14px;
+}
+
+.panel {
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+}
+
+.panel .panel-header {
+	padding: 10px;
+}
+
+.panel .panel-title {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.panel .panel-body {
+	padding: 14px;
+	overflow: hidden;
+}
+
+.panel {
+	margin-bottom: 18px;
+}
+
+#login-form {
+	margin: 0;
+}
+
+#login-form input[type="text"],
+#login-form input[type="password"] {
+	border-radius: 0;
+	height: 33px;
+	padding: 6px 10px;
+	font-size: 14px;
+	line-height: 1.36;
+}
+
+#login-form input[type="checkbox"] {
+	margin-top: 3px;
+}
+
+button.btn {
+	border-radius: 0;
+	padding: 6px 14px;
+	background-image: none;
+	box-shadow: none;
+}
+
+button.btn-primary {
+	color: #fff;
+	background-color: #428bca;
+	border-color: #357ebd;
+}
+
+button.btn-primary:focus,
+button.btn-primary:active,
+button.btn-primary:hover {
+	color: #fff;
+	background-color: #3071a9;
+	border-color: #285e8e;
+}
+
+button.btn-default {
+	color: #333;
+	background-color: #fff;
+	border-color: #ccc;
+}
+
+button.btn-default:focus,
+button.btn-default:active,
+button.btn-default:hover {
+	color: #333;
+	background-color: #e6e6e6;
+	border-color: #adadad;
+}
+
+#login-form label.checkbox {
+	margin-bottom: 10px;
+}
+
+body > footer {
+	position: relative;
+	margin-top: 28px;
+	height: 28px;
+	text-align: center;
+}
+
+body > footer > p {
+	margin: 0;
+	padding: 6px 10px;
+}
+
+body > footer > p,
+body > footer > p a,
+body > footer > p a:hover,
+body > footer > p a:active,
+body > footer > p a:visited {
+	color: #555;
+}

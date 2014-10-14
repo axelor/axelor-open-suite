@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="persistenceUnit" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+		<properties>
+		
+			<property name="hibernate.dialect" value="db.default.dialect"/>
+			<property name="javax.persistence.jdbc.driver" value="db.default.driver"/>
+			<property name="javax.persistence.jdbc.url" value="db.default.url" />
+			
+			<property name="javax.persistence.jdbc.user" value="db.default.user" />
+			<property name="javax.persistence.jdbc.password" value="db.default.password" />
+
+	        <!--  
+	        	value="create" to build a new database on each run;
+	            value="update" to modify an existing database; 
+	            value="create-drop" means the same as "create" but also drops tables when Hibernate closes; 
+	            value="validate" makes no changes to the database
+	        -->
+            <property name="hibernate.hbm2ddl.auto" value="db.default.ddl" />
+      
+            <property name="hibernate.connection.provider_class"
+              value="org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider" />
+            
+            <property name="hibernate.c3p0.max_size" value="200" />
+            <property name="hibernate.c3p0.min_size" value="10" />
+            <property name="hibernate.c3p0.acquire_increment" value="5" />
+            <property name="hibernate.c3p0.idle_test_period" value="300" />
+            <property name="hibernate.c3p0.max_statements" value="100" />
+            <property name="hibernate.c3p0.timeout" value="600" />
+		
+			<!-- 			
+			<property name="hibernate.show_sql" value="true"/> 
+			-->
+		</properties>
+	</persistence-unit>
+</persistence> 

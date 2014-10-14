@@ -1,0 +1,592 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ ********************************************* View content (default background image)  **************************************************************
+ */
+.view-container .form-view > div[ui-view-form].has-width {
+	background: url(../public/img/background.gif);
+}
+.view-container .form-view > div[ui-view-form].has-width > form{
+	width: 95%;
+}
+
+/************************************ Table Layout ******************************************************************************/
+
+table.form-layout td.form-label > label{
+	float:left;
+ 	text-align: left;
+}
+
+table.form-layout td.form-item .separator-item > span {
+  font-weight: bold;
+}
+
+
+/************************************** Header Layout **************************************************************************/
+
+header .navbar-inverse .navbar-inner {
+    background-image: linear-gradient(to bottom, #646060, #262626);
+    background-image: -moz-linear-gradient(to bottom, #646060, #262626);
+  	background-image: linear-gradient(to bottom, #646060, #262626);
+	border-bottom: 1px solid #262626;
+	
+	filter: none; /*IE*/
+}
+
+
+header .container-fluid {
+	padding-right: 20px;
+	padding-left: 30px;
+}
+.dropdown-menu > li > a{
+/* 	color: white !important; */
+	color: white;
+	white-space: normal;
+}
+
+.navbar .navbar-inner .container-fluid * > img{
+	padding-right: 5px;
+}
+
+header .navbar-inverse .dropdown-menu{
+	margin-right: -6px !important;
+	margin-left: -4px !important;
+}
+
+.container  > img{
+	padding-top: 5px;
+}
+
+.calendar-view .record-pager > span{
+	margin-right: 10px;
+	margin-top: 2px !important;
+}
+
+header .navbar-inverse .dropdown-menu .divider{
+	border-bottom: 1px solid white !important;
+	border-top: 1px solid white !important;
+}
+
+.dropdown-toggle {
+    margin-left: -4px;
+    margin-right: -5px;
+}
+
+
+.pull-right li:nth-child(2) a:before{
+	content:"\f015";
+	padding:5px;
+	font-family:FontAwesome;
+	font-size:20px;
+}
+.pull-right li:nth-child(4) a.dropdown-toggle:before{
+	content:"\f05a";
+	padding:5px;
+	font-family:FontAwesome;
+	font-size:20px;
+}
+.pull-right li:nth-child(6) a.dropdown-toggle:before{
+	content:"\f007";
+	padding:5px 5px 8px 2px;
+	font-family:FontAwesome;
+	font-size:18px;
+}
+.pull-right li:nth-child(4) img,.pull-right li:nth-child(2) img,.pull-right li:nth-child(6) img{
+	display:none;
+}
+
+ .navbar .nav > li > .dropdown-menu.pull-right{
+	right: 1px;
+}
+
+ .pull-right li:nth-child(6) .dropdown-menu{
+	right:1px !important;
+}
+
+header .navbar-inverse .dropdown-menu > li > a:hover{
+	background-color: #E0DFDF !important;
+	color : #333333 !important;
+	font-style: none;
+}
+
+
+header .navbar-inverse .dropdown-menu,
+header .navbar-inverse .dropdown-submenu:hover > a,
+header .navbar-inverse .dropdown-submenu:focus > a {
+	background-color: #646060 !important;
+	border :none;
+	margin-left: 5px !important;
+}
+.dropdown-submenu > .dropdown-menu{
+	left : 97%;
+}
+.navbar .nav > li > a {
+	margin-left: 5px;
+}
+.navbar-inverse .nav li.dropdown.open > .dropdown-toggle, 
+.navbar-inverse .nav li.dropdown.active > .dropdown-toggle, 
+.navbar-inverse .nav li.dropdown.open.active > .dropdown-toggle {
+  	background-color: #646060;
+  	color: white !important;
+}
+
+/************************************************* Menu Layout **************************************************************************/
+
+
+header .navbar-inverse .dropdown-menu > li > a{
+	color: white;	
+}
+
+.splitter-vertical{
+	background-image: linear-gradient(to left, #646060, #262626);
+    background-image: linear-gradient(to left, #646060, #262626);
+  	background-image: llinear-gradient(to left, #646060, #262626);
+  	padding-right: -5px;
+  	width:5px !important;	
+	height: auto;
+/* 	left: 210px !important; */
+}
+
+.splitter-vertical:before{
+	content: ".\a.\a.\a.\a.\a.\a.";
+	color: white !important;
+	position: absolute;
+	top: 50%;
+	line-height: 5px;
+	left: 0px;
+	font-size: 18px;
+}
+
+
+.filter-menu {
+	margin-left: 8px;
+	background: #f1f1f1;
+	top: 40px !important;
+	border-radius : 6px !important;
+}
+.filter-menu:before {
+/* 	content: "\f0d8"; */
+	font-family: FontAwesome;
+	position: absolute;
+	top: -12px;
+	left: 50.8%;
+	color: #f1f1f1;
+	font-size: 20px;
+}
+.filter-menu form{
+	border-top: 1px solid #dddddd;
+}
+
+.nav-list > .active * > .icon-caret-down:before, 
+.nav-list > .active * > .icon-caret-right:before{
+	color: white !important;
+}
+.splitter-footer{
+	margin-bottom: 5px;
+	padding-top: 3px;
+}
+.nav-list > .active * > .icon-caret-down:before{
+	color: white !important;
+}
+
+.input-append input, .input-append select, .input-append .uneditable-input{
+	padding-bottom : 7px;
+}
+
+.record-pager-text{
+	margin-top: 6px;
+	margin-right: 12px;
+}
+
+.stackbar .navbar,
+.stackbar .navbar * {
+  color: white;
+}
+.nav > li > a > img{
+	margin-bottom: 3px;
+}
+.navbar .navbar-inner .container-fluid * > img{
+	float:left !important;
+}
+.ui-dialog .ui-dialog-titlebar {
+  border : none;
+  border-bottom: 1px solid #B2C3D6;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  background: none;
+  padding: 9px 15px;
+  font-size: 24.5px;
+  line-height: 30px;
+  color: black !important;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+  text-align: left;
+  border : none;
+  border-top: 1px solid #B2C3D6;left: 210px
+  background-image: none;
+  margin: .5em 0 0 0;
+  padding: .3em 1em .5em .4em;
+}
+
+.nav-tabs > li > a, .nav-pills > li > a {
+	padding-right: 12px;
+	padding-left: 12px;
+ 	margin-right: 0px;
+ 	line-height: 14px;
+}
+
+.navbar .brand{
+	text-shadow: none;
+	font-weight: normal;
+}
+.stackbar .navbar * > .icon-plus:before, 
+.stackbar .navbar * > .icon-refresh:before,
+.stackbar .navbar * > .icon-pencil:before, 
+.stackbar .navbar * > .icon-minus:before,
+.stackbar .navbar * > .icon-search:before, 
+.navbar .nav li.dropdown > .dropdown-toggle .caret,
+.nav-tabs .inactive:hover > .icon-remove:before, 
+.nav-tabs-wrap .nav-tabs .active > .icon-remove:before,
+.icon-step-backward:before, 
+.icon-step-forward:before, 
+.icon-chevron-down:before,
+.icon-chevron-up:before{
+	color: white !important ;
+}
+
+/* .icon-remove:before{ */
+/* 	color: white; */
+/* } */
+.nav-tabs-strip .nav-tabs {
+	height: 30px;
+}
+
+.nav-tabs-strip {
+	height: 30px;
+}
+
+
+
+.nav-tabs-strip > .nav.nav-tabs.nav-tabs-scrollable.nav-tabs-closable > .ng-scope.active,
+.nav-tabs-strip > .nav.nav-tabs.nav-tabs-scrollable.nav-tabs-closable > .ng-scope.inactive {
+	height: 30px;
+}
+
+.nav-tabs-strip > .nav.nav-tabs.nav-tabs-scrollable.nav-tabs-closable > .ng-scope.active > a,
+.nav-tabs-strip > .nav.nav-tabs.nav-tabs-scrollable.nav-tabs-closable > .ng-scope.inactive > a {
+	height: 13px;
+	margin:1px;
+}
+
+.nav-tabs-closable li > i {
+	top: 3px;
+	right: 3px;
+}
+
+/**
+ **************************************** Button Layout ***************************************************************************
+ */
+a.button-item.img-button {
+	width: 100% !important;
+}
+
+.navbar .container{
+	padding-right: 10px;
+}
+.navbar .btn, .navbar .btn-group{
+	margin-right: -2px;
+	margin-bottom: 2px;
+}
+a.button-item.img-button img {
+	height: 64px;
+}
+
+.icon-table:before{
+	content: "\f0ca";
+}
+.icon-edit:before{
+	content: "\f0f6";	
+}
+
+.btn-group *  > .icon-eye-open:before{
+	content: "\f02b";
+}
+ .icon-eye-open:before{
+	content: "\f06e";
+}
+.btn-group * > .icon-remove:before {
+	content: "\f014";
+/* 	color : black; */
+}
+.btn-group * >.icon-file:before {
+	content: "\f067";
+}
+/* .open > .dropdown-menu > li > a > .icon-off:before, .open > .dropdown-menu > li > a > .icon-cog:before{ */
+/* 	color:white !important; */
+/* } */
+
+.btn-group > .btn > img{
+	padding-right: 7px;
+}
+.btn-group > .btn + .btn{
+	margin-left: 1px;
+	margin-right: -2px;
+	margin-top: 0px;
+	
+}
+.record-pager.pull-right > span, .record-pager.pull-left > .btn-group{
+	margin-top: 2px;
+}
+.btn-text{
+	margin-left: 4px;
+}
+.record-toolbar .dropdown a.dropdown-toggle{
+	margin-top: 4px;
+	padding: 4px 8px 5px;
+}
+.btn-group{
+	margin-top:2px !important;
+}
+.pull-right {
+	margin-top: 2px;
+}
+/**
+ ******************************************************* SN  *********************************************************
+ */
+ .sn-buttons {
+	height: 30px !important;
+	width: 50px !important;
+	border: none !important;
+	display: inline-block;
+}
+
+.sn-buttons img {
+	height: 25px;
+}
+
+.sn-comment-icons {
+	top: -3px;
+}
+
+
+/**
+ * Trail
+ */
+.trail-form {
+	background-color: #fff;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #a2a2a2;
+}
+
+.trail-form.trail-child {
+	margin-left: 60px;
+	width: 592px !important;
+	background-color: #eee;
+	border-style: none;
+}
+
+.trail-expand-button {
+	bottom: 1px !important;
+	right: 1px;
+}
+.nav-tabs-closable{
+	height: 38px !important;	
+}
+
+.nav-tabs-closable* > a > img{
+	height: 35px !important;
+}
+.trail-form-message td.form-item * {
+	min-width: auto !important;
+	min-height: auto !important;
+	height: auto !important;
+	width: auto !important;
+	float: left;
+}
+
+.trail-form-content {
+	color: #333333;
+}
+
+.trail-form-content > .html-display-text {
+	padding-top: 0px !important;
+}
+
+.trail-form-footer {
+	color: #909090;
+	font-size: 11px;
+	line-height: 26px;
+}
+
+.trail-form-footer label {
+	font-size: 11px !important;
+}
+
+/*********************************************************** Navigation Tab And Container **********************************************************/
+
+.view-container {
+ 	margin-top: 0px;
+}
+.navigation-tabs.ng-pristine.ng-valid > img{
+  	height: 32px;
+}
+
+.navigation-tabs{
+	top: 8px;
+	left : -1px;
+	margin-left: 0px;
+}
+ 
+.btn-group > .btn:last-child,
+.btn-group > .dropdown-toggle {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+.btn-group > .btn.large:first-child ,
+.btn-group > .btn:first-child{
+  margin-left: 0;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.record-toolbar .view-switcher {
+	margin-left: 10px;
+} 
+ 
+.record-toolbar .dropdown a.dropdown-toggle {
+	margin-left: 3px;
+	margin-right: -15px;
+}
+
+.record-toolbar .menu-bar {
+	margin-left: 10px;
+	height: 37px;
+	padding-bottom: 3px;
+}
+/* .record-toolbar .button-item{ */
+/* 	line-height: 19px !important; */
+/* } */
+input.search-query{
+	margin-bottom: 5px !important;
+	margin-top: 4px;
+	padding-bottom: 6px;
+}
+
+.navbar .nav li.dropdown > .dropdown-toggle .caret,
+.navbar .nav li.dropdown > .dropdown-toggle:hover .caret,
+.navbar .nav li.dropdown > .dropdown-toggle:focus .caret{
+	border-top-color: white;
+	border-bottom-color: white;
+}
+
+.pull-right > .btn{
+	margin-bottom: 4px !important;
+	padding: 5px 12px 5px 15px;
+	border-radius: 6px;
+}
+
+table.form-layout td.form-label label.required:after {
+	color: red;
+	content: "  *";	
+	font-weight: bold;
+	font-size: 18px;
+	vertical-align: middle !important;
+}
+
+table.form-layout td.form-label label.required{
+	color: #333333;
+}
+
+.form-item .form-item-container.ng-invalid > textarea,
+.form-item .form-item-container.ng-invalid > .picker-input input,
+.form-item .form-item-container.ng-invalid > .ui-spinner input,
+.form-item .form-item-container.ng-invalid > input,
+.form-item .form-item-container.ng-invalid > .tag-select,
+.form-item .input-append.ng-invalid > input,
+.form-item .picker-input.ng-invalid > input{
+	border-color: red;
+}
+span[required] > input:focus,span[required] > div > input:focus,span[required]>span>input:focus{
+	border-color:grey ;
+	box-shadow: 0px 0px 5px red !important;
+	
+}
+.view-content{
+	top : 32px;
+}
+.view-container .form-view > div:last-child{
+	top: 44px;
+}
+.nav-tabs-menu, .nav-tabs-scroll-l, 
+.nav-tabs-scroll-r, .nav-tabs {
+	border-bottom: 0;
+}
+.grid-view > .slickgrid{
+	top : 42px;
+}
+.nav-list > li > a, .nav-list .nav-header{
+	text-shadow: none;
+}
+
+
+/*************************** Grid Icon changes... *********************************************************/
+.slick-cell > a{
+	color:inherit;
+	font-size: 16px;
+}
+.slick-cell > a:hover, .slick-cell > a:focus{
+	color:white;
+	text-decoration: none;
+}
+.slick-cell.edit-icon i:hover, .slick-cell.edit-icon i:focus{
+	color:white;
+}
+.record-toolbar .button-item >  i {
+	font-size: 16px;
+	line-height: 20px;
+	padding-right : 5px;
+}
+
+.slick-cell .picker-input > .picker-icons > i[class^=icon] {
+	color: #222222;	
+}
+/************************  Toolbar menu item ******************************************************/
+
+.record-toolbar .menu-bar a.disabled{
+	opacity: 0.50;
+	cursor: default;
+}
+.record-pager.pull-left > span{
+	padding : 8px;
+}
+.splitter-panel{
+/* 	top : 2px; */
+}
+
+hr {
+  margin: 18px 0;
+  border: 0;
+  margin-top: -1px !important;
+}
+
+sidebar ng-scope splitter-panel{
+	
+	width : 210px !important;
+}

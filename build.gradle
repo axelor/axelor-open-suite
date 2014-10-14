@@ -1,0 +1,31 @@
+apply plugin: 'axelor-app'
+
+def modules = new File('modules/abs').listFiles().findAll { dir ->
+	new File(dir, 'build.gradle').exists()
+}
+
+application {
+
+	name "axelor-erp"
+	title "Axelor :: ERP"
+	
+	version "3.0.0"
+
+	// depends on all modules
+	modules.each { dir ->
+		module "modules:$dir.name"
+	}
+}
+
+tomcat {
+	httpPort = project.properties.get("http.port", 8080) as Integer
+	stopPort = 9451
+}
+
+task("dataImport", type: JavaExec) {
+	main = "com.axelor.apps.erp.Main"
+	classpath = sourceSets.main.runtimeClasspath
+	if(System.getProperty("exec.args") != null) {
+		args System.getProperty("exec.args").split()
+	}
+}
