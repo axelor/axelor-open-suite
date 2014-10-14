@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="TimesheetPeriodConfig" lang="java">
+
+    <integer name="typeSelect" title="Type period" required="true" selection="organisation.timesheet.period.config.type.select"/>
+    <integer name="firstDayOfWeek" title="First day of week" selection="day.week.select"/>
+ 	<integer name="lastDayOfWeek" title="Last day of week" selection="day.week.select"/>
+  	
+  	<integer name="dayOfGeneration" title="Day of generation" selection="day.week.select"/>
+ 	<integer name="hourOfGeneration" title="Hour of generation" selection="hour.day.select"/>
+ 	<boolean name="isLastDayOfMonth" title="Is last day of month"/>
+ 	<integer name="lastDayAdjustement" title="+/- n day(s)"/>
+ 	
+ 	<integer name="dayOfMonth" title="Day" selection="day.month.select"/>
+  	<integer name="hourReminderDelay" title="Nbr. of hours"/>
+  	<integer name="dayReminderDelay" title="Nbr. of days"/>
+  	
+  	<integer name="hourLimitDelay" title="Nbr. of hours"/>
+  	<integer name="dayLimitDelay" title="Nbr. of days"/>
+  	
+  	<boolean name="isReminderAtTimesheetCreation" title="Reminder at timesheet creation ?"/>
+  	
+  </entity>
+
+</domain-models>

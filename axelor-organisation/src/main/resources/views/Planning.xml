@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="planning-grid" title="Planning" model="com.axelor.apps.organisation.db.Planning">
+        <field name="period"/>
+        <field name="user"/>
+        <field name="date"/>
+    </grid>
+    
+	<form name="planning-form" title="Planning" model="com.axelor.apps.organisation.db.Planning" onNew="action-planning-record-default">
+	  <panel>
+	    <field name="period" colSpan="4"/>
+	    <field name="user" colSpan="4"/>
+	    <field name="date" colSpan="4"/>
+	  </panel>  
+	  <panel title="Configuration" colSpan="12">
+	    <field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default" colSpan="12"/>
+	    <panel title="Complete time sheet configuration" showIf="hasCompleteTimesheetLines == true"  colSpan="12">
+	      <field name="completeFromDate"/>
+	      <field name="completeToDate"/>
+	      <field name="completeDefaultTask"/>
+	      <field name="duration"/>
+	    </panel>
+	    <button name="completeTimeSheetButton" title="Complete time sheet" showIf="hasCompleteTimesheetLines == true" colSpan="1" onClick="save"/>
+	  </panel>
+	  <panel-related field="planningLineList"  colSpan="12" form-view="planning-line-form" grid-view="planning-line-grid"/>
+	</form>
+    
+    <action-record name="action-planning-record-complete-group-default" model="com.axelor.apps.organisation.db.Planning">
+    	<field name="completeFromDate" expr="eval: period?.fromDate" if="completeFromDate == null"/>
+    	<field name="completeToDate" expr="eval: period?.toDate" if="completeToDate == null"/>
+    </action-record>
+    
+    <action-record name="action-planning-record-default" model="com.axelor.apps.organisation.db.Planning">
+    	<field name="user" expr="eval:__user__"/>
+    	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+    </action-record>
+    
+     <action-method name="action-planning-method-get-period">
+    	<call class="com.axelor.apps.base.service.PeriodService" method="getPeriod"/>
+    </action-method>
+    
+</object-views>

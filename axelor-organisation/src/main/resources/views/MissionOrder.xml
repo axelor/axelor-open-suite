@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="mission-order-grid" title="Mission orders" model="com.axelor.apps.organisation.db.MissionOrder">
+		<field name="reference" />
+		<field name="date" />
+		<field name="project" />
+		<field name="company" />
+		<field name="employee" />
+		<field name="address"/>
+		<field name="missionStartDate" />
+		<field name="missionEndDate" />
+	</grid>
+
+	<form name="mission-order-form" title="Mission order" model="com.axelor.apps.organisation.db.MissionOrder">
+		<panel title="Mission order">
+        	<field name="reference"/>
+        	<field name="date"/>
+        	<field name="company" form-view="company-form" widget="SuggestBox"/>
+        	<field name="project" domain="self.isBusiness = true" grid-view="business-project-grid" form-view="business-project-form"/>
+       		<field name="employee"/>
+        	<field name="qualificationKeyword"  domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
+	        <panel title="Mission information" colSpan="12">
+	           	<field name="missionPropose" colSpan="12"/>
+	           	<field name="missionStartDate" colSpan="5"/>
+	           	<field name="missionEndDate" colSpan="5"/>
+	           	<field name="dateTypeSelect" title="*" colSpan="2"/>
+	           	<field name="address"/>
+	           	<field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	           	<field name="user"/>
+	           	<field name="workingTime"/>
+	    	</panel>
+ 		</panel>
+	</form>
+
+</object-views>

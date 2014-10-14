@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+
+	<form name="position-form" title="Professional background"
+		model="com.axelor.apps.organisation.db.Position">
+		<panel>
+			<field name="name" />
+			<field name="startDate" />
+			<field name="endDate" />
+			<field name="employer" />
+			<field name="description" />
+			<field name="departureCause" />
+			<field name="department" />
+			<field name="duration" />
+			<field name="referenceTitle" />
+			<field name="context" />
+			<field name="goals" />
+			<field name="development" />
+			<field name="result" />
+			<field name="technicalEnvironment" />
+			<field name="contact" />
+			<field name="recommendationSelect" />
+			<field name="comment" />
+		</panel>
+	</form>
+
+	<grid name="position-grid" title="Professional background"
+		model="com.axelor.apps.organisation.db.Position" editable="true">
+		<field name="startDate" />
+		<field name="endDate" />
+		<field name="employer" />
+		<field name="name" />
+	</grid>
+
+
+</object-views>

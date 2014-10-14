@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="timesheet-period-config-grid" title="Timesheets Period Config" model="com.axelor.apps.organisation.db.TimesheetPeriodConfig">
+        <field name="typeSelect"/>
+        <field name="hourReminderDelay"/>
+        <field name="dayReminderDelay"/>
+        <field name="hourLimitDelay"/>
+        <field name="dayLimitDelay"/>
+        <field name="isReminderAtTimesheetCreation"/>
+    </grid>
+    
+    <form name="timesheet-period-config-form" title="Timesheet Period Config" model="com.axelor.apps.organisation.db.TimesheetPeriodConfig"
+    onNew="action-timesheet-period-config-attrs-day-of-month">
+    	<panel>
+	    	<field name="typeSelect"/>
+	   	</panel>
+    	<panel title="Weekly" showIf="typeSelect == 1" colSpan="12">
+        	<panel title="Period" colSpan="12">
+            	<field name="firstDayOfWeek"/>
+            	<field name="lastDayOfWeek"/>
+        	</panel>
+        	<panel title="Day/Hour of generation" colSpan="12">
+            	<field name="dayOfGeneration"/>
+            	<field name="hourOfGeneration"/>
+        	</panel>
+    	</panel>
+    	<panel title="Monthly" showIf="typeSelect == 2" colSpan="12">
+        	<panel title="Day/Hour of generation" colSpan="12">
+            	<field name="dayOfMonth"/>
+            	<field name="isLastDayOfMonth" onChange="action-timesheet-period-config-attrs-day-of-month"/>            
+            	<field name="hourOfGeneration"/>
+            	<field name="lastDayAdjustement" showIf="isLastDayOfMonth == true"/>
+        	</panel>
+    	</panel>
+    	<panel sidebar="true">
+    		<panel name="reminderDelay" title="Reminder delay" colSpan="12">
+	       		<field name="hourReminderDelay"/>
+	        	<field name="dayReminderDelay"/>
+	    	</panel>
+	    	<panel title="Limit" colSpan="12">
+	        	<field name="hourLimitDelay"/>
+	        	<field name="dayLimitDelay"/>
+	   		</panel>
+	    	<field name="isReminderAtTimesheetCreation"/>
+	    	<button name="generateTimesheets" title="Generate Timesheets" colSpan="1"/>
+    	</panel>
+	</form>       
+	
+	<action-attrs name="action-timesheet-period-config-attrs-day-of-month">
+		<attribute name="readonly" for="dayOfMonth" expr="eval: isLastDayOfMonth == true"/>
+	</action-attrs>
+	 
+</object-views>

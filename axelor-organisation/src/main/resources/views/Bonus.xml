@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="bonus-grid" title="Bonuses" editable="true"
+		model="com.axelor.apps.organisation.db.Bonus">
+		<field name="period" />
+		<field name="name" />
+		<field name="amount" />
+	</grid>
+
+	<form name="bonus-form" title="Bonus" editable="true"
+		model="com.axelor.apps.organisation.db.Bonus">
+		<panel>
+			<field name="period" />
+			<field name="name" />
+			<field name="amount" />
+		</panel>
+	</form>
+
+</object-views>
+  

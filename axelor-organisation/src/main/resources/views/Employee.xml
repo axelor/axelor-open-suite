@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="employee-grid" title="Employee"	model="com.axelor.apps.organisation.db.Employee">
+		<field name="name" />
+		<field name="firstName" />
+		<field name="function"/>
+		<field name="companyDepartment"/>
+		<field name="internalContact.mobilePhone"/>
+		<field name="internalContact.fixedPhone"/>
+		<field name="internalContact.emailAddress.address" widget="Email" title="Email"/>
+		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="fa-envelope"/>
+	</grid>
+
+	<form name="employee-form" title="Employee"	model="com.axelor.apps.organisation.db.Employee"
+	onNew="action-employee-default-record">
+		<toolbar>
+			<button name="showEmployee" title="Print CV" icon="fa-print" onClick="save,action-partner-method-show-employee"/>
+			<button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
+		</toolbar>
+		<panel>
+			<panel colSpan="3">
+				<field name="picture" showTitle="false" widget="Image" colSpan="12" width="100" height="120"/>
+			</panel>
+			<panel title="Contact" colSpan="3">
+				<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="12"/>
+				<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="12"/>
+				<field name="firstName" showTitle="false" css="highlight" placeholder="First Name" colSpan="12"/>
+				<field name="function" placeholder="Function" colSpan="12"/>
+				<field name="companyDepartment" colSpan="12"/>
+			</panel>
+			<panel title="Main Contact details" colSpan="6" colWidths="30%,20%,30%,20%">
+				<field name="internalContact"/>
+				<field name="internalContact.mobilePhone"/>
+				<field name="internalContact.fixedPhone"/>
+				<field name="phoneAtCustomer"/>
+				<field name="internalContact.emailAddress.address" widget="Email" title="Email"/>
+				<spacer/>
+				<field name="internalContact.mainInvoicingAddress" colSpan="12"/>
+				<panel title="Emergency" colSpan="12">
+					<field name="emergencyContact" domain="self.isContact = True"/>
+					<field name="emergencyNumber"/>
+				</panel>
+			</panel>
+		</panel>
+		<panel-tabs>
+			<panel title="Additionnal information">
+				<panel title="Contract Details" colSpan="12">
+					<field name="contractTypeSelect" colSpan="4"/>
+					<field name="contractDuration" showIf="contractTypeSelect == 2" onChange="action-employee-set-exit-date" colSpan="4"/>
+					<field name="functionRanking" colSpan="4"/>
+					<field name="entryDate" onChange="action-employee-set-exit-date" colSpan="4"/>
+					<field name="macroCategorySelect" colSpan="4"/>
+					<field name="categorySelect" colSpan="4"/>
+					<field name="exitDate" colSpan="4"/>
+					<panel title="Advantages" colSpan="12">
+						<field name="advantages" colSpan="12" showTitle="false"/>
+					</panel>
+				</panel>
+				<panel title="Hierarchy" colSpan="12">
+					<field name="supervisedBySelect"/>
+					<field name="profileProduct" domain="self.applicationTypeSelect = 2" colSpan="2"/>
+					<field name="managerUser" showIf="supervisedBySelect == 1"/>
+					<spacer/>
+					<field name="managerProfileProduct" showIf="supervisedBySelect == 2" domain="self.applicationTypeSelect = 2"/>        
+				</panel>
+<!-- 				<field name="personalInfo" showTitle="false" widget="NestedEditor" canSelect="false" form-view="personal-info-edit-form" summary-view="true" colSpan="12"/> -->
+				<field name="personalInfo" form-view="personal-info-edit-form" colSpan="12"/>
+			</panel>
+			<panel title="Profile">
+				<panel colSpan="12">
+					<panel title="Keywords">
+						<field name="toolKeywordSet" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid"/>
+						<field name="fieldKeywordSet" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid"/>
+						<field name="jobKeywordSet" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
+					</panel>
+					<panel title="Competences profile">
+						<field name="competence"/>
+					</panel>
+				</panel>
+				<panel-related field="positionList" colSpan="12"/>
+			</panel>
+			<panel title="Salary">
+				<field name="salaryFromDate" colSpan="4"/>
+				<field name="salaryAmount" colSpan="4"/>
+				<field name="dailySalaryCost" colSpan="4"/>
+				<panel-related field="bonusList"  grid-view="bonus-grid" colSpan="6"/>
+				<panel-related field="advanceList" grid-view="advance-grid" colSpan="6"/>
+				<panel-related field="paySheetList" form-view="pay-sheet-employee-form" grid-view="pay-sheet-employee-grid" colSpan="12"/>
+			</panel>
+			<panel title="Expenses">
+				<field name="vehicleFiscalPower" colSpan="4"/>
+				<field name="commuteFee" colSpan="4"/>
+				<field name="commuteFeeRefundPerc" colSpan="4"/>
+				<panel-related field="expenseList" grid-view="expense-edit-grid" colSpan="12"/>
+			</panel>
+			<panel-related title="Leaves" field="employeeLeaveList" />
+			<panel title="History">
+				<panel title="Recruitment" colSpan="12">
+					<field name="candidate"/>
+				</panel>    
+			</panel>
+		</panel-tabs>
+	</form>
+	
+	<action-record name="action-employee-default-record" model="com.axelor.apps.organisation.db.Employee">
+    	<field name="entryDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="entryDate == null"/>
+    	<field name="categorySelect" expr="1"/>
+    	<field name="macroCategorySelect" expr="4"/>
+    </action-record>
+    
+    <action-record name="action-employee-set-exit-date" model="com.axelor.apps.organisation.db.Employee">
+		<field name="exitDate" expr="eval:entryDate.plusMonths(contractDuration).minusDays(1)" if="entryDate != null &amp;&amp; contractDuration != null &amp;&amp; contractDuration &gt; 0"/>
+    </action-record>
+	
+	<action-method name="action-partner-method-show-employee">
+		<call class="com.axelor.apps.organisation.web.EmployeeController" method="showEmployee" />
+	</action-method>
+	
+	
+    <search-filters name="employee-filters" model="com.axelor.apps.organisation.db.Employee" title="Employee filters">
+		<filter title="Current Employees">
+			<domain>self.exitDate IS NULL</domain>
+		</filter>
+		<filter title="Old Employees">
+			<domain>self.exitDate &lt; CURRENT_DATE</domain>
+		</filter>
+		<filter title="Managers">
+			<domain>self.macroCategorySelect = 1 OR self.macroCategorySelect = 2 OR self.macroCategorySelect = 3</domain>
+		</filter>
+		<filter title="Skill workers">
+			<domain>self.macroCategorySelect = 4 OR self.macroCategorySelect = 5 OR self.macroCategorySelect = 6</domain>
+		</filter>
+	</search-filters>
+	
+</object-views>
+  

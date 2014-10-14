@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+
+	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+	
+	<selection name="organisation.mission.order.date.type.select">
+		<option value="1">Included</option>
+		<option value="2">Excluded</option>
+	</selection>
+	
+	<selection name="organisation.timesheet.time.unit.select">
+		<option value="1">Day</option>
+		<option value="2">Hour</option>
+	</selection>
+	
+	<selection name="organisation.candidate.availability.select">
+		<option value="1">Immediate</option>
+		<option value="2">1 month</option>
+		<option value="3">2 month</option>
+		<option value="4">3 month</option>
+		<option value="5">1 month negociable</option>
+		<option value="6">2 month negociable</option>
+		<option value="7">3 month negociable</option>
+	</selection>
+	
+	<selection name="organisation.candidate.relocation.select">
+		<option value="1">National</option>
+		<option value="2">International</option>
+		<option value="3">Reduced</option>
+	</selection>
+	
+	<selection name="organisation.candidate.category.select">
+		<option value="1">Junior</option>
+		<option value="2">Senior</option>
+		<option value="3">Expert</option>
+	</selection>
+	
+	<selection name="organisation.candidate.macroCategory.select">
+		<option value="1">Junior Manager (0 - 5 ans)</option>
+		<option value="2">Confirmed Manager(5 - 10 ans)</option>
+		<option value="3">Senior Manager ( > 10 ans)</option>
+		<option value="4">Junior Worker Junior (0 - 5 ans)</option>
+		<option value="5">Confirmed Worker (5 - 10 ans)</option>
+		<option value="6">Senior Worker ( > 10 ans)</option>
+	</selection>
+	
+	<selection name="organisation.employee.supervised.by.select">
+		<option value="1">Manager</option>
+		<option value="2">Profile</option>
+	</selection>	
+	
+	<selection name="organisation.candidate.recruitmentType.select">
+		<option value="1">Straight recruitment</option>
+		<option value="2">Project recruitment</option>
+	</selection>
+	
+	<selection name="organisation.position.recommendation.select">
+		<option value="1">Very positive (green)</option>
+		<option value="2">Positive  (green)</option>
+		<option value="3">Mixed opinion (orange)</option>
+		<option value="4">Unfavourable (red)</option>
+	</selection>
+	
+	<selection name="organisation.personal.info.accreditation.select">
+		<option value="1"></option>
+		<option value="2">CD</option>
+		<option value="3">SD</option>
+		<option value="4">OTAN</option>
+		<option value="5">CEA</option>
+	</selection>
+	
+	<selection name="organisation.personal.info.marital.status.select">
+		<option value="1">Single</option>
+		<option value="2">Married</option>
+		<option value="3">Civil Union</option>
+		<option value="4">Divorced</option>
+		<option value="5">Widowed</option>
+	</selection>
+	
+	<selection name="organisation.candidate.other.opportunity.state.select">
+		<option value="1">1st RDV (green)</option>
+		<option value="2">2nd RDV (green)</option>
+		<option value="3">3rd RDV (orange)</option>
+		<option value="4">Proposal(red)</option>
+		<option value="5">Signature (red)</option>
+		<option value="6">OK (red)</option>
+		<option value="7">No feedback (orange)</option>
+		<option value="8">Negative (vert)</option>
+	</selection>
+	
+	<selection name="organisation.candidate.other.opportunity.interest.select">
+		<option value="1">High</option>
+		<option value="2">Medium</option>
+		<option value="3">Low</option>
+	</selection>
+	
+	<selection name="organisation.project.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Confirmed</option>
+		<option value="3">Started</option>
+		<option value="4">Completed</option>
+		<option value="5">Canceled</option>
+	</selection>
+	
+	<selection name="organisation.timesheet.period.config.type.select">
+		<option value="1">Weekly</option>
+		<option value="2">Monthly</option>
+	</selection>
+	
+	<selection name="organisation.project.type.duration.select">
+		<option value="1">Day</option>
+		<option value="2">Month</option>
+		<option value="3">Year</option>
+	</selection>
+	
+	<selection name="organisation.project.type.project.select">
+		<option value="1">Task</option>
+		<option value="2">Project</option>
+	</selection>
+	
+	<selection name="organisation.project.business.market.type.select">
+		<option value="1">Market</option>
+		<option value="2">Order form market</option>
+		<option value="3">Other</option>
+	</selection>
+	
+	<selection name="organisation.resource.status.select">
+		<option value="1">On going</option>
+		<option value="2">Waiting candidate confirmation</option>
+		<option value="3">OK</option>
+		<option value="4">KO</option>
+		<option value="5">Canceled</option>
+	</selection>
+	
+	<selection name="hr.expense.validation.status.select">
+		<option value="1">Verified</option>
+		<option value="2">Waiting validation</option>
+	</selection>
+	
+	<selection name='hr.expense.line.file.received.select'>
+		<option value="1">Yes</option>
+		<option value="2">No</option>
+	</selection>
+	
+	<selection name='organisation.project.report.type.select'>
+		<option value="pdf">PDF</option>
+		<option value="xls">XLS</option>
+	</selection>
+	<selection name="hr.expense.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Submited</option>
+		<option value="3">Validated</option>
+		<option value="5">Paid</option>
+		<option value="6">Refused</option>
+	</selection>
+	
+	<selection name="expense.line.expense.type.select">
+		<option value="1">Reinvoiceable</option>
+		<option value="2">Not reinvoiceable</option>
+	</selection>
+	
+	<selection name="training.experience.type.select">
+		<option value="internal">Internal</option>
+		<option value="previousJob">Previous job</option>
+	</selection>
+	
+	
+	<selection name="organisation.candidate.recruitment.state.select">
+		<option value="1">New application</option>
+		<option value="2">Pre-selected</option>
+		<option value="3">First interview</option>
+		<option value="4">Second interview</option>
+		<option value="5">Third interview</option>
+		<option value="6">Rejected</option>
+		<option value="7">Offer proposed</option>
+		<option value="8">Offer accepted</option>
+		<option value="9">Offer refused</option>
+	</selection>
+	
+	<selection name="organisation.project.business.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Submitted</option>
+		<option value="3">Accepted</option>
+		<option value="4">Refused</option>
+		<option value="5">Sent</option>
+		<option value="6">Won</option>
+		<option value="7">Lost</option>
+	</selection>
+
+	<selection name="organisation.working.contract.type.select">
+		<option value="1">Permanent</option>
+		<option value="2">Fixed-term</option>
+	</selection>
+	
+	<selection name="organisation.job.offer.remuneration.type.select">
+		<option value="1">from 25 to 35 k€</option>
+		<option value="2">from 35 to 45 k€</option>
+		<option value="3">from 45 to 55 k€</option>
+		<option value="4">from 55 to 65 k€</option>
+		<option value="5">from 65 to 75 k€</option>
+		<option value="6">from 75 to 85 k€</option>
+		<option value="7">from 85 to 95 k€</option>
+		<option value="8">from 95 to 100 k€ or more</option>
+	</selection>
+
+	<selection name="organisation.job.offer.domaine.type.select">
+		<option value="1">Communication</option>
+	</selection>
+
+	<selection name="organisation.job.offer.education.level.select">
+		<option value="1">1 yr Univ.</option>
+		<option value="2">2 yrs Univ.</option>
+		<option value="3">3 yrs Univ.</option>
+		<option value="4">4 yrs Univ.</option>
+		<option value="5">5 yrs Univ. or more</option>
+	</selection>
+
+	<selection name="organisation.job.offer.experience.type.select">
+		<option value="1">1 yr.</option>
+		<option value="2">2 yrs.</option>
+		<option value="3">3 yrs.</option>
+		<option value="4">4 yrs.</option>
+		<option value="5">5 yrs.</option>
+		<option value="6">6 yrs.</option>
+		<option value="7">7 yrs.</option>
+		<option value="8">8 yrs.</option>
+		<option value="9">9 yrs.</option>
+		<option value="10">10 yrs. or more</option>
+	</selection>
+	
+	<selection name="organisation.task.update.line.type.select">
+		<option value="1">Revenue</option>
+		<option value="2">Cost</option>
+	</selection>
+	
+	<selection name="organisation.task.update.line.application.select">
+		<option value="1">Initial estimated</option>
+		<option value="2">Real estimated</option>
+		<option value="3">Real invoiced</option>
+	</selection>
+	
+	<selection name="organisation.project.real.estimated.method.select">
+		<option value="1">None</option>
+		<option value="2">Progress</option>
+		<option value="3">Subscription</option>
+	</selection>
+	
+	<selection name="organisation.project.need.type.select">
+		<option value="1">Fixed fee</option>
+		<option value="2">On site</option>
+		<option value="3">TMA</option>
+	</selection>
+	
+		
+	
+	<selection name="iorganisation.timesheet.line.type.select">
+		<option value="0">Day</option>
+		<option value="1">Night</option>
+	</selection>
+	
+	<selection name="organisation.leave.request.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Confirmed</option>
+		<option value="3">Validated</option>
+		<option value="4">Canceled</option>
+		<option value="5">Refused</option>
+	</selection>
+	
+</object-views>

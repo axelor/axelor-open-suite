@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+	<module name="organisation" package="com.axelor.apps.organisation.db" />
+
+ 	<entity name="EvaluationLine" lang="java">
+		<many-to-one name="candidate" ref="Candidate"/>
+		<string name="label" required="true" title="Criteria evaluated"/>
+		<integer name="coefficient" required="true" title="Coefficient"/>
+		<integer name="gradeSelect" required="true" title="Grade" selection="grade.0.up.to.20.select"/>		
+	</entity>
+
+</domain-models>

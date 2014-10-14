@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="purchase-config-grid" title="Purchase configurations" model="com.axelor.apps.organisation.db.OrganisationConfig">
+        <field name="company"/>
+    </grid>
+
+    <form name="purchase-config-form" title="Purchase configuration" model="com.axelor.apps.organisation.db.OrganisationConfig" onNew="action-organisation-config-record-default">
+		<panel >
+		  <field name="company" form-view="company-form"/>
+		</panel>
+		<panel title="Task Information">
+		  <field name="taskProduct"/>
+		</panel>
+    </form>
+	
+	<action-record name="action-organisation-config-record-default" model="com.axelor.apps.organisation.db.OrganisationConfig">
+		<field name="company" expr="eval: _company" if="_company"/>
+		<field name="company" expr="eval:__user__.activeCompany" if="!_company"/>
+	</action-record>
+	
+	
+</object-views>

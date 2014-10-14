@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="timesheet-grid" title="Timesheets" model="com.axelor.apps.organisation.db.Timesheet">
+        <field name="user"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+    <grid edit-icon="true" name="my-timesheet-grid" title="My Timesheets" model="com.axelor.apps.organisation.db.Timesheet">
+	  <field name="fromDate"/>
+	  <field name="toDate"/>
+	  <field name="statusSelect"/>
+	</grid>
+    
+	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" onNew="action-group-organisation-timesheet-onnew">
+	  <toolbar>
+	    <button name="print" title="Print" icon="fa-print" onClick="save,action-print-pdf-timesheet"/>
+	  </toolbar>
+	  <panel>
+	    <field name="user" readonlyIf="statusSelect &gt;= 3"/>
+	    <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+	    <field name="fromDate" readonlyIf="statusSelect &gt;= 3" onChange="action-timesheet-getPeriod"/>
+	    <field name="toDate" readonlyIf="statusSelect &gt;= 3"/>
+	    <field name="unit" readonlyIf="statusSelect &gt;= 3"/>
+	    <field name="project" readonlyIf="statusSelect &gt;= 3" domain="self.isBusiness = true"/>
+	  </panel>
+	  <panel title="Satisfaction">
+	    <panel title="Project" colSpan="12">
+	      <field name="projectSatisfactionSelect" widget="SelectProgress"/>
+	      <field name="projectComment"/>
+	    </panel>
+	    <panel title="Company" colSpan="12">
+	      <field name="companySatisfactionSelect" widget="SelectProgress"/>
+	      <field name="companyComment"/>
+	    </panel>
+	  </panel>
+	  <panel title="Details of time spent on project/tasks">
+	    <panel title="Configuration" readonlyIf="statusSelect &gt;= 3" colSpan="12">
+	      <panel colSpan="12">
+	        <field name="hasToGetLeaveRequests" colSpan="4"/>
+	        <field name="hasToGetSpentTimeFromTask" colSpan="4"/>
+	        <field name="hasToGetPlanningLine" colSpan="4"/>
+	        <button name="getSpentTimeButton" title="Get past time" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true)" colSpan="1" onClick="save,action-timesheet-method-get-task-spent-time"/>
+	      </panel>        
+	      <panel colSpan="12">
+	        <field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default" colSpan="4"/>
+	        <panel title="Complete time sheet configuration" showIf="hasCompleteTimesheetLines == true" colSpan="8">
+	          <field name="completeFromDate"/>
+	          <field name="completeToDate"/>
+	          <field name="completeDefaultTask"/>
+	          <field name="duration"/>
+	        </panel>
+	        <button name="completeTimeSheetButton" title="Complete time sheet" showIf="statusSelect != 3 &amp;&amp; hasCompleteTimesheetLines == true" colSpan="6" onClick="save"/>
+	      </panel>
+	    </panel>
+	    <panel-related field="timesheetLineList" readonlyIf="statusSelect &gt;= 3" colSpan="12" form-view="timesheet-line-form" grid-view="timesheet-line-grid"/>
+	  </panel>
+	  <panel title="Totals" readonlyIf="statusSelect &gt;= 3">
+	    <field name="timesheetInputTotal"/>
+	    <panel-related field="timesheetTotalByTypeList" colSpan="12"/>
+	  </panel>
+	  <panel sidebar="true" title="Actions">
+	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" onClick="action-group-organisation-timesheet-confirm-click"/>
+	    <button name="validate" title="Validate" showIf="statusSelect == 2" onClick="action-group-organisation-timesheet-validate-click"/>
+	    <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-timesheet-record-cancel"/>
+	  </panel>
+	  <panel sidebar="true" title="Info.">
+	    <field name="validatedByUser"/>
+	    <field name="validationDate"/>
+	  </panel>
+	</form>    
+	
+    <action-group name="action-group-organisation-timesheet-onnew">
+    	<action name="action-timesheet-default-record"/>
+    	<action name="action-timesheet-getPeriod"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-timesheet-confirm-click">
+    	<action name="save"/>
+    	<action name="action-timesheet-record-confirm"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-timesheet-validate-click">
+    	<action name="save"/>
+    	<action name="action-timesheet-method-validate"/>
+    	<action name="action-timesheet-record-validate"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-record name="action-timesheet-record-complete-group-default" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="completeFromDate" expr="eval: fromDate" if="completeFromDate == null"/>
+    	<field name="completeToDate" expr="eval: toDate" if="completeToDate == null"/>
+    </action-record>
+    
+    <action-record name="action-timesheet-default-record" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="user" expr="eval:__user__"/>
+    	<field name="fromDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="fromDate == null"/>
+    	<field name="toDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="toDate == null"/>
+    	<field name="statusSelect" expr="eval: _statusSelect ? _statusSelect : 1"/> 
+    	<field name="unit" expr="eval: __repo__.of(Unit).findByCode(&quot;JR&quot;)"/>	
+    </action-record>
+    
+    <action-record name="action-timesheet-record-validate" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="statusSelect" expr="eval: 3"/>
+    	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+    	<field name="validatedByUser" expr="eval:__user__"/>
+    </action-record>
+    
+     <action-record name="action-timesheet-record-cancel" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="statusSelect" expr="eval: 4"/>
+    </action-record>
+    
+    <action-method name="action-timesheet-getPeriod">
+    	<call class="com.axelor.apps.organisation.web.TimesheetController" method="getPeriod"/>
+    </action-method>
+    
+    <action-method name="action-timesheet-method-get-task-spent-time">
+		<call class="com.axelor.apps.organisation.web.TimesheetController" method="getTaskSpentTime"/>
+	</action-method>
+    
+    <action-record name="action-timesheet-record-confirm" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="statusSelect" expr="eval: 2"/>
+    </action-record>
+    
+    <action-method name="action-timesheet-method-validate">
+    	<call class="com.axelor.apps.organisation.web.TimesheetController" method="validate"/>
+    </action-method>
+     <action-method name="action-print-pdf-timesheet">
+    	<call class="com.axelor.apps.organisation.web.TimesheetController" method="printTimesheet"/>
+    </action-method>
+    
+    
+    
+</object-views>

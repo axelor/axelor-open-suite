@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="TimesheetLine" lang="java">
+  
+  	<many-to-one name="timesheet" ref="com.axelor.apps.organisation.db.Timesheet" title="Timesheet"/>
+  	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
+  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+  	<many-to-one name="spentTime" ref="com.axelor.apps.base.db.SpentTime" title="Spent time"/>
+	
+	<date name="date" title="Date" required="true"/>
+	<decimal name="duration" title="Duration (h)" required="true"/>
+	<boolean name="isToInvoice" title="To invoice ?"/>
+	<boolean name="isInvoiced" title="Invoiced ?"/>
+	
+	<datetime name="startDateT"/>
+	<datetime name="endDateT"/>
+	
+	<integer name="dayNightSelect" title="Day/Night" selection="iorganisation.timesheet.line.type.select"/>
+	
+	<string name="name" title="Name">
+		<![CDATA[
+	    String name = "";
+	    if (project != null) name += project.getName();
+	    if (task != null) name += " - "+task.getName();
+	    return name;
+	    ]]>
+	</string>
+  </entity>
+
+</domain-models>

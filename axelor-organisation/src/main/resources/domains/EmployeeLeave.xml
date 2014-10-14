@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+	<module name="organisation" package="com.axelor.apps.organisation.db" />
+
+	<entity name="EmployeeLeave" lang="java">
+		<many-to-one name="employee" ref="Employee" required="true" title="Employee"/>
+		<many-to-one name="reasonTask" ref="Task" title="Reason"/>
+		<decimal name="leaveBalances" title="Leave balances"/>
+		<decimal name="leaveRequestInProgress" title="Leave request in progress"/>
+		<decimal name="cumulation" title="Cumulation"/>
+	</entity>
+
+</domain-models>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+	
+	<module name="organisation" package="com.axelor.apps.organisation.db"/>
+		<entity name="JobOffer" lang="java">
+		
+			<string name="name" title="Offer title" required="true"/>
+			<string name="code" title="Code" required="true"/>
+			<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Business"/>
+			<date name="fromDate" title="Open from"/>
+			<date name="toDate" title="To"/>
+			<integer name="nbrOfPositions" title="Nbr of Positions"/>
+			
+			<!-- Groupe Offre -->
+			<string name="description" title="Description" large="true" multiline="true"/>
+			<integer name="contractTypeSelect" title="Contract type" selection="organisation.working.contract.type.select"/>
+			<integer name="remunerationTypeSelect" title="Gross annual salary" selection="organisation.job.offer.remuneration.type.select"/>
+			<string name="advantages" title="Advantages" large="true" multiline="true"/>
+			<many-to-one name="region" ref="com.axelor.apps.base.db.Region" title="Geo. Zone"/>
+			<string name="geoZoneCompl" title="Geo. Zone Complement"/>
+			<integer name="domainTypeSelect" title="Domain" selection="organisation.job.offer.domain.type.select"/>
+			<string name="jobTitle" title="Job title"/>
+		
+			<!-- Groupe Profil candidat -->
+			<integer name="educationLevelSelect" title="Education level" selection="organisation.job.offer.education.level.select"/>
+			<integer name="experienceTypeSelect" title="Experience" selection="organisation.job.offer.experience.type.select"/>
+			<many-to-many name="languageSet" ref="com.axelor.apps.base.db.Language" title="Language"/>
+			<many-to-many name="trainingLineSet" ref="com.axelor.apps.organisation.db.TrainingLine" title="Training"/>
+			<string name="branch" title="Branch"/>
+		
+		</entity>	
+</domain-models>

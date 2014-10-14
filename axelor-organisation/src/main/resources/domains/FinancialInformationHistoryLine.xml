@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="FinancialInformationHistoryLine" lang="java">
+  	
+  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+  	<datetime name="dateT" title="Date" readonly="true"/>
+	<decimal name="turnover" title="Turnover" readonly="true"/>
+  	<decimal name="cost" title="Cost" readonly="true"/>
+  	<decimal name="margin" title="Margin" readonly="true"/>
+  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
+<!--   	<integer name="applicationSelect" title="Application" selection="organisation.task.update.line.application.select"/> -->
+  	
+  </entity>
+
+</domain-models>

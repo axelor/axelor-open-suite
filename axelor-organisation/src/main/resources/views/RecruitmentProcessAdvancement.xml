@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    <grid name="recruitment-process-advancement-grid" title="Recruitment process advancement" model="com.axelor.apps.organisation.db.RecuitmentProcessAdvancement">
+        <field name="candidate"/>
+        <field name="statusSelect"/>
+        <field name="dateT"/>
+        <field name="note"/>
+    </grid>
+    
+    <form name="recruitment-process-advancement-form" title="Recruitment process advancement" model="com.axelor.apps.organisation.db.RecuitmentProcessAdvancement">
+        <panel>
+	        <field name="candidate"/>
+	        <field name="statusSelect"/>
+	        <field name="dateT"/>
+	        <field name="note"/>
+        </panel>
+    </form>
+    
+    <grid name="recruitment-candidate-process-advancement-grid" title="Recruitment process progresses" model="com.axelor.apps.organisation.db.RecuitmentProcessAdvancement">
+		<field name="statusSelect"/>
+		<field name="recruitmentDate" showIf="statusSelect == 3 || statusSelect == 4 || statusSelect == 5"/>
+		<field name="dateT"/>
+		<field name="note"/>
+	</grid>
+					
+    <form name="recruitment-candidate-process-advancement-form" title="Recruitment process progress" model="com.axelor.apps.organisation.db.RecuitmentProcessAdvancement">
+		<panel>
+			<field name="statusSelect"/>
+			<field name="recruitmentDate" showIf="statusSelect == 3 || statusSelect == 4 || statusSelect == 5"/>
+			<field name="dateT"/>
+			<field name="note"/>
+		</panel>
+	</form>
+</object-views>

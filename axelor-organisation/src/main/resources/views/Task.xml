@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <calendar name="task-calendar" title="Tasks" mode="month" colorBy="user" 
+        model="com.axelor.apps.organisation.db.Task"
+	    eventStart="startDateT" 
+	    eventStop="endDateT" 
+	    eventLength="1">
+	    <field name="name" />
+ 	 </calendar>
+    
+    <grid name="task-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task" orderBy="taskProgress">
+        <field name="name"/>
+        <field name="project"/>
+        <field name="totalTime"/>
+        <field name="spentTime"/>
+        <field name="taskProgress" widget="SelectProgress"/>
+    </grid>
+    
+    <grid name="task-project-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task" orderBy="taskProgress">
+        <field name="name"/>
+        <field name="user"/>
+        <field name="plannedTime"/>
+        <field name="spentTime"/>
+    </grid>
+    
+	<form name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task" onLoad="action-group-organisation-task-onload" onNew="action-group-organisation-task-onnew">
+	  <panel colSpan="12">
+	    <field name="name" showTitle="false" css="highlight" placeholder="Task name"/>
+	    <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect" onChange="action-task-attrs-status-select"/>
+	  </panel>
+	  <panel name="context" title="Context" colSpan="12">
+	    <field name="project" onChange="action-group-organisation-project-onchange" colSpan="4"/>
+	    <field name="startDateT" colSpan="4"/>
+	    <field name="endDateT" colSpan="4"/>
+	    <field name="user" colSpan="4"/>
+	    <field name="totalTime" colSpan="4"/>
+	    <field name="project.unit" colSpan="4"/>
+	  </panel>
+	  <panel title="Times" colSpan="12">
+	    <field name="plannedTime" colSpan="4"/>
+	    <field name="spentTime" colSpan="4"/>
+	    <field name="remainingTime" colSpan="4"/>
+	  </panel>
+	  <panel title="Progress" colSpan="12">
+	    <field name="taskProgress" widget="SelectProgress" onChange="action-group-organisation-taskprogress-onchange" colSpan="4"/>
+	    <field name="delays" colSpan="4"/>
+	    <field name="advance" colSpan="4"/>
+	  </panel>
+	
+	  <panel-tabs>
+	    <panel-related title="Planification and realization" field="planningLineList" colSpan="4" onChange="action-task-method-get-planned-time" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
+	    <panel title="Invoicing follow-up">
+	      <field name="saleOrderLine" onChange="action-task-saleOrderLine-on-change" if-module="axelor-account-organisation"/>
+	      <field name="product"/>
+	      <field name="qty"/>
+	      <field name="price"/>
+	      <field name="isToInvoice" if-module="axelor-account-organisation"/>
+	      <field name="isTimesheetAffected"/>
+	      <field name="invoicingDate" if-module="axelor-account-organisation"/>
+	      <field name="amountToInvoice" if-module="axelor-account-organisation"/>
+	      <button name="generateDraftInvoice" title="Generate draft invoice" showIf="isToInvoice == true &amp;&amp; statusSelect == 4" colSpan="2" onClick="save,action-task-method-create-invoice"/>
+	    </panel>
+	    <panel title="Notes">
+	      <field name="notes" showTitle="false" colSpan="12"/>
+	    </panel>
+	    <panel name="financialInformation" title="Financial information">
+	      <panel colSpan="12">
+	        <field name="realEstimatedMethodSelect"/>
+	        <field name="estimatedAmount"/>
+	        <field name="project.company.currency"/>
+	        <field name="exportTypeSelect"/>
+	        <button name="printTask" title="View forecast report" icon="fa-print" onClick="action-print-task-report"/>
+	      </panel>
+	      <panel title="Initial estimated" hideIf="realEstimatedMethodSelect == 1" colSpan="12">
+	        <panel colSpan="12">
+	          <field name="initialEstimatedTurnover" colSpan="4"/>
+	          <field name="initialEstimatedCost" colSpan="4"/>
+	          <field name="initialEstimatedMargin" colSpan="4"/>
+	        </panel>
+	        <panel title="History" colSpan="12" showIf="statusSelect &gt;= 3">
+	          <button name="updateInitialEstimatedAmounts" title="Update and historize" showIf="statusSelect &gt;= 3" colSpan="1" onClick="action-task-method-update-initial-estimated-amounts"/>
+	          <field name="financialInformationHistoryLineList" showIf="statusSelect &gt;= 3" colSpan="12"/>
+	        </panel>  
+	      </panel>
+	      <panel title="Real estimated" colSpan="12">
+	        <field name="realEstimatedTurnover" colSpan="4"/>
+	        <field name="realEstimatedCost" colSpan="4"/>
+	        <field name="realEstimatedMargin" colSpan="4"/>
+	      </panel>
+	      <panel title="Real invoiced" colSpan="12">
+	        <field name="realInvoicedTurnover" colSpan="4"/>
+	        <field name="realInvoicedCost" colSpan="4"/>
+	        <field name="realInvoicedMargin" colSpan="4"/>
+	      </panel>
+	    </panel>
+	    <panel name="links" title="Links">
+	      <panel title="Update financial information" colSpan="12" canCollapse="true" collapseIf="financialInformationUpdateList == null || financialInformationUpdateList.isEmpty()">
+	        <panel-related field="financialInformationUpdateList" showTitle="false" colSpan="12"/>
+	      </panel>
+	      <!-- TODO: remove this comment if portlet works in panel
+	      <panel title="Initial estimated" hideIf="realEstimatedMethodSelect == 1">
+	        <dashlet colSpan="4" action="action-task-view-validated-sale-order-line"/>
+	        <dashlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
+	        <dashlet colSpan="4" action="action-task-view-initial-estimated-financial-information-update"/>
+	      </panel>
+	      <panel title="Real estimated">
+	        <dashlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
+	        <dashlet colSpan="4" action="action-task-view-timesheet-line"/>
+	        <dashlet colSpan="4" action="action-task-view-expense-line"/>
+	        <dashlet colSpan="4" action="action-task-view-real-estimated-financial-information-update"/>
+	      </panel>
+	      <panel title="Real invoiced">
+	        <dashlet colSpan="4" action="action-task-view-customer-invoice-line"/>
+	        <dashlet colSpan="4" action="action-task-view-supplier-invoice-line"/>
+	        <dashlet colSpan="4" action="action-task-view-timesheet-line"/>
+	        <dashlet colSpan="4" action="action-task-view-expense-line"/>
+	        <dashlet colSpan="4" action="action-task-view-real-invoiced-financial-information-update"/>
+	      </panel>
+	      -->
+	    </panel>
+	    <panel name="elementToInvoice" title="Elements to invoice">
+	      <panel colSpan="12">
+	        <field name="amountToInvoice" readonly="true" colSpan="4"/>
+	        <button name="generateDraftInvoice" title="Generate draft invoice" showIf="statusSelect == 4" colSpan="2" onClick="save,action-task-method-create-invoice"/>
+	        <button name="showInvoices" title="Show invoices" showIf="statusSelect == 4" colSpan="2" onClick="action-task-view-invoice"/>
+	      </panel>
+	      <!-- TODO: remove this comment if portlet works in panel
+	      <dashlet colSpan="4" action="action-task-view-expense-line-to-invoice"/>
+	      <dashlet colSpan="4" action="action-task-view-timesheet-line-to-invoice"/>
+	      -->
+	    </panel>
+	    <panel title="Description">
+	      <field name="description" showTitle="false" colSpan="12"/>
+	    </panel>
+	    <panel-related title="Spent times" field="spentTimeList" showTitle="false" colSpan="4" onChange="action-group-organisation-spenttimelist-onchange" form-view="spent-time-task-form" grid-view="spent-time-task-grid"/>
+	  </panel-tabs>
+	</form>
+
+	
+	<grid name="task-leave-reason-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task">
+        <field name="name"/>
+        <field name="hasCummulation"/>
+        <field name="accountingDay"/>
+    </grid>
+	
+	<form name="task-leave-reason-form" title="Task" model="com.axelor.apps.organisation.db.Task" onNew="action-task-default-record">
+	  <panel>
+	    <field name="name" showTitle="false" css="highlight" placeholder="Task name"/>
+	    <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
+	    <field name="hasCummulation"/>
+	    <field name="accountingDay"/>
+	  </panel>
+	  <panel title="Context">
+	    <field name="project" onChange="action-task-attrs-project-title,action-task-attrs-hide-financial" colSpan="4"/>
+	    <field name="user" colSpan="4"/>
+	    <field name="taskProgress" widget="Progress" colSpan="4"/>
+	    <field name="startDateT" colSpan="4"/>
+	    <field name="endDateT" colSpan="4"/>
+	    <field name="totalTime" colSpan="4"/>
+	  </panel>
+	  <panel-tabs>
+	    <panel-related title="Planification and realization" field="planningLineList"  colSpan="12" onChange="action-task-compute-total-planned-qty" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
+	    <panel title="Notes">
+	      <field name="notes"  colSpan="12"/>
+	    </panel>
+	    <panel title="Description">
+	      <field name="description" showTitle="false" colSpan="12"/>
+	    </panel>
+	    <panel-related title="Spent times" field="spentTimeList" showTitle="false" colSpan="4" form-view="spent-time-task-form" grid-view="spent-time-task-grid"/>
+	  </panel-tabs>
+	</form>
+
+    
+    <action-group name="action-group-organisation-task-onnew">
+    	<action name="action-task-default-record"/>
+    	<action name="action-task-attrs-hide-financial"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-task-onload">
+    	<action name="action-task-method-get-spent-time"/>
+    	<action name="action-task-method-get-planned-time"/>
+    	<action name="action-task-record-remaining-time"/>
+    	<action name="action-task-record-progress"/>
+    	<action name="action-task-attrs-status-select"/>
+    	<action name="action-task-record-task-completed"/>
+    	<action name="action-task-method-update-financial-information"/>
+    	<!-- TODO: remove this comment if 'save' issue is resolved 
+    	<action name="save"/>
+    	 -->
+    </action-group>
+    
+    <action-group name="action-group-organisation-project-onchange">
+    	<action name="action-task-attrs-project-title"/>
+    	<action name="action-task-attrs-hide-financial"/>
+    	<action name="action-task-record-real-estimated-method"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-taskprogress-onchange">
+    	<action name="action-task-record-delays-and-advance"/>
+    	<action name="action-task-record-task-completed"/>
+    </action-group>
+    
+    <action-group name="action-group-organisation-spenttimelist-onchange">
+    	<action name="action-task-method-get-spent-time"/>
+    	<action name="action-task-record-progress"/>
+    	<action name="action-task-record-task-completed"/>
+    </action-group>
+    
+    <action-record name="action-task-default-record" model="com.axelor.apps.organisation.db.Task">
+    	<field name="startDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="startDateT == null"/>
+    	<field name="statusSelect" expr="eval: 1"/>
+    	<field name="user" expr="eval:__user__"/>
+    	<field name="isTimesheetAffected" expr="true"/>
+    	<field name="exportTypeSelect" expr="eval: 'pdf'"/>
+    </action-record>
+    
+    <action-record name="action-task-record-delays-and-advance" model="com.axelor.apps.organisation.db.Task">
+		<field name="delay" expr="eval: spentTime - taskProgress*totalTime/100" if="spentTime - taskProgress*totalTime/100 > 0"/>
+		<field name="advance" expr="eval: taskProgress*totalTime/100 - spentTime" if="taskProgress*totalTime/100 - spentTime > 0"/>
+		<field name="advance" expr="eval: 0" if="spentTime - taskProgress*totalTime/100 >= 0"/>
+		<field name="delays" expr="eval: 0" if="taskProgress*totalTime/100 - spentTime >= 0"/>
+	</action-record>
+	
+	<action-record name="action-task-record-task-completed" model="com.axelor.apps.organisation.db.Task">
+		<field name="statusSelect" expr="4" if="taskProgress == 100"/>
+	</action-record>
+	
+	<action-record name="action-task-record-progress" model="com.axelor.apps.organisation.db.Task">
+		<field name="taskProgress" expr="eval: 100 * spentTime / totalTime" if="totalTime > 0"/>
+		<field name="taskProgress" expr="eval: 0" if="totalTime == 0"/>
+	</action-record>
+	
+	<action-attrs name="action-task-attrs-status-select">
+		<attribute name="readonly" for="context" expr="eval: statusSelect >= 3"/>
+	</action-attrs>
+	
+	<action-record name="action-task-record-remaining-time" model="com.axelor.apps.organisation.db.Task">
+		<field name="remainingTime" expr="eval: totalTime - spentTime"/>
+	</action-record>
+	
+	<action-method name="action-task-method-get-spent-time">
+		<call class="com.axelor.apps.organisation.web.TaskController" method="getSpentTime"/>
+	</action-method>
+	
+	<action-method name="action-task-method-get-planned-time">
+		<call class="com.axelor.apps.organisation.web.TaskController" method="getPlannedTime"/>
+	</action-method>
+	
+	<action-method name="action-task-method-update-initial-estimated-amounts">
+		<call class="com.axelor.apps.organisation.web.TaskController" method="updateFinancialInformationInitialEstimated"/>
+	</action-method>
+    
+    <action-record name="action-task-saleOrderLine-on-change" model="com.axelor.apps.organisation.db.Task">
+    	<field name="product" expr="eval:saleOrderLine?.product" if="saleOrderLine"/>
+    	<field name="qty" expr="eval:saleOrderLine?.qty" if="saleOrderLine"/>
+    	<field name="price" expr="eval:saleOrderLine?.price" if="saleOrderLine"/>
+    </action-record>
+    
+    <action-record name="action-task-record-real-estimated-method" model="com.axelor.apps.organisation.db.Task">
+    	<field name="realEstimatedMethodSelect" expr="eval: project.realEstimatedMethodSelect"/>
+    </action-record>
+    
+    <action-method name="action-task-method-create-invoice">
+		<call class="com.axelor.apps.accountorganisation.web.TaskInvoiceController" method="createInvoice"/>
+	</action-method>
+	
+	<action-attrs name="action-task-attrs-project-title">
+		<attribute name="title" for="project" expr="Projet" if="project?.isProject == true &amp;&amp; project?.isBusiness == false"/>
+		<attribute name="title" for="project" expr="Business" if="project?.isProject == false &amp;&amp; project?.isBusiness == true"/>
+		<attribute name="title" for="project" expr="Project/Business" if="project?.isProject == true &amp;&amp; project?.isBusiness == true"/>
+	</action-attrs>
+	
+	<action-attrs name="action-task-attrs-hide-financial">
+		<attribute name="hidden" for="financialInformation" expr="eval: project == null || project?.isBusiness == false"/>
+		<attribute name="hidden" for="links" expr="eval: project == null || project?.isBusiness == false"/>
+		<attribute name="hidden" for="elementToInvoice" expr="eval: project == null || project?.isBusiness == false"/>
+	</action-attrs>
+	
+	<action-method name="action-task-method-update-financial-information">
+		<call class="com.axelor.apps.organisation.web.TaskController" method="updateFinancialInformation"/>
+	</action-method>
+	
+	<action-method name="action-print-task-report" >
+		<call class="com.axelor.apps.organisation.web.TaskController" method="printTaskReport"/>
+	</action-method>
+  	
+  	<action-view name="action-task-view-initial-estimated-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 1 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-validated-sale-order-line" title="Validated Customer order lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+  		<view type="grid" name="sale-order-line-grid"/>
+		<view type="form" name="sale-order-line-form"/>
+  		<domain>self.saleOrder.statusSelect = 3 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-real-estimated-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 2 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-validated-purchase-order-line" title="Validated supplier order lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+  		<view type="grid" name="purchase-order-line-grid"/>
+		<view type="form" name="purchase-order-line-form"/>
+  		<domain>self.purchaseOrder.statusSelect = 3 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-customer-invoice-line" title="Customer invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+  		<view type="grid" name="invoice-line-grid"/>
+		<view type="form" name="invoice-line-form"/>
+  		<domain>(self.invoice.statusSelect = 2 or self.invoice.statusSelect = 3) and self.task.id = :id and (self.invoice.operationTypeSelect = 3 or self.invoice.operationTypeSelect = 4)</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-supplier-invoice-line" title="Supplier invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+  		<view type="grid" name="invoice-line-grid"/>
+		<view type="form" name="invoice-line-form"/>
+  		<domain>(self.invoice.statusSelect = 2 or self.invoice.statusSelect = 3) and self.task.id = :id and (self.invoice.operationTypeSelect = 1 or self.invoice.operationTypeSelect = 2)</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-timesheet-line" title="Timesheet lines" model="com.axelor.apps.organisation.db.TimesheetLine">
+  		<view type="grid" name="timesheet-line-task-grid"/>
+		<view type="form" name="timesheet-line-task-form"/>
+  		<domain>self.timesheet.statusSelect = 3 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-expense-line" title="Expense lines" model="com.axelor.apps.organisation.db.ExpenseLine">
+  		<view type="grid" name="expense-line-grid"/>
+		<view type="form" name="expense-line-form"/>
+  		<domain>self.expense.statusSelect = 3 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-real-invoiced-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 3 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-timesheet-line-to-invoice" title="Timesheet lines" model="com.axelor.apps.organisation.db.TimesheetLine">
+  		<view type="grid" name="timesheet-line-task-grid"/>
+		<view type="form" name="timesheet-line-task-form"/>
+  		<domain>self.timesheet.statusSelect = 3 AND self.task.id = :id AND self.isToInvoice = true</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-expense-line-to-invoice" title="Expense lines" model="com.axelor.apps.organisation.db.ExpenseLine">
+  		<view type="grid" name="expense-line-grid"/>
+		<view type="form" name="expense-line-form"/>
+  		<domain>self.expense.statusSelect = 3 AND self.task.id = :id AND self.isToInvoice = true</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+	
+	<action-view name="action-task-view-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
+  		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+  		<domain>self.project.id = :projectId</domain>
+  		<context name="projectId" expr="eval: project.id"/>
+  	</action-view>
+	
+	<search-filters name="tasks-filters" model="com.axelor.apps.organisation.db.Task" title="Tasks filters">
+		<filter title="My Tasks">
+			<domain>self.user.id = :_internalUser</domain>
+		</filter>
+		<filter title="My Today tasks">
+			<domain>self.user.id = :_internalUser and self.startDateT &lt;= :_todayDateTime</domain>
+		</filter>
+		<filter title="My Upcoming Tasks">
+			<domain>self.user.id = :_internalUser and self.startDateT &lt; :_newDate</domain>
+		</filter>
+		<filter title="Tasks Underevaluated">
+			<domain>self.spentTime &gt; self.estimateTime</domain>
+		</filter>
+		<filter title="Tasks To Invoice">
+			<domain>self.isToInvoice = true</domain>
+		</filter>
+	</search-filters>
+	
+</object-views>
