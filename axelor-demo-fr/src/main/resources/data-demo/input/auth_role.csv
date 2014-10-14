@@ -1,0 +1,10 @@
+"id";"name";"description";"permissions"
+1;"role.crm";"Accès à l'ensemble des objets du module CRM";"perm.base.all|perm.crm.all|perm.organisation.rwc|perm.supplychain.rwc"
+2;"role.supplychain";"Accès à l'ensemble des objets du module Supply Chain";"perm.base.all|perm.crm.all|perm.organisation.all|perm.supplychain.all|perm.production.rwc|perm.account.rw"
+3;"role.operations";"Accès à l'ensemble des objets liés aux opérations (Production, Stock...)";"perm.base.all|perm.crm.all|perm.organisation.all|perm.supplychain.rwc|perm.production.all"
+4;"role.accounting";"Accès à l'ensemble des objets du module Account";"perm.base.all|perm.crm.all|perm.organisation.all|perm.supplychain.rwc|perm.account.all"
+5;"role.hr";"Accès à l'ensemble des fonctionnalités RH";"perm.base.all|perm.organisation.allperm.crm.all"
+6;"role.manager";"Accès à l'ensemble des fonctionnalités";"perm.base.all|perm.account.all|perm.organisation.all|perm.production.all|perm.crm.all|perm.supplychain.all"
+7;"role.client";"Accès au portail client";"perms.user|perm.base.partner.r|perm.supplyChain.saleOrder.r|perm.supplyChain.saleOrderLine.r|perm.supplyChain.saleOrderLineTax.r|perm.crm.event.r|perm.crm.eventCategory.r|perm.account.invoice.r|perm.account.invoiceLine.r|perm.account.invoiceLineTax.r"
+8;"role.consultant";"Accès au portail consultant";
+9;"role.supplier";"Accès au portail fournisseur";"perms.user|perm.base.partner.r|perm.supplyChain.purchaseOrder.r|perm.supplyChain.purchaseOrderLine.r|perm.supplyChain.purchaseOrderLineTax.r|perm.suppliermanagement.PurchaseOrderSupplierLine.rw|perm.supplyChain.stockMove.r|perm.supplyChain.stockMoveLine.r"
