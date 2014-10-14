@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <form name="purchase-order-supplier-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder"   >
+    	<panel>
+			<field name="isPurchaseParent"/>
+			<field name="parentPurchaseOrder" hideIf="isPurchaseParent"/>
+			<button name="generateSuppliersPurchaseOrder" title="Generate suppliers purchase orders" onClick="save,action-purchase-order-method-generate-suppliers-purchase-order,save"/>
+			<button name="showSuppliersPurchaseOrder" title="Show suppliers purchase orders" onClick="action-purchase-order-view-show-suppliers-purchase-order"/>
+			<button name="generatePurchaseOrderSupplierLine" title="Generate all suppliers requests" onClick="save,action-purchase-order-method-generate-purchase-order-supplier-line,save"/>
+		</panel>
+	</form>
+    
+    <action-method name="action-purchase-order-method-generate-suppliers-purchase-order">
+    	<call class="com.axelor.apps.suppliermanagement.web.PurchaseOrderController" method="generateSuppliersPurchaseOrder"/>
+    </action-method>
+    
+    <action-method name="action-purchase-order-method-generate-purchase-order-supplier-line">
+    	<call class="com.axelor.apps.suppliermanagement.web.PurchaseOrderController" method="generateSuppliersRequests"/>
+    </action-method>
+    
+    <action-view name="action-purchase-order-view-show-suppliers-purchase-order" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Suppliers purchase">
+    	<view type="grid" name="purchase-order-grid"/>
+		<view type="form" name="purchase-order-form"/>
+		<domain>self.parentPurchaseOrder.id = :_parentPurchaseOrderId</domain>
+		<context name="_parentPurchaseOrderId" expr="eval: __this__.id"/>
+    </action-view>
+    
+    
+	
+	
+</object-views>
