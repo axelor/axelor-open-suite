@@ -1,0 +1,382 @@
+"key","message","comment","context"
+"Accordance","","","resources/domains/StockMoveLine.xml:22"
+"Action(s)","","","resources/views/Location.xml:42
+resources/views/Inventory.xml:43
+resources/views/CreateInventoryWizard.xml:19
+resources/views/StockMove.xml:95"
+"Address","","","resources/domains/Location.xml:19"
+"Alert","","","resources/views/Selects.xml:46"
+"Arrivals History","","","resources/views/StockMove.xml:288"
+"Basic","","","resources/views/CreateInventoryWizard.xml:8
+resources/views/StockConfig.xml:13"
+"Cancel","","","resources/views/StockMove.xml:98
+resources/views/Inventory.xml:46"
+"Canceled","","","resources/views/Selects.xml:31
+resources/views/Selects.xml:24"
+"Cancelled Arrivals","","","resources/views/StockMove.xml:291"
+"Code","","","resources/domains/StockConfig.xml:11"
+"Company","","","resources/domains/StockConfig.xml:13
+resources/domains/StockMove.xml:26
+resources/domains/Location.xml:13"
+"Compliant","","","resources/views/Selects.xml:52"
+"Configuration","","","resources/views/menu.xml:138
+resources/views/StockMove.xml:89"
+"Country","","","resources/views/Charts.xml:72
+resources/views/Charts.xml:113
+resources/views/Charts.xml:35"
+"Create inventory","","","resources/views/CreateInventoryWizard.xml:7
+resources/views/Location.xml:59
+resources/views/Location.xml:21"
+"Current","","","resources/views/Selects.xml:41"
+"Current Qty","","","resources/domains/InventoryLine.xml:12
+resources/domains/LocationLine.xml:13"
+"Customer Deliveries","","","resources/views/menu.xml:13
+resources/views/menu.xml:10"
+"Customer average delivery delay","","","resources/views/Charts.xml:154
+resources/views/portal.xml:31"
+"Customer deliveries","","","resources/views/menu.xml:207
+resources/views/menu.xml:204"
+"Customer deliveries by country","","","resources/views/portal.xml:7
+resources/views/Charts.xml:6"
+"Customer deliveries filters","","","resources/views/StockMove.xml:266"
+"Customer deliveries statistics","","","resources/views/Charts.xml:118
+resources/views/portal.xml:25"
+"Customer virtual location","","","resources/domains/StockConfig.xml:15"
+"Dashboard","","","resources/views/portal.xml:52
+resources/views/portal.xml:39
+resources/views/portal.xml:64"
+"Date","","","resources/domains/Inventory.xml:13
+resources/views/Charts.xml:462
+resources/views/Charts.xml:305"
+"Default location","","","resources/domains/Location.xml:16"
+"Delay","","","resources/views/Charts.xml:182"
+"Deliveries Cancelled","","","resources/views/StockMove.xml:276"
+"Deliveries History","","","resources/views/StockMove.xml:273"
+"Deliveries to prepare","","","resources/views/StockMove.xml:267"
+"Description","","","resources/domains/InventoryLine.xml:14
+resources/views/Inventory.xml:30
+resources/views/CreateInventoryWizard.xml:11
+resources/domains/Inventory.xml:14"
+"Details Location lines","","","resources/domains/Location.xml:18"
+"Draft","","","resources/views/Selects.xml:21
+resources/views/Inventory.xml:47
+resources/views/Selects.xml:28
+resources/views/StockMove.xml:99"
+"Estimated Date","","","resources/views/Charts.xml:389
+resources/views/Charts.xml:245"
+"Estimated date","","","resources/domains/StockMove.xml:17"
+"Excl. out of stock products ?","","","resources/domains/Inventory.xml:21"
+"Exclude out of stock products ?","","","resources/views/CreateInventoryWizard.xml:16"
+"Export","","","resources/views/Inventory.xml:22"
+"Expéditions clients","","","resources/views/menu.xml:93
+resources/views/menu.xml:96"
+"External","","","resources/views/Selects.xml:11"
+"File Format","","","resources/domains/Inventory.xml:16"
+"File Path","","","resources/domains/Inventory.xml:17"
+"Fill inventory","","","resources/views/Inventory.xml:40"
+"Fill inventory with","","","resources/views/Inventory.xml:33
+resources/views/CreateInventoryWizard.xml:13"
+"Forecasted Stock","","","resources/views/Charts.xml:309"
+"Forecasts","","","resources/views/menu.xml:50"
+"From","","","resources/views/Charts.xml:403
+resources/views/Charts.xml:251"
+"From address","","","resources/domains/StockMove.xml:23"
+"From location","","","resources/domains/StockMove.xml:14"
+"Future","","","resources/views/Selects.xml:42"
+"Future Qty","","","resources/domains/LocationLine.xml:14"
+"Generate inc. moves for non storable products ?","","","resources/domains/StockConfig.xml:22"
+"Generate inc. moves for storable products ?","","","resources/domains/StockConfig.xml:21"
+"Generate invoice","","","resources/views/StockMove.xml:100"
+"Generate out. moves for non storable products ?","","","resources/domains/StockConfig.xml:20"
+"Generate out. moves for storable products ?","","","resources/domains/StockConfig.xml:19"
+"Generate reversion","","","resources/views/StockMove.xml:101"
+"Historical Period","","","resources/views/Charts.xml:80
+resources/views/Charts.xml:42
+resources/views/Charts.xml:9
+resources/views/Charts.xml:121
+resources/views/Charts.xml:157"
+"Import","","","resources/views/Inventory.xml:26
+resources/domains/Location.xml:10
+resources/views/Inventory.xml:28
+resources/domains/StockMove.xml:10
+resources/domains/StockConfig.xml:9
+resources/domains/StockMoveLine.xml:12"
+"Incl. obsolete products ?","","","resources/domains/Inventory.xml:22"
+"Include obsolete products ?","","","resources/views/CreateInventoryWizard.xml:17"
+"Incoming move","","","resources/views/Selects.xml:37"
+"Internal","","","resources/views/Selects.xml:10"
+"Internal Stock Move filters","","","resources/views/StockMove.xml:296"
+"Internal Stock Moves","","","resources/views/menu.xml:39
+resources/views/menu.xml:36"
+"Internal move","","","resources/views/Selects.xml:35"
+"Internal moves","","","resources/views/menu.xml:218
+resources/views/menu.xml:215"
+"Inventories","","","resources/views/menu.xml:119
+resources/views/menu.xml:122"
+"Inventories History","","","resources/views/Inventory.xml:137"
+"Inventories filters","","","resources/views/Inventory.xml:133"
+"Inventory","","","resources/domains/InventoryLine.xml:10
+resources/views/Inventory.xml:6
+resources/views/Inventory.xml:15"
+"Inventory N°","","","resources/domains/Inventory.xml:10"
+"Inventory date","","","resources/views/CreateInventoryWizard.xml:10"
+"Inventory generated","","","resources/views/CreateInventoryWizard.xml:46"
+"Inventory line","","","resources/views/InventoryLine.xml:15"
+"Inventory lines","","","resources/views/InventoryLine.xml:6
+resources/domains/Inventory.xml:15"
+"Inventory virtual location","","","resources/domains/StockConfig.xml:17"
+"Inventory.code","Code","","java/com/axelor/apps/stock/report/ITranslation.java:42"
+"Inventory.date","Date","","java/com/axelor/apps/stock/report/ITranslation.java:40"
+"Inventory.description","Description","","java/com/axelor/apps/stock/report/ITranslation.java:45"
+"Inventory.location","Location","","java/com/axelor/apps/stock/report/ITranslation.java:41"
+"Inventory.name","Name","","java/com/axelor/apps/stock/report/ITranslation.java:39"
+"Inventory.realQty","Quantity","","java/com/axelor/apps/stock/report/ITranslation.java:44"
+"Inventory.title","INVENTORY","","java/com/axelor/apps/stock/report/ITranslation.java:38"
+"Inventory.unit","Unit","","java/com/axelor/apps/stock/report/ITranslation.java:43"
+"Last Future Stock Move","","","resources/domains/LocationLine.xml:15"
+"Late Deliveries","","","resources/views/StockMove.xml:270"
+"Late customer deliveries","","","resources/views/portal.xml:79"
+"Late supplier arrivals","","","resources/views/portal.xml:93"
+"Location","","","resources/domains/MinStockRules.xml:12
+resources/domains/LocationLine.xml:10
+resources/domains/Inventory.xml:11
+resources/views/CreateInventoryWizard.xml:9
+resources/views/Charts.xml:199"
+"Location Details","","","resources/domains/LocationLine.xml:18"
+"Location Lines","","","resources/views/Location.xml:34"
+"Location content","","","resources/views/Location.xml:64"
+"Location lines","","","resources/domains/Location.xml:17"
+"Location value","","","resources/views/Charts.xml:187
+resources/views/portal.xml:132"
+"Manage BackOrder","","","resources/domains/StockMove.xml:32"
+"Min. Qty","","","resources/domains/MinStockRules.xml:14"
+"Minimum stock rule","","","resources/views/MinStockRules.xml:16"
+"Minimum stock rules","","","resources/views/menu.xml:150
+resources/views/MinStockRules.xml:6
+resources/views/menu.xml:153"
+"Month","","","resources/views/Charts.xml:336"
+"Move date","","","resources/domains/StockMove.xml:18"
+"Moves","","","resources/views/Charts.xml:150
+resources/views/Charts.xml:36
+resources/views/Charts.xml:183"
+"Moves Cancelled","","","resources/views/StockMove.xml:303"
+"Moves History","","","resources/views/StockMove.xml:300"
+"Moves To Prepare","","","resources/views/StockMove.xml:297"
+"Name","","","resources/domains/Location.xml:11
+resources/domains/StockMove.xml:13
+resources/domains/StockConfig.xml:10
+resources/domains/MinStockRules.xml:10"
+"Non compliant","","","resources/views/Selects.xml:53"
+"Outgoing move","","","resources/views/Selects.xml:36"
+"PDF","","","resources/views/Selects.xml:16"
+"Parent","","","resources/domains/Location.xml:12"
+"Partner","","","resources/domains/Location.xml:14
+resources/domains/StockMove.xml:27"
+"Periodical processing","","","resources/views/menu.xml:116"
+"Plan","","","resources/views/StockMove.xml:96
+resources/views/Inventory.xml:44"
+"Planned","","","resources/views/Selects.xml:29
+resources/views/Selects.xml:22"
+"Planned Inventories","","","resources/views/Inventory.xml:134"
+"Print","","","resources/views/StockMove.xml:36
+resources/views/Location.xml:8
+resources/views/Inventory.xml:24
+resources/views/StockMove.xml:102
+resources/views/StockMove.xml:18
+resources/views/Location.xml:22
+resources/views/StockMove.xml:54"
+"Print StockMove(s)","","","resources/views/StockMove.xml:8
+resources/views/StockMove.xml:42
+resources/views/StockMove.xml:24"
+"Product","","","resources/domains/InventoryLine.xml:11
+resources/domains/LocationLine.xml:12
+resources/domains/MinStockRules.xml:13
+resources/domains/StockMoveLine.xml:14"
+"Product category","","","resources/domains/Inventory.xml:20
+resources/views/CreateInventoryWizard.xml:15"
+"Product deliveries in qty by country","","","resources/views/portal.xml:13
+resources/views/Charts.xml:39"
+"Product deliveries in qty by country by family","","","resources/views/Charts.xml:77
+resources/views/portal.xml:19"
+"Product family","","","resources/views/CreateInventoryWizard.xml:14
+resources/domains/Inventory.xml:19"
+"Product model","","","resources/domains/StockMoveLine.xml:28"
+"Product soon out of stock by location","","","resources/views/portal.xml:100"
+"Production Stock Move in Planned","","","resources/views/portal.xml:107"
+"Production Stock Move out Planned","","","resources/views/portal.xml:113"
+"Production forecasts","","","resources/views/menu.xml:66
+resources/views/menu.xml:63"
+"Production needs","","","resources/views/menu.xml:56
+resources/views/menu.xml:53"
+"Production order","","","resources/views/Selects.xml:48"
+"Production stock move in realized","","","resources/views/portal.xml:119"
+"Production stock move out realized","","","resources/views/portal.xml:125"
+"Purchase order","","","resources/views/Selects.xml:47"
+"Qty","","","resources/domains/StockMoveLine.xml:15"
+"Quantity","","","resources/views/Charts.xml:73
+resources/views/Charts.xml:306
+resources/views/Charts.xml:114
+resources/views/Charts.xml:390
+resources/views/Charts.xml:246
+resources/views/Charts.xml:337
+resources/views/Charts.xml:463"
+"Real Qty","","","resources/domains/InventoryLine.xml:13"
+"RealQty","","","resources/domains/StockMoveLine.xml:16"
+"Realize","","","resources/views/StockMove.xml:97
+resources/views/Inventory.xml:45"
+"Realized","","","resources/views/Selects.xml:23
+resources/views/Selects.xml:30"
+"Receptions fournisseurs","","","resources/views/menu.xml:73
+resources/views/menu.xml:76"
+"Ref.","","","resources/domains/StockMove.xml:12"
+"Refill Qty","","","resources/domains/MinStockRules.xml:15"
+"Refill type","","","resources/domains/MinStockRules.xml:18"
+"Retours clients","","","resources/views/menu.xml:106
+resources/views/menu.xml:103"
+"Retours fournisseurs","","","resources/views/menu.xml:86
+resources/views/menu.xml:83"
+"Return surplus","","","resources/domains/StockMove.xml:31"
+"Ship/Receive all products","","","resources/views/StockMove.xml:86"
+"Shipped date","","","resources/domains/StockMoveLine.xml:26"
+"Shipped qty","","","resources/domains/StockMoveLine.xml:25"
+"Special split","","","resources/views/StockMove.xml:115
+resources/views/StockMove.xml:107
+resources/views/StockMove.xml:85"
+"Split","","","resources/views/StockMove.xml:110"
+"Split by unit","","","resources/views/StockMove.xml:84"
+"Split in Qty of","","","resources/views/StockMove.xml:109"
+"Split/Ship/Receive","","","resources/views/StockMove.xml:83"
+"Status","","","resources/domains/StockMove.xml:20
+resources/domains/Inventory.xml:12
+resources/views/Charts.xml:149"
+"Stock","","","resources/views/menu.xml:193
+resources/views/portal.xml:138
+resources/views/portal.xml:144
+resources/views/menu.xml:248
+resources/views/Charts.xml:341
+resources/views/Charts.xml:203"
+"Stock Dashboard","","","resources/views/menu.xml:241"
+"Stock Dashboard 1","","","resources/views/menu.xml:254"
+"Stock Dashboard 2","","","resources/views/menu.xml:263"
+"Stock Db","","","resources/views/menu.xml:238"
+"Stock Db 1","","","resources/views/menu.xml:251"
+"Stock Db 2","","","resources/views/menu.xml:260"
+"Stock Details","","","resources/views/Location.xml:35"
+"Stock History","","","resources/views/Charts.xml:401
+resources/views/Charts.xml:249
+resources/views/portal.xml:148"
+"Stock Location","","","resources/views/Location.xml:19"
+"Stock Location content","","","resources/views/LocationLine.xml:12
+resources/views/LocationLine.xml:50
+resources/views/LocationLine.xml:27"
+"Stock Locations","","","resources/views/menu.xml:141
+resources/views/Location.xml:6
+resources/views/menu.xml:144"
+"Stock Locations content","","","resources/views/LocationLine.xml:20
+resources/views/LocationLine.xml:6
+resources/views/LocationLine.xml:36
+resources/views/LocationLine.xml:43"
+"Stock Move","","","resources/views/StockMoveLine.xml:45"
+"Stock Moves Lines","","","resources/views/menu.xml:132
+resources/views/menu.xml:129"
+"Stock Moves consumption historical","","","resources/views/portal.xml:171"
+"Stock Moves consumption planned","","","resources/views/portal.xml:163"
+"Stock Moves historical","","","resources/views/portal.xml:179"
+"Stock Moves planned","","","resources/views/portal.xml:155"
+"Stock Value","","","resources/views/Location.xml:36"
+"Stock batches","","","resources/views/menu.xml:171
+resources/views/menu.xml:174"
+"Stock config","","","resources/domains/Company.xml:10"
+"Stock configuration","","","resources/views/StockConfig.xml:12"
+"Stock configurations","","","resources/views/menu.xml:184
+resources/views/StockConfig.xml:6
+resources/views/menu.xml:181"
+"Stock management","","","resources/views/menu.xml:7"
+"Stock move","","","resources/domains/StockMoveLine.xml:10
+resources/views/StockMove.xml:59"
+"Stock move content","","","resources/domains/StockMove.xml:29"
+"Stock move informations","","","resources/views/StockMove.xml:71
+resources/views/StockConfig.xml:23"
+"Stock move line","","","resources/views/StockMoveLine.xml:18
+resources/views/StockMoveLine.xml:74
+resources/views/StockMoveLine.xml:44"
+"Stock move lines","","","resources/views/StockMoveLine.xml:31
+resources/views/StockMoveLine.xml:6
+resources/views/StockMoveLine.xml:65"
+"Stock move reference","","","resources/views/StockMove.xml:65"
+"Stock moves","","","resources/views/StockMove.xml:40
+resources/views/StockMove.xml:22
+resources/views/menu.xml:195
+resources/views/StockMove.xml:6
+resources/views/menu.xml:198"
+"StockLocation.accountingValue","Accounting Value","","java/com/axelor/apps/stock/report/ITranslation.java:33"
+"StockLocation.code","Code","","java/com/axelor/apps/stock/report/ITranslation.java:30"
+"StockLocation.date","Date","","java/com/axelor/apps/stock/report/ITranslation.java:23"
+"StockLocation.detailsByLocation","Details by location","","java/com/axelor/apps/stock/report/ITranslation.java:36"
+"StockLocation.location","Location","","java/com/axelor/apps/stock/report/ITranslation.java:25"
+"StockLocation.locationTotalContent","Location Total Content","","java/com/axelor/apps/stock/report/ITranslation.java:28"
+"StockLocation.locations","Locations","","java/com/axelor/apps/stock/report/ITranslation.java:24"
+"StockLocation.productName","Product Name","","java/com/axelor/apps/stock/report/ITranslation.java:29"
+"StockLocation.qtyUnit","Qty / Unit","","java/com/axelor/apps/stock/report/ITranslation.java:31"
+"StockLocation.saleValue","Sale Value","","java/com/axelor/apps/stock/report/ITranslation.java:32"
+"StockLocation.title","LOCATION FINANCIAL DATA","","java/com/axelor/apps/stock/report/ITranslation.java:22"
+"StockLocation.total","Total","","java/com/axelor/apps/stock/report/ITranslation.java:35"
+"StockLocation.totalAccountingValue","Total Accounting Value","","java/com/axelor/apps/stock/report/ITranslation.java:27"
+"StockLocation.totalSaleValue","Total Sale Value","","java/com/axelor/apps/stock/report/ITranslation.java:26"
+"StockLocation.unitValue","Unit Value","","java/com/axelor/apps/stock/report/ITranslation.java:34"
+"StockMove.customer","Customer","","java/com/axelor/apps/stock/report/ITranslation.java:54"
+"StockMove.date","Date","","java/com/axelor/apps/stock/report/ITranslation.java:50"
+"StockMove.deliveryAddress","Delivery Address","","java/com/axelor/apps/stock/report/ITranslation.java:58"
+"StockMove.deliveryDetails","Delivery Detail","","java/com/axelor/apps/stock/report/ITranslation.java:59"
+"StockMove.deliveryOrder","Delivery Order","","java/com/axelor/apps/stock/report/ITranslation.java:48"
+"StockMove.internalMove","Internal Move","","java/com/axelor/apps/stock/report/ITranslation.java:47"
+"StockMove.lotNoRef","Lot N°/Ref","","java/com/axelor/apps/stock/report/ITranslation.java:62"
+"StockMove.movePreparedBy","Move prepared by","","java/com/axelor/apps/stock/report/ITranslation.java:55"
+"StockMove.product","Product","","java/com/axelor/apps/stock/report/ITranslation.java:63"
+"StockMove.purchaseOrder","Order","","java/com/axelor/apps/stock/report/ITranslation.java:52"
+"StockMove.qtyUnit","Qty / Unit","","java/com/axelor/apps/stock/report/ITranslation.java:61"
+"StockMove.receivedBy","Received by","","java/com/axelor/apps/stock/report/ITranslation.java:57"
+"StockMove.receptionOrder","Reception Order","","java/com/axelor/apps/stock/report/ITranslation.java:49"
+"StockMove.reference","Reference","","java/com/axelor/apps/stock/report/ITranslation.java:51"
+"StockMove.stockPreparedBy","Order prepared by","","java/com/axelor/apps/stock/report/ITranslation.java:56"
+"StockMove.variant","Variant","","java/com/axelor/apps/stock/report/ITranslation.java:60"
+"StockMove.weight","Weight","","java/com/axelor/apps/stock/report/ITranslation.java:53"
+"Supplier Arrivals","","","resources/views/menu.xml:22
+resources/views/menu.xml:25"
+"Supplier arrivals filters","","","resources/views/StockMove.xml:281"
+"Supplier deliveries","","","resources/views/menu.xml:229
+resources/views/menu.xml:226"
+"Supplier virtual location","","","resources/domains/StockConfig.xml:16"
+"Team","","","resources/domains/MinStockRules.xml:21"
+"The move doesn't contain any product, do you wish to continue ?","","","resources/views/StockMove.xml:263"
+"To","","","resources/views/Charts.xml:252
+resources/views/Charts.xml:404"
+"To address","","","resources/domains/StockMove.xml:24"
+"To location","","","resources/domains/StockMove.xml:15"
+"Today","","","resources/views/Charts.xml:343
+resources/views/Charts.xml:205"
+"Today Arrivals","","","resources/views/StockMove.xml:282"
+"Tracking Nbr","","","resources/domains/LocationLine.xml:17"
+"Tracking Nbr.","","","resources/domains/StockMoveLine.xml:20"
+"Tracking Numbers","","","resources/views/menu.xml:162
+resources/views/menu.xml:159"
+"TrackingNumber","","","resources/domains/InventoryLine.xml:16"
+"Type","","","resources/domains/MinStockRules.xml:16
+resources/domains/Location.xml:15
+resources/views/StockMove.xml:61"
+"Type Status","","","resources/domains/StockMove.xml:21"
+"Unit","","","resources/domains/StockMoveLine.xml:17"
+"Unit price","","","resources/domains/StockMoveLine.xml:18"
+"Upcoming arrivals","","","resources/views/StockMove.xml:285"
+"Upcoming deliveries","","","resources/views/portal.xml:73"
+"Upcoming supplier arrivals","","","resources/views/portal.xml:86"
+"User","","","resources/domains/MinStockRules.xml:20"
+"Validate","","","resources/views/CreateInventoryWizard.xml:20"
+"Value","","","resources/views/Charts.xml:200"
+"View Direction","","","resources/views/StockMove.xml:103
+resources/views/StockMove.xml:55
+resources/views/StockMove.xml:37"
+"View location content","","","resources/views/Location.xml:43"
+"Virtual","","","resources/views/Selects.xml:12"
+"Virtual locations informations","","","resources/views/StockConfig.xml:18"
+"XLS","","","resources/views/Selects.xml:17"

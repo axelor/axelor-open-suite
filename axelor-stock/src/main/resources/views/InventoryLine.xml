@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.stock.db.InventoryLine" editable="true">
+        <field name="product" onChange="action-inventory-line-attrs-tracking-number"/>
+        <field name="currentQty"/>
+        <field name="realQty"/>
+        <field name="description"/>
+        <field name="trackingNumber"/>
+    </grid>
+    
+    <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.stock.db.InventoryLine"
+    	onLoad="action-inventory-line-attrs-tracking-number">
+    	<panel>
+	        <field name="product" onChange="action-inventory-line-attrs-tracking-number"
+	        	domain="self.applicationTypeSelect = 1 and self.productTypeSelect = 'storable'" />
+	        <field name="currentQty"/>
+	        <field name="realQty"/>
+	        <field name="description"/>
+		    <field name="trackingNumber" readonly="true"/>
+	    </panel>
+    </form>
+    
+    <action-attrs name="action-inventory-line-attrs-tracking-number">
+    	<attribute name="required" for="trackingNumber" expr="eval: product?.trackingNumberConfiguration?.isPurchaseTrackingManaged || product?.trackingNumberConfiguration?.isProductionTrackingManaged || product?.trackingNumberConfiguration?.isSaleTrackingManaged"/>
+    	<attribute name="readonly" for="trackingNumber" expr="eval: !product?.trackingNumberConfiguration?.isPurchaseTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isProductionTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isSaleTrackingManaged"/>
+    </action-attrs>
+    
+    
+</object-views>

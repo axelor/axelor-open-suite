@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="MinStockRules" lang="java">
+  
+  	<string name="name" title="Name"/>
+	
+	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location" required="true"/>  	
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+  	<decimal name="minQty" title="Min. Qty" required="true"/>
+  	<decimal name="reOrderQty" title="Refill Qty" required="true"/>
+  	<integer name="typeSelect" title="Type" selection="stock.min.stock.rules.type.select" required="true"/>
+  	
+  	<integer name="orderAlertSelect" title="Refill type" selection="stock.min.stock.rules.order.alert.select" required="true"/>
+  	
+  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
+  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+  	
+  </entity>
+</domain-models>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+
+	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+	
+	<selection name="stock.location.type.select">
+		<option value="1">Internal</option>
+		<option value="2">External</option>
+		<option value="3">Virtual</option>
+	</selection>
+	
+	<selection name="stock.inventory.format.select">
+		<option value="1">PDF</option>
+		<option value="2">XLS</option>
+	</selection>
+	
+	<selection name="stock.move.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Planned</option>
+		<option value="3">Realized</option>
+		<option value="4">Canceled</option>
+	</selection>
+	
+	<selection name="inventory.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Planned</option>
+		<option value="3">Realized</option>
+		<option value="4">Canceled</option>
+	</selection>
+	
+	<selection name="stock.move.type.select">
+		<option value="1">Internal move</option>
+		<option value="2">Outgoing move</option>
+		<option value="3">Incoming move</option>
+	</selection>
+	
+	<selection name="stock.min.stock.rules.type.select">
+		<option value="1">Current</option>
+		<option value="2">Future</option>
+	</selection>
+	
+	<selection name="stock.min.stock.rules.order.alert.select">
+		<option value="1">Alert</option>
+		<option value="2">Purchase order</option>
+		<option value="3">Production order</option>
+	</selection>
+	
+	<selection name="stock.move.line.accordance.select">
+		<option value="1">Compliant</option>
+		<option value="2">Non compliant</option>
+	</selection>
+	
+</object-views>

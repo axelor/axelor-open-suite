@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="stock-move-line-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
+        <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
+        <field name="productModel"/>
+        <field name="qty" onChange="action-stock-move-line-record-qty"/>
+        <field name="realQty"/>
+        <field name="unit"/>
+        <field name="price"/>
+        <field name="trackingNumber"/>
+        <field name="accordanceSelect"/>
+    </grid>
+    
+    <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
+    	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number">
+        <panel>
+	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
+	        <field name="productModel"/>
+	        <field name="qty" onChange="action-stock-move-line-record-qty"/>
+	        <field name="realQty"/>
+	        <field name="unit"/>
+	        <field name="price"/>
+	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
+	        <field name="accordanceSelect"/>
+        </panel>
+    </form>
+    
+    <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+    	<field name="stockMove.stockMoveSeq"/>
+    	<field name="stockMove.realDate"/>
+        <field name="stockMove.fromLocation"/>
+        <field name="stockMove.toLocation"/>
+        <field name="product"/>
+        <field name="realQty"/>
+        <field name="unit"/>
+        <field name="trackingNumber"/>
+        <field name="stockMove.statusSelect"/>
+    </grid>
+    
+    <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
+    	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number" readonlyIf="stockMove.statusSelect == 3">
+        <panel title="Stock Move">
+	    	<field name="stockMove.stockMoveSeq"/>
+	    	<field name="stockMove"/>
+	    	<field name="stockMove.estimatedDate"/>
+	    	<field name="stockMove.realDate"/>
+	        <field name="stockMove.fromLocation"/>
+	        <field name="stockMove.toLocation"/>
+        </panel>
+        <panel>
+	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
+	        <field name="productModel"/>
+	        <field name="unit"/>
+	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
+	        <field name="price"/>
+	        <field name="qty" onChange="action-stock-move-line-record-qty"/>
+	        <field name="realQty"/>
+	        <field name="stockMove.statusSelect" hidden="true"/>
+        </panel>
+    </form>
+
+    <grid name="stock-move-line-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+        <field name="product"/>
+        <field name="productModel"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="trackingNumber"/>
+    </grid>
+    
+    <form name="stock-move-line-production-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
+    	onNew="action-group-stock-stockmoveline-production-onnew">
+		<panel>
+	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-stock-move-line-set-product-price-unit" onSelect="action-stock-move-line-product-domain"/>
+	        <field name="productModel"/>
+	        <field name="qty" onChange="action-stock-move-line-record-qty"/>
+	        <field name="unit"/>
+	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
+	        <field name="stockMove" hidden="true"/>
+        </panel>
+    </form>
+    
+    <action-group name="action-group-stock-stockmoveline-product-onchange">
+    	<action name="action-inventory-line-attrs-tracking-number"/>
+    	<action name="action-stock-move-line-set-product-price-unit"/>
+    </action-group>
+    
+    <action-group name="action-group-stock-stockmoveline-production-onnew">
+    	<action name="action-stock-move-line-record-new"/>
+    	<action name="stock-move-line-production-record-default"/>
+    </action-group>
+    
+    <action-record name="stock-move-line-production-record-default" model="com.axelor.apps.stock.db.StockMoveLine">
+    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent._model == 'com.axelor.apps.production.db.OperationOrder'"/>
+    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'consumedProductPage'"/>
+    	<field name="stockMove" expr="eval: _parent.outStockMove" if="_parent._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'producedProductPage'"/>
+    </action-record>
+    
+    <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.stock.db.StockMoveLine">
+	    <field name="qty" expr="1"/>
+	    <field name="realQty" expr="1"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-line-record-qty" model="com.axelor.apps.stock.db.StockMoveLine">
+		<field name="realQty" expr="eval: qty" if="_parent?.statusSelect == 1"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-line-set-product-price-unit" model="com.axelor.apps.stock.db.StockMoveLine">
+	    <field name="unit" expr="eval: product.unit"/>
+	    <field name="price" expr="eval: product.costPrice"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-line-record-product" model="com.axelor.apps.stock.db.StockMoveLine">
+	    <field name="product" expr="eval: trackingNumber.product" if="trackingNumber"/>
+	</action-record>
+	
+	<action-attrs name="action-stock-move-line-product-domain">
+		<attribute name="domain" for="product" expr="eval: self.parentProduct.id = :productModel" if="productModel"/>
+	</action-attrs>
+	
+	
+</object-views>
