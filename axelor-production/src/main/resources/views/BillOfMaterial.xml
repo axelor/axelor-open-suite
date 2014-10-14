@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="name"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="prodProcess"/>
+    </grid>
+
+	<form name="bill-of-material-form" title="Bill of material"
+		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
+		onNew="action-bill-of-material-default-record">
+	  <panel>
+	    <field name="name"/>
+	    <field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"/>
+	    <field name="company" widget="SuggestBox" form-view="company-form"/>
+	    <field name="qty"/>
+	    <field name="unit"/>
+	    <field name="prodProcess"/>
+	  </panel>
+	  
+	  <panel-tabs>
+	    <panel-related field="billOfMaterialList" title="Bill of material" colSpan="12" domain="self.isRawMaterial = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+	    <panel-related field="prodRemainsList" title="Remains" colSpan="12"/>	
+	        
+	    <panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
+	    
+	    <panel title="Cost">
+	      <button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
+	      <field name="costPrice" readonly="true"/>
+	      <button name="updateProductCostPrice" title="update product cost price"   onClick="save,action-bill-of-material-method-update-product-cost-price"/>
+	    </panel>
+	  </panel-tabs>
+	</form>
+    
+    
+    <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
+        <field name="priority" readonlyIf="isRawMaterial"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="isRawMaterial"/>
+        <field name="hasNoManageStock"/>
+        <field name="prodProcess" readonlyIf="isRawMaterial"/>
+    </grid>
+
+
+	<form name="bill-of-material-line-form" title="Bill of material"
+		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
+		onNew="action-bill-of-material-line-default-record">
+	  <panel>
+	    <field name="priority" hideIf="isRawMaterial"/>
+	    <field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"/>
+	    <field name="qty"/>
+	    <field name="unit"/>
+	    <field name="isRawMaterial"/>
+	    <field name="hasNoManageStock"/>
+	    <field name="prodProcess" hideIf="isRawMaterial"/>
+	  </panel>
+	  <panel-tabs hideIf="isRawMaterial">
+	    <panel-related title="Bill of material" field="billOfMaterialList" domain="self.isRawMaterial = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+	    <panel-related title="Remains" field="prodRemainsList"/>
+	  </panel-tabs>
+	</form>
+    
+    <action-view name="action-bill-of-material-view-tree" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<view type="tree" name="bill-of-material-tree"/>
+    	<view type="form" name="bill-of-material-line-form"/>
+    	<domain>self.parentBillOfMaterial.id = :id</domain>
+     	<context name="id" expr="eval: id"/>
+    </action-view>
+    
+    <tree name="bill-of-material-tree" title="Bills of material">
+    	
+    	<column name="product" type="reference"/>
+    	<column name="qty" type="decimal"/>
+    	<column name="unit" type="reference"/>
+    	<column name="prodProcess" type="reference"/>
+		
+		<node model="com.axelor.apps.production.db.BillOfMaterial" domain="self.parentBillOfMaterial.id = :id" onClick="action-bill-of-material-line-view">
+			<field name="product" as="product"/>
+			<field name="qty" as="qty"/>
+			<field name="unit" as="unit"/>
+			<field name="prodProcess" as="prodProcess"/>
+		</node>    	
+		
+		<node model="com.axelor.apps.production.db.BillOfMaterial" parent="parentBillOfMaterial" draggable="true" onClick="action-bill-of-material-line-view">
+			<field name="product" as="product"/>
+			<field name="qty" as="qty"/>
+			<field name="unit" as="unit"/>
+			<field name="prodProcess" as="prodProcess"/>
+		</node>
+    
+	</tree>
+	
+	
+	<action-view name="action-bill-of-material-line-view" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<view type="form" name="bill-of-material-line-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+    	<context name="_showRecord" expr="eval: id"/>
+    </action-view>
+    
+    <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="qty" expr="1"/>
+    	<field name="company" expr="eval:__user__.activeCompany"/>
+    </action-record>
+    
+     <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="qty" expr="1"/>
+    	<field name="priority" expr="10"/>
+    </action-record>
+    
+    
+    <action-record name="action-bill-of-material-record-product" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="unit" expr="eval: product?.unit"/>
+    </action-record>
+    
+     <action-record name="action-bill-of-material-record-name" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="name" expr="eval: product.name + ' - ' + qty + unit.code + ' - ' + id" if="name == null"/>
+    </action-record>
+    
+    <action-method name="action-bill-of-material-method-compute-cost-price">
+    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="computeCostPrice"/>
+    </action-method>
+    
+    <action-method name="action-bill-of-material-method-update-product-cost-price">
+    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="updateProductCostPrice"/>
+    </action-method>
+    
+    
+</object-views>
+
+

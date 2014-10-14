@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="BillOfMaterial" lang="java">
+  
+  	<integer name="importId"/>
+  
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+  	<decimal name="qty" title="Qty"/>
+  	<integer name="priority" title="Priority"/>
+    <boolean name="isRawMaterial" title="Raw material"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
+  	<one-to-many name="billOfMaterialList" ref="com.axelor.apps.production.db.BillOfMaterial" mappedBy="parentBillOfMaterial" title="BOMs"/>
+  	<many-to-one name="parentBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Parent BOM"/>
+  	<one-to-many name="prodRemainsList" ref="com.axelor.apps.production.db.ProdRemains" title="Production remains"/>
+  	<string name="name" title="Label"/>
+  	<decimal name="costPrice" title="Cost price" precision="20" scale="5"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <boolean name="hasNoManageStock" title="Not manage stock"/>
+    
+  </entity>
+</domain-models>

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
+    	<toolbar>
+    		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+    	</toolbar>
+        <field name="manufOrderSeq"/>
+        <field name="company"/>
+        <field name="product"/>
+        <field name="billOfMaterial"/>
+        <field name="prodProcess"/>
+        <field name="plannedStartDateT"/>
+        <field name="plannedEndDateT"/>
+        <field name="realStartDateT"/>
+        <field name="realEndDateT"/>
+        <field name="statusSelect"/>
+        <button name="plan" icon="fa-calendar" help="Plan" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
+        <button name="start" icon="fa-play" help="Start" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+   		<button name="pause" icon="fa-pause" help="Pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
+   		<button name="finish" icon="fa-power-off" help="Finish" onClick="action-manuf-order-method-finish" readonlyIf="statusSelect != 4"/>
+   		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
+   		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+    </grid>
+    
+     <grid name="manuf-order-business-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder">
+    	<toolbar>
+    		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+    	</toolbar>
+    	<field name="productionOrder"/>
+        <field name="manufOrderSeq"/>
+        <field name="company"/>
+        <field name="product"/>
+        <field name="billOfMaterial"/>
+        <field name="prodProcess"/>
+        <field name="plannedStartDateT"/>
+        <field name="plannedEndDateT"/>
+        <field name="realStartDateT"/>
+        <field name="realEndDateT"/>
+        <field name="statusSelect"/>
+        <button name="plan" icon="fa-calendar" help="Plan" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
+        <button name="start" icon="fa-play" help="Start" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+   		<button name="pause" icon="fa-pause" help="Pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
+   		<button name="finish" icon="fa-power-off" help="Finish" onClick="action-manuf-order-method-finish" readonlyIf="statusSelect != 4"/>
+   		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
+   		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+    </grid>
+    
+	<form onLoad="action-manuf-order-attrs-is-cons-pro-on-operation" onNew="action-manuf-order-default-record,action-manuf-order-attrs-is-cons-pro-on-operation" name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder">
+<!--     TODO avec propagation -->
+	  <toolbar>
+	    <button name="plan" title="Plan" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-method-plan,save"/>
+	    <button name="start" title="Start" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start,save"/>
+	    <button name="pause" title="Pause" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause,save"/>
+	    <button name="resume" title="Resume" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume,save"/>
+	    <button name="finish" title="Finish" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-finish,save"/>
+	    <button name="cancel" title="Cancel" showIf="statusSelect != 2" onClick="save,action-manuf-order-method-cancel,save"/>
+	    <button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+	  </toolbar>
+	  <panel>
+	    <field name="manufOrderSeq" readonlyIf="statusSelect &gt; 1"/>
+	    <field name="priority" readonlyIf="statusSelect == 6"/>
+	    <field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
+	    <field name="company" readonlyIf="statusSelect &gt; 1"/>
+	    <field name="billOfMaterial" readonlyIf="statusSelect &gt; 1" domain="self.isRawMaterial = false"/>
+	    <field name="product"/>
+	    <field name="qty" readonlyIf="statusSelect &gt; 1"/>
+	    <field name="billOfMaterial.prodProcess"/>
+	    <field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>
+	    <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"/>
+	  </panel>  
+	  <panel-tabs colSpan="4">
+	    <panel-related field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" form-view="operation-order-form" grid-view="operation-order-grid"/>
+	    <panel title="Dates" readonlyIf="statusSelect == 6">
+	      <panel title="Planned dates">        
+	        <field name="plannedStartDateT"  />
+	        <field name="plannedEndDateT"  />
+	      </panel>
+	      <panel title="Real dates">
+	        <field name="realStartDateT"  />
+	        <field name="realEndDateT"  />
+	      </panel>
+	    </panel>
+	    <panel title="Stock moves">
+	      <panel title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
+	        <field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
+	        <field name="outStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
+	      </panel>
+	      <panel title="Production waste" colSpan="12">
+	        <button name="generateWasteStockMove" title="Generate waste stock move" onClick="Non implemented yet"/>
+	        <field name="wasteStockMove"/>
+	      </panel>
+	    </panel>
+	    <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-consumed">
+	      <panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
+	      <panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
+	      <panel-related field="diffConsumeProdProductList" colSpan="12"/>
+	    </panel>
+	    <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
+	      <!-- TODO: remove this comment if portlet works in panel
+	      <dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
+	      <dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
+	      <dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
+	      -->
+	    </panel>
+	    <panel title="Finished products">
+	      <panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
+	      <panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
+	      <panel-related field="wasteProdProductList" colSpan="12"/>
+	      <panel title="Description" colSpan="12">
+	        <field name="wasteProdDescription" showTitle="false" colSpan="12"/>
+	      </panel>
+	    </panel>
+	  </panel-tabs>
+	</form>
+    
+     
+    <action-record name="action-manuf-order-record-selected-page-consumed" model="com.axelor.apps.production.db.ManufOrder">
+    	<field name="selectedPage" expr="eval: 'consumed'"/>
+    </action-record>
+    
+    <action-record name="action-manuf-order-record-selected-page-produced" model="com.axelor.apps.production.db.ManufOrder">
+    	<field name="selectedPage" expr="eval: 'produced'"/>
+    </action-record>
+    
+    <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
+    	<field name="statusSelect" expr="eval: 1"/>
+    	<field name="plannedStartDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="startDate == null"/>
+    	<field name="company" expr="eval:__user__.activeCompany"/>
+    </action-record>
+    
+    <action-method name="action-manuf-order-method-is-to-invoice">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="propagateIsToInvoice"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-copy-to-consume">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="copyToConsume"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-copy-to-produce">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="copyToProduce"/>
+    </action-method>
+    
+    <action-group name="action-manuf-order-method-start-or-resume">
+    	<action name="action-manuf-order-method-start" if="statusSelect == 3"/>
+    	<action name="action-manuf-order-method-resume" if="statusSelect == 5"/>
+    </action-group>
+    
+    <action-method name="action-manuf-order-method-print">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="print"/>
+	</action-method>
+    
+    <action-method name="action-manuf-order-method-start">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="start"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-pause">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="pause"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-resume">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="resume"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-finish">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="finish"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-cancel">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="cancel"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-plan">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="plan"/>
+    </action-method>
+    
+     <action-attrs name="action-manuf-order-attrs-is-cons-pro-on-operation">
+    	<attribute name="hidden" for="consumedProductPage" expr="eval: isConsProOnOperation"/>
+    	<attribute name="hidden" for="inStockMove" expr="eval: isConsProOnOperation"/>
+    	<attribute name="hidden" for="consumedProductOperationPage" expr="eval: !isConsProOnOperation"/>
+    </action-attrs>
+    
+   	<action-view name="action-manuf-order-view-operation-order-to-consume-product" title="To consume products" model="com.axelor.apps.production.db.ProdProduct">
+  		<view type="grid" name="prod-product-grid"/>
+		<view type="form" name="prod-product-form"/>
+  		<domain>self.toConsumeOperationOrder.manufOrder.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-manuf-order-view-operation-order-diff-consume-product" title="Differences " model="com.axelor.apps.production.db.ProdProduct">
+  		<view type="grid" name="prod-product-grid"/>
+		<view type="form" name="prod-product-form"/>
+  		<domain>self.diffConsumeOperationOrder.manufOrder.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-manuf-order-view-operation-order-consumed-product" title="Consumed products" model="com.axelor.apps.stock.db.StockMoveLine">
+  		<view type="grid" name="stock-move-line-production-grid"/>
+		<view type="form" name="stock-move-line-production-form"/>
+  		<domain>self.consumedOperationOrder.manufOrder.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
+		<filter title="Draft MOs">
+			<domain>self.statusSelect = 1</domain>
+		</filter>
+		<filter title="Planned MOs">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="MOs In Progress">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+		<filter title="MOs In Standby">
+			<domain>self.statusSelect = 5</domain>
+		</filter>
+		<filter title="Finished MOs">
+			<domain>self.statusSelect = 6</domain>
+		</filter>
+		<filter title="Cancelled MOs">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="MOs to invoice">
+			<domain>self.isToInvoice = true</domain>
+		</filter>
+		<filter title="Late Planned MOs">
+			<domain>self.statusSelect = 3 AND self.plannedStartDateT &lt; :_todayDateTime</domain>
+		</filter>
+		<filter title="MOs Finished late">
+			<domain>self.statusSelect = 6 AND self.plannedEndDateT &lt; self.realEndDateT</domain>
+		</filter>
+	</search-filters>
+    
+</object-views>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ProdProduct" lang="java">
+  
+  	<integer name="importId"/>
+  
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" initParam="true"/>  	
+  	<decimal name="qty" title="Qty" initParam="true"/>
+  	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" initParam="true"/>
+  	
+<!--   	Contreparties - Non affiché  -->
+<!-- 	Operation order -->
+  	<many-to-one name="toConsumeOperationOrder" ref="com.axelor.apps.production.db.OperationOrder"/>
+  	<many-to-one name="diffConsumeOperationOrder" ref="com.axelor.apps.production.db.OperationOrder"/>
+  	
+<!--   	Manuf order -->
+  	<many-to-one name="toConsumeManufOrder" ref="com.axelor.apps.production.db.ManufOrder"/>
+  	<many-to-one name="diffConsumeManufOrder" ref="com.axelor.apps.production.db.ManufOrder"/>
+  	
+  	<many-to-one name="toProduceManufOrder" ref="com.axelor.apps.production.db.ManufOrder"/>
+  	<many-to-one name="wasteManufOrder" ref="com.axelor.apps.production.db.ManufOrder"/>
+  	
+<!--   	Prod process line -->
+  	<many-to-one name="toConsumeProdProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine"/>
+  	
+  	
+  	
+  	
+  </entity>
+</domain-models>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="prod-process-line-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
+    	<field name="name"/>
+    	<field name="priority"/>
+        <field name="prodResource"/>
+        <field name="description"/>
+    </grid>
+    
+    <form name="prod-process-line-form" title="Production process" model="com.axelor.apps.production.db.ProdProcessLine"
+    onNew="action-prod-process-line-record-default">
+    	<panel>
+	    	<field name="name"/>
+	    	<field name="priority"/>
+	    	<field name="prodResource"/>
+    	</panel>
+    	<panel-tabs>
+    		<panel title="Description">
+    			<field name="description" showTitle="false" colSpan="12"/>
+    		</panel>
+    		<panel title="To consume products">
+    			<panel-related  field="toConsumeProdProductList" colSpan="12"/>
+    		</panel>
+    	</panel-tabs>        
+    </form>
+    
+    <action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
+    	<field name="priority" expr="eval: (__parent?.prodProcessLineList?.size() + 1) * 10"/>
+    </action-record>
+    
+</object-views>
+

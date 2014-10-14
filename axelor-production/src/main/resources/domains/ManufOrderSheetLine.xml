@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ManufOrderSheetLine" lang="java">
+  
+  	<many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder"/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Part"/>
+  	<decimal name="diameter" title="Ø1"/>
+  	<integer name="accordingSelect" title="Compliance" selection="production.manuf.order.sheet.line.according.select"/>
+    
+  </entity>
+</domain-models>

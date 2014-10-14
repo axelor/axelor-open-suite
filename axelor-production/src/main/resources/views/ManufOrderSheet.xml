@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="manuf-order-sheet-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.OperationOrder">
+    	<field name="picture"/>
+    	<field name="observation"/>
+    </grid>
+    
+	<form name="manuf-order-sheet-form" title="Manufacturing order" model="com.axelor.apps.production.db.OperationOrder">
+	  <panel colSpan="12">
+	    <field name="picture" showTitle="false" widget="Image"/>
+	  </panel>  
+	  <panel title="Observations (état des filetages, aspect général, état des surfaces d'appuis...) :" colSpan="12">
+	    <field name="observation" showTitle="false" colSpan="12"/>
+	  </panel>
+	  <panel-related field="manufOrderSheetLineList" title="Conformité" form-view="manuf-order-sheet-line-form" grid-view="manuf-order-sheet-line-grid" />
+	  <panel colSpan="12">
+	    <label title="Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord." colSpan="12"/>
+	  </panel>  
+	</form>
+    
+    <form name="manuf-order-sheet-line-form" model="com.axelor.apps.production.db.ManufOrderSheetLine" title="ManufOrderSheetLine">
+		<panel>
+			<field name="operationOrder"/>
+			<field name="product"/>
+			<field name="diameter"/>
+			<field name="accordingSelect"/>
+			<field name="archived"/>
+		</panel>
+    </form>
+    
+	<grid name="manuf-order-sheet-line-grid" title="ManufOrderSheetLine" model="com.axelor.apps.production.db.ManufOrderSheetLine" >
+	  <field name="operationOrder"/>
+	  <field name="product"/>
+	  <field name="diameter"/>
+	  <field name="accordingSelect"/>
+	  <field name="archived"/>
+	</grid>
+     
+     <selection name="production.manuf.order.sheet.line.according.select">
+     	<option value="0"></option>
+     	<option value="1">Conforme</option>
+     	<option value="2">Non conforme</option>
+     </selection>
+     
+</object-views>

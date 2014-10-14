@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
+    	<field name="name"/>
+    	<field name="code"/>
+        <field name="location"/>
+        <field name="prodProcessLineList"/>
+    </grid>
+    
+    <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
+    	onSave="action-prod-process-record-name">
+		<panel>
+	    	<field name="name"/>
+	    	<field name="code"/>
+	        <field name="location"/>
+        </panel>
+        <panel-related field="prodProcessLineList" colSpan="12"/>        
+    </form>
+    
+</object-views>

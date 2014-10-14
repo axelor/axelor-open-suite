@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	<dashboard title="Dashboard" name="manufacturing.dashboard.sample"  >
+		<dashlet action="manufacturing.dashboard.upcoming.production.orders" height="350" canSearch="true" />
+		<dashlet action="manufacturing.dashboard.current.production.orders" canSearch="true" height="350" />
+		<dashlet action="manufacturing.dashboard.production.orders.plannings" canSearch="true" height="350" />
+	</dashboard>
+
+	<dashboard title="Dashboard" name="manufacturing.dashboard"  >
+		<dashlet action="manufacturing.dashboard.upcoming.production.orders" height="350" canSearch="true" />
+		<dashlet action="manufacturing.dashboard.current.production.orders" canSearch="true" height="350" />
+		<dashlet action="manufacturing.dashboard.production.orders.plannings" canSearch="true" height="350" />
+	</dashboard>
+
+	<action-view name="manufacturing.dashboard.upcoming.production.orders" title="All Upcoming Manufacturing Orders"
+		model="com.axelor.apps.production.db.ManufOrder">
+		<view type="grid" name="manuf-order-grid"/>
+		<view type="form" name="manuf-order-form"/>
+		 <domain>self.plannedStartDateT &gt;= :_today</domain>
+  		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
+	</action-view>
+	
+	<action-view name="manufacturing.dashboard.current.production.orders" title="All Current Manufacturing Orders"
+		model="com.axelor.apps.production.db.ManufOrder">
+		<view type="grid" name="manuf-order-grid"/>
+		<view type="form" name="manuf-order-form"/>
+		<domain>self.realStartDateT &lt;= :_today and self.realEndDateT &gt;= :_today</domain>
+ 		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
+	</action-view>
+
+	<action-view name="manufacturing.dashboard.production.orders.plannings" title="All Manufacturing Order Plannings"
+		model="com.axelor.apps.production.db.ManufOrderPlanning">
+		<view type="grid" name="manuf-order-planning-grid" />
+		<view type="form" name="manuf-order-planning-form" />
+	</action-view>
+
+
+
+</object-views>

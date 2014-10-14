@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="prod-product-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
+    	<field name="product"/>
+    	<field name="qty"/>
+        <field name="unit"/>
+    </grid>
+    
+    <form name="prod-product-form" title="Product" model="com.axelor.apps.production.db.ProdProduct"
+    onNew="action-product-record-default">
+    	<panel>
+	    	<field name="product" onChange="action-product-record-product-information"/>
+	    	<field name="qty"/>
+	        <field name="unit"/>
+        </panel>
+    </form>
+    
+    <action-record name="action-product-record-default" model="com.axelor.apps.production.db.ProdProduct">
+    	<field name="qty" expr="eval: 1"/>
+    </action-record>
+    
+    <action-record name="action-product-record-product-information" model="com.axelor.apps.production.db.ProdProduct">
+    	<field name="unit" expr="eval: product?.unit"/>
+    </action-record>
+    
+</object-views>

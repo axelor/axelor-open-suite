@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="prod-remains-grid" title="Production remains" model="com.axelor.apps.production.db.ProdRemains" editable="true">
+        <field name="product"/>
+        <field name="qty"/>
+        <field name="unit"/>
+    </grid>
+    
+    <form name="prod-remains-form" title="Production remains" model="com.axelor.apps.production.db.ProdRemains">
+		<panel>        
+	        <field name="product"/>
+	        <field name="qty"/>
+	        <field name="unit"/>
+        </panel>
+    </form>
+    
+</object-views>
