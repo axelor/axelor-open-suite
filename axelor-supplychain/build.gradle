@@ -1,0 +1,17 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-supplychain"
+	version "3.0.0"
+	title "Axelor :: Supply chain"
+	
+	removable true
+
+//	module "modules:axelor-account"
+//	module "modules:axelor-account-organisation"
+	module "modules:axelor-purchase"
+	module "modules:axelor-sale"
+	module "modules:axelor-stock"
+	module "modules:axelor-account"
+}
+

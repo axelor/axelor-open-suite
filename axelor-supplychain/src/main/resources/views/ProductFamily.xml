@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<form   name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" id="product-faimly-form">
+	  <toolbar>
+	    <button name="viewProducts" title="View Products" onClick="action-view-product-by-family"/>
+	  </toolbar>
+	  <panel-include view="product-family-form" from="axelor-base"/>
+	  <panel title="Sales Turnover" hideIf="fromMenu == null" >    
+		<panel-dashlet height="350" action="dashlet.family.sales.turnover.per.month"/>
+	  </panel>
+	</form>
+    
+	<action-view title="Family sale turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="dashlet.family.sales.turnover.per.month">
+		  <view type="chart" name="chart.family.sale.turnover.per.month"/>
+		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+	</action-view>
+	
+</object-views>

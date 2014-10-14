@@ -1,0 +1,86 @@
+"key","message","comment","context"
+"%","","","resources/domains/SaleOrderScheduleLine.xml:13"
+"Amount invoiced","","","resources/domains/SaleOrderLine.xml:16"
+"Amount remaining to invoice","","","resources/domains/SaleOrder.xml:15"
+"Amount to invoice","","","resources/domains/SaleOrderScheduleLine.xml:12"
+"Associated invoice lines","","","resources/domains/SaleOrderLine.xml:20"
+"Batches","","","resources/views/SaleBatch.xml:29"
+"Category","","","resources/views/menu.xml:18"
+"Category Dashboard","","","resources/views/menu.xml:30"
+"Category Db","","","resources/views/menu.xml:21"
+"Created by","","","resources/views/SaleBatch.xml:22"
+"Created on","","","resources/views/SaleBatch.xml:21"
+"Cumulated invoiced %","","","resources/domains/SaleOrderScheduleLine.xml:15"
+"Date of shipment","","","resources/domains/SaleOrder.xml:11"
+"Description","","","resources/views/SaleBatch.xml:26"
+"Draft invoice N days after order validation","","","resources/views/Selects.xml:17"
+"Family","","","resources/views/menu.xml:24"
+"Family Dashboard","","","resources/views/portal.xml:14
+resources/views/menu.xml:35
+resources/views/portal.xml:18"
+"Family Db","","","resources/views/menu.xml:27"
+"Family sale turnover (Excl. Tax) per month","","","resources/views/ProductFamily.xml:18"
+"From Date","","","resources/views/Charts.xml:75"
+"FromStock","","","resources/views/Selects.xml:10"
+"Invoice","","","resources/domains/SaleOrderScheduleLine.xml:17
+resources/domains/StockMove.xml:13"
+"Invoice controlled","","","resources/domains/SaleOrderLine.xml:24"
+"Invoiced ?","","","resources/domains/SaleOrderLine.xml:15"
+"Invoicing","","","resources/views/Selects.xml:21"
+"Invoicing Date","","","resources/domains/SaleOrderLine.xml:12"
+"Invoicing batch","","","resources/views/SaleBatch.xml:23"
+"Invoicing trigger","","","resources/domains/SaleOrder.xml:14"
+"Invoicing type","","","resources/domains/SaleOrder.xml:12"
+"Linked invoices","","","resources/domains/SaleOrder.xml:18"
+"Location","","","resources/domains/SaleOrder.xml:10
+resources/domains/PurchaseOrder.xml:10"
+"Month","","","resources/views/Charts.xml:114"
+"Nbr of days","","","resources/domains/SaleOrderScheduleLine.xml:16"
+"Number of Product per Category","","","resources/views/Charts.xml:28
+resources/views/portal.xml:35"
+"Number of Product per Family","","","resources/views/portal.xml:31
+resources/views/Charts.xml:6"
+"Partner","","","resources/views/Partner.xml:10
+resources/views/Partner.xml:6"
+"Produce","","","resources/views/Selects.xml:12"
+"Product Category","","","resources/views/Charts.xml:46"
+"Product Db","","","resources/views/menu.xml:13
+resources/views/menu.xml:10"
+"Product Family","","","resources/views/Charts.xml:24"
+"Product Type","","","resources/views/Charts.xml:69"
+"Product family","","","resources/views/ProductFamily.xml:6"
+"Product launches/withdrawal each month","","","resources/views/portal.xml:26
+resources/views/Charts.xml:73"
+"Product type distribution","","","resources/views/Charts.xml:50
+resources/views/portal.xml:22"
+"Products","","","resources/views/Charts.xml:115
+resources/views/Charts.xml:70
+resources/views/menu.xml:7
+resources/views/Charts.xml:47
+resources/views/Charts.xml:25"
+"Products DB 1","","","resources/views/portal.xml:6"
+"Purchase","","","resources/views/Selects.xml:11"
+"Purchase order","","","resources/domains/StockMove.xml:12"
+"Purchase order line","","","resources/domains/StockMoveLine.xml:11"
+"Remaining to invoice","","","resources/domains/SaleOrderLine.xml:17"
+"Sale Batch","","","resources/views/SaleBatch.xml:14"
+"Sale batches","","","resources/views/SaleBatch.xml:6"
+"Sale order","","","resources/domains/StockMove.xml:11
+resources/views/SalesOrder.xml:17
+resources/domains/SaleOrderScheduleLine.xml:10
+resources/views/SalesOrder.xml:9"
+"Sales Turnover","","","resources/views/ProductFamily.xml:11"
+"Sales order line","","","resources/domains/StockMoveLine.xml:10"
+"Sales orders","","","resources/views/Partner.xml:21
+resources/views/Partner.xml:14"
+"Schedule line list","","","resources/domains/SaleOrder.xml:21"
+"Seq.","","","resources/domains/SaleOrderScheduleLine.xml:11"
+"Show details in invoice","","","resources/domains/SaleOrder.xml:13"
+"Supply method","","","resources/domains/SaleOrderLine.xml:10"
+"Task","","","resources/domains/SaleOrderScheduleLine.xml:14"
+"To Date","","","resources/views/Charts.xml:76"
+"To invoice?","","","resources/domains/SaleOrderLine.xml:14"
+"View Products","","","resources/views/ProductFamily.xml:8"
+"When a task is over","","","resources/views/Selects.xml:16"
+"help:SaleOrderScheduleLine.nbOfDay","","","resources/domains/SaleOrderScheduleLine.xml:16"
+"help:SaleOrderScheduleLine.saleOrderLine","","","resources/domains/SaleOrderScheduleLine.xml:14"

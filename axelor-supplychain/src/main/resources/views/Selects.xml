@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+
+	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+	
+	<selection name="product.sale.supply.select">
+		<option value="1">FromStock</option>
+		<option value="2">Purchase</option>
+		<option value="3">Produce</option>
+	</selection>
+	
+	<selection name="supplychain.invoicing.moment.select">
+		<option value="1">When a task is over</option>
+		<option value="2">Draft invoice N days after order validation</option>
+	</selection>
+	
+	<selection name="supplychain.batch.action.select">
+		<option value="1">Invoicing</option>
+	</selection>
+	
+	
+</object-views>

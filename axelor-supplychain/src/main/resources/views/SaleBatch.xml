@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+    <grid name="sale-batch-grid" title="Sale batches" model="com.axelor.apps.sale.db.SaleBatch">
+    	<field name="actionSelect" />
+    	<field name="code" />
+		<field name="company" />
+		<field name="createdOn"/>
+		<field name="createdBy"/>
+    </grid>
+ 
+	<form onLoad="action-group-supplychain-salebatch-onload" onNew="action-group-supplychain-salebatch-onnew" name="sale-batch-form" title="Sale Batch" model="com.axelor.apps.sale.db.SaleBatch">
+	  <panel>
+	    <field name="actionSelect" onChange="action-sale-batch-attrs-action-select"/>
+	    <field name="code"/>
+	    <field name="company" widget="SuggestBox" form-view="company-form"/>
+	  </panel>
+	  <panel>
+	    <field name="createdOn" title="Created on"/>
+	    <field name="createdBy" title="Created by"/>
+	    <button name="invoicingBatch" title="Invoicing batch" onClick="save,action-sale-batch-method-action-invoicing"/>
+	  </panel>
+	  <panel-tabs>    
+	    <panel title="Description">
+	      <field name="description" showTitle="false" colSpan="12"/>      
+	    </panel>
+		<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true" />
+	  </panel-tabs>
+	</form>
+    
+    <!-- ACTION GROUPs -->
+    <action-group name="action-group-supplychain-salebatch-onload">
+    	<action name="action-sale-batch-attrs-action-select"/>
+    	<action name="action-sale-batch-attrs-action-select"/>
+    </action-group>
+    
+    <action-group name="action-group-supplychain-salebatch-onnew">
+    	<action name="action-sale-batch-record-on-new"/>
+    	<action name="action-sale-batch-attrs-action-select"/>
+    </action-group>
+    
+    <!-- ACTION RECORD -->
+    <action-record name="action-sale-batch-record-on-new" model="com.axelor.apps.sale.db.SaleBatch">
+		<field name="createdOn" expr="call:com.axelor.apps.sale.service.administration.GeneralService:getTodayDate()"/>
+		<field name="createdBy" expr="__user__"/>
+	</action-record>
+    
+    <!-- ACTION METHOD -->
+	<action-method name="action-sale-batch-method-action-invoicing">
+		<call class="com.axelor.apps.sale.web.SaleBatchController" method="actionInvoicing"/>
+	</action-method>
+	
+    <!-- ACTION ATTRS -->
+    <action-attrs name="action-sale-batch-attrs-action-select">
+	    <attribute name="hidden" expr="eval: actionSelect != 1" for="InvoicingPage"/>
+	</action-attrs>
+	
+</object-views>

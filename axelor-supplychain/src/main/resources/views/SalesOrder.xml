@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
+	onNew="action-group-supplychain-saleorder-onnew"
+	onLoad="action-group-supplychain-saleorder-onload" 
+	onSave="save,action-method-set-sale-order-draft-sequence,save">
+		
+		<panel-include view="sale-order-form" from="axelor-sale"/>
+	</form>
+
+	
+	<form name="sale-order-form-client" id="supplychain-sale-order-form-client" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
+		  onNew="action-group-supplychain-saleorder-onnew"
+		  onSave="save,action-method-set-sale-order-draft-sequence,save" onLoad="action-group-supplychain-saleorder-onload">
+		<panel-include view="sale-order-form-client" from="axelor-sale"/>
+	</form>
+	
+	<action-group name="action-group-supplychain-saleorder-onnew">
+		<action name="action-sale-order-record-default"/>
+		<action name="action-sale-order-record-company-configuration"/>
+		<action name="action-supplychain-sale-order-method-get-location"/>
+		<action name="action-sale-order-record-currency"/>
+		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
+	</action-group>
+	
+	<action-group name="action-group-supplychain-saleorder-onload">
+		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
+		<action name="action-sale-order-attrs-validated-read-only"/>
+		<action name="action-partner-attrs-hide-contact-partner" />
+	</action-group>
+	
+	<action-method name="action-supplychain-sale-order-method-get-location">
+    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
+    </action-method>
+    
+    <action-method name="action-supplychain-sale-order-method-generate-invoice">
+ 		<call class="com.axelor.apps.supplychain.web.SaleOrderInvoiceController" method="generateInvoice"/>
+	</action-method>
+	
+	<action-method name="action-supplychain-sale-order-create-stock-move" >
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMoves"/>
+	</action-method>
+	
+	<action-method name="action-supplychain-sale-order-create-purchase-order" >
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createPurchaseOrders"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-get-location" >
+    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
+    </action-method>
+	
+	<action-method name="action-supplychain-sale-order-create-production-order" >
+		<call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController" method="createProductionOrders"/>
+	</action-method>
+	
+	<action-validate name="action-supplychain-sale-order-validate-check-location">
+		<error message="The location must be filled." if="location == null"/>
+	</action-validate>
+	
+	
+</object-views>	

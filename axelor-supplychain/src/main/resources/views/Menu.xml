@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	<menuitem name="menu-products-dashboard" parent="menu-dashboards-products-goods"  
+		title="Products" priority="10" />	
+	
+	<menuitem name="menu-products-dashboard-1" parent="menu-products-dashboard"  
+		title="Product Db" icon="img/16px/chart_16px.png" action="supplychain.products.dashboard.1" />	
+		
+	<action-view name="supplychain.products.dashboard.1" title="Product Db"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="dashboard" name="supplychain.products.dashboard.view.1" />	 
+	</action-view>
+
+	<menuitem name="menu-category-dashboard" parent="menu-dashboards-products-goods"  
+		title="Category" priority="20" />	
+		
+	<menuitem name="menu-category-dashboard-1" parent="menu-category-dashboard"  
+		title="Category Db" icon="img/16px/chart_16px.png" action="supplychain.products.category.dashboard" />		
+		
+	<menuitem name="menu-family-dashboard" parent="menu-dashboards-products-goods"  
+		title="Family" priority="30"  />	
+	
+	<menuitem name="menu-family-dashboard-1" parent="menu-family-dashboard"  
+		title="Family Db" icon="img/16px/chart_16px.png" action="supplychain.products.family.dashboard" />	
+		
+	<action-view name="supplychain.products.category.dashboard" title="Category Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="dashboard" name="supplychain.products.category.dashboard.view.1" />	 
+	</action-view>
+	
+	<action-view name="supplychain.products.family.dashboard" title="Family Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="dashboard" name="supplychain.products.family.dashboard.view.1" />	 
+	</action-view>
+
+	
+</object-views>

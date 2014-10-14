@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+ 	
+    <form name="incl-sales-order-dashelt-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
+    	<panel-dashlet colSpan="12" action="dashlet.customer.sales.lastYear.vs.ytd.by.family" height="350" title="Sales" showIf="id != null" />
+	</form>
+	
+     <form name="incl-sales-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
+	   <panel-dashlet colSpan="12" action="action-partner-view-sales-orders" title="Sales orders" showIf="id != null"/>
+	</form>
+	
+    <action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="grid" name="sales-order-grid"/>
+		<view type="form" name="sales-order-form"/>
+		<domain>self.clientPartner.id = :id OR self.contactPartner.id = :id</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+	
+     <action-view name="action-partner-view-sales-orders" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="grid" name="sales-order-grid"/>
+		<view type="form" name="sales-order-form"/>
+		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id)</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+</object-views>
