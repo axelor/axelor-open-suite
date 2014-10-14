@@ -1,0 +1,11 @@
+"importId";"company.importId";"operationTypeSelect";"partner.importId";"account.importId";"paymentMode.importId";"paymentDateTime";"paidAmount";"currency.code";"cashRegister.importId";"allocatedAmount";"invoiceToPay.invoiceId";"user.importId";"statusSelect"
+1;1;3;88;394;8;"NOW[-4M14H00m]";"32978.50";"EUR";2;;"INV_140000001";20;2
+2;1;1;170;373;5;"NOW[-4M+22d11H00m]";2400;"USD";1;;"SINV_140000001";20;2
+3;1;3;20;394;8;"NOW[-4M+14d16H30m]";"33189.60";"EUR";3;;"INV_140000002";20;2
+4;1;1;152;373;8;"NOW[-2M+7d14H00m]";30132;"USD";1;;"SINV_140000003";20;2
+5;1;3;44;394;6;"NOW[-2M+14d10H00m]";7000;"EUR";3;;"INV_140000003";20;2
+6;1;1;70;373;6;"NOW[-1M+7d14H00m]";4000;"EUR";1;;"SINV_140000004";20;1
+7;1;1;148;373;8;"NOW[-1M+7d16H00]";10000;"USD";1;;;20;1
+8;1;3;77;394;6;"NOW[08H00m]";"10443.8";"EUR";5;;"INV_140000005";20;2
+9;1;3;132;394;8;"NOW[11H00m]";"19118.4";"EUR";1;;"INV_140000004";20;2
+10;1;3;77;394;5;"NOW[+7d11H00m]";1000;"EUR";5;;"INV_140000005";20;1

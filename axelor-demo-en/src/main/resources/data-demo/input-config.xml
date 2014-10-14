@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_3.0.xsd">
+  
+<!--     IMPORT DU PACKAGE 'AUTH' -->
+
+    <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name"/>
+    
+    <input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile" />
+    
+    <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"  search="self.name = :name">
+        <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
+    </input>
+    
+    <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" search="self.code = :code">
+      <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
+      <bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+    </input>
+    
+    <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" />
+    
+<!--     IMPORT DU PACKAGE 'BASE' -->
+	<input file="base_birtTemplate.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId" />
+	
+	<input file="base_birtTemplateParameter.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"  />
+	
+	<input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" search="self.importId = :importId"  />
+	     
+	<input file="base_template.csv" separator=";" type="com.axelor.apps.base.db.Template" search="self.name = :name" />
+    
+	<input file="base_team.csv" separator=";" type="com.axelor.apps.base.db.Team" search="self.importId = :importId"  />
+
+	<input file="base_keyword.csv" separator=";" type="com.axelor.apps.base.db.Keyword" search="self.importId = :importId"  />
+	
+	<input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source" search="self.code = :code"/>
+	
+	<input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country" search="self.importId = :importId"  />
+	
+	<input file="base_region.csv" separator=";" type="com.axelor.apps.base.db.Region"/>
+	
+	<input file="base_departement.csv" separator=";" type="com.axelor.apps.base.db.Department" />
+	
+	<input file="base_canton.csv" separator=";" type="com.axelor.apps.base.db.Canton" />
+
+	<input file="base_commune.csv" separator=";" type="com.axelor.apps.base.db.Commune" search="self.importId = :importId"  />
+	
+	<input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address" search="self.importId = :importId"  />
+	
+	<input file="base_mailModel.csv" separator=";" type="com.axelor.apps.base.db.MailModel" />
+	
+	<input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency" search="self.code = :code"  />
+	
+	<input file="base_unit.csv" separator=";" type="com.axelor.apps.base.db.Unit" search="self.importId = :importId"  />
+	
+	<input file="base_unitConversion.csv" separator=";" type="com.axelor.apps.base.db.UnitConversion"/>
+	
+	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory" search="self.importId = :importId"  />
+	
+	<input file="base_scheduler.csv" separator=";" type="com.axelor.apps.base.db.Scheduler" search="self.importId = :importId"  />
+	
+	
+<!-- 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.AccountingSituation" call="com.axelor.csv.script.ImportPartner:importAccountingSituation"> -->
+<!-- 		<bind column="partner" to="accountingSituationList"/> -->
+<!-- 	</input> -->
+	
+	<!-- A BESOIN de paymentMode, fichier vide actuellement, il faudra faire un update -->
+	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId"  >
+		<bind to="partnerSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.PARTNER)" />
+<!-- 		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" eval="companySet_importId.split('\\|') as List"/> -->
+		<bind to="emailAddress" search="self.address = :email">
+			<bind to="address" column="email" />
+		</bind>
+	</input>
+	
+	<!-- A BESOIN DE PARTNER -->
+	<input file="base_bankDetails.csv" separator=";" type="com.axelor.apps.base.db.BankDetails" >
+		<bind to="partner" column="partner_importId" search="self.importId =:partner_importId" update="true" />
+	</input>
+	
+<!--	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner" >
+ 		<bind column="bankDetails.importId" to="bankDetails"/>
+		<bind to="bankDetails" search="self.importId = :bankDetails.importId" >
+            <bind to="importId" column="bankDetails.importId"/>
+    </bind>
+	</input> -->
+	
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId"/>
+	
+	<input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year" search="self.code = :code"  />
+	
+	<input file="account_cashRegister.csv" separator=";" type="com.axelor.apps.account.db.CashRegister" search="self.importId = :importId" />
+	
+	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
+		<bind to="debitDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(debitDate)" column="debitDate"/>
+		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)" column="endDate"/>
+	</input>
+	
+	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true"/>
+<!--       TODO A COMPLETER -->
+<!-- 		<bind column="firstName" to="name" /> -->
+<!-- 		<bind column="lastName" to="password"/> -->
+<!--       	<bind to="internalUser" search="self.code = :code" > -->
+<!--         <bind to="code" column="code"/> -->
+<!--         <bind to="companySet" search="self.code = :companySet_code" update="true"> -->
+<!--         	<bind to="code" column="companySet_code" /> -->
+<!--         </bind> -->
+<!-- 	</input>   -->
+
+	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" />
+	
+	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" />
+	
+	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" />
+	
+	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.code = :code AND self.name = :name">
+    	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
+    	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
+    	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
+    	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
+    </input>
+    
+ 	<input file="base_companyDepartment.csv" separator=";" type="com.axelor.apps.base.db.CompanyDepartment">
+ 		<bind column="id" to="importId"/>
+ 		<bind column="code" to="code"/>
+ 		<bind column="name" to="name"/>
+<!--  		<bind column="code_en" to="code"/> -->
+<!--  		<bind column="name_en" to="name"/> -->
+ 	</input>
+ 	
+
+	<!-- TODO BIND EN FONCTION DE LA LANGUE POUR LES 2 CI-dessous -->
+
+<!-- 	<input file="base_productCategory.csv" separator=";" search="self.code = :code and self.name = :name" type="com.axelor.apps.base.db.ProductCategory"> -->
+<!-- 		<bind column="code" to="code" update="true"/>	 -->
+<!-- 		<bind column="name" to="name" update="true"/>	 -->
+<!-- 	</input> -->
+
+	<input file="base_productFamily.csv" separator=";" type="com.axelor.apps.base.db.ProductFamily" search="self.code = :code" />
+	
+	<input file="base_productCategory.csv" separator=";" type="com.axelor.apps.base.db.ProductCategory" search="self.code = :code" />
+	
+	<input file="account_invoiceLineType.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLineType" search="self.importId = :importId" />
+	
+	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId">
+		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+	</input>
+	
+	<input file="base_supplierCatalog.csv" separator=";" type="com.axelor.apps.base.db.SupplierCatalog"/>
+	
+ 	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner">
+<!-- 		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" eval="companySet_importId.split('\\|') as List"/> -->
+		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" update="true"/>
+		<bind to="mainPartner" search="self.importId = :mainPartner_importId" update="true" />
+	</input>
+	
+
+<!--     IMPORT DU PACKAGE 'ACCOUNT' -->
+     
+	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode"  search="self.importId = :importId" />
+	
+	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId" />
+	
+	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" />
+	
+	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId" />
+	
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true" call="com.axelor.csv.script.UpdateAll:updatePeriod">
+		<bind column="importId" to="importId"/>
+	</input>
+	
+	
+	
+	
+	<input file="account_interBankCode.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
+        <bind column="code_rejet" to="code" />
+        <bind column="libelle_rejet" to="name" />
+        <bind column="description_rejet" to="description" />
+        <bind column="transferCfonbOk" to="transferCfonbOk" eval="transferCfonbOk == 't' ? true : false"/>
+        <bind column="prelevement" to="directDebitAndTipCfonbOk" eval="prelevement == 't' ? true : false"/>
+        <bind column="prelevement_sepa" to="directDebitSepaOk" eval="prelevement_sepa == 't' ? true : false"/>
+        <bind column="lcr_bor" to="lcrBorOk" eval="lcr_bor == 't' ? true : false"/>
+        <bind column="cheque" to="chequeOk" eval="cheque == 't' ? true : false"/>
+        <bind column="rejet_technique" to="technicalRejectOk" eval="rejet_technique == 't' ? true : false"/>
+        <bind to="interbankCode" search="self.code = :code_fichier">
+            <bind column="code_fichier" to="code"/>
+            <bind column="nom_fichier" to="name"/>
+            <bind column="date_fin" to="endDate" eval="date_fin ? date_fin : null"/>
+            <bind column="description_fichier" to="description"/>
+        </bind>
+    </input>
+	
+	<input file="account_reminderLevel.csv" separator=";" type="com.axelor.apps.account.db.ReminderLevel" />
+	
+	<input file="account_reminderMethod.csv" separator=";" type="com.axelor.apps.account.db.ReminderMethod" />
+	
+	<input file="account_reminderMethodLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderMethodLine" />
+	
+	
+	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" search="self.importId = :importId">
+		<bind search="self.importId = :company_id" to="company" update="true" />
+		<bind search="self.code = :cashAccount_code and self.company.importId = :company_id" to="cashAccount" update="true" />
+		<bind search="self.code = :saleAccount_code and self.company.importId = :company_id" to="saleAccount" update="true" />
+		<bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id" to="purchaseAccount" update="true" />
+	</input>
+	
+	<input file="account_analyticAccountManagement.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccountManagement" search="self.importId = :importId" />
+	
+	<input file="account_payboxConfig.csv" separator=";" type="com.axelor.apps.account.db.PayboxConfig" search="self.importId = :importId" />
+	
+	<input file="account_cfonbConfig.csv" separator=";" type="com.axelor.apps.account.db.CfonbConfig" search="self.importId = :importId" />
+	
+	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" />
+	
+	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
+	
+	
+	
+	
+<!-- 	Deuxième passe sur le package 'base' pour prendre en compte les éléments du package account  -->
+
+	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true">
+      	<bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
+          	<bind column="defaultExemptionTax_code" to="code"/>
+      	</bind>
+		<bind to="qasWsdlUrl" column="qas_url"/>
+	</input>
+
+	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" 
+	update="true" call="com.axelor.csv.script.ImportPartner:importAccountingSituation">
+		<bind to="isContact" eval="isContact == 'true' ? true : false" />
+		<bind to="isCustomer" eval="isCustomer == 'true' ? true : false" />
+		<bind to="isSupplier" eval="isSupplier == 'true' ? true : false" />
+	</input>
+	
+	<input file="base_bankDetails.csv" separator=";" search="self.importId = :partner_importId" update="true" type="com.axelor.apps.base.db.Partner" >
+		<bind to="bankDetails" search="self.importId = :importId" >
+            <bind to="importId" column="importId"/>
+    	</bind>
+	</input>
+	
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true">
+		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" update="true" />
+	</input> 
+	
+<!--     IMPORT DU PACKAGE 'CRM' --> 	
+	
+	<input file="crm_crmBatch.csv" separator=";" type="com.axelor.apps.crm.db.CrmBatch" search="self.code = :code"/>
+	
+	<input file="crm_eventCategory.csv" separator=";" type="com.axelor.apps.crm.db.EventCategory" search="self.importId = :importId"/>
+	
+	<input file="crm_lead.csv" separator=";" type="com.axelor.apps.crm.db.Lead">
+			<bind column="description" to="description"/>
+			<bind column="jobTitle" to="jobTitle"/>
+			<bind to="emailAddress" search="self.address = :email">
+				<bind to="address" column="email" />
+			</bind>
+			<bind to="contactDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
+			<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
+			<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(user)"/>
+			<bind to="user" search="self.importId = :user" update="true" column="user"/>
+	</input>
+	
+	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType" search="self.importId = :importId"/>
+	
+	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project">
+ 	    <bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
+ 	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
+ 	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
+ 	</input>	
+
+	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project" search="self.importId = :importId" update="true">
+ 	    <bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
+ 	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
+ 	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
+ 	</input>	
+ 	
+ 	<input file="organisation_task.csv" separator=";" type="com.axelor.apps.organisation.db.Task">
+ 		<bind to="startDateT" column="startDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDateT)"/>
+ 		<bind to="endDateT" column="endDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDateT)"/>
+ 		<bind to="name" column="name"/>
+ 	</input>	
+ 	
+ 	<input file="organisation_task.csv" separator=";" type="com.axelor.apps.organisation.db.Task" search="self.importId = :importId" update="true" call="com.axelor.apps.organisation.service.TaskService:importTask" >
+ 	    <bind to="startDateT" column="startDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDateT)"/>
+ 		<bind to="endDateT" column="endDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDateT)"/>
+ 		<bind to="name" column="name"/>
+ 	</input>
+ 	
+ 	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project" search="self.importId = :importId" update="true" call="com.axelor.apps.organisation.service.ProjectService:importProject" >
+ 		<bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
+ 	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
+ 	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
+ 	</input>    
+ 	    
+	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event">
+		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)" column="startDateTime"/>
+		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTime)" column="endDateTime" />
+		<bind to="ticketNumberSeq" column="ticketNumberSeq" if="typeSelect == 5" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.EVENT_TICKET)" />
+	</input>
+	
+	<input file="crm_opportunityType.csv" separator=";" type="com.axelor.apps.crm.db.OpportunityType" search="self.code = :code"/>
+	
+	<input file="crm_opportunity.csv" separator=";" type="com.axelor.apps.crm.db.Opportunity">
+		<bind to="expectedCloseDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(expectedCloseDate)" column="expectedCloseDate"/>
+		<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(user)"/>
+		<bind to="user" search="self.importId = :user" update="true" column="user"/>
+	</input>
+	
+	
+<!--     IMPORT DU PACKAGE 'ORGANISATION' --> 	
+	<input file="organisation_publicHolidays.csv" separator=";" type="com.axelor.apps.organisation.db.PublicHolidays" search="self.importId = :importId"/>
+  	
+  	<input file="organisation_publicHolidaysLine.csv" separator=";" type="com.axelor.apps.organisation.db.PublicHolidaysLine" search="self.date =:date"/>
+  	
+  	<input file="organisation_schedule.csv" separator=";" type="com.axelor.apps.organisation.db.Schedule" search="self.importId = :importId"/>
+  	
+  	<input file="organisation_scheduleLine.csv" separator=";" type="com.axelor.apps.organisation.db.ScheduleLine" search="self.importId = :importId"/>
+  	
+  	<input file="organisation_scheduleSubLine.csv" separator=";" type="com.axelor.apps.organisation.db.ScheduleSubLine" />
+		
+	<input file="organisation_degree.csv" separator=";" type="com.axelor.apps.organisation.db.Degree"  search="self.importId = :importId"/>
+	
+	<input file="organisation_universities.csv" separator=";" type="com.axelor.apps.organisation.db.TrainingCenter"/>
+	
+	<input file="organisation_candidate.csv" separator=";" type="com.axelor.apps.organisation.db.Candidate">
+		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/>
+		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/>
+		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
+	</input>
+	
+<!-- 	<input file="organisation_employee_Prod.csv" separator=";" type="com.axelor.apps.organisation.db.Employee"> -->
+<!-- 		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/> -->
+<!-- 		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/> -->
+<!-- 		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/> -->
+<!-- 	</input> -->
+	
+	<input file="organisation_employee_Serv.csv" separator=";" type="com.axelor.apps.organisation.db.Employee">
+		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/>
+		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/>
+		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
+	</input>
+	
+	<input file="organisation_mobilityChoice.csv" separator=";" type="com.axelor.apps.organisation.db.MobilityChoice" search="self.code = :code"/>
+	
+	<input file="organisation_personalInfo.csv" separator=";" type="com.axelor.apps.organisation.db.PersonalInfo"/>
+	
+	<input file="organisation_candidate.csv" separator=";" type="com.axelor.apps.organisation.db.Candidate" search="self.importId = :importId" update="true">
+		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/>
+		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/>
+		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
+	</input>
+	
+	<input file="organisation_employee_Serv.csv" separator=";" type="com.axelor.apps.organisation.db.Employee" search="self.importId  = :importId" update="true" />
+	
+	
+<!-- 	Mise à jour de l'employé sur l'utilisateur -->
+	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true"/>
+	
+	<input file="stock_location.csv" separator=";" type="com.axelor.apps.stock.db.Location" search="self.importId = :importId" />
+	
+	<input file="stock_minStockRules.csv" separator=";" type="com.axelor.apps.stock.db.MinStockRules"/>
+	
+<!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' -->
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"/> 	
+	
+	<input file="sale_saleBatch.csv" separator=";" type="com.axelor.apps.sale.db.SaleBatch" />
+	
+	<input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory">
+		<bind to="inventorySeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.INVENTORY)" />
+	    <bind to="statusSelect" eval="3" />
+		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
+	</input>
+	
+	<input file="sale_saleConfig.csv" separator=";" type="com.axelor.apps.sale.db.SaleConfig"  search="self.importId = :importId"/>
+	
+	<input file="purchase_purchaseConfig.csv" separator=";" type="com.axelor.apps.purchase.db.PurchaseConfig" search="self.importId = :importId"/>
+	
+	<input file="stock_stockConfig.csv" separator=";" type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId" />
+	
+	<input file="stock_inventoryLine.csv" separator=";" type="com.axelor.apps.stock.db.InventoryLine" />
+	
+<!-- 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory"   -->
+<!-- 	search="self.inventorySeq = :inventorySeq" call="com.axelor.csv.script.ImportInventory:importInventory" update="true"> -->
+<!-- 		<bind to="statusSelect" eval="3" /> -->
+<!-- 		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/> -->
+<!-- 	</input> -->
+	
+<!-- 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory"   -->
+<!-- 	search="self.inventorySeq = :inventorySeq" call="com.axelor.csv.script.ImportInventory:realizeMove" update="true"> -->
+<!-- 		<bind to="statusSelect" eval="3" /> -->
+<!-- 	</input> -->
+	
+	<input file="purchase_purchaseOrder.csv" separator=";" type="com.axelor.apps.purchase.db.PurchaseOrder">
+		<bind to="purchaseOrderSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.PURCHASE_ORDER)" />
+ 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(creationDate)" column="creationDate"/>
+ 		<bind to="deliveryDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deliveryDate)" column="deliveryDate"/>
+ 		<bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)" column="orderDate"/>
+ 	</input>
+ 	
+ 	<input file="purchase_purchaseOrderLine.csv" separator=";" type="com.axelor.apps.purchase.db.PurchaseOrderLine">
+ 		<bind to="desiredDelivDate" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(desiredDelivDate)" column="desiredDelivDate"/>
+ 		<bind to="estimatedDelivDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedDelivDate)" column="estimatedDelivDate"/>
+ 	</input>
+ 	
+<!--  	<input file="supplychain_purchaseOrder.csv" separator=";" type="com.axelor.apps.purchase.db.PurchaseOrder" search="self.importId = :importId" update="true" call="com.axelor.csv.script.ImportPurchaseOrder:importPurchaseOrder"> -->
+<!--  		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(creationDate)" column="creationDate"/> -->
+<!--  		<bind to="deliveryDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deliveryDate)" column="deliveryDate"/> -->
+<!--  		<bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)" column="orderDate"/> -->
+<!--  	</input> -->
+	
+	<input file="sale_saleOrder.csv" separator=";" type="com.axelor.apps.sale.db.SaleOrder">
+		<bind to="saleOrderSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.SALES_ORDER)" />
+		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
+		<bind to="validationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(validationDate)" column="validationDate"/>
+		<bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/>
+	</input>
+	
+	<input file="sale_saleOrderLine.csv" separator=";" type="com.axelor.apps.sale.db.SaleOrderLine" />
+	
+	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General" update="true" search="self.importId = :importId" call="com.axelor.csv.script.ValidateSupplyChain:validateSupplyChain" />
+	
+<!-- 	<input file="supplychain_saleOrder.csv" separator=";" type="com.axelor.apps.sale.db.SaleOrder" call="com.axelor.csv.script.ImportSaleOrder:importSaleOrder" search="self.importId = :importId" update="true"> -->
+<!-- 		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/> -->
+<!-- 		<bind to="validationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(validationDate)" column="validationDate"/> -->
+<!-- 		<bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/> -->
+<!-- 	</input> -->
+	
+ 	<input file="base_spentTime.csv" separator=";" type="com.axelor.apps.base.db.SpentTime">
+ 	    <bind to="date" column="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)"/>
+ 	</input>
+ 	
+ 	<input file="account_invoice.csv" separator=";" type="com.axelor.apps.account.db.Invoice">
+ 		<bind to="invoiceDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(invoiceDate)" column="invoiceDate"/>
+ 		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
+ 	</input>
+ 	
+ 	<input file="account_invoiceLine.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLine" />
+ 	
+ 	<input file="account_paymentVoucher.csv" separator=";" type="com.axelor.apps.account.db.PaymentVoucher" >
+ 		<bind to="paymentDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(paymentDateTime)" column="paymentDateTime"/>
+ 	</input>
+ 	
+<!--  	<input file="account_paymentVoucher.csv" separator=";" type="com.axelor.apps.account.db.PaymentVoucher" search="self.importId = :importId" update="true" call="com.axelor.csv.script.ImportPaymentVoucher:importPaymentVoucher"> -->
+<!--  		<bind to="paymentDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(paymentDateTime)" column="paymentDateTime"/> -->
+<!--  	</input> -->
+ 	
+<!-- 	<input file="supplychain_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove"/> -->
+	
+<!-- 	<input file="supplychain_stockMoveLine.csv" separator=";" type="com.axelor.apps.stock.db.StockMoveLine"/> -->
+	
+	
+<!-- 	  	PRODUCTION -->
+	<input file="production_machine.csv" separator=";" type="com.axelor.apps.production.db.Machine"/>
+	
+	<input file="production_prodResource.csv" separator=";" type="com.axelor.apps.production.db.ProdResource"/>
+	
+	<input file="production_prodHumanResource.csv" separator=";" type="com.axelor.apps.production.db.ProdHumanResource"/>
+	
+	<input file="production_prodProcess.csv" separator=";" type="com.axelor.apps.production.db.ProdProcess"/>
+	
+	<input file="production_prodProcessLine.csv" separator=";" type="com.axelor.apps.production.db.ProdProcessLine"/>
+
+	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial" />
+	
+<!-- 	<input file="production_prodProduct.csv" separator=";" type="com.axelor.apps.production.db.ProdProduct"/> -->
+	
+	<input file="production_productionConfig.csv" separator=";" type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId"/>
+	
+	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId" update="true">
+		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)" column="startDateTime"/>
+		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTime)" column="endDateTime"/>
+	</input>
+	
+<!-- 	Update default BOM -->
+	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId" update="true">
+	    <bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+	</input>
+	
+	<input file="meta_menuGroup.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true">
+		<bind column="groups" to="groups" search="self.code in :groups" eval="groups.split('\\|') as List"/>
+	</input>
+	
+	<input file="base_template.csv" separator=";" type="com.axelor.apps.base.db.Template" update="true" search="self.name = :name"/>
+	
+</csv-inputs>
+

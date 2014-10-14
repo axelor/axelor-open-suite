@@ -1,0 +1,30 @@
+"importId";"code";"name";"type.importId";"excessPaymentOk";"editReceiptOk";"descriptionModel";"descriptionIdentificationOk";"notExportOk";"exportCode";"statusSelect";"company.importId"
+1;"SAL";"Sales";1;"false";"false";"Cust. Inv.";"true";"false";;"1";1
+2;"CREF";"Refunds";2;"false";"false";"Cust. Refund";"true";"false";;"1";1
+3;"PCH";"Purchase";4;"false";"false";"Suppl. Inv.";"true";"false";;"1";1
+4;"SREF";"Supplier Refund";2;"false";"false";"Suppl. Refund";"true";"false";;"1";1
+5;"IN_CSH";"Cash Cashing";3;"false";"true";"Payment Rec.";"true";"false";;"1";1
+6;"IN_CHQ";"Cheque Cashing";3;"true";"false";"Payment Rec.";"true";"false";;"1";1
+7;"IN_CC";"Credit Card Cashing";3;"false";"false";"Payment Rec.";"true";"false";;"1";1
+8;"IN_WEB";"Internet Cashing";3;"false";"false";"Payment Rec.";"true";"false";;"1";1
+9;"IN_IPO";"IPO Cashing";3;"true";"false";"Payment Rec.";"true";"false";;"1";1
+10;"IN_IPOC";"IPO + Cheque Cashing";3;"true";"false";"Payment Rec.";"true";"false";;"1";1
+11;"IN_WT";"Wire Transfer Cashing";3;"true";"false";"Payment Rec.";"true";"false";;"1";1
+12;"IN_DD";"Direct Debit Cashing";3;"false";"false";"Payment Rec.";"true";"false";;"1";1
+13;"IN_OTH";"Other Cashing";3;"false";"false";"Payment Rec.";"true";"false";;"1";1
+14;"RBT_CLT";"Client reimbursement";3;"false";"false";"Reimbursement ";"true";"false";;"1";1
+15;"OUT_CSH";"Cash Payments";3;"true";"true";"Payment Emit.";"true";"false";;"1";1
+16;"OUT_CHQ";"Cheque Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1
+17;"OUT_CC";"Credit Card Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1
+18;"OUT_IPO";"IPO Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1
+19;"OUT_WT";"Wire Transfer Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1
+20;"OUT_DD";"Direct Debit Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1
+21;"OUT_OTH";"Other Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1
+22;"ACC_CLR";"Account clearance";3;"true";"false";;"false";"false";;"1";1
+23;"MISC_AUTO";"Auto Misc. Operation on invoices or cashing";3;"false";"false";;"false";"false";;"1";1
+24;"MISC_MAN";"Manual Misc. Operation";3;"false";"false";;"false";"false";;"1";1
+25;"REJ_BK";"Bank Operations Rejects";3;"false";"false";"Reject ";"true";"false";;"1";1
+26;"INSTALL";"Monthly Installments";3;"false";"false";"Installment";"true";"false";;"1";1
+27;"TECH";"Technical";5;"false";"false";;"false";"true";;"1";1
+28;"IRRECOV";"Irrecoverables";4;"false";"false";"Irrecoverable";"false";"false";;"1";1
+29;"EXP";"Employees Travel expenses";4;"false";"false";"Expense";"true";"false";;"1";1

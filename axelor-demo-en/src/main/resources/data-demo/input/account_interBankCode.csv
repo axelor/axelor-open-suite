@@ -1,0 +1,189 @@
+"code_fichier";"description_fichier";"date_fin";"nom_fichier";"code_rejet";"libelle_rejet";"description_rejet";"rejet_technique";"virement";"prelevement";"prelevement_sepa";"lcr_bor";"cheque"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";76;"RCLTARDIVE";"réclamation tardive";"f";"t";"t";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";80;"CONTESTATION DEBITEUR";"Contestation par le débiteur d’une opération débitée dans
+les 8 semaines qui suivent le paiement :
+- Prélèvement : Le débiteur conteste le prélèvement
+dans les 8 semaines qui suivent le paiement de celui-ci.
+Il précise à sa banque le motif de sa contestation.
+- TIP : contestation impliquant ou non une demande de
+photocopie de TIP n’est pas satisfaite dans les délais
+par le Centre Bancaire
+- Télérèglement : le débiteur a été débité d’un montant
+qu’il n’a pas validé";"f";"f";"t";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";14;"CPTE SOLDE CLOTURE VIRE";"le client a soldé son compte ou bien le compte a été clôturé,
+transféré dans un autre guichet de la banque ou du groupe";"f";"t";"t";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";12;"COORD. BANC. INEXPLOIT.";"les coordonnées bancaires du destinataire (code
+établissement, code guichet ou numéro de compte) ne sont
+pas reconnues par la banque domiciliataire";"f";"t";"t";"t";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";31;"PAS D’AUTORISATION";"PRL : la banque n'a pas reçu l'autorisation de
+prélèvement ou l'adhésion au Télérèglement,
+alors qu'un premier débit s'est présenté, ou bien le client a effectué une révocation de l’autorisation de prélèvement et de la demande
+de prélèvement ou de l'adhésion au Télérèglement (opposition définitive)
+TIP : suite à une demande de photocopie de TIP, le
+Centre Bancaire a répondu qu'il n'en trouvait pas trace
+SEPA : pas de réponse du client au relevé d'effets à payer. A
+n'utiliser qu'en l'absence d'instructions du débiteur";"f";"f";"t";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";16;"DESTINATAIRE NON RECONNU";"VIR/PRL/TIP/LCR/BOR : le nom du destinataire n'est pas précisé ou ne correspond
+pas aux coordonnées bancaires";"f";"t";"t";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";11;"ANNULATION BANCAIRE";"LCR/BOR : Annulation d'une opération compensée à tort suite à un
+incident technique dans la banque";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";13;"CREANCE NON IDENTIFIABLE";"LCR/BOR : référence ""tiré"" absente ou incorrecte sur le document ou
+l'enregistrement remis par la banque domiciliataire à son
+client. Ce code fait l'objet d'un suivi statistique de la Banque
+de France et les enregistrements correspondants doivent
+comporter le n° SIREN";"f";"f";"f";"f";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";1;"ENDOS ERRONE";"LCR/BOR : Le nom du tireur est absent de la zone C2 de
+l'enregistrement 07";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";2;"ECHEANCE HORS LIMITE";"LCR/BOR : La date d'échéance de l'effet est postérieure au délai de
+conservation fixé par la banque";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";3;"DATE INCOHERENTE";"LCR/BOR : La date d'échéance n'appartient pas au calendrier
+grégorien (par exemple 30/02/99)";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";4;"RECLAMATION PARTIELLE";"LCR/BOR : Le remettant a demandé de présenter l'effet pour un
+montant inférieur à sa valeur d'origine ; la partie non
+présentée dans le système d'échanges lui est restituée
+avec ce motif
+05 RECLAMATION TOTALE
+Le remettant a demandé de ne plus présenter l'effet
+06 NON RETOUR D'ACCEPTATION
+L'effet n'est";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";5;"RECLAMATION TOTALE";"Le remettant a demandé de ne plus présenter l'effet";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";6;"NON RETOUR D'ACCEPTATION";"LCR/BOR : L'effet n'est jamais revenu de l'envoi à l'acceptation";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";13;"CREANCE NON IDENTIFIABLE";"LCR/BOR : référence ""tiré"" absente ou incorrecte sur le document ou
+l'enregistrement remis par la banque domiciliataire à son
+client. Ce code fait l'objet d'un suivi statistique de la Banque
+de France et les enregistrements correspondants doivent
+comporter le n° SIREN";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";19;"CREANCE CEDEE A AUTRE BQ";"LCR/BOR : le tiré a reçu une notification émanant d'une banque
+différente du banquier présentateur. Ce code fait l'objet d'un
+suivi statistique de la Banque de France et les
+enregistrements correspondants doivent comporter le n°
+SIREN";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";39;"NE PAIE QUE LCRA ou BOR";"LCR/BOR : le tiré a donné des instructions pour ne payer que les effets
+qu'il a préalablement acceptés et la notification de la
+décision du client doit avoir été portée à la connaissance de
+la Banque de France préalablement. Les enregistrements
+correspondants doivent comporter le n° SIREN";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";54;"ADRESSE INVALIDE";"VIR : Uniquement pour un virement SEPA : L’adresse indiquée
+ne correspond à celle du titulaire du compte";"f";"t";"f";"f";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";57;"FORMAT INVALIDE";"VIR : Uniquement pour un virement SEPA : Rejet/retour sur ordre
+du bénéficiaire.
+PRL SEPA : Refus du débiteur ou reversement à la demande du
+créancier";"f";"t";"f";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";58;"SUR ORDRE DU CLIENT";"VIR : Uniquement pour un virement SEPA : Rejet/retour sur ordre
+du bénéficiaire.
+PRL SEPA : Refus du débiteur ou reversement à la demande du
+créancier";"f";"t";"f";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";59;"RAISON NON COMMUNIQUEE";"VIR/PRL SEPA : Uniquement pour une opération SEPA : Rejet/Retour
+par la banque destinataire. La banque destinataire n’a
+pas communiqué de raison spécifique.";"f";"t";"f";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";60;"CODE BANQUE INCORRECT";"VIR/PRL SEPA : Uniquement pour une opération SEPA : Le code
+banque (BIC) de la banque destinataire est incorrect.";"f";"t";"f";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";61;"HEURE LIMITE DEPASSEE";"VIR : Uniquement pour un virement SEPA : Fichier reçu après
+le cut-off.";"f";"t";"f";"f";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";62;"MOTIF REGLEMENTAIRE";"VIR/PRL SEPA : Uniquement pour une opération SEPA : Le rejet/retour
+est dû à une contrainte règlementaire (par exemple :
+une donnée règlementaire est absente).";"f";"t";"f";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";63;"SERVICE SPECIFIQUE";"PRL SEPA : Le rejet/retour est dû à un service spécifique fourni par
+la banque destinataire à son client";"f";"f";"f";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";64;"DOUBLON";"VIR/PRL SEPA : Uniquement pour une opération SEPA : Opération
+dupliquée";"f";"t";"f";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";65;"RETOUR SUITE DEMANDE";"VIR : Uniquement pour un virement SEPA : Le retour est fait
+par la banque du bénéficiaire suite à une demande
+reçue de la part de la banque du donneur d’ordre.";"f";"t";"f";"f";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";66;"DONNEE MANDAT INCORRECT";"PRL SEPA : Une ou plusieurs données du mandat sont absentes ou
+erronées. Ce motif ne concerne que les « Rejets »
+(avant règlement interbancaire)";"f";"f";"f";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";70;"TIRAGE CONTESTE";"LCR/BOR : litiges (sauf cas couverts par les motifs 71, 73 et 74)
+pas de facture ou facturation contestée
+marchandise non conforme ou défectueuse
+livraison non reçue
+marchandise retournée au fournisseur, etc..";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";71;"RECU A TORT / DEJA REGLE";"VIR : opération reçue à tort
+LCR/BOR : opération déjà réglée par le biais d'un autre moyen de
+paiement ou opération en double.";"f";"t";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";72;"CODE ACCEPTATION ERRONE";"LCR/BOR : présence ou absence d'un code d'acceptation ne
+correspondant pas à la réalité. Les enregistrements
+correspondants doivent comporter le n° SIREN";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";73;"MONTANT CONTESTE";"LCR/BOR : avoir non pris en considération montant de l'effet différent de la facturation";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";74;"DATE ECHEANCE CONTESTEE";"LCR/BOR : la date d'échéance ne correspond pas à celle qui a été
+convenue.";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";75;"DEMANDE DE PROROGATION";"PRL/TIP : bien que la date d'échéance de l'opération soit bien celle
+qui a été convenue, le débiteur demande un délai
+supplémentaire pour payer. Ne concerne que les cas où
+une échéance a été convenue entre le débiteur et le
+créancier.
+LCR/BOR : bien que la date d'échéance de l'opération soit bien celle
+qui a été convenue, le tiré demande un délai
+supplémentaire";"f";"f";"t";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";76;"RECLAMATION TARDIVE";"VIR : réclamation tardive de l'émetteur
+PRL/TIP : couvre tous les cas de rejet à la demande du créancier
+intervenant après l'émission de l'opération
+LCR/BOR : le tireur a réclamé l'effet après présentation par sa banque.
+Le tiré utilise ce motif en accord avec le tireur.";"f";"t";"t";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";80;"CONTESTATION DEBITEUR";"Contestation par le débiteur d’une opération débitée dans
+les 8 semaines qui suivent le paiement :
+PRL : Le débiteur conteste le prélèvement
+dans les 8 semaines qui suivent le paiement de celui-ci.
+Il précise à sa banque le motif de sa contestation.
+TIP : contestation impliquant ou non une demande de
+photocopie de TIP n’est pas satisfaite dans les délais
+par le Centre Bancaire";"f";"f";"t";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";88;"BANQUE HORS ECHANGES";"VIR/TIP/PRL/LCR/BOR : la banque qui assurait les échanges ou la banque
+domiciliataire ne participe plus aux échanges";"f";"t";"t";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";90;"PAIEMENT PARTIEL DU TIRE";"LCR/BOR : paiement partiel résultant d'une contestation entre le tireur
+et le tiré ne devant pas masquer une insuffisance de
+provision.";"f";"f";"f";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";52;"CODE OPERATION INCORRECT";"VIR : Uniquement pour un « Retour » de virement SEPA : format
+de fichier invalide
+PRL SEPA : Le code opération indiqué est incorrect.";"f";"t";"f";"t";"f";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";32;"DECISION JUDICIAIRE";"PRL/TIP : Le débiteur a fait l’objet d’une décision de justice au titre
+d’une procédure collective
+LCR/BOR : Le client tiré a fait l’objet d’une décision de justice au titre d’une procédure collective";"f";"f";"t";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";18;"EMETTEUR NON RECONNU";"VIR/LCR/BOR : émetteur non précisé ou non identifiable
+PRL/TIP : Le NNE est absent ou ne correspond pas :
+- à l'autorisation de prélèvement,
+- à l'adhésion au Télérèglement
+- au TIP
+signé par le débiteur";"f";"t";"t";"f";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";99;"OPERATION NON ADMISE";"VIR/PRL/TIP : pour des raisons réglementaires, ce compte n'admet pas les Virements SEPA, Prélèvements, TIP et Télérèglements.
+LCR/BOR : opération ne pouvant être payée sur certaines catégories
+de comptes (comptes sur livrets, comptes à terme, comptes
+non professionnels...)
+PRL SEPA : Le débiteur refuse tout prélèvement SEPA sur ce compte
+ou pour des raisons réglementaires, ce compte n'admet pas
+les prélèvements SEPA.";"f";"t";"t";"t";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";34;"OPPOSITION SUR COMPTE";"VIR : compte frappé d'opposition ou compte bloqué
+TIP/PRL/PRL SEPA/LCR/BOR: le compte du débiteur est frappé d'opposition suite à une saisie attribution, une saisie conservatoire ou un avis à tiers détenteur. La date d'opposition doit précéder la date
+d'échéance ou de règlement interbancaire de l'opération.
+Non utilisé pour le prélèvement SEPA interentreprises";"f";"t";"t";"t";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";20;"PROVINSUF";"TIP/PRL/LCR/BOR : provision insuffisante
+PRL SEPA : compte sans provision
+paiement partiel à l'initiative de la banque domiciliataire
+faute de provision suffisante.";"f";"f";"t";"t";"t";"f"
+"REJET1";"Codes et motifs de rejet de virements, prélèvements, TIP, prélèvement SEPA";;"pour PRL-TIP-VIR-PRL SEPA";35;"TITULAIRE DECEDE";"VIR : titulaire du compte décédé
+PRL/TIP/SEPA : le client est décédé. La date du décès doit précéder la date d'échéance ou de règlement interbancaire de l'opération.
+Non utilisé pour le prélèvement SEPA interentreprises
+LCR/BOR : le client tiré de l'effet est décédé (entrepreneur individuel). La date du décès doit précéder la date d'échéance ou de
+règlement interbancaire de l'opération";"f";"t";"t";"t";"t";"f"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";10;"PERTE";"Le tireur a déclaré la perte à sa banque.";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";11;"VOL";"Le tireur a déclaré le vol à sa banque";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";12;"UTILISATION FRAUDULEUSE";"Par exemple mandataire révoqué qui continue à utiliser les formules de chèques";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";13;"DECISION JUDICIAIRE";"Le porteur a fait l’objet d’une décision de justice au titre d’une procédure collective";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";20;"CHEQUE PRESCRIT";"Ce motif unique s'applique lorsque le chèque est présenté au-delà d'un an augmenté du délai de présentation à compter de la date de création du chèque.";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";30;"ABSENCE MENTION OBLIG";"Notamment ""absence de signature"".";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";31;"SIGNATURE NON CONFORME";"Signature(s) non conforme(s) au(x) spécimen(s) déposé(s)";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";32;"INSUFFISANCE SIGNATURE";"Manque une ou plusieurs signatures pour que le chèque soit valide.";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";33;"FALSIFICATION SURCHARGE";"Chèque qui, après avoir été régulièrement émis, est modifié frauduleusement par un tiers ou le bénéficiaire en ce qui concerne une ou plusieurs de ses mentions (montant, nom du bénéficiaire, signature).";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";34;"FAUX CHEQUE";"Fraude sur les informations pré-marquées du chèques(chèque créé de toute pièce comportant des coordonnées exactes ou erronées).";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";35;"ABSENCE ENDOS OU IRREG";"Absence ou irrégularité de l'endos";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";40;"DECISION JUDICIAIRE";"Le tireur a fait l’objet d’une décision de justice au titre d’une procédure collective.
+Commentaires : dans le cas où il est prouvé que la date d’émission est
+antérieure à l’ouverture de la procédure collective, le chèque, même
+présenté postérieurement, pourrait être en principe honoré";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";41;"SAISIE";"Saisie attribution ou conservatoire";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";43;"AVIS DETENTEUR";"Avis à tiers détenteur";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";43;"DECEDE";"Décès du titulaire";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";44;"DENONCIATION COMPTE COLL";"Dénonciation de convention de compte collectif";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";60;"IMPAYE TOTAL";"Chèque impayé pour le montant total";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";61;"IMPAYE PARTIEL";"Paiement partiel";"f";"f";"f";"f";"f";"t"
+"REJET2";"Codes et motifs de rejets relatifs aux Chèques";;"pour CHQ";62;"COMPTE CLOTURE";"Compte clôturé";"f";"f";"f";"f";"f";"t"
