@@ -1,0 +1,23 @@
+"code";"name";"password";"group.code";"language";"homeAction"
+"admin";"Admin";"admin";"admins";"en";
+"demo";"Demo";"demo";"user";"en";
+"psdt";"Yoann MARQUES";"psdt";"MNGT";"en";
+"assist";"Lucy ROBERT";"assist";"MNGT";"en";
+"projdir";"Lucas RICHARD";"projdir";"MNGT";"en";
+"projmg";"Daniel SILVA";"projmg";"ERP";"en";
+"consultant";"Charles MARTIN";"consultant";"CST";"en";
+"demoerp";"Kevin DEMOERP";"demoerp";"ERP";"en";"portal.saleman.dashboard.view.sample"
+"democrm";"Charles DEMOCRM";"democrm";"CRM";"en";"crm.portal.opportunities.dashboard.2.view"
+"smn2";"Tony RAYMOND";"smn2";"SALE";"en";
+"sms1";"Thomas LAMY";"sms1";"SALE";"en";
+"sms2";"Anne GIRAULT";"sms2";"SALE";"en";
+"smi1";"Dimitri GEOFFROY";"smi1";"SALE";"en";
+"purch";"Alex DAVID";"purch";"PURCH";"en";
+"prod";"William ANDRE";"prod";"OPTS";"en";
+"suppmg";"David MAURIN";"suppmg";"OPTS";"en";
+"supp1";"Cyril MARCHAL";"supp1";"OPTS";"en";
+"supp2";"Robin COSTA";"supp2";"OPTS";"en";
+"hrmg";"Romane COLIN";"hrmg";"HRSC";"en";
+"account";"Victoria LOUIS";"account";"ACCO";"en";
+"client";"123 Service";"client";"CLT";"en";"wizard-client-view"
+"supplier";"TOP Components";"supplier";"SUP";"en";"wizard-supplier-view"

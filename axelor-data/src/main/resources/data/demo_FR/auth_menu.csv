@@ -1,0 +1,7 @@
+"id";"name";"description";"permissions"
+1;"role.crm";"Accès à l'ensemble des objets du module CRM";"perm.base.all|perm.crm.all|perm.organisation.rwc|perm.supplychain.rwc"
+2;"role.supplychain";"Accès à l'ensemble des objets du module Supply Chain";"perm.base.all|perm.crm.all|perm.organisation.all|perm.supplychain.all|perm.production.rwc|perm.account.rw"
+3;"role.operations";"Accès à l'ensemble des objets liés aux opérations (Production, Stock...)";"perm.base.all|perm.crm.all|perm.organisation.all|perm.supplychain.rwc|perm.production.all"
+4;"role.accounting";"Accès à l'ensemble des objets du module Account";"perm.base.all|perm.crm.all|perm.organisation.all|perm.supplychain.rwc|perm.account.all"
+5;"role.hr";"Accès à l'ensemble des fonctionnalités RH";"perm.base.all|perm.organisation.allperm.crm.all"
+6;"role.manager";"Accès à l'ensemble des fonctionnalités";"perm.base.all|perm.account.all|perm.organisation.all|perm.production.all|perm.crm.all|perm.supplychain.all"

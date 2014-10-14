@@ -1,0 +1,15 @@
+"id";"code";"name";"navigation";"permissions";"technicalStaff";"roles"
+1;"admins";"Administrateur";"visible";;"true";
+2;"user";"Utilisateur";"visible";;"false";
+3;"BPM";"BPM";"visible";;"false";
+4;"CLT";"Client";"hidden";"perms.user-info";"false";"role.client"
+5;"CST";"Consultant";"visible";;"false";"role.consultant"
+6;"CRM";"CRM";"visible";;"false";"role.crm"
+7;"ERP";"ERP";"visible";;"false";"role.manager"
+8;"VTE";"Ventes";"visible";;"false";"role.supplychain"
+9;"ACH";"Achats";"visible";;"false";"role.supplychain"
+10;"CPT";"Comptabilité";"visible";;"false";"role.accounting"
+11;"HRM";"RH";"visible";;"false";"role.hr"
+12;"OPS";"Opérations";"visible";;"false";"role.operations"
+13;"MGT";"Manager";"visible";;"false";"role.manager"
+14;"FRN";"Fournisseur";"hidden";"perms.user-info";"false";"role.supplier"

@@ -1,0 +1,17 @@
+"importId";"code_fr";"name_fr";"code_en";"name_en";"productFamily.importId"
+1;"HEB";"Hébergement";"HOST";"Hosting";1
+2;"MAIN";"Maintenance";"MAIN";"Maintenance";1
+3;"SERV";"Serveur";"SERV";"Server";2
+4;"IMP";"Imprimante";"PRT";"Printer";2
+5;"DD";"Disque dur";"HDD";"Hard Disk";3
+6;"PROC";"Processeur";"PROC";"Processor";3
+7;"BOIT";"Boitier";"CASE";"Case";3
+8;"MEM";"Mémoire";"MEM";"Memory";3
+9;"CARTM";"Carte mère";"MOB";"Motherboard";3
+10;"NPER";"Non-Périssable";"NPER";"Non-perishable";4
+11;"PER";"Périssable";"PER";"Perishable";4
+12;"REG";"Régie";"TIMB";"Time based";5
+13;"FORF";"Forfait";"PROB";"Project based";5
+14;"TRAN";"Transport";"TRAN";"Transport";6
+15;"REP";"Repas";"MEAL";"Meal";6
+16;"HEB2";"Hébergement2";"ACCO";"Accomodation";6
