@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="sale-order-schedule-line-grid" title="SO schedule lines" model="com.axelor.apps.sale.db.SaleOrderScheduleLine">
+        <field name="sequence"/>
+        <field name="amountToBeInvoiced"/>
+        <field name="invoicingPercentage"/>
+        <field name="saleOrderLine"/>
+    	<field name="accumulatedInvoicingPercentage"/>
+    	<field name="nbOfDay"/>
+		<field name="invoice"/>    	
+    </grid>
+
+	<form name="sale-order-schedule-line-form" title="SO schedule line"
+		model="com.axelor.apps.sale.db.SaleOrderScheduleLine" onNew="action-group-sale-saleorder-scheduleline-onnew">
+	  <panel>
+	    <field name="sequence"/>
+	    <field name="amountToBeInvoiced"/>
+	    <field name="invoicingPercentage"/>
+	    <field name="saleOrderLine" domain="self.saleOrder = :saleOrder"/>
+	    <field name="accumulatedInvoicingPercentage"/>
+	    <field name="nbOfDay"/>
+	    <field name="invoice"/>
+	  </panel>
+	</form>
+    
+    <action-group name="action-group-sale-saleorder-scheduleline-onnew">
+    	<action name="action-sale-order-schedule-line-record-sequence"/>
+    	<action name="action-sale-order-schedule-line-attrs-hide-nb-of-day"/>
+    </action-group>
+    
+    <action-attrs name="action-sale-order-schedule-line-attrs-sale-order-line-domain">
+    	<attribute name="domain" for="saleOrderLine" expr="eval: self.saleOrder = :saleOrder "/>
+    </action-attrs>
+    
+    <action-attrs name="action-sale-order-schedule-line-attrs-hide-nb-of-day">
+    	<attribute name="hidden" for="nbOfDay" expr="eval: _parent?.invoicingMomentSelect == 1"/>
+    </action-attrs>
+    
+    <action-record name="action-sale-order-schedule-line-record-sequence" model="com.axelor.apps.sale.db.SaleOrderScheduleLine">
+    	<field name="sequence" expr="eval: _parent.saleOrderScheduleLineList.size()+1" if="_parent.saleOrderScheduleLineList != null" />
+    	<field name="sequence" expr="eval: 1" if="_parent.saleOrderScheduleLineList == null" />
+    </action-record>
+    
+</object-views>

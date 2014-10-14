@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="SaleConfig" lang="java" cachable="true">
+  	<integer name="importId"/>
+    
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
+
+  	<integer name="saleOrderInvoicingTypeSelect" title="Sales order invoicing type" selection="sale.order.invoicing.type.select"/>
+  	
+  </entity>
+  
+</domain-models>

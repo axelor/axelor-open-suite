@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="SaleBatch" lang="java">
+  	
+  	<!-- HEADER -->
+  	<string name="code" title="Code" namecolumn="true" unique="true"/>
+    <integer name="actionSelect" title="Action" required="true" selection="sale.batch.action.select"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
+    
+    <!-- OTHERS INFORMATIONS -->
+    <string name="description" title="Description" large="true" />
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="saleBatch" title="Batchs" />
+  
+  </entity>
+
+</domain-models>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="SaleOrderSubLine" lang="java">
+  
+  	<many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order lines"/>
+  
+  	<integer name="sequence" title="Seq."/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+  	<string name="productName" title="Label"/>
+  	<string name="description" title="Description" large="true"/>
+	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+	<decimal name="qty" title="Qty"/>
+	<decimal name="price" title="Unit price"/>
+	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+  	<decimal name="exTaxTotal" title="Total W.T."/>
+  	
+  	<decimal name="discountAmount" title="Discount amount"/>
+  	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
+    
+    <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
+    
+    <!--   	Champ technique non affiché, utilisé pour les reportings -->
+  	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
+  	<decimal name="companyCostPrice" title="Unit cost price in company currency" hidden="true"/>
+  	
+  </entity>
+
+</domain-models>
