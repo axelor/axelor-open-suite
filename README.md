@@ -1,9 +1,9 @@
-Axelor ERP
+Axelor Business Suite
 ================================
 
-Axelor ERP reduces the complexity and improve responsiveness of business processes. Thanks to its modularity, you can start with few features and  then activate other modules when needed.
+Axelor Business Suite reduces the complexity and improve responsiveness of business processes. Thanks to its modularity, you can start with few features and  then activate other modules when needed.
 
-Axelor ERP includes the following modules :
+Axelor Business Suite includes the following modules :
 
 * Customer Relationship Management
 * Sales management
@@ -14,13 +14,13 @@ Axelor ERP includes the following modules :
 * Production Management
 * Multi-company, multi-currency and multi-lingual
 
-Axelor ERP is built on top of [Axelor SDK](https://github.com/axelor/axelor-sdk)
+Axelor Business Suite is built on top of [Axelor SDK](https://github.com/axelor/axelor-sdk)
 
 Download
 -------------------------
 ```bash
-$ git clone git@github.com:axelor/axelor-app.git
-$ cd axelor-app/
+$ git clone git@github.com:axelor/abs-webapp.git
+$ cd abs-webapp
 $ git checkout master
 $ git submodule init 
 $ git submodule update 
