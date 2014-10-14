@@ -1,0 +1,34 @@
+"key","message","comment","context"
+"Anomaly","","","resources/domains/TraceBack.xml:8
+resources/views/TraceBack.xml:40"
+"Batch","","","resources/domains/TraceBack.xml:18"
+"CRM","","","resources/views/Selects.xml:26"
+"Category","","","resources/domains/TraceBack.xml:10"
+"Cause","","","resources/views/TraceBack.xml:46
+resources/domains/TraceBack.xml:15"
+"Configuration problem","","","resources/views/Selects.xml:15"
+"Date","","","resources/domains/TraceBack.xml:12"
+"Direct debit","","","resources/views/Selects.xml:24"
+"Doubtful customer","","","resources/views/Selects.xml:22"
+"Error","","","resources/views/TraceBack.xml:43
+resources/domains/TraceBack.xml:14"
+"Functional anomaly","","","resources/views/Selects.xml:8"
+"Inconsistency","","","resources/views/Selects.xml:16"
+"Interbank payment order","","","resources/views/Selects.xml:25"
+"Invoicing","","","resources/views/Selects.xml:20"
+"Message","","","resources/domains/TraceBack.xml:16
+resources/views/TraceBack.xml:49"
+"Missing field","","","resources/views/Selects.xml:12"
+"Name","","","resources/domains/TraceBack.xml:20"
+"No Return Value","","","resources/views/Selects.xml:14"
+"Non-unique key","","","resources/views/Selects.xml:13"
+"Reimbursement","","","resources/views/Selects.xml:23"
+"Reminder","","","resources/views/Selects.xml:21"
+"Technical anomaly","","","resources/views/Selects.xml:7"
+"Trace","","","resources/domains/TraceBack.xml:17
+resources/views/TraceBack.xml:52"
+"TraceBack","","","resources/views/TraceBack.xml:24
+resources/views/TraceBack.xml:6"
+"Type","","","resources/domains/TraceBack.xml:9"
+"User","","","resources/domains/TraceBack.xml:13"
+"origin","","","resources/domains/TraceBack.xml:11"
