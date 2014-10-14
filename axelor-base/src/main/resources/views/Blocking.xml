@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="blocking-grid" title="Blockings" model="com.axelor.apps.base.db.Blocking">
+        <field name="invoicingBlockingOk"/>
+        <field name="debitBlockingOk"/>
+        <field name="reimbursementBlockingOk"/>
+        <field name="reminderBlockingOk" />
+    </grid>
+    
+    <form name="blocking-form" title="Blocking" model="com.axelor.apps.base.db.Blocking"   >
+     	<panel>
+		    <field name="invoicingBlockingOk" colSpan="3"/>
+		    <field name="debitBlockingOk" colSpan="3"/>
+		    <field name="reimbursementBlockingOk" colSpan="3"/>
+		    <field name="reminderBlockingOk" colSpan="3"/>
+		</panel>
+		
+		<panel title="Invoicing blocking" showIf="invoicingBlockingOk" colSpan="12">
+			<field name="invoicingBlockingToDate" colSpan="4"/>
+			<field name="invoicingBlockingReason" colSpan="4"/>
+			<field name="invoicingBlockingByUser" colSpan="4"/>
+		</panel>
+		
+		<panel title="Direct debit blocking" showIf="debitBlockingOk" colSpan="12">
+		  <field name="debitBlockingToDate" colSpan="4"/>
+		  <field name="debitBlockingReason" colSpan="4"/>
+		  <field name="debitBlockingByUser" colSpan="4"/>
+		</panel>
+		
+		<panel title="Reimbursement blocking" showIf="reimbursementBlockingOk" colSpan="12">
+		  <field name="reimbursementBlockingToDate" colSpan="4"/>
+		  <field name="reimbursementBlockingReason" colSpan="4"/>
+		  <field name="reimbursementBlockingByUser" colSpan="4"/>
+		</panel>
+		
+		<panel title="Reminder blocking" showIf="reminderBlockingOk" colSpan="12">
+		  <field name="reminderBlockingToDate" colSpan="4"/>
+		  <field name="reminderBlockingReason" colSpan="4"/>
+		  <field name="reminderBlockingByUser" colSpan="4"/>
+		</panel>
+    </form>
+
+</object-views>

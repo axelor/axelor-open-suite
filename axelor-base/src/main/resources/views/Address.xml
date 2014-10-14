@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
+		<field name="fullName" />
+		<button name="map" icon="fa-map-marker" help="Locate" onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
+		<button name="directions" icon="fa-location-arrow" help="Direction" onClick="com.axelor.apps.base.web.AddressController:directionsMap" />
+	</grid>
+	
+	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
+	onSave="action-group-base-address-onsave" onLoad="action-address-get-general-qas" onNew="default-address-record,action-address-get-general-qas" readonlyIf="id != null &amp;&amp; fromMain == null" >
+		<panel name="main" title="Address details" colSpan="12">
+			<field name="addressL2" onChange="action-check-string-capital-case"/>
+			<field name="addressL3" onChange="action-check-string-capital-case"/>
+			<field name="addressL4" onChange="action-check-string-capital-case"/>
+			<field name="addressL5" onChange="action-check-string-capital-case"/>
+			<field name="addressL6" onChange="action-check-string-capital-case" required="true"/>
+			<field name="commune" onChange="action-address-change-commune"/>
+			<field name="addressL7Country" required="true"/>
+			<button-group colSpan="6">
+				<button name="map" title="View map" icon="fa-map-marker" onClick="com.axelor.apps.base.web.AddressController:viewMap,save"/>
+				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="com.axelor.apps.base.web.AddressController:directionsMap"/>
+			</button-group>
+			<field name="isUsed" hidden="true" widget="BOOLEAN"/>
+		</panel>
+		<panel title="Localisation" hideIf="$popup()">
+			<field name="latit" colSpan="6"/>
+			<field name="longit" colSpan="6"/>
+			<spacer/> 
+		</panel>
+		
+		<panel title="QAS certification" colSpan="12" showIf="hasQasValidation">
+			<field name="certifiedOk" colSpan="4"/>
+			<panel colSpan="4">
+				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+				<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+			</panel>
+			<panel-related field="pickList" title="Pick list" colSpan="12" />
+			<field name="hasQasValidation" type="BOOLEAN" hidden="true"/>
+		</panel>
+	</form>
+	
+	<action-group name="action-group-base-address-onsave">
+		<action name="action-base-address-set-address-used"/>
+		<action name="action-base-address-check-address-used"/>
+	</action-group>
+
+	<action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
+		<field name="addressL7Country" expr="action:default-address-country-record" />
+	</action-record>
+	
+	<action-record name="action-address-change-commune" model="com.axelor.apps.base.db.Address">
+		<field name="addressL6" expr="eval:commune != null ? commune.hasZipOnRight ? commune.name+' '+commune.zip :commune.zip+' '+commune.name: ''" />
+		<field name="addressL7Country"  expr="eval:commune.department != null ? commune.department.region != null ? commune.department.region.country : null : null" if="commune != null"/>
+	</action-record>
+	
+	<action-record name="action-address-get-general-qas" model="com.axelor.apps.base.db.Address">
+		<field name="hasQasValidation" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getHasQasValidation()" />
+	</action-record>
+
+	<action-record name="default-address-country-record"
+		model="com.axelor.apps.base.db.Country" search="('self.code LIKE ?1', 'FRA')">
+		<field name="code" expr="FRA" />
+		<field name="name" expr="FRANCE" />
+	</action-record>
+	
+	<action-record name="action-base-address-set-address-used" model="com.axelor.apps.base.db.Address">
+		<field name="isUsed" expr="call:com.axelor.apps.base.service.AddressService:checkAddressUsed(id)" />
+	</action-record>
+	
+	<action-validate name="action-base-address-check-address-used">
+		<alert message="Be aware that the address is already in use on other documents, do you still want to modify it ?" if="isUsed == true"/>
+	</action-validate>
+</object-views>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	
+    <grid name="price-list-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList"> 
+    	<field name="partner"/> 
+    	<field name="validFrom"/>
+    	<field name="validTo"/>
+    	<field name="title"/>
+    	<field name="isActive"/>
+    </grid>
+    
+   <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
+   onNew="action-price-list-record-default,action-price-list-record-title">
+   		<panel>
+		    <field name="title"/>
+			<field name="typeSelect" colSpan="4"/>
+			<field name="isActive" colSpan="2"/>
+			<field name="partner" onChange="action-price-list-record-title" onSelect="action-price-list-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="isDisplayed"/>
+			<field name="validFromDate" onChange="action-price-list-record-title"/>
+			<field name="validToDate" onChange="action-price-list-record-title"/>
+    	</panel>
+		<panel name="priceListLine" title="Price list lines" >
+			<field name="generalDiscount"/>
+			<label name="or" title="Or" colSpan="12"/>
+			<panel-related field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="12"/>
+		 </panel>
+		<panel name="comments" title="Comments">
+			<field name="comments" colSpan="12" height="3"/>    					
+		</panel>
+   </form>
+   
+   <action-record name="action-price-list-record-default" model="com.axelor.apps.base.db.PriceList">
+   		<field name="partner" expr="eval: _parent.clientPartner" if="_parent._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+   		<field name="partner" expr="eval: _parent.supplierPartner" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+   		<field name="partner" expr="eval: _parent.partner" if="_parent._model == 'com.axelor.apps.account.db.Invoice'"/>
+   		<field name="partner" expr="eval: _parent.clientPartner" if="_parent._model == 'com.axelor.apps.protraining.db.ProTraining'"/>
+   		<field name="typeSelect" expr="1" if="_parent._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+   		<field name="typeSelect" expr="2" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+   		<field name="typeSelect" expr="1" if="_parent._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent.operationTypeSelect == 3 || _parent.operationTypeSelect == 4)"/>
+   		<field name="typeSelect" expr="2" if="_parent._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent.operationTypeSelect == 1 || _parent.operationTypeSelect == 2)"/>
+   		<field name="typeSelect" expr="1" if="_parent._model == 'com.axelor.apps.protraining.db.ProTraining'"/>
+   		<field name="isActive" expr="true"/>
+   		<field name="isDisplayed" expr="true"/>
+   		<field name="validFromDate" expr="eval: __date__"/>
+   </action-record>
+   
+   <action-record name="action-price-list-record-title" model="com.axelor.apps.base.db.PriceList">
+   		<field name="title" expr="eval: partner?.fullName + ' - ' + validFromDate" if="title == null &amp;&amp; partner != null &amp;&amp; validFromDate != null"/>
+   </action-record>
+   <action-attrs name="action-price-list-partner-domain">
+   	<attribute name="domain" for="partner" if="typeSelect == 1" expr="self.isContact = false and self.customerTypeSelect != 1" />
+   	<attribute name="domain" for="partner" if="typeSelect == 2" expr="self.isContact=false and self.supplierTypeSelect != 1"/>
+   </action-attrs>
+   
+</object-views>
+

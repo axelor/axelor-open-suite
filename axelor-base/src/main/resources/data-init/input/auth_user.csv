@@ -1,0 +1,3 @@
+"code";"name";"password";"group.code";"language";"homeAction";"importId";"companySet.importId";"activeCompany.id";"partner.importId";"activeCashRegister.id";"teamSet.importId";"employee.importId";"activeTeam.id"
+"admin";"Admin";"admin";"admins";"en";;1;"1";1;90000;;;;
+"demo";"Demo";"demo";"users";"en";;2;"1";1;90000;;;;

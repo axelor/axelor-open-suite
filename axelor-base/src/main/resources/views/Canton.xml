@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    <grid name="canton-grid" title="Cantons" model="com.axelor.apps.base.db.Canton">
+        <field name="name"/>
+        <field name="code"/>
+    	<field name="inhabitantsNbr" />
+        <field name="artmin"/>
+        <field name="department"/>
+    </grid>
+    <form name="canton-form" title="Canton" model="com.axelor.apps.base.db.Canton"  >
+    	<panel>
+	        <field name="name"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
+	        <field name="artmin"/>
+	        <field name="department"/>
+	    	<field name="inhabitantsNbr" />
+    	</panel>
+    </form>
+</object-views>

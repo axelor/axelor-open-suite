@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="TrackingNumberConfiguration" lang="java">
+	
+	<boolean name="isPurchaseTrackingManaged" title="Manage purchase tracking Nbr. ?"/>
+	<boolean name="isProductionTrackingManaged"  title="Manage production tracking Nbr. ?"/>
+	<boolean name="isSaleTrackingManaged"  title="Manage sale tracking Nbr. ?"/>
+	
+	<boolean name="generatePurchaseAutoTrackingNbr"  title="Generate new purchase auto tracking Nbr. ?"/>
+	<boolean name="generateProductionAutoTrackingNbr"  title="Generate new production auto tracking Nbr. ?"/>
+	<boolean name="generateSaleAutoTrackingNbr"  title="Generate new sale auto tracking Nbr. ?"/>
+	
+	<boolean name="hasSaleAutoSelectTrackingNbr"  title="Auto select sale tracking Nbr. ?"/>
+	<integer name="saleAutoTrackingNbrOrderSelect"  title="Auto sale tracking Nbr. order" selection="base.tracking.number.configuration.sale.tracking.order.select"/>
+	
+	<decimal name="saleQtyByTracking"  title="Sale Qty by tracking"/>
+	<decimal name="purchaseQtyByTracking"  title="Purchase Qty by tracking"/>
+	<decimal name="productionQtyByTracking"  title="Production Qty by tracking"/>
+	
+	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence" required="true"/>
+
+  </entity>
+
+</domain-models>

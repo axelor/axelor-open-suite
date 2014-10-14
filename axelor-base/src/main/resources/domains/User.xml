@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="auth" package="com.axelor.auth.db"/>
+
+  <entity name="User" sequential="true" lang="java">
+  
+  	<string name="importId" />
+    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company" title="Active company"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <datetime name="today" title="Today date" tz="true" />
+    <many-to-many name="teamSet" ref="com.axelor.apps.base.db.Team"  title="Teams"/>
+    <many-to-one name="activeTeam" ref="com.axelor.apps.base.db.Team"  title="Active Team"/>
+    
+    
+    <string name="fullName" namecolumn="true" search="partner" title="Partner name">
+    	<![CDATA[
+    	if(partner != null && partner.getFirstName() != null && partner.getName() != null)  {
+    		return partner.getFirstName()+ " " + partner.getName();
+    	}
+    	else if(partner != null && partner.getFirstName() != null)  {
+	    	return partner.getFirstName();
+	    }
+    	else if(partner != null && partner.getName() != null)  {
+    	    return partner.getName();
+    	}
+    	else  {
+    		return "";
+    	}
+    	]]>
+   	</string>
+   	
+    
+  </entity>
+
+</domain-models>

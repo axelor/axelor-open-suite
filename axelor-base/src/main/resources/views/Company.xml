@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="address"/>
+    </grid>
+
+	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" >
+		<panel readonlyIf="$popup()">
+	    	<field name="administration"/>
+	    	<field name="name"/>
+		    <field name="code" x-bind="{{code|uppercase}}"/>
+		    <field name="parent"/>
+		    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+		    <field name="address" colSpan="12"/>
+		    
+	  	</panel>
+	  
+	  	<panel sidebar="true" title="Modules configurations" hideIf="$popup()">
+	  		<button name="accountConfigButton" title="Account config" width="100%" colSpan="6" onClick="action-company-view-account-config" if-module="axelor-account"/>
+	    	<button name="saleConfigButton" title="Sale config" width="100%" colSpan="6" onClick="action-company-view-sale-config" if-module="axelor-sale"/>
+	    	<button name="stockConfigButton" title="Stock config" width="100%" colSpan="6" onClick="action-company-view-stock-config" if-module="axelor-stock"/>
+	    	<button name="purchaseConfigButton" title="Purchase config" width="100%" colSpan="6" onClick="action-company-view-purchase-config" if-module="axelor-purchase"/>
+	    	<button name="productionConfigButton" title="Production config" width="100%" colSpan="6" onClick="action-company-view-production-config" if-module="axelor-production"/>
+	    	<button name="organisationConfigButton" title="Organisation config" width="100%" colSpan="6" onClick="action-company-view-organisation-config" if-module="axelor-organisation"/>
+    	</panel>
+	  
+	  	<panel title="Notes" showIf="$popup()" readonly="true">
+      		<field name="notes" showTitle="false" colSpan="12"/>
+    	</panel>
+	  
+	  	<panel-tabs hideIf="$popup()">
+	    	<panel title="Notes">
+	      		<field name="notes" showTitle="false" colSpan="12"/>
+	    	</panel>
+	    	<panel title="Configurations">
+	  			<field name="logoPath"/>
+	  			<field name="currency"/>
+	  			<field name="printingSettings"/>
+	  		</panel>
+	    	<panel title="Bank details">
+	      		<field name="defaultBankDetails"/>
+	      		<panel-related field="bankDetailsSet" showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	    	</panel>
+	    	<panel title="Mails / Emails">
+		      	<field name="generatedMailFilePath" />
+		      	<field name="generatedEmailFilePath"/>
+		      	<field name="generatedMailFileName" />
+		      	<field name="generatedEmailFileName"/>
+	    	</panel>
+	  	</panel-tabs>
+   	</form>
+    
+    <action-view name="action-company-view-account-config" title="Account config" model="com.axelor.apps.account.db.AccountConfig">
+    	<view type="form" name="account-config-form"/>
+    	<context name="_showRecord" expr="eval: accountConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
+    
+    <action-view name="action-company-view-purchase-config" title="Purchase config" model="com.axelor.apps.purchase.db.PurchaseConfig">
+    	<view type="form" name="purchase-config-form"/>
+    	<context name="_showRecord" expr="eval: purchaseConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
+    
+    <action-view name="action-company-view-sale-config" title="Sale config" model="com.axelor.apps.sale.db.SaleConfig">
+    	<view type="form" name="sale-config-form"/>
+    	<context name="_showRecord" expr="eval: saleConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
+    
+    <action-view name="action-company-view-stock-config" title="Stock config" model="com.axelor.apps.stock.db.StockConfig">
+    	<view type="form" name="stock-config-form"/>
+    	<context name="_showRecord" expr="eval: stockConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
+    
+    <action-view name="action-company-view-production-config" title="Production config" model="com.axelor.apps.production.db.ProductionConfig">
+    	<view type="form" name="production-config-form"/>
+    	<context name="_showRecord" expr="eval: productionConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
+    
+    <action-view name="action-company-view-organisation-config" title="Organisation config" model="com.axelor.apps.organisation.db.OrganisationConfig">
+    	<view type="form" name="organisation-config-form"/>
+    	<context name="_showRecord" expr="eval: organisationConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
+    
+	
+	
+</object-views>

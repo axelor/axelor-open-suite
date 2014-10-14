@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+    <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax">
+        <field name="code"/>
+        <field name="name"/>
+    </grid>
+    
+	<form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax"  >
+		<panel>
+			<field name="code" x-bind="{{code|uppercase}}"/>
+			<field name="name"/>
+		</panel>
+	    <panel-tabs>
+			<panel title="Tax rate list">
+				<field name="activeTaxLine"/>
+			 	<panel-related field="taxLineList" colSpan="12"/>
+			</panel>
+	    	<panel-related title="Accounting configuration" field="taxAccountList" if-module="axelor-account"/>
+	    </panel-tabs>
+	</form>
+	
+	<grid name="tax-line-custom-grid" model="com.axelor.apps.account.db.TaxLine" title="Tax rate lines">
+		<field name="startDate"/>
+		<field name="endDate"/>
+		<field name="value"/>
+	</grid>
+	
+	<form name="tax-line-custom-form" model="com.axelor.apps.account.db.TaxLine" title="Tax rate"  >
+	    
+    	<field name="value"/>
+	    <field name="startDate"/>
+	    <field name="endDate"/>
+	   
+	</form>
+    
+</object-views>

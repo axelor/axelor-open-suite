@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	<grid name="site-grid" title="Site" model="com.axelor.apps.consulting.db.Site" >
+		<field name="name"/>
+	    <field name="partner"/>
+	    <field name="siretNumber"/>
+	    <field name="geographicalArea"/>
+	</grid>
+	
+    <form name="site-form" title="Site" model="com.axelor.apps.consulting.db.Site">
+    	<panel>
+		    <field name="name"/>
+		    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+		    <field name="address"/>
+		    <field name="siretNumber"/>
+	    </panel>
+	    <panel title="Sales attributes">
+	    	<field name="commercialLevelSelect"/>
+	    	<field name="geographicalArea"/>
+	    	<panel title="Keywords" colSpan="12">
+	        	<panel-related field="toolKeyWordSet"  colSpan="6" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid" widget="TagSelect" x-create="name"/>
+	        	<panel-related field="sectorKeyWordSet" colSpan="6" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid" widget="TagSelect" x-create="name"/>
+	        </panel>
+	    </panel>
+	</form>
+	
+</object-views>

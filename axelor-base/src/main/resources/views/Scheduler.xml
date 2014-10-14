@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+    <grid name="scheduler-grid" title="Schedulers" model="com.axelor.apps.base.db.Scheduler">
+        <field name="name"/>
+    </grid>
+	
+	<form name="scheduler-form" title="Scheduler" model="com.axelor.apps.base.db.Scheduler" 
+		onSave="scheduler-validate-infos" >
+		<panel>
+	    	<field name="name"/>
+	    	<spacer/>
+    		<panel title="Frequency" colSpan="12">
+	    		<field name="daily"  onChange="scheduler-onChange-daily" colSpan="3"/>
+	    		<field name="weekly" onChange="scheduler-onChange-weekly" colSpan="3"/>
+	    		<field name="monthly" onChange="scheduler-onChange-monthly" colSpan="3"/>
+	    		<field name="annually" onChange="scheduler-onChange-annually" colSpan="3"/>
+	    	</panel>
+	    	<panel name="dailyGroup" title="Daily" showTitle="false" hideIf="!daily"  colSpan="12">
+			    <field title="Every" name="dayDaily"  />
+		    	<label title="day(s)" colSpan="2"/>
+		    </panel>
+    		<panel title="Weekly" name="weeklyGroup" showTitle="false" hideIf="!weekly" colSpan="12">
+    			<field title="Every" name="weekWeekly" />
+    			<label title="week(s)" colSpan="2"/>
+    			<spacer />
+	    		<label title="On :"/>
+	    		<panel showTitle="false" colSpan="12" >
+	    			<field name="monday" colSpan="4" />
+			    	<field name="tuesday" colSpan="4" />
+			    	<field name="wednesday" colSpan="4" />
+			    	<field name="thursday" colSpan="4" />
+			    	<field name="friday" colSpan="4" />
+			   		<field name="saturday" colSpan="4" />
+			    	<field name="sunday" colSpan="4" />
+		    	</panel>
+    		</panel>
+    		<panel title="Monthly" name="monthlyGroup" showTitle="false" hideIf="!monthly" colSpan="12">
+	    		<field title="On" name="dayMonthly" colSpan="5"/>
+	    		<field title="Every" name="monthMonthly" colSpan="5"/>
+	    		<label title="month" colSpan="2"/>
+	    	</panel>
+	    	<panel title="Annually" name="annuallyGroup" showTitle="false" hideIf="!annually" colSpan="12">
+	    		<field title="Every" name="yearAnnually"/>
+	    		<label title="year(s)" colSpan="2"/>
+	    		<field name="dayAnnually" title="Le"/>
+	    		<field showTitle="false" name="monthAnnuallySelect" colSpan="4"/>
+	    	</panel>
+	    </panel>
+	</form>
+
+	<action-record name="scheduler-onChange-daily" model="com.axelor.apps.base.db.Scheduler">
+		<field name="weekly" expr="eval: false"/>
+		<field name="monthly" expr="eval: false"/>
+		<field name="annually" expr="eval: false"/>
+	</action-record>
+	
+	<action-record name="scheduler-onChange-monthly" model="com.axelor.apps.base.db.Scheduler">
+		<field name="weekly" expr="eval: false"/>
+		<field name="daily" expr="eval: false"/>
+		<field name="annually" expr="eval: false"/>
+	</action-record>
+	
+	<action-record name="scheduler-onChange-annually" model="com.axelor.apps.base.db.Scheduler">
+		<field name="weekly" expr="eval: false"/>
+		<field name="monthly" expr="eval: false"/>
+		<field name="daily" expr="eval: false"/>
+	</action-record>
+	
+	<action-record name="scheduler-onChange-weekly" model="com.axelor.apps.base.db.Scheduler">
+		<field name="daily" expr="eval: false"/>
+		<field name="monthly" expr="eval: false"/>
+		<field name="annually" expr="eval: false"/>
+	</action-record>
+	
+	<action-validate name="scheduler-validate-infos">
+		<error message="Please enter a frequency." if="!daily &amp;&amp; !weekly &amp;&amp; !monthly &amp;&amp; !annually"/>
+		<error message="Please enter a day for rhythm." if="daily &amp;&amp; !dayDaily"/>
+		<error message="Please enter a day for rhythm." if="weekly &amp;&amp; !weekWeekly"/>
+		<error message="Please enter a day of week for rhythm." if="weekly &amp;&amp; (!monday &amp;&amp; !tuesday &amp;&amp; !wednesday &amp;&amp; !thursday &amp;&amp; !friday &amp;&amp; !saturday &amp;&amp; !sunday)"/>
+		<error message="Please enter a day for rhythm." if="monthly &amp;&amp; !dayMonthly"/>
+		<error message="Please enter a month for rhythm." if="monthly &amp;&amp; !monthMonthly"/>
+		<error message="Please enter a year for rhythm." if="annually &amp;&amp; !yearAnnually"/>
+		<error message="Please enter a month for rhythm." if="annually &amp;&amp; !monthAnnually"/>
+		<error message="Please enter a day of month for rhythm." if="annually &amp;&amp; !dayAnnually"/>
+	</action-validate>
+	
+</object-views>

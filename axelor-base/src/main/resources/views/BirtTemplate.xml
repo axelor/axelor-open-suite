@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="birt-template-grid" title="Birt Templates"
+		model="com.axelor.apps.base.db.BirtTemplate">
+		<field name="name" />
+		<field name="templateLink" />
+	</grid>
+
+	<form name="birt-template-form" title="Birt Template" model="com.axelor.apps.base.db.BirtTemplate" onNew="action-birt-template-record-default">
+		<panel>
+			<field name="name" />
+			<field name="templateLink" />
+			<field name="format" />
+			<field name="generatedFilePath" />
+			<panel title="Parameters" colSpan="12">
+				<field name="birtTemplateParameterList" showTitle="false" colSpan="12">
+					<viewer>
+						<![CDATA[                                         
+	        				<birtTemplateParameterList>{{record.name}} : {{record.value}}</birtTemplateParameterList>
+	        			]]>
+	        		</viewer>
+					<editor>
+						<field name="name" />
+						<field name="value" />
+					</editor>
+				</field>
+			</panel>
+		</panel>
+	</form>
+
+	<action-record name="action-birt-template-record-default" model="com.axelor.apps.base.db.BirtTemplate">
+		<field name="format" expr="pdf" />
+	</action-record>
+
+</object-views>

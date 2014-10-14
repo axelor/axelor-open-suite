@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+    <grid name="base-batch-grid" title="Base batches" model="com.axelor.apps.base.db.BaseBatch">
+    	<field name="actionSelect" />
+    	<field name="code" />
+		<field name="company" />
+		<field name="createdOn"/>
+		<field name="createdBy"/>
+    </grid>
+ 
+    <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch"  
+    onLoad="action-base-batch-attrs-action-select" 
+    onNew="action-group-base-basebatch-onnew">
+    	<panel>
+		    <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
+		    <field name="code" x-bind="{{code|uppercase}}"/>
+		    <field name="company" widget="SuggestBox"/>
+		</panel>
+	  	<panel-tabs>
+	    	<panel name="targetPage" title="Target page" >
+<!-- 	      		<panel-related field="targetConfigurationSet" colSpan="12"/> -->
+	      		<button name="targetBatch" title="Target batch" onClick="save,action-base-batch-method-action-target"/>
+	    	</panel>
+	    	<panel title="Information">
+		      <field name="createdOn" title="Created on"/>
+		      <field name="createdBy" title="Created by"/>
+		      <field name="description" showTitle="false" colSpan="12"/>
+		      <panel-related field="batchList" colSpan="12"/>
+		    </panel>
+  		</panel-tabs>
+    </form>
+    
+    <!-- ACTION GROUP -->
+    <action-group name="action-group-base-basebatch-onnew">
+    	<action name="action-base-batch-record-on-new"/>
+    	<action name="action-base-batch-attrs-action-select"/>
+    </action-group>
+    
+    <!-- ACTION RECORD -->
+    <action-record name="action-base-batch-record-on-new" model="com.axelor.apps.base.db.BaseBatch">
+		<field name="createdOn" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		<field name="createdBy" expr="eval:__user__"/>
+	</action-record>
+    
+    <!-- ACTION METHOD -->
+	<action-method name="action-base-batch-method-action-target">
+		<call class="com.axelor.apps.base.web.BaseBatchController" method="actionTarget"/>
+	</action-method>
+	
+    <!-- ACTION ATTRS -->
+    <action-attrs name="action-base-batch-attrs-action-select">
+	    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetPage"/>
+	    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetConfigurationSet"/>
+	</action-attrs>
+	
+</object-views>

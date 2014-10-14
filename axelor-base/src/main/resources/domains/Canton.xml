@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  
+  <module name="base" package="com.axelor.apps.base.db"/>
+  
+  <entity name="Canton" lang="java" cachable="true">
+  
+    <integer name="importId"/>
+    <string title="Name" name="name" required="true"/>
+    <string title="Code" unique="true" name="code" required="true"/>
+    <string title="ARTMIN" name="artmin" selection="iterritory.artmin.select"/>
+    <integer name="inhabitantsNbr" title="Nb of Inhabitants"/>
+    <many-to-one ref="Department" title="Departement" name="department"/>
+    
+  </entity>
+  
+</domain-models>

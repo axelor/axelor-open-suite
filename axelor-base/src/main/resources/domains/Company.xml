@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Company" lang="java" cachable="true">
+  	<integer name="importId"/>
+    <string name="name" title="Name" required="true" unique="true"/>
+    <string name="code" title="Code" unique="true"/>
+    <many-to-one name="address" ref="Address" title="Address"/>  <!-- A supprimer si Partner sur company  -->  
+    
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <many-to-one name="parent" ref="Company" title="Parent company"/>
+    <many-to-one name="administration" ref="com.axelor.apps.base.db.General" title="Administration"/>
+    
+    <string name="notes" large="true" title="Notes"/>
+    <string name="logoPath" title="Path to company logo" help="true"/>
+
+   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+
+	<!--  Onglet Bank Details -->
+	<many-to-one name="defaultBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Account"/>
+	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
+
+  	<!--  Onglet Email/Courrier -->
+    <string name="generatedMailFilePath" title="Filepath to export generated mails" help="true"/>
+    <string name="generatedEmailFilePath" title="Filepath to export generated emails" help="true"/>
+    <string name="generatedMailFileName" title="Generated mail files name prefix" help="true"/>
+    <string name="generatedEmailFileName" title="Generated email files name prefix" help="true"/>
+    
+  	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings"/>
+  	
+  	
+  </entity>
+  
+</domain-models>

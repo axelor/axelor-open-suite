@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  
+  <module name="message" package="com.axelor.apps.message.db"/>
+  
+  <entity name="EmailAddress" lang="java">
+  	
+	<one-to-one name="partner"  ref="com.axelor.apps.base.db.Partner" title="Contact" mappedBy="emailAddress"/>
+	<string name="name" readonly="true" required="true">
+		<![CDATA[
+		String name = "";
+	    if(partner != null)  {   name += partner.getFullName()+" ";  }
+	    if(address != null)  {   name += "["+address+"]";  }
+	    return name;
+	    ]]>
+	</string>
+	
+	
+  </entity>
+  
+</domain-models>

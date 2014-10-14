@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	<grid name="import-configuration-grid" title="Imports" model="com.axelor.apps.base.db.ImportConfiguration">
+		<field name="name"/>
+		<field name="typeSelect"/>
+        <field name="bindMetaFile" />
+        <field name="dataMetaFile" />
+        <field name="user" />
+        <field name="createdOn" />
+	</grid>
+	
+	<form name="import-configuration-form" title="Import" model="com.axelor.apps.base.db.ImportConfiguration" onNew="action-import-record-default">
+        <toolbar>
+          <button name="import" title="Importer" colSpan="4" onClick="save,action-import-configuration-method-run,save" prompt="Are you sure you want to start the import?" />
+        </toolbar>
+        
+        <panel>
+        	<field name="name"/>
+	        <field name="typeSelect"/>
+	        <field name="bindMetaFile" canNew="true"/>
+			<field name="dataMetaFile" canNew="true"/>
+        </panel>
+        
+        <panel-tabs>
+        	<panel title="Description"> 
+        		<field name="description" colSpan="12" showTitle="false" widget="html" />
+        	</panel>
+        
+        	<panel-related field="importHistoryList" title="Historical" form-view="import-history-form" grid-view="import-history-grid" readonly="true"/>
+        </panel-tabs>
+        
+	</form>
+  
+    <action-method name="action-import-configuration-method-run">
+      <call class="com.axelor.apps.base.web.ImportConfigurationController" method="run"/>
+    </action-method>
+	
+    <action-record name="action-import-record-default" model="com.axelor.apps.base.db.ImportConfiguration">
+      <field name="user" expr="eval: __user__"/>
+    </action-record>
+    
+</object-views>

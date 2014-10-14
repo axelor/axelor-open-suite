@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	<selection name="alarm.engine.manager.type">
+		<option value="0"></option>
+		<option value="1">Invoicing Management</option>
+		<option value="2">Contract Manager</option>
+		<option value="3">Sales Manager</option>
+		<option value="4">Technical manager</option>
+	</selection>
+
+    <grid name="alarm-engine-grid" title="Alarm engines" model="com.axelor.apps.base.db.AlarmEngine">
+        <field name="code"/>
+        <field name="metaModel"/>
+        <field name="managerTypeSelect"/>
+        <field name="activeOk"/>
+        <field name="lockingOk"/>
+        <field name="externalOk"/>
+    </grid>
+
+    <form   onLoad="action-alarm-engine-attrs-external" 
+    	onSave="action-alarm-engine-method-validate-query" 
+    	onNew="action-alarm-engine-attrs-external" 
+    	name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine">
+	    <panel>
+		    <field name="code" x-bind="{{code|uppercase}}"/>
+		    <field name="metaModel"/>
+		    <field name="alarmMessage"/>
+		    <field name="managerTypeSelect"/>
+	  	</panel>
+	  	<panel>
+		    <field name="activeOk" colSpan="2"/>
+		    <field name="lockingOk" colSpan="2"/>
+		    <field name="externalOk" onChange="action-alarm-engine-attrs-external" colSpan="2"/>
+	    </panel>
+	    <panel-tabs>
+		    <panel name="queryPage" title="Query">
+		      <field name="query" showTitle="false" colSpan="12" widget="CodeEditor" x-syntax="sql"/>
+		    </panel>
+		    <panel title="Description">
+		      <field name="description" showTitle="false" colSpan="12"/>
+		    </panel>
+	  </panel-tabs>    
+	</form>
+
+    
+    <action-attrs name="action-alarm-engine-attrs-external">
+    	<attribute name="hidden" for="queryPage" expr="eval: externalOk"/>
+    </action-attrs>
+    
+    <action-method name="action-alarm-engine-method-validate-query">
+    	<call class="com.axelor.apps.base.web.AlarmEngineController" method="validateQuery"/>
+    </action-method>
+    
+</object-views>

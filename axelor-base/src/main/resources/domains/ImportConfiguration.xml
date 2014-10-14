@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  
+	<module name="base" package="com.axelor.apps.base.db"/>
+  
+  <entity name="ImportConfiguration" lang="java">
+  
+  	<string name="name" namecolumn="true"/>
+    <string title="Import type" default="csv" name="typeSelect" required="true" selection="iimport.type.select"/>
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
+    <many-to-one name="bindMetaFile" ref="com.axelor.meta.db.MetaFile" title="Binding file" required="true" help="Configuration file" />
+    <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data(s)" required="true" help="Data files ( csv, xml, or zip )"/>
+    <one-to-many name="importHistoryList" ref="ImportHistory" mappedBy="importConfiguration" title="Historical"/>
+    <string name="description" large="true" title="Description" />
+    
+  </entity>
+
+</domain-models>

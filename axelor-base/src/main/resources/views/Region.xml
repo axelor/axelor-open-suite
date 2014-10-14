@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    <grid name="region-grid" title="Regions" model="com.axelor.apps.base.db.Region">
+        <field name="name"/>
+        <field name="country"/>
+    </grid>
+    <form name="region-form" title="Region" model="com.axelor.apps.base.db.Region">
+    	<panel>
+	        <field name="name"/>
+	        <field name="code" x-bind="{{code|uppercase}}" colSpan="2"/>
+	        <field name="country"/>
+        </panel>
+    </form>
+</object-views>

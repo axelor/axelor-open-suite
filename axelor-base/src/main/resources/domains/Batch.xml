@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Batch" lang="java" sequential="true">
+  	
+  	<!-- NOT DISPLAY -->
+  	<many-to-one name="alarmEngineBatch" ref="com.axelor.apps.base.db.AlarmEngineBatch" />
+  	<many-to-one name="baseBatch" ref="com.axelor.apps.base.db.BaseBatch" />
+  	
+
+  	<!-- HEADER -->
+    <datetime name="startDate" title="Start Date" readonly="true" tz="true" />
+    <datetime name="endDate" title="End Date" readonly="true" tz="true" />
+    <integer name="duration" title="Duration" readonly="true" />
+    <integer name="done" title="Succeeded" />
+    <integer name="anomaly" title="Anomaly" />
+    <string name="comment" title="Comment" large="true" />
+  
+  </entity>
+
+</domain-models>

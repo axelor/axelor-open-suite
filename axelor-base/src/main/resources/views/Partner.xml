@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
+	    <toolbar>
+	        <button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
+	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
+	    </toolbar>
+	    <field name="fullName"/>
+	    <field name="mainInvoicingAddress"/>
+	    <field name="fixedPhone"/>
+		<field name="emailAddress.address"/>
+	    <field name="partnerCategory"/>
+		<button name="logCall" title="Log Call"   icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"  if-module="axelor-crm"/>
+		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
+		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
+	</grid>
+    
+    <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
+	    <field name="fullName"/>
+	    <field name="fixedPhone"/>
+	    <field name="mobilePhone"/>
+	    <field name="emailAddress.address"/>
+	    <button name="logCall" title="Log Call"   icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call" if-module="axelor-crm"/>
+		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
+		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
+		
+	</grid>
+    
+     <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
+        <field name="fullName"/>
+        <field name="mainInvoicingAddress"/>
+        <field name="fixedPhone"/>
+		<field name="mobilePhone"/>
+        <field name="emailAddress.address"/>
+        <field name="user"/>
+    </grid>
+    
+    <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
+    onNew="action-group-base-partner-onnew" 
+    onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" 
+    onSave="action-group-base-partner-onsave">
+	    <toolbar>
+	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
+	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
+	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null" if-module="axelor-account"/>
+	    </toolbar>
+	    <panel-include view="incl-event-actions-partner-form" from="axelor-crm" />
+	    <panel>
+	    	<panel colSpan="2">
+	        	<field name="picture" showTitle="false" widget="Image" colSpan="12" width="80" height="80"/>
+	      	</panel>
+	      	<panel colSpan="9">
+	      	<field name="fullName" colSpan="12" showTitle="false">
+	      		<hilite strong="true" if="true" color="primary"/>        
+		        <editor>
+		            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url" colSpan="4"/>
+		            <spacer colSpan="8"/>
+		            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
+		            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>            
+		            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
+		        </editor>
+		    </field>
+			<panel colSpan="4" showIf="fullName != null">
+			    <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+			    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+			    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+			    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+			    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+			</panel>
+			<field name="isContact" hidden="true" colSpan="12" />
+		</panel>
+  		</panel>
+  		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2"    domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
+  		<panel-tabs>
+  			<panel name="information" title="Informations">
+				<panel hideIf="isContact" colSpan="12">
+					<field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
+					<field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
+				</panel>
+				<panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12" >
+					<panel colSpan="6">
+						<field name="partnerCategory" widget="SuggestBox" colSpan="6"/>
+						<field name="industrySectorSelect" colSpan="6"/>
+						<field name="source" colSpan="6"/>
+						<field name="site" domain="self.partner.id = :id" colSpan="6"/>
+						<field name="department" colSpan="6"/>
+					</panel>
+					<panel  colSpan="6">
+						<field name="saleTurnover" colSpan="6"/>
+						<field name="nbrEmployees" colSpan="6"/>
+						<field name="registrationCode" colSpan="6"/>
+						<field name="taxNbr" colSpan="6"/>
+						<field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" colSpan="6"/>
+					</panel>
+		      	</panel>
+				<panel title="Postal addresses" colSpan="12">
+					<field name="deliveryAddress" canNew="true" onChange="action-partner-record-main-invoicing-address"/>
+					<field name="mainInvoicingAddress" canNew="true"/>
+					<field name="deliveryDelay" showIf="supplierTypeSelect == 2 || supplierTypeSelect == 3"/>
+				</panel>
+				<panel title="Contact" colSpan="12">
+					<field name="fixedPhone"/>
+					<field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
+					<field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
+					<field name="fax"/>
+					<field name="webSite"/>
+				</panel>
+				<spacer />
+	    	</panel>
+			<panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" >
+		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
+		    </panel>
+			<panel-include if-module="axelor-account" view="incl-customer-balance-partner-form" from="axelor-account"  />
+			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account" />
+			<panel-include if-module="axelor-account" view="incl-reported-balance-partner-form" from="axelor-account" />
+			<panel-include if-module="axelor-account" view="incl-sepa-direct-debit-partner-form" from="axelor-account" />
+			<panel title="Activities" showIf="id != null" if-module="axelor-crm">
+				<panel-include view="incl-show-project-partner-form" from="axelor-organisation" if-module="axelor-organisation" />
+		        <panel-include view="incl-activities-partner-form" from="axelor-crm" />
+		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/>
+			</panel>
+			<panel-include view="incl-sales-order-dashelt-form" from="axelor-supplychain" if-module="axelor-supplychain" />
+			<panel-include if-module="axelor-crm"  view="incl-events-partner-form" from="axelor-crm"/>
+			<panel title="Notes" colSpan="12">
+				<field name="description" colSpan="12" showTitle="false"  widget="Html" x-lite="true"/>
+			</panel>
+			<panel title="Settings" colSpan="12">
+				<field name="partnerSeq"/>
+				<field name="languageSelect"/>
+				<panel title="Assigned to" colSpan="12">
+					<field name="companySet" colSpan="4" widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false"/>
+					<field name="user"/>
+					<field name="team"/>
+				</panel>
+			</panel>
+		</panel-tabs>
+	</form>
+	
+	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
+        <field name="fullName"/>
+        <field name="mainInvoicingAddress"/>
+        <field name="fixedPhone"/>
+		<field name="mobilePhone"/>
+        <field name="email"/>
+    </grid>
+    
+    <form name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
+	    onNew="action-partner-record-partner-type-select" 
+	    onLoad="action-partner-attrs-change-name" 
+	    onSave="save,action-set-partner-seq">
+	    <toolbar>
+    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"   readonlyIf="id == null"/>
+    	</toolbar>
+	    <panel>
+	        <field name="picture" widget="Image" colSpan="4"/>
+		    <panel colSpan="8">
+		        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight" />
+		        <spacer/>
+		        <field name="name" css="highlight" onChange="action-partner-record-full-name"/>
+		        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight" onChange="action-partner-record-full-name"/>
+		        <field name="partnerCategory" widget="SuggestBox"/>
+		        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name"/>
+		        <field name="isContact" hideIf="partnerTypeSelect != 2"/>
+		        <spacer/>
+		        <field name="mainPartner" hideIf="!isContact"/>
+		    </panel>
+		</panel>
+	    <panel-tabs>
+	        <panel name="information" title="Informations">
+	            <panel title="Partner details" colSpan="12"  hideIf="partnerTypeSelect == 2">
+	                <field name="site" domain="self.partner.id = :id"/>
+	                <field name="department"/>
+	                <field name="source" hideIf="isContact"/>
+	            </panel>
+	            <panel colSpan="12" title="Postal addresses" hideIf="isContact">
+	                <field name="mainInvoicingAddress" onChange="action-partner-record-main-invoicing-address"/>
+	                <field name="deliveryAddress"/>
+	            </panel>
+	            <panel title="Contact" colSpan="12">
+	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
+	                <field name="fax"/>
+	                <field name="fixedPhone"/>
+					<field name="mobilePhone"/>
+	                <field name="webSite"/>
+	            </panel>
+	       </panel>
+	    </panel-tabs>
+    </form>
+	
+
+	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" 
+	onNew="action-partner-contact-record-default" 
+	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" 
+	onSave="save,action-set-partner-seq">
+	    <toolbar>
+	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
+	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
+	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"  readonlyIf="id == null" if-module="axelor-account"/>
+	    </toolbar>
+	    <panel-include view="incl-event-actions-partner-form" from="axelor-crm" />
+	    <panel>
+	    	<panel colSpan="3">
+	    		<field name="picture" widget="Image" showTitle="false" colSpan="12"/>
+	    		<panel colSpan="12">
+	           		<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+	        	</panel>
+	      	</panel>
+	        <panel colSpan="9">
+	            <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2" />
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange,action-partner-method-set-social-network-url" colSpan="5" />
+	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-group-base-partner-contact-name-onchange,action-partner-method-set-social-network-url" colSpan="5" />
+	            <panel title="Company" colSpan="12" >
+	            	<field name="mainPartner"/>
+	           	</panel>
+	           	<field name="isContact" hidden="true" colSpan="12" />
+	        </panel>
+         </panel>
+        <panel title="Contact">
+            <field name="jobTitle"/>
+            <field name="reportsTo"/>
+            <field name="fixedPhone"/>
+            <field name="mobilePhone"/>
+            <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
+            <field name="fax"/>
+            <field name="mainInvoicingAddress" title="Address"/>     
+        </panel>
+        <panel title="Notes">
+            <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
+        </panel>
+        <panel sidebar="true" title="Settings">
+            <field name="partnerSeq"/>
+            <field name="languageSelect"/>
+            <panel title="Assigned to" canCollapse="true" colSpan="12">
+                <field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false" />
+                <field name="user"/>
+                <field name="team"/>
+            </panel>
+        </panel>
+<!--         <panel title="Activities" showIf="id != null" if-module="axelor-crm"> -->
+<!-- 			<panel-include view="incl-show-project-partner-form" from="axelor-organisation" if-module="axelor-organisation" /> -->
+<!-- 	        <panel-include view="incl-activities-partner-form" from="axelor-crm" /> -->
+<!-- 	        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/> -->
+<!-- 		</panel> -->
+	</form>
+	
+	<action-group name="action-group-base-partner-onnew">
+		<action name="action-partner-record-partner-type-select"/>
+		<action name="action-partner-record-set-default"/>
+		<action name="action-partner-record-customer-supplier-type"/>
+	</action-group>
+	
+	<action-group name="action-group-base-partner-onsave">
+		<action name="save"/>
+		<action name="action-set-partner-seq"/>
+		<action name="action-create-accounting-situation"/>
+	</action-group>
+	
+	<action-group name="action-group-base-partner-contact-name-onchange">
+		<action name="action-check-string-capital-case"/>
+		<action name="action-partner-record-full-name"/>
+	</action-group>
+	
+	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
+		<field name="name" expr="eval:__repo__.of(Lead).find(_parent._lead).name"/>
+	</action-record>
+	
+    
+    <action-method name="action-partner-method-show-partner-info">
+		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
+	</action-method>
+    
+    
+    <action-method name="action-partner-method-set-social-network-url">
+    	<call class="com.axelor.apps.base.web.PartnerController" method="setSocialNetworkUrl" />
+    </action-method>
+    
+
+	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.socialnetwork.db.SnProfile">
+		<view type="form" name="sn-profile-form"/>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+    
+	<action-attrs name="action-partner-attrs-change-name">
+		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
+    	<attribute name="title" for="name" expr="Nom" if="partnerTypeSelect == 2"/>
+		<attribute name="required" for="name" expr="true"/>	
+	</action-attrs>
+	
+	<action-attrs name="action-partner-attrs-hide-contact-partner">
+        <attribute name="hidden" for="contactPartner" expr="eval: clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2" />
+    </action-attrs>
+    
+	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
+    	<field name="partnerTypeSelect" expr="eval:_partnerTypeSelect"/>
+    </action-record>
+    
+    <action-record name="action-partner-record-full-name" model="com.axelor.apps.base.db.Partner" >
+    	<field name="fullName" expr="eval: name + ' ' + firstName" if="name != null &amp;&amp; firstName != null"/>
+    	<field name="fullName" expr="eval: name" if="name != null &amp;&amp; firstName == null"/>
+    	<field name="fullName" expr="eval: firstName" if="firstName != null &amp;&amp; name == null"/>
+    	<field name="fullName" expr="eval: id" if="firstName == null &amp;&amp; name == null"/>
+    </action-record>
+    
+    <action-record name="action-partner-record-customer-supplier-type" model="com.axelor.apps.base.db.Partner">
+    	<field name="customerTypeSelect" expr="eval: 1" />
+    	<field name="supplierTypeSelect" expr="eval:1"/>
+    </action-record>
+    
+    <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
+    	<field name="currency" expr="eval:__user__.activeCompany?.currency" if="!isContact"/>
+    	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact" />
+    	<field name="user"  expr="eval:__user__"/>
+    	<field name="team"  expr="eval:__user__.activeTeam"/>
+    	<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
+    	<field name="languageSelect" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getDefaultPartnerLanguage()" />
+    </action-record>
+    
+    <action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">
+    	<field name="partnerTypeSelect" expr="2" />
+    	<field name="isContact" expr="true"/>
+    	<field name="companySet" expr="eval: _parent?.companySet"/>
+    	<field name="languageSelect" expr="eval: _parent != null ? _parent.languageSelect : com.axelor.apps.base.service.administration.GeneralService.getGeneral().getDefaultPartnerLanguage()"/>
+    	<field name="user"  expr="eval: _parent.user" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="team"  expr="eval: _parent.team" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="user"  expr="eval:__user__" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="team"  expr="eval:__user__.activeTeam" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
+    </action-record>
+    
+    <action-record name="action-partner-set-non-contact-fields" model="com.axelor.apps.base.db.Partner">
+    	<field name="currency" expr="eval:null" if="!isContact"/>
+    	<field name="invoiceSendingFormatSelect" expr="eval:null" if="!isContact"/>
+    </action-record>
+	
+	<action-method name="action-set-partner-seq" >
+		<call class="com.axelor.apps.base.web.PartnerController" method="setPartnerSequence"/>
+	</action-method>
+    
+    <action-method name="action-print-compnay-phonebook" >
+		<call class="com.axelor.apps.base.web.PartnerController" method="printCompanyPhonebook"/>
+	</action-method>
+	
+	<action-method name="action-print-phonebook" >
+		<call class="com.axelor.apps.base.web.PartnerController" method="printContactPhonebook"/>
+	</action-method>
+	
+	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
+		<filter title="All Enterprises">
+			<domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
+		</filter>
+		<filter title="All Individuals">
+			<domain>self.partnerTypeSelect = 2 AND self.isContact = false</domain>
+		</filter>
+		<filter title="All Prospects">
+			<domain>self.customerTypeSelect = 2 AND self.isContact = false</domain>
+		</filter>
+		<filter title="All Clients">
+			<domain>self.customerTypeSelect = 3 AND self.isContact = false</domain>
+		</filter>
+		<filter title="All Suppliers">
+			<domain>self.supplierTypeSelect = 2 AND self.isContact = false</domain>
+		</filter>
+		<filter title="All qualified supplier">
+			<domain>self.supplierTypeSelect = 3 AND self.isContact = false</domain>
+		</filter>
+	</search-filters>
+	
+	
+</object-views>

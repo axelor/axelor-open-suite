@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="currency-conversion-line-grid" groupBy="startCurrency,endCurrency" orderBy="-fromDate" title="Currency conversion lines" model="com.axelor.apps.base.db.CurrencyConversionLine">
+        <field name="startCurrency"/>
+        <field name="endCurrency"/>
+        <field name="exchangeRate"/>
+        <field name="variations" />
+        <field name="fromDate"/>
+        <field name="toDate" />
+        <field name="general" hidden="true" />
+        <button name="checkRate" title="Check rate" readonlyIf="toDate != null" icon="fa-repeat" onClick="wizard-check-currency-conversion-rate-line" />
+    </grid>
+    
+    <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine"  
+    onNew="action-currency-conversion-line-default-record">
+        <panel>
+		  <field name="startCurrency"/>
+		  <field name="endCurrency"/>
+		  <button name="getRate" title="Get rate" readonlyIf="startCurrency == null || endCurrency == null || toDate != null"   onClick="action-group-base-currencyconversionline-getrate-click"/>
+		</panel> 
+		<panel title="Applicable dates" readonlyIf="startCurrency == null || endCurrency == null">
+		    <field name="fromDate" onChange="action-currency-conversion-line-method-check-date"/>
+		    <field name="toDate" readonlyIf="fromDate == null" onChange="action-currency-conversion-line-method-check-date"/>
+		</panel>
+		<panel title="Rate">
+		    <field name="exchangeRate"/>
+		    <field name="variations"/>
+		</panel>
+    </form>
+    
+    <form onNew="action-group-base-checkcurrencyrate-wizard-onnew" 
+    name="wizard-check-currency-rate-form" title="Check currency exhange rates" model="com.axelor.apps.base.db.Wizard"  >
+      <panel>
+    	<field name="startCurrency" title="Source Currency" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.Currency" target-name="code"/>
+    	<field name="endCurrency" title="Destination Currency" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.Currency" target-name="code"/>
+    	<field name="general" title="General" hidden="true" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.General" target-name="today"/>
+  	  </panel>    
+	  <panel title="System active rate" colSpan="12">
+	    <field name="date" title="Rate Date" readonly="true" widget="DATE"/>
+	    <field name="exchangeRate" title="Exchange rate" readonly="true" widget="DECIMAL"/>
+	  </panel>
+	  <panel title="Rate updation">
+	    <field name="newExchangeRate" title="New exchange rate" widget="DECIMAL"/>
+	    <field name="variations" title="Variation"/>
+	    <button name="checkRate" title="Check / Update rate" help="Get new rate at present from internet" readonlyIf="startCurrency == null || endCurrency == null" onClick="action-currency-conversion-line-method-convert"/>
+	    <button name="updateRate" title="Save new rate" help="Create currency conversion lines with new rate" readonlyIf="startCurrency == null || endCurrency == null || newExchangeRate == null"   onClick="action-currency-conversion-line-method-apply-conversion-rate"/>
+	  </panel>
+    </form>
+    
+    <action-group name="action-group-base-currencyconversionline-getrate-click">
+    	<action name="action-currency-conversion-line-validate-rate-change"/>
+    	<action name="action-currency-conversion-line-method-convert"/>
+    </action-group>
+    
+    <action-group name="action-group-base-checkcurrencyrate-wizard-onnew">
+    	<action name="action-currency-conversion-line-wizard-set-date"/>
+    	<action name="action-currency-conversion-line-set-exchange-rate"/>
+    	<action name="action-currency-conversion-line-method-convert"/>
+    </action-group>
+    
+    <action-method name="action-currency-conversion-line-method-getTodayDate">
+    	<call class="com.axelor.apps.base.service.administration.GeneralService" method="getTodayDate()"/>
+   	</action-method>
+    
+    <action-method name="action-currency-conversion-line-method-check-date">
+    	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="checkDate"/>
+    </action-method>
+    
+    <action-method name="action-currency-conversion-line-method-apply-conversion-rate">
+    	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="applyExchangeRate"/>
+    </action-method>
+    
+    <action-method name="action-currency-conversion-line-method-convert" >
+    	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="convert"/>
+    </action-method>
+    
+    <action-record name="action-currency-conversion-line-reset-dates" model="com.axelor.apps.base.db.CurrencyConversionLine">
+    	<field name="fromDate" expr="eval:null" />
+    	<field name="toDate" expr="eval:null" />
+    </action-record>
+    
+    <action-record name="action-currency-conversion-line-set-exchange-rate" model="com.axelor.apps.base.db.Wizard">
+    	<field name="exchangeRate" if="startCurrency != null &amp;&amp; endCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(__repo__.of(Currency).find(startCurrency.id),__repo__.of(Currency).find(endCurrency.id), new LocalDate(date))" />
+    </action-record>
+    
+     <action-record name="action-currency-conversion-line-wizard-set-date" model="com.axelor.apps.base.db.Wizard">
+    	<field name="date" expr="eval:_date" />
+    	<field name="startCurrency" expr="eval:__repo__.of(Currency).find(_startCurrency.id)" if="_startCurrency != null"/>
+    	<field name="endCurrency" expr="eval:__repo__.of(Currency).find(_endCurrency.id)" if="_endCurrency != null"/>
+    	<field name="general" expr="eval:_general"  />
+    </action-record>
+    
+    <action-view title="Check currency exhange rate" model="com.axelor.apps.base.db.Wizard" name="wizard-check-currency-conversion-rate-line">
+	    <view type="form" name="wizard-check-currency-rate-form"/>
+	    <view-param name="popup" value="reload"/>
+	    <view-param name="forceEdit" value="true"/> 
+	    <view-param name="width" value="800" />
+	    <view-param name="show-confirm" value="false" />
+	    <context name="_startCurrency" expr="eval:startCurrency" if="startCurrency != null" />
+	    <context name="_endCurrency" expr="eval:endCurrency" if="endCurrency != null" />
+	    <context name="_general" expr="eval:general"/>
+	    <context name="_date" expr="eval:fromDate" />
+	</action-view>
+	
+	<action-validate name="action-currency-conversion-line-validate-rate-change" >
+		<alert message="You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?" 
+		if="fromDate != null &amp;&amp; exchangeRate != null &amp;&amp; id != null"/>
+	</action-validate>
+
+</object-views>

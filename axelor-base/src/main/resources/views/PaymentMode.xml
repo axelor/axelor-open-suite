@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+    <grid name="payment-mode-grid" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode">
+        <field name="name"/>
+        <field name="code"/>
+    </grid>
+    
+    <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode"  >
+        <panel >
+        	 <field name="name"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
+	        <field name="invoiceLabel" />
+	        <field name="typeSelect"/>
+			<field name="inOutSelect"/>
+        </panel>
+        <panel-related field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
+	        domain="self.typeSelect = 3" colSpan="12" showTitle="false" if-module="axelor-account"/>
+       
+    </form>
+    
+    <action-record name="action-payment-mode-record-cheque"
+    	model="com.axelor.apps.account.db.PaymentMode" 
+    	search="('self.typeSelect = ?1', 7)">
+    	<field name="typeSelect" expr="7"/>
+	</action-record>
+	
+</object-views>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+    <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
+        <field name="name"/>
+        <field name="fullName"/>
+        <field name="partner"/>
+        <field name="activeCompany"/>
+    </grid>
+    
+    
+    <form name="user-form" title="User" model="com.axelor.auth.db.User" 
+    onNew="action-user-default-record,action-user-check-company" onLoad="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
+    	 <panel sidebar="true">
+	        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
+	        <field name="activeCompany" widget="SuggestBox"/>
+	        <field name="today"/>
+	        <field name="activeCashRegister"/>
+	        <field name="timesheetPeriodConfig"/>
+	        <field name="employee"/>
+        </panel>
+        <panel-include view="user-form" from="axelor-core"/>
+        <panel-tabs>
+        	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
+        	 <panel title="Teams">
+        		<field name="activeTeam"/>
+        		<panel-related field="teamSet" colSpan="12"/>
+        	 </panel>
+        	 <panel-related title="Projects" field="projectSet" showTitle="false" colSpan="4"/>
+        	<panel title="Calendars">
+        		<panel-related field="followersCalUserSet" colSpan="12"/>
+        		<panel-related field="authorizeCalUserSet" colSpan="12"/>
+        	</panel>
+        </panel-tabs>
+    </form>
+    
+    
+    <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
+    	<field name="language" expr="fr"/>
+    	<field name="activeCompany" if="__repo__.of(Company).all().fetch().size == 1"  expr="eval:__repo__.of(Company).all().fetchOne()" />
+    </action-record>
+    
+    <action-validate name="action-user-check-company">
+        <notify message="Please select active company"  if="__repo__.of(Company).all().fetch().size != 1"/>
+    </action-validate>
+    
+</object-views>

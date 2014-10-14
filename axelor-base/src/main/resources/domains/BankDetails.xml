@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="BankDetails" lang="java">
+  
+  	<integer name="importId"/>
+    <many-to-one name="partner" ref="Partner" title="tiers"/>
+    <string name="ownerName" title="Owner name" max="255" help="true"/>
+    <string name="bankAddress" title="SWIFT address" max="255" help="true"/>
+    <string name="bic" title="BIC (Bank Identifier)"/>
+    <string name="iban" title="IBAN" help="true"/>
+    <string name="bankCode" title="Bank Code" max="255" help="true"/>
+    <string name="sortCode" title="Code Guichet" max="255" help="true"/>
+    <string name="accountNbr" title="Account Number" max="255" />
+    <string name="bbanKey" title="BBan Key" max="255" help="true"/>
+    <string name="countryCode" title="Country Code" max="255" help="true"/>
+    <string name="ibanBic" title="IBAN + BIC" max="255"/>
+    <string name="fullName" title="Bank Details" search="ownerName" namecolumn="true">
+        <![CDATA[
+            String str = "";
+            if (!(ownerName == null || ownerName.isEmpty())) {
+                str = ownerName;
+                if (!(ibanBic == null || ibanBic.isEmpty())) {
+                    str = str.concat(" - ").concat(ibanBic);
+                } else if (!(iban == null || iban.isEmpty())) {
+                    str = str.concat(" - ").concat(iban);
+                } else if (!(bankCode == null || bankCode.isEmpty())
+                        && !(sortCode == null || sortCode.isEmpty())
+                        && !(accountNbr == null || accountNbr.isEmpty())
+                        && !(bbanKey == null || bbanKey.isEmpty())) {
+                    str = str.concat(" - ").concat(bankCode)
+                                           .concat(sortCode)
+                                           .concat(accountNbr)
+                                           .concat(bbanKey);
+                }
+            }
+            return str;
+        ]]>
+    </string>
+
+  </entity>
+
+  <!--
+  
+  Coordonnées bancaires
+  
+  -->
+</domain-models>

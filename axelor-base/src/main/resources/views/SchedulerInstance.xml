@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+    <grid name="scheduler-instance-grid" title="Schedulers" model="com.axelor.apps.base.db.SchedulerInstance">
+        <field name="name"/>
+        <field name="lastTheoreticalExecutionDate"/>
+        <field name="lastExecutionDate"/>
+	    <field name="firstExecutionDate"/>
+    </grid>
+	
+	<form name="scheduler-instance-form" title="Scheduler" model="com.axelor.apps.base.db.SchedulerInstance"
+		onNew="action-scheduler-instance-record-first-execution-date"
+		onSave="scheduler-instance-validate-infos">
+		<panel>
+	    	<field name="name"/>
+	    	<spacer/>
+	    	<field name="scheduler" colSpan="12"/>
+	    	<panel colSpan="12">
+	    		<field name="firstExecutionDate" required="true" readonlyIf="lastExecutionDate" colSpan="4"/>
+		    	<field name="lastTheoreticalExecutionDate" readonly="true" colSpan="4"/>
+		    	<field name="lastExecutionDate" readonly="true" colSpan="4"/>
+		    </panel>
+		    <panel-related field="schedulerInstanceHistoryList" colSpan="12"/>
+		</panel>
+	</form>
+	
+	<action-validate name="scheduler-instance-validate-infos">
+		<error message="Please, enter date of next execution." if="!firstExecutionDate"/>
+	</action-validate>
+	
+	<action-record name="action-scheduler-instance-record-first-execution-date" model="com.axelor.apps.base.db.SchedulerInstance">
+		<field name="firstExecutionDate" expr="eval: _parent?.invoicedFirstDate" if="_parent._model == 'com.axelor.apps.sale.db.SaleOrder"/>
+	</action-record>
+	
+</object-views>

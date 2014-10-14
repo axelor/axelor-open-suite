@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	
+    <grid name="price-list-line-grid" title="Price list lines" model="com.axelor.apps.base.db.PriceListLine"> 
+       	<field name="product"/> 
+    	<field name="productCategory"/>
+   	 	<field name="typeSelect"/>
+    	<field name="amountTypeSelect"/>
+    	<field name="amount"/>
+    	<field name="minQty"/>
+	</grid>
+    
+	<form name="price-list-line-form" title="Price list line" model="com.axelor.apps.base.db.PriceListLine"
+	onNew="action-group-base-pricelistline-onnew">
+		<panel name="application" title="Apply on" colSpan="11">
+			<field name="product" colSpan="5" onChange="action-price-list-line-record-product" />
+			<label title="Or" colSpan="1"/>
+			<field name="productCategory" colSpan="5"/>
+		</panel>
+		<panel title="Calculation method" colSpan="12" >
+			<field name="typeSelect" colSpan="12" onChange="action-price-list-line-record-type-select" />
+			<field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3" />
+			<field name="amount" colSpan="12"/>
+			<field name="minQty" colSpan="12"/>
+		</panel>
+	</form>
+	
+	<action-group name="action-group-base-pricelistline-onnew">
+		<action name="action-price-list-line-record-default"/>
+		<action name="action-price-list-line-record-type-select"/>
+	</action-group>
+	
+	<action-record name="action-price-list-line-record-default" model="com.axelor.apps.base.db.PriceListLine">
+		<field name="typeSelect" expr="3"/>
+	</action-record>
+   
+   <action-record name="action-price-list-line-record-product" model="com.axelor.apps.base.db.PriceListLine">
+ 		<field name="amount" expr="eval: product?.salePrice" if="product &amp;&amp; _parent?.typeSelect == 1 &amp;&amp; typeSelect == 3"/>
+ 		<field name="amount" expr="eval: product?.purchasePrice" if="product &amp;&amp; _parent?.typeSelect == 2 &amp;&amp; typeSelect == 3"/>
+    </action-record>
+    
+    <action-record name="action-price-list-line-record-type-select" model="com.axelor.apps.base.db.PriceListLine">
+    	<field name="amountTypeSelect" expr="2" if="typeSelect == 3"/>
+    </action-record>
+    
+</object-views>
+

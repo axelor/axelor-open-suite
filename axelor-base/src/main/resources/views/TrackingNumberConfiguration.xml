@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="tracking-number-configuration-grid" title="Tracking Number Configuration" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+        <field name="isPurchaseTrackingManaged"/>
+        <field name="isProductionTrackingManaged"/>
+        <field name="isSaleTrackingManaged"/>
+        <field name="generatePurchaseAutoTrackingNbr"/>
+        <field name="generateProductionAutoTrackingNbr"/>
+        <field name="generateSaleAutoTrackingNbr"/>
+        <field name="hasSaleAutoSelectTrackingNbr"/>
+        <field name="saleAutoTrackingNbrOrderSelect"/>
+        <field name="saleQtyByTracking"/>
+        <field name="purchaseQtyByTracking"/>
+        <field name="productionQtyByTracking"/>
+    </grid>
+    
+    <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.base.db.TrackingNumberConfiguration"
+    	onNew="action-tracking-number-config-record-default">
+    	<panel>
+	        <field name="isPurchaseTrackingManaged"/>
+		    <panel title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
+		        <field name="generatePurchaseAutoTrackingNbr" colSpan="12"/>
+		        <field name="purchaseQtyByTracking" help="0 --&gt; infinite" colSpan="12"/>
+		    </panel>
+	   </panel>
+	   <panel>
+		    <field name="isProductionTrackingManaged"/>
+		    <panel title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="12">
+		        <field name="generateProductionAutoTrackingNbr" colSpan="12"/>
+		        <field name="productionQtyByTracking" help="0 --&gt; infinite" colSpan="12"/>
+		    </panel>
+		</panel>
+		<panel>
+		    <field name="isSaleTrackingManaged"/>
+		    <panel title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="12">
+		        <field name="generateSaleAutoTrackingNbr"  colSpan="12"/>
+		        <field name="hasSaleAutoSelectTrackingNbr" showIf="isSaleTrackingManaged" colSpan="12"/>
+		        <field name="saleAutoTrackingNbrOrderSelect" showIf="hasSaleAutoSelectTrackingNbr" colSpan="12"/>
+		        <field name="saleQtyByTracking" help="0 --&gt; infinite" colSpan="12" readonlyIf="hasSaleAutoSelectTrackingNbr"/>
+		    </panel>
+		</panel>
+		<panel>
+		    <field name="sequence" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr"/>
+		</panel>
+    </form>
+    
+    <action-record name="action-tracking-number-config-record-default" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+    	<field name="saleAutoTrackingNbrOrderSelect" expr="eval: 1"/>
+    	<field name="saleQtyByTracking" expr="0"/>
+    	<field name="purchaseQtyByTracking" expr="0"/>
+    	<field name="productionQtyByTracking" expr="0"/>
+    </action-record>
+    
+</object-views>

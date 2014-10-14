@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="PaymentCondition" lang="java" cachable="true">
+  	
+    <integer name="importId" />
+    <string name="name" title="Name" required="true" />
+    <string name="code" title="Code" required="true" unique="true"/>
+	<integer name="paymentTime" title="Payment period"/>    
+	<integer name="typeSelect" title="Type" selection="account.payment.condition.type.select"/>
+	<integer name="daySelect" title="Day" selection="day.month.select"/>
+	<boolean name="isFree" title="Free ?"/>
+
+	<extra-code><![CDATA[
+	
+	   	// TYPE SELECT
+		public static final int TYPE_NET = 1;
+		public static final int TYPE_END_OF_MONTH_N_DAYS = 2;
+		public static final int TYPE_N_DAYS_END_OF_MONTH = 3;
+		public static final int TYPE_N_DAYS_END_OF_MONTH_AT = 4;
+	
+	]]></extra-code>
+  
+
+  </entity>
+
+</domain-models>

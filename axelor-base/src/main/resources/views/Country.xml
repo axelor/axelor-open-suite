@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    <grid name="country-grid" title="Countries" model="com.axelor.apps.base.db.Country">
+        <field name="name"/>
+        <field name="code"/>
+    </grid>
+    <form name="country-form" title="Country" model="com.axelor.apps.base.db.Country" >
+    	<panel>
+	        <field name="name" onChange="action-check-string-capital-case"/>
+	        <field name="code" x-bind="{{code|uppercase}}"/>
+	    </panel>
+		<panel title="Attributes">
+			<field name="cog" />
+		    <field name="phonePrefix" />			
+		</panel>
+    </form>
+</object-views>

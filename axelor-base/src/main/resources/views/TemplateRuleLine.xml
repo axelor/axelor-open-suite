@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="template-rule-line-grid" title="Template rule lines" model="com.axelor.apps.base.db.TemplateRuleLine">
+        <field name="sequence"/>
+        <field name="template"/>
+        <field name="metaAction"/>
+    </grid>
+    
+    <form name="template-rule-line-form" title="Template rule line" model="com.axelor.apps.base.db.TemplateRuleLine"  
+    onNew="action-template-rule-line-attrs-template-domain" onLoad="action-template-rule-line-attrs-template-domain">
+    	<panel>
+	        <field name="sequence"/>
+	        <spacer/>
+	        <field name="template"/>
+	        <field name="metaAction" domain="self.type = 'action-condition'"/>
+        </panel>
+    </form>
+    
+    <action-attrs name="action-template-rule-line-attrs-template-domain">
+    	<attribute name="domain" for="template" expr="eval: (_parent?.metaModel) ? &quot;self.metaModel.name = \'${_parent?.metaModel?.name}\'&quot; : null"/>
+    </action-attrs>
+    
+</object-views>

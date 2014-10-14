@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="PickListEntry" lang="java">
+  
+    <string name="picklist" title="Picklist QAS"/>
+    <string name="l2" title="Complement" />
+    <string name="l3" title="Spatial information"/>
+    <string name="partialAddress" title="Partial address"/>
+    <string name="l5" title="Specific information"/>
+    <string name="postcode" title="Zip" />
+    <string name="inseeCode" title="INSEE Code"/>
+    <string name="score" title="QAS score"/>
+    <string name="moniker" title="QAS Moniker"/>
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
+    
+    <string name="fullName" namecolumn="true" search="score,picklist" title="Address">
+	    <![CDATA[
+	    	return score + " " + picklist;
+	    ]]>
+    </string>
+    
+  </entity>
+  
+</domain-models>

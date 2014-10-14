@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="account-management-grid" title="Account management list" model="com.axelor.apps.account.db.AccountManagement">
+    	<field name="typeSelect" />
+        <field name="company"/>
+		<field name="saleAccount" if-module="axelor-account"/>
+        <field name="purchaseAccount" if-module="axelor-account"/>
+		<field name="cashAccount" if-module="axelor-account"/>
+    </grid>
+    
+    <grid name="account-management-product-grid" title="Account management" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="company"/>
+		<field name="saleAccount" if-module="axelor-account"/>
+		<field name="saleTax"/>
+        <field name="purchaseAccount" if-module="axelor-account"/>
+        <field name="purchaseTax" if-module="axelor-account"/>
+    </grid>
+    
+	<form name="account-management-product-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement"  
+	onNew="action-account-management-record-product">
+		<panel >
+			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
+		   	<field name="company" widget="SuggestBox" form-view="company-form" onChange="action-group-account-account-management-onchange-common"/>
+		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account"/>
+		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'income'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account"/>
+		</panel>
+		
+		<panel-tabs>
+			<panel-related field="analyticAccountManagementList" colSpan="12" if-module="axelor-account"/>
+			<panel name="taxPage" title="Tax" showTitle="false">
+				<field name="purchaseTax"/>
+				<field name="saleTax"/>
+			</panel>
+		</panel-tabs>
+	</form>
+	
+	<form name="account-management-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement"    
+	onNew="action-account-management-record-default" onLoad="action-account-management-attrs-type" >
+		<panel >
+			<field name="typeSelect" onChange="action-account-management-attrs-type"/>
+			<field name="company" widget="SuggestBox" onChange="action-group-account-account-management-onchange-common" form-view="company-form"/>
+			<field name="purchaseAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" if-module="axelor-account"/>
+			<field name="saleAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'income'" if-module="axelor-account"/>
+			<field name="cashAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" if-module="axelor-account"/>
+		</panel>
+	  
+		<panel-tabs>
+			<panel-related field="analyticAccountManagementList" colSpan="12" if-module="axelor-account"/>
+			<panel name="productPage" title="Product" showTitle="false">
+			  <field name="product"  colSpan="12"/>
+			</panel>
+			<panel name="taxPage" title="Tax" showTitle="false">
+			  <field name="purchaseTax"/>
+			  <field name="saleTax"/>
+			</panel>
+			<panel name="paymentModePage" title="Payment mode" showTitle="false">
+			  <field name="paymentMode"  />
+			  <field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
+			  <field name="sequence" domain="self.company = :company"/>
+			</panel>
+		</panel-tabs>
+	</form>
+    
+    
+    <action-group name="action-group-account-account-management-onchange-common" if-module="axelor-account">
+    	<action name="action-account-management-clean-company"/>
+    	<action name="action-account-management-product-validate"/>
+    </action-group>
+    
+    <!-- ACTION RECORD -->
+    <action-record name="action-account-management-record-default" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="company"  expr="eval:__user__.activeCompany"/>
+    </action-record>
+    
+	<action-record name="action-account-management-record-product" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="typeSelect" expr="eval: 1"/>
+        <field name="company"  expr="eval:__user__.activeCompany"/>
+    </action-record>
+    
+	<action-record name="action-account-management-record-tax" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="typeSelect" expr="eval: 2"/>
+        <field name="company"  expr="eval:__user__.activeCompany"/>
+    </action-record>
+    
+    
+</object-views>

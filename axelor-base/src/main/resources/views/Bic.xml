@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="bic-grid" title="Bank Identifier Codes" model="com.axelor.apps.base.db.Bic">
+        <field name="code"/>
+        <field name="countryCode"/>
+        <field name="sortCode" />
+        <field name="bankName"/>
+        <field name="bankCode"/>
+    </grid>
+    
+    <form name="bic-form" title="Bank Identifier Code" model="com.axelor.apps.base.db.Bic"  >
+    	<panel>
+	        <field name="countryCode"/>
+	        <field name="sortCode" />
+	        <field name="bankName"/>
+	        <field name="bankCode"/>
+	        <field name="code" x-bind="{{code|uppercase}}" colSpan="12"/>
+       	</panel>
+    </form>
+
+</object-views>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="consulting" package="com.axelor.apps.consulting.db"/>
+
+  <entity name="Site">
+    <string name="name" title="Name"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Enterprise Partner"/>
+    <integer name="siretNumber" title="SIRET"/>
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
+    <string name="commercialLevelSelect" selection="site-commercial-level-select" title="Commercial level"/>
+   	<many-to-one name="geographicalArea" ref="com.axelor.apps.base.db.GeographicalArea" title="Geographical area"/>
+   	<many-to-many name="sectorKeyWordSet" ref="com.axelor.apps.base.db.Keyword" title="Sector Keywords"/>
+   	<many-to-many name="toolKeyWordSet" ref="com.axelor.apps.base.db.Keyword" title="Tool Keywords"/>
+  </entity>
+</domain-models>
