@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+    <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sentDateT">
+        <field name="sentDateT"/>
+        <field name="senderUser"/>
+        <field name="subject"/>
+    </grid>
+    
+    <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message"
+    onNew="action-group-message-message-onnew"
+    onLoad="action-message-attrs-showhide-by-media-type">
+      <toolbar>
+	        <button name="print" title="Print" icon="fa-print" onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
+	        <button name="send" title="Send" icon="fa-envelope" onClick="action-group-message-message-send-click" showIf="statusSelect == 1 " />
+        	<button name="delete" title="Delete" icon="fa-trash" onClick="action-group-message-message-delete-click" showIf="statusSelect != 3"/>
+	  </toolbar>
+    	<panel title="Informations" readonlyIf="statusSelect == 2 || statusSelect == 3">
+            <field name="sentDateT"/>
+            <field name="fromEmailAddress" />
+            <field name="senderUser"/>
+            <field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature"/>
+            <field name="statusSelect"/>
+            <field name="mediaTypeSelect" onChange="action-message-attrs-showhide-by-media-type"/>
+        </panel>
+        <panel title="Recipients" readonlyIf="statusSelect == 2 || statusSelect == 3">
+        	<field name="toEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
+        	<field name="ccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
+        	<field name="bccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
+        	<field name="addressBlock" colSpan="12" widget="html"/>
+        	<field name="recipientUser" widget="TagSelect" x-create="name" help="Internal Message" colSpan="12"/>
+        </panel>
+        <panel title="Content" readonlyIf="statusSelect == 2 || statusSelect == 3">
+        	<field name="subject" title="Subject" colSpan="12"/>
+       	 	<field name="content" colSpan="12" showTitle="false" widget="html"/>
+        </panel>
+        <panel title="Related to"  readonlyIf="statusSelect == 3">
+	        <field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" colSpan="4"/>
+	        <field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId" colSpan="4"/>
+	        <field name="filePath" widget="url" colSpan="4"/>
+        </panel>
+    </form>
+    
+    <action-group name="action-group-message-message-onnew">
+    	<action name="action-message-record-default"/>
+    	<action name="action-message-record-mail-account"/>
+    	<action name="action-message-record-get-signature"/>
+    	<action name="action-message-record-active-company"/>
+    	<action name="action-message-record-default-media-type"/>
+    	<action name="action-message-attrs-showhide-by-media-type"/>
+    </action-group>
+    
+    <action-group name="action-group-message-message-send-click">
+    	<action name="save"/>
+    	<action name="action-message-method-send-by-email"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-message-message-delete-click">
+    	<action name="save"/>
+    	<action name="action-message-record-delete-status"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-method name="action-message-method-print-pdf-email">
+		<call class="com.axelor.apps.base.web.MessageController" method="printMessage"/>
+	</action-method>
+	
+	<action-record name="action-message-record-default-media-type" model="com.axelor.apps.message.db.Message">
+    	<field name="mediaTypeSelect" expr="2"/>
+    </action-record>
+	
+    <action-record model="com.axelor.apps.message.db.Message" name="action-message-record-active-company">
+      <field name="company" expr="eval:__user__.activeCompany"/>
+    </action-record>
+    
+	<action-record name="action-message-record-default" model="com.axelor.apps.message.db.Message">
+    	<field name="sentDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+    	<field name="senderUser" expr="eval:__user__"/>
+    </action-record>
+    
+    <action-record name="action-message-record-mail-account" model="com.axelor.apps.message.db.Message">
+    	<field name="mailAccount" expr="eval: __repo__.of(MailAccount).all().filter('self.isDefault = true and self.user = ?1',senderUser).fetchOne()"/>
+    </action-record>
+    
+    <action-record name="action-message-record-get-signature" model="com.axelor.apps.message.db.Message">
+    	<field name="content" expr="eval: '&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;' + mailAccount?.signature" if="content == null &amp;&amp; mailAccount?.signature != null"/>
+    </action-record>
+    
+    <action-record name="action-message-record-delete-status" model="com.axelor.apps.message.db.Message">
+    	<field name="statusSelect" expr="3"/>
+    </action-record>
+	
+	<action-attrs name="action-message-attrs-showhide-by-media-type">		
+	  	<attribute name="hidden" for="addressBlock" expr="false" if="eval: mediaTypeSelect == 1" />
+	   	<attribute name="hidden" for="addressBlock" expr="true" if="eval: mediaTypeSelect == 2 || mediaTypeSelect == 3" />
+	    <attribute name="hidden" for="toEmailAddressSet" expr="true" if="eval: mediaTypeSelect == 1 || mediaTypeSelect == 3" />
+	   	<attribute name="hidden" for="toEmailAddressSet" expr="false" if="eval: mediaTypeSelect == 2" />
+	    <attribute name="hidden" for="ccEmailAddressSet" expr="true" if="eval: mediaTypeSelect == 1 || mediaTypeSelect == 3" />
+	   	<attribute name="hidden" for="ccEmailAddressSet" expr="false" if="eval: mediaTypeSelect == 2" />
+	    <attribute name="hidden" for="bccEmailAddressSet" expr="true" if="eval: mediaTypeSelect == 1 || mediaTypeSelect == 3" />
+	   	<attribute name="hidden" for="bccEmailAddressSet" expr="false" if="eval: mediaTypeSelect == 2" />
+	   	<attribute name="hidden" for="recipientUser" expr="true" if="eval: mediaTypeSelect == 2 ||  mediaTypeSelect == 1" />
+	  	<attribute name="hidden" for="recipientUser" expr="false" if="eval: mediaTypeSelect == 3" /> 
+    </action-attrs>
+    
+    <!-- ACTION METHOD -->
+	<action-method name="action-message-method-send-by-email">
+		<call class="com.axelor.apps.message.web.MessageController" method="sendByEmail"/>
+	</action-method>
+    
+    <!-- 	Action commune pour tous les envoies par email avec utilisation de template et context -->
+	
+	<action-method name="action-send-by-email-with-template">
+		<call class="com.axelor.apps.message.web.GenerateMessageController" method="callMessageWizard"/>
+	</action-method>
+    
+</object-views>

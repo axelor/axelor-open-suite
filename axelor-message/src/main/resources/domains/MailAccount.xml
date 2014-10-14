@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+	<module name="message" package="com.axelor.apps.message.db" />
+
+	<entity name="MailAccount" lang="java">
+
+		<string name="name" title="Name" required="true" namecolumn="true" />
+		<string name="serverTypeSelect" title="Server Type" required="true" selection="mail.account.server.type.select" default="1"/>
+		<string name="login" required="true" />
+		<string name="password" required="true" />
+		<string name="host" required="true" title="Host"/>
+		<integer name="port" title="Port"/>
+		<integer name="securitySelect" title="SSL/TLS" selection="mail.account.security.select"/>
+		<boolean name="isDefault" title="Default account ?"/>
+		<boolean name="isValid" title="Valid ?"/>
+		<string name="signature" title="Signature"/>
+
+		<extra-code><![CDATA[
+	
+		// SERVER TYPE SELECT
+		public static final int SERVER_TYPE_SMTP = 1;
+		// public static final int SERVER_TYPE_POP = 2; Not implemented yet
+		// public static final int SERVER_TYPE_IMAP = 3; Not implemented yet
+		
+		// SECURITY TYPE SELECT
+		public static final int SECURITY_NONE = 0;
+		public static final int SECURITY_SSL = 1;
+		public static final int SECURITY_TLS = 2;
+	
+		]]></extra-code>
+
+	</entity>
+
+</domain-models>
