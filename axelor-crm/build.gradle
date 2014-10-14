@@ -1,0 +1,17 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-crm"
+	version "3.0.0"
+	title "Axelor :: CRM"
+	
+	removable true
+
+	module "modules:axelor-base"
+}
+
+dependencies {
+	compile "org.mnode.ical4j:ical4j:1.0.4"
+	compile "org.mnode.ical4j:ical4j-extensions:0.9.2"
+	compile "org.mnode.ical4j:ical4j-connector:0.9.3"
+}

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="target-grid" title="Targets" model="com.axelor.apps.crm.db.Target">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="periodTypeSelect"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+    </grid>
+    
+<!--     <form name="target-form" title="Target" model="com.axelor.apps.crm.db.Target"     -->
+<!--     onLoad="action-target-method-update,save"  -->
+<!--     onSave="action-target-validate"> -->
+<!-- 	    <group title="Information"   colWidths="15%,35%,15%,35%"> -->
+<!-- 	        <field name="name"/> -->
+<!-- 	        <field name="code"/> -->
+<!-- 	        <field name="user" showIf="team == null"/> -->
+<!-- 	        <field name="team" showIf="user == null"/> -->
+<!-- 	    </group> -->
+<!-- 	    <group title="Period"   colWidths="15%,35%,15%,35%"> -->
+<!-- 	        <field name="periodTypeSelect"/> -->
+<!-- 	        <field name="fromDate"/> -->
+<!-- 	        <field name="toDate"/> -->
+<!-- 	    </group> -->
+<!-- 	    <group title="Opportunity"     colWidths="15%,35%,15%,35%"> -->
+<!-- 	        <spacer/> -->
+<!-- 	        <separator title="Target"/> -->
+<!-- 	        <spacer/> -->
+<!-- 	        <separator title="Real"/> -->
+<!-- 	        <field name="opportunityAmountWonTarget"/> -->
+<!-- 	        <label title="Vs"/> -->
+<!-- 	        <field name="opportunityAmountWon" showTitle="false" /> -->
+<!-- 	        <field name="opportunityCreatedNumberTarget"/> -->
+<!-- 	        <label title="Vs"/> -->
+<!-- 	        <field name="opportunityCreatedNumber" showTitle="false"/> -->
+<!-- 	        <field name="opportunityCreatedWonTarget"/> -->
+<!-- 	        <label title="Vs"/> -->
+<!-- 	        <field name="opportunityCreatedWon" showTitle="false"/>   -->
+<!-- 	    </group> -->
+<!-- 	    <group title="Events"     colWidths="15%,35%,15%,35%"> -->
+<!-- 	        <spacer/> -->
+<!-- 	        <separator title="Target"/> -->
+<!-- 	        <spacer/> -->
+<!-- 	        <separator title="Real"/> -->
+<!-- 	        <field name="callEmittedNumberTarget"/> -->
+<!-- 	        <label title="Vs"/> -->
+<!-- 	        <field name="callEmittedNumber" showTitle="false"/> -->
+<!-- 	        <field name="meetingNumberTarget"/> -->
+<!-- 	        <label title="Vs"/> -->
+<!-- 	        <field name="meetingNumber" showTitle="false"/> -->
+<!-- 	    </group> -->
+<!-- 	    <group title="Sales order"  > -->
+<!--         	<group    > -->
+<!-- 	        	<separator title="Target"  /> -->
+<!-- 		        <field name="saleOrderAmountWonTarget"/> -->
+<!-- 		       	<field name="saleOrderCreatedNumberTarget"/> -->
+<!-- 		       	<field name="saleOrderCreatedWonTarget"/> -->
+<!-- 	        </group> -->
+<!-- 	        <group    > -->
+<!-- 	        	<separator title="Real"  /> -->
+<!-- 	        	<field name="saleOrderAmountWon"/> -->
+<!-- 	        	<field name="saleOrderCreatedNumber"/> -->
+<!-- 	        	<field name="saleOrderCreatedWon"/> -->
+<!--         	</group> -->
+<!--         </group> -->
+<!-- 	</form> -->
+	
+<form   onLoad="action-target-method-update,save" onSave="action-target-validate" name="target-form" title="Target" model="com.axelor.apps.crm.db.Target">
+  <panel title="Information">
+    <field name="name"/>
+    <field name="code"/>
+    <field name="user" showIf="team == null"/>
+    <field name="team" showIf="user == null"/>
+  </panel>
+  <panel title="Period">
+    <field name="periodTypeSelect"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+  </panel>
+  <panel-tabs>
+    <panel title="Opportunity">
+    <panel title="Target" colSpan="6">
+     <field name="opportunityAmountWonTarget" colSpan="10"/>
+     <label title="Vs" colSpan="2"/>
+     <field name="opportunityCreatedNumberTarget" colSpan="10"/>
+     <label title="Vs" colSpan="2"/>
+    <field name="opportunityCreatedWonTarget" colSpan="10"/>
+      <label title="Vs" colSpan="2"/>
+    </panel>
+    
+    <panel title="Real" colSpan="6">
+        <field name="opportunityAmountWon" showTitle="false" colSpan="12"/>
+        <field name="opportunityCreatedNumber" showTitle="false" colSpan="12"/>
+      <field name="opportunityCreatedWon" showTitle="false" colSpan="12"/>
+    </panel>
+  </panel>  
+  
+  <panel title="Events">
+    <panel title="Target" colSpan="6">
+        <field name="callEmittedNumberTarget" colSpan="10"/>
+        <label title="Vs" colSpan="2"/>
+      <field name="meetingNumberTarget" colSpan="10"/>
+      <label title="Vs" colSpan="2"/>
+    </panel>
+    <panel title="Real" colSpan="6">
+        <field name="callEmittedNumber" showTitle="false" colSpan="12"/>
+       <field name="meetingNumber" showTitle="false" colSpan="12"/>
+    </panel>
+    
+   </panel>
+    </panel-tabs>
+
+</form>
+
+    
+    <action-method name="action-target-method-update">
+    	<call class="com.axelor.apps.crm.web.TargetController" method="update"/>
+    </action-method>
+    
+    <action-validate name="action-target-validate">
+    	<error message="From date must be less than the to date" if="fromDate > toDate"/>
+    </action-validate>
+    
+</object-views>

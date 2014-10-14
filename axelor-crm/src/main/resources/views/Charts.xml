@@ -1,0 +1,1402 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	  
+	  
+		
+	 <chart name="chart.dashboard.opportunities.sale.stage.amount.bar" title="Opportunities By Sale Stage">
+	    <dataset type="sql">
+	    <![CDATA[
+			SELECT
+	          SUM(self.amount) AS amount,
+		      selection_item.title as _sale_stage
+		    FROM
+		        crm_opportunity self
+		    LEFT JOIN
+		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+		    LEFT JOIN 
+		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.sales_stage_select			
+		    GROUP BY
+			   selection_item.id
+			ORDER BY
+			   selection_item.id
+	    ]]>
+	    </dataset>
+	    <category key="_sale_stage" type="text" title="Sales Stage"/>
+    	<series key="amount" type="bar" title="Amount"/>
+	 </chart>
+	 
+	  <chart name="chart.dashboard.opportunities.by.stage.type.bar" title="Pipeline by Stage and Type">
+	    <dataset type="sql">
+	    <![CDATA[
+			SELECT
+	          SUM(self.amount) AS amount,
+		      selection_item.title as _sale_stage
+		    FROM
+		        crm_opportunity self
+		    LEFT JOIN
+		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+		    LEFT JOIN 
+		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.sales_stage_select	and self.sales_stage_select not in (9, 10)		
+		    GROUP BY
+			   selection_item.id
+			ORDER BY
+			   selection_item.id
+	    ]]>
+	    </dataset>
+	    <category key="_sale_stage" type="text" title="Sales Stage"/>
+    	<series key="amount" type="bar" title="Amount"/>
+	 </chart>
+	
+	 <chart name="chart.dashboard.opportunities.source.amount.bar" title="Opportunities By Source">
+	    <dataset type="sql">
+		    <![CDATA[
+			SELECT
+	          SUM(self.amount) AS amount,
+		      Source.name as _source
+		    FROM
+		        crm_opportunity self
+		    LEFT JOIN
+		        base_source as Source ON self.source = Source.id
+		    GROUP BY
+			    _source
+			ORDER BY
+			    _source
+		    ]]>
+	    </dataset>
+	    <category key="_source" type="text" title="Source"/>
+    	<series key="amount" type="bar" title="Amount"/>
+	  </chart>
+	  
+	   <chart name="chart.dashboard.opportunities.type.amount.bar" title="Opportunities By Type">
+	    <dataset type="sql">
+		    <![CDATA[
+			SELECT
+          		SUM(self.amount) AS amount,
+	      		opportunity_type.name as _opportunity_type
+	    	FROM
+	        	crm_opportunity self
+	    	LEFT JOIN
+	        	crm_opportunity_type as opportunity_type ON self.opportunity_type = opportunity_type.id
+	    	GROUP BY
+		    	opportunity_type.name
+			ORDER BY
+		   		opportunity_type.name
+		 ]]>
+	    </dataset>
+	    <category key="_opportunity_type" type="text" title="Opportunity Type"/>
+    	<series key="amount" type="bar" title="Amount"/>
+	  </chart>
+	  	
+	  <chart name="chart.dashboard.opportunities.won.by.leadsource.bar" title="Opportunities Won By Lead Source">
+	    <dataset type="sql">
+		    <![CDATA[
+			SELECT
+ 				 count(*) AS lead_won,
+ 				 Source.name as _source
+			FROM
+    			crm_opportunity self
+ 			JOIN
+    			base_source as Source ON self.source = Source.id and self.sales_stage_select = 9
+			GROUP BY
+    			_source
+			ORDER BY
+    			_source
+		 ]]>
+	    </dataset>
+	    <category key="_source" type="text" title="Source"/>
+    	<series key="lead_won" type="donut" title="Opportunities"/>
+	  </chart>
+	  	  
+	  	  <chart name="chart.dashboard.opportunities.won.by.saleman.bar" title="Opportunities Won By Salesman">
+	    <dataset type="sql">
+		    <![CDATA[
+			SELECT
+          		SUM(self.amount) AS amount,
+	      		sale_man.full_name as _sale_man
+	    	FROM
+	        	crm_opportunity self
+	    	LEFT JOIN
+	        	auth_user as sale_man ON self.user_id = sale_man.id
+	        	AND sale_man.full_name IS NOT NULL
+	    	GROUP BY
+		    	_sale_man
+			ORDER BY
+		   		_sale_man
+		 ]]>
+	    </dataset>
+	    <category key="_sale_man" type="text" title="Salesman"/>
+    	<series key="amount" type="bar" title="Amount"/>
+	  </chart>
+	  
+	  <chart name="chart.opportunities.by.origin.by.stage" title="Opportunities By Origin By Stage" stacked="true">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+    		    SUM(self.amount)    AS amount,
+			    src.name    AS source,
+			    selection_item.title AS stage
+			FROM
+			    crm_opportunity self
+            LEFT JOIN 
+                base_source src on src.id = self.source
+			LEFT JOIN
+	        	meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				selection_item.value = cast(self.sales_stage_select as char)		
+			GROUP BY
+			    selection_item.id,
+			    src.name
+			ORDER BY
+			    selection_item.id,
+			    src.name
+		    ]]>
+	    </dataset>
+	    <category key="source" type="text" title="Source"/>
+	    <series key="amount" groupBy="stage" type="bar" title="Amount"/>
+	</chart>
+	
+	<chart name="chart.opportunities.pipeline.next.90d" title="Pipeline next 90 days" stacked="true">
+		<dataset type="sql">
+		    <![CDATA[
+		SELECT  
+    		SUM(self.amount)    AS amount,
+    		selection_item.title AS stage,
+    		'Pipeline' as pipeline
+		FROM
+			crm_opportunity self
+		JOIN
+			meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+		JOIN 
+	 		meta_select_item as selection_item ON selection_item.select_id = selection.id
+		WHERE
+			selection_item.value = cast(self.sales_stage_select as char)
+		AND
+    		self.expected_close_date < current_date+ interval '90 day' 
+		AND 
+    		self.sales_stage_select <9
+                
+		GROUP BY
+			selection_item.id, pipeline
+		ORDER BY
+			selection_item.id
+
+		    ]]>
+	    </dataset>
+	    <category key="pipeline" type="text" title="Pipeline"/>
+	    <series key="amount" groupBy="stage" type="bar" title="Amount"/>
+	</chart>
+	
+	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.chart.set.date">
+	  <field name="toDateT" expr="eval:LocalDateTime.parse(todayDate).withHourOfDay(23).withMinuteOfHour(59)"/>
+	  <field name="fromDateT" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
+	</action-record>
+	
+	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.source.bar" title="Leads by Source">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
+		</search-fields>
+	
+		<dataset type="jpql">
+		    <![CDATA[
+		    SELECT
+		        COUNT(*) AS leads,
+		        self.source.name AS source
+		    FROM
+		        Lead self
+		    WHERE
+		      self.createdOn BETWEEN :fromDateT AND :toDateT		       
+		    GROUP BY
+		    	self.source.name
+		    ORDER BY
+		        self.source.name
+		    ]]>
+	    </dataset>
+	    <category key="source" type="text" title="Source"/>
+	    <series key="leads"  type="bar" title="Leads"/>
+	</chart>
+	
+	 <chart onInit="action.crm.chart.set.date" name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
+		</search-fields>
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id) AS _leads,
+			    team.name AS _team,
+			    selection_item.title as _status
+			FROM
+			   crm_lead as self
+			LEFT JOIN   
+			   base_team as team ON self.team = team.id
+			LEFT JOIN
+	        	meta_select as selection ON selection.name = 'crm.lead.status.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				selection_item.value = cast(self.status_select as char)	AND
+				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)		
+	    	GROUP BY
+			  	_status,
+			  	_team
+			ORDER BY
+			   	_status,
+			   	_team	
+    ]]>
+	    </dataset>
+	    <category key="_team" type="text" title="Team"/>
+	    <series key="_leads" groupBy="_status" type="bar" title="Leads"/>
+	</chart>
+	
+	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.saleman.by.status.bar" title="Leads by Salesman by Status" stacked="true">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
+		</search-fields>
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    AS _leads,
+			    sale_man.full_name as _sale_man,
+			    selection_item.title as _status
+			FROM
+			    crm_lead as self
+			LEFT JOIN
+	        	auth_user as sale_man ON self.user_id = sale_man.id
+			LEFT JOIN
+	        	meta_select as selection ON selection.name = 'crm.lead.status.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				selection_item.value = cast(self.status_select as char)	and sale_man.full_name != '' AND
+				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)	
+	    	GROUP BY
+			  	_status,
+			  	_sale_man
+			ORDER BY
+			   	_status,
+			   	_sale_man	
+			  ]]>
+	    </dataset>
+	    <category key="_sale_man" type="text" title="Salesman"/>
+	    <series key="_leads" groupBy="_status" type="bar" title="Leads"/>
+	</chart>
+	
+	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.user.bar" title="Calls type by user" stacked="true">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
+		</search-fields>
+		<dataset type="sql">
+		    <![CDATA[
+				SELECT    
+				    COUNT(_event.id) AS _total_calls,
+					_user.full_name AS _user_name,
+					_meta._select_title AS _call_status
+				FROM
+					crm_event AS _event
+				LEFT JOIN
+					auth_user AS _user
+					ON _event.user_id = _user.id
+					
+				JOIN
+					(SELECT 
+						cast(_item.value as int) AS _select_value,
+				        _item.title AS _select_title
+					FROM	
+						meta_select AS _selection		
+					JOIN
+						meta_select_item AS _item
+						ON _selection.name = 'crm.event.call.status.select'
+						AND _item.select_id = _selection.id	
+					) AS _meta
+				ON
+					_meta._select_value = _event.call_status_select	
+				WHERE
+        			_event.type_select = 1 AND
+        			_event.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+				GROUP BY
+					_user_name, _call_status
+				ORDER BY
+					_user_name, _total_calls DESC	
+			  ]]>
+	    </dataset>
+	    <category key="_user_name" type="text" title="User"/>
+	    <series key="_total_calls" groupBy="_call_status" type="bar" title="Calls"/>
+	</chart>
+	  	
+	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.team.bar" title="Calls type by team" stacked="true">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
+		</search-fields>
+		<dataset type="sql">
+		    <![CDATA[
+				SELECT    
+				    COUNT(_event.id) AS _total_calls,
+					_team.name AS _team_name,
+					_meta._select_title AS _call_status
+				FROM
+					crm_event AS _event
+				LEFT JOIN
+					base_team AS _team
+					ON _event.team = _team.id
+						
+				JOIN
+					(SELECT 
+						cast(_item.value as int) AS _select_value,
+				        _item.title AS _select_title
+					FROM	
+						meta_select AS _selection		
+					JOIN
+						meta_select_item AS _item
+						ON _selection.name = 'crm.event.call.status.select'
+						AND _item.select_id = _selection.id	
+					) AS _meta
+				ON
+					_meta._select_value = _event.call_status_select
+				WHERE
+        			_event.type_select = 1 AND 
+        			_event.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+				GROUP BY
+					_team_name, _call_status
+				ORDER BY
+					_team_name, _total_calls DESC
+		  ]]>
+	    </dataset>
+	    <category key="_team_name" type="text" title="Team"/>
+	    <series key="_total_calls" groupBy="_call_status" type="bar" title="Calls"/>
+	</chart>  	
+	  	
+	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.team.by.user.bar" title="Calls by team by user">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="reference" name="team" target="com.axelor.apps.base.db.Team" widget="[required=true]" title="Team" />
+		</search-fields>
+		<dataset type="jpql">
+		    <![CDATA[
+				SELECT
+			      COUNT(self.id) AS _total_calls,
+			      saleMan.fullName AS _sale_man			      
+			    FROM
+			      Event self,    
+			      User saleMan      
+			    
+			    WHERE
+			      self.typeSelect = 1 AND
+			      self.user = saleMan AND
+			      self.team = :team AND
+			      self.createdOn BETWEEN DATE(:fromDateT) AND DATE(:todayDate)
+			    GROUP BY        
+			        saleMan.fullName
+			    ORDER BY         
+			         saleMan.fullName
+			  ]]>
+	    </dataset>
+	    <category key="_sale_man" type="text" title="Salesman"/>
+	    <series key="_total_calls" type="bar" title="Calls"/>
+	</chart> 
+	
+	
+	<chart name="chart.open.tickets.by.priority.bar" title="Open tickets by priority">
+		<dataset type="sql">
+		    <![CDATA[
+				SELECT
+				    COUNT(self.id)  AS _tickets,
+				    selection_item.title AS _priority
+				FROM
+				    crm_event as self
+				RIGHT JOIN 
+				    meta_select_item as selection_item     
+				ON 
+				    (cast(selection_item.value as int) = self.priority_select 
+				    and self.ticket_status_select != 5)    
+				WHERE            
+				    selection_item.select_id =(select id from meta_select where name='crm.event.ticket.priority.select')
+				    AND self.type_select = 5
+				GROUP BY
+				    _priority
+				ORDER BY
+				    _priority    
+			  ]]>
+	    </dataset>
+	    <category key="_priority" type="text" title="Priority"/>
+	    <series key="_tickets" type="bar" title="Tickets"/>
+	</chart>  	
+	
+	<chart name="chart.open.ticket.priority.distribution.bar" title="Open tickets distribution by Priority">
+		<dataset type="sql">
+		    <![CDATA[
+			    select
+			        (count(self.id)*100/(select CASE WHEN count(*)=0 THEN 1 ELSE count(*) END from crm_event where ticket_status_select!=5 and priority_select is not null)) as _tickets,
+			        selection_item.title as _priority
+			    from
+			        crm_event self
+			    RIGHT JOIN
+			        meta_select_item selection_item
+			    ON
+			        (cast(selection_item.value as int)=self.priority_select
+			        and
+			        self.ticket_status_select!=5)
+			    where
+			        selection_item.select_id=(select id from meta_select where name='crm.event.ticket.priority.select')
+			        AND self.type_select = 5
+			    group by
+			        _priority
+			  ]]>
+	    </dataset>
+	    <category key="_priority" type="text" title="Priority"/>
+	    <series key="_tickets" type="donut" title="Tickets"/>
+	</chart>  	
+	
+	
+	<chart name="chart.open.tickets.by.status.bar" title="Open tickets by status">
+		<dataset type="sql">
+		    <![CDATA[
+			    SELECT
+			      COUNT(self.id)    AS     _tickets,
+			      selection_item.title     AS     _status
+			    FROM
+			        crm_event as self
+			    RIGHT JOIN 
+			        meta_select_item as selection_item     
+			    ON 
+			        (cast(selection_item.value as decimal) = self.ticket_status_select and self.ticket_status_select != 5)
+			    WHERE
+			        selection_item.select_id = (select id from meta_select where name = 'crm.event.ticket.status.select')
+			    AND
+			        cast(selection_item.value as int)!=5
+			    AND
+			        self.type_select = 5
+			    GROUP BY
+			        _status
+			    ORDER BY
+			        _status     
+			  ]]>
+	    </dataset>
+	    <category key="_status" type="text" title="Status"/>
+	    <series key="_tickets" type="bar" title="Tickets"/>
+	</chart>  	
+	  	
+	<chart name="chart.user.by.open.cases.bar" title="Open Cases by Agents" stacked="true">
+	  <dataset type="sql">
+	    
+	    SELECT
+	      COUNT(self.id)      AS   _cases,
+	      sale_man.full_name AS _sale_man,
+	      selection_item.title   AS   _status
+	    FROM
+	        crm_event as self
+	    JOIN
+	      auth_user as sale_man ON self.user_id = sale_man.id
+	    JOIN
+	      meta_select as selection    ON selection.name = 'crm.event.ticket.status.select'
+	    JOIN 
+	      meta_select_item as selection_item  ON selection_item.select_id = selection.id
+	    WHERE
+	      self.type_select = 5
+	      AND self.ticket_status_select != 5    
+	      AND cast(selection_item.value as decimal) = self.ticket_status_select       
+	    GROUP BY
+	        _status,
+	        _sale_man
+	    ORDER BY
+	         _status,  
+	         _sale_man
+	      
+	  </dataset>
+	  <category key="_sale_man" type="text" title="Salesman"/>
+	  <series key="_cases" type="bar" groupBy="_status" title="Cases"/>
+	</chart>
+	
+	<chart onInit="action.crm.chart.set.date" name="chart.customer.by.open.cases.bar" title="New Cases by Customer" stacked="true">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
+		</search-fields>
+	  <dataset type="jpql">
+	    
+	    SELECT
+	      COUNT(self.id)      AS   _cases,
+	      self.clientPartner.fullName     AS   _partner,
+	      selection_item.title   AS   _status
+	    FROM
+	        Event self,        
+	        MetaSelectItem selection_item
+	    WHERE
+	      self.typeSelect = 5
+	      AND self.ticketStatusSelect != 5
+	      AND self.createdOn >= :fromDateT AND self.createdOn &lt;= :toDateT        
+	      AND selection_item.select.name = 'crm.event.ticket.status.select'
+	      AND cast(selection_item.value as int) = self.ticketStatusSelect    
+	    GROUP BY
+	        selection_item.title,
+	        self.clientPartner.fullName
+	    ORDER BY
+	         selection_item.title,  
+	         self.clientPartner.fullName
+	      
+	  </dataset>
+	  <category key="_partner" type="text" title="Customer"/>
+	  <series key="_cases" groupBy="_status" type="bar" title="Cases"/>
+	</chart>	
+	
+	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.country.bar" title="Leads by Country">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
+		</search-fields>
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    	AS 	_total_leads,
+			    country.name 		AS 	_country
+			FROM
+			  	crm_lead as self
+			LEFT JOIN
+	        	base_country as country ON self.primary_country = country.id
+	        WHERE
+	        	self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+	    	GROUP BY
+			  	_country
+			ORDER BY
+			   	_country
+			  ]]>
+	    </dataset>
+	    <category key="_country" type="text" title="Country"/>
+	    <series key="_total_leads"  type="bar" title="Leads"/>
+	</chart>  		
+	
+	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.chart.default.month.value.6m">
+	  <field name="monthSelect" expr="eval:6"/>
+	</action-record>
+	
+	<chart onInit="action.crm.chart.default.month.value.6m" name="chart.created.leads.per.month" title="Created leads per month">
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	  </search-fields>
+	  <dataset type="sql">  
+	  SELECT
+	    COUNT(self.id) AS _leads,
+	    date_part('year',self.created_on) || '-' || date_part('mon',self.created_on) || '-01' AS _month
+	  FROM
+	    crm_lead self
+	  WHERE
+	    self.created_on BETWEEN DATE(:todayDate) - CAST(:monthSelect as int) * INTERVAL '1 month' AND DATE(:todayDate)
+	  GROUP BY
+	    _month
+	  ORDER BY
+  		_month    
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_leads" type="bar" title="Leads"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+
+
+	 <chart name="chart.due.open.ticket.gauge.bar" title="Due Open Tickets">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    		AS 	_total_ticket,
+			    (select Count(id) from crm_event as open_ticket where open_ticket.ticket_status_select != 5) as _open_ticket
+			FROM
+			  	crm_event as self
+			  ]]>	
+	    </dataset>
+	   	<category key="_total_ticket" type="text"/>
+	   	<series key="_open_ticket" type="gauge"/>
+	    <config name="min" value="0"/>
+    	<config name="max" value="_total_ticket"/>
+	</chart> 
+	
+	
+	<chart stacked="true" name="chart.created.tickets.by.month.by.priority.bar" title="Total created tickets by month by priority">
+	  <dataset type="sql">
+	  
+	      SELECT
+	    COUNT(_ticket.id) AS _tickets,  
+	    _meta_status.status_title AS _priority,
+	     date_part('year',_ticket.created_on) || '-' || date_part('mon',_ticket.created_on) || '-01' AS _month
+	  FROM
+	    crm_event AS _ticket  
+	  JOIN
+	    (SELECT    
+	      cast(_item.value as int) AS status_value,
+	      _item.title AS status_title
+	    FROM
+	      meta_select AS _selection
+	    LEFT JOIN
+	      meta_select_item AS _item
+	    ON
+	      _selection.name = 'crm.event.ticket.priority.select'    
+	    WHERE
+	      _selection.id = _item.select_id    
+	      ) AS _meta_status
+	  ON
+	    _ticket.priority_select = _meta_status.status_value  
+	  WHERE 
+	    _ticket.type_select=5 AND _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
+	  GROUP BY
+	    _priority, _month
+	  ORDER BY
+    	 _month, _priority
+	  
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_tickets" groupBy="_priority" type="bar" title="No of Tickets" aggregate="sum"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+	
+	<chart stacked="true" name="chart.created.tickets.by.month.by.status" title="Total created tickets by month by status">
+	  <dataset type="sql">
+	
+	  SELECT
+	    COUNT(_ticket.id) AS _tickets,  
+	    _meta_status.status_title AS _status,
+	     date_part('year',_ticket.created_on) || '-' || date_part('mon',_ticket.created_on) || '-01' AS _month
+	  FROM
+	    crm_event AS _ticket    
+	  JOIN
+	
+	    (SELECT    
+	      cast(_item.value as int) AS status_value,
+	      _item.title AS status_title
+	    FROM
+	      meta_select AS _selection
+	    LEFT JOIN
+	      meta_select_item AS _item
+	    ON
+	      _selection.name = 'crm.event.ticket.status.select'    
+	    WHERE
+	      _selection.id = _item.select_id    
+	    ) AS _meta_status
+	
+	  ON
+	    _ticket.ticket_status_select = _meta_status.status_value  
+	  WHERE
+	    _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
+	    AND _ticket.type_select=5
+	  GROUP BY
+	    _status, _month
+	   ORDER BY
+ 		  _month,_tickets DESC     
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_tickets" groupBy="_status" type="bar" title="Tickets"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+	
+	<chart stacked="true" name="chart.open.tickets.by.month.by.agent" title="Total open tickets by month by user">
+	  <dataset type="sql">
+	
+	  SELECT
+	    COUNT(_ticket.id) AS _tickets,  
+	    _user.full_name AS _agent,
+	  date_part('year',_ticket.created_on) || '-' || date_part('mon',_ticket.created_on) || '-01' AS _month
+	  FROM
+	    crm_event AS _ticket    
+	  LEFT JOIN
+	    auth_user AS _user
+	  ON
+	    _ticket.user_id = _user.id  
+	  WHERE
+	    _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
+	    AND _ticket.type_select != 5
+	  GROUP BY
+	    _agent, _month
+	  ORDER BY
+  		 _month   
+	    
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_tickets" groupBy="_agent" type="bar" title="Tickets"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+	
+	<!-- 	  Target user charts -->
+	  
+	   <chart name="chart.user.call.target.gauge" title="Calls emitted target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.callEmittedNumber*100/self.callEmittedNumberTarget   		AS 	_callEmittedNumber
+				FROM Target self 
+				WHERE self.user = :__user__ and :date between self.fromDate and self.toDate and self.callEmittedNumberTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_callEmittedNumber" type="text"/>
+		    <series key="_callEmittedNumber" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.user.call.target.bar" title="Call emitted historical" onInit="action.chart.crm.chart.set.active.user">
+		    <search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.callEmittedNumber)           AS     _callEmittedNumber,
+				    SUM(self.callEmittedNumberTarget)           AS     _callEmittedNumberTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.user = :activeUser
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_callEmittedNumber" type="bar"/>
+<!-- 		    <series key="_callEmittedNumberTarget" type="bar"/> -->
+		</chart>
+		
+		<action-record name="action.chart.crm.chart.set.active.user" model="com.axelor.apps.crm.db.Event">
+		    <field name="activeUser" expr="eval:__repo__.of(User).find(__user__.id)" />
+		</action-record>
+		
+		<chart name="chart.user.meeting.target.gauge" title="Meetings number target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.meetingNumber*100/self.meetingNumberTarget   		AS 	_meetingNumber
+				FROM Target self 
+				WHERE self.user = :__user__ and :date between self.fromDate and self.toDate and self.meetingNumberTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_meetingNumber" type="text"/>
+		    <series key="_meetingNumber" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.user.meeting.target.bar" title="Meetings number historical" onInit="action.chart.crm.chart.set.active.user">
+		     <search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.meetingNumber)           AS     _meetingNumber,
+				    SUM(self.meetingNumberTarget)           AS     _meetingNumberTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.user = :activeUser
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_meetingNumber" type="bar"/>
+<!-- 		    <series key="_meetingNumberTarget" type="bar"/> -->
+		</chart>
+		
+		<chart name="chart.user.opportunity.amount.won.target.gauge" title="Opportunities amount won target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.opportunityAmountWon*100/self.opportunityAmountWonTarget   		AS 	_opportunityAmountWon
+				FROM Target self 
+				WHERE self.user = :__user__ and :date between self.fromDate and self.toDate and self.opportunityAmountWonTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_opportunityAmountWon" type="text"/>
+		    <series key="_opportunityAmountWon" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.user.opportunity.amount.won.target.bar" title="Opportunities amount won historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.opportunityAmountWon)           AS     _opportunityAmountWon,
+				    SUM(self.opportunityAmountWonTarget)           AS     _opportunityAmountWonTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.user = :activeUser
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_opportunityAmountWon" type="bar"/>
+<!-- 		    <series key="_opportunityAmountWonTarget" type="bar"/> -->
+		</chart>
+	
+		<chart name="chart.user.opportunity.created.number.target.gauge" title="Opportunities created number target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.opportunityCreatedNumber*100/self.opportunityCreatedNumberTarget 		AS 	_opportunityCreatedNumber
+				FROM Target self 
+				WHERE self.user = :__user__ and :date between self.fromDate and self.toDate and self.opportunityCreatedNumberTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_opportunityCreatedNumber" type="text"/>
+		    <series key="_opportunityCreatedNumber" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.user.opportunity.created.number.target.bar" title="Opportunities created number historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.opportunityCreatedNumber)           AS     _opportunityCreatedNumber,
+				    SUM(self.opportunityCreatedNumberTarget)           AS     _opportunityCreatedNumberTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.user = :activeUser
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_opportunityCreatedNumber" type="bar"/>
+<!-- 		    <series key="_opportunityCreatedNumberTarget" type="bar"/> -->
+		</chart>
+		
+		<chart name="chart.user.opportunity.created.won.target.gauge" title="Opportunities created won target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.opportunityCreatedWon*100/self.opportunityCreatedWonTarget   		AS 	_opportunityCreatedWon
+				FROM Target self 
+				WHERE self.user = :__user__ and :date between self.fromDate and self.toDate and self.opportunityCreatedWonTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_opportunityCreatedWon" type="text"/>
+		    <series key="_opportunityCreatedWon" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.user.opportunity.created.won.target.bar" title="Opportunities created won historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.opportunityCreatedWon)           AS     _opportunityCreatedWon,
+				    SUM(self.opportunityCreatedWonTarget)           AS     _opportunityCreatedWonTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.user = :activeUser
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_opportunityCreatedWon" type="bar"/>
+<!-- 		    <series key="_opportunityCreatedWonTarget" type="bar"/> -->
+		</chart>
+		
+		<chart name="chart.user.sale.order.amount.won.target.gauge" title="Sales orders amount won target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.saleOrderAmountWon*100/self.saleOrderAmountWonTarget   		AS 	_saleOrderAmountWon
+				FROM Target self 
+				WHERE self.user = :__user__ and self.fromDate <= :date and self.toDate >= :date and self.saleOrderAmountWonTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_saleOrderAmountWon" type="text"/>
+		    <series key="_saleOrderAmountWon" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.user.sale.order.amount.won.target.bar" title="Sales orders amount won historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.saleOrderAmountWon)           AS     _saleOrderAmountWon,
+				    SUM(self.saleOrderAmountWonTarget)           AS     _saleOrderAmountWonTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.user = :activeUser
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_saleOrderAmountWon" type="bar"/>
+<!-- 		    <series key="_saleOrderAmountWonTarget" type="bar"/> -->
+		</chart>
+		
+		<chart name="chart.user.sale.order.created.number.target.gauge" title="Sales orders created number target completed (%)" >
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.saleOrderCreatedNumber*100/self.saleOrderCreatedNumberTarget   		AS 	_saleOrderCreatedNumber
+				FROM Target self 
+				WHERE self.user = :__user__ and self.fromDate <= :date and self.toDate >= :date and self.saleOrderCreatedNumberTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_saleOrderCreatedNumber" type="text"/>
+		    <series key="_saleOrderCreatedNumber" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.user.sale.order.created.number.target.bar" title="Sales orders created number historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.saleOrderCreatedNumber)           AS     _saleOrderCreatedNumber,
+				    SUM(self.saleOrderCreatedNumberTarget)           AS     _saleOrderCreatedNumberTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.user = :activeUser
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_saleOrderCreatedNumber" type="bar"/>
+<!-- 		    <series key="_saleOrderCreatedNumberTarget" type="bar"/> -->
+		</chart>
+		
+		<chart name="chart.user.sale.order.created.won.target.gauge" title="Sales orders created won target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.saleOrderCreatedWon*100/self.saleOrderCreatedWonTarget   		AS 	_saleOrderCreatedWon
+				FROM Target self 
+				WHERE self.user = :__user__ and self.fromDate <= :date and self.toDate >= :date and self.saleOrderCreatedWonTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_saleOrderCreatedWon" type="text"/>
+		    <series key="_saleOrderCreatedWon" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.user.sale.order.created.won.target.bar" title="Sales orders created won historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.saleOrderCreatedWon)           AS     _saleOrderCreatedWon,
+				    SUM(self.saleOrderCreatedWonTarget)           AS     _saleOrderCreatedWonTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.user = :activeUser
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_saleOrderCreatedWon" type="bar"/>
+<!-- 		    <series key="_saleOrderCreatedWonTarget" type="bar"/> -->
+		</chart>
+		
+		
+<!--   Target team charts -->
+	  
+	   <chart name="chart.team.call.target.gauge" title="Calls emitted target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.callEmittedNumber*100/self.callEmittedNumberTarget   		AS 	_callEmittedNumber
+				FROM Target self 
+				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.callEmittedNumberTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_callEmittedNumber" type="text"/>
+		    <series key="_callEmittedNumber" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.team.call.target.bar" title="Calls emitted historical" onInit="action.chart.crm.chart.set.active.team">
+		    <search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.callEmittedNumber)           AS     _callEmittedNumber,
+				    SUM(self.callEmittedNumberTarget)           AS     _callEmittedNumberTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.team = :activeTeam
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_callEmittedNumber" type="bar"/>
+<!-- 		    <series key="_callEmittedNumberTarget" type="bar"/> -->
+		</chart>
+		
+		<action-record name="action.chart.crm.chart.set.active.team" model="com.axelor.apps.crm.db.Event">
+		    <field name="activeTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" />
+		</action-record>
+		
+		<chart name="chart.team.meeting.target.gauge" title="Meetings number target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.meetingNumber*100/self.meetingNumberTarget   		AS 	_meetingNumber
+				FROM Target self 
+				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.meetingNumberTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_meetingNumber" type="text"/>
+		    <series key="_meetingNumber" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.team.meeting.target.bar" title="Meeting number historical" onInit="action.chart.crm.chart.set.active.team">
+		    <search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.meetingNumber)           AS     _meetingNumber,
+				    SUM(self.meetingNumberTarget)           AS     _meetingNumberTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.team = :activeTeam
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_meetingNumber" type="bar"/>
+<!-- 		    <series key="_meetingNumberTarget" type="bar"/> -->
+		</chart>
+		
+		<chart name="chart.team.opportunity.amount.won.target.gauge" title="Opportunities amount won target competed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.opportunityAmountWon*100/self.opportunityAmountWonTarget   		AS 	_opportunityAmountWon
+				FROM Target self 
+				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.opportunityAmountWonTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_opportunityAmountWon" type="text"/>
+		    <series key="_opportunityAmountWon" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.team.opportunity.amount.won.target.bar" title="Opportunities amount won historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.opportunityAmountWon)           AS     _opportunityAmountWon,
+				    SUM(self.opportunityAmountWonTarget)           AS     _opportunityAmountWonTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.team = :activeTeam
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_opportunityAmountWon" type="bar"/>
+<!-- 		    <series key="_opportunityAmountWonTarget" type="bar"/> -->
+		</chart>
+	
+		<chart name="chart.team.opportunity.created.number.target.gauge" title="Opportunities created number target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.opportunityCreatedNumber*100/self.opportunityCreatedNumberTarget   		AS 	_opportunityCreatedNumber
+				FROM Target self 
+				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.opportunityCreatedNumberTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_opportunityCreatedNumber" type="text"/>
+		    <series key="_opportunityCreatedNumber" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.team.opportunity.created.number.target.bar" title="Opportunities created number historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.opportunityCreatedNumber)           AS     _opportunityCreatedNumber,
+				    SUM(self.opportunityCreatedNumberTarget)           AS     _opportunityCreatedNumberTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.team = :activeTeam
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_opportunityCreatedNumber" type="bar"/>
+<!-- 		    <series key="_opportunityCreatedNumberTarget" type="bar"/> -->
+		</chart>
+		
+		<chart name="chart.team.opportunity.created.won.target.gauge" title="Opportunities created won target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.opportunityCreatedWon*100/self.opportunityCreatedWonTarget   		AS 	_opportunityCreatedWon
+				FROM Target self 
+				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.opportunityCreatedWonTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_opportunityCreatedWon" type="text"/>
+		    <series key="_opportunityCreatedWon" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.team.opportunity.created.won.target.bar" title="Opportunities created won historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.opportunityCreatedWon)           AS     _opportunityCreatedWon,
+				    SUM(self.opportunityCreatedWonTarget)           AS     _opportunityCreatedWonTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.team = :activeTeam
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_opportunityCreatedWon" type="bar"/>
+<!-- 		    <series key="_opportunityCreatedWonTarget" type="bar"/> -->
+		</chart>
+		
+		<chart name="chart.team.sale.order.amount.won.target.gauge" title="Sales orders amount won target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.saleOrderAmountWon*100/self.saleOrderAmountWonTarget   		AS 	_saleOrderAmountWon
+				FROM Target self 
+				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.saleOrderAmountWonTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_saleOrderAmountWon" type="text"/>
+		    <series key="_saleOrderAmountWon" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.team.sale.order.amount.won.target.bar" title="Sales orders amount won historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.saleOrderAmountWon)           AS     _saleOrderAmountWon,
+				    SUM(self.saleOrderAmountWonTarget)           AS     _saleOrderAmountWonTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.team = :activeTeam
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_saleOrderAmountWon" type="bar"/>
+<!-- 		    <series key="_saleOrderAmountWonTarget" type="bar"/> -->
+		</chart>
+		
+		<chart name="chart.team.sale.order.created.number.target.gauge" title="Sales orders created number target completed (%)">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.saleOrderCreatedNumber*100/self.saleOrderCreatedNumberTarget   		AS 	_saleOrderCreatedNumber
+				FROM Target self 
+				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.saleOrderCreatedNumberTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_saleOrderCreatedNumber" type="text"/>
+		    <series key="_saleOrderCreatedNumber" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.team.sale.order.created.number.target.bar" title="Sales orders created number historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.saleOrderCreatedNumber)           AS     _saleOrderCreatedNumber,
+				    SUM(self.saleOrderCreatedNumberTarget)           AS     _saleOrderCreatedNumberTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.team = :activeTeam
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_saleOrderCreatedNumber" type="bar"/>
+<!-- 		    <series key="_saleOrderCreatedNumberTarget" type="bar"/> -->
+		</chart>
+		
+		<chart name="chart.team.sale.order.created.won.target.gauge" title="Sales orders created won target completed">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    self.saleOrderCreatedWon*100/self.saleOrderCreatedWonTarget   		AS 	_saleOrderCreatedWon
+				FROM Target self 
+				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.saleOrderCreatedWonTarget > 0
+				  ]]>
+		    </dataset>
+		    <category key="_saleOrderCreatedWon" type="text"/>
+		    <series key="_saleOrderCreatedWon" type="gauge"/>
+		    <config name="min" value="0"/>
+	    	<config name="max" value="200"/>
+		</chart>
+		
+		<chart name="chart.team.sale.order.created.won.target.bar" title="Sales orders created won historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    SUM(self.saleOrderCreatedWon)           AS     _saleOrderCreatedWon,
+				    SUM(self.saleOrderCreatedWonTarget)           AS     _saleOrderCreatedWonTarget,
+				    self.periodTypeSelect as _period,
+				    self.toDate as _toDate
+				FROM Target self 
+				WHERE self.team = :activeTeam
+				GROUP BY
+				    self.periodTypeSelect,
+				    self.toDate
+				ORDER BY 
+				     self.toDate
+				  ]]>
+		    </dataset>
+		    <category key="_toDate" type="text"/>
+		    <series key="_saleOrderCreatedWon" type="bar"/>
+<!-- 		    <series key="_saleOrderCreatedWonTarget" type="bar"/> -->
+		</chart>
+		
+	<!-- CRM EVENT ASSOCIATED TO PARTNER -->
+		<chart name="chart.customer.crm.activities" title="CRM Activities">
+		  <dataset type="sql">
+		       SELECT 
+		        coalesce(COUNT(_event.id),0) AS _num_event, 
+		        selection_item.title AS _type
+		      FROM 
+		            meta_select as selection        
+		      JOIN 
+		            meta_select_item as selection_item   ON selection_item.select_id = selection.id
+		      LEFT JOIN 
+		           crm_event as _event 
+		             ON _event.type_select=cast(selection_item.value as int) AND _event.contact_partner=:id  
+		      WHERE 
+		            selection.name = 'crm.event.type.select'
+		      GROUP BY
+		            _type    
+		  </dataset>
+		  <category key="_type" type="text" title="Type"/>
+		  <series key="_num_event" type="bar" title="Activities"/>
+		</chart>
+		
+</object-views>

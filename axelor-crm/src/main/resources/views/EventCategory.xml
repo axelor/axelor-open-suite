@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="event-category-grid" title="Event categories" model="com.axelor.apps.crm.db.EventCategory">
+        <field name="name"/>
+    </grid>
+    
+    <grid name="event-category-conf-grid" title="Event configuration categories" model="com.axelor.apps.crm.db.EventCategory">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="typeSelect"/>
+    </grid>
+    
+    <form name="event-category-form" title="Event category" model="com.axelor.apps.crm.db.EventCategory"  >
+        <panel>
+	        <field name="name"/>
+	        <field name="code"/>
+	        <field name="typeSelect"/>
+        </panel>
+        
+    </form>
+    
+</object-views>

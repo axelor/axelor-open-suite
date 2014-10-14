@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="event-attendee-contact-grid" title="Contacts" model="com.axelor.apps.crm.db.EventAttendee">
+		<field name="name"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+    <form name="event-attendee-contact-form" title="Contact" model="com.axelor.apps.crm.db.EventAttendee" >
+    	<panel >
+	    	<field name="statusSelect"/>
+	        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" showIf="contactPartner"/>
+	        <field name="lead" showIf="lead"/>
+    	</panel>
+    	
+    </form>
+    
+</object-views>

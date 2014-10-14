@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="Lead" lang="java">
+  	
+  	<string name="importId"/>
+  
+ 	<string name="titleSelect" title="Title" selection="partner.title.type.select"/>
+    <string name="name" required="true" title="Last name"/>
+    <string name="firstName" title="First name"/>
+    <string name="enterpriseName" title="Enterprise name"/> 
+    <string name="officeName" title="Office name"/>
+  	<string name="jobTitle" title="Job Title"/>
+    <string name="mobilePhone" title="Mobile N°"/>
+    <string name="fixedPhone" title="Fixed Phone"/>
+  	<string name="department" title="Dep./Div."/>
+  	<string name="fax" title="Fax"/>
+  	<string name="webSite" title="Website"/>
+  	
+<!--   Primary address group -->
+	<string name="primaryAddress" title="Address"/>
+	<string name="primaryCity" title="City"/>
+	<string name="primaryState" title="State"/>
+	<string name="primaryPostalCode" title="Postal code"/>
+  	<many-to-one name="primaryCountry" ref="com.axelor.apps.base.db.Country" title="Country"/>
+  
+<!--   Others address group -->
+	<string name="otherAddress" title="Address"/>
+	<string name="otherCity" title="City"/>
+	<string name="otherState" title="State"/>
+	<string name="otherPostalCode" title="Postal code"/>
+  	<many-to-one name="otherCountry" ref="com.axelor.apps.base.db.Country" title="Country"/>
+  	<boolean name="isCopyAddress" title="Copy primary address"/>
+    
+    
+    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email"/>
+	<binary name="picture" title="Picture" />
+	
+	<string name="description" title="Description" large="true"/>
+	<date name="contactDate" title="Contact date" />
+	
+	<integer name="statusSelect" title="Status" selection="crm.lead.status.select" default="1" required="true"/>  
+	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
+  	<string name="statusDescription" title="Status description" large="true"/>
+    <decimal name="opportunityAmount" title="Opportunity amount"/>
+ 	<string name="sourceDescription" title="Source description" large="true"/>
+    <string name="referredBy" title="Referred by"/>
+    <boolean name="isDoNotCall" title="Allow calls ?"/>
+    <boolean name="isDoNotSendEmail" title="Allow emails ?"/>
+    
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Contact" readonly="true"/>
+    
+    
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" />
+  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"  />
+  	
+    
+    <string name="fullName" title="Contact name" namecolumn="true">
+	    <![CDATA[
+	    String fullName = "";
+	    if(name != null && firstName != null) fullName = firstName + " "+name;
+	    else if(name != null) fullName = name;
+	    else if(firstName != null)  fullName = firstName;
+	    return fullName;
+	    ]]>
+    </string>
+    
+    <string name="companyName" title="Company name" namecolumn="true">
+	    <![CDATA[
+	    String companyName =  enterpriseName;
+	    if(companyName != null && jobTitle != null) companyName = companyName+","+jobTitle;
+	    return companyName;
+	    ]]>
+    </string>
+  </entity>
+
+</domain-models>

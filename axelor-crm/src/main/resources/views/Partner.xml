@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+ 	
+    <form name="incl-activities-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
+	    <panel-dashlet colSpan="12" action="action-partner-view-upcoming-events"/>
+	    <panel-dashlet colSpan="12" action="action-partner-view-historical-events-completed"/>
+	    <panel-dashlet colSpan="12" action="action-partner-view-opportunities"/>
+	    <panel-dashlet colSpan="12" action="action-partner-view-tickets"/>
+	</form>
+	
+    <form name="incl-events-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
+	    <panel-dashlet colSpan="12" title="Events" showIf="id != null" action="dashlet.customer.crm.activities" height="350"/>
+	</form>
+	
+    <form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
+        <menubar>
+	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null"/>
+	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null"/>
+	            <item title="Create task" action="save,action-partner-view-create-task" readonlyIf="id == null"/>
+	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null"/>
+	        </menu>
+	    </menubar>
+    </form>
+	
+    <!--     CREATE CRM OBJECT FROM PARTNER -->
+    
+    <action-view name="action-partner-view-create-call" title="Create call" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="call-form"/>
+    	<context name="_partner" expr="eval: __self__"/>
+    	<context name="_typeSelect" expr="1"/>
+    </action-view>
+    
+    <action-view name="action-partner-view-create-meeting" title="Create meeting" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="meeting-form"/>
+    	<context name="_partner" expr="eval: __self__"/>
+    	<context name="_typeSelect" expr="2"/>
+    </action-view>
+    
+    <action-view name="action-partner-view-create-task" title="Create task" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="crm-task-form"/>
+    	<context name="_partner" expr="eval: __self__"/>
+    	<context name="_typeSelect" expr="3"/>
+    </action-view>
+    
+    <action-view name="action-partner-view-create-opportunity" title="Create opportunity" model="com.axelor.apps.crm.db.Opportunity">
+    	<view type="form" name="opportunity-form"/>
+    	<context name="_partner" expr="eval: __self__"/>
+    </action-view>
+    
+    <!--     PORTLET -->
+    
+    <action-view name="action-partner-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
+		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.startDateTime > :_todayTime and self.typeSelect != 5</domain>
+		<context name="id" expr="eval: id"/>
+		<context name="_todayTime" expr="eval: __datetime__"/>
+	</action-view>
+	
+	<action-view name="action-partner-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
+		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
+		<context name="id" expr="eval: id"/>
+		<context name="_todayTime" expr="eval: __datetime__"/>
+	</action-view>
+   	
+   	<action-view name="action-partner-view-opportunities" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid"/>
+		<view type="form" name="opportunity-form"/>
+		<domain>self.partner.id = :id</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+   	
+   	<action-view name="action-partner-view-tickets" title="Tickets" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form"/>
+		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) AND self.typeSelect = 5</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+    	
+    
+
+</object-views>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="target-configuration-grid" title="Target configurations" model="com.axelor.apps.crm.db.TargetConfiguration">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="user" />
+       	<field name="team"/>
+    </grid>
+    
+<!--     <form name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration"  > -->
+<!-- 	    <group  > -->
+<!-- 	        <field name="name"/> -->
+<!-- 	        <field name="code"/>     -->
+<!-- 	    </group> -->
+<!-- 	    <group title="Concerns"  > -->
+<!-- 	        <field name="user" showIf="team == null"/> -->
+<!-- 	        <field name="team" showIf="user == null"/>     -->
+<!-- 	    </group> -->
+<!-- 	    <group title="Period"  > -->
+<!-- 	        <field name="periodTypeSelect"/> -->
+<!-- 	        <break/> -->
+<!-- 	        <field name="fromDate"/> -->
+<!-- 	        <field name="toDate"/> -->
+<!-- 	    </group> -->
+<!-- 	    <group title="Targets"     > -->
+<!-- 	        <group  > -->
+<!-- 	            <separator title="Opportunities"  /> -->
+<!-- 	            <break/> -->
+<!-- 	            <field name="opportunityAmountWon"/> -->
+<!-- 	            <break/> -->
+<!-- 	            <field name="opportunityCreatedNumber"/> -->
+<!-- 	            <break/> -->
+<!-- 	            <field name="opportunityCreatedWon"/> -->
+<!-- 	        </group> -->
+<!-- 	        <group  > -->
+<!-- 	            <separator title="Calls"  /> -->
+<!-- 	            <break/> -->
+<!-- 	            <field name="callEmittedNumber"/> -->
+<!-- 	        </group> -->
+<!-- 	        <group  > -->
+<!-- 	            <separator title="Meetings"  /> -->
+<!-- 	            <break/> -->
+<!-- 	            <field name="meetingNumber"/> -->
+<!-- 	        </group> -->
+	        <!--         <group title="Sales order"  > -->
+<!--         	<field name="saleOrderAmountWon"/> -->
+<!--         	<field name="saleOrderCreatedNumber"/> -->
+<!--         	<field name="saleOrderCreatedWon"/> -->
+<!--         </group> -->
+<!-- 	    </group> -->
+<!-- 	</form> -->
+    <form   name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration">
+  <panel >
+    <field name="name"/>
+    <field name="code"/>
+  </panel>
+  <panel title="Concerns">
+    <field name="user" showIf="team == null"/>
+    <field name="team" showIf="user == null"/>
+  </panel>
+  <panel title="Period">
+    <field name="periodTypeSelect"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+  </panel>
+  <panel title="Targets">
+      <panel title="Opportunities" colSpan="4">
+        <field name="opportunityAmountWon" colSpan="12"/>
+        <field name="opportunityCreatedNumber" colSpan="12"/>
+        <field name="opportunityCreatedWon" colSpan="12"/>
+      </panel>
+      <panel title="Calls" colSpan="4">
+        <field name="callEmittedNumber"/>
+     </panel>
+     <panel title="Meetings" colSpan="4">
+      <field name="meetingNumber"/>
+    </panel>
+  </panel>
+</form>
+</object-views>
