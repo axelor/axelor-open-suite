@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	  
+	<action-record model="com.axelor.apps.purchase.db.PurchaseOrder" name="action.purchase.chart.set.date.6m">
+	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
+	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)"/>
+	  <field name="monthSelect" expr="eval:6" />
+	</action-record>
+	
+	<action-record model="com.axelor.apps.purchase.db.PurchaseOrder" name="action.purchase.chart.set.date">
+	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)" />
+	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)" />
+	  <field name="monthSelect" expr="eval:12" />
+	</action-record>
+	  
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.my.purchase.per.product.family.volume" title="My purchased qty by product family">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
+	  </search-fields>
+	  <dataset type="jpql">
+	  
+	  SELECT
+	    SUM(self.qty) AS _qty,
+	    product.productFamily.name AS _product_family
+	  FROM
+	    PurchaseOrderLine self,  
+	    Product product
+	    
+	  WHERE
+	    self.product = product
+	    AND self.purchaseOrder.validationDate &gt;= :fromDate 
+	    AND self.purchaseOrder.validationDate &lt;= :toDate
+	    AND self.purchaseOrder.statusSelect &gt; 3 
+	    AND self.purchaseOrder.statusSelect &lt; 6
+	    AND self.purchaseOrder.buyerUser = :activeUser
+	    AND self.purchaseOrder.company = :activeCompany
+	  GROUP BY
+	    product.productFamily.name
+	  ORDER BY
+	    product.productFamily.name
+	  
+	  </dataset>
+	  <category key="_product_family" type="text" title="Product Family"/>
+	  <series key="_qty" type="donut" title="Quantity"/>
+	</chart>
+	  
+	  
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.my.purchase.amount.per.product.family" title="My purchased amount by product family">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
+	  </search-fields>
+	  <dataset type="jpql">
+	  
+	  SELECT
+	    SUM(self.exTaxTotal) AS amount,
+	    product.productFamily.name AS _product_family    
+	  FROM
+	    PurchaseOrderLine self,
+	    Product product
+	    
+	  WHERE
+	    self.purchaseOrder.buyerUser = :activeUser
+	    AND self.purchaseOrder.company = :activeCompany
+	    AND self.purchaseOrder.validationDate &gt;= :fromDate AND self.purchaseOrder.validationDate &lt;= :toDate
+	    AND self.purchaseOrder.createdOn &lt;= CURRENT_TIMESTAMP
+	    AND self.purchaseOrder.statusSelect IN (4,5)
+	    AND self.product = product  
+	  GROUP BY
+	    product.productFamily.name    
+	  ORDER BY
+	    product.productFamily.name
+	  
+	  </dataset>
+	  <category key="_product_family" type="text" title="Product Family"/>
+	  <series key="amount" type="bar" title="Amount"/>
+	</chart>
+	  
+	   
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.volume.by.buyer.by.family" title="POs Volume by buyer by family">
+	
+	  <search-fields>
+	    <field name="fromDate" type="date" title="From Date" />
+	    <field name="toDate" type="date" title="To Date" />
+	  </search-fields>
+	  
+	  <dataset type="sql">
+	  
+	  select
+	    sum(_line.qty) as qty,
+	    buyer.full_name buyer_name  
+	  FROM
+	    purchase_purchase_order_line _line
+	  JOIN
+	    purchase_purchase_order self
+	    ON _line.purchase_order=self.id
+	  JOIN
+	    auth_user _user
+	    ON _user.id = :_user_id
+	    AND self.company = _user.active_company
+	  JOIN
+	    auth_user buyer
+	    ON buyer.id=self.buyer_user
+	  where
+	    self.validation_date &gt;= DATE(:fromDate) AND self.validation_date &lt;= DATE(:toDate)
+	    AND self.status_select in(4,5)
+	  group by buyer_name
+	  
+	  </dataset>
+	  <category key="buyer_name" type="text" title="Buyer"/>
+	  <series key="qty" type="bar" title="Quantity"/>
+	</chart>
+	  
+	  
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.amount.by.family" title="Purchased amount by family">
+	  <search-fields>
+	    <field name="fromDate" type="date" title="From Date" />
+	    <field name="toDate" type="date" title="To Date" />
+	  </search-fields>
+	
+	  <dataset type="sql">
+	  
+	  SELECT
+	      family.name as family_name,
+	      coalesce(sum(self.ex_tax_total) ,0) as amount
+	    FROM
+	      purchase_purchase_order_line orders
+	    JOIN
+	      purchase_purchase_order self
+	      ON self.id=orders.purchase_order
+	    JOIN
+	      auth_user _user
+	      ON _user.id = :_user_id
+	      AND self.company = _user.active_company
+	    JOIN
+	      base_product product
+	      ON product.id=orders.product
+	    JOIN
+	      base_product_family family
+	      ON product.product_family=family.id
+	    WHERE
+	      self.status_select in(4,5)  
+	      AND self.validation_date &gt;= DATE(:fromDate) AND self.validation_date &lt;= DATE(:toDate)
+	    GROUP BY
+	      family_name
+	  
+	  </dataset>
+	  <category key="family_name" type="text" title="Product Family"/>
+	  <series key="amount" type="bar" title="Amount"/>
+	</chart>
+	  
+	  
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.amount.distribution.by.family" title="Purchased amount distribution by family">
+	  <search-fields>
+	    <field name="fromDate" type="date" title="From Date" />
+	    <field name="toDate" type="date" title="To Date" />
+	  </search-fields>
+	
+	  <dataset type="sql">
+	  
+	  SELECT
+	     
+	    base_product_family.name AS _family_product,
+	    TRUNC((SUM(purchase_purchase_order_line.ex_tax_total) * 100)/(SELECT
+	        SUM(purchase_purchase_order_line.ex_tax_total)
+	      FROM
+	        purchase_purchase_order self
+	      JOIN
+	        auth_user _user
+	        ON _user.id = :_user_id
+	        AND self.company = _user.active_company
+	      LEFT JOIN
+	        purchase_purchase_order_line ON purchase_purchase_order_line.purchase_order = self.id
+	      WHERE
+	        self.validation_date &gt;= DATE(:fromDate) AND self.validation_date &lt;= DATE(:toDate)
+	      AND
+	        self.status_select IN (4,5)),2) AS _percent
+	  FROM
+	    purchase_purchase_order self
+	  JOIN
+	    auth_user _user
+	    ON _user.id = :_user_id
+	    AND self.company = _user.active_company    
+	  LEFT JOIN
+	    purchase_purchase_order_line ON purchase_purchase_order_line.purchase_order = self.id
+	  LEFT JOIN
+	    base_product ON base_product.id = purchase_purchase_order_line.product
+	  LEFT JOIN
+	    base_product_family ON base_product_family.id = base_product.product_family
+	  WHERE
+	    self.validation_date &gt;= DATE(:fromDate) AND self.validation_date &lt;= DATE(:toDate)
+	  AND
+	    self.status_select IN (4,5)
+	  GROUP BY
+	    base_product_family.name
+	  ORDER BY
+	    base_product_family.name
+	  
+	  </dataset>
+	  <category key="_family_product" type="text" title="Product Family"/>
+	  <series key="_percent" type="donut" title="Percent"/>
+	</chart>	  
+	
+	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.amount" title="Total Purchased Amount by month">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
+	  </search-fields>
+	  <dataset type="sql">
+	  
+	  SELECT
+	    DATE_PART('year', _order.validation_date) || '-' ||
+	    DATE_PART('month', _order.validation_date) || '-01' AS _month,
+	    SUM(_order.ex_tax_total) AS _turn_over
+	  FROM
+	    purchase_purchase_order AS _order
+	  JOIN
+	    auth_user AS _user
+	    ON _user.id = :_user_id
+	    AND _order.company = _user.active_company
+	  WHERE
+	    _order.validation_date &gt;= DATE(:fromDate) 
+	    AND _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+	    AND _order.status_select IN (4,5)
+	  GROUP BY
+	     _month  
+	  ORDER BY
+	  	 _month
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_turn_over" type="bar" title="Turn Over"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+	
+	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.qty" title="Total Purchased Qty by month">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
+	  </search-fields>
+	  <dataset type="sql">
+	  
+	  SELECT
+	    DATE_PART('year',_order.validation_date) || '-' ||
+	    DATE_PART('month',_order.validation_date) || '-01' AS _month,
+	    SUM(_line.qty) AS _qty
+	  FROM
+	    purchase_purchase_order AS _order
+	  JOIN
+	    auth_user AS _user
+	    ON _user.id = :_user_id
+	    AND _order.company = _user.active_company
+	  JOIN
+	    purchase_purchase_order_line AS _line 
+	    ON _order.id = _line.purchase_order
+	  WHERE
+	    _order.validation_date &gt;= DATE(:fromDate) 
+	    AND _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+	    AND _order.status_select IN (4,5)
+	  GROUP BY 
+	    _month
+	  ORDER BY
+	  	_month
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_qty" type="bar" title="Units"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+	  
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.nbr.of.po.per.month" title="Nbr of PO by month">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
+	  </search-fields>
+	  <dataset type="sql">
+	  
+	  SELECT
+	    COUNT(_order.id) as _orders,
+	    DATE_PART('year', _order.validation_date) || '-' ||
+	    DATE_PART('month', _order.validation_date) || '-' || '01' AS _month
+	  FROM
+	    purchase_purchase_order AS _order
+	  JOIN
+	    auth_user AS _user
+	    ON _user.id = :_user_id
+	    AND _order.company = _user.active_company
+	  WHERE
+	    _order.validation_date &gt;= DATE(:fromDate) 
+	    AND _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+	    AND _order.status_select IN (4,5)
+	  GROUP BY 
+	    _month
+	  ORDER BY
+	  	_month
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_orders" type="bar" title="Orders"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+	
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.amount.per.product.family" title="Purchased amount by product family">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
+	  </search-fields>
+	  <dataset type="jpql">
+	      
+	      SELECT
+	        SUM(self.exTaxTotal) AS amount,
+	        product.productFamily.name AS _family_product
+	      FROM
+	        PurchaseOrder self,
+	        PurchaseOrderLine line,
+	        Product product
+	      
+	      WHERE
+	        line.purchaseOrder = self
+	        AND line.product = product      
+	        AND self.validationDate &gt;= :fromDate 
+	        AND self.validationDate &lt;= :toDate  
+	        AND self.createdOn &lt;= CURRENT_TIMESTAMP      
+	        AND self.statusSelect &gt; 3 
+	        AND self.statusSelect &lt; 6
+	        AND self.company = :activeCompany
+	      GROUP BY
+	        product.productFamily.name
+	      ORDER BY
+	        product.productFamily.name
+	      
+	      </dataset>
+	  <category key="_family_product" type="text" title="Product Family"/>
+	  <series key="amount" type="bar" title="Amount"/>
+	</chart>
+	
+</object-views>

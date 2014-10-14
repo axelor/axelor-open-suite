@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="PurchaseOrder" lang="java">
+  
+  	<integer name="importId" />
+  	<string name="fullName" namecolumn="true">
+  	<![CDATA[
+  		if(purchaseOrderSeq==null && supplierPartner == null){
+  			return " ";
+  		}
+  		return purchaseOrderSeq + "-" + supplierPartner.getName();
+  	]]>
+  	</string>
+  	<string name="purchaseOrderSeq" title="Ref." readonly="true"  unique="true"/>
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
+  	
+  	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Supplier"/>
+  	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
+  	<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
+  	
+	<many-to-one name="buyerUser" ref="com.axelor.auth.db.User" title="Buyer"/>
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" required="true"/>
+	<date name="deliveryDate" title="Delivery Date"/>
+	<date name="orderDate" title="Order Date"/>
+  	<one-to-many name="purchaseOrderLineList"  mappedBy="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Products list"/>
+  	<integer name="statusSelect" title="Status" selection="purchase.purchase.order.status.select" readonly="true"/>
+  	<string name="externalReference" title="Supplier ref."/>
+    <string name="internalReference" title="Internal Ref." help="true"/>
+  	
+  	
+  	
+<!-- Ligne de TVA -->	
+	<one-to-many name="purchaseOrderLineTaxList" ref="com.axelor.apps.purchase.db.PurchaseOrderLineTax" mappedBy="purchaseOrder" title="Tax Lines"/>
+
+<!-- Validation and totals -->	
+    <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/> 
+  	<date name="validationDate" title="Validation date" readonly="true"/>
+    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
+    <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+
+<!-- Notes -->
+	<string name="notes" large="true" multiline="true" title="Notes"/>
+	
+	
+	
+  </entity>
+
+</domain-models>

@@ -1,0 +1,239 @@
+key,message,comment,context
+50 Latest Supplier Orders,50 dernières commandes clients,,resources/views/portal.xml:131
+Account,Tiers,,resources/views/PurchaseOrderLine.xml:82
+Action(s),,,resources/views/PurchaseOrder.xml:86
+All Purchases Docs,Devis/Cmdes d'achats,,resources/views/menu.xml:60
+Amount,Montant,,"resources/views/Charts.xml:334
+resources/views/Charts.xml:152
+resources/views/Charts.xml:79"
+Amount A.T.I.,Montant T.T.C.,,resources/domains/PurchaseOrderLineTax.xml:12
+Base W.T.,Base H.T.,,resources/domains/PurchaseOrderLineTax.xml:10
+Basic,Basique,,resources/views/PurchaseConfig.xml:13
+Buyer,Acheteur,,"resources/domains/PurchaseOrder.xml:18
+resources/views/Charts.xml:113"
+By delivery,Par Livraison,,resources/views/Selects.xml:21
+Cancel,Annuler,,resources/views/PurchaseOrder.xml:94
+Canceled,Annulé(e),,resources/views/Selects.xml:15
+Clear purchase order,Nettoyer la commande,,resources/views/PurchaseOrder.xml:97
+Closed Purchase orders,Commandes d'achat terminées,,resources/views/portal.xml:165
+Code,Code,,resources/domains/PurchaseConfig.xml:11
+Company,Société,,"resources/domains/PurchaseOrder.xml:12
+resources/domains/PurchaseConfig.xml:13"
+Completed,Complété(e),,resources/views/PurchaseOrder.xml:93
+Compute,Calculer,,resources/views/PurchaseOrder.xml:88
+Contact,Contact,,resources/domains/PurchaseOrder.xml:15
+Contacts,Contacts,,resources/views/PurchaseOrder.xml:52
+Currency,Devise,,resources/domains/PurchaseOrder.xml:19
+Current Purchase Orders,Commandes d'achat en cours,,resources/views/portal.xml:100
+Dashboard,Tableau de bord,,"resources/views/portal.xml:139
+resources/views/portal.xml:8
+resources/views/portal.xml:90"
+Delivery,Livraison,,"resources/views/PurchaseOrder.xml:63
+resources/views/PurchaseOrderLine.xml:67"
+Delivery Date,Date de livraison,,resources/domains/PurchaseOrder.xml:20
+Description,Description,,resources/domains/PurchaseOrderLine.xml:19
+Desired delivery date,Date souhaitée de livraison,,resources/domains/PurchaseOrderLine.xml:31
+Details,Détails,,resources/views/PurchaseOrderLine.xml:63
+Discount,Remise,,resources/views/PurchaseOrderLine.xml:58
+Discount amount,Montant remise,,resources/domains/PurchaseOrderLine.xml:22
+Draft,Brouillon,,"resources/views/Selects.xml:10
+resources/views/PurchaseOrder.xml:89"
+Estim. delivery date,Date de livraison estimée,,resources/domains/PurchaseOrderLine.xml:30
+Financial terms,Terms financiers,,resources/views/PurchaseOrder.xml:74
+Finished,Terminé,,resources/views/Selects.xml:14
+Free,Libre,,resources/views/Selects.xml:20
+From Date,Date de,,"resources/views/Charts.xml:240
+resources/views/Charts.xml:53
+resources/views/Charts.xml:86
+resources/views/Charts.xml:274
+resources/views/Charts.xml:305
+resources/views/Charts.xml:120
+resources/views/Charts.xml:209
+resources/views/Charts.xml:20
+resources/views/Charts.xml:158"
+Generate control invoice,Générer facture de contrôle,,resources/views/PurchaseOrder.xml:96
+Generate suppliers requests,Générer demandes de devis fourn.,,resources/views/PurchaseOrderLine.xml:78
+Historical Period,Période d'historique,,"resources/views/Charts.xml:275
+resources/views/Charts.xml:241
+resources/views/Charts.xml:210"
+Import,,,"resources/domains/PurchaseOrder.xml:10
+resources/domains/PurchaseConfig.xml:9"
+In % / fixed,En % / Fixe,,resources/domains/PurchaseOrderLine.xml:23
+Info.,,,resources/views/PurchaseOrder.xml:100
+Internal Ref.,Réf. Interne,,resources/domains/PurchaseOrder.xml:25
+Invoicing Information,Information de facturation,,resources/views/PurchaseConfig.xml:18
+Label,Libellé,,resources/domains/PurchaseOrderLine.xml:14
+Links,Liens,,resources/views/PurchaseOrderLine.xml:74
+Min sale price,Prix de vente min.,,resources/domains/PurchaseOrderLine.xml:27
+Month,Mois,,"resources/views/Charts.xml:298
+resources/views/Charts.xml:267
+resources/views/Charts.xml:233"
+My Closed Purchase Orders,Mes commandes d'achat clôturées,,resources/views/portal.xml:171
+My Ongoing Purchase Orders,Mes commandes d'achat en cours,,resources/views/portal.xml:159
+My Orders to process,Mes commandes d'achat à traiter,,resources/views/portal.xml:147
+My Purchase Orders,Mes commandes d'achat,,resources/views/portal.xml:30
+My RFQs,Mes demandes de devis ,,resources/views/PurchaseOrder.xml:226
+My RFQs and POs To Validate (Requested & Received),Mes demandes de devis ,,resources/views/portal.xml:38
+My Sales,Mes ventes,,resources/views/PurchaseOrder.xml:229
+My Validated POs,Mes commandes d'achat validées,,resources/views/portal.xml:22
+My purchased amount by product family,Mon volume d'achats (montant) par famille de produit,,"resources/views/portal.xml:54
+resources/views/Charts.xml:51"
+My purchased qty by product family,Mon volume d'achats (qté) par famille de produit,,"resources/views/Charts.xml:18
+resources/views/portal.xml:46"
+Name,Nom,,resources/domains/PurchaseConfig.xml:10
+Nbr of PO by month,Nbr de commandes par mois,,"resources/views/Charts.xml:272
+resources/views/portal.xml:68"
+New Purchase order,Nouv. Commande d'achat,,"resources/views/menu.xml:11
+resources/views/menu.xml:14"
+Notes,,,"resources/domains/PurchaseOrder.xml:40
+resources/views/PurchaseOrder.xml:78"
+Ongoing Purchase orders,Commandes d'achat en cours,,resources/views/portal.xml:153
+Order Date,Date de commande,,resources/domains/PurchaseOrder.xml:21
+Ordered ?,Commandé ? ,,resources/domains/PurchaseOrderLine.xml:25
+Orders,Commandes,,"resources/views/Charts.xml:299
+resources/views/menu.xml:72
+resources/views/menu.xml:75"
+PO Lines,Lignes de Cmde,,resources/views/PurchaseOrder.xml:72
+PO Tax line,Ligne de taxes achat,,resources/views/PurchaseOrderLineTax.xml:14
+PO Tax lines,Lignes de taxes achats,,resources/views/PurchaseOrderLineTax.xml:6
+PO information,Information Cmde,,resources/views/PurchaseOrder.xml:51
+PO line,Ligne de Cmde,,resources/views/PurchaseOrderLine.xml:40
+PO lines,Lignes de Cmde,,"resources/views/PurchaseOrderLine.xml:24
+resources/views/PurchaseOrderLine.xml:7"
+POs Volume by buyer by family,Vol. d'achat par acheteur par famille,,"resources/views/Charts.xml:83
+resources/views/portal.xml:113"
+Per order,Par commande,,resources/views/Selects.xml:22
+Percent,Pourcentage,,resources/views/Charts.xml:204
+Price list,Liste de prix,,resources/domains/PurchaseOrder.xml:16
+Print,Imprimer,,"resources/views/PurchaseOrder.xml:8
+resources/views/PurchaseOrder.xml:38
+resources/views/PurchaseOrder.xml:30
+resources/views/PurchaseOrder.xml:18"
+Product,Produit,,resources/domains/PurchaseOrderLine.xml:12
+Product Family,Famille de produit,,"resources/views/Charts.xml:333
+resources/views/Charts.xml:78
+resources/views/Charts.xml:151
+resources/views/Charts.xml:46
+resources/views/Charts.xml:203"
+Product variant,Variante de produit,,resources/domains/PurchaseOrderLine.xml:33
+Products list,Liste de produits,,resources/domains/PurchaseOrder.xml:22
+Purchase Buyer Dashboard,Tableau de bord Acheteur,,resources/views/menu.xml:86
+Purchase Buyer Db,Tb Acheteur,,resources/views/menu.xml:83
+Purchase Manager Dashboard,Tableau de bord Manager Achat,,resources/views/menu.xml:96
+Purchase Manager Db,Td Manager Achat,,resources/views/menu.xml:93
+Purchase Order Dashboard,Tableau de bord Achats,,resources/views/menu.xml:104
+Purchase Order Db,Tb Achats,,resources/views/menu.xml:101
+Purchase batches,Batchs liés aux Achats,,"resources/views/menu.xml:39
+resources/views/menu.xml:36"
+Purchase config,Config. Achats,,resources/domains/Company.xml:10
+Purchase configuration,Configuration Achat,,resources/views/PurchaseConfig.xml:12
+Purchase configurations,Configurations Achat,,"resources/views/menu.xml:49
+resources/views/menu.xml:46
+resources/views/PurchaseConfig.xml:6"
+Purchase order,Commande Achat,,"resources/domains/PurchaseOrderLineTax.xml:8
+resources/domains/PurchaseOrderLine.xml:10"
+Purchase orders,Commandes,,"resources/views/menu.xml:20
+resources/views/menu.xml:23"
+PurchaseOrder.bankDetails,,,java/com/axelor/apps/purchase/report/ITranslation.java:43
+PurchaseOrder.bankingInfo,,,java/com/axelor/apps/purchase/report/ITranslation.java:41
+PurchaseOrder.base,,,java/com/axelor/apps/purchase/report/ITranslation.java:35
+PurchaseOrder.cheque,,,java/com/axelor/apps/purchase/report/ITranslation.java:42
+PurchaseOrder.customer,,,java/com/axelor/apps/purchase/report/ITranslation.java:29
+PurchaseOrder.customerRef,,,java/com/axelor/apps/purchase/report/ITranslation.java:27
+PurchaseOrder.deliveryDate,,,java/com/axelor/apps/purchase/report/ITranslation.java:23
+PurchaseOrder.note,,,java/com/axelor/apps/purchase/report/ITranslation.java:40
+PurchaseOrder.paymentCondition,,,java/com/axelor/apps/purchase/report/ITranslation.java:24
+PurchaseOrder.paymentMode,,,java/com/axelor/apps/purchase/report/ITranslation.java:25
+PurchaseOrder.priceExclTax,,,java/com/axelor/apps/purchase/report/ITranslation.java:34
+PurchaseOrder.productDescription,,,java/com/axelor/apps/purchase/report/ITranslation.java:30
+PurchaseOrder.purchaseInfo,,,java/com/axelor/apps/purchase/report/ITranslation.java:22
+PurchaseOrder.qtyUnit,,,java/com/axelor/apps/purchase/report/ITranslation.java:32
+PurchaseOrder.state,,,java/com/axelor/apps/purchase/report/ITranslation.java:44
+PurchaseOrder.supplier,,,java/com/axelor/apps/purchase/report/ITranslation.java:28
+PurchaseOrder.supplyRef,,,java/com/axelor/apps/purchase/report/ITranslation.java:26
+PurchaseOrder.tax,,,java/com/axelor/apps/purchase/report/ITranslation.java:31
+PurchaseOrder.taxAmount,,,java/com/axelor/apps/purchase/report/ITranslation.java:36
+PurchaseOrder.totalExclTax,,,java/com/axelor/apps/purchase/report/ITranslation.java:37
+PurchaseOrder.totalInclTax,,,java/com/axelor/apps/purchase/report/ITranslation.java:39
+PurchaseOrder.totalTax,,,java/com/axelor/apps/purchase/report/ITranslation.java:38
+PurchaseOrder.unitPrice,,,java/com/axelor/apps/purchase/report/ITranslation.java:33
+Purchased amount by family,Montants achats par famille,,"resources/views/Charts.xml:118
+resources/views/portal.xml:119"
+Purchased amount by product family,Montants achats par famille de produit,,"resources/views/Charts.xml:303
+resources/views/portal.xml:62"
+Purchased amount distribution by family,Répartition des achats par famille,,"resources/views/portal.xml:125
+resources/views/Charts.xml:156"
+Purchases,Achats,,"resources/views/menu.xml:109
+resources/views/menu.xml:58
+resources/views/menu.xml:8"
+Purchases Dashboard 1,Tb Achat 1,,resources/views/portal.xml:180
+Purchases Dashboard 2,Tb Achat 2,,resources/views/portal.xml:193
+Purchases Dashboard 3,Tb Achat 3,,resources/views/portal.xml:206
+Purchases Db 1,Tb Achat 1,,"resources/views/menu.xml:115
+resources/views/menu.xml:112"
+Purchases Db 2,Tb Achat 2,,"resources/views/menu.xml:124
+resources/views/menu.xml:121"
+Purchases Db 3,Tb Achat 3,,"resources/views/menu.xml:132
+resources/views/menu.xml:129"
+Purchases Order filters,Filtres Achats,,resources/views/PurchaseOrder.xml:225
+Purchases order invoicing type,Type facturation achats,,resources/domains/PurchaseConfig.xml:15
+Qty,Qté,,resources/domains/PurchaseOrderLine.xml:13
+Quantity,Quantité,,"resources/views/Charts.xml:114
+resources/views/Charts.xml:47"
+RFQ,Devis,,"resources/views/menu.xml:65
+resources/views/menu.xml:62"
+RFQ And PO To Validate,Devis et Cmde à valider,,resources/views/portal.xml:107
+Receipt,Reçu,,resources/views/PurchaseOrder.xml:91
+Received,Reçu(e),,resources/views/Selects.xml:12
+Ref.,Réf.,,resources/domains/PurchaseOrder.xml:11
+Remaining,Reste à payer,,resources/views/PurchaseOrderLine.xml:95
+Requested,Demandé,,"resources/views/PurchaseOrder.xml:90
+resources/views/Selects.xml:11"
+Sale price,Prix de vente,,resources/domains/PurchaseOrderLine.xml:39
+Send Email,Envoyer Email,,"resources/views/PurchaseOrder.xml:31
+resources/views/PurchaseOrder.xml:19"
+Send email,Envoyer Email,,resources/views/PurchaseOrder.xml:39
+Seq.,Séq.,,resources/domains/PurchaseOrderLine.xml:11
+Show invoice,Voir facture,,resources/views/PurchaseOrder.xml:95
+Status,Statut,,resources/domains/PurchaseOrder.xml:23
+Subtotal W.T.,Sous-total H.T.,,resources/domains/PurchaseOrderLine.xml:17
+Supplier,Fournisseur,,resources/domains/PurchaseOrder.xml:14
+Supplier RFQ/PO,Fournisseur Devis/Cmde,,resources/views/PurchaseOrder.xml:36
+Supplier RFQs/POs,Fournisseur Devis/Cmdes,,"resources/views/PurchaseOrder.xml:22
+resources/views/PurchaseOrder.xml:6"
+Supplier invoices,Factures fournisseur,,resources/views/PurchaseOrder.xml:214
+Supplier ref.,Réf. Fournisseur,,resources/domains/PurchaseOrder.xml:24
+Suppliers managements,Gestion des fournisseurs,,resources/views/PurchaseOrder.xml:83
+Suppliers requests,Demandes de cotation,,resources/views/PurchaseOrderLine.xml:77
+Tax,Taxe,,resources/domains/PurchaseOrderLine.xml:16
+Tax Lines,Lignes de taxe,,"resources/domains/PurchaseOrder.xml:30
+resources/views/PurchaseOrder.xml:73"
+Tax amount,Montant,,resources/domains/PurchaseOrderLineTax.xml:11
+The field 'Location' must be filled.,Le champ 'Location' doit être rempli.,,resources/views/PurchaseOrder.xml:222
+To Date,A,,"resources/views/Charts.xml:159
+resources/views/Charts.xml:87
+resources/views/Charts.xml:21
+resources/views/Charts.xml:121
+resources/views/Charts.xml:306
+resources/views/Charts.xml:54"
+Total,Total,,resources/views/PurchaseOrderLine.xml:94
+Total A.T.I.,Total T.T.C.,,resources/domains/PurchaseOrder.xml:37
+Total Purchased Amount by month,Montant total Achats par mois,,"resources/views/Charts.xml:207
+resources/views/portal.xml:74"
+Total Purchased Qty by month,Qté totale Achats par mois,,"resources/views/Charts.xml:238
+resources/views/portal.xml:80"
+Total Tax,Total Taxe,,resources/domains/PurchaseOrder.xml:36
+Total W.T.,Total H.T.,,resources/domains/PurchaseOrder.xml:35
+Total W.T. in company currency,Total H.T. Devise Sté,,resources/domains/PurchaseOrderLine.xml:37
+Totals,Totaux,,resources/views/PurchaseOrder.xml:105
+Turn Over,Chiffre d'affaire Achat,,resources/views/Charts.xml:234
+Unit,Unité,,resources/domains/PurchaseOrderLine.xml:20
+Unit price,Prix unitaire,,resources/domains/PurchaseOrderLine.xml:15
+Units,Unités,,resources/views/Charts.xml:268
+V.A.T.,T.V.A.,,resources/domains/PurchaseOrderLineTax.xml:9
+Validate,Valider,,resources/views/PurchaseOrder.xml:92
+Validated,Validé(e),,resources/views/Selects.xml:13
+Validated by,Validé par,,resources/domains/PurchaseOrder.xml:33
+Validation date,Date de validation,,resources/domains/PurchaseOrder.xml:34
+help:PurchaseOrder.internalReference,"Se réfère à un document interne comme un devis, autre commande d'achat, réception…",,resources/domains/PurchaseOrder.xml:25
+help:PurchaseOrderLine.estimatedDelivDate,Estimée par le fournisseur,,resources/domains/PurchaseOrderLine.xml:30

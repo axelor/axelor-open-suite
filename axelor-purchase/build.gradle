@@ -1,0 +1,14 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-purchase"
+	version "3.0.0"
+	title "Axelor :: Purchase"
+	
+	removable true
+
+	module "modules:axelor-base"
+//	module "modules:axelor-account"
+//	module "modules:axelor-account-organisation"
+}
+

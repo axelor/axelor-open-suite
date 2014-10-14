@@ -1,0 +1,239 @@
+"key","message","comment","context"
+"50 Latest Supplier Orders","","","resources/views/portal.xml:131"
+"Account","","","resources/views/PurchaseOrderLine.xml:82"
+"Action(s)","","","resources/views/PurchaseOrder.xml:86"
+"All Purchases Docs","","","resources/views/menu.xml:60"
+"Amount","","","resources/views/Charts.xml:334
+resources/views/Charts.xml:152
+resources/views/Charts.xml:79"
+"Amount A.T.I.","","","resources/domains/PurchaseOrderLineTax.xml:12"
+"Base W.T.","","","resources/domains/PurchaseOrderLineTax.xml:10"
+"Basic","","","resources/views/PurchaseConfig.xml:13"
+"Buyer","","","resources/domains/PurchaseOrder.xml:18
+resources/views/Charts.xml:113"
+"By delivery","","","resources/views/Selects.xml:21"
+"Cancel","","","resources/views/PurchaseOrder.xml:94"
+"Canceled","","","resources/views/Selects.xml:15"
+"Clear purchase order","","","resources/views/PurchaseOrder.xml:97"
+"Closed Purchase orders","","","resources/views/portal.xml:165"
+"Code","","","resources/domains/PurchaseConfig.xml:11"
+"Company","","","resources/domains/PurchaseOrder.xml:12
+resources/domains/PurchaseConfig.xml:13"
+"Completed","","","resources/views/PurchaseOrder.xml:93"
+"Compute","","","resources/views/PurchaseOrder.xml:88"
+"Contact","","","resources/domains/PurchaseOrder.xml:15"
+"Contacts","","","resources/views/PurchaseOrder.xml:52"
+"Currency","","","resources/domains/PurchaseOrder.xml:19"
+"Current Purchase Orders","","","resources/views/portal.xml:100"
+"Dashboard","","","resources/views/portal.xml:139
+resources/views/portal.xml:8
+resources/views/portal.xml:90"
+"Delivery","","","resources/views/PurchaseOrder.xml:63
+resources/views/PurchaseOrderLine.xml:67"
+"Delivery Date","","","resources/domains/PurchaseOrder.xml:20"
+"Description","","","resources/domains/PurchaseOrderLine.xml:19"
+"Desired delivery date","","","resources/domains/PurchaseOrderLine.xml:31"
+"Details","","","resources/views/PurchaseOrderLine.xml:63"
+"Discount","","","resources/views/PurchaseOrderLine.xml:58"
+"Discount amount","","","resources/domains/PurchaseOrderLine.xml:22"
+"Draft","","","resources/views/Selects.xml:10
+resources/views/PurchaseOrder.xml:89"
+"Estim. delivery date","","","resources/domains/PurchaseOrderLine.xml:30"
+"Financial terms","","","resources/views/PurchaseOrder.xml:74"
+"Finished","","","resources/views/Selects.xml:14"
+"Free","","","resources/views/Selects.xml:20"
+"From Date","","","resources/views/Charts.xml:240
+resources/views/Charts.xml:53
+resources/views/Charts.xml:86
+resources/views/Charts.xml:274
+resources/views/Charts.xml:305
+resources/views/Charts.xml:120
+resources/views/Charts.xml:209
+resources/views/Charts.xml:20
+resources/views/Charts.xml:158"
+"Generate control invoice","","","resources/views/PurchaseOrder.xml:96"
+"Generate suppliers requests","","","resources/views/PurchaseOrderLine.xml:78"
+"Historical Period","","","resources/views/Charts.xml:275
+resources/views/Charts.xml:241
+resources/views/Charts.xml:210"
+"Import","","","resources/domains/PurchaseOrder.xml:10
+resources/domains/PurchaseConfig.xml:9"
+"In % / fixed","","","resources/domains/PurchaseOrderLine.xml:23"
+"Info.","","","resources/views/PurchaseOrder.xml:100"
+"Internal Ref.","","","resources/domains/PurchaseOrder.xml:25"
+"Invoicing Information","","","resources/views/PurchaseConfig.xml:18"
+"Label","","","resources/domains/PurchaseOrderLine.xml:14"
+"Links","","","resources/views/PurchaseOrderLine.xml:74"
+"Min sale price","","","resources/domains/PurchaseOrderLine.xml:27"
+"Month","","","resources/views/Charts.xml:298
+resources/views/Charts.xml:267
+resources/views/Charts.xml:233"
+"My Closed Purchase Orders","","","resources/views/portal.xml:171"
+"My Ongoing Purchase Orders","","","resources/views/portal.xml:159"
+"My Orders to process","","","resources/views/portal.xml:147"
+"My Purchase Orders","","","resources/views/portal.xml:30"
+"My RFQs","","","resources/views/PurchaseOrder.xml:226"
+"My RFQs and POs To Validate (Requested & Received)","","","resources/views/portal.xml:38"
+"My Sales","","","resources/views/PurchaseOrder.xml:229"
+"My Validated POs","","","resources/views/portal.xml:22"
+"My purchased amount by product family","","","resources/views/portal.xml:54
+resources/views/Charts.xml:51"
+"My purchased qty by product family","","","resources/views/Charts.xml:18
+resources/views/portal.xml:46"
+"Name","","","resources/domains/PurchaseConfig.xml:10"
+"Nbr of PO by month","","","resources/views/Charts.xml:272
+resources/views/portal.xml:68"
+"New Purchase order","","","resources/views/menu.xml:11
+resources/views/menu.xml:14"
+"Notes","","","resources/domains/PurchaseOrder.xml:40
+resources/views/PurchaseOrder.xml:78"
+"Ongoing Purchase orders","","","resources/views/portal.xml:153"
+"Order Date","","","resources/domains/PurchaseOrder.xml:21"
+"Ordered ?","","","resources/domains/PurchaseOrderLine.xml:25"
+"Orders","","","resources/views/Charts.xml:299
+resources/views/menu.xml:72
+resources/views/menu.xml:75"
+"PO Lines","","","resources/views/PurchaseOrder.xml:72"
+"PO Tax line","","","resources/views/PurchaseOrderLineTax.xml:14"
+"PO Tax lines","","","resources/views/PurchaseOrderLineTax.xml:6"
+"PO information","","","resources/views/PurchaseOrder.xml:51"
+"PO line","","","resources/views/PurchaseOrderLine.xml:40"
+"PO lines","","","resources/views/PurchaseOrderLine.xml:24
+resources/views/PurchaseOrderLine.xml:7"
+"POs Volume by buyer by family","","","resources/views/Charts.xml:83
+resources/views/portal.xml:113"
+"Per order","","","resources/views/Selects.xml:22"
+"Percent","","","resources/views/Charts.xml:204"
+"Price list","","","resources/domains/PurchaseOrder.xml:16"
+"Print","","","resources/views/PurchaseOrder.xml:8
+resources/views/PurchaseOrder.xml:38
+resources/views/PurchaseOrder.xml:30
+resources/views/PurchaseOrder.xml:18"
+"Product","","","resources/domains/PurchaseOrderLine.xml:12"
+"Product Family","","","resources/views/Charts.xml:333
+resources/views/Charts.xml:78
+resources/views/Charts.xml:151
+resources/views/Charts.xml:46
+resources/views/Charts.xml:203"
+"Product variant","","","resources/domains/PurchaseOrderLine.xml:33"
+"Products list","","","resources/domains/PurchaseOrder.xml:22"
+"Purchase Buyer Dashboard","","","resources/views/menu.xml:86"
+"Purchase Buyer Db","","","resources/views/menu.xml:83"
+"Purchase Manager Dashboard","","","resources/views/menu.xml:96"
+"Purchase Manager Db","","","resources/views/menu.xml:93"
+"Purchase Order Dashboard","","","resources/views/menu.xml:104"
+"Purchase Order Db","","","resources/views/menu.xml:101"
+"Purchase batches","","","resources/views/menu.xml:39
+resources/views/menu.xml:36"
+"Purchase config","","","resources/domains/Company.xml:10"
+"Purchase configuration","","","resources/views/PurchaseConfig.xml:12"
+"Purchase configurations","","","resources/views/menu.xml:49
+resources/views/menu.xml:46
+resources/views/PurchaseConfig.xml:6"
+"Purchase order","","","resources/domains/PurchaseOrderLineTax.xml:8
+resources/domains/PurchaseOrderLine.xml:10"
+"Purchase orders","","","resources/views/menu.xml:20
+resources/views/menu.xml:23"
+"PurchaseOrder.bankDetails","","","java/com/axelor/apps/purchase/report/ITranslation.java:43"
+"PurchaseOrder.bankingInfo","","","java/com/axelor/apps/purchase/report/ITranslation.java:41"
+"PurchaseOrder.base","","","java/com/axelor/apps/purchase/report/ITranslation.java:35"
+"PurchaseOrder.cheque","","","java/com/axelor/apps/purchase/report/ITranslation.java:42"
+"PurchaseOrder.customer","","","java/com/axelor/apps/purchase/report/ITranslation.java:29"
+"PurchaseOrder.customerRef","","","java/com/axelor/apps/purchase/report/ITranslation.java:27"
+"PurchaseOrder.deliveryDate","","","java/com/axelor/apps/purchase/report/ITranslation.java:23"
+"PurchaseOrder.note","","","java/com/axelor/apps/purchase/report/ITranslation.java:40"
+"PurchaseOrder.paymentCondition","","","java/com/axelor/apps/purchase/report/ITranslation.java:24"
+"PurchaseOrder.paymentMode","","","java/com/axelor/apps/purchase/report/ITranslation.java:25"
+"PurchaseOrder.priceExclTax","","","java/com/axelor/apps/purchase/report/ITranslation.java:34"
+"PurchaseOrder.productDescription","","","java/com/axelor/apps/purchase/report/ITranslation.java:30"
+"PurchaseOrder.purchaseInfo","","","java/com/axelor/apps/purchase/report/ITranslation.java:22"
+"PurchaseOrder.qtyUnit","","","java/com/axelor/apps/purchase/report/ITranslation.java:32"
+"PurchaseOrder.state","","","java/com/axelor/apps/purchase/report/ITranslation.java:44"
+"PurchaseOrder.supplier","","","java/com/axelor/apps/purchase/report/ITranslation.java:28"
+"PurchaseOrder.supplyRef","","","java/com/axelor/apps/purchase/report/ITranslation.java:26"
+"PurchaseOrder.tax","","","java/com/axelor/apps/purchase/report/ITranslation.java:31"
+"PurchaseOrder.taxAmount","","","java/com/axelor/apps/purchase/report/ITranslation.java:36"
+"PurchaseOrder.totalExclTax","","","java/com/axelor/apps/purchase/report/ITranslation.java:37"
+"PurchaseOrder.totalInclTax","","","java/com/axelor/apps/purchase/report/ITranslation.java:39"
+"PurchaseOrder.totalTax","","","java/com/axelor/apps/purchase/report/ITranslation.java:38"
+"PurchaseOrder.unitPrice","","","java/com/axelor/apps/purchase/report/ITranslation.java:33"
+"Purchased amount by family","","","resources/views/Charts.xml:118
+resources/views/portal.xml:119"
+"Purchased amount by product family","","","resources/views/Charts.xml:303
+resources/views/portal.xml:62"
+"Purchased amount distribution by family","","","resources/views/portal.xml:125
+resources/views/Charts.xml:156"
+"Purchases","","","resources/views/menu.xml:109
+resources/views/menu.xml:58
+resources/views/menu.xml:8"
+"Purchases Dashboard 1","","","resources/views/portal.xml:180"
+"Purchases Dashboard 2","","","resources/views/portal.xml:193"
+"Purchases Dashboard 3","","","resources/views/portal.xml:206"
+"Purchases Db 1","","","resources/views/menu.xml:115
+resources/views/menu.xml:112"
+"Purchases Db 2","","","resources/views/menu.xml:124
+resources/views/menu.xml:121"
+"Purchases Db 3","","","resources/views/menu.xml:132
+resources/views/menu.xml:129"
+"Purchases Order filters","","","resources/views/PurchaseOrder.xml:225"
+"Purchases order invoicing type","","","resources/domains/PurchaseConfig.xml:15"
+"Qty","","","resources/domains/PurchaseOrderLine.xml:13"
+"Quantity","","","resources/views/Charts.xml:114
+resources/views/Charts.xml:47"
+"RFQ","","","resources/views/menu.xml:65
+resources/views/menu.xml:62"
+"RFQ And PO To Validate","","","resources/views/portal.xml:107"
+"Receipt","","","resources/views/PurchaseOrder.xml:91"
+"Received","","","resources/views/Selects.xml:12"
+"Ref.","","","resources/domains/PurchaseOrder.xml:11"
+"Remaining","","","resources/views/PurchaseOrderLine.xml:95"
+"Requested","","","resources/views/PurchaseOrder.xml:90
+resources/views/Selects.xml:11"
+"Sale price","","","resources/domains/PurchaseOrderLine.xml:39"
+"Send Email","","","resources/views/PurchaseOrder.xml:31
+resources/views/PurchaseOrder.xml:19"
+"Send email","","","resources/views/PurchaseOrder.xml:39"
+"Seq.","","","resources/domains/PurchaseOrderLine.xml:11"
+"Show invoice","","","resources/views/PurchaseOrder.xml:95"
+"Status","","","resources/domains/PurchaseOrder.xml:23"
+"Subtotal W.T.","","","resources/domains/PurchaseOrderLine.xml:17"
+"Supplier","","","resources/domains/PurchaseOrder.xml:14"
+"Supplier RFQ/PO","","","resources/views/PurchaseOrder.xml:36"
+"Supplier RFQs/POs","","","resources/views/PurchaseOrder.xml:22
+resources/views/PurchaseOrder.xml:6"
+"Supplier invoices","","","resources/views/PurchaseOrder.xml:214"
+"Supplier ref.","","","resources/domains/PurchaseOrder.xml:24"
+"Suppliers managements","","","resources/views/PurchaseOrder.xml:83"
+"Suppliers requests","","","resources/views/PurchaseOrderLine.xml:77"
+"Tax","","","resources/domains/PurchaseOrderLine.xml:16"
+"Tax Lines","","","resources/domains/PurchaseOrder.xml:30
+resources/views/PurchaseOrder.xml:73"
+"Tax amount","","","resources/domains/PurchaseOrderLineTax.xml:11"
+"The field 'Location' must be filled.","","","resources/views/PurchaseOrder.xml:222"
+"To Date","","","resources/views/Charts.xml:159
+resources/views/Charts.xml:87
+resources/views/Charts.xml:21
+resources/views/Charts.xml:121
+resources/views/Charts.xml:306
+resources/views/Charts.xml:54"
+"Total","","","resources/views/PurchaseOrderLine.xml:94"
+"Total A.T.I.","","","resources/domains/PurchaseOrder.xml:37"
+"Total Purchased Amount by month","","","resources/views/Charts.xml:207
+resources/views/portal.xml:74"
+"Total Purchased Qty by month","","","resources/views/Charts.xml:238
+resources/views/portal.xml:80"
+"Total Tax","","","resources/domains/PurchaseOrder.xml:36"
+"Total W.T.","","","resources/domains/PurchaseOrder.xml:35"
+"Total W.T. in company currency","","","resources/domains/PurchaseOrderLine.xml:37"
+"Totals","","","resources/views/PurchaseOrder.xml:105"
+"Turn Over","","","resources/views/Charts.xml:234"
+"Unit","","","resources/domains/PurchaseOrderLine.xml:20"
+"Unit price","","","resources/domains/PurchaseOrderLine.xml:15"
+"Units","","","resources/views/Charts.xml:268"
+"V.A.T.","","","resources/domains/PurchaseOrderLineTax.xml:9"
+"Validate","","","resources/views/PurchaseOrder.xml:92"
+"Validated","","","resources/views/Selects.xml:13"
+"Validated by","","","resources/domains/PurchaseOrder.xml:33"
+"Validation date","","","resources/domains/PurchaseOrder.xml:34"
+"help:PurchaseOrder.internalReference","","","resources/domains/PurchaseOrder.xml:25"
+"help:PurchaseOrderLine.estimatedDelivDate","","","resources/domains/PurchaseOrderLine.xml:30"

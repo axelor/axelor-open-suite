@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	
+	<menuitem name="sc-root-purchase" title="Purchases" priority="150" 
+		icon="img/32px/order_32px.png" groups="admins,erp"/>
+		
+	<menuitem name="sc-root-purchase-order-new" title="New Purchase order" priority="2" icon="img/16px/create_16px.png"
+		groups="admins,erp" action="sc.root.purchase.order.new" parent="sc-root-purchase"/>
+		
+	<action-view name="sc.root.purchase.order.new" title="New Purchase order"
+		model="com.axelor.apps.purchase.db.PurchaseOrder" icon="img/16px/create_16px.png">
+		<view type="form" name="purchase-order-form" />
+		<view type="grid" name="purchase-order-grid" />
+	</action-view>	
+	
+	<menuitem name="sc-root-purchase-orders" title="Purchase orders" priority="1" 
+		groups="admins,erp" action="sc.root.purchase.orders" parent="sc-root-purchase"/>
+
+	<action-view name="sc.root.purchase.orders" title="Purchase orders"
+		model="com.axelor.apps.purchase.db.PurchaseOrder" icon="img/16px/orderSmall_16px.png">
+		<view type="grid" name="purchase-order-grid" />
+		<view type="form" name="purchase-order-form" />
+		<view-param name="search-filters" value="purchase-order-filters"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+	</action-view>
+
+
+
+<!-- ADMINISTRATION -->
+
+
+	<menuitem name="admin-root-batch-purchase" parent="admin-root-batch"
+		title="Purchase batches" action="admin.root.batch.purchase" />
+
+	<action-view name="admin.root.batch.purchase" title="Purchase batches"
+		model="com.axelor.apps.purchase.db.PurchaseBatch" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	
+	<menuitem name="admin-root-conf-purchase-config" parent="admin-root-conf"
+		title="Purchase configurations" action="admin.root.conf.purchase.config" icon="img/Other/parameter_59px.png"/>
+		
+	<action-view name="admin.root.conf.purchase.config" title="Purchase configurations"
+		model="com.axelor.apps.purchase.db.PurchaseConfig" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
+
+
+<!-- TOP MENU -->
+
+	<menuitem name="top-purchase" title="Purchases" groups="admins,erp" top="true" left="false" priority="150"/>
+	
+	<menuitem name="top-purchase-create-rfq" title="Create RFQ" priority="100" parent="top-purchase" action="sc.root.purchase.order.new"/>
+	<menuitem name="top-purchase-orders-all" title="RFQs &amp; Orders" priority="70" action="sc.root.purchase.orders" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
+	
+	<menuitem name="top-purchase-quotes" title="View RFQ" priority="90" action="top.purchase.quotes" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
+	
+	<action-view name="top.purchase.quotes" title="RFQ"
+		model="com.axelor.apps.purchase.db.PurchaseOrder" >
+		<view type="grid" name="purchase-order-grid" />
+		<view type="form" name="purchase-order-form" />
+		<view-param name="search-filters" value="purchase-order-filters"/>
+		<domain>self.statusSelect in (2,3) </domain>
+	</action-view>	
+	
+	<menuitem name="top-purchase-orders" priority="80" title="View Orders" action="top.purchase.orders" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
+	
+	<action-view name="top.purchase.orders" title="Orders"
+		model="com.axelor.apps.purchase.db.PurchaseOrder" >
+		<view type="grid" name="purchase-order-grid" />
+		<view type="form" name="purchase-order-form" />
+		<view-param name="search-filters" value="purchase-order-filters"/>
+		<domain>self.statusSelect in (4,5) </domain>
+	</action-view>		
+	
+	<menuitem name="menu-purchase-buyer-dashboard-sample" parent="menu-dashboards-sample" priority="190"
+		title="Purchase Buyer Db" icon="img/16px/chart_16px.png" action="purchase.buyer.dashboard.view.sample" />	
+
+	<action-view name="purchase.buyer.dashboard.view.sample" title="Purchase Buyer Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="dashboard" name="purchase.buyer.dashboard.sample" />
+    	<context name="_user" expr="eval:__user__"/>
+    	<context name="_user_id" expr="eval:__user__.id"/>
+	</action-view>
+	
+	<menuitem name="menu-purchase-manager-dashboard-sample" parent="menu-dashboards-sample" priority="180"
+		title="Purchase Manager Db" icon="img/16px/chart_16px.png" action="purchase.manager.dashboard.view.sample" />	
+
+	<action-view name="purchase.manager.dashboard.view.sample" title="Purchase Manager Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="dashboard" name="purchase.manager.dashboard.sample" />
+	</action-view>
+	
+	<menuitem name="menu-purchase-order-dashboard-sample" parent="menu-dashboards-sample"  priority="170"
+		title="Purchase Order Db" icon="img/16px/chart_16px.png" action="purchase.order.dashboard.view.sample" />	
+		
+	<action-view name="purchase.order.dashboard.view.sample" title="Purchase Order Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="dashboard" name="purchase.order.dashboard.sample" />	    
+	</action-view>
+	
+	<menuitem name="menu-purchase-dashboard" parent="menu-dashboards"  
+		title="Purchases" priority="60" />	
+	
+	<menuitem name="menu-purchase-dashboard-1" parent="menu-purchase-dashboard"  
+		title="Purchases Db 1" icon="img/16px/chart_16px.png" action="purchase.dashboard.1" />	
+		
+	<action-view name="purchase.dashboard.1" title="Purchases Db 1"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="dashboard" name="purchase.dashboard.1" />	 
+		<context name="_user_id" expr="eval:__user__.id"/>   
+	</action-view>
+	
+	<menuitem name="menu-purchase-dashboard-2" parent="menu-purchase-dashboard"  
+		title="Purchases Db 2" icon="img/16px/chart_16px.png" action="purchase.dashboard.2" />	
+		
+	<action-view name="purchase.dashboard.2" title="Purchases Db 2"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="dashboard" name="purchase.dashboard.2" />	    
+	</action-view>
+	
+	<menuitem name="menu-purchase-dashboard-3" parent="menu-purchase-dashboard"  
+		title="Purchases Db 3" icon="img/16px/chart_16px.png" action="purchase.purchase.dashboard.3" />	
+		
+	<action-view name="purchase.purchase.dashboard.3" title="Purchases Db 3"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="dashboard" name="purchase.dashboard.3" />	    
+	</action-view>
+	
+	
+</object-views>
