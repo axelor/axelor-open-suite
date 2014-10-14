@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="payment-condition-grid" title="Payment Condition" model="com.axelor.apps.account.db.PaymentCondition">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="typeSelect"/>
+        <field name="paymentTime"/>
+        <field name="isFree"/>
+    </grid>
+    
+    <form name="payment-condition-form" title="Payment Condition" model="com.axelor.apps.account.db.PaymentCondition"  >
+        <panel>
+        	<field name="name"/>
+	        <field name="code"/>
+	        <field name="typeSelect"/>
+	        <field name="paymentTime"/>
+	        <field name="daySelect" showIf="typeSelect == 4"/>
+	        <field name="isFree"/>
+        </panel>
+    </form>
+    
+</object-views>

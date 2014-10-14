@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="year-account-grid" title="Fiscal years" model="com.axelor.apps.base.db.Year">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="reportedBalanceDate"/>
+        <field name="company"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+    <form   onSave="action-year-check-date,action-fiscal-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
+		<panel >
+			<field name="name"/>
+			<field name="code"/>
+			<field name="fromDate"/>
+			<field name="toDate"/>
+			<field name="reportedBalanceDate"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" required="true"/>
+		</panel>
+		<panel>
+			<panel-related field="periodList" colSpan="12"/>
+		</panel>
+		<panel sidebar="true">
+			<field name="typeSelect" readonly="true"/>
+			<field name="statusSelect"/>
+			<button name="close" title="Close fiscal year"   onClick="action-group-account-year-close-click"/>
+		</panel>
+		<panel sidebar="true" title="Periods generation assistant">
+			<field name="periodDurationSelect"/>
+			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-year-generateperiod-click"/>    
+		</panel>
+	</form>
+
+    
+    <action-group name="action-group-account-year-close-click">
+    	<action name="action-year-check-date"/>
+    	<action name="action-fiscal-year-check-date"/>
+    	<action name="action-year-close-method"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-account-year-generateperiod-click">
+    	<action name="action-year-check-date"/>
+    	<action name="action-fiscal-year-check-date"/>
+    	<action name="save"/>
+    	<action name="action-year-validate-generate-period"/>
+    	<action name="action-method-account-year-generate-periods"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-method name="action-method-account-year-generate-periods">
+    	<call class="com.axelor.apps.account.web.YearController" method="generatePeriods"/>
+    </action-method>
+    
+    <action-record name="action-year-account-record-new" model="com.axelor.apps.base.db.Year">
+    	<field name="company"  expr="eval:__user__.activeCompany"/>
+    	<field name="typeSelect"  expr="eval:1"/>
+    </action-record>
+    
+    <action-method name="action-year-close-method">
+    	<call class="com.axelor.apps.account.web.YearController" method="close"/>
+    </action-method>
+    
+    <action-validate name="action-year-validate-generate-period">
+	    <error message="To generate periods, please fill in the limits of the fiscal year." if="fromDate == null || toDate == null" />
+	    <error message="To generate periods, please fill in the Period duration." if="periodDurationSelect == null || periodDurationSelect == 0"/>
+	    <error message="Please clear all existing periods before generating new ones" if="!periodList.empty"/>
+	</action-validate>
+	
+	<action-validate name="action-year-check-date">
+		<error message="Enter proper 'From' and 'To' date." if="fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate &gt; toDate" action="action-year-set-empty-date"/>
+	</action-validate>
+	
+	<action-validate name="action-fiscal-year-check-date">
+		<error message="Fiscal year already exist for 'From' and 'To' date." if="id == null &amp;&amp; __repo__.of(Year).all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND typeSelect = 1',fromDate,toDate,fromDate,toDate,company).count() > 0 &amp;&amp; typeSelect == 1" />
+		<error message="Fiscal year already exist for 'From' and 'To' date." if="id != null &amp;&amp; __repo__.of(Year).all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND id != ?6 AND typeSelect = 1',fromDate,toDate,fromDate,toDate,company,id).count() > 0 &amp;&amp; typeSelect == 1" />
+	</action-validate>
+	
+	<action-record name="action-year-set-empty-date" model="com.axelor.apps.base.db.Year">
+		<field name="fromDate" expr="eval:null" />
+		<field name="toDate" expr="eval:null" />
+	</action-record>
+	
+	
+</object-views>

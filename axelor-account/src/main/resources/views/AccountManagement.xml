@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="account-management-payment-mode-grid" title="Les gestions de compte comptable" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="company"/>
+        <field name="cashAccount"/>
+        <field name="journal"/>
+        <field name="sequence"/>
+    </grid>
+ 
+	 <form name="account-management-payment-mode-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement"  
+	 onNew="action-account-management-record-payment">
+	 	<panel >
+			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
+			<field name="company" widget="SuggestBox" form-view="company-form"/>
+			 <field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" />
+			 <field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
+			<field name="sequence" domain="self.company = :company" canNew="true"/>
+	 	</panel>
+	 </form>
+    
+    <action-group name="action-group-account-account-management-onchange-common">
+    	<action name="action-account-management-clean-company"/>
+    	<action name="action-account-management-product-validate"/>
+    </action-group>
+    
+    <!-- ACTION RECORD -->
+    
+	<action-record name="action-account-management-record-payment" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="typeSelect" expr="eval: 3"/>
+        <field name="company"  expr="eval:__user__.activeCompany"/>
+    </action-record>
+    
+    <action-validate name="action-account-management-product-validate">
+     	<error message="The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company." if="saleAccount != null &amp;&amp; company != null &amp;&amp; saleAccount?.company?.id != company?.id"/>
+    	<error message="The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company." if="purchaseAccount != null &amp;&amp; company != null &amp;&amp; purchaseAccount?.company?.id != company?.id"/>
+    	<error message="The sale account or the purchase account or the cash account are associated to another company. Please make sure to select the right account in the company chart before changing the company." if="cashAccount != null &amp;&amp; company != null &amp;&amp; cashAccount?.company?.id != company?.id"/>
+    </action-validate>
+    
+    <action-record name="action-account-management-clean-company" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="company"  expr="eval:null" if="saleAccount != null &amp;&amp; company != null &amp;&amp; saleAccount?.company?.id != company?.id"/>
+        <field name="company"  expr="eval:null" if="purchaseAccount != null &amp;&amp; company != null &amp;&amp; purchaseAccount?.company?.id != company?.id"/>
+        <field name="company"  expr="eval:null" if="cashAccount != null &amp;&amp; company != null &amp;&amp; cashAccount?.company?.id != company?.id"/>
+    </action-record>
+    
+</object-views>

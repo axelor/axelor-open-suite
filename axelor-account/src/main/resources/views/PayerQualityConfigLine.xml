@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    <grid name="payer-quality-config-line-grid" title="Payer quality configuration lines" model="com.axelor.apps.account.db.PayerQualityConfigLine">
+        <field name="name"/>
+        <field name="burden"/>
+        <field name="description"/>
+    </grid>
+    <form name="payer-quality-config-line-form" title="Payer quality configuration line" model="com.axelor.apps.account.db.PayerQualityConfigLine"  >
+        <panel >
+        <field name="incidentTypeSelect"/>
+        <field name="reminderLevel"/>
+        <field name="rejectType"/>
+        <field name="name"/>
+        <field name="burden"/>
+        <field name="description"/>
+        </panel>
+    
+    </form>
+</object-views>

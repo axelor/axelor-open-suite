@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="ChequeRejection" lang="java">
+  	<string name="name" title="Reference" readonly="true"/>
+   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+    <datetime name="dateTime" title="Date" tz="true" readonly="true"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+  	<many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment voucher" required="true"/>
+  	<decimal name="amountRejected" title="Rejected amount" readonly="true"/>
+  	<date name="rejectionDate" title="Reject Date" required="true"/>
+    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason" required="true"/>
+  	<integer name="statusSelect" title="Status" selection="iaccount.cheque.rejection.status.select" readonly="true" default="1"/>
+  	<many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Rejection MoveLine"/>
+  	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" hidden="true"/>
+    <string title="Description" name="description" default="Cheque rejection"/>
+  
+  	<extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+	
+	]]></extra-code> 
+  
+  </entity>
+
+</domain-models>

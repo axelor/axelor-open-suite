@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="Rum" lang="java" >
+  
+    <string name="rumNumber" title="RUM N°" namecolumn="true" initParam="true"/>
+    <string name="debtorName" title="Debtor Name" initParam="true"/>
+    <many-to-one name="debtorAddress" ref="com.axelor.apps.base.db.Address" title="Debtor address" initParam="true"/>
+    <date name="creationDate" title="Creation date" initParam="true"/>
+    <date name="mandateSignatureDate" title="Mandate signature date" initParam="true"/>
+    <many-to-one name="mandateSignatureCommune" ref="com.axelor.apps.base.db.Commune" title="Mandate signature city" initParam="true"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" initParam="true"/>
+    
+    <string name="lastNumberIbanBic" hidden="true" />
+    <boolean name="isUpdating" hidden="true" />
+    <many-to-one name="activeBankDetails" ref="com.axelor.apps.base.db.BankDetails"/>
+    
+    
+  </entity>
+
+</domain-models>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="reimbursement-grid" title="Reimbursements" model="com.axelor.apps.account.db.Reimbursement">
+    	<field name="ref"/>
+        <field name="statusSelect"/>
+        <field name="total"/>
+    </grid>
+    
+	<form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement"  >
+		<panel >
+			<field name="ref" colSpan="12"/>
+			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="company" widget="SuggestBox" form-view="company-form"/>
+		</panel>
+		
+		<panel title="Reimbursement details">
+			<field name="amountToReimburse"/>
+			<field name="amountReimbursed"/>
+			<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
+		</panel>
+		
+		<panel title="Reason">
+			<field name="description" colSpan="12" showTitle="false"/>
+		</panel>
+		
+		<panel  title="Reject Information" showIf="rejectedOk">
+			<field name="rejectedOk"/>
+			<field name="interbankCodeLine"/>
+			<field name="rejectDate"/>
+			<field name="rejectMoveLine"/>
+		</panel> 
+		
+		<panel-related field="moveLineSet" hideIf="statusSelect == 1" colSpan="12"/>
+		
+		<panel sidebar="true" title="Info">
+			<field name="statusSelect"/>
+			<button name="validateReimbursement" title="Validate" onClick="save,action-group-account-reimbursement-validate,save" showIf="statusSelect == 2"/>
+		</panel>
+	</form>
+    
+    <action-method name="action-method-account-reimbursement-validate">
+    	<call class="com.axelor.apps.account.web.ReimbursementController" method="validateReimbursement"/>
+    </action-method>
+    
+	<search-filters name="reimbursement-filters" model="com.axelor.apps.account.db.Reimbursement" title="Reimbursement filters">
+		<filter title="Reimbursements to validate">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="Rejected reimbursements">
+			<domain>self.rejectedOk = true</domain>
+		</filter>	
+	</search-filters>   
+	
+</object-views>

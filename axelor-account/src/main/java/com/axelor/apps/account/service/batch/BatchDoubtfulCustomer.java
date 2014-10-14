@@ -1,0 +1,229 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2014 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.axelor.apps.account.service.batch;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
+
+public class BatchDoubtfulCustomer extends BatchStrategy {
+
+	private static final Logger LOG = LoggerFactory.getLogger(BatchDoubtfulCustomer.class);
+
+	private boolean stop = false;
+	
+	private String updateCustomerAccountLog = "";
+	
+	@Inject
+	private AccountRepository accountRepo;
+	
+	@Inject
+	public BatchDoubtfulCustomer(DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {
+		
+		super(doubtfulCustomerService, batchAccountCustomer);
+	}
+	
+	
+	@Override
+	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+		
+		super.start();
+		
+		Company company = batch.getAccountingBatch().getCompany();
+				
+		try {
+			
+			doubtfulCustomerService.testCompanyField(company);
+			
+		} catch (AxelorException e) {
+			
+			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
+			incrementAnomaly();
+			stop = true;
+		}
+		
+		checkPoint();
+
+	}
+
+	
+	@Override
+	protected void process() {
+	
+		if(!stop)  {
+			Company company = batch.getAccountingBatch().getCompany();
+			
+			AccountConfig accountConfig = company.getAccountConfig();
+			
+			Account doubtfulCustomerAccount = accountConfig.getDoubtfulCustomerAccount();
+			String sixMonthDebtPassReason = accountConfig.getSixMonthDebtPassReason();
+			String threeMonthDebtPassReason = accountConfig.getThreeMonthDebtPassReason();
+		
+			// FACTURES
+			List<Move> moveList = doubtfulCustomerService.getMove(0, doubtfulCustomerAccount, company);
+			LOG.debug("Nombre d'écritures de facture concernées (Créance de + 6 mois) au 411 : {} ",moveList.size());
+			this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, sixMonthDebtPassReason);
+			
+			moveList = doubtfulCustomerService.getMove(1, doubtfulCustomerAccount, company);
+			LOG.debug("Nombre d'écritures de facture concernées (Créance de + 3 mois) au 411 : {} ",moveList.size());
+			this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, threeMonthDebtPassReason);
+			
+			// FACTURES REJETES
+			List<MoveLine> moveLineList = (List<MoveLine>) doubtfulCustomerService.getRejectMoveLine(0, doubtfulCustomerAccount, company);
+			LOG.debug("Nombre de lignes d'écriture de rejet concernées (Créance de + 6 mois) au 411 : {} ",moveLineList.size());
+			this.createDoubtFulCustomerRejectMove(moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
+			
+			moveLineList = (List<MoveLine>) doubtfulCustomerService.getRejectMoveLine(1, doubtfulCustomerAccount, company);
+			LOG.debug("Nombre de lignes d'écriture de rejet concernées (Créance de + 3 mois) au 411 : {} ",moveLineList.size());
+			this.createDoubtFulCustomerRejectMove(moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
+	
+			updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(companyRepo.find(company.getId()));
+		}
+		
+	}
+	
+	
+	
+	/**
+	 * 
+	 * Procédure permettant de créer les écritures de passage en client douteux pour chaque écriture de facture
+	 * @param moveLineList
+	 * 			Une liste d'écritures de facture
+	 * @param doubtfulCustomerAccount
+	 * 			Un compte client douteux
+	 * @param debtPassReason
+	 * 			Un motif de passage en client douteux
+	 * @throws AxelorException
+	 */
+	public void createDoubtFulCustomerMove(List<Move> moveList, Account doubtfulCustomerAccount, String debtPassReason)  {
+		
+		int i = 0;
+		
+		for(Move move : moveList)  {
+			try {
+				
+				doubtfulCustomerService.createDoubtFulCustomerMove(moveService.find(move.getId()), accountRepo.find(doubtfulCustomerAccount.getId()), debtPassReason);
+				updateInvoice(moveService.find(move.getId()).getInvoice()); 
+			
+			} catch (AxelorException e) {
+				
+				TraceBackService.trace(new AxelorException(String.format("Facture %s", move.getInvoice().getInvoiceId()), e, e.getcategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				incrementAnomaly();
+				
+			} catch (Exception e) {
+				
+				TraceBackService.trace(new Exception(String.format("Facture %s", move.getInvoice().getInvoiceId()), e), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				
+				incrementAnomaly();
+				
+				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", moveService.find(move.getId()).getInvoice().getInvoiceId());
+				
+			} finally {
+				
+				if (i % 10 == 0) { JPA.clear(); }
+	
+			}	
+		}
+	}
+	
+	
+	
+	/**
+	 * Procédure permettant de créer les écritures de passage en client douteux pour chaque ligne d'écriture de rejet de facture
+	 * @param moveLineList
+	 * 			Une liste de lignes d'écritures de rejet de facture
+	 * @param doubtfulCustomerAccount
+	 * 			Un compte client douteux
+	 * @param debtPassReason
+	 * 			Un motif de passage en client douteux
+	 * @throws AxelorException
+	 */
+	public void createDoubtFulCustomerRejectMove(List<MoveLine> moveLineList, Account doubtfulCustomerAccount, String debtPassReason)  {
+		
+		int i = 0;
+		
+		for(MoveLine moveLine : moveLineList)  {
+			
+			try {
+				
+				doubtfulCustomerService.createDoubtFulCustomerRejectMove(moveLineService.find(moveLine.getId()), accountRepo.find(doubtfulCustomerAccount.getId()), debtPassReason);
+				updateInvoice(moveLineService.find(moveLine.getId()).getInvoiceReject()); 
+				i++;
+				
+			} catch (AxelorException e) {
+				
+				TraceBackService.trace(new AxelorException(String.format("Facture %s", moveLine.getInvoiceReject().getInvoiceId()), e, e.getcategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				incrementAnomaly();
+				
+			} catch (Exception e) {
+				
+				TraceBackService.trace(new Exception(String.format("Facture %s", moveLine.getInvoiceReject().getInvoiceId()), e), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				
+				incrementAnomaly();
+				
+				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", moveLineService.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
+				
+			} finally {
+				
+				if (i % 10 == 0) { JPA.clear(); }
+	
+			}	
+		}
+	}
+	
+	
+	
+	
+	
+	
+
+	/**
+	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
+	 * Warning : {@code batch} entity have to be saved before.
+	 */
+	@Override
+	protected void stop() {
+
+		String comment = "Compte rendu de la détermination des créances douteuses :\n";
+		comment += String.format("\t* %s Facture(s) traitée(s)\n", batch.getDone());
+		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		
+		comment += String.format("\t* ------------------------------- \n");
+		comment += String.format("\t* %s ", updateCustomerAccountLog);
+
+		super.stop();
+		addComment(comment);
+		
+	}
+
+}

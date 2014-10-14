@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    <grid name="tax-line-grid" title="Tax Rates" model="com.axelor.apps.account.db.TaxLine">
+        <field name="tax"/>
+        <field name="startDate"/>
+        <field name="endDate"/>
+        <field name="value"/>
+    </grid>
+    <form name="tax-line-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine"  >
+        <panel >
+        	<field name="tax"/>
+        <field name="value"/>
+        <field name="startDate"/>
+        <field name="endDate"/>
+        </panel>
+        
+    </form>
+</object-views>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AccountingBatch" lang="java">
+  	
+  	<!-- HEADER -->
+  	<string name="code" title="Code" namecolumn="true"/>
+    <integer name="actionSelect" title="Action" required="true" selection="iaccounting.batch.action.select"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
+    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="BBAN/IBAN to use"/>
+    
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    
+    <!-- REIMBURSEMENT -->
+    <integer name="reimbursementTypeSelect" title="Reimbursement batch type" selection="ireimbursement.batch.type.select"/>
+    <integer name="reimbursementExportTypeSelect" title="Treatment/Operation type" selection="ireimbursement.batch.export.type.select"/>
+    
+    <!-- REMINDER -->
+    <integer name="reminderTypeSelect" title="Reminder batch type" selection="ireminder.batch.type.select"/>
+    
+    
+    <!--  DIRECT DEBIT -->
+    <integer name="directDebitTypeSelect" title="Direct Debit batch type" selection="iaccount.account.schedule.type.select"/>
+    <integer name="directDebitExportTypeSelect" title="Datatype" selection="iaccount.account.schedule.export.type.select"/>
+    <date name="debitDate" title="Reference Due Date"/>
+	<boolean name="isSepaDirectDebit" title="SEPA ?" default="false"/>
+	<boolean name="hasToReExportCfbonb" title="Re-export the bank file"/>
+	<many-to-one name="batchToReExport" ref="com.axelor.apps.base.db.Batch" title="Batch to re-export"/>
+    
+    <!--  INTERBANK PAYMENT ORDER -->
+    <integer name="interbankPaymentOrderTypeSelect" title="Interbank Payment Orders batch type" selection="iinterbank.account.order.batch.type.select"/>
+    
+    <!--  CUSTOMER ACCOUNT -->
+    <boolean name="updateCustAccountOk" title="Customer balance"/>
+    <boolean name="updateDueCustAccountOk" title="Due balance"/>
+    <boolean name="updateDueReminderCustAccountOk" title="Due balance remindable"/>
+    
+    <!--     MOVE LINE EXPORT -->
+    <integer name="moveLineExportTypeSelect" title="Export type" selection="move.line.report.type.select.export"/>
+    <date name="startDate" title="Start date"/>
+    <date name="endDate" title="End date"/>
+    
+    <!-- OTHERS INFORMATIONS -->
+    <string name="description" title="Description" large="true" />
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="accountingBatch" title="Batchs" />
+  
+  	<extra-code><![CDATA[
+	
+	   	// ACTION TYPE
+		public static final int ACTION_REIMBURSEMENT = 11;
+		public static final int ACTION_DIRECT_DEBIT = 12;
+		public static final int ACTION_REMINDER = 14;
+		public static final int ACTION_INTERBANK_PAYMENT_ORDER = 15;
+		public static final int ACTION_DOUBTFUL_CUSTOMER = 16;
+		public static final int ACTION_ACCOUNT_CUSTOMER = 17;
+		public static final int ACTION_MOVE_LINE_EXPORT = 18;
+		
+		// REIMBURSEMENT TYPE
+		public static final int REIMBURSEMENT_TYPE_EXPORT = 1;
+		public static final int REIMBURSEMENT_TYPE_IMPORT = 2;
+		
+		// REIMBURSEMENT EXPORT TYPE
+		public static final int REIMBURSEMENT_EXPORT_TYPE_GENERATE = 1;
+		public static final int REIMBURSEMNT_EXPORT_TYPE_EXPORT = 2;
+	
+		// DIRECT DEBIT TYPE
+		public static final int DIRECT_DEBIT_TYPE_EXPORT = 1;
+		public static final int DIRECT_DEBIT_TYPE_IMPORT = 2;
+		
+		// DIRECT DEBIT EXPORT TYPE
+		public static final int DIRECT_DEBIT_EXPORT_TYPE_MONTHLY = 0;
+		public static final int DIRECT_DEBIT_EXPORT_TYPE_INVOICE = 1;
+		
+		// INTERBANK PAYMENT ORDER TYPE
+		public static final int INTERBANK_PAYMENT_ORDER_TYPE_IMPORT = 1;
+		public static final int INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT = 2;
+
+		// REMINDER TYPE
+		public static final int REMINDER_TYPE = 1;
+	
+	]]></extra-code>
+	
+  
+  
+  </entity>
+
+</domain-models>

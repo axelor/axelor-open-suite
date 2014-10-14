@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+    <grid name="invoice-batch-grid" title="Invoice batches" model="com.axelor.apps.account.db.InvoiceBatch">
+    	<field name="actionSelect" />
+    	<field name="code" />
+		<field name="company" />
+    	<field name="usage" />
+		<field name="pricingOption" />
+		<field name="createdOn" title="Created on"/>
+		<field name="createdBy" title="Created by" />
+    </grid>
+ 
+    <form name="invoice-batch-form" title="Invoice batch" model="com.axelor.apps.account.db.InvoiceBatch"  
+    onLoad="action-account-invoice-batch-onload-group" 
+    onNew="action-account-invoice-batch-onnew-group">
+    	<panel >
+    		<field name="actionSelect" onChange="action-invoice-batch-attrs-action-select"/>
+    		<field name="code" />
+    		<field name="company" widget="SuggestBox" form-view="company-form"/>
+    		<field name="usage" />
+    		<field name="pricingOption" />
+    	</panel>
+    	<panel-tabs>
+    		<panel name="statusOptionPage" title="Options">
+				<field name="toStatusSelect" />
+				<field name="fromStatusSelect"/>				
+				<field name="contractLineId" />
+				<field name="meIntegrationFromDate" />
+				<field name="meIntegrationToDate" />
+				<field name="onSelectOk" onChange="action-invoice-batch-attrs-on-select-ok"/>
+    		</panel>
+    		<panel-related field="invoiceSet"  onSelect="action-invoice-batch-method-invoice-set-domain" grid-view="invoice-grid" form-view="invoice-form"/>
+    		<panel title="Informations"  >
+    			<field name="createdOn" title="Created on"/>
+				<field name="createdBy" title="Created by" />
+		    	<field name="description" showTitle="false" colSpan="12"/>
+    		</panel>
+	      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+    	</panel-tabs>
+    	<panel sidebar="true" title="Actions">
+    		<button name="statusBatch" title="Run"  onClick="save,action-invoice-batch-method-action-status" colSpan="12"/>
+    	</panel>
+    </form>
+    
+    <!-- ACTION GROUPs -->
+    <action-group name="action-account-invoice-batch-onnew-group">
+	    <action name="action-invoice-batch-record-on-new"/>
+	    <action name="action-invoice-batch-attrs-action-select"/>
+	    <action name="action-invoice-batch-attrs-on-select-ok"/>
+    </action-group>
+    
+    <action-group name="action-account-invoice-batch-onload-group">
+	    <action name="action-invoice-batch-attrs-action-select"/>
+	    <action name="action-invoice-batch-attrs-on-select-ok"/>
+    </action-group>
+    
+    <!-- ACTION RECORD -->
+    <action-record name="action-invoice-batch-record-on-new" model="com.axelor.apps.account.db.InvoiceBatch">
+		<field name="createdOn" expr="call:com.axelor.apps.base.service.GeneralService:getTodayDate()"/>
+		<field name="createdBy" expr="eval:__user__"/>
+	</action-record>
+    
+    <!-- ACTION METHOD -->
+	<action-method name="action-invoice-batch-method-invoice-set-domain">
+		<call class="com.axelor.apps.account.web.InvoiceBatchController" method="invoiceSetDomain"/>
+	</action-method>
+		
+	<action-method name="action-invoice-batch-method-action-status">
+		<call class="com.axelor.apps.account.web.InvoiceBatchController" method="actionStatus"/>
+	</action-method>
+				
+    <!-- ACTION ATTRS -->
+    <action-attrs name="action-invoice-batch-attrs-action-select">
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 3, 4]" for="statusOptionPage"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 1, 2, 3, 4]" for="invoiceBatch"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 2, 3, 4]" for="statusBatch"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 3, 4]" for="alarmBatch"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 4]" for="memoryBatch"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 3]" for="confirmMemoryBatch"/>
+	    <attribute name="hidden" expr="eval: actionSelect != 1" for="toStatusSelect"/>
+	    <attribute name="hidden" expr="eval: actionSelect != 2" for="clearAlarmsOk"/>
+	    <attribute name="hidden" expr="eval: actionSelect != 2" for="fromStatusSelect"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [3, 4]" for="usage"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [3, 4]" for="pricingOption"/>
+	</action-attrs>
+	
+    <action-attrs name="action-invoice-batch-attrs-on-select-ok">
+	    <attribute name="hidden" expr="eval: !onSelectOk" for="invoiceSet"/>
+	</action-attrs>
+	
+</object-views>

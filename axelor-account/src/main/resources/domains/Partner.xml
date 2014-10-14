@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  
+  <module name="base" package="com.axelor.apps.base.db"/>
+  
+  <entity name="Partner" lang="java">
+  
+    <decimal name="payerQuality" title="Payer quality" readonly="true"/>
+    <one-to-many name="reportedBalanceList" ref="com.axelor.apps.account.db.ReportedBalance" mappedBy="partner" title="Reported Balance"/>
+    
+    <one-to-many name="accountingSituationList" ref="com.axelor.apps.account.db.AccountingSituation" mappedBy="partner" title="Accounting situation"/>
+   
+    <string name="invoiceSendingFormatSelect" title="Invoice sending media" selection="invoice.account.condition.invoice.sending.format.select"/>
+    <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
+    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
+   
+    <integer name="rejectCounter" title="Reject counter"/>
+   
+	 <!-- PAGE SEPA -->
+	<one-to-many name="rumList" ref="com.axelor.apps.account.db.Rum" mappedBy="partner" title="UMR List"/>
+	<many-to-one name="activeRum" ref="com.axelor.apps.account.db.Rum" title="Active UMR"/>
+	    
+  </entity>
+  
+</domain-models>

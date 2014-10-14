@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="Account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="AccountClearance" lang="java">
+  
+   	<string name="name" title="Reference" readonly="true"/>
+	<datetime name="dateTime" title="Account clearance date" tz="true" readonly="true"/>
+	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User" readonly="true"/>
+	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/> 
+	<integer name="statusSelect" title="Status" readonly="true" selection="iaccount.account.clearance.status.select" default="1"/>
+	<decimal name="amountThreshold" title="Clearance maximum amount" required="true"/>
+	<date name="dateThreshold" title="Overpayment before" required="true"/>
+	<many-to-many name="moveLineSet" ref="com.axelor.apps.account.db.MoveLine" title="Overpayments collected"/>
+	 
+	
+    <extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+	
+	]]></extra-code> 
+	 
+  </entity>
+
+</domain-models>

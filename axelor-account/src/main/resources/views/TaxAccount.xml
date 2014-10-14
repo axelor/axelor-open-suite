@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    <grid name="tax-account-grid" title="Tax accounting configurations" model="com.axelor.apps.account.db.TaxAccount">
+        <field name="company"/>
+        <field name="account"/>
+    </grid>
+    <form name="tax-account-form" title="Tax accounting configuration" model="com.axelor.apps.account.db.TaxAccount"  
+    onNew="action-tax-account-record-new">
+       <panel >
+       	 <field name="company" widget="SuggestBox" onChange="action-group-account-tax-account-common-onchange"/>
+        <field name="account" domain="self.company = :company" onChange="action-group-account-tax-account-common-onchange"/>
+       </panel>
+       
+    </form>
+    
+    <action-group name="action-group-account-tax-account-common-onchange">
+    	<action name="action-tax-account-clean-company"/>
+    	<action name="action-tax-account-validate"/>
+    </action-group>
+    
+    <action-record name="action-tax-account-record-new" model="com.axelor.apps.account.db.TaxAccount">
+    	<field name="company" expr="eval:__user__.activeCompany"/>
+    </action-record>
+    
+    <action-validate name="action-tax-account-validate">
+     	<error message="The account is associated to another company. Please make sure to select the right account in the company chart before changing the company." if="account != null &amp;&amp; company != null &amp;&amp; account?.company?.id != company?.id"/>
+    </action-validate>
+    
+    <action-record name="action-tax-account-clean-company" model="com.axelor.apps.account.db.TaxAccount">
+        <field name="company"  expr="eval:null" if="account != null &amp;&amp; company != null &amp;&amp; account?.company?.id != company?.id"/>
+    </action-record>
+    
+</object-views>

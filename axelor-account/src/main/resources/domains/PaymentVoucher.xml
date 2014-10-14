@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  
+  	<module name="account" package="com.axelor.apps.account.db"/>
+  	
+  	<entity name="PaymentVoucher" sequential="true" lang="java">
+  	
+	  	<integer name="importId" />
+		<string name="ref" title="Reference" namecolumn="true" required="false"/>
+		<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner" required="true"/>
+		<many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Partner account"/>
+		<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" required="true"/>
+	    <datetime name="paymentDateTime" title="Payment date" tz="true"/>
+		<decimal name="paidAmount" title="Amount paid" />
+		<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User" readonly="true"/>
+        <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
+		<many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Overdue moveline" />
+		<decimal name="remainingAllocatedAmount" title="Amount Remaining to allocate" />
+		<decimal name="allocatedAmount" title="Allocated amount" />
+		<one-to-many name="paymentInvoiceList" ref="com.axelor.apps.account.db.PaymentInvoice" title="List of invoices/schedule lines with remaining amount to pay" mappedBy="paymentVoucher" />
+		<one-to-many name="paymentInvoiceToPayList" ref="com.axelor.apps.account.db.PaymentInvoiceToPay" title="List of invoices to pay" mappedBy="paymentVoucher" />
+		<integer name="statusSelect" title="Status" default="1" readonly="true" selection="iaccount.payment.voucher.status.select"/>
+		<many-to-one name="generatedMove" ref="com.axelor.apps.account.db.Move" title="Generated move" readonly="true"/>
+		<many-to-one name="invoiceToPay" ref="com.axelor.apps.account.db.Invoice" title="Invoice/Refund"/>
+		<many-to-one name="rejectToPay" ref="com.axelor.apps.account.db.MoveLine" title="Reject"/>
+		<boolean name="hasAutoInput" title="Auto. input." default="false" help="true"/>
+	 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+	 	<string name="bankCardTransactionNumber" title="CC Transaction N°" readonly="true"/>
+	 	<string name="receiptNo" title="Receipt N°" readonly="true"/>
+	 	<boolean name="payboxPaidOk" title="Paid through paybox" default="false" hidden="true"/>
+	 	<string name="email" title="Email to use"/>
+	 	<boolean name="toSaveEmailOk" title="Save email sent to contact ?" default="true"/>
+	 	<boolean name="defaultEmailOk" title="Default email address" default="false"/>
+	 	<decimal name="payboxAmountPaid" title="Paybox transaction Amount" hidden="true"/>
+ 	   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+	  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency"/>
+	  	<decimal name="paidAmountInCurrency"  title="Amount paid in currency"/>
+	 	
+<!-- 	 	<integer name="operationTypeSelect" title="Type de saisie paiement" required="true" selection="ipayment.operation.type.select"/> -->
+	 	<integer name="operationTypeSelect" title="Payment type" required="true" selection="iinvoice.operation.type.select"/>
+	 	
+		<decimal name="remainingAmount" title="Amount remaining to allocate">
+			<![CDATA[
+			BigDecimal totalInvoices = new BigDecimal("0.0");
+			if (paidAmount != null){
+		    	if(paymentInvoiceToPayList != null)  {
+					for (PaymentInvoiceToPay toPay : paymentInvoiceToPayList){
+						totalInvoices = totalInvoices.add(toPay.getAmountToPay());
+					}
+				}
+				return paidAmount.subtract(totalInvoices);
+			}
+			else return totalInvoices;
+				
+		    ]]>  
+		</decimal>
+		
+		<extra-code><![CDATA[
+		
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_CONFIRMED = 2;
+		
+	   	// OPERATION TYPE SELECT
+		public static final int OPERATION_TYPE_SUPPLIER_PURCHASE = 1;
+		public static final int OPERATION_TYPE_SUPPLIER_REFUND = 2;
+		public static final int OPERATION_TYPE_CLIENT_SALE = 3;
+		public static final int OPERATION_TYPE_CLIENT_REFUND = 4;
+		
+		]]></extra-code>
+	
+		
+		
+  	
+  	</entity>
+
+</domain-models>

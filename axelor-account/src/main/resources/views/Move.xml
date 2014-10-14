@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="move-grid" orderBy="-date" title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
+        <toolbar>
+            <button name="validateMove" title="Validate" prompt="Validation of moves is irrevocable" onClick="action-move-method-validate-multiple-moves"/>
+        </toolbar>
+        
+        <hilite color="danger" if="statusSelect == 1"/>
+        <field name="reference"/>
+        <field name="journal"/>
+        <field name="period"/>
+        <field name="date"/>
+        <field name="partner"/>
+        <field name="company"/>
+        <field name="invoice"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+	<form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move"    canDelete="false" 
+	onNew="action-account-move-onnew-group" onSave="save,action-move-record-draft-sequence">
+	
+		<toolbar>
+			<button name="reverse" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
+		</toolbar>
+		
+		<panel readonlyIf="statusSelect == 3" colSpan="12">
+			<panel colSpan="12" itemSpan="4">
+				<field name="reference"/>
+				<field name="period"/>
+				<field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
+				<field name="company" widget="SuggestBox" onSelect="action-move-attrs-set-domain-company" onChange="action-move-method-get-period" form-view="company-form"/>
+				<field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canNew="false"/>
+				<field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false"/>
+			</panel>
+		</panel>
+			
+		<panel-related field="moveLineList" readonlyIf="statusSelect == 3"   grid-view="move-line-move-grid" form-view="move-line-move-form"/>
+		  
+		<panel sidebar="true" title="Action" itemSpan="6">
+			<field name="statusSelect" readonly="true"/>
+			<field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
+			<button name="validate" title="Validate"   onClick="action-group-account-move-validate-click" hideIf="statusSelect == 3"/>
+			<field name="getInfoFromFirstMoveLineOk" hideIf="statusSelect == 3"/>
+		</panel>
+		
+		<panel-tabs title="Configuration" sidebar="true">
+			<panel title="Related to" readonly="true">
+				<field name="invoice" domain="self.company = :company AND self.statusSelect = 3" form-view="invoice-form" grid-view="invoice-grid" canNew="false"/>
+				<field name="paymentVoucher" domain="self.company = :company" canNew="false"/>
+				<field name="paymentMode" onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
+				<field name="cashRegister" domain="self.company =:company" canNew="false"/>
+			</panel>
+			
+			<panel title="Accounting export" hideIf="statusSelect == 1" readonly="true">
+				<field name="accountingOk"/>
+				<field name="exportNumber" showIf="accountingOk"/>
+				<field name="exportDate" showIf="accountingOk"/>
+				<field name="moveLineReport" form-view="move-line-report-export-form" showIf="accountingOk"/>
+			</panel>
+			
+			<panel title="Others">
+				<field name="ignoreInAccountingOk"/>
+				<field name="ignoreInReminderOk"/>
+				<field name="rejectOk"/>
+			</panel>
+		</panel-tabs>
+	
+	</form>
+	
+	<!-- ACTION GROUPs -->
+	<action-group name="action-account-move-onnew-group">
+		<action name="default-move-record"/>
+		<action name="action-move-method-get-period"/>
+	</action-group>
+	
+	<action-group name="action-group-account-move-validate-click">
+		<action name="save"/>
+		<action name="action-move-record-draft-sequence"/>
+		<action name="save"/>
+		<action name="action-move-method-validate"/>
+		<action name="save"/>
+	</action-group>
+	   
+   	<!-- ACTION RECORD -->
+    <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
+        <field name="cashRegister" expr="eval:__user__.activeCashRegister"/>
+		<field name="company" expr="eval:__user__.activeCompany"/>
+		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
+		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
+    </action-record>
+    
+    <action-record name="action-move-record-draft-sequence" model="com.axelor.apps.account.db.Move">
+    	<field name="reference" expr="eval: '*'+id"/>
+    </action-record>
+   
+	<!-- ACTION ATTRS -->
+	<action-attrs name="action-move-attrs-set-domain-company">
+	  <attribute name="domain" for="company" if="__user__.activeCompany != null" expr="eval: &quot; self.id = ${__user__.activeCompany.id}  &quot;"/>
+	</action-attrs>
+	
+	<action-attrs name="action-move-attrs-set-domain-payment-mode">
+	  <attribute name="domain" for="paymentMode" expr="eval: &quot; self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company = :company)  &quot;"/>
+	</action-attrs>
+	
+	<!-- ACTION METHOD -->
+	<action-method name="action-move-method-validate">
+		<call class="com.axelor.apps.account.web.MoveController" method="validate"/>
+	</action-method>
+	
+	<action-method name="action-move-method-generate-reverse-move">
+		<call class="com.axelor.apps.account.web.MoveController" method="generateReverse"/> 
+	</action-method>
+	
+	<action-method name="action-move-method-get-period">
+		<call class="com.axelor.apps.account.web.MoveController" method="getPeriod"/>
+	</action-method>
+	
+	<action-method name="action-move-method-validate-multiple-moves">
+	    <call class="com.axelor.apps.account.web.MoveController" method="validateMultipleMoves"/>
+	</action-method>
+	
+	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
+		<filter title="Current Period Entries">
+			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>
+		</filter>
+		<filter title="Exported moves">
+			<domain>self.accountingOk = true</domain>
+		</filter>
+		<filter title="Moves to export">
+			<domain>self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.accountingOk = false</domain>
+		</filter>
+		<filter title="Moves from invoices/refunds">
+			<domain>self.invoice IS NOT NULL</domain>
+		</filter>
+		<filter title="Moves from payment">
+			<domain>self.paymentMode IS NOT NULL</domain>
+		</filter>
+		<filter title="Misc. Moves">
+			<domain>self.date IS NOT NULL</domain>
+		</filter>
+		<filter title="Draft Moves">
+			<domain>self.statusSelect = 1</domain>
+		</filter>
+		<filter title="Simulated Moves">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="Validated Moves">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="Canceled Moves">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+	</search-filters>
+   
+</object-views>

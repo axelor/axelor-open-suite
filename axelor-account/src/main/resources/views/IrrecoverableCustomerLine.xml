@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="irrecoverable-customer-line-grid" title="Customers" model="com.axelor.apps.account.db.IrrecoverableCustomerLine">
+        <field name="partner"/>
+    </grid>
+    
+    <form name="irrecoverable-customer-line-form" title="Customer" model="com.axelor.apps.account.db.IrrecoverableCustomerLine"   >
+        <panel >
+        	<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" colSpan="12"/>
+        </panel>
+        <panel-tabs>
+        	<panel-related field="irrecoverablePaymentScheduleLineLineList" colSpan="12"/>
+        	<panel-related field="irrecoverableInvoiceLineList" colSpan="12"/>
+        </panel-tabs>
+        
+    </form>
+    
+</object-views>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AccountCategoryLine" lang="java" cachable="true">
+    
+    <many-to-one name="accountCategory" ref="AccountCategory" title="Account category"/>
+    <string name="sign" max="1" title="Signe"/>
+    <many-to-one name="category" ref="AccountCategory" title="Category"/>
+   
+    <string name="fullName" namecolumn="true" search="accountCategory,sign" title="Name">
+	    <![CDATA[
+		    String name = "Nouvelle ligne de catégorie";
+		    if (accountCategory != null) name = accountCategory.getName();
+		    if (accountCategory != null && sign != null && !sign.isEmpty()) name = name + " - " + sign;
+		    return name;
+	    ]]>
+    </string>
+    
+  </entity>
+
+</domain-models>

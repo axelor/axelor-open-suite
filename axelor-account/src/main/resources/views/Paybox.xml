@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="paybox-grid" title="Paybox" model="com.axelor.apps.account.db.Paybox">
+		<field name="name"/>
+    </grid>
+    
+    <form name="paybox-form" title="Paybox" model="com.axelor.apps.account.db.Paybox"   onLoad="action-payment-voucher-checkIfPaidByPaybox">
+    	<panel >
+    		<field name="name" hidden="true"/>
+    		<label title="Please close this notebook to go back to the payment voucher. Please refresh the payment voucher to see the changes."/>
+    	</panel>
+    	
+    </form> 
+  
+	        	
+	<action-method name="action-payment-voucher-checkIfPaidByPaybox">
+    	<call class="com.axelor.apps.account.web.PayboxController" method="checkIfPaidByPaybox"/>
+   	</action-method>
+	
+	
+	
+	
+</object-views>

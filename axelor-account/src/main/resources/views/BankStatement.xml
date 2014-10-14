@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+  
+     <grid name="bank-statement-grid" title="Bank Statements" model="com.axelor.apps.account.db.BankStatement">
+			<field name="name" />
+			<field name="fromDate" />
+			<field name="toDate" />
+			<field name="journal" />
+			<field name="startingBalance" />
+			<field name="endingBalance" />
+            <field name="statusSelect"/> 
+     </grid>
+  
+	<form   onNew="action-account-bank-statement-onnew-group" readonlyIf="statusSelect == 2" name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.account.db.BankStatement">
+	  
+		<panel >
+			<field name="name"/>
+			<field name="company" widget="SuggestBox" onChange="action-bank-statement-set-currency"/>
+			<field name="currency"/>
+			<field name="fromDate"/>
+			<field name="toDate"/>
+			<field name="journal" domain="self.statusSelect = 1 AND self.company = :company"/>
+			<field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect='cash'"/>
+		</panel>
+		
+		<panel title="Status" >
+			<field name="statusSelect" title="Status"/>
+			<button name="validated" title="Validated" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-validate-click"/>
+		</panel>
+		
+		<panel title="Balance" >
+			<field name="startingBalance"/>
+			<field name="endingBalance"/>
+			<field name="computedBalance"/>
+			<button name="compute" title="Compute" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-compute-click"/>
+		</panel>
+		
+		<panel-related field="bankStatementLineList" colSpan="12"/>
+		
+	</form>
+
+ 
+   <action-group name="action-account-bank-statement-onnew-group">
+	   <action name="action-bank-statement-active-company"/>
+	   <action name="action-bank-statement-set-months"/>
+	   <action name="action-bank-statement-set-currency"/>
+   </action-group>
+ 
+   <action-group name="action-group-account-bankstatement-validate-click">
+   		<action name="save"/>
+   		<action name="action-bank-statement-method-compute"/>
+   		<action name="action-bank-statement-method-validate"/>
+   </action-group>	
+   
+   <action-group name="action-group-account-bankstatement-compute-click">
+   		<action name="save"/>
+   		<action name="action-bank-statement-method-compute"/>
+   </action-group>
+   	
+   <action-record model="com.axelor.apps.account.db.BankStatement" name="action-bank-statement-active-company">
+       <field name="company" expr="eval:__user__.activeCompany"/>
+   </action-record>
+   
+   <action-record model="com.axelor.apps.account.db.BankStatement" name="action-bank-statement-set-months">
+       <field name="fromDate" expr="eval: LocalDate.parse(todayDate).withDayOfMonth(1)"/>
+       <field name="toDate" expr="eval: LocalDate.parse(todayDate).toDateTimeAtCurrentTime().dayOfMonth().withMaximumValue().toLocalDate()"/>
+   </action-record>
+     
+   <action-record model="com.axelor.apps.account.db.BankStatement" name="action-bank-statement-set-currency">
+       <field name="currency" expr="eval: company?.currency"/>
+   </action-record>
+   
+	<action-method name="action-bank-statement-method-compute">
+		<call class="com.axelor.apps.account.web.BankStatementController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-bank-statement-method-validate">
+		<call class="com.axelor.apps.account.web.BankStatementController" method="validate"/>
+	</action-method>
+	 
+    
+</object-views>

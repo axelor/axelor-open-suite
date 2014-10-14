@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  
+  <module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="PaymentSchedule" lang="java">
+  
+    <string name="scheduleId" title="Ref." unique="false" required="false" namecolumn="true" readonly="true"/>
+    <date name="creationDate" title="Creation Date"/>
+    <date name="startDate" title="Schedule start Date"/>
+    <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
+    <integer name="nbrTerm" title="Nbr. of terms"/>
+    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Details"/>
+    <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" required="true"/>
+    <one-to-many name="paymentScheduleLineList" ref="PaymentScheduleLine" mappedBy="paymentSchedule" title="Schedule lines" readonly="false"/>
+    <integer name="statusSelect" title="Status" default="1" selection="iaccount.payment.schedule.status.select" readonly="true"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+    <many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Select invoices to include in the payment schedule"/>
+    <integer name="rejectCounter" title="Reject counter" readonly="true"/>
+    <decimal name="inTaxAmount" title="Amount"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" required="true"/>
+    
+   	<integer name="irrecoverableStatusSelect" title="Irrecoverable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
+	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shift reason"/>
+	
+	<extra-code><![CDATA[
+	
+	   	// Status select
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_CONFIRMED = 2;
+		public static final int STATUS_CLOSED = 3;
+		public static final int STATUS_CANCELED = 4;
+		
+		// IRRECOVERABLE STATUS SELECT
+		public static final int IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE = 0;
+		public static final int IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE = 1;
+		public static final int IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE = 2;
+	
+	]]></extra-code>
+	
+  </entity>
+
+</domain-models>

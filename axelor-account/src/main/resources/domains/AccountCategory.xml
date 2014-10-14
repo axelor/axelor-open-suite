@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AccountCategory" lang="java" cachable="true">
+  
+    <string name="name" title="Name"/>
+    <string name="type" title="Type"/>
+    <string name="signType" title="Sign Associated"/>
+    <many-to-many name="accounts" ref="Account" title="General Accounts"/>
+    <one-to-many name="accountCategoryLines" ref="AccountCategoryLine" mappedBy="accountCategory" title="Categories"/>
+  
+  </entity>
+
+</domain-models>

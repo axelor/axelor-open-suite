@@ -1,0 +1,13 @@
+"code";"name";"_activeTaxLine"
+"UK_SRT";"Standard rate purchase (20%)";1
+"UK_SRS_20";"Standard rate sale (20%)";2
+"UK_ZRP_EC";"Zero rated purchase from EC";3
+"UK_STC_EC";"Sales to customers in EC";4
+"UK_LRP";"Lower rate purchase (5%)";5
+"UK_SRP_EC";"Standard rated purchase from EC";6
+"UK_EP";"Exempt purchase";7
+"UK_SRP";"Standard rate purchase (17.5%)";8
+"UK_ZRP";"Zero rated purchase";9
+"UK_ES";"Exempt sale";10
+"UK_SRS_17";"Standard rate sale (17.5%)";11
+"UK_ZRS";"Zero rated sale";12

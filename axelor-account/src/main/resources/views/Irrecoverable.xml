@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+    <grid name="irrecoverable-grid" title="Irrecoverables" model="com.axelor.apps.account.db.Irrecoverable">
+        <field name="name"/>
+        <field name="dateTime"/>
+        <field name="company"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+    <form name="irrecoverable-form" title="Irrecoverable" model="com.axelor.apps.account.db.Irrecoverable"   
+    onNew="action-record-irrecoverable-default-record">
+  
+		<panel  itemSpan="12">
+			 <field name="name"/>
+			 <field name="user"/>
+			 <field name="dateTime"/>
+			 <field name="company" widget="SuggestBox" form-view="company-form"/>
+		</panel>
+		<panel showIf="statusSelect == 1">
+	 		<button name="getIrrecoverable" title="Get invoices and schedule lines to set as irrecoverable" onClick="save,com.axelor.apps.account.web.IrrecoverableController:getIrrecoverable"/>
+		</panel>
+		<panel-tabs showIf="statusSelect == 1">
+			<panel-related field="invoiceSet"  form-view="invoice-form" grid-view="invoice-grid" colSpan="12"/>
+			<panel-related field="paymentScheduleLineSet"/>
+		</panel-tabs>
+		
+		<panel sidebar="true" showIf="invoiceSet != null || paymentScheduleLineSet != null">
+			<button name="createIrrecoverableReport" title="Generate irrecoverable report"  onClick="save,com.axelor.apps.account.web.IrrecoverableController:createIrrecoverableReport" showIf="statusSelect == 1"/>
+			<field name="exportTypeSelect" colSpan="4"/>
+			<button name="printReport" title="Print" icon="fa-print" onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>  		
+		</panel>
+		<panel-related sidebar="true" field="irrecoverableCustomerLineList" title="Report execution" colSpan="12"/>  
+		
+		<panel showIf="invoiceSet != null || paymentScheduleLineSet != null">
+  			<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="save,action-method-account-irrecoverable-pass-in" showIf="statusSelect == 1"/>
+	 		<button name="showTraceBack" title="Anomalies"   onClick="save,action-irrecoverable-show-trace-back" showIf="statusSelect == 2"/>
+	 	</panel>
+		<panel-related field="moveSet" showIf="statusSelect == 2" colSpan="12"/>
+	</form>
+
+    <action-method name="action-method-account-irrecoverable-pass-in">
+    	<call class="com.axelor.apps.account.web.IrrecoverableController" method="passInIrrecoverable"/>
+    </action-method>
+    
+	<action-record name="action-record-irrecoverable-default-record" model="com.axelor.apps.account.db.Irrecoverable">
+		<field name="dateTime" expr="eval:__datetime__"/>
+		<field name="user" expr="eval:__user__"/>
+   		<field name="company"   expr="eval:__user__.activeCompany"/>
+	</action-record>
+	
+	<action-view name="action-irrecoverable-show-trace-back" title="Anomalies"	model="com.axelor.exception.db.TraceBack">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.batchId = :id and self.origin = 'irrecoverable'</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+	
+</object-views>

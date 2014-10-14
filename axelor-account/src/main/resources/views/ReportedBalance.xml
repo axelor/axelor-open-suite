@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    <grid name="reported-balance-grid" title="Reported balance list" model="com.axelor.apps.account.db.ReportedBalance">
+ 		<field name="company"/>
+  		<field name="partner"/>		
+    </grid>
+ <form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance"  >
+
+	<panel >
+		<field name="company" widget="SuggestBox" form-view="company-form"/>
+		<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
+	</panel>
+
+	<panel-related field="reportedBalanceLineList" colSpan="12" form-view="reported-balance-line-custom-from" grid-view="reported-balance-line-custom-grid"/>
+	
+ </form>
+<grid name="reported-balance-line-custom-grid" model="com.axelor.apps.account.db.ReportedBalanceLine"  title="Reported balance lines" >
+	<field name="year"/>
+	<field name="amount"/>
+</grid>
+<form name="reported-balance-line-custom-form" model="com.axelor.apps.account.db.ReportedBalanceLine"  title="Reported balance line"  >
+	<panel tite="Overview">
+		<field name="year"/>
+		<field name="amount"/>
+	</panel>
+</form>
+        
+</object-views>

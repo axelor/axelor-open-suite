@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="cfonb-config-grid" title="Cfonb configurations" model="com.axelor.apps.account.db.CfonbConfig">
+        <field name="name"/>
+        <field name="code"/>
+    </grid>
+    
+    <form name="cfonb-config-form" title="Cfonb configuration" model="com.axelor.apps.account.db.CfonbConfig"   >
+	    
+	   <panel >
+	     <field name="name"/>
+        <field name="code"/>
+	   </panel> 
+      
+        
+      	<panel title="CFONB Export">
+	       	<field name="senderRecordCodeExportCFONB"/>
+	       	<field name="senderNumExportCFONB"/>
+	       	<field name="senderNameCodeExportCFONB"/>
+	       	<field name="recipientRecordCodeExportCFONB"/>
+	       	<field name="totalRecordCodeExportCFONB"/>
+	       	<field name="transferOperationCodeExportCFONB"/>
+	       	<field name="directDebitOperationCodeExportCFONB"/>
+	     </panel>
+        
+        <panel title="CFONB Import">
+	       	<field name="headerRecordCodeImportCFONB"/>
+	       	<field name="detailRecordCodeImportCFONB"/>
+	       	<field name="endingRecordCodeImportCFONB"/>
+	       	<field name="transferOperationCodeImportCFONB"/>
+	       	<field name="directDebitOperationCodeImportCFONB"/>
+	       	<field name="ipoRejectOperationCodeImportCFONB"/>
+	       	<field name="ipoOperationCodeImportCFONB"/>
+	       	<field name="ipoAndChequeOperationCodeImportCFONB"/>
+       </panel>
+    </form>
+	
+</object-views>

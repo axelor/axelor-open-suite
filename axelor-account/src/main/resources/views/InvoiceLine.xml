@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+   
+    <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="sequence,invoiceLineType.name,qty" >
+    	<field name="sequence"/>
+        <field name="invoiceLineType"/>
+        <field name="productName"/>
+        <field name="qty"/>
+        <field name="price"/>
+        <field name="product.unit"/>
+        <field name="exTaxTotal"/>
+        <field name="taxLine.tax"/>
+    </grid>
+    
+    <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
+    onNew="action-account-invoice-line-onnew-group"
+    onLoad="action-account-invoice-line-onload-group">
+    	<panel-tabs>
+    		<panel title="Informations">
+    			<field name="sequence"/>
+    			<spacer/>
+		        <field name="product" required="true" onChange="action-group-account-invoice-line-product-onchange"/>
+		        <field name="invoiceLineType"/>
+		        <field name="productName"/>
+		        <field name="qty" required="true" onChange="action-invoice-line-method-compute"/>
+		        <field name="price" required="true"  onChange="action-invoice-line-method-compute"/>
+		        <field name="product.unit"/>
+		        <field name="exTaxTotal"/>
+		        <field name="task"/>
+		        <panel title="Tax informations" colSpan="12">
+		    		<field name="taxLine"/>
+					<field name="taxLine.tax.name"/>
+					<field name="taxLine.value"/>
+				</panel>
+				 <panel name="discount" title="Discount" colSpan="12">
+			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute"/>
+			        <field name="discountAmount" onChange="action-invoice-line-method-compute"/>
+			    </panel>
+    		</panel>
+    		<panel title="Notes">
+    			<field name="note" colSpan="12"/>
+    		</panel>
+    	</panel-tabs>
+        
+    </form>
+    
+    <grid name="tax-invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="invoiceLineType.name,qty">
+        <field name="invoiceLineType"/>
+        <field name="productName"/>
+        <field name="qty"/>
+        <field name="price"/>
+        <field name="product.unit"/>
+        <field name="exTaxTotal"/>
+        <field name="taxLine.vat"/>
+    </grid>
+    
+    <form name="tax-invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
+    onLoad="action-invoice-line-method-product-management">
+        <panel >
+        	 <field name="product" required="true" onChange="action-group-account-tax-invoice-line-product-onchange"/>
+	        <field name="invoiceLineType"/>
+	        <field name="productName"/>
+	        <field name="qty" required="true" onChange="action-group-account-tax-invoice-line-qty-onchange"/>
+	        <field name="price" required="true" onChange="action-invoice-line-method-compute"/>
+	        <field name="product.unit"/>
+	        <field name="exTaxTotal"/>
+	    	<field name="taxLine"/>
+			<field name="taxLine.tax.name"/>
+			<field name="taxLine.value"/>
+        </panel>
+       
+    </form>
+    
+    
+    <!-- ACTION GROUPs -->
+    <action-group name="action-account-invoice-line-onnew-group">
+	    <action name="action-invoice-line-record-new"/>
+	    <action name="action-invoice-line-record-sequence"/>
+	    <action name="action-invoice-line-attrs-hide-product-variant"/>
+    </action-group>
+    
+    <action-group name="action-account-invoice-line-onload-group">
+	    <action name="action-invoice-line-method-product-management"/>
+	    <action name="action-invoice-line-attrs-hide-product-variant"/>
+    </action-group>
+    
+    <action-group name="action-group-account-invoice-line-product-onchange">
+    	<action name="action-invoice-line-attrs-hide-product-variant"/>
+    	<action name="action-invoice-line-method-get-product-information"/>
+    	<action name="action-invoice-line-record-product-variant"/>
+    	<action name="action-invoice-line-method-compute"/>
+    	<action name="action-invoice-line-record-invoice-line-type"/>    	
+    </action-group>
+    
+    <action-group name="action-group-account-tax-invoice-line-product-onchange">
+    	<action name="action-invoice-line-method-get-product-information"/>
+    	<action name="action-invoice-line-method-compute"/>
+    	<action name="action-invoice-line-record-invoice-line-type"/>
+    </action-group>
+    
+    <action-group name="action-group-account-tax-invoice-line-qty-onchange">
+    	<action name="action-invoice-line-method-get-discount"/>
+    	<action name="action-invoice-line-method-compute"/>
+    </action-group>
+    
+    <!--     ACTION RECORDS -->
+    
+    <action-record name="action-invoice-line-record-sequence" model="com.axelor.apps.account.db.InvoiceLine">
+    	<field name="sequence" expr="10" if="eval: _parent?.invoiceLineList == null"/>
+    	<field name="sequence" expr="eval: (_parent?.invoiceLineList.size()+1)*10" if="eval: _parent?.invoiceLineList != null"/>
+    </action-record>
+    
+    <action-record name="action-invoice-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    	<field name="qty" expr="eval: 1"/>
+    	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
+    </action-record>
+    
+    <action-record name="action-invoice-line-record-invoice-line-type" model="com.axelor.apps.account.db.InvoiceLine">
+    	<field name="invoiceLineType" expr="eval: product?.invoiceLineType"/>
+    </action-record>
+    
+	<!-- ACTION METHOD -->
+	<action-method name="action-invoice-line-method-compute">
+		<call class="com.axelor.apps.account.web.InvoiceLineController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-invoice-line-method-get-product-information">
+		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getProductInformation"/>
+	</action-method>
+	
+	<action-method name="action-invoice-line-method-get-discount">
+		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getDiscount"/>
+	</action-method>
+	
+	<!-- ACTION ATTRS -->
+	<action-attrs name="action-invoice-line-attrs-hide-product-variant">
+    	<attribute name="hidden" for="productVariant" expr="product?.productVariantConfiguration == null"/>
+    </action-attrs>
+	
+</object-views>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    <grid name="account-clearance-grid" title="Account clearance operations" model="com.axelor.apps.account.db.AccountClearance">
+        <field name="name"/>
+        <field name="dateTime"/>
+        <field name="user"/>
+        <field name="amountThreshold"/>
+        <field name="dateThreshold"/>
+        <field name="company"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+	<form name="account-clearance-form" title="Account clearance" model="com.axelor.apps.account.db.AccountClearance"
+	onNew="action-account-clearance-record-default">
+		
+		<panel title="General">
+			<field name="name"/>
+			<field name="dateTime"/>
+			<field name="user"/>
+			<field name="company" widget="SuggestBox"/>
+			<field name="statusSelect"/>
+		</panel>
+		
+		<panel title="Clearance settings" >
+			<field name="amountThreshold"/>
+			<field name="dateThreshold"/>
+		</panel>
+		
+		<panel-related field="moveLineSet"/>  
+		
+		<panel sidebar="true" title="Actions"> 
+			<button name="getExcessPayment" title="Get overdue payments" onClick="save,action-method-account-clearance-get-excesspayment,save" hideIf="statusSelect == 2" colSpan="6"/>
+			<button name="validateAccountClearance" title="Validate account clearances" onClick="save,action-method-account-clearance-validate,save" hideIf="statusSelect == 2" colSpan="6"/>
+			<button name="showAccountClearanceMoveLines" title="Move lines generated"  onClick="action-method-account-clearance-show-move-lines" showIf="statusSelect == 2" colSpan="12"/> 
+		</panel>
+	
+	</form>
+    
+    <action-method name="action-method-account-clearance-get-excesspayment">
+    	<call class="com.axelor.apps.account.web.AccountClearanceController" method="getExcessPayment"/>
+    </action-method>
+    
+    <action-method name="action-method-account-clearance-validate">
+    	<call class="com.axelor.apps.account.web.AccountClearanceController" method="validateAccountClearance"/>
+    </action-method>
+    
+    <action-method name="action-method-account-clearance-show-move-lines">
+    	<call class="com.axelor.apps.account.web.AccountClearanceController" method="showAccountClearanceMoveLines"/>
+    </action-method>
+    
+    <action-record name="action-account-clearance-record-default" model="com.axelor.apps.account.db.AccountClearance">
+        <field name="user" expr="eval:__user__"/>
+   		<field name="company"   expr="eval:__user__.activeCompany"/>
+    </action-record>
+    
+</object-views>

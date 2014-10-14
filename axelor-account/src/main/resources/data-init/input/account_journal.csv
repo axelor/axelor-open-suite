@@ -1,0 +1,15 @@
+importId;code;name;type.importId;excessPaymentOk;editReceiptOk;descriptionModel;sequence.importId;descriptionIdentificationOk;notExportOk;exportCode;statusSelect;company.importId
+1;SAL;Sales;1;false;false;Cust. Inv.;11;true;false;;1;1
+2;CREF;Refunds;2;false;false;Cust. Refund;12;true;false;;1;1
+3;PCH;Purchases;4;false;false;Suppl. Inv.;13;true;false;;1;1
+4;SREF;Supplier Refunds;2;false;false;Suppl. Refund;14;true;false;;1;1
+5;IN_BNK;Payments received;3;false;true;Payment Rec.;16;true;false;;1;1
+6;OUT_BNK;Payments emitted;3;false;false;Payment Emit.;17;true;false;;1;1
+7;ACC_CLR;Account clearance;3;true;false;;20;false;false;;1;1
+8;MISC_AUTO;Auto Misc. Operation on invoices or cashing;3;false;false;;18;false;false;;1;1
+9;MISC_MAN;Manual Misc. Operation;3;false;false;;19;false;false;;1;1
+10;REJ_BK;Bank Operations Rejects;3;false;false;Reject ;;true;false;;1;1
+11;INSTALL;Monthly Installments;3;false;false;Installment;;true;false;;1;1
+12;TECH;Technical;5;false;false;;;false;true;;1;1
+13;IRRECOV;Irrecoverables;4;false;false;Irrecoverable;10;false;false;;1;1
+14;EXP;Employees Travel expenses;4;false;false;Expense;;true;false;;1;1
