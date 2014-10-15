@@ -7,7 +7,7 @@
         <field name="debitNumber"/>
     </grid>
     
-    <form name="direct-debit-management-form-payment-schedule-line" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement"  >
+    <form name="direct-debit-management-form-payment-schedule-line" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement"  onNew="action-direct-debit-managemen-set-default">
         <panel >
         	<field name="company" widget="SuggestBox"/>
         	<field name="debitNumber"/>
@@ -15,7 +15,7 @@
         <panel-related field="paymentScheduleLineList"/>
     </form>
     
-    <form name="direct-debit-management-form-invoice" title="Direct debit management" model="com.axelor.apps.account.db.DirectDebitManagement"  >
+    <form name="direct-debit-management-form-invoice" title="Direct debit management" model="com.axelor.apps.account.db.DirectDebitManagement"  onNew="action-direct-debit-managemen-set-default">
         <panel >
         	<field name="company" widget="SuggestBox"/>
         	<field name="debitNumber"/>
@@ -23,4 +23,8 @@
         <panel-related field="invoiceSet" grid-view="invoice-grid" form-view="invoice-form"/>
     </form>
     
+    <action-record name="action-direct-debit-managemen-set-default" model="com.axelor.apps.account.db.DirectDebitManagement">
+        <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    </action-record>
 </object-views>

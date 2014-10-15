@@ -138,7 +138,8 @@
     </action-group>
     
     <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     	<field name="user" expr="eval:__user__"/>
     	<field name="salesStageSelect" expr="1"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -162,7 +163,8 @@
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="salesStageSelect" expr="1"/>
     	<field name="currency" expr="eval: _lead.currency"/>
-    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>
     
     <action-record name="action-opportunity-record-from-partner" model="com.axelor.apps.crm.db.Opportunity">
@@ -174,7 +176,8 @@
     	<field name="team" expr="eval: _partner.team"/>
     	<field name="salesStageSelect" expr="1"/>
     	<field name="currency" expr="eval: _partner.currency"/>
-    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">

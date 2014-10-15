@@ -237,7 +237,8 @@
         <field name="invoiceDate" expr="eval: __date__"/>
         <field name="currency" expr="eval:__repo__.of(User).find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect"/>
-        <field name="company" expr="eval:__user__.activeCompany"/>
+        <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
         <field name="dueDate" expr="eval: __date__"/>
     </action-record>
     

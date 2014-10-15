@@ -64,6 +64,8 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     	<field name="padding" expr="3"/>
     	<field name="nextNum" expr="1"/>
     	<field name="toBeAdded" expr="1"/>
+    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>
     
     <!-- ACTION METHOD -->

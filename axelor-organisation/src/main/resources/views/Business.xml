@@ -133,7 +133,8 @@
     	<field name="exportTypeSelect" expr="eval: 'pdf'"/>
     	<field name="realEstimatedMethodSelect" expr="2"/>
     	<field name="responsibleUser" expr="eval:__user__"/>
-		<field name="company" expr="eval:__user__.activeCompany"/>
+		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 		<field name="businessStatusSelect" expr="1"/>		
 		<field name="unit" expr="eval: company?.administration?.unit"/>
 		<field name="marginCoef" expr="1"/>

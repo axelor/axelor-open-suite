@@ -73,7 +73,8 @@
     </action-attrs>
     
      <action-record name="default-cheque-rejection-record" model="com.axelor.apps.account.db.ChequeRejection">
-		<field name="company" expr="eval:__user__.activeCompany"/>
+		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
    		<field name="dateTime" expr="action:action-payment-voucher-getDateTime"/>
    		<field name="paymentMode" expr="action:action-payment-mode-record-cheque"/>
     </action-record>

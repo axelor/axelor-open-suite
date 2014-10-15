@@ -13,11 +13,11 @@
 	 <form name="account-management-payment-mode-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement"  
 	 onNew="action-account-management-record-payment">
 	 	<panel >
-			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
 			<field name="company" widget="SuggestBox" form-view="company-form"/>
-			 <field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" />
-			 <field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
+			<field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" />
+			<field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
 			<field name="sequence" domain="self.company = :company" canNew="true"/>
+			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
 	 	</panel>
 	 </form>
     
@@ -30,7 +30,8 @@
     
 	<action-record name="action-account-management-record-payment" model="com.axelor.apps.account.db.AccountManagement">
         <field name="typeSelect" expr="eval: 3"/>
-        <field name="company"  expr="eval:__user__.activeCompany"/>
+        <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>
     
     <action-validate name="action-account-management-product-validate">

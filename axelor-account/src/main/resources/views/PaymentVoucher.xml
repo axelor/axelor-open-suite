@@ -250,7 +250,8 @@
 	<action-record name="action-record-payment-voucher-default-record" model="com.axelor.apps.account.db.PaymentVoucher">
 		<field name="user" expr="eval:__user__"/>
        	<field name="cashRegister" expr="eval:__user__.activeCashRegister"/>
-		<field name="company" expr="eval:__user__.activeCompany"/>
+		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 		<field name="operationTypeSelect" expr="eval: _operationTypeSelect"/>
 	</action-record>
 	

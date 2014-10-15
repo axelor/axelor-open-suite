@@ -37,7 +37,8 @@
     </action-record>
     
     <action-record name="action-period-record-default" model="com.axelor.apps.base.db.Period">
-    	<field name="company"  expr="eval:__user__.activeCompany"/>
+    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
      </action-record>
     
      <action-record name="action-period-record-open" model="com.axelor.apps.base.db.Period">

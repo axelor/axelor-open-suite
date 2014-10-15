@@ -25,8 +25,9 @@
 	</form>	
 	
 	<action-record name="action-stock-config-record-default" model="com.axelor.apps.stock.db.StockConfig">
-		<field name="company" expr="eval: _company" if="_company"/>
-		<field name="company" expr="eval:__user__.activeCompany" if="!_company"/>
+		<field name="company" expr="eval: _company" if="_company != null"/>
+		<field name="company"  expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 	</action-record>
 	
 </object-views>

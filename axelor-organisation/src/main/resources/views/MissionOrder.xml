@@ -14,7 +14,7 @@
 		<field name="missionEndDate" />
 	</grid>
 
-	<form name="mission-order-form" title="Mission order" model="com.axelor.apps.organisation.db.MissionOrder">
+	<form name="mission-order-form" title="Mission order" model="com.axelor.apps.organisation.db.MissionOrder" onNew="action-mission-order-set-default">
 		<panel title="Mission order">
         	<field name="reference"/>
         	<field name="date"/>
@@ -34,5 +34,11 @@
 	    	</panel>
  		</panel>
 	</form>
-
+	
+	<action-record name="action-mission-order-set-default" model="action-mission-order-set-default">
+	    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+	</action-record>
+	
+	
 </object-views>

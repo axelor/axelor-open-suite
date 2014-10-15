@@ -108,7 +108,8 @@
     	<field name="user" expr="eval:__user__"/>
     	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
     	<field name="statusSelect" expr="eval: 1"/>
-		<field name="company" expr="eval:__user__.activeCompany"/>
+		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>
     
     <action-record name="action-expense-record-default-currency" model="com.axelor.apps.organisation.db.Expense">

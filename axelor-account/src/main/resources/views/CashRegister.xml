@@ -7,7 +7,7 @@
         <field name="num"/>
         <field name="company"/>
     </grid>
-    <form name="cash-register-form" title="Cash register" model="com.axelor.apps.account.db.CashRegister"  >
+    <form name="cash-register-form" title="Cash register" model="com.axelor.apps.account.db.CashRegister" onNew="action-cash-register-set-default" >
        <panel >
        		<field name="name"/>
         	<field name="num"/>
@@ -15,4 +15,10 @@
         	<field name="address"/>
        </panel>
     </form>
+    
+    <action-record name="action-cash-register-set-default" model="com.axelor.apps.account.db.CashRegister">
+        <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    </action-record>
+    
 </object-views>

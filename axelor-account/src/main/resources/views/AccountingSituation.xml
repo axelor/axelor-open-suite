@@ -12,7 +12,9 @@
         <field name="balanceDueReminderCustAccount"/>
     </grid>
     
-	 <form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account"  >
+	 <form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" 
+	     onLoad="action-account-accounting-situation-method-update-customer-account" 
+	     onNew="action-account-accounting-situation-default-set" >
 		<panel  itemSpan="4">
 			<field name="company" widget="SuggestBox" form-view="company-form"/>
 			<field name="customerAccount"/>
@@ -41,7 +43,9 @@
         <field name="balanceDueReminderCustAccount"/>
     </grid>
     
-	 <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account"  >
+	 <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" 
+	     onLoad="action-account-accounting-situation-method-update-customer-account"  
+	     onNew="action-account-accounting-situation-default-set" >
 		<panel >
 			<field name="company" widget="SuggestBox"/>
 			<field name="partner"/>
@@ -71,4 +75,8 @@
     	AND self.account.reconcileOk = 'true' AND self.move.statusSelect = 3</domain>
     </action-view>
     
+	<action-record name="action-account-accounting-situation-default-set" model="AccountingSituation">
+	    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+	</action-record>
  </object-views>

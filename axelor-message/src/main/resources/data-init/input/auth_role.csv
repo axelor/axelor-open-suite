@@ -1,0 +1,3 @@
+"name";"description";"permissions"
+"role.admin";"Access to all objects for all modules";"perm.message.all"
+"role.user";"Access to all objects for all modules except admin";"perm.message.all"

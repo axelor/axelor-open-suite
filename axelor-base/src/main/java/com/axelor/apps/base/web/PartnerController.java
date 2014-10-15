@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +31,7 @@ import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -39,6 +41,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
@@ -234,7 +237,14 @@ public class PartnerController {
 	
 	public Set<Company> getActiveCompany(){
 		Set<Company> companySet = new HashSet<Company>();
-		companySet.add(userService.getUser().getActiveCompany());	
+		Company company = userService.getUser().getActiveCompany();
+		if(company == null){
+			List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
+			if(companyList.size() == 1){
+				company = companyList.get(0);
+			}
+		}
+		companySet.add(company);	
 		return companySet;
 	}
 	

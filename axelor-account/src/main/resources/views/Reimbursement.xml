@@ -9,7 +9,7 @@
         <field name="total"/>
     </grid>
     
-	<form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement"  >
+	<form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement"  onNew="action-reimbursement-set-default">
 		<panel >
 			<field name="ref" colSpan="12"/>
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
@@ -41,6 +41,11 @@
 		</panel>
 	</form>
     
+	<action-record name="action-reimbursement-set-default" model="com.axelor.apps.account.db.Reimbursement">
+	    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+	</action-record>
+	
     <action-method name="action-method-account-reimbursement-validate">
     	<call class="com.axelor.apps.account.web.ReimbursementController" method="validateReimbursement"/>
     </action-method>

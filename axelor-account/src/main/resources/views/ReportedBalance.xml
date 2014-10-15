@@ -6,7 +6,7 @@
  		<field name="company"/>
   		<field name="partner"/>		
     </grid>
- <form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance"  >
+ <form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance"  onNew="action-reported-balance-set-default">
 
 	<panel >
 		<field name="company" widget="SuggestBox" form-view="company-form"/>
@@ -26,5 +26,10 @@
 		<field name="amount"/>
 	</panel>
 </form>
+
+<action-record name="action-reported-balance-set-default" model="com.axelor.apps.account.db.ReportedBalance">
+    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    <field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+</action-record>
         
 </object-views>

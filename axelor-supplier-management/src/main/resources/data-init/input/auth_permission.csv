@@ -1,0 +1,2 @@
+"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"readCondition";"readParams";"writeCondition";"writeParams";"createCondition";"createParams";"removeCondition";"removeParams"
+"perm.supplier.management.all";"com.axelor.apps.suppliermanagement.db.*";"true";"true";"true";"true";"true";;;;;;;;

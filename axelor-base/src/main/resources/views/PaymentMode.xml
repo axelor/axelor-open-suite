@@ -8,7 +8,7 @@
         <field name="code"/>
     </grid>
     
-    <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode"  >
+    <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode" onNew="action-payment-mode-set-default"  >
         <panel >
         	 <field name="name"/>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
@@ -26,5 +26,9 @@
     	search="('self.typeSelect = ?1', 7)">
     	<field name="typeSelect" expr="7"/>
 	</action-record>
+	
+	<action-record name="action-payment-mode-set-default" model="com.axelor.apps.account.db.PaymentMode">
+	    <field name="accountManagementList" expr="eval:__repo__.of(Company).all().fetch().collect{__repo__.of(AccountManagement).create([company:it])}"/> 
+	</action-record>    
 	
 </object-views>

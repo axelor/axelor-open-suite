@@ -207,7 +207,8 @@
     </action-record>
     
     <action-record name="action-stock-move-record-new" model="com.axelor.apps.stock.db.StockMove">
-    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+        <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 	    <field name="statusSelect" expr="eval: 1"/>
 	    <field name="isWithBackorder" expr="eval:true" />
 	    <field name="estimatedDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
