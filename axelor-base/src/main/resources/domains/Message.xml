@@ -7,13 +7,7 @@
   
   <entity name="Message" lang="java">
   
-  	
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" help="true" />
-	
-  	
-<!--   	Intern message -->
-  	<many-to-one name="senderUser" ref="com.axelor.auth.db.User" title="Sender (User)" readonly="true"/>
-  	<many-to-one name="recipientUser" ref="com.axelor.auth.db.User" title="Recipient"/>
   
   </entity>
   

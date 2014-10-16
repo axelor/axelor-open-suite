@@ -30,6 +30,10 @@
   	<boolean name="sentByEmail" title="Sent by email" initParam="true"/>
   	<many-to-one name="mailAccount" ref="com.axelor.apps.message.db.MailAccount" title="Mail account" initParam="true"/>
   	
+  	<!--   	Intern message -->
+  	<many-to-one name="senderUser" ref="com.axelor.auth.db.User" title="Sender (User)" readonly="true"/>
+  	<many-to-one name="recipientUser" ref="com.axelor.auth.db.User" title="Recipient"/>s
+  	
   	<extra-code><![CDATA[
 
 		// TYPE SELECT

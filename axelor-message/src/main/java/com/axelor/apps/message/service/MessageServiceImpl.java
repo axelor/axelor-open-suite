@@ -123,6 +123,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		try {
 			
 			this.sendByEmail(message);
+			this.sendToUser(message);
 			
 		} catch (MessagingException e) {
 			e.printStackTrace();
@@ -135,6 +136,14 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		
 	}
 	
+	private void sendToUser(Message message)  {
+		
+		if(!message.getSentByEmail() && message.getRecipientUser()!=null)  {
+			message.setStatusSelect(MessageRepository.STATUS_SENT);
+			message.setSentByEmail(false);
+			save(message);
+		}
+	}
 	
 	protected void sendByEmail(Message message) throws MessagingException, IOException  {
 		
