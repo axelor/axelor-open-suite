@@ -418,7 +418,50 @@
 	    </dataset>
 	    <category key="_team_name" type="text" title="Team"/>
 	    <series key="_total_calls" groupBy="_call_status" type="bar" title="Calls"/>
-	</chart>  	
+	</chart>
+<chart onInit="action.crm.chart.set.date" name="chart.held.calls.types.by.team.bar" title="Calls held by team by type" stacked="true">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
+		</search-fields>
+		<dataset type="sql">
+		    <![CDATA[
+				SELECT    
+				    COUNT(_event.id) AS _total_calls,
+					_team.name AS _team_name,
+					_meta._select_title AS _call_status
+				FROM
+					crm_event AS _event
+				LEFT JOIN
+					base_team AS _team
+					ON _event.team = _team.id
+						
+				JOIN
+					(SELECT 
+						cast(_item.value as int) AS _select_value,
+				        _item.title AS _select_title
+					FROM	
+						meta_select AS _selection		
+					JOIN
+						meta_select_item AS _item
+						ON _selection.name = 'crm.event.call.status.select'
+						AND _item.select_id = _selection.id	
+					) AS _meta
+				ON
+					_meta._select_value = _event.call_status_select
+				WHERE
+        			_event.type_select = 1 AND
+				_event.status_select=2 AND
+        			_event.start_date_time BETWEEN cast(:fromDateT as timestamp) AND cast(:toDateT as timestamp)
+				GROUP BY
+					_team_name, _call_status
+				ORDER BY
+					_team_name, _total_calls DESC
+		  ]]>
+	    </dataset>
+	    <category key="_team_name" type="text" title="Team"/>
+	    <series key="_total_calls" groupBy="_call_status" type="bar" title="Calls"/>
+	</chart>  	  	
 	  	
 	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.team.by.user.bar" title="Calls by user(of a team)">
 		<search-fields> 	        
