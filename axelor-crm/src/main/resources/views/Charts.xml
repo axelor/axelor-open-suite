@@ -409,7 +409,6 @@
 					_meta._select_value = _event.call_status_select
 				WHERE
         			_event.type_select = 1 AND
-				_event.status_select=2 AND
         			_event.start_date_time BETWEEN cast(:fromDateT as timestamp) AND cast(:toDateT as timestamp)
 				GROUP BY
 					_team_name, _call_status
