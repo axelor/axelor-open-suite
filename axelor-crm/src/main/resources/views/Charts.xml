@@ -324,7 +324,7 @@
 					_meta._select_value = _event.call_status_select	
 				WHERE
         			_event.type_select = 1 AND
-        			_event.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+        			_event.start_date_time BETWEEN cast(:fromDateT as timestamp) AND cast(:toDateT as timestamp)
 				GROUP BY
 					_user_name, _call_status
 				ORDER BY
@@ -367,7 +367,7 @@
 					_meta._select_value = _event.call_status_select
 				WHERE
         			_event.type_select = 1 AND 
-        			_event.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+        			_event.start_date_time BETWEEN cast(:fromDateT as timestamp) AND cast(:toDateT as timestamp)
 				GROUP BY
 					_team_name, _call_status
 				ORDER BY
@@ -378,7 +378,7 @@
 	    <series key="_total_calls" groupBy="_call_status" type="bar" title="Calls"/>
 	</chart>  	
 	  	
-	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.team.by.user.bar" title="Calls by team by user">
+	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.team.by.user.bar" title="Calls by user(of a team)">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" />
 		    <field type="reference" name="team" target="com.axelor.apps.base.db.Team" widget="[required=true]" title="Team" />
@@ -396,7 +396,7 @@
 			      self.typeSelect = 1 AND
 			      self.user = saleMan AND
 			      self.team = :team AND
-			      self.createdOn BETWEEN DATE(:fromDateT) AND DATE(:todayDate)
+			      self.startDateTime BETWEEN DATE(:fromDateT) AND DATE(:todayDate)
 			    GROUP BY        
 			        saleMan.fullName
 			    ORDER BY         
