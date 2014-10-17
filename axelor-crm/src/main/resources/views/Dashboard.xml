@@ -293,6 +293,7 @@
 		<dashlet action="dashlet.calls.by.team.by.user" height="350" />
 		<dashlet action="dashlet.held.calls.types.by.user" height="350"/>
 		<dashlet action="dashlet.held.calls.types.by.team" height="350"/>
+		<dashlet action="dashlet.daily.team.calls.summary.by.user" height="350"/>
 	</dashboard>
 	
 	<!-- Event Tickets Dashboard -->
@@ -349,6 +350,10 @@
 	</action-view>
 	<action-view name="dashlet.held.calls.types.by.team" title="Calls held by team by type">
 		<view type="chart" name="chart.held.calls.types.by.team.bar" />
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	</action-view>
+	<action-view name="dashlet.daily.team.calls.summary.by.user" title="portal.daily.team.calls.summary.by.user">
+		<view type="chart" name="chart.daily.team.calls.summary.by.user.bar" />
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
 	

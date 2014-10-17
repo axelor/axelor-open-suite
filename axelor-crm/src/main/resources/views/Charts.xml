@@ -491,6 +491,37 @@
 	    <category key="_sale_man" type="text" title="Salesman"/>
 	    <series key="_total_calls" type="bar" title="Calls"/>
 	</chart> 
+	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" name="chart.daily.team.calls.summary.by.user.bar" title="Daily team call summary by user" stacked="false">
+	<search-fields>
+	<field name="toDateT" title="From Date" type="date"/>
+	<field name="activeTeam" title="Team" type="reference" widget="[required=true]" target="com.axelor.apps.base.db.Team"/>
+	</search-fields>
+	<dataset type="jpql">
+	SELECT
+	COUNT(*) AS _total_calls,
+	salesMan.fullName AS _sale_man,
+	_item.title as status
+	FROM
+	Event self,    
+	User salesMan,
+	MetaSelectItem _item
+	WHERE
+	self.typeSelect = 1 AND
+	self.user = salesMan AND
+	self.team = :activeTeam AND
+	DATE(self.startDateTime) = DATE(:toDateT) AND
+	_item.select.name = 'crm.event.status.select' AND
+	cast(_item.value as int) = self.statusSelect    
+	GROUP BY        
+	salesMan.fullName,_item.title
+	ORDER BY         
+	salesMan.fullName
+
+	</dataset>
+	<category key="_sale_man" type="text" title="Salesman"/>
+	<series key="_total_calls" type="bar" groupBy="status" title="Calls"/>
+	</chart>
+
 	
 	
 	<chart name="chart.open.tickets.by.priority.bar" title="Open tickets by priority">
