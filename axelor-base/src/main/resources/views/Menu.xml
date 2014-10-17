@@ -412,7 +412,7 @@
 		action="admin.root.templating.template" />
 		
 	<action-view name="admin.root.templating.template"
-		title="Template" model="com.axelor.apps.base.db.Template">
+		title="Template" model="com.axelor.apps.message.db.Template">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>

@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.Template;
-import com.axelor.apps.base.service.template.TemplateService;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.TemplateService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

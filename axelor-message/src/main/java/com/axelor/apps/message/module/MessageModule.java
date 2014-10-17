@@ -23,6 +23,7 @@ import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.MessageServiceImpl;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 
 @AxelorModuleInfo(name = "axelor-message")
@@ -30,7 +31,7 @@ public class MessageModule extends AxelorModule {
 
     @Override
     protected void configure() {
-    	bind(TemplateMessageServiceImpl.class);
+    	bind(TemplateMessageService.class).to(TemplateMessageServiceImpl.class);
         bind(MessageService.class).to(MessageServiceImpl.class);
         bind(MailAccountService.class).to(MailAccountServiceImpl.class);
     }

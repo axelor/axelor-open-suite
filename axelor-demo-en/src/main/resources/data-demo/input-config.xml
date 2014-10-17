@@ -27,7 +27,7 @@
 	
 	<input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" search="self.importId = :importId"  />
 	     
-	<input file="base_template.csv" separator=";" type="com.axelor.apps.base.db.Template" search="self.name = :name" />
+	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" />
     
 	<input file="base_team.csv" separator=";" type="com.axelor.apps.base.db.Team" search="self.importId = :importId"  />
 
@@ -484,7 +484,7 @@
 		<bind column="groups" to="groups" search="self.code in :groups" eval="groups.split('\\|') as List"/>
 	</input>
 	
-	<input file="base_template.csv" separator=";" type="com.axelor.apps.base.db.Template" update="true" search="self.name = :name"/>
+	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" update="true" search="self.name = :name"/>
 	
 </csv-inputs>
 

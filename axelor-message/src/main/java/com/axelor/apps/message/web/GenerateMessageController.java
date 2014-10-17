@@ -24,10 +24,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Template;
 import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.base.db.repo.TemplateRepository;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.tool.ObjectTool;
 import com.axelor.exception.AxelorException;

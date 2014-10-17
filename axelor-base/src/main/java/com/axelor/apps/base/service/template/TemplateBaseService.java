@@ -15,23 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.message.service;
+package com.axelor.apps.base.service.template;
 
-import java.util.List;
+import java.util.Map;
 
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
-import com.axelor.exception.AxelorException;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.apps.message.service.TemplateService;
+import com.axelor.db.Model;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-public interface TemplateMessageService {
+@Singleton
+public class TemplateBaseService extends TemplateService {
+	
+	@Inject
+	private TemplateContextService tcs;
+	
+	public Map<String, Object> getContext(Template template, Model bean) {
+		if(template.getTemplateContext() == null) {
+			return null;
+		}
+		
+		return tcs.getContext(tcs.find(find(template.getId()).getTemplateContext().getId()), bean);
+	}
 
-	public Message generateMessage(Object object, long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException;
 	
-	public List<EmailAddress> getEmailAddress(String recipients);
-	
-	public TemplateMaker initMaker(long objectId, String model, String tag) throws InstantiationException, IllegalAccessException, ClassNotFoundException;
-	
-	
+
 }
