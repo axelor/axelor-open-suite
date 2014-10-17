@@ -150,9 +150,10 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		MailAccount mailAccount = message.getMailAccount();
 		
 		if(mailAccount != null)  {
+			String port = mailAccount.getPort()<=0?null:mailAccount.getPort().toString();
 			
 			com.axelor.mail.MailAccount account = new SmtpAccount(
-					mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), mailAccoutService.getSmtpSecurity(mailAccount));
+					mailAccount.getHost(), port, mailAccount.getLogin(), mailAccount.getPassword(), mailAccoutService.getSmtpSecurity(mailAccount));
 					                               
 			MailSender sender = new MailSender(account);
 
