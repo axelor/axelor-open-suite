@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 	
 	<menuitem name="stock-root" title="Stock management"  priority="85"
-	icon="img/16px/baggageCartBox_16px.png" groups="admins,erp"/>
+	icon="img/16px/baggageCartBox_16px.png" groups="admins,ERP"/>
 		
 	<menuitem name="stock-root-custdeliveries" parent="stock-root"
 		title="Customer Deliveries" action="stock.root.custdeliveries" />
@@ -190,13 +190,13 @@
 
 <!-- TOP MENU -->
 
-	<menuitem name="top-stock" title="Stock" groups="admins,erp" top="true" left="false" priority="140"/>
+	<menuitem name="top-stock" title="Stock" groups="admins,ERP" top="true" left="false" priority="140"/>
 	
 	<menuitem name="top-stock-create-stock-move" title="Create Stock Move" priority="100" parent="top-stock" action="top.stock.move.new"/>
 	<action-view name="top.stock.move.new" title="Stock Move" model="com.axelor.apps.stock.db.StockMove">
 		<view type="form"/>
 	</action-view>
-	<menuitem name="top-stock-moves-all" priority="90" title="View Stock moves" action="top.stock.moves.all" parent="top-stock" groups="admins,erp" top="true" left="false"/>	
+	<menuitem name="top-stock-moves-all" priority="90" title="View Stock moves" action="top.stock.moves.all" parent="top-stock" groups="admins,ERP" top="true" left="false"/>	
 	
 	<action-view name="top.stock.moves.all" title="Stock moves"
 		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
@@ -205,7 +205,7 @@
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
 	</action-view>	
 	
-	<menuitem name="top-stock-cust-deliveries" title="View Customer deliveries" action="top.stock.cust.deliveries" parent="top-stock" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-stock-cust-deliveries" title="View Customer deliveries" action="top.stock.cust.deliveries" parent="top-stock" groups="admins,ERP" top="true" left="false"/>		
 	
 	<action-view name="top.stock.cust.deliveries" title="Customer deliveries"
 		model="com.axelor.apps.stock.db.StockMove" >
@@ -216,7 +216,7 @@
 		<context name="_typeSelect" expr="eval: 2" />
 	</action-view>	
 	
-	<menuitem name="top-stock-internal-moves" title="View Internal moves" action="top.stock.internal.moves" parent="top-stock" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-stock-internal-moves" title="View Internal moves" action="top.stock.internal.moves" parent="top-stock" groups="admins,ERP" top="true" left="false"/>		
 	
 	<action-view name="top.stock.internal.moves" title="Internal moves"
 		model="com.axelor.apps.stock.db.StockMove" >
@@ -227,7 +227,7 @@
 		<context name="_typeSelect" expr="eval: 1" />
 	</action-view>	
 	
-	<menuitem name="top-stock-suppl-deliveries" title="View Supplier deliveries" action="top.stock.suppl.deliveries" parent="top-stock" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-stock-suppl-deliveries" title="View Supplier deliveries" action="top.stock.suppl.deliveries" parent="top-stock" groups="admins,ERP" top="true" left="false"/>		
 	
 	<action-view name="top.stock.suppl.deliveries" title="Supplier deliveries"
 		model="com.axelor.apps.stock.db.StockMove" >

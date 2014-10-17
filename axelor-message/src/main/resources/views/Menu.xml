@@ -7,11 +7,11 @@
 	
 
 <!-- 	<menuitem name="mail-root" title="Emails/Mails" priority="70" -->
-<!-- 		icon="img/64px/mail_64px.png" groups="admins,erp"/> -->
+<!-- 		icon="img/64px/mail_64px.png" groups="admins,ERP"/> -->
 
 <!-- 	title-f="Messagerie" -->
 	<menuitem name="mail-root" title="Emails/Mails" priority="70"
-		icon="img/64px/mail_64px.png" groups="admins,erp"/>
+		icon="img/64px/mail_64px.png" groups="admins,ERP"/>
 	
 	<menuitem name="mail-root-mail" parent="mail-root" title="All batchs mails" />
 	
