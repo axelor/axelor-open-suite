@@ -231,29 +231,6 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
-	
-
-
-	
-	
-
-	<menuitem name="mail-root-email" parent="mail-root" title="All batchs emails"/>
-
-	<menuitem name="mail-root-email-all" title="All Emails"
-		parent="mail-root-email" action="mail.root.email.all" />
-
-	<action-view name="mail.root.email.all" title="All Emails"
-		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 0</domain>
-		<context name="typeSelect" expr="0" />
-	</action-view>
-
-	
-
-	<menuitem name="mail-root-mail-all" title="All Mails"
-		parent="mail-root-mail" action="mail.root.mail.all" />
 
 	<action-view name="mail.root.mail.all" title="All mails"
 		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
@@ -262,9 +239,6 @@
 		<domain>self.typeSelect = 1</domain>
 		<context name="typeSelect" expr="1" />
 	</action-view>
-
-	<menuitem name="mail-conf" parent="mail-root"
-		title="Configuration" icon="img/Other/parameter_59px.png" />
 
 	<menuitem name="mail-conf-email-model" title="Email models"
 		parent="mail-conf" action="mail.conf.email.model" />
@@ -403,13 +377,10 @@
 		<view type="grid" name="company-grid"/>
 		<view type="form" name="company-form"/>
 	</action-view>
-
-	<menuitem name="admin-root-templating" parent="admin-root"
-		title="Templating"/>
 	
-	<menuitem name="admin-root-templating-template"
-		parent="admin-root-templating" title="Template"
-		action="admin.root.templating.template" />
+	<menuitem name="mail-conf-template"
+		parent="mail-conf" title="Template"
+		action="admin.root.templating.template" priority="100" />
 		
 	<action-view name="admin.root.templating.template"
 		title="Template" model="com.axelor.apps.message.db.Template">
@@ -417,9 +388,9 @@
 		<view type="form" />
 	</action-view>
 		
-	<menuitem name="admin-root-templating-template-rules"
-		parent="admin-root-templating" title="Template Rules"
-		action="admin.root.templating.template.rules" />
+	<menuitem name="mail-conf-template-rules"
+		parent="mail-conf" title="Template Rules"
+		action="admin.root.templating.template.rules" priority="90" />
 		
 	<action-view name="admin.root.templating.template.rules"
 		title="Template Rules" model="com.axelor.apps.base.db.TemplateRule">
@@ -427,8 +398,8 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="admin-root-templating-pdf-templates"
-		parent="admin-root-templating" title="PDF Templates"
+	<menuitem name="mail-conf-pdf-templates"
+		parent="mail-conf" priority="60" title="PDF Templates"
 		action="admin.root.templating.pdf.templates" />
 		
 	<action-view name="admin.root.templating.pdf.templates"

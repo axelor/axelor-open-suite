@@ -593,56 +593,8 @@
 		<context name="typeSelect" expr="0" />
 		<context name="objectConcernedSelect" expr="4" />
 	</action-view>
-	
-	<menuitem name="mail-root-mail-debtrecovery" title="Reminder mails"
-		parent="mail-root-mail" action="mail.root.mail.debtrecovery" />
 
-	<action-view name="mail.root.mail.debtrecovery" title="Reminder mails"
-		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 1 AND self.objectConcernedSelect = 1</domain>
-		<context name="typeSelect" expr="1" />
-		<context name="objectConcernedSelect" expr="1" />
-	</action-view>
 
-	<menuitem name="mail-root-mail-reimboursement" title="Reimbursement mails"
-		parent="mail-root-mail" action="mail.root.mail.reimboursement" />
-
-	<action-view name="mail.root.mail.reimboursement" title="Reimbursement mails"
-		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 1 AND self.objectConcernedSelect = 2</domain>
-		<context name="typeSelect" expr="1" />
-		<context name="objectConcernedSelect" expr="2" />
-	</action-view>
-
-	<menuitem name="mail-root-mail-reject-import" title="Bank Rejects mails"
-		parent="mail-root-mail" action="mail.root.mail.reject.import" />
-
-	<action-view name="mail.root.mail.reject.import" title="Bank Rejects mails"
-		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 1 AND self.objectConcernedSelect = 3</domain>
-		<context name="typeSelect" expr="1" />
-		<context name="objectConcernedSelect" expr="3" />
-	</action-view>
-
-	<menuitem name="mail-root-mail-cash-register" title="Cash register mails"
-		parent="mail-root-mail" action="mail.root.mail.cash.register" />
-
-	<action-view name="mail.root.mail.cash.register" title="Cash register mails"
-		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 1 AND self.objectConcernedSelect = 4</domain>
-		<context name="typeSelect" expr="1" />
-		<context name="objectConcernedSelect" expr="4" />
-	</action-view>
-	
-	
 	
 	
 	<menuitem name="admin-root-batch-accounting" parent="admin-root-batch"
