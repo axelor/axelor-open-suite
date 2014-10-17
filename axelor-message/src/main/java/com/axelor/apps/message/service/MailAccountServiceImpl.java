@@ -43,7 +43,7 @@ public class MailAccountServiceImpl extends MailAccountRepository implements Mai
 		boolean isvalidated=false;
 		try {
 			Transport transport=session.getTransport("smtp");
-			transport.connect();
+			transport.connect(account.getHost(),account.getPort(),account.getLogin(),account.getPassword());
 			transport.close();
 			isvalidated=true;
 		} catch (NoSuchProviderException e) {
