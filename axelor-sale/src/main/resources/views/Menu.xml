@@ -5,10 +5,10 @@
 	
 	
 	<menuitem name="sc-root-sale" title="Sales" priority="150"
-		icon="img/32px/order_32px.png" groups="admins,erp,crm"/>
+		icon="img/32px/order_32px.png" groups="admins,ERP,CRM"/>
 			
 	<menuitem name="sc-root-sale-new-so" title="New Sale order" priority="2" icon="img/16px/create_16px.png"
-		 groups="admins,erp" action="sc.root.sale.new.so" parent="sc-root-sale"/>
+		 groups="admins,ERP" action="sc.root.sale.new.so" parent="sc-root-sale"/>
 		
 	<action-view name="sc.root.sale.new.so" title="New Sale order"
 		model="com.axelor.apps.sale.db.SaleOrder" icon="img/16px/create_16px.png">
@@ -20,7 +20,7 @@
 	</action-view>	
 	
 	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" priority="1"
-		groups="admins,erp" title="Sale orders" action="sc.root.sale.orders" />
+		groups="admins,ERP" title="Sale orders" action="sc.root.sale.orders" />
 	
 	<action-view name="sc.root.sale.orders" title="Sale orders"
 		model="com.axelor.apps.sale.db.SaleOrder" icon="img/16px/orderSmall_16px.png">
@@ -68,13 +68,13 @@
 	</action-view>	
 	
 
-	<menuitem name="top-sale" title="Sales" groups="admins,erp,crm" top="true" left="false" priority="160"/>
+	<menuitem name="top-sale" title="Sales" groups="admins,ERP,CRM" top="true" left="false" priority="160"/>
 	
 	<menuitem name="top-sale-create-quote" priority="100" title="Create Quote" parent="top-sale" action="sc.root.sale.new.so"/>
-	<menuitem name="top-sale-orders-all" title="Quotes &amp; Orders" priority="70" action="sc.root.sale.orders" parent="top-sale" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-sale-orders-all" title="Quotes &amp; Orders" priority="70" action="sc.root.sale.orders" parent="top-sale" groups="admins,ERP" top="true" left="false"/>
 	
 	
-	<menuitem name="top-sale-offers" title="View Quotes" priority="90" action="top.sale.offers" parent="top-sale" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-sale-offers" title="View Quotes" priority="90" action="top.sale.offers" parent="top-sale" groups="admins,ERP" top="true" left="false"/>
 	<action-view name="top.sale.offers" title="Quotes"
 		model="com.axelor.apps.sale.db.SaleOrder" >
 		<view type="grid" name="sale-order-grid" />
@@ -86,7 +86,7 @@
 	</action-view>	
 	
 	
-	<menuitem name="top-sale-orders" title="View Orders" priority="80" action="top.sale.orders" parent="top-sale" groups="admins,erp" top="true" left="false"/>		
+	<menuitem name="top-sale-orders" title="View Orders" priority="80" action="top.sale.orders" parent="top-sale" groups="admins,ERP" top="true" left="false"/>		
 	
 	<action-view name="top.sale.orders" title="Orders"
 		model="com.axelor.apps.sale.db.SaleOrder" >

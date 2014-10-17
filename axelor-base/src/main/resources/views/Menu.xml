@@ -5,22 +5,22 @@
 
 
 	<menuitem name="menu-dashboards" priority="200"
-    	title="Dashboards" icon="img/16px/chart_16px.png" groups="admins,erp"/> 	
+    	title="Dashboards" icon="img/16px/chart_16px.png" groups="admins,ERP"/> 	
     	
 	<menuitem name="menu-dashboards-sample" priority="200" parent="menu-dashboards"
-    	title="Sample"  groups="admins,erp"/> 
+    	title="Sample"  groups="admins,ERP"/> 
     	
 	<menuitem name="menu-dashboards-partner-contact" priority="195" parent="menu-dashboards"
-    	title="Partners/Contacts"  groups="admins,erp"/>
+    	title="Partners/Contacts"  groups="admins,ERP"/>
 	
 	<menuitem name="menu-dashboards-partner" priority="100" parent="menu-dashboards-partner-contact"
-    	title="Partner"  groups="admins,erp" />
+    	title="Partner"  groups="admins,ERP" />
 	
 	<menuitem name="menu-dashboards-partner-1"  parent="menu-dashboards-partner"
     	title="Partner Db" icon="img/16px/chart_16px.png"  action="base.partner.list.dashboard.view"/>
 	
 	<menuitem name="menu-dashboards-contact" priority="90" parent="menu-dashboards-partner-contact"
-    	title="Contacts"  groups="admins,erp"/>	
+    	title="Contacts"  groups="admins,ERP"/>	
     	    
 	<menuitem name="menu-dashboards-contact-1"  parent="menu-dashboards-contact" icon="img/16px/chart_16px.png"
     	title="Contacts Db"  />		
@@ -30,10 +30,10 @@
 	</action-view>
 	
 	<menuitem name="menu-dashboards-products-goods" priority="40" parent="menu-dashboards"
-    	title="Products/Goods"  groups="admins,erp"/>
+    	title="Products/Goods"  groups="admins,ERP"/>
 	
 	<menuitem name="contact-root" title="Companies/Contacts" priority="190"
-		icon="img/64px/partner_64px.png" groups="admins,erp,crm"/>
+		icon="img/64px/partner_64px.png" groups="admins,ERP,CRM"/>
 
 	<menuitem name="contact-root-partner" parent="contact-root" priority="4"
 		title="Accounts" action="contact.root.partner" />
@@ -173,7 +173,7 @@
 	
 	
 	<menuitem name="product-root" title="Products" priority="170"
-		icon="img/Other/product_65px.png" groups="admins,erp,crm"/>
+		icon="img/Other/product_65px.png" groups="admins,ERP,CRM"/>
 
 	<menuitem name="product-root-product" parent="product-root"
 		title="Products" action="product.root.product" />
@@ -309,7 +309,7 @@
 
 
 	<menuitem name="admin-root" title="ERP Administration" priority="60"
-		icon="img/Other/organisation_70px.png" groups="admins,erp,crm"/>
+		icon="img/Other/organisation_70px.png" groups="admins,ERP,CRM"/>
 
 	<menuitem name="admin-root-organisation" parent="admin-root" title="Organization"/>
 
@@ -588,7 +588,7 @@
 	
 	
 		<menuitem name="alarm-root" title="Alarmes" priority="80"
-		icon="img/Other/alert_60px.png" groups="admins,erp" parent="admin-root"/>
+		icon="img/Other/alert_60px.png" groups="admins,ERP" parent="admin-root"/>
 
 	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
 		action="alarm.root.alarm.other" />
@@ -634,7 +634,7 @@
 	<!-- Top Menu for Create new objects.... -->
 
 
-	<menuitem name="top-menu-utility" priority="200"  title="Create" groups="admins,erp" top="true" left="false"/> 	
+	<menuitem name="top-menu-utility" priority="200"  title="Create" groups="admins,ERP" top="true" left="false"/> 	
 
 	<menuitem name="top-menu-create-partner" priority="100" parent="top-menu-utility" title="Create Account" action="top.new.partner.view" top="true" left="false"/> 	
 		
@@ -657,9 +657,9 @@
 		<view type="form" name="partner-form"/>
 	</action-view>
 
-	<menuitem name="top-relations" title="Relations" groups="admins,erp" top="true" left="false" priority="190"/>
+	<menuitem name="top-relations" title="Relations" groups="admins,ERP" top="true" left="false" priority="190"/>
 	<menuitem name="top-relations-create-partner" priority="100" parent="top-relations" title="Create Account" action="top.new.partner.view" top="true" left="false"/> 	
-	<menuitem name="top-relations-partners" priority="90" title="View Accounts" action="contact.root.partner" parent="top-relations" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-relations-partners" priority="90" title="View Accounts" action="contact.root.partner" parent="top-relations" groups="admins,ERP" top="true" left="false"/>
 	<menuitem name="top-relations-create-contact" priority="80" parent="top-relations" title="Create Contact" action="top.new.contact.view" /> 	
-	<menuitem name="top-relations-contacts" priority="70" title="View Contacts" action="contact.root.contact" parent="top-relations" groups="admins,erp" top="true" left="false"/>		  
+	<menuitem name="top-relations-contacts" priority="70" title="View Contacts" action="contact.root.contact" parent="top-relations" groups="admins,ERP" top="true" left="false"/>		  
 </object-views>

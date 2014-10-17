@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
 	<menuitem name="hr-root" title="Human Resources" priority="130"
-		icon="img/Other/organisation_70px.png" groups="admins,erp"/>
+		icon="img/Other/organisation_70px.png" groups="admins,ERP"/>
 
 	<menuitem name="hr-root-employee" parent="hr-root"
 		title="Employees" action="hr.root.employee" />
@@ -273,7 +273,7 @@
 	</action-view>
 
 	<menuitem name="business-root" title="Business" priority="120"
-		icon="img/Other/business_53px.png" groups="admins,erp"/>
+		icon="img/Other/business_53px.png" groups="admins,ERP"/>
 		
 	<menuitem name="business-root-project-new-business" parent="business-root" icon="img/16px/create_16px.png"
 		title="New Business" action="business.root.project.new.business" />
@@ -297,7 +297,7 @@
 	
 	
 	<menuitem name="project-root" title="Project" priority="110"
-		icon="img/Other/project_100px.png" groups="admins,erp"/>
+		icon="img/Other/project_100px.png" groups="admins,ERP"/>
 
 <!-- 	<menuitem name="menu-gant1" parent="project-root" -->
 <!--     title="Gantt Diagram" action="demo.gantt1"/> -->
@@ -397,7 +397,7 @@
 	
 	<!-- TOP MENU -->
 	
-	<menuitem name="top-hr" title="HR" left="false" top="true" groups="admins,erp"/>
+	<menuitem name="top-hr" title="HR" left="false" top="true" groups="admins,ERP"/>
 	<menuitem name="top-hr-profile" title="My HR Profile" parent="top-hr" priority="100" action="top.hr.profile"/>
 	<action-view name="top.hr.profile" title="My HR Profile"
 		model="com.axelor.apps.organisation.db.Employee" icon="img/16px/organisationSmall_16px.png">
@@ -430,7 +430,7 @@
 	</action-view>
 	<menuitem name="top-hr-job-offer-all" title="View Job Offers" parent="top-hr" priority="20" action="hr.root.recruitment.jobOffer"/>
 	
-	<menuitem name="top-project" title="Project" left="false" top="true" groups="admins,erp"/>
+	<menuitem name="top-project" title="Project" left="false" top="true" groups="admins,ERP"/>
 	<menuitem name="top-project-create-project" title="Create Project" priority="100" parent="top-project" action="top.project.create.project"/>
 	<action-view name="top.project.create.project" title="Create Project" model="com.axelor.apps.organisation.db.Project">
 		<view type="form" name="project-form"/>
