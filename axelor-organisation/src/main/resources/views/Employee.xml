@@ -48,7 +48,7 @@
 		<panel-tabs>
 			<panel title="Additionnal information">
 				<panel title="Contract Details" colSpan="12">
-					<field name="contractTypeSelect" colSpan="4"/>
+					<field name="contractTypeSelect" colSpan="4" selection="organisation.working.contract.type.select"/>
 					<field name="contractDuration" showIf="contractTypeSelect == 2" onChange="action-employee-set-exit-date" colSpan="4"/>
 					<field name="functionRanking" colSpan="4"/>
 					<field name="entryDate" onChange="action-employee-set-exit-date" colSpan="4"/>
