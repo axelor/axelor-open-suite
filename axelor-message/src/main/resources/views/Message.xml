@@ -10,37 +10,46 @@
     </grid>
     
     <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message"
-    onNew="action-group-message-message-onnew"
-    onLoad="action-message-attrs-showhide-by-media-type">
-      <toolbar>
+    onNew="action-group-message-message-onnew">
+		<toolbar>
 	        <button name="print" title="Print" icon="fa-print" onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
 	        <button name="send" title="Send" icon="fa-envelope" onClick="action-group-message-message-send-click" showIf="statusSelect == 1 " />
-        	<button name="delete" title="Delete" icon="fa-trash" onClick="action-group-message-message-delete-click" showIf="statusSelect != 3"/>
-	  </toolbar>
+        	<button name="trash" title="Delete" icon="fa-trash" onClick="action-group-message-message-delete-click" showIf="statusSelect != 3 "/>
+		</toolbar>
     	<panel title="Informations" readonlyIf="statusSelect == 2 || statusSelect == 3">
-            <field name="sentDateT"/>
-            <field name="fromEmailAddress" />
-            <field name="senderUser"/>
-            <field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature"/>
-            <field name="statusSelect"/>
-            <field name="mediaTypeSelect" onChange="action-message-attrs-showhide-by-media-type"/>
+            <field name="mediaTypeSelect" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
+			<field name="statusSelect"/>
+			<field name="senderUser"/>
+			<field name="sentDateT" colSpan="4"/>
+			<panel colSpan="12" showIf="mediaTypeSelect == 2">
+				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature"/>
+				<field name="fromEmailAddress"/>
+			</panel>
         </panel>
-        <panel title="Recipients" readonlyIf="statusSelect == 2 || statusSelect == 3">
+		<panel title="Recipient address" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 1">
+			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false" showIf="mediaTypeSelect == 1"/>
+		</panel>
+        <panel title="Recipients" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 2">
         	<field name="toEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
         	<field name="ccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
         	<field name="bccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
-        	<field name="addressBlock" colSpan="12" widget="html"/>
-        	<field name="recipientUser" help="Internal Message" colSpan="12"/>
         </panel>
+		<panel title="Message destinated to" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 3">
+			<field name="recipientUser" colSpan="6" showTitle="false" showIf="mediaTypeSelect == 3"/>
+		</panel>
         <panel title="Content" readonlyIf="statusSelect == 2 || statusSelect == 3">
         	<field name="subject" title="Subject" colSpan="12"/>
        	 	<field name="content" colSpan="12" showTitle="false" widget="html"/>
         </panel>
-        <panel title="Related to"  readonlyIf="statusSelect == 3">
-	        <field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" colSpan="4"/>
-	        <field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId" colSpan="4"/>
-	        <field name="filePath" widget="url" colSpan="4"/>
-        </panel>
+        <panel title="Related to" sidebar="true" colSpan="12" readonlyIf="statusSelect == 3">
+				<field name="filePath" widget="url" colSpan="12"/>
+			<panel colSpan="12">
+				<field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" colSpan="12"/>
+			</panel>
+			<panel colSpan="12">
+				<field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId" colSpan="12" showIf="relatedTo1Select != null"/>
+			</panel>
+		</panel>
     </form>
     
     <action-group name="action-group-message-message-onnew">
@@ -93,26 +102,14 @@
     <action-record name="action-message-record-delete-status" model="com.axelor.apps.message.db.Message">
     	<field name="statusSelect" expr="3"/>
     </action-record>
-	
-	<action-attrs name="action-message-attrs-showhide-by-media-type">		
-	  	<attribute name="hidden" for="addressBlock" expr="false" if="eval: mediaTypeSelect == 1" />
-	   	<attribute name="hidden" for="addressBlock" expr="true" if="eval: mediaTypeSelect == 2 || mediaTypeSelect == 3" />
-	    <attribute name="hidden" for="toEmailAddressSet" expr="true" if="eval: mediaTypeSelect == 1 || mediaTypeSelect == 3" />
-	   	<attribute name="hidden" for="toEmailAddressSet" expr="false" if="eval: mediaTypeSelect == 2" />
-	    <attribute name="hidden" for="ccEmailAddressSet" expr="true" if="eval: mediaTypeSelect == 1 || mediaTypeSelect == 3" />
-	   	<attribute name="hidden" for="ccEmailAddressSet" expr="false" if="eval: mediaTypeSelect == 2" />
-	    <attribute name="hidden" for="bccEmailAddressSet" expr="true" if="eval: mediaTypeSelect == 1 || mediaTypeSelect == 3" />
-	   	<attribute name="hidden" for="bccEmailAddressSet" expr="false" if="eval: mediaTypeSelect == 2" />
-	   	<attribute name="hidden" for="recipientUser" expr="true" if="eval: mediaTypeSelect == 2 ||  mediaTypeSelect == 1" />
-	  	<attribute name="hidden" for="recipientUser" expr="false" if="eval: mediaTypeSelect == 3" /> 
-    </action-attrs>
+
     
     <!-- ACTION METHOD -->
 	<action-method name="action-message-method-send-by-email">
 		<call class="com.axelor.apps.message.web.MessageController" method="sendByEmail"/>
 	</action-method>
     
-    <!-- 	Action commune pour tous les envoies par email avec utilisation de template et context -->
+    <!-- 	Common action for all messages sent by email using a template and the context -->
 	
 	<action-method name="action-send-by-email-with-template">
 		<call class="com.axelor.apps.message.web.GenerateMessageController" method="callMessageWizard"/>
