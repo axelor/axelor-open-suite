@@ -341,7 +341,7 @@
 	    <button name="stop" icon="fa-power-off" help="Finish" onClick="action-group-crm-ticket-stop-click" readonlyIf="ticketStatusSelect &gt; 4" />
 	</grid>
     
-    <form   onLoad="action-event-ticket-attrs-default,action-partner-attrs-hide-contact-partner" onSave="action-event-set-sequence" onNew="action-group-crm-ticket-onnew" name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event">
+    <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" onLoad="action-event-ticket-attrs-default,action-partner-attrs-hide-contact-partner" onSave="action-event-set-sequence" onNew="action-group-crm-ticket-onnew">
 	<toolbar>
 		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome"/>
 		<button name="start" help="Start" readonlyIf="ticketStatusSelect &gt; 1" icon="fa-play" onClick="action-set-ticket-status-select-2,save"/>
@@ -372,8 +372,8 @@
 	<panel sidebar="true" title="Attributes">
 		<field name="ticketStatusSelect" colSpan="3"/>
 		<field name="prioritySelect" colSpan="3" readonlyIf="ticketStatusSelect == 5"/>
-		<field name="eventCategory" colSpan="6" widget="SuggestBox" domain="self.typeSelect = :typeSelect"/>
-		<field name="progressSelect" colSpan="12" readonlyIf="ticketStatusSelect == 5" widget="SelectProgress"/>
+		<field name="eventCategory" colSpan="6" widget="SuggestBox" readonlyIf="ticketStatusSelect == 5" domain="self.typeSelect = :typeSelect"/>
+		<field name="progressSelect" colSpan="12" readonlyIf="ticketStatusSelect == 1 || ticketStatusSelect == 5 " widget="SelectProgress"/>
     </panel>
 	<panel sidebar="true" title="Followers/Comments" readonlyIf="ticketStatusSelect == 5">
 		<field name="userSet" colSpan="6" widget="TagSelect" onSelect="action-event-attrs-watchers-domain"/>

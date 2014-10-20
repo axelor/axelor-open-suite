@@ -229,7 +229,7 @@
             <field name="mobilePhone"/>
             <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
             <field name="fax"/>
-            <field name="mainInvoicingAddress" title="Address"/>     
+            <field name="mainInvoicingAddress" title="Address" canNew="true" />     
         </panel>
         <panel title="Notes">
             <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
