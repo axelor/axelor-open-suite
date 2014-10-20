@@ -20,7 +20,7 @@
 <!--   	<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/> -->
 	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
 	<boolean name="isDefault" title="Default ?"/>
-	<string name="filePath" title="File path"/>
+	<string name="filePath" title="Attached File path"/>
     
   </entity>
 

@@ -224,7 +224,7 @@
          </panel>
         <panel title="Contact">
             <field name="jobTitle"/>
-            <field name="reportsTo"/>
+            <field name="reportsTo" domain="self.isContact = true"/>
             <field name="fixedPhone"/>
             <field name="mobilePhone"/>
             <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
