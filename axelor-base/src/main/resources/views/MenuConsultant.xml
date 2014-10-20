@@ -14,9 +14,9 @@
 	
 	<dashboard name="consultant.dashboard" title="Dashboard">
 		<dashlet action="consultant.dashbord.dashlet.time.sheet" canSearch="true" height="400" />
-		<dashlet action="consultant.dashboard.dashlet.expense" canSearch="true" height="400" />
-		<dashlet action="consultant.dashboard.dashlet.expense" canSearch="true" height="400" />
-		<dashlet action="consultant.dashboard.dashlet.expense" canSearch="true" height="400" />
+		<dashlet action="consultant.dashboard.dashlet.my.expense" canSearch="true" height="400" />
+		<dashlet action="consultant.dashboard.dashlet.my.task" canSearch="true" height="400" />
+		<dashlet action="consultant.dashboard.dashlet.my.leave" canSearch="true" height="400" />
 	</dashboard>
 	
 	<action-view name="consultant.dashbord.dashlet.time.sheet" title="My Timesheets to complete"
@@ -27,7 +27,7 @@
 		<context name="_user" expr="eval:__user__"/>
 	</action-view>	
 	
-	<action-view name="consultant.dashboard.dashlet.expense" title="My expenses to complete"
+	<action-view name="consultant.dashboard.dashlet.my.expense" title="My expenses to complete"
 		model="com.axelor.apps.organisation.db.Expense">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
@@ -35,7 +35,7 @@
 		<context name="_user" expr="eval:__user__"/>
 	</action-view>
 	
-	<action-view name="consultant.dashboard.dashlet.expense" title="My Tasks"
+	<action-view name="consultant.dashboard.dashlet.my.task" title="My Tasks"
 		model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="crm-task-grid"/>
 		<view type="form" name="crm-task-form"/>
@@ -44,7 +44,7 @@
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>	
 	
-	<action-view name="consultant.dashboard.dashlet.expense" title="My leave requests"
+	<action-view name="consultant.dashboard.dashlet.my.leave" title="My leave requests"
 		model="com.axelor.apps.organisation.db.LeaveRequest">
 		<view type="grid" name="leave-request-grid" />
 		<view type="form" name="leave-request-form" />

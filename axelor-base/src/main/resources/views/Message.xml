@@ -3,13 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 	
-    <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sentDateT">
-        <field name="sentDateT"/>
-        <field name="senderUser"/>
-        <field name="subject"/>
-    </grid>
-    
-    <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message"
+    <form name="message-form" id="base-message-form" title="Email" model="com.axelor.apps.message.db.Message"
     onNew="action-group-message-message-onnew">
 		<toolbar>
 	        <button name="print" title="Print" icon="fa-print" onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
@@ -49,6 +43,7 @@
 			<panel colSpan="12">
 				<field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId" colSpan="12" showIf="relatedTo1Select != null"/>
 			</panel>
+			<field name="company" colSpan="12"/>
 		</panel>
     </form>
     
@@ -56,56 +51,14 @@
     	<action name="action-message-record-default"/>
     	<action name="action-message-record-mail-account"/>
     	<action name="action-message-record-get-signature"/>
+    	<action name="action-message-record-active-company"/>
     	<action name="action-message-record-default-media-type"/>
     </action-group>
     
-    <action-group name="action-group-message-message-send-click">
-    	<action name="save"/>
-    	<action name="action-message-method-send-by-email"/>
-    	<action name="save"/>
-    </action-group>
-    
-    <action-group name="action-group-message-message-delete-click">
-    	<action name="save"/>
-    	<action name="action-message-record-delete-status"/>
-    	<action name="save"/>
-    </action-group>
-    
-    <action-method name="action-message-method-print-pdf-email">
-		<call class="com.axelor.apps.base.web.MessageController" method="printMessage"/>
-	</action-method>
 	
-	<action-record name="action-message-record-default-media-type" model="com.axelor.apps.message.db.Message">
-    	<field name="mediaTypeSelect" expr="eval:defaultMediaType"/>
-    </action-record>
-
-	<action-record name="action-message-record-default" model="com.axelor.apps.message.db.Message">
-    	<field name="sentDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
-    	<field name="senderUser" expr="eval:__user__"/>
+    <action-record model="com.axelor.apps.message.db.Message" name="action-message-record-active-company">
+    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>
     
-    <action-record name="action-message-record-mail-account" model="com.axelor.apps.message.db.Message">
-    	<field name="mailAccount" expr="eval: __repo__.of(MailAccount).all().filter('self.isDefault = true and self.user = ?1',senderUser).fetchOne()"/>
-    </action-record>
-    
-    <action-record name="action-message-record-get-signature" model="com.axelor.apps.message.db.Message">
-    	<field name="content" expr="eval: '&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;' + mailAccount?.signature" if="content == null &amp;&amp; mailAccount?.signature != null"/>
-    </action-record>
-    
-    <action-record name="action-message-record-delete-status" model="com.axelor.apps.message.db.Message">
-    	<field name="statusSelect" expr="3"/>
-    </action-record>
-
-    
-    <!-- ACTION METHOD -->
-	<action-method name="action-message-method-send-by-email">
-		<call class="com.axelor.apps.message.web.MessageController" method="sendByEmail"/>
-	</action-method>
-    
-    <!-- 	Common action for all messages sent by email using a template and the context -->
-	
-	<action-method name="action-send-by-email-with-template">
-		<call class="com.axelor.apps.message.web.GenerateMessageController" method="callMessageWizard"/>
-	</action-method>
-	
 </object-views>

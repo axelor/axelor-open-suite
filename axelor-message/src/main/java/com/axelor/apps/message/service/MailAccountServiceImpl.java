@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.message.service;
 
+import javax.mail.AuthenticationFailedException;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
@@ -33,23 +34,27 @@ public class MailAccountServiceImpl extends MailAccountRepository implements Mai
 		return all().filter("self.isDefault = true").fetchOne();
 		
 	}
-
-
+   
 	@Override
-	public boolean validateSmtpMailAccount(MailAccount account) {
+	public String validateSmtpMailAccount(MailAccount account) {
 		String port=account.getPort()<=0?null:account.getPort().toString();
 		SmtpAccount smtpAccount=new SmtpAccount(account.getHost(), port, account.getLogin(), account.getPassword(), this.getSmtpSecurity(account));
 		Session session=smtpAccount.getSession();
-		boolean isvalidated=false;
+		String errorMessage = null;
 		try {
 			Transport transport=session.getTransport("smtp");
 			transport.connect(account.getHost(),account.getPort(),account.getLogin(),account.getPassword());
 			transport.close();
-			isvalidated=true;
+		} catch (AuthenticationFailedException e){
+			errorMessage = "Incorrect login or password ";
 		} catch (NoSuchProviderException e) {
+			errorMessage = "Unable to reach server. Please check Host,Port and SSL/TLS";
 		} catch (MessagingException e) {
+			errorMessage = e.getMessage();
+		} catch (Exception e){
+			errorMessage = e.getMessage();
 		}
-		return isvalidated;	
+		return errorMessage;	
 	}
 	
 	

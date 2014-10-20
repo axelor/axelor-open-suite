@@ -25,7 +25,7 @@ public interface MailAccountService extends Repository<MailAccount> {
 	
 	public MailAccount getDefaultMailAccount();
 	
-	public boolean validateSmtpMailAccount(MailAccount account);
+	public String validateSmtpMailAccount(MailAccount account);
 	
 	public String getSmtpSecurity(MailAccount mailAccount);
 	

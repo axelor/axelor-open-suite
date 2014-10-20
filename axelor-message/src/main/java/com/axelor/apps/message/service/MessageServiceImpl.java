@@ -124,6 +124,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 			
 			this.sendByEmail(message);
 			this.sendToUser(message);
+			this.sendMessage(message);
 			
 		} catch (MessagingException e) {
 			e.printStackTrace();
@@ -143,6 +144,16 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 			message.setSentByEmail(false);
 			save(message);
 		}
+	}
+	
+	private void sendMessage(Message message){
+		
+		if(message.getMediaTypeSelect() == 1){
+			message.setStatusSelect(MessageRepository.STATUS_SENT);
+			message.setSentByEmail(false);
+			save(message);
+		}
+			
 	}
 	
 	protected void sendByEmail(Message message) throws MessagingException, IOException  {

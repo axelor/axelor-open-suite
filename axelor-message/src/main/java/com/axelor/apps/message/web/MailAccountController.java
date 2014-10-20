@@ -28,14 +28,14 @@ public class MailAccountController {
 	MailAccountService mailAccountService;
 	public void validateSmtpAccount(ActionRequest request,ActionResponse response){
 		MailAccount account=request.getContext().asType(MailAccount.class);
-		boolean isValidAccount=mailAccountService.validateSmtpMailAccount(account);
-		if(isValidAccount){
+		String validationError = mailAccountService.validateSmtpMailAccount(account);
+		if(validationError == null){
 			response.setValue("isValid",new Boolean(true));
 			response.setFlash("Connection successful");
 			response.setReadonly("loginPanel", true);
 			response.setReadonly("configPanel",true);
 		}else{
-			response.setFlash("Provided settings are wrong, please modify them and try again");
+			response.setFlash("Provided settings are wrong, please modify them and try again<br/>Error:"+validationError);
 			response.setValue("isValid",new Boolean(false));
 		}
 		
