@@ -17,7 +17,7 @@
 		title="Configuration" icon="img/Other/parameter_59px.png" priority="80" />
 
 	<menuitem name="mail-message" parent="mail-root"
-		title="Messages" icon="img/Other/parameter_59px.png" priority="90" action="mail.root.messages" />
+		title="Messages"  priority="90" action="mail.root.messages" />
 	<action-view name="mail.root.messages" title="Messages" 
 		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" name="message-grid"/>
@@ -29,8 +29,9 @@
 	<action-view name="mail.root.message.new" title="New Message"
 		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="form" name="message-form"/>
-		<domain>self.statusSelect = 1 and self.mediaTypeSelect= 3</domain>
-	</action-view>	
+		<domain>self.statusSelect = 1</domain>
+		<context name="defaultMediaType" expr="1"></context>
+	</action-view>		
 		
 <!-- 	title-f="Boite de réception" -->
 	<menuitem name="mail-root-email-inbox" parent="mail-root-email-box" title="Inbox" priority="80" action="mail.root.email.inbox" />
@@ -51,6 +52,7 @@
 		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="form" name="message-form"/>
 		<domain>self.statusSelect = 1</domain>
+		<context name="defaultMediaType" expr="2"></context>
 	</action-view>	
 		
 <!-- 	title-f="Brouillons" -->
