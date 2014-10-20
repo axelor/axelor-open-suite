@@ -105,30 +105,19 @@
 	</chart>
 	
 	<chart name="chart.partner.prospects.by.industrySector" title="Prospects by Industry Sector">
-	  <dataset type="sql">
-		  SELECT
-		    COUNT(self.id) AS _total_partner,
-		    selection_item.title as _industry_sector
-		  FROM
-		    base_partner as self
-		  LEFT JOIN
-		    meta_select as selection ON selection.name = 'partner.industry.sectory.select'
-		  LEFT JOIN 
-		    meta_select_item as selection_item ON selection_item.select_id = selection.id
-		  JOIN
-			auth_user as _user
-			ON _user.id = :_user_id
-		  JOIN
-			base_partner_company_set m2m_companySet
-			ON m2m_companySet.base_partner=self.id
-			AND m2m_companySet.company_set=_user.active_company	
-		  WHERE
-		    cast(selection_item.value as decimal) = self.industry_sector_select AND self.customer_type_select=2 AND is_contact=true
-		  GROUP BY
-		   _industry_sector	
-		  ORDER BY
-		   _industry_sector
-	  </dataset>
+	  <dataset type="jpql">
+		SELECT 	
+			count(*) as _total_partner,
+			_partnerCategory.name as _industry_sector
+		FROM 
+			Partner self 
+		LEFT JOIN 
+			self.partnerCategory _partnerCategory 
+		WHERE 
+			self.customerTypeSelect = 2 AND self.isContact = false
+		group by
+			_partnerCategory.name
+		</dataset>
 	  <category key="_industry_sector" type="text" title="Industry Sector"/>
 	  <series key="_total_partner" type="donut" title="Partners"/>
 	</chart>
