@@ -65,6 +65,15 @@
 		<view type="form" name="message-form"/>
 		<domain>self.statusSelect = 1 AND self.senderUser = :__user__</domain>
 	</action-view>	
+	<menuitem name="mail-root-email-trash" parent="mail-root-email-box" title="Trash" action="mail.root.email.trash" />	
+		
+<!-- 	title-f="Messages supprimés" -->
+	<action-view name="mail.root.email.trash" title="Trash" 
+		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
+		<view type="grid" name="message-grid"/>
+		<view type="form" name="message-form"/>
+		<domain>self.statusSelect = 3 AND (self.senderUser = :__user__ OR self.recipientUser = :__user__)</domain>
+	</action-view>
 		
 <!-- 	title-f="Messages envoyés" -->
 	<menuitem name="mail-root-email-sent" parent="mail-root-email-box" title="Sentbox" priority="70" action="mail.root.email.sent" />	
