@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
-    <grid name="purchase-config-grid" title="Purchase configurations" model="com.axelor.apps.organisation.db.OrganisationConfig">
+    <grid name="organisation-config-grid" title="Purchase configurations" model="com.axelor.apps.organisation.db.OrganisationConfig">
         <field name="company"/>
     </grid>
 
-    <form name="purchase-config-form" title="Purchase configuration" model="com.axelor.apps.organisation.db.OrganisationConfig" onNew="action-organisation-config-record-default">
+    <form name="organisation-config-form" title="Purchase configuration" model="com.axelor.apps.organisation.db.OrganisationConfig" onNew="action-organisation-config-record-default">
 		<panel >
 		  <field name="company" form-view="company-form"/>
 		</panel>

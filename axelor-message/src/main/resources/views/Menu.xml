@@ -28,7 +28,7 @@
 	<menuitem name="mail-root-email-new-message" parent="mail-root-email-box" title="New Message" priority="100" icon="img/16px/create_16px.png" action="mail.root.message.new"/>
 	<action-view name="mail.root.message.new" title="New Message"
 		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
-		<view type="form" name="message-form"/>
+		<view type="form" name="message-form" />
 		<domain>self.statusSelect = 1</domain>
 		<context name="defaultMediaType" expr="1"></context>
 	</action-view>		

@@ -403,6 +403,7 @@
     <action-group name="action-event-new-record">
     	<action name="action-event-default-record"/>
     	<action name="action-event-record-default-duration" if="typeSelect != 5"/>
+    	<action name="action-event-method-compute-from-duration" />
     	<action name="action-ticket-record-new" if="typeSelect == 5"/> <!-- typeSelect == 5: ticket -->
     	<action name="action-event-default-record-user" if="_lead == null &amp;&amp; _partner == null"/>
     	<action name="action-event-record-event-from-lead" if="_lead != null"/>
@@ -498,12 +499,15 @@
     	<field name="description" expr="eval: _lead.description"/>
     	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
+    	<field if="_lead.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.crm.db.Lead'"/>
+	    <field name="relatedToSelectId" expr="eval:_lead.id" />
     </action-record>
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">
 	    <field name="clientPartner" expr="eval:_saleOrder.clientPartner?.id != null ? __repo__.of(Partner).find(_saleOrder.clientPartner.id) : _saleOrder.clientPartner"/>
 	    <field name="contactPartner" expr="eval:_saleOrder.contactPartner?.id != null ? __repo__.of(Partner).find(_saleOrder.contactPartner.id) : _saleOrder.contactPartner"/>
 	    <field if="_saleOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.sale.db.SaleOrder'"/>
+	    <field name="relatedToSelectId" expr="eval:_saleOrder.id" />
 	</action-record>
     
     <action-record name="action-event-record-event-from-partner" model="com.axelor.apps.crm.db.Event">
@@ -513,6 +517,8 @@
     	<field name="description" expr="eval: _partner.description"/>
     	<field name="user" expr="eval: _partner.user"/>
     	<field name="team" expr="eval: _partner.team"/>
+    	<field if="_partner.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.base.db.Partner'"/>
+    	<field name="relatedToSelectId" expr="eval:_partner.id" />
     </action-record>
     
     <action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">
@@ -596,7 +602,7 @@
 	
 <!-- 	FILTERS -->
 	
-	<search-filters name="tasks-filters" model="com.axelor.apps.crm.db.Event" title="Tasks filters">
+	<search-filters name="crm-tasks-filters" model="com.axelor.apps.crm.db.Event" title="Tasks filters">
 		<filter title="My Tasks">
 			<domain>self.user = :__user__</domain>
 		</filter>

@@ -26,6 +26,8 @@ import javax.mail.MessagingException;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
@@ -54,6 +56,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 	@Inject
 	protected MailAccountService mailAccoutService;
 	
+	private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
 	
 	@Transactional
 	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
@@ -175,7 +178,11 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 			MailBuilder mailBuilder = sender.compose();
 
 			mailBuilder.subject(message.getSubject());
+			
+			mailBuilder.from(message.getSenderUser().getName());
 
+			LOG.debug("Mail from: {}",message.getSenderUser().getName());
+			
 			if(!Strings.isNullOrEmpty(message.getContent()))  {
 				mailBuilder.html(message.getContent());
 			}

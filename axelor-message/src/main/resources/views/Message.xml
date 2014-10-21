@@ -23,7 +23,6 @@
 			<field name="sentDateT" colSpan="4"/>
 			<panel colSpan="12" showIf="mediaTypeSelect == 2">
 				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature" requiredIf="mediaTypeSelect == 2"/>
-				<field name="fromEmailAddress"/>
 			</panel>
         </panel>
 		<panel title="Recipient address" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 1">
