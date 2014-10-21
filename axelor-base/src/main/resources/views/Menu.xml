@@ -239,49 +239,6 @@
 		<domain>self.typeSelect = 1</domain>
 		<context name="typeSelect" expr="1" />
 	</action-view>
-
-	<menuitem name="mail-conf-email-model" title="Email models"
-		parent="mail-conf" action="mail.conf.email.model" />
-
-	<action-view name="mail.conf.email.model" title="Email models"
-		model="com.axelor.apps.base.db.MailModel" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 0</domain>
-		<context name="typeSelect" expr="0" />
-	</action-view>
-
-	<menuitem name="mail-conf-mail-model" title="Mail models"
-		parent="mail-conf" action="mail.conf.mail.model" />
-
-	<action-view name="mail.conf.mail.model" title="Mail models"
-		model="com.axelor.apps.base.db.MailModel" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 1</domain>
-		<context name="typeSelect" expr="1" />
-	</action-view>
-	
-	<menuitem name="mail-conf-mail-model-tag" title="Email/Mail model tags"
-		parent="mail-conf" action="mail.conf.mail.model.tag" />
-
-	<action-view name="mail.conf.mail.model.tag" title="Les balises de modèles de courrier"
-		model="com.axelor.apps.base.db.MailModelTag" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-	<menuitem name="mail-conf-email-list" title="Partners lists"
-		parent="mail-conf" action="mail.conf.partner.list" />
-
-	<action-view name="mail.conf.partner.list" title="Partners lists"
-		model="com.axelor.apps.base.db.PartnerList" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-
-
-
 	<menuitem name="admin-root" title="ERP Administration" priority="60"
 		icon="img/Other/organisation_70px.png" groups="admins,ERP,CRM"/>
 
