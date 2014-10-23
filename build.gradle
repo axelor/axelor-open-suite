@@ -4,6 +4,10 @@ def modules = new File('modules/abs').listFiles().findAll { dir ->
 	new File(dir, 'build.gradle').exists()
 }
 
+def installedModules = new File('modules/abs').listFiles().findAll { dir ->
+	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('-demo-fr') && !dir.name.endsWith('-l10n-fr')
+}
+
 application {
 
 	name "axelor-erp"
@@ -14,6 +18,11 @@ application {
 	// depends on all modules
 	modules.each { dir ->
 		module "modules:$dir.name"
+	}
+	
+	// install all modules
+	installedModules.each { dir ->
+			install "$dir.name"
 	}
 }
 
