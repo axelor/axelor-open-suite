@@ -104,7 +104,11 @@
 				<panel title="Contact" colSpan="12">
 					<field name="fixedPhone"/>
 					<field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
-					<field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
+					<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+						<editor>
+							<field name="address"/>
+						</editor>
+					</field>
 					<field name="fax"/>
 					<field name="webSite"/>
 				</panel>
