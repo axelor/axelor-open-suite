@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
-import com.axelor.apps.base.db.Template;
+import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;

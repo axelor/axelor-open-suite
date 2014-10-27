@@ -19,9 +19,9 @@ package com.axelor.apps.message.service;
 
 import java.util.List;
 
-import com.axelor.apps.base.db.Template;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.tool.template.TemplateMaker;
 

@@ -15,8 +15,8 @@
 	    	<field name="name"/>
 		    <field name="code" x-bind="{{code|uppercase}}"/>
 		    <field name="parent"/>
-		    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-		    <field name="address" colSpan="12"/>
+		    <field name="partner" canNew="true" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+		    <field name="address" canNew="true" colSpan="12"/>
 		    
 	  	</panel>
 	  

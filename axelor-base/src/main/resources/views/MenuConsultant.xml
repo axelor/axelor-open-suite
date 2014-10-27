@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 	
-	<menuitem name="menu-consultant-dashbord" title="My DashBord" groups="consultant" 
+	<menuitem name="menu-consultant-dashbord" title="My DashBord" groups="CST" 
 		action="menu.consultant.dashbord" icon="img/16px/chart_16px.png"/>
 	
 	<action-view name="menu.consultant.dashbord" title="My DashBord"
@@ -14,9 +14,9 @@
 	
 	<dashboard name="consultant.dashboard" title="Dashboard">
 		<dashlet action="consultant.dashbord.dashlet.time.sheet" canSearch="true" height="400" />
-		<dashlet action="consultant.dashboard.dashlet.expense" canSearch="true" height="400" />
-		<dashlet action="consultant.dashboard.dashlet.expense" canSearch="true" height="400" />
-		<dashlet action="consultant.dashboard.dashlet.expense" canSearch="true" height="400" />
+		<dashlet action="consultant.dashboard.dashlet.my.expense" canSearch="true" height="400" />
+		<dashlet action="consultant.dashboard.dashlet.my.task" canSearch="true" height="400" />
+		<dashlet action="consultant.dashboard.dashlet.my.leave" canSearch="true" height="400" />
 	</dashboard>
 	
 	<action-view name="consultant.dashbord.dashlet.time.sheet" title="My Timesheets to complete"
@@ -27,7 +27,7 @@
 		<context name="_user" expr="eval:__user__"/>
 	</action-view>	
 	
-	<action-view name="consultant.dashboard.dashlet.expense" title="My expenses to complete"
+	<action-view name="consultant.dashboard.dashlet.my.expense" title="My expenses to complete"
 		model="com.axelor.apps.organisation.db.Expense">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
@@ -35,7 +35,7 @@
 		<context name="_user" expr="eval:__user__"/>
 	</action-view>
 	
-	<action-view name="consultant.dashboard.dashlet.expense" title="My Tasks"
+	<action-view name="consultant.dashboard.dashlet.my.task" title="My Tasks"
 		model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="crm-task-grid"/>
 		<view type="form" name="crm-task-form"/>
@@ -44,7 +44,7 @@
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>	
 	
-	<action-view name="consultant.dashboard.dashlet.expense" title="My leave requests"
+	<action-view name="consultant.dashboard.dashlet.my.leave" title="My leave requests"
 		model="com.axelor.apps.organisation.db.LeaveRequest">
 		<view type="grid" name="leave-request-grid" />
 		<view type="form" name="leave-request-form" />
@@ -54,7 +54,7 @@
 	
 	
 
-	<menuitem name="menu-consultant-timesheet" title="My Timesheets" groups="consultant" 
+	<menuitem name="menu-consultant-timesheet" title="My Timesheets" groups="CST" 
 		action="menu.consultant.timesheet"/>	
 	
 	<action-view name="menu.consultant.timesheet" title="My  Timesheets"
@@ -65,7 +65,7 @@
 		<context name="_user" expr="eval:__user__"/>
 	</action-view>	
 	
-	<menuitem name="menu-consultant-create-timesheet" title="Create Timesheet" groups="consultant" 
+	<menuitem name="menu-consultant-create-timesheet" title="Create Timesheet" groups="CST" 
 		action="menu.consultant.create.timesheet" icon="img/16px/new_16px.png"/>	
 	
 	<action-view name="menu.consultant.create.timesheet" title="Timesheets"
@@ -76,7 +76,7 @@
 	
 	
 	
-	<menuitem name="menu-consultant-expense" title="My Expenses" groups="consultant" 
+	<menuitem name="menu-consultant-expense" title="My Expenses" groups="CST" 
 		action="menu.consultant.expense" />	
 	
 	<action-view name="menu.consultant.expense" title="My expenses"
@@ -87,7 +87,7 @@
 		<context name="_user" expr="eval:__user__"/>
 	</action-view>
 	
-	<menuitem name="menu-consultant-create-expense" title="Create Expense" groups="consultant" 
+	<menuitem name="menu-consultant-create-expense" title="Create Expense" groups="CST" 
 		action="menu.consultant.create.expense" icon="img/16px/new_16px.png"/>	
 	
 	<action-view name="menu.consultant.create.expense" title="Expenses"
@@ -98,7 +98,7 @@
 	
 	
 	
-	<menuitem name="menu-consultant-leave-request" title="My Leave requests" groups="consultant" 
+	<menuitem name="menu-consultant-leave-request" title="My Leave requests" groups="CST" 
 		action="menu.consultant.leave.request"/>	
 	
 	<action-view name="menu.consultant.leave.request" title="My Leave request"
@@ -109,7 +109,7 @@
 		<context name="_user" expr="eval:__user__"/>
 	</action-view>
 	
-	<menuitem name="menu-consultant-create-leave-request" title="Create Leave request" groups="consultant" 
+	<menuitem name="menu-consultant-create-leave-request" title="Create Leave request" groups="CST" 
 		action="menu.consultant.create.leave.request" icon="img/16px/new_16px.png"/>	
 	
 	<action-view name="menu.consultant.create.leave.request" title="Leave request"
@@ -117,7 +117,7 @@
 		<view type="form" name="leave-request-form" />
 	</action-view>	
 	
-	<menuitem name="menu-consultant-leave-request-calendar" title="My Leave request calendar" groups="consultant" 
+	<menuitem name="menu-consultant-leave-request-calendar" title="My Leave request calendar" groups="CST" 
 		action="menu.consultant.create.leave.request.calendar" icon="img/16px/calendarTask_16px.png"/>	
 	
 	<action-view name="menu.consultant.create.leave.request.calendar" title="Leave request calendar"
@@ -128,7 +128,7 @@
 	</action-view>	
 	
 	
-	<menuitem name="menu-consultant-my-task" title="My Tasks" groups="consultant" 
+	<menuitem name="menu-consultant-my-task" title="My Tasks" groups="CST" 
 		action="menu.consultant.my.task"/>	
 		
 	<action-view name="menu.consultant.my.task" title="My Tasks"
@@ -141,7 +141,7 @@
 	</action-view>	
 	
 	
-	<menuitem name="menu-consultant-my-tickets" title="My Tickets" groups="consultant" 
+	<menuitem name="menu-consultant-my-tickets" title="My Tickets" groups="CST" 
 		action="menu.consultant.my.tickets"/>	
 		
 	<action-view name="menu.consultant.my.tickets" title="My Tickets"

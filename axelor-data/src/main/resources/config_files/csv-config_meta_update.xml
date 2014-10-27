@@ -7,5 +7,5 @@
 		<bind column="groups" to="groups" search="self.code in :groups" eval="groups.split('\\|') as List"/>
 	</input>
 	
-	<input file="base_template.csv" separator=";" type="com.axelor.apps.base.db.Template" update="true" search="self.name = :name"/>
+	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" update="true" search="self.name = :name"/>
 </csv-inputs>

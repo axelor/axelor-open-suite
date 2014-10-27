@@ -22,10 +22,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.base.db.Template;
 import com.axelor.apps.base.db.TemplateRule;
 import com.axelor.apps.base.db.TemplateRuleLine;
 import com.axelor.apps.base.db.repo.TemplateRuleRepository;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.TemplateService;
 import com.axelor.db.Model;
 import com.axelor.meta.ActionHandler;
 import com.axelor.meta.MetaStore;
@@ -40,7 +41,7 @@ import com.google.inject.Inject;
 public class TemplateRuleService extends TemplateRuleRepository{
 	
 	@Inject
-	private TemplateService ts;
+	private TemplateBaseService ts;
 	
 	@Inject
 	private ActionHandler ac;
@@ -51,7 +52,6 @@ public class TemplateRuleService extends TemplateRuleRepository{
 		if(template == null) {
 			return null;
 		}
-		
 		return ts.getContext(template, bean);
 	}
 

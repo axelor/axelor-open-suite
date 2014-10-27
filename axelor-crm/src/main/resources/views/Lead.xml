@@ -77,15 +77,17 @@
 			</panel>
 		</panel>
 		
-		<panel title="Coordonnées">
-			<field name="mobilePhone" colSpan="4"/>
-			<field name="isDoNotCall" colSpan="2"/>
-			<field name="emailAddress" canSelect="false" canNew="false" colSpan="4" form-view="email-address-simple-form"/>
-			<field name="isDoNotSendEmail" colSpan="2"/>
-			<field name="fixedPhone"/>
-			<field name="fax"/>
-			<field name="webSite"/>
-			<spacer colSpan="6"/>
+		<panel title="Contact details">
+			<panel colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
+				<field name="mobilePhone" colSpan="4"/>
+				<field name="isDoNotCall" colSpan="2"/>
+				<field name="emailAddress" canSelect="false" canNew="false" colSpan="4" form-view="email-address-simple-form"/>
+				<field name="isDoNotSendEmail" colSpan="2"/>
+				<field name="fixedPhone"/>
+				<field name="fax"/>
+				<field name="webSite"/>
+				<spacer colSpan="6"/>
+			</panel>
 			<panel title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="6">
 				<field name="primaryAddress" colSpan="12"/>
 				<field name="primaryCity" colSpan="4"/>

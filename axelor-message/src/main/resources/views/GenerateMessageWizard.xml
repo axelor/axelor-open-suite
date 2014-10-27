@@ -7,7 +7,7 @@
     <form name="generate-message-wizard-form"  model="com.axelor.apps.base.db.Wizard" title="Generate message" 
     onNew="action-group-message-generate-wizard-onnew">
     	<panel>
-	      	<field name="template" title="Template" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.Template" target-name="name"/>
+	      	<field name="template" title="Template" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.message.db.Template" target-name="name"/>
 	      	<spacer/>
 	      	<button name="validate" title="Validate" onClick="action-generate-message-method-generate-message"/>
       	</panel>

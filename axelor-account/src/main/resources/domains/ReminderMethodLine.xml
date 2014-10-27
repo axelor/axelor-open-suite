@@ -12,7 +12,7 @@
   	<string name="reminderLevelLabel" namecolumn="true" title="Label"/>
   	<integer name="standardDeadline" title="Standard delay (days)"/> 
   	<decimal name="minThreshold" title="Min. amount (€)"/>
-  	<many-to-one name="messageTemplate" ref="com.axelor.apps.base.db.Template" title="Message model"/>
+  	<many-to-one name="messageTemplate" ref="com.axelor.apps.message.db.Template" title="Message model"/>
   	<boolean name="manualValidationOk" title="Manual validation"/>
   	<many-to-one name="reminderMethod" ref="com.axelor.apps.account.db.ReminderMethod" title="Reminder Method"/>
     

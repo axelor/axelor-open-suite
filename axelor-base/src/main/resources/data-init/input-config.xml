@@ -31,7 +31,7 @@
 	
 	<input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" search="self.importId = :importId"  />
 	     
-	<input file="base_template.csv" separator=";" type="com.axelor.apps.base.db.Template"  search="self.name = :name"  />
+	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"  search="self.name = :name"  />
     
 	<input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source" search="self.code = :code"/>
 	

@@ -26,6 +26,8 @@ import javax.mail.MessagingException;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
@@ -54,6 +56,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 	@Inject
 	protected MailAccountService mailAccoutService;
 	
+	private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
 	
 	@Transactional
 	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
@@ -123,6 +126,8 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		try {
 			
 			this.sendByEmail(message);
+			this.sendToUser(message);
+			this.sendMessage(message);
 			
 		} catch (MessagingException e) {
 			e.printStackTrace();
@@ -135,15 +140,34 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		
 	}
 	
+	private void sendToUser(Message message)  {
+		
+		if(!message.getSentByEmail() && message.getRecipientUser()!=null)  {
+			message.setStatusSelect(MessageRepository.STATUS_SENT);
+			message.setSentByEmail(false);
+			save(message);
+		}
+	}
+	
+	private void sendMessage(Message message){
+		
+		if(message.getMediaTypeSelect() == 1){
+			message.setStatusSelect(MessageRepository.STATUS_SENT);
+			message.setSentByEmail(false);
+			save(message);
+		}
+			
+	}
 	
 	protected void sendByEmail(Message message) throws MessagingException, IOException  {
 		
 		MailAccount mailAccount = message.getMailAccount();
 		
 		if(mailAccount != null)  {
+			String port = mailAccount.getPort()<=0?null:mailAccount.getPort().toString();
 			
 			com.axelor.mail.MailAccount account = new SmtpAccount(
-					mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), mailAccoutService.getSmtpSecurity(mailAccount));
+					mailAccount.getHost(), port, mailAccount.getLogin(), mailAccount.getPassword(), mailAccoutService.getSmtpSecurity(mailAccount));
 					                               
 			MailSender sender = new MailSender(account);
 
@@ -154,7 +178,11 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 			MailBuilder mailBuilder = sender.compose();
 
 			mailBuilder.subject(message.getSubject());
+			
+			mailBuilder.from(message.getSenderUser().getName());
 
+			LOG.debug("Mail from: {}",message.getSenderUser().getName());
+			
 			if(!Strings.isNullOrEmpty(message.getContent()))  {
 				mailBuilder.html(message.getContent());
 			}

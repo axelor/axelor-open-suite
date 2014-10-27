@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.template;
+package com.axelor.apps.message.service;
 
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import com.axelor.apps.base.db.Template;
-import com.axelor.apps.base.db.repo.TemplateRepository;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -32,21 +32,11 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class TemplateService extends TemplateRepository {
 	
-	@Inject
-	private TemplateContextService tcs;
-	
-	public Map<String, Object> getContext(Template template, Model bean) {
-		if(template.getTemplateContext() == null) {
-			return null;
-		}
-		
-		return tcs.getContext(tcs.find(find(template.getId()).getTemplateContext().getId()), bean);
-	}
-
 	public void checkTargetReceptor(Template template) throws AxelorException {
 		String target = template.getTarget();
 		MetaModel metaModel = template.getMetaModel();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140218-1056></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140225-1404></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1237,7 +1237,13 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             <property name="footerHeight">1cm</property>
             <page-footer>
                 <grid id="3692">
-                    <column id="3693"/>
+                    <column id="3693">
+                        <property name="width">5.802083333333333in</property>
+                    </column>
+                    <column id="3816">
+                        <property name="textAlign">right</property>
+                        <property name="width">0.4166666666666667in</property>
+                    </column>
                     <column id="3714">
                         <property name="textAlign">right</property>
                         <property name="width">2cm</property>
@@ -1456,16 +1462,44 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <text-property name="content"><![CDATA[<DIV><VALUE-OF format="HTML">row["footer"]</VALUE-OF></DIV>]]></text-property>
                             </text>
                         </cell>
+                        <cell id="3815">
+                            <property name="borderTopColor">#68B022</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="verticalAlign">top</property>
+                            <text id="3817">
+                                <property name="contentType">auto</property>
+                                <text-property name="content"><![CDATA[Page]]></text-property>
+                            </text>
+                        </cell>
                         <cell id="3713">
                             <property name="borderTopColor">#68B022</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
                             <property name="verticalAlign">top</property>
-                            <text-data id="3757">
-                                <property name="fontSize">9pt</property>
-                                <expression name="valueExpr">"Page : "+pageNumber+" / "+totalPage</expression>
-                                <property name="contentType">html</property>
-                            </text-data>
+                            <grid id="3804">
+                                <column id="3805"/>
+                                <column id="3806"/>
+                                <column id="3807"/>
+                                <row id="3808">
+                                    <cell id="3809">
+                                        <auto-text id="3810">
+                                            <property name="type">page-number</property>
+                                        </auto-text>
+                                    </cell>
+                                    <cell id="3811">
+                                        <text id="3812">
+                                            <property name="contentType">plain</property>
+                                            <text-property name="content"><![CDATA[/]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="3813">
+                                        <auto-text id="3814">
+                                            <property name="type">total-page</property>
+                                        </auto-text>
+                                    </cell>
+                                </row>
+                            </grid>
                         </cell>
                     </row>
                 </grid>

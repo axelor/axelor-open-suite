@@ -23,10 +23,10 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Template;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;

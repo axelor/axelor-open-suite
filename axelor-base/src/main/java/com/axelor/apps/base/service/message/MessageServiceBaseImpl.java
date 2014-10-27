@@ -90,27 +90,6 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	}	
 	
 	@Override
-	@Transactional
-	public Message sendMessageByEmail(Message message)  {
-			
-		super.sendMessageByEmail(message);
-		this.sendToUser(message);
-			
-		return message;
-		
-	}
-	
-	
-	private void sendToUser(Message message)  {
-		
-		if(!message.getSentByEmail() && message.getRecipientUser()!=null)  {
-			message.setStatusSelect(MessageRepository.STATUS_SENT);
-			message.setSentByEmail(false);
-			save(message);
-		}
-	}
-	
-	@Override
 	public String printMessage(Message message){
 		Company company = message.getCompany();
 		if(company == null)

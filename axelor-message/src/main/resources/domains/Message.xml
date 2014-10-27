@@ -17,7 +17,7 @@
   	<string name="relatedTo2Select" title="Related to" selection="message.related.to.select"/>
   	<integer name="relatedTo2SelectId"/>
 	<integer name="statusSelect" title="Status" selection="message.status.select" readonly="true" default="1" initParam="true"/>
-	<string name="filePath" title="File path"/>
+	<string name="filePath" title="Attached File path"/>
   	
   	<integer name="mediaTypeSelect" title="Media Type" selection="message.media.type.select" initParam="true"/>
 	<string name="addressBlock" large="true" multiline="true" title="Address Block" initParam="true"/>
@@ -26,9 +26,13 @@
   	<many-to-many name="toEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="To" initParam="true"/>
   	<many-to-many name="ccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Cc" help="true" initParam="true"/>
   	<many-to-many name="bccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Bcc" help="true" initParam="true"/>
-  	<many-to-one name="fromEmailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Sender (Email)" readonly="true" initParam="true"/>
+  	<many-to-one name="fromEmailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Sender (Email)" initParam="true"/>
   	<boolean name="sentByEmail" title="Sent by email" initParam="true"/>
   	<many-to-one name="mailAccount" ref="com.axelor.apps.message.db.MailAccount" title="Mail account" initParam="true"/>
+  	
+  	<!--   	Intern message -->
+  	<many-to-one name="senderUser" ref="com.axelor.auth.db.User" title="Sender (User)" readonly="true"/>
+  	<many-to-one name="recipientUser" ref="com.axelor.auth.db.User" title="Recipient"/>
   	
   	<extra-code><![CDATA[
 
