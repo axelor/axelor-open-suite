@@ -81,7 +81,11 @@
 			<panel colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
 				<field name="mobilePhone" colSpan="4"/>
 				<field name="isDoNotCall" colSpan="2"/>
-				<field name="emailAddress" canSelect="false" canNew="false" colSpan="4" form-view="email-address-simple-form"/>
+				<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+					<editor>
+						<field name="address"/>
+					</editor>
+				</field>
 				<field name="isDoNotSendEmail" colSpan="2"/>
 				<field name="fixedPhone"/>
 				<field name="fax"/>
