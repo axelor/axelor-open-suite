@@ -65,11 +65,6 @@
 	</form>
     
     
-    <action-group name="action-group-account-account-management-onchange-common" if-module="axelor-account">
-    	<action name="action-account-management-clean-company"/>
-    	<action name="action-account-management-product-validate"/>
-    </action-group>
-    
     <!-- ACTION RECORD -->
     <action-record name="action-account-management-record-default" model="com.axelor.apps.account.db.AccountManagement">
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
