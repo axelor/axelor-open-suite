@@ -26,5 +26,17 @@
 		<panel-tabs if-module="axelor-supplychain">
       		<panel-dashlet  title="Sales Turnover" action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350" />
 		</panel-tabs>
-    </form>    
+    </form>  
+    
+    <action-view name="action-view-product-by-category" title="Products"
+		model="com.axelor.apps.base.db.Product" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="product-grid" />
+		<view type="form" name="product-form" />
+		<view-param name="search-filters" value="products-filters"/>
+		<domain>self.isModel = false AND self.productCategory.id = :_productCategoryId</domain>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_isModel" expr="false"/>
+		<context name="_productCategoryId" expr="eval:__this__.id" />
+	</action-view>
+	
 </object-views>
