@@ -183,6 +183,10 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 
 			LOG.debug("Mail from: {}",message.getSenderUser().getName());
 			
+			if(message.getFromEmailAddress() != null ){
+				mailBuilder.replyTo(message.getFromEmailAddress().getAddress());
+			}
+			
 			if(!Strings.isNullOrEmpty(message.getContent()))  {
 				mailBuilder.html(message.getContent());
 			}
