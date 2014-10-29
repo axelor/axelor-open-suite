@@ -52,8 +52,8 @@
 	</action-record>
 	
 	<action-record name="action-address-change-commune" model="com.axelor.apps.base.db.Address">
-		<field name="addressL6" expr="eval:commune != null ? commune.hasZipOnRight ? commune.name+' '+commune.zip :commune.zip+' '+commune.name: ''" />
-		<field name="addressL7Country"  expr="eval:commune.department != null ? commune.department.region != null ? commune.department.region.country : null : null" if="commune != null"/>
+		<field name="addressL6" expr="eval:commune.hasZipOnRight ? commune.name+' '+commune.zip :commune.zip+' '+commune.name" if="addressL6 == null"/>
+  		<field name="addressL7Country" expr="eval:commune.department==null?addressL7Country:commune.department.region!=null?commune.department.region.country:addressL7Country"/>
 	</action-record>
 	
 	<action-record name="action-address-get-general-qas" model="com.axelor.apps.base.db.Address">
