@@ -1,1318 +1,1327 @@
 "key","message","comment","context"
-"*","","","resources/views/MissionOrder.xml:29"
-"+/- n day(s)","","","resources/domains/TimesheetPeriodConfig.xml:17"
-"1 month","","","resources/views/Selects.xml:21"
-"1 month negociable","","","resources/views/Selects.xml:24"
-"1 yr Univ.","","","resources/views/Selects.xml:220"
-"1 yr.","","","resources/views/Selects.xml:228"
-"10 yrs. or more","","","resources/views/Selects.xml:237"
-"1st Interview","","","resources/views/Candidate.xml:73"
-"1st RDV (green)","","","resources/views/Selects.xml:84"
-"2 month","","","resources/views/Selects.xml:22"
-"2 month negociable","","","resources/views/Selects.xml:25"
-"2 yrs Univ.","","","resources/views/Selects.xml:221"
-"2 yrs.","","","resources/views/Selects.xml:229"
-"2nd Interview","","","resources/views/Candidate.xml:74"
-"2nd RDV (green)","","","resources/views/Selects.xml:85"
-"3 month","","","resources/views/Selects.xml:23"
-"3 month negociable","","","resources/views/Selects.xml:26"
-"3 yrs Univ.","","","resources/views/Selects.xml:222"
-"3 yrs.","","","resources/views/Selects.xml:230"
-"3rd Interview","","","resources/views/Candidate.xml:75"
-"3rd RDV (orange)","","","resources/views/Selects.xml:86"
-"4 yrs Univ.","","","resources/views/Selects.xml:223"
-"4 yrs.","","","resources/views/Selects.xml:231"
-"5 yrs Univ. or more","","","resources/views/Selects.xml:224"
-"5 yrs.","","","resources/views/Selects.xml:232"
-"6 yrs.","","","resources/views/Selects.xml:233"
-"7 yrs.","","","resources/views/Selects.xml:234"
-"8 yrs.","","","resources/views/Selects.xml:235"
-"9 yrs.","","","resources/views/Selects.xml:236"
-"Academic background/Trainings","","","resources/domains/Candidate.xml:53"
-"Accepted","","","resources/views/Selects.xml:186"
-"Accounted","","","resources/domains/LeaveRequest.xml:29"
-"Accounting day","","","resources/domains/Task.xml:67"
-"Accreditation","","","resources/domains/PersonalInfo.xml:14"
-"Action(s)","","","resources/views/Project.xml:70
+"*",,,"resources/views/MissionOrder.xml:29"
+"+/- n day(s)",,,"resources/domains/TimesheetPeriodConfig.xml:17"
+"1 month",,,"resources/views/Selects.xml:21"
+"1 month negociable",,,"resources/views/Selects.xml:24"
+"1 yr Univ.",,,"resources/views/Selects.xml:214"
+"1 yr.",,,"resources/views/Selects.xml:222"
+"10 yrs. or more",,,"resources/views/Selects.xml:231"
+"1st Interview",,,"resources/views/Candidate.xml:73"
+"1st RDV (green)",,,"resources/views/Selects.xml:84"
+"2 month",,,"resources/views/Selects.xml:22"
+"2 month negociable",,,"resources/views/Selects.xml:25"
+"2 yrs Univ.",,,"resources/views/Selects.xml:215"
+"2 yrs.",,,"resources/views/Selects.xml:223"
+"2nd Interview",,,"resources/views/Candidate.xml:74"
+"2nd RDV (green)",,,"resources/views/Selects.xml:85"
+"3 month",,,"resources/views/Selects.xml:23"
+"3 month negociable",,,"resources/views/Selects.xml:26"
+"3 yrs Univ.",,,"resources/views/Selects.xml:216"
+"3 yrs.",,,"resources/views/Selects.xml:224"
+"3rd Interview",,,"resources/views/Candidate.xml:75"
+"3rd RDV (orange)",,,"resources/views/Selects.xml:86"
+"4 yrs Univ.",,,"resources/views/Selects.xml:217"
+"4 yrs.",,,"resources/views/Selects.xml:225"
+"5 yrs Univ. or more",,,"resources/views/Selects.xml:218"
+"5 yrs.",,,"resources/views/Selects.xml:226"
+"6 yrs.",,,"resources/views/Selects.xml:227"
+"7 yrs.",,,"resources/views/Selects.xml:228"
+"8 yrs.",,,"resources/views/Selects.xml:229"
+"9 yrs.",,,"resources/views/Selects.xml:230"
+"Academic background/Trainings",,,"resources/domains/Candidate.xml:53"
+"Accepted",,,"resources/views/Selects.xml:186"
+"Accounted",,,"resources/domains/LeaveRequest.xml:29"
+"Accounting day",,,"resources/domains/Task.xml:67"
+"Accreditation",,,"resources/domains/PersonalInfo.xml:14"
+"Actions",,,"resources/views/Business.xml:118
+resources/views/Expense.xml:48
 resources/views/Overtime.xml:36
-resources/views/Expense.xml:51
+resources/views/Project.xml:63
 resources/views/Timesheet.xml:66"
-"Actions","","","resources/views/Business.xml:132"
-"Additionnal information","","","resources/views/PersonalInfo.xml:8
-resources/views/Employee.xml:49
+"Additionnal information",,,"resources/domains/Employee.xml:29
 resources/views/Candidate.xml:115
-resources/domains/Employee.xml:29"
-"Additionnal informations","","","resources/domains/Candidate.xml:67"
-"Address","","","resources/domains/MissionOrder.xml:17
-resources/domains/Candidate.xml:21"
-"Administrative ?","","","resources/domains/Project.xml:59"
-"Advance","","","resources/domains/Task.xml:19
+resources/views/Employee.xml:49
+resources/views/PersonalInfo.xml:8"
+"Additionnal informations",,,"resources/domains/Candidate.xml:67"
+"Address",,,"resources/domains/Candidate.xml:21
+resources/domains/MissionOrder.xml:17"
+"Administrative ?",,,"resources/domains/Project.xml:56"
+"Advance",,,"resources/domains/Task.xml:19
 resources/views/Advance.xml:15"
-"Advance payment date","","","resources/domains/Advance.xml:10"
-"Advances","","","resources/views/Advance.xml:7"
-"Advantages","","","resources/views/Employee.xml:58
+"Advance payment date",,,"resources/domains/Advance.xml:10"
+"Advances",,,"resources/views/Advance.xml:7"
+"Advantages",,,"resources/domains/Employee.xml:27
 resources/domains/JobOffer.xml:20
-resources/domains/Employee.xml:27"
-"Age Group","","","resources/views/Charts.xml:218"
-"Agencies","","","resources/views/Agency.xml:6"
-"Agency","","","resources/views/Agency.xml:11"
-"Aims","","","resources/domains/Training.xml:19"
-"All Candidates","","","resources/views/portal.xml:31"
-"All Overtimes","","","resources/views/portal.xml:49"
-"All Timesheets","","","resources/views/portal.xml:37"
-"All Travel Expenses","","","resources/views/portal.xml:43"
-"All leave requests","","","resources/views/portal.xml:55"
-"All supporting files have not been provided","","","resources/views/Expense.xml:138"
-"Allow expenses input ?","","","resources/domains/Project.xml:56"
-"Already imputed on timesheet","","","resources/domains/SpentTime.xml:10"
-"Amount","","","resources/domains/FinancialInformationUpdate.xml:14
-resources/domains/Advance.xml:11
-resources/domains/Bonus.xml:12"
-"Amount to invoice","","","resources/domains/Task.xml:28"
-"Analytic axis","","","resources/domains/Project.xml:81
-resources/views/Business.xml:130"
-"Answer Date","","","resources/domains/Project.xml:73"
-"Application","","","resources/domains/FinancialInformationUpdate.xml:16"
-"Approval Date","","","resources/domains/LeaveRequest.xml:23"
-"Area name","","","resources/domains/GeographicalArea.xml:9"
-"Assigned to","","","resources/domains/Task.xml:23"
-"Associated Profile","","","resources/domains/Employee.xml:52"
-"Attach specification","","","resources/domains/Project.xml:72"
-"Availability and Decision","","","resources/views/Candidate.xml:57"
-"Available within","","","resources/domains/Candidate.xml:32"
-"Avancement date","","","resources/domains/RecruitmentProcessAdvancement.xml:10"
-"Aware competence","","","resources/domains/Competence.xml:29"
-"Aware skill set","","","resources/domains/Competence.xml:42"
-"Awareness","","","resources/views/Competence.xml:33"
-"Back to draft","","","resources/views/LeaveRequest.xml:62"
-"Billable","","","resources/views/Project.xml:146"
-"Bonus","","","resources/views/Bonus.xml:14"
-"Bonuses","","","resources/views/Bonus.xml:7"
-"Branch","","","resources/domains/JobOffer.xml:31"
-"Business","","","resources/domains/Expense.xml:22
-resources/views/menu.xml:278
-resources/views/menu.xml:291
+resources/views/Employee.xml:58"
+"Age Group",,,"resources/views/Charts.xml:218"
+"Agencies",,,"resources/views/Agency.xml:6"
+"Agency",,,"resources/views/Agency.xml:11"
+"Aims",,,"resources/domains/Training.xml:19"
+"All Candidates",,,"resources/views/Dashboard.xml:28"
+"All Overtimes",,,"resources/views/Dashboard.xml:46"
+"All Timesheets",,,"resources/views/Dashboard.xml:34"
+"All Travel Expenses",,,"resources/views/Dashboard.xml:40"
+"All leave requests",,,"resources/views/Dashboard.xml:52"
+"All supporting files have not been provided",,,"resources/views/Expense.xml:136"
+"Allow expenses input ?",,,"resources/domains/Project.xml:53"
+"Already imputed on timesheet",,,"resources/domains/SpentTime.xml:10"
+"Amount",,,"resources/domains/Advance.xml:11
+resources/domains/Bonus.xml:12
+resources/domains/FinancialInformationUpdate.xml:14"
+"Amount to invoice",,,"resources/domains/Task.xml:28"
+"Application",,,"resources/domains/FinancialInformationUpdate.xml:16"
+"Approval Date",,,"resources/domains/LeaveRequest.xml:23"
+"Area name",,,"resources/domains/GeographicalArea.xml:9"
+"Assigned to",,,"resources/domains/Task.xml:23"
+"Associated Profile",,,"resources/domains/Employee.xml:52"
+"Availability and Decision",,,"resources/views/Candidate.xml:57"
+"Available within",,,"resources/domains/Candidate.xml:32"
+"Avancement date",,,"resources/domains/RecruitmentProcessAdvancement.xml:10"
+"Aware competence",,,"resources/domains/Competence.xml:29"
+"Aware skill set",,,"resources/domains/Competence.xml:42"
+"Awareness",,,"resources/views/Competence.xml:36"
+"Back to draft",,,"resources/views/LeaveRequest.xml:62"
+"Billable",,,"resources/views/Project.xml:136"
+"Bonus",,,"resources/views/Bonus.xml:14"
+"Bonuses",,,"resources/views/Bonus.xml:7"
+"Branch",,,"resources/domains/JobOffer.xml:31"
+"Business",,,"resources/domains/Expense.xml:22
 resources/domains/Invoice.xml:8
-resources/views/menu.xml:294
-resources/domains/OvertimeLine.xml:11
+resources/domains/JobOffer.xml:11
 resources/domains/MissionOrder.xml:14
-resources/views/Business.xml:6
+resources/domains/OvertimeLine.xml:11
 resources/domains/Timesheet.xml:19
-resources/views/Business.xml:19
-resources/domains/JobOffer.xml:11"
-"Business ?","","","resources/domains/Project.xml:19"
-"Business Situation","","","resources/views/Business.xml:21
+resources/views/Business.xml:18
+resources/views/Business.xml:6
+resources/views/Menu.xml:276
+resources/views/Menu.xml:289
+resources/views/Menu.xml:292"
+"Business ?",,,"resources/domains/Project.xml:18"
+"Business Situation",,,"resources/views/Business.xml:20
 resources/views/Business.xml:8"
-"BusinessSituation.contact","Contact","","java/com/axelor/apps/organisation/report/ITranslation.java:26"
-"BusinessSituation.currency","Currency","","java/com/axelor/apps/organisation/report/ITranslation.java:24"
-"BusinessSituation.description","Description","","java/com/axelor/apps/organisation/report/ITranslation.java:27"
-"BusinessSituation.estimated","Estimated","","java/com/axelor/apps/organisation/report/ITranslation.java:32"
-"BusinessSituation.expenses","Expenses","","java/com/axelor/apps/organisation/report/ITranslation.java:29"
-"BusinessSituation.financialData","Financial Data","","java/com/axelor/apps/organisation/report/ITranslation.java:35"
-"BusinessSituation.followedBy","Followed by","","java/com/axelor/apps/organisation/report/ITranslation.java:23"
-"BusinessSituation.margin","Margin","","java/com/axelor/apps/organisation/report/ITranslation.java:30"
-"BusinessSituation.marginPercent","Margin (%)","","java/com/axelor/apps/organisation/report/ITranslation.java:31"
-"BusinessSituation.partner","Partner","","java/com/axelor/apps/organisation/report/ITranslation.java:25"
-"BusinessSituation.realEstimated","Real Estimated","","java/com/axelor/apps/organisation/report/ITranslation.java:33"
-"BusinessSituation.realInvoiced","Real Invoiced","","java/com/axelor/apps/organisation/report/ITranslation.java:34"
-"BusinessSituation.revenues","Revenues","","java/com/axelor/apps/organisation/report/ITranslation.java:28"
-"BusinessSituation.title","BUSINESS SITUATION","","java/com/axelor/apps/organisation/report/ITranslation.java:22"
-"CD","","","resources/views/Selects.xml:69"
-"CEA","","","resources/views/Selects.xml:72"
-"CV","","","resources/domains/Candidate.xml:28"
-"Cancel","","","resources/views/Timesheet.xml:69
-resources/views/LeaveRequest.xml:59"
-"Canceled","","","resources/views/Selects.xml:105
-resources/views/Selects.xml:274
-resources/views/Selects.xml:135"
-"Candidate","","","resources/domains/TrainingLine.xml:9
-resources/domains/EvaluationLine.xml:9
-resources/domains/PlacementFollowUp.xml:9
-resources/domains/CandidateOtherOpportunity.xml:9
-resources/views/Candidate.xml:22
-resources/domains/RecruitmentProcessAdvancement.xml:9
+"BusinessSituation.contact","Contact",,"java/com/axelor/apps/organisation/report/ITranslation.java:26"
+"BusinessSituation.currency","Currency",,"java/com/axelor/apps/organisation/report/ITranslation.java:24"
+"BusinessSituation.description","Description",,"java/com/axelor/apps/organisation/report/ITranslation.java:27"
+"BusinessSituation.estimated","Estimated",,"java/com/axelor/apps/organisation/report/ITranslation.java:32"
+"BusinessSituation.expenses","Expenses",,"java/com/axelor/apps/organisation/report/ITranslation.java:29"
+"BusinessSituation.financialData","Financial Data",,"java/com/axelor/apps/organisation/report/ITranslation.java:35"
+"BusinessSituation.followedBy","Followed by",,"java/com/axelor/apps/organisation/report/ITranslation.java:23"
+"BusinessSituation.margin","Margin",,"java/com/axelor/apps/organisation/report/ITranslation.java:30"
+"BusinessSituation.marginPercent","Margin (%)",,"java/com/axelor/apps/organisation/report/ITranslation.java:31"
+"BusinessSituation.partner","Partner",,"java/com/axelor/apps/organisation/report/ITranslation.java:25"
+"BusinessSituation.realEstimated","Real Estimated",,"java/com/axelor/apps/organisation/report/ITranslation.java:33"
+"BusinessSituation.realInvoiced","Real Invoiced",,"java/com/axelor/apps/organisation/report/ITranslation.java:34"
+"BusinessSituation.revenues","Revenues",,"java/com/axelor/apps/organisation/report/ITranslation.java:28"
+"BusinessSituation.title","BUSINESS SITUATION",,"java/com/axelor/apps/organisation/report/ITranslation.java:22"
+"CD",,,"resources/views/Selects.xml:69"
+"CEA",,,"resources/views/Selects.xml:72"
+"CV",,,"resources/domains/Candidate.xml:28"
+"Cancel",,,"resources/views/LeaveRequest.xml:59
+resources/views/Timesheet.xml:69"
+"Canceled",,,"resources/views/Selects.xml:105
+resources/views/Selects.xml:135
+resources/views/Selects.xml:268"
+"Candidate",,,"resources/domains/CandidateOtherOpportunity.xml:9
 resources/domains/Competence.xml:34
+resources/domains/EvaluationLine.xml:9
+resources/domains/PersonalInfo.xml:10
+resources/domains/PlacementFollowUp.xml:9
 resources/domains/Position.xml:9
-resources/domains/PersonalInfo.xml:10"
-"Candidate (job application)","","","resources/domains/Employee.xml:38"
-"Candidate.citizenshipCountry","Citizenship country","","java/com/axelor/apps/organisation/report/ITranslation.java:153"
-"Candidate.coefficient","Coefficient","","java/com/axelor/apps/organisation/report/ITranslation.java:167"
-"Candidate.comment","Comment","","java/com/axelor/apps/organisation/report/ITranslation.java:185"
-"Candidate.competence","Competence","","java/com/axelor/apps/organisation/report/ITranslation.java:170"
-"Candidate.competenceAreaSet","Competence area","","java/com/axelor/apps/organisation/report/ITranslation.java:172"
-"Candidate.criteriaEvaluated","Criteria evaluated","","java/com/axelor/apps/organisation/report/ITranslation.java:166"
-"Candidate.degree","Degree/Diploma","","java/com/axelor/apps/organisation/report/ITranslation.java:160"
-"Candidate.dob","Dob","","java/com/axelor/apps/organisation/report/ITranslation.java:152"
-"Candidate.educationTraining","Education / training","","java/com/axelor/apps/organisation/report/ITranslation.java:159"
-"Candidate.employer","Company","","java/com/axelor/apps/organisation/report/ITranslation.java:158"
-"Candidate.enddate","End date","","java/com/axelor/apps/organisation/report/ITranslation.java:157"
-"Candidate.evaluationLineList","Evaluation","","java/com/axelor/apps/organisation/report/ITranslation.java:165"
-"Candidate.globalGrade","Global grade","","java/com/axelor/apps/organisation/report/ITranslation.java:169"
-"Candidate.grade","Grade","","java/com/axelor/apps/organisation/report/ITranslation.java:168"
-"Candidate.interventionTypeSet","Intervention type","","java/com/axelor/apps/organisation/report/ITranslation.java:171"
-"Candidate.languageAware","Language aware","","java/com/axelor/apps/organisation/report/ITranslation.java:178"
-"Candidate.languageExpert","Language expert","","java/com/axelor/apps/organisation/report/ITranslation.java:176"
-"Candidate.languageLavel","Language lavel","","java/com/axelor/apps/organisation/report/ITranslation.java:175"
-"Candidate.languageMaster","Language master","","java/com/axelor/apps/organisation/report/ITranslation.java:177"
-"Candidate.languageName","Language name","","java/com/axelor/apps/organisation/report/ITranslation.java:174"
-"Candidate.languageSet","Language","","java/com/axelor/apps/organisation/report/ITranslation.java:173"
-"Candidate.maritalStatusSelect","Marital status","","java/com/axelor/apps/organisation/report/ITranslation.java:154"
-"Candidate.mobilityChoiceSet","Mobility Choice","","java/com/axelor/apps/organisation/report/ITranslation.java:155"
-"Candidate.personalInfo","Personal Info","","java/com/axelor/apps/organisation/report/ITranslation.java:150"
-"Candidate.positionList","Position List","","java/com/axelor/apps/organisation/report/ITranslation.java:151"
-"Candidate.significantDegree","Significant degree","","java/com/axelor/apps/organisation/report/ITranslation.java:162"
-"Candidate.skillAware","Skill aware","","java/com/axelor/apps/organisation/report/ITranslation.java:184"
-"Candidate.skillExpert","Skill expert","","java/com/axelor/apps/organisation/report/ITranslation.java:182"
-"Candidate.skillLavel","Skill lavel","","java/com/axelor/apps/organisation/report/ITranslation.java:181"
-"Candidate.skillLineList","Skill line","","java/com/axelor/apps/organisation/report/ITranslation.java:179"
-"Candidate.skillMaster","Skill master","","java/com/axelor/apps/organisation/report/ITranslation.java:183"
-"Candidate.skillName","Skill name","","java/com/axelor/apps/organisation/report/ITranslation.java:180"
-"Candidate.startdate","Start date","","java/com/axelor/apps/organisation/report/ITranslation.java:156"
-"Candidate.trainingCenter","Training center","","java/com/axelor/apps/organisation/report/ITranslation.java:163"
-"Candidate.trainingLineList","Training","","java/com/axelor/apps/organisation/report/ITranslation.java:161"
-"Candidate.year","","","java/com/axelor/apps/organisation/report/ITranslation.java:164"
-"Candidates","","","resources/views/menu.xml:43
-resources/views/Candidate.xml:7
-resources/views/menu.xml:46"
-"Candidates other position proposals","","","resources/domains/Candidate.xml:70"
-"Cash Advances","","","resources/domains/Employee.xml:41"
-"Category","","","resources/domains/Employee.xml:22
-resources/domains/Candidate.xml:58"
-"Center","","","resources/domains/TrainingCenter.xml:10"
-"Civil Union","","","resources/views/Selects.xml:78"
-"Civility","","","resources/domains/Employee.xml:10
-resources/domains/Candidate.xml:13
-resources/views/Employee.xml:28
-resources/views/Candidate.xml:34"
-"Code","","","resources/domains/JobOffer.xml:10
-resources/domains/MobilityChoice.xml:10
+resources/domains/RecruitmentProcessAdvancement.xml:9
+resources/domains/TrainingLine.xml:9
+resources/views/Candidate.xml:22"
+"Candidate (job application)",,,"resources/domains/Employee.xml:38"
+"Candidate.citizenshipCountry","Citizenship country",,"java/com/axelor/apps/organisation/report/ITranslation.java:153"
+"Candidate.coefficient","Coefficient",,"java/com/axelor/apps/organisation/report/ITranslation.java:167"
+"Candidate.comment","Comment",,"java/com/axelor/apps/organisation/report/ITranslation.java:185"
+"Candidate.competence","Competence",,"java/com/axelor/apps/organisation/report/ITranslation.java:170"
+"Candidate.competenceAreaSet","Competence area",,"java/com/axelor/apps/organisation/report/ITranslation.java:172"
+"Candidate.criteriaEvaluated","Criteria evaluated",,"java/com/axelor/apps/organisation/report/ITranslation.java:166"
+"Candidate.degree","Degree/Diploma",,"java/com/axelor/apps/organisation/report/ITranslation.java:160"
+"Candidate.dob","Dob",,"java/com/axelor/apps/organisation/report/ITranslation.java:152"
+"Candidate.educationTraining","Education / training",,"java/com/axelor/apps/organisation/report/ITranslation.java:159"
+"Candidate.employer","Company",,"java/com/axelor/apps/organisation/report/ITranslation.java:158"
+"Candidate.enddate","End date",,"java/com/axelor/apps/organisation/report/ITranslation.java:157"
+"Candidate.evaluationLineList","Evaluation",,"java/com/axelor/apps/organisation/report/ITranslation.java:165"
+"Candidate.globalGrade","Global grade",,"java/com/axelor/apps/organisation/report/ITranslation.java:169"
+"Candidate.grade","Grade",,"java/com/axelor/apps/organisation/report/ITranslation.java:168"
+"Candidate.interventionTypeSet","Intervention type",,"java/com/axelor/apps/organisation/report/ITranslation.java:171"
+"Candidate.languageAware","Language aware",,"java/com/axelor/apps/organisation/report/ITranslation.java:178"
+"Candidate.languageExpert","Language expert",,"java/com/axelor/apps/organisation/report/ITranslation.java:176"
+"Candidate.languageLavel","Language lavel",,"java/com/axelor/apps/organisation/report/ITranslation.java:175"
+"Candidate.languageMaster","Language master",,"java/com/axelor/apps/organisation/report/ITranslation.java:177"
+"Candidate.languageName","Language name",,"java/com/axelor/apps/organisation/report/ITranslation.java:174"
+"Candidate.languageSet","Language",,"java/com/axelor/apps/organisation/report/ITranslation.java:173"
+"Candidate.maritalStatusSelect","Marital status",,"java/com/axelor/apps/organisation/report/ITranslation.java:154"
+"Candidate.mobilityChoiceSet","Mobility Choice",,"java/com/axelor/apps/organisation/report/ITranslation.java:155"
+"Candidate.personalInfo","Personal Info",,"java/com/axelor/apps/organisation/report/ITranslation.java:150"
+"Candidate.positionList","Position List",,"java/com/axelor/apps/organisation/report/ITranslation.java:151"
+"Candidate.significantDegree","Significant degree",,"java/com/axelor/apps/organisation/report/ITranslation.java:162"
+"Candidate.skillAware","Skill aware",,"java/com/axelor/apps/organisation/report/ITranslation.java:184"
+"Candidate.skillExpert","Skill expert",,"java/com/axelor/apps/organisation/report/ITranslation.java:182"
+"Candidate.skillLavel","Skill lavel",,"java/com/axelor/apps/organisation/report/ITranslation.java:181"
+"Candidate.skillLineList","Skill line",,"java/com/axelor/apps/organisation/report/ITranslation.java:179"
+"Candidate.skillMaster","Skill master",,"java/com/axelor/apps/organisation/report/ITranslation.java:183"
+"Candidate.skillName","Skill name",,"java/com/axelor/apps/organisation/report/ITranslation.java:180"
+"Candidate.startdate","Start date",,"java/com/axelor/apps/organisation/report/ITranslation.java:156"
+"Candidate.trainingCenter","Training center",,"java/com/axelor/apps/organisation/report/ITranslation.java:163"
+"Candidate.trainingLineList","Training",,"java/com/axelor/apps/organisation/report/ITranslation.java:161"
+"Candidate.year",,,"java/com/axelor/apps/organisation/report/ITranslation.java:164"
+"Candidates",,,"resources/views/Candidate.xml:7
+resources/views/Menu.xml:41
+resources/views/Menu.xml:44"
+"Candidates other position proposals",,,"resources/domains/Candidate.xml:70"
+"Cash Advances",,,"resources/domains/Employee.xml:41"
+"Category",,,"resources/domains/Candidate.xml:58
+resources/domains/Employee.xml:22"
+"Center",,,"resources/domains/TrainingCenter.xml:10"
+"Civil Union",,,"resources/views/Selects.xml:78"
+"Civility",,,"resources/domains/Candidate.xml:13
+resources/domains/Employee.xml:10
+resources/views/Candidate.xml:34
+resources/views/Employee.xml:28"
+"Code",,,"resources/domains/Competence.xml:10
 resources/domains/Competence.xml:15
-resources/domains/Competence.xml:10"
-"Coefficient","","","resources/domains/EvaluationLine.xml:11"
-"Comment","","","resources/domains/Timesheet.xml:16
-resources/domains/Advance.xml:13
+resources/domains/JobOffer.xml:10
+resources/domains/MobilityChoice.xml:10"
+"Coefficient",,,"resources/domains/EvaluationLine.xml:11"
+"Comment",,,"resources/domains/Advance.xml:13
 resources/domains/Timesheet.xml:15
+resources/domains/Timesheet.xml:16
 resources/domains/TrainingLine.xml:16"
-"Communication","","","resources/views/Selects.xml:216"
-"Commute Fee","","","resources/domains/Employee.xml:46"
-"Commute Fee Refund %","","","resources/domains/Employee.xml:47"
-"Companies","","","resources/domains/Employee.xml:34
-resources/domains/Candidate.xml:74"
-"Company","","","resources/domains/MissionOrder.xml:13
-resources/domains/Expense.xml:23
+"Communication",,,"resources/views/Selects.xml:210"
+"Commute Fee",,,"resources/domains/Employee.xml:46"
+"Commute Fee Refund %",,,"resources/domains/Employee.xml:47"
+"Companies",,,"resources/domains/Candidate.xml:74
+resources/domains/Employee.xml:34"
+"Company",,,"resources/domains/Expense.xml:23
+resources/domains/MissionOrder.xml:13
+resources/domains/OrganisationConfig.xml:11
 resources/domains/Project.xml:14
 resources/views/Timesheet.xml:36"
-"Company satisfaction","","","resources/domains/Timesheet.xml:14"
-"Competence Area","","","resources/domains/Competence.xml:14"
-"Competence area","","","resources/domains/Competence.xml:39"
-"Competence type","","","resources/domains/Competence.xml:33"
-"Competences","","","resources/domains/Candidate.xml:73
+"Company satisfaction",,,"resources/domains/Timesheet.xml:14"
+"Competence Area",,,"resources/domains/Competence.xml:14"
+"Competence area",,,"resources/domains/Competence.xml:39"
+"Competence type",,,"resources/domains/Competence.xml:33"
+"Competences",,,"resources/domains/Candidate.xml:73
 resources/domains/Employee.xml:35
-resources/views/Candidate.xml:120
+resources/views/Candidate.xml:122
 resources/views/Competence.xml:23
-resources/views/Competence.xml:36"
-"Competences profile","","","resources/views/Employee.xml:78"
-"Competition","","","resources/domains/Project.xml:69"
-"Complete lines","","","resources/domains/Planning.xml:16
+resources/views/Competence.xml:39"
+"Competences profile",,,"resources/views/Employee.xml:79"
+"Complete lines",,,"resources/domains/Planning.xml:16
 resources/domains/Timesheet.xml:34"
-"Complete time sheet","","","resources/views/Planning.xml:26
+"Complete time sheet",,,"resources/views/Planning.xml:26
 resources/views/Timesheet.xml:57"
-"Complete time sheet configuration","","","resources/views/Timesheet.xml:51
-resources/views/Planning.xml:20"
-"Completed","","","resources/views/Selects.xml:104"
-"Complexity","","","resources/domains/Project.xml:68"
-"Compute","","","resources/views/Expense.xml:59
-resources/views/Candidate.xml:109"
-"Configuration","","","resources/views/Timesheet.xml:42
+"Complete time sheet configuration",,,"resources/views/Planning.xml:20
+resources/views/Timesheet.xml:51"
+"Completed",,,"resources/views/Selects.xml:104"
+"Compute",,,"resources/views/Candidate.xml:109
+resources/views/Expense.xml:50"
+"Configuration",,,"resources/views/Menu.xml:227
 resources/views/Planning.xml:18
-resources/views/menu.xml:229"
-"Confirm","","","resources/views/Overtime.xml:42
+resources/views/Timesheet.xml:42"
+"Confirm",,,"resources/views/Expense.xml:55
 resources/views/LeaveRequest.xml:58
-resources/views/Timesheet.xml:67
-resources/views/Expense.xml:57"
-"Confirmed","","","resources/views/Selects.xml:272
-resources/views/Selects.xml:102"
-"Confirmed Manager(5 - 10 ans)","","","resources/views/Selects.xml:43"
-"Confirmed Worker (5 - 10 ans)","","","resources/views/Selects.xml:46"
-"Consultation Date","","","resources/domains/Project.xml:65"
-"Contact","","","resources/domains/CandidateOtherOpportunity.xml:12
+resources/views/Overtime.xml:42
+resources/views/Timesheet.xml:67"
+"Confirmed",,,"resources/views/Selects.xml:102
+resources/views/Selects.xml:266"
+"Confirmed Manager(5 - 10 ans)",,,"resources/views/Selects.xml:43"
+"Confirmed Worker (5 - 10 ans)",,,"resources/views/Selects.xml:46"
+"Contact",,,"resources/domains/CandidateOtherOpportunity.xml:12
+resources/domains/Project.xml:13
 resources/views/Candidate.xml:33
-resources/views/Employee.xml:27
-resources/domains/Project.xml:13"
-"Contact comments","","","resources/domains/Position.xml:31"
-"Contact name","","","resources/domains/Position.xml:28"
-"Contact opinion","","","resources/domains/Position.xml:30"
-"Context","","","resources/domains/Position.xml:22
+resources/views/Employee.xml:27"
+"Contact comments",,,"resources/domains/Position.xml:31"
+"Contact name",,,"resources/domains/Position.xml:28"
+"Contact opinion",,,"resources/domains/Position.xml:30"
+"Context",,,"resources/domains/Position.xml:22
+resources/domains/Training.xml:18
 resources/views/ExpenseLine.xml:40
-resources/views/Task.xml:34
 resources/views/Task.xml:156
-resources/domains/Training.xml:18"
-"Contract Details","","","resources/views/Employee.xml:50"
-"Contract Type","","","resources/domains/Candidate.xml:24
+resources/views/Task.xml:34"
+"Contract Details",,,"resources/views/Employee.xml:50"
+"Contract Type",,,"resources/domains/Candidate.xml:24
 resources/views/Charts.xml:121"
-"Contract type","","","resources/domains/JobOffer.xml:18
-resources/domains/Employee.xml:24"
-"Cost","","","resources/domains/Task.xml:43
-resources/domains/Task.xml:49
+"Contract type",,,"resources/domains/Employee.xml:24
+resources/domains/JobOffer.xml:18"
+"Cost",,,"resources/domains/FinancialInformationHistoryLine.xml:13
+resources/domains/Project.xml:31
+resources/domains/Project.xml:34
+resources/domains/Project.xml:37
+resources/domains/Task.xml:43
 resources/domains/Task.xml:46
-resources/domains/Project.xml:38
-resources/domains/Project.xml:35
-resources/domains/FinancialInformationHistoryLine.xml:13
-resources/views/Selects.xml:242
-resources/domains/Project.xml:32"
-"Cost + Expenses","","","resources/domains/OfferLine.xml:9"
-"Country","","","resources/domains/TrainingCenter.xml:11"
-"Cover Letter","","","resources/domains/Candidate.xml:29"
-"Create pre-sale task","","","resources/views/Business.xml:136"
-"Create production order","","","resources/views/Business.xml:138
-resources/views/Business.xml:255"
-"Create quote","Créer devis","","resources/views/Business.xml:140"
-"Criteria evaluated","","","resources/domains/EvaluationLine.xml:10"
-"Cumulate ?","","","resources/domains/Task.xml:66"
-"Cumulation","","","resources/domains/EmployeeLeave.xml:13"
-"Currency","","","resources/domains/Expense.xml:13
+resources/domains/Task.xml:49
+resources/views/Selects.xml:236"
+"Cost + Expenses",,,"resources/domains/OfferLine.xml:9"
+"Country",,,"resources/domains/TrainingCenter.xml:11"
+"Cover Letter",,,"resources/domains/Candidate.xml:29"
+"Create Expense",,,"resources/views/Menu.xml:421
+resources/views/Menu.xml:423"
+"Create Job Offer",,,"resources/views/Menu.xml:427
+resources/views/Menu.xml:428"
+"Create Leave Request",,,"resources/views/Menu.xml:416
+resources/views/Menu.xml:417"
+"Create Project",,,"resources/views/Menu.xml:434
+resources/views/Menu.xml:435"
+"Create Task",,,"resources/views/Menu.xml:439
+resources/views/Menu.xml:440"
+"Create Timesheet",,,"resources/views/Menu.xml:411
+resources/views/Menu.xml:412"
+"Create production order",,,"resources/views/Business.xml:121
+resources/views/Business.xml:232"
+"Criteria evaluated",,,"resources/domains/EvaluationLine.xml:10"
+"Cumulate ?",,,"resources/domains/Task.xml:66"
+"Cumulation",,,"resources/domains/EmployeeLeave.xml:13"
+"Currency",,,"resources/domains/Expense.xml:13
 resources/domains/Overtime.xml:12"
-"Current Employees","","","resources/views/Employee.xml:123"
-"Current Function","","","resources/domains/Candidate.xml:16"
-"Customer","","","resources/domains/Project.xml:12"
-"Customer invoice lines","","","resources/views/Business.xml:218
+"Current Employees",,,"resources/views/Employee.xml:124"
+"Current Function",,,"resources/domains/Candidate.xml:16"
+"Customer",,,"resources/domains/Project.xml:12"
+"Customer invoice lines",,,"resources/views/Business.xml:195
 resources/views/Task.xml:318"
-"DEPT","","","resources/domains/Department.xml:12"
-"Daily periods","","","resources/domains/ScheduleLine.xml:12"
-"Dashboard","","","resources/views/portal.xml:7"
-"Date","","","resources/domains/Overtime.xml:15
-resources/domains/FinancialInformationUpdate.xml:11
-resources/domains/FinancialInformationHistoryLine.xml:11
-resources/domains/Expense.xml:11
-resources/domains/MissionOrder.xml:11
-resources/domains/TimesheetLine.xml:15
-resources/domains/SpentTime.xml:14
+"DEPT",,,"resources/domains/Department.xml:12"
+"Daily periods",,,"resources/domains/ScheduleLine.xml:12"
+"Dashboard",,,"resources/views/Dashboard.xml:6"
+"Date",,,"resources/domains/Expense.xml:11
 resources/domains/ExpenseLine.xml:16
-resources/domains/PublicHolidaysLine.xml:12
-resources/domains/Planning.xml:12
+resources/domains/FinancialInformationHistoryLine.xml:11
+resources/domains/FinancialInformationUpdate.xml:11
+resources/domains/MissionOrder.xml:11
 resources/domains/Overtime.xml:10
+resources/domains/Overtime.xml:15
+resources/domains/Planning.xml:12
+resources/domains/PublicHolidaysLine.xml:12
+resources/domains/SpentTime.xml:14
+resources/domains/TimesheetLine.xml:15
 resources/views/ExpenseLine.xml:37"
-"Date of Birth","","","resources/domains/PersonalInfo.xml:12"
-"Date type select","","","resources/domains/MissionOrder.xml:23"
-"Date-time","","","resources/domains/RecruitmentProcessAdvancement.xml:12"
-"Day","","","resources/views/Selects.xml:194
-resources/domains/ScheduleSubLine.xml:11
+"Date of Birth",,,"resources/domains/PersonalInfo.xml:12"
+"Date type select",,,"resources/domains/MissionOrder.xml:23"
+"Date-time",,,"resources/domains/RecruitmentProcessAdvancement.xml:12"
+"Day",,,"resources/domains/ScheduleSubLine.xml:11
 resources/domains/TimesheetPeriodConfig.xml:19
 resources/views/Selects.xml:114
 resources/views/Selects.xml:15
-resources/views/Selects.xml:266"
-"Day of generation","","","resources/domains/TimesheetPeriodConfig.xml:14"
-"Day/Hour of generation","","","resources/views/TimesheetPeriodConfig.xml:31
-resources/views/TimesheetPeriodConfig.xml:25"
-"Day/Night","","","resources/domains/TimesheetLine.xml:23"
-"Deadline","","","resources/domains/Project.xml:67"
-"Decision Date","","","resources/domains/Candidate.xml:34"
-"Default task","","","resources/domains/Timesheet.xml:37
-resources/domains/Project.xml:21
-resources/domains/Planning.xml:19"
-"Delays","","","resources/domains/Task.xml:18"
-"Dep./Div.","","","resources/domains/Position.xml:18"
-"Department","","","resources/domains/GeographicalArea.xml:10
-resources/domains/Employee.xml:17"
-"Department Cantons List","","","resources/domains/Department.xml:15"
-"Department Communes List","","","resources/domains/Department.xml:14"
-"Department Name","","","resources/domains/Department.xml:11"
-"Departure Date","","","resources/domains/Employee.xml:16"
-"Departure cause","","","resources/domains/Position.xml:17"
-"Description","","","resources/views/Task.xml:135
-resources/views/Business.xml:46
-resources/domains/Task.xml:21
-resources/domains/FinancialInformationUpdate.xml:17
+resources/views/Selects.xml:260"
+"Day of generation",,,"resources/domains/TimesheetPeriodConfig.xml:14"
+"Day/Hour of generation",,,"resources/views/TimesheetPeriodConfig.xml:25
+resources/views/TimesheetPeriodConfig.xml:31"
+"Day/Night",,,"resources/domains/TimesheetLine.xml:23"
+"Decision Date",,,"resources/domains/Candidate.xml:34"
+"Default task",,,"resources/domains/Planning.xml:19
+resources/domains/Project.xml:20
+resources/domains/Timesheet.xml:37"
+"Delays",,,"resources/domains/Task.xml:18"
+"Dep./Div.",,,"resources/domains/Position.xml:18"
+"Department",,,"resources/domains/Employee.xml:17
+resources/domains/GeographicalArea.xml:10"
+"Department Cantons List",,,"resources/domains/Department.xml:15"
+"Department Communes List",,,"resources/domains/Department.xml:14"
+"Department Name",,,"resources/domains/Department.xml:11"
+"Departure Date",,,"resources/domains/Employee.xml:16"
+"Departure cause",,,"resources/domains/Position.xml:17"
+"Description",,,"resources/domains/FinancialInformationUpdate.xml:17
 resources/domains/JobOffer.xml:17
-resources/domains/PublicHolidaysLine.xml:13
-resources/views/Task.xml:169
 resources/domains/OvertimeLine.xml:10
 resources/domains/Project.xml:16
-resources/views/Project.xml:45"
-"Details","","","resources/views/ExpenseLine.xml:44"
-"Details of time spent on project/tasks","","","resources/views/Timesheet.xml:41"
-"Development","","","resources/domains/Position.xml:24"
-"Diploma","","","resources/domains/Degree.xml:10"
-"Diploma/Degree","","","resources/domains/TrainingLine.xml:11"
-"Discount %","","","resources/domains/OfferLine.xml:10"
-"Divorced","","","resources/views/Selects.xml:79"
-"Domain","","","resources/domains/JobOffer.xml:23"
-"Draft","","","resources/views/Selects.xml:101
-resources/views/Selects.xml:184
-resources/views/Overtime.xml:38
-resources/views/Selects.xml:271
+resources/domains/PublicHolidaysLine.xml:13
+resources/domains/Task.xml:21
+resources/views/Business.xml:45
+resources/views/Project.xml:42
+resources/views/Task.xml:135
+resources/views/Task.xml:169"
+"Details",,,"resources/views/ExpenseLine.xml:44"
+"Details of time spent on project/tasks",,,"resources/views/Timesheet.xml:41"
+"Development",,,"resources/domains/Position.xml:24"
+"Diploma",,,"resources/domains/Degree.xml:10"
+"Diploma/Degree",,,"resources/domains/TrainingLine.xml:11"
+"Discount %",,,"resources/domains/OfferLine.xml:10"
+"Divorced",,,"resources/views/Selects.xml:79"
+"Domain",,,"resources/domains/JobOffer.xml:23"
+"Draft",,,"resources/views/Expense.xml:56
+resources/views/Overtime.xml:43
+resources/views/Selects.xml:101
 resources/views/Selects.xml:153
-resources/views/Expense.xml:53"
-"Driving licence","","","resources/domains/Candidate.xml:65"
-"Duration","","","resources/views/TimesheetLine.xml:16
+resources/views/Selects.xml:184
+resources/views/Selects.xml:265"
+"Driving licence",,,"resources/domains/Candidate.xml:65"
+"Duration",,,"resources/domains/Employee.xml:25
+resources/domains/PlanningLine.xml:17
 resources/domains/Position.xml:20
-resources/views/TimesheetLine.xml:28
+resources/domains/SpentTime.xml:13
+resources/domains/TimesheetTotalByType.xml:13
 resources/views/TimesheetLine.xml:111
 resources/views/TimesheetLine.xml:122
-resources/domains/TimesheetTotalByType.xml:13
-resources/domains/Employee.xml:25
-resources/views/TimesheetLine.xml:51
-resources/domains/SpentTime.xml:13
+resources/views/TimesheetLine.xml:16
+resources/views/TimesheetLine.xml:28
 resources/views/TimesheetLine.xml:40
+resources/views/TimesheetLine.xml:51
 resources/views/TimesheetLine.xml:64
-resources/views/TimesheetLine.xml:88
 resources/views/TimesheetLine.xml:76
-resources/domains/PlanningLine.xml:17
+resources/views/TimesheetLine.xml:88
 resources/views/TimesheetLine.xml:99"
-"Duration (days)","","","resources/domains/Training.xml:15"
-"Duration (h)","","","resources/domains/TimesheetLine.xml:16
+"Duration (days)",,,"resources/domains/Training.xml:15"
+"Duration (h)",,,"resources/domains/Planning.xml:20
 resources/domains/Timesheet.xml:38
-resources/domains/Planning.xml:20"
-"E-mail","","","resources/domains/Candidate.xml:20"
-"Education level","","","resources/domains/JobOffer.xml:27
-resources/domains/Candidate.xml:52"
-"Education/Trainings","","","resources/views/Candidate.xml:99"
-"Effective Date","","","resources/views/Charts.xml:191"
-"Elements to invoice","","","resources/views/Task.xml:124"
-"Email","","","resources/views/Employee.xml:39
-resources/views/Employee.xml:13"
-"Emergency","","","resources/views/Employee.xml:42"
-"Emergency Contact","","","resources/domains/Employee.xml:36"
-"Emergency Contact Phone Nbr.","","","resources/domains/Employee.xml:37"
-"Employee","","","resources/domains/PaySheet.xml:9
+resources/domains/TimesheetLine.xml:16"
+"E-mail",,,"resources/domains/Candidate.xml:20"
+"Education level",,,"resources/domains/Candidate.xml:52
+resources/domains/JobOffer.xml:27"
+"Education/Trainings",,,"resources/views/Candidate.xml:99"
+"Effective Date",,,"resources/views/Charts.xml:191"
+"Elements to invoice",,,"resources/views/Task.xml:124"
+"Email",,,"resources/views/Employee.xml:13
+resources/views/Employee.xml:39"
+"Emergency",,,"resources/views/Employee.xml:42"
+"Emergency Contact",,,"resources/domains/Employee.xml:36"
+"Emergency Contact Phone Nbr.",,,"resources/domains/Employee.xml:37"
+"Employee",,,"resources/domains/Advance.xml:9
+resources/domains/Bonus.xml:9
+resources/domains/Competence.xml:35
+resources/domains/EmployeeLeave.xml:9
+resources/domains/Expense.xml:10
+resources/domains/Expense.xml:9
+resources/domains/LeaveRequest.xml:10
+resources/domains/MissionOrder.xml:15
+resources/domains/Overtime.xml:9
+resources/domains/OvertimeLine.xml:9
+resources/domains/PaySheet.xml:9
+resources/domains/PersonalInfo.xml:11
 resources/domains/Position.xml:10
 resources/domains/Timesheet.xml:10
 resources/domains/User.xml:10
-resources/views/TimesheetLine.xml:120
-resources/views/Employee.xml:6
-resources/domains/MissionOrder.xml:15
 resources/views/Employee.xml:18
-resources/domains/Competence.xml:35
-resources/domains/Overtime.xml:9
-resources/domains/Expense.xml:10
-resources/domains/Bonus.xml:9
-resources/domains/OvertimeLine.xml:9
-resources/domains/Advance.xml:9
-resources/domains/LeaveRequest.xml:10
+resources/views/Employee.xml:6
 resources/views/TimesheetLine.xml:109
-resources/domains/Expense.xml:9
-resources/domains/EmployeeLeave.xml:9
-resources/domains/PersonalInfo.xml:11"
-"Employee Bonuses","","","resources/domains/Employee.xml:40"
-"Employee Daily Cost","","","resources/domains/Employee.xml:20"
-"Employee filters","","","resources/views/Employee.xml:122"
-"Employee leave","","","resources/views/EmployeeLeave.xml:13"
-"Employee leaves","","","resources/views/EmployeeLeave.xml:6
-resources/domains/Employee.xml:56"
-"Employee.category","Category","","java/com/axelor/apps/organisation/report/ITranslation.java:60"
-"Employee.citizenshipCountry","Citizenship country","","java/com/axelor/apps/organisation/report/ITranslation.java:63"
-"Employee.company","Company","","java/com/axelor/apps/organisation/report/ITranslation.java:87"
-"Employee.companyDepartment","Company Department","","java/com/axelor/apps/organisation/report/ITranslation.java:58"
-"Employee.competence","Competence","","java/com/axelor/apps/organisation/report/ITranslation.java:89"
-"Employee.competenceArea","Competence area","","java/com/axelor/apps/organisation/report/ITranslation.java:72"
-"Employee.contractDetails","Contract detail","","java/com/axelor/apps/organisation/report/ITranslation.java:54"
-"Employee.dailySalaryCost","Salary cost","","java/com/axelor/apps/organisation/report/ITranslation.java:55"
-"Employee.dob","DOB","","java/com/axelor/apps/organisation/report/ITranslation.java:62"
-"Employee.emergencyContact","Emergency contact","","java/com/axelor/apps/organisation/report/ITranslation.java:68"
-"Employee.emergencyNumber","Emergency number","","java/com/axelor/apps/organisation/report/ITranslation.java:69"
-"Employee.endDate","End date","","java/com/axelor/apps/organisation/report/ITranslation.java:86"
-"Employee.entryDate","Entry date","","java/com/axelor/apps/organisation/report/ITranslation.java:56"
-"Employee.exitDate","Exit date","","java/com/axelor/apps/organisation/report/ITranslation.java:57"
-"Employee.internalContact","Internal contact","","java/com/axelor/apps/organisation/report/ITranslation.java:66"
-"Employee.intervention","Intervention","","java/com/axelor/apps/organisation/report/ITranslation.java:71"
-"Employee.language","Language","","java/com/axelor/apps/organisation/report/ITranslation.java:73"
-"Employee.languageAware","Language aware","","java/com/axelor/apps/organisation/report/ITranslation.java:78"
-"Employee.languageExpert","Language expert","","java/com/axelor/apps/organisation/report/ITranslation.java:76"
-"Employee.languageLavel","Level","","java/com/axelor/apps/organisation/report/ITranslation.java:75"
-"Employee.languageMastered","Language master","","java/com/axelor/apps/organisation/report/ITranslation.java:77"
-"Employee.languageName","Name","","java/com/axelor/apps/organisation/report/ITranslation.java:74"
-"Employee.macroCategory","Macro category","","java/com/axelor/apps/organisation/report/ITranslation.java:59"
-"Employee.maritalStatus","Marital status","","java/com/axelor/apps/organisation/report/ITranslation.java:64"
-"Employee.mobilityChoice","Mobility choice","","java/com/axelor/apps/organisation/report/ITranslation.java:65"
-"Employee.personalInfo","Personal info","","java/com/axelor/apps/organisation/report/ITranslation.java:61"
-"Employee.phoneAtCustomer","Phone at customer","","java/com/axelor/apps/organisation/report/ITranslation.java:67"
-"Employee.positionList","Position List","","java/com/axelor/apps/organisation/report/ITranslation.java:70"
-"Employee.positionName","Position name","","java/com/axelor/apps/organisation/report/ITranslation.java:88"
-"Employee.skillAware","Skilll aware","","java/com/axelor/apps/organisation/report/ITranslation.java:84"
-"Employee.skillExpert","Skill expert","","java/com/axelor/apps/organisation/report/ITranslation.java:82"
-"Employee.skillLavel","Skill lavel","","java/com/axelor/apps/organisation/report/ITranslation.java:81"
-"Employee.skillLine","Skill line","","java/com/axelor/apps/organisation/report/ITranslation.java:79"
-"Employee.skillMastered","Skill mastered","","java/com/axelor/apps/organisation/report/ITranslation.java:83"
-"Employee.skillName","Skill name","","java/com/axelor/apps/organisation/report/ITranslation.java:80"
-"Employee.startDate","Start date","","java/com/axelor/apps/organisation/report/ITranslation.java:85"
-"EmployeeConsultant.balance","Balance","","java/com/axelor/apps/organisation/report/ITranslation.java:102"
-"EmployeeConsultant.cash","Cash","","java/com/axelor/apps/organisation/report/ITranslation.java:93"
-"EmployeeConsultant.cashing","Cashing","","java/com/axelor/apps/organisation/report/ITranslation.java:99"
-"EmployeeConsultant.company","Company","","java/com/axelor/apps/organisation/report/ITranslation.java:104"
-"EmployeeConsultant.currEur","Currency: EUR","","java/com/axelor/apps/organisation/report/ITranslation.java:91"
-"EmployeeConsultant.date","Date","","java/com/axelor/apps/organisation/report/ITranslation.java:94"
-"EmployeeConsultant.description","Description","","java/com/axelor/apps/organisation/report/ITranslation.java:96"
-"EmployeeConsultant.disbursed","Disbursing","","java/com/axelor/apps/organisation/report/ITranslation.java:100"
-"EmployeeConsultant.income","Income","","java/com/axelor/apps/organisation/report/ITranslation.java:97"
-"EmployeeConsultant.operation","Operation","","java/com/axelor/apps/organisation/report/ITranslation.java:92"
-"EmployeeConsultant.origine","Origine","","java/com/axelor/apps/organisation/report/ITranslation.java:95"
-"EmployeeConsultant.outgone","Outgone","","java/com/axelor/apps/organisation/report/ITranslation.java:98"
-"EmployeeConsultant.situation","Situation on","","java/com/axelor/apps/organisation/report/ITranslation.java:105"
-"EmployeeConsultant.title","Statement of activity","","java/com/axelor/apps/organisation/report/ITranslation.java:103"
-"EmployeeConsultant.totalPeriod","Total period","","java/com/axelor/apps/organisation/report/ITranslation.java:101"
-"Employees","","","resources/views/Charts.xml:163
-resources/views/Charts.xml:50
-resources/views/menu.xml:12
-resources/views/menu.xml:15
-resources/views/Charts.xml:122
-resources/views/Charts.xml:72
+resources/views/TimesheetLine.xml:120"
+"Employee Bonuses",,,"resources/domains/Employee.xml:40"
+"Employee Daily Cost",,,"resources/domains/Employee.xml:20"
+"Employee filters",,,"resources/views/Employee.xml:123"
+"Employee leave",,,"resources/views/EmployeeLeave.xml:13"
+"Employee leaves",,,"resources/domains/Employee.xml:56
+resources/views/EmployeeLeave.xml:6"
+"Employee.category","Category",,"java/com/axelor/apps/organisation/report/ITranslation.java:60"
+"Employee.citizenshipCountry","Citizenship country",,"java/com/axelor/apps/organisation/report/ITranslation.java:63"
+"Employee.company","Company",,"java/com/axelor/apps/organisation/report/ITranslation.java:87"
+"Employee.companyDepartment","Company Department",,"java/com/axelor/apps/organisation/report/ITranslation.java:58"
+"Employee.competence","Competence",,"java/com/axelor/apps/organisation/report/ITranslation.java:89"
+"Employee.competenceArea","Competence area",,"java/com/axelor/apps/organisation/report/ITranslation.java:72"
+"Employee.contractDetails","Contract detail",,"java/com/axelor/apps/organisation/report/ITranslation.java:54"
+"Employee.dailySalaryCost","Salary cost",,"java/com/axelor/apps/organisation/report/ITranslation.java:55"
+"Employee.dob","DOB",,"java/com/axelor/apps/organisation/report/ITranslation.java:62"
+"Employee.emergencyContact","Emergency contact",,"java/com/axelor/apps/organisation/report/ITranslation.java:68"
+"Employee.emergencyNumber","Emergency number",,"java/com/axelor/apps/organisation/report/ITranslation.java:69"
+"Employee.endDate","End date",,"java/com/axelor/apps/organisation/report/ITranslation.java:86"
+"Employee.entryDate","Entry date",,"java/com/axelor/apps/organisation/report/ITranslation.java:56"
+"Employee.exitDate","Exit date",,"java/com/axelor/apps/organisation/report/ITranslation.java:57"
+"Employee.internalContact","Internal contact",,"java/com/axelor/apps/organisation/report/ITranslation.java:66"
+"Employee.intervention","Intervention",,"java/com/axelor/apps/organisation/report/ITranslation.java:71"
+"Employee.language","Language",,"java/com/axelor/apps/organisation/report/ITranslation.java:73"
+"Employee.languageAware","Language aware",,"java/com/axelor/apps/organisation/report/ITranslation.java:78"
+"Employee.languageExpert","Language expert",,"java/com/axelor/apps/organisation/report/ITranslation.java:76"
+"Employee.languageLavel","Level",,"java/com/axelor/apps/organisation/report/ITranslation.java:75"
+"Employee.languageMastered","Language master",,"java/com/axelor/apps/organisation/report/ITranslation.java:77"
+"Employee.languageName","Name",,"java/com/axelor/apps/organisation/report/ITranslation.java:74"
+"Employee.macroCategory","Macro category",,"java/com/axelor/apps/organisation/report/ITranslation.java:59"
+"Employee.maritalStatus","Marital status",,"java/com/axelor/apps/organisation/report/ITranslation.java:64"
+"Employee.mobilityChoice","Mobility choice",,"java/com/axelor/apps/organisation/report/ITranslation.java:65"
+"Employee.personalInfo","Personal info",,"java/com/axelor/apps/organisation/report/ITranslation.java:61"
+"Employee.phoneAtCustomer","Phone at customer",,"java/com/axelor/apps/organisation/report/ITranslation.java:67"
+"Employee.positionList","Position List",,"java/com/axelor/apps/organisation/report/ITranslation.java:70"
+"Employee.positionName","Position name",,"java/com/axelor/apps/organisation/report/ITranslation.java:88"
+"Employee.skillAware","Skilll aware",,"java/com/axelor/apps/organisation/report/ITranslation.java:84"
+"Employee.skillExpert","Skill expert",,"java/com/axelor/apps/organisation/report/ITranslation.java:82"
+"Employee.skillLavel","Skill lavel",,"java/com/axelor/apps/organisation/report/ITranslation.java:81"
+"Employee.skillLine","Skill line",,"java/com/axelor/apps/organisation/report/ITranslation.java:79"
+"Employee.skillMastered","Skill mastered",,"java/com/axelor/apps/organisation/report/ITranslation.java:83"
+"Employee.skillName","Skill name",,"java/com/axelor/apps/organisation/report/ITranslation.java:80"
+"Employee.startDate","Start date",,"java/com/axelor/apps/organisation/report/ITranslation.java:85"
+"EmployeeConsultant.balance","Balance",,"java/com/axelor/apps/organisation/report/ITranslation.java:102"
+"EmployeeConsultant.cash","Cash",,"java/com/axelor/apps/organisation/report/ITranslation.java:93"
+"EmployeeConsultant.cashing","Cashing",,"java/com/axelor/apps/organisation/report/ITranslation.java:99"
+"EmployeeConsultant.company","Company",,"java/com/axelor/apps/organisation/report/ITranslation.java:104"
+"EmployeeConsultant.currEur","Currency: EUR",,"java/com/axelor/apps/organisation/report/ITranslation.java:91"
+"EmployeeConsultant.date","Date",,"java/com/axelor/apps/organisation/report/ITranslation.java:94"
+"EmployeeConsultant.description","Description",,"java/com/axelor/apps/organisation/report/ITranslation.java:96"
+"EmployeeConsultant.disbursed","Disbursing",,"java/com/axelor/apps/organisation/report/ITranslation.java:100"
+"EmployeeConsultant.income","Income",,"java/com/axelor/apps/organisation/report/ITranslation.java:97"
+"EmployeeConsultant.operation","Operation",,"java/com/axelor/apps/organisation/report/ITranslation.java:92"
+"EmployeeConsultant.origine","Origine",,"java/com/axelor/apps/organisation/report/ITranslation.java:95"
+"EmployeeConsultant.outgone","Outgone",,"java/com/axelor/apps/organisation/report/ITranslation.java:98"
+"EmployeeConsultant.situation","Situation on",,"java/com/axelor/apps/organisation/report/ITranslation.java:105"
+"EmployeeConsultant.title","Statement of activity",,"java/com/axelor/apps/organisation/report/ITranslation.java:103"
+"EmployeeConsultant.totalPeriod","Total period",,"java/com/axelor/apps/organisation/report/ITranslation.java:101"
+"Employees",,,"resources/views/Charts.xml:122
+resources/views/Charts.xml:163
 resources/views/Charts.xml:186
 resources/views/Charts.xml:219
+resources/views/Charts.xml:30
+resources/views/Charts.xml:50
+resources/views/Charts.xml:72
 resources/views/Charts.xml:99
-resources/views/Charts.xml:30"
-"Employees age pyramid","","","resources/views/Charts.xml:189
-resources/views/portal.xml:118"
-"Employees by gender","","","resources/views/Charts.xml:34
-resources/views/portal.xml:93"
-"Employees by macro-category","","","resources/views/portal.xml:101
-resources/views/portal.xml:97
-resources/views/Charts.xml:53
-resources/views/Charts.xml:75"
-"Employees contract type distribution","","","resources/views/Charts.xml:103
-resources/views/portal.xml:105"
-"Employees gender distribution","","","resources/views/Charts.xml:6
-resources/views/portal.xml:89"
-"Employees turnover per year","","","resources/views/Charts.xml:125
-resources/views/portal.xml:109"
-"Employer","","","resources/domains/Position.xml:15"
-"End Date","","","resources/views/Charts.xml:128"
-"End Date Time","","","resources/domains/Task.xml:30"
-"End date","","","resources/domains/Training.xml:12"
-"End date t","","","resources/domains/TimesheetLine.xml:21"
-"End hour period 1","","","resources/domains/ScheduleSubLine.xml:13"
-"End hour period 2","","","resources/domains/ScheduleSubLine.xml:15"
-"Entry Date","","","resources/domains/Employee.xml:15"
-"Estimated amount","","","resources/domains/Task.xml:31"
-"Evaluation","","","resources/views/Candidate.xml:105"
-"Evaluation lines","","","resources/views/EvaluationLine.xml:18
+resources/views/Menu.xml:10
+resources/views/Menu.xml:13"
+"Employees age pyramid",,,"resources/views/Charts.xml:189
+resources/views/Dashboard.xml:115"
+"Employees by gender",,,"resources/views/Charts.xml:34
+resources/views/Dashboard.xml:90"
+"Employees by macro-category",,,"resources/views/Charts.xml:53
+resources/views/Charts.xml:75
+resources/views/Dashboard.xml:94
+resources/views/Dashboard.xml:98"
+"Employees contract type distribution",,,"resources/views/Charts.xml:103
+resources/views/Dashboard.xml:102"
+"Employees gender distribution",,,"resources/views/Charts.xml:6
+resources/views/Dashboard.xml:86"
+"Employees turnover per year",,,"resources/views/Charts.xml:125
+resources/views/Dashboard.xml:106"
+"Employer",,,"resources/domains/Position.xml:15"
+"End Date",,,"resources/views/Charts.xml:128"
+"End Date Time",,,"resources/domains/Task.xml:30"
+"End date",,,"resources/domains/Training.xml:12"
+"End date t",,,"resources/domains/TimesheetLine.xml:21"
+"End hour period 1",,,"resources/domains/ScheduleSubLine.xml:13"
+"End hour period 2",,,"resources/domains/ScheduleSubLine.xml:15"
+"Entry Date",,,"resources/domains/Employee.xml:15"
+"Estimated amount",,,"resources/domains/Task.xml:31"
+"Evaluation",,,"resources/views/Candidate.xml:105"
+"Evaluation lines",,,"resources/views/EvaluationLine.xml:18
 resources/views/EvaluationLine.xml:8"
-"Evaluation/Appraisal form","","","resources/domains/Candidate.xml:61"
-"Excluded","","","resources/views/Selects.xml:11"
-"Expense","","","resources/domains/ExpenseLine.xml:10
-resources/views/Project.xml:56
-resources/views/Expense.xml:35"
-"Expense Line","","","resources/views/ExpenseLine.xml:36
-resources/views/ExpenseLine.xml:25"
-"Expense lines","","","resources/views/Business.xml:239
-resources/views/Task.xml:360
+"Evaluation/Appraisal form",,,"resources/domains/Candidate.xml:61"
+"Excluded",,,"resources/views/Selects.xml:11"
+"Expense",,,"resources/domains/ExpenseLine.xml:10
+resources/views/Expense.xml:32
+resources/views/Project.xml:49"
+"Expense Line",,,"resources/views/ExpenseLine.xml:25
+resources/views/ExpenseLine.xml:36"
+"Expense lines",,,"resources/domains/Expense.xml:14
+resources/views/Business.xml:216
 resources/views/Task.xml:339
-resources/domains/Expense.xml:14"
-"Expense.amount","Amount","","java/com/axelor/apps/organisation/report/ITranslation.java:46"
-"Expense.client","Client","","java/com/axelor/apps/organisation/report/ITranslation.java:41"
-"Expense.currency","Currency","","java/com/axelor/apps/organisation/report/ITranslation.java:52"
-"Expense.date","Date","","java/com/axelor/apps/organisation/report/ITranslation.java:39"
-"Expense.description","Description","","java/com/axelor/apps/organisation/report/ITranslation.java:43"
-"Expense.employeeName","Employee name","","java/com/axelor/apps/organisation/report/ITranslation.java:38"
-"Expense.employeeSignature","Employee's signature","","java/com/axelor/apps/organisation/report/ITranslation.java:50"
-"Expense.employerSignature","Employer's signature","","java/com/axelor/apps/organisation/report/ITranslation.java:51"
-"Expense.paymentPeriod","Payment period","","java/com/axelor/apps/organisation/report/ITranslation.java:40"
-"Expense.product","Product","","java/com/axelor/apps/organisation/report/ITranslation.java:42"
-"Expense.quantity","Quantity","","java/com/axelor/apps/organisation/report/ITranslation.java:44"
-"Expense.tax","Tax","","java/com/axelor/apps/organisation/report/ITranslation.java:47"
-"Expense.timesheetOf","Timesheet of","","java/com/axelor/apps/organisation/report/ITranslation.java:37"
-"Expense.totalATI","Total A.T.I.","","java/com/axelor/apps/organisation/report/ITranslation.java:48"
-"Expense.totalExpensesAmount","Total expenses amount","","java/com/axelor/apps/organisation/report/ITranslation.java:49"
-"Expense.unit","Unit","","java/com/axelor/apps/organisation/report/ITranslation.java:45"
-"Expenses","","","resources/views/Employee.xml:92
-resources/views/Expense.xml:14
-resources/views/Expense.xml:7"
-"Expenses list","","","resources/domains/Employee.xml:45"
-"Expenses to be paid","","","resources/views/menu.xml:193
-resources/views/menu.xml:196"
-"Expenses to validate by RSC Manager","","","resources/views/menu.xml:150
-resources/views/menu.xml:147"
-"Expenses to validate by commercial","","","resources/views/menu.xml:157
-resources/views/menu.xml:160"
-"Experience","","","resources/domains/JobOffer.xml:28"
-"Experience type","","","resources/domains/Training.xml:10"
-"Expert","","","resources/views/Selects.xml:38"
-"Expert competence","","","resources/domains/Competence.xml:27"
-"Expert skill set","","","resources/domains/Competence.xml:40"
-"Expertises","","","resources/views/Competence.xml:31"
-"Export Type","","","resources/domains/Task.xml:69
-resources/domains/Project.xml:75"
-"File","","","resources/domains/ExpenseLine.xml:21"
-"File received","","","resources/domains/ExpenseLine.xml:22"
-"Financial information","","","resources/views/Business.xml:66
+resources/views/Task.xml:360"
+"Expense.amount","Amount",,"java/com/axelor/apps/organisation/report/ITranslation.java:46"
+"Expense.client","Client",,"java/com/axelor/apps/organisation/report/ITranslation.java:41"
+"Expense.currency","Currency",,"java/com/axelor/apps/organisation/report/ITranslation.java:52"
+"Expense.date","Date",,"java/com/axelor/apps/organisation/report/ITranslation.java:39"
+"Expense.description","Description",,"java/com/axelor/apps/organisation/report/ITranslation.java:43"
+"Expense.employeeName","Employee name",,"java/com/axelor/apps/organisation/report/ITranslation.java:38"
+"Expense.employeeSignature","Employee's signature",,"java/com/axelor/apps/organisation/report/ITranslation.java:50"
+"Expense.employerSignature","Employer's signature",,"java/com/axelor/apps/organisation/report/ITranslation.java:51"
+"Expense.paymentPeriod","Payment period",,"java/com/axelor/apps/organisation/report/ITranslation.java:40"
+"Expense.product","Product",,"java/com/axelor/apps/organisation/report/ITranslation.java:42"
+"Expense.quantity","Quantity",,"java/com/axelor/apps/organisation/report/ITranslation.java:44"
+"Expense.tax","Tax",,"java/com/axelor/apps/organisation/report/ITranslation.java:47"
+"Expense.timesheetOf","Timesheet of",,"java/com/axelor/apps/organisation/report/ITranslation.java:37"
+"Expense.totalATI","Total A.T.I.",,"java/com/axelor/apps/organisation/report/ITranslation.java:48"
+"Expense.totalExpensesAmount","Total expenses amount",,"java/com/axelor/apps/organisation/report/ITranslation.java:49"
+"Expense.unit","Unit",,"java/com/axelor/apps/organisation/report/ITranslation.java:45"
+"Expenses",,,"resources/views/Employee.xml:93
+resources/views/Expense.xml:13
+resources/views/Expense.xml:6"
+"Expenses list",,,"resources/domains/Employee.xml:45"
+"Expenses to be paid",,,"resources/views/Menu.xml:191
+resources/views/Menu.xml:194"
+"Expenses to validate by RSC Manager",,,"resources/views/Menu.xml:145
+resources/views/Menu.xml:148"
+"Expenses to validate by commercial",,,"resources/views/Menu.xml:155
+resources/views/Menu.xml:158"
+"Experience",,,"resources/domains/JobOffer.xml:28"
+"Experience type",,,"resources/domains/Training.xml:10"
+"Expert",,,"resources/views/Selects.xml:38"
+"Expert competence",,,"resources/domains/Competence.xml:27"
+"Expert skill set",,,"resources/domains/Competence.xml:40"
+"Expertises",,,"resources/views/Competence.xml:32"
+"Export Type",,,"resources/domains/Project.xml:60
+resources/domains/Task.xml:69"
+"File",,,"resources/domains/ExpenseLine.xml:21"
+"File received",,,"resources/domains/ExpenseLine.xml:22"
+"Financial information",,,"resources/views/Business.xml:53
 resources/views/Task.xml:69"
-"Financial information historical","","","resources/views/FinancialInformationHistoryLine.xml:14"
-"Financial information historicals","","","resources/views/FinancialInformationHistoryLine.xml:6"
-"Financial information history","","","resources/domains/Task.xml:52"
-"Financial information updates","","","resources/views/Task.xml:304
-resources/views/Business.xml:246
-resources/views/Task.xml:346
-resources/domains/Task.xml:54
-resources/views/Business.xml:211
-resources/views/Business.xml:190
-resources/views/Task.xml:290"
-"First Name","","","resources/domains/Employee.xml:12
+"Financial information historical",,,"resources/views/FinancialInformationHistoryLine.xml:14"
+"Financial information historicals",,,"resources/views/FinancialInformationHistoryLine.xml:6"
+"Financial information history",,,"resources/domains/Task.xml:52"
+"Financial information updates",,,"resources/domains/Task.xml:54
+resources/views/Business.xml:167
+resources/views/Business.xml:188
+resources/views/Business.xml:223
+resources/views/Task.xml:290
+resources/views/Task.xml:304
+resources/views/Task.xml:346"
+"First Name",,,"resources/domains/Candidate.xml:15
+resources/domains/Employee.xml:12
 resources/views/Candidate.xml:36
-resources/domains/Candidate.xml:15
 resources/views/Employee.xml:30"
-"First day of week","","","resources/domains/TimesheetPeriodConfig.xml:11"
-"First interview","","","resources/views/Selects.xml:174"
-"Fixed fee","","","resources/views/Selects.xml:258"
-"Fixed phone N°","","","resources/domains/Candidate.xml:19"
-"Fixed-term","","","resources/views/Selects.xml:201"
-"Follow-up","","","resources/views/Candidate.xml:62"
-"Followed by","","","resources/domains/Candidate.xml:37"
-"From","","","resources/domains/PlanningLine.xml:15
-resources/domains/Position.xml:12
-resources/domains/Employee.xml:43"
-"From Date","","","resources/domains/Planning.xml:17
-resources/domains/Timesheet.xml:35
-resources/domains/Timesheet.xml:11"
-"From Date/Time","","","resources/domains/LeaveRequest.xml:14"
-"Function","","","resources/views/Employee.xml:31
+"First day of week",,,"resources/domains/TimesheetPeriodConfig.xml:11"
+"First interview",,,"resources/views/Selects.xml:174"
+"Fixed fee",,,"resources/views/Selects.xml:252"
+"Fixed phone N°",,,"resources/domains/Candidate.xml:19"
+"Fixed-term",,,"resources/views/Selects.xml:195"
+"Follow-up",,,"resources/views/Candidate.xml:62"
+"Followed by",,,"resources/domains/Candidate.xml:37"
+"From",,,"resources/domains/Employee.xml:43
+resources/domains/PlanningLine.xml:15
+resources/domains/Position.xml:12"
+"From Date",,,"resources/domains/Planning.xml:17
+resources/domains/Timesheet.xml:11
+resources/domains/Timesheet.xml:35"
+"From Date/Time",,,"resources/domains/LeaveRequest.xml:14"
+"Function",,,"resources/domains/Employee.xml:14
 resources/views/Candidate.xml:37
-resources/domains/Employee.xml:14"
-"Function Coeff.","","","resources/domains/Employee.xml:26"
-"Function description","","","resources/domains/Position.xml:16"
-"Function name","","","resources/domains/Position.xml:11"
-"Function searched","","","resources/domains/Candidate.xml:25"
-"Gender","","","resources/views/Charts.xml:49
-resources/views/Charts.xml:29"
-"General","","","resources/views/Candidate.xml:48"
-"Generate Timesheets","","","resources/views/TimesheetPeriodConfig.xml:48"
-"Generate draft invoice","","","resources/views/Task.xml:127
-resources/views/Task.xml:64
-resources/views/Project.xml:72"
-"Generate new project instance","","","resources/views/Project.xml:71"
-"Generating invoice is impossible, please link the task to a saleOrderLine to do so.","","","resources/views/Project.xml:122"
-"Generating invoice is impossible, the fields clientPartner and contactPartner must be filled.","","","resources/views/Project.xml:121"
-"Geo. Zone","","","resources/domains/JobOffer.xml:21"
-"Geo. Zone Complement","","","resources/domains/JobOffer.xml:22"
-"Geographical mobility","","","resources/domains/PersonalInfo.xml:18
-resources/views/MobilityChoice.xml:8
-resources/views/MobilityChoice.xml:16"
-"Get leave requests","","","resources/domains/Timesheet.xml:31"
-"Get past time","","","resources/views/Timesheet.xml:47"
-"Get planning line","","","resources/domains/Timesheet.xml:33"
-"Get spent time from tasks","","","resources/domains/Timesheet.xml:32"
-"Global grade","","","resources/domains/Candidate.xml:40"
-"Global grade / 20","","","resources/domains/Candidate.xml:62"
-"Grade","","","resources/domains/EvaluationLine.xml:12"
-"Grade by skills","","","resources/views/Candidate.xml:231"
-"Gross Salary","","","resources/domains/Employee.xml:44"
-"Gross annual salary","","","resources/domains/JobOffer.xml:19"
-"Hierarchy","","","resources/views/Employee.xml:62"
-"High","","","resources/views/Selects.xml:95"
-"History","","","resources/views/Employee.xml:99
-resources/views/menu.xml:215
+resources/views/Employee.xml:31"
+"Function Coeff.",,,"resources/domains/Employee.xml:26"
+"Function description",,,"resources/domains/Position.xml:16"
+"Function name",,,"resources/domains/Position.xml:11"
+"Function searched",,,"resources/domains/Candidate.xml:25"
+"Gender",,,"resources/views/Charts.xml:29
+resources/views/Charts.xml:49"
+"General",,,"resources/views/Candidate.xml:48"
+"Generate Timesheets",,,"resources/views/TimesheetPeriodConfig.xml:48"
+"Generate draft invoice",,,"resources/views/Project.xml:64
+resources/views/Task.xml:127
+resources/views/Task.xml:64"
+"Generating invoice is impossible, please link the task to a saleOrderLine to do so.",,,"resources/views/Project.xml:115"
+"Generating invoice is impossible, the fields clientPartner and contactPartner must be filled.",,,"resources/views/Project.xml:114"
+"Geo. Zone",,,"resources/domains/JobOffer.xml:21"
+"Geo. Zone Complement",,,"resources/domains/JobOffer.xml:22"
+"Geographical mobility",,,"resources/domains/PersonalInfo.xml:18
+resources/views/MobilityChoice.xml:16
+resources/views/MobilityChoice.xml:8"
+"Get leave requests",,,"resources/domains/Timesheet.xml:31"
+"Get past time",,,"resources/views/Timesheet.xml:47"
+"Get planning line",,,"resources/domains/Timesheet.xml:33"
+"Get spent time from tasks",,,"resources/domains/Timesheet.xml:32"
+"Global grade",,,"resources/domains/Candidate.xml:40"
+"Global grade / 20",,,"resources/domains/Candidate.xml:62"
+"Grade",,,"resources/domains/EvaluationLine.xml:12"
+"Grade by skills",,,"resources/views/Candidate.xml:235"
+"Gross Salary",,,"resources/domains/Employee.xml:44"
+"Gross annual salary",,,"resources/domains/JobOffer.xml:19"
+"HR",,,"resources/views/Menu.xml:400"
+"Hierarchy",,,"resources/views/Employee.xml:62"
+"High",,,"resources/views/Selects.xml:95"
+"History",,,"resources/views/Employee.xml:100
+resources/views/Menu.xml:213
 resources/views/Task.xml:83"
-"Holiday requests duration must always be greater than 0.","","","resources/views/LeaveRequest.xml:134"
-"Hour","","","resources/views/Selects.xml:16"
-"Hour of generation","","","resources/domains/TimesheetPeriodConfig.xml:15"
-"Human Resources","","","resources/views/menu.xml:9
-resources/views/menu.xml:365"
-"Human Resources DB 1","","","resources/views/portal.xml:138"
-"Human Resources DB 2","","","resources/views/portal.xml:151"
-"Human Resources Dashboard","","","resources/views/menu.xml:359"
-"Human Resources Db","","","resources/views/menu.xml:356"
-"Human Resources Db 1","","","resources/views/menu.xml:371
-resources/views/menu.xml:368"
-"Human Resources Db 2","","","resources/views/menu.xml:377
-resources/views/menu.xml:380"
-"Immediate","","","resources/views/Selects.xml:20"
-"Import","","","resources/domains/Candidate.xml:9
-resources/domains/Task.xml:10
-resources/domains/Schedule.xml:9
+"Holiday requests duration must always be greater than 0.",,,"resources/views/LeaveRequest.xml:134"
+"Hour",,,"resources/views/Selects.xml:16"
+"Hour of generation",,,"resources/domains/TimesheetPeriodConfig.xml:15"
+"Human Resources",,,"resources/views/Menu.xml:378
+resources/views/Menu.xml:7"
+"Human Resources DB 1",,,"resources/views/Dashboard.xml:135"
+"Human Resources DB 2",,,"resources/views/Dashboard.xml:148"
+"Human Resources Dashboard",,,"resources/views/Menu.xml:372"
+"Human Resources Db",,,"resources/views/Menu.xml:369"
+"Human Resources Db 1",,,"resources/views/Menu.xml:381
+resources/views/Menu.xml:384"
+"Human Resources Db 2",,,"resources/views/Menu.xml:390
+resources/views/Menu.xml:393"
+"Immediate",,,"resources/views/Selects.xml:20"
+"Import",,,"resources/domains/Candidate.xml:9
+resources/domains/Degree.xml:9
 resources/domains/Department.xml:10
 resources/domains/Employee.xml:9
-resources/domains/PublicHolidays.xml:9
-resources/domains/Project.xml:10
+resources/domains/OrganisationConfig.xml:9
 resources/domains/PersonalInfo.xml:9
-resources/domains/TrainingCenter.xml:9
-resources/domains/Degree.xml:9
-resources/domains/ScheduleLine.xml:9"
-"Included","","","resources/views/Selects.xml:10"
-"Info.","","","resources/views/Timesheet.xml:71"
-"Initial estimated","","","resources/views/Business.xml:72
-resources/views/Selects.xml:246
+resources/domains/Project.xml:10
+resources/domains/PublicHolidays.xml:9
+resources/domains/Schedule.xml:9
+resources/domains/ScheduleLine.xml:9
+resources/domains/Task.xml:10
+resources/domains/TrainingCenter.xml:9"
+"Included",,,"resources/views/Selects.xml:10"
+"Info.",,,"resources/views/Timesheet.xml:71"
+"Initial estimated",,,"resources/views/Business.xml:59
+resources/views/Business.xml:77
+resources/views/Selects.xml:240
 resources/views/Task.xml:77"
-"Input forms","","","resources/views/menu.xml:86"
-"Input from timesheet ?","","","resources/domains/Task.xml:22"
-"Internal","","","resources/views/Selects.xml:166"
-"Internal Contact","","","resources/domains/Employee.xml:19"
-"International","","","resources/views/Selects.xml:31"
-"Intervention type","","","resources/domains/Competence.xml:38
+"Input forms",,,"resources/views/Menu.xml:84"
+"Input from timesheet ?",,,"resources/domains/Task.xml:22"
+"Internal",,,"resources/views/Selects.xml:166"
+"Internal Contact",,,"resources/domains/Employee.xml:19"
+"International",,,"resources/views/Selects.xml:31"
+"Intervention type",,,"resources/domains/Competence.xml:38
 resources/domains/Competence.xml:9"
-"Invoiced","","","resources/domains/ExpenseLine.xml:25"
-"Invoiced ?","","","resources/domains/TimesheetLine.xml:18"
-"Invoices","","","resources/views/Task.xml:367"
-"Invoicing Date","","","resources/domains/Task.xml:27"
-"Invoicing follow-up","","","resources/views/Task.xml:55"
-"Is last day of month","","","resources/domains/TimesheetPeriodConfig.xml:16"
-"Job Keywords","","","resources/domains/Candidate.xml:47
+"Invoiced",,,"resources/domains/ExpenseLine.xml:25"
+"Invoiced ?",,,"resources/domains/TimesheetLine.xml:18"
+"Invoices",,,"resources/views/Task.xml:367"
+"Invoicing Date",,,"resources/domains/Task.xml:27"
+"Invoicing follow-up",,,"resources/views/Task.xml:55"
+"Is last day of month",,,"resources/domains/TimesheetPeriodConfig.xml:16"
+"Job Keywords",,,"resources/domains/Candidate.xml:47
 resources/domains/Employee.xml:33"
-"Job Offer","","","resources/views/menu.xml:36
-resources/views/menu.xml:33"
-"Job description","","","resources/domains/Training.xml:16"
-"Job offer","","","resources/views/JobOffer.xml:15"
-"Job offers","","","resources/views/JobOffer.xml:6"
-"Job position","","","resources/domains/Training.xml:13"
-"Job title","","","resources/domains/JobOffer.xml:24"
-"Junior","","","resources/views/Selects.xml:36"
-"Junior Manager (0 - 5 ans)","","","resources/views/Selects.xml:42"
-"Junior Worker Junior (0 - 5 ans)","","","resources/views/Selects.xml:45"
-"KO","","","resources/views/Selects.xml:134"
-"Keyword sector","","","resources/domains/Training.xml:26"
-"Keyword tool","","","resources/domains/Training.xml:25"
-"Keywords","","","resources/views/Employee.xml:73
-resources/views/Candidate.xml:88"
-"Label","","","resources/domains/Competence.xml:19
-resources/domains/Bonus.xml:11"
-"Language","","","resources/domains/JobOffer.xml:29"
-"Language set","","","resources/domains/Competence.xml:26"
-"Last Name","","","resources/domains/Candidate.xml:14"
-"Last day of week","","","resources/domains/TimesheetPeriodConfig.xml:12"
-"Leave balances","","","resources/domains/EmployeeLeave.xml:11"
-"Leave period","","","resources/views/LeaveRequest.xml:49"
-"Leave request","","","resources/views/LeaveRequest.xml:41"
-"Leave request ?","","","resources/domains/Task.xml:33"
-"Leave request in progress","","","resources/domains/EmployeeLeave.xml:12"
-"Leave request reasons","","","resources/views/menu.xml:271
-resources/views/menu.xml:268"
-"Leave requests","","","resources/views/LeaveRequest.xml:11
+"Job Offer",,,"resources/views/Menu.xml:31
+resources/views/Menu.xml:34"
+"Job description",,,"resources/domains/Training.xml:16"
+"Job offer",,,"resources/views/JobOffer.xml:15"
+"Job offers",,,"resources/views/JobOffer.xml:6"
+"Job position",,,"resources/domains/Training.xml:13"
+"Job title",,,"resources/domains/JobOffer.xml:24"
+"Junior",,,"resources/views/Selects.xml:36"
+"Junior Manager (0 - 5 ans)",,,"resources/views/Selects.xml:42"
+"Junior Worker Junior (0 - 5 ans)",,,"resources/views/Selects.xml:45"
+"KO",,,"resources/views/Selects.xml:134"
+"Keyword sector",,,"resources/domains/Training.xml:26"
+"Keyword tool",,,"resources/domains/Training.xml:25"
+"Keywords",,,"resources/views/Candidate.xml:88
+resources/views/Employee.xml:74"
+"Label",,,"resources/domains/Bonus.xml:11
+resources/domains/Competence.xml:19"
+"Language",,,"resources/domains/JobOffer.xml:29"
+"Language set",,,"resources/domains/Competence.xml:26"
+"Last Name",,,"resources/domains/Candidate.xml:14"
+"Last day of week",,,"resources/domains/TimesheetPeriodConfig.xml:12"
+"Leave balances",,,"resources/domains/EmployeeLeave.xml:11"
+"Leave period",,,"resources/views/LeaveRequest.xml:49"
+"Leave request",,,"resources/views/LeaveRequest.xml:41"
+"Leave request ?",,,"resources/domains/Task.xml:33"
+"Leave request in progress",,,"resources/domains/EmployeeLeave.xml:12"
+"Leave request reasons",,,"resources/views/Menu.xml:266
+resources/views/Menu.xml:269"
+"Leave requests",,,"resources/views/LeaveRequest.xml:11
 resources/views/LeaveRequest.xml:15"
-"Leave requests to validate","","","resources/views/menu.xml:179
-resources/views/menu.xml:182"
-"Leaves","","","resources/views/Employee.xml:98"
-"Limit","","","resources/views/TimesheetPeriodConfig.xml:43"
-"Links","","","resources/views/Task.xml:99"
-"Local contact","","","resources/domains/MissionOrder.xml:18"
-"Lost","","","resources/views/Selects.xml:190"
-"Low","","","resources/views/Selects.xml:97"
-"Macro Category","","","resources/domains/Candidate.xml:57
-resources/views/Charts.xml:98
-resources/views/Charts.xml:71"
-"Macro-Category","","","resources/domains/Employee.xml:21"
-"Main Contact details","","","resources/views/Candidate.xml:39
+"Leave requests to validate",,,"resources/views/Menu.xml:177
+resources/views/Menu.xml:180"
+"Leaves",,,"resources/views/Employee.xml:99"
+"Limit",,,"resources/views/TimesheetPeriodConfig.xml:43"
+"Links",,,"resources/views/Business.xml:76
+resources/views/Task.xml:99"
+"Local contact",,,"resources/domains/MissionOrder.xml:18"
+"Lost",,,"resources/views/Selects.xml:190"
+"Low",,,"resources/views/Selects.xml:97"
+"Macro Category",,,"resources/domains/Candidate.xml:57
+resources/views/Charts.xml:71
+resources/views/Charts.xml:98"
+"Macro-Category",,,"resources/domains/Employee.xml:21"
+"Main Contact details",,,"resources/views/Candidate.xml:39
 resources/views/Employee.xml:34"
-"Manager","","","resources/domains/Employee.xml:50
+"Manager",,,"resources/domains/Employee.xml:50
 resources/domains/LeaveRequest.xml:21
 resources/views/Selects.xml:51"
-"Manager Profile","","","resources/domains/Employee.xml:51"
-"Managers","","","resources/views/Employee.xml:129"
-"Margin","","","resources/domains/Task.xml:44
-resources/domains/Project.xml:39
+"Manager Profile",,,"resources/domains/Employee.xml:51"
+"Managers",,,"resources/views/Employee.xml:130"
+"Margin",,,"resources/domains/FinancialInformationHistoryLine.xml:14
+resources/domains/OfferLine.xml:12
+resources/domains/Project.xml:32
+resources/domains/Project.xml:35
+resources/domains/Project.xml:38
+resources/domains/Task.xml:44
 resources/domains/Task.xml:47
-resources/domains/Project.xml:36
-resources/domains/Project.xml:33
-resources/domains/FinancialInformationHistoryLine.xml:14
-resources/domains/Task.xml:50
-resources/domains/OfferLine.xml:12"
-"Margin %","","","resources/domains/OfferLine.xml:13
+resources/domains/Task.xml:50"
+"Margin %",,,"resources/domains/OfferLine.xml:13
 resources/domains/OfferLine.xml:6"
-"Margin coef","","","resources/domains/Project.xml:28"
-"Marital status","","","resources/domains/PersonalInfo.xml:15"
-"Market","","","resources/views/Selects.xml:125"
-"Market Type","","","resources/domains/Project.xml:74"
-"Married","","","resources/views/Selects.xml:77"
-"Mastered Skills","","","resources/views/Competence.xml:32"
-"Mastered competence","","","resources/domains/Competence.xml:28"
-"Mastered skill set","","","resources/domains/Competence.xml:41"
-"Medium","","","resources/views/Selects.xml:96"
-"Members","","","resources/views/Project.xml:68
-resources/domains/Project.xml:52"
-"Mission date","","","resources/domains/MissionOrder.xml:21"
-"Mission information","","","resources/views/MissionOrder.xml:25"
-"Mission manager","","","resources/domains/MissionOrder.xml:16"
-"Mission order","","","resources/views/menu.xml:22
-resources/views/menu.xml:25
-resources/views/MissionOrder.xml:18
-resources/views/MissionOrder.xml:17"
-"Mission orders","","","resources/views/MissionOrder.xml:6"
-"Mission propose","","","resources/domains/MissionOrder.xml:12"
-"Mixed opinion (orange)","","","resources/views/Selects.xml:63"
-"Mobile N°","","","resources/domains/Candidate.xml:18"
-"Model ?","","","resources/domains/Project.xml:17"
-"Models","","","resources/views/Project.xml:143"
-"Month","","","resources/views/Selects.xml:115
-resources/views/Selects.xml:195"
-"Month of Payment","","","resources/domains/Overtime.xml:17"
-"Monthly","","","resources/views/TimesheetPeriodConfig.xml:30
-resources/views/Selects.xml:110"
-"Motivation","","","resources/domains/CandidateOtherOpportunity.xml:14"
-"My Expenses","","","resources/views/Expense.xml:25"
-"My Leave requests","","","resources/views/LeaveRequest.xml:28"
-"My Overtimes","","","resources/views/portal.xml:75
+"Margin coef",,,"resources/domains/Project.xml:27"
+"Marital status",,,"resources/domains/PersonalInfo.xml:15"
+"Market",,,"resources/views/Selects.xml:125"
+"Married",,,"resources/views/Selects.xml:77"
+"Mastered Skills",,,"resources/views/Competence.xml:34"
+"Mastered competence",,,"resources/domains/Competence.xml:28"
+"Mastered skill set",,,"resources/domains/Competence.xml:41"
+"Medium",,,"resources/views/Selects.xml:96"
+"Members",,,"resources/domains/Project.xml:51
+resources/views/Project.xml:61"
+"Mission date",,,"resources/domains/MissionOrder.xml:21"
+"Mission information",,,"resources/views/MissionOrder.xml:25"
+"Mission manager",,,"resources/domains/MissionOrder.xml:16"
+"Mission order",,,"resources/views/Menu.xml:20
+resources/views/Menu.xml:23
+resources/views/MissionOrder.xml:17
+resources/views/MissionOrder.xml:18"
+"Mission orders",,,"resources/views/MissionOrder.xml:6"
+"Mission purpose",,,"resources/domains/MissionOrder.xml:12"
+"Mixed opinion (orange)",,,"resources/views/Selects.xml:63"
+"Mobile N°",,,"resources/domains/Candidate.xml:18"
+"Month",,,"resources/views/Selects.xml:115"
+"Month of Payment",,,"resources/domains/Overtime.xml:17"
+"Monthly",,,"resources/views/Selects.xml:110
+resources/views/TimesheetPeriodConfig.xml:30"
+"Motivation",,,"resources/domains/CandidateOtherOpportunity.xml:14"
+"My Expenses",,,"resources/views/Expense.xml:23"
+"My HR Profile",,,"resources/views/Menu.xml:401
+resources/views/Menu.xml:403"
+"My Leave requests",,,"resources/views/LeaveRequest.xml:28"
+"My Overtimes",,,"resources/views/Dashboard.xml:72
 resources/views/Overtime.xml:16"
-"My Projects","","","resources/views/Project.xml:140"
-"My Tasks","","","resources/views/Task.xml:375"
-"My Timesheets","","","resources/views/Timesheet.xml:13
-resources/views/portal.xml:61"
-"My Today tasks","","","resources/views/Task.xml:378"
-"My Travel Expenses","","","resources/views/portal.xml:68"
-"My Upcoming Tasks","","","resources/views/Task.xml:381"
-"My expenses","","","resources/views/menu.xml:103
-resources/views/menu.xml:100"
-"My leave requests","","","resources/views/portal.xml:82
-resources/views/menu.xml:125
-resources/views/menu.xml:122"
-"My overtimes","","","resources/views/menu.xml:111
-resources/views/menu.xml:114"
-"My timesheet","","","resources/views/menu.xml:89
-resources/views/menu.xml:92"
-"My timesheet calendar","","","resources/views/menu.xml:73
-resources/views/menu.xml:76"
-"Name","","","resources/domains/TimesheetLine.xml:25
+"My Projects",,,"resources/views/Project.xml:133"
+"My Tasks",,,"resources/views/Task.xml:375"
+"My Timesheets",,,"resources/views/Dashboard.xml:58
+resources/views/Timesheet.xml:13"
+"My Today tasks",,,"resources/views/Task.xml:378"
+"My Travel Expenses",,,"resources/views/Dashboard.xml:65"
+"My Upcoming Tasks",,,"resources/views/Task.xml:381"
+"My expenses",,,"resources/views/Menu.xml:101
+resources/views/Menu.xml:98"
+"My leave requests",,,"resources/views/Dashboard.xml:79
+resources/views/Menu.xml:120
+resources/views/Menu.xml:123"
+"My overtimes",,,"resources/views/Menu.xml:109
+resources/views/Menu.xml:112"
+"My timesheet",,,"resources/views/Menu.xml:87
+resources/views/Menu.xml:90"
+"My timesheet calendar",,,"resources/views/Menu.xml:71
+resources/views/Menu.xml:74"
+"Name",,,"resources/domains/MobilityChoice.xml:9
+resources/domains/Project.xml:15
+resources/domains/PublicHolidays.xml:10
 resources/domains/PublicHolidaysLine.xml:10
+resources/domains/Schedule.xml:10
+resources/domains/TimesheetLine.xml:25
+resources/views/Business.xml:23
 resources/views/Candidate.xml:35
 resources/views/Employee.xml:29
-resources/domains/MobilityChoice.xml:9
-resources/views/Project.xml:26
-resources/views/Business.xml:24
-resources/domains/Schedule.xml:10
-resources/domains/Project.xml:15
-resources/domains/PublicHolidays.xml:10"
-"National","","","resources/views/Selects.xml:30"
-"Nationality","","","resources/domains/PersonalInfo.xml:13"
-"Nbr of Days Off","","","resources/domains/LeaveRequest.xml:17"
-"Nbr of Positions","","","resources/domains/JobOffer.xml:14"
-"Nbr of children","","","resources/domains/PersonalInfo.xml:16"
-"Nbr of days","","","resources/domains/OfferLine.xml:8"
-"Nbr. of days","","","resources/domains/TimesheetPeriodConfig.xml:21
+resources/views/Project.xml:24"
+"National",,,"resources/views/Selects.xml:30"
+"Nationality",,,"resources/domains/PersonalInfo.xml:13"
+"Nbr of Days Off",,,"resources/domains/LeaveRequest.xml:17"
+"Nbr of Positions",,,"resources/domains/JobOffer.xml:14"
+"Nbr of children",,,"resources/domains/PersonalInfo.xml:16"
+"Nbr of days",,,"resources/domains/OfferLine.xml:8"
+"Nbr. of days",,,"resources/domains/TimesheetPeriodConfig.xml:21
 resources/domains/TimesheetPeriodConfig.xml:24"
-"Nbr. of hours","","","resources/domains/TimesheetPeriodConfig.xml:20
+"Nbr. of hours",,,"resources/domains/TimesheetPeriodConfig.xml:20
 resources/domains/TimesheetPeriodConfig.xml:23"
-"Need","","","resources/views/Business.xml:118"
-"Need Description","","","resources/domains/Project.xml:71"
-"Negative (vert)","","","resources/views/Selects.xml:91"
-"New Business","","","resources/views/menu.xml:284
-resources/views/menu.xml:281"
-"New application","","","resources/views/Selects.xml:172"
-"New candidate","","","resources/views/Candidate.xml:71"
-"Night","","","resources/views/Selects.xml:267"
-"No","","","resources/views/Selects.xml:145"
-"No feedback (orange)","","","resources/views/Selects.xml:90"
-"None","","","resources/views/Selects.xml:252"
-"Not reinvoiceable","","","resources/views/Selects.xml:162"
-"Note","","","resources/domains/Candidate.xml:41"
-"Notes","","","resources/domains/RecruitmentProcessAdvancement.xml:13
+"Negative (vert)",,,"resources/views/Selects.xml:91"
+"New Business",,,"resources/views/Menu.xml:279
+resources/views/Menu.xml:282"
+"New application",,,"resources/views/Selects.xml:172"
+"New candidate",,,"resources/views/Candidate.xml:71"
+"Night",,,"resources/views/Selects.xml:261"
+"No",,,"resources/views/Selects.xml:145"
+"No feedback (orange)",,,"resources/views/Selects.xml:90"
+"None",,,"resources/views/Selects.xml:246"
+"Not reinvoiceable",,,"resources/views/Selects.xml:162"
+"Note",,,"resources/domains/Candidate.xml:41"
+"Notes",,,"resources/domains/RecruitmentProcessAdvancement.xml:13
 resources/domains/Task.xml:39
 resources/views/Task.xml:166
 resources/views/Task.xml:66"
-"Number of Employees","","","resources/views/portal.xml:113
-resources/views/Charts.xml:170"
-"OK","","","resources/views/Selects.xml:133"
-"OK (red)","","","resources/views/Selects.xml:89"
-"OTAN","","","resources/views/Selects.xml:71"
-"Objectives","","","resources/domains/Position.xml:23"
-"Offer Line","","","resources/views/OfferLine.xml:16"
-"Offer Lines","","","resources/views/OfferLine.xml:6"
-"Offer accepted","","","resources/views/Candidate.xml:78
+"Number of Employees",,,"resources/views/Charts.xml:170
+resources/views/Dashboard.xml:110"
+"OK",,,"resources/views/Selects.xml:133"
+"OK (red)",,,"resources/views/Selects.xml:89"
+"OTAN",,,"resources/views/Selects.xml:71"
+"Objectives",,,"resources/domains/Position.xml:23"
+"Offer Line",,,"resources/views/OfferLine.xml:16"
+"Offer Lines",,,"resources/views/OfferLine.xml:6"
+"Offer accepted",,,"resources/views/Candidate.xml:78
 resources/views/Selects.xml:179"
-"Offer details","","","resources/views/JobOffer.xml:25"
-"Offer proposed","","","resources/views/Candidate.xml:77
+"Offer details",,,"resources/views/JobOffer.xml:25"
+"Offer proposed",,,"resources/views/Candidate.xml:77
 resources/views/Selects.xml:178"
-"Offer refused","","","resources/views/Selects.xml:180
-resources/views/Candidate.xml:79"
-"Offer title","","","resources/domains/JobOffer.xml:9"
-"Old Employees","","","resources/views/Employee.xml:126"
-"Olds timesheets","","","resources/views/menu.xml:218
-resources/views/menu.xml:221"
-"On going","","","resources/views/Selects.xml:131"
-"On site","","","resources/views/Selects.xml:259"
-"OnSite Phone N°","","","resources/domains/Employee.xml:18"
-"Open from","","","resources/domains/JobOffer.xml:12"
-"Order form market","","","resources/views/Selects.xml:126"
-"Organisation Dashboard","","","resources/views/menu.xml:341
-resources/views/menu.xml:338"
-"Other","","","resources/views/Selects.xml:127"
-"Other Partner","","","resources/domains/CandidateOtherOpportunity.xml:10"
-"Other financial information","","","resources/views/FinancialInformationUpdate.xml:17"
-"Other opportunities","","","resources/views/CandidateOtherOpportunity.xml:7
-resources/views/Candidate.xml:121"
-"Other opportunity","","","resources/views/CandidateOtherOpportunity.xml:17"
-"Others financials informations","","","resources/views/FinancialInformationUpdate.xml:6"
-"Overtime","","","resources/views/Overtime.xml:25"
-"Overtime line","","","resources/views/OvertimeLine.xml:16"
-"Overtime lines","","","resources/views/OvertimeLine.xml:6
-resources/domains/Overtime.xml:13"
-"Overtimes","","","resources/views/Overtime.xml:6"
-"Overtimes to be paid","","","resources/views/menu.xml:207
-resources/views/menu.xml:204"
-"Overtimes to validate","","","resources/views/menu.xml:171
-resources/views/menu.xml:168"
-"PDF","","","resources/views/Selects.xml:149"
-"Paid","","","resources/views/Selects.xml:156"
-"Parent project","","","resources/domains/Project.xml:46"
-"Participant","","","resources/views/Participant.xml:11"
-"Participants","","","resources/views/Participant.xml:6"
-"Partner","","","resources/views/Partner.xml:6"
-"Pay sheet","","","resources/views/PaySheet.xml:12
+"Offer refused",,,"resources/views/Candidate.xml:79
+resources/views/Selects.xml:180"
+"Offer title",,,"resources/domains/JobOffer.xml:9"
+"Old Employees",,,"resources/views/Employee.xml:127"
+"Olds timesheets",,,"resources/views/Menu.xml:216
+resources/views/Menu.xml:219"
+"On going",,,"resources/views/Selects.xml:131"
+"On site",,,"resources/views/Selects.xml:253"
+"OnSite Phone N°",,,"resources/domains/Employee.xml:18"
+"Open from",,,"resources/domains/JobOffer.xml:12"
+"Order form market",,,"resources/views/Selects.xml:126"
+"Organisation Dashboard",,,"resources/views/Menu.xml:351
+resources/views/Menu.xml:354"
+"Organisation config",,,"resources/domains/Company.xml:10"
+"Organisation configurations",,,"resources/views/Menu.xml:338
+resources/views/Menu.xml:341"
+"Other",,,"resources/views/Selects.xml:127"
+"Other Partner",,,"resources/domains/CandidateOtherOpportunity.xml:10"
+"Other financial information",,,"resources/views/FinancialInformationUpdate.xml:17"
+"Other opportunities",,,"resources/views/Candidate.xml:125
+resources/views/CandidateOtherOpportunity.xml:7"
+"Other opportunity",,,"resources/views/CandidateOtherOpportunity.xml:17"
+"Others financials informations",,,"resources/views/FinancialInformationUpdate.xml:6"
+"Overtime",,,"resources/views/Overtime.xml:25"
+"Overtime line",,,"resources/views/OvertimeLine.xml:16"
+"Overtime lines",,,"resources/domains/Overtime.xml:13
+resources/views/OvertimeLine.xml:6"
+"Overtimes",,,"resources/views/Overtime.xml:6"
+"Overtimes to be paid",,,"resources/views/Menu.xml:202
+resources/views/Menu.xml:205"
+"Overtimes to validate",,,"resources/views/Menu.xml:166
+resources/views/Menu.xml:169"
+"PDF",,,"resources/views/Selects.xml:149"
+"Paid",,,"resources/views/Selects.xml:156"
+"Parent project",,,"resources/domains/Project.xml:45"
+"Participant",,,"resources/views/Participant.xml:11"
+"Participants",,,"resources/views/Participant.xml:6"
+"Partner",,,"resources/views/Partner.xml:6"
+"Pay sheet",,,"resources/views/PaySheet.xml:12
 resources/views/PaySheet.xml:25"
-"Pay sheets","","","resources/views/PaySheet.xml:6
-resources/domains/Employee.xml:54
-resources/views/PaySheet.xml:20"
-"Payment Period","","","resources/domains/Expense.xml:17"
-"Payment date","","","resources/domains/PaySheet.xml:11"
-"Payment forms","","","resources/views/menu.xml:190"
-"Period","","","resources/domains/Bonus.xml:10
-resources/views/TimesheetPeriodConfig.xml:21
+"Pay sheets",,,"resources/domains/Employee.xml:54
+resources/views/PaySheet.xml:20
+resources/views/PaySheet.xml:6"
+"Payment Period",,,"resources/domains/Expense.xml:17"
+"Payment date",,,"resources/domains/PaySheet.xml:11"
+"Payment forms",,,"resources/views/Menu.xml:188"
+"Period",,,"resources/domains/Bonus.xml:10
 resources/domains/PaySheet.xml:10
-resources/domains/Planning.xml:10"
-"Permanent","","","resources/views/Selects.xml:200"
-"Photo","","","resources/domains/Employee.xml:13
-resources/domains/Candidate.xml:12"
-"PlacementFollowUp","","","resources/views/PlacementFollowUp.xml:12
+resources/domains/Planning.xml:10
+resources/views/TimesheetPeriodConfig.xml:21"
+"Permanent",,,"resources/views/Selects.xml:194"
+"Photo",,,"resources/domains/Candidate.xml:12
+resources/domains/Employee.xml:13"
+"PlacementFollowUp",,,"resources/views/PlacementFollowUp.xml:12
 resources/views/PlacementFollowUp.xml:7"
-"Planification and realization","","","resources/views/Task.xml:165
+"Planification and realization",,,"resources/views/Task.xml:165
 resources/views/Task.xml:54"
-"Planned budget","","","resources/domains/Project.xml:70"
-"Planned time","","","resources/domains/Project.xml:41
+"Planned time",,,"resources/domains/Project.xml:40
 resources/domains/Task.xml:15"
-"Plannification","","","resources/domains/PlanningLine.xml:10"
-"Planning","","","resources/domains/Machine.xml:10
+"Plannification",,,"resources/domains/PlanningLine.xml:10"
+"Planning",,,"resources/domains/Machine.xml:10
 resources/views/Planning.xml:12
 resources/views/Planning.xml:6"
-"Planning line","","","resources/views/PlanningLine.xml:18
+"Planning line",,,"resources/views/PlanningLine.xml:18
 resources/views/PlanningLine.xml:43"
-"Planning lines","","","resources/domains/Planning.xml:14
+"Planning lines",,,"resources/domains/Planning.xml:14
 resources/views/PlanningLine.xml:31
 resources/views/PlanningLine.xml:6"
-"Plannings","","","resources/views/menu.xml:241
-resources/views/menu.xml:244"
-"Position title","","","resources/domains/CandidateOtherOpportunity.xml:11"
-"Positive  (green)","","","resources/views/Selects.xml:62"
-"Pre-selected","","","resources/views/Candidate.xml:72
+"Plannings",,,"resources/views/Menu.xml:239
+resources/views/Menu.xml:242"
+"Position title",,,"resources/domains/CandidateOtherOpportunity.xml:11"
+"Positive  (green)",,,"resources/views/Selects.xml:62"
+"Pre-selected",,,"resources/views/Candidate.xml:72
 resources/views/Selects.xml:173"
-"Previous job","","","resources/views/Selects.xml:167"
-"Print","","","resources/views/Timesheet.xml:21
-resources/views/Expense.xml:37
-resources/views/Project.xml:23"
-"Print CV","","","resources/views/Candidate.xml:24
-resources/views/Employee.xml:20"
-"Product","","","resources/domains/Task.xml:57
-resources/domains/ExpenseLine.xml:13
-resources/domains/FinancialInformationUpdate.xml:13"
-"Production informations","","","resources/views/Business.xml:110"
-"Production invoicing type","","","resources/domains/Project.xml:78"
-"Professional background","","","resources/views/Position.xml:8
-resources/views/Position.xml:31"
-"Professional experience","","","resources/domains/Candidate.xml:49"
-"Professionnal background","","","resources/domains/Employee.xml:30"
-"Profil candidat","","","resources/views/JobOffer.xml:34"
-"Profil sub title","","","resources/domains/Competence.xml:37"
-"Profil title","","","resources/domains/Competence.xml:36"
-"Profile","","","resources/domains/PlanningLine.xml:12
-resources/views/Candidate.xml:87
-resources/views/Selects.xml:52
-resources/views/Employee.xml:71"
-"Progress","","","resources/domains/Expense.xml:16
-resources/domains/Training.xml:20
-resources/views/Selects.xml:253
-resources/views/Task.xml:47
-resources/domains/Project.xml:61"
-"Project","","","resources/domains/Task.xml:13
-resources/domains/TimesheetLine.xml:11
-resources/domains/Event.xml:10
-resources/views/Selects.xml:121
+"Previous job",,,"resources/views/Selects.xml:167"
+"Print",,,"resources/views/Expense.xml:34
 resources/views/Project.xml:21
+resources/views/Timesheet.xml:21"
+"Print CV",,,"resources/views/Candidate.xml:24
+resources/views/Employee.xml:20"
+"Product",,,"resources/domains/ExpenseLine.xml:13
+resources/domains/FinancialInformationUpdate.xml:13
+resources/domains/Task.xml:57"
+"Production informations",,,"resources/views/Business.xml:108"
+"Production invoicing type",,,"resources/domains/Project.xml:63"
+"Professional background",,,"resources/views/Position.xml:31
+resources/views/Position.xml:8"
+"Professional experience",,,"resources/domains/Candidate.xml:49"
+"Professionnal background",,,"resources/domains/Employee.xml:30"
+"Profil candidat",,,"resources/views/JobOffer.xml:34"
+"Profil sub title",,,"resources/domains/Competence.xml:37"
+"Profil title",,,"resources/domains/Competence.xml:36"
+"Profile",,,"resources/domains/PlanningLine.xml:12
+resources/views/Candidate.xml:87
+resources/views/Employee.xml:72
+resources/views/Selects.xml:52"
+"Progress",,,"resources/domains/Expense.xml:16
+resources/domains/Project.xml:58
+resources/domains/Training.xml:20
+resources/views/Selects.xml:247
+resources/views/Task.xml:47"
+"Project",,,"resources/domains/Event.xml:10
+resources/domains/Task.xml:13
+resources/domains/TimesheetLine.xml:11
 resources/domains/TimesheetTotalByType.xml:12
-resources/views/menu.xml:302
+resources/views/Menu.xml:300
+resources/views/Menu.xml:433
+resources/views/Project.xml:19
+resources/views/Selects.xml:121
 resources/views/Timesheet.xml:32"
-"Project ?","","","resources/domains/Project.xml:18"
-"Project Dashboard","","","resources/views/portal.xml:123"
-"Project filters","","","resources/views/Project.xml:139"
-"Project model","","","resources/views/Project.xml:52
-resources/domains/Project.xml:54"
-"Project recruitment","","","resources/views/Selects.xml:57"
-"Project satisfaction","","","resources/domains/Timesheet.xml:13"
-"Project unit","","","resources/domains/Project.xml:47"
-"Project.amount","Amount","","java/com/axelor/apps/organisation/report/ITranslation.java:111"
-"Project.client","Customer","","java/com/axelor/apps/organisation/report/ITranslation.java:109"
-"Project.commercial","Commercial","","java/com/axelor/apps/organisation/report/ITranslation.java:112"
-"Project.cost","Project cost","","java/com/axelor/apps/organisation/report/ITranslation.java:115"
-"Project.date","Date","","java/com/axelor/apps/organisation/report/ITranslation.java:108"
-"Project.expectedRevenue","Expected revenue","","java/com/axelor/apps/organisation/report/ITranslation.java:107"
-"Project.forecastMargin","Forecasted margin","","java/com/axelor/apps/organisation/report/ITranslation.java:120"
-"Project.productName","Product name","","java/com/axelor/apps/organisation/report/ITranslation.java:110"
-"Project.purchase","Purchases","","java/com/axelor/apps/organisation/report/ITranslation.java:116"
-"Project.purchaser","Purchaser","","java/com/axelor/apps/organisation/report/ITranslation.java:114"
-"Project.supplier","Supplier","","java/com/axelor/apps/organisation/report/ITranslation.java:113"
-"Project.totalCost","Total cost","","java/com/axelor/apps/organisation/report/ITranslation.java:118"
-"Project.totalMargin","Total margin","","java/com/axelor/apps/organisation/report/ITranslation.java:119"
-"Project.totalTurnover","Total turnover","","java/com/axelor/apps/organisation/report/ITranslation.java:117"
-"Project/Business","","","resources/views/menu.xml:346"
-"Project/Business Dashboard","","","resources/views/portal.xml:127"
-"Project/Business Db","","","resources/views/menu.xml:349
-resources/views/menu.xml:351"
-"Projects","","","resources/views/menu.xml:313
-resources/domains/User.xml:11
-resources/views/Project.xml:6
-resources/views/menu.xml:316"
-"Projects by Client Partner","","","resources/views/Project.xml:13
-resources/views/portal.xml:131"
-"Proofs","","","resources/views/ExpenseLine.xml:53"
-"Proposal(red)","","","resources/views/Selects.xml:87"
-"Public holiday","","","resources/views/PublicHolidaysLine.xml:11
-resources/domains/PublicHolidaysLine.xml:11"
-"Public holidays","","","resources/views/PublicHolidaysLine.xml:6
-resources/domains/PublicHolidays.xml:12
+"Project ?",,,"resources/domains/Project.xml:17"
+"Project Dashboard",,,"resources/views/Dashboard.xml:120"
+"Project filters",,,"resources/views/Project.xml:132"
+"Project recruitment",,,"resources/views/Selects.xml:57"
+"Project satisfaction",,,"resources/domains/Timesheet.xml:13"
+"Project unit",,,"resources/domains/Project.xml:46"
+"Project.amount","Amount",,"java/com/axelor/apps/organisation/report/ITranslation.java:111"
+"Project.client","Customer",,"java/com/axelor/apps/organisation/report/ITranslation.java:109"
+"Project.commercial","Commercial",,"java/com/axelor/apps/organisation/report/ITranslation.java:112"
+"Project.cost","Project cost",,"java/com/axelor/apps/organisation/report/ITranslation.java:115"
+"Project.date","Date",,"java/com/axelor/apps/organisation/report/ITranslation.java:108"
+"Project.expectedRevenue","Expected revenue",,"java/com/axelor/apps/organisation/report/ITranslation.java:107"
+"Project.forecastMargin","Forecasted margin",,"java/com/axelor/apps/organisation/report/ITranslation.java:120"
+"Project.productName","Product name",,"java/com/axelor/apps/organisation/report/ITranslation.java:110"
+"Project.purchase","Purchases",,"java/com/axelor/apps/organisation/report/ITranslation.java:116"
+"Project.purchaser","Purchaser",,"java/com/axelor/apps/organisation/report/ITranslation.java:114"
+"Project.supplier","Supplier",,"java/com/axelor/apps/organisation/report/ITranslation.java:113"
+"Project.totalCost","Total cost",,"java/com/axelor/apps/organisation/report/ITranslation.java:118"
+"Project.totalMargin","Total margin",,"java/com/axelor/apps/organisation/report/ITranslation.java:119"
+"Project.totalTurnover","Total turnover",,"java/com/axelor/apps/organisation/report/ITranslation.java:117"
+"Project/Business",,,"resources/views/Menu.xml:359"
+"Project/Business Dashboard",,,"resources/views/Dashboard.xml:124"
+"Project/Business Db",,,"resources/views/Menu.xml:362
+resources/views/Menu.xml:364"
+"Projects",,,"resources/domains/User.xml:11
+resources/views/Menu.xml:311
+resources/views/Menu.xml:314
+resources/views/Project.xml:6"
+"Projects by Client Partner",,,"resources/views/Dashboard.xml:128
+resources/views/Project.xml:12"
+"Proofs",,,"resources/views/ExpenseLine.xml:53"
+"Proposal(red)",,,"resources/views/Selects.xml:87"
+"Public holiday",,,"resources/domains/PublicHolidaysLine.xml:11
+resources/views/PublicHolidaysLine.xml:11"
+"Public holidays",,,"resources/domains/PublicHolidays.xml:12
+resources/views/Menu.xml:257
+resources/views/Menu.xml:260
 resources/views/PublicHolidays.xml:10
-resources/views/menu.xml:262
 resources/views/PublicHolidays.xml:6
-resources/views/menu.xml:259"
-"Public holidays list","","","resources/domains/Schedule.xml:12"
-"Qty","","","resources/domains/Task.xml:58
-resources/domains/OvertimeLine.xml:12"
-"Qualification (contractual)","","","resources/domains/MissionOrder.xml:19"
-"Quantity","","","resources/domains/ExpenseLine.xml:17"
-"Real estimated","","","resources/views/Selects.xml:247
-resources/views/Business.xml:77
+resources/views/PublicHolidaysLine.xml:6"
+"Public holidays list",,,"resources/domains/Schedule.xml:12"
+"Purchase configuration",,,"resources/views/OrganisationConfig.xml:10"
+"Purchase configurations",,,"resources/views/OrganisationConfig.xml:6"
+"Qty",,,"resources/domains/OvertimeLine.xml:12
+resources/domains/Task.xml:58"
+"Qualification (contractual)",,,"resources/domains/MissionOrder.xml:19"
+"Quantity",,,"resources/domains/ExpenseLine.xml:17"
+"Real estimated",,,"resources/views/Business.xml:64
+resources/views/Business.xml:82
+resources/views/Selects.xml:241
 resources/views/Task.xml:88"
-"Real estimated compute method","","","resources/domains/Project.xml:26
+"Real estimated compute method",,,"resources/domains/Project.xml:25
 resources/domains/Task.xml:25"
-"Real invoiced","","","resources/views/Business.xml:82
-resources/views/Task.xml:93
-resources/views/Selects.xml:248"
-"Realized by","","","resources/domains/Planning.xml:11"
-"Reason","","","resources/domains/LeaveRequest.xml:19
-resources/domains/EmployeeLeave.xml:10
+"Real invoiced",,,"resources/views/Business.xml:69
+resources/views/Business.xml:88
+resources/views/Selects.xml:242
+resources/views/Task.xml:93"
+"Realized by",,,"resources/domains/Planning.xml:11"
+"Reason",,,"resources/domains/EmployeeLeave.xml:10
+resources/domains/LeaveRequest.xml:19
 resources/domains/Overtime.xml:18"
-"Recruitment","","","resources/views/Employee.xml:100
-resources/views/menu.xml:30"
-"Recruitment Process Progress","","","resources/domains/Candidate.xml:42"
-"Recruitment Type","","","resources/views/Candidate.xml:93"
-"Recruitment date","","","resources/domains/Candidate.xml:39
+"Recruitment",,,"resources/views/Employee.xml:101
+resources/views/Menu.xml:28"
+"Recruitment Process Progress",,,"resources/domains/Candidate.xml:42"
+"Recruitment Type",,,"resources/views/Candidate.xml:93"
+"Recruitment date",,,"resources/domains/Candidate.xml:39
 resources/domains/RecruitmentProcessAdvancement.xml:11"
-"Recruitment process advancement","","","resources/views/RecruitmentProcessAdvancement.xml:5
-resources/views/RecruitmentProcessAdvancement.xml:12"
-"Recruitment process progress","","","resources/views/RecruitmentProcessAdvancement.xml:28"
-"Recruitment process progresses","","","resources/views/RecruitmentProcessAdvancement.xml:21"
-"Recruitment state","","","resources/domains/Candidate.xml:38"
-"Recruitment type","","","resources/domains/Candidate.xml:56"
-"Reduced","","","resources/views/Selects.xml:32"
-"Reference","","","resources/domains/MissionOrder.xml:10"
-"Reference position","","","resources/domains/Training.xml:17"
-"Reference title","","","resources/domains/Position.xml:21"
-"Refusal reason","","","resources/domains/Expense.xml:21"
-"Refuse","","","resources/views/Overtime.xml:43
-resources/views/Expense.xml:58
-resources/views/LeaveRequest.xml:61"
-"Refused","","","resources/views/Selects.xml:187
-resources/views/Selects.xml:157
-resources/views/Selects.xml:275"
-"Region","","","resources/domains/Department.xml:13"
-"Reinvoiceable","","","resources/views/Selects.xml:161"
-"Reinvoicing of expense","","","resources/domains/Project.xml:22"
-"Reinvoicing time spent","","","resources/domains/Project.xml:23"
-"Rejected","","","resources/views/Candidate.xml:76
+"Recruitment process advancement",,,"resources/views/RecruitmentProcessAdvancement.xml:12
+resources/views/RecruitmentProcessAdvancement.xml:5"
+"Recruitment process progress",,,"resources/views/RecruitmentProcessAdvancement.xml:28"
+"Recruitment process progresses",,,"resources/views/RecruitmentProcessAdvancement.xml:21"
+"Recruitment state",,,"resources/domains/Candidate.xml:38"
+"Recruitment type",,,"resources/domains/Candidate.xml:56"
+"Reduced",,,"resources/views/Selects.xml:32"
+"Reference",,,"resources/domains/MissionOrder.xml:10"
+"Reference position",,,"resources/domains/Training.xml:17"
+"Reference title",,,"resources/domains/Position.xml:21"
+"Refusal reason",,,"resources/domains/Expense.xml:21"
+"Refuse",,,"resources/views/Expense.xml:53
+resources/views/LeaveRequest.xml:61
+resources/views/Overtime.xml:40"
+"Refused",,,"resources/views/Selects.xml:157
+resources/views/Selects.xml:187
+resources/views/Selects.xml:269"
+"Region",,,"resources/domains/Department.xml:13"
+"Reinvoiceable",,,"resources/views/Selects.xml:161"
+"Reinvoicing of expense",,,"resources/domains/Project.xml:21"
+"Reinvoicing time spent",,,"resources/domains/Project.xml:22"
+"Rejected",,,"resources/views/Candidate.xml:76
 resources/views/Selects.xml:177"
-"Relocation choice","","","resources/domains/Candidate.xml:26"
-"Remaining days for the period","","","resources/domains/LeaveRequest.xml:25"
-"Remaining time","","","resources/domains/Task.xml:17
-resources/domains/Project.xml:43"
-"Reminder at timesheet creation ?","","","resources/domains/TimesheetPeriodConfig.xml:26"
-"Reminder delay","","","resources/views/TimesheetPeriodConfig.xml:39"
-"Report Date","","","resources/views/Charts.xml:172"
-"Request Date","","","resources/domains/LeaveRequest.xml:12"
-"Request status","","","resources/domains/LeaveRequest.xml:27"
-"Resource","","","resources/domains/PlanningLine.xml:13"
-"Resources planning","","","resources/domains/Task.xml:36"
-"Responsible","","","resources/domains/Project.xml:51"
-"Result","","","resources/domains/Training.xml:22"
-"Results","","","resources/domains/Position.xml:26"
-"Revenue","","","resources/views/Selects.xml:241"
-"Revenue/Cost ?","","","resources/domains/FinancialInformationUpdate.xml:15"
-"Reversal Date","","","resources/domains/Advance.xml:12"
-"SD","","","resources/views/Selects.xml:70"
-"Salary","","","resources/views/Employee.xml:84"
-"Salary expectation","","","resources/domains/Candidate.xml:27"
-"Sales order","","","resources/views/Business.xml:272
-resources/views/Business.xml:266"
-"Satisfaction","","","resources/views/Timesheet.xml:31"
-"Search criterias","","","resources/views/Candidate.xml:49"
-"Second interview","","","resources/views/Selects.xml:175"
-"Sector Keywords","","","resources/domains/Candidate.xml:46
+"Relocation choice",,,"resources/domains/Candidate.xml:26"
+"Remaining days for the period",,,"resources/domains/LeaveRequest.xml:25"
+"Remaining time",,,"resources/domains/Project.xml:42
+resources/domains/Task.xml:17"
+"Reminder at timesheet creation ?",,,"resources/domains/TimesheetPeriodConfig.xml:26"
+"Reminder delay",,,"resources/views/TimesheetPeriodConfig.xml:39"
+"Report Date",,,"resources/views/Charts.xml:172"
+"Request Date",,,"resources/domains/LeaveRequest.xml:12"
+"Request status",,,"resources/domains/LeaveRequest.xml:27"
+"Resource",,,"resources/domains/PlanningLine.xml:13"
+"Resources planning",,,"resources/domains/Task.xml:36"
+"Responsible",,,"resources/domains/Project.xml:50"
+"Result",,,"resources/domains/Training.xml:22"
+"Results",,,"resources/domains/Position.xml:26"
+"Revenue",,,"resources/views/Selects.xml:235"
+"Revenue/Cost ?",,,"resources/domains/FinancialInformationUpdate.xml:15"
+"Reversal Date",,,"resources/domains/Advance.xml:12"
+"SD",,,"resources/views/Selects.xml:70"
+"Salary",,,"resources/views/Employee.xml:85"
+"Salary expectation",,,"resources/domains/Candidate.xml:27"
+"Satisfaction",,,"resources/views/Timesheet.xml:31"
+"Search criterias",,,"resources/views/Candidate.xml:49"
+"Second interview",,,"resources/views/Selects.xml:175"
+"Sector Keywords",,,"resources/domains/Candidate.xml:46
 resources/domains/Employee.xml:32"
-"Send by email","","","resources/views/Employee.xml:14
-resources/views/Candidate.xml:17"
-"Send email","","","resources/views/Employee.xml:21
-resources/views/Candidate.xml:25"
-"Senior","","","resources/views/Selects.xml:37"
-"Senior Manager ( > 10 ans)","","","resources/views/Selects.xml:44"
-"Senior Worker ( > 10 ans)","","","resources/views/Selects.xml:47"
-"Sent","","","resources/views/Selects.xml:188"
-"Service","","","resources/domains/Training.xml:14"
-"Shift","","","resources/domains/ScheduleLine.xml:10"
-"Shift lines","","","resources/domains/ScheduleSubLine.xml:10"
-"Shift periods","","","resources/domains/Schedule.xml:11"
-"Short description","","","resources/domains/ExpenseLine.xml:15"
-"Show invoices","","","resources/views/Task.xml:128"
-"Show projects","","","resources/views/Partner.xml:7"
-"Show tasks","","","resources/views/Project.xml:73"
-"Signature (red)","","","resources/views/Selects.xml:88"
-"Significant Degree","","","resources/domains/Candidate.xml:51"
-"Single","","","resources/views/Selects.xml:76"
-"Skill","","","resources/views/Competence.xml:18"
-"Skill set","","","resources/domains/Competence.xml:21"
-"Skill workers","","","resources/views/Employee.xml:132"
-"Skills","","","resources/views/Competence.xml:11
+"Send by email",,,"resources/views/Candidate.xml:17
+resources/views/Employee.xml:14"
+"Send email",,,"resources/views/Candidate.xml:25
+resources/views/Employee.xml:21"
+"Senior",,,"resources/views/Selects.xml:37"
+"Senior Manager ( > 10 ans)",,,"resources/views/Selects.xml:44"
+"Senior Worker ( > 10 ans)",,,"resources/views/Selects.xml:47"
+"Sent",,,"resources/views/Selects.xml:188"
+"Service",,,"resources/domains/Training.xml:14"
+"Shift",,,"resources/domains/ScheduleLine.xml:10"
+"Shift lines",,,"resources/domains/ScheduleSubLine.xml:10"
+"Shift periods",,,"resources/domains/Schedule.xml:11"
+"Short description",,,"resources/domains/ExpenseLine.xml:15"
+"Show invoices",,,"resources/views/Task.xml:128"
+"Show projects",,,"resources/views/Partner.xml:7"
+"Show tasks",,,"resources/views/Project.xml:65"
+"Signature (red)",,,"resources/views/Selects.xml:88"
+"Significant Degree",,,"resources/domains/Candidate.xml:51"
+"Single",,,"resources/views/Selects.xml:76"
+"Skill",,,"resources/views/Competence.xml:18"
+"Skill set",,,"resources/domains/Competence.xml:21"
+"Skill workers",,,"resources/views/Employee.xml:133"
+"Skills",,,"resources/views/Competence.xml:11
 resources/views/Competence.xml:6"
-"Skills list","","","resources/domains/Competence.xml:25"
-"Source","","","resources/domains/Candidate.xml:66"
-"Specific settings","","","resources/views/Business.xml:49
-resources/views/Project.xml:48"
-"Spent time","","","resources/domains/Project.xml:42
-resources/domains/TimesheetLine.xml:13
-resources/domains/Task.xml:16"
-"Spent times","","","resources/domains/Task.xml:62
+"Skills list",,,"resources/domains/Competence.xml:25"
+"Source",,,"resources/domains/Candidate.xml:66"
+"Specific settings",,,"resources/views/Business.xml:97
+resources/views/Project.xml:45"
+"Spent time",,,"resources/domains/Project.xml:41
+resources/domains/Task.xml:16
+resources/domains/TimesheetLine.xml:13"
+"Spent times",,,"resources/domains/Event.xml:12
+resources/domains/Task.xml:62
 resources/views/Task.xml:138
-resources/views/Task.xml:172
-resources/domains/Event.xml:12"
-"Spouse occupation","","","resources/domains/PersonalInfo.xml:17"
-"Start Date Time","","","resources/domains/Task.xml:29"
-"Start date","","","resources/domains/Training.xml:11
-resources/domains/ScheduleLine.xml:11"
-"Start date t","","","resources/domains/TimesheetLine.xml:20"
-"Start hour period 1","","","resources/domains/ScheduleSubLine.xml:12"
-"Start hour period 2","","","resources/domains/ScheduleSubLine.xml:14"
-"Started","","","resources/views/Selects.xml:103"
-"Status","","","resources/views/Charts.xml:162
-resources/domains/Task.xml:24
-resources/domains/Overtime.xml:14
-resources/domains/Timesheet.xml:27
+resources/views/Task.xml:172"
+"Spouse occupation",,,"resources/domains/PersonalInfo.xml:17"
+"Start Date Time",,,"resources/domains/Task.xml:29"
+"Start date",,,"resources/domains/ScheduleLine.xml:11
+resources/domains/Training.xml:11"
+"Start date t",,,"resources/domains/TimesheetLine.xml:20"
+"Start hour period 1",,,"resources/domains/ScheduleSubLine.xml:12"
+"Start hour period 2",,,"resources/domains/ScheduleSubLine.xml:14"
+"Started",,,"resources/views/Selects.xml:103"
+"Status",,,"resources/domains/CandidateOtherOpportunity.xml:13
 resources/domains/Expense.xml:18
+resources/domains/Overtime.xml:14
+resources/domains/Project.xml:23
 resources/domains/Project.xml:24
-resources/domains/Project.xml:25
-resources/domains/CandidateOtherOpportunity.xml:13"
-"Straight recruitment","","","resources/views/Selects.xml:56"
-"Sub total","","","resources/domains/OvertimeLine.xml:15"
-"Submit","","","resources/views/Overtime.xml:39
-resources/views/Expense.xml:54"
-"Submited","","","resources/views/Selects.xml:154"
-"Submitted","","","resources/views/Selects.xml:185"
-"Subscription","","","resources/views/Selects.xml:254"
-"Supervised by","","","resources/domains/Employee.xml:49"
-"Supplier invoice lines","","","resources/views/Task.xml:325
-resources/views/Business.xml:225"
-"Surname","","","resources/domains/Employee.xml:11"
-"TImesheet project/task time input","","","resources/views/TimesheetLine.xml:7"
-"TMA","","","resources/views/Selects.xml:260"
-"Task","","","resources/domains/FinancialInformationUpdate.xml:10
-resources/domains/FinancialInformationHistoryLine.xml:10
-resources/views/Task.xml:149
+resources/domains/Task.xml:24
+resources/domains/Timesheet.xml:27
+resources/views/Charts.xml:162"
+"Straight recruitment",,,"resources/views/Selects.xml:56"
+"Sub total",,,"resources/domains/OvertimeLine.xml:15"
+"Submit",,,"resources/views/Expense.xml:51
+resources/views/Overtime.xml:38"
+"Submited",,,"resources/views/Selects.xml:154"
+"Submitted",,,"resources/views/Selects.xml:185"
+"Subscription",,,"resources/views/Selects.xml:248"
+"Supervised by",,,"resources/domains/Employee.xml:49"
+"Supplier invoice lines",,,"resources/views/Business.xml:202
+resources/views/Task.xml:325"
+"Surname",,,"resources/domains/Employee.xml:11"
+"TImesheet project/task time input",,,"resources/views/TimesheetLine.xml:7"
+"TMA",,,"resources/views/Selects.xml:254"
+"Task",,,"resources/domains/Event.xml:11
 resources/domains/ExpenseLine.xml:11
-resources/domains/Project.xml:55
+resources/domains/FinancialInformationHistoryLine.xml:10
+resources/domains/FinancialInformationUpdate.xml:10
 resources/domains/InvoiceLine.xml:8
-resources/views/Selects.xml:120
+resources/domains/PlanningLine.xml:14
 resources/domains/SpentTime.xml:12
 resources/domains/TimesheetLine.xml:12
-resources/views/Task.xml:29
-resources/domains/Event.xml:11
-resources/domains/PlanningLine.xml:14"
-"Task Progress","","","resources/domains/Task.xml:20"
-"Task name","","","resources/views/Task.xml:151
-resources/views/Task.xml:31
-resources/domains/Task.xml:12"
-"Task.amount","Amount","","java/com/axelor/apps/organisation/report/ITranslation.java:126"
-"Task.client","Customer","","java/com/axelor/apps/organisation/report/ITranslation.java:124"
-"Task.commercial","Commercial","","java/com/axelor/apps/organisation/report/ITranslation.java:127"
-"Task.cost","Task cost","","java/com/axelor/apps/organisation/report/ITranslation.java:130"
-"Task.date","Date","","java/com/axelor/apps/organisation/report/ITranslation.java:123"
-"Task.expectedRevenue","Expected revenue","","java/com/axelor/apps/organisation/report/ITranslation.java:122"
-"Task.forecastMargin","Forecast margin","","java/com/axelor/apps/organisation/report/ITranslation.java:135"
-"Task.productName","Product name","","java/com/axelor/apps/organisation/report/ITranslation.java:125"
-"Task.purchase","Purchases","","java/com/axelor/apps/organisation/report/ITranslation.java:131"
-"Task.purchaser","Purchaser","","java/com/axelor/apps/organisation/report/ITranslation.java:129"
-"Task.supplier","Supplier","","java/com/axelor/apps/organisation/report/ITranslation.java:128"
-"Task.totalCost","Total cost","","java/com/axelor/apps/organisation/report/ITranslation.java:133"
-"Task.totalMargin","Total margin","","java/com/axelor/apps/organisation/report/ITranslation.java:134"
-"Task.totalTurnover","Total turnover","","java/com/axelor/apps/organisation/report/ITranslation.java:132"
-"Tasks","","","resources/views/Project.xml:67
-resources/views/Task.xml:14
-resources/views/menu.xml:327
-resources/views/Task.xml:22
+resources/views/Selects.xml:120
+resources/views/Task.xml:149
+resources/views/Task.xml:29"
+"Task Information",,,"resources/views/OrganisationConfig.xml:14"
+"Task Progress",,,"resources/domains/Task.xml:20"
+"Task name",,,"resources/domains/Task.xml:12
+resources/views/Task.xml:151
+resources/views/Task.xml:31"
+"Task product",,,"resources/domains/OrganisationConfig.xml:13"
+"Task.amount","Amount",,"java/com/axelor/apps/organisation/report/ITranslation.java:126"
+"Task.client","Customer",,"java/com/axelor/apps/organisation/report/ITranslation.java:124"
+"Task.commercial","Commercial",,"java/com/axelor/apps/organisation/report/ITranslation.java:127"
+"Task.cost","Task cost",,"java/com/axelor/apps/organisation/report/ITranslation.java:130"
+"Task.date","Date",,"java/com/axelor/apps/organisation/report/ITranslation.java:123"
+"Task.expectedRevenue","Expected revenue",,"java/com/axelor/apps/organisation/report/ITranslation.java:122"
+"Task.forecastMargin","Forecast margin",,"java/com/axelor/apps/organisation/report/ITranslation.java:135"
+"Task.productName","Product name",,"java/com/axelor/apps/organisation/report/ITranslation.java:125"
+"Task.purchase","Purchases",,"java/com/axelor/apps/organisation/report/ITranslation.java:131"
+"Task.purchaser","Purchaser",,"java/com/axelor/apps/organisation/report/ITranslation.java:129"
+"Task.supplier","Supplier",,"java/com/axelor/apps/organisation/report/ITranslation.java:128"
+"Task.totalCost","Total cost",,"java/com/axelor/apps/organisation/report/ITranslation.java:133"
+"Task.totalMargin","Total margin",,"java/com/axelor/apps/organisation/report/ITranslation.java:134"
+"Task.totalTurnover","Total turnover",,"java/com/axelor/apps/organisation/report/ITranslation.java:132"
+"Tasks",,,"resources/domains/Project.xml:48
+resources/views/Business.xml:50
+resources/views/Menu.xml:322
+resources/views/Menu.xml:325
+resources/views/Project.xml:60
+resources/views/Project.xml:74
 resources/views/Task.xml:10
-resources/views/Business.xml:62
-resources/views/menu.xml:324
+resources/views/Task.xml:14
 resources/views/Task.xml:143
-resources/domains/Project.xml:49
-resources/views/Project.xml:82"
-"Tasks To Invoice","","","resources/views/Task.xml:387"
-"Tasks Underevaluated","","","resources/views/Task.xml:384"
-"Tasks filters","","","resources/views/Task.xml:374"
-"Tax","","","resources/domains/ExpenseLine.xml:20"
-"Technical environment","","","resources/domains/Position.xml:27
+resources/views/Task.xml:22"
+"Tasks To Invoice",,,"resources/views/Task.xml:387"
+"Tasks Underevaluated",,,"resources/views/Task.xml:384"
+"Tasks filters",,,"resources/views/Task.xml:374"
+"Tax",,,"resources/domains/ExpenseLine.xml:20"
+"Technical environment",,,"resources/domains/Position.xml:27
 resources/domains/Training.xml:21"
-"Technical topics","","","resources/domains/TrainingLine.xml:14"
-"The holiday end date must be after the start date.","","","resources/views/LeaveRequest.xml:133
-resources/views/LeaveRequest.xml:132"
-"The holiday request date should be equal or before the today date.","","","resources/views/LeaveRequest.xml:131"
-"There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in.","","","resources/views/Project.xml:123"
-"Third interview","","","resources/views/Selects.xml:176"
-"Times","","","resources/views/Project.xml:34
-resources/views/Task.xml:42
-resources/views/Business.xml:34"
-"Timesheet","","","resources/domains/TimesheetLine.xml:10
-resources/domains/PlanningLine.xml:19
+"Technical topics",,,"resources/domains/TrainingLine.xml:14"
+"The holiday end date must be after the start date.",,,"resources/views/LeaveRequest.xml:132
+resources/views/LeaveRequest.xml:133"
+"The holiday request date should be equal or before the today date.",,,"resources/views/LeaveRequest.xml:131"
+"There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in.",,,"resources/views/Project.xml:116"
+"Third interview",,,"resources/views/Selects.xml:176"
+"Times",,,"resources/views/Business.xml:33
+resources/views/Project.xml:31
+resources/views/Task.xml:42"
+"Timesheet",,,"resources/domains/PlanningLine.xml:19
+resources/domains/TimesheetLine.xml:10
 resources/domains/TimesheetTotalByType.xml:10
-resources/views/Timesheet.xml:19
-resources/views/Project.xml:61"
-"Timesheet Period Config","","","resources/views/TimesheetPeriodConfig.xml:16"
-"Timesheet input required ?","","","resources/domains/Project.xml:20"
-"Timesheet line","","","resources/domains/Timesheet.xml:22"
-"Timesheet lines","","","resources/views/Task.xml:332
-resources/views/Business.xml:232
+resources/views/Project.xml:54
+resources/views/Timesheet.xml:19"
+"Timesheet Period Config",,,"resources/views/TimesheetPeriodConfig.xml:16"
+"Timesheet input required ?",,,"resources/domains/Project.xml:19"
+"Timesheet line",,,"resources/domains/Timesheet.xml:22"
+"Timesheet lines",,,"resources/views/Business.xml:209
+resources/views/Task.xml:332
 resources/views/Task.xml:353"
-"Timesheet period config","","","resources/domains/User.xml:12"
-"Timesheet project/task time input","","","resources/views/TimesheetLine.xml:94
-resources/views/TimesheetLine.xml:70
-resources/views/TimesheetLine.xml:117
+"Timesheet period config",,,"resources/domains/User.xml:12"
+"Timesheet project/task time input",,,"resources/views/TimesheetLine.xml:117
 resources/views/TimesheetLine.xml:22
-resources/views/TimesheetLine.xml:46"
-"Timesheet project/task time inputs","","","resources/views/TimesheetLine.xml:59
-resources/views/TimesheetLine.xml:107
-resources/views/TimesheetLine.xml:84
+resources/views/TimesheetLine.xml:46
+resources/views/TimesheetLine.xml:70
+resources/views/TimesheetLine.xml:94"
+"Timesheet project/task time inputs",,,"resources/views/TimesheetLine.xml:107
 resources/views/TimesheetLine.xml:11
-resources/views/TimesheetLine.xml:36"
-"Timesheet.Business","Business","","java/com/axelor/apps/organisation/report/ITranslation.java:140"
-"Timesheet.Date","Date","","java/com/axelor/apps/organisation/report/ITranslation.java:144"
-"Timesheet.Desclaimer","The input spent time doesn't cover the period of the timesheet.","","java/com/axelor/apps/organisation/report/ITranslation.java:147"
-"Timesheet.FromDate","From Date","","java/com/axelor/apps/organisation/report/ITranslation.java:137"
-"Timesheet.Project","Project","","java/com/axelor/apps/organisation/report/ITranslation.java:141"
-"Timesheet.ProjectSpentTime","Total project spent time","","java/com/axelor/apps/organisation/report/ITranslation.java:145"
-"Timesheet.SpentTime","Spent time","","java/com/axelor/apps/organisation/report/ITranslation.java:143"
-"Timesheet.Task","Task","","java/com/axelor/apps/organisation/report/ITranslation.java:142"
-"Timesheet.ToDate","To","","java/com/axelor/apps/organisation/report/ITranslation.java:138"
-"Timesheet.TotalDuration","Total timesheet duration","","java/com/axelor/apps/organisation/report/ITranslation.java:148"
-"Timesheet.TotalSpentTime","Total input spent time","","java/com/axelor/apps/organisation/report/ITranslation.java:146"
-"Timesheet.Unit","Timesheet unit","","java/com/axelor/apps/organisation/report/ITranslation.java:139"
-"Timesheets","","","resources/views/Timesheet.xml:6"
-"Timesheets Period Config","","","resources/views/TimesheetPeriodConfig.xml:6"
-"Timesheets to validate","","","resources/views/menu.xml:139
-resources/views/menu.xml:136"
-"Timetable","","","resources/domains/PublicHolidays.xml:11"
-"To","","","resources/domains/JobOffer.xml:13
-resources/domains/PlanningLine.xml:16
+resources/views/TimesheetLine.xml:36
+resources/views/TimesheetLine.xml:59
+resources/views/TimesheetLine.xml:84"
+"Timesheet.Business","Business",,"java/com/axelor/apps/organisation/report/ITranslation.java:140"
+"Timesheet.Date","Date",,"java/com/axelor/apps/organisation/report/ITranslation.java:144"
+"Timesheet.Desclaimer","The input spent time doesn't cover the period of the timesheet.",,"java/com/axelor/apps/organisation/report/ITranslation.java:147"
+"Timesheet.FromDate","From Date",,"java/com/axelor/apps/organisation/report/ITranslation.java:137"
+"Timesheet.Project","Project",,"java/com/axelor/apps/organisation/report/ITranslation.java:141"
+"Timesheet.ProjectSpentTime","Total project spent time",,"java/com/axelor/apps/organisation/report/ITranslation.java:145"
+"Timesheet.SpentTime","Spent time",,"java/com/axelor/apps/organisation/report/ITranslation.java:143"
+"Timesheet.Task","Task",,"java/com/axelor/apps/organisation/report/ITranslation.java:142"
+"Timesheet.ToDate","To",,"java/com/axelor/apps/organisation/report/ITranslation.java:138"
+"Timesheet.TotalDuration","Total timesheet duration",,"java/com/axelor/apps/organisation/report/ITranslation.java:148"
+"Timesheet.TotalSpentTime","Total input spent time",,"java/com/axelor/apps/organisation/report/ITranslation.java:146"
+"Timesheet.Unit","Timesheet unit",,"java/com/axelor/apps/organisation/report/ITranslation.java:139"
+"Timesheets",,,"resources/views/Timesheet.xml:6"
+"Timesheets Period Config",,,"resources/views/TimesheetPeriodConfig.xml:6"
+"Timesheets to validate",,,"resources/views/Menu.xml:134
+resources/views/Menu.xml:137"
+"Timetable",,,"resources/domains/PublicHolidays.xml:11"
+"To",,,"resources/domains/JobOffer.xml:13
 resources/domains/MissionOrder.xml:22
+resources/domains/PlanningLine.xml:16
 resources/domains/Position.xml:13"
-"To Date","","","resources/domains/Timesheet.xml:12
-resources/domains/Timesheet.xml:36
-resources/domains/Planning.xml:18"
-"To Date/Time","","","resources/domains/LeaveRequest.xml:15"
-"To invoice ?","","","resources/domains/Task.xml:26
-resources/domains/ExpenseLine.xml:24
+"To Date",,,"resources/domains/Planning.xml:18
+resources/domains/Timesheet.xml:12
+resources/domains/Timesheet.xml:36"
+"To Date/Time",,,"resources/domains/LeaveRequest.xml:15"
+"To invoice ?",,,"resources/domains/ExpenseLine.xml:24
+resources/domains/Task.xml:26
 resources/domains/TimesheetLine.xml:17"
-"Tool Keywords","","","resources/domains/Candidate.xml:45"
-"Tools Keywords","","","resources/domains/Employee.xml:31"
-"Total (TTC)","","","resources/domains/ExpenseLine.xml:19
-resources/views/Expense.xml:28
-resources/views/Expense.xml:18
-resources/views/Expense.xml:44"
-"Total W.T. in company currency","","","resources/domains/ExpenseLine.xml:28"
-"Total amount","","","resources/domains/Overtime.xml:11
-resources/domains/Expense.xml:12"
-"Total input per type","","","resources/views/TimesheetTotalByType.xml:11"
-"Total input per types","","","resources/views/TimesheetTotalByType.xml:6"
-"Total input time","","","resources/domains/Timesheet.xml:24"
-"Total per type","","","resources/domains/Timesheet.xml:26"
-"Total time","","","resources/domains/Task.xml:14
-resources/domains/Project.xml:44"
-"Totals","","","resources/views/Timesheet.xml:62"
-"Training","","","resources/views/Training.xml:6
+"Tool Keywords",,,"resources/domains/Candidate.xml:45"
+"Tools Keywords",,,"resources/domains/Employee.xml:31"
+"Total (TTC)",,,"resources/domains/ExpenseLine.xml:19
+resources/views/Expense.xml:17
+resources/views/Expense.xml:26
+resources/views/Expense.xml:41"
+"Total W.T. in company currency",,,"resources/domains/ExpenseLine.xml:28"
+"Total amount",,,"resources/domains/Expense.xml:12
+resources/domains/Overtime.xml:11"
+"Total input per type",,,"resources/views/TimesheetTotalByType.xml:11"
+"Total input per types",,,"resources/views/TimesheetTotalByType.xml:6"
+"Total input time",,,"resources/domains/Timesheet.xml:24"
+"Total per type",,,"resources/domains/Timesheet.xml:26"
+"Total time",,,"resources/domains/Project.xml:43
+resources/domains/Task.xml:14"
+"Totals",,,"resources/views/Timesheet.xml:62"
+"Training",,,"resources/domains/JobOffer.xml:30
 resources/views/Training.xml:13
-resources/domains/JobOffer.xml:30"
-"Training center","","","resources/domains/TrainingLine.xml:13"
-"Trainings","","","resources/views/menu.xml:232
-resources/views/menu.xml:235"
-"Transform into employee","","","resources/views/Candidate.xml:26"
-"Transform to project","","","resources/views/Business.xml:135"
-"Turnover","","","resources/domains/Project.xml:37
-resources/domains/Task.xml:45
+resources/views/Training.xml:6"
+"Training center",,,"resources/domains/TrainingLine.xml:13"
+"Trainings",,,"resources/views/Menu.xml:230
+resources/views/Menu.xml:233"
+"Transform into employee",,,"resources/views/Candidate.xml:26"
+"Transform to project",,,"resources/views/Business.xml:119"
+"Turnover",,,"resources/domains/FinancialInformationHistoryLine.xml:12
+resources/domains/Project.xml:30
+resources/domains/Project.xml:33
+resources/domains/Project.xml:36
 resources/domains/Task.xml:42
-resources/domains/FinancialInformationHistoryLine.xml:12
-resources/domains/Task.xml:48
-resources/domains/Project.xml:34
-resources/domains/Project.xml:31"
-"Turnover + Discount + Expenses","","","resources/domains/OfferLine.xml:11"
-"Type","","","resources/domains/OfferLine.xml:7
-resources/domains/Project.xml:66"
-"Type of expense","","","resources/domains/ExpenseLine.xml:12"
-"Type period","","","resources/domains/TimesheetPeriodConfig.xml:10"
-"Type select","","","resources/domains/Project.xml:57"
-"Unfavourable (red)","","","resources/views/Selects.xml:64"
-"Unit","","","resources/domains/Timesheet.xml:17
+resources/domains/Task.xml:45
+resources/domains/Task.xml:48"
+"Turnover + Discount + Expenses",,,"resources/domains/OfferLine.xml:11"
+"Type",,,"resources/domains/OfferLine.xml:7"
+"Type of expense",,,"resources/domains/ExpenseLine.xml:12"
+"Type period",,,"resources/domains/TimesheetPeriodConfig.xml:10"
+"Type select",,,"resources/domains/Project.xml:54"
+"Unfavourable (red)",,,"resources/views/Selects.xml:64"
+"Unit",,,"resources/domains/PlanningLine.xml:18
 resources/domains/SpentTime.xml:15
-resources/domains/PlanningLine.xml:18"
-"Unit price","","","resources/domains/ExpenseLine.xml:18
+resources/domains/Timesheet.xml:17"
+"Unit price",,,"resources/domains/ExpenseLine.xml:18
 resources/domains/OvertimeLine.xml:14
 resources/domains/Task.xml:59"
-"UoM","","","resources/domains/ExpenseLine.xml:14
+"UoM",,,"resources/domains/ExpenseLine.xml:14
 resources/domains/OvertimeLine.xml:13"
-"Update and historize","","","resources/views/Task.xml:84"
-"Update financial information","","","resources/views/Task.xml:100"
-"Update quote","Mettre à jour devis","","resources/views/Business.xml:141"
-"Update task progress","","","resources/views/Business.xml:137
-resources/views/Project.xml:74"
-"User","","","resources/domains/FinancialInformationUpdate.xml:12
-resources/domains/FinancialInformationHistoryLine.xml:15
+"Update and historize",,,"resources/views/Task.xml:84"
+"Update financial information",,,"resources/views/Task.xml:100"
+"Update task progress",,,"resources/views/Business.xml:120
+resources/views/Project.xml:66"
+"User",,,"resources/domains/FinancialInformationHistoryLine.xml:15
+resources/domains/FinancialInformationUpdate.xml:12
 resources/domains/SpentTime.xml:11"
-"Validate","","","resources/views/Overtime.xml:41
+"Validate",,,"resources/views/Expense.xml:52
+resources/views/Expense.xml:54
 resources/views/LeaveRequest.xml:60
-resources/views/Overtime.xml:40
+resources/views/Overtime.xml:39
+resources/views/Overtime.xml:41
 resources/views/OvertimeLine.xml:24
-resources/views/Expense.xml:56
-resources/views/Timesheet.xml:68
-resources/views/Expense.xml:55"
-"Validated","","","resources/views/Selects.xml:155
-resources/views/Selects.xml:273"
-"Validated Customer order lines","","","resources/views/Business.xml:197
+resources/views/Timesheet.xml:68"
+"Validated",,,"resources/views/Selects.xml:155
+resources/views/Selects.xml:267"
+"Validated Customer order lines",,,"resources/views/Business.xml:174
 resources/views/Task.xml:297"
-"Validated by","","","resources/domains/Overtime.xml:16
-resources/domains/Expense.xml:19
+"Validated by",,,"resources/domains/Expense.xml:19
+resources/domains/Overtime.xml:16
 resources/domains/Timesheet.xml:28"
-"Validated supplier order lines","","","resources/views/Business.xml:204
+"Validated supplier order lines",,,"resources/views/Business.xml:181
 resources/views/Task.xml:311"
-"Validation Date","","","resources/domains/ExpenseLine.xml:23"
-"Validation Status","","","resources/domains/Expense.xml:15"
-"Validation date","","","resources/domains/Timesheet.xml:29
+"Validation Date",,,"resources/domains/ExpenseLine.xml:23"
+"Validation Status",,,"resources/domains/Expense.xml:15"
+"Validation date",,,"resources/domains/Expense.xml:20
 resources/domains/OvertimeLine.xml:16
-resources/domains/Expense.xml:20"
-"Validation forms","","","resources/views/menu.xml:133"
-"Validation/Invoicing","","","resources/views/ExpenseLine.xml:57"
-"Value","","","resources/domains/Competence.xml:20"
-"Vehicle Fiscal Power","","","resources/domains/Employee.xml:42"
-"Verified","","","resources/views/Selects.xml:139"
-"Very positive (green)","","","resources/views/Selects.xml:61"
-"View forecast report","","","resources/views/Task.xml:75"
-"Waiting candidate confirmation","","","resources/views/Selects.xml:132"
-"Waiting validation","","","resources/views/Selects.xml:140"
-"Weekly","","","resources/views/Selects.xml:109
+resources/domains/Timesheet.xml:29"
+"Validation forms",,,"resources/views/Menu.xml:131"
+"Validation/Invoicing",,,"resources/views/ExpenseLine.xml:57"
+"Value",,,"resources/domains/Competence.xml:20"
+"Vehicle Fiscal Power",,,"resources/domains/Employee.xml:42"
+"Verified",,,"resources/views/Selects.xml:139"
+"Very positive (green)",,,"resources/views/Selects.xml:61"
+"View Employees",,,"resources/views/Menu.xml:410"
+"View Expenses",,,"resources/views/Menu.xml:426"
+"View Job Offers",,,"resources/views/Menu.xml:431"
+"View Leave Requests",,,"resources/views/Menu.xml:420"
+"View Projects",,,"resources/views/Menu.xml:438"
+"View Tasks",,,"resources/views/Menu.xml:443"
+"View Timesheets",,,"resources/views/Menu.xml:415"
+"View forecast report",,,"resources/views/Task.xml:75"
+"Waiting candidate confirmation",,,"resources/views/Selects.xml:132"
+"Waiting validation",,,"resources/views/Selects.xml:140"
+"Weekly",,,"resources/views/Selects.xml:109
 resources/views/TimesheetPeriodConfig.xml:20"
-"Widowed","","","resources/views/Selects.xml:80"
-"Won","","","resources/views/Selects.xml:189"
-"Working Schedule","","","resources/views/Schedule.xml:11"
-"Working Schedules","","","resources/views/Schedule.xml:6"
-"Working Time shift","","","resources/views/ScheduleLine.xml:11"
-"Working Time shifts","","","resources/views/ScheduleLine.xml:6"
-"Working hours","","","resources/views/menu.xml:253
-resources/views/menu.xml:250"
-"Working time / Specific condition","","","resources/domains/MissionOrder.xml:20"
-"Working timeshift periods","","","resources/views/ScheduleSubLine.xml:6
-resources/views/ScheduleSubLine.xml:14"
-"XLS","","","resources/views/Selects.xml:150"
-"Year","","","resources/views/Charts.xml:185
-resources/views/Selects.xml:116
-resources/views/Selects.xml:196"
-"Year of completion","","","resources/domains/TrainingLine.xml:15"
-"Yes","","","resources/views/Selects.xml:144"
-"You are not allowed to validate this holiday request, please refer to your supervisor (the supervisor is listed in the employee hierarchy notebook).","","","resources/views/LeaveRequest.xml:138"
-"from 25 to 35 k€","","","resources/views/Selects.xml:205"
-"from 35 to 45 k€","","","resources/views/Selects.xml:206"
-"from 45 to 55 k€","","","resources/views/Selects.xml:207"
-"from 55 to 65 k€","","","resources/views/Selects.xml:208"
-"from 65 to 75 k€","","","resources/views/Selects.xml:209"
-"from 75 to 85 k€","","","resources/views/Selects.xml:210"
-"from 85 to 95 k€","","","resources/views/Selects.xml:211"
-"from 95 to 100 k€ or more","","","resources/views/Selects.xml:212"
-"help:Candidate.drivingLicence","Format: Car DL / Moto DL / Truck DL …","","resources/domains/Candidate.xml:65"
-"help:Candidate.globalEvaluation","The grade is calculated based on the page 'Appraisal'","","resources/domains/Candidate.xml:40"
-"help:Candidate.relocationSelect","Non modifiable, automatique en fonction du champs 'Mobilité Géographique' dans l'onglet 'autres infos'","","resources/domains/Candidate.xml:26"
-"help:CandidateOtherOpportunity.ets","Etablissement","","resources/domains/CandidateOtherOpportunity.xml:10"
-"help:Task.isLeaveRequest","Is used as a leave request reason","","resources/domains/Task.xml:33"
-"members","","","resources/views/Business.xml:117"
-"or Available from","","","resources/domains/Candidate.xml:33"
+"Widowed",,,"resources/views/Selects.xml:80"
+"Won",,,"resources/views/Selects.xml:189"
+"Working Schedule",,,"resources/views/Schedule.xml:11"
+"Working Schedules",,,"resources/views/Schedule.xml:6"
+"Working Time shift",,,"resources/views/ScheduleLine.xml:11"
+"Working Time shifts",,,"resources/views/ScheduleLine.xml:6"
+"Working hours",,,"resources/views/Menu.xml:248
+resources/views/Menu.xml:251"
+"Working time / Specific condition",,,"resources/domains/MissionOrder.xml:20"
+"Working timeshift periods",,,"resources/views/ScheduleSubLine.xml:14
+resources/views/ScheduleSubLine.xml:6"
+"XLS",,,"resources/views/Selects.xml:150"
+"Year",,,"resources/views/Charts.xml:185
+resources/views/Selects.xml:116"
+"Year of completion",,,"resources/domains/TrainingLine.xml:15"
+"Yes",,,"resources/views/Selects.xml:144"
+"You are not allowed to validate this holiday request, please refer to your supervisor (the supervisor is listed in the employee hierarchy notebook).",,,"resources/views/LeaveRequest.xml:138"
+"from 25 to 35 k€",,,"resources/views/Selects.xml:199"
+"from 35 to 45 k€",,,"resources/views/Selects.xml:200"
+"from 45 to 55 k€",,,"resources/views/Selects.xml:201"
+"from 55 to 65 k€",,,"resources/views/Selects.xml:202"
+"from 65 to 75 k€",,,"resources/views/Selects.xml:203"
+"from 75 to 85 k€",,,"resources/views/Selects.xml:204"
+"from 85 to 95 k€",,,"resources/views/Selects.xml:205"
+"from 95 to 100 k€ or more",,,"resources/views/Selects.xml:206"
+"help:Candidate.drivingLicence","Format: Car DL / Moto DL / Truck DL …",,"resources/domains/Candidate.xml:65"
+"help:Candidate.globalEvaluation","The grade is calculated based on the page 'Appraisal'",,"resources/domains/Candidate.xml:40"
+"help:Candidate.relocationSelect","Non modifiable, automatique en fonction du champs 'Mobilité Géographique' dans l'onglet 'autres infos'",,"resources/domains/Candidate.xml:26"
+"help:CandidateOtherOpportunity.ets","Etablissement",,"resources/domains/CandidateOtherOpportunity.xml:10"
+"help:Task.isLeaveRequest","Is used as a leave request reason",,"resources/domains/Task.xml:33"
+"members",,,"resources/views/Business.xml:116"
+"or Available from",,,"resources/domains/Candidate.xml:33"
