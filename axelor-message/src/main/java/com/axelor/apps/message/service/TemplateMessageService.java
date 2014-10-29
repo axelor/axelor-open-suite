@@ -22,11 +22,14 @@ import java.util.List;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.axelor.tool.template.TemplateMaker;
 
-public interface TemplateMessageService {
+public interface TemplateMessageService extends Repository<Template> {
 
+	public Message generateMessage(Object object, long objectId, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException;
+	
 	public Message generateMessage(Object object, long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException;
 	
 	public List<EmailAddress> getEmailAddress(String recipients);

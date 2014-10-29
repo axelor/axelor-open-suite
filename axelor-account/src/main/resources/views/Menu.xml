@@ -328,17 +328,6 @@
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="debt-recovery-root-conf-mail-model"
-		parent="debt-recovery-root-conf" title="Reminder mail models"
-		action="debt.recovery.root.conf.mail.model" />
-
-	<action-view name="debt.recovery.root.conf.mail.model"
-		title="Reminder mail models" model="com.axelor.apps.base.db.MailModel" icon="img/16px/reminderSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-		<view-param name="search-filters" value="mail-model-filters"/>
-	</action-view>
-
 	
 	<menuitem name="account-root-accounting" parent="account-root"
 		title="Accounting Exports/Reports" icon="img/Other/report_55px.png" />

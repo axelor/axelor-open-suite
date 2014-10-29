@@ -182,13 +182,6 @@
 		<option value="2">Individual</option>
 	</selection>
 
-	<selection name='mail.model.object.concerned.select'>
-		<option value='1'>Debt Recovery</option>
-		<option value='2'>Reimbursement</option>
-		<option value='3'>Reject import</option>
-		<option value='4'>Cashier</option>
-	</selection>
-
 	<selection name='iadministration.yes.no.select'>
 		<option value='1'>Yes</option>
 		<option value='0'>No</option>
@@ -296,18 +289,6 @@
 		<option value='12'>December</option>
 	</selection>
 
-	<selection name='mail.type.select'>
-		<option value='0'>Email</option>
-		<option value='1'>Mail</option>
-	</selection>
-
-	<selection name='mail.object.concerned.select'>
-		<option value='1'>Debt Recovery</option>
-		<option value='2'>Reimbursement</option>
-		<option value='3'>Reject import</option>
-		<option value='4'>Cashier</option>
-	</selection>
-
 	<selection name='iaccount.reject.import.state.select'>
 		<option value='0'>Draft</option>
 		<option value='1'>Validated</option>
@@ -412,14 +393,6 @@
 		<option value="3">Only label</option>
 		<option value="4">Reject</option>
 		<option value="5">Schedule line</option>
-	</selection>
-
-	<selection name="isale.sale.rule.action.select">
-		<option value="1">Appointment setup</option>
-		<option value="2">Create personalized offer</option>
-		<option value="3">Email</option>
-		<option value="4">Mail</option>
-		<option value="5">Alarm</option>
 	</selection>
 
 	<selection name="iadministration.indicator.generator.request.type.select">

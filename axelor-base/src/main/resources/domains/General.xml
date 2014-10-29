@@ -14,7 +14,6 @@
 		
 		<!-- Exception -->
 		<string name="exceptionDefaultMsg" multiline="true" title="Default Message" required="true" />
-		<string name="exceptionMailMsg" multiline="true" title="Mail and Email message" />
 		<string name="exceptionSupplychainMsg" multiline="true" title="Supply chain message" />
 
 		<!-- Interfaces QAS et SVI -->

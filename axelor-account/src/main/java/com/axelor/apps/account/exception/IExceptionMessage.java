@@ -49,4 +49,9 @@ public interface IExceptionMessage {
 	 */
 	public  String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/ "Accounting configuration is missing for Product: %s (company: %s)" /*)*/ ;
 	
+	/**
+	 * Mail service
+	 */
+	public  String MAIL_1 = /*$$(*/ "%s :\n Please define an email template for cash register (company: %s)" /*)*/ ;
+	
 }

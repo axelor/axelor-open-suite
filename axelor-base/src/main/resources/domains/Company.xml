@@ -24,12 +24,6 @@
 	<many-to-one name="defaultBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Account"/>
 	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
 
-  	<!--  Onglet Email/Courrier -->
-    <string name="generatedMailFilePath" title="Filepath to export generated mails" help="true"/>
-    <string name="generatedEmailFilePath" title="Filepath to export generated emails" help="true"/>
-    <string name="generatedMailFileName" title="Generated mail files name prefix" help="true"/>
-    <string name="generatedEmailFileName" title="Generated email files name prefix" help="true"/>
-    
   	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings"/>
   	
   	

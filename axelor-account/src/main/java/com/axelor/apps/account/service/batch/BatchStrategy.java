@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.InterbankPaymentOrderRejectImportService;
-import com.axelor.apps.account.service.MailService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
@@ -55,7 +54,6 @@ import com.google.inject.Inject;
 public abstract class BatchStrategy extends AbstractBatch {
 
 	protected ReminderService reminderService;
-	protected MailService mailService;
 	protected DoubtfulCustomerService doubtfulCustomerService;
 	protected ReimbursementExportService reimbursementExportService;
 	protected ReimbursementImportService reimbursementImportService;
@@ -90,10 +88,9 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected ReimbursementService reimbursementService;
 
 	
-	protected BatchStrategy(ReminderService reminderService, MailService mailService) {
+	protected BatchStrategy(ReminderService reminderService) {
 		super();
 		this.reminderService = reminderService;
-		this.mailService = mailService;
 	}
 	
 	protected BatchStrategy(DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {

@@ -232,13 +232,6 @@
 		<view type="form" />
 	</action-view>
 
-	<action-view name="mail.root.mail.all" title="All mails"
-		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 1</domain>
-		<context name="typeSelect" expr="1" />
-	</action-view>
 	<menuitem name="admin-root" title="ERP Administration" priority="60"
 		icon="img/Other/organisation_70px.png" groups="admins,ERP,CRM"/>
 

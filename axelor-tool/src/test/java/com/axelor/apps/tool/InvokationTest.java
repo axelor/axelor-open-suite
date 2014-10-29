@@ -55,8 +55,8 @@ public class InvokationTest {
 	
 	@Before
 	public void prepareTest() {
-		contact = new Contact("Belloy","Pierre");
-		contact.setEmail("p.belloy@axelor.com");
+		contact = new Contact("Durand","Pierre");
+		contact.setEmail("@test.com");
 		contact.setFullName(contact.getFullName());
 		contact.setDateOfBirth(new LocalDate());
 		contact.setPayeurQuality(new BigDecimal("2.2569"));

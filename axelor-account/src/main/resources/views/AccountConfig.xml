@@ -55,7 +55,7 @@
 					<field name="exportPath"/>
 				</panel>
 				<panel title="Cashiers" colSpan="12">
-					<field name="cashRegisterMailModel"/>
+					<field name="cashRegisterTemplate"/>
 					<field name="cashRegisterAddressEmail"/>
 				</panel>
 				<panel title="Shift to irrecoverable" colSpan="12">
@@ -90,7 +90,7 @@
 					<field name="lowerThresholdReimbursement"/>
 					<field name="upperThresholdReimbursement"/>
 					<field name="reimbursementAccount" domain="self.company = :company"/>
-					<field name="reimbursementMailModel"/>
+					<field name="reimbursementTemplate"/>
 				</panel>
 				<panel title="Reimbursement rejects" colSpan="12">
 					<field name="reimbursementImportFolderPathCFONB"/>
@@ -112,7 +112,7 @@
 					<field name="rejectionPaymentMode"/>
 					<field name="paymentScheduleRejectNumLimit"/>
 					<field name="invoiceRejectNumLimit"/>
-					<field name="rejectPaymentScheduleMailModel"/>
+					<field name="rejectPaymentScheduleTemplate"/>
 					<field name="rejectImportPathAndFileName"/>
 					<field name="tempImportPathAndFileName"/>
 				</panel>

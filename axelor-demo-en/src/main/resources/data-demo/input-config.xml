@@ -47,8 +47,6 @@
 	
 	<input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address" search="self.importId = :importId"  />
 	
-	<input file="base_mailModel.csv" separator=";" type="com.axelor.apps.base.db.MailModel" />
-	
 	<input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency" search="self.code = :code"  />
 	
 	<input file="base_unit.csv" separator=";" type="com.axelor.apps.base.db.Unit" search="self.importId = :importId"  />

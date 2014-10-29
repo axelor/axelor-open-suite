@@ -29,7 +29,6 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.GeneralRepository;
-import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -144,27 +143,6 @@ public class GeneralService extends GeneralRepository{
 
 // Message exception	
 	
-	/**
-	 * Obtenir le message d'erreur pour le moteur d'email et courrier.
-	 * 
-	 * @return
-	 */
-	public static String getExceptionMailMsg(){
-		
-		if (getGeneral() != null) {
-			
-			if (getGeneral().getExceptionMailMsg() != null ) {
-				return getGeneral().getExceptionMailMsg();
-			}
-			else {
-				return getGeneral().getExceptionDefaultMsg();
-			}
-		}
-		else {
-			return EXCEPTION;
-		}
-		
-	}
 	
 	
 	/**

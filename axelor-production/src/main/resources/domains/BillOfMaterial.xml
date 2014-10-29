@@ -22,6 +22,7 @@
   	<decimal name="costPrice" title="Cost price" precision="20" scale="5"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <boolean name="hasNoManageStock" title="Not manage stock"/>
+    <boolean name="personalized" title="Personalized"/>
     
   </entity>
 </domain-models>

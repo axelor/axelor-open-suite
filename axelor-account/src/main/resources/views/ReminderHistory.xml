@@ -13,7 +13,7 @@
     	<field name="balanceDueReminder"/>
     	<field name="referenceDate"/>
         <field name="userReminder"/>
-        <field name="reminderMail"/>
+        <field name="reminderMessage"/>
     	<field name="reminderDate"/>
         <field name="reminderMethodLine"/>
     </grid>
@@ -35,7 +35,7 @@
         	<field name="reminderDate"/>
     	</panel>
     	<panel title="Reminder content">
-        	<field name="reminderMail"/>
+        	<field name="reminderMessage"/>
     	</panel>
 	</form>
     
@@ -47,7 +47,7 @@
     	<field name="balanceDueReminder"/>
     	<field name="referenceDate"/>
         <field name="userReminder"/>
-        <field name="reminderMail"/>
+        <field name="reminderMessage"/>
     	<field name="reminderDate"/>
         <field name="reminderMethodLine"/>
     </grid>
@@ -62,7 +62,7 @@
         <field name="userReminder"/>
         <field name="reminderDate"/>
         <field name="reminderMethodLine"/>
-        <field name="reminderMail"/>
+        <field name="reminderMessage"/>
 	    </panel>
 	    
     </form>

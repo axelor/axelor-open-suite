@@ -19,8 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.CashRegisterLine;
 import com.axelor.apps.account.service.CashRegisterLineService;
-import com.axelor.apps.account.service.MailService;
-import com.axelor.apps.base.db.Mail;
+import com.axelor.apps.message.db.Message;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -35,8 +34,8 @@ public class CashRegisterLineController {
 		cashRegisterLine = cashRegisterLineService.find(cashRegisterLine.getId());
 		
 		try  {
-			Mail mail = cashRegisterLineService.closeCashRegister(cashRegisterLine);
-			Beans.get(MailService.class).generatePdfMail(mail);
+			Message message = cashRegisterLineService.closeCashRegister(cashRegisterLine);
+//			Beans.get(MailService.class).generatePdfMail(mail);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }	

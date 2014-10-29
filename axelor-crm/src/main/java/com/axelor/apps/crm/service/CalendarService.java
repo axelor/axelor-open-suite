@@ -237,13 +237,13 @@ public class CalendarService extends CalendarRepository {
 
 		System.out.println( "collectionID= " + collection.getId() ); 
 		
-//		CalDavCalendarCollection calDavCalendarCollection = store.getCollection("/calendar/dav/g.dubaux%40axelor.com/events/");
+//		CalDavCalendarCollection calDavCalendarCollection = store.getCollection("/calendar/dav/%40axelor.com/events/");
 		
 //		calDavCalendarCollection = store.get;
    
 //		System.out.println( "calDavCalendarCollection.collectionID= " + calDavCalendarCollection.getId() ); 
 		
-//		  Calendar calendar = collection.getCalendar("g.dubaux@axelor.com");
+//		  Calendar calendar = collection.getCalendar("@axelor.com");
 		
 		
 		List<? extends Event> eventList = eventService.all().filter("self.typeSelect != 6 and self.calendarEventUid IS NULL and self.calendar = ?1",internalCalendar).fetch();
@@ -255,7 +255,7 @@ public class CalendarService extends CalendarRepository {
 		
 		for(CalDavCalendarCollection calDavCalendarCollection : collections)  {
 		  
-//			  Calendar calendar = calDavCalendarCollection.getCalendar("g.dubaux@axelor.com");
+//			  Calendar calendar = calDavCalendarCollection.getCalendar("@axelor.com");
 		  
 			System.out.println( "collectionID2= " + calDavCalendarCollection.getId() ); 
 			net.fortuna.ical4j.model.Calendar[] calendars = calDavCalendarCollection.getEvents();

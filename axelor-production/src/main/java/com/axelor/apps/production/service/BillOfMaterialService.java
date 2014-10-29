@@ -221,7 +221,9 @@ public class BillOfMaterialService extends BillOfMaterialRepository {
 		BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
 		
 		if(billOfMaterial != null)  {
-			return JPA.copy(billOfMaterial, true);
+			BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, true);
+			personalizedBOM.setPersonalized(true);
+			return personalizedBOM;
 		}
 		
 		return null;

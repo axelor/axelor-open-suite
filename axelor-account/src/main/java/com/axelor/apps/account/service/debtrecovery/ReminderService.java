@@ -368,9 +368,12 @@ public class ReminderService extends ReminderRepository{
 	 * @param company
 	 * 			Une société
 	 * @throws AxelorException
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public boolean reminderGenerate(Partner partner, Company company) throws AxelorException {			
+	public boolean reminderGenerate(Partner partner, Company company) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException {			
 		boolean remindedOk = false;
 		
 		Reminder reminder = this.getReminder(partner, company); // ou getReminder si existe

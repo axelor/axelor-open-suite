@@ -24,10 +24,8 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.service.MailService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Mail;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -44,9 +42,9 @@ public class BatchReminder extends BatchStrategy {
 	private boolean stop = false;
 	
 	@Inject
-	public BatchReminder(ReminderService reminderService, MailService mailService) {
+	public BatchReminder(ReminderService reminderService) {
 		
-		super(reminderService, mailService);
+		super(reminderService);
 	}
 
 
@@ -125,30 +123,30 @@ public class BatchReminder extends BatchStrategy {
 	
 	public void generateMail()  {
 		
-		List<Mail> mailList = (List<Mail>) mailService.all().filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
-		
-		LOG.debug("Nombre de fichiers à générer : {}",mailList.size());
-		for(Mail mail : mailList)  {
-			try {
-				
-				mailService.generatePdfMail(mailService.find(mail.getId()));
-				mailDone++;
-				
-			} catch (AxelorException e) {
-				
-				TraceBackService.trace(new AxelorException(String.format("Courrier/Email %s", mail.getName()), e, e.getcategory()), IException.REMINDER, batch.getId());
-				mailAnomaly++;
-				
-			} catch (Exception e) {
-				
-				TraceBackService.trace(new Exception(String.format("Courrier/Mail %s", mail.getName()), e), IException.REMINDER, batch.getId());
-				
-				mailAnomaly++;
-				
-				LOG.error("Bug(Anomalie) généré(e) pour l'email/courrier {}", mail.getName());
-				
-			}
-		}
+//		List<Mail> mailList = (List<Mail>) mailService.all().filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
+//		
+//		LOG.debug("Nombre de fichiers à générer : {}",mailList.size());
+//		for(Mail mail : mailList)  {
+//			try {
+//				
+//				mailService.generatePdfMail(mailService.find(mail.getId()));
+//				mailDone++;
+//				
+//			} catch (AxelorException e) {
+//				
+//				TraceBackService.trace(new AxelorException(String.format("Courrier/Email %s", mail.getName()), e, e.getcategory()), IException.REMINDER, batch.getId());
+//				mailAnomaly++;
+//				
+//			} catch (Exception e) {
+//				
+//				TraceBackService.trace(new Exception(String.format("Courrier/Mail %s", mail.getName()), e), IException.REMINDER, batch.getId());
+//				
+//				mailAnomaly++;
+//				
+//				LOG.error("Bug(Anomalie) généré(e) pour l'email/courrier {}", mail.getName());
+//				
+//			}
+//		}
 		
 	}
 	
@@ -166,8 +164,8 @@ public class BatchReminder extends BatchStrategy {
 		comment += String.format("\t* %s tiers(s) traité(s)\n", batch.getDone());
 		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
 		
-		comment += String.format("\t* %s Courrier(s) et email(s) traité(s)\n", mailDone);
-		comment += String.format("\t* %s anomalie(s)", mailAnomaly);
+//		comment += String.format("\t* %s email(s) traité(s)\n", mailDone);
+//		comment += String.format("\t* %s anomalie(s)", mailAnomaly);
 
 		super.stop();
 		addComment(comment);

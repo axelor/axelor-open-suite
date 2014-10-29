@@ -17,28 +17,31 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderHistory;
 import com.axelor.apps.account.db.ReminderMethodLine;
 import com.axelor.apps.account.db.repo.ReminderHistoryRepository;
-import com.axelor.apps.account.service.MailService;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Mail;
 import com.axelor.apps.base.db.Partner;
-//import com.axelor.apps.base.db.Template;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -49,9 +52,6 @@ public class ReminderActionService {
 	@Inject
 	private UserService userService;
 	
-	@Inject
-	private MailService ms;
-
 	private LocalDate today;
 	
 	@Inject
@@ -59,6 +59,12 @@ public class ReminderActionService {
 	
 	@Inject
 	private ReminderHistoryRepository reminderHistoryRepository;
+	
+	@Inject
+	private AccountingSituationService accountingSituationService;
+	
+	@Inject
+	private TemplateMessageService templateMessageService;
 
 	@Inject
 	public ReminderActionService() {
@@ -67,34 +73,6 @@ public class ReminderActionService {
 		
 	}
 	
-	/**
-	 * Fonction permettant d'enregistrer les mails générérés
-	 * @param mapVal
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void saveAction(Map<String, Object> mapVal)  {
-		
-		LOG.debug("Begin saveAction service ...");
-		
-		for(Entry<String, Object> entry : mapVal.entrySet()) {
-		    String cle = entry.getKey();
-		    Object valeur = entry.getValue();
-		    if(cle.equals("ReminderMailSocial1") || cle.equals("ReminderMailSocial2") || cle.equals("ReminderMailStandard1")  || cle.equals("ReminderMailStandard2"))  {
-		    	Mail reminderMail = (Mail) valeur;
-		    	ms.save(reminderMail);
-		    }
-		    else if(cle.equals("ReminderEmailSocialDept")  || cle.equals("ReminderEmailSocialMun")) {
-		    	Mail reminderEmail = (Mail) valeur;
-		    	ms.save(reminderEmail);
-		    }
-		}
-		
-		LOG.debug("End saveAction service");
-		
-	}
-	
-	
-	
 	
 	
 	/**
@@ -102,11 +80,13 @@ public class ReminderActionService {
 	 * @param reminder
 	 * 			Une relance
 	 * @throws AxelorException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void runAction(Reminder reminder) throws AxelorException  {
+	public void runAction(Reminder reminder) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
 		
-		LOG.debug("Begin runAction service ...");
 		if(reminder.getReminderMethod()==null )  {
 			throw new AxelorException(String.format("%s :\nTiers %s: Méthode de relance absente.", 
 					GeneralServiceAccount.getExceptionReminderMsg(), reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
@@ -124,13 +104,14 @@ public class ReminderActionService {
 			
 			this.saveReminder(reminder);
 						
-//			Message message = this.runStandardMessage(reminder.getReminderMethodLine(), reminder.getAccountingSituation().getPartner(), reminder.getAccountingSituation().getCompany()).save();
+			Message message = this.runStandardMessage(reminder);
 			
-//			this.updateReminderHistory(reminder, mail);
+			Beans.get(MessageRepository.class).save(message);
+			
+			this.updateReminderHistory(reminder, message);
 							
 		}
 		
-		LOG.debug("End runAction service");
 	}
 	
 	
@@ -146,27 +127,53 @@ public class ReminderActionService {
 	 * @return
 	 * 			Un email
 	 * @throws AxelorException
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public Message runStandardMessage(ReminderMethodLine reminderMethodLine, Partner partner, Company company, Reminder reminder) throws AxelorException  {
-		LOG.debug("Begin runMailStandard service ...");	
-		if(reminderMethodLine.getMessageTemplate() == null )  {
-			throw new AxelorException(String.format("%s :\nContrat %s: Modèle de courrier absent pour la matrice de relance %s (Niveau %s).", 
+	public Message runStandardMessage(Reminder reminder) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+
+		ReminderMethodLine reminderMethodLine = reminder.getReminderMethodLine(); 
+		Partner partner =  reminder.getAccountingSituation().getPartner();
+		Company company = reminder.getAccountingSituation().getCompany();
+		
+		Template template = reminderMethodLine.getMessageTemplate();
+		
+		if(template == null )  {
+			throw new AxelorException(String.format("%s : Modèle de courrier absent pour la matrice de relance %s (Tiers %s, Niveau %s).", 
 					GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), reminderMethodLine.getReminderMethod().getName(), reminderMethodLine.getReminderLevel().getName()), IException.CONFIGURATION_ERROR);
 		}
 			
-			
-//		Template template = reminderMethodLine.getMessageTemplate();
+		ReminderHistory reminderHistory = this.getReminderHistory(partner, company);
 		
-		return null; //TODO
+		reminderHistory.setReminderMessage(templateMessageService.generateMessage(reminderHistory, reminderHistory.getId(), template));
 		
-//		Message message = templateMessageService.generateMessage(reminder, reminder.getId(), reminder.getClass().getCanonicalName(), reminder.getClass().getSimpleName(), template);
+		return reminderHistory.getReminderMessage();
+		
+	}
+	
+
+	public List<ReminderHistory> getReminderHistoryList(Partner partner, Company company)  {
 		
 		
-//		Mail reminderMail = this.createGenericMail(reminderMailModel, null, today.plusDays(reminderMethodLine.getStandardDeadline()), partner.getMainInvoicingAddress(), company);
+		AccountingSituation accountingSituation = accountingSituationService.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
+		if(accountingSituation != null && accountingSituation.getReminder() != null)  {
+			return accountingSituation.getReminder().getReminderHistoryList();
+		}
 		
-//		reminderMail.setReminderHistory(this.getReminderHistory(partner, company));
+		return new LinkedList<ReminderHistory>();
+	}
+	
+	
+	public ReminderHistory getReminderHistory(Partner partner, Company company)  {
 		
-//		return this.replaceTag(reminderMail);
+		LinkedList<ReminderHistory>  reminderHistoryList = new LinkedList<ReminderHistory>();
+		reminderHistoryList.addAll(this.getReminderHistoryList(partner, company));
+		
+		if(!reminderHistoryList.isEmpty())  {
+			return reminderHistoryList.getLast();
+		}
+		return null;
 	}
 	
 	
@@ -175,9 +182,12 @@ public class ReminderActionService {
 	 * @param reminder
 	 * 			Une relance
 	 * @throws AxelorException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void runManualAction(Reminder reminder) throws AxelorException  {
+	public void runManualAction(Reminder reminder) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
 		
 		LOG.debug("Begin runManualAction service ...");
 		if(reminder.getReminderMethod()==null )  {
@@ -196,11 +206,10 @@ public class ReminderActionService {
 			this.reminderLevelValidate(reminder);		
 			
 			this.saveReminder(reminder);
-						
 			
-			Mail mail = ms.save(ms.runMailStandard(reminder.getReminderMethodLine(), reminder.getAccountingSituation().getPartner(), reminder.getAccountingSituation().getCompany()));
+			Message message = this.runStandardMessage(reminder);
 			
-			this.updateReminderHistory(reminder, mail);
+			this.updateReminderHistory(reminder, message);
 				
 		}
 		LOG.debug("End runManualAction service");
@@ -218,10 +227,9 @@ public class ReminderActionService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void moveReminderMethodLine(Reminder reminder, ReminderMethodLine reminderMethodLine) throws AxelorException  {
 		
-		LOG.debug("Begin MoveReminderMatrixLine service ...");
 		reminder.setWaitReminderMethodLine(reminderMethodLine);	
+		
 		reminderService.save(reminder);
-		LOG.debug("End MoveReminderMatrixLine service");
 		
 	}
 	
@@ -252,7 +260,7 @@ public class ReminderActionService {
 	 */
 	@Transactional
 	public void saveReminder(Reminder reminder)  {
-		LOG.debug("Begin saveReminder service ...");	
+
 		ReminderHistory reminderHistory = new ReminderHistory();
 		reminderHistory.setReminder(reminder);
 		reminderHistory.setBalanceDue(reminder.getBalanceDue());
@@ -267,16 +275,15 @@ public class ReminderActionService {
 		reminderHistory.setUserReminder(userService.getUser());
 		reminder.getReminderHistoryList().add(reminderHistory);
 		reminderHistoryRepository.save(reminderHistory);
-		LOG.debug("End saveReminder service");	
+		
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateReminderHistory(Reminder reminder, Mail reminderMail)  {
-		LOG.debug("Begin updateReminderHistory service ...");	
+	public void updateReminderHistory(Reminder reminder, Message reminderMessage)  {
+
 		if(!reminder.getReminderHistoryList().isEmpty())  {
-			reminder.getReminderHistoryList().get(reminder.getReminderHistoryList().size()-1).setReminderMail(reminderMail);
+			reminder.getReminderHistoryList().get(reminder.getReminderHistoryList().size()-1).setReminderMessage(reminderMessage);
 		}
-		LOG.debug("End updateReminderHistory service");	
 		
 	}
 

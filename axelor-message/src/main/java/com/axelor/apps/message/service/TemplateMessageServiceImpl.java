@@ -28,6 +28,7 @@ import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -35,7 +36,7 @@ import com.axelor.tool.template.TemplateMaker;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
-public class TemplateMessageServiceImpl implements TemplateMessageService {
+public class TemplateMessageServiceImpl extends TemplateRepository implements TemplateMessageService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TemplateMessageServiceImpl.class); 
 
@@ -50,6 +51,18 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	@Inject
 	private EmailAddressRepository emailAddressRepo;
 	
+	
+	
+	public Message generateMessage(Object object, long objectId, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException  {
+
+		return this.generateMessage(
+				object, 
+				objectId, 
+				object.getClass().getCanonicalName(), 
+				object.getClass().getSimpleName(), 
+				template);
+		
+	}
 	
 	
 	public Message generateMessage(Object object, long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException  {

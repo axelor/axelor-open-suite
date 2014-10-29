@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.MailModel;
+import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -403,14 +403,14 @@ public class AccountConfigService extends AccountConfigRepository{
 		
 	}
 	
-	public MailModel getRejectPaymentScheduleMailModel(AccountConfig accountConfig) throws AxelorException  {
+	public Template getRejectPaymentScheduleTemplate(AccountConfig accountConfig) throws AxelorException  {
 		
-		if(accountConfig.getRejectPaymentScheduleMailModel() == null)   {
+		if(accountConfig.getRejectPaymentScheduleTemplate() == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer les modèles de courrier Imports de rejet pour la société %s",
 					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		return accountConfig.getRejectPaymentScheduleMailModel();
+		return accountConfig.getRejectPaymentScheduleTemplate();
 		
 	}
 	

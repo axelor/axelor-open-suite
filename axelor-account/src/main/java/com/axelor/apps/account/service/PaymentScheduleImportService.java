@@ -46,10 +46,15 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.axelor.inject.Beans;
 
 public class PaymentScheduleImportService {
 
@@ -60,9 +65,6 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 
 	@Inject
 	private MoveService ms;
-	
-	@Inject
-	private MailService mas;
 	
 	@Inject
 	private PaymentScheduleService pss;
@@ -124,7 +126,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		// Test si les champs d'import sont configurés pour la société
 		accountConfigService.getRejectImportPathAndFileName(accountConfig);
 		accountConfigService.getTempImportPathAndFileName(accountConfig);
-		accountConfigService.getRejectPaymentScheduleMailModel(accountConfig);
+		accountConfigService.getRejectPaymentScheduleTemplate(accountConfig);
 		accountConfigService.getCustomerAccount(accountConfig);
 		accountConfigService.getRejectionPaymentMode(accountConfig);
 		
@@ -467,8 +469,11 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * @return
 	 * 				Le numéro de ligne d'écriture incrémenté
 	 * @throws AxelorException
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public MoveLine createMajorAccountRejectMoveLine(PaymentScheduleLine paymentScheduleLine, Company company, Account customerAccount, Move move, int ref) throws AxelorException  {
+	public MoveLine createMajorAccountRejectMoveLine(PaymentScheduleLine paymentScheduleLine, Company company, Account customerAccount, Move move, int ref) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
 			
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		if(paymentSchedule.getCompany().equals(company))  {
@@ -513,8 +518,11 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * @param ref
 	 * @return
 	 * @throws AxelorException
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public MoveLine createInvoiceRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move move, int ref) throws AxelorException  {
+	public MoveLine createInvoiceRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move move, int ref) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
 		if(invoice.getCompany().equals(company))  {
 			
 			MoveLine moveLine = this.createRejectMoveLine(invoice, invoice.getCompany(), customerAccount, move, ref);
@@ -580,8 +588,11 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * @param psl
 	 * 			Une ligne d'échéancier
 	 * @throws AxelorException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public void rejectLimitExceeded(PaymentScheduleLine paymentScheduleLine) throws AxelorException  {
+	public void rejectLimitExceeded(PaymentScheduleLine paymentScheduleLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
 		
 		LOG.debug("Action suite à un rejet sur une échéancier");
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
@@ -590,9 +601,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		AccountConfig accountConfig = company.getAccountConfig();
 		
 		if(partner.getRejectCounter() >= accountConfig.getPaymentScheduleRejectNumLimit())  {
-			// Génération du COURRIER
-			LOG.debug("COURRIER Paiement");
-			mas.save(mas.createImportRejectMail(partner, company, accountConfig.getRejectPaymentScheduleMailModel(), paymentScheduleLine.getRejectMoveLine()));
+			
+			// Génération du message
+			this.createImportRejectMessage(partner, company, accountConfig.getRejectPaymentScheduleTemplate(), paymentScheduleLine.getRejectMoveLine());
 			// Changement du mode de paiement de l'échéancier, du tiers
 			this.setPaymentMode(paymentSchedule);
 			// Alarme générée dans l'historique du client ?
@@ -610,17 +621,20 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * @param psl
 	 * 			Une facture
 	 * @throws AxelorException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public void rejectLimitExceeded(Invoice invoice) throws AxelorException  {
+	public void rejectLimitExceeded(Invoice invoice) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
 		LOG.debug("Action suite à un rejet sur une facture");
 		Partner partner = invoice.getPartner();
 		Company company = invoice.getCompany();
 		AccountConfig accountConfig = company.getAccountConfig();
 		
 		if(partner.getRejectCounter() >= accountConfig.getInvoiceRejectNumLimit())  {
-			// Génération du COURRIER
-			LOG.debug("COURRIER Facture");
-			mas.save(mas.createImportRejectMail(invoice.getPartner(), company, accountConfig.getRejectPaymentScheduleMailModel(), invoice.getRejectMoveLine()));
+			
+			// Génération du message
+			this.createImportRejectMessage(invoice.getPartner(), company, accountConfig.getRejectPaymentScheduleTemplate(), invoice.getRejectMoveLine());
 			// Mise à jour de la date de la dernière relance sur le tiers
 			rs.getReminder(partner, company).setReminderDate(today);
 			// Changement du mode de paiement de la facture, du tiers
@@ -630,6 +644,34 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 			invoiceService.save(invoice); 
 		}	
 	}
+	
+
+	/**
+	 * Procédure permettant de créer un courrier spécifique aux imports des rejets
+	 * @param contact
+	 * 			Un contact
+	 * @param company
+	 * 			Une société
+	 * @throws AxelorException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
+	 */
+	public Message createImportRejectMessage(Partner partner, Company company, Template template, MoveLine rejectMoveLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+		
+		TemplateMessageService templateMessageService = Beans.get(TemplateMessageService.class);
+		
+		Message message = templateMessageService.generateMessage(rejectMoveLine, rejectMoveLine.getId(), template);
+		
+		Beans.get(MessageRepository.class).save(message);
+		
+		return message;
+		
+	}
+	
+	
+	
+	
 	
 	
 	/**

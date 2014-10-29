@@ -46,12 +46,6 @@
 	      		<field name="defaultBankDetails"/>
 	      		<panel-related field="bankDetailsSet" showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    	</panel>
-	    	<panel title="Mails / Emails">
-		      	<field name="generatedMailFilePath" />
-		      	<field name="generatedEmailFilePath"/>
-		      	<field name="generatedMailFileName" />
-		      	<field name="generatedEmailFileName"/>
-	    	</panel>
 	  	</panel-tabs>
    	</form>
     
