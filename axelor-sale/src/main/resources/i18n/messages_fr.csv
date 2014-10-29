@@ -241,7 +241,7 @@ Sales distribution per product family,Répartition des ventes par famille de pro
 resources/views/Charts.xml:313"
 Sales follow-up,Suivi devis,,resources/views/SalesOrder.xml:93
 Sales order,Devis/Cmdes clients,,resources/views/menu.xml:65
-Sales order invoicing type,,,resources/domains/SaleConfig.xml:15
+Sales order invoicing type,Type facturation,,resources/domains/SaleConfig.xml:15
 Sales per country,Ventes par pays,,"resources/views/portal.xml:135
 resources/views/Charts.xml:387"
 Sales turnover comparison per month this year vs past years,CA par mois année N vs N-1,,"resources/views/Charts.xml:37

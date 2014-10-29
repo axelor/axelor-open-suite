@@ -805,7 +805,7 @@ resources/views/MenuConsultant.xml:94"
 Export,Export,,resources/views/AddressExport.xml:16
 Export Address,Exporter l'adresse,,resources/views/AddressExport.xml:12
 Export Date,Date Export,,resources/domains/AddressExport.xml:10
-Export Object,,,resources/views/General.xml:25
+Export Object,Exporter les objets,,resources/views/General.xml:25
 Export addresses,Exporter les adresses,,resources/views/AddressExport.xml:6
 Export indicators,Exporter le résultat,,resources/views/IndicatorGeneratorGrouping.xml:21
 External ?,Externe ?,,resources/domains/AlarmEngine.xml:17
@@ -1617,7 +1617,7 @@ resources/views/Partner.xml:18"
 Send email,Envoyer email,,"resources/views/Partner.xml:263
 resources/views/Partner.xml:45
 resources/views/Partner.xml:219"
-Sender (User),,,resources/domains/Message.xml:15
+Sender (User),Email de réponse (Répondre à),,resources/domains/Message.xml:15
 Sending dates,Dates d'envoi,,resources/views/Mail.xml:33
 Sensor,,,resources/domains/GooglePlaceSearch.xml:9
 Sensor used for Device only,,,resources/domains/GooglePlaceSearch.xml:9
