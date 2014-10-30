@@ -222,6 +222,8 @@ public class BillOfMaterialService extends BillOfMaterialRepository {
 		
 		if(billOfMaterial != null)  {
 			BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, true);
+			save(personalizedBOM);
+			personalizedBOM.setName(personalizedBOM.getName() + " (Personalized " + personalizedBOM.getId() + ")");
 			personalizedBOM.setPersonalized(true);
 			return personalizedBOM;
 		}
