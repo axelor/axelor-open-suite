@@ -24,6 +24,7 @@ application {
 	installedModules.each { dir ->
 			install "$dir.name"
 	}
+	
 }
 
 tomcat {
@@ -37,4 +38,19 @@ task("dataImport", type: JavaExec) {
 	if(System.getProperty("exec.args") != null) {
 		args System.getProperty("exec.args").split()
 	}
+}
+
+build.doLast{
+	archiveReports.execute()
+}
+
+task archiveReports(type: Zip){
+	from 'modules/abs'
+    include '*/src/main/resources/reports/*'
+	classifier 'reports'
+	eachFile { fileCopyDetails ->
+		fileCopyDetails.path = fileCopyDetails.path.replaceAll(".*/src/main/resources/reports/", '')
+	}
+	includeEmptyDirs = false
+	destinationDir = new File("$buildDir/libs")
 }
