@@ -70,49 +70,51 @@
         <field name="amount" aggregate="sum"/>
     </grid>
 	 
-    <form   onNew="action-opportunity-group-new" name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
-  <toolbar>
-    <button name="previous-stage" help="Previous Stage" readonlyIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
-    <button name="next-stage" help="Next Stage" readonlyIf="salesStageSelect &gt; 7" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
-    <button name="closed-won" help="Closed won" readonlyIf="salesStageSelect &gt; 8" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,save"/>
-    <button name="closed-lost" help="Closed lost" readonlyIf="salesStageSelect &gt; 8" icon="fa-minus-circle" onClick="action-opportunity-set-closed-lost,save"/>
-  </toolbar>
-  
-    <panel title="Context" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
-      <field name="name"/>
-      <field name="opportunityType" widget="SuggestBox"/>
-    </panel>
-    <panel title="Follow-up">
-      <field name="salesStageSelect"/>
-      <field name="source" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
-      <field name="nextStep" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
-      <field name="expectedCloseDate" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
-      <field name="probability" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
-    </panel>
-    <panel title="Financial terms" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
-      <field name="amount"/>
-      <field name="currency"/>
-      <field name="bestCase"/>
-      <field name="worstCase"/>
-    </panel>
-   <panel title="Description">
-    <field name="description" colSpan="12" showTitle="false" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" />
-  </panel>
-  <panel-tabs readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
-    <panel title="Linked to">
-      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-      <field name="lead"/>
-    </panel>
-    <panel title="Assigned to">
-      <field name="user"/>
-      <label title=""/>
-      <button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
-      <field name="team"/>
-      <field name="company" widget="SuggestBox"/>
-    </panel>
-  </panel-tabs>
+    <form   name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new" >
+		<toolbar>
+			<button name="previous-stage" help="Previous Stage" readonlyIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
+			<button name="next-stage" help="Next Stage" readonlyIf="salesStageSelect &gt; 7" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
+			<button name="closed-won" help="Closed won" readonlyIf="salesStageSelect &gt; 8" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,save"/>
+			<button name="closed-lost" help="Closed lost" readonlyIf="salesStageSelect &gt; 8" icon="fa-minus-circle" onClick="action-opportunity-set-closed-lost,save"/>
+		</toolbar>
+	  
+		<panel readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
+			<field name="name" css="label-bold bold"/>
+			<field name="opportunityType" widget="SuggestBox" colSpan="3"/>
+			<field name="source" colSpan="3"/>
+		</panel>
+		
+		<panel title="Follow-up">
+			<field name="salesStageSelect"/>
+			<field name="nextStep" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
+			<field name="expectedCloseDate" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
+			<field name="probability" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
+		</panel>
+		
+		<panel title="Financial terms" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
+			<field name="amount" colSpan="3"/>
+			<field name="currency" colSpan="3"/>
+			<field name="bestCase" colSpan="3"/>
+			<field name="worstCase" colSpan="3"/>
+		</panel>
+		
+		<panel title="Description">
+			<field name="description" colSpan="12" showTitle="false" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" />
+		</panel>
+		
+		<panel title="Linked to"  readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" sidebar="true">
+			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="lead"/>
+		</panel>
+		
+		<panel title="Assigned to" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" sidebar="true">
+		  <field name="user"/>
+		  <button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
+		  <field name="team"/>
+		  <field name="company" widget="SuggestBox"/>
+		</panel>
  
-</form>
+	</form>
     
     <action-group name="action-opportunity-group-new">
     	<action name="action-opportunity-record-new"/>
