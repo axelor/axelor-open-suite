@@ -51,7 +51,7 @@
 	
 	<input file="base_unit.csv" separator=";" type="com.axelor.apps.base.db.Unit" search="self.importId = :importId"  />
 	
-	<input file="base_unitConversion.csv" separator=";" type="com.axelor.apps.base.db.UnitConversion"/>
+	<input file="base_unitConversion.csv" separator=";" type="com.axelor.apps.base.db.UnitConversion" search="self.importId = :importId"/>
 	
 	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory" search="self.importId = :importId"  />
 	

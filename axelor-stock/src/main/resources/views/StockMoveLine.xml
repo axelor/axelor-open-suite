@@ -19,10 +19,10 @@
         <panel>
 	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
 	        <field name="productModel"/>
-	        <field name="qty" onChange="action-stock-move-line-record-qty"/>
-	        <field name="realQty"/>
-	        <field name="unit"/>
-	        <field name="price"/>
+	        <field name="qty" onChange="action-stock-move-line-record-qty" colSpan="3"/>
+	        <field name="realQty" colSpan="3"/>
+	        <field name="unit" colSpan="3"/>
+	        <field name="price" colSpan="3"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="accordanceSelect"/>
         </panel>

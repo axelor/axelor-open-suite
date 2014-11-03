@@ -256,7 +256,7 @@ resources/views/InterbankCode.xml:16"
 Blocking until,Blocage jusqu'au,,"resources/domains/Invoice.xml:69
 resources/domains/Invoice.xml:64"
 Blockings,Blocages,,resources/views/Invoice.xml:111
-Burden (weight),,,resources/domains/PayerQualityConfigLine.xml:21
+Burden (weight),Contrainte (poid),,resources/domains/PayerQualityConfigLine.xml:21
 CC Transaction N°,N° transaction CB,,resources/domains/PaymentVoucher.xml:28
 CFONB,CFONB,,resources/views/AccountConfig.xml:24
 CFONB Export,Export CFONB,,resources/views/CfonbConfig.xml:19
@@ -1147,7 +1147,7 @@ resources/domains/Reminder.xml:18"
 Partner account,Compte comptable Tiers,,resources/domains/PaymentVoucher.xml:11
 Partner category,Les Tiers,,resources/domains/ReminderConfigLine.xml:11
 Partner information,Information Tiers,,resources/views/ReminderHistory.xml:29
-Partner input select,,,resources/domains/MoveTemplate.xml:15
+Partner input select,Saisie du tiers,,resources/domains/MoveTemplate.xml:15
 Partner situation must be updated,MàJ du compte client ?,,resources/domains/AccountingSituation.xml:21
 Partner to Credit,Tiers à créditer,,"resources/views/MoveTemplate.xml:66
 resources/views/MoveTemplate.xml:73"
@@ -1252,7 +1252,7 @@ resources/views/PaymentVoucher.xml:6
 resources/views/menu.xml:205
 resources/views/menu.xml:155"
 Payment(s) schedule(s) rejected,Echéancier(s) paiement(s) rejeté(s),,resources/domains/IrrecoverableCustomerLine.xml:11
-PaymentSchduleLine,,,resources/views/PaymentSchedule.xml:40
+PaymentSchduleLine,Lignes d'Echéanciers,,resources/views/PaymentSchedule.xml:40
 Payments,Paiements,,"resources/views/menu.xml:794
 resources/views/menu.xml:151"
 Payments by IPO and IPO Cheque,Paiement par TIP et TIP chèque,,resources/views/AccountConfig.xml:133
@@ -1443,7 +1443,7 @@ Reminder method configuration line,Ligne de configuration de la méthode de rela
 Reminder method configuration lines,Lignes de configuration de la méthode de relance,,resources/views/ReminderConfigLine.xml:6
 Reminder method line,Ligne de la méthode de relance,,"resources/domains/Reminder.xml:20
 resources/views/ReminderMethodLine.xml:12"
-Reminder method line reached by active contract,,,resources/domains/Reminder.xml:12
+Reminder method line reached by active contract,Ligne de relance atteinte par le contrat actif,,resources/domains/Reminder.xml:12
 Reminder method lines,Lignes de la méthode de relance,,"resources/domains/ReminderMethod.xml:12
 resources/views/ReminderMethodLine.xml:5"
 Reminder methods,Méthodes de relance,,"resources/views/menu.xml:313
@@ -1615,7 +1615,7 @@ resources/views/Selects.xml:100
 resources/domains/InvoiceLine.xml:19
 resources/domains/InvoiceLineTax.xml:17
 resources/views/Tax.xml:11"
-Tax 0%,,,resources/domains/General.xml:21
+Tax 0%,Taxe à 0 %,,resources/domains/General.xml:21
 Tax Line,Ligne de TVA,,resources/views/InvoiceLineTax.xml:14
 Tax Lines,Les lignes de TVA,,"resources/domains/Invoice.xml:49
 resources/views/InvoiceLineTax.xml:6"
@@ -1800,8 +1800,8 @@ help:Invoice.taxTotal,Egal à la somme des montants TVA des lignes de T.V.A.,,re
 help:Journal.validAccountSet,Comptes comptables autorisés pour ce journal,,resources/domains/Journal.xml:27
 help:Journal.validAccountTypeSet,Types de comptes comptables autorisés sur ce journal,,resources/domains/Journal.xml:26
 help:MoveLine.counter,"This sequence is unique per Move, automatically reset to 1 for a new moveline",,resources/domains/MoveLine.xml:14
-help:MoveTemplateLine.account,,,resources/domains/MoveTemplateLine.xml:13
-help:MoveTemplateLine.percentage,,,resources/domains/MoveTemplateLine.xml:14
-help:MoveTemplateLine.product,,,resources/domains/MoveTemplateLine.xml:12
+help:MoveTemplateLine.account,Compte comptable qui sera repris sur la ligne d'écriture.,,resources/domains/MoveTemplateLine.xml:13
+help:MoveTemplateLine.percentage,Pourcentage de ventilation du montant total de la balance de l'écriture (entre 1 et 100%),,resources/domains/MoveTemplateLine.xml:14
+help:MoveTemplateLine.product,"Le produit n'a pas d'impact ici, il permet simplement de pré-remplir le compte comptable.",,resources/domains/MoveTemplateLine.xml:12
 help:PaymentMode.invoiceLabel,Libellé qui sera affiché sur le PDF.,,resources/domains/PaymentMode.xml:11
 help:PaymentVoucher.hasAutoInput,Indicates if the voucher has been manually or automatically input. This has an impact on overdue management.,,resources/domains/PaymentVoucher.xml:26
