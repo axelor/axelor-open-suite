@@ -73,8 +73,8 @@
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-general-check-duplicate-set-fields-set">
 		<panel>
-			<field name="fieldsSet" title="Fields" widget="MANY_TO_MANY" target="com.axelor.meta.db.MetaField" colSpan="12" readonly="true" help="Key fields to check duplicate records" />
-			<button name="showDuplicate" onClick="action-general-method-show-duplicate" title="Show" colSpan="1"/>
+			<field name="fieldsSet" title="Fields" type="many-to-many" target="com.axelor.meta.db.MetaField" colSpan="12" readonly="true" help="Key fields to check duplicate records" />
+			<button name="showDuplicate" onClick="action-general-method-show-duplicate" title="Show" colSpan="6"/>
 		</panel>
 	</form>
 	
