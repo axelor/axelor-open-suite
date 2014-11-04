@@ -43,7 +43,7 @@
 		    </panel>
 		</panel>
 		<panel>
-		    <field name="sequence" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr"/>
+		    <field name="sequence" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.code = 'productTrackingNumber'"/>
 		</panel>
     </form>
     

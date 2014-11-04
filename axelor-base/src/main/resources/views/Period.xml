@@ -10,18 +10,18 @@
         <field name="fromDate"/>
         <field name="toDate"/>
         <field name="company"/>
-        <field name="status"/>
+        <field name="statusSelect"/>
     </grid>
     
     <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period"  
 	    onNew="action-period-record-default">
-	    <panel>
+	    <panel readonlyIf="statusSelect == 2">
 	        <field name="name"/>
-	    	<field name="code" x-bind="{{code|uppercase}}"/>
-	    	<field name="fromDate"/>
-	    	<field name="toDate"/>
+	    	<field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>
+			<field name="company" widget="SuggestBox" colSpan="3"/>
+	    	<field name="fromDate" colSpan="3"/>
+	    	<field name="toDate" colSpan="3"/>
 	    	<field name="year" title="Fiscal year"/>   
-	    	<field name="company" widget="SuggestBox"/>
     	</panel>
     	<panel>
         	<panel colSpan="6">

@@ -36,8 +36,8 @@
 	        	<field name="versionSelect" colSpan="12"/>
 	        </panel>
             <panel colSpan="8">
-				<field name="name" showTitle="false" css="highlight" placeholder="Name"	colSpan="8"/>
-				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="highlight" placeholder="Code" colSpan="4"/>
+				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
+				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
 				<panel title="Product typology" colSpan="6" colWidths="30%,70%">
 					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" colSpan="12"/>
 					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" colSpan="12"/>
@@ -110,7 +110,7 @@
 	            	<field name="perishableNbrOfMonths" showIf="isPerishable"/>
         	 	</panel>
         	 	<panel colSpan="12" if-module="axelor-stock">
-		            <field name="trackingNumberConfiguration"/>
+		            <field name="trackingNumberConfiguration" canNew="true"/>
 	            </panel>
 	        </panel>
 	        <panel title="Variants" showTitle="false">
