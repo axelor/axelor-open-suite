@@ -19,6 +19,8 @@ package com.axelor.apps.purchase.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.app.AxelorModuleInfo;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepositroy;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 
@@ -27,6 +29,7 @@ public class PurchaseModule extends AxelorModule {
 
     @Override
     protected void configure() {
+    	bind(PurchaseOrderRepository.class).to(PurchaseOrderManagementRepositroy.class);
         bind(PurchaseOrderService.class).to(PurchaseOrderServiceImpl.class);
     }
 }

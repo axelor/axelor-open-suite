@@ -21,6 +21,8 @@ import com.axelor.app.AxelorModule;
 import com.axelor.app.AxelorModuleInfo;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.organisation.db.repo.ProjectManagementRepository;
+import com.axelor.apps.organisation.db.repo.ProjectRepository;
 import com.axelor.apps.organisation.service.invoice.InvoiceGeneratorOrganisation;
 import com.axelor.apps.organisation.service.invoice.InvoiceLineGeneratorOrganisation;
 
@@ -32,5 +34,6 @@ public class OrganisationModule extends AxelorModule {
         
         bind(InvoiceGenerator.class).to(InvoiceGeneratorOrganisation.class);
         bind(InvoiceLineGenerator.class).to(InvoiceLineGeneratorOrganisation.class);
+        bind(ProjectRepository.class).to(ProjectManagementRepository.class);
     }
 }
