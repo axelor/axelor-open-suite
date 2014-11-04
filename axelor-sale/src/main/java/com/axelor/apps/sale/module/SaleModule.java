@@ -19,6 +19,8 @@ package com.axelor.apps.sale.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.app.AxelorModuleInfo;
+import com.axelor.apps.sale.db.repo.SaleOrderManagementRepositroy;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 
@@ -28,5 +30,6 @@ public class SaleModule extends AxelorModule {
     @Override
     protected void configure() {
         bind(SaleOrderService.class).to(SaleOrderServiceImpl.class);
+        bind(SaleOrderRepository.class).to(SaleOrderManagementRepositroy.class);
     }
 }

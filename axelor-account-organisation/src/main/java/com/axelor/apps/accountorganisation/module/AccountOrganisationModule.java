@@ -26,6 +26,8 @@ import com.axelor.apps.accountorganisation.service.SaleOrderInvoiceServiceAccoun
 import com.axelor.apps.accountorganisation.service.SaleOrderPurchaseServiceAccountOrganisationImpl;
 import com.axelor.apps.accountorganisation.service.SaleOrderServiceAccountOrganisationImpl;
 import com.axelor.apps.accountorganisation.service.StockMoveLineServiceAccountOrganisationImpl;
+import com.axelor.apps.organisation.db.repo.TaskManagementRepository;
+import com.axelor.apps.organisation.db.repo.TaskRepository;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
@@ -45,6 +47,7 @@ public class AccountOrganisationModule extends AxelorModule {
         bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceServiceAccountOrganisationImpl.class);
         bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceServiceAccountOrganisationImpl.class);
         bind(SaleOrderPurchaseServiceImpl.class).to(SaleOrderPurchaseServiceAccountOrganisationImpl.class);
+        bind(TaskRepository.class).to(TaskManagementRepository.class);
         bind(StockMoveLineServiceImpl.class).to(StockMoveLineServiceAccountOrganisationImpl.class);
     }
 }

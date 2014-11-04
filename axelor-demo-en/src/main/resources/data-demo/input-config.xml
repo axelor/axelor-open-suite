@@ -41,6 +41,8 @@
 	
 	<input file="base_departement.csv" separator=";" type="com.axelor.apps.base.db.Department" />
 	
+	<input file="base_indicator_generator.csv" separator="," type="com.axelor.apps.base.db.IndicatorGenerator"/>
+	
 	<input file="base_canton.csv" separator=";" type="com.axelor.apps.base.db.Canton" />
 
 	<input file="base_commune.csv" separator=";" type="com.axelor.apps.base.db.Commune" search="self.importId = :importId"  />
