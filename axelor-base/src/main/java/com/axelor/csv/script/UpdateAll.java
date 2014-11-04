@@ -54,7 +54,7 @@ public class UpdateAll {
 				company.setAdministration(general);
 				List<? extends Period> periods = periodRepo.all().filter("self.company.id = ?1",company.getId()).fetch();
 				if(periods == null || periods.isEmpty()) {
-					for(Year year : yearRepo.all().filter("self.company.id = ?1",company.getId()).fetch()) {
+					for(Year year : yearRepo.all().filter("self.company.id = ?1 AND self.typeSelect = 1",company.getId()).fetch()) {
 						for(Integer month : Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12})) {
 							Period period = new Period();
 							LocalDate dt = new LocalDate(year.getFromDate().getYear(),month,1);

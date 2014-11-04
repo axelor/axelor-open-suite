@@ -1,6 +1,6 @@
 "code";"name";"importId";"password";"group.code";"language";"homeAction";"companySet.importId";"activeCompany.importId";"partner.importId";"activeCashRegister.importId";"teamSet.importId";"employee.importId";"activeTeam.importId"
 "admin";"Admin";1;"axadmin";"admins";"fr";;"1";1;90000;1;;;4
-"demo";"Demo";2;"axdemo";"user";"fr";;"1";1;90000;1;;;4
+"demo";"Demo";2;"axdemo";"users";"fr";;"1";1;90000;1;;;4
 "dirg";"Yoann MARQUES";3;"dirg";"MGT";"fr";;"1";1;90001;1;;1;4
 "assist";"Lucy ROBERT";4;"assist";"MGT";"fr";;"1";1;90002;1;;2;4
 "dirpro";"Lucas RICHARD";5;"dirpro";"MGT";"fr";;"1";1;90003;1;;3;4

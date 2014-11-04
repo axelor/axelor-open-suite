@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.report.IReport;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.tool.net.URLService;
@@ -35,7 +36,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
-public class MessageController {
+public class MessageController extends com.axelor.apps.message.web.MessageController {
 
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MessageController.class);
@@ -129,6 +130,5 @@ public class MessageController {
 			response.setFlash("Please select the Message(s) to print.");
 		}	
 	}
-	
 	
 }

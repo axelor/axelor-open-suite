@@ -145,6 +145,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		if(!message.getSentByEmail() && message.getRecipientUser()!=null)  {
 			message.setStatusSelect(MessageRepository.STATUS_SENT);
 			message.setSentByEmail(false);
+			message.setSentDateT(LocalDateTime.now());
 			save(message);
 		}
 	}
@@ -154,6 +155,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		if(message.getMediaTypeSelect() == 1){
 			message.setStatusSelect(MessageRepository.STATUS_SENT);
 			message.setSentByEmail(false);
+			message.setSentDateT(LocalDateTime.now());
 			save(message);
 		}
 			
@@ -163,7 +165,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		
 		MailAccount mailAccount = message.getMailAccount();
 		
-		if(mailAccount != null)  {
+		if(mailAccount != null && message.getMediaTypeSelect() == 2)  {
 			String port = mailAccount.getPort()<=0?null:mailAccount.getPort().toString();
 			
 			com.axelor.mail.MailAccount account = new SmtpAccount(
@@ -211,6 +213,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 			
 			message.setSentByEmail(true);
 			message.setStatusSelect(MessageRepository.STATUS_SENT);
+			message.setSentDateT(LocalDateTime.now());
 			save(message);
 			
 		}

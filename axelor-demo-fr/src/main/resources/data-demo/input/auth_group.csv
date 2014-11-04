@@ -1,6 +1,6 @@
 "id";"code";"name";"navigation";"permissions";"technicalStaff";"roles"
 1;"admins";"Administrateur";"visible";;"true";
-2;"user";"Utilisateur";"visible";;"false";
+2;"users";"Utilisateur";"visible";;"false";
 3;"BPM";"BPM";"visible";;"false";
 4;"CLT";"Client";"hidden";"perms.user";"false";"role.client"
 5;"CST";"Consultant";"visible";;"false";"role.consultant"

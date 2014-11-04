@@ -17,8 +17,11 @@
  */
 package com.axelor.apps.base.service.message;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import javax.mail.MessagingException;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -110,5 +113,16 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		return null;
 	}
 	
+	
+	@Override
+	@Transactional
+	public Message sendMessageByEmail(Message message)  {
+		super.sendMessageByEmail(message);
+		if(message.getStatusSelect() != null && message.getStatusSelect().equals(MessageRepository.STATUS_SENT)){
+			message.setSentDateT(GeneralService.getTodayDateTime().toLocalDateTime());
+			save(message);
+		}
+		return message;
+	}
 	
 }
