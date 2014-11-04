@@ -44,7 +44,7 @@
 	        <field name="hasToGetLeaveRequests" colSpan="4"/>
 	        <field name="hasToGetSpentTimeFromTask" colSpan="4"/>
 	        <field name="hasToGetPlanningLine" colSpan="4"/>
-	        <button name="getSpentTimeButton" title="Get past time" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true)" colSpan="1" onClick="save,action-timesheet-method-get-task-spent-time"/>
+	        <button name="getSpentTimeButton" title="Get past time" showIf="statusSelect != 3 &amp;&amp; (hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true)" colSpan="6" onClick="save,action-timesheet-method-get-task-spent-time"/>
 	      </panel>        
 	      <panel colSpan="12">
 	        <field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default" colSpan="4"/>

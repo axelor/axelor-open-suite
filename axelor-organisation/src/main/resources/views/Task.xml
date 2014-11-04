@@ -81,8 +81,8 @@
 	          <field name="initialEstimatedMargin" colSpan="4"/>
 	        </panel>
 	        <panel title="History" colSpan="12" showIf="statusSelect &gt;= 3">
-	          <button name="updateInitialEstimatedAmounts" title="Update and historize" showIf="statusSelect &gt;= 3" colSpan="1" onClick="action-task-method-update-initial-estimated-amounts"/>
-	          <field name="financialInformationHistoryLineList" showIf="statusSelect &gt;= 3" colSpan="12"/>
+	          <button name="updateInitialEstimatedAmounts" title="Update and historize" showIf="statusSelect &gt;= 3" colSpan="6" onClick="action-task-method-update-initial-estimated-amounts"/>
+	          <panel-related field="financialInformationHistoryLineList" showIf="statusSelect &gt;= 3" colSpan="12"/>
 	        </panel>  
 	      </panel>
 	      <panel title="Real estimated" colSpan="12">
