@@ -80,7 +80,6 @@
     </action-record>
 
 	<action-record name="action-message-record-default" model="com.axelor.apps.message.db.Message">
-    	<field name="sentDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
     	<field name="senderUser" expr="eval:__user__"/>
     </action-record>
     

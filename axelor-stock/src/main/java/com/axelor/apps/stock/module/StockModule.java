@@ -19,7 +19,10 @@ package com.axelor.apps.stock.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.app.AxelorModuleInfo;
-import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
+import com.axelor.apps.stock.db.repo.InventoryRepository;
+import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
 import com.axelor.apps.stock.service.MinStockRulesService;
 import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
@@ -33,6 +36,8 @@ public class StockModule extends AxelorModule {
     protected void configure() {
         bind(MinStockRulesService.class).to(MinStockRulesServiceImpl.class);
         bind(AddressServiceStockImpl.class);
+        bind(InventoryRepository.class).to(InventoryManagementRepository.class);
+        bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);
         bind(StockMoveService.class).to(StockMoveServiceImpl.class);
     }
 }

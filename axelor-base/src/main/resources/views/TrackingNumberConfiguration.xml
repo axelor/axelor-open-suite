@@ -18,23 +18,23 @@
     </grid>
     
     <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.base.db.TrackingNumberConfiguration"
-    	onNew="action-tracking-number-config-record-default">
+    	onNew="action-tracking-number-config-record-default" onSave="action-tracking-number-validate-qty">
     	<panel>
-	        <field name="isPurchaseTrackingManaged"/>
+	        <field name="isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-purchase-qty"/>
 		    <panel title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
 		        <field name="generatePurchaseAutoTrackingNbr" colSpan="12"/>
 		        <field name="purchaseQtyByTracking" help="0 --&gt; infinite" colSpan="12"/>
 		    </panel>
 	   </panel>
 	   <panel>
-		    <field name="isProductionTrackingManaged"/>
+		    <field name="isProductionTrackingManaged" onChange="action-tracking-number-set-default-production-qty" />
 		    <panel title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="12">
 		        <field name="generateProductionAutoTrackingNbr" colSpan="12"/>
 		        <field name="productionQtyByTracking" help="0 --&gt; infinite" colSpan="12"/>
 		    </panel>
 		</panel>
 		<panel>
-		    <field name="isSaleTrackingManaged"/>
+		    <field name="isSaleTrackingManaged" onChange="action-tracking-number-set-default-sale-qty"/>
 		    <panel title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="12">
 		        <field name="generateSaleAutoTrackingNbr"  colSpan="12"/>
 		        <field name="hasSaleAutoSelectTrackingNbr" showIf="isSaleTrackingManaged" colSpan="12"/>
@@ -43,7 +43,7 @@
 		    </panel>
 		</panel>
 		<panel>
-		    <field name="sequence" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr"/>
+		    <field name="sequence" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.code = 'productTrackingNumber'"/>
 		</panel>
     </form>
     
@@ -53,5 +53,22 @@
     	<field name="purchaseQtyByTracking" expr="0"/>
     	<field name="productionQtyByTracking" expr="0"/>
     </action-record>
+    
+    
+    <action-record name="action-tracking-number-set-default-purchase-qty" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+        <field name="purchaseQtyByTracking" expr="eval:isPurchaseTrackingManaged ? 1 : 0"/>
+    </action-record>
+    
+    <action-record name="action-tracking-number-set-default-production-qty" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+        <field name="productionQtyByTracking" expr="eval:isProductionTrackingManaged ? 1 : 0"/>
+    </action-record>
+    
+    <action-record name="action-tracking-number-set-default-sale-qty" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+        <field name="saleQtyByTracking" expr="eval:isSaleTrackingManaged ? 1 : 0"/>
+    </action-record>
+    
+    <action-validate name="action-tracking-number-validate-qty">
+        <error message="The quantity by lot must be greater than 0" if="purchaseQtyByTracking+productionQtyByTracking+saleQtyByTracking &lt;= 0" />
+    </action-validate>
     
 </object-views>

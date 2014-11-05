@@ -40,6 +40,7 @@
 	<input file="base_region.csv" separator=";" type="com.axelor.apps.base.db.Region"/>
 	
 	<input file="base_departement.csv" separator=";" type="com.axelor.apps.base.db.Department" />
+	<input file="base_indicator_generator.csv" separator="," type="com.axelor.apps.base.db.IndicatorGenerator"/>
 	
 	<input file="base_canton.csv" separator=";" type="com.axelor.apps.base.db.Canton" />
 
@@ -85,7 +86,7 @@
 	
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId"/>
 	
-	<input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year" search="self.code = :code"  />
+	<input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year" search="self.importId = :importId"/>
 	
 	<input file="account_cashRegister.csv" separator=";" type="com.axelor.apps.account.db.CashRegister" search="self.importId = :importId" />
 	

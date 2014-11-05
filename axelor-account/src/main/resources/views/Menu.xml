@@ -394,6 +394,7 @@
 		model="com.axelor.apps.base.db.Period" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" name="period-account-grid"/>
 		<view type="form" name="period-account-form"/>
+		<domain>self.year.typeSelect = 1</domain>
 	</action-view>
 
 	<menuitem name="account-conf-financial-journal" parent="account-conf-financial"
