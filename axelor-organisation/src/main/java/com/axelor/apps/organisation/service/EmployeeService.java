@@ -39,22 +39,26 @@ public class EmployeeService extends EmployeeRepository{
 		
 		employee.setFieldKeywordSet(new HashSet<Keyword>());
 		employee.getFieldKeywordSet().addAll(candidate.getFieldKeywordSet());
-		employee.setFirstName(candidate.getFirstName());
 		employee.setJobKeywordSet(new HashSet<Keyword>());
 		employee.getJobKeywordSet().addAll(candidate.getJobKeywordSet());
 		
 		employee.setMacroCategorySelect(candidate.getMacroCategorySelect());
-		employee.setName(candidate.getName());
 		employee.setPartnerSet(new HashSet<Partner>());
 		employee.getPartnerSet().addAll(candidate.getPartnerSet());
 		employee.setPersonalInfo(candidate.getPersonalInfo());
-		employee.setPicture(candidate.getPicture());
 		if(candidate.getPositionList()!=null && !candidate.getPositionList().isEmpty())  {
 			employee.getPositionList().addAll(candidate.getPositionList());
 		}
-		employee.setTitleSelect(candidate.getTitleSelect());
 		employee.setToolKeywordSet(new HashSet<Keyword>());
 		employee.getToolKeywordSet().addAll(candidate.getToolKeywordSet());
+		
+		Partner internalContact = new Partner();
+		internalContact.setName(candidate.getName());
+		internalContact.setFirstName(candidate.getFirstName());
+		internalContact.setTitleSelect(candidate.getTitleSelect());
+		internalContact.setPicture(candidate.getPicture());
+		
+		employee.setInternalContact(internalContact);
 		
 		return save(employee);
 		

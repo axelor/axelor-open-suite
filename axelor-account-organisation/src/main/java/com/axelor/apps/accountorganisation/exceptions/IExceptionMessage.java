@@ -44,7 +44,7 @@ public interface IExceptionMessage {
 	static final String TASK_INVOICE_4 = "Veuillez configurer un prix unitaire à facturer pour la tache";
 	static final String TASK_INVOICE_5 = "Veuillez configurer un montant à facturer pour la tache";
 	static final String TASK_INVOICE_6 = "Le montant à facturer ne correspond pas à la quantité et au prix unitaire à facturer pour la tache";
-	static final String TASK_INVOICE_7 = "Veuillez configurer un produit profil pour l'employé %s %s";
+	static final String TASK_INVOICE_7 = "Veuillez configurer un produit profil pour l'employé %s";
 	
 	
 	

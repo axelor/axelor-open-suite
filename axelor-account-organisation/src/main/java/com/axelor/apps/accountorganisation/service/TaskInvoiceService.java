@@ -272,7 +272,7 @@ public class TaskInvoiceService {
 		Product profileProduct = employee.getProfileProduct();
 		
 		if(profileProduct == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TASK_INVOICE_7), employee.getName(), employee.getFirstName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TASK_INVOICE_7), employee.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return profileProduct;

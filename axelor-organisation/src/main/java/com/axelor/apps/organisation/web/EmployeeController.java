@@ -64,10 +64,10 @@ public class EmployeeController {
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
 		
-			LOG.debug("Impression des informations sur l'employe "+employee.getName()+" "+employee.getFirstName()+" : "+url.toString());
+			LOG.debug("Impression des informations sur l'employe "+employee.getName() + " : "+url.toString());
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Employee "+employee.getName()+" "+employee.getFirstName());
+			mapView.put("title", "Employee "+employee.getName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);		
