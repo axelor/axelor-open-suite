@@ -6,8 +6,8 @@
 	<grid name="import-configuration-grid" title="Imports" model="com.axelor.apps.base.db.ImportConfiguration">
 		<field name="name"/>
 		<field name="typeSelect"/>
-        <field name="bindMetaFile" />
-        <field name="dataMetaFile" />
+        <field name="bindMetaFile"/>
+        <field name="dataMetaFile"/>
         <field name="user" />
         <field name="createdOn" />
 	</grid>
@@ -20,8 +20,8 @@
         <panel>
         	<field name="name"/>
 	        <field name="typeSelect"/>
-	        <field name="bindMetaFile" canNew="true"/>
-			<field name="dataMetaFile" canNew="true"/>
+	        <field name="bindMetaFile" domain="self.mime='text/xml'" canNew="true"/>
+			<field name="dataMetaFile" onSelect="action-attar-set-data-meta-file-domain" canNew="true"/>
         </panel>
         
         <panel-tabs>
@@ -42,4 +42,8 @@
       <field name="user" expr="eval: __user__"/>
     </action-record>
     
+   <action-attrs model="com.axelor.apps.base.db.ImportConfiguration" name="action-attar-set-data-meta-file-domain">
+     <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.mime='text/csv'&quot;" if="typeSelect=='csv'"/>
+     <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.mime='text/xml'&quot;" if="typeSelect=='xml'"/>
+   </action-attrs>
 </object-views>
