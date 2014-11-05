@@ -14,35 +14,30 @@
     onNew="action-mail-account-default-record">
     	<panel title="Informations">
             <field name="name"/>
-            <field name="user" column="user_id" colSpan="4"/>
-			<field name="isDefault" colSpan="2" onChange="action-mail-account-validate-is-default"/>
-			<button name="testConnection" onClick="save,action-method-mail-account-validate,save" title="Test connection"/>
-			<field name="isValid" onChange="action-panel-validate"/>
-        	<field name="signature" widget="Html" x-lite="true" colSpan="12"/>
+            <field name="user" column="user_id"/>
+			<field name="isDefault" onChange="action-mail-account-validate-is-default"/>
+        	<field name="signature" widget="Html" x-lite="true" height="7" colSpan="12"/>
         </panel>
-        <panel name="loginPanel" title="Login" >
+        <panel name="loginPanel" title="Login" readonlyIf="isValid" >
        	 	<field name="login"/>
         	<field name="password" widget="password"/>
         </panel>
-        <panel name="configPanel" title="Configurations">
+        <panel name="configPanel" title="Configurations" readonlyIf="isValid">
         	<field name="serverTypeSelect"/>
         	<field name="host"/>
         	<field name="port"/>
         	<field name="securitySelect"/>
         </panel>
+		<panel sidebar="true">
+			<field name="isValid"/>
+			<button name="testConnection" onClick="save,action-method-mail-account-validate,save" title="Test connection"/>
+		</panel>
     </form>
     
     
 	<action-method name="action-method-mail-account-validate">
 		<call class="com.axelor.apps.message.web.MailAccountController" method="validateSmtpAccount"/>
 	</action-method>
-	
-	<action-attrs name="action-panel-validate">
-		<attribute name="readonly" for="loginPanel" expr="true" if="isValid == true"></attribute>
-		<attribute name="readonly" for="configPanel" expr="true" if="isValid == true"></attribute>
-		<attribute name="readonly" for="loginPanel" expr="false" if="isValid == false"></attribute>
-		<attribute name="readonly" for="configPanel" expr="false" if="isValid == false"></attribute>
-	</action-attrs>
 	
 	<action-record name="action-mail-account-default-record" model="com.axelor.apps.message.db.MailAccount">
     	<field name="user" expr="eval:__user__"/>
