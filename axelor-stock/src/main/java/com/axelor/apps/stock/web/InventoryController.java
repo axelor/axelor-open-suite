@@ -142,13 +142,13 @@ public class InventoryController {
 	
 	public BigDecimal getCurrentQty(Location location, Product product){
 		
-		LocationLine locationLine = Beans.get(LocationLineService.class).getLocationLine(location, product);
-		
-		if(locationLine != null ){
-			LOG.debug("Current qty found: {}",locationLine.getCurrentQty());
-			return locationLine.getCurrentQty();
+		if(location != null && product != null){
+			LocationLine locationLine = Beans.get(LocationLineService.class).getLocationLine(location, product);
+			if(locationLine != null ){
+				LOG.debug("Current qty found: {}",locationLine.getCurrentQty());
+				return locationLine.getCurrentQty();
+			}
 		}
-		
 		return BigDecimal.ZERO;
 	}
 	
