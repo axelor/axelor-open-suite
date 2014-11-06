@@ -14,27 +14,26 @@
 	<form name="bill-of-material-form" title="Bill of material"
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
 		onNew="action-bill-of-material-default-record">
-	  <panel>
-	    <field name="name"/>
-	    <field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"/>
-	    <field name="company" widget="SuggestBox" form-view="company-form"/>
-	    <field name="qty"/>
-	    <field name="unit"/>
-	    <field name="prodProcess"/>
-	  </panel>
+		<panel>
+			<field name="name"/>
+			<field name="company" widget="SuggestBox" form-view="company-form"/>
+			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"/>
+			<field name="qty" colSpan="3"/>
+			<field name="unit" colSpan="3"/>
+			<field name="prodProcess"/>
+		</panel>
 	  
-	  <panel-tabs>
-	    <panel-related field="billOfMaterialList" title="Bill of material" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
-	    <panel-related field="prodRemainsList" title="Remains" colSpan="12"/>	
-	        
-	    <panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
-	    
-	    <panel title="Cost">
-	      <button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
-	      <field name="costPrice" readonly="true"/>
-	      <button name="updateProductCostPrice" title="update product cost price"   onClick="save,action-bill-of-material-method-update-product-cost-price"/>
-	    </panel>
-	  </panel-tabs>
+		<panel-tabs>
+			<panel-related field="billOfMaterialList" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+			<panel-related field="prodRemainsList" title="Remains" colSpan="12"/>	    
+			<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
+			<panel title="Cost">
+				<button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
+				<field name="costPrice" readonly="true"/>
+				<button name="updateProductCostPrice" title="update product cost price"   onClick="save,action-bill-of-material-method-update-product-cost-price"/>
+			</panel>
+		</panel-tabs>
+	  
 	</form>
     
     
@@ -52,19 +51,21 @@
 	<form name="bill-of-material-line-form" title="Bill of material"
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
 		onNew="action-bill-of-material-line-default-record">
-	  <panel>
-	    <field name="priority" hideIf="isRawMaterial"/>
-	    <field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"/>
-	    <field name="qty"/>
-	    <field name="unit"/>
-	    <field name="isRawMaterial"/>
-	    <field name="hasNoManageStock"/>
-	    <field name="prodProcess" hideIf="isRawMaterial"/>
-	  </panel>
-	  <panel-tabs hideIf="isRawMaterial">
-	    <panel-related title="Bill of material" field="billOfMaterialList" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
-	    <panel-related title="Remains" field="prodRemainsList"/>
-	  </panel-tabs>
+		<panel>
+			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"/>
+			<field name="isRawMaterial" colSpan="3"/>
+			<field name="hasNoManageStock" colSpan="3"/>
+			<field name="qty" colSpan="3"/>
+			<field name="unit" colSpan="3"/>
+			<panel title="Sub-process configuration" hideIf="isRawMaterial" colSpan="12">
+				<field name="prodProcess"/>
+				<field name="priority"/>
+			</panel>
+		</panel>
+		<panel-tabs hideIf="isRawMaterial">
+			<panel-related title="Bill of material" field="billOfMaterialList" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+			<panel-related title="Remains" field="prodRemainsList"/>
+		</panel-tabs>
 	</form>
     
     <action-view name="action-bill-of-material-view-tree" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">

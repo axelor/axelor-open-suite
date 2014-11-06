@@ -1221,7 +1221,7 @@ Owner name,Titulaire du compte,,resources/domains/BankDetails.xml:12
 PDF,PDF,,resources/views/Selects.xml:359
 PDF Templates,Modèles PDF,,"resources/views/menu.xml:444
 resources/views/menu.xml:441"
-Padding,Incrément,,resources/domains/Sequence.xml:16
+Padding,Nombre de chiffres,,resources/domains/Sequence.xml:16
 Paper,Papier,,resources/views/Selects.xml:274
 Parameters,Liste des paramètres/balises,,"resources/domains/BirtTemplate.xml:15
 resources/views/BirtTemplate.xml:18"

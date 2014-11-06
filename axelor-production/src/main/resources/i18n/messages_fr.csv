@@ -210,7 +210,7 @@ resources/domains/ProdHumanResource.xml:17
 resources/domains/ProdResource.xml:33
 resources/domains/StockMoveLine.xml:13"
 Operation order filters,Filtre des opérations,,resources/views/OperationOrder.xml:171
-Operation orders,Opération de fabrication,,"resources/domains/ManufOrder.xml:16
+Operation orders,Opérations de fabrication,,"resources/domains/ManufOrder.xml:16
 resources/views/Business.xml:17
 resources/views/Menu.xml:55
 resources/views/ProductionOrder.xml:65"
