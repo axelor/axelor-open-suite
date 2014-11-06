@@ -32,6 +32,8 @@ import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.LeadRepository;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -165,4 +167,14 @@ public class LeadService extends LeadRepository {
 		save(lead);
 	}
 	
+	
+	public Object importLead(Object bean, Map values) {
+
+		assert bean instanceof Lead;
+		Lead lead = (Lead)bean;
+		User user = AuthUtils.getUser();
+		lead.setUser(user);
+		lead.setTeam(user.getActiveTeam());
+		return lead;
+	}
 }

@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.web;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,17 +27,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
 public class InventoryController {
@@ -132,5 +139,20 @@ public class InventoryController {
 			response.setValue("inventorySeq", inventoryService.getInventorySequence(location.getCompany()));
 		}
 	}
+	
+	public BigDecimal getCurrentQty(Location location, Product product){
+		
+		LocationLine locationLine = Beans.get(LocationLineService.class).getLocationLine(location, product);
+		
+		if(locationLine != null ){
+			LOG.debug("Current qty found: {}",locationLine.getCurrentQty());
+			return locationLine.getCurrentQty();
+		}
+		
+		return BigDecimal.ZERO;
+	}
+	
+	
 }
+
   

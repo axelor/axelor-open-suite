@@ -9,6 +9,7 @@
     		<button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
 <!--     		<button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> -->
     		<button name="checkDuplicate" title="Check duplicate" onClick="action-general-check-duplicate-records" help=""/>
+    		<button name="importLeads" title="Import leads" onClick="action-crm-method-lead-import-leads" /> 
     	</toolbar>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
 	    <hilite color="primary" if="statusSelect == 1"/>
@@ -290,6 +291,10 @@
 	<action-method name="action-lead-method-set-social-network-url">
     	<call class="com.axelor.apps.crm.web.LeadController" method="setSocialNetworkUrl" />
     </action-method>
+    
+	<action-method name="action-crm-method-lead-import-leads">
+	    <call class="com.axelor.apps.crm.web.LeadController" method="getLeadImportConfig" />
+	</action-method>
 	
    	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">
 		<filter title="My Leads">

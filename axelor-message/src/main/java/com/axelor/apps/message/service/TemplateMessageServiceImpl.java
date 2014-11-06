@@ -28,6 +28,7 @@ import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -132,7 +133,7 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 				this.getEmailAddress(toRecipients),
 				this.getEmailAddress(ccRecipients),
 				this.getEmailAddress(bccRecipients),
-				mailAccount,
+				mailAccountService.find(mailAccount.getId()),
 				filePath,
 				addressBlock,
 				mediaTypeSelect
