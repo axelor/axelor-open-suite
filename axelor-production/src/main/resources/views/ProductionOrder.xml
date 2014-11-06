@@ -19,7 +19,7 @@
 	    <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice"/>
 	    <button name="showManufOrderWizard" title="Add Manuf. Order"   onClick="action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  
-	  <panel title="Add Manu. Order" hidden="true">
+	  <panel name="addManufOrderWizard" title="Add Manu. Order" hidden="true">
 	    <field name="product" title="Product" widget="ManyToOne" target="com.axelor.apps.base.db.Product"/>
 	    <field name="billOfMaterial" title="BOM" widget="ManyToOne" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" target="com.axelor.apps.production.db.BillOfMaterial"/>
 	    <field name="qty" title="Quantity" widget="decimal"/>
