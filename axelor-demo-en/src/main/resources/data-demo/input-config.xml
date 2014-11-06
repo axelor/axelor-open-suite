@@ -7,7 +7,7 @@
 
     <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name"/>
     
-    <input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile" />
+    <input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile" search="self.fileName = :fileName" />
     
     <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"  search="self.name = :name">
         <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
@@ -21,6 +21,10 @@
     <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" />
     
 <!--     IMPORT DU PACKAGE 'BASE' -->
+	
+	<input file="base_import_configuration.csv" separator=";" type="com.axelor.apps.base.db.ImportConfiguration">
+		<bind to="user" search="self.code = 'admin' " update="true" />
+	</input>	
 	<input file="base_birtTemplate.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId" />
 	
 	<input file="base_birtTemplateParameter.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"  />
