@@ -16,14 +16,16 @@
     	onNew="action-min-stock-rules-record-new">
     	<panel>
 	        <field name="location"/>
-	        <field name="product"/>
+			<field name="typeSelect"/>
+	        <field name="product" domain="self.productTypeSelect == storable"/>
+			<field name="orderAlertSelect"/>
 	        <field name="minQty"/>
 	        <field name="reOrderQty"/>
-	        <field name="typeSelect"/>
-	        <field name="orderAlertSelect"/>
-	        <field name="user"/>
-	        <field name="team"/>
         </panel>
+		<panel title="Reordering managed by">
+			<field name="user"/>
+	        <field name="team"/>
+		</panel>
     </form>
     
     <action-record name="action-min-stock-rules-record-new" model="com.axelor.apps.stock.db.MinStockRules">

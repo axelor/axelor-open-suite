@@ -7,16 +7,13 @@
 
 	<entity name="Employee" lang="java">
 		<integer name="importId" />
-		<integer name="titleSelect" title="Civility" selection="partner.title.type.select" massUpdate="true" />
-		<string name="name" title="Surname" required="true" />
-		<string name="firstName" title="First Name" required="true" />
-    	<many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" />
+		<string name="name" title="Name"/>
 		<string name="function" title="Function"/>
 		<date name="entryDate" title="Entry Date" />
 		<date name="exitDate" title="Departure Date"/>
 		<many-to-one name="companyDepartment" ref="com.axelor.apps.base.db.CompanyDepartment" title="Department" massUpdate="true" />
 		<string name="phoneAtCustomer" title="OnSite Phone N°"/>
-		<many-to-one name="internalContact" ref="com.axelor.apps.base.db.Partner" title="Internal Contact"/>
+		<one-to-one name="internalContact" ref="com.axelor.apps.base.db.Partner" title="Internal Contact"/>
 		<decimal name="dailySalaryCost" title="Employee Daily Cost"/>
 		<integer name="macroCategorySelect" title="Macro-Category" selection="organisation.candidate.macroCategory.select"/>
 		<integer name="categorySelect" title="Category"	selection="organisation.candidate.category.select" />

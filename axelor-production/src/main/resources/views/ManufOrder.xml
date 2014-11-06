@@ -60,14 +60,14 @@
 	    <button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
 	  </toolbar>
 	  <panel>
-	    <field name="manufOrderSeq" readonlyIf="statusSelect &gt; 1"/>
-	    <field name="priority" readonlyIf="statusSelect == 6"/>
+	    <field name="manufOrderSeq" readonlyIf="statusSelect &gt; 1" css="bold"/>
+	    <field name="priority" readonlyIf="statusSelect == 6" colSpan="3"/>
+		<field name="company" readonlyIf="statusSelect &gt; 1" colSpan="3"/>
 	    <field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-	    <field name="company" readonlyIf="statusSelect &gt; 1"/>
-	    <field name="billOfMaterial" readonlyIf="statusSelect &gt; 1" domain="self.isRawMaterial = false"/>
-	    <field name="product"/>
-	    <field name="qty" readonlyIf="statusSelect &gt; 1"/>
+		<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.isRawMaterial = false"/>
 	    <field name="billOfMaterial.prodProcess"/>
+	    <field name="product" required="true"/>
+	    <field name="qty" readonlyIf="statusSelect &gt; 1"/>
 	    <field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>
 	    <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"/>
 	  </panel>  
