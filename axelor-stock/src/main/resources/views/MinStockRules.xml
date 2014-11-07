@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
     <grid name="min-stock-rules-grid" title="Minimum stock rules" model="com.axelor.apps.stock.db.MinStockRules">
+        <toolbar>
+        <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
+        </toolbar>
         <field name="location"/>
         <field name="product"/>
         <field name="minQty"/>

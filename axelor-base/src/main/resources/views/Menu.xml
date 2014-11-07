@@ -46,6 +46,7 @@
 		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
 		<domain>self.isContact = false</domain>
 		<context name="user_id" expr="eval:__user__" />
+		<context name="searchFields" expr="name;firstName"/>
 	</action-view>
 	
 	<menuitem name="contact-root-contact" parent="contact-root" priority="3"
@@ -105,6 +106,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<context name="fromMain" expr="eval:true"/>
+		<context name="searchFields" expr=" addressL4;addressL6"/>
 	</action-view>
 	
 	<menuitem name="contact-conf-invoice-rib" parent="contact-conf"
@@ -255,6 +257,7 @@
 		title="Cities/Communes" model="com.axelor.apps.base.db.Commune" icon="img/16px/organisationSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
+		<context name="searchFields" expr="name"/>
 	</action-view>
 
 	<menuitem name="admin-root-organisation-territory-department"
@@ -402,6 +405,7 @@
 		title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
+		<context name="searchFields" expr="fromUnit;toUnit"/>
 	</action-view>
 	
 	<menuitem name="admin-conf-general-year" parent="admin-conf-general"

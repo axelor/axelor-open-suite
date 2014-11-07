@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
    
     <grid name="commune-grid" title="Cities-Communes" model="com.axelor.apps.base.db.Commune">
+       <toolbar>
+       <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
+       </toolbar> 
         <field name="name"/>
 		<field name="zip"/>
     </grid>

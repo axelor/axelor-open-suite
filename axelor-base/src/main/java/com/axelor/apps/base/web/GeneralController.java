@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,15 +33,15 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
-import com.axelor.inject.Beans;
 
 public class GeneralController {
 	
@@ -67,25 +68,30 @@ public class GeneralController {
 	
 	@SuppressWarnings("unchecked")
 	public void showDuplicate(ActionRequest request, ActionResponse response){
-		String object = (String) request.getContext().get("object");
-		LOG.debug("Duplicate record model: {}",object);
-		List<String> joinList = new ArrayList<String>();
-		joinList.add("m.id <> m1.id");
-		for(HashMap<String,Object> field:(List<HashMap<String,Object>>) request.getContext().get("fieldsSet")){
-			if((Boolean)field.get("selected"))
-				joinList.add("m."+field.get("name")+" = m1."+field.get("name"));
+		String model = (String)request.getContext().get("object");
+		List<String> fieldList = new ArrayList<String>();
+		String searchFields;
+		if(model==null){
+			model=request.getModel();
+			searchFields=(String) request.getContext().get("searchFields");
+			fieldList.addAll(Arrays.asList(searchFields.split(";")));
 			
+		}else{
+			for(HashMap<String,Object> field:(List<HashMap<String,Object>>) request.getContext().get("fieldsSet")){
+				if((Boolean)field.get("selected"))
+					fieldList.add(field.get("name").toString());
+			}
 		}
-		if(joinList.size() > 1){
-			LOG.debug("Duplicate record joinList: {}",joinList);
-			Query query = JPA.em().createQuery("SELECT DISTINCT(m.id) FROM "+object+" m,"+object+" m1 WHERE "+Joiner.on(" AND ").join(joinList));
-			String ids = Joiner.on(",").join(query.getResultList());
+		LOG.debug("Duplicate record model: {}",model);
+		if(fieldList.size() > 0){
+			LOG.debug("Duplicate record joinList: {}",fieldList);
+			String ids =findDuplicateRecords(fieldList,model);
 			if(ids.isEmpty())
 				response.setFlash("No duplicate records found");
 			else
 				response.setView(ActionView
 						  .define("Duplicate records")
-						  .model(object)
+						  .model(model)
 						  .domain("self.id in ("+ids+")")
 						  .map());
 		}
@@ -108,5 +114,15 @@ public class GeneralController {
 					  .context("_showRecord", metaFile.getId().toString())
 					  .map());
 		}
-	}	
+	}
+	private String findDuplicateRecords(List<String> fieldList,String object){
+		List<String> joinList=new ArrayList<>();
+		joinList.add("m.id <> m1.id");
+		for(String field:fieldList){
+			joinList.add("m."+field+" = "+"m1."+field);
+		}
+		Query query = JPA.em().createQuery("SELECT DISTINCT(m.id) FROM "+object+" m,"+object+" m1 WHERE "+Joiner.on(" AND ").join(joinList));
+		String ids = Joiner.on(",").join(query.getResultList());
+		return ids;
+	}
 }

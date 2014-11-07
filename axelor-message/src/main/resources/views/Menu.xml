@@ -109,6 +109,7 @@
 		model="com.axelor.apps.message.db.EmailAddress" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
+		<context name="searchFields" expr="address"/>
 	</action-view>
 
 </object-views>

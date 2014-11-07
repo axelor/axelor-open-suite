@@ -3,6 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     <grid name="unit-conversion-grid" title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion">
+      <toolbar>
+      <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
+      </toolbar>  
         <field name="startUnit"/>
         <field name="coef"/>
         <field name="endUnit"/>
