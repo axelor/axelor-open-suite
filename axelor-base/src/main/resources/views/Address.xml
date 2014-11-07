@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 	
 	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
+		<toolbar>
+		<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
+		</toolbar>
 		<field name="fullName" />
 		<button name="map" icon="fa-map-marker" help="Locate" onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
 		<button name="directions" icon="fa-location-arrow" help="Direction" onClick="com.axelor.apps.base.web.AddressController:directionsMap" />

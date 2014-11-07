@@ -72,10 +72,10 @@
 	</form>
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-general-check-duplicate-set-fields-set">
-		<panel>
-			<field name="fieldsSet" title="Fields" type="many-to-many" target="com.axelor.meta.db.MetaField" colSpan="12" readonly="true" help="Key fields to check duplicate records" />
-			<button name="showDuplicate" onClick="action-general-method-show-duplicate" title="Show" colSpan="6"/>
-		</panel>
+		<panel-related field="fieldsSet" title="Fields" help="Key fields to check duplicate records" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField"/>
+  		<panel>
+    		<button name="showDuplicate" title="Show" colSpan="6" onClick="action-general-method-show-duplicate"/>
+  		</panel>
 	</form>
 	
 	

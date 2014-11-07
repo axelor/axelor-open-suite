@@ -153,6 +153,7 @@
 		model="com.axelor.apps.stock.db.MinStockRules" icon="img/16px/addressBook_16px.png">
 		<view type="grid" />
 		<view type="form" />
+		<context name="searchFields" expr="location;product"/>
 	</action-view>
 	
 	<menuitem name="stock-root-conf-stock-tracking-numbers" parent="stock-root-conf"
