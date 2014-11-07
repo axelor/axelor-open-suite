@@ -17,6 +17,11 @@
  */
 package com.axelor.apps.production.service;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
@@ -47,6 +52,7 @@ public class ManufOrderStockMoveService extends ManufOrderRepository {
 	@Inject
 	private LocationRepository locationRepo;
 	
+	private static final Logger log = LoggerFactory.getLogger(ManufOrderStockMoveService.class);
 
 	public void createToConsumeStockMove(ManufOrder manufOrder) throws AxelorException {
 		
@@ -130,6 +136,9 @@ public class ManufOrderStockMoveService extends ManufOrderRepository {
 		
 		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfigService.getProductionConfig(company));
 		
+		LocalDateTime plannedEndDateT = manufOrder.getPlannedEndDateT();
+		LocalDate plannedEndDate = plannedEndDateT != null ? plannedEndDateT.toLocalDate() : null;
+		
 		StockMove stockMove = stockMoveService.createStockMove(
 				null, 
 				null, 
@@ -137,7 +146,7 @@ public class ManufOrderStockMoveService extends ManufOrderRepository {
 				null, 
 				virtualLocation, 
 				manufOrder.getProdProcess().getLocation(), 
-				manufOrder.getPlannedEndDateT().toLocalDate());
+				plannedEndDate);
 		
 		return stockMove;
 	}

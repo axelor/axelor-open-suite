@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportSettings;
+import com.axelor.apps.base.db.ImportConfiguration;
+import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.report.IReport;
@@ -34,7 +36,9 @@ import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
@@ -154,5 +158,23 @@ public class LeadController {
 		response.setAttr("linkedin", "title", urlMap.get("linkedin"));
 		response.setAttr("youtube", "title", urlMap.get("youtube"));
 		
+	}
+	
+	public void getLeadImportConfig(ActionRequest request, ActionResponse response){
+		ImportConfiguration leadImportConfig  = Beans.get(ImportConfigurationRepository.class).all().filter("self.bindMetaFile.fileName = ?1","import-config-lead.xml").fetchOne();
+		LOG.debug("ImportConfig for lead: {}",leadImportConfig);
+		if(leadImportConfig == null){
+			response.setFlash(I18n.get("No lead import configuration found"));
+		}
+		else{
+			response.setView(ActionView
+							  .define(I18n.get("Import lead"))
+							  .model("com.axelor.apps.base.db.ImportConfiguration")
+							  .add("form", "import-configuration-form")
+							  .param("popup", "reload")
+							  .param("forceEdit", "true")
+							  .context("_showRecord", leadImportConfig.getId().toString())
+							  .map());
+		}
 	}
 }
