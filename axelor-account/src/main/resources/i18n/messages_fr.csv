@@ -428,7 +428,7 @@ Currency Rate,Taux de change,,resources/domains/MoveLine.xml:33
 Current Asset,"Actif courants (stock, encours...)",,resources/views/Selects.xml:23
 Current Period Entries,Ecritures Période en cours,,resources/views/Move.xml:186
 Cust. Credit note Journal,Journal note de crédit client,,resources/domains/AccountConfig.xml:17
-Cust. Invoices,Factures de vente des clients,,"resources/views/menu.xml:39
+Cust. Invoices,Factures clients,,"resources/views/menu.xml:39
 resources/views/menu.xml:687
 resources/views/menu.xml:42
 resources/views/menu.xml:690"
@@ -476,7 +476,6 @@ resources/domains/ChequeRejection.xml:11
 resources/domains/Move.xml:10"
 Date can't be ahead of today,La date saisie ne peut être supérieure à la date du jour.,,resources/views/MoveTemplate.xml:81
 Dates,Dates,,resources/views/Invoice.xml:40
-Ddd,,,resources/domains/Batch.xml:13
 Debit,Débit,,"resources/views/Selects.xml:215
 resources/domains/MoveLine.xml:15"
 Debit Nbr.,N° de prélèvement,,resources/domains/DirectDebitManagement.xml:9
@@ -1583,11 +1582,11 @@ Subtotal by partner,Sous-total par tiers,,resources/domains/MoveLineReport.xml:2
 Subtype,Sous type,,resources/views/Selects.xml:11
 Summary code,,,resources/domains/InvoiceLineEvent.xml:12
 Suppl. Credit Note Journal,Journal Avoirs Frn.,,resources/domains/AccountConfig.xml:19
-Suppl. Invoices,Factures d'achats des fournisseurs,,"resources/views/menu.xml:712
+Suppl. Invoices,Factures fournisseurs,,"resources/views/menu.xml:712
 resources/views/menu.xml:69
 resources/views/menu.xml:72
 resources/views/menu.xml:709"
-Suppl. Refunds,Avoirs des fournisseurs,,"resources/views/menu.xml:720
+Suppl. Refunds,Avoirs fournisseurs,,"resources/views/menu.xml:720
 resources/views/menu.xml:82
 resources/views/menu.xml:85
 resources/views/menu.xml:723"

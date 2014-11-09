@@ -180,7 +180,7 @@ Civility,Civilité,,"resources/domains/Candidate.xml:13
 resources/domains/Employee.xml:10
 resources/views/Candidate.xml:34
 resources/views/Employee.xml:28"
-Code,,,"resources/domains/Competence.xml:10
+Code,Code,,"resources/domains/Competence.xml:10
 resources/domains/Competence.xml:15
 resources/domains/JobOffer.xml:10
 resources/domains/MobilityChoice.xml:10"

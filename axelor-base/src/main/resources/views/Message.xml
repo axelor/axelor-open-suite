@@ -36,14 +36,14 @@
        	 	<field name="content" colSpan="12" showTitle="false" widget="html"/>
         </panel>
         <panel title="Related to" sidebar="true" colSpan="12" readonlyIf="statusSelect == 3">
-				<field name="filePath" widget="url" colSpan="12"/>
+			<field name="filePath" widget="url" colSpan="12"/>
+			<field name="company" colSpan="12"/>
 			<panel colSpan="12">
 				<field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" colSpan="12"/>
 			</panel>
 			<panel colSpan="12">
 				<field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId" colSpan="12" showIf="relatedTo1Select != null"/>
 			</panel>
-			<field name="company" colSpan="12"/>
 		</panel>
     </form>
     

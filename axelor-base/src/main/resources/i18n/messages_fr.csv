@@ -403,7 +403,6 @@ COG,COG,,resources/domains/Country.xml:13
 CSV File,Fichiers CSV,,resources/views/Selects.xml:280
 Calculated price/Qty,Prix calculé,,resources/domains/SupplierCatalog.xml:17
 Calendar,Calendrier,,resources/views/Calendar.xml:11
-Calendar Id,Id Calendrier,,resources/domains/GoogleCalendar.xml:7
 Calendar configuration,Configuration calendrier,,resources/views/CalendarConfiguration.xml:11
 Calendar configurations,Configuration Calendriers,,resources/views/CalendarConfiguration.xml:5
 Calendars,Calendriers,,"resources/views/User.xml:34
@@ -423,12 +422,10 @@ Categorization,Catégorisation,,resources/views/Product.xml:46
 Category,Catégorie,,resources/domains/Partner.xml:11
 Chart,Graphique,,resources/views/welcome.xml:14
 Check / Update rate,Vérifier / Màj le taux,,resources/views/CurrencyConversionLine.xml:48
-Check File is Trahsed or not,,,resources/domains/GoogleFile.xml:14
 Check currency exhange rate,Vérifier taux de change,,resources/views/CurrencyConversionLine.xml:96
 Check currency exhange rates,Vérifier taux de change,,resources/views/CurrencyConversionLine.xml:35
 Check duplicate,Vérifier les doublons,,"resources/views/General.xml:74
 resources/views/General.xml:139"
-Check file is Trashed or not,,,resources/domains/GoogleDirectory.xml:9
 Check query,Tester la requête,,resources/views/Querie.xml:19
 Check rate,Vérifier taux,,resources/views/CurrencyConversionLine.xml:14
 Chemistry,Chimie,,resources/views/Selects.xml:220
@@ -443,12 +440,6 @@ Civility,Civilité,,"resources/views/Partner.xml:278
 resources/views/Selects.xml:329
 resources/views/Partner.xml:61
 resources/domains/Partner.xml:16"
-Cliend Id in Api Console,,,resources/domains/GoogleAppsConfig.xml:8
-Client Email Id,Email,,resources/domains/GoogleAppsConfig.xml:7
-Client Email Id in Api Console,,,resources/domains/GoogleAppsConfig.xml:7
-Client Id,Id Client,,resources/domains/GoogleAppsConfig.xml:8
-Client Secret,Clé secrète,,resources/domains/GoogleAppsConfig.xml:9
-Client Secret in Api Console,,,resources/domains/GoogleAppsConfig.xml:9
 Client Situation,Situation comptable,,"resources/views/Partner.xml:265
 resources/views/Partner.xml:47"
 Client invoice,Facture client,,resources/views/Selects.xml:463
@@ -568,7 +559,6 @@ resources/domains/PrintingSettings.xml:11"
 Company phoneBook,Annuaire société,,resources/views/Partner.xml:9
 Complement,Complément,,resources/domains/PickListEntry.xml:11
 Complementary information,Informations complémentaires,,resources/views/Mail.xml:41
-Completed Date,Date de réalisation,,resources/domains/GoogleTask.xml:12
 Compute payers quality,Calculer les qualités payeurs,,resources/views/General.xml:41
 Configuration,Configuration,,"resources/views/AlarmEngineBatch.xml:20
 resources/views/menu.xml:464
@@ -622,7 +612,6 @@ Create,Créer,,"resources/domains/RoutingAction.xml:14
 resources/views/menu.xml:658"
 Create Contact,Créer Contact,,"resources/views/menu.xml:677
 resources/views/menu.xml:675"
-Create Date,Date de création,,resources/domains/GoogleCalendar.xml:13
 Create Expense,Créer une note de frais,,resources/views/MenuConsultant.xml:91
 Create Individual Partner,Créer Tiers Individuels,,"resources/views/menu.xml:668
 resources/views/menu.xml:670"
@@ -738,8 +727,6 @@ resources/views/Selects.xml:318"
 Direct debit blocking,Blocage prélèvement,,resources/views/Blocking.xml:24
 Direct debit reject,Rejet des prélèvements,,resources/views/Selects.xml:373
 Direction,Itinéraire,,resources/views/Address.xml:9
-Directory Id,ID Répertoire,,resources/domains/GoogleDirectory.xml:7
-Directory Name,Nom du répertoire,,resources/domains/GoogleDirectory.xml:8
 Discount,Remise,,resources/views/Selects.xml:501
 Discount/Additionnal/Replace,Remise/Surcharge/Remplace,,resources/domains/PriceListLine.xml:12
 Display discount?,Afficher réduction ?,,resources/domains/PriceList.xml:16
@@ -749,11 +736,6 @@ Draft,Brouillon,,"resources/views/Selects.xml:324
 resources/views/Selects.xml:313
 resources/views/Selects.xml:452
 resources/views/Selects.xml:349"
-Drive User,Utilisateur,,resources/domains/UserProfile.xml:7
-Drive user,Utilisateur Drive,,"resources/domains/GoogleDirectory.xml:11
-resources/domains/GoogleAppsSyncSettings.xml:9
-resources/domains/GoogleFile.xml:18"
-Due Date,Date d'échéance,,resources/domains/GoogleTask.xml:10
 Duration,Durée,,resources/domains/Batch.xml:18
 EAN13 Code,Code EAN13,,resources/domains/Product.xml:12
 ERP Administration,Administration Axelor,,resources/views/menu.xml:312
@@ -767,8 +749,6 @@ Email,Email,,"resources/views/Selects.xml:301
 resources/domains/Partner.xml:41
 resources/views/Selects.xml:421
 resources/views/Selects.xml:273"
-Email Id,Identifiant Email,,"resources/domains/GoogleCalendar.xml:12
-resources/domains/UserProfile.xml:8"
 Email address,Adresse Email,,resources/domains/Mail.xml:15
 Email and paper,Email et papier,,resources/views/Selects.xml:275
 Email model,Modèle d' Email,,resources/views/MailModel.xml:14
@@ -780,13 +760,10 @@ resources/views/MailModel.xml:5"
 Email/Mail model tags,Balises de modèles de courrier,,resources/views/menu.xml:292
 Emails models,Modèles d'Emails,,resources/views/MailModel.xml:33
 End Date,Date de fin,,resources/domains/Batch.xml:17
-End date,Date fin,,resources/domains/GoogleCalendar.xml:15
 Energy,Energie,,resources/views/Selects.xml:226
 Enterprise Partner,Entreprise,,resources/domains/Site.xml:10
 Entertainment,Divertissement,,resources/views/Selects.xml:227
 Equal,Égal,,resources/views/Selects.xml:475
-Event Id,,,resources/domains/GoogleCalendar.xml:9
-Event Summary,,,resources/domains/GoogleCalendar.xml:10
 Events,Événements,,resources/views/Partner.xml:148
 Every,Tous,,"resources/views/Scheduler.xml:25
 resources/views/Scheduler.xml:21
@@ -820,17 +797,6 @@ resources/domains/RoutingRule.xml:12
 resources/domains/TemplateSpreadSheetCriteria.xml:7"
 Fields,Champs,,"resources/domains/RoutingActionCreate.xml:11
 resources/views/General.xml:76"
-"File Content, Not storing",,,resources/domains/GoogleFile.xml:13
-File Id,ID Répertoire,,resources/domains/GoogleFile.xml:8
-File Name,Nom fichier,,resources/domains/GoogleFile.xml:9
-File Size,Taille fichier,,resources/domains/GoogleFile.xml:11
-File Size in bytes,,,resources/domains/GoogleFile.xml:11
-File Type,Type fichier,,resources/domains/GoogleFile.xml:10
-File content,Contenu du fichier,,resources/domains/GoogleFile.xml:13
-File name,,,resources/domains/GoogleFile.xml:9
-File permission to share File,,,resources/domains/GoogleFile.xml:21
-File permissions,,,resources/domains/GoogleFile.xml:21
-File type,,,resources/domains/GoogleFile.xml:10
 Filepath to export generated emails,Chemin d'export des emails générés,,resources/domains/Company.xml:29
 Filepath to export generated mails,Chemin d'export des courriers générés,,resources/domains/Company.xml:28
 Filter,Filtrer,,resources/domains/FilterList.xml:11
@@ -886,25 +852,10 @@ Generated mail files name prefix,Chemin d'export des courriers générés,,resou
 Geographical area,Zone géographique,,"resources/domains/Site.xml:14
 resources/views/GeographicalArea.xml:11
 resources/views/GeographicalArea.xml:7"
-Get Files Modified Within,Fichiers modifiés dans,,resources/domains/GoogleAppsSyncSettings.xml:7
-Get Files Shared With Me,Récupérer les fichiers partagés avec moi,,resources/domains/GoogleAppsSyncSettings.xml:8
 Get directions,Voir l'itinéraire,,resources/views/Address.xml:30
 Get new rate at present from internet,Récupérer le dernier taux disponible,,resources/views/CurrencyConversionLine.xml:48
 Get rate,Récupérer Tx du jour,,resources/views/CurrencyConversionLine.xml:22
 Google,Google,,resources/views/Selects.xml:479
-Google Account Id/Permission Id to share File,,,resources/domains/UserProfile.xml:10
-Google Apps User,,,resources/domains/GoogleDirectory.xml:11
-Google Directory,,,resources/domains/GoogleFile.xml:19
-Google Directory Id,,,resources/domains/GoogleDirectory.xml:7
-Google File,Fichier google,,resources/domains/TemplateFile.xml:7
-Google File Id,,,resources/domains/GoogleFile.xml:8
-Google File as Template,,,resources/domains/TemplateFile.xml:7
-Google File to share,,,resources/domains/FilePermission.xml:10
-Google Files in Directory,,,resources/domains/GoogleDirectory.xml:12
-Google apps User,,,resources/domains/GoogleFile.xml:18
-Google directory,Répertoire Google,,resources/domains/GoogleFile.xml:19
-Google file,Fichier Google,,resources/domains/FilePermission.xml:10
-Google files,,,resources/domains/GoogleDirectory.xml:12
 Government,Public,,resources/views/Selects.xml:231
 Groups,Groupes,,resources/domains/ViewController.xml:8
 Healthcare,Santé,,resources/views/Selects.xml:232
@@ -1026,9 +977,7 @@ Language,Langue,,"resources/views/Language.xml:11
 resources/domains/Partner.xml:28
 resources/domains/PrintingSettings.xml:10"
 Languages,Langues,,resources/views/Language.xml:6
-Last Modified,Dernière modification le,,resources/domains/GoogleFile.xml:12
 Last execution date,Date dernière exécution,,resources/domains/SchedulerInstance.xml:14
-Last modified Time of File,,,resources/domains/GoogleFile.xml:12
 Last theoretical execution date,Date théo. dernière exécution,,resources/domains/SchedulerInstance.xml:13
 Last update,Date dernière MàJ,,resources/domains/SupplierCatalog.xml:15
 Latitude,Latitude,,resources/domains/Address.xml:18
@@ -1041,7 +990,6 @@ Les balises de modèles de courrier,Les balises de modèles de courrier,,resourc
 Link,Lien,,resources/domains/MailModelTag.xml:9
 Localization,Localisation,,resources/views/Commune.xml:17
 Locate,Localiser,,resources/views/Address.xml:8
-Location,Emplacement,,resources/domains/GoogleCalendar.xml:11
 Log,Log,,"resources/domains/IndicatorGenerator.xml:13
 resources/domains/IndicatorGeneratorGrouping.xml:12
 resources/domains/AddressExport.xml:12
@@ -1169,7 +1117,6 @@ resources/domains/Canton.xml:9
 resources/domains/TemplateContextLine.xml:10
 resources/domains/CompanyDepartment.xml:11
 resources/domains/Period.xml:10"
-Name of Calendar,,,resources/domains/GoogleCalendar.xml:8
 Name/Company Name,Nom/Raison Sociale,,resources/domains/Partner.xml:17
 National Code,Code INSEE,,"resources/domains/Address.xml:21
 resources/domains/Commune.xml:13"
@@ -1186,7 +1133,6 @@ resources/views/Selects.xml:175"
 Non-profit,Association,,resources/views/Selects.xml:235
 None,Aucun,,resources/views/Selects.xml:260
 Not contains,Ne contient pas,,resources/views/Selects.xml:474
-Note,Note,,resources/domains/GoogleTask.xml:9
 Notes,Remarques,,"resources/views/Company.xml:28
 resources/views/Partner.xml:295
 resources/domains/Company.xml:18
@@ -1225,8 +1171,6 @@ Padding,Nombre de chiffres,,resources/domains/Sequence.xml:16
 Paper,Papier,,resources/views/Selects.xml:274
 Parameters,Liste des paramètres/balises,,"resources/domains/BirtTemplate.xml:15
 resources/views/BirtTemplate.xml:18"
-Parent Directory,Dossier Google parent,,resources/domains/GoogleDirectory.xml:10
-Parent Directory name,,,resources/domains/GoogleDirectory.xml:10
 Parent category,Catégorie Parente,,resources/domains/ProductCategory.xml:11
 Parent company,Parent,,resources/domains/Company.xml:15
 Parent product,Produit parent,,resources/domains/Product.xml:52
@@ -1303,7 +1247,6 @@ Photo,Photo,,resources/domains/Partner.xml:20
 Pick list,Liste de choix,,resources/views/Address.xml:39
 Picklist QAS,Sélection QAS,,resources/domains/PickListEntry.xml:10
 Picture,Image,,resources/domains/Product.xml:16
-Place API,,,resources/domains/GooglePlaceSearch.xml:7
 Please enter a day for rhythm.,Veuillez saisir un jour pour le rythme.,,"resources/views/Scheduler.xml:80
 resources/views/Scheduler.xml:82
 resources/views/Scheduler.xml:79"
@@ -1492,8 +1435,6 @@ Recipient details,Complément,,resources/domains/Address.xml:11
 Record,Enregistrement,,resources/domains/FilterList.xml:9
 Record model,Modèle d'enregistrement,,resources/domains/FilterList.xml:10
 Reder and Writer Role,,,resources/domains/FilePermission.xml:7
-Redirect Uri,URL Redirection,,resources/domains/GoogleAppsConfig.xml:10
-Redirect Url to get auth code,,,resources/domains/GoogleAppsConfig.xml:10
 Reference,Référence,,"resources/domains/Blocking.xml:36
 resources/domains/Partner.xml:12"
 Refresh,Rafraîchir,,resources/views/General.xml:12
@@ -1600,12 +1541,8 @@ Scheduler history,Historique planificateurs,,"resources/views/SchedulerInstanceH
 resources/views/SchedulerInstanceHistory.xml:10"
 Schedulers,Planificateurs,,"resources/views/Scheduler.xml:5
 resources/views/SchedulerInstance.xml:5"
-Scope Description,,,resources/domains/GoogleServiceScope.xml:10
-Scope Url,,,resources/domains/GoogleServiceScope.xml:9
-Scope name,,,resources/domains/GoogleServiceScope.xml:8
 Search,Recherche,,"resources/views/General.xml:13
 resources/views/General.xml:24"
-Search Place,,,resources/domains/GooglePlaceSearch.xml:8
 Sector,Secteur,,resources/views/Selects.xml:468
 Sector Keyword,Mot Clé Secteur,,resources/views/Keyword.xml:34
 Sector Keywords,Mots clés,,"resources/views/Keyword.xml:30
@@ -1619,8 +1556,6 @@ resources/views/Partner.xml:45
 resources/views/Partner.xml:219"
 Sender (User),Email de réponse (Répondre à),,resources/domains/Message.xml:15
 Sending dates,Dates d'envoi,,resources/views/Mail.xml:33
-Sensor,,,resources/domains/GooglePlaceSearch.xml:9
-Sensor used for Device only,,,resources/domains/GooglePlaceSearch.xml:9
 Sent Date,Date d'envoi réelle,,resources/domains/Mail.xml:19
 September,Septembre,,resources/views/Selects.xml:294
 Sequence,Séquence,,"resources/domains/TemplateRuleLine.xml:10
@@ -1637,11 +1572,6 @@ Settings,Configurations,,"resources/views/Partner.xml:298
 resources/views/Partner.xml:152"
 Share,Partager ce modèle ?,,"resources/domains/TemplateSpreadSheet.xml:12
 resources/domains/TemplateFile.xml:8"
-Share to email,Partager par mail,,resources/domains/FilePermission.xml:11
-Shared by,Partagé par,,resources/domains/GoogleFile.xml:17
-Shared with me,Docs Partagés avec moi,,resources/domains/GoogleFile.xml:15
-Sharing User Profile,,,resources/domains/FilePermission.xml:9
-Sharing user,Partagé avec,,resources/domains/FilePermission.xml:9
 Shift to doubtful receivables,Passage en créance douteuse,,resources/views/Selects.xml:385
 Shift to irrecoverable,Passage en irrécouvrable,,resources/views/Selects.xml:378
 Show,Afficher,,resources/views/General.xml:77
@@ -1709,8 +1639,6 @@ Tag,Balise,,resources/domains/MailModelTag.xml:8
 Target,Objectifs,,resources/views/Selects.xml:438
 Target batch,Batch des objectifs,,resources/views/BaseBatch.xml:25
 Target page,Page obejctif,,resources/views/BaseBatch.xml:23
-Task Id,,,resources/domains/GoogleTask.xml:7
-Task Title,,,resources/domains/GoogleTask.xml:8
 Task product,Produit tâche,,resources/domains/Company.xml:36
 Tasks,Tâches,,resources/views/welcome.xml:31
 Tax,TVA,,resources/domains/TaxLine.xml:11
@@ -1753,7 +1681,6 @@ Template rule line list,Règle template,,resources/domains/TemplateRule.xml:13
 Template rule lines,Ligne de règle de template,,resources/views/TemplateRuleLine.xml:6
 Template rules,Règles du modèle,,resources/views/TemplateRule.xml:6
 Template spread sheet,Template tableur,,resources/domains/TemplateSpreadSheetCriteria.xml:10
-Template to create Document,,,resources/domains/GoogleFile.xml:20
 Templates,Modèles,,"resources/domains/GoogleFile.xml:20
 resources/views/Template.xml:6"
 Templating,Modèle,,resources/views/menu.xml:417
@@ -1798,8 +1725,6 @@ Tracking number configuration,N° de suivi,,"resources/views/menu.xml:227
 resources/views/menu.xml:230"
 Tracking page,URL du Tracker,,resources/domains/MarketingSettings.xml:10
 Transport,,,resources/views/Selects.xml:237
-Trashed,Corbeille,,"resources/domains/GoogleDirectory.xml:9
-resources/domains/GoogleFile.xml:14"
 Treasury interface,Interface trésorerie,,resources/views/Selects.xml:382
 Tuesday,Mardi,,"resources/views/Selects.xml:574
 resources/domains/Scheduler.xml:21"
@@ -1829,10 +1754,6 @@ Update current product prices and variants,MàJ prix produits & variantes,,resou
 Update products prices,Maj prix produits,,resources/views/Product.xml:149
 Use QAS Validation ?,Utiliser la validation QAS ? ,,resources/domains/General.xml:30
 Use for stock only,Utiliser en stock ?,,resources/domains/ProductVariant.xml:20
-User,Utilisateur,,"resources/domains/MailAccount.xml:10
-resources/views/User.xml:12
-resources/domains/GoogleCalendar.xml:16
-resources/domains/GoogleTask.xml:13"
 Users,Utilisateurs,,"resources/views/menu.xml:384
 resources/views/menu.xml:380"
 Users list,Les utilisateurs,,resources/views/User.xml:5
@@ -1868,7 +1789,6 @@ Weekly,Hebdomadaire,,"resources/domains/Scheduler.xml:15
 resources/views/Scheduler.xml:24"
 With payment schedule,A échéancier,,resources/views/Selects.xml:444
 Work,Fonction,,resources/views/Selects.xml:469
-Writable,Ecriture,,resources/domains/GoogleFile.xml:16
 XLS,Excel,,resources/views/Selects.xml:360
 XML,XML,,resources/views/Selects.xml:276
 XML File,Fichiers XML,,resources/views/Selects.xml:281
@@ -1889,7 +1809,6 @@ Zip/City,Code Postal - Commune,,resources/domains/Address.xml:15
 cost price,Prix de revient,,resources/views/Selects.xml:584
 creator of Template,,,resources/domains/TemplateSpreadSheet.xml:8
 day(s),jour(s),,resources/views/Scheduler.xml:22
-directory Name,Nom du répertoire,,resources/domains/GoogleDirectory.xml:8
 help:BankDetails.bankAddress,Adresse de la banque,,resources/domains/BankDetails.xml:13
 help:BankDetails.bankCode,Code de la banque où le titulaire a son compte enregistré.,,resources/domains/BankDetails.xml:16
 help:BankDetails.bbanKey,Clé RIB,,resources/domains/BankDetails.xml:19
@@ -1918,12 +1837,6 @@ help:PrintingSettings.defaultMailBirtTemplate,Default Mail Birt Template,,resour
 help:Product.accountManagementList,"Paramétrage des règles comptables à l'achat et à la vente lors que la génération des factures (comptes de produit, de charge et de TVA).",,resources/domains/Product.xml:57
 help:Product.parentProduct,Used for variants,,resources/domains/Product.xml:52
 month,mois,,resources/views/Scheduler.xml:42
-name of user who has shared file,,,resources/domains/GoogleFile.xml:17
-query to Search Place,,,resources/domains/GooglePlaceSearch.xml:8
-set if File is shared With me file,,,resources/domains/GoogleFile.xml:15
-set if file is shared With me,,,resources/domains/GoogleFile.xml:16
-status,,,resources/domains/GoogleTask.xml:11
-tiers,Tiers,,resources/domains/BankDetails.xml:11
 type,,,resources/domains/PaymentMode.xml:13
 v1,,,resources/views/Selects.xml:589
 v2,,,resources/views/Selects.xml:590
@@ -1931,4 +1844,4 @@ v3,,,resources/views/Selects.xml:591
 v4,,,resources/views/Selects.xml:592
 v5,,,resources/views/Selects.xml:593
 week(s),semaine(s),,resources/views/Scheduler.xml:26
-year(s),an(s),,resources/views/Scheduler.xml:46
+year(s),année(s),,resources/views/Scheduler.xml:46

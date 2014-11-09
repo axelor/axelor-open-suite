@@ -98,19 +98,22 @@
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
 	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group">
-		
-		<panel title="Informations">
-			<field name="name"/>
-			<field name="date"/>
-			<field name="dueDate"/>
-			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="account" onSelect="action-move-line-attrs-domain-account"/>
-			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
-			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
-			<field name="amountPaid"/>
-			<field name="amountRemaining"/>
-			<field name="interbankCodeLine"/>
-			<field name="description"/>
+		<panel>
+			<field name="name" css="bold"/>
+			<field name="date" colSpan="3"/>
+			<field name="dueDate" colSpan="3"/>
+			<panel title="Informations" colSpan="12">
+				<field name="account" onSelect="action-move-line-attrs-domain-account"/>
+				<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0" css="label-bold bold" colSpan="3"/>
+				<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0" css="label-bold bold" colSpan="3"/>
+				<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="amountRemaining" colSpan="3"/>
+				<field name="amountPaid" colSpan="3"/>
+				<field name="description" colSpan="12" />
+			</panel>
+			<panel title="Reject reason" colSpan="12" showIf="interbankCodeLine">
+				<field name="interbankCodeLine" showTitle="false"/>
+			</panel>
 		</panel>
 			
 		<panel-tabs>	
