@@ -63,7 +63,7 @@ resources/views/Employee.xml:58"
 "All Travel Expenses","Toutes les Notes de frais",,"resources/views/Dashboard.xml:40"
 "All leave requests","Toutes les demandes de congés",,"resources/views/Dashboard.xml:52"
 "All supporting files have not been provided","Toutes les justificatifs ont été rattachés.",,"resources/views/Expense.xml:136"
-"Allow expenses input ?","Autoriser l'inputation des NdF ?",,"resources/domains/Project.xml:53"
+"Allow expenses input ?","Autoriser l'imputation des NdF ?",,"resources/domains/Project.xml:53"
 "Already imputed on timesheet","Déjà imputé sur feuille de temps",,"resources/domains/SpentTime.xml:10"
 "Amount","Montant",,"resources/domains/Advance.xml:11
 resources/domains/Bonus.xml:12
@@ -229,7 +229,7 @@ resources/views/Timesheet.xml:67"
 resources/views/Selects.xml:266"
 "Confirmed Manager(5 - 10 ans)","Cadre Confirmé (5 - 10 ans)",,"resources/views/Selects.xml:43"
 "Confirmed Worker (5 - 10 ans)","Non-Cadre Confirmé (5 - 10 ans)",,"resources/views/Selects.xml:46"
-"Contact","Coordonnées",,"resources/domains/CandidateOtherOpportunity.xml:12
+"Contact","Contact",,"resources/domains/CandidateOtherOpportunity.xml:12
 resources/domains/Project.xml:13
 resources/views/Candidate.xml:33
 resources/views/Employee.xml:27"
