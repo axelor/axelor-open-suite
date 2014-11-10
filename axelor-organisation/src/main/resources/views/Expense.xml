@@ -34,20 +34,21 @@
 	    <button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="action-print-expenses"/>
 	  </toolbar>
 	  <panel>
-	    <field name="user"/>
+	    <field name="user" required="true" readonlyIf="statusSelect &gt; 1"/>
+		<field name="company" widget="SuggestBox" required="true" form-view="company-form" readonlyIf="statusSelect &gt; 1"/>
 	    <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
-	    <field name="date"/>
-	    <field name="company" widget="SuggestBox" form-view="company-form"/>
-	    <field name="totalAmount" title="Total (TTC)"/>
-	    <field name="currency"/>
-	    <field name="project"/>
-	    <panel-related field="expenseLineList" colSpan="12"/>    
-	    <field name="paymentPeriod"/>
+	    <field name="date" colSpan="3" readonlyIf="statusSelect &gt; 1"/>
+	    <field name="paymentPeriod" domain="self.company = :company" colSpan="3"/>
+		<field name="project"/>
+	    <field name="totalAmount" title="Total (TTC)" colSpan="3" css="bold" readonlyIf="statusSelect &gt; 1"/>
+	    <field name="currency" required="true" colSpan="3" readonlyIf="statusSelect &gt; 1"/>
+	    <button name="compute" title="Compute" colSpan="3" onClick="action-expense-compute-expense-line"/>
+	    <panel-related field="expenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12"/>    
+	    
 	    <field name="refusalReason" showIf="statusSelect == 6"/>
 	  </panel>
 	  <panel sidebar="true" title="Actions">
 	    <panel colSpan="12">
-	      <button name="compute" title="Compute" colSpan="6" onClick="action-expense-compute-expense-line"/>
 	      <button name="submit" title="Submit" showIf="statusSelect == 1" colSpan="6" onClick="action-group-organisation-expense-submit-click"/>
 	      <button name="validateManager" title="Validate" showIf="statusSelect == 2" colSpan="6" onClick="action-group-organisation-expense-validatemanager-click"/>
 	      <button name="refuse" title="Refuse" showIf="statusSelect == 2" colSpan="6" onClick="save,action-expense-record-refuse"/>

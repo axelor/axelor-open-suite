@@ -1,101 +1,101 @@
-key,message,comment,context
-%s :\n Bank statement line %s amount can't be null,%s :\n Le montant de la ligne de relevé bancaire %s ne peut être égale à 0.,,java/com/axelor/apps/account/exception/IExceptionMessage.java:36
-%s :\n Computed balance and Ending Balance must be equal,%s :\n La balance calculée et la balance de fin doivent être égales.,,java/com/axelor/apps/account/exception/IExceptionMessage.java:34
-%s :\n MoveLine amount is not equals with bank statement line %s,%s :\n Le montant de la ligne d'écriture n'est pas égale au montant de la ligne de relevé bancaire %s,,java/com/axelor/apps/account/exception/IExceptionMessage.java:35
+"key","message","comment","context"
+"%s :\n Bank statement line %s amount can't be null","%s :\n Le montant de la ligne de relevé bancaire %s ne peut être égale à 0.",,"java/com/axelor/apps/account/exception/IExceptionMessage.java:36"
+"%s :\n Computed balance and Ending Balance must be equal","%s :\n La balance calculée et la balance de fin doivent être égales.",,"java/com/axelor/apps/account/exception/IExceptionMessage.java:34"
+"%s :\n MoveLine amount is not equals with bank statement line %s","%s :\n Le montant de la ligne d'écriture n'est pas égale au montant de la ligne de relevé bancaire %s",,"java/com/axelor/apps/account/exception/IExceptionMessage.java:35"
 80,,,"resources/views/MoveTemplateLine.xml:22
 resources/views/MoveTemplate.xml:25"
-<font color=#953B39> OR </font>,<font color=#953B39> OU </font>,,"resources/views/PaymentVoucher.xml:62
+"<font color=#953B39> OR </font>","<font color=#953B39> OU </font>",,"resources/views/PaymentVoucher.xml:62
 resources/views/PaymentVoucher.xml:30"
-Acc. Clearance,Apurage comptes,,resources/views/AccountConfig.xml:117
-Account,Compte comptable,,"resources/domains/MoveLineReport.xml:15
+"Acc. Clearance","Apurage comptes",,"resources/views/AccountConfig.xml:117"
+"Account","Compte comptable",,"resources/domains/MoveLineReport.xml:15
 resources/views/Account.xml:28
 resources/domains/MoveTemplateLine.xml:13
 resources/domains/MoveLine.xml:11
 resources/domains/TaxAccount.xml:12
 resources/domains/BankStatementLine.xml:14"
-Account Category,Catégorie de compte,,"resources/views/AccountCategory.xml:12
+"Account Category","Catégorie de compte",,"resources/views/AccountCategory.xml:12
 resources/views/AccountCategory.xml:6"
-Account Category Line,Ligne de catégorie de compte,,resources/views/AccountCategoryLine.xml:12
-Account Category Lines,Lignes de catégorie de compte,,resources/views/AccountCategoryLine.xml:6
-Account Chart,Plan de compte,,"resources/views/AccountChart.xml:12
+"Account Category Line","Ligne de catégorie de compte",,"resources/views/AccountCategoryLine.xml:12"
+"Account Category Lines","Lignes de catégorie de compte",,"resources/views/AccountCategoryLine.xml:6"
+"Account Chart","Plan de compte",,"resources/views/AccountChart.xml:12
 resources/views/AccountChart.xml:6"
-Account Dashboard,Tb Comptes,,resources/views/menu.xml:735
-Account Db,Tb Comptes,,resources/views/menu.xml:732
-Account Invoice Summary,Situation facturation,,"resources/views/portal.xml:76
+"Account Dashboard","Tb Comptes",,"resources/views/menu.xml:735"
+"Account Db","Tb Comptes",,"resources/views/menu.xml:732"
+"Account Invoice Summary","Situation facturation",,"resources/views/portal.xml:76
 resources/views/charts.xml:6"
-Account Type,Type,,resources/domains/Account.xml:14
-Account calculation configuration,Configuration calcul des comptes,,resources/views/AccountingBatch.xml:47
-Account category,Catégorie de compte,,resources/domains/AccountCategoryLine.xml:10
-Account chart,Plan de compte,,resources/domains/AccountConfig.xml:103
-Account clearance,Apurement des comptes,,"resources/domains/MoveLine.xml:44
+"Account Type","Type",,"resources/domains/Account.xml:14"
+"Account calculation configuration","Configuration calcul des comptes",,"resources/views/AccountingBatch.xml:47"
+"Account category","Catégorie de compte",,"resources/domains/AccountCategoryLine.xml:10"
+"Account chart","Plan de compte",,"resources/domains/AccountConfig.xml:103"
+"Account clearance","Apurement des comptes",,"resources/domains/MoveLine.xml:44
 resources/views/AccountClearance.xml:16"
-Account clearance date,Date de l'apurement des trop-perçu,,resources/domains/AccountClearance.xml:11
-Account clearance journal,Journal Apurages,,resources/domains/AccountConfig.xml:21
-Account clearance operations,Opérations d'apurement des comptes,,resources/views/AccountClearance.xml:6
-Account config,Config. Comptable,,resources/domains/Company.xml:10
-Account configuration,Configuration comptable,,"resources/views/AccountConfig.xml:11
+"Account clearance date","Date de l'apurement des trop-perçu",,"resources/domains/AccountClearance.xml:11"
+"Account clearance journal","Journal Apurages",,"resources/domains/AccountConfig.xml:21"
+"Account clearance operations","Opérations d'apurement des comptes",,"resources/views/AccountClearance.xml:6"
+"Account config","Config. Comptable",,"resources/domains/Company.xml:10"
+"Account configuration","Configuration comptable",,"resources/views/AccountConfig.xml:11
 resources/domains/ReminderConfigLine.xml:13"
-Account configurations,Configurations comptables,,"resources/views/AccountConfig.xml:6
+"Account configurations","Configurations comptables",,"resources/views/AccountConfig.xml:6
 resources/views/menu.xml:660
 resources/views/menu.xml:657"
-Account equivalence,Equivalence de compte,,resources/views/AccountEquiv.xml:11
-Account equivalences,Equivalences de compte,,"resources/domains/FiscalPosition.xml:10
+"Account equivalence","Equivalence de compte",,"resources/views/AccountEquiv.xml:11"
+"Account equivalences","Equivalences de compte",,"resources/domains/FiscalPosition.xml:10
 resources/views/AccountEquiv.xml:6"
-Account management,Gestion de compte de comptable,,"resources/views/AccountManagement.xml:14
+"Account management","Gestion de compte de comptable",,"resources/views/AccountManagement.xml:14
 resources/views/AccountManagement.xml:52
 resources/views/AccountManagement.xml:43"
-Account management Line,Paramétrage de compte comptable,,resources/domains/AnalyticAccountManagement.xml:11
-Account management list,Liste des gestions comptables,,resources/views/AccountManagement.xml:6
-Account move,Écriture comptable,,resources/views/Move.xml:53
-Account moves,Écritures comptable,,resources/views/Move.xml:5
-Account type,Type de compte,,resources/views/AccountType.xml:8
-Account types,Types de compte,,"resources/views/AccountType.xml:5
+"Account management Line","Paramétrage de compte comptable",,"resources/domains/AnalyticAccountManagement.xml:11"
+"Account management list","Liste des gestions comptables",,"resources/views/AccountManagement.xml:6"
+"Account move","Écriture comptable",,"resources/views/Move.xml:53"
+"Account moves","Écritures comptable",,"resources/views/Move.xml:5"
+"Account type","Type de compte",,"resources/views/AccountType.xml:8"
+"Account types","Types de compte",,"resources/views/AccountType.xml:5
 resources/views/menu.xml:456
 resources/views/menu.xml:459"
-Accounting,Comptabilité,,"resources/views/AccountConfig.xml:41
+"Accounting","Comptabilité",,"resources/views/AccountConfig.xml:41
 resources/views/menu.xml:790
 resources/views/Invoice.xml:88
 resources/views/Invoice.xml:61
 resources/views/menu.xml:123
 resources/views/menu.xml:784"
-Accounting Batch,Routine comptable,,resources/views/AccountingBatch.xml:14
-Accounting Dashboard,Tb Comptabilité,,resources/views/portal.xml:69
-Accounting Db,Tb Comptabilité,,resources/views/menu.xml:787
-Accounting Export,Export comptable,,resources/domains/Move.xml:24
-Accounting Export N°,Export comptable N°,,resources/domains/Move.xml:21
-Accounting Exports/Reports,Exports/Rapports comptables,,resources/views/menu.xml:344
-Accounting batch,Batch de comptabilité,,resources/domains/Batch.xml:12
-Accounting batches,Batchs de comptabilité,,"resources/views/menu.xml:651
+"Accounting Batch","Routine comptable",,"resources/views/AccountingBatch.xml:14"
+"Accounting Dashboard","Tb Comptabilité",,"resources/views/portal.xml:69"
+"Accounting Db","Tb Comptabilité",,"resources/views/menu.xml:787"
+"Accounting Export","Export comptable",,"resources/domains/Move.xml:24"
+"Accounting Export N°","Export comptable N°",,"resources/domains/Move.xml:21"
+"Accounting Exports/Reports","Exports/Rapports comptables",,"resources/views/menu.xml:344"
+"Accounting batch","Batch de comptabilité",,"resources/domains/Batch.xml:12"
+"Accounting batches","Batchs de comptabilité",,"resources/views/menu.xml:651
 resources/views/menu.xml:648
 resources/views/AccountingBatch.xml:6"
-Accounting configuration,Configuration comptable,,resources/views/Tax.xml:21
-Accounting details,Informations comptables,,"resources/views/Invoice.xml:62
+"Accounting configuration","Configuration comptable",,"resources/views/Tax.xml:21"
+"Accounting details","Informations comptables",,"resources/views/Invoice.xml:62
 resources/views/Invoice.xml:89"
-Accounting export,Export comptable,,"resources/views/Move.xml:74
+"Accounting export","Export comptable",,"resources/views/Move.xml:74
 resources/views/MoveLineReport.xml:89"
-Accounting exports,Exports comptables,,"resources/views/menu.xml:367
+"Accounting exports","Exports comptables",,"resources/views/menu.xml:367
 resources/views/menu.xml:370
 resources/views/MoveLineReport.xml:74"
-Accounting message,Message comptable,,resources/domains/General.xml:17
-Accounting report,Rapport comptable,,resources/views/MoveLineReport.xml:26
-Accounting reports,Rapports comptables,,"resources/views/menu.xml:357
+"Accounting message","Message comptable",,"resources/domains/General.xml:17"
+"Accounting report","Rapport comptable",,"resources/views/MoveLineReport.xml:26"
+"Accounting reports","Rapports comptables",,"resources/views/menu.xml:357
 resources/views/MoveLineReport.xml:8
 resources/views/menu.xml:360"
-Accounting situation,Situations comptables,,"resources/domains/Partner.xml:11
+"Accounting situation","Situations comptables",,"resources/domains/Partner.xml:11
 resources/views/AccountingSituation.xml:44
 resources/domains/Reminder.xml:10
 resources/views/AccountingSituation.xml:15"
-Accounting situations,Situations comptables,,"resources/views/AccountingSituation.xml:34
+"Accounting situations","Situations comptables",,"resources/views/AccountingSituation.xml:34
 resources/views/AccountingSituation.xml:6"
-Accounts,Tiers,,"resources/views/Account.xml:6
+"Accounts","Tiers",,"resources/views/Account.xml:6
 resources/views/AccountConfig.xml:57"
-Accounts by paymentMode,Comptes par mode de paiement,,resources/domains/PaymentMode.xml:10
-Action,Action,,"resources/domains/InvoiceBatch.xml:12
+"Accounts by paymentMode","Comptes par mode de paiement",,"resources/domains/PaymentMode.xml:10"
+"Action","Action",,"resources/domains/InvoiceBatch.xml:12
 resources/views/Move.xml:87
 resources/views/ChequeRejection.xml:49
 resources/domains/AccountingBatch.xml:12"
-Action(s),Action(s),,resources/views/Invoice.xml:148
-Actions,Actions,,"resources/views/Partner.xml:173
+"Action(s)","Action(s)",,"resources/views/Invoice.xml:148"
+"Actions","Actions",,"resources/views/Partner.xml:173
 resources/views/CashRegisterLine.xml:31
 resources/views/Reconcile.xml:27
 resources/views/InvoiceBatch.xml:43
@@ -106,26 +106,26 @@ resources/views/AccountClearance.xml:31
 resources/views/PaymentVoucher.xml:53
 resources/views/ReminderMethodLine.xml:26
 resources/views/AccountingBatch.xml:66"
-Active,Actif,,"resources/views/Selects.xml:51
+"Active","Actif",,"resources/views/Selects.xml:51
 resources/views/Journal.xml:38"
-Active bank details,RIB Actif,,resources/domains/Rum.xml:20
-Add Move line N° in the description,Ajouter le n° pièce dans la description,,resources/domains/Journal.xml:18
-Add an email for payment through Paybox,Ajoutez un email pour le paiement par Paybox,,resources/views/PaymentVoucher.xml:35
-Address,Adresse,,"resources/domains/Invoice.xml:24
+"Active bank details","RIB Actif",,"resources/domains/Rum.xml:20"
+"Add Move line N° in the description","Ajouter le n° pièce dans la description",,"resources/domains/Journal.xml:18"
+"Add an email for payment through Paybox","Ajoutez un email pour le paiement par Paybox",,"resources/views/PaymentVoucher.xml:35"
+"Address","Adresse",,"resources/domains/Invoice.xml:24
 resources/domains/CashRegister.xml:13"
-Address unknown,Adresse inconnue ?,,"resources/domains/ReminderHistory.xml:16
+"Address unknown","Adresse inconnue ?",,"resources/domains/ReminderHistory.xml:16
 resources/domains/Reminder.xml:17"
-Advance move line,Ligne d'écriture d'Acompte,,resources/domains/PaymentScheduleLine.xml:20
-Advance/Payment move,Ecriture d'Acompte/Paiement,,resources/domains/PaymentScheduleLine.xml:24
-Aged Balance,Balance âgée,,resources/views/Selects.xml:66
-Alarm,Alarme,,resources/views/Selects.xml:130
-Algorithm hashing type to calculate footprint,Type d'algorithme de hachage pour calculer l'empreinte,,resources/domains/PayboxConfig.xml:18
-All Payments,Tous les Paiements,,resources/views/menu.xml:796
-Allocated amount,Montant affecté,,resources/domains/PaymentVoucher.xml:19
-Allow payments greater than due amount ?,Autoriser règlement supérieur aux montants dus ?,,resources/domains/Journal.xml:15
-Allowed Payment range,Seuil d'écart des règlements,,resources/domains/AccountConfig.xml:38
-Already printed ?,Impression générée ?,,resources/domains/Invoice.xml:52
-Amount,Montant,,"resources/domains/BankStatementLine.xml:15
+"Advance move line","Ligne d'écriture d'Acompte",,"resources/domains/PaymentScheduleLine.xml:20"
+"Advance/Payment move","Ecriture d'Acompte/Paiement",,"resources/domains/PaymentScheduleLine.xml:24"
+"Aged Balance","Balance âgée",,"resources/views/Selects.xml:66"
+"Alarm","Alarme",,"resources/views/Selects.xml:130"
+"Algorithm hashing type to calculate footprint","Type d'algorithme de hachage pour calculer l'empreinte",,"resources/domains/PayboxConfig.xml:18"
+"All Payments","Tous les Paiements",,"resources/views/menu.xml:796"
+"Allocated amount","Montant affecté",,"resources/domains/PaymentVoucher.xml:19"
+"Allow payments greater than due amount ?","Autoriser règlement supérieur aux montants dus ?",,"resources/domains/Journal.xml:15"
+"Allowed Payment range","Seuil d'écart des règlements",,"resources/domains/AccountConfig.xml:38"
+"Already printed ?","Impression générée ?",,"resources/domains/Invoice.xml:52"
+"Amount","Montant",,"resources/domains/BankStatementLine.xml:15
 resources/views/charts.xml:572
 resources/views/charts.xml:506
 resources/domains/PaymentSchedule.xml:21
@@ -141,192 +141,192 @@ resources/views/charts.xml:537
 resources/views/charts.xml:640
 resources/domains/ReportedBalanceLine.xml:12
 resources/views/charts.xml:711"
-Amount A.T.I.,Montant T.T.C.,,"resources/domains/PaymentScheduleLine.xml:12
+"Amount A.T.I.","Montant T.T.C.",,"resources/domains/PaymentScheduleLine.xml:12
 resources/domains/InvoiceLineTax.xml:13"
-Amount A.T.I. in Acc. Currency,Montant T.T.C. (Devise société),,resources/domains/InvoiceLineTax.xml:16
-Amount Remaining to allocate,Montant restant à affecter,,resources/domains/PaymentVoucher.xml:18
-Amount Tax,Montant taxe,,resources/domains/InvoiceLineTax.xml:12
-Amount Tax in Acc. Currency,Montant taxe en compte devise,,resources/domains/InvoiceLineTax.xml:15
-Amount already paid,Montant déjà payé,,resources/domains/PaymentInvoice.xml:14
-Amount charged,Montant facturé,,resources/domains/PaymentInvoiceToPay.xml:15
-Amount exported for direct debit,Montant exporté pour prélèvement,,resources/domains/MoveLine.xml:41
-Amount in Currency,Montant en devise,,resources/domains/MoveLine.xml:34
-Amount invoiced,Montant facturé,,resources/domains/PurchaseOrderLine.xml:11
-Amount paid,Montant payé,,"resources/domains/PaymentVoucher.xml:14
+"Amount A.T.I. in Acc. Currency","Montant T.T.C. (Devise société)",,"resources/domains/InvoiceLineTax.xml:16"
+"Amount Remaining to allocate","Montant restant à affecter",,"resources/domains/PaymentVoucher.xml:18"
+"Amount Tax","Montant taxe",,"resources/domains/InvoiceLineTax.xml:12"
+"Amount Tax in Acc. Currency","Montant taxe en compte devise",,"resources/domains/InvoiceLineTax.xml:15"
+"Amount already paid","Montant déjà payé",,"resources/domains/PaymentInvoice.xml:14"
+"Amount charged","Montant facturé",,"resources/domains/PaymentInvoiceToPay.xml:15"
+"Amount exported for direct debit","Montant exporté pour prélèvement",,"resources/domains/MoveLine.xml:41"
+"Amount in Currency","Montant en devise",,"resources/domains/MoveLine.xml:34"
+"Amount invoiced","Montant facturé",,"resources/domains/PurchaseOrderLine.xml:11"
+"Amount paid","Montant payé",,"resources/domains/PaymentVoucher.xml:14
 resources/views/charts.xml:433
 resources/domains/Invoice.xml:99
 resources/views/charts.xml:462"
-Amount paid A.T.I.,Montant payé T.T.C.,,resources/domains/PaymentScheduleLine.xml:13
-Amount paid in currency,Montant payé en compte devise,,resources/domains/PaymentVoucher.xml:37
-Amount paid/reconciled,Montant payé/réconcilié,,resources/domains/MoveLine.xml:21
-Amount reconciled,Montant réconcilié,,resources/domains/Reconcile.xml:8
-Amount rejected,Montant rejeté,,resources/domains/PaymentScheduleLine.xml:26
-Amount remaining before cashing,Montant restant avant encaissement,,resources/domains/PaymentInvoiceToPay.xml:13
-Amount remaining to allocate,Montant restant à allouer,,resources/domains/PaymentVoucher.xml:42
-Amount remaining to invoice,Montant restant à facturer,,resources/domains/PurchaseOrder.xml:15
-Amount to reimburse,Montant à rembourser,,resources/domains/Reimbursement.xml:25
-Amounts to register,Montant à enregistrer,,resources/views/CashRegisterLine.xml:24
-An accounting moveline must have higher a credit value or a debit value.,"Une ligne d'écriture doit soit avoir une valeur au crédit, soit avoir une valeur au débit.",,resources/views/MoveLine.xml:199
-Analytic,Analytique,,resources/views/menu.xml:474
-Analytic Acc.,Compte analytique,,resources/domains/AnalyticAccountManagement.xml:13
-Analytic Acc. Mngmt,Gestion des comptes analytiques,,resources/views/AnalyticAccountManagement.xml:9
-Analytic Acc. Mngmt List,Liste des comptes analytiques,,resources/views/AnalyticAccountManagement.xml:5
-Analytic Account,Compte analytique,,resources/views/AnalyticAccount.xml:11
-Analytic Accounts,Comptes analytiques,,resources/views/AnalyticAccount.xml:5
-Analytic Axis,Axe analytique,,"resources/domains/AnalyticAccount.xml:13
+"Amount paid A.T.I.","Montant payé T.T.C.",,"resources/domains/PaymentScheduleLine.xml:13"
+"Amount paid in currency","Montant payé en compte devise",,"resources/domains/PaymentVoucher.xml:37"
+"Amount paid/reconciled","Montant payé/réconcilié",,"resources/domains/MoveLine.xml:21"
+"Amount reconciled","Montant réconcilié",,"resources/domains/Reconcile.xml:8"
+"Amount rejected","Montant rejeté",,"resources/domains/PaymentScheduleLine.xml:26"
+"Amount remaining before cashing","Montant restant avant encaissement",,"resources/domains/PaymentInvoiceToPay.xml:13"
+"Amount remaining to allocate","Montant restant à allouer",,"resources/domains/PaymentVoucher.xml:42"
+"Amount remaining to invoice","Montant restant à facturer",,"resources/domains/PurchaseOrder.xml:15"
+"Amount to reimburse","Montant à rembourser",,"resources/domains/Reimbursement.xml:25"
+"Amounts to register","Montant à enregistrer",,"resources/views/CashRegisterLine.xml:24"
+"An accounting moveline must have higher a credit value or a debit value.","Une ligne d'écriture doit soit avoir une valeur au crédit, soit avoir une valeur au débit.",,"resources/views/MoveLine.xml:199"
+"Analytic","Analytique",,"resources/views/menu.xml:474"
+"Analytic Acc.","Compte analytique",,"resources/domains/AnalyticAccountManagement.xml:13"
+"Analytic Acc. Mngmt","Gestion des comptes analytiques",,"resources/views/AnalyticAccountManagement.xml:9"
+"Analytic Acc. Mngmt List","Liste des comptes analytiques",,"resources/views/AnalyticAccountManagement.xml:5"
+"Analytic Account","Compte analytique",,"resources/views/AnalyticAccount.xml:11"
+"Analytic Accounts","Comptes analytiques",,"resources/views/AnalyticAccount.xml:5"
+"Analytic Axis","Axe analytique",,"resources/domains/AnalyticAccount.xml:13
 resources/views/AnalyticAxis.xml:5
 resources/views/AnalyticAxis.xml:9"
-Analytic Journal,Journal analytique,,"resources/views/AnalyticJournal.xml:10
+"Analytic Journal","Journal analytique",,"resources/views/AnalyticJournal.xml:10
 resources/views/AnalyticJournal.xml:5"
-Analytic Journal Type,Type journal analytique,,"resources/views/AnalyticJournalType.xml:9
+"Analytic Journal Type","Type journal analytique",,"resources/views/AnalyticJournalType.xml:9
 resources/views/AnalyticJournalType.xml:5"
-Analytic account,Compte analytique,,"resources/domains/MoveLine.xml:27
+"Analytic account","Compte analytique",,"resources/domains/MoveLine.xml:27
 resources/views/AccountManagement.xml:24"
-Analytic accounts,Comptes analytiques,,"resources/domains/AccountManagement.xml:12
+"Analytic accounts","Comptes analytiques",,"resources/domains/AccountManagement.xml:12
 resources/views/menu.xml:486
 resources/views/menu.xml:489"
-Analytic axis,Axe analytique,,"resources/views/menu.xml:498
+"Analytic axis","Axe analytique",,"resources/views/menu.xml:498
 resources/views/menu.xml:495"
-Analytic journals,Journaux analytiques,,"resources/views/menu.xml:480
+"Analytic journals","Journaux analytiques",,"resources/views/menu.xml:480
 resources/views/menu.xml:477"
-Analytics,Analytiques,,"resources/views/Move.xml:45
+"Analytics","Analytiques",,"resources/views/Move.xml:45
 resources/views/MoveLine.xml:81
 resources/views/MoveLine.xml:126"
-Anomalies,Anomalies,,"resources/views/Irrecoverable.xml:67
+"Anomalies","Anomalies",,"resources/views/Irrecoverable.xml:67
 resources/views/Irrecoverable.xml:24"
-Archived,Archivé,,resources/views/Selects.xml:52
-Archived ?,Archivé ?,,resources/views/AccountingBatch.xml:20
-Article code,Code article,,resources/domains/InvoiceLineEvent.xml:10
-Asset,Capitaux,,resources/views/Selects.xml:20
-Associated Invoice lines,Lignes de Fact. associées,,resources/domains/PurchaseOrderLine.xml:15
-Associated MoveLine,Ligne d'Ecr. Associée,,resources/views/BankStatementLine.xml:27
-Auto. input.,Saisie Auto.,,resources/domains/PaymentVoucher.xml:26
-Axelor Backoffice email,Email Backoffice Axelor,,resources/domains/PayboxConfig.xml:20
-Axis,Axe,,resources/domains/AnalyticAccountManagement.xml:12
-B2B,Factures B2B,,resources/views/Invoice.xml:337
-B2C,Factures B2C,,resources/views/Invoice.xml:340
-BBAN/IBAN to use,RIB à utiliser,,resources/domains/AccountingBatch.xml:14
-Balance,Balance,,"resources/domains/MoveLineReport.xml:34
+"Archived","Archivé",,"resources/views/Selects.xml:52"
+"Archived ?","Archivé ?",,"resources/views/AccountingBatch.xml:20"
+"Article code","Code article",,"resources/domains/InvoiceLineEvent.xml:10"
+"Asset","Capitaux",,"resources/views/Selects.xml:20"
+"Associated Invoice lines","Lignes de Fact. associées",,"resources/domains/PurchaseOrderLine.xml:15"
+"Associated MoveLine","Ligne d'Ecr. Associée",,"resources/views/BankStatementLine.xml:27"
+"Auto. input.","Saisie Auto.",,"resources/domains/PaymentVoucher.xml:26"
+"Axelor Backoffice email","Email Backoffice Axelor",,"resources/domains/PayboxConfig.xml:20"
+"Axis","Axe",,"resources/domains/AnalyticAccountManagement.xml:12"
+"B2B","Factures B2B",,"resources/views/Invoice.xml:337"
+"B2C","Factures B2C",,"resources/views/Invoice.xml:340"
+"BBAN/IBAN to use","RIB à utiliser",,"resources/domains/AccountingBatch.xml:14"
+"Balance","Balance",,"resources/domains/MoveLineReport.xml:34
 resources/views/Selects.xml:65
 resources/views/BankStatement.xml:31
 resources/views/MoveLineReport.xml:63
 resources/views/MoveLineReport.xml:108"
-Balance due remindable,Solde exigible (relançable),,"resources/domains/ReminderHistory.xml:18
+"Balance due remindable","Solde exigible (relançable)",,"resources/domains/ReminderHistory.xml:18
 resources/domains/Reminder.xml:19"
-Bank,Banque,,resources/views/BankDetails.xml:18
-Bank Details,RIBs,,"resources/domains/PaymentSchedule.xml:13
+"Bank","Banque",,"resources/views/BankDetails.xml:18"
+"Bank Details","RIBs",,"resources/domains/PaymentSchedule.xml:13
 resources/domains/Reimbursement.xml:16"
-Bank Rejects mails,Courriers de rejet,,"resources/views/menu.xml:621
+"Bank Rejects mails","Courriers de rejet",,"resources/views/menu.xml:621
 resources/views/menu.xml:624"
-Bank Statement,Rapprochement bancaire,,"resources/views/menu.xml:271
+"Bank Statement","Rapprochement bancaire",,"resources/views/menu.xml:271
 resources/views/menu.xml:278
 resources/domains/BankStatementLine.xml:9
 resources/views/menu.xml:275
 resources/views/BankStatement.xml:16"
-Bank Statement Line,Ligne du relevé de compte,,"resources/views/menu.xml:286
+"Bank Statement Line","Ligne du relevé de compte",,"resources/views/menu.xml:286
 resources/views/BankStatementLine.xml:16
 resources/views/menu.xml:289"
-Bank Statement Lines,Lignes du relevé de compte,,"resources/views/BankStatementLine.xml:6
+"Bank Statement Lines","Lignes du relevé de compte",,"resources/views/BankStatementLine.xml:6
 resources/domains/BankStatement.xml:17"
-Bank Statements,Rapprochements bancaires,,resources/views/BankStatement.xml:6
-Bank card,Carte bancaire,,resources/views/Selects.xml:192
-Bank details,Coordonnées bancaires,,"resources/domains/Invoice.xml:22
+"Bank Statements","Rapprochements bancaires",,"resources/views/BankStatement.xml:6"
+"Bank card","Carte bancaire",,"resources/views/Selects.xml:192"
+"Bank details","Coordonnées bancaires",,"resources/domains/Invoice.xml:22
 resources/views/BankDetails.xml:6
 resources/views/BankDetails.xml:13"
-Base W.T.,Base H.T.,,resources/domains/InvoiceLineTax.xml:11
-Base W.T. in Acc. Currency.,Base H.T. (Devise société),,resources/domains/InvoiceLineTax.xml:14
-Batch to re-export,Batch à ré-exporter,,resources/domains/AccountingBatch.xml:32
-Batchs,Traitement de masse,,"resources/domains/Reimbursement.xml:23
+"Base W.T.","Base H.T.",,"resources/domains/InvoiceLineTax.xml:11"
+"Base W.T. in Acc. Currency.","Base H.T. (Devise société)",,"resources/domains/InvoiceLineTax.xml:14"
+"Batch to re-export","Batch à ré-exporter",,"resources/domains/AccountingBatch.xml:32"
+"Batchs","Traitement de masse",,"resources/domains/Reimbursement.xml:23
 resources/domains/AccountingSituation.xml:27
 resources/domains/PaymentScheduleLine.xml:27
 resources/domains/Invoice.xml:59
 resources/domains/MoveLineReport.xml:35
 resources/domains/PaymentVoucher.xml:35"
-Belonging to a payment schedule,Sélectionnée dans un échéancier,,resources/domains/Invoice.xml:38
-Blocking done by,Blocage réalisé par,,"resources/domains/Invoice.xml:70
+"Belonging to a payment schedule","Sélectionnée dans un échéancier",,"resources/domains/Invoice.xml:38"
+"Blocking done by","Blocage réalisé par",,"resources/domains/Invoice.xml:70
 resources/domains/Invoice.xml:65"
-Blocking reason,Raison de blocage,,"resources/domains/Invoice.xml:68
+"Blocking reason","Raison de blocage",,"resources/domains/Invoice.xml:68
 resources/domains/Invoice.xml:63"
-Blocking reason/reject codes list,Liste des codes motifs de rejet/retour,,resources/views/InterbankCodeLine.xml:12
-Blocking reason/reject codes lists,Listes des codes motifs de rejet/retour,,"resources/views/InterbankCode.xml:33
+"Blocking reason/reject codes list","Liste des codes motifs de rejet/retour",,"resources/views/InterbankCodeLine.xml:12"
+"Blocking reason/reject codes lists","Listes des codes motifs de rejet/retour",,"resources/views/InterbankCode.xml:33
 resources/views/InterbankCode.xml:5
 resources/views/InterbankCodeLine.xml:5
 resources/views/InterbankCode.xml:10
 resources/views/InterbankCode.xml:16"
-Blocking until,Blocage jusqu'au,,"resources/domains/Invoice.xml:69
+"Blocking until","Blocage jusqu'au",,"resources/domains/Invoice.xml:69
 resources/domains/Invoice.xml:64"
-Blockings,Blocages,,resources/views/Invoice.xml:111
-Burden (weight),Contrainte (poid),,resources/domains/PayerQualityConfigLine.xml:21
-CC Transaction N°,N° transaction CB,,resources/domains/PaymentVoucher.xml:28
-CFONB,CFONB,,resources/views/AccountConfig.xml:24
-CFONB Export,Export CFONB,,resources/views/CfonbConfig.xml:19
-CFONB Import,Import CFONB,,resources/views/CfonbConfig.xml:29
-Cancel,Annuler,,"resources/views/Invoice.xml:152
+"Blockings","Blocages",,"resources/views/Invoice.xml:111"
+"Burden (weight)","Contrainte (poid)",,"resources/domains/PayerQualityConfigLine.xml:21"
+"CC Transaction N°","N° transaction CB",,"resources/domains/PaymentVoucher.xml:28"
+"CFONB","CFONB",,"resources/views/AccountConfig.xml:24"
+"CFONB Export","Export CFONB",,"resources/views/CfonbConfig.xml:19"
+"CFONB Import","Import CFONB",,"resources/views/CfonbConfig.xml:29"
+"Cancel","Annuler",,"resources/views/Invoice.xml:152
 resources/views/PaymentSchedule.xml:46"
-Canceled,Annulé,,"resources/views/Reconcile.xml:65
+"Canceled","Annulé",,"resources/views/Reconcile.xml:65
 resources/views/Selects.xml:85
 resources/views/Selects.xml:46
 resources/views/Selects.xml:59"
-Canceled Moves,Ecritures Annulées,,resources/views/Move.xml:213
-Canceled payment schedule,Echéancier annulé,,resources/domains/Invoice.xml:10
-Cash,Liquidité,,"resources/views/Selects.xml:21
+"Canceled Moves","Ecritures Annulées",,"resources/views/Move.xml:213"
+"Canceled payment schedule","Echéancier annulé",,"resources/domains/Invoice.xml:10"
+"Cash","Liquidité",,"resources/views/Selects.xml:21
 resources/views/Selects.xml:191"
-Cash Register,Caisse,,resources/domains/CashRegisterLine.xml:16
-Cash Register Amount,Solde de la caisse,,resources/domains/CashRegisterLine.xml:20
-Cash account,Compte liquidité,,resources/domains/BankStatement.xml:14
-Cash journal type,Type journal Encaissements,,resources/domains/AccountConfig.xml:28
-Cash payments summary,Récapitulation des reçus espèces,,resources/views/Selects.xml:68
-Cash register,Caisse,,"resources/views/CashRegister.xml:10
+"Cash Register","Caisse",,"resources/domains/CashRegisterLine.xml:16"
+"Cash Register Amount","Solde de la caisse",,"resources/domains/CashRegisterLine.xml:20"
+"Cash account","Compte liquidité",,"resources/domains/BankStatement.xml:14"
+"Cash journal type","Type journal Encaissements",,"resources/domains/AccountConfig.xml:28"
+"Cash payments summary","Récapitulation des reçus espèces",,"resources/views/Selects.xml:68"
+"Cash register","Caisse",,"resources/views/CashRegister.xml:10
 resources/domains/Move.xml:15
 resources/domains/User.xml:10
 resources/domains/PaymentVoucher.xml:16
 resources/domains/MoveLineReport.xml:21"
-Cash register N°,N° de caisse,,resources/domains/CashRegister.xml:12
-Cash register closing,Fermeture de caisse,,"resources/views/CashRegisterLine.xml:6
+"Cash register N°","N° de caisse",,"resources/domains/CashRegister.xml:12"
+"Cash register closing","Fermeture de caisse",,"resources/views/CashRegisterLine.xml:6
 resources/views/CashRegisterLine.xml:16"
-Cash register closure,Fermetures Caisses,,"resources/views/menu.xml:228
+"Cash register closure","Fermetures Caisses",,"resources/views/menu.xml:228
 resources/views/menu.xml:231"
-Cash register date,Date de la caisse,,resources/domains/CashRegisterLine.xml:18
-Cash register emails,Emails de caisse,,"resources/views/menu.xml:585
+"Cash register date","Date de la caisse",,"resources/domains/CashRegisterLine.xml:18"
+"Cash register emails","Emails de caisse",,"resources/views/menu.xml:585
 resources/views/menu.xml:588"
-Cash register mails,Courriers de caisse,,"resources/views/menu.xml:636
+"Cash register mails","Courriers de caisse",,"resources/views/menu.xml:636
 resources/views/menu.xml:633"
-Cash registers,Caisses,,"resources/views/CashRegister.xml:5
+"Cash registers","Caisses",,"resources/views/CashRegister.xml:5
 resources/views/menu.xml:383
 resources/views/menu.xml:380"
-Cashier,Caisse,,resources/domains/Mail.xml:11
-Cashier Agent,Utilisateur,,resources/domains/CashRegisterLine.xml:15
-Cashier Regulation account,Compte Ecart de réglement,,resources/domains/AccountConfig.xml:36
-Cashier email address,Adresse Email Caisse,,resources/domains/AccountConfig.xml:41
-Cashier email model,Modèle Email Caisse,,resources/domains/AccountConfig.xml:40
-Cashiers,Caisses,,resources/views/AccountConfig.xml:70
-Categories,Catégories,,resources/domains/AccountCategory.xml:14
-Category,Catégorie,,resources/domains/AccountCategoryLine.xml:12
-Cfonb configuration,Config. CFONB,,"resources/views/CfonbConfig.xml:11
+"Cashier","Caisse",,"resources/domains/Mail.xml:11"
+"Cashier Agent","Utilisateur",,"resources/domains/CashRegisterLine.xml:15"
+"Cashier Regulation account","Compte Ecart de réglement",,"resources/domains/AccountConfig.xml:36"
+"Cashier email address","Adresse Email Caisse",,"resources/domains/AccountConfig.xml:41"
+"Cashier email model","Modèle Email Caisse",,"resources/domains/AccountConfig.xml:40"
+"Cashiers","Caisses",,"resources/views/AccountConfig.xml:70"
+"Categories","Catégories",,"resources/domains/AccountCategory.xml:14"
+"Category","Catégorie",,"resources/domains/AccountCategoryLine.xml:12"
+"Cfonb configuration","Config. CFONB",,"resources/views/CfonbConfig.xml:11
 resources/domains/AccountConfig.xml:45"
-Cfonb configurations,Config. CFONB,,resources/views/CfonbConfig.xml:6
-Chart imported?,Plan de compte importé ?,,resources/domains/AccountConfig.xml:104
-Chart of Accounts,Plan comptable,,"resources/views/menu.xml:438
+"Cfonb configurations","Config. CFONB",,"resources/views/CfonbConfig.xml:6"
+"Chart imported?","Plan de compte importé ?",,"resources/domains/AccountConfig.xml:104"
+"Chart of Accounts","Plan comptable",,"resources/views/menu.xml:438
 resources/views/menu.xml:441"
-Check validity,Vérifier validité,,resources/views/MoveTemplate.xml:44
-Cheque,Chèque,,"resources/views/Selects.xml:193
+"Check validity","Vérifier validité",,"resources/views/MoveTemplate.xml:44"
+"Cheque","Chèque",,"resources/views/Selects.xml:193
 resources/domains/InterbankCodeLine.xml:17"
-Cheque Rejection,Rejet du chèque,,resources/views/ChequeRejection.xml:17
-Cheque Rejections,Rejets chèque,,resources/views/ChequeRejection.xml:6
-Cheque deposit slip,Bordereau de remise de chèque,,resources/views/Selects.xml:67
-Cheque rejection filters,Filtres de rejet de chèques,,resources/views/ChequeRejection.xml:98
-Classic reminder,Relance classique,,resources/views/Selects.xml:159
-Clear remaining amount,Apurer le montant restant,,resources/domains/Reconcile.xml:14
-Clearance Accounts,Comptes d'apurements,,resources/domains/AccountConfig.xml:82
-Clearance maximum amount,Montant maximum apuré,,resources/domains/AccountClearance.xml:15
-Clearance settings,Paramètres d'épurage des comptes,,resources/views/AccountClearance.xml:24
-Client,Client,,resources/domains/IrrecoverablePaymentScheduleLineLine.xml:10
-Close cashier,Fermer caisse,,resources/views/CashRegisterLine.xml:32
-Close fiscal year,Clôturer l'exercice,,resources/views/Year.xml:28
-Closed,Fermé,,"resources/views/Selects.xml:90
+"Cheque Rejection","Rejet du chèque",,"resources/views/ChequeRejection.xml:17"
+"Cheque Rejections","Rejets chèque",,"resources/views/ChequeRejection.xml:6"
+"Cheque deposit slip","Bordereau de remise de chèque",,"resources/views/Selects.xml:67"
+"Cheque rejection filters","Filtres de rejet de chèques",,"resources/views/ChequeRejection.xml:98"
+"Classic reminder","Relance classique",,"resources/views/Selects.xml:159"
+"Clear remaining amount","Apurer le montant restant",,"resources/domains/Reconcile.xml:14"
+"Clearance Accounts","Comptes d'apurements",,"resources/domains/AccountConfig.xml:82"
+"Clearance maximum amount","Montant maximum apuré",,"resources/domains/AccountClearance.xml:15"
+"Clearance settings","Paramètres d'épurage des comptes",,"resources/views/AccountClearance.xml:24"
+"Client","Client",,"resources/domains/IrrecoverablePaymentScheduleLineLine.xml:10"
+"Close cashier","Fermer caisse",,"resources/views/CashRegisterLine.xml:32"
+"Close fiscal year","Clôturer l'exercice",,"resources/views/Year.xml:28"
+"Closed","Fermé",,"resources/views/Selects.xml:90
 resources/views/Selects.xml:58"
-Incorrect BBAN Key,Clé RIB incorrecte,,resources/views/BankDetails.xml:59
-Code,Code,,"resources/domains/AccountChart.xml:11
+"Incorrect BBAN Key","Clé RIB incorrecte",,"resources/views/BankDetails.xml:59"
+"Code","Code",,"resources/domains/AccountChart.xml:11
 resources/domains/ReminderMethod.xml:10
 resources/domains/AnalyticAxis.xml:11
 resources/domains/MoveTemplateType.xml:10
@@ -345,10 +345,10 @@ resources/domains/AccountConfig.xml:11
 resources/domains/AnalyticAccount.xml:11
 resources/domains/MoveTemplate.xml:10
 resources/domains/AccountingBatch.xml:11"
-Code list for rejects/return of Cheques,Liste des codes motifs de rejet/retour Chèque,,resources/domains/General.xml:13
-"Code list for rejects/return of Direct debit, Wire Transfers and IPO","Liste des codes motifs de rejet/retour Prélèv., Virement et TIP",,resources/domains/General.xml:12
-Commitment,Engagement,,resources/views/Selects.xml:22
-Company,Société,,"resources/domains/AccountingSituation.xml:10
+"Code list for rejects/return of Cheques","Liste des codes motifs de rejet/retour Chèque",,"resources/domains/General.xml:13"
+"Code list for rejects/return of Direct debit, Wire Transfers and IPO","Liste des codes motifs de rejet/retour Prélèv., Virement et TIP",,"resources/domains/General.xml:12"
+"Commitment","Engagement",,"resources/views/Selects.xml:22"
+"Company","Société",,"resources/domains/AccountingSituation.xml:10
 resources/domains/Reimbursement.xml:13
 resources/domains/ChequeRejection.xml:10
 resources/domains/AnalyticJournal.xml:12
@@ -370,52 +370,52 @@ resources/domains/PaymentSchedule.xml:18
 resources/domains/MoveLineReport.xml:11
 resources/domains/BankStatement.xml:9
 resources/domains/DirectDebitManagement.xml:8"
-Company set,Sociétés,,resources/domains/AccountChart.xml:13
-Compatible Account Types,Types de comptes compatibles,,resources/domains/Journal.xml:26
-Compatible Accounts,Comptes comptables compatibles,,resources/domains/Journal.xml:27
-Comptes Comptables,Comptes Comptables,,resources/views/Account.xml:15
-Comptes analytiques,Comptes Analytiques,,resources/views/AccountManagement.xml:61
-Compute,Calculer,,"resources/views/Invoice.xml:149
+"Company set","Sociétés",,"resources/domains/AccountChart.xml:13"
+"Compatible Account Types","Types de comptes compatibles",,"resources/domains/Journal.xml:26"
+"Compatible Accounts","Comptes comptables compatibles",,"resources/domains/Journal.xml:27"
+"Comptes Comptables","Comptes Comptables",,"resources/views/Account.xml:15"
+"Comptes analytiques","Comptes Analytiques",,"resources/views/AccountManagement.xml:61"
+"Compute","Calculer",,"resources/views/Invoice.xml:149
 resources/views/BankStatement.xml:35"
-Computed Balance,Solde calculé,,resources/domains/BankStatement.xml:18
-Conditions,Conditions,,resources/views/ReminderMethodLine.xml:21
-Configuration,Configuration,,"resources/views/menu.xml:377
+"Computed Balance","Solde calculé",,"resources/domains/BankStatement.xml:18"
+"Conditions","Conditions",,"resources/views/ReminderMethodLine.xml:21"
+"Configuration","Configuration",,"resources/views/menu.xml:377
 resources/views/menu.xml:309"
-Configurations,Configurations,,resources/views/Journal.xml:25
-Confirm payment,Confirmer le paiement,,resources/views/PaymentVoucher.xml:54
-Confirmed,Confirmé,,"resources/views/Selects.xml:57
+"Configurations","Configurations",,"resources/views/Journal.xml:25"
+"Confirm payment","Confirmer le paiement",,"resources/views/PaymentVoucher.xml:54"
+"Confirmed","Confirmé",,"resources/views/Selects.xml:57
 resources/views/Reconcile.xml:62
 resources/views/Selects.xml:16
 resources/views/Selects.xml:45"
-Confirmed Customer payments,Paiements Clients confirmés,,resources/views/PaymentVoucher.xml:281
-Confirmed Supplier payments,Règlements Fournisseurs confirmés,,resources/views/PaymentVoucher.xml:299
-Consolidate invoice movelines ?,Consolider les lignes d'écritures de facture,,resources/domains/General.xml:10
-Contact,Coordonnées,,resources/domains/Invoice.xml:19
-Country,Pays,,resources/views/charts.xml:231
-Country code,Code pays,,resources/domains/AccountChart.xml:12
-Create Cust. Payment,Créer Paiement Client,,resources/views/menu.xml:166
-Create Cust. Refund,Remb. Avoir Client,,resources/views/menu.xml:178
-Create Suppl. Payment,Payer Fact. Fourn.,,resources/views/menu.xml:190
-Create Suppl. Refund,Créer Avoir Fourn.,,resources/views/menu.xml:202
-Create schedule lines,Créer Lignes d'échéancier,,resources/views/PaymentSchedule.xml:47
-Created by,Créé par,,"resources/views/InvoiceBatch.xml:38
+"Confirmed Customer payments","Paiements Clients confirmés",,"resources/views/PaymentVoucher.xml:281"
+"Confirmed Supplier payments","Règlements Fournisseurs confirmés",,"resources/views/PaymentVoucher.xml:299"
+"Consolidate invoice movelines ?","Consolider les lignes d'écritures de facture",,"resources/domains/General.xml:10"
+"Contact","Coordonnées",,"resources/domains/Invoice.xml:19"
+"Country","Pays",,"resources/views/charts.xml:231"
+"Country code","Code pays",,"resources/domains/AccountChart.xml:12"
+"Create Cust. Payment","Créer Paiement Client",,"resources/views/menu.xml:166"
+"Create Cust. Refund","Remb. Avoir Client",,"resources/views/menu.xml:178"
+"Create Suppl. Payment","Payer Fact. Fourn.",,"resources/views/menu.xml:190"
+"Create Suppl. Refund","Créer Avoir Fourn.",,"resources/views/menu.xml:202"
+"Create schedule lines","Créer Lignes d'échéancier",,"resources/views/PaymentSchedule.xml:47"
+"Created by","Créé par",,"resources/views/InvoiceBatch.xml:38
 resources/views/AccountingBatch.xml:61
 resources/views/InvoiceBatch.xml:13"
-Created on,Créé par,,"resources/views/InvoiceBatch.xml:37
+"Created on","Créé par",,"resources/views/InvoiceBatch.xml:37
 resources/views/AccountingBatch.xml:60
 resources/views/InvoiceBatch.xml:12"
-Creation Date,Date de création,,"resources/domains/PaymentSchedule.xml:9
+"Creation Date","Date de création",,"resources/domains/PaymentSchedule.xml:9
 resources/domains/MoveLineReport.xml:23
 resources/domains/CashRegisterLine.xml:17"
-Creation date,Date de création,,resources/domains/Rum.xml:13
-Credit,Crédit,,"resources/views/Selects.xml:216
+"Creation date","Date de création",,"resources/domains/Rum.xml:13"
+"Credit","Crédit",,"resources/views/Selects.xml:216
 resources/domains/MoveLine.xml:16"
-Credit Reconcile List,Liste des réconciliations au crédit,,resources/domains/MoveLine.xml:20
-Credit line,Ligne au crédit,,resources/domains/Reconcile.xml:10
-Credit note journal type,Type journal Avoirs,,resources/domains/AccountConfig.xml:29
-Credit remaining,Crédit restant à réconcilier,,"resources/views/Reconcile.xml:21
+"Credit Reconcile List","Liste des réconciliations au crédit",,"resources/domains/MoveLine.xml:20"
+"Credit line","Ligne au crédit",,"resources/domains/Reconcile.xml:10"
+"Credit note journal type","Type journal Avoirs",,"resources/domains/AccountConfig.xml:29"
+"Credit remaining","Crédit restant à réconcilier",,"resources/views/Reconcile.xml:21
 resources/views/Reconcile.xml:10"
-Currency,Devise,,"resources/domains/Invoice.xml:44
+"Currency","Devise",,"resources/domains/Invoice.xml:44
 resources/domains/PaymentVoucher.xml:36
 resources/views/charts.xml:675
 resources/domains/PaymentSchedule.xml:22
@@ -424,81 +424,81 @@ resources/domains/PaymentInvoice.xml:16
 resources/domains/PaymentInvoiceToPay.xml:18
 resources/domains/Move.xml:26
 resources/domains/BankStatement.xml:13"
-Currency Rate,Taux de change,,resources/domains/MoveLine.xml:33
-Current Asset,"Actif courants (stock, encours...)",,resources/views/Selects.xml:23
-Current Period Entries,Ecritures Période en cours,,resources/views/Move.xml:186
-Cust. Credit note Journal,Journal note de crédit client,,resources/domains/AccountConfig.xml:17
-Cust. Invoices,Factures clients,,"resources/views/menu.xml:39
+"Currency Rate","Taux de change",,"resources/domains/MoveLine.xml:33"
+"Current Asset","Actif courants (stock, encours...)",,"resources/views/Selects.xml:23"
+"Current Period Entries","Ecritures Période en cours",,"resources/views/Move.xml:186"
+"Cust. Credit note Journal","Journal note de crédit client",,"resources/domains/AccountConfig.xml:17"
+"Cust. Invoices","Factures clients",,"resources/views/menu.xml:39
 resources/views/menu.xml:687
 resources/views/menu.xml:42
 resources/views/menu.xml:690"
-Cust. Payments,Paiements clients,,"resources/views/menu.xml:801
+"Cust. Payments","Paiements clients",,"resources/views/menu.xml:801
 resources/views/menu.xml:798"
-Cust. Refunds,Avoirs des clients,,"resources/views/menu.xml:52
+"Cust. Refunds","Avoirs des clients",,"resources/views/menu.xml:52
 resources/views/menu.xml:698
 resources/views/menu.xml:701
 resources/views/menu.xml:55"
-Customer,Client,,"resources/views/IrrecoverableCustomerLine.xml:10
+"Customer","Client",,"resources/views/IrrecoverableCustomerLine.xml:10
 resources/views/Selects.xml:113
 resources/domains/IrrecoverableInvoiceLine.xml:10
 resources/domains/Irrecoverable.xml:11
 resources/domains/ChequeRejection.xml:12
 resources/domains/IrrecoverableCustomerLine.xml:10
 resources/views/Selects.xml:205"
-Customer Invoices remaining To Collect,Factures clients non soldées,,resources/views/portal.xml:133
-Customer Paybox payments,Paiements Clients Paybox,,resources/views/PaymentVoucher.xml:287
-Customer Payment mode by amount,Mode paiement client par montant,,"resources/views/charts.xml:437
+"Customer Invoices remaining To Collect","Factures clients non soldées",,"resources/views/portal.xml:133"
+"Customer Paybox payments","Paiements Clients Paybox",,"resources/views/PaymentVoucher.xml:287"
+"Customer Payment mode by amount","Mode paiement client par montant",,"resources/views/charts.xml:437
 resources/views/portal.xml:149"
-Customer Payment mode distribution by amount,Répartition des modes de paiement par montant,,"resources/views/portal.xml:144
+"Customer Payment mode distribution by amount","Répartition des modes de paiement par montant",,"resources/views/portal.xml:144
 resources/views/charts.xml:408"
-Customer Payment mode distribution by transactions,Répartition des modes de paiement par nbre transactions,,"resources/views/portal.xml:139
+"Customer Payment mode distribution by transactions","Répartition des modes de paiement par nbre transactions",,"resources/views/portal.xml:139
 resources/views/charts.xml:365"
-Customer Turnover history by month (on invoices),CA par mois (sur facture),,"resources/views/portal.xml:86
+"Customer Turnover history by month (on invoices)","CA par mois (sur facture)",,"resources/views/portal.xml:86
 resources/views/charts.xml:56"
-Customer account,Compte tiers,,"resources/domains/Invoice.xml:23
+"Customer account","Compte tiers",,"resources/domains/Invoice.xml:23
 resources/domains/AccountConfig.xml:32
 resources/domains/AccountingSituation.xml:14"
-Customer balance,Solde client,,"resources/views/AccountingSituation.xml:52
+"Customer balance","Solde client",,"resources/views/AccountingSituation.xml:52
 resources/views/AccountingSituation.xml:22"
-Customer invoices filters,Factures clients,,resources/views/Invoice.xml:321
-Customer payments,Paiements Clients,,resources/views/PaymentVoucher.xml:275
-Customer payments with remaining,Paiements Clients avec reste,,resources/views/PaymentVoucher.xml:284
-Customer refund,Avoir client,,resources/views/Selects.xml:108
-Customer refunds,Remboursements Clients,,resources/views/PaymentVoucher.xml:290
-Customer refunds filters,Filtres Remboursements Clients,,resources/views/Invoice.xml:345
-Customer sale,Vente client,,resources/views/Selects.xml:107
-Customers,Clients,,resources/views/IrrecoverableCustomerLine.xml:6
-Datatype,Type de données,,resources/domains/AccountingBatch.xml:28
-Date,Date,,"resources/domains/Irrecoverable.xml:16
+"Customer invoices filters","Factures clients",,"resources/views/Invoice.xml:321"
+"Customer payments","Paiements Clients",,"resources/views/PaymentVoucher.xml:275"
+"Customer payments with remaining","Paiements Clients avec reste",,"resources/views/PaymentVoucher.xml:284"
+"Customer refund","Avoir client",,"resources/views/Selects.xml:108"
+"Customer refunds","Remboursements Clients",,"resources/views/PaymentVoucher.xml:290"
+"Customer refunds filters","Filtres Remboursements Clients",,"resources/views/Invoice.xml:345"
+"Customer sale","Vente client",,"resources/views/Selects.xml:107"
+"Customers","Clients",,"resources/views/IrrecoverableCustomerLine.xml:6"
+"Datatype","Type de données",,"resources/domains/AccountingBatch.xml:28"
+"Date","Date",,"resources/domains/Irrecoverable.xml:16
 resources/views/MoveTemplate.xml:70
 resources/views/MoveTemplate.xml:63
 resources/domains/ChequeRejection.xml:11
 resources/domains/Move.xml:10"
-Date can't be ahead of today,La date saisie ne peut être supérieure à la date du jour.,,resources/views/MoveTemplate.xml:81
-Dates,Dates,,resources/views/Invoice.xml:40
-Debit,Débit,,"resources/views/Selects.xml:215
+"Date can't be ahead of today","La date saisie ne peut être supérieure à la date du jour.",,"resources/views/MoveTemplate.xml:81"
+"Dates","Dates",,"resources/views/Invoice.xml:40"
+"Debit","Débit",,"resources/views/Selects.xml:215
 resources/domains/MoveLine.xml:15"
-Debit Nbr.,N° de prélèvement,,resources/domains/DirectDebitManagement.xml:9
-Debit Reconcile list,Liste des réconciliations au débit,,resources/domains/MoveLine.xml:19
-Debit and credit value cannot be negative.,La valeur au débit ou au crédit ne peut être négative.,,resources/views/MoveLine.xml:200
-Debit blocking,Blocage prélèvement,,resources/domains/PaymentScheduleLine.xml:16
-Debit line,Ligne au débit,,resources/domains/Reconcile.xml:9
-Debit remaining,Débit restant à réconcilier,,"resources/views/Reconcile.xml:20
+"Debit Nbr.","N° de prélèvement",,"resources/domains/DirectDebitManagement.xml:9"
+"Debit Reconcile list","Liste des réconciliations au débit",,"resources/domains/MoveLine.xml:19"
+"Debit and credit value cannot be negative.","La valeur au débit ou au crédit ne peut être négative.",,"resources/views/MoveLine.xml:200"
+"Debit blocking","Blocage prélèvement",,"resources/domains/PaymentScheduleLine.xml:16"
+"Debit line","Ligne au débit",,"resources/domains/Reconcile.xml:9"
+"Debit remaining","Débit restant à réconcilier",,"resources/views/Reconcile.xml:20
 resources/views/Reconcile.xml:8"
-Debit/Credit,Débit/Crédit,,resources/domains/MoveTemplateLine.xml:11
-Debited Invoices List,Factures prélevées,,resources/domains/DirectDebitManagement.xml:11
-Debited amount,Montant débité,,"resources/domains/PaymentScheduleLine.xml:29
+"Debit/Credit","Débit/Crédit",,"resources/domains/MoveTemplateLine.xml:11"
+"Debited Invoices List","Factures prélevées",,"resources/domains/DirectDebitManagement.xml:11"
+"Debited amount","Montant débité",,"resources/domains/PaymentScheduleLine.xml:29
 resources/domains/Invoice.xml:80"
-Debited invoices,Factures prélevées,,resources/views/Invoice.xml:182
-Debited schedule lines List,Echéances prélevées,,resources/domains/DirectDebitManagement.xml:10
-Debt,Dette,,resources/views/Selects.xml:24
-Debt recovery,Recouvrement,,resources/views/menu.xml:296
-Debt recovery message,Message recouvrement,,resources/domains/General.xml:18
-Debtor Name,Nom du débiteur,,resources/domains/Rum.xml:11
-Debtor address,Adresse du débiteur,,resources/domains/Rum.xml:12
-Default email address,Adresse email par défaut,,resources/domains/PaymentVoucher.xml:33
-Deposited Amount,Dépot du jour,,resources/domains/CashRegisterLine.xml:19
-Description,Description,,"resources/domains/InvoiceBatch.xml:24
+"Debited invoices","Factures prélevées",,"resources/views/Invoice.xml:182"
+"Debited schedule lines List","Echéances prélevées",,"resources/domains/DirectDebitManagement.xml:10"
+"Debt","Dette",,"resources/views/Selects.xml:24"
+"Debt recovery","Recouvrement",,"resources/views/menu.xml:296"
+"Debt recovery message","Message recouvrement",,"resources/domains/General.xml:18"
+"Debtor Name","Nom du débiteur",,"resources/domains/Rum.xml:11"
+"Debtor address","Adresse du débiteur",,"resources/domains/Rum.xml:12"
+"Default email address","Adresse email par défaut",,"resources/domains/PaymentVoucher.xml:33"
+"Deposited Amount","Dépot du jour",,"resources/domains/CashRegisterLine.xml:19"
+"Description","Description",,"resources/domains/InvoiceBatch.xml:24
 resources/domains/PayerQualityConfigLine.xml:22
 resources/domains/AccountingBatch.xml:48
 resources/views/InterbankCode.xml:39
@@ -509,45 +509,45 @@ resources/domains/InterbankCode.xml:13
 resources/views/InterbankCodeLine.xml:18
 resources/views/InterbankCode.xml:21
 resources/domains/Reimbursement.xml:17"
-Detailed,Détaillé,,resources/domains/MoveLineReport.xml:29
-Details record code,Code Enreg. détail,,resources/domains/CfonbConfig.xml:28
-Direct Debit Batch,Batch Prélèvements,,resources/views/AccountingBatch.xml:68
-Direct Debit N°,N° de prélèvement,,resources/domains/Invoice.xml:73
-Direct Debit batch type,Type de batch de prélèvement,,resources/domains/AccountingBatch.xml:27
-Direct debit,Prélèvement,,"resources/views/AccountConfig.xml:103
+"Detailed","Détaillé",,"resources/domains/MoveLineReport.xml:29"
+"Details record code","Code Enreg. détail",,"resources/domains/CfonbConfig.xml:28"
+"Direct Debit Batch","Batch Prélèvements",,"resources/views/AccountingBatch.xml:68"
+"Direct Debit N°","N° de prélèvement",,"resources/domains/Invoice.xml:73"
+"Direct Debit batch type","Type de batch de prélèvement",,"resources/domains/AccountingBatch.xml:27"
+"Direct debit","Prélèvement",,"resources/views/AccountConfig.xml:103
 resources/views/Invoice.xml:132
 resources/views/Selects.xml:188
 resources/views/Selects.xml:135"
-Direct debit Nbr,N° de prélèvement,,resources/domains/PaymentScheduleLine.xml:21
-Direct debit SEPA,Prélèvement SEPA,,resources/domains/InterbankCodeLine.xml:15
-Direct debit blocking,Blocage prélèvement,,resources/domains/Invoice.xml:62
-Direct debit configuration,Configuration de débit direct,,resources/views/AccountingBatch.xml:28
-Direct debit list,Gestion de prélèvement,,resources/domains/Invoice.xml:74
-Direct debit management,Gestion des prélèvements,,"resources/views/DirectDebitManagement.xml:18
+"Direct debit Nbr","N° de prélèvement",,"resources/domains/PaymentScheduleLine.xml:21"
+"Direct debit SEPA","Prélèvement SEPA",,"resources/domains/InterbankCodeLine.xml:15"
+"Direct debit blocking","Blocage prélèvement",,"resources/domains/Invoice.xml:62"
+"Direct debit configuration","Configuration de débit direct",,"resources/views/AccountingBatch.xml:28"
+"Direct debit list","Gestion de prélèvement",,"resources/domains/Invoice.xml:74"
+"Direct debit management","Gestion des prélèvements",,"resources/views/DirectDebitManagement.xml:18
 resources/domains/PaymentScheduleLine.xml:22"
-Direct debit operation code,Code Opér. Prélèvement,,resources/domains/CfonbConfig.xml:23
-Direct debit rejects,Rejets de prélèvement,,resources/views/AccountConfig.xml:108
-Direct debit/IPO/Electronic Payment Order (EPO) CFONB,Prélèvement/TIP/Télèrèglement,,resources/domains/InterbankCodeLine.xml:14
-Direct debits,Prélèvements,,resources/views/AccountConfig.xml:104
-Direct debits management,Gestion des prélèvements,,"resources/views/DirectDebitManagement.xml:10
+"Direct debit operation code","Code Opér. Prélèvement",,"resources/domains/CfonbConfig.xml:23"
+"Direct debit rejects","Rejets de prélèvement",,"resources/views/AccountConfig.xml:108"
+"Direct debit/IPO/Electronic Payment Order (EPO) CFONB","Prélèvement/TIP/Télèrèglement",,"resources/domains/InterbankCodeLine.xml:14"
+"Direct debits","Prélèvements",,"resources/views/AccountConfig.xml:104"
+"Direct debits management","Gestion des prélèvements",,"resources/views/DirectDebitManagement.xml:10
 resources/views/DirectDebitManagement.xml:6"
-Discount,Remise,,resources/views/InvoiceLine.xml:34
-Discount amount,Montant remise,,resources/domains/InvoiceLine.xml:21
-Do not export ?,Ne pas exporter le contenu ?,,resources/domains/Journal.xml:19
-Do not shift to irrecoverable,Ne pas passer en irrécouvrable,,"resources/views/MoveLine.xml:76
+"Discount","Remise",,"resources/views/InvoiceLine.xml:34"
+"Discount amount","Montant remise",,"resources/domains/InvoiceLine.xml:21"
+"Do not export ?","Ne pas exporter le contenu ?",,"resources/domains/Journal.xml:19"
+"Do not shift to irrecoverable","Ne pas passer en irrécouvrable",,"resources/views/MoveLine.xml:76
 resources/views/MoveLine.xml:122
 resources/views/PaymentSchedule.xml:36"
-Do not shit into irrecoverable,Ne pas passer en irrécouvrable,,"resources/views/Invoice.xml:108
+"Do not shit into irrecoverable","Ne pas passer en irrécouvrable",,"resources/views/Invoice.xml:108
 resources/views/Invoice.xml:81"
-Document Type,Type de facture,,resources/domains/Invoice.xml:14
-Domain of use,Domaine d'utilisation,,"resources/views/InterbankCodeLine.xml:22
+"Document Type","Type de facture",,"resources/domains/Invoice.xml:14"
+"Domain of use","Domaine d'utilisation",,"resources/views/InterbankCodeLine.xml:22
 resources/views/InterbankCode.xml:25"
-Doubtful Customer,Créance douteuse,,resources/domains/Invoice.xml:43
-Doubtful Customer Batch,Batch clients douteux,,resources/views/AccountingBatch.xml:71
-Doubtful Customers,Client douteux,,resources/views/Selects.xml:138
-Doubtful customers account,Compte Clients Douteux,,resources/domains/AccountConfig.xml:34
-Doubtful receivables,Créances douteuses,,resources/views/AccountConfig.xml:97
-Draft,Brouillon,,"resources/views/Selects.xml:56
+"Doubtful Customer","Créance douteuse",,"resources/domains/Invoice.xml:43"
+"Doubtful Customer Batch","Batch clients douteux",,"resources/views/AccountingBatch.xml:71"
+"Doubtful Customers","Client douteux",,"resources/views/Selects.xml:138"
+"Doubtful customers account","Compte Clients Douteux",,"resources/domains/AccountConfig.xml:34"
+"Doubtful receivables","Créances douteuses",,"resources/views/AccountConfig.xml:97"
+"Draft","Brouillon",,"resources/views/Selects.xml:56
 resources/views/Selects.xml:210
 resources/views/Invoice.xml:153
 resources/views/Selects.xml:44
@@ -558,110 +558,110 @@ resources/views/Selects.xml:173
 resources/views/Invoice.xml:379
 resources/views/Invoice.xml:361
 resources/views/Selects.xml:89"
-Draft Customer payments,Paiements Clients brouillon,,resources/views/PaymentVoucher.xml:278
-Draft Moves,Ecritures Brouillon,,resources/views/Move.xml:204
-Draft Supplier payments,Règlements Fournisseurs brouillons,,resources/views/PaymentVoucher.xml:296
-Due Date,Date d'échéance,,"resources/domains/MoveLine.xml:13
+"Draft Customer payments","Paiements Clients brouillon",,"resources/views/PaymentVoucher.xml:278"
+"Draft Moves","Ecritures Brouillon",,"resources/views/Move.xml:204"
+"Draft Supplier payments","Règlements Fournisseurs brouillons",,"resources/views/PaymentVoucher.xml:296"
+"Due Date","Date d'échéance",,"resources/domains/MoveLine.xml:13
 resources/domains/Invoice.xml:33"
-Due Sale Entries,Lignes Ecritures échues,,resources/views/MoveLine.xml:212
-Due balance,Solde exigible,,resources/domains/AccountingSituation.xml:19
-Due balance (remindable),Solde exigible (relançable),,resources/domains/AccountingSituation.xml:20
-Due balance Reminder,Relance Solde exigible,,resources/domains/Alarm.xml:12
-Edit receipt ?,Editer un reçu ?,,resources/domains/Journal.xml:16
-Effect Date,Date d'effet,,resources/domains/BankStatementLine.xml:10
-Email sent ?,Email envoyé ?,,resources/domains/CashRegisterLine.xml:22
-Email to use,Email à utilisé,,resources/domains/PaymentVoucher.xml:31
-Email used by Paybox,Email utilisé par Paybox,,resources/views/PaymentVoucher.xml:262
-End Date,Date de fin,,resources/domains/InvoiceLineEvent.xml:14
-End date,Date de fin,,resources/domains/AccountingBatch.xml:45
-End of cycle,Fin de cycle,,resources/domains/Invoice.xml:25
-End of month + n days,Fin de mois + n jours,,resources/views/Selects.xml:181
-Ending Balance,Balance de fin,,resources/domains/BankStatement.xml:16
-Ending record code,Code Enreg. fin,,resources/domains/CfonbConfig.xml:30
-Enter proper 'From' and 'To' date.,Veuillez saisir correctement la date de début et de fin.,,resources/views/Year.xml:69
-Environment Url,URL Environnement,,resources/domains/PayboxConfig.xml:13
-Equity,Capitaux,,resources/views/Selects.xml:25
-"Error in move validation, please check the log","Erreur dans la validation de l'écriture, veuillez vérifier les logs.",,java/com/axelor/apps/account/exception/IExceptionMessage.java:43
-Expense,NDF,,resources/views/Selects.xml:26
-Expiration date (only for reference),Date de fin d'application (informatif),,resources/domains/InterbankCode.xml:12
-Export,Export,,resources/views/MoveLineReport.xml:104
-Export Date,Date d'export,,resources/domains/Move.xml:22
-Export code,Code d'export,,resources/domains/Journal.xml:14
-Export direct debits,Export des prélèvements,,resources/views/Selects.xml:154
-Export file type,Format d'export,,resources/domains/Irrecoverable.xml:19
-Export purchase -> Acc. Soft.,Export achat -> Logiciel comptable,,resources/views/Selects.xml:78
-Export refunds -> Acc. Soft.,Export avoir -> Logiciel comptable,,resources/views/Selects.xml:76
-Export reimbursements,Exporter les remboursements,,resources/views/Selects.xml:150
-Export sale -> Acc. Soft.,Export vente -> Logiciel comptable,,resources/views/Selects.xml:75
-Export tresury -> Acc. Soft.,Export trésorerie -> Logiciel comptable,,resources/views/Selects.xml:77
-Export type,Type d'export,,"resources/domains/MoveLineReport.xml:16
+"Due Sale Entries","Lignes Ecritures échues",,"resources/views/MoveLine.xml:212"
+"Due balance","Solde exigible",,"resources/domains/AccountingSituation.xml:19"
+"Due balance (remindable)","Solde exigible (relançable)",,"resources/domains/AccountingSituation.xml:20"
+"Due balance Reminder","Relance Solde exigible",,"resources/domains/Alarm.xml:12"
+"Edit receipt ?","Editer un reçu ?",,"resources/domains/Journal.xml:16"
+"Effect Date","Date d'effet",,"resources/domains/BankStatementLine.xml:10"
+"Email sent ?","Email envoyé ?",,"resources/domains/CashRegisterLine.xml:22"
+"Email to use","Email à utilisé",,"resources/domains/PaymentVoucher.xml:31"
+"Email used by Paybox","Email utilisé par Paybox",,"resources/views/PaymentVoucher.xml:262"
+"End Date","Date de fin",,"resources/domains/InvoiceLineEvent.xml:14"
+"End date","Date de fin",,"resources/domains/AccountingBatch.xml:45"
+"End of cycle","Fin de cycle",,"resources/domains/Invoice.xml:25"
+"End of month + n days","Fin de mois + n jours",,"resources/views/Selects.xml:181"
+"Ending Balance","Balance de fin",,"resources/domains/BankStatement.xml:16"
+"Ending record code","Code Enreg. fin",,"resources/domains/CfonbConfig.xml:30"
+"Enter proper 'From' and 'To' date.","Veuillez saisir correctement la date de début et de fin.",,"resources/views/Year.xml:69"
+"Environment Url","URL Environnement",,"resources/domains/PayboxConfig.xml:13"
+"Equity","Capitaux",,"resources/views/Selects.xml:25"
+"Error in move validation, please check the log","Erreur dans la validation de l'écriture, veuillez vérifier les logs.",,"java/com/axelor/apps/account/exception/IExceptionMessage.java:43"
+"Expense","NDF",,"resources/views/Selects.xml:26"
+"Expiration date (only for reference)","Date de fin d'application (informatif)",,"resources/domains/InterbankCode.xml:12"
+"Export","Export",,"resources/views/MoveLineReport.xml:104"
+"Export Date","Date d'export",,"resources/domains/Move.xml:22"
+"Export code","Code d'export",,"resources/domains/Journal.xml:14"
+"Export direct debits","Export des prélèvements",,"resources/views/Selects.xml:154"
+"Export file type","Format d'export",,"resources/domains/Irrecoverable.xml:19"
+"Export purchase -> Acc. Soft.","Export achat -> Logiciel comptable",,"resources/views/Selects.xml:78"
+"Export refunds -> Acc. Soft.","Export avoir -> Logiciel comptable",,"resources/views/Selects.xml:76"
+"Export reimbursements","Exporter les remboursements",,"resources/views/Selects.xml:150"
+"Export sale -> Acc. Soft.","Export vente -> Logiciel comptable",,"resources/views/Selects.xml:75"
+"Export tresury -> Acc. Soft.","Export trésorerie -> Logiciel comptable",,"resources/views/Selects.xml:77"
+"Export type","Type d'export",,"resources/domains/MoveLineReport.xml:16
 resources/domains/AccountingBatch.xml:43"
-Exported,Exporté,,resources/domains/Move.xml:23
-Exported Direct Debit,Prélèvement exporté,,resources/domains/MoveLine.xml:24
-Exported moves,Écritures exportées,,"resources/views/Move.xml:189
+"Exported","Exporté",,"resources/domains/Move.xml:23"
+"Exported Direct Debit","Prélèvement exporté",,"resources/domains/MoveLine.xml:24"
+"Exported moves","Écritures exportées",,"resources/views/Move.xml:189
 resources/views/MoveLineReport.xml:105"
-Exports,Exports,,resources/views/AccountConfig.xml:67
-External Ref.,Réf. Externe,,resources/domains/Invoice.xml:28
-Filepath for direct debit exports (CFONB),Dossier,,resources/domains/AccountConfig.xml:71
-Filepath for exported files (Accounting),Chemin du dossier pour exports comptables,,resources/domains/AccountConfig.xml:68
-Filepath for rejected reimbursements,Chemin d'import des rejets de remboursements,,resources/domains/AccountConfig.xml:65
-Filepath for temporary rejected reimbursements import,Chemin d'import temporaire des rejets de remboursements,,resources/domains/AccountConfig.xml:66
-"Filepath to import IPO, and IPO and Cheque payments",Chemin d'import des paiements par TIP et TIP Chèque,,resources/domains/AccountConfig.xml:93
-"Filepath to import IPO, and IPO and Cheque payments rejects",Chemin d'import des rejets de paiement par TIP et TIP Chèque,,resources/domains/AccountConfig.xml:96
-Filepath to import rejected records,Chemin du fichier d'import,,resources/domains/AccountConfig.xml:77
-Filter,Filtrer,,resources/views/MoveLineReport.xml:42
-Financial,Financière,,resources/views/menu.xml:389
-Financial Accounts,Comptes comptables,,"resources/views/menu.xml:431
+"Exports","Exports",,"resources/views/AccountConfig.xml:67"
+"External Ref.","Réf. Externe",,"resources/domains/Invoice.xml:28"
+"Filepath for direct debit exports (CFONB)","Dossier",,"resources/domains/AccountConfig.xml:71"
+"Filepath for exported files (Accounting)","Chemin du dossier pour exports comptables",,"resources/domains/AccountConfig.xml:68"
+"Filepath for rejected reimbursements","Chemin d'import des rejets de remboursements",,"resources/domains/AccountConfig.xml:65"
+"Filepath for temporary rejected reimbursements import","Chemin d'import temporaire des rejets de remboursements",,"resources/domains/AccountConfig.xml:66"
+"Filepath to import IPO, and IPO and Cheque payments","Chemin d'import des paiements par TIP et TIP Chèque",,"resources/domains/AccountConfig.xml:93"
+"Filepath to import IPO, and IPO and Cheque payments rejects","Chemin d'import des rejets de paiement par TIP et TIP Chèque",,"resources/domains/AccountConfig.xml:96"
+"Filepath to import rejected records","Chemin du fichier d'import",,"resources/domains/AccountConfig.xml:77"
+"Filter","Filtrer",,"resources/views/MoveLineReport.xml:42"
+"Financial","Financière",,"resources/views/menu.xml:389"
+"Financial Accounts","Comptes comptables",,"resources/views/menu.xml:431
 resources/views/menu.xml:428"
-Financial Accounts Management,Paramétrages de compte comptable,,"resources/views/menu.xml:447
+"Financial Accounts Management","Paramétrages de compte comptable",,"resources/views/menu.xml:447
 resources/views/menu.xml:450"
-Fiscal position,Position fiscale,,"resources/views/FiscalPosition.xml:11
+"Fiscal position","Position fiscale",,"resources/views/FiscalPosition.xml:11
 resources/views/menu.xml:672
 resources/domains/AccountEquiv.xml:10"
-Fiscal positions,Positions fiscales,,"resources/views/FiscalPosition.xml:6
+"Fiscal positions","Positions fiscales",,"resources/views/FiscalPosition.xml:6
 resources/views/menu.xml:669"
-Fiscal year,Année fiscale,,"resources/domains/ReportedBalanceLine.xml:11
+"Fiscal year","Année fiscale",,"resources/domains/ReportedBalanceLine.xml:11
 resources/views/Year.xml:16
 resources/domains/MoveLineReport.xml:22"
-Fiscal year already exist for 'From' and 'To' date.,Une année fiscale existe déjà pour la période du 'From' au 'To',,resources/views/Year.xml:70
-Fiscal years,Années fiscales,,"resources/views/menu.xml:395
+"Fiscal year already exist for 'From' and 'To' date.","Une année fiscale existe déjà pour la période du 'From' au 'To'",,"resources/views/Year.xml:70"
+"Fiscal years","Années fiscales",,"resources/views/menu.xml:395
 resources/views/menu.xml:392
 resources/views/Year.xml:6"
-Follow-up,Suivi,,resources/views/CashRegisterLine.xml:28
-From,De,,"resources/domains/MoveLineReport.xml:9
+"Follow-up","Suivi",,"resources/views/CashRegisterLine.xml:28"
+"From","De",,"resources/domains/MoveLineReport.xml:9
 resources/domains/Invoice.xml:34"
-From Account,Compte à remplacer,,resources/domains/AccountEquiv.xml:11
-From Date,Date de,,"resources/domains/BankStatement.xml:10
+"From Account","Compte à remplacer",,"resources/domains/AccountEquiv.xml:11"
+"From Date","Date de",,"resources/domains/BankStatement.xml:10
 resources/views/charts.xml:178
 resources/views/charts.xml:119
 resources/views/charts.xml:58"
-From Partner,Du Tiers,,resources/domains/MoveLineReport.xml:19
-From reject schedule line,De la ligne de rejet,,resources/domains/PaymentScheduleLine.xml:25
-Full name,Nom complet,,resources/domains/MoveTemplate.xml:16
-General,Général,,"resources/views/AccountClearance.xml:17
+"From Partner","Du Tiers",,"resources/domains/MoveLineReport.xml:19"
+"From reject schedule line","De la ligne de rejet",,"resources/domains/PaymentScheduleLine.xml:25"
+"Full name","Nom complet",,"resources/domains/MoveTemplate.xml:16"
+"General","Général",,"resources/views/AccountClearance.xml:17
 resources/views/AccountChart.xml:13
 resources/views/AccountCategory.xml:13
 resources/views/Selects.xml:204
 resources/views/Account.xml:29
 resources/views/AccountCategoryLine.xml:13
 resources/views/Journal.xml:34"
-General Accounts,Compte,,resources/domains/AccountCategory.xml:13
-General ledger,Grand livre,,resources/views/Selects.xml:64
-Generate Moves,Générer écritures,,resources/views/MoveTemplate.xml:58
-Generate irrecoverable report,Générer le report irrécouvrable,,resources/views/Irrecoverable.xml:26
-Generate move from template,Générer les écritures à partir du modèle,,resources/views/MoveTemplate.xml:49
-Generate periods,Générer les périodes,,resources/views/Year.xml:30
-Generate refund,Générer un avoir,,"resources/views/Invoice.xml:95
+"General Accounts","Compte",,"resources/domains/AccountCategory.xml:13"
+"General ledger","Grand livre",,"resources/views/Selects.xml:64"
+"Generate Moves","Générer écritures",,"resources/views/MoveTemplate.xml:58"
+"Generate irrecoverable report","Générer le report irrécouvrable",,"resources/views/Irrecoverable.xml:26"
+"Generate move from template","Générer les écritures à partir du modèle",,"resources/views/MoveTemplate.xml:49"
+"Generate periods","Générer les périodes",,"resources/views/Year.xml:30"
+"Generate refund","Générer un avoir",,"resources/views/Invoice.xml:95
 resources/views/Invoice.xml:68"
-Generate reimbursements,Générer les remboursements,,resources/views/Selects.xml:149
-Generated move,Ecriture générée,,resources/domains/PaymentVoucher.xml:23
-Gestion de compte comptable,Gestion de compte comptable,,resources/views/AccountManagement.xml:78
-Get information from 1st Move line,Récupérer les données de la 1ère ligne,,resources/domains/Move.xml:20
-Get invoices and schedule lines to set as irrecoverable,Récupérer les factures et échéances à passer en irrécouvrable,,resources/views/Irrecoverable.xml:25
-Get overdue payments,Récupérer les trop perçus,,resources/views/AccountClearance.xml:32
-Global,Global,,resources/domains/MoveLineReport.xml:25
-Header record code,Code Enreg. en-tête,,resources/domains/CfonbConfig.xml:26
-Historical Period,Historique,,"resources/views/charts.xml:543
+"Generate reimbursements","Générer les remboursements",,"resources/views/Selects.xml:149"
+"Generated move","Ecriture générée",,"resources/domains/PaymentVoucher.xml:23"
+"Gestion de compte comptable","Gestion de compte comptable",,"resources/views/AccountManagement.xml:78"
+"Get information from 1st Move line","Récupérer les données de la 1ère ligne",,"resources/domains/Move.xml:20"
+"Get invoices and schedule lines to set as irrecoverable","Récupérer les factures et échéances à passer en irrécouvrable",,"resources/views/Irrecoverable.xml:25"
+"Get overdue payments","Récupérer les trop perçus",,"resources/views/AccountClearance.xml:32"
+"Global","Global",,"resources/domains/MoveLineReport.xml:25"
+"Header record code","Code Enreg. en-tête",,"resources/domains/CfonbConfig.xml:26"
+"Historical Period","Historique",,"resources/views/charts.xml:543
 resources/views/charts.xml:716
 resources/views/charts.xml:511
 resources/views/charts.xml:647
@@ -675,17 +675,17 @@ resources/views/charts.xml:59
 resources/views/charts.xml:577
 resources/views/charts.xml:439
 resources/views/charts.xml:912"
-History,Historique,,resources/views/Partner.xml:218
-IBAN,IBAN,,resources/views/BankDetails.xml:28
-IPO,TIP,,resources/views/Selects.xml:189
-IPO + Cheque,TIP + Chèque,,resources/views/Selects.xml:190
-IPO Payments and IPO Cheque,Paiement par TIP et TIP chèque,,resources/views/AccountConfig.xml:132
-IPO and Cheque operation code,Code Opér. TIP + Chèque,,resources/domains/CfonbConfig.xml:36
-IPO operation code,Code Opér. TIP,,resources/domains/CfonbConfig.xml:35
-Ignore in accounting,Ignorer en comptabilité,,resources/domains/Move.xml:27
-Ignore in remind process,Ignorer en relance,,resources/domains/Move.xml:28
-Immobilisation,Immobilisation,,resources/views/Selects.xml:27
-Import,Importer,,"resources/domains/ReminderMethod.xml:8
+"History","Historique",,"resources/views/Partner.xml:218"
+"IBAN","IBAN",,"resources/views/BankDetails.xml:28"
+"IPO","TIP",,"resources/views/Selects.xml:189"
+"IPO + Cheque","TIP + Chèque",,"resources/views/Selects.xml:190"
+"IPO Payments and IPO Cheque","Paiement par TIP et TIP chèque",,"resources/views/AccountConfig.xml:132"
+"IPO and Cheque operation code","Code Opér. TIP + Chèque",,"resources/domains/CfonbConfig.xml:36"
+"IPO operation code","Code Opér. TIP",,"resources/domains/CfonbConfig.xml:35"
+"Ignore in accounting","Ignorer en comptabilité",,"resources/domains/Move.xml:27"
+"Ignore in remind process","Ignorer en relance",,"resources/domains/Move.xml:28"
+"Immobilisation","Immobilisation",,"resources/views/Selects.xml:27"
+"Import","Importer",,"resources/domains/ReminderMethod.xml:8
 resources/domains/AnalyticAxis.xml:10
 resources/domains/ReminderConfigLine.xml:10
 resources/domains/AccountConfig.xml:9
@@ -703,34 +703,34 @@ resources/domains/AccountChart.xml:9
 resources/domains/AnalyticAccount.xml:10
 resources/domains/PaymentVoucher.xml:8
 resources/domains/ReminderMethodLine.xml:10"
-Import a chart,Importer un plan comptable,,resources/views/AccountConfig.xml:20
-Import direct debit rejects,Import des rejets de prélèvements,,resources/views/Selects.xml:155
-Import payment rejects by IPO and IPO cheque,Import des rejets de paiement par TIP et TIP chèque,,resources/views/Selects.xml:164
-Import payments by IPO and IPO cheque,Import des paiements par TIP et TIP chèque,,resources/views/Selects.xml:163
-In,Reçu,,resources/views/Selects.xml:199
-In % / fixed amount,En % / montant fixe,,resources/domains/InvoiceLine.xml:22
-In alarm,En alarme,,resources/views/Selects.xml:176
-Inactive,Inactif,,resources/views/Selects.xml:50
-Incident type,Type d'incident,,resources/domains/PayerQualityConfigLine.xml:8
-Income,Produits,,resources/views/Selects.xml:28
-Info,Info,,"resources/views/MoveLineReport.xml:34
+"Import a chart","Importer un plan comptable",,"resources/views/AccountConfig.xml:20"
+"Import direct debit rejects","Import des rejets de prélèvements",,"resources/views/Selects.xml:155"
+"Import payment rejects by IPO and IPO cheque","Import des rejets de paiement par TIP et TIP chèque",,"resources/views/Selects.xml:164"
+"Import payments by IPO and IPO cheque","Import des paiements par TIP et TIP chèque",,"resources/views/Selects.xml:163"
+"In","Reçu",,"resources/views/Selects.xml:199"
+"In % / fixed amount","En % / montant fixe",,"resources/domains/InvoiceLine.xml:22"
+"In alarm","En alarme",,"resources/views/Selects.xml:176"
+"Inactive","Inactif",,"resources/views/Selects.xml:50"
+"Incident type","Type d'incident",,"resources/domains/PayerQualityConfigLine.xml:8"
+"Income","Produits",,"resources/views/Selects.xml:28"
+"Info","Info",,"resources/views/MoveLineReport.xml:34
 resources/views/MoveLineReport.xml:101
 resources/views/Reimbursement.xml:33
 resources/views/PaymentVoucher.xml:48
 resources/views/Reconcile.xml:23"
-Information,Information,,resources/views/AccountingBatch.xml:59
-Informations,Informations,,"resources/views/InvoiceLine.xml:20
+"Information","Information",,"resources/views/AccountingBatch.xml:59"
+"Informations","Informations",,"resources/views/InvoiceLine.xml:20
 resources/views/Move.xml:58
 resources/views/MoveLine.xml:95
 resources/views/InvoiceBatch.xml:36
 resources/views/Move.xml:30
 resources/views/MoveLine.xml:49"
-Input Date,Date de saisie,,resources/domains/MoveLine.xml:12
-Interbank Payment Order Batch,Batchs d'Ordre de Paiement interbancaires,,resources/views/AccountingBatch.xml:70
-Interbank Payment Orders batch type,Type de batch de paiement par TIP et TIP chèque,,resources/domains/AccountingBatch.xml:35
-Internal Ref.,Réf. Interne,,resources/domains/Invoice.xml:27
-Internal identifier,Identifiant interne,,resources/domains/PayboxConfig.xml:17
-Invoice,Facture,,"resources/domains/PurchaseOrder.xml:11
+"Input Date","Date de saisie",,"resources/domains/MoveLine.xml:12"
+"Interbank Payment Order Batch","Batchs d'Ordre de Paiement interbancaires",,"resources/views/AccountingBatch.xml:70"
+"Interbank Payment Orders batch type","Type de batch de paiement par TIP et TIP chèque",,"resources/domains/AccountingBatch.xml:35"
+"Internal Ref.","Réf. Interne",,"resources/domains/Invoice.xml:27"
+"Internal identifier","Identifiant interne",,"resources/domains/PayboxConfig.xml:17"
+"Invoice","Facture",,"resources/domains/PurchaseOrder.xml:11
 resources/views/IrrecoverableInvoiceLine.xml:9
 resources/domains/InvoiceLine.xml:8
 resources/domains/InvoiceLineTax.xml:10
@@ -743,87 +743,87 @@ resources/views/menu.xml:9
 resources/views/menu.xml:740
 resources/domains/Move.xml:17
 resources/domains/Alarm.xml:10"
-Invoice & Rejects,Factures & Rejets,,resources/domains/Irrecoverable.xml:12
-Invoice Amount,Montant sur facture,,resources/domains/PaymentInvoice.xml:13
-Invoice Dashboard,Tableau de bord Facturation,,"resources/views/portal.xml:36
+"Invoice & Rejects","Factures & Rejets",,"resources/domains/Irrecoverable.xml:12"
+"Invoice Amount","Montant sur facture",,"resources/domains/PaymentInvoice.xml:13"
+"Invoice Dashboard","Tableau de bord Facturation",,"resources/views/portal.xml:36
 resources/views/portal.xml:49
 resources/views/portal.xml:53
 resources/views/portal.xml:65
 resources/views/portal.xml:8"
-Invoice Date,Date de facture,,resources/domains/Invoice.xml:32
-Invoice Db,Tb Factures,,"resources/views/menu.xml:779
+"Invoice Date","Date de facture",,"resources/domains/Invoice.xml:32"
+"Invoice Db","Tb Factures",,"resources/views/menu.xml:779
 resources/views/menu.xml:776"
-Invoice Lines,Lignes de facture,,resources/domains/Invoice.xml:48
-Invoice N°,N° de facture,,resources/domains/Invoice.xml:13
-Invoice Purchase Payment Condition distribution,Répartition conditions de paiement à l'achat (facture),,"resources/views/portal.xml:190
+"Invoice Lines","Lignes de facture",,"resources/domains/Invoice.xml:48"
+"Invoice N°","N° de facture",,"resources/domains/Invoice.xml:13"
+"Invoice Purchase Payment Condition distribution","Répartition conditions de paiement à l'achat (facture)",,"resources/views/portal.xml:190
 resources/views/charts.xml:679"
-Invoice Purchase by currency (tax excl.),Montant achats HT par devise,,"resources/views/portal.xml:184
+"Invoice Purchase by currency (tax excl.)","Montant achats HT par devise",,"resources/views/portal.xml:184
 resources/views/charts.xml:645"
-Invoice Purchase by month (tax excl.),Montant achats HT par mois,,"resources/views/portal.xml:178
+"Invoice Purchase by month (tax excl.)","Montant achats HT par mois",,"resources/views/portal.xml:178
 resources/views/charts.xml:612"
-Invoice Purchase situation (tax incl.),Situation factures d'achat (HT),,"resources/views/portal.xml:208
+"Invoice Purchase situation (tax incl.)","Situation factures d'achat (HT)",,"resources/views/portal.xml:208
 resources/views/charts.xml:909"
-Invoice Sale Payment Condition distribution,Répartition conditions de paiement à la vente (factures),,"resources/views/charts.xml:575
+"Invoice Sale Payment Condition distribution","Répartition conditions de paiement à la vente (factures)",,"resources/views/charts.xml:575
 resources/views/portal.xml:172"
-Invoice Sale by currency (tax excl.),CA HT par devise (factures),,"resources/views/portal.xml:166
+"Invoice Sale by currency (tax excl.)","CA HT par devise (factures)",,"resources/views/portal.xml:166
 resources/views/charts.xml:541"
-Invoice Sale by month (tax excl.),CA HT par mois (factures),,"resources/views/portal.xml:160
+"Invoice Sale by month (tax excl.)","CA HT par mois (factures)",,"resources/views/portal.xml:160
 resources/views/charts.xml:509"
-Invoice Sale situation (tax incl.),Situation factures de vente HT,,"resources/views/charts.xml:821
+"Invoice Sale situation (tax incl.)","Situation factures de vente HT",,"resources/views/charts.xml:821
 resources/views/portal.xml:202"
-Invoice and Refunds Sale situation (tax incl.),Situation factures & avoirs HT,,"resources/views/charts.xml:713
+"Invoice and Refunds Sale situation (tax incl.)","Situation factures & avoirs HT",,"resources/views/charts.xml:713
 resources/views/portal.xml:196"
-Invoice batch,Batch de facturation,,"resources/domains/Batch.xml:11
+"Invoice batch","Batch de facturation",,"resources/domains/Batch.xml:11
 resources/views/InvoiceBatch.xml:18"
-Invoice batches,Batchs de facturation,,resources/views/InvoiceBatch.xml:6
-Invoice concerned by the reminder,Factures concernées à relancer,,resources/domains/Reminder.xml:21
-Invoice content,Contenu de la facture,,resources/views/Invoice.xml:84
-Invoice final status,Statut final à obtenir,,resources/domains/InvoiceBatch.xml:17
-Invoice initial status,Statut initial à traiter,,resources/domains/InvoiceBatch.xml:16
-Invoice label,Libellé facture,,resources/domains/PaymentMode.xml:11
-Invoice line,Ligne de facture,,"resources/views/InvoiceLineEvent.xml:19
+"Invoice batches","Batchs de facturation",,"resources/views/InvoiceBatch.xml:6"
+"Invoice concerned by the reminder","Factures concernées à relancer",,"resources/domains/Reminder.xml:21"
+"Invoice content","Contenu de la facture",,"resources/views/Invoice.xml:84"
+"Invoice final status","Statut final à obtenir",,"resources/domains/InvoiceBatch.xml:17"
+"Invoice initial status","Statut initial à traiter",,"resources/domains/InvoiceBatch.xml:16"
+"Invoice label","Libellé facture",,"resources/domains/PaymentMode.xml:11"
+"Invoice line","Ligne de facture",,"resources/views/InvoiceLineEvent.xml:19
 resources/views/InvoiceLine.xml:18
 resources/views/InvoiceLine.xml:57"
-Invoice line type,Type de ligne de fact.,,"resources/domains/Product.xml:8
+"Invoice line type","Type de ligne de fact.",,"resources/domains/Product.xml:8
 resources/domains/InvoiceLine.xml:10"
-Invoice lines,Lignes de facture,,"resources/views/InvoiceLine.xml:46
+"Invoice lines","Lignes de facture",,"resources/views/InvoiceLine.xml:46
 resources/views/InvoiceLine.xml:6
 resources/views/InvoiceLineEvent.xml:6"
-Invoice of origin,Factures d'origine,,resources/domains/Invoice.xml:55
-Invoice rejected,Facture rejetée,,resources/domains/MoveLine.xml:23
-Invoice sending format,Format d'envoi des factures,,resources/domains/Partner.xml:13
-Invoice.bankDetails,Coord. bancaires,,java/com/axelor/apps/account/report/ITranslation.java:40
-Invoice.bankingInfo,Informations bancaires,,java/com/axelor/apps/account/report/ITranslation.java:41
-Invoice.base,Assiette,,java/com/axelor/apps/account/report/ITranslation.java:33
-Invoice.cheque,Règlement par virement bancaire ou par Chèque à l'ordre d',,java/com/axelor/apps/account/report/ITranslation.java:39
-Invoice.clientRef,Réf. Client,,java/com/axelor/apps/account/report/ITranslation.java:42
-Invoice.date,Date facture,,java/com/axelor/apps/account/report/ITranslation.java:23
-Invoice.documentRef,Référence interne,,java/com/axelor/apps/account/report/ITranslation.java:26
-Invoice.dueDate,Date d'échéance ,,java/com/axelor/apps/account/report/ITranslation.java:25
-Invoice.invoiceNo,FACTURE N°,,java/com/axelor/apps/account/report/ITranslation.java:46
-Invoice.note,Remarques,,java/com/axelor/apps/account/report/ITranslation.java:38
-Invoice.paymentTerms,Conditions de paiement,,java/com/axelor/apps/account/report/ITranslation.java:24
-Invoice.priceExclTax,Prix HT,,java/com/axelor/apps/account/report/ITranslation.java:32
-Invoice.productDescription,Produit/Description,,java/com/axelor/apps/account/report/ITranslation.java:28
-Invoice.purchaseInvoiceNo,FACTURE FOURNISSEUR N°,,java/com/axelor/apps/account/report/ITranslation.java:44
-Invoice.purchaseRefundNo,AVOIR FOURNISSEUR N°,,java/com/axelor/apps/account/report/ITranslation.java:45
-Invoice.qtyUnit,Qté / Unité,,java/com/axelor/apps/account/report/ITranslation.java:30
-Invoice.refundNo,AVOIR N°,,java/com/axelor/apps/account/report/ITranslation.java:47
-Invoice.supplier,Fournisseur,,java/com/axelor/apps/account/report/ITranslation.java:27
-Invoice.client,Client,,java/com/axelor/apps/account/report/ITranslation.java:27
-Invoice.supplyRef,Réf. Fournisseur,,java/com/axelor/apps/account/report/ITranslation.java:43
-Invoice.tax,TVA,,java/com/axelor/apps/account/report/ITranslation.java:29
-Invoice.taxAmount,Montant T.V.A.,,java/com/axelor/apps/account/report/ITranslation.java:34
-Invoice.totalExclTax,Total H.T.,,java/com/axelor/apps/account/report/ITranslation.java:35
-Invoice.totalInclTax,Total T.T.C.,,java/com/axelor/apps/account/report/ITranslation.java:37
-Invoice.totalTax,Total T.V.A.,,java/com/axelor/apps/account/report/ITranslation.java:36
-Invoice.unitPrice,Prix unitaire,,java/com/axelor/apps/account/report/ITranslation.java:31
-Invoice.law,Dans le cadre de la loi N°92-1442 du décembre 1992 nous vous précisons que tout retard de paiement donnera lieu à une application d'une pénalité égale à une fois et demi le taux d'intérêt légal.,,
-Invoice/Refund,Facture/Avoir,,resources/domains/PaymentVoucher.xml:24
-Invoiced ?,Facturé ?,,resources/domains/PurchaseOrderLine.xml:10
-Invoiced Turnover This year vs Last year,CA facturé année N vs N-1,,"resources/views/portal.xml:80
+"Invoice of origin","Factures d'origine",,"resources/domains/Invoice.xml:55"
+"Invoice rejected","Facture rejetée",,"resources/domains/MoveLine.xml:23"
+"Invoice sending format","Format d'envoi des factures",,"resources/domains/Partner.xml:13"
+"Invoice.bankDetails","Coord. bancaires",,"java/com/axelor/apps/account/report/ITranslation.java:40"
+"Invoice.bankingInfo","Informations bancaires",,"java/com/axelor/apps/account/report/ITranslation.java:41"
+"Invoice.base","Assiette",,"java/com/axelor/apps/account/report/ITranslation.java:33"
+"Invoice.cheque","Règlement par virement bancaire ou par Chèque à l'ordre d'",,"java/com/axelor/apps/account/report/ITranslation.java:39"
+"Invoice.clientRef","Réf. Client",,"java/com/axelor/apps/account/report/ITranslation.java:42"
+"Invoice.date","Date facture",,"java/com/axelor/apps/account/report/ITranslation.java:23"
+"Invoice.documentRef","Référence interne",,"java/com/axelor/apps/account/report/ITranslation.java:26"
+"Invoice.dueDate","Date d'échéance ",,"java/com/axelor/apps/account/report/ITranslation.java:25"
+"Invoice.invoiceNo","FACTURE N°",,"java/com/axelor/apps/account/report/ITranslation.java:46"
+"Invoice.note","Remarques",,"java/com/axelor/apps/account/report/ITranslation.java:38"
+"Invoice.paymentTerms","Conditions de paiement",,"java/com/axelor/apps/account/report/ITranslation.java:24"
+"Invoice.priceExclTax","Prix HT",,"java/com/axelor/apps/account/report/ITranslation.java:32"
+"Invoice.productDescription","Produit/Description",,"java/com/axelor/apps/account/report/ITranslation.java:28"
+"Invoice.purchaseInvoiceNo","FACTURE FOURNISSEUR N°",,"java/com/axelor/apps/account/report/ITranslation.java:44"
+"Invoice.purchaseRefundNo","AVOIR FOURNISSEUR N°",,"java/com/axelor/apps/account/report/ITranslation.java:45"
+"Invoice.qtyUnit","Qté / Unité",,"java/com/axelor/apps/account/report/ITranslation.java:30"
+"Invoice.refundNo","AVOIR N°",,"java/com/axelor/apps/account/report/ITranslation.java:47"
+"Invoice.supplier","Fournisseur",,"java/com/axelor/apps/account/report/ITranslation.java:27"
+"Invoice.client","Client",,"java/com/axelor/apps/account/report/ITranslation.java:27"
+"Invoice.supplyRef","Réf. Fournisseur",,"java/com/axelor/apps/account/report/ITranslation.java:43"
+"Invoice.tax","TVA",,"java/com/axelor/apps/account/report/ITranslation.java:29"
+"Invoice.taxAmount","Montant T.V.A.",,"java/com/axelor/apps/account/report/ITranslation.java:34"
+"Invoice.totalExclTax","Total H.T.",,"java/com/axelor/apps/account/report/ITranslation.java:35"
+"Invoice.totalInclTax","Total T.T.C.",,"java/com/axelor/apps/account/report/ITranslation.java:37"
+"Invoice.totalTax","Total T.V.A.",,"java/com/axelor/apps/account/report/ITranslation.java:36"
+"Invoice.unitPrice","Prix unitaire",,"java/com/axelor/apps/account/report/ITranslation.java:31"
+"Invoice.law","Dans le cadre de la loi N°92-1442 du décembre 1992 nous vous précisons que tout retard de paiement donnera lieu à une application d'une pénalité égale à une fois et demi le taux d'intérêt légal.",,
+"Invoice/Refund","Facture/Avoir",,"resources/domains/PaymentVoucher.xml:24"
+"Invoiced ?","Facturé ?",,"resources/domains/PurchaseOrderLine.xml:10"
+"Invoiced Turnover This year vs Last year","CA facturé année N vs N-1",,"resources/views/portal.xml:80
 resources/views/charts.xml:30"
-Invoices,Factures,,"resources/domains/IrrecoverableCustomerLine.xml:13
+"Invoices","Factures",,"resources/domains/IrrecoverableCustomerLine.xml:13
 resources/domains/IrrecoverableCustomerLine.xml:12
 resources/views/Invoice.xml:169
 resources/views/Invoice.xml:8
@@ -834,38 +834,38 @@ resources/views/Partner.xml:225
 resources/views/PaymentSchedule.xml:39
 resources/views/AccountConfig.xml:155
 resources/views/menu.xml:773"
-Invoices selection,Les factures,,resources/domains/InvoiceBatch.xml:19
-Invoices to pay,Factures à payer,,"resources/views/PaymentInvoice.xml:14
+"Invoices selection","Les factures",,"resources/domains/InvoiceBatch.xml:19"
+"Invoices to pay","Factures à payer",,"resources/views/PaymentInvoice.xml:14
 resources/views/PaymentInvoice.xml:5"
-Invoices(DD),Factures (Prélèv.),,resources/views/Selects.xml:118
-Invoices/Refunds,Factures/Avoirs,,"resources/views/menu.xml:682
+"Invoices(DD)","Factures (Prélèv.)",,"resources/views/Selects.xml:118"
+"Invoices/Refunds","Factures/Avoirs",,"resources/views/menu.xml:682
 resources/views/menu.xml:677
 resources/views/menu.xml:679"
-Invoicing,Facturation,,resources/views/Selects.xml:128
-Invoicing informations,Informations Facturation,,resources/views/Invoice.xml:46
-Invoicing message,Message de facturation,,resources/domains/General.xml:16
-Invoicing type,Type facturation,,resources/domains/PurchaseOrder.xml:10
-Irrecouvrable status,Etat Irrecouvrable,,resources/domains/Invoice.xml:56
-Irrecoverable,Irrécouvrable,,"resources/domains/IrrecoverableCustomerLine.xml:14
+"Invoicing","Facturation",,"resources/views/Selects.xml:128"
+"Invoicing informations","Informations Facturation",,"resources/views/Invoice.xml:46"
+"Invoicing message","Message de facturation",,"resources/domains/General.xml:16"
+"Invoicing type","Type facturation",,"resources/domains/PurchaseOrder.xml:10"
+"Irrecouvrable status","Etat Irrecouvrable",,"resources/domains/Invoice.xml:56"
+"Irrecoverable","Irrécouvrable",,"resources/domains/IrrecoverableCustomerLine.xml:14
 resources/views/MoveLine.xml:72
 resources/views/Irrecoverable.xml:12
 resources/views/PaymentSchedule.xml:32
 resources/views/Invoice.xml:104
 resources/views/Invoice.xml:77
 resources/views/MoveLine.xml:118"
-Irrecoverable Journal,Journal Irrécouvrables,,resources/domains/AccountConfig.xml:23
-Irrecoverable Shift Reason,Motif de passage en irrécouvrable,,resources/domains/MoveLine.xml:29
-Irrecoverable account,Compte Irrécouvrables,,resources/domains/AccountConfig.xml:35
-Irrecoverable shift reason,Motif de passage en irrécouvrable,,"resources/domains/PaymentSchedule.xml:25
+"Irrecoverable Journal","Journal Irrécouvrables",,"resources/domains/AccountConfig.xml:23"
+"Irrecoverable Shift Reason","Motif de passage en irrécouvrable",,"resources/domains/MoveLine.xml:29"
+"Irrecoverable account","Compte Irrécouvrables",,"resources/domains/AccountConfig.xml:35"
+"Irrecoverable shift reason","Motif de passage en irrécouvrable",,"resources/domains/PaymentSchedule.xml:25
 resources/domains/MoveLine.xml:47"
-Irrecoverable shifting reason,Motif de passage en irrécouvrable,,"resources/domains/AccountConfig.xml:86
+"Irrecoverable shifting reason","Motif de passage en irrécouvrable",,"resources/domains/AccountConfig.xml:86
 resources/domains/Invoice.xml:57"
-Irrecoverable status,Statut irrécouvrable,,"resources/domains/PaymentSchedule.xml:24
+"Irrecoverable status","Statut irrécouvrable",,"resources/domains/PaymentSchedule.xml:24
 resources/domains/MoveLine.xml:46"
-Irrecoverables,Irrécouvrables,,resources/views/Irrecoverable.xml:5
-Is posted ?,Est comptabilisé ?,,resources/domains/BankStatementLine.xml:17
-Is updating,Est mis à jour ? ,,resources/domains/Rum.xml:19
-Journal,Journal,,"resources/views/Journal.xml:18
+"Irrecoverables","Irrécouvrables",,"resources/views/Irrecoverable.xml:5"
+"Is posted ?","Est comptabilisé ?",,"resources/domains/BankStatementLine.xml:17"
+"Is updating","Est mis à jour ? ",,"resources/domains/Rum.xml:19"
+"Journal","Journal",,"resources/views/Journal.xml:18
 resources/views/Journal.xml:5
 resources/domains/MoveLineReport.xml:13
 resources/domains/Invoice.xml:40
@@ -874,15 +874,15 @@ resources/domains/MoveTemplate.xml:12
 resources/views/Selects.xml:69
 resources/domains/AccountManagement.xml:15
 resources/domains/BankStatement.xml:12"
-Journal Type,Types de journal,,"resources/views/JournalType.xml:9
+"Journal Type","Types de journal",,"resources/views/JournalType.xml:9
 resources/views/JournalType.xml:5"
-Journal types,Types de journaux,,"resources/views/menu.xml:422
+"Journal types","Types de journaux",,"resources/views/menu.xml:422
 resources/views/menu.xml:419"
-Journals,Journaux,,"resources/views/AccountConfig.xml:42
+"Journals","Journaux",,"resources/views/AccountConfig.xml:42
 resources/views/menu.xml:413
 resources/views/menu.xml:410"
-LCR/BOR,LCR/BOR,,resources/domains/InterbankCodeLine.xml:16
-Label,Libellé,,"resources/domains/AccountType.xml:10
+"LCR/BOR","LCR/BOR",,"resources/domains/InterbankCodeLine.xml:16"
+"Label","Libellé",,"resources/domains/AccountType.xml:10
 resources/domains/ReminderLevel.xml:13
 resources/domains/PayerQualityConfigLine.xml:11
 resources/domains/IrrecoverableReportLine.xml:13
@@ -891,37 +891,37 @@ resources/domains/Account.xml:17
 resources/domains/BankStatementLine.xml:8
 resources/domains/BankStatement.xml:8
 resources/domains/MoveTemplateLine.xml:10"
-Label for automatic moveline generation,Libellé pour génération automatique de la description des écritures,,resources/domains/Journal.xml:17
-Last number iban bic,Dernier N° IBAN BIC,,resources/domains/Rum.xml:18
-Last print date,Date dernière impression,,resources/domains/MoveLineReport.xml:24
-Last reminder date,Date de dernière relance,,"resources/domains/Reminder.xml:13
+"Label for automatic moveline generation","Libellé pour génération automatique de la description des écritures",,"resources/domains/Journal.xml:17"
+"Last number iban bic","Dernier N° IBAN BIC",,"resources/domains/Rum.xml:18"
+"Last print date","Date dernière impression",,"resources/domains/MoveLineReport.xml:24"
+"Last reminder date","Date de dernière relance",,"resources/domains/Reminder.xml:13
 resources/domains/ReminderHistory.xml:13"
-Les gestions de compte comptable,Les gestions de compte comptable,,resources/views/AccountManagement.xml:72
-Level,Niveau,,"resources/domains/ReminderLevel.xml:11
+"Les gestions de compte comptable","Les gestions de compte comptable",,"resources/views/AccountManagement.xml:72"
+"Level","Niveau",,"resources/domains/ReminderLevel.xml:11
 resources/domains/ReminderMethodLine.xml:11"
-Line Nbr.,N° Ligne,,resources/domains/MoveLine.xml:14
-List of invoices to pay,Liste des facturers à payer,,resources/domains/PaymentVoucher.xml:21
-List of invoices/schedule lines with remaining amount to pay,Liste des factures/échéanciers avec un restant à payer,,resources/domains/PaymentVoucher.xml:20
-Load invoice and display other invoices to pay,Charger facture et afficher les autres factures à payer,,resources/views/PaymentVoucher.xml:57
-Load selected lines,Charger les lignes sélectionnées,,resources/views/PaymentVoucher.xml:58
-Long term debt duration (month),Nbre de mois (créance + 6 mois),,resources/domains/AccountConfig.xml:50
-Lower reimbursement limit,Seuil inf. de remboursement,,resources/domains/AccountConfig.xml:60
-Mail model for invoice and payment schedule rejections,Modèle de courrier rejet Facture et Echéancier de paiement,,resources/domains/AccountConfig.xml:79
-Mail transit time,Délai envoi courrier,,resources/domains/AccountConfig.xml:55
-Management,Gestion,,resources/views/ManagementObject.xml:9
-Managements,Gestions,,resources/views/ManagementObject.xml:5
-Mandate signature city,Ville de signature du mandat,,resources/domains/Rum.xml:15
-Mandate signature date,Date de signature du mandat,,resources/domains/Rum.xml:14
-Manual validation,Validation manuelle,,resources/domains/ReminderMethodLine.xml:16
-Max Amount to reconcile,Montant Max. à réconcilier,,resources/domains/MoveLine.xml:37
-Max Nbr. for payment schedule rejection,Nbre limite de rejet Echéancier de paiement,,resources/domains/AccountConfig.xml:75
-Max Nbr. of invoices rejection,Nbre limite de rejet Facture,,resources/domains/AccountConfig.xml:76
-Message model,Modèle de message,,resources/domains/ReminderMethodLine.xml:15
-Method name,Nom,,resources/domains/ReminderMethod.xml:9
-Min. amount (€),Montant min. (€),,resources/domains/ReminderMethodLine.xml:14
-Misc. Moves,O.D.,,resources/views/Move.xml:201
-Misc. Operation Journal,Journal O.D.,,resources/domains/AccountConfig.xml:24
-Month,Mois,,"resources/views/charts.xml:359
+"Line Nbr.","N° Ligne",,"resources/domains/MoveLine.xml:14"
+"List of invoices to pay","Liste des facturers à payer",,"resources/domains/PaymentVoucher.xml:21"
+"List of invoices/schedule lines with remaining amount to pay","Liste des factures/échéanciers avec un restant à payer",,"resources/domains/PaymentVoucher.xml:20"
+"Load invoice and display other invoices to pay","Charger facture et afficher les autres factures à payer",,"resources/views/PaymentVoucher.xml:57"
+"Load selected lines","Charger les lignes sélectionnées",,"resources/views/PaymentVoucher.xml:58"
+"Long term debt duration (month)","Nbre de mois (créance + 6 mois)",,"resources/domains/AccountConfig.xml:50"
+"Lower reimbursement limit","Seuil inf. de remboursement",,"resources/domains/AccountConfig.xml:60"
+"Mail model for invoice and payment schedule rejections","Modèle de courrier rejet Facture et Echéancier de paiement",,"resources/domains/AccountConfig.xml:79"
+"Mail transit time","Délai envoi courrier",,"resources/domains/AccountConfig.xml:55"
+"Management","Gestion",,"resources/views/ManagementObject.xml:9"
+"Managements","Gestions",,"resources/views/ManagementObject.xml:5"
+"Mandate signature city","Ville de signature du mandat",,"resources/domains/Rum.xml:15"
+"Mandate signature date","Date de signature du mandat",,"resources/domains/Rum.xml:14"
+"Manual validation","Validation manuelle",,"resources/domains/ReminderMethodLine.xml:16"
+"Max Amount to reconcile","Montant Max. à réconcilier",,"resources/domains/MoveLine.xml:37"
+"Max Nbr. for payment schedule rejection","Nbre limite de rejet Echéancier de paiement",,"resources/domains/AccountConfig.xml:75"
+"Max Nbr. of invoices rejection","Nbre limite de rejet Facture",,"resources/domains/AccountConfig.xml:76"
+"Message model","Modèle de message",,"resources/domains/ReminderMethodLine.xml:15"
+"Method name","Nom",,"resources/domains/ReminderMethod.xml:9"
+"Min. amount (€)","Montant min. (€)",,"resources/domains/ReminderMethodLine.xml:14"
+"Misc. Moves","O.D.",,"resources/views/Move.xml:201"
+"Misc. Operation Journal","Journal O.D.",,"resources/domains/AccountConfig.xml:24"
+"Month","Mois",,"resources/views/charts.xml:359
 resources/views/charts.xml:571
 resources/views/charts.xml:639
 resources/views/charts.xml:171
@@ -930,64 +930,65 @@ resources/views/charts.xml:110
 resources/views/charts.xml:331
 resources/views/charts.xml:281
 resources/views/charts.xml:608"
-Move,Ecriture,,"resources/domains/Invoice.xml:41
+"Move","Ecriture",,"resources/domains/Invoice.xml:41
 resources/domains/MoveLine.xml:8"
-Move From Template,Ecriture à partir du modèle,,"resources/views/menu.xml:823
+"Moves","Ecritures",,
+"Move From Template","Ecriture à partir du modèle",,"resources/views/menu.xml:823
 resources/views/menu.xml:820"
-Move Line,Ligne d'écriture,,"resources/domains/PaymentInvoice.xml:12
+"Move Line","Ligne d'écriture",,"resources/domains/PaymentInvoice.xml:12
 resources/domains/BankStatementLine.xml:16"
-Move Line generated,Ligne d'écriture générée,,resources/domains/PaymentInvoiceToPay.xml:16
-Move Lines,Lignes d'écritures,,"resources/views/menu.xml:140
+"Move Line generated","Ligne d'écriture générée",,"resources/domains/PaymentInvoiceToPay.xml:16"
+"Move Lines","Lignes d'écritures",,"resources/views/menu.xml:140
 resources/views/menu.xml:143"
-Move Lines Export Config,Config. Export Ecritures,,resources/views/AccountingBatch.xml:54
-Move Template Types,Types de modèle d'écriture,,"resources/views/menu.xml:852
+"Move Lines Export Config","Config. Export Ecritures",,"resources/views/AccountingBatch.xml:54"
+"Move Template Types","Types de modèle d'écriture",,"resources/views/menu.xml:852
 resources/views/menu.xml:855"
-Move Templates,Modèle d'écriture,,"resources/views/menu.xml:834
+"Move Templates","Modèle d'écriture",,"resources/views/menu.xml:834
 resources/views/menu.xml:832
 resources/views/menu.xml:837"
-Move Templates Lines,Lignes de modèle d'écriture,,"resources/views/menu.xml:847
+"Move Templates Lines","Lignes de modèle d'écriture",,"resources/views/menu.xml:847
 resources/views/menu.xml:844"
-Move export,Export Ecritures,,resources/views/Selects.xml:140
-Move filters,Filtres écritures,,resources/views/Move.xml:185
-Move header,En tête,,resources/views/Move.xml:59
-Move line,Ligne d'écriture,,"resources/views/MoveLine.xml:93
+"Move export","Export Ecritures",,"resources/views/Selects.xml:140"
+"Move filters","Filtres écritures",,"resources/views/Move.xml:185"
+"Move header","En tête",,"resources/views/Move.xml:59"
+"Move line","Ligne d'écriture",,"resources/views/MoveLine.xml:93
 resources/domains/PaymentInvoiceToPay.xml:11
 resources/views/Move.xml:28
 resources/views/MoveLine.xml:47
 resources/domains/Move.xml:12"
-Move line filters,Filtres Move Lines,,resources/views/MoveLine.xml:208
-Move lines,Lignes d'écriture,,"resources/views/MoveLine.xml:6
+"Move line filters","Filtres Move Lines",,"resources/views/MoveLine.xml:208"
+"Move lines","Lignes d'écriture",,"resources/views/MoveLine.xml:6
 resources/views/Move.xml:19
 resources/views/Journal.xml:45
 resources/views/MoveLine.xml:33
 resources/views/MoveLine.xml:20
 resources/views/AccountingSituation.xml:67"
-Move lines generated,Lignes d'écriture générées,,resources/views/AccountClearance.xml:34
-Move template,Modèle d'écriture,,"resources/views/MoveTemplate.xml:32
+"Move lines generated","Lignes d'écriture générées",,"resources/views/AccountClearance.xml:34"
+"Move template","Modèle d'écriture",,"resources/views/MoveTemplate.xml:32
 resources/views/MoveTemplate.xml:5
 resources/domains/MoveTemplateLine.xml:9"
-Move template line,Ligne de modèle d'écriture,,"resources/views/MoveTemplate.xml:12
+"Move template line","Ligne de modèle d'écriture",,"resources/views/MoveTemplate.xml:12
 resources/views/MoveTemplateLine.xml:6
 resources/views/MoveTemplateLine.xml:15
 resources/views/MoveTemplate.xml:19"
-Move template type,Type de modèle d'écriture,,"resources/views/MoveTemplateType.xml:11
+"Move template type","Type de modèle d'écriture",,"resources/views/MoveTemplateType.xml:11
 resources/views/MoveTemplateType.xml:6"
-MoveLine Amount,Montant de la ligne d'écriture,,"resources/views/MoveTemplate.xml:71
+"MoveLine Amount","Montant de la ligne d'écriture",,"resources/views/MoveTemplate.xml:71
 resources/views/MoveTemplate.xml:64"
-MoveLine content data input,Saisie du contenu des lignes d'écritures,,resources/views/MoveTemplate.xml:68
-MoveLines content data input,Saisies du contenu des lignes d'écritures,,resources/views/MoveTemplate.xml:62
-Moves,Ecritures,,"resources/views/menu.xml:130
+"MoveLine content data input","Saisie du contenu des lignes d'écritures",,"resources/views/MoveTemplate.xml:68"
+"MoveLines content data input","Saisies du contenu des lignes d'écritures",,"resources/views/MoveTemplate.xml:62"
+"Moves","Ecritures",,"resources/views/menu.xml:130
 resources/views/menu.xml:133
 resources/views/menu.xml:127"
-Moves from invoices/refunds,Ecritures associées factures/avoirs,,resources/views/Move.xml:195
-Moves from payment,Ecritures de paiement,,resources/views/Move.xml:198
-Moves generated,Ecritures générées,,resources/domains/Irrecoverable.xml:14
-Moves to export,Ecritures à Exporter,,resources/views/Move.xml:192
-Moves validated successfully,Ecritures validées avec succès,,java/com/axelor/apps/account/exception/IExceptionMessage.java:44
-Must be solded out,Doit être soldé(e),,resources/domains/Reconcile.xml:17
-N days + end of month,n jours + Fin de mois,,resources/views/Selects.xml:182
-N days + end of month at,n jours + Fin de mois le,,resources/views/Selects.xml:183
-Name,Intitulé,,"resources/domains/AnalyticAxis.xml:12
+"Moves from invoices/refunds","Ecritures associées factures/avoirs",,"resources/views/Move.xml:195"
+"Moves from payment","Ecritures de paiement",,"resources/views/Move.xml:198"
+"Moves generated","Ecritures générées",,"resources/domains/Irrecoverable.xml:14"
+"Moves to export","Ecritures à Exporter",,"resources/views/Move.xml:192"
+"Moves validated successfully","Ecritures validées avec succès",,"java/com/axelor/apps/account/exception/IExceptionMessage.java:44"
+"Must be solded out","Doit être soldé(e)",,"resources/domains/Reconcile.xml:17"
+"N days + end of month","n jours + Fin de mois",,"resources/views/Selects.xml:182"
+"N days + end of month at","n jours + Fin de mois le",,"resources/views/Selects.xml:183"
+"Name","Intitulé",,"resources/domains/AnalyticAxis.xml:12
 resources/domains/AnalyticJournal.xml:10
 resources/domains/IrrecoverablePaymentScheduleLineLine.xml:15
 resources/domains/AccountChart.xml:10
@@ -1018,39 +1019,39 @@ resources/domains/InterbankCode.xml:11
 resources/domains/MoveTemplate.xml:9
 resources/domains/Reminder.xml:25
 resources/domains/AccountCategory.xml:10"
-Nbr. of terms,Nbr. De termes,,resources/domains/PaymentSchedule.xml:12
-Net,Net,,resources/views/Selects.xml:180
-New cust. invoice,Nouv. Facture Client,,"resources/views/menu.xml:12
+"Nbr. of terms","Nbr. De termes",,"resources/domains/PaymentSchedule.xml:12"
+"Net","Net",,"resources/views/Selects.xml:180"
+"New cust. invoice","Nouv. Facture Client",,"resources/views/menu.xml:12
 resources/views/menu.xml:15"
-New sup. invoice,Nouv. Facture Fourn.,,"resources/views/menu.xml:24
+"New sup. invoice","Nouv. Facture Fourn.",,"resources/views/menu.xml:24
 resources/views/menu.xml:27"
-No of Units,Nbr d'unités,,resources/views/charts.xml:172
-Note,Note,,resources/domains/InvoiceLine.xml:27
-Notes,Remarques,,"resources/views/InvoiceLine.xml:39
+"No of Units","Nbr d'unités",,"resources/views/charts.xml:172"
+"Note","Note",,"resources/domains/InvoiceLine.xml:27"
+"Notes","Remarques",,"resources/views/InvoiceLine.xml:39
 resources/domains/Invoice.xml:84
 resources/views/Invoice.xml:143"
-Number Of Supplier Invoices Per Month,Nbr of Supplier invoices per month,,"resources/views/portal.xml:117
+"Number Of Supplier Invoices Per Month","Nbr of Supplier invoices per month",,"resources/views/portal.xml:117
 resources/views/charts.xml:336"
-Number Of Units On Supplier Invoices On Last 12 Month,Qtés produits achetés (facturés) sur 12 mois,,"resources/views/portal.xml:109
+"Number Of Units On Supplier Invoices On Last 12 Month","Qtés produits achetés (facturés) sur 12 mois",,"resources/views/portal.xml:109
 resources/views/charts.xml:237"
-Obsolete ?,Obsolète ?,,resources/domains/Journal.xml:21
-Old Schedules,Anciens Echéanciers,,resources/views/PaymentSchedule.xml:119
-Ongoing Schedules,Echéanciers en cours,,resources/views/PaymentSchedule.xml:116
-Open cashier,Ouvrir caisse,,resources/views/CashRegisterLine.xml:33
-Options,Options,,resources/views/InvoiceBatch.xml:27
-Other,Autre,,resources/views/Selects.xml:187
-Others,Autres,,"resources/views/MoveLine.xml:129
+"Obsolete ?","Obsolète ?",,"resources/domains/Journal.xml:21"
+"Old Schedules","Anciens Echéanciers",,"resources/views/PaymentSchedule.xml:119"
+"Ongoing Schedules","Echéanciers en cours",,"resources/views/PaymentSchedule.xml:116"
+"Open cashier","Ouvrir caisse",,"resources/views/CashRegisterLine.xml:33"
+"Options","Options",,"resources/views/InvoiceBatch.xml:27"
+"Other","Autre",,"resources/views/Selects.xml:187"
+"Others","Autres",,"resources/views/MoveLine.xml:129
 resources/views/Move.xml:80
 resources/views/MoveLine.xml:84
 resources/views/Move.xml:48"
-Out,Emis,,resources/views/Selects.xml:200
-Overdue moveline,Ligne d'écriture de trop-perçus,,resources/domains/PaymentVoucher.xml:17
-Overdue payment,Paiement associé au trop-perçus,,resources/domains/Reimbursement.xml:14
-Overpayment before,Trop-perçus antérieurs à,,resources/domains/AccountClearance.xml:16
-Overpayments clearances,Apurements de trop-perçu,,"resources/views/menu.xml:241
+"Out","Emis",,"resources/views/Selects.xml:200"
+"Overdue moveline","Ligne d'écriture de trop-perçus",,"resources/domains/PaymentVoucher.xml:17"
+"Overdue payment","Paiement associé au trop-perçus",,"resources/domains/Reimbursement.xml:14"
+"Overpayment before","Trop-perçus antérieurs à",,"resources/domains/AccountClearance.xml:16"
+"Overpayments clearances","Apurements de trop-perçu",,"resources/views/menu.xml:241
 resources/views/menu.xml:238"
-Overpayments collected,Trop-perçus récupérés,,resources/domains/AccountClearance.xml:17
-Overview,Aperçu,,"resources/views/TaxAccount.xml:11
+"Overpayments collected","Trop-perçus récupérés",,"resources/domains/AccountClearance.xml:17"
+"Overview","Aperçu",,"resources/views/TaxAccount.xml:11
 resources/views/AccountManagement.xml:53
 resources/views/MoveLineReport.xml:27
 resources/views/AnalyticAxis.xml:10
@@ -1121,12 +1122,12 @@ resources/views/InterbankCode.xml:17
 resources/views/AnalyticAccount.xml:12
 resources/views/Reimbursement.xml:13
 resources/views/ReminderConfigLine.xml:12"
-Owner,Titulaire,,resources/views/BankDetails.xml:14
-Owner deceased,Titulaire décédé,,resources/domains/Reminder.xml:23
-Paid through paybox,Payé via Paybox,,resources/domains/PaymentVoucher.xml:30
-Parent Account,Parent,,resources/domains/Account.xml:13
-Parent Analytic Acc.,Parent,,resources/domains/AnalyticAccount.xml:14
-Partner,Tiers,,"resources/domains/MoveLine.xml:10
+"Owner","Titulaire",,"resources/views/BankDetails.xml:14"
+"Owner deceased","Titulaire décédé",,"resources/domains/Reminder.xml:23"
+"Paid through paybox","Payé via Paybox",,"resources/domains/PaymentVoucher.xml:30"
+"Parent Account","Parent",,"resources/domains/Account.xml:13"
+"Parent Analytic Acc.","Parent",,"resources/domains/AnalyticAccount.xml:14"
+"Partner","Tiers",,"resources/domains/MoveLine.xml:10
 resources/domains/Reimbursement.xml:12
 resources/domains/MoveLineReport.xml:18
 resources/views/Partner.xml:187
@@ -1141,48 +1142,48 @@ resources/views/Partner.xml:214
 resources/domains/ReportedBalance.xml:10
 resources/domains/PaymentVoucher.xml:10
 resources/domains/PaymentSchedule.xml:17"
-Partner Balance due,Solde exigible,,"resources/domains/ReminderHistory.xml:17
+"Partner Balance due","Solde exigible",,"resources/domains/ReminderHistory.xml:17
 resources/domains/Reminder.xml:18"
-Partner account,Compte comptable Tiers,,resources/domains/PaymentVoucher.xml:11
-Partner category,Les Tiers,,resources/domains/ReminderConfigLine.xml:11
-Partner information,Information Tiers,,resources/views/ReminderHistory.xml:29
-Partner input select,Saisie du tiers,,resources/domains/MoveTemplate.xml:15
-Partner situation must be updated,MàJ du compte client ?,,resources/domains/AccountingSituation.xml:21
-Partner to Credit,Tiers à créditer,,"resources/views/MoveTemplate.xml:66
+"Partner account","Compte comptable Tiers",,"resources/domains/PaymentVoucher.xml:11"
+"Partner category","Les Tiers",,"resources/domains/ReminderConfigLine.xml:11"
+"Partner information","Information Tiers",,"resources/views/ReminderHistory.xml:29"
+"Partner input select","Saisie du tiers",,"resources/domains/MoveTemplate.xml:15"
+"Partner situation must be updated","MàJ du compte client ?",,"resources/domains/AccountingSituation.xml:21"
+"Partner to Credit","Tiers à créditer",,"resources/views/MoveTemplate.xml:66
 resources/views/MoveTemplate.xml:73"
-Partner to Debit,Tiers à débiter,,"resources/views/MoveTemplate.xml:65
+"Partner to Debit","Tiers à débiter",,"resources/views/MoveTemplate.xml:65
 resources/views/MoveTemplate.xml:72"
-Partner to credit,Tiers à créditer,,resources/domains/MoveTemplateLine.xml:16
-Partner to debit,Tiers à débiter,,resources/domains/MoveTemplateLine.xml:15
-Path for reimbursement files (CFONB),Dossier d'export des Rbts (CFONB),,resources/domains/AccountConfig.xml:58
-Path for reimbursement files (SEPA),Dossier d'export des Rbts (SEPA),,resources/domains/AccountConfig.xml:59
-Path to Paybox public key,Chemin vers le clé publique Paybox,,resources/domains/PayboxConfig.xml:25
-Payable,Fournisseur,,resources/views/Selects.xml:29
-Paybox,Paybox,,"resources/views/PaymentVoucher.xml:43
+"Partner to credit","Tiers à créditer",,"resources/domains/MoveTemplateLine.xml:16"
+"Partner to debit","Tiers à débiter",,"resources/domains/MoveTemplateLine.xml:15"
+"Path for reimbursement files (CFONB)","Dossier d'export des Rbts (CFONB)",,"resources/domains/AccountConfig.xml:58"
+"Path for reimbursement files (SEPA)","Dossier d'export des Rbts (SEPA)",,"resources/domains/AccountConfig.xml:59"
+"Path to Paybox public key","Chemin vers le clé publique Paybox",,"resources/domains/PayboxConfig.xml:25"
+"Payable","Fournisseur",,"resources/views/Selects.xml:29"
+"Paybox","Paybox",,"resources/views/PaymentVoucher.xml:43
 resources/views/PaymentVoucher.xml:34
 resources/views/menu.xml:516
 resources/views/Paybox.xml:6
 resources/views/Paybox.xml:10
 resources/views/menu.xml:519
 resources/views/AccountConfig.xml:37"
-Paybox configuration,Config. Paybox,,"resources/domains/AccountConfig.xml:90
+"Paybox configuration","Config. Paybox",,"resources/domains/AccountConfig.xml:90
 resources/views/PayboxConfig.xml:12"
-Paybox configurations,Configs. Paybox,,resources/views/PayboxConfig.xml:6
-Paybox transaction Amount,Montant de la transaction Paybox,,resources/domains/PaymentVoucher.xml:34
-Payer,Payeur,,resources/views/PaymentVoucher.xml:65
-Payer partner,Tiers payeur,,resources/domains/AccountingSituation.xml:11
-Payer quality,Qualité payeur,,resources/domains/Partner.xml:8
-Payer quality configuration line,Ligne de configuration de la qualité payeur,,resources/views/PayerQualityConfigLine.xml:10
-Payer quality configuration lines,Lignes de configuration de la qualité payeur,,resources/views/PayerQualityConfigLine.xml:5
-Payment,Paiement,,"resources/domains/PaymentInvoice.xml:10
+"Paybox configurations","Configs. Paybox",,"resources/views/PayboxConfig.xml:6"
+"Paybox transaction Amount","Montant de la transaction Paybox",,"resources/domains/PaymentVoucher.xml:34"
+"Payer","Payeur",,"resources/views/PaymentVoucher.xml:65"
+"Payer partner","Tiers payeur",,"resources/domains/AccountingSituation.xml:11"
+"Payer quality","Qualité payeur",,"resources/domains/Partner.xml:8"
+"Payer quality configuration line","Ligne de configuration de la qualité payeur",,"resources/views/PayerQualityConfigLine.xml:10"
+"Payer quality configuration lines","Lignes de configuration de la qualité payeur",,"resources/views/PayerQualityConfigLine.xml:5"
+"Payment","Paiement",,"resources/domains/PaymentInvoice.xml:10
 resources/views/Invoice.xml:127
 resources/views/Selects.xml:101
 resources/domains/PaymentInvoiceToPay.xml:17
 resources/views/menu.xml:504"
-Payment Condition,Conditions de paiement,,"resources/views/charts.xml:710
+"Payment Condition","Conditions de paiement",,"resources/views/charts.xml:710
 resources/views/PaymentCondition.xml:12
 resources/views/PaymentCondition.xml:5"
-Payment Mode,Modes de paiement,,"resources/domains/Partner.xml:14
+"Payment Mode","Modes de paiement",,"resources/domains/Partner.xml:14
 resources/views/charts.xml:389
 resources/domains/MoveLineReport.xml:14
 resources/views/charts.xml:432
@@ -1193,335 +1194,335 @@ resources/domains/ChequeRejection.xml:19
 resources/views/PaymentMode.xml:11
 resources/views/charts.xml:461
 resources/views/PaymentMode.xml:6"
-Payment Move,Ecriture de paiement,,resources/domains/Invoice.xml:81
-Payment Rejected,Paiement rejeté,,resources/views/ChequeRejection.xml:34
-Payment Schedule,Echéanciers,,"resources/views/menu.xml:101
+"Payment Move","Ecriture de paiement",,"resources/domains/Invoice.xml:81"
+"Payment Rejected","Paiement rejeté",,"resources/views/ChequeRejection.xml:34"
+"Payment Schedule","Echéanciers",,"resources/views/menu.xml:101
 resources/domains/Invoice.xml:39
 resources/views/menu.xml:97
 resources/views/menu.xml:104
 resources/domains/PaymentScheduleLine.xml:10"
-Payment Schedule Entries,Lignes Ecritures liées aux Echéanciers,,resources/views/MoveLine.xml:215
-Payment Schedule line,Ligne d'échéancier,,resources/domains/MoveLine.xml:38
-Payment Schedules Lines,Lignes d'Echéanciers,,resources/views/PaymentScheduleLine.xml:77
-Payment Smoothings Lines,Lignes de Lissage,,resources/views/PaymentScheduleLine.xml:80
-Payment account,Compte comptable paiement,,resources/domains/AccountManagement.xml:10
-Payment collection journal,Journal des encaissements,,resources/views/Selects.xml:63
-Payment condition,Condition de paiement,,"resources/domains/Partner.xml:15
+"Payment Schedule Entries","Lignes Ecritures liées aux Echéanciers",,"resources/views/MoveLine.xml:215"
+"Payment Schedule line","Ligne d'échéancier",,"resources/domains/MoveLine.xml:38"
+"Payment Schedules Lines","Lignes d'Echéanciers",,"resources/views/PaymentScheduleLine.xml:77"
+"Payment Smoothings Lines","Lignes de Lissage",,"resources/views/PaymentScheduleLine.xml:80"
+"Payment account","Compte comptable paiement",,"resources/domains/AccountManagement.xml:10"
+"Payment collection journal","Journal des encaissements",,"resources/views/Selects.xml:63"
+"Payment condition","Condition de paiement",,"resources/domains/Partner.xml:15
 resources/domains/SaleOrder.xml:11
 resources/domains/PurchaseOrder.xml:13
 resources/domains/Invoice.xml:21"
-Payment conditions,Conditions de paiement,,"resources/views/menu.xml:528
+"Payment conditions","Conditions de paiement",,"resources/views/menu.xml:528
 resources/views/menu.xml:525"
-Payment date,Date de paiement,,resources/domains/PaymentVoucher.xml:13
-Payment differences,Différences paiement,,"resources/views/AccountConfig.xml:63
+"Payment date","Date de paiement",,"resources/domains/PaymentVoucher.xml:13"
+"Payment differences","Différences paiement",,"resources/views/AccountConfig.xml:63
 resources/views/Selects.xml:70"
-Payment mode,Mode de paiement,,"resources/domains/PurchaseOrder.xml:12
+"Payment mode","Mode de paiement",,"resources/domains/PurchaseOrder.xml:12
 resources/domains/PaymentVoucher.xml:12
 resources/domains/SaleOrder.xml:10
 resources/views/AccountManagement.xml:34
 resources/domains/AccountManagement.xml:14"
-Payment mode after rejection,Mode de paiement après rejet,,resources/domains/AccountConfig.xml:74
-Payment mode for direct debit,Mode de paiement Prélèvements,,resources/domains/AccountConfig.xml:73
-Payment modes,Modes de paiements,,"resources/views/menu.xml:510
+"Payment mode after rejection","Mode de paiement après rejet",,"resources/domains/AccountConfig.xml:74"
+"Payment mode for direct debit","Mode de paiement Prélèvements",,"resources/domains/AccountConfig.xml:73"
+"Payment modes","Modes de paiements",,"resources/views/menu.xml:510
 resources/views/menu.xml:507"
-Payment schedue line,Ligne d'échéancier,,resources/views/IrrecoverablePaymentScheduleLineLine.xml:11
-Payment schedule,Échéancier,,"resources/views/PaymentSchedule.xml:18
+"Payment schedue line","Ligne d'échéancier",,"resources/views/IrrecoverablePaymentScheduleLineLine.xml:11"
+"Payment schedule","Échéancier",,"resources/views/PaymentSchedule.xml:18
 resources/views/Invoice.xml:128
 resources/views/PaymentSchedule.xml:6"
-Payment schedule filters,Filtres Echéanciers Paiement,,resources/views/PaymentSchedule.xml:115
-Payment schedule line,Ligne d'échéanciers de paiement,,"resources/views/menu.xml:115
+"Payment schedule filters","Filtres Echéanciers Paiement",,"resources/views/PaymentSchedule.xml:115"
+"Payment schedule line","Ligne d'échéanciers de paiement",,"resources/views/menu.xml:115
 resources/views/menu.xml:112"
-Payment schedule line filters,Filtres Lignes d'échéancier,,resources/views/PaymentScheduleLine.xml:76
-Payment schedule lines,Les lignes d'échéanciers,,resources/views/IrrecoverablePaymentScheduleLineLine.xml:6
-Payment schedule rejected,Echéancier(s) paiement(s) rejeté(s),,resources/domains/Irrecoverable.xml:13
-Payment smoothing(DD),Lissage Paiement (Prélèv.),,resources/views/Selects.xml:117
-Payment type,Type de paiement,,resources/domains/PaymentVoucher.xml:40
-Payment voucher,Saisie paiement,,"resources/domains/ChequeRejection.xml:13
+"Payment schedule line filters","Filtres Lignes d'échéancier",,"resources/views/PaymentScheduleLine.xml:76"
+"Payment schedule lines","Les lignes d'échéanciers",,"resources/views/IrrecoverablePaymentScheduleLineLine.xml:6"
+"Payment schedule rejected","Echéancier(s) paiement(s) rejeté(s)",,"resources/domains/Irrecoverable.xml:13"
+"Payment smoothing(DD)","Lissage Paiement (Prélèv.)",,"resources/views/Selects.xml:117"
+"Payment type","Type de paiement",,"resources/domains/PaymentVoucher.xml:40"
+"Payment voucher","Saisie paiement",,"resources/domains/ChequeRejection.xml:13
 resources/views/ChequeRejection.xml:37
 resources/views/PaymentVoucher.xml:20
 resources/domains/Move.xml:25"
-Payment voucher filters,Filtres Saisie Paiement,,resources/views/PaymentVoucher.xml:274
-Payment voucher invoices to pay,Paiement des factures,,"resources/views/PaymentInvoiceToPay.xml:15
+"Payment voucher filters","Filtres Saisie Paiement",,"resources/views/PaymentVoucher.xml:274"
+"Payment voucher invoices to pay","Paiement des factures",,"resources/views/PaymentInvoiceToPay.xml:15
 resources/views/PaymentInvoiceToPay.xml:5"
-Payment vouchers,Les Saisies paiements,,"resources/views/menu.xml:193
+"Payment vouchers","Les Saisies paiements",,"resources/views/menu.xml:193
 resources/views/menu.xml:158
 resources/views/menu.xml:181
 resources/views/menu.xml:169
 resources/views/PaymentVoucher.xml:6
 resources/views/menu.xml:205
 resources/views/menu.xml:155"
-Payment(s) schedule(s) rejected,Echéancier(s) paiement(s) rejeté(s),,resources/domains/IrrecoverableCustomerLine.xml:11
-PaymentSchduleLine,Lignes d'Echéanciers,,resources/views/PaymentSchedule.xml:40
-Payments,Paiements,,"resources/views/menu.xml:794
+"Payment(s) schedule(s) rejected","Echéancier(s) paiement(s) rejeté(s)",,"resources/domains/IrrecoverableCustomerLine.xml:11"
+"PaymentSchduleLine","Lignes d'Echéanciers",,"resources/views/PaymentSchedule.xml:40"
+"Payments","Paiements",,"resources/views/menu.xml:794
 resources/views/menu.xml:151"
-Payments by IPO and IPO Cheque,Paiement par TIP et TIP chèque,,resources/views/AccountConfig.xml:133
-Payments by IPO and IPO Cheque configuration,Paiements par TIP et par TIP-chèque,,resources/views/AccountingBatch.xml:42
-Payments by IPO et IPO cheque,Paiement par TIP et TIP chèque,,resources/views/Selects.xml:137
-Payments rejects by IPO and IPO Cheque,Rejets paiement par TIP et TIP chèque,,resources/views/AccountConfig.xml:137
-Percentage,Pourcentage,,resources/domains/MoveTemplateLine.xml:14
-Period,Période,,"resources/domains/MoveLineReport.xml:12
+"Payments by IPO and IPO Cheque","Paiement par TIP et TIP chèque",,"resources/views/AccountConfig.xml:133"
+"Payments by IPO and IPO Cheque configuration","Paiements par TIP et par TIP-chèque",,"resources/views/AccountingBatch.xml:42"
+"Payments by IPO et IPO cheque","Paiement par TIP et TIP chèque",,"resources/views/Selects.xml:137"
+"Payments rejects by IPO and IPO Cheque","Rejets paiement par TIP et TIP chèque",,"resources/views/AccountConfig.xml:137"
+"Percentage","Pourcentage",,"resources/domains/MoveTemplateLine.xml:14"
+"Period","Période",,"resources/domains/MoveLineReport.xml:12
 resources/domains/Move.xml:9
 resources/views/charts.xml:473"
-Periodical processing,Traitements Périodiques,,resources/views/menu.xml:213
-Periods,Périodes comptables,,"resources/views/menu.xml:401
+"Periodical processing","Traitements Périodiques",,"resources/views/menu.xml:213"
+"Periods","Périodes comptables",,"resources/views/menu.xml:401
 resources/views/menu.xml:404"
-Please clear all existing periods before generating new ones,Veuillez supprimer toutes les périodes générées pour en saisir des nouvelles.,,resources/views/Year.xml:65
-Please close this notebook to go back to the payment voucher. Please refresh the payment voucher to see the changes.,Vous pouvez fermer cet onglet et revenir sur la saisie paiement. Pensez à actualiser la saisie paiement.,,resources/views/Paybox.xml:13
-Please input values between 1 to 100,"Veuillez saisir une valeur comprise entre 1 et 100,",,resources/views/MoveTemplateLine.xml:42
-Please select 'Draft' or 'Simulated' moves,Veuillez sélectionner une écriture 'Brouillon' ou 'Simulée',,java/com/axelor/apps/account/exception/IExceptionMessage.java:42
-Previous Move,Ancienne pièce comptable,,resources/domains/Invoice.xml:42
-Previous invoice,Facture précédente,,resources/domains/Invoice.xml:53
-Price list,Liste de prix,,resources/domains/Invoice.xml:29
-Pricinglist unit,Unité du barème,,resources/domains/InvoiceLine.xml:15
-Print,Imprimer,,"resources/views/Irrecoverable.xml:27
+"Please clear all existing periods before generating new ones","Veuillez supprimer toutes les périodes générées pour en saisir des nouvelles.",,"resources/views/Year.xml:65"
+"Please close this notebook to go back to the payment voucher. Please refresh the payment voucher to see the changes.","Vous pouvez fermer cet onglet et revenir sur la saisie paiement. Pensez à actualiser la saisie paiement.",,"resources/views/Paybox.xml:13"
+"Please input values between 1 to 100","Veuillez saisir une valeur comprise entre 1 et 100,",,"resources/views/MoveTemplateLine.xml:42"
+"Please select 'Draft' or 'Simulated' moves","Veuillez sélectionner une écriture 'Brouillon' ou 'Simulée'",,"java/com/axelor/apps/account/exception/IExceptionMessage.java:42"
+"Previous Move","Ancienne pièce comptable",,"resources/domains/Invoice.xml:42"
+"Previous invoice","Facture précédente",,"resources/domains/Invoice.xml:53"
+"Price list","Liste de prix",,"resources/domains/Invoice.xml:29"
+"Pricinglist unit","Unité du barème",,"resources/domains/InvoiceLine.xml:15"
+"Print","Imprimer",,"resources/views/Irrecoverable.xml:27
 resources/views/Invoice.xml:31
 resources/views/Invoice.xml:25
 resources/views/MoveLineReport.xml:36"
-Print invoices,Imprimer factures,,resources/views/Invoice.xml:10
-Print receipt,Imprimer reçu,,resources/views/PaymentVoucher.xml:56
-Printing informations,Information d'impression,,resources/views/MoveLineReport.xml:55
-Printing output,Format d'impression,,resources/domains/MoveLineReport.xml:17
-Product,Produit,,"resources/domains/MoveTemplateLine.xml:12
+"Print invoices","Imprimer factures",,"resources/views/Invoice.xml:10"
+"Print receipt","Imprimer reçu",,"resources/views/PaymentVoucher.xml:56"
+"Printing informations","Information d'impression",,"resources/views/MoveLineReport.xml:55"
+"Printing output","Format d'impression",,"resources/domains/MoveLineReport.xml:17"
+"Product","Produit",,"resources/domains/MoveTemplateLine.xml:12
 resources/domains/InvoiceLine.xml:11
 resources/views/Selects.xml:99
 resources/views/AccountManagement.xml:27
 resources/domains/InvoiceLineEvent.xml:11"
-Product Category,Catégorie produit,,resources/views/charts.xml:209
-Product Name,Nom du Produit,,resources/domains/InvoiceLine.xml:12
-Profit accounts,Compte de profits,,resources/domains/AccountConfig.xml:83
-Provision,Provision,,resources/views/Selects.xml:30
-Purchase Entries,Lignes Ecritures Achat,,resources/views/MoveLine.xml:218
-Purchase Invoice,Facture d'achat,,resources/views/menu.xml:762
-Purchase Invoice Db,Tb Facture d'achat,,"resources/views/menu.xml:768
+"Product Category","Catégorie produit",,"resources/views/charts.xml:209"
+"Product Name","Nom du Produit",,"resources/domains/InvoiceLine.xml:12"
+"Profit accounts","Compte de profits",,"resources/domains/AccountConfig.xml:83"
+"Provision","Provision",,"resources/views/Selects.xml:30"
+"Purchase Entries","Lignes Ecritures Achat",,"resources/views/MoveLine.xml:218"
+"Purchase Invoice","Facture d'achat",,"resources/views/menu.xml:762"
+"Purchase Invoice Db","Tb Facture d'achat",,"resources/views/menu.xml:768
 resources/views/menu.xml:765"
-Purchase account,Compte comptable à l'Achat,,resources/domains/AccountManagement.xml:8
-Purchase journal type,Type journal Achats,,resources/domains/AccountConfig.xml:27
-Purchases,Achats,,resources/views/menu.xml:66
-Qty,Qté,,"resources/domains/InvoiceLineEvent.xml:15
+"Purchase account","Compte comptable à l'Achat",,"resources/domains/AccountManagement.xml:8"
+"Purchase journal type","Type journal Achats",,"resources/domains/AccountConfig.xml:27"
+"Purchases","Achats",,"resources/views/menu.xml:66"
+"Qty","Qté",,"resources/domains/InvoiceLineEvent.xml:15
 resources/domains/InvoiceLine.xml:16"
-Qty Unit,Unité de la quantité,,resources/domains/InvoiceLineEvent.xml:19
-RIB,*,,resources/views/BankDetails.xml:22
-RUM N°,N° RUM,,resources/domains/Rum.xml:10
-Rank Nbr,N° Rang,,resources/domains/PayboxConfig.xml:15
-Re-export the bank file,Réexporter fichier bancaire,,resources/domains/AccountingBatch.xml:31
-Reached reminder method line,Ligne de la méthode de relance,,resources/domains/ReminderHistory.xml:12
-Reason,Motif,,resources/views/Reimbursement.xml:23
-Receipt N°,N° Reçu,,resources/domains/PaymentVoucher.xml:29
-Receivable,Clients,,resources/views/Selects.xml:31
-Receivables recovery,Recouvrement créances,,resources/views/AccountConfig.xml:27
-Recent reimbursements,Remboursements récents,,resources/views/Reimbursement.xml:67
-Recent rejects,Rejets récents,,resources/views/ChequeRejection.xml:99
-Recipient record code,Code Enreg. destinataire,,resources/domains/CfonbConfig.xml:18
-Reconcilable ?,Lettrable ?,,resources/domains/Account.xml:15
-Reconcilations,Réconciliations,,"resources/views/menu.xml:220
+"Qty Unit","Unité de la quantité",,"resources/domains/InvoiceLineEvent.xml:19"
+"RIB","*",,"resources/views/BankDetails.xml:22"
+"RUM N°","N° RUM",,"resources/domains/Rum.xml:10"
+"Rank Nbr","N° Rang",,"resources/domains/PayboxConfig.xml:15"
+"Re-export the bank file","Réexporter fichier bancaire",,"resources/domains/AccountingBatch.xml:31"
+"Reached reminder method line","Ligne de la méthode de relance",,"resources/domains/ReminderHistory.xml:12"
+"Reason","Motif",,"resources/views/Reimbursement.xml:23"
+"Receipt N°","N° Reçu",,"resources/domains/PaymentVoucher.xml:29"
+"Receivable","Clients",,"resources/views/Selects.xml:31"
+"Receivables recovery","Recouvrement créances",,"resources/views/AccountConfig.xml:27"
+"Recent reimbursements","Remboursements récents",,"resources/views/Reimbursement.xml:67"
+"Recent rejects","Rejets récents",,"resources/views/ChequeRejection.xml:99"
+"Recipient record code","Code Enreg. destinataire",,"resources/domains/CfonbConfig.xml:18"
+"Reconcilable ?","Lettrable ?",,"resources/domains/Account.xml:15"
+"Reconcilations","Réconciliations",,"resources/views/menu.xml:220
 resources/views/menu.xml:217"
-Reconcile,Réconciliations,,"resources/views/Reconcile.xml:16
+"Reconcile","Réconciliations",,"resources/views/Reconcile.xml:16
 resources/views/Reconcile.xml:6
 resources/views/Reconcile.xml:28"
-Reconcile filters,Filtre Réconciliations,,resources/views/Reconcile.xml:58
-Ref.,Réf.,,"resources/domains/Reimbursement.xml:10
+"Reconcile filters","Filtre Réconciliations",,"resources/views/Reconcile.xml:58"
+"Ref.","Réf.",,"resources/domains/Reimbursement.xml:10
 resources/domains/PaymentSchedule.xml:8
 resources/domains/MoveLineReport.xml:8"
-Reference,Référence,,"resources/domains/IrrecoverableInvoiceLine.xml:11
+"Reference","Référence",,"resources/domains/IrrecoverableInvoiceLine.xml:11
 resources/domains/AccountClearance.xml:10
 resources/domains/IrrecoverableReportLine.xml:12
 resources/domains/Move.xml:11
 resources/domains/ChequeRejection.xml:9
 resources/domains/BankStatementLine.xml:11
 resources/domains/PaymentVoucher.xml:9"
-Reference Date,Date de référence,,resources/domains/Reminder.xml:14
-Reference Due Date,Date d'échéance à prendre en compte,,resources/domains/AccountingBatch.xml:29
-Reference date,Date de référence,,resources/domains/ReminderHistory.xml:14
-Reference documents,Documents de référence,,resources/views/Invoice.xml:54
-Refund,Avoir,,"resources/domains/Invoice.xml:54
+"Reference Date","Date de référence",,"resources/domains/Reminder.xml:14"
+"Reference Due Date","Date d'échéance à prendre en compte",,"resources/domains/AccountingBatch.xml:29"
+"Reference date","Date de référence",,"resources/domains/ReminderHistory.xml:14"
+"Reference documents","Documents de référence",,"resources/views/Invoice.xml:54"
+"Refund","Avoir",,"resources/domains/Invoice.xml:54
 resources/views/Invoice.xml:94
 resources/views/Invoice.xml:67"
-Reimbursed,Remboursé,,resources/views/Selects.xml:40
-Reimbursed amount,Montant remboursé,,resources/domains/Reimbursement.xml:15
-Reimbursement,Remboursement,,"resources/views/Reimbursement.xml:12
+"Reimbursed","Remboursé",,"resources/views/Selects.xml:40"
+"Reimbursed amount","Montant remboursé",,"resources/domains/Reimbursement.xml:15"
+"Reimbursement","Remboursement",,"resources/views/Reimbursement.xml:12
 resources/views/Selects.xml:134
 resources/views/AccountConfig.xml:83"
-Reimbursement Batch,Batch remboursements,,resources/views/AccountingBatch.xml:67
-Reimbursement Export,Export des remboursements,,resources/views/Selects.xml:144
-Reimbursement Journal,Journal Remboursements,,resources/domains/AccountConfig.xml:22
-Reimbursement account,Compte de remboursement,,resources/domains/AccountConfig.xml:62
-Reimbursement batch type,Type de batch de remboursement,,resources/domains/AccountingBatch.xml:19
-Reimbursement configuration,Configuration de remboursement,,resources/views/AccountingBatch.xml:23
-Reimbursement details,Détails remboursement,,resources/views/Reimbursement.xml:18
-Reimbursement emails,Emails de remboursement,,"resources/views/menu.xml:564
+"Reimbursement Batch","Batch remboursements",,"resources/views/AccountingBatch.xml:67"
+"Reimbursement Export","Export des remboursements",,"resources/views/Selects.xml:144"
+"Reimbursement Journal","Journal Remboursements",,"resources/domains/AccountConfig.xml:22"
+"Reimbursement account","Compte de remboursement",,"resources/domains/AccountConfig.xml:62"
+"Reimbursement batch type","Type de batch de remboursement",,"resources/domains/AccountingBatch.xml:19"
+"Reimbursement configuration","Configuration de remboursement",,"resources/views/AccountingBatch.xml:23"
+"Reimbursement details","Détails remboursement",,"resources/views/Reimbursement.xml:18"
+"Reimbursement emails","Emails de remboursement",,"resources/views/menu.xml:564
 resources/views/menu.xml:561"
-Reimbursement filters,Filtres remboursements,,resources/views/Reimbursement.xml:66
-Reimbursement mail model,Modèle d'email de remboursement,,resources/domains/AccountConfig.xml:63
-Reimbursement mails,Courriers de remboursement,,"resources/views/menu.xml:612
+"Reimbursement filters","Filtres remboursements",,"resources/views/Reimbursement.xml:66"
+"Reimbursement mail model","Modèle d'email de remboursement",,"resources/domains/AccountConfig.xml:63"
+"Reimbursement mails","Courriers de remboursement",,"resources/views/menu.xml:612
 resources/views/menu.xml:609"
-Reimbursement ongoing,En cours de remboursement,,resources/views/Selects.xml:39
-Reimbursement rejects,Rejets de remboursement,,resources/views/AccountConfig.xml:92
-Reimbursement status,Statut du remboursement,,resources/domains/MoveLine.xml:28
-Reimbursements,Remboursements,,"resources/views/menu.xml:350
+"Reimbursement ongoing","En cours de remboursement",,"resources/views/Selects.xml:39"
+"Reimbursement rejects","Rejets de remboursement",,"resources/views/AccountConfig.xml:92"
+"Reimbursement status","Statut du remboursement",,"resources/domains/MoveLine.xml:28"
+"Reimbursements","Remboursements",,"resources/views/menu.xml:350
 resources/views/AccountConfig.xml:84
 resources/views/Reimbursement.xml:6
 resources/views/menu.xml:347"
-Reject,Rejet,,"resources/domains/PaymentVoucher.xml:25
+"Reject","Rejet",,"resources/domains/PaymentVoucher.xml:25
 resources/views/Invoice.xml:137
 resources/domains/Move.xml:19
 resources/views/Selects.xml:95"
-Reject Date,Date du rejet,,"resources/domains/Invoice.xml:78
+"Reject Date","Date du rejet",,"resources/domains/Invoice.xml:78
 resources/domains/PaymentScheduleLine.xml:18
 resources/domains/ChequeRejection.xml:15
 resources/domains/Reimbursement.xml:21"
-Reject Information,Information de rejet,,"resources/views/ChequeRejection.xml:27
+"Reject Information","Information de rejet",,"resources/views/ChequeRejection.xml:27
 resources/views/Reimbursement.xml:26"
-Reject Move line,Ligne d'écriture de rejet,,resources/domains/Reimbursement.xml:22
-Reject amount,Montant rejeté,,resources/domains/Invoice.xml:77
-Reject counter,Compteur de rejet,,"resources/domains/PaymentSchedule.xml:20
+"Reject Move line","Ligne d'écriture de rejet",,"resources/domains/Reimbursement.xml:22"
+"Reject amount","Montant rejeté",,"resources/domains/Invoice.xml:77"
+"Reject counter","Compteur de rejet",,"resources/domains/PaymentSchedule.xml:20
 resources/domains/Partner.xml:17"
-Reject emails,Emails de rejet,,"resources/views/menu.xml:573
+"Reject emails","Emails de rejet",,"resources/views/menu.xml:573
 resources/views/menu.xml:576"
-Reject move line,Ecriture de rejet,,"resources/domains/Invoice.xml:75
+"Reject move line","Ecriture de rejet",,"resources/domains/Invoice.xml:75
 resources/domains/PaymentScheduleLine.xml:23
 resources/domains/Mail.xml:12"
-Reject reason,Motif du rejet,,"resources/domains/MoveLine.xml:25
+"Reject reason","Motif du rejet",,"resources/domains/MoveLine.xml:25
 resources/domains/Reimbursement.xml:20
 resources/domains/PaymentScheduleLine.xml:19
 resources/domains/Invoice.xml:79"
-Reject to pay,Rejet à payer,,resources/views/PaymentVoucher.xml:63
-Reject type,Type de rejet,,resources/domains/PayerQualityConfigLine.xml:10
-Reject/Return reason codes,Listes des codes motifs de rejet/retour ,,"resources/views/menu.xml:537
+"Reject to pay","Rejet à payer",,"resources/views/PaymentVoucher.xml:63"
+"Reject type","Type de rejet",,"resources/domains/PayerQualityConfigLine.xml:10"
+"Reject/Return reason codes","Listes des codes motifs de rejet/retour ",,"resources/views/menu.xml:537
 resources/views/menu.xml:540"
-Rejected,Rejeté(e),,resources/domains/PaymentScheduleLine.xml:15
-Rejected Reimbursements Import,Import des rejets de remboursements,,resources/views/Selects.xml:145
-Rejected Schedule line,Ligne d'échéancier rejetée,,"resources/domains/IrrecoverableReportLine.xml:11
+"Rejected","Rejeté(e)",,"resources/domains/PaymentScheduleLine.xml:15"
+"Rejected Reimbursements Import","Import des rejets de remboursements",,"resources/views/Selects.xml:145"
+"Rejected Schedule line","Ligne d'échéancier rejetée",,"resources/domains/IrrecoverableReportLine.xml:11
 resources/domains/IrrecoverablePaymentScheduleLineLine.xml:12"
-Rejected Schedule lines,Echéanciers rejetés,,resources/views/PaymentScheduleLine.xml:83
-Rejected Wire transfer operation code,Code Opér. Virement rejetés,,resources/domains/CfonbConfig.xml:32
-Rejected amount,Montant rejeté,,resources/domains/ChequeRejection.xml:14
-Rejected reimbursement,Remboursement rejeté,,resources/domains/Reimbursement.xml:19
-Rejected reimbursements,Remboursements rejetés,,resources/views/Reimbursement.xml:70
-Rejection MoveLine,Ecriture de rejet générée,,resources/domains/ChequeRejection.xml:18
-Rejection reason,Motif du rejet,,resources/domains/ChequeRejection.xml:16
-Rejects journal,Journal Rejets,,resources/domains/AccountConfig.xml:20
-Rejects of cheques,Rejets de chèques,,"resources/views/menu.xml:261
+"Rejected Schedule lines","Echéanciers rejetés",,"resources/views/PaymentScheduleLine.xml:83"
+"Rejected Wire transfer operation code","Code Opér. Virement rejetés",,"resources/domains/CfonbConfig.xml:32"
+"Rejected amount","Montant rejeté",,"resources/domains/ChequeRejection.xml:14"
+"Rejected reimbursement","Remboursement rejeté",,"resources/domains/Reimbursement.xml:19"
+"Rejected reimbursements","Remboursements rejetés",,"resources/views/Reimbursement.xml:70"
+"Rejection MoveLine","Ecriture de rejet générée",,"resources/domains/ChequeRejection.xml:18"
+"Rejection reason","Motif du rejet",,"resources/domains/ChequeRejection.xml:16"
+"Rejects journal","Journal Rejets",,"resources/domains/AccountConfig.xml:20"
+"Rejects of cheques","Rejets de chèques",,"resources/views/menu.xml:261
 resources/views/menu.xml:258"
-Rejects over past 30 days,Rejets de plus de 30 jrs.,,resources/views/ChequeRejection.xml:102
-Rejects/Return Reason Code List,Liste des codes motifs de rejet/retour,,resources/domains/InterbankCode.xml:14
-Rejects/Return reason code list,Liste des codes motifs de rejet/retour,,resources/domains/InterbankCodeLine.xml:18
-Remaining to invoice,Restant à facturer,,resources/domains/PurchaseOrderLine.xml:12
-Remaining to pay,Restant à payer,,resources/domains/Invoice.xml:93
-Remaining to pay after cashing,Restant à payer après encaissement,,resources/domains/PaymentInvoiceToPay.xml:22
-Reminder,Relance,,"resources/domains/AccountingSituation.xml:24
+"Rejects over past 30 days","Rejets de plus de 30 jrs.",,"resources/views/ChequeRejection.xml:102"
+"Rejects/Return Reason Code List","Liste des codes motifs de rejet/retour",,"resources/domains/InterbankCode.xml:14"
+"Rejects/Return reason code list","Liste des codes motifs de rejet/retour",,"resources/domains/InterbankCodeLine.xml:18"
+"Remaining to invoice","Restant à facturer",,"resources/domains/PurchaseOrderLine.xml:12"
+"Remaining to pay","Restant à payer",,"resources/domains/Invoice.xml:93"
+"Remaining to pay after cashing","Restant à payer après encaissement",,"resources/domains/PaymentInvoiceToPay.xml:22"
+"Reminder","Relance",,"resources/domains/AccountingSituation.xml:24
 resources/domains/ReminderHistory.xml:10
 resources/views/Selects.xml:136
 resources/views/Selects.xml:94"
-Reminder Batch,Batch Rappels,,resources/views/AccountingBatch.xml:69
-Reminder Configuration Table,Configurations du recouvrement,,resources/domains/AccountConfig.xml:54
-Reminder Method,Méthode de relance,,resources/domains/ReminderMethodLine.xml:17
-Reminder batch type,Type de batch de relance,,resources/domains/AccountingBatch.xml:23
-Reminder blocking,Blocage relance,,resources/domains/Invoice.xml:67
-Reminder configuration,Configuration de relance,,resources/views/AccountingBatch.xml:39
-Reminder content,Contenu du rappel,,resources/views/ReminderHistory.xml:37
-Reminder emails,Emails de relance,,"resources/views/menu.xml:552
+"Reminder Batch","Batch Rappels",,"resources/views/AccountingBatch.xml:69"
+"Reminder Configuration Table","Configurations du recouvrement",,"resources/domains/AccountConfig.xml:54"
+"Reminder Method","Méthode de relance",,"resources/domains/ReminderMethodLine.xml:17"
+"Reminder batch type","Type de batch de relance",,"resources/domains/AccountingBatch.xml:23"
+"Reminder blocking","Blocage relance",,"resources/domains/Invoice.xml:67"
+"Reminder configuration","Configuration de relance",,"resources/views/AccountingBatch.xml:39"
+"Reminder content","Contenu du rappel",,"resources/views/ReminderHistory.xml:37"
+"Reminder emails","Emails de relance",,"resources/views/menu.xml:552
 resources/views/menu.xml:549"
-Reminder history,Historique des relances,,resources/views/ReminderHistory.xml:21
-Reminder level,Niveau de relance,,"resources/domains/PayerQualityConfigLine.xml:9
+"Reminder history","Historique des relances",,"resources/views/ReminderHistory.xml:21"
+"Reminder level","Niveau de relance",,"resources/domains/PayerQualityConfigLine.xml:9
 resources/views/ReminderLevel.xml:12
 resources/views/ReminderMethodLine.xml:13"
-Reminder levels,Niveaux de relance,,"resources/views/ReminderLevel.xml:6
+"Reminder levels","Niveaux de relance",,"resources/views/ReminderLevel.xml:6
 resources/views/menu.xml:326
 resources/views/menu.xml:323"
-Reminder line,Ligne de relance,,resources/domains/Mail.xml:10
-Reminder mail,Courrier de relance,,resources/domains/ReminderHistory.xml:20
-Reminder mail models,Modèles de courrier,,"resources/views/menu.xml:336
+"Reminder line","Ligne de relance",,"resources/domains/Mail.xml:10"
+"Reminder mail","Courrier de relance",,"resources/domains/ReminderHistory.xml:20"
+"Reminder mail models","Modèles de courrier",,"resources/views/menu.xml:336
 resources/views/menu.xml:333"
-Reminder mails,Courriers de relance,,"resources/views/menu.xml:600
+"Reminder mails","Courriers de relance",,"resources/views/menu.xml:600
 resources/views/menu.xml:597"
-Reminder method,Méthode de relance,,"resources/views/ReminderMethod.xml:9
+"Reminder method","Méthode de relance",,"resources/views/ReminderMethod.xml:9
 resources/domains/ReminderConfigLine.xml:12
 resources/domains/Reminder.xml:11
 resources/domains/ReminderHistory.xml:11"
-Reminder method configuration line,Ligne de configuration de la méthode de relance,,resources/views/ReminderConfigLine.xml:11
-Reminder method configuration lines,Lignes de configuration de la méthode de relance,,resources/views/ReminderConfigLine.xml:6
-Reminder method line,Ligne de la méthode de relance,,"resources/domains/Reminder.xml:20
+"Reminder method configuration line","Ligne de configuration de la méthode de relance",,"resources/views/ReminderConfigLine.xml:11"
+"Reminder method configuration lines","Lignes de configuration de la méthode de relance",,"resources/views/ReminderConfigLine.xml:6"
+"Reminder method line","Ligne de la méthode de relance",,"resources/domains/Reminder.xml:20
 resources/views/ReminderMethodLine.xml:12"
-Reminder method line reached by active contract,Ligne de relance atteinte par le contrat actif,,resources/domains/Reminder.xml:12
-Reminder method lines,Lignes de la méthode de relance,,"resources/domains/ReminderMethod.xml:12
+"Reminder method line reached by active contract","Ligne de relance atteinte par le contrat actif",,"resources/domains/Reminder.xml:12"
+"Reminder method lines","Lignes de la méthode de relance",,"resources/domains/ReminderMethod.xml:12
 resources/views/ReminderMethodLine.xml:5"
-Reminder methods,Méthodes de relance,,"resources/views/menu.xml:313
+"Reminder methods","Méthodes de relance",,"resources/views/menu.xml:313
 resources/views/ReminderMethod.xml:5
 resources/views/menu.xml:316"
-Reminder process,Processus de relance,,"resources/views/AccountingSituation.xml:57
+"Reminder process","Processus de relance",,"resources/views/AccountingSituation.xml:57
 resources/views/AccountingSituation.xml:27"
-Reminder settings,Paramétrage relances,,resources/views/ReminderHistory.xml:22
-Reminders history,Historique des relances,,"resources/views/ReminderHistory.xml:42
+"Reminder settings","Paramétrage relances",,"resources/views/ReminderHistory.xml:22"
+"Reminders history","Historique des relances",,"resources/views/ReminderHistory.xml:42
 resources/views/ReminderHistory.xml:6
 resources/views/menu.xml:300
 resources/views/ReminderHistory.xml:54
 resources/views/menu.xml:303"
-Reminders history list,Historique des relances,,resources/domains/Reminder.xml:15
-Report execution,Exécuter le rapport,,resources/views/Irrecoverable.xml:30
-Reported Balance,A nouveau,,resources/domains/Partner.xml:9
-Reported balance,A nouveau,,"resources/views/ReportedBalance.xml:9
+"Reminders history list","Historique des relances",,"resources/domains/Reminder.xml:15"
+"Report execution","Exécuter le rapport",,"resources/views/Irrecoverable.xml:30"
+"Reported Balance","A nouveau",,"resources/domains/Partner.xml:9"
+"Reported balance","A nouveau",,"resources/views/ReportedBalance.xml:9
 resources/domains/ReportedBalanceLine.xml:10"
-Reported balance Date,Date des à nouveaux,,resources/domains/Year.xml:10
-Reported balance line,Ligne de report à nouveau,,"resources/views/ReportedBalance.xml:23
+"Reported balance Date","Date des à nouveaux",,"resources/domains/Year.xml:10"
+"Reported balance line","Ligne de report à nouveau",,"resources/views/ReportedBalance.xml:23
 resources/views/ReportedBalanceLine.xml:10"
-Reported balance lines,Les Lignes de reports à nouveaux,,"resources/domains/ReportedBalance.xml:12
+"Reported balance lines","Les Lignes de reports à nouveaux",,"resources/domains/ReportedBalance.xml:12
 resources/views/ReportedBalanceLine.xml:5
 resources/views/ReportedBalance.xml:19"
-Reported balance list,Liste de report à nouveau,,resources/views/ReportedBalance.xml:5
-Reporting,Rapport,,resources/views/IrrecoverableReportLine.xml:10
-Reportings,Rapports,,"resources/domains/IrrecoverableInvoiceLine.xml:13
+"Reported balance list","Liste de report à nouveau",,"resources/views/ReportedBalance.xml:5"
+"Reporting","Rapport",,"resources/views/IrrecoverableReportLine.xml:10"
+"Reportings","Rapports",,"resources/domains/IrrecoverableInvoiceLine.xml:13
 resources/domains/IrrecoverablePaymentScheduleLineLine.xml:13
 resources/views/IrrecoverableReportLine.xml:5"
-Reportings/Exports,Rapports / Exports,,resources/views/menu.xml:534
-Revenue,Revenu,,"resources/views/charts.xml:232
+"Reportings/Exports","Rapports / Exports",,"resources/views/menu.xml:534"
+"Revenue","Revenu",,"resources/views/charts.xml:232
 resources/views/charts.xml:210"
-Revenue Generated by Geographical Region,Revenu généré par région géographique,,resources/views/charts.xml:213
-Revenues vs Expenses,Produits vs Charges,,"resources/views/portal.xml:154
+"Revenue Generated by Geographical Region","Revenu généré par région géographique",,"resources/views/charts.xml:213"
+"Revenues vs Expenses","Produits vs Charges",,"resources/views/portal.xml:154
 resources/views/charts.xml:469"
-Reverse,Extourner,,resources/views/Move.xml:55
-Rum active,RUM Active,,resources/domains/Partner.xml:21
-Run,Lancer,,resources/views/InvoiceBatch.xml:44
-Run export again,Rejouer l'export,,resources/views/MoveLineReport.xml:106
-SEPA ?,SEPA ? ,,resources/domains/AccountingBatch.xml:30
-Move Lines data input,Saisie des données d'écriture,,resources/views/MoveTemplate.xml:54
-Sale Entries,Lignes Ecritures Vente,,resources/views/MoveLine.xml:209
-Sale account,Compte comptable à la vente,,resources/domains/AccountManagement.xml:9
-Sales,Vente,,resources/views/menu.xml:36
-Sales Invoice,Facture de vente,,resources/views/menu.xml:743
-Sales Invoice Db 1,Tb Facture de vente 1,,"resources/views/menu.xml:746
+"Reverse","Extourner",,"resources/views/Move.xml:55"
+"Rum active","RUM Active",,"resources/domains/Partner.xml:21"
+"Run","Lancer",,"resources/views/InvoiceBatch.xml:44"
+"Run export again","Rejouer l'export",,"resources/views/MoveLineReport.xml:106"
+"SEPA ?","SEPA ? ",,"resources/domains/AccountingBatch.xml:30"
+"Move Lines data input","Saisie des données d'écriture",,"resources/views/MoveTemplate.xml:54"
+"Sale Entries","Lignes Ecritures Vente",,"resources/views/MoveLine.xml:209"
+"Sale account","Compte comptable à la vente",,"resources/domains/AccountManagement.xml:9"
+"Sales","Vente",,"resources/views/menu.xml:36"
+"Sales Invoice","Facture de vente",,"resources/views/menu.xml:743"
+"Sales Invoice Db 1","Tb Facture de vente 1",,"resources/views/menu.xml:746
 resources/views/menu.xml:749"
-Sales Invoice Db 2,Tb Facture de vente 2,,"resources/views/menu.xml:757
+"Sales Invoice Db 2","Tb Facture de vente 2",,"resources/views/menu.xml:757
 resources/views/menu.xml:754"
-Sales Journal,Journal Ventes,,resources/domains/AccountConfig.xml:16
-Sales journal type,Type journal Ventes,,resources/domains/AccountConfig.xml:26
-Save email sent to contact ?,Sauvegarder l'email envoyé au contact ? ,,resources/domains/PaymentVoucher.xml:32
-Schedule Date,Date de l'échéancier,,resources/domains/PaymentScheduleLine.xml:14
-Schedule line,Échéance,,"resources/views/PaymentScheduleLine.xml:55
+"Sales Journal","Journal Ventes",,"resources/domains/AccountConfig.xml:16"
+"Sales journal type","Type journal Ventes",,"resources/domains/AccountConfig.xml:26"
+"Save email sent to contact ?","Sauvegarder l'email envoyé au contact ? ",,"resources/domains/PaymentVoucher.xml:32"
+"Schedule Date","Date de l'échéancier",,"resources/domains/PaymentScheduleLine.xml:14"
+"Schedule line","Échéance",,"resources/views/PaymentScheduleLine.xml:55
 resources/views/PaymentScheduleLine.xml:22"
-Schedule line N°,N° d'échéance,,resources/domains/PaymentScheduleLine.xml:11
-Schedule line concerned by the reminder,Echéances concernées à relancer,,resources/domains/Reminder.xml:22
-Schedule lines,Échéances,,"resources/views/PaymentScheduleLine.xml:7
+"Schedule line N°","N° d'échéance",,"resources/domains/PaymentScheduleLine.xml:11"
+"Schedule line concerned by the reminder","Echéances concernées à relancer",,"resources/domains/Reminder.xml:22"
+"Schedule lines","Échéances",,"resources/views/PaymentScheduleLine.xml:7
 resources/views/PaymentScheduleLine.xml:43
 resources/domains/PaymentSchedule.xml:15"
-Schedule lines created from reject,Echéanciers créés à partir rejet,,resources/views/PaymentScheduleLine.xml:86
-Schedule start Date,Date de début d'Echéancier,,resources/domains/PaymentSchedule.xml:10
-Search,Recherche,,"resources/views/MoveLineReport.xml:90
+"Schedule lines created from reject","Echéanciers créés à partir rejet",,"resources/views/PaymentScheduleLine.xml:86"
+"Schedule start Date","Date de début d'Echéancier",,"resources/domains/PaymentSchedule.xml:10"
+"Search","Recherche",,"resources/views/MoveLineReport.xml:90
 resources/views/MoveLineReport.xml:35
 resources/views/MoveLineReport.xml:103"
-Secret key,Clé secrète,,resources/domains/PayboxConfig.xml:19
-Select invoices manually ?,Sur sélection ?,,resources/domains/InvoiceBatch.xml:18
-Select invoices to include in the payment schedule,Sélection factures à inclure dans l'échéancier de paiement,,resources/domains/PaymentSchedule.xml:19
-Send email,Envoyer email,,"resources/views/Invoice.xml:32
+"Secret key","Clé secrète",,"resources/domains/PayboxConfig.xml:19"
+"Select invoices manually ?","Sur sélection ?",,"resources/domains/InvoiceBatch.xml:18"
+"Select invoices to include in the payment schedule","Sélection factures à inclure dans l'échéancier de paiement",,"resources/domains/PaymentSchedule.xml:19"
+"Send email","Envoyer email",,"resources/views/Invoice.xml:32
 resources/views/Invoice.xml:26"
-Sender Name,Nom/Raison sociale émetteur,,resources/domains/CfonbConfig.xml:16
-Sender Nbr,N° d'émetteur,,resources/domains/CfonbConfig.xml:15
-Sender record code,Code enregistrement émetteur,,resources/domains/CfonbConfig.xml:14
-Seq.,Séq.,,resources/domains/PaymentInvoiceToPay.xml:10
-Sequence,Séquence,,"resources/domains/AccountManagement.xml:16
+"Sender Name","Nom/Raison sociale émetteur",,"resources/domains/CfonbConfig.xml:16"
+"Sender Nbr","N° d'émetteur",,"resources/domains/CfonbConfig.xml:15"
+"Sender record code","Code enregistrement émetteur",,"resources/domains/CfonbConfig.xml:14"
+"Seq.","Séq.",,"resources/domains/PaymentInvoiceToPay.xml:10"
+"Sequence","Séquence",,"resources/domains/AccountManagement.xml:16
 resources/domains/Journal.xml:23"
-Shift Reason (long term debt),Motif de passage (créance + 6 mois),,resources/domains/AccountConfig.xml:48
-Shift Reason (short term debt),Motif de passage (créance + 3 mois),,resources/domains/AccountConfig.xml:49
-Shift to irrecoverable,Passage en irrécouvrable,,"resources/views/Invoice.xml:107
+"Shift Reason (long term debt)","Motif de passage (créance + 6 mois)",,"resources/domains/AccountConfig.xml:48"
+"Shift Reason (short term debt)","Motif de passage (créance + 3 mois)",,"resources/domains/AccountConfig.xml:49"
+"Shift to irrecoverable","Passage en irrécouvrable",,"resources/views/Invoice.xml:107
 resources/views/MoveLine.xml:75
 resources/domains/Reminder.xml:16
 resources/views/Irrecoverable.xml:23
@@ -1531,33 +1532,33 @@ resources/views/MoveLine.xml:121
 resources/views/menu.xml:248
 resources/views/menu.xml:251
 resources/views/AccountConfig.xml:74"
-Shift to irrecoverablePassage en irrécouvrable,Passage en irrécouvrable,,resources/views/PaymentSchedule.xml:35
-Shifted as irrecoverable,Passé en irrécouvrable,,resources/views/Selects.xml:124
-Short term debt duration (month),Nbre de mois (créance + 3 mois),,resources/domains/AccountConfig.xml:51
-Show details in invoice,Voir détails sur la facture,,resources/domains/AccountConfig.xml:100
-Show invoices,Voir factures associées,,resources/views/Partner.xml:174
-Show move lines,Lignes d'écriture,,resources/views/PaymentVoucher.xml:55
-Sign Associated,Signe de Type,,resources/domains/AccountCategory.xml:12
-Signe,Signe,,resources/domains/AccountCategoryLine.xml:11
-Simulated,Simulée,,resources/views/Selects.xml:83
-Simulated Moves,Ecritures Simulées,,resources/views/Move.xml:207
-Site Nbr,N° du site,,resources/domains/PayboxConfig.xml:14
-Situation,Etat,,"resources/views/charts.xml:817
+"Shift to irrecoverablePassage en irrécouvrable","Passage en irrécouvrable",,"resources/views/PaymentSchedule.xml:35"
+"Shifted as irrecoverable","Passé en irrécouvrable",,"resources/views/Selects.xml:124"
+"Short term debt duration (month)","Nbre de mois (créance + 3 mois)",,"resources/domains/AccountConfig.xml:51"
+"Show details in invoice","Voir détails sur la facture",,"resources/domains/AccountConfig.xml:100"
+"Show invoices","Voir factures associées",,"resources/views/Partner.xml:174"
+"Show move lines","Lignes d'écriture",,"resources/views/PaymentVoucher.xml:55"
+"Sign Associated","Signe de Type",,"resources/domains/AccountCategory.xml:12"
+"Signe","Signe",,"resources/domains/AccountCategoryLine.xml:11"
+"Simulated","Simulée",,"resources/views/Selects.xml:83"
+"Simulated Moves","Ecritures Simulées",,"resources/views/Move.xml:207"
+"Site Nbr","N° du site",,"resources/domains/PayboxConfig.xml:14"
+"Situation","Etat",,"resources/views/charts.xml:817
 resources/views/charts.xml:993
 resources/views/charts.xml:905"
-Solde client,Mettre à jour Compte client ?,,resources/domains/AccountingBatch.xml:38
-Solde exigible,MàJ solde dû compte client ?,,resources/domains/AccountingBatch.xml:39
-Solde exigible relançable,Mettre à jour le solde relançable client,,resources/domains/AccountingBatch.xml:40
-Special,Spéciaux,,resources/views/Selects.xml:32
-Standard Invoice,Facture normale,,resources/domains/Invoice.xml:58
-Standard delay (days),Délai standard (jours),,resources/domains/ReminderMethodLine.xml:13
-Standard label (24 caracters),Libellé standard (24 caractères),,resources/domains/InterbankCodeLine.xml:11
-Start,Lancer,,"resources/views/AccountingBatch.xml:73
+"Solde client","Mettre à jour Compte client ?",,"resources/domains/AccountingBatch.xml:38"
+"Solde exigible","MàJ solde dû compte client ?",,"resources/domains/AccountingBatch.xml:39"
+"Solde exigible relançable","Mettre à jour le solde relançable client",,"resources/domains/AccountingBatch.xml:40"
+"Special","Spéciaux",,"resources/views/Selects.xml:32"
+"Standard Invoice","Facture normale",,"resources/domains/Invoice.xml:58"
+"Standard delay (days)","Délai standard (jours)",,"resources/domains/ReminderMethodLine.xml:13"
+"Standard label (24 caracters)","Libellé standard (24 caractères)",,"resources/domains/InterbankCodeLine.xml:11"
+"Start","Lancer",,"resources/views/AccountingBatch.xml:73
 resources/views/AccountingBatch.xml:72"
-Start Date,Date de début,,resources/domains/InvoiceLineEvent.xml:13
-Start date,Date de début,,resources/domains/AccountingBatch.xml:44
-Starting Balance,Balance début,,resources/domains/BankStatement.xml:15
-Status,Statut,,"resources/domains/Reconcile.xml:11
+"Start Date","Date de début",,"resources/domains/InvoiceLineEvent.xml:13"
+"Start date","Date de début",,"resources/domains/AccountingBatch.xml:44"
+"Starting Balance","Balance début",,"resources/domains/BankStatement.xml:15"
+"Status","Statut",,"resources/domains/Reconcile.xml:11
 resources/domains/Reimbursement.xml:11
 resources/domains/Irrecoverable.xml:15
 resources/views/BankStatement.xml:27
@@ -1575,36 +1576,36 @@ resources/domains/PaymentScheduleLine.xml:17
 resources/domains/PaymentVoucher.xml:22
 resources/domains/PaymentSchedule.xml:16
 resources/domains/MoveLineReport.xml:30"
-Subscription ?,Abonnement ?,,resources/domains/Invoice.xml:26
-Subtotal by cash register,Sous-total par caisse,,resources/domains/MoveLineReport.xml:27
-Subtotal by date,Sous-total par date,,resources/domains/MoveLineReport.xml:28
-Subtotal by partner,Sous-total par tiers,,resources/domains/MoveLineReport.xml:26
-Subtype,Sous type,,resources/views/Selects.xml:11
-Summary code,,,resources/domains/InvoiceLineEvent.xml:12
-Suppl. Credit Note Journal,Journal Avoirs Frn.,,resources/domains/AccountConfig.xml:19
-Suppl. Invoices,Factures fournisseurs,,"resources/views/menu.xml:712
+"Subscription ?","Abonnement ?",,"resources/domains/Invoice.xml:26"
+"Subtotal by cash register","Sous-total par caisse",,"resources/domains/MoveLineReport.xml:27"
+"Subtotal by date","Sous-total par date",,"resources/domains/MoveLineReport.xml:28"
+"Subtotal by partner","Sous-total par tiers",,"resources/domains/MoveLineReport.xml:26"
+"Subtype","Sous type",,"resources/views/Selects.xml:11"
+"Summary code",,,"resources/domains/InvoiceLineEvent.xml:12"
+"Suppl. Credit Note Journal","Journal Avoirs Frn.",,"resources/domains/AccountConfig.xml:19"
+"Suppl. Invoices","Factures fournisseurs",,"resources/views/menu.xml:712
 resources/views/menu.xml:69
 resources/views/menu.xml:72
 resources/views/menu.xml:709"
-Suppl. Refunds,Avoirs fournisseurs,,"resources/views/menu.xml:720
+"Suppl. Refunds","Avoirs fournisseurs",,"resources/views/menu.xml:720
 resources/views/menu.xml:82
 resources/views/menu.xml:85
 resources/views/menu.xml:723"
-Supplier,Fournisseur,,"resources/views/Selects.xml:112
+"Supplier","Fournisseur",,"resources/views/Selects.xml:112
 resources/views/Selects.xml:206"
-Supplier Payments,Paiements fourn.,,"resources/views/menu.xml:808
+"Supplier Payments","Paiements fourn.",,"resources/views/menu.xml:808
 resources/views/menu.xml:811"
-Supplier Purchase Journal,Journal Achats,,resources/domains/AccountConfig.xml:18
-Supplier account,Compte fournisseur,,"resources/domains/AccountConfig.xml:33
+"Supplier Purchase Journal","Journal Achats",,"resources/domains/AccountConfig.xml:18"
+"Supplier account","Compte fournisseur",,"resources/domains/AccountConfig.xml:33
 resources/domains/AccountingSituation.xml:15"
-Supplier invoices filters,Filtre factures fournisseurs,,resources/views/Invoice.xml:360
-Supplier payments,Règlements Fournisseurs,,resources/views/PaymentVoucher.xml:293
-Supplier purchase,Achat fournisseur,,resources/views/Selects.xml:105
-Supplier refund,Avoir fournisseur,,resources/views/Selects.xml:106
-Supplier refunds,Remboursements Fournisseurs,,resources/views/PaymentVoucher.xml:302
-Supplier refunds filters,Filtres Rmbt Fournisseurs,,resources/views/Invoice.xml:378
-Supplier's Invoices Due,Factures fournisseurs échues,,resources/views/portal.xml:127
-Tax,TVA,,"resources/views/AccountManagement.xml:64
+"Supplier invoices filters","Filtre factures fournisseurs",,"resources/views/Invoice.xml:360"
+"Supplier payments","Règlements Fournisseurs",,"resources/views/PaymentVoucher.xml:293"
+"Supplier purchase","Achat fournisseur",,"resources/views/Selects.xml:105"
+"Supplier refund","Avoir fournisseur",,"resources/views/Selects.xml:106"
+"Supplier refunds","Remboursements Fournisseurs",,"resources/views/PaymentVoucher.xml:302"
+"Supplier refunds filters","Filtres Rmbt Fournisseurs",,"resources/views/Invoice.xml:378"
+"Supplier's Invoices Due","Factures fournisseurs échues",,"resources/views/portal.xml:127"
+"Tax","TVA",,"resources/views/AccountManagement.xml:64
 resources/views/Tax.xml:6
 resources/views/AccountManagement.xml:30
 resources/domains/MoveLine.xml:31
@@ -1614,80 +1615,80 @@ resources/views/Selects.xml:100
 resources/domains/InvoiceLine.xml:19
 resources/domains/InvoiceLineTax.xml:17
 resources/views/Tax.xml:11"
-Tax 0%,Taxe à 0 %,,resources/domains/General.xml:21
-Tax Line,Ligne de TVA,,resources/views/InvoiceLineTax.xml:14
-Tax Lines,Les lignes de TVA,,"resources/domains/Invoice.xml:49
+"Tax 0%","Taxe à 0 %",,"resources/domains/General.xml:21"
+"Tax Line","Ligne de TVA",,"resources/views/InvoiceLineTax.xml:14"
+"Tax Lines","Les lignes de TVA",,"resources/domains/Invoice.xml:49
 resources/views/InvoiceLineTax.xml:6"
-Tax Rate,Ligne de TVA,,resources/views/TaxLine.xml:11
-Tax Rates,Les lignes de TVA,,resources/views/TaxLine.xml:5
-Tax Standard rate for clearance,T.V.A. Taux standard,,resources/domains/AccountConfig.xml:84
-Tax Standard rate for irrecoverables,T.V.A. Taux Normal,,resources/domains/AccountConfig.xml:87
-Tax account configuration,Configuration de compte de taxe,,resources/domains/Tax.xml:10
-Tax accounting configuration,Configuration de compte de TVA,,resources/views/TaxAccount.xml:10
-Tax accounting configurations,Configurations de compte de TVA,,resources/views/TaxAccount.xml:5
-Tax equivalence,Equivalence de taxe,,resources/views/TaxEquiv.xml:11
-Tax for management fee,TVA pour frais de gestion,,resources/domains/AccountConfig.xml:42
-Tax informations,Informations sur taxes,,resources/views/InvoiceLine.xml:29
-Tax payment,Paiement taxes,,resources/views/AccountConfig.xml:78
-Tax rate,Les lignes de TVA,,resources/views/Tax.xml:29
-Tax rate lines,Ligne de TVA,,resources/views/Tax.xml:24
-Tax rate list,Liste des taux de TVA,,resources/views/Tax.xml:17
-Taxes equivalences,Equivalences de taxe,,resources/views/TaxEquiv.xml:6
-Technical Rejection,Rejet technique,,resources/domains/InterbankCodeLine.xml:19
-Template,Modèle,,resources/views/MoveTemplate.xml:52
-Template Move Lines,Modèle de ligne d'écriture,,resources/domains/MoveTemplate.xml:14
-"Temporary filepath to import IPO, and IPO and Cheque payments",Chemin d'import temporaire des paiements par TIP et TIP Chèque,,resources/domains/AccountConfig.xml:94
-"Temporary filepath to import IPO, and IPO and Cheque payments rejects",Chemin d'import temporaire des rejets de paiement par TIP et TIP Chèque,,resources/domains/AccountConfig.xml:97
-Temporary filepath to import rejected records,Chemin du fichier d'import temporaire,,resources/domains/AccountConfig.xml:78
-The Move Balance must be positive,La balance de l'écriture doit être positive.,,resources/views/MoveTemplate.xml:82
-The account is associated to another company. Please make sure to select the right account in the company chart before changing the company.,Le compte est associé à un plan comptable d'une autre société. Veuillez sélectionner le bon compte dans la société active actuellement avant de changer d'entreprise.,,resources/views/TaxAccount.xml:28
-The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company.,Le compte parent est associé à une autre société. Veuillez vous assurez de sélectionner le bon compte parent dans le plan de compte avant de modifier la société.,,resources/views/Account.xml:49
-The payer doesn't have email attached. Please input/provide the email to use.,Le tiers payeur ne possède pas d'email. Veuillez préciser l'email à utiliser,,resources/views/PaymentVoucher.xml:36
-The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company.,Le compte de vente ou d'achat est associé à une entreprise differente. Veuillez vous assurer de sélectionner le bon compte associé au plan de compte de la société en cours avant de modifier la société.,,"resources/views/AccountManagement.xml:114
+"Tax Rate","Ligne de TVA",,"resources/views/TaxLine.xml:11"
+"Tax Rates","Les lignes de TVA",,"resources/views/TaxLine.xml:5"
+"Tax Standard rate for clearance","T.V.A. Taux standard",,"resources/domains/AccountConfig.xml:84"
+"Tax Standard rate for irrecoverables","T.V.A. Taux Normal",,"resources/domains/AccountConfig.xml:87"
+"Tax account configuration","Configuration de compte de taxe",,"resources/domains/Tax.xml:10"
+"Tax accounting configuration","Configuration de compte de TVA",,"resources/views/TaxAccount.xml:10"
+"Tax accounting configurations","Configurations de compte de TVA",,"resources/views/TaxAccount.xml:5"
+"Tax equivalence","Equivalence de taxe",,"resources/views/TaxEquiv.xml:11"
+"Tax for management fee","TVA pour frais de gestion",,"resources/domains/AccountConfig.xml:42"
+"Tax informations","Informations sur taxes",,"resources/views/InvoiceLine.xml:29"
+"Tax payment","Paiement taxes",,"resources/views/AccountConfig.xml:78"
+"Tax rate","Les lignes de TVA",,"resources/views/Tax.xml:29"
+"Tax rate lines","Ligne de TVA",,"resources/views/Tax.xml:24"
+"Tax rate list","Liste des taux de TVA",,"resources/views/Tax.xml:17"
+"Taxes equivalences","Equivalences de taxe",,"resources/views/TaxEquiv.xml:6"
+"Technical Rejection","Rejet technique",,"resources/domains/InterbankCodeLine.xml:19"
+"Template","Modèle",,"resources/views/MoveTemplate.xml:52"
+"Template Move Lines","Modèle de ligne d'écriture",,"resources/domains/MoveTemplate.xml:14"
+"Temporary filepath to import IPO, and IPO and Cheque payments","Chemin d'import temporaire des paiements par TIP et TIP Chèque",,"resources/domains/AccountConfig.xml:94"
+"Temporary filepath to import IPO, and IPO and Cheque payments rejects","Chemin d'import temporaire des rejets de paiement par TIP et TIP Chèque",,"resources/domains/AccountConfig.xml:97"
+"Temporary filepath to import rejected records","Chemin du fichier d'import temporaire",,"resources/domains/AccountConfig.xml:78"
+"The Move Balance must be positive","La balance de l'écriture doit être positive.",,"resources/views/MoveTemplate.xml:82"
+"The account is associated to another company. Please make sure to select the right account in the company chart before changing the company.","Le compte est associé à un plan comptable d'une autre société. Veuillez sélectionner le bon compte dans la société active actuellement avant de changer d'entreprise.",,"resources/views/TaxAccount.xml:28"
+"The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company.","Le compte parent est associé à une autre société. Veuillez vous assurez de sélectionner le bon compte parent dans le plan de compte avant de modifier la société.",,"resources/views/Account.xml:49"
+"The payer doesn't have email attached. Please input/provide the email to use.","Le tiers payeur ne possède pas d'email. Veuillez préciser l'email à utiliser",,"resources/views/PaymentVoucher.xml:36"
+"The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company.","Le compte de vente ou d'achat est associé à une entreprise differente. Veuillez vous assurer de sélectionner le bon compte associé au plan de compte de la société en cours avant de modifier la société.",,"resources/views/AccountManagement.xml:114
 resources/views/AccountManagement.xml:115"
-The sale account or the purchase account or the cash account are associated to another company. Please make sure to select the right account in the company chart before changing the company.,Le compte de vente ou d'achat ou de banque est associé à une entreprise differente. Veuillez vous assurer de sélectionner le bon compte associé au plan de compte de la société en cours avant de modifier la société.,,resources/views/AccountManagement.xml:116
-To,A,,"resources/domains/Invoice.xml:35
+"The sale account or the purchase account or the cash account are associated to another company. Please make sure to select the right account in the company chart before changing the company.","Le compte de vente ou d'achat ou de banque est associé à une entreprise differente. Veuillez vous assurer de sélectionner le bon compte associé au plan de compte de la société en cours avant de modifier la société.",,"resources/views/AccountManagement.xml:116"
+"To","A",,"resources/domains/Invoice.xml:35
 resources/domains/MoveLineReport.xml:10"
-To Account,Compte de remplacement,,resources/domains/AccountEquiv.xml:12
-To Date,à,,"resources/domains/BankStatement.xml:11
+"To Account","Compte de remplacement",,"resources/domains/AccountEquiv.xml:12"
+"To Date","à",,"resources/domains/BankStatement.xml:11
 resources/views/charts.xml:179"
-To Partner,Au tiers,,resources/domains/MoveLineReport.xml:20
-"To generate periods, please fill in the Period duration.","Pour générer les périodes, veuillez remplir la durée de chaque période (en mois).",,resources/views/Year.xml:64
-"To generate periods, please fill in the limits of the fiscal year.","Pour générer les périodes, veuillez remplir les dates de début et de fin de l'année fiscale.",,resources/views/Year.xml:63
-To pay,A payer,,resources/views/PaymentVoucher.xml:60
-To pay / To use,A payer / A utiliser,,resources/domains/MoveLine.xml:59
-To shift as irrecoverable,A passer en irrécouvrable,,resources/views/Selects.xml:123
-To validate,A valider,,resources/views/Selects.xml:174
-Total A.T.I.,Total T.T.C.,,"resources/domains/Invoice.xml:92
+"To Partner","Au tiers",,"resources/domains/MoveLineReport.xml:20"
+"To generate periods, please fill in the Period duration.","Pour générer les périodes, veuillez remplir la durée de chaque période (en mois).",,"resources/views/Year.xml:64"
+"To generate periods, please fill in the limits of the fiscal year.","Pour générer les périodes, veuillez remplir les dates de début et de fin de l'année fiscale.",,"resources/views/Year.xml:63"
+"To pay","A payer",,"resources/views/PaymentVoucher.xml:60"
+"To pay / To use","A payer / A utiliser",,"resources/domains/MoveLine.xml:59"
+"To shift as irrecoverable","A passer en irrécouvrable",,"resources/views/Selects.xml:123"
+"To validate","A valider",,"resources/views/Selects.xml:174"
+"Total A.T.I.","Total T.T.C.",,"resources/domains/Invoice.xml:92
 resources/domains/Invoice.xml:98"
-Total Credit,Total Crédit,,resources/domains/MoveLineReport.xml:33
-Total Debit,Total Débit,,resources/domains/MoveLineReport.xml:32
-Total Product Qty sold history by month by category,Nbre total de produits vendus par mois par catégorie,,"resources/views/portal.xml:92
+"Total Credit","Total Crédit",,"resources/domains/MoveLineReport.xml:33"
+"Total Debit","Total Débit",,"resources/domains/MoveLineReport.xml:32"
+"Total Product Qty sold history by month by category","Nbre total de produits vendus par mois par catégorie",,"resources/views/portal.xml:92
 resources/views/charts.xml:117"
-Total Revenue Distribution by Product,Répartition CA facturé par produit,,"resources/views/charts.xml:176
+"Total Revenue Distribution by Product","Répartition CA facturé par produit",,"resources/views/charts.xml:176
 resources/views/portal.xml:98"
-Total Revenue Generated By Geo Region,Répartition CA facturé par pays,,resources/views/portal.xml:104
-Total Tax,Total T.V.A.,,"resources/domains/Invoice.xml:91
+"Total Revenue Generated By Geo Region","Répartition CA facturé par pays",,"resources/views/portal.xml:104"
+"Total Tax","Total T.V.A.",,"resources/domains/Invoice.xml:91
 resources/domains/Invoice.xml:97"
-Total W.T.,Total H.T.,,resources/domains/InvoiceLine.xml:17
-Total W.T. in accounting currency,Total H.T. (Devise Sté),,resources/domains/InvoiceLine.xml:18
-Total W.T. in company currency,Total H.T. Devise Sté,,resources/domains/InvoiceLine.xml:30
-Total W.V.,Total H.T.,,"resources/domains/Invoice.xml:96
+"Total W.T.","Total H.T.",,"resources/domains/InvoiceLine.xml:17"
+"Total W.T. in accounting currency","Total H.T. (Devise Sté)",,"resources/domains/InvoiceLine.xml:18"
+"Total W.T. in company currency","Total H.T. Devise Sté",,"resources/domains/InvoiceLine.xml:30"
+"Total W.V.","Total H.T.",,"resources/domains/Invoice.xml:96
 resources/domains/Invoice.xml:90"
-Total amount,Montant total,,resources/domains/PaymentInvoiceToPay.xml:12
-Total balance,Solde total,,resources/domains/AccountingSituation.xml:18
-Total record code,Code Enreg. total,,resources/domains/CfonbConfig.xml:20
-Totals,Totaux,,resources/views/Invoice.xml:158
-Transaction currency,Devise transactionnelle,,resources/domains/PayboxConfig.xml:16
-Transfer,Transfert,,resources/views/Selects.xml:195
-Transfer(ed) to Usher,Passage à l'huissier,,resources/domains/MoveLine.xml:30
-Transfer(ed) to usher,Passage à l'huissier,,resources/domains/Invoice.xml:76
-Treatment/Operation type,Type de traitement,,resources/domains/AccountingBatch.xml:20
-TurnOver,CA,,"resources/views/charts.xml:111
+"Total amount","Montant total",,"resources/domains/PaymentInvoiceToPay.xml:12"
+"Total balance","Solde total",,"resources/domains/AccountingSituation.xml:18"
+"Total record code","Code Enreg. total",,"resources/domains/CfonbConfig.xml:20"
+"Totals","Totaux",,"resources/views/Invoice.xml:158"
+"Transaction currency","Devise transactionnelle",,"resources/domains/PayboxConfig.xml:16"
+"Transfer","Transfert",,"resources/views/Selects.xml:195"
+"Transfer(ed) to Usher","Passage à l'huissier",,"resources/domains/MoveLine.xml:30"
+"Transfer(ed) to usher","Passage à l'huissier",,"resources/domains/Invoice.xml:76"
+"Treatment/Operation type","Type de traitement",,"resources/domains/AccountingBatch.xml:20"
+"TurnOver","CA",,"resources/views/charts.xml:111
 resources/views/charts.xml:51"
-Turnover On Supplier Invoices On Last 12 Month,Montant produits achetés (facturés) sur 12 mois,,"resources/views/portal.xml:113
+"Turnover On Supplier Invoices On Last 12 Month","Montant produits achetés (facturés) sur 12 mois",,"resources/views/portal.xml:113
 resources/views/charts.xml:287"
-Type,Type,,"resources/domains/AnalyticJournal.xml:11
+"Type","Type",,"resources/domains/AnalyticJournal.xml:11
 resources/domains/AccountCategory.xml:11
 resources/domains/Journal.xml:13
 resources/domains/AccountType.xml:9
@@ -1695,44 +1696,44 @@ resources/views/MoveTemplate.xml:51
 resources/views/Selects.xml:10
 resources/domains/MoveTemplate.xml:11
 resources/domains/BankStatementLine.xml:13"
-UMR List,RUM List,,resources/domains/Partner.xml:20
-Unique Mandate References,Référence Mandat Unique,,"resources/views/Rum.xml:6
+"UMR List","RUM List",,"resources/domains/Partner.xml:20"
+"Unique Mandate References","Référence Mandat Unique",,"resources/views/Rum.xml:6
 resources/views/Rum.xml:16"
-Unit price,Prix unitaire,,"resources/domains/InvoiceLineEvent.xml:18
+"Unit price","Prix unitaire",,"resources/domains/InvoiceLineEvent.xml:18
 resources/domains/InvoiceLine.xml:13
 resources/domains/InvoiceLineEvent.xml:16"
-Units,Unités,,"resources/views/charts.xml:360
+"Units","Unités",,"resources/views/charts.xml:360
 resources/views/charts.xml:332
 resources/views/charts.xml:282"
-Unpaid,Factures Impayées,,"resources/views/Invoice.xml:370
+"Unpaid","Factures Impayées",,"resources/views/Invoice.xml:370
 resources/views/Invoice.xml:388
 resources/views/Invoice.xml:328
 resources/views/Invoice.xml:352"
-Unpaid Due,Factures non soldées,,"resources/views/Invoice.xml:391
+"Unpaid Due","Factures non soldées",,"resources/views/Invoice.xml:391
 resources/views/Invoice.xml:331
 resources/views/Invoice.xml:355
 resources/views/Invoice.xml:373"
-Unpaid IPO operation code,Code Opér. TIP impayés,,resources/domains/CfonbConfig.xml:34
-Unpaid Supplier's Invoices,Factures fournisseurs à régler,,resources/views/portal.xml:121
-Unpaid direct debit operation code,Code Opér. Prélèvement impayés,,resources/domains/CfonbConfig.xml:33
-Unpaid invoices,Facture impayées,,resources/views/Partner.xml:232
-Unreconcile,Déréconcilier,,resources/views/Reconcile.xml:29
-Update customer account,Màj Compte client,,resources/views/Selects.xml:139
-Upper reimbursement limit,Seuil sup. de remboursement,,resources/domains/AccountConfig.xml:61
-Url returned by Paybox once payment cancelled,Url retournée par Paybox une fois le paiement annulé,,resources/domains/PayboxConfig.xml:24
-Url returned by Paybox once payment done,Url retournée par Paybox une fois le paiement effectué,,resources/domains/PayboxConfig.xml:22
-Url returned by Paybox once payment refused,Url retournée par Paybox une fois le paiement refusé,,resources/domains/PayboxConfig.xml:23
-Usage rule,Règles d'utilisation,,resources/domains/InterbankCodeLine.xml:12
-User,Utilisateur,,"resources/domains/AccountClearance.xml:12
+"Unpaid IPO operation code","Code Opér. TIP impayés",,"resources/domains/CfonbConfig.xml:34"
+"Unpaid Supplier's Invoices","Factures fournisseurs à régler",,"resources/views/portal.xml:121"
+"Unpaid direct debit operation code","Code Opér. Prélèvement impayés",,"resources/domains/CfonbConfig.xml:33"
+"Unpaid invoices","Facture impayées",,"resources/views/Partner.xml:232"
+"Unreconcile","Déréconcilier",,"resources/views/Reconcile.xml:29"
+"Update customer account","Màj Compte client",,"resources/views/Selects.xml:139"
+"Upper reimbursement limit","Seuil sup. de remboursement",,"resources/domains/AccountConfig.xml:61"
+"Url returned by Paybox once payment cancelled","Url retournée par Paybox une fois le paiement annulé",,"resources/domains/PayboxConfig.xml:24"
+"Url returned by Paybox once payment done","Url retournée par Paybox une fois le paiement effectué",,"resources/domains/PayboxConfig.xml:22"
+"Url returned by Paybox once payment refused","Url retournée par Paybox une fois le paiement refusé",,"resources/domains/PayboxConfig.xml:23"
+"Usage rule","Règles d'utilisation",,"resources/domains/InterbankCodeLine.xml:12"
+"User","Utilisateur",,"resources/domains/AccountClearance.xml:12
 resources/domains/PaymentVoucher.xml:15
 resources/domains/ReminderHistory.xml:19
 resources/domains/Irrecoverable.xml:17"
-V.A.T.,T.V.A.,,"resources/views/menu.xml:465
+"V.A.T.","T.V.A.",,"resources/views/menu.xml:465
 resources/views/menu.xml:468"
-VAT Statement,Etat TVA,,resources/views/Selects.xml:71
-Valid ?,Valide ? ,,"resources/domains/MoveTemplateLine.xml:17
+"VAT Statement","Etat TVA",,"resources/views/Selects.xml:71"
+"Valid ?","Valide ? ",,"resources/domains/MoveTemplateLine.xml:17
 resources/domains/MoveTemplate.xml:13"
-Validate,Valider,,"resources/views/Move.xml:7
+"Validate","Valider",,"resources/views/Move.xml:7
 resources/views/PaymentVoucher.xml:39
 resources/views/Selects.xml:168
 resources/views/Selects.xml:175
@@ -1740,67 +1741,67 @@ resources/views/PaymentSchedule.xml:45
 resources/views/Move.xml:91
 resources/views/Invoice.xml:150
 resources/views/Reimbursement.xml:35"
-Validate account clearances,Valider l'apurement des comptes,,resources/views/AccountClearance.xml:33
-Validate reject,Valider le rejet,,resources/views/ChequeRejection.xml:50
-Validated,Validé,,"resources/views/Invoice.xml:382
+"Validate account clearances","Valider l'apurement des comptes",,"resources/views/AccountClearance.xml:33"
+"Validate reject","Valider le rejet",,"resources/views/ChequeRejection.xml:50"
+"Validated","Validé",,"resources/views/Invoice.xml:382
 resources/views/Selects.xml:84
 resources/views/Invoice.xml:364
 resources/views/Invoice.xml:346
 resources/views/Selects.xml:211
 resources/views/Invoice.xml:322
 resources/views/BankStatement.xml:29"
-Validated Moves,Ecritures Validées,,resources/views/Move.xml:210
-Validated by,Validé(e) par,,resources/domains/Invoice.xml:102
-Validation date,Date de validation,,resources/domains/Move.xml:29
-Validation of moves is irrevocable,La validation des écritures est irréversible.,,resources/views/Move.xml:7
-Value,Valeur,,resources/domains/IrrecoverableReportLine.xml:14
-Variables list returned by Paybox,Liste des variables retournées par Paybox,,resources/domains/PayboxConfig.xml:21
-Variants,Variantes,,resources/domains/InvoiceLine.xml:25
-Ventilate,Ventiler,,"resources/views/Invoice.xml:151
+"Validated Moves","Ecritures Validées",,"resources/views/Move.xml:210"
+"Validated by","Validé(e) par",,"resources/domains/Invoice.xml:102"
+"Validation date","Date de validation",,"resources/domains/Move.xml:29"
+"Validation of moves is irrevocable","La validation des écritures est irréversible.",,"resources/views/Move.xml:7"
+"Value","Valeur",,"resources/domains/IrrecoverableReportLine.xml:14"
+"Variables list returned by Paybox","Liste des variables retournées par Paybox",,"resources/domains/PayboxConfig.xml:21"
+"Variants","Variantes",,"resources/domains/InvoiceLine.xml:25"
+"Ventilate","Ventiler",,"resources/views/Invoice.xml:151
 resources/views/Selects.xml:169"
-Ventilated,Factures Ventilées,,"resources/views/Invoice.xml:385
+"Ventilated","Factures Ventilées",,"resources/views/Invoice.xml:385
 resources/views/Invoice.xml:367
 resources/views/Invoice.xml:349
 resources/views/Invoice.xml:325"
-View,Vue,,resources/views/Selects.xml:34
-View all unpaid invoices,Voir factures impayées,,resources/views/Partner.xml:175
-Web,Web,,resources/views/Selects.xml:194
-Weight table (Payer quality),Table des poids (Qualité payeur),,resources/domains/General.xml:14
-Wire Transfer,Virement,,resources/domains/InterbankCodeLine.xml:13
-Wire transfer operation code,Code Opér. Virement,,resources/domains/CfonbConfig.xml:22
-With Payment Rejected,Factures avec paiement rejeté,,resources/views/Invoice.xml:334
-Year,Année,,"resources/views/charts.xml:50
+"View","Vue",,"resources/views/Selects.xml:34"
+"View all unpaid invoices","Voir factures impayées",,"resources/views/Partner.xml:175"
+"Web","Web",,"resources/views/Selects.xml:194"
+"Weight table (Payer quality)","Table des poids (Qualité payeur)",,"resources/domains/General.xml:14"
+"Wire Transfer","Virement",,"resources/domains/InterbankCodeLine.xml:13"
+"Wire transfer operation code","Code Opér. Virement",,"resources/domains/CfonbConfig.xml:22"
+"With Payment Rejected","Factures avec paiement rejeté",,"resources/views/Invoice.xml:334"
+"Year","Année",,"resources/views/charts.xml:50
 resources/views/charts.xml:472"
-actions,actions,,resources/views/PaymentSchedule.xml:44
-help:Account.accountType,"The account type is an attribute attached to the account that will impact the way accounting documents will be printed or filtered. Account Types are as follow : asset, cash, commitment, current asset (stock), debt, equity, expense, immobilisation, income, payable, provision, receivable, special, tax, view",,resources/domains/Account.xml:14
-help:Account.code,The account code is usually a number (e.g. : 101000). The account code help to locate the account in the chart of account. This code must be unique per company account chart.,,resources/domains/Account.xml:12
-help:Account.company,"Each account is linked to a chart of account, and thus to a company.",,resources/domains/Account.xml:16
-help:Account.parent,Le compte parent permet de définir la hiérarchie du compte dans le plan comptable de la société.,,resources/domains/Account.xml:13
-help:Account.reconcileOk,Les écritures présentes sur ce compte seront sélectionnables dans l'interface de saisie des réconciliations.,,resources/domains/Account.xml:15
-help:AccountConfig.doubtfulCustomerAccount,Utiliser pour le passage en client douteux,,resources/domains/AccountConfig.xml:34
-help:AccountConfig.interbankPaymentOrderImportPathCFONB,example : /home/axelor/reject.dat,,resources/domains/AccountConfig.xml:93
-help:AccountConfig.interbankPaymentOrderRejectImportPathCFONB,example : /home/axelor/reject.dat,,resources/domains/AccountConfig.xml:96
-help:AccountConfig.paymentScheduleExportFolderPathCFONB,example : /home/axelor/,,resources/domains/AccountConfig.xml:71
-help:AccountConfig.reimbursementExportFolderPath,example : /home/axelor/reject.dat,,resources/domains/AccountConfig.xml:59
-help:AccountConfig.reimbursementExportFolderPathCFONB,example : /home/axelor/reject.dat,,resources/domains/AccountConfig.xml:58
-help:AccountConfig.reimbursementImportFolderPathCFONB,example : /home/axelor/reject.dat,,resources/domains/AccountConfig.xml:65
-help:AccountConfig.rejectImportPathAndFileName,example : /home/axelor/reject.dat,,resources/domains/AccountConfig.xml:77
-help:AccountConfig.tempImportPathAndFileName,example : /home/axelor/reject.dat,,resources/domains/AccountConfig.xml:78
-help:AccountConfig.tempInterbankPaymentOrderImportPathCFONB,example : /home/axelor/reject.dat,,resources/domains/AccountConfig.xml:94
-help:AccountConfig.tempInterbankPaymentOrderRejectImportPathCFONB,example : /home/axelor/reject.dat,,resources/domains/AccountConfig.xml:97
-help:AccountConfig.tempReimbImportFolderPathCFONB,example : /home/axelor/reject.dat,,resources/domains/AccountConfig.xml:66
-help:Invoice.alreadyPrintedOk,Field allowing to distinguish the original invoice from a copy/duplicata.,,resources/domains/Invoice.xml:52
-help:Invoice.currency,"Devise associée à la facture. Si la devise est différente de la devise configurée pour la Société, une conversion sera effectuée avant la ventilation de la facture en comptabilité.",,resources/domains/Invoice.xml:44
-help:Invoice.exTaxTotal,Egal à la somme des totaux hors taxes (H.T.) des lignes de facture.,,resources/domains/Invoice.xml:90
-help:Invoice.externalReference,Réfère à un N° de document externe (Référence client ou fournisseur).,,resources/domains/Invoice.xml:28
-help:Invoice.inTaxTotal,Egal à la somme du total H.T. Et du total T.V.A.,,resources/domains/Invoice.xml:92
-help:Invoice.internalReference,"Réfère à un N° ou Séquence de document présente sur l'ERP (N° Devis, N° Commande, N° BL...).",,resources/domains/Invoice.xml:27
-help:Invoice.taxTotal,Egal à la somme des montants TVA des lignes de T.V.A.,,resources/domains/Invoice.xml:91
-help:Journal.validAccountSet,Comptes comptables autorisés pour ce journal,,resources/domains/Journal.xml:27
-help:Journal.validAccountTypeSet,Types de comptes comptables autorisés sur ce journal,,resources/domains/Journal.xml:26
-help:MoveLine.counter,"This sequence is unique per Move, automatically reset to 1 for a new moveline",,resources/domains/MoveLine.xml:14
-help:MoveTemplateLine.account,Compte comptable qui sera repris sur la ligne d'écriture.,,resources/domains/MoveTemplateLine.xml:13
-help:MoveTemplateLine.percentage,Pourcentage de ventilation du montant total de la balance de l'écriture (entre 1 et 100%),,resources/domains/MoveTemplateLine.xml:14
-help:MoveTemplateLine.product,"Le produit n'a pas d'impact ici, il permet simplement de pré-remplir le compte comptable.",,resources/domains/MoveTemplateLine.xml:12
-help:PaymentMode.invoiceLabel,Libellé qui sera affiché sur le PDF.,,resources/domains/PaymentMode.xml:11
-help:PaymentVoucher.hasAutoInput,Indicates if the voucher has been manually or automatically input. This has an impact on overdue management.,,resources/domains/PaymentVoucher.xml:26
+"actions","actions",,"resources/views/PaymentSchedule.xml:44"
+"help:Account.accountType","The account type is an attribute attached to the account that will impact the way accounting documents will be printed or filtered. Account Types are as follow : asset, cash, commitment, current asset (stock), debt, equity, expense, immobilisation, income, payable, provision, receivable, special, tax, view",,"resources/domains/Account.xml:14"
+"help:Account.code","The account code is usually a number (e.g. : 101000). The account code help to locate the account in the chart of account. This code must be unique per company account chart.",,"resources/domains/Account.xml:12"
+"help:Account.company","Each account is linked to a chart of account, and thus to a company.",,"resources/domains/Account.xml:16"
+"help:Account.parent","Le compte parent permet de définir la hiérarchie du compte dans le plan comptable de la société.",,"resources/domains/Account.xml:13"
+"help:Account.reconcileOk","Les écritures présentes sur ce compte seront sélectionnables dans l'interface de saisie des réconciliations.",,"resources/domains/Account.xml:15"
+"help:AccountConfig.doubtfulCustomerAccount","Utiliser pour le passage en client douteux",,"resources/domains/AccountConfig.xml:34"
+"help:AccountConfig.interbankPaymentOrderImportPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:93"
+"help:AccountConfig.interbankPaymentOrderRejectImportPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:96"
+"help:AccountConfig.paymentScheduleExportFolderPathCFONB","example : /home/axelor/",,"resources/domains/AccountConfig.xml:71"
+"help:AccountConfig.reimbursementExportFolderPath","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:59"
+"help:AccountConfig.reimbursementExportFolderPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:58"
+"help:AccountConfig.reimbursementImportFolderPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:65"
+"help:AccountConfig.rejectImportPathAndFileName","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:77"
+"help:AccountConfig.tempImportPathAndFileName","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:78"
+"help:AccountConfig.tempInterbankPaymentOrderImportPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:94"
+"help:AccountConfig.tempInterbankPaymentOrderRejectImportPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:97"
+"help:AccountConfig.tempReimbImportFolderPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:66"
+"help:Invoice.alreadyPrintedOk","Field allowing to distinguish the original invoice from a copy/duplicata.",,"resources/domains/Invoice.xml:52"
+"help:Invoice.currency","Devise associée à la facture. Si la devise est différente de la devise configurée pour la Société, une conversion sera effectuée avant la ventilation de la facture en comptabilité.",,"resources/domains/Invoice.xml:44"
+"help:Invoice.exTaxTotal","Egal à la somme des totaux hors taxes (H.T.) des lignes de facture.",,"resources/domains/Invoice.xml:90"
+"help:Invoice.externalReference","Réfère à un N° de document externe (Référence client ou fournisseur).",,"resources/domains/Invoice.xml:28"
+"help:Invoice.inTaxTotal","Egal à la somme du total H.T. Et du total T.V.A.",,"resources/domains/Invoice.xml:92"
+"help:Invoice.internalReference","Réfère à un N° ou Séquence de document présente sur l'ERP (N° Devis, N° Commande, N° BL...).",,"resources/domains/Invoice.xml:27"
+"help:Invoice.taxTotal","Egal à la somme des montants TVA des lignes de T.V.A.",,"resources/domains/Invoice.xml:91"
+"help:Journal.validAccountSet","Comptes comptables autorisés pour ce journal",,"resources/domains/Journal.xml:27"
+"help:Journal.validAccountTypeSet","Types de comptes comptables autorisés sur ce journal",,"resources/domains/Journal.xml:26"
+"help:MoveLine.counter","This sequence is unique per Move, automatically reset to 1 for a new moveline",,"resources/domains/MoveLine.xml:14"
+"help:MoveTemplateLine.account","Compte comptable qui sera repris sur la ligne d'écriture.",,"resources/domains/MoveTemplateLine.xml:13"
+"help:MoveTemplateLine.percentage","Pourcentage de ventilation du montant total de la balance de l'écriture (entre 1 et 100%)",,"resources/domains/MoveTemplateLine.xml:14"
+"help:MoveTemplateLine.product","Le produit n'a pas d'impact ici, il permet simplement de pré-remplir le compte comptable.",,"resources/domains/MoveTemplateLine.xml:12"
+"help:PaymentMode.invoiceLabel","Libellé qui sera affiché sur le PDF.",,"resources/domains/PaymentMode.xml:11"
+"help:PaymentVoucher.hasAutoInput","Indicates if the voucher has been manually or automatically input. This has an impact on overdue management.",,"resources/domains/PaymentVoucher.xml:26"

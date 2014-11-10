@@ -270,8 +270,8 @@
 	
 	<action-validate name="action-stock-move-validate-address">
 	    <error message="Both source location address and delivery (to) address are required to define the delivery itinerary" if="fromLocation?.address == null &amp;&amp; toAddress == null"/>
-	    <error message="Please fill in the location address to get the delivery itinerary" if="fromLocation?.address == null"/>
-	    <error message="Please fill in the delivery (to) address to get the delivery itinerary" if="toAddress == null"/>
+	    <error message="Please fill in the source (from) location address to get the delivery itinerary." if="fromLocation?.address == null"/>
+	    <error message="Please fill in the delivery (to) address to get the delivery itinerary." if="toAddress == null"/>
 	</action-validate>
 	
 	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove" title="Customer deliveries filters">

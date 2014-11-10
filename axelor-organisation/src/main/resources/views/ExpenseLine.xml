@@ -34,33 +34,30 @@
 	</grid>
 
 	<form name="expense-line-form" title="Expense Line" model="com.axelor.apps.organisation.db.ExpenseLine" onNew="action-expense-line-default-record">
-	  <panel title="Date" colSpan="12">
-	    <field name="date"/>    
-	  </panel>
-	  <panel title="Context" colSpan="12">
-	    <field name="expenseTypeSelect"/>
-	    <field name="task" onSelect="action-attrs-expense-line-task-domain"/>
-	  </panel>
-	  <panel title="Details" colSpan="12">
-	    <field name="product" widget="SuggestBox" onChange="action-group-organisation-expenseline-product-onchange" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
-	    <field name="shortDescription" colSpan="12"/>
-	    <field name="qty" onChange="action-expense-line-method-compute"/>
-	    <field name="unit"/>
-	    <field name="price" onChange="action-expense-line-method-compute"/>
-	    <field name="inTaxTotal"/>
-	    <field name="taxLine"/>
-	  </panel>  
-	  <panel title="Proofs" colSpan="12">
-	    <field name="file"/>
-	    <field name="fileReceived" onChange="action-expense-line-record-validation-date"/>
-	  </panel>
-	  <panel title="Validation/Invoicing" colSpan="12">
-	    <field name="validationDate"/>
-	    <field name="isToInvoice" hideIf="expenseTypeSelect == 1"/>
-	    <field name="isInvoiced" hideIf="expenseTypeSelect == 1"/>
-	  </panel>
+		<panel colSpan="12">
+			<field name="date" colSpan="3"/>
+			<field name="expenseTypeSelect" required="true" colSpan="3"/>
+			<field name="task" onSelect="action-attrs-expense-line-task-domain"/>	
+		</panel>
+		<panel title="Details" colSpan="12">
+			<field name="product" widget="SuggestBox" required="true" onChange="action-group-organisation-expenseline-product-onchange" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
+			<field name="shortDescription" required="true" colSpan="12" css="bold"/>
+			<field name="qty" colSpan="3" onChange="action-expense-line-method-compute"/>
+			<field name="unit" colSpan="3"/>
+			<field name="price" onChange="action-expense-line-method-compute"/>
+			<field name="taxLine"/>
+			<field name="inTaxTotal" required="true" css="bold"/>
+		</panel>  
+		<panel title="Proofs" colSpan="12">
+			<field name="file"/>
+			<field name="fileReceived" onChange="action-expense-line-record-validation-date" colSpan="3"/>
+		</panel>
+		<panel title="Validation/Invoicing" colSpan="12">
+			<field name="validationDate"/>
+			<field name="isToInvoice" hideIf="expenseTypeSelect == 2" readonlyIf="isInvoiced == 'true'" colSpan="3"/>
+			<field name="isInvoiced" hideIf="expenseTypeSelect == 2" colSpan="3" />
+		</panel>
 	</form>
-
 
 	<action-group name="action-group-organisation-expenseline-product-onchange">
 		<action name="action-expense-line-method-get-product-information-1"/>
