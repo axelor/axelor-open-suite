@@ -40,7 +40,7 @@
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
-		<domain>self.fromLocation.typeSelect = 1 OR self.toLocation.typeSelect = 1</domain>
+		<domain>self.typeSelect = 1</domain>
 		<context name="_typeSelect" expr="1"/>
 	</action-view>		
 	

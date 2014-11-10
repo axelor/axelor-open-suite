@@ -17,7 +17,7 @@
 	    <field name="businessProject"/>
 	    -->
 	    <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice"/>
-	    <button name="showManufOrderWizard" title="Add Manuf. Order"   onClick="action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
+	    <button name="showManufOrderWizard" title="Add Manuf. Order"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  
 	  <panel name="addManufOrderWizard" title="Add Manu. Order" hidden="true">
 	    <field name="product" title="Product" widget="ManyToOne" target="com.axelor.apps.base.db.Product"/>

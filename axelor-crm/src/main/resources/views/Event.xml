@@ -36,7 +36,8 @@
 		<field name="duration" widget="duration" x-big="true"/>
 	</grid>
     
-	<form  onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" name="event-form" title="Events" model="com.axelor.apps.crm.db.Event">
+	<form  onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
+	    onSave="action-general-validate-start-end-datetime">
 		<toolbar>
 			<button name="exportCalendar" title="Export calendar"   onClick="com.axelor.apps.crm.web.CalendarController:exportCalendar"/>
 			<button name="importCalendar" title="Import calendar"   onClick="com.axelor.apps.crm.web.CalendarController:importCalendar"/>
@@ -49,10 +50,10 @@
 			<field name="subject" colSpan="6"/>
 			<field name="location" colSpan="5" css="highlight" showIf="typeSelect == 2"/>
 			<button name="viewOnMap" colSpan="1" icon="fa-map-marker" showIf="typeSelect == 2" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
-			<field name="startDateTime" colSpan="4" onChange="action-event-method-compute-from-start-date-time"/>
+			<field name="startDateTime" colSpan="4" onChange="action-general-validate-start-end-datetime,action-event-method-compute-from-start-date-time"/>
 			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true"/>
 			<field name="limitDateT" colSpan="4" showIf="typeSelect == 3"/>
-			<field name="endDateTime" colSpan="4" onChange="action-event-method-compute-from-end-date-time"/>
+			<field name="endDateTime" colSpan="4" onChange="action-general-validate-start-end-datetime,action-event-method-compute-from-end-date-time"/>
 			<spacer colSpan="8"/>
 			<field name="user"/>
 			<field name="team" onSelect="action-event-attrs-team-domain"/>
@@ -65,7 +66,7 @@
 		
 		<panel sidebar="true" title="Attributes">
 			<field name="typeSelect" colSpan="6" domain="self.value IN ('1','2','3')"/>
-			<field name="callStatusSelect" colSpan="6" showIf="typeSelect == 1"/>
+			<field name="callTypeSelect" colSpan="6" showIf="typeSelect == 1"/>
 			<field name="statusSelect" showIf="statusSelect != 3" colSpan="6"/>
 			<field name="meetingType" colSpan="6" hideIf="statusSelect != 2" widget="SuggestBox"/>
 			<field name="taskStatusSelect" showIf="typeSelect == 4"/>
@@ -120,7 +121,7 @@
     		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="action-method-crm-event-assign-tome" />
     	</toolbar>
 	    <field name="subject"/>
-	    <field name="callStatusSelect"/>
+	    <field name="callTypeSelect"/>
 	    <field name="contact"/>
 	    <field name="startDateTime"/>
 	    <field name="endDateTime"/>
@@ -132,7 +133,8 @@
 	</grid>
     
 	<form  name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" onLoad="action-partner-attrs-hide-contact-partner"
-		onNew="action-event-new-record">
+		onNew="action-event-new-record"
+		onSave="action-general-validate-start-end-datetime">
 		<toolbar>
 			<button name="accept" help="Validate" readonlyIf="statusSelect &gt; 1" icon="fa-check" onClick="action-set-status-select-2,save"/>
 			<button name="cancel" help="Cancel" readonlyIf="statusSelect &gt; 2" icon="fa-times-circle" onClick="action-set-status-select-3,save"/>
@@ -147,15 +149,15 @@
 				<field name="description" widget="TEXT" height="3" colSpan="12"/>
 			</panel>
 			<panel title="Dates" colSpan="12">
-				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
+				<field name="startDateTime" colSpan="3" onChange="action-general-validate-start-end-datetime,action-event-method-compute-from-start-date-time"/>
 				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
-				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
+				<field name="endDateTime" colSpan="3" onChange="action-general-validate-start-end-datetime,action-event-method-compute-from-end-date-time"/>
 			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false"/>
 		</panel>
 		
 		<panel sidebar="true" title="Attributes">
-			<field name="callStatusSelect" readonlyIf="statusSelect == 2"  />
+			<field name="callTypeSelect" readonlyIf="statusSelect == 2"  />
 			<field name="statusSelect" showTitle="false"  />
 		</panel>
 		
@@ -202,7 +204,9 @@
 	    <button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-group-crm-meeting-cancel-click" readonlyIf="statusSelect &gt; 2"/>
 	</grid>
     
-    <form onNew="action-event-new-record" name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" onLoad="action-partner-attrs-hide-contact-partner">
+    <form onNew="action-event-new-record" name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" 
+        onLoad="action-partner-attrs-hide-contact-partner"
+        onSave="action-general-validate-start-end-datetime">
 		<toolbar>
 			<button name="accept" help="Validate" readonlyIf="statusSelect &gt; 1" icon="fa-check" onClick="action-set-status-select-2,save"/>
 			<button name="cancel" help="Cancel" readonlyIf="statusSelect &gt; 2" icon="fa-times-circle" onClick="action-set-status-select-3,save"/>
@@ -217,9 +221,9 @@
 				<field name="description" widget="TEXT" height="3" colSpan="12"/>
 			</panel>
 			<panel title="Dates" colSpan="12">
-				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
+				<field name="startDateTime" colSpan="3" onChange="action-general-validate-start-end-datetime,action-event-method-compute-from-start-date-time"/>
 				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
-				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
+				<field name="endDateTime" colSpan="3" onChange="action-general-validate-start-end-datetime,action-event-method-compute-from-end-date-time"/>
 			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false"/>
 		</panel>
@@ -265,7 +269,8 @@
     
 	
 	<form name="crm-task-form" title="Task" model="com.axelor.apps.crm.db.Event" onLoad="action-partner-attrs-hide-contact-partner" 
-		onNew="action-event-new-record">
+		onNew="action-event-new-record" 
+		onSave="action-general-validate-start-end-datetime">
 		<toolbar>
 			<button name="start" help="Start" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 4" icon="fa-play" onClick="action-set-task-status-select-2,save"/>
 			<button name="pause" help="Pause" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3" icon="fa-pause" onClick="action-set-task-status-select-3,save"/>
@@ -281,9 +286,9 @@
 				<field name="description" widget="TEXT" x-height="3" colSpan="12"/>
 			</panel>
 			<panel title="Dates" colSpan="12">
-				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
+				<field name="startDateTime" colSpan="3" onChange="action-general-validate-start-end-datetime,action-event-method-compute-from-start-date-time"/>
 				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
-				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
+				<field name="endDateTime" colSpan="3" onChange="action-general-validate-start-end-datetime,action-event-method-compute-from-end-date-time"/>
 				<panel-related field="eventReminderList" colSpan="12" showTitle="false" />
 			</panel>
 		</panel>
@@ -339,7 +344,7 @@
 	    <button name="stop" icon="fa-power-off" help="Finish" onClick="action-group-crm-ticket-stop-click" readonlyIf="ticketStatusSelect &gt; 4" />
 	</grid>
     
-    <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" onLoad="action-event-ticket-attrs-default,action-partner-attrs-hide-contact-partner" onSave="action-event-set-sequence" onNew="action-group-crm-ticket-onnew">
+    <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" onLoad="action-event-ticket-attrs-default,action-partner-attrs-hide-contact-partner" onSave="action-general-validate-start-end-datetime,action-event-set-sequence" onNew="action-group-crm-ticket-onnew">
 	<toolbar>
 		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome"/>
 		<button name="start" help="Start" readonlyIf="ticketStatusSelect &gt; 1" icon="fa-play" onClick="action-set-ticket-status-select-2,save"/>
@@ -358,9 +363,9 @@
 			<field name="responsibleUser"/>
 		</panel>
 		<panel title=" " colSpan="12">
-			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
+			<field name="startDateTime" colSpan="3" onChange="action-general-validate-start-end-datetime,action-event-method-compute-from-start-date-time"/>
 			<field name="duration" colSpan="3" widget="duration" onChange="action-event-method-compute-from-duration" x-big="true"/>
-			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
+			<field name="endDateTime" colSpan="3" onChange="action-general-validate-start-end-datetime,action-event-method-compute-from-end-date-time"/>
 			<field name="limitDateT" colSpan="3"/>
 		</panel>
 		<panel title=" " colSpan="12">
@@ -406,7 +411,6 @@
     	<action name="action-event-default-record-user" if="_lead == null &amp;&amp; _partner == null"/>
     	<action name="action-event-record-event-from-lead" if="_lead != null"/>
     	<action name="action-event-record-event-from-partner" if="_partner != null"/>
-    	<action name="action-event-record-call-status-select" if="typeSelect == 1 &amp;&amp; (_lead != null || _partner != null)"/>
     	<action name="action-event-record-status-select" if="typeSelect == 2 || typeSelect == 1"/>
     	<action name="action-event-record-task-status-select" if="typeSelect == 3"/>
     	<action name="action-event-record-event-from-sale-order" if="_saleOrder != null" />
@@ -461,6 +465,7 @@
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
     	<field name="typeSelect" expr="eval: _typeSelect"/>
+    	<field name="callTypeSelect" expr="2" if="typeSelect == 3"/>
     </action-record>
     
     <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">
@@ -505,6 +510,7 @@
 	    <field name="clientPartner" expr="eval:_saleOrder.clientPartner?.id != null ? __repo__.of(Partner).find(_saleOrder.clientPartner.id) : _saleOrder.clientPartner"/>
 	    <field name="contactPartner" expr="eval:_saleOrder.contactPartner?.id != null ? __repo__.of(Partner).find(_saleOrder.contactPartner.id) : _saleOrder.contactPartner"/>
 	    <field if="_saleOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.sale.db.SaleOrder'"/>
+	    <field name="callTypeSelect" expr="eval:2" />
 	    <field name="relatedToSelectId" expr="eval:_saleOrder.id" />
 	</action-record>
     
@@ -555,11 +561,6 @@
 	<action-record name="action-set-ticket-status-select-5" model="com.axelor.apps.crm.db.Event">
 		<field name="ticketStatusSelect" expr="eval:5"/>
 	</action-record>
-	
-	<action-record name="action-event-record-call-status-select" model="com.axelor.apps.crm.db.Event">
-    	<field name="callStatusSelect" expr="2"/>
-    </action-record>
-	
 	
 <!-- 	ACTION METHOD -->
 	

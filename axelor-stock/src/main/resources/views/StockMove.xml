@@ -15,8 +15,9 @@
         <field name="company"/>
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
+        <field name="toAddress" hidden="true" />
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
-        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
     
      <grid name="stock-move-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
@@ -34,7 +35,7 @@
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
-        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
     
     <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
@@ -52,7 +53,7 @@
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
-        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
+        <button name="viewDirection" icon="fa-location-arrow" help="View Direction" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
     
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
@@ -97,7 +98,7 @@
 			<button name="generateInvoice" title="Generate invoice" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
 			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect &gt;= 2"/>
 			<button name="printStockMove" title=" Print" icon="fa-print" onClick="save,action-print-stock-move" showIf="statusSelect != 1"/>
-			<button name="viewDirection" title="View Direction" help="View Direction" showIf="typeSelect == 2 || statusSelect != 1"   icon="fa-location-arrow" onClick="action-stock-move-method-view-direction"/>
+			<button name="viewDirection" title="View Direction" help="View Direction" showIf="typeSelect == 2"   icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
 	  </panel>
 	  
 	   <panel sidebar="true" title="Split/Ship/Receive" showIf="statusSelect == 1 || statusSelect == 2" >
@@ -265,6 +266,12 @@
 	
 	<action-validate name="action-stock-move-check-stock-move-line-real-qty">
 		<alert message="The move doesn't contain any product, do you wish to continue ?" if="stockMoveLineList != null &amp;&amp; stockMoveLineList.sum{it->it.realQty} == 0"/>
+	</action-validate>
+	
+	<action-validate name="action-stock-move-validate-address">
+	    <error message="Both source location address and delivery (to) address are required to define the delivery itinerary" if="fromLocation?.address == null &amp;&amp; toAddress == null"/>
+	    <error message="Please fill in the location address to get the delivery itinerary" if="fromLocation?.address == null"/>
+	    <error message="Please fill in the delivery (to) address to get the delivery itinerary" if="toAddress == null"/>
 	</action-validate>
 	
 	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove" title="Customer deliveries filters">

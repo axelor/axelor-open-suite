@@ -301,7 +301,7 @@
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event">
 		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)" column="startDateTime"/>
 		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTime)" column="endDateTime"/>
-		<bind to="ticketNumberSeq" column="ticketNumberSeq" if="typeSelect == 5" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.EVENT_TICKET)" />
+		<bind to="ticketNumberSeq" if="typeSelect.equals('5')" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.EVENT_TICKET)" />
 	</input>
 	
 	<input file="crm_opportunityType.csv" separator=";" type="com.axelor.apps.crm.db.OpportunityType" search="self.code = :code"/>

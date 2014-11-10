@@ -232,7 +232,7 @@
 
 	<action-attrs name="action-move-line-attrs-domain-account">
 		<attribute for="account" name="domain"
-			if="move.company != null &amp;&amp; !move.journal.validAccountTypeSet.isEmpty() &amp;&amp; !move.journal.validAccountSet.isEmpty()"
+			if="move?.company != null &amp;&amp; !move.journal.validAccountTypeSet.isEmpty() &amp;&amp; !move.journal.validAccountSet.isEmpty()"
 			expr="eval: &quot; self.company.id = ${move.company.id} AND (self.accountType.id IN (${move.journal.validAccountTypeSet?.collect{it.id}.join(',')}) OR self.id IN (${move.journal.validAccountSet?.collect{it.id}.join(',')})) &quot;" />
 	</action-attrs>
 	

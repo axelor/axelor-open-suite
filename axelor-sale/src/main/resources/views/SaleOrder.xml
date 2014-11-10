@@ -385,7 +385,7 @@
     	<context name="_typeSelect" expr="2"/>
     </action-view>
     
-    <action-view name="action-sale-order-view-plan-call" title="Plan a call" model="com.axelor.apps.crm.db.Event">
+    <action-view name="action-sale-order-view-plan-call" title="Call" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="call-form"/>
     	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
     	<context name="_typeSelect" expr="1"/>

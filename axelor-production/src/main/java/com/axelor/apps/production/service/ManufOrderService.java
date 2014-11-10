@@ -164,7 +164,7 @@ public class ManufOrderService extends ManufOrderRepository {
 				isToInvoice, 
 				qty,
 				company, 
-				this.getManufOrderSeq(), 
+				null, 
 				priority, 
 				this.isManagedConsumedProduct(billOfMaterial), 
 				billOfMaterial, 

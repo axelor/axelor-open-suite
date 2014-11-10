@@ -139,7 +139,7 @@ public class TargetService extends TargetRepository{
 					
 			BigDecimal opportunityAmountWon = (BigDecimal) q.getSingleResult();
 			
-			Long callEmittedNumber = eventService.all().filter("self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callStatusSelect = 2",
+			Long callEmittedNumber = eventService.all().filter("self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
 					1, user, fromDateTime, toDateTime).count();
 			
 			target.setCallEmittedNumber(callEmittedNumber.intValue());
@@ -171,7 +171,7 @@ public class TargetService extends TargetRepository{
 					
 			BigDecimal opportunityAmountWon = (BigDecimal) q.getResultList();
 			
-			Long callEmittedNumber = eventService.all().filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callStatusSelect = 2",
+			Long callEmittedNumber = eventService.all().filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
 					1, user, fromDateTime, toDateTime).count();
 			
 			target.setCallEmittedNumber(callEmittedNumber.intValue());
