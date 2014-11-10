@@ -11,6 +11,11 @@
         <field name="parent"/>
         <field name="company"/>
     </grid>
+	
+	<grid name="account-simple-grid" title="Accounts" model="com.axelor.apps.account.db.Account">
+        <field name="code"/>
+        <field name="name"/>
+    </grid>
     
     <tree name="account-tree" title="Comptes Comptables">
         <column name="name" type="string"/>
