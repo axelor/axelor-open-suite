@@ -1108,7 +1108,7 @@ resources/views/Selects.xml:120
 resources/views/Task.xml:149
 resources/views/Task.xml:29"
 "Task Information","Information sur tâche",,"resources/views/OrganisationConfig.xml:14"
-"Task Progress","Avancement tâche",,"resources/domains/Task.xml:20"
+"Task Progress (%)","Avancement tâche (%)",,"resources/domains/Task.xml:20"
 "Task name","Nom tâche",,"resources/domains/Task.xml:12
 resources/views/Task.xml:151
 resources/views/Task.xml:31"

@@ -16,7 +16,6 @@
   	<datetime name="toDateTime" title="To"/>
 	<decimal name="duration" title="Duration"/>
 	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-	<decimal name="timeSheet" title="Timesheet"/>
 
   </entity>
 
