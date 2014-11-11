@@ -143,8 +143,4 @@
 		<context name="object" expr="eval:_model"/>
 	</action-view>
 	
-	<action-validate name="action-general-validate-start-end-datetime">
-	    <error message="The end Date Time must be after the start Date Time" if="startDateTime != null &amp;&amp; endDateTime != null"/>
-	</action-validate>
-	
 </object-views>

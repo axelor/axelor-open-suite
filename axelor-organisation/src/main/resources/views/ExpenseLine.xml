@@ -69,6 +69,7 @@
     	<field name="expenseTypeSelect" expr="eval: 2"/>
     	<field name="fileReceived" expr="eval: 2"/>
     	<field name="qty" expr="1"/>
+    	<field name="date" expr="eval:GeneralService.getTodayDate()" />
     	<field name="expenseTypeSelect" expr="1" if="_parent?.project?.isReinvoicingExpense == true"/>
     	<field name="expenseTypeSelect" expr="2" if="_parent?.project?.isReinvoicingExpense == false"/>
     </action-record>

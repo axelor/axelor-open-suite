@@ -208,6 +208,8 @@
 		<bind search="self.code = :cashAccount_code and self.company.importId = :company_id" to="cashAccount" update="true" />
 		<bind search="self.code = :saleAccount_code and self.company.importId = :company_id" to="saleAccount" update="true" />
 		<bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id" to="purchaseAccount" update="true" />
+		<bind search="self.importId = :sequence_importId and self.company.importId = :company_id" to="sequence" update="true" />
+		<bind search="self.importId = :journal_importId and self.company.importId = :company_id" to="journal" update="true" />
 	</input>
 	
 	<input file="account_analyticAccountManagement.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccountManagement" search="self.importId = :importId" />
