@@ -52,8 +52,8 @@
 <!--              </form> -->
 	
 	<form name="incl-sepa-direct-debit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
-         <panel title="SEPA Direct Debit" >
-		 	<field name="activeRum" colSpan="2" canNew="false" domain="self.partner.id = :id"/>
+         <panel title="SEPA Direct Debit" colSpan="12" >
+		 	<field name="activeRum" colSpan="3" canNew="false" domain="self.partner.id = :id"/>
          	<panel-related field="rumList" title="History" colSpan="12"/>
          </panel>
 	</form>
