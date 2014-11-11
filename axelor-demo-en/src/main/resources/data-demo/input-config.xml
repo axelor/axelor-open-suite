@@ -112,7 +112,7 @@
 <!--         </bind> -->
 <!-- 	</input>   -->
 
-	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" />
+	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" search="self.importId = :importId"  />
 	
 	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" />
 	

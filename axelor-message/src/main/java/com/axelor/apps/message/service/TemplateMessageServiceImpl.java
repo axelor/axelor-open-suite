@@ -100,6 +100,10 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
 		content += "<p></p><p></p>" + mailAccountService.getSignature(mailAccount);
 		
+		if(mailAccount != null){
+			mailAccount = mailAccountService.find(mailAccount.getId());
+		}
+		
 		if(template.getSubject() != null)  {
 			this.maker.setTemplate(template.getSubject());
 			subject = this.maker.make();
@@ -133,7 +137,7 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 				this.getEmailAddress(toRecipients),
 				this.getEmailAddress(ccRecipients),
 				this.getEmailAddress(bccRecipients),
-				mailAccountService.find(mailAccount.getId()),
+				mailAccount,
 				filePath,
 				addressBlock,
 				mediaTypeSelect
