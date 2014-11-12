@@ -73,6 +73,7 @@
 	    <field name="qty" readonlyIf="statusSelect &gt; 1"/>
 	    <field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>
 	    <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"/>
+	    <button name="preFillOperations" colSpan="4" title="Pre-fill operations"  onClick="save,action-manuf-order-method-pre-fill-operations" />
 	  </panel>  
 	  <panel-tabs colSpan="4">
 	    <panel-related field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" form-view="operation-order-form" grid-view="operation-order-grid"/>
@@ -101,13 +102,13 @@
 	      <panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
 	      <panel-related field="diffConsumeProdProductList" colSpan="12"/>
 	    </panel>
-	    <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
-	      <!-- TODO: remove this comment if portlet works in panel
-	      <dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
-	      <dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
-	      <dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
-	      -->
-	    </panel>
+<!-- 	    <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced"> -->
+<!-- 	      TODO: remove this comment if portlet works in panel
+<!-- 	      <dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/> -->
+<!-- 	      <dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/> -->
+<!-- 	      <dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/> -->
+<!-- 	      --> -->
+<!-- 	    </panel> -->
 	    <panel title="Finished products">
 	      <panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
 	      <panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
@@ -188,6 +189,10 @@
     
     <action-method name="action-manuf-order-method-plan">
     	<call class="com.axelor.apps.production.web.ManufOrderController" method="plan"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-pre-fill-operations">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="preFillOperations"/>
     </action-method>
     
      <action-attrs name="action-manuf-order-attrs-is-cons-pro-on-operation">

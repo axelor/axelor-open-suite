@@ -1,9 +1,0 @@
-"importId";"name_fr_FR";"code_fr_FR";"name_en_EN";"code_en_EN";"paymentTime";"typeSelect";"isFree";"daySelect"
-1;"A réception de facture";"ARFACT";"Upon Receipt";"UPRECPT";0;1;"true";0
-2;"15 jours nets";"15JRNET";"15 net days";"15DAYNET";15;1;"false";0
-3;"30 jours nets";"30JRNET";"30 net days";"30DAYNET";30;1;"false";0
-4;"45 jours nets";"45JRNET";"45 net days";"45DAYNET";45;1;"false";0
-5;"15 jours fin de mois";"15JRFDM";"15 days end of month";"15DAYEOM";15;3;"false";0
-6;"30 jours fin de mois";"30JRFDM";"30 days end of month";"30DAYEOM";30;3;"false";0
-7;"45 jours fin de mois";"45JRFDM";"45 days end of month";"45DAYEOM";45;3;"false";0
-8;"30 jours fin de mois le 10";"30JRFDM10";"30 days end of month the 10";"30DAYEOM10";30;4;"false";10

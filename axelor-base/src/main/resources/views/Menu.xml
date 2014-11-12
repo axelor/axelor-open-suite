@@ -418,15 +418,6 @@
 		<domain>self.typeSelect = 0</domain>
 	</action-view>
 	
-	<menuitem name="admin-conf-general-period" parent="admin-conf-general"
-		title="Periods" action="admin.conf.general.period" />
-
-	<action-view name="admin.conf.general.period" title="Periods"
-		model="com.axelor.apps.base.db.Period" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" name="period-grid"/>
-		<view type="form" name="period-form"/>
-	</action-view>
-
 	<menuitem name="admin-conf-general-sequence-generic"
 		parent="admin-conf-general" title="Sequences"
 		action="admin.conf.general.sequence.generic" />

@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
@@ -190,6 +191,44 @@ public class ManufOrderService extends ManufOrderRepository {
 		
 		return manufOrder; 
 		
+	}
+	
+	@Transactional
+	public void preFillOperations(ManufOrder manufOrder) throws AxelorException{
+		
+		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
+		
+		manufOrder.setIsConsProOnOperation(this.isManagedConsumedProduct(billOfMaterial));
+		
+		if(manufOrder.getProdProcess() == null){
+			manufOrder.setProdProcess(billOfMaterial.getProdProcess());
+		}
+		ProdProcess prodProcess = manufOrder.getProdProcess();
+		
+		if(manufOrder.getPlannedStartDateT() == null){
+			manufOrder.setPlannedStartDateT(GeneralService.getTodayDateTime().toLocalDateTime());
+		}
+		
+		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
+			
+			for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
+				manufOrder.addOperationOrderListItem(
+						operationOrderService.createOperationOrder(manufOrder, prodProcessLine, manufOrder.getIsToInvoice()));
+			}
+			
+		}
+		
+		save(manufOrder);
+		
+		manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
+		
+		if(!manufOrder.getIsConsProOnOperation())  {
+			this.createToConsumeProdProductList(manufOrder);
+		}
+		
+		this.createToProduceProdProductList(manufOrder);
+		
+		save(manufOrder);
 	}
 	
 	

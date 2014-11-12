@@ -216,4 +216,15 @@ public class ManufOrderController {
 	}
 	
 	
+	public void preFillOperations (ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+		ManufOrderService moService = Beans.get(ManufOrderService.class);
+		manufOrder  = moService.find(manufOrder.getId());
+		moService.preFillOperations(manufOrder);
+		response.setReload(true);
+		
+	}
+	
+	
 }
