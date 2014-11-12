@@ -102,13 +102,11 @@
 	      <panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
 	      <panel-related field="diffConsumeProdProductList" colSpan="12"/>
 	    </panel>
-<!-- 	    <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced"> -->
-<!-- 	      TODO: remove this comment if portlet works in panel
-<!-- 	      <dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/> -->
-<!-- 	      <dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/> -->
-<!-- 	      <dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/> -->
-<!-- 	      --> -->
-<!-- 	    </panel> -->
+<!--   <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
+	 	      <dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
+	 	      <dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
+	 	      <dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/> 
+	   </panel> -->
 	    <panel title="Finished products">
 	      <panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
 	      <panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
