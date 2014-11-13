@@ -23,10 +23,10 @@
 		<panel>
 			<field name="internalContact" colSpan="7" x-show-icons="false">
 				<editor x-viewer="true">
-					<field name="picture" showTitle="false" widget="Image" colSpan="3" width="100" height="120"/>
-		            <field name="titleSelect" showTitle="false"  placeholder="Civility" colSpan="2"/>
-					<field name="name" showTitle="false" placeholder="Name" onChange="action-employee-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
-		            <field name="firstName" showTitle="false" placeholder="First name" onChange="action-employee-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>            
+					<field name="picture" showTitle="false" widget="Image" colSpan="3" width="100" height="120" onChange="save,action-set-partner-seq"/>
+		            <field name="titleSelect" showTitle="false"  placeholder="Civility" colSpan="2" onChange="save,action-set-partner-seq"/>
+					<field name="name" showTitle="false" placeholder="Name" x-bind="{{name|uppercase}}" onChange="action-employee-record-full-name,action-partner-method-set-social-network-url,save,action-set-partner-seq" colSpan="4"/>
+		            <field name="firstName" showTitle="false" placeholder="First name" x-bind="{{code|uppercase}}" onChange="action-employee-record-full-name,action-partner-method-set-social-network-url,save,action-set-partner-seq" colSpan="3"/>            
 					<field name="fixedPhone"/>
 					<field name="mobilePhone"/>
 					<field name="emailAddress" canSelect="false" canNew="true" form-view="email-address-simple-form" colSpan="12"/>

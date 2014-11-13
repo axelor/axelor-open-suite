@@ -20,8 +20,6 @@ package com.axelor.apps.organisation.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -30,7 +28,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 
 public class InvoiceGeneratorOrganisation extends InvoiceGenerator  {
 	
@@ -72,23 +69,6 @@ public class InvoiceGeneratorOrganisation extends InvoiceGenerator  {
 		
 	}
 	
-	protected int inverseOperationType(int operationType) throws AxelorException  {
-
-		switch(operationType)  {
-		
-			case InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE:
-				return InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND;
-			case InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND:
-				return InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE;
-			case InvoiceService.OPERATION_TYPE_CLIENT_SALE:
-				return InvoiceService.OPERATION_TYPE_CLIENT_REFUND;
-			case InvoiceService.OPERATION_TYPE_CLIENT_REFUND:
-				return InvoiceService.OPERATION_TYPE_CLIENT_SALE;
-			default:
-				throw new AxelorException(String.format("%s :\nLe type de facture n'est pas rempli %s", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
-		}
-		
-	}
 	
 	
 	public Invoice generate() throws AxelorException {

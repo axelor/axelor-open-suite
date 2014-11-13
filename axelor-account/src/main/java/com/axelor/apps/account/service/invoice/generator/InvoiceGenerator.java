@@ -30,10 +30,10 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -123,14 +123,14 @@ public abstract class InvoiceGenerator {
 
 		switch(operationType)  {
 		
-			case InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE:
-				return InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND;
-			case InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND:
-				return InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE;
-			case InvoiceService.OPERATION_TYPE_CLIENT_SALE:
-				return InvoiceService.OPERATION_TYPE_CLIENT_REFUND;
-			case InvoiceService.OPERATION_TYPE_CLIENT_REFUND:
-				return InvoiceService.OPERATION_TYPE_CLIENT_SALE;
+			case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
+				return InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+			case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+				return InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+			case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+				return InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+			case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+				return InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
 			default:
 				throw new AxelorException(String.format("%s :\nLe type de facture n'est pas rempli %s", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
@@ -193,11 +193,11 @@ public abstract class InvoiceGenerator {
 		
 		invoice.setCompany(company);
 		
-		invoice.setPartnerAccount(Beans.get(AccountCustomerService.class).getPartnerAccount(partner, company, operationType == InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND));
+		invoice.setPartnerAccount(Beans.get(AccountCustomerService.class).getPartnerAccount(partner, company, operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
 		
 		invoice.setJournal(journalService.getJournal(invoice)); 
 		
-		invoice.setStatusSelect(InvoiceService.STATUS_DRAFT);
+		invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
 		
 		invoice.setPriceList(priceList);
 		

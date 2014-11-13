@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.InvoiceBatch;
 import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchStrategy;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchValidation;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchVentilation;
@@ -70,10 +71,10 @@ public class InvoiceBatchService extends InvoiceBatchRepository{
 		
 		BatchStrategy strategy = null;
 		
-		if (invoiceBatch.getToStatusSelect().equals(InvoiceService.STATUS_VALIDATED)) { 
+		if (invoiceBatch.getToStatusSelect().equals(InvoiceRepository.STATUS_VALIDATED)) { 
 			strategy = Beans.get(BatchValidation.class); 
 		}
-		else if (invoiceBatch.getToStatusSelect().equals(InvoiceService.STATUS_VENTILATED)) { 
+		else if (invoiceBatch.getToStatusSelect().equals(InvoiceRepository.STATUS_VENTILATED)) { 
 			strategy = Beans.get(BatchVentilation.class);
 		}
 		else {

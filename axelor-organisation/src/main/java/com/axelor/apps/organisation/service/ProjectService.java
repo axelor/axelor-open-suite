@@ -25,7 +25,7 @@ import javax.persistence.Query;
 
 import org.joda.time.LocalDateTime;
 
-import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -245,10 +245,10 @@ public class ProjectService extends ProjectRepository{
 		Query q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task.project = ?1 " +
 				"AND (il.invoice.statusSelect = ?2 OR il.invoice.statusSelect = ?3) AND (il.invoice.operationTypeSelect = ?4 OR il.invoice.operationTypeSelect = ?5)");
 		q.setParameter(1, project);
-		q.setParameter(2, InvoiceService.STATUS_VALIDATED);
-		q.setParameter(3, InvoiceService.STATUS_VENTILATED);
-		q.setParameter(4, InvoiceService.OPERATION_TYPE_CLIENT_REFUND);
-		q.setParameter(5, InvoiceService.OPERATION_TYPE_CLIENT_SALE);
+		q.setParameter(2, InvoiceRepository.STATUS_VALIDATED);
+		q.setParameter(3, InvoiceRepository.STATUS_VENTILATED);
+		q.setParameter(4, InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+		q.setParameter(5, InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
 				
 		BigDecimal invoiceLineTurnover = (BigDecimal) q.getSingleResult();
 		
@@ -268,10 +268,10 @@ public class ProjectService extends ProjectRepository{
 		q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task.project = ?1 " +
 				"AND (il.invoice.statusSelect = ?2 OR il.invoice.statusSelect = ?3) AND (il.invoice.operationTypeSelect = ?4 OR il.invoice.operationTypeSelect = ?5)");
 		q.setParameter(1, project);
-		q.setParameter(2, InvoiceService.STATUS_VALIDATED);
-		q.setParameter(3, InvoiceService.STATUS_VENTILATED);
-		q.setParameter(4, InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE);
-		q.setParameter(5, InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND);
+		q.setParameter(2, InvoiceRepository.STATUS_VALIDATED);
+		q.setParameter(3, InvoiceRepository.STATUS_VENTILATED);
+		q.setParameter(4, InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
+		q.setParameter(5, InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
 				
 		BigDecimal supplierInvoiceLineCost = (BigDecimal) q.getSingleResult();
 		

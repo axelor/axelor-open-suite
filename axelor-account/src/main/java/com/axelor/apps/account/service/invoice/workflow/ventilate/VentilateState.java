@@ -22,9 +22,9 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.service.MoveService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -35,13 +35,13 @@ import com.google.common.base.Strings;
 
 public class VentilateState extends WorkflowInvoice {
 
-	protected SequenceService SequenceService;
+	protected SequenceService sequenceService;
 	protected MoveService moveService;
 	
-	public VentilateState(SequenceService SequenceService, MoveService moveService, Invoice invoice) {
+	public VentilateState(SequenceService sequenceService, MoveService moveService, Invoice invoice) {
 		
 		super(invoice);
-		this.SequenceService = SequenceService;
+		this.sequenceService = sequenceService;
 		this.moveService = moveService;
 		
 	}
@@ -80,7 +80,7 @@ public class VentilateState extends WorkflowInvoice {
 	protected void checkInvoiceDate() throws AxelorException  {
 		
 		if(all().filter("self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3", 
-				InvoiceService.STATUS_VENTILATED, invoice.getInvoiceDate(), invoice.getOperationTypeSelect()).count() > 0)  {
+				InvoiceRepository.STATUS_VENTILATED, invoice.getInvoiceDate(), invoice.getOperationTypeSelect()).count() > 0)  {
 			throw new AxelorException(String.format("La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée"), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -136,7 +136,7 @@ public class VentilateState extends WorkflowInvoice {
 	 * @throws AxelorException 
 	 */
 	protected void setStatus( ) {
-		invoice.setStatusSelect(InvoiceService.STATUS_VENTILATED);
+		invoice.setStatusSelect(InvoiceRepository.STATUS_VENTILATED);
 	}
 	
 	/**
@@ -152,24 +152,24 @@ public class VentilateState extends WorkflowInvoice {
 		
 		switch (invoice.getOperationTypeSelect()) {
 		
-		case InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE:
+		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
 			
-			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.SUPPLIER_INVOICE, invoice.getCompany()));
+			invoice.setInvoiceId(sequenceService.getSequenceNumber(IAdministration.SUPPLIER_INVOICE, invoice.getCompany()));
 			break;
 			
-		case InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND:
+		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
 			
-			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.SUPPLIER_REFUND, invoice.getCompany()));
+			invoice.setInvoiceId(sequenceService.getSequenceNumber(IAdministration.SUPPLIER_REFUND, invoice.getCompany()));
 			break;
 
-		case InvoiceService.OPERATION_TYPE_CLIENT_SALE:
+		case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
 			
-			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.CUSTOMER_INVOICE, invoice.getCompany()));
+			invoice.setInvoiceId(sequenceService.getSequenceNumber(IAdministration.CUSTOMER_INVOICE, invoice.getCompany()));
 			break;
 			
-		case InvoiceService.OPERATION_TYPE_CLIENT_REFUND:
+		case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
 				
-			invoice.setInvoiceId(SequenceService.getSequenceNumber(IAdministration.CUSTOMER_REFUND, invoice.getCompany()));
+			invoice.setInvoiceId(sequenceService.getSequenceNumber(IAdministration.CUSTOMER_REFUND, invoice.getCompany()));
 			break;
 			
 		default:

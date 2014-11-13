@@ -469,7 +469,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		moveService.validateMove(move);
 		irrecoverable.getMoveSet().add(move);
 		
-		invoice.setIrrecoverableStatusSelect(InvoiceService.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
+		invoice.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 		
 		if(invoice.getCanceledPaymentSchedule() != null && this.isAllInvoicePassedInIrrecoverable(invoice.getCanceledPaymentSchedule()))  {
 			invoice.getCanceledPaymentSchedule().setIrrecoverableStatusSelect(PaymentScheduleService.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
@@ -588,7 +588,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	 */
 	public boolean isAllInvoicePassedInIrrecoverable (PaymentSchedule paymentSchedule)  {
 		for(Invoice invoiceScheduled : paymentSchedule.getInvoiceSet())  {
-			if(invoiceScheduled.getIrrecoverableStatusSelect().equals(InvoiceService.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE))  {
+			if(invoiceScheduled.getIrrecoverableStatusSelect().equals(InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE))  {
 				return false;
 			}
 		}
@@ -928,7 +928,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void passInIrrecoverable(Invoice invoice, boolean generateEvent) throws AxelorException  {
-		invoice.setIrrecoverableStatusSelect(InvoiceService.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE);
+		invoice.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE);
 		
 		if(generateEvent)  {
 			Company company = invoice.getCompany();
@@ -983,7 +983,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void notPassInIrrecoverable(Invoice invoice) throws AxelorException  {
-		invoice.setIrrecoverableStatusSelect(InvoiceService.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
+		invoice.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 		
 		MoveLine moveLine = moveService.getCustomerMoveLineByQuery(invoice);
 		

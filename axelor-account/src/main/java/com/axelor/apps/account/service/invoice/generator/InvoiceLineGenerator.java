@@ -29,7 +29,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineType;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
@@ -218,7 +218,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		if(taxLine == null)  {
 			boolean isPurchase = false;
-			if(invoice.getOperationTypeSelect() == InvoiceService.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == InvoiceService.OPERATION_TYPE_SUPPLIER_REFUND)  {
+			if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)  {
 				isPurchase = true;
 			}
 			taxLine =  accountManagementServiceImpl.getTaxLine(invoice.getInvoiceDate(), product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
