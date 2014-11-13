@@ -78,7 +78,7 @@
 		<option value="9">Export purchase -> Acc. Soft.</option>
 	</selection>
 	
-	<selection name='iacount.move.status.select'>
+	<selection name='iaccount.move.status.select'>
 		<option value='1'>Draft</option>
 		<option value='2'>Simulated</option>
 		<option value='3'>Validated</option>
