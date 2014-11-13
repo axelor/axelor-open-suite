@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
     <grid name="prod-process-line-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
-    	<field name="name"/>
     	<field name="priority"/>
+		<field name="name"/>
         <field name="prodResource"/>
         <field name="description"/>
     </grid>
@@ -14,17 +14,13 @@
     onNew="action-prod-process-line-record-default">
     	<panel>
 	    	<field name="name"/>
-	    	<field name="priority"/>
+	    	<field name="priority" colSpan="3"/>
 	    	<field name="prodResource"/>
+			<panel title="Description" colSpan="12">
+    			<field name="description" showTitle="false" height="5" colSpan="12"/>
+    		</panel>
     	</panel>
-    	<panel-tabs>
-    		<panel title="Description">
-    			<field name="description" showTitle="false" colSpan="12"/>
-    		</panel>
-    		<panel title="To consume products">
-    			<panel-related  field="toConsumeProdProductList" colSpan="12"/>
-    		</panel>
-    	</panel-tabs>        
+    	<panel-related  field="toConsumeProdProductList" title="To consume products" colSpan="12"/>        
     </form>
     
     <action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">

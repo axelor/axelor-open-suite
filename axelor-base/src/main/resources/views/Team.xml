@@ -15,7 +15,7 @@
         	<field name="code" x-bind="{{code|uppercase}}"/>
         </panel>
         
-        <panel-related field="userSet" colSpan="12"/>
+        <panel-related field="userSet" canNew="false" colSpan="12"/>
         
     </form>
     

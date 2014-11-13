@@ -68,44 +68,39 @@
 	    <button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
 	  </toolbar>
 	  <panel>
-	    <field name="priority" readonlyIf="statusSelect == 6"/>
-	    <field name="manufOrder" readonlyIf="statusSelect == 6" onChange="action-operation-order-name"/>
-	    <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
-	    <field name="manufOrder.company" readonlyIf="statusSelect == 6"/>
-	    <field name="prodResource" readonlyIf="statusSelect == 6"/>
 	    <field name="operationName" readonlyIf="statusSelect == 6"/>
-	    <field name="machineProdResource" readonlyIf="statusSelect == 6"/>
-	  </panel>
-	  <panel-related field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12"/>
-	  <panel>
-	    <field name="prodProcessLine" readonlyIf="statusSelect == 6"/>
+		<field name="priority" colSpan="3" readonlyIf="statusSelect == 6"/>
+	    <field name="manufOrder" colSpan="3" readonlyIf="statusSelect == 6" onChange="action-operation-order-name"/>
+	    <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
+		<field name="prodProcessLine" readonlyIf="statusSelect == 6"/>
 	    <field name="isToInvoice"/>
-	  </panel>  
-	  <panel-tabs>
-	    <panel title="Dates" readonlyIf="statusSelect == 6">
-	      <panel title="Planned dates">
-	        <field name="plannedStartDateT"   onChange="save,action-operation-order-method-compute-duration,save"/>
-	        <field name="plannedEndDateT"   onChange="save,action-operation-order-method-compute-duration,save"/>
+		<panel title="Dates" colSpan="12" readonlyIf="statusSelect == 6">
+	      <panel title="Planned dates" colSpan="6">
+	        <field name="plannedStartDateT" colSpan="3" onChange="save,action-operation-order-method-compute-duration,save"/>
+	        <field name="plannedEndDateT" colSpan="3" onChange="save,action-operation-order-method-compute-duration,save"/>
 	      </panel>
-	      <panel title="Real dates">
-	        <field name="realStartDateT"   onChange="save,action-operation-order-method-compute-duration,save"/>
-	        <field name="realEndDateT"   onChange="save,action-operation-order-method-compute-duration,save"/>
+	      <panel title="Real dates" colSpan="6">
+	        <field name="realStartDateT" colSpan="3" onChange="save,action-operation-order-method-compute-duration,save"/>
+	        <field name="realEndDateT" colSpan="3" onChange="save,action-operation-order-method-compute-duration,save"/>
 	      </panel>
 	    </panel>
-	    <panel title="Stock moves" readonlyIf="statusSelect == 6">
+		<panel title="Resources" colSpan="12" readonlyIf="statusSelect == 6">
+			<field name="prodResource" readonlyIf="statusSelect == 6"/>
+			<field name="machineProdResource" readonlyIf="statusSelect == 6"/>
+			<panel-related field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12"/>
+		</panel>
+	  </panel>
+	  <panel-tabs>
+	    <panel name="stockMoves" title="Stock moves" readonlyIf="statusSelect == 6">
 	      <field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 	    </panel>
-	    <panel title="Consumed products" readonlyIf="statusSelect == 6">
+	    <panel name="consumedProductPage" title="Consumed products" readonlyIf="statusSelect == 6">
 	      <panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
 	      <panel-related field="consumedStockMoveLineList" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid" colSpan="12"/>
 	      <panel-related field="diffConsumeProdProductList" colSpan="12"/>
 	    </panel>
-	    <panel title="Timesheet lines">
-	      <panel-related field="timesheetLineList" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>
-	    </panel>    
+<!--	    <panel-related field="timesheetLineList" title="Timesheet lines" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>  --> 
 	  </panel-tabs>
-	  <!-- MUST BE DELETED AFTER DEMO COEFLY -->
-	  <panel-include view="manuf-order-sheet-form"/>
 	</form>
     
     
@@ -160,7 +155,7 @@
     
     <action-attrs name="action-operation-order-attrs-is-cons-pro-on-operation">
     	<attribute name="hidden" for="consumedProductPage" expr="eval: !manufOrder.isConsProOnOperation"/>
-    	<attribute name="hidden" for="inStockMove" expr="eval: !manufOrder.isConsProOnOperation"/>
+    	<attribute name="hidden" for="stockMoves" expr="eval: !manufOrder.isConsProOnOperation"/>
     </action-attrs>
     
 <!--     TO DELETE une fois bug corrigé -->

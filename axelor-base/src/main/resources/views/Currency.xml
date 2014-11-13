@@ -12,8 +12,8 @@
     <form name="currency-form" title="Currency" model="com.axelor.apps.base.db.Currency">
     	<panel>
 	        <field name="name"/>
-	        <field name="code" x-bind="{{code|uppercase}}"/>
-	        <field name="symbol"/>
+	        <field name="code" colSpan="3" x-bind="{{code|uppercase}}"/>
+	        <field name="symbol" colSpan="3"/>
         </panel>
     </form>
     

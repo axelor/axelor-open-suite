@@ -231,9 +231,9 @@
 	            <field name="name" showTitle="false" css="highlight" placeholder="Name" x-bind="{{code|uppercase}}"  onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5" />
 	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5" />
 	            <panel title="Company" colSpan="12" >
-	            	<field name="mainPartner"/>
+	            	<field name="mainPartner" domain="self.isContact = false"/>
 	           	</panel>
-	           	<field name="isContact" hidden="true" colSpan="12" />
+	           	<field name="isContact" hidden="true" colSpan="12"/>
 	        </panel>
          </panel>
         <panel title="Contact details">

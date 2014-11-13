@@ -13,22 +13,24 @@
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
     onNew="action-user-default-record,action-user-check-company" onLoad="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
-    	 <panel sidebar="true">
+    	<panel sidebar="true">
 	        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 	        <field name="activeCompany" widget="SuggestBox"/>
-	        <field name="today"/>
 	        <field name="activeCashRegister"/>
 	        <field name="timesheetPeriodConfig"/>
 	        <field name="employee"/>
         </panel>
+		<panel title="Testing" sidebar="true">
+			<field name="today"/>
+		</panel>
         <panel-include view="user-form" from="axelor-core"/>
         <panel-tabs>
         	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
         	 <panel title="Teams">
         		<field name="activeTeam"/>
-        		<panel-related field="teamSet" colSpan="12"/>
+        		<panel-related field="teamSet" canNew="false" colSpan="12"/>
         	 </panel>
-        	 <panel-related title="Projects" field="projectSet" showTitle="false" colSpan="4"/>
+        	 <panel-related title="Projects" field="projectSet" showTitle="false" canNew="false" colSpan="4"/>
         	<panel title="Calendars">
         		<panel-related field="followersCalUserSet" colSpan="12"/>
         		<panel-related field="authorizeCalUserSet" colSpan="12"/>

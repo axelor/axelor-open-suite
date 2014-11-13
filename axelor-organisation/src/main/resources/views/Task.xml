@@ -46,7 +46,7 @@
 			<field name="spentTime" css="bold" colSpan="4"/>
 			<field name="remainingTime" colSpan="4"/>
 			<panel title="Progress" colSpan="12">
-				<field name="taskProgress" widget="SelectProgress" onChange="action-group-organisation-taskprogress-onchange" colSpan="4"/>
+				<field name="taskProgress" widget="SelectProgress" onChange="action-group-organisation-taskprogress-onchange" readonlyIf="statusSelect &gt;= 3" colSpan="4"/>
 				<field name="delays" colSpan="4"/>
 				<field name="advance" colSpan="4"/>
 			</panel>
