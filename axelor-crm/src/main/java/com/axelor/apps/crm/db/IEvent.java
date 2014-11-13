@@ -38,8 +38,8 @@ public interface IEvent {
 	/**
 	 * Static event call status select
 	 */
-	static final int CALL_STATUS_INCOMING = 1;
-	static final int CALL_STATUS_OUTGOING = 2;
+	static final int CALL_TYPE_INCOMING = 1;
+	static final int CALL_TYPE_OUTGOING = 2;
 	
 	/**
 	 * Static event status select

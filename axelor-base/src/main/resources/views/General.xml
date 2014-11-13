@@ -142,4 +142,5 @@
 		<view-param name="width" value="500" />
 		<context name="object" expr="eval:_model"/>
 	</action-view>
+	
 </object-views>

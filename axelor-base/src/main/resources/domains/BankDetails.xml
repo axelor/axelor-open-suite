@@ -8,7 +8,7 @@
   <entity name="BankDetails" lang="java">
   
   	<integer name="importId"/>
-    <many-to-one name="partner" ref="Partner" title="tiers"/>
+    <many-to-one name="partner" ref="Partner" title="Partner"/>
     <string name="ownerName" title="Owner name" max="255" help="true"/>
     <string name="bankAddress" title="SWIFT address" max="255" help="true"/>
     <string name="bic" title="BIC (Bank Identifier)"/>

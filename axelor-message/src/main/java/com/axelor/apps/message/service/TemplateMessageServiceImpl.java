@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.message.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +35,9 @@ import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.tool.template.TemplateMaker;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -100,6 +104,10 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
 		content += "<p></p><p></p>" + mailAccountService.getSignature(mailAccount);
 		
+		if(mailAccount != null){
+			mailAccount = mailAccountService.find(mailAccount.getId());
+		}
+		
 		if(template.getSubject() != null)  {
 			this.maker.setTemplate(template.getSubject());
 			subject = this.maker.make();
@@ -133,7 +141,7 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 				this.getEmailAddress(toRecipients),
 				this.getEmailAddress(ccRecipients),
 				this.getEmailAddress(bccRecipients),
-				mailAccountService.find(mailAccount.getId()),
+				mailAccount,
 				filePath,
 				addressBlock,
 				mediaTypeSelect
@@ -176,9 +184,12 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 			String[] toTab = recipients.split(";");
 			for(String s : toTab)  {
 				EmailAddress emailAddress = emailAddressRepo.findByAddress(s);
-				if(emailAddress != null)  {
-					emailAddressList.add(emailAddress);
+				if(emailAddress == null)  {
+					Map<String, Object> values = new HashMap<String,Object>();
+					values.put("address", s);
+					emailAddress = emailAddressRepo.create(values);
 				}
+				emailAddressList.add(emailAddress);
 			}
 		}
 		

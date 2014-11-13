@@ -112,7 +112,7 @@
 <!--         </bind> -->
 <!-- 	</input>   -->
 
-	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" />
+	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" search="self.importId = :importId"  />
 	
 	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" />
 	
@@ -208,6 +208,8 @@
 		<bind search="self.code = :cashAccount_code and self.company.importId = :company_id" to="cashAccount" update="true" />
 		<bind search="self.code = :saleAccount_code and self.company.importId = :company_id" to="saleAccount" update="true" />
 		<bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id" to="purchaseAccount" update="true" />
+		<bind search="self.importId = :sequence_importId and self.company.importId = :company_id" to="sequence" update="true" />
+		<bind search="self.importId = :journal_importId and self.company.importId = :company_id" to="journal" update="true" />
 	</input>
 	
 	<input file="account_analyticAccountManagement.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccountManagement" search="self.importId = :importId" />
@@ -302,7 +304,7 @@
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event">
 		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)" column="startDateTime"/>
 		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTime)" column="endDateTime" />
-		<bind to="ticketNumberSeq" column="ticketNumberSeq" if="typeSelect == 5" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.EVENT_TICKET)" />
+		<bind to="ticketNumberSeq" if="typeSelect.equals('5')" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.EVENT_TICKET)" />
 	</input>
 	
 	<input file="crm_opportunityType.csv" separator=";" type="com.axelor.apps.crm.db.OpportunityType" search="self.code = :code"/>

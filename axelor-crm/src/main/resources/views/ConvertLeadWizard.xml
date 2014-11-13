@@ -160,7 +160,7 @@
 					  	<spacer/>
 					    <field name="subject" colSpan="12" css="bold"/>
 					    <label title="Status" colSpan="4"/>
-					    <field name="callStatusSelect" colSpan="4" showTitle="false"/>
+					    <field name="callTypeSelect" colSpan="4" showTitle="false"/>
 					    <field name="statusSelect" colSpan="4" showTitle="false"/>
 					    <spacer/>
 					    <label title="Description" css="label-bold"/>
@@ -511,7 +511,7 @@
 	<form   name="call-lead-converted-form" title="Call" model="com.axelor.apps.crm.db.Event">
 	  <panel title="Informations">
 	    <field name="subject"/>
-	    <field name="callStatusSelect"/>
+	    <field name="callTypeSelect"/>
 	    <field name="statusSelect" showTitle="false"/>
 	  </panel>
 	    <panel title="Description"  css="groupTitle" >
@@ -540,7 +540,7 @@
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
     	<field name="duration" expr="0"/>
-    	<field name="callStatusSelect" expr="2"/>
+    	<field name="callTypeSelect" expr="2"/>
     </action-record>
 	
 	<form   name="meeting-lead-converted-form" title="Meeting" model="com.axelor.apps.crm.db.Event">

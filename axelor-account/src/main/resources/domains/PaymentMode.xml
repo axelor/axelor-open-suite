@@ -7,7 +7,7 @@
 
   <entity name="PaymentMode" lang="java" cachable="true">
   
-    <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="paymentMode" title="Accounts by paymentMode"/>
+    <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="paymentMode" title="Accounting settings"/>
     <string name="invoiceLabel" title="Invoice label" help="true"/>
   
   	<extra-code><![CDATA[

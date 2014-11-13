@@ -53,12 +53,12 @@ public class EventController {
 		LOG.debug("event : {}", event);
 		
 		if(event.getStartDateTime() != null) {
-			if(event.getEndDateTime() != null) {
+			if(event.getDuration() != null) {
+				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
+			}
+			else if(event.getEndDateTime() != null && event.getEndDateTime().isAfter(event.getStartDateTime())) {
 				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
 				response.setValue("duration", eventService.getDuration(duration));
-			}
-			else if(event.getDuration() != null) {
-				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
 		}
 	}
@@ -71,7 +71,7 @@ public class EventController {
 		LOG.debug("event : {}", event);
 		
 		if(event.getEndDateTime() != null) {
-			if(event.getStartDateTime() != null) {
+			if(event.getStartDateTime() != null && event.getStartDateTime().isBefore(event.getEndDateTime())) {
 				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
 				response.setValue("duration", eventService.getDuration(duration));
 			}

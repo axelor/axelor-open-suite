@@ -80,9 +80,8 @@ public class ExpenseLineController {
 
 			try  {
 				TaxLine tline = expenseLineService.getTaxLine(expense,expenseLine);
-				System.out.println("tline......"+tline);
 				response.setValue("taxLine", tline);
-				response.setValue("productName", expenseLine.getProduct().getName());
+				response.setValue("shortDescription", expenseLine.getProduct().getName());
 				response.setValue("unit", expenseLine.getProduct().getUnit());
 				
 				response.setValue("price", expenseLineService.getUnitPrice(expense, expenseLine));
@@ -102,7 +101,7 @@ public class ExpenseLineController {
 	
 	public void resetProductInformation(ActionResponse response)  {
 		
-		response.setValue("productName", null);
+		response.setValue("shortDescription", null);
 		response.setValue("unit", null);
 		response.setValue("price", null);
 		

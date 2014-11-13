@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Maps;
@@ -69,11 +70,14 @@ public class MoveController {
 		
 		try {
 			Move newMove = moveService.generateReverse(moveService.find(move.getId()));
-			Map<String, Object> viewMap = Maps.newHashMap();
-			viewMap.put("title", "Account move");
-			viewMap.put("resource", "com.axelor.apps.account.db.Move");
-			viewMap.put("domain", "self.id = "+newMove.getId());
-			response.setView(viewMap);
+			if(newMove != null){
+				response.setView(ActionView
+							.define(I18n.get("Account move"))
+							.model("com.axelor.apps.account.db.Move")
+							.param("forceEdit", "true")
+							.context("_showRecord", newMove.getId().toString())
+							.map());
+			}
 		}
 		catch (Exception e){ TraceBackService.trace(response, e); }
 	}

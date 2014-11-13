@@ -764,7 +764,10 @@
 		  AND self.product.productCategory.id = :id
 		  AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
 	  GROUP BY
-	 	 YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01'  
+	     self.saleOrder.validationDate,
+	 	 YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01'
+	  ORDER BY
+         self.saleOrder.validationDate  
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_amount" type="bar" title="Turnover"/>

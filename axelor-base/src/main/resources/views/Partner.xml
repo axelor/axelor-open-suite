@@ -81,6 +81,23 @@
 					<field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
 					<field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
 				</panel>
+				<panel title="Postal addresses" colSpan="12">
+					<field name="deliveryAddress" canNew="true" onChange="action-partner-record-main-invoicing-address"/>
+					<field name="mainInvoicingAddress" canNew="true"/>
+					<field name="deliveryDelay" showIf="supplierTypeSelect == 2 || supplierTypeSelect == 3"/>
+				</panel>
+				<panel title="Contact details" colSpan="12">
+					<field name="fixedPhone" colSpan="3"/>
+					<field name="fax" colSpan="3"/>
+					<field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1"/>
+					<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+						<editor>
+							<field name="address"/>
+						</editor>
+					</field>
+					
+					<field name="webSite"/>
+				</panel>
 				<panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12" >
 					<panel colSpan="6">
 						<field name="partnerCategory" widget="SuggestBox" colSpan="6"/>
@@ -97,51 +114,39 @@
 						<field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" colSpan="6"/>
 					</panel>
 		      	</panel>
-				<panel title="Postal addresses" colSpan="12">
-					<field name="deliveryAddress" canNew="true" onChange="action-partner-record-main-invoicing-address"/>
-					<field name="mainInvoicingAddress" canNew="true"/>
-					<field name="deliveryDelay" showIf="supplierTypeSelect == 2 || supplierTypeSelect == 3"/>
-				</panel>
-				<panel title="Contact" colSpan="12">
-					<field name="fixedPhone"/>
-					<field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
-					<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
-						<editor>
-							<field name="address"/>
-						</editor>
-					</field>
-					<field name="fax"/>
-					<field name="webSite"/>
-				</panel>
-				<spacer />
 	    	</panel>
-			<panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" >
+			<panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" colSpan="12" >
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
+				<panel-include if-module="axelor-account" view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 		    </panel>
-			<panel-include if-module="axelor-account" view="incl-customer-balance-partner-form" from="axelor-account"  />
+			<panel name="balance" title="Accounting balance" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" colSpan="12">
+				<panel-include if-module="axelor-account" view="incl-customer-balance-partner-form" from="axelor-account" />
+				<panel-include if-module="axelor-account" view="incl-reported-balance-partner-form" from="axelor-account" />
+			</panel>
+			
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account" />
-			<panel-include if-module="axelor-account" view="incl-reported-balance-partner-form" from="axelor-account" />
-			<panel-include if-module="axelor-account" view="incl-sepa-direct-debit-partner-form" from="axelor-account" />
+			
+			
 			<panel title="Activities" showIf="id != null" if-module="axelor-crm">
-				<panel-include view="incl-show-project-partner-form" from="axelor-organisation" if-module="axelor-organisation" />
+				<panel-include if-module="axelor-organisation" view="incl-show-project-partner-form" from="axelor-organisation"/>
 		        <panel-include view="incl-activities-partner-form" from="axelor-crm" />
 		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/>
 			</panel>
-			<panel-include view="incl-sales-order-dashelt-form" from="axelor-supplychain" if-module="axelor-supplychain" />
-			<panel-include if-module="axelor-crm"  view="incl-events-partner-form" from="axelor-crm"/>
-			<panel title="Notes" colSpan="12">
-				<field name="description" colSpan="12" showTitle="false"  widget="Html" x-lite="true"/>
-			</panel>
-			<panel title="Settings" colSpan="12">
-				<field name="partnerSeq"/>
-				<field name="languageSelect"/>
-				<panel title="Assigned to" colSpan="12">
-					<field name="companySet" colSpan="4" widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false"/>
-					<field name="user"/>
-					<field name="team"/>
-				</panel>
-			</panel>
+
 		</panel-tabs>
+		
+		<panel title="Settings" colSpan="12" sidebar="true">
+			<field name="partnerSeq" colSpan="6"/>
+			<field name="languageSelect" colSpan="6"/>
+			<panel title="Assigned to" colSpan="12">
+				<field name="user" colSpan="6"/>
+				<field name="team" colSpan="6"/>
+				<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false"/>
+			</panel>
+		</panel>
+		<panel title="Notes" colSpan="12" sidebar="true">
+			<field name="description" colSpan="12" height="8" showTitle="false"/>
+		</panel>
 	</form>
 	
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -185,7 +190,11 @@
 	                <field name="deliveryAddress"/>
 	            </panel>
 	            <panel title="Contact" colSpan="12">
-	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
+	                <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+						<editor>
+							<field name="address"/>
+						</editor>
+					</field>
 	                <field name="fax"/>
 	                <field name="fixedPhone"/>
 					<field name="mobilePhone"/>
@@ -227,26 +236,30 @@
 	           	<field name="isContact" hidden="true" colSpan="12" />
 	        </panel>
          </panel>
-        <panel title="Contact">
+        <panel title="Contact details">
             <field name="jobTitle"/>
             <field name="reportsTo" domain="self.isContact = true"/>
             <field name="fixedPhone"/>
             <field name="mobilePhone"/>
-            <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
+            <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+				<editor>
+					<field name="address"/>
+				</editor>
+			</field>
             <field name="fax"/>
             <field name="mainInvoicingAddress" title="Address" canNew="true" />     
-        </panel>
-        <panel title="Notes">
-            <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
         <panel sidebar="true" title="Settings">
             <field name="partnerSeq"/>
             <field name="languageSelect"/>
             <panel title="Assigned to" canCollapse="true" colSpan="12">
+				<field name="user" colSpan="6"/>
+                <field name="team" colSpan="6"/>
                 <field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false" />
-                <field name="user"/>
-                <field name="team"/>
             </panel>
+        </panel>
+		<panel title="Notes" colSpan="12" sidebar="true">
+            <field name="description" showTitle="false" colSpan="12" height="6"/>
         </panel>
 <!--         <panel title="Activities" showIf="id != null" if-module="axelor-crm"> -->
 <!-- 			<panel-include view="incl-show-project-partner-form" from="axelor-organisation" if-module="axelor-organisation" /> -->

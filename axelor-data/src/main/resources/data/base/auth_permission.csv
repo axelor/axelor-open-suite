@@ -1,2 +1,0 @@
-name;object;canRead;canWrite;canCreate;canRemove;readCondition;readParams;writeCondition;writeParams;createCondition;createParams;removeCondition;removeParams
-perms.user-info;com.axelor.apps.base.db.UserInfo;true;false;false;false;;;;;;;;

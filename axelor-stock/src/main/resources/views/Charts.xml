@@ -33,7 +33,7 @@
 	        
 	  </dataset>
 	  <category key="_country" type="text" title="Country"/>
-	  <series key="_moves" type="bar" title="Moves"/>
+	  <series key="_moves" type="bar" title="Stock Moves"/>
 	</chart>	
 	
 	<chart onInit="action.general.default.month.value" name="chart.stockMoveLine.product.delivery.by.country" title="Product deliveries in qty by country">
@@ -147,7 +147,7 @@
 	  </dataset>
 	  
 	  <category key="status" type="text" title="Status"/>
-	  <series key="moves" type="donut" title="Moves" />
+	  <series key="moves" type="donut" title="Stock Moves" />
 	</chart>
 
 	<chart onInit="action.general.default.month.value" name="chart.stockMove.average.delivery.time.delay" 
@@ -180,7 +180,7 @@
 	  </dataset>
 	  
 	  <category key="label" type="text" title="Delay"/>
-	  <series key="moves" type="bar" title="Moves"/>
+	  <series key="moves" type="bar" title="Stock Moves"/>
 	</chart>
 	  
 	<!-- This chart is used in location-form -->

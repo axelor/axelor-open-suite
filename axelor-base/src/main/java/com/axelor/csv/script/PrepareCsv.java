@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.axelor.data;
+package com.axelor.csv.script;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,38 +26,34 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.Parser;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.XMLReader;
 
-import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.google.common.base.CaseFormat;
-import com.google.inject.Inject;
 
+/** 
+ * Class generate import compatible csv files from xml model files.
+ * @author axelor
+ *
+ */
 public class PrepareCsv {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(LeadService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PrepareCsv.class);
 	
-	@Inject
-	CsvTool cTool;
-
-	@Test
-	public void prepareCsv(){
-		String xmlDir = System.getProperty("xmlDir");
-		String csvDir = System.getProperty("csvDir");
+	/**
+	 * Method to generate csv files
+	 * @param xmlDir 
+	 * @param csvDir
+	 */
+	public void prepareCsv(String xmlDir, String csvDir){
 		List<String> ignoreType = Arrays.asList("one-to-one","many-to-many","one-to-many");
 		try{
 			if(xmlDir != null && csvDir != null){
@@ -101,7 +97,7 @@ public class PrepareCsv {
 									
 								count++;
 							}
-							cTool.csvWriter(csvDir, csvFileName, ';',StringUtils.join(fieldList,",").split(","), blankData);
+							CsvTool.csvWriter(csvDir, csvFileName, ';',StringUtils.join(fieldList,",").split(","), blankData);
 							LOG.info("CSV file prepared: "+csvFileName);
 						}
 					}
@@ -116,7 +112,15 @@ public class PrepareCsv {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Get namecolumn field of entity
+	 * @param fileName
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
 	private String getNameColumn(String fileName) throws SAXException, IOException, ParserConfigurationException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

@@ -65,7 +65,7 @@
 		
 		<panel sidebar="true" title="Attributes">
 			<field name="typeSelect" colSpan="6" domain="self.value IN ('1','2','3')"/>
-			<field name="callStatusSelect" colSpan="6" showIf="typeSelect == 1"/>
+			<field name="callTypeSelect" colSpan="6" showIf="typeSelect == 1"/>
 			<field name="statusSelect" showIf="statusSelect != 3" colSpan="6"/>
 			<field name="meetingType" colSpan="6" hideIf="statusSelect != 2" widget="SuggestBox"/>
 			<field name="taskStatusSelect" showIf="typeSelect == 4"/>
@@ -120,7 +120,7 @@
     		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="action-method-crm-event-assign-tome" />
     	</toolbar>
 	    <field name="subject"/>
-	    <field name="callStatusSelect"/>
+	    <field name="callTypeSelect"/>
 	    <field name="contact"/>
 	    <field name="startDateTime"/>
 	    <field name="endDateTime"/>
@@ -136,7 +136,7 @@
 		<toolbar>
 			<button name="accept" help="Validate" readonlyIf="statusSelect &gt; 1" icon="fa-check" onClick="action-set-status-select-2,save"/>
 			<button name="cancel" help="Cancel" readonlyIf="statusSelect &gt; 2" icon="fa-times-circle" onClick="action-set-status-select-3,save"/>
-			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome"/>
+			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome" readonlyIf="user != null"/>
 		</toolbar>
 
 		<panel colSpan="12">
@@ -155,7 +155,7 @@
 		</panel>
 		
 		<panel sidebar="true" title="Attributes">
-			<field name="callStatusSelect" readonlyIf="statusSelect == 2"  />
+			<field name="callTypeSelect" readonlyIf="statusSelect == 2"  />
 			<field name="statusSelect" showTitle="false"  />
 		</panel>
 		
@@ -202,7 +202,8 @@
 	    <button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-group-crm-meeting-cancel-click" readonlyIf="statusSelect &gt; 2"/>
 	</grid>
     
-    <form onNew="action-event-new-record" name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" onLoad="action-partner-attrs-hide-contact-partner">
+    <form onNew="action-event-new-record" name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" 
+        onLoad="action-partner-attrs-hide-contact-partner">
 		<toolbar>
 			<button name="accept" help="Validate" readonlyIf="statusSelect &gt; 1" icon="fa-check" onClick="action-set-status-select-2,save"/>
 			<button name="cancel" help="Cancel" readonlyIf="statusSelect &gt; 2" icon="fa-times-circle" onClick="action-set-status-select-3,save"/>
@@ -341,7 +342,7 @@
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" onLoad="action-event-ticket-attrs-default,action-partner-attrs-hide-contact-partner" onSave="action-event-set-sequence" onNew="action-group-crm-ticket-onnew">
 	<toolbar>
-		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome"/>
+		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome" readonlyIf="ticketStatusSelect == 5 || user != null" />
 		<button name="start" help="Start" readonlyIf="ticketStatusSelect &gt; 1" icon="fa-play" onClick="action-set-ticket-status-select-2,save"/>
 		<button name="accept" help="Validate" readonlyIf="ticketStatusSelect &gt; 2" icon="fa-check" onClick="action-set-ticket-status-select-3,save"/>
 		<button name="stop" help="Finish" readonlyIf="ticketStatusSelect &gt; 4" icon="fa-power-off" onClick="action-set-ticket-status-select-5,save"/>
@@ -406,7 +407,6 @@
     	<action name="action-event-default-record-user" if="_lead == null &amp;&amp; _partner == null"/>
     	<action name="action-event-record-event-from-lead" if="_lead != null"/>
     	<action name="action-event-record-event-from-partner" if="_partner != null"/>
-    	<action name="action-event-record-call-status-select" if="typeSelect == 1 &amp;&amp; (_lead != null || _partner != null)"/>
     	<action name="action-event-record-status-select" if="typeSelect == 2 || typeSelect == 1"/>
     	<action name="action-event-record-task-status-select" if="typeSelect == 3"/>
     	<action name="action-event-record-event-from-sale-order" if="_saleOrder != null" />
@@ -461,6 +461,7 @@
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
     	<field name="typeSelect" expr="eval: _typeSelect"/>
+    	<field name="callTypeSelect" expr="2" if="_typeSelect == 1"/>
     </action-record>
     
     <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">
@@ -555,11 +556,6 @@
 	<action-record name="action-set-ticket-status-select-5" model="com.axelor.apps.crm.db.Event">
 		<field name="ticketStatusSelect" expr="eval:5"/>
 	</action-record>
-	
-	<action-record name="action-event-record-call-status-select" model="com.axelor.apps.crm.db.Event">
-    	<field name="callStatusSelect" expr="2"/>
-    </action-record>
-	
 	
 <!-- 	ACTION METHOD -->
 	

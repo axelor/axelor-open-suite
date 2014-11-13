@@ -31,8 +31,17 @@
     </action-record>
     
     <action-validate name="action-civil-year-check-date">
-		<error message="Civil year already exist for 'From' and 'To' date." if="id == null &amp;&amp; __repo__.of(Year).all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND typeSelect = 0',fromDate,toDate,fromDate,toDate,company).count() > 0 &amp;&amp; typeSelect == 0" />
-		<error message="Civil year already exist for 'From' and 'To' date." if="id != null &amp;&amp; __repo__.of(Year).all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND id != ?6 AND typeSelect = 0',fromDate,toDate,fromDate,toDate,company,id).count() > 0 &amp;&amp; typeSelect == 0" />
+		<error message="Civil year already exist for ${fromDate.toString('dd/MM/yyyy')} and ${toDate.toString('dd/MM/yyyy')}." if="id == null &amp;&amp; __repo__.of(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0',fromDate,toDate,company).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
+ 		<error message="Civil year already exist for ${fromDate.toString('dd/MM/yyyy')} and ${toDate.toString('dd/MM/yyyy')}." if="id != null &amp;&amp; __repo__.of(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0 AND id != ?4',fromDate,toDate,company,id).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
 	</action-validate>
+	
+    <action-validate name="action-year-check-date">
+		<error message="Enter proper 'From' and 'To' date." if="fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate &gt; toDate" action="action-year-set-empty-date"/>
+	</action-validate>
+	
+    <action-record name="action-year-set-empty-date" model="com.axelor.apps.base.db.Year">
+		<field name="fromDate" expr="eval:null" />
+		<field name="toDate" expr="eval:null" />
+	</action-record>
     
 </object-views>

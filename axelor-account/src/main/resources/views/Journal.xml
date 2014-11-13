@@ -41,6 +41,10 @@
 					<field name="editReceiptOk" colSpan="6"/>
 					<field name="excessPaymentOk" colSpan="6"/>
 				</panel>
+				<panel title="Move lines security settings" colSpan="12">
+					<field name="validAccountTypeSet" canNew="false" colSpan="6"/>
+					<field name="validAccountSet" domain="self.company = :company" canNew="false" grid-view="account-simple-grid" colSpan="6"/>
+				</panel>
 			</panel>
 			
 		</panel-tabs>

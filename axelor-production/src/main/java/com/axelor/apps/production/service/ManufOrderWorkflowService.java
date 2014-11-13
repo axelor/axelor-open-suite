@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -186,6 +187,10 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 		manufOrderStockMoveService.createToProduceStockMove(manufOrder);
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_PLANNED);
+		
+		ManufOrderService mfService = Beans.get(ManufOrderService.class);
+		
+		manufOrder.setManufOrderSeq(mfService.getManufOrderSeq());
 		
 		return save(manufOrder);
 	}

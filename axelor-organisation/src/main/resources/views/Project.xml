@@ -17,54 +17,56 @@
 	</grid>
 	
 	<form name="project-form" title="Project" model="com.axelor.apps.organisation.db.Project" onSave="action-project-method-create-default-task-on-save" onLoad="action-partner-attrs-hide-contact-partner" onNew="action-project-group-default">
-	  <toolbar>
-	    <button name="printProject" title="Print" colSpan="2" icon="fa-print" onClick="action-print-project"/>
-	  </toolbar>
-	  <panel colSpan="12">
-	    <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
-	    <field name="projectStatusSelect" showTitle="false"  colSpan="12" widget="NavSelect"/>
-	    <field name="responsibleUser"/>
-	    <field name="clientPartner" onChange="action-partner-attrs-hide-contact-partner" />
-	    <field name="contactPartner"  domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	    <field name="company" readonlyIf="projectStatusSelect &gt;= 3 || businessStatusSelect &gt;= 2" widget="SuggestBox" form-view="company-form"/>
-	  </panel>
-	  <panel title="Times" colSpan="12">
-	    <panel colSpan="12">
-	      <field name="totalTime" colSpan="4"/>
-	      <field name="unit" colSpan="4"/>
-	    </panel>
-	    <panel colSpan="12">
-	      <field name="plannedTime" colSpan="4"/>
-	      <field name="spentTime" colSpan="4"/>
-	      <field name="remainingTime" colSpan="4"/>
-	    </panel>
-	  </panel>
-	  <panel title="Description" colSpan="12">
-	    <field name="description" showTitle="false" colSpan="12" widget="html"/>
-	  </panel>
-	  <panel title="Specific settings" colSpan="12">
-	    <field name="isProject" colSpan="4"/>
-	    <field name="isBusiness" colSpan="4"/>
-	    <field name="parentProject" onChange="action-project-unit" colSpan="4"/>
-	    <panel title="Expense" colSpan="4">
-	      <field name="imputExpense" colSpan="12"/>
-	      <field name="typeProjectSelect" showIf="imputExpense == true" onChange="action-project-attrs-domain-task-project" colSpan="12"/>
-	      <field name="isReinvoicingExpense" colSpan="12"/>
-	    </panel>
-	    <panel title="Timesheet" colSpan="4">
-	      <field name="isReinvoicingTime" colSpan="12"/>
-	      <field name="isTimeSheetImputable" colSpan="12"/>
-	    </panel>
-	  </panel>
-	  <panel-tabs>
-	    <panel-related title="Tasks" field="taskList" form-view="task-form" grid-view="task-project-grid"/>
-	    <panel-related title="Members" field="memberUserSet"/>    
-	  </panel-tabs>  
-	  <panel sidebar="true" title="Actions">
-	    <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="12" onClick="action-group-organisation-generate-draftinvoice-click"/>
-	    <button name="showTask" title="Show tasks" colSpan="12" onClick="action-project-view-task"/>
-	    <button name="updateTaskProgression" title="Update task progress" colSpan="12" onClick="action-project-method-update-task-progress"/>
-	  </panel>
+		<toolbar>
+			<button name="printProject" title="Print" colSpan="2" icon="fa-print" onClick="action-print-project"/>
+		</toolbar>
+		<panel colSpan="12">
+			<field name="name" showTitle="false" css="bold" placeholder="Name"/>
+			<field name="responsibleUser" colSpan="3" />
+			<field name="clientPartner" colSpan="3" onChange="action-partner-attrs-hide-contact-partner" />
+			<field name="projectStatusSelect" showTitle="false"  colSpan="12" widget="NavSelect"/>
+		</panel>
+		<panel title="Partner" colSpan="12">
+			<field name="contactPartner"  domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+			<field name="company" readonlyIf="projectStatusSelect &gt;= 3 || businessStatusSelect &gt;= 2" widget="SuggestBox" form-view="company-form"/>
+		</panel>
+		<panel title="Times" colSpan="12">
+			<panel colSpan="12">
+			  <field name="totalTime" colSpan="4"/>
+			  <field name="unit" colSpan="4"/>
+			</panel>
+			<panel colSpan="12">
+			  <field name="plannedTime" colSpan="4"/>
+			  <field name="spentTime" colSpan="4"/>
+			  <field name="remainingTime" colSpan="4"/>
+			</panel>
+		</panel>
+		<panel title="Description" colSpan="12">
+			<field name="description" showTitle="false" colSpan="12" widget="html"/>
+		</panel>
+		<panel title="Specific settings" colSpan="12">
+			<field name="isProject" colSpan="4"/>
+			<field name="isBusiness" colSpan="4"/>
+			<field name="parentProject" onChange="action-project-unit" colSpan="4"/>
+			<panel title="Expense" colSpan="4">
+				<field name="imputExpense" colSpan="12"/>
+				<field name="typeProjectSelect" showIf="imputExpense == true" onChange="action-project-attrs-domain-task-project" colSpan="12"/>
+				<field name="isReinvoicingExpense" colSpan="12"/>
+			</panel>
+			<panel title="Timesheet" colSpan="4">
+				<field name="isReinvoicingTime" colSpan="12"/>
+				<field name="isTimeSheetImputable" colSpan="12"/>
+			</panel>
+		</panel>
+		<panel-tabs>
+			<panel-related title="Tasks" field="taskList" form-view="task-form" grid-view="task-project-grid"/>
+			<panel-related title="Members" field="memberUserSet"/>    
+		</panel-tabs>  
+		<panel sidebar="true" title="Actions">
+			<button name="generateDraftInvoice" title="Generate draft invoice" colSpan="12" onClick="action-group-organisation-generate-draftinvoice-click"/>
+			<button name="showTask" title="Show tasks" colSpan="12" onClick="action-project-view-task"/>
+			<button name="updateTaskProgression" title="Update task progress" colSpan="12" onClick="action-project-method-update-task-progress"/>
+		</panel>
 	</form>
 
 	<action-method name="action-print-project">

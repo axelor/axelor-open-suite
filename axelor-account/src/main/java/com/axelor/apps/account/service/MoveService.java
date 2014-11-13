@@ -989,7 +989,6 @@ public class MoveService extends MoveRepository {
 								  move.getIgnoreInReminderOk(), 
 								  move.getIgnoreInAccountingOk());
 		
-		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 		for(MoveLine line: move.getMoveLineList()){
 			LOG.debug("Moveline {}",line);
 			Boolean isDebit = true;
@@ -998,9 +997,17 @@ public class MoveService extends MoveRepository {
 				isDebit = false;
 				amount = line.getDebit();
 			}
-			moveLines.add(moveLineService.createMoveLine(newMove, newMove.getPartner(), line.getAccount(), amount, isDebit, false, null, 0, null));
+			MoveLine newMoveLine = moveLineService.createMoveLine(newMove, 
+																newMove.getPartner(), 
+																line.getAccount(), 
+																amount, 
+																isDebit, 
+																false, 
+																null, 
+																0, 
+																null); 
+			newMove.addMoveLineListItem(newMoveLine);
 		}
-		newMove.setMoveLineList(moveLines);
 		return save(newMove);
 	}
 	
