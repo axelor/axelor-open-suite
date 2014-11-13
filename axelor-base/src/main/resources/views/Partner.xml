@@ -59,8 +59,8 @@
 		        <editor>
 		            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url" colSpan="4"/>
 		            <spacer colSpan="8"/>
-		            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
-		            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>            
+		            <field name="name" showTitle="false" css="highlight" placeholder="Name" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
+		            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" x-bind="{{code|uppercase}}" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>            
 		            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
 		        </editor>
 		    </field>
@@ -219,8 +219,8 @@
 	      	</panel>
 	        <panel colSpan="9">
 	            <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2" />
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange,action-partner-method-set-social-network-url" colSpan="5" />
-	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-group-base-partner-contact-name-onchange,action-partner-method-set-social-network-url" colSpan="5" />
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" x-bind="{{code|uppercase}}"  onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5" />
+	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5" />
 	            <panel title="Company" colSpan="12" >
 	            	<field name="mainPartner"/>
 	           	</panel>
@@ -268,7 +268,6 @@
 	</action-group>
 	
 	<action-group name="action-group-base-partner-contact-name-onchange">
-		<action name="action-check-string-capital-case"/>
 		<action name="action-partner-record-full-name"/>
 	</action-group>
 	
