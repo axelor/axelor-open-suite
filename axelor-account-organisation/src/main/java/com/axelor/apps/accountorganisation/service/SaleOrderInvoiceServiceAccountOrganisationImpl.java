@@ -42,9 +42,6 @@ import com.google.inject.Inject;
 
 public class SaleOrderInvoiceServiceAccountOrganisationImpl extends SaleOrderInvoiceServiceImpl {
 
-	@Inject
-	private InvoiceRepository invoiceRepo;
-	
 	@Override
 	public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException  {
 		
@@ -52,7 +49,7 @@ public class SaleOrderInvoiceServiceAccountOrganisationImpl extends SaleOrderInv
 			throw new AxelorException(String.format("Veuillez selectionner une devise pour le devis %s ", saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 		
-		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(invoiceRepo.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(),saleOrder.getPaymentCondition(), 
+		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(),saleOrder.getPaymentCondition(), 
 				saleOrder.getPaymentMode(), saleOrder.getMainInvoicingAddress(), saleOrder.getClientPartner(), saleOrder.getContactPartner(), 
 				saleOrder.getCurrency(), saleOrder.getProject(), saleOrder.getPriceList(), saleOrder.getSaleOrderSeq(), saleOrder.getExternalReference()) {
 			

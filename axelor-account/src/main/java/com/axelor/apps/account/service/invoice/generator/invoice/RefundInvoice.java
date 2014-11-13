@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -62,7 +62,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		
 		refund.setJournal(journalService.getJournal(invoice)); 
 		
-		refund.setStatusSelect(InvoiceService.STATUS_DRAFT);
+		refund.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
 		
 		refund.setInvoiceId(null);
 		

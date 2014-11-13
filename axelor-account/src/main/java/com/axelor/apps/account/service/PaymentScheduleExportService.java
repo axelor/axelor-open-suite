@@ -39,6 +39,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.DirectDebitManagementRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -322,7 +323,7 @@ public class PaymentScheduleExportService{
 						"AND self.move.invoice.operationTypeSelect = ?3 " +
 						"AND self.move.invoice.schedulePaymentOk = 'true' " +
 						"AND self.move.invoice.paymentSchedule = ?4 "+
-						"ORDER BY self.date", MoveService.STATUS_VALIDATED, true, InvoiceService.OPERATION_TYPE_CLIENT_SALE, paymentSchedule).fetch();
+						"ORDER BY self.date", MoveService.STATUS_VALIDATED, true, InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, paymentSchedule).fetch();
 	}
 	
 	

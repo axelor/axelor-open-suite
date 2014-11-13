@@ -32,6 +32,8 @@ import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.ProductServiceAccountImpl;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
+import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -64,5 +66,7 @@ public class AccountModule extends AxelorModule {
         bind(BankStatementRepository.class).to(BankStatementManagementRepository.class);
         
         bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
+        
+        bind(InvoiceService.class).to(InvoiceServiceImpl.class);
     }
 }

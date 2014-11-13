@@ -30,7 +30,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 public class VentilateFactory {
 	
 	@Inject
-	private SequenceService SequenceService;
+	private SequenceService sequenceService;
 	
 	@Inject
 	private MoveService moveService;
@@ -50,10 +50,10 @@ public class VentilateFactory {
 	protected VentilateState ventilatorByType(Invoice invoice){
 		
 		if(invoice.getEndOfCycleOk())  {
-			return new MajorEndCycleVentilateState(SequenceService, moveService, paymentScheduleService, reimbursementExportService, invoice);
+			return new MajorEndCycleVentilateState(sequenceService, moveService, paymentScheduleService, reimbursementExportService, invoice);
 		}
 		else  {
-			return new VentilateState(SequenceService, moveService, invoice);
+			return new VentilateState(sequenceService, moveService, invoice);
 		}
 		
 	}
