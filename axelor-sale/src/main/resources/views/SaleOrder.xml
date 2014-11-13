@@ -320,7 +320,7 @@
     
     <action-record name="action-sale-order-record-company-configuration" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="showDetailsInInvoice" expr="eval: company?.accountConfig?.showDetailsInInvoice" if="company"/>
-    	<field name="invoicingTypeSelect" expr="eval: company?.supplychainConfig?.saleOrderInvoicingTypeSelect" if="eval: company?.supplychainConfig?.saleOrderInvoicingTypeSelect != 0"/>
+    	<field name="invoicingTypeSelect" expr="eval: company?.saleConfig?.saleOrderInvoicingTypeSelect" if="eval: company?.saleConfig?.saleOrderInvoicingTypeSelect != 0"/>
     </action-record>
     
     <action-record name="action-sale-order-record-partner" model="com.axelor.apps.sale.db.SaleOrder">
