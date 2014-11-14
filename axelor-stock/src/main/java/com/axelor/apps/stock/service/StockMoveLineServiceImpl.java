@@ -223,7 +223,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				qty = stockMoveLine.getQty();
 			}
 			
-			if(!productUnit.equals(stockMoveLineUnit))  {
+			if(productUnit != null && !productUnit.equals(stockMoveLineUnit))  {
 				qty = new UnitConversionService().convert(stockMoveLineUnit, productUnit, qty);
 			}
 			
