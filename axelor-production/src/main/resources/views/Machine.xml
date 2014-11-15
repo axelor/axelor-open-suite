@@ -4,22 +4,21 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
     <grid name="machine-grid" title="Machines" model="com.axelor.apps.production.db.Machine">
-        <field name="serialNumber"/>
+        <field name="name"/>
+		<field name="serialNumber"/>
         <field name="location"/>
-        <field name="planning"/>
-        <field name="startingDuration"/>
-        <field name="setupDuration"/>
     </grid>
     
 	<form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine">
 	  <panel>
 	    <field name="name"/>
 	    <field name="serialNumber"/>
-	    <field name="location"/>
+		<field name="brand"/>
+	    <field name="location" required="true"/>
 	    <field name="planning"/>
-	    <field name="startingDuration"/>
-	    <field name="setupDuration"/>
-	    <field name="description"/>
+	    <field name="startingDuration" colSpan="3"/>
+	    <field name="setupDuration" colSpan="3"/>
+	    <field name="description" colSpan="12"/>
 	  </panel>
 	</form>
     

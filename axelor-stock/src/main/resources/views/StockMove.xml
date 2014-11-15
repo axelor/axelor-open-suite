@@ -70,8 +70,8 @@
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12"/>
 	    </panel>
 	    <panel title="Stock move informations">
-	      <field name="fromLocation" onChange="action-stock-move-set-from-address" colSpan="12"/>
-	      <field name="toLocation" onChange="action-stock-move-set-to-address" colSpan="12"/>
+	      <field name="fromLocation" domain="self.company = :company" onChange="action-stock-move-set-from-address" colSpan="12"/>
+	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-set-to-address" colSpan="12"/>
 	      <field name="estimatedDate" colSpan="6"/>
 	      <field name="realDate" colSpan="6"/>
 	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12"/>
@@ -91,9 +91,9 @@
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" title="Actions">
-			<button name="plan" title="Plan" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
-			<button name="realize" title="Realize" showIf="statusSelect == 2" onClick="action-group-stock-stockmove-realize-click"/>
-			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" onClick="action-group-stock-stockmove-cancel-click"/>
+			<button name="plan" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
+			<button name="realize" title="Realize" icon="fa-check" showIf="statusSelect == 2" onClick="action-group-stock-stockmove-realize-click"/>
+			<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" onClick="action-group-stock-stockmove-cancel-click"/>
 			<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
 			<button name="generateInvoice" title="Generate invoice" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
 			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect &gt;= 2"/>

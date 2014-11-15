@@ -50,14 +50,14 @@
 	        <field name="stockMove.fromLocation"/>
 	        <field name="stockMove.toLocation"/>
         </panel>
-        <panel>
+        <panel title="Move details">
 	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
 	        <field name="productModel"/>
-	        <field name="unit"/>
+			<field name="qty" colSpan="3" onChange="action-stock-move-line-record-qty"/>
+	        <field name="realQty" colSpan="3"/>
+			<field name="price" colSpan="3"/>
+	        <field name="unit" colSpan="3"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
-	        <field name="price"/>
-	        <field name="qty" onChange="action-stock-move-line-record-qty"/>
-	        <field name="realQty"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
         </panel>
     </form>

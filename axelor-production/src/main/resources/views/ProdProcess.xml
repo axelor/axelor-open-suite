@@ -15,7 +15,7 @@
 		<panel>
 	    	<field name="name"/>
 	    	<field name="code"/>
-	        <field name="location"/>
+	        <field name="location" required="true"/>
         </panel>
         <panel-related field="prodProcessLineList" colSpan="12"/>        
     </form>

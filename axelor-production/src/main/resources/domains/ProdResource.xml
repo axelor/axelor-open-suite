@@ -9,7 +9,7 @@
   	
  	<integer name="importId"/> 	
   
-    <string name="name" title="Label"/>
+    <string name="name" title="Label" required="true"/>
     <string name="code" title="Code"/>
     <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Default Machine"/>
     <integer name="resourceTypeSelect" title="Resource type" selection="iproduction.prod.resource.resource.type.select"/>
@@ -27,7 +27,7 @@
     
     <one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="prodResource" title="Human resources"/>
     
-    <one-to-many name="prodResourceList" ref="com.axelor.apps.production.db.ProdResource" mappedBy="parentProdResource" title="Machines"/>
+    <one-to-many name="prodResourceList" ref="com.axelor.apps.production.db.ProdResource" mappedBy="parentProdResource" title="Replacement machines"/>
     <many-to-one name="parentProdResource" ref="com.axelor.apps.production.db.ProdResource" title="Resource"/>
     
     <many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>

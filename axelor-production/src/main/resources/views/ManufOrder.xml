@@ -53,69 +53,72 @@
 	      name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
 	      onSave="save,action-manuf-order-set-draft-seq,save">
 <!--     TODO avec propagation -->
-	  <toolbar>
-	    <button name="plan" title="Plan" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-plan,save"/>
-	    <button name="start" title="Start" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start,save"/>
-	    <button name="pause" title="Pause" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause,save"/>
-	    <button name="resume" title="Resume" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume,save"/>
-	    <button name="finish" title="Finish" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-finish,save"/>
-	    <button name="cancel" title="Cancel" showIf="statusSelect != 2" onClick="save,action-manuf-order-method-cancel,save"/>
-	    <button name="print" title="Print" icon="fa-print" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-print"/>
-	  </toolbar>
-	  <panel>
-	    <field name="manufOrderSeq" readonlyIf="statusSelect &gt; 1" css="bold"/>
-	    <field name="priority" readonlyIf="statusSelect == 6" colSpan="3"/>
-		<field name="company" readonlyIf="statusSelect &gt; 1" colSpan="3"/>
-	    <field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-		<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.isRawMaterial = false" onChange="action-manuf-order-on-change-bill-of-material"/>
-	    <field name="prodProcess"/>
-	    <field name="product" required="true"/>
-	    <field name="qty" readonlyIf="statusSelect &gt; 1"/>
-	    <field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>
-	    <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"/>
-	    <button name="preFillOperations" colSpan="4" title="Pre-fill operations"  onClick="save,action-manuf-order-method-pre-fill-operations" />
-	  </panel>  
-	  <panel-tabs colSpan="4">
-	    <panel-related field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" form-view="operation-order-form" grid-view="operation-order-grid"/>
-	    <panel title="Dates" readonlyIf="statusSelect == 6">
-	      <panel title="Planned dates">        
-	        <field name="plannedStartDateT"  />
-	        <field name="plannedEndDateT"  />
-	      </panel>
-	      <panel title="Real dates">
-	        <field name="realStartDateT"  />
-	        <field name="realEndDateT"  />
-	      </panel>
-	    </panel>
-	    <panel title="Stock moves">
-	      <panel title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
-	        <field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
-	        <field name="outStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
-	      </panel>
-	      <panel title="Production waste" colSpan="12">
-	        <button name="generateWasteStockMove" title="Generate waste stock move" onClick="Non implemented yet"/>
-	        <field name="wasteStockMove"/>
-	      </panel>
-	    </panel>
-	    <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-consumed">
-	      <panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
-	      <panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
-	      <panel-related field="diffConsumeProdProductList" colSpan="12"/>
-	    </panel>
-<!--   <panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
+		<toolbar>
+			<button name="print" title="Print" icon="fa-print" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-print"/>
+		</toolbar>
+		<panel>
+			<field name="manufOrderSeq" readonly="true" css="bold"/>
+			<field name="priority" readonlyIf="statusSelect == 6" colSpan="3"/>
+			<field name="company" readonlyIf="statusSelect &gt; 1" colSpan="3"/>
+			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
+			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.isRawMaterial = false" onChange="action-manuf-order-on-change-bill-of-material"/>
+			<field name="prodProcess" readonlyIf="statusSelect &gt; 1"/>
+			<field name="product" required="true" readonlyIf="statusSelect &gt; 1"/>
+			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
+			<field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>
+			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"/>
+			<button name="preFillOperations" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1" onClick="save,action-manuf-order-method-pre-fill-operations" />
+		</panel>  
+		<panel-tabs colSpan="4">
+			<panel-related field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" form-view="operation-order-form" grid-view="operation-order-grid"/>
+			<panel title="Dates" readonlyIf="statusSelect == 6">
+				<panel title="Planned dates">        
+					<field name="plannedStartDateT"  />
+					<field name="plannedEndDateT"  />
+				</panel>
+				<panel title="Real dates">
+					<field name="realStartDateT"  />
+					<field name="realEndDateT"  />
+				</panel>
+			</panel>
+			<panel title="Stock moves">
+				<panel title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
+					<field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
+					<field name="outStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
+				</panel>
+				<panel title="Production waste" colSpan="12">
+					<button name="generateWasteStockMove" title="Generate waste stock move" onClick="Non implemented yet"/>
+					<field name="wasteStockMove"/>
+				</panel>
+			</panel>
+			<panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-consumed">
+				<panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
+				<panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
+				<panel-related field="diffConsumeProdProductList" colSpan="12"/>
+			</panel>
+<!--   		<panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
 	 	      <dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
 	 	      <dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
 	 	      <dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/> 
-	   </panel> -->
-	    <panel title="Finished products">
-	      <panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
-	      <panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
-	      <panel-related field="wasteProdProductList" colSpan="12"/>
-	      <panel title="Description" colSpan="12">
-	        <field name="wasteProdDescription" showTitle="false" colSpan="12"/>
-	      </panel>
-	    </panel>
-	  </panel-tabs>
+			</panel> -->
+			<panel title="Finished products">
+				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
+				<panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
+				<panel-related field="wasteProdProductList" colSpan="12"/>
+				<panel title="Description" colSpan="12">
+					<field name="wasteProdDescription" showTitle="false" colSpan="12"/>
+				</panel>
+			</panel>
+		</panel-tabs>
+		<panel title="Actions" colSpan="12" sidebar="true" showIf="id">
+			<button name="plan" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-plan,save"/>
+			<button name="start" icon="fa-play" title="Start" colSpan="12" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start,save"/>
+			<button name="pause" icon="fa-pause" title="Pause" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause,save"/>
+			<button name="resume" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume,save"/>
+			<button name="finish" icon="fa-power-off" title="Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-finish,save"/>
+			<button name="cancel" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-method-cancel,save"/>
+		</panel>
+	  
 	</form>
     
      

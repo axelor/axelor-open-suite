@@ -13,28 +13,29 @@
 	<form name="prod-resource-form" title="Resource" model="com.axelor.apps.production.db.ProdResource">
 	  <panel>
 	    <field name="name"/>
-	    <field name="code"/>
-	    <field name="machine"/>
-	    <field name="resourceTypeSelect"/>
+	    <field name="code" colSpan="3"/>
+	    <field name="resourceTypeSelect" required="true"/>
+		<field name="machine" requiredIf="resourceTypeSelect == 2 || resourceTypeSelect == 3" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3"/>
 	  </panel>  
 	  <panel-tabs>
-	    <panel title="Default Machine informations" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3">
-	        <panel title="Capacity information" colSpan="12">
-	          <field name="capacityPerCycle"/>
-	          <field name="maxCapacityPerCycle"/>
-	          <field name="durationPerCycle" widget="duration" x-big="true" x-seconds="true"/>
-	          <field name="startingDuration" widget="duration" x-big="true" x-seconds="true"/>
-	          <field name="setupDuration" widget="duration" x-big="true" x-seconds="true"/>
-	          <field name="endingDuration" widget="duration" x-big="true" x-seconds="true"/>
+	    <panel title="Default Machine settings" readonlyIf="!machine" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3">
+	        <panel title="Capacity settings" colSpan="12">
+	          <field name="capacityPerCycle" colSpan="3"/>
+	          <field name="maxCapacityPerCycle" colSpan="3"/>
+	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
+			  <label title="" colSpan="3"/>
+				<field name="startingDuration" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
+				<field name="setupDuration" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
+				<field name="endingDuration" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
-	        <panel title="Costing information" colSpan="12">
+	        <panel title="Costing settings" colSpan="12">
 	          <field name="product"/>
-	          <field name="costTypeSelect"/>
-	          <field name="costAmount"/>
+	          <field name="costTypeSelect" colSpan="3"/>
+	          <field name="costAmount" colSpan="3"/>
 	        </panel>
 	    </panel>
 	    <panel-related field="prodHumanResourceList" title="Human resources" showIf="resourceTypeSelect == 1 || resourceTypeSelect == 3"/>
-	    <panel-related field="prodResourceList" title="Machines" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3" form-view="prod-resource-machine-form" grid-view="prod-resource-machine-grid"/>
+	    <panel-related field="prodResourceList" title="Replacement machines" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3" form-view="prod-resource-machine-form" grid-view="prod-resource-machine-grid"/>
 	  </panel-tabs>
 	</form>
     
@@ -50,23 +51,22 @@
 	        <field name="code"/>
 	        <field name="machine"/>
         </panel>
-        <panel-tabs>
-        	<panel title="Default Machine informations">
-	        	<panel title="Capacity information" colSpan="6">
-	        		<field name="capacityPerCycle"/>
-			        <field name="maxCapacityPerCycle"/>
-			        <field name="durationPerCycle" widget="duration" x-big="true" x-seconds="true"/>
-			        <field name="startingDuration" widget="duration" x-big="true" x-seconds="true"/>
-			        <field name="setupDuration" widget="duration" x-big="true" x-seconds="true"/>
-			        <field name="endingDuration" widget="duration" x-big="true" x-seconds="true"/>
-	        	</panel>
-	        	<panel title="Costing information" colSpan="6">
-	        		<field name="product"/>
-			        <field name="costTypeSelect"/>
-			        <field name="costAmount"/>
-	        	</panel>
-        	</panel>
-        </panel-tabs>
+        <panel title="Production and cost settings">
+	        <panel title="Capacity settings" colSpan="12">
+	          <field name="capacityPerCycle" colSpan="3"/>
+	          <field name="maxCapacityPerCycle" colSpan="3"/>
+	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
+			  <label title="" colSpan="3"/>
+				<field name="startingDuration" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
+				<field name="setupDuration" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
+				<field name="endingDuration" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
+	        </panel>
+	        <panel title="Costing settings" colSpan="12">
+	          <field name="product"/>
+	          <field name="costTypeSelect" colSpan="3"/>
+	          <field name="costAmount" colSpan="3"/>
+	        </panel>
+	    </panel>
     </form>
     
     <action-record name="action-prod-resource-record-default" model="com.axelor.apps.production.db.ProdResource">

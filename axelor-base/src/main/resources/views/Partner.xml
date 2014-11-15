@@ -24,7 +24,7 @@
 	    <field name="fixedPhone"/>
 	    <field name="mobilePhone"/>
 	    <field name="emailAddress.address"/>
-	    <button name="logCall" title="Log Call"   icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call" if-module="axelor-crm"/>
+	    <button name="logCall" title="Log Call" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call" if-module="axelor-crm"/>
 		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
 		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
 		
@@ -90,9 +90,9 @@
 					<field name="fixedPhone" colSpan="3"/>
 					<field name="fax" colSpan="3"/>
 					<field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1"/>
-					<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+					<field name="emailAddress" canSelect="false" colSpan="6" form-view="email-address-simple-form" x-show-icons="false">
 						<editor>
-							<field name="address"/>
+							<field name="address" colSpan="12"/>
 						</editor>
 					</field>
 					
@@ -115,11 +115,11 @@
 					</panel>
 		      	</panel>
 	    	</panel>
-			<panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" colSpan="12" >
+			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12" >
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
 				<panel-include if-module="axelor-account" view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 		    </panel>
-			<panel name="balance" title="Accounting balance" hideIf="partnerTypeSelect == 2 || isContact" if-module="axelor-account" colSpan="12">
+			<panel name="balance" title="Accounting balance" hideIf="isContact" if-module="axelor-account" colSpan="12">
 				<panel-include if-module="axelor-account" view="incl-customer-balance-partner-form" from="axelor-account" />
 				<panel-include if-module="axelor-account" view="incl-reported-balance-partner-form" from="axelor-account" />
 			</panel>

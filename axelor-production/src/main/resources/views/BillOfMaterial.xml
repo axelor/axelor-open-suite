@@ -30,7 +30,7 @@
 			<panel title="Cost">
 				<button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
 				<field name="costPrice" readonly="true"/>
-				<button name="updateProductCostPrice" title="update product cost price"   onClick="save,action-bill-of-material-method-update-product-cost-price"/>
+				<button name="updateProductCostPrice" title="Update product cost price"  onClick="save,action-bill-of-material-method-update-product-cost-price"/>
 			</panel>
 		</panel-tabs>
 	  

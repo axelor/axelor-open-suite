@@ -9,8 +9,9 @@
   	
   	<integer name="importId"/>
   	
-  	<string name="name" title="Name"/>
+  	<string name="name" title="Name" required="true"/>
     <string name="serialNumber" title="Serial Nbr"/>
+	<string name="brand" title="Brand"/>
     <string name="description" title="Description" large="true"/>
     <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
     <integer name="startingDuration" title="Starting duration (min)"/>
