@@ -2,45 +2,30 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
-    <grid name="interbank-code-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
+    
+	<grid name="interbank-code-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
         <field name="code"/>
         <field name="name"/>
         <field name="description"/>
     </grid>
-     <grid name="interbank-code-line-custom-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCodeLine"> 
-		        <field name="code"/>
-		        <field name="name"/>
-		        <field name="description"/>
-		        <field name="technicalRejectOk"/>
+	
+    <grid name="interbank-code-line-custom-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCodeLine"> 
+		<field name="code"/>
+		<field name="name"/>
+		<field name="description"/>
+		<field name="technicalRejectOk"/>
 	</grid>
-<form model="com.axelor.apps.account.db.InterbankCodeLine" name="interbank-code-line-custom-form" title="Blocking reason/reject codes lists">
-	<panel >
-	    <field name="code"/>
-	    <field name="name"/>
-	</panel>
-	<panel title="Description">
-	    <field name="description" showTitle="false"  />
-	    <field name="technicalRejectOk"/>
-	</panel>
-	<panel title="Domain of use">
-	    <field name="transferCfonbOk"/>
-	    <field name="directDebitAndTipCfonbOk"/>
-	    <field name="directDebitSepaOk"/>
-	    <field name="lcrBorOk"/>
-	    <field name="chequeOk"/>
-	</panel>
-</form>
-    <form   name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
+	
+    <form name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
 		<panel >
-		  <field name="code"/>
-		  <field name="name"/>
-		  <field name="endDate"/>
+			<field name="code"/>
+			<field name="name"/>
+			<field name="endDate"/>
 		</panel>
 		<panel title="Description" >
-		  <field name="description" showTitle="false" colSpan="12"/>
+			<field name="description" showTitle="false" colSpan="12"/>
 		</panel> 
 		<panel-related field="interbankCodeLineList" form-view="interbank-code-line-custom-form" grid-view="interbank-code-line-custom-grid"/>
-    
 </form>
     
 </object-views>

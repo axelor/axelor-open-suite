@@ -13,8 +13,8 @@
         	 <field name="name"/>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="invoiceLabel" />
-	        <field name="typeSelect"/>
-			<field name="inOutSelect"/>
+	        <field name="typeSelect" colSpan="3"/>
+			<field name="inOutSelect" colSpan="3"/>
         </panel>
         <panel-related field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
 	        domain="self.typeSelect = 3" colSpan="12" showTitle="false" if-module="axelor-account"/>

@@ -8,7 +8,7 @@
     	title="Dashboards" icon="img/16px/chart_16px.png" groups="admins,ERP"/> 	
     	
 	<menuitem name="menu-dashboards-sample" priority="200" parent="menu-dashboards"
-    	title="Sample"  groups="admins,ERP"/> 
+    	title="Samples"  groups="admins,ERP"/> 
     	
 	<menuitem name="menu-dashboards-partner-contact" priority="195" parent="menu-dashboards"
     	title="Partners/Contacts"  groups="admins,ERP"/>
@@ -32,11 +32,11 @@
 	<menuitem name="menu-dashboards-products-goods" priority="40" parent="menu-dashboards"
     	title="Products/Goods"  groups="admins,ERP"/>
 	
-	<menuitem name="contact-root" title="Companies/Contacts" priority="190"
+	<menuitem name="contact-root" title="Accounts/Contacts" priority="190"
 		icon="img/64px/partner_64px.png" groups="admins,ERP,CRM"/>
 
 	<menuitem name="contact-root-partner" parent="contact-root" priority="4"
-		title="Accounts" action="contact.root.partner" />
+		title="Accounts/Partners" action="contact.root.partner" />
 
 	<action-view name="contact.root.partner" title="Accounts"
 		model="com.axelor.apps.base.db.Partner" icon="img/16px/partnerSmall_16px.png">

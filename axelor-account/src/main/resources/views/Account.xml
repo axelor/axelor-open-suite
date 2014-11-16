@@ -30,16 +30,18 @@
         </node>
     </tree>
 
-<form  onNew="action-account-record-new" name="account-form" title="Account" model="com.axelor.apps.account.db.Account">
-	<panel title="General">
-	  <field name="code"/>
-	  <field name="name"/>
-	  <field name="accountType"/>
-	  <field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form"/>
-	  <field name="parent" onChange="action-group-account-account-onchange-common" domain="self.company = :company"/>
-	  <field name="reconcileOk"/>
-   </panel>
-</form>
+	<form  onNew="action-account-record-new" name="account-form" title="Account" model="com.axelor.apps.account.db.Account">
+		<panel>
+			<field name="code" colSpan="3" css="bold"/>
+			<field name="name" colSpan="9" css="bold"/>
+			<panel title="Settings" colSpan="12">
+				<field name="accountType"/>
+				<field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form"/>
+				<field name="parent" onChange="action-group-account-account-onchange-common" domain="self.company = :company"/>
+				<field name="reconcileOk"/>
+			</panel>
+	   </panel>
+	</form>
     
     <action-group name="action-group-account-account-onchange-common">
     	<action name="action-account-clean-company"/>

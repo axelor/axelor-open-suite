@@ -10,9 +10,9 @@
     <integer name="importId" />
     <string name="name" title="Name" required="true" />
     <string name="code" title="Code" required="true" unique="true"/>
-	<integer name="paymentTime" title="Payment period"/>    
+	<integer name="paymentTime" title="Payment period (N days)"/>    
 	<integer name="typeSelect" title="Type" selection="account.payment.condition.type.select"/>
-	<integer name="daySelect" title="Day" selection="day.month.select"/>
+	<integer name="daySelect" title="Day (end of month)" selection="day.month.select"/>
 	<boolean name="isFree" title="Free ?"/>
 
 	<extra-code><![CDATA[

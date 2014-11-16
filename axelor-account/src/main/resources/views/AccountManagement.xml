@@ -3,14 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
-    <grid name="account-management-payment-mode-grid" title="Les gestions de compte comptable" model="com.axelor.apps.account.db.AccountManagement">
+    <grid name="account-management-payment-mode-grid" title="Account Managements" model="com.axelor.apps.account.db.AccountManagement">
         <field name="company"/>
         <field name="cashAccount"/>
         <field name="journal"/>
         <field name="sequence"/>
     </grid>
  
-	 <form name="account-management-payment-mode-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement"  
+	 <form name="account-management-payment-mode-form" title="Account Management" model="com.axelor.apps.account.db.AccountManagement"  
 	 onNew="action-account-management-record-payment">
 	 	<panel >
 			<field name="company" widget="SuggestBox" form-view="company-form"/>

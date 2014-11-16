@@ -14,11 +14,11 @@
     <form name="payment-condition-form" title="Payment Condition" model="com.axelor.apps.account.db.PaymentCondition"  >
         <panel>
         	<field name="name"/>
-	        <field name="code"/>
+	        <field name="code" colSpan="3"/>
+			<field name="isFree" colSpan="3"/>
 	        <field name="typeSelect"/>
-	        <field name="paymentTime"/>
-	        <field name="daySelect" showIf="typeSelect == 4"/>
-	        <field name="isFree"/>
+	        <field name="paymentTime" colSpan="3"/>
+	        <field name="daySelect" colSpan="3" showIf="typeSelect == 4"/>
         </panel>
     </form>
     

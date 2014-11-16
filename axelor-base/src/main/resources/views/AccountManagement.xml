@@ -11,7 +11,7 @@
 		<field name="cashAccount" if-module="axelor-account"/>
     </grid>
     
-    <grid name="account-management-product-grid" title="Account management" model="com.axelor.apps.account.db.AccountManagement">
+    <grid name="account-management-product-grid" title="Account managements" model="com.axelor.apps.account.db.AccountManagement">
         <field name="company"/>
 		<field name="saleAccount" if-module="axelor-account"/>
 		<field name="saleTax"/>
@@ -42,21 +42,25 @@
 		<panel >
 			<field name="typeSelect" onChange="action-account-management-attrs-type"/>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-account-management-onchange-common" form-view="company-form"/>
-			<field name="purchaseAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" if-module="axelor-account"/>
-			<field name="saleAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'income'" if-module="axelor-account"/>
-			<field name="cashAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" if-module="axelor-account"/>
+			<panel colSpan="12" showIf="typeSelect == 1">
+				<field name="purchaseAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" if-module="axelor-account"/>
+				<field name="saleAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'income'" if-module="axelor-account"/>
+			</panel>
+			<panel colSpan="12" showIf="typeSelect == 3">
+				<field name="cashAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" if-module="axelor-account"/>
+			</panel>
 		</panel>
 	  
 		<panel-tabs>
 			<panel-related field="analyticAccountManagementList" colSpan="12" if-module="axelor-account"/>
-			<panel name="productPage" title="Product" showTitle="false">
+			<panel name="productPage" title="Product" showIf="typeSelect == 1" showTitle="false">
 			  <field name="product"  colSpan="12"/>
 			</panel>
-			<panel name="taxPage" title="Tax" showTitle="false">
+			<panel name="taxPage" title="Tax" hideIf="typeSelect == 3" showTitle="false">
 			  <field name="purchaseTax"/>
 			  <field name="saleTax"/>
 			</panel>
-			<panel name="paymentModePage" title="Payment mode" showTitle="false">
+			<panel name="paymentModePage" showIf="typeSelect == 3" title="Payment mode" showTitle="false">
 			  <field name="paymentMode"  />
 			  <field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
 			  <field name="sequence" domain="self.company = :company" canNew="true"/>
