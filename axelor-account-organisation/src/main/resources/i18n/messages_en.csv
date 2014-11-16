@@ -1,14 +1,14 @@
 "key","message","comment","context"
-"Amount to invoice","","","resources/domains/Task.xml:14"
-"Business","","","resources/domains/SaleOrder.xml:10
-resources/domains/PurchaseOrder.xml:10"
-"Candidates","","","resources/domains/SaleOrderLine.xml:12"
-"Employee","","","resources/domains/SaleOrderSubLine.xml:10"
-"Employees","","","resources/domains/SaleOrderLine.xml:11"
-"Global task ?","","","resources/domains/SaleOrder.xml:12"
-"Import","","","resources/domains/Task.xml:10"
-"Invoicing Date","","","resources/domains/Task.xml:13"
-"Sale order line (origin)","","","resources/domains/Task.xml:15"
-"Task","","","resources/domains/SaleOrderLine.xml:10
-resources/domains/PurchaseOrderLine.xml:10"
-"To invoice ?","","","resources/domains/Task.xml:12"
+"Amount to invoice",,,"resources/domains/Task.xml:14"
+"Business",,,"resources/domains/PurchaseOrder.xml:10
+resources/domains/SaleOrder.xml:10"
+"Candidates",,,"resources/domains/SaleOrderLine.xml:12"
+"Employee",,,"resources/domains/SaleOrderSubLine.xml:10"
+"Employees",,,"resources/domains/SaleOrderLine.xml:11"
+"Global task ?",,,"resources/domains/SaleOrder.xml:12"
+"Import",,,"resources/domains/Task.xml:10"
+"Invoicing Date",,,"resources/domains/Task.xml:13"
+"Sale order line (origin)",,,"resources/domains/Task.xml:15"
+"Task",,,"resources/domains/PurchaseOrderLine.xml:10
+resources/domains/SaleOrderLine.xml:10"
+"To invoice ?",,,"resources/domains/Task.xml:12"

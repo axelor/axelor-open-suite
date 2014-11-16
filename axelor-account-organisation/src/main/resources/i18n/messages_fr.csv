@@ -1,14 +1,14 @@
-key,message,comment,context
-Amount to invoice,Montant à facturer,,resources/domains/Task.xml:14
-Business,Affaire,,"resources/domains/SaleOrder.xml:10
-resources/domains/PurchaseOrder.xml:10"
-Candidates,Candidats,,resources/domains/SaleOrderLine.xml:12
-Employee,Employé,,resources/domains/SaleOrderSubLine.xml:10
-Employees,Employés,,resources/domains/SaleOrderLine.xml:11
-Global task ?,Tâche globale ?,,resources/domains/SaleOrder.xml:12
-Import,Importer,,resources/domains/Task.xml:10
-Invoicing Date,Date de facturation,,resources/domains/Task.xml:13
-Sale order line (origin),Ligne de vente (origine),,resources/domains/Task.xml:15
-Task,Tâche,,"resources/domains/SaleOrderLine.xml:10
-resources/domains/PurchaseOrderLine.xml:10"
-To invoice ?,A facturer ? ,,resources/domains/Task.xml:12
+"key","message","comment","context"
+"Amount to invoice","Montant à facturer",,"resources/domains/Task.xml:14"
+"Business","Affaire",,"resources/domains/PurchaseOrder.xml:10
+resources/domains/SaleOrder.xml:10"
+"Candidates","Candidats",,"resources/domains/SaleOrderLine.xml:12"
+"Employee","Employé",,"resources/domains/SaleOrderSubLine.xml:10"
+"Employees","Employés",,"resources/domains/SaleOrderLine.xml:11"
+"Global task ?","Tâche globale ?",,"resources/domains/SaleOrder.xml:12"
+"Import","Importer",,"resources/domains/Task.xml:10"
+"Invoicing Date","Date de facturation",,"resources/domains/Task.xml:13"
+"Sale order line (origin)","Ligne de vente (origine)",,"resources/domains/Task.xml:15"
+"Task","Tâche",,"resources/domains/PurchaseOrderLine.xml:10
+resources/domains/SaleOrderLine.xml:10"
+"To invoice ?","A facturer ? ",,"resources/domains/Task.xml:12"

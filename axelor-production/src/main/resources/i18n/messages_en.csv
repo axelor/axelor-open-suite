@@ -1,40 +1,42 @@
 "key","message","comment","context"
-"Add Manu. Order",,,"resources/views/ProductionOrder.xml:22"
+"Actions",,,"resources/views/ManufOrder.xml:113
+resources/views/OperationOrder.xml:97"
 "Add Manuf. Order",,,"resources/views/ProductionOrder.xml:20
+resources/views/ProductionOrder.xml:22
 resources/views/ProductionOrder.xml:26"
 "All Current Manufacturing Orders",,,"resources/views/ManufacturingDashboard.xml:27"
 "All Manufacturing Order Plannings",,,"resources/views/ManufacturingDashboard.xml:35"
 "All Upcoming Manufacturing Orders",,,"resources/views/ManufacturingDashboard.xml:19"
 "BOM",,,"resources/views/ProductionOrder.xml:24
 resources/views/ProductionOrderWizard.xml:14"
-"BOM tree",,,"resources/views/BillOfMaterial.xml:30"
-"BOMs",,,"resources/domains/BillOfMaterial.xml:18"
+"BOM tree",,,"resources/views/BillOfMaterial.xml:29"
+"BOMs",,,"resources/domains/BillOfMaterial.xml:19"
 "Bill of material",,,"resources/views/BillOfMaterial.xml:16
-resources/views/BillOfMaterial.xml:27
-resources/views/BillOfMaterial.xml:54
-resources/views/BillOfMaterial.xml:65"
-"Bills of material",,,"resources/views/BillOfMaterial.xml:101
-resources/views/BillOfMaterial.xml:41
+resources/views/BillOfMaterial.xml:53
+resources/views/BillOfMaterial.xml:66"
+"Bills of material",,,"resources/views/BillOfMaterial.xml:102
+resources/views/BillOfMaterial.xml:40
 resources/views/BillOfMaterial.xml:6
-resources/views/BillOfMaterial.xml:70
-resources/views/BillOfMaterial.xml:77"
+resources/views/BillOfMaterial.xml:71
+resources/views/BillOfMaterial.xml:78"
 "Bills of materials",,,"resources/views/Menu.xml:12
 resources/views/Menu.xml:15"
 "BoM",,,"resources/domains/ManufOrder.xml:39
 resources/domains/ProdRemains.xml:12
 resources/domains/SaleOrderLine.xml:10"
+"Brand",,,"resources/domains/Machine.xml:14"
 "Business",,,"resources/views/Business.xml:6"
-"Cancel",,,"resources/views/ManufOrder.xml:24
+"Cancel",,,"resources/views/ManufOrder.xml:119
+resources/views/ManufOrder.xml:24
 resources/views/ManufOrder.xml:47
-resources/views/ManufOrder.xml:59
+resources/views/OperationOrder.xml:100
 resources/views/OperationOrder.xml:36
-resources/views/OperationOrder.xml:54
-resources/views/OperationOrder.xml:64"
+resources/views/OperationOrder.xml:54"
 "Canceled",,,"resources/views/Selects.xml:11"
-"Cancelled MOs",,,"resources/views/ManufOrder.xml:223"
-"Cancelled Operations",,,"resources/views/OperationOrder.xml:187"
+"Cancelled MOs",,,"resources/views/ManufOrder.xml:242"
+"Cancelled Operations",,,"resources/views/OperationOrder.xml:185"
 "Capacity / cycle",,,"resources/domains/ProdResource.xml:16"
-"Capacity information",,,"resources/views/ProdResource.xml:22
+"Capacity settings",,,"resources/views/ProdResource.xml:22
 resources/views/ProdResource.xml:55"
 "Charge by machine",,,"resources/views/ChargeByMachineDashboard.xml:6
 resources/views/Menu.xml:83
@@ -43,71 +45,70 @@ resources/views/Menu.xml:86"
 "Charge réelle par machine",,,"resources/views/Charts.xml:7"
 "Code",,,"resources/domains/ProdProcess.xml:14
 resources/domains/ProdResource.xml:13"
+"Comments",,,"resources/domains/OperationOrder.xml:58"
 "Company",,,"resources/domains/BillOfMaterial.xml:23
 resources/domains/ManufOrder.xml:21
 resources/domains/ProductionConfig.xml:11"
 "Compliance",,,"resources/domains/ManufOrderSheetLine.xml:13"
-"Compute cost price",,,"resources/views/BillOfMaterial.xml:33"
+"Components",,,"resources/views/BillOfMaterial.xml:27"
+"Compute cost price",,,"resources/views/BillOfMaterial.xml:31"
 "Configurations",,,"resources/views/Menu.xml:92"
 "Conforme",,,"resources/views/ManufOrderSheet.xml:44"
 "Conformité",,,"resources/views/ManufOrderSheet.xml:18"
-"Conformités",,,"resources/domains/OperationOrder.xml:63"
 "Consumed products",,,"resources/domains/ManufOrder.xml:28
 resources/domains/OperationOrder.xml:30
-resources/views/ManufOrder.xml:101
-resources/views/ManufOrder.xml:200
-resources/views/ManufOrder.xml:96
-resources/views/OperationOrder.xml:98"
-"Cost",,,"resources/views/BillOfMaterial.xml:32"
+resources/views/ManufOrder.xml:219
+resources/views/ManufOrder.xml:94
+resources/views/OperationOrder.xml:91"
+"Cost",,,"resources/views/BillOfMaterial.xml:30"
 "Cost (W.T.)",,,"resources/domains/ProdResource.xml:26"
 "Cost price",,,"resources/domains/BillOfMaterial.xml:22"
 "Cost type",,,"resources/domains/ProdResource.xml:25"
-"Costing information",,,"resources/views/ProdResource.xml:30
-resources/views/ProdResource.xml:63"
+"Costing settings",,,"resources/views/ProdResource.xml:31
+resources/views/ProdResource.xml:64"
 "Create Manuf. Order",,,"resources/views/Menu.xml:149"
 "Dashboard",,,"resources/views/ManufacturingDashboard.xml:12
 resources/views/ManufacturingDashboard.xml:6"
-"Dates",,,"resources/views/ManufOrder.xml:76
-resources/views/OperationOrder.xml:85"
+"Dates",,,"resources/views/ManufOrder.xml:74
+resources/views/OperationOrder.xml:73"
 "Default BOM",,,"resources/domains/Product.xml:9"
 "Default Machine",,,"resources/domains/ProdResource.xml:14"
-"Default Machine informations",,,"resources/views/ProdResource.xml:21
-resources/views/ProdResource.xml:54"
+"Default Machine settings",,,"resources/views/ProdResource.xml:21"
 "Default resource product",,,"resources/domains/ProductionConfig.xml:14"
-"Description",,,"resources/domains/Machine.xml:14
+"Description",,,"resources/domains/Machine.xml:15
 resources/domains/ManufOrder.xml:56
 resources/domains/ProdProcessLine.xml:16
-resources/views/ManufOrder.xml:112
-resources/views/ProdProcessLine.xml:21"
+resources/views/ManufOrder.xml:108
+resources/views/ProdProcessLine.xml:19"
 "Diff consume manuf order",,,"resources/domains/ProdProduct.xml:23"
 "Diff consume operation order",,,"resources/domains/ProdProduct.xml:19"
 "Difference",,,"resources/domains/ManufOrder.xml:29"
 "Differences",,,"resources/domains/OperationOrder.xml:31
-resources/views/ManufOrder.xml:193"
+resources/views/ManufOrder.xml:212"
 "Draft",,,"resources/views/Selects.xml:10"
-"Draft MOs",,,"resources/views/ManufOrder.xml:208"
-"Draft Operations",,,"resources/views/OperationOrder.xml:172"
+"Draft MOs",,,"resources/views/ManufOrder.xml:227"
+"Draft Operations",,,"resources/views/OperationOrder.xml:170"
 "Duration",,,"resources/domains/ProdHumanResource.xml:15"
 "Duration / cycle (hh:mm)",,,"resources/domains/ProdResource.xml:18"
 "Duration between two cycles (hh:mm)",,,"resources/domains/ProdResource.xml:20"
 "Ee",,,"resources/domains/TimesheetLine.xml:11"
 "Ending duration (hh:mm)",,,"resources/domains/ProdResource.xml:21"
-"Finish",,,"resources/views/ManufOrder.xml:23
+"Finish",,,"resources/views/ManufOrder.xml:118
+resources/views/ManufOrder.xml:23
 resources/views/ManufOrder.xml:46
-resources/views/ManufOrder.xml:58
+resources/views/OperationOrder.xml:101
 resources/views/OperationOrder.xml:35
-resources/views/OperationOrder.xml:53
-resources/views/OperationOrder.xml:65"
+resources/views/OperationOrder.xml:53"
 "Finished",,,"resources/views/Selects.xml:15"
-"Finished MOs",,,"resources/views/ManufOrder.xml:220"
-"Finished Operations",,,"resources/views/OperationOrder.xml:184"
-"Finished products",,,"resources/views/ManufOrder.xml:108"
-"Generate waste stock move",,,"resources/views/ManufOrder.xml:92"
+"Finished MOs",,,"resources/views/ManufOrder.xml:239"
+"Finished Operations",,,"resources/views/OperationOrder.xml:182"
+"Finished products",,,"resources/views/ManufOrder.xml:104"
+"Generate waste stock move",,,"resources/views/ManufOrder.xml:90"
 "Human",,,"resources/views/Selects.xml:20"
 "Human and Machine",,,"resources/views/Selects.xml:22"
 "Human resources",,,"resources/domains/OperationOrder.xml:27
 resources/domains/ProdResource.xml:28
-resources/views/ProdResource.xml:36"
+resources/views/ProdResource.xml:37"
 "Import",,,"resources/domains/BillOfMaterial.xml:10
 resources/domains/Machine.xml:10
 resources/domains/ManufOrder.xml:10
@@ -123,30 +124,28 @@ resources/domains/ProductionOrder.xml:10"
 "In progress",,,"resources/views/Selects.xml:13"
 "Is closed",,,"resources/domains/ProductionOrder.xml:16"
 "Is with difference",,,"resources/domains/OperationOrder.xml:50"
-"Label",,,"resources/domains/BillOfMaterial.xml:21
+"Label",,,"resources/domains/BillOfMaterial.xml:12
 resources/domains/ProdProcess.xml:13
 resources/domains/ProdProcessLine.xml:14
 resources/domains/ProdResource.xml:12"
 "Last production price",,,"resources/domains/Product.xml:8"
-"Late Planned MOs",,,"resources/views/ManufOrder.xml:229"
-"Late Planned Operations",,,"resources/views/OperationOrder.xml:193"
+"Late Planned MOs",,,"resources/views/ManufOrder.xml:248"
+"Late Planned Operations",,,"resources/views/OperationOrder.xml:191"
 "Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord.",,,"resources/views/ManufOrderSheet.xml:20"
-"Location",,,"resources/domains/Machine.xml:15"
+"Location",,,"resources/domains/Machine.xml:16"
 "MO",,,"resources/domains/ManufOrder.xml:23"
-"MOs Finished late",,,"resources/views/ManufOrder.xml:232"
-"MOs In Progress",,,"resources/views/ManufOrder.xml:214"
-"MOs In Standby",,,"resources/views/ManufOrder.xml:217"
-"MOs to invoice",,,"resources/views/ManufOrder.xml:226"
+"MOs Finished late",,,"resources/views/ManufOrder.xml:251"
+"MOs In Progress",,,"resources/views/ManufOrder.xml:233"
+"MOs In Standby",,,"resources/views/ManufOrder.xml:236"
+"MOs to invoice",,,"resources/views/ManufOrder.xml:245"
 "Machine",,,"resources/domains/OperationOrder.xml:25
-resources/views/Machine.xml:14
-resources/views/ProdResource.xml:47
+resources/views/Machine.xml:12
+resources/views/ProdResource.xml:48
 resources/views/Selects.xml:21"
-"Machines",,,"resources/domains/ProdResource.xml:30
-resources/views/Machine.xml:6
+"Machines",,,"resources/views/Machine.xml:6
 resources/views/Menu.xml:104
 resources/views/Menu.xml:107
-resources/views/ProdResource.xml:37
-resources/views/ProdResource.xml:41"
+resources/views/ProdResource.xml:42"
 "Manage consumed products on operations?",,,"resources/domains/ManufOrder.xml:37"
 "ManufOrder.billOfMaterial","Bill of Material",,"java/com/axelor/apps/production/report/ITranslation.java:49"
 "ManufOrder.effective","Effective",,"java/com/axelor/apps/production/report/ITranslation.java:53"
@@ -180,9 +179,9 @@ resources/views/Menu.xml:141"
 "Manufacturing order",,,"resources/domains/OperationOrder.xml:20
 resources/domains/StockMoveLine.xml:10
 resources/domains/StockMoveLine.xml:11
-resources/views/ManufOrder.xml:51
+resources/views/ManufOrder.xml:54
 resources/views/ManufOrderSheet.xml:11"
-"Manufacturing order filters",,,"resources/views/ManufOrder.xml:207"
+"Manufacturing order filters",,,"resources/views/ManufOrder.xml:226"
 "Manufacturing orders",,,"resources/domains/ProductionOrder.xml:15
 resources/views/ManufOrder.xml:28
 resources/views/ManufOrder.xml:6
@@ -192,7 +191,7 @@ resources/views/Menu.xml:44"
 "Manufacturing processes",,,"resources/views/Menu.xml:22
 resources/views/Menu.xml:25"
 "Max. capacity / cycle",,,"resources/domains/ProdResource.xml:17"
-"Moves In/Out",,,"resources/views/ManufOrder.xml:87"
+"Moves In/Out",,,"resources/views/ManufOrder.xml:85"
 "Name",,,"resources/domains/Machine.xml:12
 resources/domains/OperationOrder.xml:14
 resources/domains/ProductionOrder.xml:12"
@@ -200,8 +199,7 @@ resources/domains/ProductionOrder.xml:12"
 "Non conforme",,,"resources/views/ManufOrderSheet.xml:45"
 "None",,,"resources/views/Selects.xml:31"
 "Not manage stock",,,"resources/domains/BillOfMaterial.xml:24"
-"Observations (état des filetages, aspect général, état des surfaces d'appuis...) :",,,"resources/domains/OperationOrder.xml:62
-resources/views/ManufOrderSheet.xml:15"
+"Observations (état des filetages, aspect général, état des surfaces d'appuis...) :",,,"resources/views/ManufOrderSheet.xml:15"
 "Operation",,,"resources/domains/OperationOrder.xml:35
 resources/views/OperationOrder.xml:60"
 "Operation name",,,"resources/domains/OperationOrder.xml:16"
@@ -209,7 +207,7 @@ resources/views/OperationOrder.xml:60"
 resources/domains/ProdHumanResource.xml:17
 resources/domains/ProdResource.xml:33
 resources/domains/StockMoveLine.xml:13"
-"Operation order filters",,,"resources/views/OperationOrder.xml:171"
+"Operation order filters",,,"resources/views/OperationOrder.xml:169"
 "Operation orders",,,"resources/domains/ManufOrder.xml:16
 resources/views/Business.xml:17
 resources/views/Menu.xml:55
@@ -238,34 +236,34 @@ resources/views/ProductionOrder.xml:65"
 "Operations",,,"resources/domains/ProdProcess.xml:12
 resources/views/OperationOrder.xml:19
 resources/views/OperationOrder.xml:41"
-"Operations Finished late",,,"resources/views/OperationOrder.xml:196"
-"Operations In Progress",,,"resources/views/OperationOrder.xml:178"
-"Operations In Standby",,,"resources/views/OperationOrder.xml:181"
+"Operations Finished late",,,"resources/views/OperationOrder.xml:194"
+"Operations In Progress",,,"resources/views/OperationOrder.xml:176"
+"Operations In Standby",,,"resources/views/OperationOrder.xml:179"
 "Operations orders",,,"resources/views/Menu.xml:52"
-"Operations to invoice",,,"resources/views/OperationOrder.xml:190"
-"Operations with difference",,,"resources/views/OperationOrder.xml:199"
-"Parent BOM",,,"resources/domains/BillOfMaterial.xml:19"
+"Operations to invoice",,,"resources/views/OperationOrder.xml:188"
+"Operations with difference",,,"resources/views/OperationOrder.xml:197"
+"Parent BOM",,,"resources/domains/BillOfMaterial.xml:20"
 "Part",,,"resources/domains/ManufOrderSheetLine.xml:11"
-"Pause",,,"resources/views/ManufOrder.xml:22
+"Pause",,,"resources/views/ManufOrder.xml:116
+resources/views/ManufOrder.xml:22
 resources/views/ManufOrder.xml:45
-resources/views/ManufOrder.xml:56
+resources/views/OperationOrder.xml:102
 resources/views/OperationOrder.xml:34
-resources/views/OperationOrder.xml:52
-resources/views/OperationOrder.xml:66"
+resources/views/OperationOrder.xml:52"
 "Per Cycle",,,"resources/views/Selects.xml:27"
 "Per hour",,,"resources/views/Selects.xml:26"
-"Picture",,,"resources/domains/OperationOrder.xml:61"
-"Plan",,,"resources/views/ManufOrder.xml:20
+"Personalized",,,"resources/domains/BillOfMaterial.xml:25"
+"Plan",,,"resources/views/ManufOrder.xml:114
+resources/views/ManufOrder.xml:20
 resources/views/ManufOrder.xml:43
-resources/views/ManufOrder.xml:54
 resources/views/OperationOrder.xml:32
 resources/views/OperationOrder.xml:50
-resources/views/OperationOrder.xml:62"
+resources/views/OperationOrder.xml:98"
 "Planned",,,"resources/views/Selects.xml:12"
-"Planned MOs",,,"resources/views/ManufOrder.xml:211"
-"Planned Operations",,,"resources/views/OperationOrder.xml:175"
-"Planned dates",,,"resources/views/ManufOrder.xml:77
-resources/views/OperationOrder.xml:86"
+"Planned MOs",,,"resources/views/ManufOrder.xml:230"
+"Planned Operations",,,"resources/views/OperationOrder.xml:173"
+"Planned dates",,,"resources/views/ManufOrder.xml:75
+resources/views/OperationOrder.xml:74"
 "Planned duration",,,"resources/domains/OperationOrder.xml:47"
 "Planned end date",,,"resources/domains/ManufOrder.xml:46
 resources/domains/OperationOrder.xml:38"
@@ -274,24 +272,25 @@ resources/views/Menu.xml:66
 resources/views/OperationOrder.xml:8"
 "Planned start date",,,"resources/domains/ManufOrder.xml:45
 resources/domains/OperationOrder.xml:37"
+"Pre-fill operations",,,"resources/views/ManufOrder.xml:70"
 "Print",,,"java/com/axelor/apps/production/web/ManufOrderController.java:198
 resources/views/ManufOrder.xml:25
 resources/views/ManufOrder.xml:30
 resources/views/ManufOrder.xml:48
-resources/views/ManufOrder.xml:60
+resources/views/ManufOrder.xml:57
 resources/views/ManufOrder.xml:8
 resources/views/OperationOrder.xml:21
 resources/views/OperationOrder.xml:37
 resources/views/OperationOrder.xml:55
-resources/views/OperationOrder.xml:68"
-"Priority",,,"resources/domains/BillOfMaterial.xml:14
+resources/views/OperationOrder.xml:63"
+"Priority",,,"resources/domains/BillOfMaterial.xml:15
 resources/domains/ManufOrder.xml:24
 resources/domains/OperationOrder.xml:12
 resources/domains/ProdProcessLine.xml:15"
 "Prod. Human resource",,,"resources/views/ProdHumanResource.xml:12"
 "Prod. Human resources",,,"resources/views/ProdHumanResource.xml:6"
 "Produced products",,,"resources/domains/ManufOrder.xml:33"
-"Product",,,"resources/domains/BillOfMaterial.xml:12
+"Product",,,"resources/domains/BillOfMaterial.xml:13
 resources/domains/ManufOrder.xml:40
 resources/domains/ProdProduct.xml:12
 resources/domains/ProdRemains.xml:13
@@ -299,6 +298,7 @@ resources/domains/ProdResource.xml:23
 resources/views/ProdProduct.xml:13
 resources/views/ProductionOrder.xml:23
 resources/views/ProductionOrderWizard.xml:10"
+"Production and cost settings",,,"resources/views/ProdResource.xml:54"
 "Production config",,,"resources/domains/Company.xml:10"
 "Production configuration",,,"resources/views/ProductionConfig.xml:10"
 "Production configurations",,,"resources/views/Menu.xml:116
@@ -312,18 +312,18 @@ resources/views/ProductionOrder.xml:13"
 "Production orders",,,"resources/views/ProductionOrder.xml:6"
 "Production orders closed",,,"resources/views/ProductionOrder.xml:76"
 "Production orders to invoice",,,"resources/views/ProductionOrder.xml:73"
-"Production process",,,"resources/domains/BillOfMaterial.xml:17
+"Production process",,,"resources/domains/BillOfMaterial.xml:18
 resources/domains/ManufOrder.xml:43
 resources/domains/ProdProcessLine.xml:12
 resources/views/ProdProcess.xml:14
 resources/views/ProdProcess.xml:6
 resources/views/ProdProcessLine.xml:14
 resources/views/ProdProcessLine.xml:6"
-"Production remains",,,"resources/domains/BillOfMaterial.xml:20
+"Production remains",,,"resources/domains/BillOfMaterial.xml:21
 resources/views/ProdRemains.xml:12
 resources/views/ProdRemains.xml:6"
 "Production virtual location",,,"resources/domains/ProductionConfig.xml:13"
-"Production waste",,,"resources/views/ManufOrder.xml:91"
+"Production waste",,,"resources/views/ManufOrder.xml:89"
 "Productions orders",,,"resources/views/Menu.xml:31
 resources/views/Menu.xml:34"
 "Products",,,"resources/views/ProdProduct.xml:6"
@@ -332,15 +332,15 @@ resources/domains/OperationOrder.xml:29
 resources/domains/ProdProcessLine.xml:18"
 "Products to produce",,,"resources/domains/ManufOrder.xml:32"
 "Profile",,,"resources/domains/ProdHumanResource.xml:13"
-"Qty",,,"resources/domains/BillOfMaterial.xml:13
+"Qty",,,"resources/domains/BillOfMaterial.xml:14
 resources/domains/ManufOrder.xml:18
 resources/domains/ProdProduct.xml:13
 resources/domains/ProdRemains.xml:14"
 "Quantity",,,"resources/views/ProductionOrder.xml:25
 resources/views/ProductionOrderWizard.xml:11"
-"Raw material",,,"resources/domains/BillOfMaterial.xml:15"
-"Real dates",,,"resources/views/ManufOrder.xml:81
-resources/views/OperationOrder.xml:90"
+"Raw material",,,"resources/domains/BillOfMaterial.xml:16"
+"Real dates",,,"resources/views/ManufOrder.xml:79
+resources/views/OperationOrder.xml:78"
 "Real duration",,,"resources/domains/OperationOrder.xml:48"
 "Real end date",,,"resources/domains/ManufOrder.xml:49
 resources/domains/OperationOrder.xml:41"
@@ -350,7 +350,9 @@ resources/views/OperationOrder.xml:14"
 "Real start date",,,"resources/domains/ManufOrder.xml:48
 resources/domains/OperationOrder.xml:40"
 "Remains",,,"resources/views/BillOfMaterial.xml:28
-resources/views/BillOfMaterial.xml:66"
+resources/views/BillOfMaterial.xml:67"
+"Replacement machines",,,"resources/domains/ProdResource.xml:30
+resources/views/ProdResource.xml:38"
 "Resource",,,"resources/domains/OperationOrder.xml:24
 resources/domains/ProdHumanResource.xml:12
 resources/domains/ProdProcessLine.xml:13
@@ -359,41 +361,43 @@ resources/views/ProdResource.xml:13"
 "Resource type",,,"resources/domains/ProdResource.xml:15"
 "Resources",,,"resources/views/Menu.xml:95
 resources/views/Menu.xml:98
+resources/views/OperationOrder.xml:83
 resources/views/ProdResource.xml:6"
-"Resume",,,"resources/views/ManufOrder.xml:57
-resources/views/OperationOrder.xml:67"
+"Resume",,,"resources/views/ManufOrder.xml:117
+resources/views/OperationOrder.xml:103"
 "Serial Nbr",,,"resources/domains/Machine.xml:13"
-"Setup duration (min)",,,"resources/domains/Machine.xml:17"
+"Setup duration (min)",,,"resources/domains/Machine.xml:18"
 "Standby",,,"resources/views/Selects.xml:14"
-"Start",,,"resources/views/ManufOrder.xml:21
+"Start",,,"resources/views/ManufOrder.xml:115
+resources/views/ManufOrder.xml:21
 resources/views/ManufOrder.xml:44
-resources/views/ManufOrder.xml:55
 resources/views/OperationOrder.xml:33
 resources/views/OperationOrder.xml:51
-resources/views/OperationOrder.xml:63"
+resources/views/OperationOrder.xml:99"
 "Starting duration (hh:mm)",,,"resources/domains/ProdResource.xml:19"
-"Starting duration (min)",,,"resources/domains/Machine.xml:16"
+"Starting duration (min)",,,"resources/domains/Machine.xml:17"
 "Status",,,"resources/domains/ManufOrder.xml:58
 resources/domains/OperationOrder.xml:33"
 "Stock move in",,,"resources/domains/ManufOrder.xml:51
 resources/domains/OperationOrder.xml:43"
 "Stock move out",,,"resources/domains/ManufOrder.xml:52
 resources/domains/ManufOrder.xml:54"
-"Stock moves",,,"resources/views/ManufOrder.xml:86
-resources/views/OperationOrder.xml:95"
-"Timesheet lines",,,"resources/views/OperationOrder.xml:103"
+"Stock moves",,,"resources/views/ManufOrder.xml:84
+resources/views/OperationOrder.xml:89"
+"Sub-process configuration",,,"resources/views/BillOfMaterial.xml:60"
 "To consume manuf order",,,"resources/domains/ProdProduct.xml:22"
 "To consume operation order",,,"resources/domains/ProdProduct.xml:18"
 "To consume prod process line",,,"resources/domains/ProdProduct.xml:29"
-"To consume products",,,"resources/views/ManufOrder.xml:186
-resources/views/ProdProcessLine.xml:24"
+"To consume products",,,"resources/views/ManufOrder.xml:205
+resources/views/ProdProcessLine.xml:23"
 "To invoice ?",,,"resources/domains/ManufOrder.xml:12
 resources/domains/OperationOrder.xml:18
 resources/domains/ProductionOrder.xml:13"
 "To produce manuf order",,,"resources/domains/ProdProduct.xml:25"
-"Unit",,,"resources/domains/BillOfMaterial.xml:16
+"Unit",,,"resources/domains/BillOfMaterial.xml:17
 resources/domains/ProdProduct.xml:14
 resources/domains/ProdRemains.xml:15"
+"Update product cost price",,,"resources/views/BillOfMaterial.xml:33"
 "Validate",,,"resources/views/ProductionOrderWizard.xml:15"
 "Version",,,"resources/domains/Product.xml:11"
 "View Bill Of Materials",,,"resources/views/Menu.xml:155"
@@ -403,5 +407,4 @@ resources/domains/ProdRemains.xml:15"
 "Waste manuf order",,,"resources/domains/ProdProduct.xml:26"
 "Yes (Fixed)",,,"resources/views/Selects.xml:32"
 "Yes (Real)",,,"resources/views/Selects.xml:33"
-"update product cost price",,,"resources/views/BillOfMaterial.xml:35"
 "Ø1",,,"resources/domains/ManufOrderSheetLine.xml:12"

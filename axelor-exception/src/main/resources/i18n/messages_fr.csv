@@ -1,34 +1,34 @@
 "key","message","comment","context"
-"Anomaly","Anomalie","","resources/domains/TraceBack.xml:8
+"Anomaly","Anomalie",,"resources/domains/TraceBack.xml:8
 resources/views/TraceBack.xml:40"
-"Batch","Batch","","resources/domains/TraceBack.xml:18"
-"CRM","CRM","","resources/views/Selects.xml:26"
-"Category","Catégorie","","resources/domains/TraceBack.xml:10"
-"Cause","Cause","","resources/views/TraceBack.xml:46
-resources/domains/TraceBack.xml:15"
-"Configuration problem","Problème de configuration","","resources/views/Selects.xml:15"
-"Date","Date","","resources/domains/TraceBack.xml:12"
-"Direct debit","Prélèvement","","resources/views/Selects.xml:24"
-"Doubtful customer","Client douteux","","resources/views/Selects.xml:22"
-"Error","Erreur","","resources/views/TraceBack.xml:43
-resources/domains/TraceBack.xml:14"
-"Functional anomaly","Anomalie fonctionnelle","","resources/views/Selects.xml:8"
-"Inconsistency","Inconsistence","","resources/views/Selects.xml:16"
-"Interbank payment order","Ordre de paiement interbancaire","","resources/views/Selects.xml:25"
-"Invoicing","Facturation","","resources/views/Selects.xml:20"
-"Message","Message","","resources/domains/TraceBack.xml:16
+"Batch","Batch",,"resources/domains/TraceBack.xml:18"
+"CRM","CRM",,"resources/views/Selects.xml:26"
+"Category","Catégorie",,"resources/domains/TraceBack.xml:10"
+"Cause","Cause",,"resources/domains/TraceBack.xml:15
+resources/views/TraceBack.xml:46"
+"Configuration problem","Problème de configuration",,"resources/views/Selects.xml:15"
+"Date","Date",,"resources/domains/TraceBack.xml:12"
+"Direct debit","Prélèvement",,"resources/views/Selects.xml:24"
+"Doubtful customer","Client douteux",,"resources/views/Selects.xml:22"
+"Error","Erreur",,"resources/domains/TraceBack.xml:14
+resources/views/TraceBack.xml:43"
+"Functional anomaly","Anomalie fonctionnelle",,"resources/views/Selects.xml:8"
+"Inconsistency","Inconsistence",,"resources/views/Selects.xml:16"
+"Interbank payment order","Ordre de paiement interbancaire",,"resources/views/Selects.xml:25"
+"Invoicing","Facturation",,"resources/views/Selects.xml:20"
+"Message","Message",,"resources/domains/TraceBack.xml:16
 resources/views/TraceBack.xml:49"
-"Missing field","Champ manquant","","resources/views/Selects.xml:12"
-"Name","Nom","","resources/domains/TraceBack.xml:20"
-"No Return Value","Aucune valeur","","resources/views/Selects.xml:14"
-"Non-unique key","Clé non unique","","resources/views/Selects.xml:13"
-"Reimbursement","Remboursement","","resources/views/Selects.xml:23"
-"Reminder","Relance","","resources/views/Selects.xml:21"
-"Technical anomaly","Anomalie technique","","resources/views/Selects.xml:7"
-"Trace","Trace","","resources/domains/TraceBack.xml:17
+"Missing field","Champ manquant",,"resources/views/Selects.xml:12"
+"Name","Nom",,"resources/domains/TraceBack.xml:20"
+"No Return Value","Aucune valeur",,"resources/views/Selects.xml:14"
+"Non-unique key","Clé non unique",,"resources/views/Selects.xml:13"
+"Origin",,,"resources/domains/TraceBack.xml:11"
+"Reimbursement","Remboursement",,"resources/views/Selects.xml:23"
+"Reminder","Relance",,"resources/views/Selects.xml:21"
+"Technical anomaly","Anomalie technique",,"resources/views/Selects.xml:7"
+"Trace","Trace",,"resources/domains/TraceBack.xml:17
 resources/views/TraceBack.xml:52"
-"TraceBack","TraceBacks","","resources/views/TraceBack.xml:24
+"TraceBack","TraceBacks",,"resources/views/TraceBack.xml:24
 resources/views/TraceBack.xml:6"
-"Type","Type","","resources/domains/TraceBack.xml:9"
-"User","Utilisateur","","resources/domains/TraceBack.xml:13"
-"origin","Origine","","resources/domains/TraceBack.xml:11"
+"Type","Type",,"resources/domains/TraceBack.xml:9"
+"User","Utilisateur",,"resources/domains/TraceBack.xml:13"

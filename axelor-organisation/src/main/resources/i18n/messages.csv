@@ -34,13 +34,13 @@
 "Accounting day",,,"resources/domains/Task.xml:67"
 "Accreditation",,,"resources/domains/PersonalInfo.xml:14"
 "Actions",,,"resources/views/Business.xml:118
-resources/views/Expense.xml:48
+resources/views/Expense.xml:50
 resources/views/Overtime.xml:36
-resources/views/Project.xml:63
+resources/views/Project.xml:65
 resources/views/Timesheet.xml:66"
-"Additionnal information",,,"resources/domains/Employee.xml:29
+"Additionnal information",,,"resources/domains/Employee.xml:26
 resources/views/Candidate.xml:115
-resources/views/Employee.xml:49
+resources/views/Employee.xml:51
 resources/views/PersonalInfo.xml:8"
 "Additionnal informations",,,"resources/domains/Candidate.xml:67"
 "Address",,,"resources/domains/Candidate.xml:21
@@ -50,9 +50,9 @@ resources/domains/MissionOrder.xml:17"
 resources/views/Advance.xml:15"
 "Advance payment date",,,"resources/domains/Advance.xml:10"
 "Advances",,,"resources/views/Advance.xml:7"
-"Advantages",,,"resources/domains/Employee.xml:27
+"Advantages",,,"resources/domains/Employee.xml:24
 resources/domains/JobOffer.xml:20
-resources/views/Employee.xml:58"
+resources/views/Employee.xml:60"
 "Age Group",,,"resources/views/Charts.xml:218"
 "Agencies",,,"resources/views/Agency.xml:6"
 "Agency",,,"resources/views/Agency.xml:11"
@@ -62,7 +62,7 @@ resources/views/Employee.xml:58"
 "All Timesheets",,,"resources/views/Dashboard.xml:34"
 "All Travel Expenses",,,"resources/views/Dashboard.xml:40"
 "All leave requests",,,"resources/views/Dashboard.xml:52"
-"All supporting files have not been provided",,,"resources/views/Expense.xml:136"
+"All supporting files have not been provided",,,"resources/views/Expense.xml:142"
 "Allow expenses input ?",,,"resources/domains/Project.xml:53"
 "Already imputed on timesheet",,,"resources/domains/SpentTime.xml:10"
 "Amount",,,"resources/domains/Advance.xml:11
@@ -73,7 +73,7 @@ resources/domains/FinancialInformationUpdate.xml:14"
 "Approval Date",,,"resources/domains/LeaveRequest.xml:23"
 "Area name",,,"resources/domains/GeographicalArea.xml:9"
 "Assigned to",,,"resources/domains/Task.xml:23"
-"Associated Profile",,,"resources/domains/Employee.xml:52"
+"Associated Profile",,,"resources/domains/Employee.xml:49"
 "Availability and Decision",,,"resources/views/Candidate.xml:57"
 "Available within",,,"resources/domains/Candidate.xml:32"
 "Avancement date",,,"resources/domains/RecruitmentProcessAdvancement.xml:10"
@@ -81,7 +81,7 @@ resources/domains/FinancialInformationUpdate.xml:14"
 "Aware skill set",,,"resources/domains/Competence.xml:42"
 "Awareness",,,"resources/views/Competence.xml:36"
 "Back to draft",,,"resources/views/LeaveRequest.xml:62"
-"Billable",,,"resources/views/Project.xml:136"
+"Billable",,,"resources/views/Project.xml:138"
 "Bonus",,,"resources/views/Bonus.xml:14"
 "Bonuses",,,"resources/views/Bonus.xml:7"
 "Branch",,,"resources/domains/JobOffer.xml:31"
@@ -130,7 +130,7 @@ resources/domains/Position.xml:9
 resources/domains/RecruitmentProcessAdvancement.xml:9
 resources/domains/TrainingLine.xml:9
 resources/views/Candidate.xml:22"
-"Candidate (job application)",,,"resources/domains/Employee.xml:38"
+"Candidate (job application)",,,"resources/domains/Employee.xml:35"
 "Candidate.citizenshipCountry",,,"java/com/axelor/apps/organisation/report/ITranslation.java:153"
 "Candidate.coefficient",,,"java/com/axelor/apps/organisation/report/ITranslation.java:167"
 "Candidate.comment",,,"java/com/axelor/apps/organisation/report/ITranslation.java:185"
@@ -171,15 +171,14 @@ resources/views/Candidate.xml:22"
 resources/views/Menu.xml:41
 resources/views/Menu.xml:44"
 "Candidates other position proposals",,,"resources/domains/Candidate.xml:70"
-"Cash Advances",,,"resources/domains/Employee.xml:41"
+"Cash Advances",,,"resources/domains/Employee.xml:38"
 "Category",,,"resources/domains/Candidate.xml:58
-resources/domains/Employee.xml:22"
+resources/domains/Employee.xml:19"
 "Center",,,"resources/domains/TrainingCenter.xml:10"
 "Civil Union",,,"resources/views/Selects.xml:78"
 "Civility",,,"resources/domains/Candidate.xml:13
-resources/domains/Employee.xml:10
 resources/views/Candidate.xml:34
-resources/views/Employee.xml:28"
+resources/views/Employee.xml:27"
 "Code",,,"resources/domains/Competence.xml:10
 resources/domains/Competence.xml:15
 resources/domains/JobOffer.xml:10
@@ -190,10 +189,10 @@ resources/domains/Timesheet.xml:15
 resources/domains/Timesheet.xml:16
 resources/domains/TrainingLine.xml:16"
 "Communication",,,"resources/views/Selects.xml:210"
-"Commute Fee",,,"resources/domains/Employee.xml:46"
-"Commute Fee Refund %",,,"resources/domains/Employee.xml:47"
+"Commute Fee",,,"resources/domains/Employee.xml:43"
+"Commute Fee Refund %",,,"resources/domains/Employee.xml:44"
 "Companies",,,"resources/domains/Candidate.xml:74
-resources/domains/Employee.xml:34"
+resources/domains/Employee.xml:31"
 "Company",,,"resources/domains/Expense.xml:23
 resources/domains/MissionOrder.xml:13
 resources/domains/OrganisationConfig.xml:11
@@ -204,11 +203,11 @@ resources/views/Timesheet.xml:36"
 "Competence area",,,"resources/domains/Competence.xml:39"
 "Competence type",,,"resources/domains/Competence.xml:33"
 "Competences",,,"resources/domains/Candidate.xml:73
-resources/domains/Employee.xml:35
+resources/domains/Employee.xml:32
 resources/views/Candidate.xml:122
 resources/views/Competence.xml:23
 resources/views/Competence.xml:39"
-"Competences profile",,,"resources/views/Employee.xml:79"
+"Competences profile",,,"resources/views/Employee.xml:81"
 "Complete lines",,,"resources/domains/Planning.xml:16
 resources/domains/Timesheet.xml:34"
 "Complete time sheet",,,"resources/views/Planning.xml:26
@@ -217,11 +216,11 @@ resources/views/Timesheet.xml:57"
 resources/views/Timesheet.xml:51"
 "Completed",,,"resources/views/Selects.xml:104"
 "Compute",,,"resources/views/Candidate.xml:109
-resources/views/Expense.xml:50"
+resources/views/Expense.xml:45"
 "Configuration",,,"resources/views/Menu.xml:227
 resources/views/Planning.xml:18
 resources/views/Timesheet.xml:42"
-"Confirm",,,"resources/views/Expense.xml:55
+"Confirm",,,"resources/views/Expense.xml:56
 resources/views/LeaveRequest.xml:58
 resources/views/Overtime.xml:42
 resources/views/Timesheet.xml:67"
@@ -231,20 +230,19 @@ resources/views/Selects.xml:266"
 "Confirmed Worker (5 - 10 ans)",,,"resources/views/Selects.xml:46"
 "Contact",,,"resources/domains/CandidateOtherOpportunity.xml:12
 resources/domains/Project.xml:13
-resources/views/Candidate.xml:33
-resources/views/Employee.xml:27"
+resources/views/Candidate.xml:33"
 "Contact comments",,,"resources/domains/Position.xml:31"
 "Contact name",,,"resources/domains/Position.xml:28"
 "Contact opinion",,,"resources/domains/Position.xml:30"
 "Context",,,"resources/domains/Position.xml:22
 resources/domains/Training.xml:18
-resources/views/ExpenseLine.xml:40
-resources/views/Task.xml:156
-resources/views/Task.xml:34"
-"Contract Details",,,"resources/views/Employee.xml:50"
+resources/views/Business.xml:28
+resources/views/Task.xml:159
+resources/views/Task.xml:37"
+"Contract Details",,,"resources/views/Employee.xml:52"
 "Contract Type",,,"resources/domains/Candidate.xml:24
 resources/views/Charts.xml:121"
-"Contract type",,,"resources/domains/Employee.xml:24
+"Contract type",,,"resources/domains/Employee.xml:21
 resources/domains/JobOffer.xml:18"
 "Cost",,,"resources/domains/FinancialInformationHistoryLine.xml:13
 resources/domains/Project.xml:31
@@ -276,11 +274,11 @@ resources/views/Business.xml:232"
 "Cumulation",,,"resources/domains/EmployeeLeave.xml:13"
 "Currency",,,"resources/domains/Expense.xml:13
 resources/domains/Overtime.xml:12"
-"Current Employees",,,"resources/views/Employee.xml:124"
+"Current Employees",,,"resources/views/Employee.xml:137"
 "Current Function",,,"resources/domains/Candidate.xml:16"
 "Customer",,,"resources/domains/Project.xml:12"
 "Customer invoice lines",,,"resources/views/Business.xml:195
-resources/views/Task.xml:318"
+resources/views/Task.xml:321"
 "DEPT",,,"resources/domains/Department.xml:12"
 "Daily periods",,,"resources/domains/ScheduleLine.xml:12"
 "Dashboard",,,"resources/views/Dashboard.xml:6"
@@ -294,8 +292,7 @@ resources/domains/Overtime.xml:15
 resources/domains/Planning.xml:12
 resources/domains/PublicHolidaysLine.xml:12
 resources/domains/SpentTime.xml:14
-resources/domains/TimesheetLine.xml:15
-resources/views/ExpenseLine.xml:37"
+resources/domains/TimesheetLine.xml:15"
 "Date of Birth",,,"resources/domains/PersonalInfo.xml:12"
 "Date type select",,,"resources/domains/MissionOrder.xml:23"
 "Date-time",,,"resources/domains/RecruitmentProcessAdvancement.xml:12"
@@ -314,12 +311,12 @@ resources/domains/Project.xml:20
 resources/domains/Timesheet.xml:37"
 "Delays",,,"resources/domains/Task.xml:18"
 "Dep./Div.",,,"resources/domains/Position.xml:18"
-"Department",,,"resources/domains/Employee.xml:17
+"Department",,,"resources/domains/Employee.xml:14
 resources/domains/GeographicalArea.xml:10"
 "Department Cantons List",,,"resources/domains/Department.xml:15"
 "Department Communes List",,,"resources/domains/Department.xml:14"
 "Department Name",,,"resources/domains/Department.xml:11"
-"Departure Date",,,"resources/domains/Employee.xml:16"
+"Departure Date",,,"resources/domains/Employee.xml:13"
 "Departure cause",,,"resources/domains/Position.xml:17"
 "Description",,,"resources/domains/FinancialInformationUpdate.xml:17
 resources/domains/JobOffer.xml:17
@@ -327,11 +324,9 @@ resources/domains/OvertimeLine.xml:10
 resources/domains/Project.xml:16
 resources/domains/PublicHolidaysLine.xml:13
 resources/domains/Task.xml:21
-resources/views/Business.xml:45
-resources/views/Project.xml:42
-resources/views/Task.xml:135
-resources/views/Task.xml:169"
-"Details",,,"resources/views/ExpenseLine.xml:44"
+resources/views/Project.xml:44
+resources/views/Task.xml:172"
+"Details",,,"resources/views/ExpenseLine.xml:42"
 "Details of time spent on project/tasks",,,"resources/views/Timesheet.xml:41"
 "Development",,,"resources/domains/Position.xml:24"
 "Diploma",,,"resources/domains/Degree.xml:10"
@@ -339,14 +334,14 @@ resources/views/Task.xml:169"
 "Discount %",,,"resources/domains/OfferLine.xml:10"
 "Divorced",,,"resources/views/Selects.xml:79"
 "Domain",,,"resources/domains/JobOffer.xml:23"
-"Draft",,,"resources/views/Expense.xml:56
+"Draft",,,"resources/views/Expense.xml:57
 resources/views/Overtime.xml:43
 resources/views/Selects.xml:101
 resources/views/Selects.xml:153
 resources/views/Selects.xml:184
 resources/views/Selects.xml:265"
 "Driving licence",,,"resources/domains/Candidate.xml:65"
-"Duration",,,"resources/domains/Employee.xml:25
+"Duration",,,"resources/domains/Employee.xml:22
 resources/domains/PlanningLine.xml:17
 resources/domains/Position.xml:20
 resources/domains/SpentTime.xml:13
@@ -370,12 +365,11 @@ resources/domains/TimesheetLine.xml:16"
 resources/domains/JobOffer.xml:27"
 "Education/Trainings",,,"resources/views/Candidate.xml:99"
 "Effective Date",,,"resources/views/Charts.xml:191"
-"Elements to invoice",,,"resources/views/Task.xml:124"
-"Email",,,"resources/views/Employee.xml:13
-resources/views/Employee.xml:39"
-"Emergency",,,"resources/views/Employee.xml:42"
-"Emergency Contact",,,"resources/domains/Employee.xml:36"
-"Emergency Contact Phone Nbr.",,,"resources/domains/Employee.xml:37"
+"Elements to invoice",,,"resources/views/Task.xml:131"
+"Email",,,"resources/views/Employee.xml:13"
+"Emergency",,,"resources/views/Employee.xml:43"
+"Emergency Contact",,,"resources/domains/Employee.xml:33"
+"Emergency Contact Phone Nbr.",,,"resources/domains/Employee.xml:34"
 "Employee",,,"resources/domains/Advance.xml:9
 resources/domains/Bonus.xml:9
 resources/domains/Competence.xml:35
@@ -386,6 +380,7 @@ resources/domains/LeaveRequest.xml:10
 resources/domains/MissionOrder.xml:15
 resources/domains/Overtime.xml:9
 resources/domains/OvertimeLine.xml:9
+resources/domains/Partner.xml:10
 resources/domains/PaySheet.xml:9
 resources/domains/PersonalInfo.xml:11
 resources/domains/Position.xml:10
@@ -395,11 +390,11 @@ resources/views/Employee.xml:18
 resources/views/Employee.xml:6
 resources/views/TimesheetLine.xml:109
 resources/views/TimesheetLine.xml:120"
-"Employee Bonuses",,,"resources/domains/Employee.xml:40"
-"Employee Daily Cost",,,"resources/domains/Employee.xml:20"
-"Employee filters",,,"resources/views/Employee.xml:123"
+"Employee Bonuses",,,"resources/domains/Employee.xml:37"
+"Employee Daily Cost",,,"resources/domains/Employee.xml:17"
+"Employee filters",,,"resources/views/Employee.xml:136"
 "Employee leave",,,"resources/views/EmployeeLeave.xml:13"
-"Employee leaves",,,"resources/domains/Employee.xml:56
+"Employee leaves",,,"resources/domains/Employee.xml:53
 resources/views/EmployeeLeave.xml:6"
 "Employee.category",,,"java/com/axelor/apps/organisation/report/ITranslation.java:60"
 "Employee.citizenshipCountry",,,"java/com/axelor/apps/organisation/report/ITranslation.java:63"
@@ -483,7 +478,7 @@ resources/views/Dashboard.xml:106"
 "End date t",,,"resources/domains/TimesheetLine.xml:21"
 "End hour period 1",,,"resources/domains/ScheduleSubLine.xml:13"
 "End hour period 2",,,"resources/domains/ScheduleSubLine.xml:15"
-"Entry Date",,,"resources/domains/Employee.xml:15"
+"Entry Date",,,"resources/domains/Employee.xml:12"
 "Estimated amount",,,"resources/domains/Task.xml:31"
 "Evaluation",,,"resources/views/Candidate.xml:105"
 "Evaluation lines",,,"resources/views/EvaluationLine.xml:18
@@ -492,13 +487,13 @@ resources/views/EvaluationLine.xml:8"
 "Excluded",,,"resources/views/Selects.xml:11"
 "Expense",,,"resources/domains/ExpenseLine.xml:10
 resources/views/Expense.xml:32
-resources/views/Project.xml:49"
+resources/views/Project.xml:51"
 "Expense Line",,,"resources/views/ExpenseLine.xml:25
 resources/views/ExpenseLine.xml:36"
 "Expense lines",,,"resources/domains/Expense.xml:14
 resources/views/Business.xml:216
-resources/views/Task.xml:339
-resources/views/Task.xml:360"
+resources/views/Task.xml:342
+resources/views/Task.xml:363"
 "Expense.amount",,,"java/com/axelor/apps/organisation/report/ITranslation.java:46"
 "Expense.client",,,"java/com/axelor/apps/organisation/report/ITranslation.java:41"
 "Expense.currency",,,"java/com/axelor/apps/organisation/report/ITranslation.java:52"
@@ -515,10 +510,10 @@ resources/views/Task.xml:360"
 "Expense.totalATI",,,"java/com/axelor/apps/organisation/report/ITranslation.java:48"
 "Expense.totalExpensesAmount",,,"java/com/axelor/apps/organisation/report/ITranslation.java:49"
 "Expense.unit",,,"java/com/axelor/apps/organisation/report/ITranslation.java:45"
-"Expenses",,,"resources/views/Employee.xml:93
+"Expenses",,,"resources/views/Employee.xml:95
 resources/views/Expense.xml:13
 resources/views/Expense.xml:6"
-"Expenses list",,,"resources/domains/Employee.xml:45"
+"Expenses list",,,"resources/domains/Employee.xml:42"
 "Expenses to be paid",,,"resources/views/Menu.xml:191
 resources/views/Menu.xml:194"
 "Expenses to validate by RSC Manager",,,"resources/views/Menu.xml:145
@@ -535,8 +530,8 @@ resources/views/Menu.xml:158"
 resources/domains/Task.xml:69"
 "File",,,"resources/domains/ExpenseLine.xml:21"
 "File received",,,"resources/domains/ExpenseLine.xml:22"
-"Financial information",,,"resources/views/Business.xml:53
-resources/views/Task.xml:69"
+"Financial information",,,"resources/views/Business.xml:52
+resources/views/Task.xml:76"
 "Financial information historical",,,"resources/views/FinancialInformationHistoryLine.xml:14"
 "Financial information historicals",,,"resources/views/FinancialInformationHistoryLine.xml:6"
 "Financial information history",,,"resources/domains/Task.xml:52"
@@ -544,31 +539,30 @@ resources/views/Task.xml:69"
 resources/views/Business.xml:167
 resources/views/Business.xml:188
 resources/views/Business.xml:223
-resources/views/Task.xml:290
-resources/views/Task.xml:304
-resources/views/Task.xml:346"
+resources/views/Task.xml:293
+resources/views/Task.xml:307
+resources/views/Task.xml:349"
 "First Name",,,"resources/domains/Candidate.xml:15
-resources/domains/Employee.xml:12
-resources/views/Candidate.xml:36
-resources/views/Employee.xml:30"
+resources/views/Candidate.xml:36"
 "First day of week",,,"resources/domains/TimesheetPeriodConfig.xml:11"
 "First interview",,,"resources/views/Selects.xml:174"
+"First name",,,"resources/views/Employee.xml:29"
 "Fixed fee",,,"resources/views/Selects.xml:252"
 "Fixed phone N°",,,"resources/domains/Candidate.xml:19"
 "Fixed-term",,,"resources/views/Selects.xml:195"
 "Follow-up",,,"resources/views/Candidate.xml:62"
 "Followed by",,,"resources/domains/Candidate.xml:37"
-"From",,,"resources/domains/Employee.xml:43
+"From",,,"resources/domains/Employee.xml:40
 resources/domains/PlanningLine.xml:15
 resources/domains/Position.xml:12"
 "From Date",,,"resources/domains/Planning.xml:17
 resources/domains/Timesheet.xml:11
 resources/domains/Timesheet.xml:35"
 "From Date/Time",,,"resources/domains/LeaveRequest.xml:14"
-"Function",,,"resources/domains/Employee.xml:14
+"Function",,,"resources/domains/Employee.xml:11
 resources/views/Candidate.xml:37
-resources/views/Employee.xml:31"
-"Function Coeff.",,,"resources/domains/Employee.xml:26"
+resources/views/Employee.xml:38"
+"Function Coeff.",,,"resources/domains/Employee.xml:23"
 "Function description",,,"resources/domains/Position.xml:16"
 "Function name",,,"resources/domains/Position.xml:11"
 "Function searched",,,"resources/domains/Candidate.xml:25"
@@ -576,11 +570,11 @@ resources/views/Employee.xml:31"
 resources/views/Charts.xml:49"
 "General",,,"resources/views/Candidate.xml:48"
 "Generate Timesheets",,,"resources/views/TimesheetPeriodConfig.xml:48"
-"Generate draft invoice",,,"resources/views/Project.xml:64
-resources/views/Task.xml:127
-resources/views/Task.xml:64"
-"Generating invoice is impossible, please link the task to a saleOrderLine to do so.",,,"resources/views/Project.xml:115"
-"Generating invoice is impossible, the fields clientPartner and contactPartner must be filled.",,,"resources/views/Project.xml:114"
+"Generate draft invoice",,,"resources/views/Project.xml:66
+resources/views/Task.xml:134
+resources/views/Task.xml:69"
+"Generating invoice is impossible, please link the task to a saleOrderLine to do so.",,,"resources/views/Project.xml:117"
+"Generating invoice is impossible, the fields clientPartner and contactPartner must be filled.",,,"resources/views/Project.xml:116"
 "Geo. Zone",,,"resources/domains/JobOffer.xml:21"
 "Geo. Zone Complement",,,"resources/domains/JobOffer.xml:22"
 "Geographical mobility",,,"resources/domains/PersonalInfo.xml:18
@@ -594,14 +588,14 @@ resources/views/MobilityChoice.xml:8"
 "Global grade / 20",,,"resources/domains/Candidate.xml:62"
 "Grade",,,"resources/domains/EvaluationLine.xml:12"
 "Grade by skills",,,"resources/views/Candidate.xml:235"
-"Gross Salary",,,"resources/domains/Employee.xml:44"
+"Gross Salary",,,"resources/domains/Employee.xml:41"
 "Gross annual salary",,,"resources/domains/JobOffer.xml:19"
 "HR",,,"resources/views/Menu.xml:400"
-"Hierarchy",,,"resources/views/Employee.xml:62"
+"Hierarchy",,,"resources/views/Employee.xml:64"
 "High",,,"resources/views/Selects.xml:95"
-"History",,,"resources/views/Employee.xml:100
+"History",,,"resources/views/Employee.xml:102
 resources/views/Menu.xml:213
-resources/views/Task.xml:83"
+resources/views/Task.xml:90"
 "Holiday requests duration must always be greater than 0.",,,"resources/views/LeaveRequest.xml:134"
 "Hour",,,"resources/views/Selects.xml:16"
 "Hour of generation",,,"resources/domains/TimesheetPeriodConfig.xml:15"
@@ -621,6 +615,7 @@ resources/domains/Degree.xml:9
 resources/domains/Department.xml:10
 resources/domains/Employee.xml:9
 resources/domains/OrganisationConfig.xml:9
+resources/domains/Partner.xml:8
 resources/domains/PersonalInfo.xml:9
 resources/domains/Project.xml:10
 resources/domains/PublicHolidays.xml:9
@@ -630,25 +625,25 @@ resources/domains/Task.xml:10
 resources/domains/TrainingCenter.xml:9"
 "Included",,,"resources/views/Selects.xml:10"
 "Info.",,,"resources/views/Timesheet.xml:71"
-"Initial estimated",,,"resources/views/Business.xml:59
-resources/views/Business.xml:77
+"Initial estimated",,,"resources/views/Business.xml:58
+resources/views/Business.xml:76
 resources/views/Selects.xml:240
-resources/views/Task.xml:77"
+resources/views/Task.xml:84"
 "Input forms",,,"resources/views/Menu.xml:84"
 "Input from timesheet ?",,,"resources/domains/Task.xml:22"
 "Internal",,,"resources/views/Selects.xml:166"
-"Internal Contact",,,"resources/domains/Employee.xml:19"
+"Internal Contact",,,"resources/domains/Employee.xml:16"
 "International",,,"resources/views/Selects.xml:31"
 "Intervention type",,,"resources/domains/Competence.xml:38
 resources/domains/Competence.xml:9"
 "Invoiced",,,"resources/domains/ExpenseLine.xml:25"
 "Invoiced ?",,,"resources/domains/TimesheetLine.xml:18"
-"Invoices",,,"resources/views/Task.xml:367"
+"Invoices",,,"resources/views/Task.xml:370"
 "Invoicing Date",,,"resources/domains/Task.xml:27"
-"Invoicing follow-up",,,"resources/views/Task.xml:55"
+"Invoicing follow-up",,,"resources/views/Task.xml:60"
 "Is last day of month",,,"resources/domains/TimesheetPeriodConfig.xml:16"
 "Job Keywords",,,"resources/domains/Candidate.xml:47
-resources/domains/Employee.xml:33"
+resources/domains/Employee.xml:30"
 "Job Offer",,,"resources/views/Menu.xml:31
 resources/views/Menu.xml:34"
 "Job description",,,"resources/domains/Training.xml:16"
@@ -663,7 +658,7 @@ resources/views/Menu.xml:34"
 "Keyword sector",,,"resources/domains/Training.xml:26"
 "Keyword tool",,,"resources/domains/Training.xml:25"
 "Keywords",,,"resources/views/Candidate.xml:88
-resources/views/Employee.xml:74"
+resources/views/Employee.xml:76"
 "Label",,,"resources/domains/Bonus.xml:11
 resources/domains/Competence.xml:19"
 "Language",,,"resources/domains/JobOffer.xml:29"
@@ -681,24 +676,23 @@ resources/views/Menu.xml:269"
 resources/views/LeaveRequest.xml:15"
 "Leave requests to validate",,,"resources/views/Menu.xml:177
 resources/views/Menu.xml:180"
-"Leaves",,,"resources/views/Employee.xml:99"
+"Leaves",,,"resources/views/Employee.xml:101"
 "Limit",,,"resources/views/TimesheetPeriodConfig.xml:43"
-"Links",,,"resources/views/Business.xml:76
-resources/views/Task.xml:99"
+"Links",,,"resources/views/Business.xml:75
+resources/views/Task.xml:106"
 "Local contact",,,"resources/domains/MissionOrder.xml:18"
 "Lost",,,"resources/views/Selects.xml:190"
 "Low",,,"resources/views/Selects.xml:97"
 "Macro Category",,,"resources/domains/Candidate.xml:57
 resources/views/Charts.xml:71
 resources/views/Charts.xml:98"
-"Macro-Category",,,"resources/domains/Employee.xml:21"
-"Main Contact details",,,"resources/views/Candidate.xml:39
-resources/views/Employee.xml:34"
-"Manager",,,"resources/domains/Employee.xml:50
+"Macro-Category",,,"resources/domains/Employee.xml:18"
+"Main Contact details",,,"resources/views/Candidate.xml:39"
+"Manager",,,"resources/domains/Employee.xml:47
 resources/domains/LeaveRequest.xml:21
 resources/views/Selects.xml:51"
-"Manager Profile",,,"resources/domains/Employee.xml:51"
-"Managers",,,"resources/views/Employee.xml:130"
+"Manager Profile",,,"resources/domains/Employee.xml:48"
+"Managers",,,"resources/views/Employee.xml:143"
 "Margin",,,"resources/domains/FinancialInformationHistoryLine.xml:14
 resources/domains/OfferLine.xml:12
 resources/domains/Project.xml:32
@@ -718,7 +712,7 @@ resources/domains/OfferLine.xml:6"
 "Mastered skill set",,,"resources/domains/Competence.xml:41"
 "Medium",,,"resources/views/Selects.xml:96"
 "Members",,,"resources/domains/Project.xml:51
-resources/views/Project.xml:61"
+resources/views/Project.xml:63"
 "Mission date",,,"resources/domains/MissionOrder.xml:21"
 "Mission information",,,"resources/views/MissionOrder.xml:25"
 "Mission manager",,,"resources/domains/MissionOrder.xml:16"
@@ -741,13 +735,13 @@ resources/views/Menu.xml:403"
 "My Leave requests",,,"resources/views/LeaveRequest.xml:28"
 "My Overtimes",,,"resources/views/Dashboard.xml:72
 resources/views/Overtime.xml:16"
-"My Projects",,,"resources/views/Project.xml:133"
-"My Tasks",,,"resources/views/Task.xml:375"
+"My Projects",,,"resources/views/Project.xml:135"
+"My Tasks",,,"resources/views/Task.xml:378"
 "My Timesheets",,,"resources/views/Dashboard.xml:58
 resources/views/Timesheet.xml:13"
-"My Today tasks",,,"resources/views/Task.xml:378"
+"My Today tasks",,,"resources/views/Task.xml:381"
 "My Travel Expenses",,,"resources/views/Dashboard.xml:65"
-"My Upcoming Tasks",,,"resources/views/Task.xml:381"
+"My Upcoming Tasks",,,"resources/views/Task.xml:384"
 "My expenses",,,"resources/views/Menu.xml:101
 resources/views/Menu.xml:98"
 "My leave requests",,,"resources/views/Dashboard.xml:79
@@ -759,7 +753,8 @@ resources/views/Menu.xml:112"
 resources/views/Menu.xml:90"
 "My timesheet calendar",,,"resources/views/Menu.xml:71
 resources/views/Menu.xml:74"
-"Name",,,"resources/domains/MobilityChoice.xml:9
+"Name",,,"resources/domains/Employee.xml:10
+resources/domains/MobilityChoice.xml:9
 resources/domains/Project.xml:15
 resources/domains/PublicHolidays.xml:10
 resources/domains/PublicHolidaysLine.xml:10
@@ -767,7 +762,7 @@ resources/domains/Schedule.xml:10
 resources/domains/TimesheetLine.xml:25
 resources/views/Business.xml:23
 resources/views/Candidate.xml:35
-resources/views/Employee.xml:29
+resources/views/Employee.xml:28
 resources/views/Project.xml:24"
 "National",,,"resources/views/Selects.xml:30"
 "Nationality",,,"resources/domains/PersonalInfo.xml:13"
@@ -792,8 +787,8 @@ resources/views/Menu.xml:282"
 "Note",,,"resources/domains/Candidate.xml:41"
 "Notes",,,"resources/domains/RecruitmentProcessAdvancement.xml:13
 resources/domains/Task.xml:39
-resources/views/Task.xml:166
-resources/views/Task.xml:66"
+resources/views/Task.xml:169
+resources/views/Task.xml:72"
 "Number of Employees",,,"resources/views/Charts.xml:170
 resources/views/Dashboard.xml:110"
 "OK",,,"resources/views/Selects.xml:133"
@@ -810,12 +805,12 @@ resources/views/Selects.xml:178"
 "Offer refused",,,"resources/views/Candidate.xml:79
 resources/views/Selects.xml:180"
 "Offer title",,,"resources/domains/JobOffer.xml:9"
-"Old Employees",,,"resources/views/Employee.xml:127"
+"Old Employees",,,"resources/views/Employee.xml:140"
 "Olds timesheets",,,"resources/views/Menu.xml:216
 resources/views/Menu.xml:219"
 "On going",,,"resources/views/Selects.xml:131"
 "On site",,,"resources/views/Selects.xml:253"
-"OnSite Phone N°",,,"resources/domains/Employee.xml:18"
+"OnSite Phone N°",,,"resources/domains/Employee.xml:15"
 "Open from",,,"resources/domains/JobOffer.xml:12"
 "Order form market",,,"resources/views/Selects.xml:126"
 "Organisation Dashboard",,,"resources/views/Menu.xml:351
@@ -844,10 +839,11 @@ resources/views/Menu.xml:169"
 "Parent project",,,"resources/domains/Project.xml:45"
 "Participant",,,"resources/views/Participant.xml:11"
 "Participants",,,"resources/views/Participant.xml:6"
-"Partner",,,"resources/views/Partner.xml:6"
+"Partner",,,"resources/views/Partner.xml:6
+resources/views/Project.xml:29"
 "Pay sheet",,,"resources/views/PaySheet.xml:12
 resources/views/PaySheet.xml:25"
-"Pay sheets",,,"resources/domains/Employee.xml:54
+"Pay sheets",,,"resources/domains/Employee.xml:51
 resources/views/PaySheet.xml:20
 resources/views/PaySheet.xml:6"
 "Payment Period",,,"resources/domains/Expense.xml:17"
@@ -858,22 +854,21 @@ resources/domains/PaySheet.xml:10
 resources/domains/Planning.xml:10
 resources/views/TimesheetPeriodConfig.xml:21"
 "Permanent",,,"resources/views/Selects.xml:194"
-"Photo",,,"resources/domains/Candidate.xml:12
-resources/domains/Employee.xml:13"
+"Photo",,,"resources/domains/Candidate.xml:12"
 "PlacementFollowUp",,,"resources/views/PlacementFollowUp.xml:12
 resources/views/PlacementFollowUp.xml:7"
-"Planification and realization",,,"resources/views/Task.xml:165
-resources/views/Task.xml:54"
+"Planification and realization",,,"resources/views/Task.xml:168
+resources/views/Task.xml:56"
 "Planned time",,,"resources/domains/Project.xml:40
 resources/domains/Task.xml:15"
 "Plannification",,,"resources/domains/PlanningLine.xml:10"
 "Planning",,,"resources/domains/Machine.xml:10
 resources/views/Planning.xml:12
 resources/views/Planning.xml:6"
-"Planning line",,,"resources/views/PlanningLine.xml:18
-resources/views/PlanningLine.xml:43"
+"Planning line",,,"resources/views/PlanningLine.xml:17
+resources/views/PlanningLine.xml:40"
 "Planning lines",,,"resources/domains/Planning.xml:14
-resources/views/PlanningLine.xml:31
+resources/views/PlanningLine.xml:29
 resources/views/PlanningLine.xml:6"
 "Plannings",,,"resources/views/Menu.xml:239
 resources/views/Menu.xml:242"
@@ -890,24 +885,25 @@ resources/views/Employee.xml:20"
 "Product",,,"resources/domains/ExpenseLine.xml:13
 resources/domains/FinancialInformationUpdate.xml:13
 resources/domains/Task.xml:57"
-"Production informations",,,"resources/views/Business.xml:108"
+"Production informations",,,"resources/views/Business.xml:109"
 "Production invoicing type",,,"resources/domains/Project.xml:63"
 "Professional background",,,"resources/views/Position.xml:31
 resources/views/Position.xml:8"
 "Professional experience",,,"resources/domains/Candidate.xml:49"
-"Professionnal background",,,"resources/domains/Employee.xml:30"
+"Professionnal",,,"resources/views/Employee.xml:37"
+"Professionnal background",,,"resources/domains/Employee.xml:27"
 "Profil candidat",,,"resources/views/JobOffer.xml:34"
 "Profil sub title",,,"resources/domains/Competence.xml:37"
 "Profil title",,,"resources/domains/Competence.xml:36"
 "Profile",,,"resources/domains/PlanningLine.xml:12
 resources/views/Candidate.xml:87
-resources/views/Employee.xml:72
+resources/views/Employee.xml:74
 resources/views/Selects.xml:52"
 "Progress",,,"resources/domains/Expense.xml:16
 resources/domains/Project.xml:58
 resources/domains/Training.xml:20
 resources/views/Selects.xml:247
-resources/views/Task.xml:47"
+resources/views/Task.xml:48"
 "Project",,,"resources/domains/Event.xml:10
 resources/domains/Task.xml:13
 resources/domains/TimesheetLine.xml:11
@@ -919,7 +915,7 @@ resources/views/Selects.xml:121
 resources/views/Timesheet.xml:32"
 "Project ?",,,"resources/domains/Project.xml:17"
 "Project Dashboard",,,"resources/views/Dashboard.xml:120"
-"Project filters",,,"resources/views/Project.xml:132"
+"Project filters",,,"resources/views/Project.xml:134"
 "Project recruitment",,,"resources/views/Selects.xml:57"
 "Project satisfaction",,,"resources/domains/Timesheet.xml:13"
 "Project unit",,,"resources/domains/Project.xml:46"
@@ -947,7 +943,7 @@ resources/views/Menu.xml:314
 resources/views/Project.xml:6"
 "Projects by Client Partner",,,"resources/views/Dashboard.xml:128
 resources/views/Project.xml:12"
-"Proofs",,,"resources/views/ExpenseLine.xml:53"
+"Proofs",,,"resources/views/ExpenseLine.xml:51"
 "Proposal(red)",,,"resources/views/Selects.xml:87"
 "Public holiday",,,"resources/domains/PublicHolidaysLine.xml:11
 resources/views/PublicHolidaysLine.xml:11"
@@ -964,21 +960,21 @@ resources/views/PublicHolidaysLine.xml:6"
 resources/domains/Task.xml:58"
 "Qualification (contractual)",,,"resources/domains/MissionOrder.xml:19"
 "Quantity",,,"resources/domains/ExpenseLine.xml:17"
-"Real estimated",,,"resources/views/Business.xml:64
-resources/views/Business.xml:82
+"Real estimated",,,"resources/views/Business.xml:63
+resources/views/Business.xml:81
 resources/views/Selects.xml:241
-resources/views/Task.xml:88"
+resources/views/Task.xml:95"
 "Real estimated compute method",,,"resources/domains/Project.xml:25
 resources/domains/Task.xml:25"
-"Real invoiced",,,"resources/views/Business.xml:69
-resources/views/Business.xml:88
+"Real invoiced",,,"resources/views/Business.xml:68
+resources/views/Business.xml:87
 resources/views/Selects.xml:242
-resources/views/Task.xml:93"
+resources/views/Task.xml:100"
 "Realized by",,,"resources/domains/Planning.xml:11"
 "Reason",,,"resources/domains/EmployeeLeave.xml:10
 resources/domains/LeaveRequest.xml:19
 resources/domains/Overtime.xml:18"
-"Recruitment",,,"resources/views/Employee.xml:101
+"Recruitment",,,"resources/views/Employee.xml:103
 resources/views/Menu.xml:28"
 "Recruitment Process Progress",,,"resources/domains/Candidate.xml:42"
 "Recruitment Type",,,"resources/views/Candidate.xml:93"
@@ -995,7 +991,7 @@ resources/views/RecruitmentProcessAdvancement.xml:5"
 "Reference position",,,"resources/domains/Training.xml:17"
 "Reference title",,,"resources/domains/Position.xml:21"
 "Refusal reason",,,"resources/domains/Expense.xml:21"
-"Refuse",,,"resources/views/Expense.xml:53
+"Refuse",,,"resources/views/Expense.xml:54
 resources/views/LeaveRequest.xml:61
 resources/views/Overtime.xml:40"
 "Refused",,,"resources/views/Selects.xml:157
@@ -1025,13 +1021,13 @@ resources/domains/Task.xml:17"
 "Revenue/Cost ?",,,"resources/domains/FinancialInformationUpdate.xml:15"
 "Reversal Date",,,"resources/domains/Advance.xml:12"
 "SD",,,"resources/views/Selects.xml:70"
-"Salary",,,"resources/views/Employee.xml:85"
+"Salary",,,"resources/views/Employee.xml:87"
 "Salary expectation",,,"resources/domains/Candidate.xml:27"
 "Satisfaction",,,"resources/views/Timesheet.xml:31"
 "Search criterias",,,"resources/views/Candidate.xml:49"
 "Second interview",,,"resources/views/Selects.xml:175"
 "Sector Keywords",,,"resources/domains/Candidate.xml:46
-resources/domains/Employee.xml:32"
+resources/domains/Employee.xml:29"
 "Send by email",,,"resources/views/Candidate.xml:17
 resources/views/Employee.xml:14"
 "Send email",,,"resources/views/Candidate.xml:25
@@ -1045,28 +1041,28 @@ resources/views/Employee.xml:21"
 "Shift lines",,,"resources/domains/ScheduleSubLine.xml:10"
 "Shift periods",,,"resources/domains/Schedule.xml:11"
 "Short description",,,"resources/domains/ExpenseLine.xml:15"
-"Show invoices",,,"resources/views/Task.xml:128"
+"Show invoices",,,"resources/views/Task.xml:135"
 "Show projects",,,"resources/views/Partner.xml:7"
-"Show tasks",,,"resources/views/Project.xml:65"
+"Show tasks",,,"resources/views/Project.xml:67"
 "Signature (red)",,,"resources/views/Selects.xml:88"
 "Significant Degree",,,"resources/domains/Candidate.xml:51"
 "Single",,,"resources/views/Selects.xml:76"
 "Skill",,,"resources/views/Competence.xml:18"
 "Skill set",,,"resources/domains/Competence.xml:21"
-"Skill workers",,,"resources/views/Employee.xml:133"
+"Skill workers",,,"resources/views/Employee.xml:146"
 "Skills",,,"resources/views/Competence.xml:11
 resources/views/Competence.xml:6"
 "Skills list",,,"resources/domains/Competence.xml:25"
 "Source",,,"resources/domains/Candidate.xml:66"
-"Specific settings",,,"resources/views/Business.xml:97
-resources/views/Project.xml:45"
+"Specific settings",,,"resources/views/Business.xml:98
+resources/views/Project.xml:47"
 "Spent time",,,"resources/domains/Project.xml:41
 resources/domains/Task.xml:16
 resources/domains/TimesheetLine.xml:13"
 "Spent times",,,"resources/domains/Event.xml:12
 resources/domains/Task.xml:62
-resources/views/Task.xml:138
-resources/views/Task.xml:172"
+resources/views/Task.xml:175
+resources/views/Task.xml:58"
 "Spouse occupation",,,"resources/domains/PersonalInfo.xml:17"
 "Start Date Time",,,"resources/domains/Task.xml:29"
 "Start date",,,"resources/domains/ScheduleLine.xml:11
@@ -1085,15 +1081,14 @@ resources/domains/Timesheet.xml:27
 resources/views/Charts.xml:162"
 "Straight recruitment",,,"resources/views/Selects.xml:56"
 "Sub total",,,"resources/domains/OvertimeLine.xml:15"
-"Submit",,,"resources/views/Expense.xml:51
+"Submit",,,"resources/views/Expense.xml:52
 resources/views/Overtime.xml:38"
 "Submited",,,"resources/views/Selects.xml:154"
 "Submitted",,,"resources/views/Selects.xml:185"
 "Subscription",,,"resources/views/Selects.xml:248"
-"Supervised by",,,"resources/domains/Employee.xml:49"
+"Supervised by",,,"resources/domains/Employee.xml:46"
 "Supplier invoice lines",,,"resources/views/Business.xml:202
-resources/views/Task.xml:325"
-"Surname",,,"resources/domains/Employee.xml:11"
+resources/views/Task.xml:328"
 "TImesheet project/task time input",,,"resources/views/TimesheetLine.xml:7"
 "TMA",,,"resources/views/Selects.xml:254"
 "Task",,,"resources/domains/Event.xml:11
@@ -1105,12 +1100,12 @@ resources/domains/PlanningLine.xml:14
 resources/domains/SpentTime.xml:12
 resources/domains/TimesheetLine.xml:12
 resources/views/Selects.xml:120
-resources/views/Task.xml:149
+resources/views/Task.xml:152
 resources/views/Task.xml:29"
 "Task Information",,,"resources/views/OrganisationConfig.xml:14"
-"Task Progress",,,"resources/domains/Task.xml:20"
+"Task Progress (%)",,,"resources/domains/Task.xml:20"
 "Task name",,,"resources/domains/Task.xml:12
-resources/views/Task.xml:151
+resources/views/Task.xml:154
 resources/views/Task.xml:31"
 "Task product",,,"resources/domains/OrganisationConfig.xml:13"
 "Task.amount",,,"java/com/axelor/apps/organisation/report/ITranslation.java:126"
@@ -1128,18 +1123,18 @@ resources/views/Task.xml:31"
 "Task.totalMargin",,,"java/com/axelor/apps/organisation/report/ITranslation.java:134"
 "Task.totalTurnover",,,"java/com/axelor/apps/organisation/report/ITranslation.java:132"
 "Tasks",,,"resources/domains/Project.xml:48
-resources/views/Business.xml:50
+resources/views/Business.xml:47
 resources/views/Menu.xml:322
 resources/views/Menu.xml:325
-resources/views/Project.xml:60
-resources/views/Project.xml:74
+resources/views/Project.xml:62
+resources/views/Project.xml:76
 resources/views/Task.xml:10
 resources/views/Task.xml:14
-resources/views/Task.xml:143
+resources/views/Task.xml:146
 resources/views/Task.xml:22"
-"Tasks To Invoice",,,"resources/views/Task.xml:387"
-"Tasks Underevaluated",,,"resources/views/Task.xml:384"
-"Tasks filters",,,"resources/views/Task.xml:374"
+"Tasks To Invoice",,,"resources/views/Task.xml:390"
+"Tasks Underevaluated",,,"resources/views/Task.xml:387"
+"Tasks filters",,,"resources/views/Task.xml:377"
 "Tax",,,"resources/domains/ExpenseLine.xml:20"
 "Technical environment",,,"resources/domains/Position.xml:27
 resources/domains/Training.xml:21"
@@ -1147,22 +1142,21 @@ resources/domains/Training.xml:21"
 "The holiday end date must be after the start date.",,,"resources/views/LeaveRequest.xml:132
 resources/views/LeaveRequest.xml:133"
 "The holiday request date should be equal or before the today date.",,,"resources/views/LeaveRequest.xml:131"
-"There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in.",,,"resources/views/Project.xml:116"
+"There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in.",,,"resources/views/Project.xml:118"
 "Third interview",,,"resources/views/Selects.xml:176"
 "Times",,,"resources/views/Business.xml:33
-resources/views/Project.xml:31
-resources/views/Task.xml:42"
-"Timesheet",,,"resources/domains/PlanningLine.xml:19
-resources/domains/TimesheetLine.xml:10
+resources/views/Project.xml:33
+resources/views/Task.xml:44"
+"Timesheet",,,"resources/domains/TimesheetLine.xml:10
 resources/domains/TimesheetTotalByType.xml:10
-resources/views/Project.xml:54
+resources/views/Project.xml:56
 resources/views/Timesheet.xml:19"
 "Timesheet Period Config",,,"resources/views/TimesheetPeriodConfig.xml:16"
 "Timesheet input required ?",,,"resources/domains/Project.xml:19"
 "Timesheet line",,,"resources/domains/Timesheet.xml:22"
 "Timesheet lines",,,"resources/views/Business.xml:209
-resources/views/Task.xml:332
-resources/views/Task.xml:353"
+resources/views/Task.xml:335
+resources/views/Task.xml:356"
 "Timesheet period config",,,"resources/domains/User.xml:12"
 "Timesheet project/task time input",,,"resources/views/TimesheetLine.xml:117
 resources/views/TimesheetLine.xml:22
@@ -1203,11 +1197,11 @@ resources/domains/Timesheet.xml:36"
 resources/domains/Task.xml:26
 resources/domains/TimesheetLine.xml:17"
 "Tool Keywords",,,"resources/domains/Candidate.xml:45"
-"Tools Keywords",,,"resources/domains/Employee.xml:31"
+"Tools Keywords",,,"resources/domains/Employee.xml:28"
 "Total (TTC)",,,"resources/domains/ExpenseLine.xml:19
 resources/views/Expense.xml:17
 resources/views/Expense.xml:26
-resources/views/Expense.xml:41"
+resources/views/Expense.xml:43"
 "Total W.T. in company currency",,,"resources/domains/ExpenseLine.xml:28"
 "Total amount",,,"resources/domains/Expense.xml:12
 resources/domains/Overtime.xml:11"
@@ -1247,15 +1241,15 @@ resources/domains/OvertimeLine.xml:14
 resources/domains/Task.xml:59"
 "UoM",,,"resources/domains/ExpenseLine.xml:14
 resources/domains/OvertimeLine.xml:13"
-"Update and historize",,,"resources/views/Task.xml:84"
-"Update financial information",,,"resources/views/Task.xml:100"
+"Update and historize",,,"resources/views/Task.xml:91"
+"Update financial information",,,"resources/views/Task.xml:107"
 "Update task progress",,,"resources/views/Business.xml:120
-resources/views/Project.xml:66"
+resources/views/Project.xml:68"
 "User",,,"resources/domains/FinancialInformationHistoryLine.xml:15
 resources/domains/FinancialInformationUpdate.xml:12
 resources/domains/SpentTime.xml:11"
-"Validate",,,"resources/views/Expense.xml:52
-resources/views/Expense.xml:54
+"Validate",,,"resources/views/Expense.xml:53
+resources/views/Expense.xml:55
 resources/views/LeaveRequest.xml:60
 resources/views/Overtime.xml:39
 resources/views/Overtime.xml:41
@@ -1264,21 +1258,21 @@ resources/views/Timesheet.xml:68"
 "Validated",,,"resources/views/Selects.xml:155
 resources/views/Selects.xml:267"
 "Validated Customer order lines",,,"resources/views/Business.xml:174
-resources/views/Task.xml:297"
+resources/views/Task.xml:300"
 "Validated by",,,"resources/domains/Expense.xml:19
 resources/domains/Overtime.xml:16
 resources/domains/Timesheet.xml:28"
 "Validated supplier order lines",,,"resources/views/Business.xml:181
-resources/views/Task.xml:311"
+resources/views/Task.xml:314"
 "Validation Date",,,"resources/domains/ExpenseLine.xml:23"
 "Validation Status",,,"resources/domains/Expense.xml:15"
 "Validation date",,,"resources/domains/Expense.xml:20
 resources/domains/OvertimeLine.xml:16
 resources/domains/Timesheet.xml:29"
 "Validation forms",,,"resources/views/Menu.xml:131"
-"Validation/Invoicing",,,"resources/views/ExpenseLine.xml:57"
+"Validation/Invoicing",,,"resources/views/ExpenseLine.xml:55"
 "Value",,,"resources/domains/Competence.xml:20"
-"Vehicle Fiscal Power",,,"resources/domains/Employee.xml:42"
+"Vehicle Fiscal Power",,,"resources/domains/Employee.xml:39"
 "Verified",,,"resources/views/Selects.xml:139"
 "Very positive (green)",,,"resources/views/Selects.xml:61"
 "View Employees",,,"resources/views/Menu.xml:410"
@@ -1288,7 +1282,7 @@ resources/domains/Timesheet.xml:29"
 "View Projects",,,"resources/views/Menu.xml:438"
 "View Tasks",,,"resources/views/Menu.xml:443"
 "View Timesheets",,,"resources/views/Menu.xml:415"
-"View forecast report",,,"resources/views/Task.xml:75"
+"View forecast report",,,"resources/views/Task.xml:82"
 "Waiting candidate confirmation",,,"resources/views/Selects.xml:132"
 "Waiting validation",,,"resources/views/Selects.xml:140"
 "Weekly",,,"resources/views/Selects.xml:109
@@ -1323,5 +1317,5 @@ resources/views/Selects.xml:116"
 "help:Candidate.relocationSelect",,,"resources/domains/Candidate.xml:26"
 "help:CandidateOtherOpportunity.ets",,,"resources/domains/CandidateOtherOpportunity.xml:10"
 "help:Task.isLeaveRequest",,,"resources/domains/Task.xml:33"
-"members",,,"resources/views/Business.xml:116"
+"members",,,"resources/views/Business.xml:96"
 "or Available from",,,"resources/domains/Candidate.xml:33"
