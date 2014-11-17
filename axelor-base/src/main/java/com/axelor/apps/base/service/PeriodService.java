@@ -61,7 +61,7 @@ public class PeriodService extends PeriodRepository  {
 	
 	public Period getNextPeriod(Period period) throws AxelorException  {
 		
-		Period nextPeriod = all().filter("self.fromDate > ?1 AND self.company = ?2", period.getToDate(), period.getCompany()).fetchOne();
+		Period nextPeriod = all().filter("self.fromDate > ?1 AND self.company = ?2 AND self.statusSelect = ?3", period.getToDate(), period.getCompany(), PeriodRepository.STATUS_OPENED).fetchOne();
 		
 		if (nextPeriod == null || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
 			throw new AxelorException(String.format("Aucune période trouvée ou celle-ci clôturée pour la société %s", period.getCompany().getName()), IException.CONFIGURATION_ERROR);

@@ -169,7 +169,7 @@ public class YearService extends YearRepository {
 	 * @param reportedBalance
 	 * 				Un A nouveau
 	 */
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ReportedBalanceLine createReportedBalanceLine(ReportedBalance reportedBalance, BigDecimal amount, Year year)  {
 		ReportedBalanceLine reportedBalanceLine = new ReportedBalanceLine();
 		reportedBalanceLine.setReportedBalance(reportedBalance);
