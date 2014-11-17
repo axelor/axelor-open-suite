@@ -110,8 +110,8 @@ resources/views/Menu.xml:278"
 resources/views/Calendar.xml:10"
 "Calendar Configurations","Configuration Calendriers",,"resources/views/Menu.xml:247
 resources/views/Menu.xml:250"
-"Calendar configuration",,,"resources/views/CalendarConfiguration.xml:13"
-"Calendar configurations",,,"resources/views/CalendarConfiguration.xml:6"
+"Calendar configuration","Configuration Calendrier",,"resources/views/CalendarConfiguration.xml:13"
+"Calendar configurations","Configuration Calendriers",,"resources/views/CalendarConfiguration.xml:6"
 "Calendars","Calendriers",,"resources/domains/CalendarConfiguration.xml:15
 resources/views/Calendar.xml:6
 resources/views/Menu.xml:238
@@ -127,7 +127,7 @@ resources/domains/Target.xml:34"
 "Call emitted historical","Histo. appels émis",,"resources/views/Charts.xml:860
 resources/views/Dashboard.xml:501"
 "Call filters","Filtres Appels",,"resources/views/Event.xml:624"
-"Call type",,,"resources/domains/Event.xml:44"
+"Call type","Type d'appel",,"resources/domains/Event.xml:44"
 "Calls","Appels",,"resources/views/Charts.xml:335
 resources/views/Charts.xml:378
 resources/views/Charts.xml:420
@@ -143,16 +143,16 @@ resources/views/TargetConfiguration.xml:75"
 "Calls Db","Tbl. Bord Appels",,"resources/views/Menu.xml:438
 resources/views/Menu.xml:441"
 "Calls by team by user","Appels par équipe et par utilisateur",,"resources/views/Dashboard.xml:343"
-"Calls by user(of a team)",,,"resources/views/Charts.xml:466"
+"Calls by user(of a team)","Appel par utilisateur (par Equipe)",,"resources/views/Charts.xml:466"
 "Calls emitted historical","Historique des appels émis",,"resources/views/Charts.xml:1187
 resources/views/Dashboard.xml:563"
 "Calls emitted target completed (%)","Objectif des Appels émis réalisés (%)",,"resources/views/Charts.xml:1172
 resources/views/Charts.xml:845
 resources/views/Dashboard.xml:497
 resources/views/Dashboard.xml:559"
-"Calls held by team by type",,,"resources/views/Charts.xml:422
+"Calls held by team by type","Appels par équipe par type",,"resources/views/Charts.xml:422
 resources/views/Dashboard.xml:351"
-"Calls held by type by user",,,"resources/views/Charts.xml:337
+"Calls held by type by user","Appels par type par utilisateur",,"resources/views/Charts.xml:337
 resources/views/Dashboard.xml:347"
 "Calls type by team","Appels par équipe",,"resources/views/Charts.xml:380
 resources/views/Dashboard.xml:338"
@@ -192,7 +192,7 @@ resources/views/Selects.xml:92"
 resources/views/Opportunity.xml:46
 resources/views/Opportunity.xml:77
 resources/views/Selects.xml:91"
-"Code",,,"resources/domains/CrmBatch.xml:11
+"Code","Code",,"resources/domains/CrmBatch.xml:11
 resources/domains/EventCategory.xml:11
 resources/domains/MeetingType.xml:12
 resources/domains/OpportunityType.xml:11
@@ -216,15 +216,15 @@ resources/views/ConvertLeadWizard.xml:352
 resources/views/ConvertLeadWizard.xml:99
 resources/views/EventAttendee.xml:11"
 "Contact date","Date de contact",,"resources/domains/Lead.xml:44"
-"Contact details",,,"resources/views/Lead.xml:81"
+"Contact details","Coordonnées",,"resources/views/Lead.xml:81"
 "Contact name","Nom contact",,"resources/domains/Lead.xml:62"
 "Contacts","Contacts",,"resources/views/Event.xml:111
 resources/views/EventAttendee.xml:6"
 "Context","Contexte",,"resources/views/ConvertLeadWizard.xml:479
 resources/views/Event.xml:355"
-"Convert into Contact",,,"resources/views/ConvertLeadWizard.xml:21"
+"Convert into Contact","Convertir en Contact",,"resources/views/ConvertLeadWizard.xml:21"
 "Convert into Contact ?","Convertir en Contact ?",,"resources/views/ConvertLeadWizard.xml:11"
-"Convert into Partner",,,"resources/views/ConvertLeadWizard.xml:58"
+"Convert into Partner","Convertir en Tiers",,"resources/views/ConvertLeadWizard.xml:58"
 "Convert into Partner ?","Convertir en Tiers ?",,"resources/views/ConvertLeadWizard.xml:13"
 "Convert lead","Convertir Piste",,"resources/views/ConvertLeadWizard.xml:6
 resources/views/Lead.xml:224
@@ -248,17 +248,17 @@ resources/views/Menu.xml:331"
 resources/views/Menu.xml:315
 resources/views/Menu.xml:339"
 "Create Task","Créer Tâche",,"resources/views/Menu.xml:301"
-"Create a task",,,"resources/views/ConvertLeadWizard.xml:203"
+"Create a task","Créer une Tâche",,"resources/views/ConvertLeadWizard.xml:203"
 "Create a task ?","Créer une tâche ?",,"resources/views/ConvertLeadWizard.xml:18"
 "Create call","Créer Appel",,"resources/views/Lead.xml:232
 resources/views/Lead.xml:45
 resources/views/Partner.xml:20
 resources/views/Partner.xml:30"
-"Create into Opportunity",,,"resources/views/ConvertLeadWizard.xml:119"
+"Create into Opportunity","Créer une Opportunité",,"resources/views/ConvertLeadWizard.xml:119"
 "Create into Opportunity ?","Créer Opportunité ?",,"resources/views/ConvertLeadWizard.xml:15"
 "Create meeting","Créer Rendez-vous",,"resources/views/Lead.xml:238
 resources/views/Partner.xml:36"
-"Create menu entrie",,,"resources/views/CalendarConfiguration.xml:21"
+"Create menu entrie","Créer entrée de menu",,"resources/views/CalendarConfiguration.xml:21"
 "Create opportunity","Créer Opportunité",,"resources/views/Lead.xml:250
 resources/views/Lead.xml:48
 resources/views/Partner.xml:23
@@ -284,7 +284,7 @@ resources/views/Dashboard.xml:283"
 resources/domains/Opportunity.xml:11
 resources/views/Charts.xml:666"
 "Daily","Journalier",,"resources/views/Selects.xml:164"
-"Daily team call summary by user",,,"resources/views/Charts.xml:494"
+"Daily team call summary by user","Appels du jour par utilisateur",,"resources/views/Charts.xml:494"
 "Dashboard","Tableau de bord",,"resources/views/Dashboard.xml:144
 resources/views/Dashboard.xml:157
 resources/views/Dashboard.xml:170"
@@ -304,7 +304,7 @@ resources/views/Event.xml:220
 resources/views/Event.xml:284"
 "Days","Jours",,"resources/views/Selects.xml:146"
 "Dead","Perdu",,"resources/views/Selects.xml:15"
-"Delete menu entrie",,,"resources/views/CalendarConfiguration.xml:22"
+"Delete menu entrie","Supprimer entrée de menu",,"resources/views/CalendarConfiguration.xml:22"
 "Delivery address","Adresse livraison",,"resources/views/ConvertLeadWizard.xml:344"
 "Dep./Div.","Dépt/Div.",,"resources/domains/Lead.xml:20"
 "Description","Description",,"resources/domains/CrmBatch.xml:16
@@ -417,8 +417,8 @@ resources/domains/Lead.xml:10
 resources/domains/MeetingType.xml:10"
 "Import calendar","Importer calendrier",,"resources/views/Event.xml:42
 resources/views/Event.xml:9"
-"Import lead",,,"java/com/axelor/apps/crm/web/LeadController.java:171"
-"Import leads",,,"resources/views/Lead.xml:12"
+"Import lead","Importer Lead",,"java/com/axelor/apps/crm/web/LeadController.java:171"
+"Import leads","Importer les Leads",,"resources/views/Lead.xml:12"
 "In process","En cours",,"resources/views/Selects.xml:12"
 "In progress","En cours",,"resources/views/Selects.xml:121"
 "Incoming","Entrant",,"resources/views/Selects.xml:96"
@@ -496,7 +496,7 @@ resources/views/Opportunity.xml:105"
 "Location","Lieu",,"resources/domains/Event.xml:48"
 "Log Call","Planifier un appel",,"resources/views/Lead.xml:173
 resources/views/Lead.xml:29"
-"Log a call",,,"resources/views/ConvertLeadWizard.xml:156"
+"Log a call","Planifier un appel",,"resources/views/ConvertLeadWizard.xml:156"
 "Log a call ?","Notifier un Appel ?",,"resources/views/ConvertLeadWizard.xml:16"
 "Login","Identifiant",,"resources/domains/Calendar.xml:12"
 "Low","Faible",,"resources/views/Selects.xml:128
@@ -609,7 +609,7 @@ resources/views/Event.xml:649"
 resources/views/Opportunity.xml:45
 resources/views/Opportunity.xml:76"
 "Next step","Prochaine étape",,"resources/domains/Opportunity.xml:20"
-"No lead import configuration found",,,"java/com/axelor/apps/crm/web/LeadController.java:167"
+"No lead import configuration found","Le fichier de paramétrage pour l'import des leads est manquante.",,"java/com/axelor/apps/crm/web/LeadController.java:167"
 "No of Tickets","Nbre de tickets",,"resources/views/Charts.xml:773"
 "Non-participant","Non-participant",,"resources/views/Selects.xml:134"
 "None","Aucun",,"resources/views/Selects.xml:161"
@@ -715,7 +715,7 @@ resources/views/Event.xml:272"
 resources/views/TargetConfiguration.xml:64"
 "Period type","Type de période",,"resources/domains/Target.xml:37
 resources/domains/TargetConfiguration.xml:29"
-"Personal",,,"resources/views/ConvertLeadWizard.xml:24
+"Personal","Personnel",,"resources/views/ConvertLeadWizard.xml:24
 resources/views/ConvertLeadWizard.xml:252
 resources/views/ConvertLeadWizard.xml:306
 resources/views/ConvertLeadWizard.xml:61"
@@ -725,7 +725,7 @@ resources/views/ConvertLeadWizard.xml:61"
 resources/views/Dashboard.xml:193"
 "Pipeline next 90 days","Pipeline à 90 jrs.",,"resources/views/Charts.xml:166"
 "Planified","Planifié",,"resources/views/Selects.xml:101"
-"Port",,,"resources/domains/Calendar.xml:16"
+"Port","Port",,"resources/domains/Calendar.xml:16"
 "Postal addresses","Les adresses postales",,"resources/views/ConvertLeadWizard.xml:336"
 "Postal code","Code Postal",,"resources/domains/Lead.xml:28
 resources/domains/Lead.xml:35
@@ -788,7 +788,7 @@ resources/views/Charts.xml:521
 resources/views/Charts.xml:634"
 "Schedule Meeting","Planifier un rendez-vous",,"resources/views/Lead.xml:174
 resources/views/Lead.xml:30"
-"Schedule a meeting",,,"resources/views/ConvertLeadWizard.xml:180"
+"Schedule a meeting","Planifier un rendez-vous",,"resources/views/ConvertLeadWizard.xml:180"
 "Schedule a meeting ?","Planifier un Meeting ?",,"resources/views/ConvertLeadWizard.xml:17"
 "Schedule meeting","Planifier Rendez-vous",,"resources/views/Lead.xml:46
 resources/views/Partner.xml:21"
@@ -926,7 +926,7 @@ resources/views/Dashboard.xml:387"
 resources/views/Dashboard.xml:391"
 "Total open tickets by month by user","Nbre de ticket ouvert par mois par utilisateur",,"resources/views/Charts.xml:816
 resources/views/Dashboard.xml:395"
-"Type",,,"resources/domains/Calendar.xml:14
+"Type","Type",,"resources/domains/Calendar.xml:14
 resources/domains/Event.xml:12
 resources/domains/EventCategory.xml:12
 resources/domains/EventReminder.xml:11
@@ -963,11 +963,11 @@ resources/views/Event.xml:201
 resources/views/Event.xml:208
 resources/views/Event.xml:339
 resources/views/Event.xml:347"
-"View Calls",,,"resources/views/Menu.xml:307"
-"View Leads",,,"resources/views/Menu.xml:332"
-"View Meetings",,,"resources/views/Menu.xml:311"
-"View Opportunities",,,"resources/views/Menu.xml:340"
-"View Tasks",,,"resources/views/Menu.xml:303"
+"View Calls","Voir Appels",,"resources/views/Menu.xml:307"
+"View Leads","Voir Pistes",,"resources/views/Menu.xml:332"
+"View Meetings","Voir Rendez-vous",,"resources/views/Menu.xml:311"
+"View Opportunities","Voir Opportunités",,"resources/views/Menu.xml:340"
+"View Tasks","Voir Tâches",,"resources/views/Menu.xml:303"
 "Vs","Vs",,"resources/views/Target.xml:104
 resources/views/Target.xml:106
 resources/views/Target.xml:87
@@ -981,4 +981,4 @@ resources/views/Target.xml:91"
 "ZIMBRA",,,"resources/views/Selects.xml:71"
 "amount","Montant",,"java/com/axelor/web/MapRest.java:147
 java/com/axelor/web/MapRest.java:148"
-"portal.daily.team.calls.summary.by.user",,,"resources/views/Dashboard.xml:355"
+"portal.daily.team.calls.summary.by.user","Appels du jour par utilisateur",,"resources/views/Dashboard.xml:355"

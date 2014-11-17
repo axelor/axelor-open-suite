@@ -24,7 +24,7 @@ resources/views/Menu.xml:15"
 "BoM","Nomenclature",,"resources/domains/ManufOrder.xml:39
 resources/domains/ProdRemains.xml:12
 resources/domains/SaleOrderLine.xml:10"
-"Brand",,,"resources/domains/Machine.xml:14"
+"Brand","Fabricant",,"resources/domains/Machine.xml:14"
 "Business","Affaire",,"resources/views/Business.xml:6"
 "Cancel","Annuler",,"resources/views/ManufOrder.xml:119
 resources/views/ManufOrder.xml:24
@@ -36,21 +36,21 @@ resources/views/OperationOrder.xml:54"
 "Cancelled MOs","OFs annulés",,"resources/views/ManufOrder.xml:242"
 "Cancelled Operations","Opérations annulées",,"resources/views/OperationOrder.xml:185"
 "Capacity / cycle","Capacité / cycle",,"resources/domains/ProdResource.xml:16"
-"Capacity settings",,,"resources/views/ProdResource.xml:22
+"Capacity settings","Paramétrages capacité",,"resources/views/ProdResource.xml:22
 resources/views/ProdResource.xml:55"
 "Charge by machine","Charge par machine",,"resources/views/ChargeByMachineDashboard.xml:6
 resources/views/Menu.xml:83
 resources/views/Menu.xml:86"
 "Charge previsionnelle par machine","Charge previsionnelle par machine",,"resources/views/Charts.xml:457"
 "Charge réelle par machine","Charge réelle par machine",,"resources/views/Charts.xml:7"
-"Code",,,"resources/domains/ProdProcess.xml:14
+"Code","Code",,"resources/domains/ProdProcess.xml:14
 resources/domains/ProdResource.xml:13"
-"Comments",,,"resources/domains/OperationOrder.xml:58"
+"Comments","Commentaires",,"resources/domains/OperationOrder.xml:58"
 "Company","Société",,"resources/domains/BillOfMaterial.xml:23
 resources/domains/ManufOrder.xml:21
 resources/domains/ProductionConfig.xml:11"
 "Compliance","Conformité",,"resources/domains/ManufOrderSheetLine.xml:13"
-"Components",,,"resources/views/BillOfMaterial.xml:27"
+"Components","Composants",,"resources/views/BillOfMaterial.xml:27"
 "Compute cost price","Calculer coût de revient",,"resources/views/BillOfMaterial.xml:31"
 "Configurations","Configurations",,"resources/views/Menu.xml:92"
 "Conforme","Conforme",,"resources/views/ManufOrderSheet.xml:44"
@@ -64,7 +64,7 @@ resources/views/OperationOrder.xml:91"
 "Cost (W.T.)","Coût (H.T.)",,"resources/domains/ProdResource.xml:26"
 "Cost price","Prix de revient",,"resources/domains/BillOfMaterial.xml:22"
 "Cost type","Type coût",,"resources/domains/ProdResource.xml:25"
-"Costing settings",,,"resources/views/ProdResource.xml:31
+"Costing settings","Paramétrages coûts",,"resources/views/ProdResource.xml:31
 resources/views/ProdResource.xml:64"
 "Create Manuf. Order","Créer Ordre de Fabr.",,"resources/views/Menu.xml:149"
 "Dashboard","Tableau de bord",,"resources/views/ManufacturingDashboard.xml:12
@@ -73,15 +73,15 @@ resources/views/ManufacturingDashboard.xml:6"
 resources/views/OperationOrder.xml:73"
 "Default BOM","Nomenclature par défaut",,"resources/domains/Product.xml:9"
 "Default Machine","Machine par défaut",,"resources/domains/ProdResource.xml:14"
-"Default Machine settings",,,"resources/views/ProdResource.xml:21"
+"Default Machine settings","Paramétrages machine par défaut",,"resources/views/ProdResource.xml:21"
 "Default resource product","Produit ressource par défaut",,"resources/domains/ProductionConfig.xml:14"
 "Description","Description",,"resources/domains/Machine.xml:15
 resources/domains/ManufOrder.xml:56
 resources/domains/ProdProcessLine.xml:16
 resources/views/ManufOrder.xml:108
 resources/views/ProdProcessLine.xml:19"
-"Diff consume manuf order",,,"resources/domains/ProdProduct.xml:23"
-"Diff consume operation order",,,"resources/domains/ProdProduct.xml:19"
+"Diff consume manuf order","Diff. Consommation Ordre de fabr.",,"resources/domains/ProdProduct.xml:23"
+"Diff consume operation order","Diff. Consommation Opération",,"resources/domains/ProdProduct.xml:19"
 "Difference","Différences",,"resources/domains/ManufOrder.xml:29"
 "Differences","Différence",,"resources/domains/OperationOrder.xml:31
 resources/views/ManufOrder.xml:212"
@@ -252,7 +252,7 @@ resources/views/OperationOrder.xml:34
 resources/views/OperationOrder.xml:52"
 "Per Cycle","Par cycle",,"resources/views/Selects.xml:27"
 "Per hour","Par heure",,"resources/views/Selects.xml:26"
-"Personalized",,,"resources/domains/BillOfMaterial.xml:25"
+"Personalized","Personnalisée",,"resources/domains/BillOfMaterial.xml:25"
 "Plan","Planifier",,"resources/views/ManufOrder.xml:114
 resources/views/ManufOrder.xml:20
 resources/views/ManufOrder.xml:43
@@ -272,7 +272,7 @@ resources/views/Menu.xml:66
 resources/views/OperationOrder.xml:8"
 "Planned start date","Date de début prévisionnelle",,"resources/domains/ManufOrder.xml:45
 resources/domains/OperationOrder.xml:37"
-"Pre-fill operations",,,"resources/views/ManufOrder.xml:70"
+"Pre-fill operations","Pré-remplir les opérations",,"resources/views/ManufOrder.xml:70"
 "Print","Imprimer",,"java/com/axelor/apps/production/web/ManufOrderController.java:198
 resources/views/ManufOrder.xml:25
 resources/views/ManufOrder.xml:30
@@ -298,7 +298,7 @@ resources/domains/ProdResource.xml:23
 resources/views/ProdProduct.xml:13
 resources/views/ProductionOrder.xml:23
 resources/views/ProductionOrderWizard.xml:10"
-"Production and cost settings",,,"resources/views/ProdResource.xml:54"
+"Production and cost settings","Paramétrages production et coûts",,"resources/views/ProdResource.xml:54"
 "Production config","Config. Production",,"resources/domains/Company.xml:10"
 "Production configuration","Configuration de la production",,"resources/views/ProductionConfig.xml:10"
 "Production configurations","Configs. Production",,"resources/views/Menu.xml:116
@@ -351,7 +351,7 @@ resources/views/OperationOrder.xml:14"
 resources/domains/OperationOrder.xml:40"
 "Remains","Restes",,"resources/views/BillOfMaterial.xml:28
 resources/views/BillOfMaterial.xml:67"
-"Replacement machines",,,"resources/domains/ProdResource.xml:30
+"Replacement machines","Machine de remplacement",,"resources/domains/ProdResource.xml:30
 resources/views/ProdResource.xml:38"
 "Resource","Ressource",,"resources/domains/OperationOrder.xml:24
 resources/domains/ProdHumanResource.xml:12
@@ -384,7 +384,7 @@ resources/domains/OperationOrder.xml:43"
 resources/domains/ManufOrder.xml:54"
 "Stock moves","Mouvements de stock",,"resources/views/ManufOrder.xml:84
 resources/views/OperationOrder.xml:89"
-"Sub-process configuration",,,"resources/views/BillOfMaterial.xml:60"
+"Sub-process configuration","Configuration des sous-process",,"resources/views/BillOfMaterial.xml:60"
 "To consume manuf order",,,"resources/domains/ProdProduct.xml:22"
 "To consume operation order",,,"resources/domains/ProdProduct.xml:18"
 "To consume prod process line",,,"resources/domains/ProdProduct.xml:29"
@@ -397,9 +397,9 @@ resources/domains/ProductionOrder.xml:13"
 "Unit","Unité",,"resources/domains/BillOfMaterial.xml:17
 resources/domains/ProdProduct.xml:14
 resources/domains/ProdRemains.xml:15"
-"Update product cost price",,,"resources/views/BillOfMaterial.xml:33"
+"Update product cost price","Mettre à jour coût de revient",,"resources/views/BillOfMaterial.xml:33"
 "Validate","Valider",,"resources/views/ProductionOrderWizard.xml:15"
-"Version",,,"resources/domains/Product.xml:11"
+"Version","Version",,"resources/domains/Product.xml:11"
 "View Bill Of Materials","Voir les nomenclatures",,"resources/views/Menu.xml:155"
 "View Manuf. Orders","Voir les OF",,"resources/views/Menu.xml:153"
 "View Operation Orders","Voir les Opérations de fabr.",,"resources/views/Menu.xml:154"

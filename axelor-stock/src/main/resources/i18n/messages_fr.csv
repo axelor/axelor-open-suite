@@ -7,13 +7,13 @@ resources/views/StockMove.xml:93"
 "Alert","Alerte",,"resources/views/Selects.xml:46"
 "Arrivals History","Historique réceptions",,"resources/views/StockMove.xml:299"
 "Basic","Basique",,"resources/views/CreateInventoryWizard.xml:8"
-"Both source location address and delivery (to) address are required to define the delivery itinerary",,,"resources/views/StockMove.xml:272"
+"Both source location address and delivery (to) address are required to define the delivery itinerary","Les champs Emplacement source et A l'adresse sont requis pour définir l'itinéraire de livraison.",,"resources/views/StockMove.xml:272"
 "Cancel","Annuler",,"resources/views/Inventory.xml:32
 resources/views/StockMove.xml:96"
 "Canceled","Annulé",,"resources/views/Selects.xml:24
 resources/views/Selects.xml:31"
 "Cancelled Arrivals","Réceptions annulées",,"resources/views/StockMove.xml:302"
-"Check Duplicate",,,"resources/views/MinStockRules.xml:8"
+"Check Duplicate","Vérifier doublons",,"resources/views/MinStockRules.xml:8"
 "Company","Société",,"resources/domains/Location.xml:13
 resources/domains/StockConfig.xml:11
 resources/domains/StockMove.xml:26"
@@ -23,7 +23,7 @@ resources/views/StockMove.xml:86"
 "Country","Pays",,"resources/views/Charts.xml:113
 resources/views/Charts.xml:35
 resources/views/Charts.xml:72"
-"Create Stock Move",,,"resources/views/Menu.xml:196"
+"Create Stock Move","Créer Mvt. Stock",,"resources/views/Menu.xml:196"
 "Create inventory","Créer inventaire",,"resources/views/CreateInventoryWizard.xml:7
 resources/views/Location.xml:21
 resources/views/Location.xml:57"
@@ -42,7 +42,7 @@ resources/views/Dashboard.xml:7"
 "Customer deliveries filters","Livraisons Clients",,"resources/views/StockMove.xml:277"
 "Customer deliveries statistics","Statistiques de livraison client",,"resources/views/Charts.xml:118
 resources/views/Dashboard.xml:25"
-"Customer returns",,,"resources/views/Menu.xml:103
+"Customer returns","Retours clients",,"resources/views/Menu.xml:103
 resources/views/Menu.xml:106"
 "Customer virtual location","Emplacement virtuel client",,"resources/domains/StockConfig.xml:13"
 "Dashboard","Tableau de bord",,"resources/views/Dashboard.xml:39
@@ -69,7 +69,7 @@ resources/views/Charts.xml:389"
 "Estimated date","Date estimée",,"resources/domains/StockMove.xml:17"
 "Excl. out of stock products ?","Excl. Produits sans stock ?",,"resources/domains/Inventory.xml:22"
 "Exclude out of stock products ?","Exclure produits sans stock ?",,"resources/views/CreateInventoryWizard.xml:16"
-"Expected Qty",,,"resources/domains/StockMoveLine.xml:15"
+"Expected Qty","Qté prévue",,"resources/domains/StockMoveLine.xml:15"
 "Export","Export",,"resources/views/Inventory.xml:35"
 "External","Externe",,"resources/views/Selects.xml:11"
 "File Format","Format fichier",,"resources/domains/Inventory.xml:17"
@@ -143,7 +143,7 @@ resources/domains/LocationLine.xml:10
 resources/domains/MinStockRules.xml:12
 resources/views/Charts.xml:199
 resources/views/CreateInventoryWizard.xml:9"
-"Location Content",,,"resources/views/Location.xml:34"
+"Location Content","Contenu de l'emplacement",,"resources/views/Location.xml:34"
 "Location Details","Produits présents dans l'emplacement (vue non-consolidée)",,"resources/domains/LocationLine.xml:18"
 "Location Lines","Ligne d'emplacement",,"resources/views/Location.xml:36"
 "Location content","Contenu de l'emplacement",,"resources/views/Location.xml:62"
@@ -158,7 +158,7 @@ resources/views/Menu.xml:153
 resources/views/MinStockRules.xml:6"
 "Month","Mois",,"resources/views/Charts.xml:336"
 "Move date","Date du mouvement",,"resources/domains/StockMove.xml:18"
-"Move details",,,"resources/views/StockMoveLine.xml:53"
+"Move details","Détails de mouvement",,"resources/views/StockMoveLine.xml:53"
 "Moves Cancelled","Mouvements annulés",,"resources/views/StockMove.xml:314"
 "Moves History","Historique des Mouvements",,"resources/views/StockMove.xml:311"
 "Moves To Prepare","Mouvement à préparer",,"resources/views/StockMove.xml:308"
@@ -177,8 +177,8 @@ resources/views/StockMove.xml:94"
 "Planned","Planifié",,"resources/views/Selects.xml:22
 resources/views/Selects.xml:29"
 "Planned Inventories","Inventaires Planifiés",,"resources/views/Inventory.xml:128"
-"Please fill in the delivery (to) address to get the delivery itinerary.",,,"resources/views/StockMove.xml:274"
-"Please fill in the source (from) location address to get the delivery itinerary.",,,"resources/views/StockMove.xml:273"
+"Please fill in the delivery (to) address to get the delivery itinerary.","Veuillez remplir le champ A l'adresse pour obtenir l'itinéraire de livraison.",,"resources/views/StockMove.xml:274"
+"Please fill in the source (from) location address to get the delivery itinerary.","Veuillez remplir l'adresse associé au champ Emplacement source pour obtenir l'itinéraire de livraison.",,"resources/views/StockMove.xml:273"
 "Print","Imprimer",,"resources/views/Inventory.xml:37
 resources/views/Location.xml:22
 resources/views/Location.xml:8
@@ -229,7 +229,7 @@ resources/views/Selects.xml:30"
 "Ref.","Réf.",,"resources/domains/StockMove.xml:12"
 "Refill Qty","Qté à recommander",,"resources/domains/MinStockRules.xml:15"
 "Refill type","Mode de réappro",,"resources/domains/MinStockRules.xml:18"
-"Reordering managed by",,,"resources/views/MinStockRules.xml:28"
+"Reordering managed by","Mode de gestion des réapprovisionnements",,"resources/views/MinStockRules.xml:28"
 "Return surplus","Retourner surplus",,"resources/domains/StockMove.xml:31"
 "Ship/Receive all products","Envois/Réception de produits",,"resources/views/StockMove.xml:107"
 "Shipped date","Date d'expédition",,"resources/domains/StockMoveLine.xml:26"
@@ -240,7 +240,7 @@ resources/views/StockMove.xml:119"
 "Split","Scinder",,"resources/views/StockMove.xml:114"
 "Split by unit","Scinder par unité",,"resources/views/StockMove.xml:105"
 "Split in Qty of","Scinder par qté de",,"resources/views/StockMove.xml:113"
-"Split/Ship/Receive",,,"resources/views/StockMove.xml:104"
+"Split/Ship/Receive","Scinder/Expédier/Recevoir",,"resources/views/StockMove.xml:104"
 "Status","Statut",,"resources/domains/Inventory.xml:13
 resources/domains/StockMove.xml:20
 resources/views/Charts.xml:149"
@@ -273,7 +273,7 @@ resources/views/LocationLine.xml:43
 resources/views/LocationLine.xml:6"
 "Stock Move","Mouvement stock",,"resources/views/Menu.xml:197
 resources/views/StockMoveLine.xml:45"
-"Stock Moves",,,"resources/views/Charts.xml:150
+"Stock Moves","Mouvements stocks",,"resources/views/Charts.xml:150
 resources/views/Charts.xml:183
 resources/views/Charts.xml:36"
 "Stock Moves Lines","Lignes Mvt Stock",,"resources/views/Menu.xml:129
@@ -341,10 +341,10 @@ resources/views/StockMove.xml:6"
 "Supplier Arrivals","Receptions Fournisseur",,"resources/views/Menu.xml:22
 resources/views/Menu.xml:25"
 "Supplier arrivals filters","Filtres Arrivages fournisseurs",,"resources/views/StockMove.xml:292"
-"Supplier deliveries","Receptions fournisseurs",,"resources/views/Menu.xml:234
+"Supplier deliveries","Réceptions fournisseurs",,"resources/views/Menu.xml:234
 resources/views/Menu.xml:73
 resources/views/Menu.xml:76"
-"Supplier returns",,,"resources/views/Menu.xml:83
+"Supplier returns","Retours fournisseurs",,"resources/views/Menu.xml:83
 resources/views/Menu.xml:86"
 "Supplier virtual location","Emplacement virtuel fournisseur",,"resources/domains/StockConfig.xml:14"
 "Team","Equipe",,"resources/domains/MinStockRules.xml:21"
@@ -373,14 +373,14 @@ resources/views/StockMove.xml:62"
 "User","Utilisateur",,"resources/domains/MinStockRules.xml:20"
 "Validate","Valider",,"resources/views/CreateInventoryWizard.xml:20"
 "Value","Valeur",,"resources/views/Charts.xml:200"
-"View Customer deliveries",,,"resources/views/Menu.xml:209"
+"View Customer deliveries","Voir Livraisons Clients",,"resources/views/Menu.xml:209"
 "View Direction","Voir itinéraire",,"resources/views/StockMove.xml:101
 resources/views/StockMove.xml:20
 resources/views/StockMove.xml:38
 resources/views/StockMove.xml:56"
-"View Internal moves",,,"resources/views/Menu.xml:220"
-"View Stock moves",,,"resources/views/Menu.xml:200"
-"View Supplier deliveries",,,"resources/views/Menu.xml:231"
+"View Internal moves","Voir Mvts. Internes",,"resources/views/Menu.xml:220"
+"View Stock moves","Voir Mvts de stock",,"resources/views/Menu.xml:200"
+"View Supplier deliveries","Voir Réceptions fournisseur",,"resources/views/Menu.xml:231"
 "View location content","Voir contenu de l'emplacement",,"resources/views/Location.xml:35"
 "Virtual","Virtuel",,"resources/views/Selects.xml:12"
 "Virtual locations informations","Informations Stocks Virtuels",,"resources/views/StockConfig.xml:14"

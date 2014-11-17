@@ -14,8 +14,8 @@ resources/views/Charts.xml:442"
 "Base W.T.","Base H.T.",,"resources/domains/SaleOrderLineTax.xml:10"
 "Batchs","Batch",,"resources/domains/SaleBatch.xml:17
 resources/domains/SaleOrder.xml:25"
-"Business project",,,"resources/views/SaleOrder.xml:87"
-"Call",,,"resources/views/SaleOrder.xml:388"
+"Business project","Affaire/Projet",,"resources/views/SaleOrder.xml:87"
+"Call","Appel",,"resources/views/SaleOrder.xml:388"
 "Cancel","Annuler",,"resources/views/SaleOrder.xml:121"
 "Category","Catégorie",,"resources/views/Charts.xml:720"
 "Category sale turnover (Excl. Tax) per month","CA H.T. par catégorie par mois",,"resources/views/Charts.xml:750
@@ -27,9 +27,9 @@ resources/domains/SaleOrder.xml:10"
 "Compute","Calculer",,"resources/views/SaleOrder.xml:118"
 "Confirm","Confirmer",,"resources/views/SaleOrder.xml:119"
 "Contact","Contact",,"resources/domains/SaleOrder.xml:29"
-"Content",,,"resources/views/SaleOrder.xml:63"
+"Content","Contenu",,"resources/views/SaleOrder.xml:63"
 "Country","Pays",,"resources/views/Charts.xml:412"
-"Create Quote",,,"resources/views/Menu.xml:73"
+"Create Quote","Créer Devis",,"resources/views/Menu.xml:73"
 "Create SO","Créer Devis",,"resources/views/Menu.xml:62"
 "Creation date","Date de création",,"resources/domains/SaleOrder.xml:23"
 "Currency","Devise",,"resources/domains/SaleOrder.xml:21"
@@ -73,7 +73,7 @@ resources/views/Charts.xml:678
 resources/views/Charts.xml:704
 resources/views/Charts.xml:726
 resources/views/Charts.xml:752"
-"Full name",,,"resources/domains/SaleOrder.xml:12"
+"Full name","Nom complet",,"resources/domains/SaleOrder.xml:12"
 "Generate invoice","Générer facture",,"resources/views/SaleOrder.xml:122"
 "Import","Import",,"resources/domains/SaleConfig.xml:9
 resources/domains/SaleOrder.xml:11
@@ -161,7 +161,7 @@ resources/domains/SaleOrderSubLine.xml:25"
 "Qty","Qté",,"resources/domains/SaleOrderLine.xml:14
 resources/domains/SaleOrderSubLine.xml:17"
 "Quotes","Devis",,"resources/views/Menu.xml:79"
-"Quotes & Orders",,,"resources/views/Menu.xml:74"
+"Quotes & Orders","Devis & Commandes",,"resources/views/Menu.xml:74"
 "Reference","Référence",,"resources/domains/SaleOrder.xml:20"
 "SO Tax line","Ligne de TVA",,"resources/views/SaleOrderLineTax.xml:14"
 "SO Tax lines","Les lignes de TVA",,"resources/views/SaleOrderLineTax.xml:6"
@@ -267,7 +267,7 @@ resources/domains/SaleOrderSubLine.xml:12"
 "Source",,,"resources/domains/SaleOrder.xml:53"
 "Specific settings","Configuration spécifique",,"resources/views/SaleOrder.xml:91"
 "Status","Statut",,"resources/domains/SaleOrder.xml:48"
-"Stock location",,,"resources/views/SaleOrder.xml:84"
+"Stock location","Emplacement de stock",,"resources/views/SaleOrder.xml:84"
 "Subscription","Abonnement",,"resources/views/SaleOrder.xml:102"
 "Subscription dates","Date d'abonnement",,"resources/views/SaleOrder.xml:103"
 "Subscription end date","Date de fin d'abonnement",,"resources/domains/SaleOrder.xml:68"
@@ -301,7 +301,7 @@ resources/domains/SaleOrderLine.xml:19
 resources/domains/SaleOrderSubLine.xml:20"
 "Total W.T. in company currency","Total H.T. Devise Sté",,"resources/domains/SaleOrderLine.xml:40
 resources/domains/SaleOrderSubLine.xml:28"
-"Total tax",,,"resources/domains/SaleOrder.xml:45"
+"Total tax","Total T.V.A.",,"resources/domains/SaleOrder.xml:45"
 "TurnOver","CA HT",,"resources/views/Charts.xml:104
 resources/views/Charts.xml:130
 resources/views/Charts.xml:199
@@ -342,8 +342,8 @@ resources/domains/SaleOrderSubLine.xml:18"
 "Validate","Valider",,"resources/views/SaleOrder.xml:120"
 "Validated by","Validé par",,"resources/domains/SaleOrder.xml:70"
 "Validation date","Date de validation",,"resources/domains/SaleOrder.xml:24"
-"View Orders",,,"resources/views/Menu.xml:89"
-"View Quotes",,,"resources/views/Menu.xml:77"
+"View Orders","Voir Commandes",,"resources/views/Menu.xml:89"
+"View Quotes","Voir Devis",,"resources/views/Menu.xml:77"
 "Word Export","Export Word",,"resources/views/SaleOrder.xml:36"
 "Year","Année",,"resources/views/Charts.xml:103
 resources/views/Charts.xml:129
