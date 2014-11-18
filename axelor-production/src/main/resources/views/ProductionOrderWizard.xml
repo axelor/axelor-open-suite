@@ -29,7 +29,7 @@
 	</action-record>
 	
 	<action-record name="action-production-order-wizard-record-product" model="com.axelor.apps.base.db.Wizard">
-		<field name="product" expr="eval: billOfMaterial?.product" if="billOfMaterial"/>
+		<field name="product" expr="eval: billOfMaterial?.product" if="billOfMaterial != null &amp;&amp; product == null" />
 	</action-record>
 	
 
