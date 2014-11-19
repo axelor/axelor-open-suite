@@ -61,7 +61,7 @@
 		 <dataset type="sql">
 		  
 		 SELECT 
-		    date_part('year',_invoice.invoice_date) || '-' || date_part('mon',_invoice.invoice_date) || '-01' AS _month_no,
+		    to_char(_invoice.invoice_date,'yyyy-MM') AS _month_no,
 		    coalesce(_product._product_type,'other') AS product,
 		    coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
 		  FROM
@@ -119,7 +119,7 @@
 	  <dataset type="sql">
 	  
 	  SELECT 
-	     date_part('year',_invoice._invoice_date) || '-' || date_part('mon',_invoice._invoice_date) || '-01' AS _month_no,
+	    to_char(_invoice._invoice_date,'yyyy-MM') AS _month_no,
 	    coalesce(_product._product_type,'other') AS product,
 	    coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
 	  FROM
@@ -230,7 +230,7 @@
 	<chart stacked="true" name="chart.purchase.buyer.dashboard.prod.qty.suppl.invoices.last.12m" title="Number Of Units On Supplier Invoices On Last 12 Month">
 	  <dataset type="sql">
 	      SELECT 
-	        date_part('year',_invoice._invoice_date) || '-' || date_part('mon',_invoice._invoice_date) || '-01' AS _month,
+	        to_char(_invoice._invoice_date,'yyyy-MM') AS _month,
 	        coalesce(_product._product_type,'other') AS _product,
 	        SUM(_invoice._qty) AS _qty
 	      FROM  
@@ -274,7 +274,7 @@
 	<chart stacked="true" name="chart.purchase.buyer.dashboard.prod.turnover.suppl.invoices.last.12m" title="Turnover On Supplier Invoices On Last 12 Month">
 	  <dataset type="sql">
 	  SELECT 
-	     date_part('year',_invoice._invoice_date) || '-' || date_part('mon',_invoice._invoice_date) || '-01' AS _month,
+	    to_char(_invoice._invoice_date,'yyyy-MM') AS _month,
 	    coalesce(_product._product_type,'other') AS _product,
 	    coalesce(SUM(_invoice._turn_over),00) AS _turn_over
 	  FROM  
@@ -319,7 +319,7 @@
 	  <dataset type="sql">
 	   
 	    SELECT  
-	    date_part('year',_invoices._invoice_date) || '-' || date_part('mon',_invoices._invoice_date) || '-01' AS _month,
+	    	to_char(_invoices._invoice_date,'yyyy-MM') AS _month,
 	        SUM(_invoices._amount) AS _amount
 	    FROM
 	        (SELECT 
@@ -495,7 +495,7 @@
 	  <dataset type="sql">
 	    SELECT
 	      coalesce(SUM(self.ex_tax_total),0.00)  AS ex_tax_total,
-	     date_part('year',self.invoice_date) || '-' || date_part('mon',self.invoice_date) || '-01' AS _month
+	      to_char(self.invoice_date,'yyyy-MM') AS _month
 	    FROM
 	      account_invoice self
 	    JOIN
@@ -589,8 +589,8 @@
 	  <dataset type="sql">
 	    
 	  SELECT
-	    coalesce(SUM(self.ex_tax_total),0.00)  AS ex_tax_total,
-	     date_part('year',self.invoice_date) || '-' || date_part('mon',self.invoice_date) || '-01' AS _month
+	     coalesce(SUM(self.ex_tax_total),0.00)  AS ex_tax_total,
+	     to_char(self.invoice_date,'yyyy-MM') AS _month
 	  FROM
 	      account_invoice self
 	  JOIN   

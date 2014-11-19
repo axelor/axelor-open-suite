@@ -4,74 +4,72 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 	  
 	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.dates.this.last.year">
-	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
-	  <field name="toDateLY" expr="eval:LocalDate.parse(todayDate).minusYears(1).withMonthOfYear(12).withDayOfMonth(31)"/>  
+		<field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
+		<field name="toDateLY" expr="eval:LocalDate.parse(todayDate).minusYears(1).withMonthOfYear(12).withDayOfMonth(31)"/>  
 	</action-record>
 	
 	<chart onInit="action.general.chart.set.date.6m" name="chart.family.sale.turnover.per.month" title="Family sale turnover (Excl. Tax) per month">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date" widget="required" x-required="true" />
-	    <field type="date" name="toDate" title="To Date" widget="required" x-required="true" />
-	  </search-fields>
-	  <dataset type="jpql">
-	  SELECT
-		  SUM(self.exTaxTotal) AS _amount,
-		  YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01' AS _month
-	  FROM
-	 	 SaleOrderLine self
-	  WHERE
-		  self.saleOrder.statusSelect = 3
-		  AND self.saleOrder.company = :activeCompany
-		  AND self.product.productFamily.id = :id
-		  AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
-	  GROUP BY
-		  YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01'  
-	  ORDER BY
-	  	  _month
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_amount" type="bar" title="Turnover"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date" widget="required" x-required="true" />
+			<field type="date" name="toDate" title="To Date" widget="required" x-required="true" />
+		</search-fields>
+		<dataset type="jpql">
+			SELECT
+				SUM(self.exTaxTotal) AS _amount,
+				to_char(self.saleOrder.validationDate,'yyyy-MM') AS _month
+			FROM
+				SaleOrderLine self
+			WHERE
+				self.saleOrder.statusSelect = 3
+				AND self.saleOrder.company = :activeCompany
+				AND self.product.productFamily.id = :id
+				AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			GROUP BY
+				to_char(self.saleOrder.validationDate,'yyyy-MM') 
+			ORDER BY
+				_month
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_amount" type="bar" title="Turnover"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart onInit="action.sale.chart.set.dates.this.last.year" name="chart.sale.turnover.ytd.vs.previous.years.by.month" title="Sales turnover comparison per month this year vs past years">
-	  <search-fields>
-	    <field name="toDateLY" type="date" title="Year 1 To Date"/>
-	    <field name="toDate" type="date" title="Year 2 To Date"/>
-	  </search-fields>
-	  <dataset type="sql">
-	    
-	    SELECT
-	      SUM(_line.ex_tax_total) AS _turn_over,
-	      DATE_PART('month', self.validation_date) AS _month,  
-	      DATE_PART('year', self.validation_date) AS _year
-	    FROM
-	      sale_sale_order AS self
-	    JOIN
-	      sale_sale_order_line AS _line
-	      ON _line.sale_order = self.id
-	    JOIN
-	      auth_user AS _user
-	      ON _user.id = :_user_id
-	    WHERE
-	      self.status_select = 3
-	      AND self.company = _user.active_company  
-	      AND(
-	          ( self.validation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
-	          AND self.validation_date &lt;= DATE(:toDate))
-	        OR
-	          (self.validation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD') 
-	          AND self.validation_date &lt;= DATE(:toDateLY))
-	         )      
-	    GROUP BY
-	      _month, _year
-	    ORDER BY
-	      _month, _year
-	  
-	  </dataset>
-	  <category key="_month" type="number" title="Month"/>
-	  <series key="_turn_over" type="bar" title="TurnOver" groupBy="_year"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field name="toDateLY" type="date" title="Year 1 To Date"/>
+			<field name="toDate" type="date" title="Year 2 To Date"/>
+		</search-fields>
+		<dataset type="sql">
+			SELECT
+				SUM(_line.ex_tax_total) AS _turn_over,
+				DATE_PART('month', self.validation_date) AS _month,  
+				DATE_PART('year', self.validation_date) AS _year
+			FROM
+				sale_sale_order AS self
+			JOIN
+				sale_sale_order_line AS _line
+				ON _line.sale_order = self.id
+			JOIN
+				auth_user AS _user
+				ON _user.id = :_user_id
+			WHERE
+				self.status_select = 3
+				AND self.company = _user.active_company  
+				AND(
+				    ( self.validation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
+				    AND self.validation_date &lt;= DATE(:toDate))
+					OR
+				    (self.validation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD') 
+				    AND self.validation_date &lt;= DATE(:toDateLY))
+				 )      
+			GROUP BY
+				_month, _year
+			ORDER BY
+				_month, _year
+		</dataset>
+		<category key="_month" type="number" title="Month"/>
+		<series key="_turn_over" type="bar" title="TurnOver" groupBy="_year"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	  
 	<chart name="chart.sale.turnover.ytd.vs.lastyear" title="Sales turnover this year vs last year">
@@ -131,104 +129,98 @@
 	</chart>
 	
 	<chart name="chart.sale.turnover.ytd.vs.lastyear.by.family" title="Sales Turnover YTD vs Last year by Product Family" stacked="true">
-	  <dataset type="sql">
-	    
-	    SELECT
-	      coalesce(SUM(_line.ex_tax_total), 0.00) AS _turn_over,
-	      _family.name AS _product_family,
-	      DATE_PART('year', _order.validation_date) AS _year
-	    FROM
-	      sale_sale_order_line AS _line
-	    JOIN
-	      sale_sale_order AS _order
-	    ON
-	      _order.id = _line.sale_order
-	    JOIN
-	      base_product AS _product
-	    ON
-	      _product.id = _line.product
-	    JOIN
-	      base_product_family AS _family
-	    ON
-	      _family.id = _product.product_family
-	    WHERE
-	      DATE_PART('year', _order.validation_date) IN 
-	      (DATE_PART('year', CURRENT_DATE), DATE_PART('year', CURRENT_DATE - INTERVAL '1 year'))
-	    GROUP BY
-	      _product_family, _year
-	    
-	  </dataset>
-	  <category key="_year" type="text" title="Year"/>
-	  <series key="_turn_over" groupBy="_product_family" type="bar" title="Turnover"/>
+		<dataset type="sql">
+			SELECT
+			  coalesce(SUM(_line.ex_tax_total), 0.00) AS _turn_over,
+			  _family.name AS _product_family,
+			  DATE_PART('year', _order.validation_date) AS _year
+			FROM
+			  sale_sale_order_line AS _line
+			JOIN
+			  sale_sale_order AS _order
+			ON
+			  _order.id = _line.sale_order
+			JOIN
+			  base_product AS _product
+			ON
+			  _product.id = _line.product
+			JOIN
+			  base_product_family AS _family
+			ON
+			  _family.id = _product.product_family
+			WHERE
+			  DATE_PART('year', _order.validation_date) IN 
+			  (DATE_PART('year', CURRENT_DATE), DATE_PART('year', CURRENT_DATE - INTERVAL '1 year'))
+			GROUP BY
+			  _product_family, _year
+		</dataset>
+		<category key="_year" type="text" title="Year"/>
+		<series key="_turn_over" groupBy="_product_family" type="bar" title="Turnover"/>
 	</chart>
 	
 	<chart onInit="action.sale.chart.set.dates.this.last.year" name="chart.sale.turnover.ytd.vs.past.year" title="Sales turnover this year vs past years">
-	  <search-fields>
-	    <field name="toDate" type="date" title="This Year To Date"/>
-	    <field name="toDateLY" type="date" title="Last Year To Date"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-	    SELECT
-	      SUM(_order.ex_tax_total) AS _turn_over,
-	      DATE_PART('year',_order.validation_date) AS _year
-	    FROM
-	      sale_sale_order AS _order  
-	    JOIN
-	      auth_user AS _user
-	      ON _user.id = :_user_id
-	    WHERE
-	      _order.status_select=3
-	      AND _order.company = _user.active_company  
-	      AND(
-	          ( _order.validation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
-	          AND _order.validation_date &lt;= DATE(:toDate))
-	        OR
-	          (_order.validation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD') 
-	          AND _order.validation_date &lt;= DATE(:toDateLY))
-	         )      
- 		  AND
-    	    _order.ex_tax_total > 0.00	         
-	    GROUP BY
-	      _year
-	    ORDER BY
-	      _year  
-	        
-	  </dataset>
-	  <category key="_year" type="text" title="Year"/>
-	  <series key="_turn_over" type="bar" title="TurnOver"/>
+		<search-fields>
+			<field name="toDate" type="date" title="This Year To Date"/>
+			<field name="toDateLY" type="date" title="Last Year To Date"/>
+		</search-fields>
+		<dataset type="sql">
+			SELECT
+			  SUM(_order.ex_tax_total) AS _turn_over,
+			  DATE_PART('year',_order.validation_date) AS _year
+			FROM
+			  sale_sale_order AS _order  
+			JOIN
+			  auth_user AS _user
+			  ON _user.id = :_user_id
+			WHERE
+			  _order.status_select=3
+			  AND _order.company = _user.active_company  
+			  AND(
+			      ( _order.validation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
+			      AND _order.validation_date &lt;= DATE(:toDate))
+			    OR
+			      (_order.validation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD') 
+			      AND _order.validation_date &lt;= DATE(:toDateLY))
+			     )      
+			AND
+			    _order.ex_tax_total > 0.00	         
+			GROUP BY
+			  _year
+			ORDER BY
+			  _year  
+		</dataset>
+		<category key="_year" type="text" title="Year"/>
+		<series key="_turn_over" type="bar" title="TurnOver"/>
 	</chart>
 	
 	<chart name="chart.sale.turnover.by.family.ytd.vs.lastyear" title="Product Family Sales Turnover this year vs last year">
-	  <dataset type="sql">
-	    
-	    SELECT
-	      coalesce(SUM(_line.ex_tax_total), 0.00) AS _turn_over,
-	      _family.name AS _product_family,
-	      DATE_PART('year', _order.validation_date) AS _year
-	    FROM
-	      sale_sale_order_line AS _line
-	    JOIN
-	      sale_sale_order AS _order
-	    ON
-	      _order.id = _line.sale_order
-	    JOIN
-	      base_product AS _product
-	    ON
-	      _product.id = _line.product
-	    JOIN
-	      base_product_family AS _family
-	    ON
-	      _family.id = _product.product_family
-	    WHERE
-	      DATE_PART('year', _order.validation_date) IN 
-	      (DATE_PART('year', CURRENT_DATE), DATE_PART('year', CURRENT_DATE - INTERVAL '1 year'))
-	    GROUP BY
-	      _product_family, _year
-	    
-	  </dataset>
-	  <category key="_product_family" type="text" title="Product Family"/>
-	  <series key="_turn_over" groupBy="_year" type="bar" title="Turnover"/>
+		<dataset type="sql">
+			SELECT
+			  coalesce(SUM(_line.ex_tax_total), 0.00) AS _turn_over,
+			  _family.name AS _product_family,
+			  DATE_PART('year', _order.validation_date) AS _year
+			FROM
+			  sale_sale_order_line AS _line
+			JOIN
+			  sale_sale_order AS _order
+			ON
+			  _order.id = _line.sale_order
+			JOIN
+			  base_product AS _product
+			ON
+			  _product.id = _line.product
+			JOIN
+			  base_product_family AS _family
+			ON
+			  _family.id = _product.product_family
+			WHERE
+			  DATE_PART('year', _order.validation_date) IN 
+			  (DATE_PART('year', CURRENT_DATE), DATE_PART('year', CURRENT_DATE - INTERVAL '1 year'))
+			GROUP BY
+			  _product_family, _year
+		</dataset>
+		<category key="_product_family" type="text" title="Product Family"/>
+		<series key="_turn_over" groupBy="_year" type="bar" title="Turnover"/>
 	</chart>
 	
 	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.date">
@@ -243,509 +235,476 @@
 	</action-record>
 	
 	<chart onInit="action.sale.chart.set.date.1m" name="chart.sale.manager.dashboard.turnover.per.team" title="Turnover (excl. Tax) per team">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-	  select
-	    team.name as _team_name,
-	    coalesce(sum(self.ex_tax_total),0) as amount
-	  from 
-	    sale_sale_order self
-	  JOIN
-	    base_team team
-	    ON team.id=self.team
-	  JOIN
-	    auth_user _user
-	    ON _user.id = :_user_id
-	    AND self.company = _user.active_company
-	  WHERE
-	    self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-	    AND self.status_select=3
-	  GROUP BY
-	    team.name
-	  HAVING  
-	    sum(self.ex_tax_total) > 0
-	    	  
-	  </dataset>
-	  <category key="_team_name" type="text" title="Team"/>
-	  <series key="amount" type="bar" title="Amount"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date"/>
+		</search-fields>
+		<dataset type="sql">
+	  		SELECT
+	    		team.name AS _team_name,
+	    		COALESCE(SUM(self.ex_tax_total),0) AS amount
+	  		FROM 
+	    		sale_sale_order self
+	  		JOIN
+	    		base_team team ON team.id=self.team
+	  		JOIN 
+	    		auth_user _user ON _user.id = :_user_id AND self.company = _user.active_company
+	  		WHERE
+	    		self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select=3
+	  		GROUP BY
+	    		team.name
+	  		HAVING  
+	    		sum(self.ex_tax_total) > 0
+		</dataset>
+		<category key="_team_name" type="text" title="Team"/>
+		<series key="amount" type="bar" title="Amount"/>
 	</chart>
 	  
 	<chart onInit="action.sale.chart.set.date.1m" name="chart.sale.manager.dashboard.turnover.per.saleman" title="Turnover (excl. Tax) per saleman">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-	  SELECT
-	    sum(self.ex_tax_total) as amount,
-	    saleman.full_name as saleman_name
-	  FROM
-	    sale_sale_order self
-	  JOIN
-	   	auth_user saleman
-	    ON saleman.id=self.saleman_user
-	  JOIN
-	    auth_user _user
-	    ON _user.id = :_user_id
-	    AND self.company = _user.active_company
-	  WHERE
-	    self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-	    AND self.status_select=3
-	  GROUP BY
-	    saleman_name
-	  HAVING
-    	sum(self.ex_tax_total) > 0
-	  </dataset>
-	  <category key="saleman_name" type="text" title="Salesman"/>
-	  <series key="amount" type="bar" title="Amount"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date"/>
+		</search-fields>
+		<dataset type="sql">
+			SELECT
+			  sum(self.ex_tax_total) as amount,
+			  saleman.full_name as saleman_name
+			FROM
+			  sale_sale_order self
+			JOIN
+			 	auth_user saleman
+			  ON saleman.id=self.saleman_user
+			JOIN
+			  auth_user _user
+			  ON _user.id = :_user_id
+			  AND self.company = _user.active_company
+			WHERE
+			  self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			  AND self.status_select=3
+			GROUP BY
+			  saleman_name
+			HAVING
+			 	sum(self.ex_tax_total) > 0
+		</dataset>
+		<category key="saleman_name" type="text" title="Salesman"/>
+		<series key="amount" type="bar" title="Amount"/>
 	</chart>
 	
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.manager.dashboard.sale.distribution.per.family" title="Sales distribution per product family">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-	  select
-	    sum(self.ex_tax_total) as amount,
-	    family.name as family_name
-	  FROM
-	    sale_sale_order self
-	  JOIN
-	    sale_sale_order_line _line
-	    ON _line.sale_order=self.id
-	  JOIN
-	    base_product products
-	    ON products.id=_line.product
-	  JOIN
-	    base_product_family family
-	    ON products.product_family=family.id
-	  JOIN
-	    auth_user _user
-	    ON _user.id = :_user_id
-	    AND self.company = _user.active_company
-	  WHERE
-	    self.status_select=3    
-	  AND
-	    self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-	  GROUP BY
-	    family_name
-	  HAVING
-    	sum(self.ex_tax_total) > 0
-	  </dataset>
-	  <category key="family_name" type="text" title="Product Family"/>
-	  <series key="amount" type="donut" title="Amount"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date"/>
+		</search-fields>
+	  	<dataset type="sql">
+			SELECT
+				SUM(self.ex_tax_total) AS amount,
+				family.name AS family_name
+			FROM
+				sale_sale_order self
+			JOIN
+				sale_sale_order_line _line
+				ON _line.sale_order=self.id
+			JOIN
+				base_product products
+				ON products.id=_line.product
+			JOIN
+				base_product_family family
+				ON products.product_family=family.id
+			JOIN
+				auth_user _user
+				ON _user.id = :_user_id
+				AND self.company = _user.active_company
+			WHERE
+				self.status_select=3 AND self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			GROUP BY
+			  family_name
+			HAVING
+			 	sum(self.ex_tax_total) > 0
+		</dataset>
+		<category key="family_name" type="text" title="Product Family"/>
+		<series key="amount" type="donut" title="Amount"/>
 	</chart>
 
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.manager.dashboard.product.sale.per.category" title="Sales distribution per product category">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-	  SELECT
-	    category.name as category_name,
-	    coalesce(sum(orders.ex_tax_total) ,0) as amount
-	  from
-	    sale_sale_order_line orders
-	  JOIN
-	    sale_sale_order self
-	    ON self.id = orders.sale_order
-	  JOIN
-	    base_product product
-	    ON product.id=orders.product
-	  JOIN
-	    base_product_category category
-	    ON product.product_category=category.id
-	  JOIN
-	    auth_user _user
-	    ON _user.id = :_user_id
-	    AND self.company = _user.active_company
-	  WHERE
-	    self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-	    AND self.status_select=3    
-	  GROUP BY
-	    category_name
-	  
-	  </dataset>
-	  <category key="category_name" type="text" title="Product Category"/>
-	  <series key="amount" type="donut" title="Amount"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date"/>
+		</search-fields>
+		<dataset type="sql">
+			SELECT
+				category.name AS category_name,
+				COALESCE(SUM(orders.ex_tax_total) ,0) AS amount
+			FROM
+				sale_sale_order_line orders
+			JOIN
+				sale_sale_order self
+				ON self.id = orders.sale_order
+			JOIN
+				base_product product
+				ON product.id=orders.product
+			JOIN
+				base_product_category category
+				ON product.product_category=category.id
+			JOIN
+				auth_user _user
+				ON _user.id = :_user_id
+				AND self.company = _user.active_company
+			WHERE
+				self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select=3    
+			GROUP BY
+				category_name
+		</dataset>
+		<category key="category_name" type="text" title="Product Category"/>
+		<series key="amount" type="donut" title="Amount"/>
 	</chart>
 	  
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.manager.dashboard.sale.per.country" title="Sales per country">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-	  SELECT
-	    country.name as country_name,
-	    coalesce(sum(self.ex_tax_total),0) as amount
-	  FROM
-	    sale_sale_order self
-	  JOIN
-	    base_address address
-	    ON address.id=self.main_invoicing_address
-	  JOIN
-	    base_country country
-	    ON country.id=address.addressl7country
-	  JOIN
-	    auth_user _user
-	    ON _user.id = :_user_id
-	    AND self.company = _user.active_company
-	  WHERE
-	    self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-	    and self.status_select=3
-	  GROUP BY
-	    country_name
-	  HAVING
-  		sum(self.ex_tax_total) > 0
-	  </dataset>
-	  <category key="country_name" type="text" title="Country"/>
-	  <series key="amount" type="donut" title="Amount"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date"/>
+		</search-fields>
+		<dataset type="sql">
+			SELECT
+			  country.name as country_name,
+			  coalesce(sum(self.ex_tax_total),0) as amount
+			FROM
+			  sale_sale_order self
+			JOIN
+			  base_address address
+			  ON address.id=self.main_invoicing_address
+			JOIN
+			  base_country country
+			  ON country.id=address.addressl7country
+			JOIN
+			  auth_user _user
+			  ON _user.id = :_user_id
+			  AND self.company = _user.active_company
+			WHERE
+			  self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			  and self.status_select=3
+			GROUP BY
+			  country_name
+			HAVING
+				sum(self.ex_tax_total) > 0
+		</dataset>
+		<category key="country_name" type="text" title="Country"/>
+		<series key="amount" type="donut" title="Amount"/>
 	</chart>
 	   
 	<chart stacked="true" onInit="action.general.chart.set.date.6m" name="chart.my.turnover.per.month" title="My Turnover per month">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-		  SELECT
-		    COALESCE(SUM(self.ex_tax_total), 0.00) AS _amount,   
-		    date_part('year',self.validation_date) || '-' || date_part('mon',self.validation_date) || '-01' AS _month
-		  FROM
-		    sale_sale_order AS self
-		  JOIN
-		    auth_user AS _user
-		    ON _user.id = :_user_id
-		  WHERE
-		    self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-		    AND self.saleman_user = :_user_id
-		    AND self.company = _user.active_company
-		  GROUP BY
-		    _month
-		  ORDER BY
-		    _month  
-	  
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_amount" type="bar" title="Amount"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date"/>
+		</search-fields>
+		<dataset type="sql">
+			SELECT
+				COALESCE(SUM(self.ex_tax_total), 0.00) AS _amount,   
+				TO_CHAR(self.validation_date,'yyyy-MM') AS _month
+			FROM
+				sale_sale_order AS self
+			JOIN
+				auth_user AS _user
+				ON _user.id = :_user_id
+			WHERE
+				self.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+				AND self.saleman_user = :_user_id
+				AND self.company = _user.active_company
+			GROUP BY
+				_month
+			ORDER BY
+				_month  
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_amount" type="bar" title="Amount"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	<chart stacked="true" onInit="action.sale.chart.set.date" name="chart.turnover.sale.by.month.by.category" title="Sales Turnover (Orders) by month by category">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-	  SELECT 
-	    date_part('year',_sale._creation_date) || '-' || date_part('mon',_sale._creation_date) || '-01' AS _month,
-	    coalesce(_product._product_type, 'other') AS product, 
-	    coalesce(SUM(_sale._turn_over),00) AS _turn_over
-	  FROM 
-	    
-	    (SELECT
-	      _sale_order.id AS _order_id,
-	      _sale_order.creation_date AS _creation_date,
-	      _sale_order.ex_tax_total AS _turn_over,
-	      _line.product AS _line_product
-	    FROM
-	      sale_sale_order AS _sale_order
-	    JOIN
-	      sale_sale_order_line AS _line ON _sale_order.id = _line.sale_order
-	    JOIN
-	      auth_user _user
-	      ON _user.id = :_user_id
-	      AND _sale_order.company = _user.active_company    
-	    WHERE
-	      _sale_order.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-	      AND _sale_order.status_select=3
-	    GROUP BY _sale_order.id, _line_product
-	    ORDER BY _turn_over DESC) AS _sale
-	    
-	  JOIN 
-	     (SELECT _category.name AS _product_type, _product.id AS _product_id
-	      FROM 
-	        base_product AS _product
-	      RIGHT JOIN
-	        base_product_category AS _category 
-	        ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product 
-	
-	  ON
-	    _sale._line_product=_product._product_id AND _sale._turn_over > 0.00
-	  GROUP BY 
-	    _product._product_type,_month
-	  ORDER BY 
-	    _month
-	  
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_turn_over" groupBy="product" type="bar" title="TurnOver" aggregate="sum"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date"/>
+		</search-fields>
+		<dataset type="sql">
+			SELECT 
+				TO_CHAR(_sale._creation_date,'yyyy-MM') AS _month,
+				COALESCE(_product._product_type, 'other') AS product, 
+				COALESCE(SUM(_sale._turn_over),00) AS _turn_over
+			FROM 
+			    (SELECT
+			      _sale_order.id AS _order_id,
+			      _sale_order.creation_date AS _creation_date,
+			      _sale_order.ex_tax_total AS _turn_over,
+			      _line.product AS _line_product
+			    FROM
+			      sale_sale_order AS _sale_order
+			    JOIN
+			      sale_sale_order_line AS _line ON _sale_order.id = _line.sale_order
+			    JOIN
+			      auth_user _user
+			      ON _user.id = :_user_id
+		      	AND _sale_order.company = _user.active_company    
+			    WHERE
+			      _sale_order.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			      AND _sale_order.status_select=3
+			    GROUP BY _sale_order.id, _line_product
+			    ORDER BY _turn_over DESC) AS _sale
+		  	JOIN 
+		    	(SELECT _category.name AS _product_type, _product.id AS _product_id
+				FROM 
+				  base_product AS _product
+				RIGHT JOIN
+				  base_product_category AS _category 
+				  ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product 
+		  	ON
+		  		_sale._line_product=_product._product_id AND _sale._turn_over > 0.00
+			GROUP BY 
+				_product._product_type,_month
+			ORDER BY 
+				_month
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_turn_over" groupBy="product" type="bar" title="TurnOver" aggregate="sum"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	
 	<chart stacked="true" onInit="action.sale.chart.set.date" name="chart.units.sold.on.cust.sale.by.category" title="Nbr of Units sold (Orders) by category">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-	  SELECT 
-	   date_part('year',_sale._creation_date) || '-' || date_part('mon',_sale._creation_date) || '-01' AS _month, 
-	   coalesce(_product._product_type, 'other') AS product, 
-	   coalesce(SUM(_sale._turn_over),00) AS _turn_over
-	  FROM 
-	    (SELECT
-	      _sale_order.id AS _order_id,
-	      _sale_order.creation_date AS _creation_date,
-	      _line.qty AS _turn_over,
-	      _line.product AS _line_product
-	    FROM
-	      sale_sale_order AS _sale_order
-	    JOIN
-	      sale_sale_order_line AS _line ON _sale_order.id = _line.sale_order
-	    JOIN
-	      auth_user _user
-	      ON _user.id = :_user_id
-	      AND _sale_order.company = _user.active_company    
-	    WHERE
-	      _sale_order.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-	      AND _sale_order.status_select=3
-	    GROUP BY _sale_order.id, _line_product, _turn_over
-	    ORDER BY _turn_over DESC) AS _sale
-	
-	  JOIN 
-	    (SELECT _category.name AS _product_type, _product.id AS _product_id
-	    FROM 
-	      base_product AS _product
-	    RIGHT JOIN
-	      base_product_category AS _category 
-	    ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product 
-	  
-	  ON
-	    _sale._line_product=_product._product_id
-	  GROUP BY 
-	    _product._product_type,_month
-	  ORDER BY 
-	    _month
-	  
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_turn_over" groupBy="product" type="bar" title="No Of Units" aggregate="sum"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date"/>
+		</search-fields>
+		<dataset type="sql">
+			SELECT 
+				TO_CHAR(_sale._creation_date,'yyyy-MM') AS _month,
+				COALESCE(_product._product_type, 'other') AS product, 
+				COALESCE(SUM(_sale._turn_over),00) AS _turn_over
+			FROM 
+			  (SELECT
+			    _sale_order.id AS _order_id,
+			    _sale_order.creation_date AS _creation_date,
+			    _line.qty AS _turn_over,
+			    _line.product AS _line_product
+			  FROM
+			    sale_sale_order AS _sale_order
+			  JOIN
+			    sale_sale_order_line AS _line ON _sale_order.id = _line.sale_order
+			  JOIN
+			    auth_user _user
+			    ON _user.id = :_user_id
+			    AND _sale_order.company = _user.active_company    
+			  WHERE
+			    _sale_order.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			    AND _sale_order.status_select=3
+			  GROUP BY _sale_order.id, _line_product, _turn_over
+			  ORDER BY _turn_over DESC) AS _sale
+			
+			JOIN 
+			  (SELECT _category.name AS _product_type, _product.id AS _product_id
+			  FROM 
+			    base_product AS _product
+			  RIGHT JOIN
+			    base_product_category AS _category 
+			  ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product 
+			
+			ON
+			  _sale._line_product=_product._product_id
+			GROUP BY 
+			  _product._product_type,_month
+			ORDER BY 
+			  _month
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_turn_over" groupBy="product" type="bar" title="No Of Units" aggregate="sum"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<!-- This chart is used in product-form (base)  -->
 	
 	<chart onInit="action.general.chart.set.date.6m" name="chart.product.sale.turnover.per.month" title="Product sale turnover (Excl. Tax) per month">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	  <dataset type="jpql">
-	    SELECT
-	    SUM(self.exTaxTotal) AS _amount,
-	    YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01' AS _month
-	    FROM
-	    SaleOrderLine self
-	    WHERE
-	    self.saleOrder.statusSelect = 3
-	    AND self.saleOrder.company = :activeCompany
-	    AND self.product.id = :id
-	    AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
-	    GROUP BY
-	    YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01'  
-	    ORDER BY  _month 
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_amount" type="bar" title="Turnover"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date"/>
+		</search-fields>
+ 		<dataset type="jpql">
+			SELECT
+				SUM(self.exTaxTotal) AS _amount,
+				TO_CHAR(self.saleOrder.validationDate,'yyyy-MM') AS _month
+			FROM
+				SaleOrderLine self
+			WHERE
+				self.saleOrder.statusSelect = 3
+				AND self.saleOrder.company = :activeCompany
+				AND self.product.id = :id
+				AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			GROUP BY
+				TO_CHAR(self.saleOrder.validationDate,'yyyy-MM')  
+			ORDER BY  _month 
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_amount" type="bar" title="Turnover"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	
 		
 	<chart onInit="action.general.chart.set.date.6m" name="chart.product.sale.turnover.last.12.month" title="Product sale turnover (Excl. Tax) last 12 month">
-	  <search-fields>
-	    <field type="date" name="toDate" title="To Date"/>
-	    <field type="reference" target="com.axelor.apps.base.db.Product" name="product" title="Product"/>
-	  </search-fields>
-	  <dataset type="jpql">
-	  
-	  SELECT
-	    SUM(self.exTaxTotal) AS _amount,
-	    YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01' AS _month
-	  FROM
-	    SaleOrderLine AS self
-	    
-	  WHERE
-	    self.saleOrder.statusSelect = 3  
-	    AND self.saleOrder.company = :activeCompany
-	    AND self.product = :product
-	    AND self.saleOrder.validationDate BETWEEN DATE(:toDate) - 365 AND DATE(:toDate)
-	  GROUP BY
-	    YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01'
-	   ORDER BY _month
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_amount" type="bar" title="Turnover"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field type="date" name="toDate" title="To Date"/>
+			<field type="reference" target="com.axelor.apps.base.db.Product" name="product" title="Product"/>
+		</search-fields>
+		<dataset type="jpql">
+			SELECT
+				SUM(self.exTaxTotal) AS _amount,
+				TO_CHAR(self.saleOrder.validationDate,'yyyy-MM') AS _month
+			FROM
+			  SaleOrderLine AS self
+			WHERE
+				self.saleOrder.statusSelect = 3  
+				AND self.saleOrder.company = :activeCompany
+				AND self.product = :product
+				AND self.saleOrder.validationDate BETWEEN DATE(:toDate) - 365 AND DATE(:toDate)
+			GROUP BY
+				TO_CHAR(self.saleOrder.validationDate,'yyyy-MM')
+			ORDER BY _month
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_amount" type="bar" title="Turnover"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart onInit="action.sale.chart.set.from.date.and.saleman.6m" name="chart.turnover.per.month.per.saleman.over.6mth" title="Turnover per month per saleman (6 month)">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="SalesMan" widget="[required=true]"/>
-	  </search-fields>
-	  <dataset type="jpql">
-	    SELECT
-	    SUM(self.exTaxTotal) AS _amount,
-	    YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01' AS _month
-	    FROM
-	    SaleOrderLine self
-	    WHERE
-	    self.saleOrder.statusSelect = 3
-	    AND self.saleOrder.salemanUser =:salemanUser
-	    AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 180
-	    AND self.saleOrder.company = :activeCompany
-	    GROUP BY
-	    YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01'
-	    ORDER BY
-  		_month 
-	  
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_amount" type="bar" title="Turnover"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="SalesMan" widget="[required=true]"/>
+		</search-fields>
+		<dataset type="jpql">
+			SELECT
+				SUM(self.exTaxTotal) AS _amount,
+				TO_CHAR(self.saleOrder.validationDate,'yyyy-MM') AS _month
+			FROM
+				SaleOrderLine self
+			WHERE
+				self.saleOrder.statusSelect = 3
+				AND self.saleOrder.salemanUser =:salemanUser
+				AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 180
+				AND self.saleOrder.company = :activeCompany
+			GROUP BY
+				TO_CHAR(self.saleOrder.validationDate,'yyyy-MM')
+			ORDER BY
+				_month 
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_amount" type="bar" title="Turnover"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.from.date.and.saleman.6m">
-		   <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)" />
-		   <field name="salemanUser" expr="eval:__user__"/>
+		<field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)" />
+		<field name="salemanUser" expr="eval:__user__"/>
 	</action-record>
-	
-	
 	
 	<chart onInit="action.sale.chart.set.from.date.and.saleman.4m" name="chart.turnover.per.month.per.saleman.over.4mth" title="Turnover per month per saleman (4 month)">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="Salesman" widget="[required=true]"/>
-	  </search-fields>
-	  <dataset type="jpql">
-	    SELECT
-	    SUM(self.exTaxTotal) AS _amount,
-	     YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01' AS _month
-	    FROM
-	    SaleOrderLine self
-	    WHERE
-	    self.saleOrder.statusSelect = 3
-	    AND self.saleOrder.salemanUser =:salemanUser
-	    AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 120
-	    AND self.saleOrder.company = :activeCompany
-	    GROUP BY
-	    YEAR(self.saleOrder.validationDate) || '-' || MONTH(self.saleOrder.validationDate) || '-01'
-	    ORDER BY
- 		_month 
-	  
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_amount" type="bar" title="Turnover"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="Salesman" widget="[required=true]"/>
+		</search-fields>
+		<dataset type="jpql">
+			SELECT
+				SUM(self.exTaxTotal) AS _amount,
+				TO_CHAR(self.saleOrder.validationDate,'yyyy-MM') AS _month
+			FROM
+				SaleOrderLine self
+			WHERE
+				self.saleOrder.statusSelect = 3
+				AND self.saleOrder.salemanUser =:salemanUser
+				AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 120
+				AND self.saleOrder.company = :activeCompany
+			GROUP BY
+				TO_CHAR(self.saleOrder.validationDate,'yyyy-MM')
+			ORDER BY
+				_month 
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_amount" type="bar" title="Turnover"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
-	
 	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.from.date.and.saleman.4m">
-		   <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(4)" />
-		   <field name="salemanUser" expr="eval:__user__"/>
+		<field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(4)" />
+		<field name="salemanUser" expr="eval:__user__"/>
 	</action-record>
 	
-	
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.type" title="Turnover per customer type">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date" />
-	  </search-fields>
-	  <dataset type="jpql">
-		    SELECT
-		    SUM(self.exTaxTotal) AS _amount,
-		    item.title AS _partner
-		    FROM
-		    SaleOrderLine self,
-		    MetaSelectItem item
-		    WHERE
-		    self.saleOrder.statusSelect = 3
-		    AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
-		    AND self.saleOrder.company = :activeCompany
-		    AND item.select.name='partner.partner.type.select'
-		    AND CAST(item.value as int) = self.saleOrder.clientPartner.partnerTypeSelect
-		    GROUP BY
-		    item.title
-	   </dataset>
-	  <category key="_partner" type="text" title="Partner Type"/>
-	  <series key="_amount" type="donut" title="Turnover"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date" />
+		</search-fields>
+		<dataset type="jpql">
+			SELECT
+		   		SUM(self.exTaxTotal) AS _amount,
+		  		item.title AS _partner
+			FROM
+				SaleOrderLine self,
+				MetaSelectItem item
+			WHERE
+				self.saleOrder.statusSelect = 3
+				AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+				AND self.saleOrder.company = :activeCompany
+				AND item.select.name='partner.partner.type.select'
+				AND CAST(item.value as int) = self.saleOrder.clientPartner.partnerTypeSelect
+			GROUP BY
+				item.title
+		</dataset>
+		<category key="_partner" type="text" title="Partner Type"/>
+		<series key="_amount" type="donut" title="Turnover"/>
 	</chart>
 	
-	
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.category" title="Turnover per customer category">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	 <dataset type="jpql">
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date"/>
+		</search-fields>
+		<dataset type="jpql">
 		    SELECT
-		    SUM(self.exTaxTotal) AS _amount,
-		    self.saleOrder.clientPartner.partnerCategory.name AS category
+		    	SUM(self.exTaxTotal) AS _amount,
+		    	self.saleOrder.clientPartner.partnerCategory.name AS category
 		    FROM
-		    SaleOrderLine self
+		    	SaleOrderLine self
 		    WHERE
-		    self.saleOrder.statusSelect = 3
-		    AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate) 
-		    AND self.saleOrder.company = :activeCompany
+			    self.saleOrder.statusSelect = 3
+			    AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate) 
+			    AND self.saleOrder.company = :activeCompany
 		    GROUP BY
-		    self.saleOrder.clientPartner.partnerCategory.name
-	  </dataset>
-	  <category key="category" type="text" title="Category"/>
-	  <series key="_amount" type="bar" title="Turnover"/>
+		    	self.saleOrder.clientPartner.partnerCategory.name
+		</dataset>
+		<category key="category" type="text" title="Category"/>
+		<series key="_amount" type="bar" title="Turnover"/>
 	</chart>
 	
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.sector" title="Turnover per customer sector">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date" />
-	  </search-fields>
-	  <dataset type="jpql">
-		    SELECT
-		    SUM(self.exTaxTotal) AS _amount,
-		    item.title AS _industry_sector
-		    FROM
-		    SaleOrderLine self,
-		    MetaSelectItem item
-		    WHERE
-		    self.saleOrder.statusSelect = 3
-		    AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
-		    AND self.saleOrder.company = :activeCompany
-		    AND item.select.name='partner.industry.sectory.select'
-		    AND CAST(item.value as int) = self.saleOrder.clientPartner.industrySectorSelect
-		    GROUP BY
-		    item.title
-	   </dataset>
-	  <category key="_industry_sector" type="text" title="Industry Sector"/>
-	  <series key="_amount" type="donut" title="Turnover"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date" />
+		</search-fields>
+		<dataset type="jpql">
+			SELECT
+				SUM(self.exTaxTotal) AS _amount,
+				item.title AS _industry_sector
+			FROM
+				SaleOrderLine self,
+				MetaSelectItem item
+			WHERE
+				self.saleOrder.statusSelect = 3
+				AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+				AND self.saleOrder.company = :activeCompany
+				AND item.select.name='partner.industry.sectory.select'
+				AND CAST(item.value as int) = self.saleOrder.clientPartner.industrySectorSelect
+			GROUP BY
+				item.title
+		</dataset>
+		<category key="_industry_sector" type="text" title="Industry Sector"/>
+		<series key="_amount" type="donut" title="Turnover"/>
 	</chart>
-	
 	
 	<chart onInit="action.general.chart.set.date.6m" name="chart.category.sale.turnover.per.month" title="Category sale turnover (Excl. Tax) per month">
 		<search-fields>
@@ -755,7 +714,7 @@
 		<dataset type="jpql">
 			SELECT
 			    SUM(self.exTaxTotal) AS _amount,
-			    to_char(self.saleOrder.validationDate,'yyyy-MM') AS _month
+			    TO_CHAR(self.saleOrder.validationDate,'yyyy-MM') AS _month
 			FROM
 			    SaleOrderLine self
 			WHERE
@@ -764,7 +723,7 @@
 			    AND self.product.productCategory.id = :id
 			    AND self.saleOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			GROUP BY
-			   to_char(self.saleOrder.validationDate,'yyyy-MM')
+			   TO_CHAR(self.saleOrder.validationDate,'yyyy-MM')
 			ORDER BY
 			    _month
 		 </dataset>
@@ -776,55 +735,49 @@
 		
 	<chart onInit="action.sale.chart.set.dates.this.last.year" name="chart.customer.sale.lastYear.vs.ytd.by.family" 
 			title="Sales turnover comparison per month this year vs past years by family" stacked="true">
-	  <search-fields>
-	    <field type="date" name="toDateLY" title="Year 1 To Date"/>
-	    <field type="date" name="toDate" title="Year 2 To Date"/>
-	  </search-fields>
-	  
-	  <dataset type="jpql">
-	  
-	    SELECT
-	      COALESCE(SUM(saleOrderLine.exTaxTotal), 0.00) AS turnOver,
-	      productFamily.name AS family,
-	      YEAR(saleOrder.validationDate) || '-' || MONTH(saleOrder.validationDate) || '-01' AS _month    
-	
-	    FROM
-	      SaleOrderLine saleOrderLine,
-	      SaleOrder saleOrder,
-	      Product product,
-	      ProductFamily productFamily
-	
-	    WHERE  
-	      saleOrder = saleOrderLine.saleOrder
-	    AND
-	      saleOrder.statusSelect=3
-	    AND
-	      saleOrder.company =:activeCompany
-	    AND
-	      product = saleOrderLine.product
-	    AND
-	      productFamily = product.productFamily
-	    AND
-	      YEAR(saleOrder.validationDate) IN (YEAR(CURRENT_DATE), YEAR(CURRENT_DATE) - 1)
-	    AND
-	      saleOrder.clientPartner.id=:id
-	    AND(
-	      ( saleOrder.validationDate &gt;= TO_DATE(YEAR(DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
-	      AND saleOrder.validationDate &lt;= DATE(:toDate))
-	    OR
-	      (saleOrder.validationDate &gt;= TO_DATE(YEAR(DATE(:toDateLY)) || '-01-01','YYYY-MM-DD') 
-	      AND saleOrder.validationDate &lt;= DATE(:toDateLY))
-	     )        
-	    
-	    GROUP BY
-	      productFamily.name,
-	      YEAR(saleOrder.validationDate) || '-' || MONTH(saleOrder.validationDate) || '-01'
-	    ORDER BY
-	      YEAR(saleOrder.validationDate) || '-' || MONTH(saleOrder.validationDate) || '-01'
-	  
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="turnOver" type="bar" title="Turnover" aggregate="sum" groupBy="family"/>
-	  <config name="xFormat" value="MM-YYYY" />
+		<search-fields>
+			<field type="date" name="toDateLY" title="Year 1 To Date"/>
+			<field type="date" name="toDate" title="Year 2 To Date"/>
+		</search-fields>
+		<dataset type="jpql">
+			SELECT
+				COALESCE(SUM(saleOrderLine.exTaxTotal), 0.00) AS turnOver,
+				productFamily.name AS family,
+				TO_CHAR(self.saleOrder.validationDate,'yyyy-MM') AS _month
+			FROM
+				SaleOrderLine saleOrderLine,
+				SaleOrder saleOrder,
+				Product product,
+				ProductFamily productFamily
+			WHERE  
+				saleOrder = saleOrderLine.saleOrder
+				AND
+				  saleOrder.statusSelect=3
+				AND
+				  saleOrder.company =:activeCompany
+				AND
+				  product = saleOrderLine.product
+				AND
+				  productFamily = product.productFamily
+				AND
+				  YEAR(saleOrder.validationDate) IN (YEAR(CURRENT_DATE), YEAR(CURRENT_DATE) - 1)
+				AND
+				  saleOrder.clientPartner.id=:id
+				AND(
+				  ( saleOrder.validationDate &gt;= TO_DATE(YEAR(DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
+				  AND saleOrder.validationDate &lt;= DATE(:toDate))
+				OR
+				  (saleOrder.validationDate &gt;= TO_DATE(YEAR(DATE(:toDateLY)) || '-01-01','YYYY-MM-DD') 
+				  AND saleOrder.validationDate &lt;= DATE(:toDateLY))
+				 )        
+			GROUP BY
+				productFamily.name,
+				TO_CHAR(self.saleOrder.validationDate,'yyyy-MM')
+			ORDER BY
+				_month
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="turnOver" type="bar" title="Turnover" aggregate="sum" groupBy="family"/>
+		<config name="xFormat" value="MM-YYYY" />
 	</chart>		
 </object-views>

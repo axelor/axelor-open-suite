@@ -205,133 +205,125 @@
 	</chart>	  
 	
 	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.amount" title="Total Purchased Amount by month">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-	  SELECT
-	    DATE_PART('year', _order.validation_date) || '-' ||
-	    DATE_PART('month', _order.validation_date) || '-01' AS _month,
-	    SUM(_order.ex_tax_total) AS _turn_over
-	  FROM
-	    purchase_purchase_order AS _order
-	  JOIN
-	    auth_user AS _user
-	    ON _user.id = :_user_id
-	    AND _order.company = _user.active_company
-	  WHERE
-	    _order.validation_date &gt;= DATE(:fromDate) 
-	    AND _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
-	    AND _order.status_select IN (4,5)
-	  GROUP BY
-	     _month  
-	  ORDER BY
-	  	 _month
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_turn_over" type="bar" title="Turn Over"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
+		</search-fields>
+		<dataset type="sql">
+			SELECT
+			  to_char(_order.validation_date,'yyyy-MM') AS _month,
+			  SUM(_order.ex_tax_total) AS _turn_over
+			FROM
+			  purchase_purchase_order AS _order
+			JOIN
+			  auth_user AS _user
+			  ON _user.id = :_user_id
+			  AND _order.company = _user.active_company
+			WHERE
+			  _order.validation_date &gt;= DATE(:fromDate) 
+			  AND _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+			  AND _order.status_select IN (4,5)
+			GROUP BY
+			   _month  
+			ORDER BY
+				 _month
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_turn_over" type="bar" title="Turn Over"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.qty" title="Total Purchased Qty by month">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-	  SELECT
-	    DATE_PART('year',_order.validation_date) || '-' ||
-	    DATE_PART('month',_order.validation_date) || '-01' AS _month,
-	    SUM(_line.qty) AS _qty
-	  FROM
-	    purchase_purchase_order AS _order
-	  JOIN
-	    auth_user AS _user
-	    ON _user.id = :_user_id
-	    AND _order.company = _user.active_company
-	  JOIN
-	    purchase_purchase_order_line AS _line 
-	    ON _order.id = _line.purchase_order
-	  WHERE
-	    _order.validation_date &gt;= DATE(:fromDate) 
-	    AND _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
-	    AND _order.status_select IN (4,5)
-	  GROUP BY 
-	    _month
-	  ORDER BY
-	  	_month
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_qty" type="bar" title="Units"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
+		</search-fields>
+		<dataset type="sql">
+			SELECT
+			  to_char(_order.validation_date,'yyyy-MM') AS _month,
+			  SUM(_line.qty) AS _qty
+			FROM
+			  purchase_purchase_order AS _order
+			JOIN
+			  auth_user AS _user
+			  ON _user.id = :_user_id
+			  AND _order.company = _user.active_company
+			JOIN
+			  purchase_purchase_order_line AS _line 
+			  ON _order.id = _line.purchase_order
+			WHERE
+			  _order.validation_date &gt;= DATE(:fromDate) 
+			  AND _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+			  AND _order.status_select IN (4,5)
+			GROUP BY 
+			  _month
+			ORDER BY
+				_month
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_qty" type="bar" title="Units"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	  
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.nbr.of.po.per.month" title="Nbr of PO by month">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
-	  </search-fields>
-	  <dataset type="sql">
-	  
-	  SELECT
-	    COUNT(_order.id) as _orders,
-	    DATE_PART('year', _order.validation_date) || '-' ||
-	    DATE_PART('month', _order.validation_date) || '-' || '01' AS _month
-	  FROM
-	    purchase_purchase_order AS _order
-	  JOIN
-	    auth_user AS _user
-	    ON _user.id = :_user_id
-	    AND _order.company = _user.active_company
-	  WHERE
-	    _order.validation_date &gt;= DATE(:fromDate) 
-	    AND _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
-	    AND _order.status_select IN (4,5)
-	  GROUP BY 
-	    _month
-	  ORDER BY
-	  	_month
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_orders" type="bar" title="Orders"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
+		</search-fields>
+		<dataset type="sql">
+			SELECT
+			  COUNT(_order.id) as _orders,
+			  to_char(_order.validation_date,'yyyy-MM') AS _month
+			FROM
+			  purchase_purchase_order AS _order
+			JOIN
+			  auth_user AS _user
+			  ON _user.id = :_user_id
+			  AND _order.company = _user.active_company
+			WHERE
+			  _order.validation_date &gt;= DATE(:fromDate) 
+			  AND _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+			  AND _order.status_select IN (4,5)
+			GROUP BY 
+			  _month
+			ORDER BY
+				_month
+		</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_orders" type="bar" title="Orders"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.amount.per.product.family" title="Purchased amount by product family">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	  <dataset type="jpql">
-	      
-	      SELECT
-	        SUM(self.exTaxTotal) AS amount,
-	        product.productFamily.name AS _family_product
-	      FROM
-	        PurchaseOrder self,
-	        PurchaseOrderLine line,
-	        Product product
-	      
-	      WHERE
-	        line.purchaseOrder = self
-	        AND line.product = product      
-	        AND self.validationDate &gt;= :fromDate 
-	        AND self.validationDate &lt;= :toDate  
-	        AND self.createdOn &lt;= CURRENT_TIMESTAMP      
-	        AND self.statusSelect &gt; 3 
-	        AND self.statusSelect &lt; 6
-	        AND self.company = :activeCompany
-	      GROUP BY
-	        product.productFamily.name
-	      ORDER BY
-	        product.productFamily.name
-	      
-	      </dataset>
-	  <category key="_family_product" type="text" title="Product Family"/>
-	  <series key="amount" type="bar" title="Amount"/>
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="toDate" title="To Date"/>
+		</search-fields>
+		<dataset type="jpql">
+			SELECT
+			  SUM(self.exTaxTotal) AS amount,
+			  product.productFamily.name AS _family_product
+			FROM
+			  PurchaseOrder self,
+			  PurchaseOrderLine line,
+			  Product product
+			
+			WHERE
+			  line.purchaseOrder = self
+			  AND line.product = product      
+			  AND self.validationDate &gt;= :fromDate 
+			  AND self.validationDate &lt;= :toDate  
+			  AND self.createdOn &lt;= CURRENT_TIMESTAMP      
+			  AND self.statusSelect &gt; 3 
+			  AND self.statusSelect &lt; 6
+			  AND self.company = :activeCompany
+			GROUP BY
+			  product.productFamily.name
+			ORDER BY
+			  product.productFamily.name
+		</dataset>
+		<category key="_family_product" type="text" title="Product Family"/>
+		<series key="amount" type="bar" title="Amount"/>
 	</chart>
 	
 </object-views>

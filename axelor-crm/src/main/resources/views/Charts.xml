@@ -704,7 +704,7 @@
 	  <dataset type="sql">  
 	  SELECT
 	    COUNT(self.id) AS _leads,
-	    date_part('year',self.created_on) || '-' || date_part('mon',self.created_on) || '-01' AS _month
+	    to_char(self.created_on,'yyyy-MM') AS _month
 	  FROM
 	    crm_lead self
 	  WHERE
@@ -738,102 +738,89 @@
 	
 	
 	<chart stacked="true" name="chart.created.tickets.by.month.by.priority.bar" title="Total created tickets by month by priority">
-	  <dataset type="sql">
-	  
-	      SELECT
-	    COUNT(_ticket.id) AS _tickets,  
-	    _meta_status.status_title AS _priority,
-	     date_part('year',_ticket.created_on) || '-' || date_part('mon',_ticket.created_on) || '-01' AS _month
-	  FROM
-	    crm_event AS _ticket  
-	  JOIN
-	    (SELECT    
-	      cast(_item.value as int) AS status_value,
-	      _item.title AS status_title
-	    FROM
-	      meta_select AS _selection
-	    LEFT JOIN
-	      meta_select_item AS _item
-	    ON
-	      _selection.name = 'crm.event.ticket.priority.select'    
-	    WHERE
-	      _selection.id = _item.select_id    
-	      ) AS _meta_status
-	  ON
-	    _ticket.priority_select = _meta_status.status_value  
-	  WHERE 
-	    _ticket.type_select=5 AND _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
-	  GROUP BY
-	    _priority, _month
-	  ORDER BY
-    	 _month, _priority
-	  
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_tickets" groupBy="_priority" type="bar" title="No of Tickets" aggregate="sum"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+		<dataset type="sql">
+			SELECT
+				COUNT(_ticket.id) AS _tickets,  
+			   	_meta_status.status_title AS _priority,
+			   	to_char(_ticket.created_on,'yyyy-MM') AS _month
+			FROM
+			   	crm_event AS _ticket  
+			JOIN
+			   	(SELECT    
+			     		cast(_item.value as int) AS status_value,
+			     		_item.title AS status_title
+			   	 FROM
+			    		 meta_select AS _selection
+			   	 LEFT JOIN
+			     		 meta_select_item AS _item ON _selection.name = 'crm.event.ticket.priority.select'    
+			   	 WHERE
+			     		_selection.id = _item.select_id    
+			     	) AS _meta_status
+			ON
+				_ticket.priority_select = _meta_status.status_value  
+			WHERE 
+			  _ticket.type_select=5 AND _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
+			GROUP BY
+			  _priority, _month
+			ORDER BY
+			 	 _month, _priority
+		  </dataset>
+		  <category key="_month" type="month" title="Month"/>
+		  <series key="_tickets" groupBy="_priority" type="bar" title="No of Tickets" aggregate="sum"/>
+		  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart stacked="true" name="chart.created.tickets.by.month.by.status" title="Total created tickets by month by status">
-	  <dataset type="sql">
-	
-	  SELECT
-	    COUNT(_ticket.id) AS _tickets,  
-	    _meta_status.status_title AS _status,
-	     date_part('year',_ticket.created_on) || '-' || date_part('mon',_ticket.created_on) || '-01' AS _month
-	  FROM
-	    crm_event AS _ticket    
-	  JOIN
-	
-	    (SELECT    
-	      cast(_item.value as int) AS status_value,
-	      _item.title AS status_title
-	    FROM
-	      meta_select AS _selection
-	    LEFT JOIN
-	      meta_select_item AS _item
-	    ON
-	      _selection.name = 'crm.event.ticket.status.select'    
-	    WHERE
-	      _selection.id = _item.select_id    
-	    ) AS _meta_status
-	
-	  ON
-	    _ticket.ticket_status_select = _meta_status.status_value  
-	  WHERE
-	    _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
-	    AND _ticket.type_select=5
-	  GROUP BY
-	    _status, _month
-	   ORDER BY
- 		  _month,_tickets DESC     
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_tickets" groupBy="_status" type="bar" title="Tickets"/>
-	  <config name="xFormat" value="MM-YYYY"/>
+	  	<dataset type="sql">
+			SELECT
+				COUNT(_ticket.id) AS _tickets,  
+		    	_meta_status.status_title AS _status,
+		     	to_char(_ticket.created_on,'yyyy-MM') AS _month
+			FROM
+		    	crm_event AS _ticket    
+		  	JOIN
+		    	(SELECT    
+		      		cast(_item.value as int) AS status_value,
+		      		_item.title AS status_title
+		    	FROM
+		      		meta_select AS _selection
+		    	LEFT JOIN
+		      		meta_select_item AS _item ON _selection.name = 'crm.event.ticket.status.select'    
+		    	WHERE
+		      		_selection.id = _item.select_id    
+		    	) AS _meta_status
+		   	ON
+		    	_ticket.ticket_status_select = _meta_status.status_value  
+		  	WHERE
+		    	_ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now() AND _ticket.type_select=5
+		  	GROUP BY
+		    	_status, _month
+		   	ORDER BY
+	 		  _month,_tickets DESC     
+	  	</dataset>
+		<category key="_month" type="month" title="Month"/>
+		<series key="_tickets" groupBy="_status" type="bar" title="Tickets"/>
+		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart stacked="true" name="chart.open.tickets.by.month.by.agent" title="Total open tickets by month by user">
-	  <dataset type="sql">
-	
-	  SELECT
-	    COUNT(_ticket.id) AS _tickets,  
-	    _user.full_name AS _agent,
-	  date_part('year',_ticket.created_on) || '-' || date_part('mon',_ticket.created_on) || '-01' AS _month
-	  FROM
-	    crm_event AS _ticket    
-	  LEFT JOIN
-	    auth_user AS _user
-	  ON
-	    _ticket.user_id = _user.id  
-	  WHERE
-	    _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
-	    AND _ticket.type_select != 5
-	  GROUP BY
-	    _agent, _month
-	  ORDER BY
-  		 _month   
-	    
+		<dataset type="sql">
+			SELECT
+	    		COUNT(_ticket.id) AS _tickets,  
+	    		_user.full_name AS _agent,
+	  			to_char(_ticket.created_on,'yyyy-MM') AS _month
+			FROM
+				crm_event AS _ticket    
+			LEFT JOIN
+				auth_user AS _user
+			ON
+				_ticket.user_id = _user.id  
+			WHERE
+				_ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now() AND _ticket.type_select = 5
+			GROUP BY
+				_agent, _month
+			ORDER BY
+				_month   
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_tickets" groupBy="_agent" type="bar" title="Tickets"/>

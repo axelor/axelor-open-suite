@@ -15,7 +15,7 @@
 			<field name="inventorySeq" readOnly="true" colSpan="4"/>    
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
 			<field name="dateT" colSpan="4" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-			<field name="location" domain="self.typeSelect = 1 OR self.typeSelect = 2" colSpan="8" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
+			<field name="location" onSelect="action-inventory-attrs-set-location-domain" colSpan="8" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
 			<field name="description" colSpan="12" height="3"/>
 		</panel>  
 		<panel title="Fill inventory with" hideIf="statusSelect == 3 || statusSelect == 4 || location == null">
@@ -124,6 +124,10 @@
 		<call class="com.axelor.apps.stock.web.InventoryController" method="setInventorySequence"/>
 	</action-method>
 	
+	<action-attrs  name="action-inventory-attrs-set-location-domain">
+  		<attribute name="domain" for="location" expr="eval:&quot;(self.typeSelect = 1 OR self.typeSelect = 2) AND self.company.id = ${__user__.activeCompany?.id}&quot;" />
+	</action-attrs>
+
     <search-filters name="inventories-filters" model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">
 		<filter title="Planned Inventories">
 			<domain>self.statusSelect = 1</domain>
