@@ -27,7 +27,6 @@
 	    <button name="logCall" title="Log Call" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call" if-module="axelor-crm"/>
 		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
 		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
-		
 	</grid>
     
      <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">

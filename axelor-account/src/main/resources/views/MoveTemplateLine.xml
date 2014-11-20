@@ -12,13 +12,13 @@
         <field name="percentage"/>
     </grid>
     
-    <form name="move-template-line-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine" onNew="action-move-template-line-set-domain" onLoad="action-move-template-line-set-domain">
+    <form name="move-template-line-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
         <panel   readonlyIf="isValid">
 	        <field name="moveTemplate"  onChange="action-move-template-line-get-account" required="true"/>
 	        <field name="name"/>
 	        <field name="debitCreditSelect" onChange="action-move-template-line-get-account"/>
 	        <field name="product" onChange="action-move-template-line-get-account"/>
-	        <field name="account"/>
+	        <field name="account" onSelect="action-move-template-line-set-account-domain"/>
 	        <field name="percentage" placeholder="80" onChange="action-template-move-line-check-percent"/>
 	        <field name="hasPartnerToDebit" showIf="debitCreditSelect == '0'" />
 	        <field name="hasPartnerToCredit" showIf="debitCreditSelect == '1'" />
@@ -26,16 +26,11 @@
         </panel>
     </form>
     
-    <action-attrs name="action-move-template-line-set-domain">
-    	<attribute name="domain" expr="eval:'self.company.id = '+_parent.journal.company.id" for="account" if="_parent != null"/>
-    	<attribute name="domain" expr="eval:'self.company.id = '+moveTemplate.journal.company.id" for="account" if="moveTemplate != null"/>
-    </action-attrs>
-    
     <action-record name="action-move-template-line-get-account" model="com.axelor.apps.account.db.MoveTemplateLine">
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.journal.company,true)" if="product != null &amp;&amp; moveTemplate != null &amp;&amp; moveTemplate.journal.company != null &amp;&amp; debitCreditSelect == '0' "/>
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__.of(Company).find(_parent.journal.company.id),true)" if="product != null &amp;&amp; _parent != null &amp;&amp; _parent.journal.company != null &amp;&amp; debitCreditSelect == '0' "/>
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.joural.company,false)" if="product != null &amp;&amp; moveTemplate != null &amp;&amp; moveTemplate.journal.company != null &amp;&amp; debitCreditSelect == '1' "/>
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__.of(Company).find(_parent.journal.company.id),false)" if="product != null &amp;&amp; _parent != null &amp;&amp; _parent.journal.company != null &amp;&amp; debitCreditSelect == '1' "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,true)" if="product != null &amp;&amp; moveTemplate?.company != null &amp;&amp; debitCreditSelect == '0' "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__.of(Company).find(_parent.company.id),true)" if="product != null &amp;&amp; _parent?.company != null &amp;&amp; debitCreditSelect == '0' "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,false)" if="product != null &amp;&amp; moveTemplate?.company != null &amp;&amp; debitCreditSelect == '1' "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__.of(Company).find(_parent.company.id),false)" if="product != null &amp;&amp; _parent?.company != null &amp;&amp; debitCreditSelect == '1' "/>
     </action-record>
     
     <action-validate name="action-template-move-line-check-percent">

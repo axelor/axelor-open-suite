@@ -557,6 +557,7 @@
 	<action-view name="top.new.partner.view" title="Create Account" model="com.axelor.apps.base.db.Partner" >
 		<view type="form" name="partner-form"/>
 		<view type="grid" name="partner-grid" />
+		<domain>self.isContact = false</domain>
 		<context name="_partnerTypeSelect" expr="eval:1" />
 	</action-view>
 	
@@ -570,7 +571,9 @@
 	<menuitem name="top-menu-create-contact" priority="90" parent="top-menu-utility" title="Create Contact" action="top.new.contact.view" />
 		
 	<action-view name="top.new.contact.view" title="Create Contact" model="com.axelor.apps.base.db.Partner" >
-		<view type="form" name="partner-form"/>
+		<view type="form" name="partner-contact-form"/>
+		<view type="grid" name="partner-contact-grid" />
+		<domain>self.isContact = true</domain>
 	</action-view>
 
 	<menuitem name="top-relations" title="Relations" groups="admins,ERP" top="true" left="false" priority="190"/>

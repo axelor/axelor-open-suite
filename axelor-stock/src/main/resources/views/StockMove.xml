@@ -59,7 +59,7 @@
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
 		 onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
 	  <panel>
-		  <field name="typeSelect" title="Type" colSpan="4"/>
+		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations"/>
 		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
 	  </panel>
 	  <panel>
@@ -214,6 +214,10 @@
 	    <field name="isWithBackorder" expr="eval:true" />
 	    <field name="estimatedDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	    <field name="typeSelect" expr="eval: _typeSelect"/>
+	    <field if="_typeSelect == '3'" name="toLocation" expr="eval:__repo__.of(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',__user__.activeCompany?.id).fetchOne()"/>
+		<field if="_typeSelect == '3'" name="fromLocation" expr="eval:__repo__.of(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualLocation"/>
+		<field if="_typeSelect == '2'" name="fromLocation" expr="eval:__repo__.of(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',__user__.activeCompany?.id).fetchOne()"/>
+		<field if="_typeSelect == '2'" name="toLocation" expr="eval:__repo__.of(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.customerVirtualLocation"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.stock.db.StockMove">
@@ -222,6 +226,13 @@
 	
 	<action-record name="action-stock-move-set-to-address" model="com.axelor.apps.stock.db.StockMove">
 		<field name="toAddress" expr="eval:toLocation?.address" />
+	</action-record>
+	
+	<action-record name="action-stock-move-set-default-locations" model="com.axelor.apps.stock.db.StockMove">
+	    <field if="typeSelect == 2" name="fromLocation" expr="eval:__repo__.of(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',company != null ? company.id :__user__.activeCompany?.id).fetchOne()"/>
+  		<field if="typeSelect == 2" name="toLocation" expr="eval:__repo__.of(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.customerVirtualLocation"/>
+  		<field if="typeSelect == 3" name="toLocation" expr="eval:__repo__.of(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',company != null ? company.id : __user__.activeCompany?.id).fetchOne()"/>
+  		<field if="typeSelect == 3" name="fromLocation" expr="eval:__repo__.of(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualLocation"/>
 	</action-record>
 	
 	<action-method name="action-stock-move-method-plan">

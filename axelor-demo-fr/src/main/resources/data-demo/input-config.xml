@@ -21,6 +21,13 @@
     <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" />
     
 <!--     IMPORT DU PACKAGE 'BASE' -->
+
+	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId">
+    	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
+    	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
+    	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
+    	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
+    </input>
 	
 	<input file="base_import_configuration.csv" separator=";" type="com.axelor.apps.base.db.ImportConfiguration">
 		<bind to="user" search="self.code = 'admin' " update="true" />
@@ -117,13 +124,6 @@
 	
 	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" />
 	
-	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.code = :code AND self.name = :name">
-    	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
-    	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
-    	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
-    	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
-    </input>
-    
  	<input file="base_companyDepartment.csv" separator=";" type="com.axelor.apps.base.db.CompanyDepartment">
  		<bind column="id" to="importId"/>
  		<bind column="code" to="code"/>

@@ -23,7 +23,7 @@
 			<field name="name"/>
 			<field name="debitCreditSelect" onChange="action-move-template-line-get-account"/>
 			<field name="product" onChange="action-move-template-line-get-account"/>
-			<field name="account"/>
+			<field name="account" onSelect="action-move-template-line-set-account-domain"/>
 			<field name="percentage" placeholder="80" onChange="action-template-move-line-check-percent"/>
 			<field name="hasPartnerToDebit" showIf="debitCreditSelect == '0'"/>
 			<field name="hasPartnerToCredit" showIf="debitCreditSelect == '1'"/>
@@ -31,12 +31,13 @@
 		</panel>
   	</form>
     
-    <form onLoad="action-move-template-set-domain" onNew="action-move-template-set-domain" name="move-template-form" title="Move template" model="com.axelor.apps.account.db.MoveTemplate">
+    <form onNew="action-move-template-set-default" name="move-template-form" title="Move template" model="com.axelor.apps.account.db.MoveTemplate">
   		<panel >
 		    <field name="name" readonlyIf="isValid"/>
-		    <field name="code" readonlyIf="isValid" required="true"/>
+		    <field name="code" readonlyIf="isValid" required="true" colSpan="3"/>
+		    <field name="company" readonlyIf="isValid" colSpan="3" canNew="false"/>
 		    <field name="moveTemplateType" readonlyIf="isValid" required="true"/>
-		    <field name="journal" readonlyIf="isValid"/>
+		    <field name="journal" readonlyIf="isValid" onSelect="action-move-template-set-journal-domain"/>
 	 	</panel>
  	 	<panel-related field="moveTemplateLineList" readonlyIf="isValid" colSpan="12" form-view="move-template-line-cusom-form" grid-view="move-template-line-cusom-grid"/>
      	<panel sidebar="true" title="Actions">
@@ -75,11 +76,14 @@
 		</panel>
 	</form>
     
-    
     <action-validate name="action-move-template-wizard-check-value">
     	<error if="date != null &amp;&amp; LocalDate.parse(date) &gt; __date__"  message="Date can't be ahead of today" action="action-move-template-wizard-reset-value" />
     	<error if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0" message="The Move Balance must be positive" action="action-move-template-wizard-reset-value" />
     </action-validate>
+    
+    <action-record name="action-move-template-set-default" model="com.axelor.apps.account.db.MoveTemplate">
+		<field name="company" expr="eval:__repo__.of(Company).find(__user__.activeCompany.id)" if="__user__.activeCompany != null"/>        
+    </action-record>
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-reset-value">
     	<field if="date != null &amp;&amp; LocalDate.parse(date) &gt; __date__" name="date" expr="eval:null"/>
@@ -103,8 +107,13 @@
         <call method="setIsValid" class="com.axelor.apps.account.web.MoveTemplateController" />
     </action-method>
     
-    <action-attrs name="action-move-template-set-domain">
-    	<attribute name="domain" for="journal" expr="eval:'self.statusSelect = 1 AND self.company = '+_activeCompanyId" />
+    <action-attrs name="action-move-template-set-journal-domain">
+    	<attribute name="domain" for="journal" expr="eval:&quot;self.statusSelect = 1 AND self.company.id = ${company?.id} &quot;" />
+    </action-attrs>
+    
+    <action-attrs name="action-move-template-line-set-account-domain">
+        <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${_parent?.company?.id} &quot;" if="_parent != null" />
+        <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${moveTemplate?.company?.id} &quot;" if="moveTemplate != null" />
     </action-attrs>
     
 	<action-record name="action-move-template-wizard-line-set-move-template" model="com.axelor.apps.base.db.Wizard">
