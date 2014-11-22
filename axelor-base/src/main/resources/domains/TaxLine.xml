@@ -11,7 +11,7 @@
     <many-to-one name="tax" ref="Tax" title="Tax" />
     <date name="startDate" title="Application start Date" required="true"/>
     <date name="endDate" title="Run off Date" />
-    <decimal name="value" title="Rate" scale="3" precision="20"/>
+    <decimal name="value" title="Rate" scale="3" precision="20"help="true"/>
     
     <string name="name" namecolumn="true" search="tax,startDate,endDate" title="Name">
 	    <![CDATA[

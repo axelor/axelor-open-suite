@@ -6,18 +6,18 @@
 	<module name="base" package="com.axelor.apps.base.db" />
 		
 		<entity name="PriceList"  lang="java">
-			<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+			<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner" help="true"/>
 			<date name="validFromDate" title="Valid from" required="true"/>
 			<date name="validToDate" title="Valid to"/>
 			<string name="title" title="Title" namecolumn="true" required="true"/>
-			<boolean name="isActive" title="Active?"/>
+			<boolean name="isActive" title="Active?" help="true"/>
 			<string name="comments" title="Comments" large="true"/>
-			<one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine" mappedBy="priceList" title="Price lines"/>
-			<boolean name="isDisplayed" title="Display discount?"/>
-			<decimal name="generalDiscount" title="General discount (%)"/>
+			<one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine" mappedBy="priceList" title="Price list content"/>
+			<boolean name="isDisplayed" title="Display discount ?" help="true"/>
+			<decimal name="generalDiscount" title="General discount (%)" help="true"/>
 			
-			<integer name="typeSelect" title="Type" selection="base.price.list.type.select" required="true"/>
-			<integer name="basedOnSelect" title="Based on" selection="base.price.list.based.on.select"/>
+			<integer name="typeSelect" title="Type" selection="base.price.list.type.select" required="true" help="true"/>
+			<integer name="basedOnSelect" title="Based on" selection="base.price.list.based.on.select" help="true"/>
 		</entity>
 		
 </domain-models>

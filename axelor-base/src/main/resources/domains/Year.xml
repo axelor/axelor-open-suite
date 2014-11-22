@@ -12,11 +12,11 @@
     <string name="code" title="Code" required="true" unique="true"/>
     <date name="fromDate" title="From" required="true"/>
     <date name="toDate" title="To" required="true"/>
-    <one-to-many name="periodList" ref="com.axelor.apps.base.db.Period" mappedBy="year" title="Periods list"/>
+    <one-to-many name="periodList" ref="com.axelor.apps.base.db.Period" mappedBy="year" title="Periods list" help="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-	<integer name="statusSelect" title="Status" readonly="true" selection="base.year.status.select" default="1"/>
+	<integer name="statusSelect" title="Status" readonly="true" selection="base.year.status.select" default="1" help="true"/>
     <integer name="periodDurationSelect" title="Period duration" selection="account.year.period.duration.select"/>
-    <integer name="typeSelect" title="Type" selection="account.year.type.select" required="true"/>
+    <integer name="typeSelect" title="Type" selection="account.year.type.select" required="true" help="true"/>
   
   	<extra-code><![CDATA[
 	

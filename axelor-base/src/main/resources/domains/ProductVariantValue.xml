@@ -10,7 +10,7 @@
 	<string name="name" title="Name" required="true"/>
 	<string name="code" title="Code" required="true"/>
 	<decimal name="priceExtra" title="Price Extra"/>
-	<integer name="applicationPriceSelect" title="Application" selection="ibase.product.variant.value.application.price.select"/>
+	<integer name="applicationPriceSelect" title="Application" selection="ibase.product.variant.value.application.price.select" help="true"/>
 	<many-to-one name="productVariantAttr" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	
   </entity>

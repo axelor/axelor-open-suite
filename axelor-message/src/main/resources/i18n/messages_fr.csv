@@ -1,5 +1,5 @@
 "key","message","comment","context"
-"Address","Adresse postale",,"resources/domains/EmailAddress.xml:11"
+"Address","Adresse email",,"resources/domains/EmailAddress.xml:11"
 "Address Block","Bloc d'adresse",,"resources/domains/Message.xml:23
 resources/domains/Template.xml:18"
 "Attached File path","Chemin vers fichier attaché",,"resources/domains/Message.xml:20
@@ -59,7 +59,7 @@ resources/domains/Template.xml:17"
 resources/views/Menu.xml:22"
 "Messaging","Messenger",,"resources/views/Menu.xml:14"
 "Model","Objet métier",,"resources/domains/Template.xml:21"
-"NONE",,,"resources/views/Selects.xml:44"
+"NONE","Non",,"resources/views/Selects.xml:44"
 "Name","Intitulé",,"resources/domains/MailAccount.xml:10
 resources/domains/Template.xml:10
 resources/domains/Wizard.xml:10"

@@ -11,7 +11,7 @@
     <string name="artmin" title="Artmin" selection="iterritory.artmin.select"/>
     <many-to-one name="canton" ref="Canton" title="Canton Code"/>
     <string name="inseeCode" title="National Code" index="true" />
-    <many-to-one name="department" ref="Department" title="Departement"/>
+    <many-to-one name="department" ref="Department" title="Department"/>
     <string name="importId" title="Import identifier"/>
     <integer name="nbInhCommune" title="Nb. of Inhabitants"/>
     <string name="zip" title="Zip code"/>

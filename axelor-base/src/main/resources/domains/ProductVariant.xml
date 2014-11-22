@@ -8,16 +8,16 @@
   <entity name="ProductVariant" lang="java">
 	
 	<integer name="importId" />
-	<many-to-one name="productVariantAttr1" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+	<many-to-one name="productVariantAttr1" ref="com.axelor.apps.base.db.ProductVariantAttr" help="true"/>
 	<many-to-one name="productVariantAttr2" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr3" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr4" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
-	<many-to-one name="productVariantValue1" ref="com.axelor.apps.base.db.ProductVariantValue"/>
+	<many-to-one name="productVariantValue1" ref="com.axelor.apps.base.db.ProductVariantValue" help="true"/>
 	<many-to-one name="productVariantValue2" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-one name="productVariantValue3" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-one name="productVariantValue4" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	
-	<boolean name="usedForStock" title="Use for stock only"/>
+	<boolean name="usedForStock" title="Use for stock only" help="true"/>
 	
 	<string name="name" title="Name" required="true">
 		<![CDATA[

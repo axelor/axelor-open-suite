@@ -7,10 +7,10 @@ xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml
   <entity name="ImportConfiguration" lang="java">
   
   	<string name="name" namecolumn="true"/>
-    <string title="Import type" default="csv" name="typeSelect" required="true" selection="iimport.type.select"/>
+    <string name="typeSelect" title="Import type" default="csv" required="true" selection="iimport.type.select"/>
     <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
     <many-to-one name="bindMetaFile" ref="com.axelor.meta.db.MetaFile" title="Binding file" required="true" help="Configuration file" />
-    <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data(s)" required="true" help="Data files ( csv, xml, or zip )"/>
+    <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data file" required="true" help="File format can be a csv, xml, or zip depending on the binding file settings."/>
     <one-to-many name="importHistoryList" ref="ImportHistory" mappedBy="importConfiguration" title="Historical"/>
     <string name="description" large="true" title="Description" />
     

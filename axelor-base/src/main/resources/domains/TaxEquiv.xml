@@ -8,8 +8,8 @@
   <entity name="TaxEquiv" lang="java">
   
     <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position"/>
-    <many-to-one name="fromTax" ref="com.axelor.apps.account.db.Tax" title="From Tax"/>
-    <many-to-one name="toTax" ref="com.axelor.apps.account.db.Tax" title="To Tax"/>
+    <many-to-one name="fromTax" ref="com.axelor.apps.account.db.Tax" title="Tax to replace"/>
+    <many-to-one name="toTax" ref="com.axelor.apps.account.db.Tax" title="Replacement Tax" help="true"/>
     
   </entity>
 

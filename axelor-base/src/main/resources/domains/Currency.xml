@@ -8,7 +8,7 @@
   <entity name="Currency" lang="java" cachable="true">
   
     <string name="name" title="Name" required="true" />
-    <string name="code" title="Code" required="true"/>
+    <string name="code" title="Code" required="true" help="true"/>
     <string name="symbol" title="Symbol"/>
     
   </entity>

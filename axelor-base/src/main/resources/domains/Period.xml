@@ -9,11 +9,11 @@
   
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code"/>
-    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year"/>
+    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year" help="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <date name="fromDate" title="From"/>
     <date name="toDate" title="To"/>
-    <integer name="statusSelect" title="Status" readonly="true" selection="base.period.status.select" default="1"/>
+    <integer name="statusSelect" title="Status" readonly="true" selection="base.period.status.select" default="1" help="true"/>
   
   	<extra-code><![CDATA[
 	

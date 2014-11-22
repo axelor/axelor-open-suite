@@ -7,12 +7,12 @@
 
 	<entity name="Department" lang="java" cachable="true">
 
-	<integer name="importId"/>
-	<string name="name" title="Department Name" required="true"/>
-	<string name="code" title="DEPT" required="true" unique="true"/>
-	<many-to-one name="region" ref="com.axelor.apps.base.db.Region" title="Region"/>
-	<one-to-many name="communeList" ref="Commune" mappedBy="department" title="Department Communes List"/>
-	<one-to-many name="cantonList" ref="Canton" mappedBy="department" title="Department Cantons List"/>
+		<integer name="importId"/>
+		<string name="name" title="Department Name" required="true"/>
+		<string name="code" title="DEPT" required="true" unique="true" help="true"/>
+		<many-to-one name="region" ref="com.axelor.apps.base.db.Region" title="Region"/>
+		<one-to-many name="communeList" ref="Commune" mappedBy="department" title="Department Communes List"/>
+		<one-to-many name="cantonList" ref="Canton" mappedBy="department" title="Department Cantons List"/>
 
 	</entity>
 

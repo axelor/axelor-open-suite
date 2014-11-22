@@ -11,12 +11,12 @@
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="false"/>
     <string name="name" title="Name" required="true" namecolumn="true"/>
     <string name="code" title="Document concerned" required="true" selection="sequence.generic.code.select"/> 
-    <string name="prefixe" title="Prefix"/>
-    <string name="suffixe" title="Suffix"/>
-    <integer name="padding" title="Padding" required="true"/>
-    <integer name="toBeAdded" title="Increment" required="true"/>
+    <string name="prefixe" title="Prefix" help="true"/>
+    <string name="suffixe" title="Suffix" help="true"/>
+    <integer name="padding" title="Padding" required="true" help="true"/>
+    <integer name="toBeAdded" title="Increment" required="true" help="true"/>
     <integer name="nextNum" title="Next N°" required="true"/>
-    <boolean name="yearlyResetOk" title="Yearly reset"/>
+    <boolean name="yearlyResetOk" title="Yearly reset" help="true"/>
     
 <!--     <unique-constraint columns="company,code"/> -->
     

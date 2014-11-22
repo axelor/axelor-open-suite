@@ -12,7 +12,7 @@
     <string name="code" title="Code" required="true" unique="true"/>
     <many-to-one name="activeTaxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax active version"/>
     
-    <one-to-many name="taxLineList" ref="com.axelor.apps.account.db.TaxLine" mappedBy="tax" title="Tax versions"/>
+    <one-to-many name="taxLineList" ref="com.axelor.apps.account.db.TaxLine" mappedBy="tax" title="Tax versions history"/>
     
  	<unique-constraint columns="code,name"/>
   

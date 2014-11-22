@@ -14,32 +14,32 @@
     <string name="description" large="true" title="Description" initParam="true"/>
     <string name="internalDescription" large="true" title="Internal description" initParam="true"/>
     <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile"  initParam="true"/>
-    <many-to-one name="productCategory" ref="ProductCategory" title="Product category" initParam="true" massUpdate="true"/>
-    <many-to-one name="productFamily" ref="ProductFamily" title="Family" initParam="true"/>
-    <many-to-one name="unit" ref="Unit" title="Unit" initParam="true" massUpdate="true"/>
+    <many-to-one name="productCategory" ref="ProductCategory" title="Product category" initParam="true" massUpdate="true" help="true"/>
+    <many-to-one name="productFamily" ref="ProductFamily" title="Family" initParam="true" help="true"/>
+    <many-to-one name="unit" ref="Unit" title="Unit" initParam="true" massUpdate="true" help="true"/>
 
-    <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select" initParam="true"/>
-    <integer name="saleSupplySelect" title="Sale supply default method" selection="product.sale.supply.select" initParam="true"/>
+    <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select" initParam="true" help="true"/>
+    <integer name="saleSupplySelect" title="Sale supply default method" selection="product.sale.supply.select" initParam="true" help="true"/>
      
-    <string name="productTypeSelect" title="Product type" required="true" selection="product.product.type.select" initParam="true"  />
-    <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select" initParam="true"/>
-    <boolean name="isRawMaterial" title="Raw material" initParam="true"/>
+    <string name="productTypeSelect" title="Product type" required="true" selection="product.product.type.select" initParam="true" help="true"/>
+    <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select" initParam="true" help="true"/>
+    <boolean name="isRawMaterial" title="Raw material" initParam="true" help="true"/>
     
     <decimal name="salePrice" title="Sale price W.T." precision="20" scale="2" massUpdate="true"/>
     <many-to-one name="saleCurrency" ref="com.axelor.apps.base.db.Currency" title="Sale currency" initParam="true"  />
     <decimal name="purchasePrice" title="Purchase price W.T." precision="20" scale="2" massUpdate="true"/>
     <many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency" title="Purchase / Cost currency" initParam="true" />
     
-    <decimal name="costPrice" title="Cost price" precision="20" scale="2" massUpdate="true"/>
+    <decimal name="costPrice" title="Cost price" precision="20" scale="2" massUpdate="true" help="true"/>
     
-    <decimal name="managPriceCoef" title="Management coef."/>
+    <decimal name="managPriceCoef" title="Management coef." help="true"/>
     
-    <date name="startDate" title="Product launch Date" initParam="true"/>
-    <date name="endDate" title="Product pulled off market Date" initParam="true"/>
+    <date name="startDate" title="Product launch Date" initParam="true" help="true"/>
+    <date name="endDate" title="Product pulled off market Date" initParam="true" help="true"/>
      	
-  	<one-to-many name="supplierCatalogList" ref="com.axelor.apps.base.db.SupplierCatalog" mappedBy="product" title="Supplier Catalog Lines"/>
+  	<one-to-many name="supplierCatalogList" ref="com.axelor.apps.base.db.SupplierCatalog" mappedBy="product" title="Supplier Catalog Lines" help="true"/>
   	
-    <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.base.db.TrackingNumberConfiguration" title="Tracking Nbr. Config."/>
+    <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.base.db.TrackingNumberConfiguration" title="Tracking Nbr. Config." help="true"/>
     <boolean name="hasWarranty" title="Warranty ?"/>
     <boolean name="isPerishable" title="Perishable ?"/>
     <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>
@@ -50,7 +50,7 @@
    	<many-to-one name="parentProduct" ref="com.axelor.apps.base.db.Product" title="Parent product" help="true"/>
   	<boolean name="isModel" title="Is model?"/>
   
-  	<many-to-one name="defaultSupplierPartner" ref="com.axelor.apps.base.db.Partner" title="Default supplier" />
+  	<many-to-one name="defaultSupplierPartner" ref="com.axelor.apps.base.db.Partner" title="Default supplier" help="true"/>
   
     <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="product" title="Accounts configuration" help="true"/>
   

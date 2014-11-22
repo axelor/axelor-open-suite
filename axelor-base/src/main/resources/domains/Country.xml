@@ -8,7 +8,7 @@
   <entity name="Country" lang="java" cachable="true">
   
     <integer name="importId"/>
-    <string name="code" required="true" title="Country code"/>
+    <string name="code" required="true" title="Country code" help="true"/>
     <string name="name" required="true" title="Country name" />
     <string name="cog" title="COG"/>
     <string name="phonePrefix" title="Calling code"/>

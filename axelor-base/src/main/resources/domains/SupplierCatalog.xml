@@ -9,13 +9,13 @@
 	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
 	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Supplier"/>
-	<string name="productSupplierName" title="Supplier Product Name"/>
-	<string name="productSupplierCode" title="Supplier Product Code"/>
-	<decimal name="price" title="Unit price"/>
+	<string name="productSupplierName" title="Product name on catalog"/>
+	<string name="productSupplierCode" title="Product code on catalog"/>
+	<decimal name="price" title="Unit price" help="true"/>
 	<date name="updateDate" title="Last update"/>
   	<string name="description" title="Description" large="true"/>
 	<decimal name="calculatedPrice" title="Calculated price/Qty"/>
-	<decimal name="minQty" title="Quantity min"/>
+	<decimal name="minQty" title="Quantity min" help="true"/>
   </entity>
 
 </domain-models>

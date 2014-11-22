@@ -9,11 +9,11 @@
   
   	<string name="importId" />
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company" title="Active company"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    <datetime name="today" title="Today date" tz="true" />
+    <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company" title="Active company" help="true"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" help="true"/>
+    <datetime name="today" title="Today date" tz="true" help="true"/>
     <many-to-many name="teamSet" ref="com.axelor.apps.base.db.Team"  title="Teams"/>
-    <many-to-one name="activeTeam" ref="com.axelor.apps.base.db.Team"  title="Active Team"/>
+    <many-to-one name="activeTeam" ref="com.axelor.apps.base.db.Team"  title="Active Team" help="true"/>
     
     
     <string name="fullName" namecolumn="true" search="partner" title="Partner name">

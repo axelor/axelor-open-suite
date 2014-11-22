@@ -9,7 +9,7 @@
 	
 	<string name="name" title="Name" required="true"/>
 	<string name="code" title="Code" required="true"/>
-	<one-to-many name="productVariantValueList" ref="com.axelor.apps.base.db.ProductVariantValue" mappedBy="productVariantAttr"/>
+	<one-to-many name="productVariantValueList" ref="com.axelor.apps.base.db.ProductVariantValue" mappedBy="productVariantAttr" help="true"/>
 	
   </entity>
 

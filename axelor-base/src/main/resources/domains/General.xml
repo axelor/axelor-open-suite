@@ -8,9 +8,9 @@
 
 		<integer name="importId"/>
 		<datetime name="today" title="Today date" tz="true" help="true" />
-		<boolean name="logOk" title="Activate Logs ?" default="true" />
-		<many-to-one name="defaultProjectUnit" title="Project unit" ref="com.axelor.apps.base.db.Unit"/>
-		<string name="defaultPartnerLanguage" title="Default partner language" selection="select.language"/>
+		<boolean name="logOk" title="Activate Logs ?" default="true" help="true"/>
+		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit" help="true"/>
+		<string name="defaultPartnerLanguage" title="Default Partner language" selection="select.language" help="true"/>
 		
 		<!-- Exception -->
 		<string name="exceptionDefaultMsg" multiline="true" title="Default Message" required="true" />
@@ -23,9 +23,9 @@
 		<integer name="mapApiSelect" title="Mapping service provider" selection="base.general.map.api.select" default="1" />
 		
 		<!-- Currency Conversion Webservice URL -->
-		<string name="currencyWsURL" title="Currency Ws URL" />
+		<string name="currencyWsURL" title="Currency Ws URL" help="true"/>
 
-		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="general" title="Currency conversion table"/>
+		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="general" title="Currency conversion table" help="true"/>
 		
 		<boolean name="hasQasValidation" title="Use QAS Validation ?" help="true" />
 

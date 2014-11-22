@@ -11,7 +11,7 @@
     <many-to-one name="partner" ref="Partner" title="Partner"/>
     <string name="ownerName" title="Owner name" max="255" help="true"/>
     <string name="bankAddress" title="SWIFT address" max="255" help="true"/>
-    <string name="bic" title="BIC (Bank Identifier)"/>
+    <string name="bic" title="BIC (Bank Identifier)" help="true"/>
     <string name="iban" title="IBAN" help="true"/>
     <string name="bankCode" title="Bank Code" max="255" help="true"/>
     <string name="sortCode" title="Code Guichet" max="255" help="true"/>
