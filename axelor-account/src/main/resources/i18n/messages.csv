@@ -100,8 +100,8 @@ resources/views/AccountingBatch.xml:66
 resources/views/CashRegisterLine.xml:36
 resources/views/Invoice.xml:129
 resources/views/InvoiceBatch.xml:43
-resources/views/MoveTemplate.xml:42
-resources/views/MoveTemplate.xml:55
+resources/views/MoveTemplate.xml:43
+resources/views/MoveTemplate.xml:56
 resources/views/PaymentVoucher.xml:56
 resources/views/Reconcile.xml:30
 resources/views/ReminderMethodLine.xml:28"
@@ -302,7 +302,7 @@ resources/views/CfonbConfig.xml:11"
 "Chart imported?",,,"resources/domains/AccountConfig.xml:104"
 "Chart of Accounts",,,"resources/views/Menu.xml:429
 resources/views/Menu.xml:432"
-"Check validity",,,"resources/views/MoveTemplate.xml:44"
+"Check validity",,,"resources/views/MoveTemplate.xml:45"
 "Cheque",,,"resources/domains/InterbankCodeLine.xml:17
 resources/views/Selects.xml:188"
 "Cheque Rejection",,,"resources/views/ChequeRejection.xml:18"
@@ -356,12 +356,13 @@ resources/domains/Irrecoverable.xml:18
 resources/domains/Journal.xml:24
 resources/domains/Move.xml:14
 resources/domains/MoveLineReport.xml:11
+resources/domains/MoveTemplate.xml:12
 resources/domains/PaymentSchedule.xml:18
 resources/domains/PaymentVoucher.xml:27
 resources/domains/Reimbursement.xml:14
 resources/domains/ReportedBalance.xml:11
 resources/domains/TaxAccount.xml:11
-resources/views/MoveTemplate.xml:52"
+resources/views/MoveTemplate.xml:53"
 "Company set",,,"resources/domains/AccountChart.xml:13"
 "Compatible Account Types",,,"resources/domains/Journal.xml:26"
 "Compatible Accounts",,,"resources/domains/Journal.xml:27"
@@ -468,8 +469,8 @@ resources/views/Selects.xml:114"
 "Date",,,"resources/domains/ChequeRejection.xml:11
 resources/domains/Irrecoverable.xml:16
 resources/domains/Move.xml:10
-resources/views/MoveTemplate.xml:61
-resources/views/MoveTemplate.xml:69"
+resources/views/MoveTemplate.xml:62
+resources/views/MoveTemplate.xml:70"
 "Date can't be ahead of today",,,"resources/views/MoveTemplate.xml:80"
 "Dates",,,"resources/views/Invoice.xml:121
 resources/views/Year.xml:21"
@@ -584,7 +585,6 @@ resources/domains/AccountingSituation.xml:20"
 "End of month + n days",,,"resources/views/Selects.xml:176"
 "Ending Balance",,,"resources/domains/BankStatement.xml:16"
 "Ending record code",,,"resources/domains/CfonbConfig.xml:30"
-"Enter proper 'From' and 'To' date.",,,"resources/views/Year.xml:77"
 "Environment Url",,,"resources/domains/PayboxConfig.xml:13"
 "Equity",,,"resources/views/Selects.xml:25"
 "Error in move validation, please check the log",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:43"
@@ -630,8 +630,6 @@ resources/views/Menu.xml:558"
 "Fiscal year",,,"resources/domains/MoveLineReport.xml:22
 resources/domains/ReportedBalanceLine.xml:11
 resources/views/Year.xml:16"
-"Fiscal year already exist for 'From' and 'To' date.",,,"resources/views/Year.xml:81
-resources/views/Year.xml:82"
 "Fiscal years",,,"resources/views/Menu.xml:381
 resources/views/Menu.xml:384
 resources/views/Year.xml:6"
@@ -645,7 +643,7 @@ resources/views/charts.xml:57"
 "From Partner",,,"resources/domains/MoveLineReport.xml:19"
 "From reject schedule line",,,"resources/domains/PaymentScheduleLine.xml:25"
 "Full name",,,"resources/domains/Account.xml:17
-resources/domains/MoveTemplate.xml:16"
+resources/domains/MoveTemplate.xml:17"
 "General",,,"resources/views/AccountCategory.xml:13
 resources/views/AccountCategoryLine.xml:13
 resources/views/AccountChart.xml:13
@@ -654,9 +652,9 @@ resources/views/Journal.xml:31
 resources/views/Selects.xml:199"
 "General Accounts",,,"resources/domains/AccountCategory.xml:13"
 "General ledger",,,"resources/views/Selects.xml:64"
-"Generate Moves",,,"resources/views/MoveTemplate.xml:56"
+"Generate Moves",,,"resources/views/MoveTemplate.xml:57"
 "Generate irrecoverable report",,,"resources/views/Irrecoverable.xml:30"
-"Generate move from template",,,"resources/views/MoveTemplate.xml:48"
+"Generate move from template",,,"resources/views/MoveTemplate.xml:49"
 "Generate periods",,,"resources/views/Year.xml:35"
 "Generate refund",,,"resources/views/Invoice.xml:67"
 "Generate reimbursements",,,"resources/views/Selects.xml:151"
@@ -869,7 +867,7 @@ resources/domains/BankStatement.xml:12
 resources/domains/Invoice.xml:40
 resources/domains/Move.xml:8
 resources/domains/MoveLineReport.xml:13
-resources/domains/MoveTemplate.xml:12
+resources/domains/MoveTemplate.xml:13
 resources/views/Journal.xml:20
 resources/views/Journal.xml:6
 resources/views/Selects.xml:69"
@@ -936,7 +934,7 @@ resources/domains/PaymentInvoice.xml:12"
 "Move Lines",,,"resources/views/Menu.xml:140
 resources/views/Menu.xml:143"
 "Move Lines Export Config",,,"resources/views/AccountingBatch.xml:54"
-"Move Lines data input",,,"resources/views/MoveTemplate.xml:53"
+"Move Lines data input",,,"resources/views/MoveTemplate.xml:54"
 "Move Template Types",,,"resources/views/Menu.xml:748
 resources/views/Menu.xml:751"
 "Move Templates",,,"resources/views/Menu.xml:728
@@ -970,10 +968,10 @@ resources/views/MoveTemplateLine.xml:6"
 "Move template type",,,"resources/views/MoveTemplateType.xml:11
 resources/views/MoveTemplateType.xml:6"
 "MoveLine",,,"resources/views/Journal.xml:34"
-"MoveLine Amount",,,"resources/views/MoveTemplate.xml:62
-resources/views/MoveTemplate.xml:70"
-"MoveLine content data input",,,"resources/views/MoveTemplate.xml:67"
-"MoveLines content data input",,,"resources/views/MoveTemplate.xml:60"
+"MoveLine Amount",,,"resources/views/MoveTemplate.xml:63
+resources/views/MoveTemplate.xml:71"
+"MoveLine content data input",,,"resources/views/MoveTemplate.xml:68"
+"MoveLines content data input",,,"resources/views/MoveTemplate.xml:61"
 "Moves",,,"resources/views/Menu.xml:127
 resources/views/Menu.xml:130
 resources/views/Menu.xml:133"
@@ -1072,12 +1070,12 @@ resources/domains/ReminderHistory.xml:17"
 "Partner account",,,"resources/domains/PaymentVoucher.xml:11"
 "Partner category",,,"resources/domains/ReminderConfigLine.xml:11"
 "Partner information",,,"resources/views/ReminderHistory.xml:29"
-"Partner input select",,,"resources/domains/MoveTemplate.xml:15"
+"Partner input select",,,"resources/domains/MoveTemplate.xml:16"
 "Partner situation must be updated",,,"resources/domains/AccountingSituation.xml:21"
-"Partner to Credit",,,"resources/views/MoveTemplate.xml:64
+"Partner to Credit",,,"resources/views/MoveTemplate.xml:65
+resources/views/MoveTemplate.xml:73"
+"Partner to Debit",,,"resources/views/MoveTemplate.xml:64
 resources/views/MoveTemplate.xml:72"
-"Partner to Debit",,,"resources/views/MoveTemplate.xml:63
-resources/views/MoveTemplate.xml:71"
 "Partner to credit",,,"resources/domains/MoveTemplateLine.xml:16"
 "Partner to debit",,,"resources/domains/MoveTemplateLine.xml:15"
 "Path for reimbursement files (CFONB)",,,"resources/domains/AccountConfig.xml:56"
@@ -1120,12 +1118,12 @@ resources/views/charts.xml:443"
 "Payment Rejected",,,"resources/views/ChequeRejection.xml:36"
 "Payment Schedule",,,"resources/domains/Invoice.xml:39
 resources/domains/PaymentScheduleLine.xml:10
-resources/views/Menu.xml:101
-resources/views/Menu.xml:104
 resources/views/Menu.xml:97"
 "Payment Schedule Entries",,,"resources/views/MoveLine.xml:254"
 "Payment Schedule Line",,,"resources/views/PaymentSchedule.xml:43"
 "Payment Schedule line",,,"resources/domains/MoveLine.xml:38"
+"Payment Schedules",,,"resources/views/Menu.xml:101
+resources/views/Menu.xml:104"
 "Payment Schedules Lines",,,"resources/views/PaymentScheduleLine.xml:77"
 "Payment Smoothings Lines",,,"resources/views/PaymentScheduleLine.xml:80"
 "Payment account",,,"resources/domains/AccountManagement.xml:10"
@@ -1192,7 +1190,7 @@ resources/views/Menu.xml:394"
 "Periods generation assistant",,,"resources/views/Year.xml:33"
 "Please clear all existing periods before generating new ones",,,"resources/views/Year.xml:73"
 "Please close this notebook to go back to the payment voucher. Please refresh the payment voucher to see the changes.",,,"resources/views/Paybox.xml:13"
-"Please input values between 1 to 100",,,"resources/views/MoveTemplateLine.xml:42"
+"Please input values between 1 to 100",,,"resources/views/MoveTemplateLine.xml:37"
 "Please select 'Draft' or 'Simulated' moves",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:42"
 "Previous Move",,,"resources/domains/Invoice.xml:42"
 "Previous invoice",,,"resources/domains/Invoice.xml:53"
@@ -1534,8 +1532,8 @@ resources/views/InvoiceLineTax.xml:6"
 "Tax standard rate for clearance",,,"resources/domains/AccountConfig.xml:82"
 "Tax standard rate for irrecoverables",,,"resources/domains/AccountConfig.xml:85"
 "Technical Rejection",,,"resources/domains/InterbankCodeLine.xml:19"
-"Template",,,"resources/views/MoveTemplate.xml:51"
-"Template Move Lines",,,"resources/domains/MoveTemplate.xml:14"
+"Template",,,"resources/views/MoveTemplate.xml:52"
+"Template Move Lines",,,"resources/domains/MoveTemplate.xml:15"
 "Temporary filepath to import IPO, and IPO & Cheque payments",,,"resources/domains/AccountConfig.xml:92"
 "Temporary filepath to import IPO, and IPO & Cheque payments rejects",,,"resources/domains/AccountConfig.xml:95"
 "Temporary filepath to import rejected records",,,"resources/domains/AccountConfig.xml:76"
@@ -1592,7 +1590,7 @@ resources/domains/AnalyticJournal.xml:11
 resources/domains/BankStatementLine.xml:13
 resources/domains/Journal.xml:13
 resources/domains/MoveTemplate.xml:11
-resources/views/MoveTemplate.xml:50
+resources/views/MoveTemplate.xml:51
 resources/views/Selects.xml:10"
 "UMR List",,,"resources/domains/Partner.xml:20"
 "Unique Mandate References",,,"resources/views/Rum.xml:16
@@ -1629,7 +1627,7 @@ resources/domains/ReminderHistory.xml:19"
 "V.A.T.",,,"resources/views/Menu.xml:456
 resources/views/Menu.xml:459"
 "VAT Statement",,,"resources/views/Selects.xml:71"
-"Valid ?",,,"resources/domains/MoveTemplate.xml:13
+"Valid ?",,,"resources/domains/MoveTemplate.xml:14
 resources/domains/MoveTemplateLine.xml:17"
 "Validate",,,"resources/views/Invoice.xml:131
 resources/views/Move.xml:45

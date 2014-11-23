@@ -214,19 +214,19 @@ resources/views/Selects.xml:66"
 "97",,,"resources/views/Selects.xml:154"
 "98",,,"resources/views/Selects.xml:155"
 "99",,,"resources/views/Selects.xml:156"
-"<a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' />",,,"resources/views/Partner.xml:223
-resources/views/Partner.xml:69"
-"<a class='fa fa-google-plus' href='http://www.google.com' target='_blank' />",,,"resources/views/Partner.xml:222
+"<a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' />",,,"resources/views/Partner.xml:222
 resources/views/Partner.xml:68"
-"<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />",,,"resources/views/Partner.xml:225
-resources/views/Partner.xml:71"
-"<a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' />",,,"resources/views/Partner.xml:224
+"<a class='fa fa-google-plus' href='http://www.google.com' target='_blank' />",,,"resources/views/Partner.xml:221
+resources/views/Partner.xml:67"
+"<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />",,,"resources/views/Partner.xml:224
 resources/views/Partner.xml:70"
-"<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />",,,"resources/views/Partner.xml:226
-resources/views/Partner.xml:72"
+"<a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' />",,,"resources/views/Partner.xml:223
+resources/views/Partner.xml:69"
+"<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />",,,"resources/views/Partner.xml:225
+resources/views/Partner.xml:71"
 "=",,,"resources/views/UnitConversion.xml:16"
 "A product of type service can't be procured from stock.",,,"resources/views/Product.xml:219"
-"ARTMIN",,,"resources/domains/Canton.xml:11"
+"ARTMIN",,,"resources/domains/Canton.xml:12"
 "Account Number",,,"resources/domains/BankDetails.xml:18"
 "Account config",,,"resources/views/Company.xml:24
 resources/views/Company.xml:52"
@@ -237,7 +237,7 @@ resources/views/AccountManagement.xml:41"
 "Accounting",,,"resources/views/General.xml:34
 resources/views/Product.xml:83"
 "Accounting Export",,,"resources/views/Batch.xml:34"
-"Accounting balance",,,"resources/views/Partner.xml:122"
+"Accounting balance",,,"resources/views/Partner.xml:121"
 "Accounting configuration",,,"resources/views/Tax.xml:21"
 "Accounting export",,,"resources/views/Selects.xml:364"
 "Accounting reports",,,"resources/views/Selects.xml:354"
@@ -258,7 +258,7 @@ resources/domains/Routing.xml:13"
 "Active Team",,,"resources/domains/User.xml:16"
 "Active company",,,"resources/domains/User.xml:12"
 "Active?",,,"resources/domains/PriceList.xml:13"
-"Activities",,,"resources/views/Partner.xml:130"
+"Activities",,,"resources/views/Partner.xml:129"
 "Additionnal",,,"resources/views/Selects.xml:474"
 "Address",,,"resources/domains/Address.xml:26
 resources/domains/Company.xml:12
@@ -266,7 +266,7 @@ resources/domains/PickListEntry.xml:19
 resources/domains/PickListEntry.xml:21
 resources/domains/Site.xml:12
 resources/views/Address.xml:16
-resources/views/Partner.xml:250"
+resources/views/Partner.xml:249"
 "Address certified by QAS engine",,,"resources/domains/Address.xml:22"
 "Address details",,,"resources/views/Address.xml:17"
 "Address list",,,"resources/views/Address.xml:6"
@@ -296,17 +296,17 @@ resources/views/Menu.xml:525"
 "Alarms",,,"resources/views/Alarm.xml:14"
 "All Alarms",,,"resources/views/Menu.xml:510
 resources/views/Menu.xml:513"
-"All Clients",,,"resources/views/Partner.xml:380"
-"All Enterprises",,,"resources/views/Partner.xml:371"
-"All Individuals",,,"resources/views/Partner.xml:374"
+"All Clients",,,"resources/views/Partner.xml:379"
+"All Enterprises",,,"resources/views/Partner.xml:370"
+"All Individuals",,,"resources/views/Partner.xml:373"
 "All Messages",,,"resources/views/Menu.xml:531
 resources/views/Menu.xml:534"
 "All Partners",,,"resources/views/Menu.xml:66
 resources/views/Menu.xml:67"
-"All Prospects",,,"resources/views/Partner.xml:377"
-"All Suppliers",,,"resources/views/Partner.xml:383"
+"All Prospects",,,"resources/views/Partner.xml:376"
+"All Suppliers",,,"resources/views/Partner.xml:382"
 "All friends",,,"resources/views/Selects.xml:463"
-"All qualified supplier",,,"resources/views/Partner.xml:386"
+"All qualified supplier",,,"resources/views/Partner.xml:385"
 "Amount",,,"resources/views/Selects.xml:334"
 "Amount/%",,,"resources/domains/PriceListLine.xml:14"
 "Anniversary date",,,"resources/views/Selects.xml:404"
@@ -326,8 +326,8 @@ resources/views/Batch.xml:53"
 "Area name",,,"resources/domains/GeographicalArea.xml:9"
 "Artmin",,,"resources/domains/Commune.xml:11"
 "Assigned to",,,"resources/domains/Partner.xml:62
-resources/views/Partner.xml:141
-resources/views/Partner.xml:255"
+resources/views/Partner.xml:140
+resources/views/Partner.xml:254"
 "Attached files",,,"resources/views/Template.xml:24"
 "Attributes",,,"resources/views/Country.xml:14"
 "Aucune conversion trouvée de la devise '%s' à la devise '%s' à la date du %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:34"
@@ -344,8 +344,7 @@ resources/domains/Bic.xml:10"
 "Bank",,,"resources/views/BankDetails.xml:19"
 "Bank Code",,,"resources/domains/BankDetails.xml:16
 resources/domains/Bic.xml:11"
-"Bank Details",,,"resources/domains/BankDetails.xml:22
-resources/domains/Partner.xml:54"
+"Bank Details",,,"resources/domains/BankDetails.xml:22"
 "Bank Details list",,,"resources/domains/Partner.xml:51"
 "Bank Identifier Code",,,"resources/views/Bic.xml:14"
 "Bank Identifier Codes",,,"resources/views/Bic.xml:6"
@@ -363,26 +362,27 @@ resources/views/Menu.xml:494
 resources/views/Menu.xml:497"
 "Based on",,,"resources/domains/PriceList.xml:20"
 "Batch",,,"resources/views/Batch.xml:18"
-"Batches",,,"resources/views/AlarmEngineBatch.xml:24
+"Batches",,,"resources/domains/Partner.xml:60
+resources/views/AlarmEngineBatch.xml:24
 resources/views/Batch.xml:7
 resources/views/Menu.xml:491"
 "Batchs",,,"resources/domains/AlarmEngineBatch.xml:15
-resources/domains/BaseBatch.xml:17
-resources/domains/Partner.xml:60"
+resources/domains/BaseBatch.xml:17"
 "Be aware that the address is already in use on other documents, do you still want to modify it ?",,,"resources/views/Address.xml:77"
 "Beverage",,,"resources/views/Selects.xml:223"
 "Bill of materials",,,"resources/views/Product.xml:293"
 "Binding file",,,"resources/domains/ImportConfiguration.xml:12"
 "Biotechnologies",,,"resources/views/Selects.xml:212"
 "Birt Template",,,"resources/domains/PrintingSettings.xml:14
-resources/domains/Template.xml:20
+resources/domains/Template.xml:11
 resources/views/BirtTemplate.xml:12"
 "Birt Template parameter",,,"resources/views/BirtTemplateParameter.xml:11"
 "Birt Template parameters",,,"resources/views/BirtTemplateParameter.xml:6"
 "Birt Templates",,,"resources/views/BirtTemplate.xml:7"
 "Birt template",,,"resources/domains/BirtTemplateParameter.xml:12"
+"Block Direct Debit ?",,,"resources/domains/Blocking.xml:16"
 "Block Invoicing ?",,,"resources/domains/Blocking.xml:26"
-"Block Reimbursement",,,"resources/domains/Blocking.xml:31"
+"Block Reimbursement ?",,,"resources/domains/Blocking.xml:31"
 "Block Reminders ?",,,"resources/domains/Blocking.xml:21"
 "Block until",,,"resources/domains/Blocking.xml:17
 resources/domains/Blocking.xml:22
@@ -445,11 +445,11 @@ resources/views/Menu.xml:257"
 "Civil year already exist for ${fromDate.toString('dd/MM/yyyy')} and ${toDate.toString('dd/MM/yyyy')}.",,,"resources/views/Year.xml:34
 resources/views/Year.xml:35"
 "Civility",,,"resources/domains/Partner.xml:16
-resources/views/Partner.xml:230
-resources/views/Partner.xml:64
+resources/views/Partner.xml:229
+resources/views/Partner.xml:63
 resources/views/Selects.xml:309"
-"Client Situation",,,"resources/views/Partner.xml:215
-resources/views/Partner.xml:49"
+"Client Situation",,,"resources/views/Partner.xml:214
+resources/views/Partner.xml:48"
 "Client invoice",,,"resources/views/Selects.xml:435"
 "ClientSituation.12MonthTurnover",,,"java/com/axelor/apps/base/report/ITranslation.java:58"
 "ClientSituation.address",,,"java/com/axelor/apps/base/report/ITranslation.java:30"
@@ -501,7 +501,7 @@ resources/views/Selects.xml:592"
 resources/domains/AlarmEngine.xml:11
 resources/domains/AlarmEngineBatch.xml:11
 resources/domains/BaseBatch.xml:11
-resources/domains/Canton.xml:10
+resources/domains/Canton.xml:11
 resources/domains/Company.xml:11
 resources/domains/CompanyDepartment.xml:12
 resources/domains/Currency.xml:11
@@ -550,7 +550,7 @@ resources/domains/Sequence.xml:11
 resources/domains/User.xml:11
 resources/domains/Year.xml:16
 resources/views/Company.xml:12
-resources/views/Partner.xml:233
+resources/views/Partner.xml:232
 resources/views/Selects.xml:181
 resources/views/Selects.xml:200"
 "Company Footer",,,"resources/domains/PrintingSettings.xml:13
@@ -569,17 +569,17 @@ resources/views/Menu.xml:90"
 "Configurations",,,"resources/views/Company.xml:40"
 "Confirmed",,,"resources/views/Selects.xml:425"
 "Contact",,,"resources/domains/EmailAddress.xml:10
-resources/views/Partner.xml:192
-resources/views/Partner.xml:211
+resources/views/Partner.xml:191
+resources/views/Partner.xml:210
 resources/views/Selects.xml:431"
 "Contact ?",,,"resources/domains/Partner.xml:25"
-"Contact details",,,"resources/views/Partner.xml:239
-resources/views/Partner.xml:89"
+"Contact details",,,"resources/views/Partner.xml:238
+resources/views/Partner.xml:88"
 "Contacts",,,"resources/domains/Partner.xml:35
 resources/views/Menu.xml:23
 resources/views/Menu.xml:53
 resources/views/Menu.xml:56
-resources/views/Partner.xml:152
+resources/views/Partner.xml:151
 resources/views/Partner.xml:22"
 "Contacts Db",,,"resources/views/Menu.xml:26"
 "Contains",,,"resources/views/Selects.xml:445"
@@ -610,10 +610,10 @@ resources/domains/Bic.xml:14"
 resources/views/Menu.xml:553"
 "Create Account",,,"resources/views/Menu.xml:555
 resources/views/Menu.xml:557
-resources/views/Menu.xml:577"
-"Create Contact",,,"resources/views/Menu.xml:570
-resources/views/Menu.xml:572
-resources/views/Menu.xml:579"
+resources/views/Menu.xml:580"
+"Create Contact",,,"resources/views/Menu.xml:571
+resources/views/Menu.xml:573
+resources/views/Menu.xml:582"
 "Create Expense",,,"resources/views/MenuConsultant.xml:91"
 "Create Leave request",,,"resources/views/MenuConsultant.xml:113"
 "Create Timesheet",,,"resources/views/MenuConsultant.xml:69"
@@ -654,33 +654,33 @@ resources/views/Scheduler.xml:20"
 "Dashboard",,,"resources/views/MenuConsultant.xml:15
 resources/views/welcome.xml:7"
 "Dashboards",,,"resources/views/Menu.xml:8"
-"Data files ( csv, xml, or zip )",,,"resources/domains/ImportConfiguration.xml:13
-resources/domains/ImportHistory.xml:12"
-"Data(s)",,,"resources/domains/ImportConfiguration.xml:13
-resources/domains/ImportHistory.xml:12"
+"Data file",,,"resources/domains/ImportConfiguration.xml:13"
+"Data files ( csv, xml, or zip )",,,"resources/domains/ImportHistory.xml:12"
+"Data(s)",,,"resources/domains/ImportHistory.xml:12"
 "Date",,,"resources/domains/Alarm.xml:10"
 "Day (end of month)",,,"resources/domains/PaymentCondition.xml:15"
 "Day of month",,,"resources/domains/Scheduler.xml:29
 resources/domains/Scheduler.xml:33"
 "December",,,"resources/views/Selects.xml:289"
 "Default Bank Account",,,"resources/domains/Company.xml:24"
+"Default Bank Details",,,"resources/domains/Partner.xml:54"
 "Default Message",,,"resources/domains/General.xml:16"
-"Default partner language",,,"resources/domains/General.xml:13"
+"Default Partner language",,,"resources/domains/General.xml:13"
+"Default Project unit",,,"resources/domains/General.xml:12"
 "Default supplier",,,"resources/domains/Product.xml:53"
 "Default zoom",,,"resources/domains/Address.xml:20"
 "Delete",,,"resources/views/General.xml:10
 resources/views/General.xml:21
 resources/views/Message.xml:11"
 "Delivery Address",,,"resources/domains/Partner.xml:31"
-"Delivery delay (day)",,,"resources/domains/Partner.xml:33"
+"Delivery delay (days)",,,"resources/domains/Partner.xml:33"
 "Delivery stock move",,,"resources/views/Selects.xml:370"
 "Demography",,,"resources/views/Commune.xml:26"
-"Dep./Div.",,,"resources/domains/Partner.xml:47"
-"Departement",,,"resources/domains/Canton.xml:13
-resources/domains/Commune.xml:14
-resources/views/CompanyDepartment.xml:11
+"Departement",,,"resources/views/CompanyDepartment.xml:11
 resources/views/Department.xml:12"
-"Department",,,"resources/domains/GeographicalArea.xml:10"
+"Department",,,"resources/domains/Canton.xml:14
+resources/domains/Commune.xml:14
+resources/domains/GeographicalArea.xml:10"
 "Department Cantons List",,,"resources/domains/Department.xml:15"
 "Department Communes List",,,"resources/domains/Department.xml:14"
 "Department Name",,,"resources/domains/Department.xml:11"
@@ -688,6 +688,7 @@ resources/views/Department.xml:12"
 resources/views/Department.xml:6
 resources/views/Menu.xml:265
 resources/views/Menu.xml:268"
+"Dept./Div.",,,"resources/domains/Partner.xml:47"
 "Description",,,"resources/domains/AlarmEngine.xml:21
 resources/domains/AlarmEngineBatch.xml:14
 resources/domains/BaseBatch.xml:16
@@ -706,7 +707,6 @@ resources/views/SupplierCatalog.xml:24"
 resources/views/CurrencyConversionLine.xml:38"
 "Details",,,"resources/views/Alarm.xml:30"
 "Diploma",,,"resources/domains/Degree.xml:10"
-"Direct Debit Blocking ?",,,"resources/domains/Blocking.xml:16"
 "Direct debit",,,"resources/views/Selects.xml:298
 resources/views/Selects.xml:352"
 "Direct debit blocking",,,"resources/views/Blocking.xml:27"
@@ -714,7 +714,7 @@ resources/views/Selects.xml:352"
 "Direction",,,"resources/views/Address.xml:12"
 "Discount",,,"resources/views/Selects.xml:473"
 "Discount/Additionnal/Replace",,,"resources/domains/PriceListLine.xml:12"
-"Display discount?",,,"resources/domains/PriceList.xml:16"
+"Display discount ?",,,"resources/domains/PriceList.xml:16"
 "Distribution precisions (POB, Village...)",,,"resources/domains/Address.xml:14"
 "Document concerned",,,"resources/domains/Sequence.xml:13"
 "Dr",,,"resources/views/Selects.xml:164"
@@ -732,6 +732,7 @@ resources/views/Selects.xml:424"
 resources/views/Message.xml:7
 resources/views/Selects.xml:266"
 "Email and paper",,,"resources/views/Selects.xml:268"
+"Employees (Nbr)",,,"resources/domains/Partner.xml:67"
 "End Date",,,"resources/domains/Batch.xml:17"
 "Energy",,,"resources/views/Selects.xml:219"
 "Enter proper 'From' and 'To' date.",,,"resources/views/Year.xml:39"
@@ -771,12 +772,13 @@ resources/views/IndicatorGeneratorGrouping.xml:29"
 resources/domains/RoutingRule.xml:12"
 "Fields",,,"resources/domains/RoutingActionCreate.xml:11
 resources/views/General.xml:75"
+"File format can be a csv, xml, or zip depending on the binding file settings.",,,"resources/domains/ImportConfiguration.xml:13"
 "Filters",,,"resources/views/Routing.xml:21"
 "Finance",,,"resources/views/Selects.xml:222"
 "First Name",,,"resources/domains/Partner.xml:18"
 "First execution date",,,"resources/domains/SchedulerInstance.xml:12"
-"First name",,,"resources/views/Partner.xml:232
-resources/views/Partner.xml:63"
+"First name",,,"resources/views/Partner.xml:231
+resources/views/Partner.xml:62"
 "Fiscal Year",,,"resources/views/Selects.xml:582"
 "Fiscal position",,,"resources/domains/Partner.xml:74
 resources/domains/TaxEquiv.xml:10"
@@ -797,7 +799,6 @@ resources/views/Selects.xml:549"
 "From",,,"resources/domains/Period.xml:14
 resources/domains/Year.xml:13"
 "From Date",,,"resources/domains/CurrencyConversionLine.xml:15"
-"From Tax",,,"resources/domains/TaxEquiv.xml:11"
 "From Unit",,,"resources/domains/UnitConversion.xml:11"
 "FromStock",,,"resources/views/Selects.xml:254"
 "Function",,,"resources/domains/Partner.xml:19"
@@ -838,7 +839,7 @@ resources/domains/BankDetails.xml:10
 resources/domains/BirtTemplate.xml:10
 resources/domains/BirtTemplateParameter.xml:9
 resources/domains/Blocking.xml:10
-resources/domains/Canton.xml:8
+resources/domains/Canton.xml:9
 resources/domains/Company.xml:9
 resources/domains/CompanyDepartment.xml:10
 resources/domains/Country.xml:10
@@ -897,8 +898,8 @@ resources/views/Selects.xml:201"
 resources/views/Charts.xml:59"
 "Information",,,"resources/views/BaseBatch.xml:27"
 "Informations",,,"resources/views/Message.xml:13
-resources/views/Partner.xml:182
-resources/views/Partner.xml:79"
+resources/views/Partner.xml:181
+resources/views/Partner.xml:78"
 "Insurance",,,"resources/views/Selects.xml:211"
 "Interfaces",,,"resources/views/General.xml:50"
 "Internal companies",,,"resources/views/User.xml:28"
@@ -914,7 +915,7 @@ resources/views/Batch.xml:61"
 "Invoicing Address",,,"resources/domains/Partner.xml:30"
 "Invoicing Management",,,"resources/views/AlarmEngine.xml:8"
 "Invoicing blocking",,,"resources/views/Blocking.xml:21"
-"Invoicing/Payment",,,"resources/views/Partner.xml:118"
+"Invoicing/Payment",,,"resources/views/Partner.xml:117"
 "Is model?",,,"resources/domains/Product.xml:51"
 "JPQL",,,"resources/views/Selects.xml:400"
 "January",,,"resources/views/Selects.xml:278"
@@ -964,7 +965,7 @@ resources/views/Partner.xml:27"
 "M.",,,"resources/views/Selects.xml:161"
 "MDC2",,,"resources/views/Selects.xml:385"
 "Machinery",,,"resources/views/Selects.xml:226"
-"Main partner",,,"resources/domains/Partner.xml:36"
+"Main company",,,"resources/domains/Partner.xml:36"
 "Manage production tracking Nbr. ?",,,"resources/domains/TrackingNumberConfiguration.xml:11"
 "Manage purchase tracking Nbr. ?",,,"resources/domains/TrackingNumberConfiguration.xml:10"
 "Manage sale tracking Nbr. ?",,,"resources/domains/TrackingNumberConfiguration.xml:12"
@@ -1031,7 +1032,7 @@ resources/views/ClientView.xml:35"
 "Name",,,"resources/domains/Agency.xml:11
 resources/domains/BirtTemplate.xml:11
 resources/domains/BirtTemplateParameter.xml:10
-resources/domains/Canton.xml:9
+resources/domains/Canton.xml:10
 resources/domains/Company.xml:10
 resources/domains/CompanyDepartment.xml:11
 resources/domains/Currency.xml:10
@@ -1065,13 +1066,13 @@ resources/domains/TemplateRule.xml:10
 resources/domains/Territory.xml:10
 resources/domains/UnitConversion.xml:15
 resources/domains/Year.xml:11
-resources/views/Partner.xml:231
-resources/views/Partner.xml:62
+resources/views/Partner.xml:230
+resources/views/Partner.xml:61
 resources/views/Product.xml:39"
 "Name/Company Name",,,"resources/domains/Partner.xml:17"
 "National Code",,,"resources/domains/Address.xml:21
 resources/domains/Commune.xml:13"
-"Nb of Inhabitants",,,"resources/domains/Canton.xml:12"
+"Nb of Inhabitants",,,"resources/domains/Canton.xml:13"
 "Nb. of Inhabitants",,,"resources/domains/Commune.xml:16"
 "New",,,"resources/views/General.xml:20
 resources/views/General.xml:9"
@@ -1087,12 +1088,11 @@ resources/views/Selects.xml:187"
 "Notes",,,"resources/domains/Company.xml:18
 resources/views/Company.xml:32
 resources/views/Company.xml:37
-resources/views/Partner.xml:147
-resources/views/Partner.xml:261"
+resources/views/Partner.xml:146
+resources/views/Partner.xml:260"
 "Notification",,,"resources/views/Selects.xml:405"
 "November",,,"resources/views/Selects.xml:288"
 "N° and Street label",,,"resources/domains/Address.xml:13"
-"N° of Employees",,,"resources/domains/Partner.xml:67"
 "OSM",,,"resources/views/Selects.xml:452"
 "Object",,,"resources/domains/RoutingActionCreate.xml:10"
 "Obsolete Products",,,"resources/views/Product.xml:287"
@@ -1133,21 +1133,21 @@ resources/domains/Company.xml:14
 resources/domains/PriceList.xml:9
 resources/domains/User.xml:13
 resources/views/Menu.xml:17
-resources/views/Partner.xml:163
-resources/views/Partner.xml:33
-resources/views/Partner.xml:45"
+resources/views/Partner.xml:162
+resources/views/Partner.xml:32
+resources/views/Partner.xml:44"
 "Partner (Cust/Suppl)",,,"resources/views/Selects.xml:344"
 "Partner Dashboard",,,"resources/views/Dashboard.xml:8"
 "Partner Db",,,"resources/views/Menu.xml:20
 resources/views/Menu.xml:28"
-"Partner Details",,,"resources/views/Partner.xml:101"
+"Partner Details",,,"resources/views/Partner.xml:100"
 "Partner Type",,,"resources/domains/Partner.xml:15"
 "Partner categories",,,"resources/views/Menu.xml:93
 resources/views/Menu.xml:96
 resources/views/PartnerCategory.xml:6"
 "Partner category",,,"resources/views/PartnerCategory.xml:11"
-"Partner details",,,"resources/views/Partner.xml:183"
-"Partner filters",,,"resources/views/Partner.xml:370"
+"Partner details",,,"resources/views/Partner.xml:182"
+"Partner filters",,,"resources/views/Partner.xml:369"
 "Partner list",,,"resources/views/PartnerList.xml:11"
 "Partner lists",,,"resources/views/PartnerList.xml:6"
 "Partner name",,,"resources/domains/User.xml:19"
@@ -1176,7 +1176,7 @@ resources/views/PaymentMode.xml:6"
 "Payment Schedule",,,"resources/views/Selects.xml:261"
 "Payment by IPO and IPO Cheque",,,"resources/views/Selects.xml:300"
 "Payment mode",,,"resources/views/AccountManagement.xml:63"
-"Payment period (N days)",,,"resources/domains/PaymentCondition.xml:13"
+"Payment period (N days)",,,"resources/domains/PaymentCondition.xml:14"
 "Payment schedule",,,"resources/views/Selects.xml:350"
 "Payment voucher",,,"resources/views/Selects.xml:351"
 "Payment vouchers",,,"resources/views/Batch.xml:33
@@ -1214,13 +1214,13 @@ resources/views/General.xml:110"
 "Please input first character as capital and other as lower case",,,"resources/views/General.xml:101"
 "Please select active company",,,"resources/views/User.xml:48"
 "Please, enter date of next execution.",,,"resources/views/SchedulerInstance.xml:29"
-"Postal addresses",,,"resources/views/Partner.xml:188
-resources/views/Partner.xml:84"
+"Postal addresses",,,"resources/views/Partner.xml:187
+resources/views/Partner.xml:83"
 "Prefix",,,"resources/domains/Sequence.xml:14"
 "Price Extra",,,"resources/domains/ProductVariantValue.xml:12"
-"Price lines",,,"resources/domains/PriceList.xml:15"
 "Price list",,,"resources/domains/PriceListLine.xml:9
 resources/views/PriceList.xml:16"
+"Price list content",,,"resources/domains/PriceList.xml:15"
 "Price list line",,,"resources/views/PriceListLine.xml:17"
 "Price list lines",,,"resources/views/PriceList.xml:26
 resources/views/PriceListLine.xml:7"
@@ -1228,8 +1228,8 @@ resources/views/PriceListLine.xml:7"
 resources/views/Menu.xml:152
 resources/views/PriceList.xml:7"
 "Print",,,"resources/views/Message.xml:9"
-"Print Informations",,,"resources/views/Partner.xml:214
-resources/views/Partner.xml:48"
+"Print Informations",,,"resources/views/Partner.xml:213
+resources/views/Partner.xml:47"
 "Printing Setting",,,"resources/views/PrintingSetting.xml:20
 resources/views/PrintingSetting.xml:6"
 "Printing Settings",,,"resources/domains/Company.xml:27"
@@ -1252,12 +1252,14 @@ resources/views/ProductCategory.xml:6"
 "Product category",,,"resources/domains/PriceListLine.xml:11
 resources/domains/Product.xml:17
 resources/views/ProductCategory.xml:13"
+"Product code on catalog",,,"resources/domains/SupplierCatalog.xml:13"
 "Product dates",,,"resources/views/Product.xml:60"
 "Product families",,,"resources/views/Menu.xml:219
 resources/views/Menu.xml:222"
 "Product family",,,"resources/domains/AccountManagement.xml:15
 resources/views/ProductFamily.xml:11"
 "Product launch Date",,,"resources/domains/Product.xml:37"
+"Product name on catalog",,,"resources/domains/SupplierCatalog.xml:12"
 "Product pulled off market Date",,,"resources/domains/Product.xml:38"
 "Product sheet",,,"resources/views/Product.xml:31"
 "Product specific attributes",,,"resources/views/Product.xml:53"
@@ -1323,9 +1325,8 @@ resources/views/Menu.xml:197"
 "Prof.",,,"resources/views/Selects.xml:165"
 "Professional training",,,"resources/views/Selects.xml:374"
 "Profile",,,"resources/views/Selects.xml:248"
-"Profiles",,,"resources/views/Partner.xml:302
+"Profiles",,,"resources/views/Partner.xml:301
 resources/views/Product.xml:281"
-"Project unit",,,"resources/domains/General.xml:12"
 "Projects",,,"resources/views/User.xml:33"
 "Prospect",,,"resources/views/Selects.xml:170"
 "Prospects",,,"resources/views/Menu.xml:78
@@ -1406,10 +1407,11 @@ resources/views/Selects.xml:394"
 "Related to",,,"resources/domains/RoutingAction.xml:12
 resources/domains/RoutingAction.xml:13
 resources/views/Message.xml:38"
-"Relations",,,"resources/views/Menu.xml:576"
+"Relations",,,"resources/views/Menu.xml:579"
 "Reminder blocking",,,"resources/views/Blocking.xml:39"
 "Reopen period",,,"resources/views/Period.xml:29"
 "Replace",,,"resources/views/Selects.xml:475"
+"Replacement Tax",,,"resources/domains/TaxEquiv.xml:12"
 "Reports to",,,"resources/domains/Partner.xml:64"
 "Reset",,,"resources/views/Sequence.xml:24
 resources/views/Sequence.xml:8"
@@ -1491,9 +1493,9 @@ resources/views/Keyword.xml:30"
 resources/views/Partner.xml:29
 resources/views/Product.xml:17
 resources/views/Product.xml:30"
-"Send email",,,"resources/views/Partner.xml:165
-resources/views/Partner.xml:213
-resources/views/Partner.xml:47"
+"Send email",,,"resources/views/Partner.xml:164
+resources/views/Partner.xml:212
+resources/views/Partner.xml:46"
 "September",,,"resources/views/Selects.xml:286"
 "Sequence",,,"resources/domains/TemplateRuleLine.xml:10
 resources/domains/TrackingNumberConfiguration.xml:25
@@ -1505,8 +1507,8 @@ resources/views/Sequence.xml:6"
 "Service",,,"resources/views/Selects.xml:237"
 "Service Products",,,"resources/views/Product.xml:272"
 "Services",,,"resources/views/Selects.xml:216"
-"Settings",,,"resources/views/Partner.xml:138
-resources/views/Partner.xml:252"
+"Settings",,,"resources/views/Partner.xml:137
+resources/views/Partner.xml:251"
 "Shift to doubtful receivables",,,"resources/views/Selects.xml:365"
 "Shift to irrecoverable",,,"resources/views/Selects.xml:358"
 "Show",,,"resources/views/General.xml:77"
@@ -1547,8 +1549,6 @@ resources/views/Selects.xml:551"
 "Supplier Catalog",,,"resources/views/SupplierCatalog.xml:15
 resources/views/SupplierCatalog.xml:6"
 "Supplier Catalog Lines",,,"resources/domains/Product.xml:40"
-"Supplier Product Code",,,"resources/domains/SupplierCatalog.xml:13"
-"Supplier Product Name",,,"resources/domains/SupplierCatalog.xml:12"
 "Supplier Refund",,,"resources/views/Selects.xml:349"
 "Supplier Type",,,"resources/domains/Partner.xml:24"
 "Supplier invoice",,,"resources/views/Selects.xml:347"
@@ -1580,7 +1580,8 @@ resources/views/Tax.xml:6"
 "Tax rate",,,"resources/views/Tax.xml:31"
 "Tax rate lines",,,"resources/views/Tax.xml:25"
 "Tax rate list",,,"resources/views/Tax.xml:17"
-"Tax versions",,,"resources/domains/Tax.xml:15"
+"Tax to replace",,,"resources/domains/TaxEquiv.xml:11"
+"Tax versions history",,,"resources/domains/Tax.xml:15"
 "Taxes equivalences",,,"resources/views/TaxEquiv.xml:6"
 "Team",,,"resources/domains/Partner.xml:63
 resources/views/Team.xml:11"
@@ -1604,7 +1605,7 @@ resources/views/TemplateContextLine.xml:11"
 "Template Context Lines",,,"resources/views/TemplateContextLine.xml:6"
 "Template Rules",,,"resources/views/Menu.xml:346
 resources/views/Menu.xml:349"
-"Template context",,,"resources/domains/Template.xml:19
+"Template context",,,"resources/domains/Template.xml:10
 resources/domains/TemplateContextLine.xml:15"
 "Template file name",,,"resources/domains/BirtTemplate.xml:12"
 "Template rule",,,"resources/domains/TemplateRuleLine.xml:16
@@ -1634,7 +1635,6 @@ resources/views/Selects.xml:548"
 "To",,,"resources/domains/Period.xml:15
 resources/domains/Year.xml:14"
 "To Date",,,"resources/domains/CurrencyConversionLine.xml:16"
-"To Tax",,,"resources/domains/TaxEquiv.xml:12"
 "To Unit",,,"resources/domains/UnitConversion.xml:12"
 "To include in next invoice batch",,,"resources/views/Selects.xml:320"
 "To reimburse",,,"resources/views/Selects.xml:314"
@@ -1663,7 +1663,7 @@ resources/views/Selects.xml:546"
 "Type",,,"resources/domains/AccountManagement.xml:9
 resources/domains/AlarmMessage.xml:9
 resources/domains/Keyword.xml:11
-resources/domains/PaymentCondition.xml:14
+resources/domains/PaymentCondition.xml:13
 resources/domains/PaymentMode.xml:13
 resources/domains/PriceList.xml:19
 resources/domains/Querie.xml:11
@@ -1710,8 +1710,8 @@ resources/domains/RoutingRule.xml:14"
 resources/views/CurrencyConversionLine.xml:47"
 "Veuillez configurer les conversions d'unités de '%s' à '%s'.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:43"
 "Veuillez configurer les conversions d'unités.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:44"
-"View Accounts",,,"resources/views/Menu.xml:578"
-"View Contacts",,,"resources/views/Menu.xml:580"
+"View Accounts",,,"resources/views/Menu.xml:581"
+"View Contacts",,,"resources/views/Menu.xml:583"
 "View Products",,,"resources/views/ProductCategory.xml:15
 resources/views/ProductFamily.xml:13"
 "View map",,,"resources/views/Address.xml:26"
@@ -1755,6 +1755,7 @@ resources/views/Selects.xml:186"
 "help:BankDetails.bankAddress",,,"resources/domains/BankDetails.xml:13"
 "help:BankDetails.bankCode",,,"resources/domains/BankDetails.xml:16"
 "help:BankDetails.bbanKey",,,"resources/domains/BankDetails.xml:19"
+"help:BankDetails.bic",,,"resources/domains/BankDetails.xml:14"
 "help:BankDetails.countryCode",,,"resources/domains/BankDetails.xml:20"
 "help:BankDetails.iban",,,"resources/domains/BankDetails.xml:15"
 "help:BankDetails.ownerName",,,"resources/domains/BankDetails.xml:12"
@@ -1765,15 +1766,108 @@ resources/views/Selects.xml:186"
 "help:Bic.sortCode",,,"resources/domains/Bic.xml:13"
 "help:BirtTemplate.format",,,"resources/domains/BirtTemplate.xml:13"
 "help:BirtTemplate.generatedFilePath",,,"resources/domains/BirtTemplate.xml:14"
+"help:BirtTemplate.templateLink",,,"resources/domains/BirtTemplate.xml:12"
+"help:Company.administration",,,"resources/domains/Company.xml:16"
+"help:Company.currency",,,"resources/domains/Company.xml:21"
+"help:Company.defaultBankDetails",,,"resources/domains/Company.xml:24"
 "help:Company.logoPath",,,"resources/domains/Company.xml:19"
+"help:Company.parent",,,"resources/domains/Company.xml:15"
+"help:Company.printingSettings",,,"resources/domains/Company.xml:27"
+"help:Country.code",,,"resources/domains/Country.xml:11"
+"help:Currency.code",,,"resources/domains/Currency.xml:11"
+"help:CurrencyConversionLine.variations",,,"resources/domains/CurrencyConversionLine.xml:17"
+"help:Department.code",,,"resources/domains/Department.xml:12"
+"help:General.currencyConversionLineList",,,"resources/domains/General.xml:28"
+"help:General.currencyWsURL",,,"resources/domains/General.xml:26"
+"help:General.defaultPartnerLanguage",,,"resources/domains/General.xml:13"
+"help:General.defaultProjectUnit",,,"resources/domains/General.xml:12"
 "help:General.hasQasValidation",,,"resources/domains/General.xml:30"
+"help:General.logOk",,,"resources/domains/General.xml:11"
 "help:General.qasWsdlUrl",,,"resources/domains/General.xml:20"
 "help:General.today",,,"resources/domains/General.xml:10"
 "help:IndicatorGeneratorGrouping.path",,,"resources/domains/IndicatorGeneratorGrouping.xml:13"
+"help:Keyword.typeSelect",,,"resources/domains/Keyword.xml:11"
 "help:Message.company",,,"resources/domains/Message.xml:10"
+"help:Partner.bankDetails",,,"resources/domains/Partner.xml:54"
+"help:Partner.companySet",,,"resources/domains/Partner.xml:49"
+"help:Partner.currency",,,"resources/domains/Partner.xml:55"
+"help:Partner.customerTypeSelect",,,"resources/domains/Partner.xml:23"
+"help:Partner.deliveryAddress",,,"resources/domains/Partner.xml:31"
+"help:Partner.fiscalPosition",,,"resources/domains/Partner.xml:74"
+"help:Partner.languageSelect",,,"resources/domains/Partner.xml:28"
+"help:Partner.mainInvoicingAddress",,,"resources/domains/Partner.xml:30"
+"help:Partner.mainPartner",,,"resources/domains/Partner.xml:36"
+"help:Partner.registrationCode",,,"resources/domains/Partner.xml:69"
+"help:Partner.reportsTo",,,"resources/domains/Partner.xml:64"
+"help:Partner.supplierTypeSelect",,,"resources/domains/Partner.xml:24"
+"help:Partner.team",,,"resources/domains/Partner.xml:63"
+"help:Partner.user",,,"resources/domains/Partner.xml:62"
+"help:PaymentCondition.daySelect",,,"resources/domains/PaymentCondition.xml:15"
+"help:PaymentCondition.isFree",,,"resources/domains/PaymentCondition.xml:16"
+"help:PaymentCondition.paymentTime",,,"resources/domains/PaymentCondition.xml:14"
+"help:PaymentCondition.typeSelect",,,"resources/domains/PaymentCondition.xml:13"
+"help:PaymentMode.inOutSelect",,,"resources/domains/PaymentMode.xml:14"
+"help:PaymentMode.typeSelect",,,"resources/domains/PaymentMode.xml:13"
+"help:Period.statusSelect",,,"resources/domains/Period.xml:16"
+"help:Period.year",,,"resources/domains/Period.xml:12"
+"help:PriceList.basedOnSelect",,,"resources/domains/PriceList.xml:20"
+"help:PriceList.generalDiscount",,,"resources/domains/PriceList.xml:17"
+"help:PriceList.isActive",,,"resources/domains/PriceList.xml:13"
+"help:PriceList.isDisplayed",,,"resources/domains/PriceList.xml:16"
+"help:PriceList.partner",,,"resources/domains/PriceList.xml:9"
+"help:PriceList.typeSelect",,,"resources/domains/PriceList.xml:19"
+"help:PriceListLine.amount",,,"resources/domains/PriceListLine.xml:14"
+"help:PriceListLine.amountTypeSelect",,,"resources/domains/PriceListLine.xml:13"
+"help:PriceListLine.minQty",,,"resources/domains/PriceListLine.xml:15"
+"help:PriceListLine.product",,,"resources/domains/PriceListLine.xml:10"
+"help:PriceListLine.productCategory",,,"resources/domains/PriceListLine.xml:11"
+"help:PriceListLine.typeSelect",,,"resources/domains/PriceListLine.xml:12"
 "help:PrintingSettings.defaultMailBirtTemplate",,,"resources/domains/PrintingSettings.xml:14"
+"help:PrintingSettings.pdfFooter",,,"resources/domains/PrintingSettings.xml:13"
+"help:PrintingSettings.pdfHeader",,,"resources/domains/PrintingSettings.xml:12"
 "help:Product.accountManagementList",,,"resources/domains/Product.xml:55"
+"help:Product.applicationTypeSelect",,,"resources/domains/Product.xml:21"
+"help:Product.costPrice",,,"resources/domains/Product.xml:33"
+"help:Product.defaultSupplierPartner",,,"resources/domains/Product.xml:53"
+"help:Product.endDate",,,"resources/domains/Product.xml:38"
+"help:Product.isRawMaterial",,,"resources/domains/Product.xml:26"
+"help:Product.managPriceCoef",,,"resources/domains/Product.xml:35"
 "help:Product.parentProduct",,,"resources/domains/Product.xml:50"
+"help:Product.procurementMethodSelect",,,"resources/domains/Product.xml:25"
+"help:Product.productCategory",,,"resources/domains/Product.xml:17"
+"help:Product.productFamily",,,"resources/domains/Product.xml:18"
+"help:Product.productTypeSelect",,,"resources/domains/Product.xml:24"
+"help:Product.saleSupplySelect",,,"resources/domains/Product.xml:22"
+"help:Product.startDate",,,"resources/domains/Product.xml:37"
+"help:Product.supplierCatalogList",,,"resources/domains/Product.xml:40"
+"help:Product.trackingNumberConfiguration",,,"resources/domains/Product.xml:42"
+"help:Product.unit",,,"resources/domains/Product.xml:19"
+"help:ProductCategory.parentProductCategory",,,"resources/domains/ProductCategory.xml:11"
+"help:ProductCategory.productFamily",,,"resources/domains/ProductCategory.xml:12"
+"help:ProductFamily.accountManagementList",,,"resources/domains/ProductFamily.xml:11"
+"help:ProductVariant.productVariantAttr1",,,"resources/domains/ProductVariant.xml:11"
+"help:ProductVariant.productVariantValue1",,,"resources/domains/ProductVariant.xml:15"
+"help:ProductVariant.usedForStock",,,"resources/domains/ProductVariant.xml:20"
+"help:ProductVariantAttr.productVariantValueList",,,"resources/domains/ProductVariantAttr.xml:12"
+"help:ProductVariantValue.applicationPriceSelect",,,"resources/domains/ProductVariantValue.xml:13"
+"help:Sequence.padding",,,"resources/domains/Sequence.xml:16"
+"help:Sequence.prefixe",,,"resources/domains/Sequence.xml:14"
+"help:Sequence.suffixe",,,"resources/domains/Sequence.xml:15"
+"help:Sequence.toBeAdded",,,"resources/domains/Sequence.xml:17"
+"help:Sequence.yearlyResetOk",,,"resources/domains/Sequence.xml:19"
+"help:SupplierCatalog.minQty",,,"resources/domains/SupplierCatalog.xml:18"
+"help:SupplierCatalog.price",,,"resources/domains/SupplierCatalog.xml:14"
+"help:TaxEquiv.toTax",,,"resources/domains/TaxEquiv.xml:12"
+"help:TaxLine.value",,,"resources/domains/TaxLine.xml:14"
+"help:Template.birtTemplate",,,"resources/domains/Template.xml:11"
+"help:UnitConversion.coef",,,"resources/domains/UnitConversion.xml:13"
+"help:User.activeCompany",,,"resources/domains/User.xml:12"
+"help:User.activeTeam",,,"resources/domains/User.xml:16"
+"help:User.partner",,,"resources/domains/User.xml:13"
+"help:User.today",,,"resources/domains/User.xml:14"
+"help:Year.periodList",,,"resources/domains/Year.xml:15"
+"help:Year.statusSelect",,,"resources/domains/Year.xml:17"
+"help:Year.typeSelect",,,"resources/domains/Year.xml:19"
 "month",,,"resources/views/Scheduler.xml:42"
 "v1",,,"resources/views/Selects.xml:561"
 "v2",,,"resources/views/Selects.xml:562"

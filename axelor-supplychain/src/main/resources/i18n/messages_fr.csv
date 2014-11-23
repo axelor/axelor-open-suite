@@ -19,7 +19,7 @@ resources/views/Dashboard.xml:18
 resources/views/Menu.xml:35"
 "Family Db","Tb Famille",,"resources/views/Menu.xml:27"
 "Family sale turnover (Excl. Tax) per month","CA HT par famille par mois",,"resources/views/ProductFamily.xml:13"
-"From Date","Date de",,"resources/views/Charts.xml:75"
+"From Date","Date de",,"resources/views/Charts.xml:69"
 "Invoice","Facturer",,"resources/domains/SaleOrderScheduleLine.xml:17
 resources/domains/StockMove.xml:13"
 "Invoice controlled","Facture contrôlée",,"resources/domains/SaleOrderLine.xml:24"
@@ -32,28 +32,28 @@ resources/domains/StockMove.xml:13"
 "Linked invoices","Factures associées",,"resources/domains/SaleOrder.xml:18"
 "Location","Emplacement",,"resources/domains/PurchaseOrder.xml:10
 resources/domains/SaleOrder.xml:10"
-"Month","Mois",,"resources/views/Charts.xml:114"
+"Month","Mois",,"resources/views/Charts.xml:104"
 "Nbr of days","Nbr de jours",,"resources/domains/SaleOrderScheduleLine.xml:16"
-"Number of Product per Category","Nbr de produits par catégorie",,"resources/views/Charts.xml:28
+"Number of Product per Category","Nbr de produits par catégorie",,"resources/views/Charts.xml:26
 resources/views/Dashboard.xml:35"
 "Number of Product per Family","Nbr de produits par famille",,"resources/views/Charts.xml:6
 resources/views/Dashboard.xml:31"
 "Partner","Tiers",,"resources/views/Partner.xml:10
 resources/views/Partner.xml:6"
-"Product Category","Catégorie de produit",,"resources/views/Charts.xml:46"
+"Product Category","Catégorie de produit",,"resources/views/Charts.xml:42"
 "Product Db","Tb produits",,"resources/views/Menu.xml:10
 resources/views/Menu.xml:13"
-"Product Family","Famille produit",,"resources/views/Charts.xml:24"
-"Product Type","Type produit",,"resources/views/Charts.xml:69"
+"Product Family","Famille produit",,"resources/views/Charts.xml:22"
+"Product Type","Type produit",,"resources/views/Charts.xml:63"
 "Product family","Famille produit",,"resources/views/ProductFamily.xml:6"
-"Product launches/withdrawal each month","Lancement/Retrait produits par mois",,"resources/views/Charts.xml:73
+"Product launches/withdrawal each month","Lancement/Retrait produits par mois",,"resources/views/Charts.xml:67
 resources/views/Dashboard.xml:26"
-"Product type distribution","Distribution par type de produit",,"resources/views/Charts.xml:50
+"Product type distribution","Distribution par type de produit",,"resources/views/Charts.xml:46
 resources/views/Dashboard.xml:22"
-"Products","Produits",,"resources/views/Charts.xml:115
-resources/views/Charts.xml:25
-resources/views/Charts.xml:47
-resources/views/Charts.xml:70
+"Products","Produits",,"resources/views/Charts.xml:105
+resources/views/Charts.xml:23
+resources/views/Charts.xml:43
+resources/views/Charts.xml:64
 resources/views/Menu.xml:7"
 "Products DB 1","Tb Produits 1",,"resources/views/Dashboard.xml:6"
 "Purchase order","Devis fournisseurs",,"resources/domains/StockMove.xml:12"
@@ -77,7 +77,7 @@ resources/views/Partner.xml:21"
 "Supply method","Mode d'appro.",,"resources/domains/SaleOrderLine.xml:10"
 "Task","Tâche",,"resources/domains/SaleOrderScheduleLine.xml:14"
 "The location must be filled.",,,"resources/views/SaleOrder.xml:60"
-"To Date","à Date",,"resources/views/Charts.xml:76"
+"To Date","à Date",,"resources/views/Charts.xml:70"
 "To invoice?","A facturer ?",,"resources/domains/SaleOrderLine.xml:14"
 "When a task is over","Lorsqu'une tâche est terminée",,"resources/views/Selects.xml:10"
 "help:SaleOrderScheduleLine.nbOfDay","Si facturation en fonction de nb de jours",,"resources/domains/SaleOrderScheduleLine.xml:16"

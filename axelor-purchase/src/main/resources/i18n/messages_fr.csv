@@ -3,7 +3,7 @@
 "Account","Tiers",,"resources/views/PurchaseOrderLine.xml:82"
 "Actions",,,"resources/views/PurchaseOrder.xml:87"
 "Amount","Montant",,"resources/views/Charts.xml:152
-resources/views/Charts.xml:334
+resources/views/Charts.xml:326
 resources/views/Charts.xml:79"
 "Amount A.T.I.","Montant T.T.C.",,"resources/domains/PurchaseOrderLineTax.xml:12"
 "Base W.T.","Base H.T.",,"resources/domains/PurchaseOrderLineTax.xml:10"
@@ -44,17 +44,17 @@ resources/views/Selects.xml:10"
 resources/views/Charts.xml:158
 resources/views/Charts.xml:20
 resources/views/Charts.xml:209
-resources/views/Charts.xml:240
-resources/views/Charts.xml:274
-resources/views/Charts.xml:305
+resources/views/Charts.xml:238
+resources/views/Charts.xml:270
+resources/views/Charts.xml:299
 resources/views/Charts.xml:53
 resources/views/Charts.xml:86"
 "Full name","Réf.",,"resources/domains/PurchaseOrder.xml:11"
 "Generate control invoice","Générer facture de contrôle",,"resources/views/PurchaseOrder.xml:96"
 "Generate suppliers requests","Générer demandes de devis fourn.",,"resources/views/PurchaseOrderLine.xml:78"
 "Historical Period","Période d'historique",,"resources/views/Charts.xml:210
-resources/views/Charts.xml:241
-resources/views/Charts.xml:275"
+resources/views/Charts.xml:239
+resources/views/Charts.xml:271"
 "Import","Importer",,"resources/domains/PurchaseConfig.xml:9
 resources/domains/PurchaseOrder.xml:10"
 "In % / fixed","En % / Fixe",,"resources/domains/PurchaseOrderLine.xml:23"
@@ -65,9 +65,9 @@ resources/domains/PurchaseOrder.xml:10"
 "Label","Libellé",,"resources/domains/PurchaseOrderLine.xml:14"
 "Links","Liens",,"resources/views/PurchaseOrderLine.xml:74"
 "Min sale price","Prix de vente min.",,"resources/domains/PurchaseOrderLine.xml:27"
-"Month","Mois",,"resources/views/Charts.xml:233
-resources/views/Charts.xml:267
-resources/views/Charts.xml:298"
+"Month","Mois",,"resources/views/Charts.xml:231
+resources/views/Charts.xml:263
+resources/views/Charts.xml:292"
 "My Closed Purchase Orders","Mes commandes d'achat clôturées",,"resources/views/Dashboard.xml:169"
 "My Ongoing Purchase Orders","Mes commandes d'achat en cours",,"resources/views/Dashboard.xml:157"
 "My Orders to process","Mes commandes d'achat à traiter",,"resources/views/Dashboard.xml:145"
@@ -80,7 +80,7 @@ resources/views/Charts.xml:298"
 resources/views/Dashboard.xml:53"
 "My purchased qty by product family","Mon volume d'achats (qté) par famille de produit",,"resources/views/Charts.xml:18
 resources/views/Dashboard.xml:45"
-"Nbr of PO by month","Nbr de commandes par mois",,"resources/views/Charts.xml:272
+"Nbr of PO by month","Nbr de commandes par mois",,"resources/views/Charts.xml:268
 resources/views/Dashboard.xml:67"
 "New Purchase order","Nouv. Commande d'achat",,"resources/views/Menu.xml:11
 resources/views/Menu.xml:14"
@@ -89,7 +89,7 @@ resources/views/PurchaseOrder.xml:79"
 "Ongoing Purchase orders","Commandes d'achat en cours",,"resources/views/Dashboard.xml:151"
 "Order Date","Date de commande",,"resources/domains/PurchaseOrder.xml:29"
 "Ordered ?","Commandé ? ",,"resources/domains/PurchaseOrderLine.xml:25"
-"Orders","Commandes",,"resources/views/Charts.xml:299
+"Orders","Commandes",,"resources/views/Charts.xml:293
 resources/views/Menu.xml:76"
 "Other information","Autres informations",,"resources/views/PurchaseOrder.xml:69"
 "PO Lines","Lignes de Cmde",,"resources/views/PurchaseOrder.xml:66"
@@ -111,7 +111,7 @@ resources/views/PurchaseOrder.xml:8"
 "Product","Produit",,"resources/domains/PurchaseOrderLine.xml:12"
 "Product Family","Famille de produit",,"resources/views/Charts.xml:151
 resources/views/Charts.xml:203
-resources/views/Charts.xml:333
+resources/views/Charts.xml:325
 resources/views/Charts.xml:46
 resources/views/Charts.xml:78"
 "Product variant","Variante de produit",,"resources/domains/PurchaseOrderLine.xml:33"
@@ -158,7 +158,7 @@ resources/views/Menu.xml:23"
 "PurchaseOrder.unitPrice",,,"java/com/axelor/apps/purchase/report/ITranslation.java:33"
 "Purchased amount by family","Montants achats par famille",,"resources/views/Charts.xml:118
 resources/views/Dashboard.xml:118"
-"Purchased amount by product family","Montants achats par famille de produit",,"resources/views/Charts.xml:303
+"Purchased amount by product family","Montants achats par famille de produit",,"resources/views/Charts.xml:297
 resources/views/Dashboard.xml:61"
 "Purchased amount distribution by family","Répartition des achats par famille",,"resources/views/Charts.xml:156
 resources/views/Dashboard.xml:124"
@@ -212,22 +212,22 @@ resources/views/PurchaseOrder.xml:67"
 "To Date","A",,"resources/views/Charts.xml:121
 resources/views/Charts.xml:159
 resources/views/Charts.xml:21
-resources/views/Charts.xml:306
+resources/views/Charts.xml:300
 resources/views/Charts.xml:54
 resources/views/Charts.xml:87"
 "Total","Total",,"resources/views/PurchaseOrderLine.xml:94"
 "Total A.T.I.","Total T.T.C.",,"resources/domains/PurchaseOrder.xml:45"
 "Total Purchased Amount by month","Montant total Achats par mois",,"resources/views/Charts.xml:207
 resources/views/Dashboard.xml:73"
-"Total Purchased Qty by month","Qté totale Achats par mois",,"resources/views/Charts.xml:238
+"Total Purchased Qty by month","Qté totale Achats par mois",,"resources/views/Charts.xml:236
 resources/views/Dashboard.xml:79"
 "Total Tax","Total Taxe",,"resources/domains/PurchaseOrder.xml:44"
 "Total W.T.","Total H.T.",,"resources/domains/PurchaseOrder.xml:43"
 "Total W.T. in company currency","Total H.T. Devise Sté",,"resources/domains/PurchaseOrderLine.xml:37"
-"Turn Over","Chiffre d'affaire Achat",,"resources/views/Charts.xml:234"
+"Turn Over","Chiffre d'affaire Achat",,"resources/views/Charts.xml:232"
 "Unit","Unité",,"resources/domains/PurchaseOrderLine.xml:20"
 "Unit price","Prix unitaire",,"resources/domains/PurchaseOrderLine.xml:15"
-"Units","Unités",,"resources/views/Charts.xml:268"
+"Units","Unités",,"resources/views/Charts.xml:264"
 "V.A.T.","T.V.A.",,"resources/domains/PurchaseOrderLineTax.xml:9"
 "Validate","Valider",,"resources/views/PurchaseOrder.xml:92"
 "Validated","Validé(e)",,"resources/views/Selects.xml:13"

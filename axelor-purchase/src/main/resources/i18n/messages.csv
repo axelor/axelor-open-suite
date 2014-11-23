@@ -3,7 +3,7 @@
 "Account",,,"resources/views/PurchaseOrderLine.xml:82"
 "Actions",,,"resources/views/PurchaseOrder.xml:87"
 "Amount",,,"resources/views/Charts.xml:152
-resources/views/Charts.xml:334
+resources/views/Charts.xml:326
 resources/views/Charts.xml:79"
 "Amount A.T.I.",,,"resources/domains/PurchaseOrderLineTax.xml:12"
 "Base W.T.",,,"resources/domains/PurchaseOrderLineTax.xml:10"
@@ -44,17 +44,17 @@ resources/views/Selects.xml:10"
 resources/views/Charts.xml:158
 resources/views/Charts.xml:20
 resources/views/Charts.xml:209
-resources/views/Charts.xml:240
-resources/views/Charts.xml:274
-resources/views/Charts.xml:305
+resources/views/Charts.xml:238
+resources/views/Charts.xml:270
+resources/views/Charts.xml:299
 resources/views/Charts.xml:53
 resources/views/Charts.xml:86"
 "Full name",,,"resources/domains/PurchaseOrder.xml:11"
 "Generate control invoice",,,"resources/views/PurchaseOrder.xml:96"
 "Generate suppliers requests",,,"resources/views/PurchaseOrderLine.xml:78"
 "Historical Period",,,"resources/views/Charts.xml:210
-resources/views/Charts.xml:241
-resources/views/Charts.xml:275"
+resources/views/Charts.xml:239
+resources/views/Charts.xml:271"
 "Import",,,"resources/domains/PurchaseConfig.xml:9
 resources/domains/PurchaseOrder.xml:10"
 "In % / fixed",,,"resources/domains/PurchaseOrderLine.xml:23"
@@ -65,9 +65,9 @@ resources/domains/PurchaseOrder.xml:10"
 "Label",,,"resources/domains/PurchaseOrderLine.xml:14"
 "Links",,,"resources/views/PurchaseOrderLine.xml:74"
 "Min sale price",,,"resources/domains/PurchaseOrderLine.xml:27"
-"Month",,,"resources/views/Charts.xml:233
-resources/views/Charts.xml:267
-resources/views/Charts.xml:298"
+"Month",,,"resources/views/Charts.xml:231
+resources/views/Charts.xml:263
+resources/views/Charts.xml:292"
 "My Closed Purchase Orders",,,"resources/views/Dashboard.xml:169"
 "My Ongoing Purchase Orders",,,"resources/views/Dashboard.xml:157"
 "My Orders to process",,,"resources/views/Dashboard.xml:145"
@@ -80,7 +80,7 @@ resources/views/Charts.xml:298"
 resources/views/Dashboard.xml:53"
 "My purchased qty by product family",,,"resources/views/Charts.xml:18
 resources/views/Dashboard.xml:45"
-"Nbr of PO by month",,,"resources/views/Charts.xml:272
+"Nbr of PO by month",,,"resources/views/Charts.xml:268
 resources/views/Dashboard.xml:67"
 "New Purchase order",,,"resources/views/Menu.xml:11
 resources/views/Menu.xml:14"
@@ -89,7 +89,7 @@ resources/views/PurchaseOrder.xml:79"
 "Ongoing Purchase orders",,,"resources/views/Dashboard.xml:151"
 "Order Date",,,"resources/domains/PurchaseOrder.xml:29"
 "Ordered ?",,,"resources/domains/PurchaseOrderLine.xml:25"
-"Orders",,,"resources/views/Charts.xml:299
+"Orders",,,"resources/views/Charts.xml:293
 resources/views/Menu.xml:76"
 "Other information",,,"resources/views/PurchaseOrder.xml:69"
 "PO Lines",,,"resources/views/PurchaseOrder.xml:66"
@@ -111,7 +111,7 @@ resources/views/PurchaseOrder.xml:8"
 "Product",,,"resources/domains/PurchaseOrderLine.xml:12"
 "Product Family",,,"resources/views/Charts.xml:151
 resources/views/Charts.xml:203
-resources/views/Charts.xml:333
+resources/views/Charts.xml:325
 resources/views/Charts.xml:46
 resources/views/Charts.xml:78"
 "Product variant",,,"resources/domains/PurchaseOrderLine.xml:33"
@@ -158,7 +158,7 @@ resources/views/Menu.xml:23"
 "PurchaseOrder.unitPrice",,,"java/com/axelor/apps/purchase/report/ITranslation.java:33"
 "Purchased amount by family",,,"resources/views/Charts.xml:118
 resources/views/Dashboard.xml:118"
-"Purchased amount by product family",,,"resources/views/Charts.xml:303
+"Purchased amount by product family",,,"resources/views/Charts.xml:297
 resources/views/Dashboard.xml:61"
 "Purchased amount distribution by family",,,"resources/views/Charts.xml:156
 resources/views/Dashboard.xml:124"
@@ -212,22 +212,22 @@ resources/views/PurchaseOrder.xml:67"
 "To Date",,,"resources/views/Charts.xml:121
 resources/views/Charts.xml:159
 resources/views/Charts.xml:21
-resources/views/Charts.xml:306
+resources/views/Charts.xml:300
 resources/views/Charts.xml:54
 resources/views/Charts.xml:87"
 "Total",,,"resources/views/PurchaseOrderLine.xml:94"
 "Total A.T.I.",,,"resources/domains/PurchaseOrder.xml:45"
 "Total Purchased Amount by month",,,"resources/views/Charts.xml:207
 resources/views/Dashboard.xml:73"
-"Total Purchased Qty by month",,,"resources/views/Charts.xml:238
+"Total Purchased Qty by month",,,"resources/views/Charts.xml:236
 resources/views/Dashboard.xml:79"
 "Total Tax",,,"resources/domains/PurchaseOrder.xml:44"
 "Total W.T.",,,"resources/domains/PurchaseOrder.xml:43"
 "Total W.T. in company currency",,,"resources/domains/PurchaseOrderLine.xml:37"
-"Turn Over",,,"resources/views/Charts.xml:234"
+"Turn Over",,,"resources/views/Charts.xml:232"
 "Unit",,,"resources/domains/PurchaseOrderLine.xml:20"
 "Unit price",,,"resources/domains/PurchaseOrderLine.xml:15"
-"Units",,,"resources/views/Charts.xml:268"
+"Units",,,"resources/views/Charts.xml:264"
 "V.A.T.",,,"resources/domains/PurchaseOrderLineTax.xml:9"
 "Validate",,,"resources/views/PurchaseOrder.xml:92"
 "Validated",,,"resources/views/Selects.xml:13"

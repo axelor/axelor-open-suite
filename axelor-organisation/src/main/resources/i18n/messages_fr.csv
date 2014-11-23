@@ -451,7 +451,7 @@ resources/views/EmployeeLeave.xml:6"
 resources/views/Charts.xml:163
 resources/views/Charts.xml:186
 resources/views/Charts.xml:219
-resources/views/Charts.xml:30
+resources/views/Charts.xml:31
 resources/views/Charts.xml:50
 resources/views/Charts.xml:72
 resources/views/Charts.xml:99
@@ -566,7 +566,7 @@ resources/views/Employee.xml:38"
 "Function description","Description fonction",,"resources/domains/Position.xml:16"
 "Function name","Intitulé de la fonction",,"resources/domains/Position.xml:11"
 "Function searched","Fonction recherchée",,"resources/domains/Candidate.xml:25"
-"Gender","Sexe",,"resources/views/Charts.xml:29
+"Gender","Sexe",,"resources/views/Charts.xml:30
 resources/views/Charts.xml:49"
 "General","Général",,"resources/views/Candidate.xml:48"
 "Generate Timesheets","Générer les feuilles de temps",,"resources/views/TimesheetPeriodConfig.xml:48"
