@@ -108,7 +108,7 @@ resources/views/Menu.xml:83"
 resources/views/Message.xml:41"
 "Suject","Sujet",,"resources/domains/Template.xml:12"
 "TLS","TLS",,"resources/views/Selects.xml:46"
-"Target receptor",,,"resources/domains/Template.xml:16"
+"Target receptor","Destinataire cible",,"resources/domains/Template.xml:16"
 "Task (Project)","Tâche (Projet)",,"resources/views/Selects.xml:17"
 "Template","Modèle",,"resources/views/GenerateMessageWizard.xml:10
 resources/views/Template.xml:14"
