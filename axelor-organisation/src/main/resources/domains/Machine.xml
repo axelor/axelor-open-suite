@@ -7,7 +7,7 @@
 
   <entity name="Machine" lang="java">
   	
-    <many-to-one name="planning" ref="com.axelor.apps.organisation.db.Schedule" title="Planning"/>
+    <many-to-one name="planning" ref="com.axelor.apps.organisation.db.Schedule" title="Planning" help="true"/>
     
   </entity>
 </domain-models>

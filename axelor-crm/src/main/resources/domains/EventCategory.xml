@@ -9,7 +9,8 @@
 	<integer name="importId" />
     <string name="name" title="Name" required="true"/>
   	<string name="code" title="Code" required="true"/>
-  	<integer name="typeSelect" title="Type" selection="crm.event.type.select" default="2"/>
+  	<integer name="typeSelect" title="Type" selection="crm.event.type.select" default="2" help="true"/>
+	
   	
   </entity>
 

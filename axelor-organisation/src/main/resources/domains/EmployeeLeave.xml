@@ -7,9 +7,9 @@
 
 	<entity name="EmployeeLeave" lang="java">
 		<many-to-one name="employee" ref="Employee" required="true" title="Employee"/>
-		<many-to-one name="reasonTask" ref="Task" title="Reason"/>
-		<decimal name="leaveBalances" title="Leave balances"/>
-		<decimal name="leaveRequestInProgress" title="Leave request in progress"/>
+		<many-to-one name="reasonTask" ref="Task" title="Reason" help="true"/>
+		<decimal name="leaveBalances" title="Leave balance"/>
+		<decimal name="leaveRequestInProgress" title="Leave requests in progress"/>
 		<decimal name="cumulation" title="Cumulation"/>
 	</entity>
 

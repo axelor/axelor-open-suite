@@ -11,24 +11,24 @@
   	
   	<string name="name" title="Task name" required="true"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project" required="true"/>
-  	<decimal name="totalTime" title="Total time"/>
-  	<decimal name="plannedTime" title="Planned time" readonly="true"/>
-  	<decimal name="spentTime" title="Spent time" readonly="true"/>
-  	<decimal name="remainingTime" title="Remaining time" readonly="true"/>
-  	<decimal name="delays" title="Delays" readonly="true"/>
-  	<decimal name="advance" title="Advance" readonly="true"/>
-  	<integer name="taskProgress" title="Task Progress (%)" selection="grade.0.up.to.100.select"/>
+  	<decimal name="totalTime" title="Total time" help="true"/>
+  	<decimal name="plannedTime" title="Planned time" readonly="true" help="true"/>
+  	<decimal name="spentTime" title="Spent time" readonly="true" help="true"/>
+  	<decimal name="remainingTime" title="Remaining time" readonly="true" help="true"/>
+  	<decimal name="delays" title="Delays" readonly="true" help="true"/>
+  	<decimal name="advance" title="Advance" readonly="true" help="true"/>
+  	<integer name="taskProgress" title="Task Progress (%)" selection="grade.0.up.to.100.select" help="true"/>
   	<string name="description" title="Description" large="true"/>
   	<boolean name="isTimesheetAffected" title="Input from timesheet ?"/>
   	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to"/>
   	<integer name="statusSelect" title="Status" selection="organisation.project.status.select"/>
-  	<integer name="realEstimatedMethodSelect" title="Real estimated compute method" selection="organisation.project.real.estimated.method.select"/>
+  	<integer name="realEstimatedMethodSelect" title="Real estimated compute method" selection="organisation.project.real.estimated.method.select" help="true"/>
   	<boolean name="isToInvoice" title="To invoice ?"/>
   	<date name="invoicingDate" title="Invoicing Date"/>
-  	<decimal name="amountToInvoice" title="Amount to invoice"/>
+  	<decimal name="amountToInvoice" title="Amount to invoice" help="true"/>
   	<datetime name="startDateT" title="Start Date Time"/>
   	<datetime name="endDateT" title="End Date Time"/>
-  	<decimal name="estimatedAmount" title="Estimated amount"/>
+  	<decimal name="estimatedAmount" title="Estimated amount" help="true"/>
   	
   	<boolean name="isLeaveRequest" title="Leave request ?" help="true"/>
   	
@@ -39,32 +39,32 @@
 	<string name="notes" title="Notes" large="true"/>
 
 <!-- Financial informations -->
-  	<decimal name="initialEstimatedTurnover" title="Turnover" readonly="true"/>
-  	<decimal name="initialEstimatedCost" title="Cost" readonly="true"/>
-  	<decimal name="initialEstimatedMargin" title="Margin" readonly="true"/>
-  	<decimal name="realEstimatedTurnover" title="Turnover" readonly="true"/>
-  	<decimal name="realEstimatedCost" title="Cost" readonly="true"/>
-  	<decimal name="realEstimatedMargin" title="Margin" readonly="true"/>
-  	<decimal name="realInvoicedTurnover" title="Turnover" readonly="true"/>
-  	<decimal name="realInvoicedCost" title="Cost" readonly="true"/>
-  	<decimal name="realInvoicedMargin" title="Margin" readonly="true"/>
+  	<decimal name="initialEstimatedTurnover" title="Turnover" readonly="true" help="true"/>
+  	<decimal name="initialEstimatedCost" title="Cost" readonly="true" help="true"/>
+  	<decimal name="initialEstimatedMargin" title="Margin" readonly="true" help="true"/>
+  	<decimal name="realEstimatedTurnover" title="Turnover" readonly="true" help="true"/>
+  	<decimal name="realEstimatedCost" title="Cost" readonly="true" help="true"/>
+  	<decimal name="realEstimatedMargin" title="Margin" readonly="true" help="true"/>
+  	<decimal name="realInvoicedTurnover" title="Turnover" readonly="true" help="true"/>
+  	<decimal name="realInvoicedCost" title="Cost" readonly="true" help="true"/>
+  	<decimal name="realInvoicedMargin" title="Margin" readonly="true" help="true"/>
   	
   	<one-to-many name="financialInformationHistoryLineList" ref="com.axelor.apps.organisation.db.FinancialInformationHistoryLine" mappedBy="task" title="Financial information history" readonly="true"/>
   	
-  	<one-to-many name="financialInformationUpdateList" ref="com.axelor.apps.organisation.db.FinancialInformationUpdate" mappedBy="task" title="Financial information updates"/>
+  	<one-to-many name="financialInformationUpdateList" ref="com.axelor.apps.organisation.db.FinancialInformationUpdate" mappedBy="task" title="Financial information updates" help="true"/>
   	
   	<!--   	Onglet facturation -->
-  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" help="true"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<decimal name="price" title="Unit price"/>
   	
 	<!--   	Onglet Temps passés -->
-  	<one-to-many name="spentTimeList" ref="com.axelor.apps.base.db.SpentTime" mappedBy="task" title="Spent times"/>
+  	<one-to-many name="spentTimeList" ref="com.axelor.apps.base.db.SpentTime" mappedBy="task" title="Spent times" help="true"/>
   	
   	
 <!--   	Leave request reasons field -->
-  	<boolean name="hasCummulation" title="Cumulate ?"/>
-  	<integer name="accountingDay" title="Accounting day" selection="day.month.select"/>
+  	<boolean name="hasCummulation" title="Cumulate ?" help="true"/>
+  	<integer name="accountingDay" title="Accounting day" selection="day.month.select" help="true"/>
   	
   	<string name="exportTypeSelect" title="Export Type" selection="organisation.project.report.type.select"/>
   	

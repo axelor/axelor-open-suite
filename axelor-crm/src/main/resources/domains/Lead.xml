@@ -12,7 +12,7 @@
  	<string name="titleSelect" title="Title" selection="partner.title.type.select"/>
     <string name="name" required="true" title="Last name"/>
     <string name="firstName" title="First name"/>
-    <string name="enterpriseName" title="Enterprise name"/> 
+    <string name="enterpriseName" title="Enterprise" help="true"/> 
     <string name="officeName" title="Office name"/>
   	<string name="jobTitle" title="Job Title"/>
     <string name="mobilePhone" title="Mobile N°"/>
@@ -34,23 +34,23 @@
 	<string name="otherState" title="State"/>
 	<string name="otherPostalCode" title="Postal code"/>
   	<many-to-one name="otherCountry" ref="com.axelor.apps.base.db.Country" title="Country"/>
-  	<boolean name="isCopyAddress" title="Copy primary address"/>
+  	<boolean name="isCopyAddress" title="Copy primary address" help="true"/>
     
     
-    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email"/>
+    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email" help="true"/>
 	<binary name="picture" title="Picture" />
 	
 	<string name="description" title="Description" large="true"/>
 	<date name="contactDate" title="Contact date" />
 	
-	<integer name="statusSelect" title="Status" selection="crm.lead.status.select" default="1" required="true"/>  
-	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
+	<integer name="statusSelect" title="Status" selection="crm.lead.status.select" default="1" required="true" help="true"/>  
+	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source" help="true"/>
   	<string name="statusDescription" title="Status description" large="true"/>
     <decimal name="opportunityAmount" title="Opportunity amount"/>
  	<string name="sourceDescription" title="Source description" large="true"/>
-    <string name="referredBy" title="Referred by"/>
-    <boolean name="isDoNotCall" title="Allow calls ?"/>
-    <boolean name="isDoNotSendEmail" title="Allow emails ?"/>
+    <string name="referredBy" title="Referred by" help="true"/>
+    <boolean name="isDoNotCall" title="Allow calls ?" help="true"/>
+    <boolean name="isDoNotSendEmail" title="Allow emails ?" help="true"/>
     
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Contact" readonly="true"/>
     

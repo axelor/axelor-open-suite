@@ -10,7 +10,7 @@
    
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
-	<many-to-one name="taskProduct" ref="com.axelor.apps.base.db.Product" title="Task product"/>
+	<many-to-one name="taskProduct" ref="com.axelor.apps.base.db.Product" title="Task product" help="true"/>
   	
   	
   </entity>

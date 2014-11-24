@@ -14,9 +14,9 @@
   	<datetime name="startDateT" title="From Date/Time"/>
   	<datetime name="endDateT" title="To Date/Time"/>
   	
-  	<decimal name="nbrOfDayOff" title="Nbr of Days Off" />
+  	<decimal name="nbrOfDayOff" title="Nbr of Days Off" help="true" />
   	
- 	<many-to-one name="reasonTask" ref="com.axelor.apps.organisation.db.Task" title="Reason"/>
+ 	<many-to-one name="reasonTask" ref="com.axelor.apps.organisation.db.Task" title="Reason" help="true"/>
  	
  	<many-to-one name="managerUser" ref="com.axelor.auth.db.User" title="Manager"/>
   	
@@ -26,7 +26,7 @@
   	
   	<integer name="statusSelect" title="Request status" selection="organisation.leave.request.status.select" readonly="true"/>
   
-  	<boolean name="accounted" title="Accounted"/>
+  	<boolean name="accounted" title="Accounted" help="true"/>
   
   </entity>
   

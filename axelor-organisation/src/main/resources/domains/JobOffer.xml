@@ -13,7 +13,7 @@
 			<date name="toDate" title="To"/>
 			<integer name="nbrOfPositions" title="Nbr of Positions"/>
 			
-			<!-- Groupe Offre -->
+			<!-- Group Offer -->
 			<string name="description" title="Description" large="true" multiline="true"/>
 			<integer name="contractTypeSelect" title="Contract type" selection="organisation.working.contract.type.select"/>
 			<integer name="remunerationTypeSelect" title="Gross annual salary" selection="organisation.job.offer.remuneration.type.select"/>
@@ -23,7 +23,7 @@
 			<integer name="domainTypeSelect" title="Domain" selection="organisation.job.offer.domain.type.select"/>
 			<string name="jobTitle" title="Job title"/>
 		
-			<!-- Groupe Profil candidat -->
+			<!-- Groupe candidate profile -->
 			<integer name="educationLevelSelect" title="Education level" selection="organisation.job.offer.education.level.select"/>
 			<integer name="experienceTypeSelect" title="Experience" selection="organisation.job.offer.experience.type.select"/>
 			<many-to-many name="languageSet" ref="com.axelor.apps.base.db.Language" title="Language"/>

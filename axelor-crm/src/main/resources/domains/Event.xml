@@ -9,12 +9,12 @@
 
 <!-- Commun   -->
 	<integer name="importId" />
-  	<integer name="typeSelect" title="Type" selection="crm.event.type.select" required="true" default="2"/>
+  	<integer name="typeSelect" title="Type" selection="crm.event.type.select" required="true" default="2" help="true"/>
   	<string name="subject" namecolumn="true" title="Subject" required="true"/>
 	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>  
   	<datetime name="startDateTime" title="Start Date"/>
   	<datetime name="endDateTime" title="End Date"/>
-	<datetime name="limitDateT" title="Limit Date"/>
+	<datetime name="limitDateT" title="Limit Date" help="true"/>
   	
   	<long name="duration" title="Duration"/>
   	
@@ -45,15 +45,15 @@
     
 <!-- Meeting -->
 	<many-to-one name="meetingType" ref="com.axelor.apps.crm.db.MeetingType" title="Meeting type"/>
-	<string name="location" title="Location"/>
+	<string name="location" title="Location" help="true"/>
 
 <!-- Task -->
 	<integer name="taskStatusSelect" title="Status" selection="crm.event.task.status.select"/>
     
 <!-- Ticket -->
 	<integer name="ticketStatusSelect" title="Status" selection="crm.event.ticket.status.select"/>
-    <integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select"/>
-    <string name="ticketNumberSeq" title="Ticket N°"/>
+    <integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select" help="true"/>
+    <string name="ticketNumberSeq" title="Ticket N°" help="true"/>
     <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Watchers"/>
     <many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
 <!--   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/> -->

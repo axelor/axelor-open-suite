@@ -7,20 +7,20 @@
   
   <entity name="Message" lang="java">
   
-  	<integer name="typeSelect" title="Type" selection="message.type.select" readonly="true" default="2" initParam="true"/>
+  	<integer name="typeSelect" title="Type" selection="message.type.select" readonly="true" default="2" initParam="true" help="true"/>
   	<string name="subject" title="Subject" initParam="true"/>
   	<string name="content" title="Content" large="true" initParam="true"/>
-	<datetime name="sentDateT" title="Sent date" readonly="true"/>
+	<datetime name="sentDateT" title="Sent date" readonly="true" help="true"/>
  	<date name="sendScheduleDate" title="Forecasted Sent Date" />
 	<string name="relatedTo1Select" title="Related to" selection="message.related.to.select"/>
   	<integer name="relatedTo1SelectId"/>
   	<string name="relatedTo2Select" title="Related to" selection="message.related.to.select"/>
   	<integer name="relatedTo2SelectId"/>
 	<integer name="statusSelect" title="Status" selection="message.status.select" readonly="true" default="1" initParam="true"/>
-	<string name="filePath" title="Attached File path"/>
+	<string name="filePath" title="Attached File path" help="true"/>
   	
-  	<integer name="mediaTypeSelect" title="Media Type" selection="message.media.type.select" initParam="true"/>
-	<string name="addressBlock" large="true" multiline="true" title="Address Block" initParam="true"/>
+  	<integer name="mediaTypeSelect" title="Media Type" selection="message.media.type.select" initParam="true" help="true"/>
+	<string name="addressBlock" large="true" multiline="true" title="Address Block" initParam="true" help="true"/>
 	
   <!--   	Email -->
   	<many-to-many name="toEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="To" initParam="true"/>

@@ -5,7 +5,7 @@
 
   <entity sequential="true" name="Invoice" lang="java">
 	
-    <many-to-one name="project" title="Business" ref="com.axelor.apps.organisation.db.Project" />
+    <many-to-one name="project" title="Business" ref="com.axelor.apps.organisation.db.Project" help="true"/>
 
   </entity>
   

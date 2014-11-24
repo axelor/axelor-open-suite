@@ -7,7 +7,7 @@
   
   	<string name="importId"/>
   
-    <many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="Employee"  mappedBy="internalContact"/>
+    <many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="Employee"  mappedBy="internalContact" help="true"/>
 	 
   </entity>
   

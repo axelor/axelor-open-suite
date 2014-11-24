@@ -8,14 +8,14 @@
 	<entity name="MailAccount" lang="java">
 
 		<string name="name" title="Name" required="true" namecolumn="true" />
-		<string name="serverTypeSelect" title="Server Type" required="true" selection="mail.account.server.type.select" default="1"/>
-		<string name="login" required="true" />
-		<string name="password" required="true" />
-		<string name="host" required="true" title="Host"/>
+		<string name="serverTypeSelect" title="Server Type" required="true" selection="mail.account.server.type.select" default="1" help="true"/>
+		<string name="login" title="Login" required="true" help="true"/>
+		<string name="password" title="Password" required="true"/>
+		<string name="host" title="Host" required="true" help="true"/>
 		<integer name="port" title="Port"/>
-		<integer name="securitySelect" title="SSL/TLS" selection="mail.account.security.select"/>
-		<boolean name="isDefault" title="Default account ?"/>
-		<boolean name="isValid" title="Valid ?"/>
+		<integer name="securitySelect" title="SSL/TLS" selection="mail.account.security.select" help="true"/>
+		<boolean name="isDefault" title="Default account ?" help="true"/>
+		<boolean name="isValid" title="Valid ?" help="true"/>
 		<string name="signature" title="Signature"/>
 
 		<extra-code><![CDATA[

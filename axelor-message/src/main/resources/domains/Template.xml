@@ -14,13 +14,11 @@
   	<string name="ccRecipients" large="true" multiline="true" title="Cc"/>
   	<string name="bccRecipients" large="true" multiline="true" title="Bcc"/>
   	<string name="target" title="Target receptor"/>
-  	<integer name="mediaTypeSelect" title="Media Type" required="true" selection="message.media.type.select"/>
-  	<string name="addressBlock" large="true" multiline="true" title="Address Block"/>
-<!--   	<many-to-one name="templateContext" ref="com.axelor.apps.base.db.TemplateContext" /> -->
-<!--   	<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/> -->
-	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
-	<boolean name="isDefault" title="Default ?"/>
-	<string name="filePath" title="Attached File path"/>
+  	<integer name="mediaTypeSelect" title="Media Type" required="true" selection="message.media.type.select" help="true"/>
+  	<string name="addressBlock" large="true" multiline="true" title="Address Block" help="true"/>
+	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" help="true"/>
+	<boolean name="isDefault" title="Default ?" help="true"/>
+	<string name="filePath" title="Attached File path" help="true"/>
     
   </entity>
 

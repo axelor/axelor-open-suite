@@ -8,7 +8,7 @@
   <entity name="EmailAddress" lang="java">
   	
   	<string name="importId" />
-	<string name="address" title="Address" />
+	<string name="address" title="Address" help="true" />
 	<finder-method name="findByAddress" using="address"/>
 	
   </entity>
