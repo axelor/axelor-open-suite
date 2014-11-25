@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
 	<grid name="employee-grid" title="Employee"	model="com.axelor.apps.organisation.db.Employee">
-		<field name="name" />
-		<field name="firstName" />
+		<field name="internalContact.name" />
+		<field name="internalContact.firstName" />
 		<field name="function"/>
 		<field name="companyDepartment"/>
 		<field name="internalContact.mobilePhone"/>
@@ -25,8 +25,8 @@
 				<editor x-viewer="true">
 					<field name="picture" showTitle="false" widget="Image" colSpan="3" width="100" height="120" onChange="save,action-set-partner-seq"/>
 		            <field name="titleSelect" showTitle="false"  placeholder="Civility" colSpan="2" onChange="save,action-set-partner-seq"/>
-					<field name="name" showTitle="false" placeholder="Name" x-bind="{{name|uppercase}}" onChange="action-employee-record-full-name,action-partner-method-set-social-network-url,save,action-set-partner-seq" colSpan="4"/>
-		            <field name="firstName" showTitle="false" placeholder="First name" x-bind="{{code|uppercase}}" onChange="action-employee-record-full-name,action-partner-method-set-social-network-url,save,action-set-partner-seq" colSpan="3"/>            
+					<field name="name" showTitle="false" placeholder="Name" x-bind="{{name|uppercase}}" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url,save,action-set-partner-seq" colSpan="4"/>
+		            <field name="firstName" showTitle="false" placeholder="First name" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url,save,action-set-partner-seq" colSpan="3"/>            
 					<field name="fixedPhone"/>
 					<field name="mobilePhone"/>
 					<field name="emailAddress" canSelect="false" canNew="true" form-view="email-address-simple-form" colSpan="12"/>
@@ -106,13 +106,6 @@
 			</panel>
 		</panel-tabs>
 	</form>
-	
-	 <action-record name="action-employee-record-full-name" model="com.axelor.apps.organisation.db.Employee" >
-    	<field name="fullName" expr="eval: name + ' ' + firstName" if="name != null &amp;&amp; firstName != null"/>
-    	<field name="fullName" expr="eval: name" if="name != null &amp;&amp; firstName == null"/>
-    	<field name="fullName" expr="eval: firstName" if="firstName != null &amp;&amp; name == null"/>
-    	<field name="fullName" expr="eval: id" if="firstName == null &amp;&amp; name == null"/>
-    </action-record>
 	
 	<action-record name="action-employee-default-record" model="com.axelor.apps.organisation.db.Employee">
     	<field name="entryDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="entryDate == null"/>

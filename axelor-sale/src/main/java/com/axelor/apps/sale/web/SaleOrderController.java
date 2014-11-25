@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.tool.net.URLService;
@@ -33,8 +34,12 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
 public class SaleOrderController {
+	
+	@Inject
+	private SaleOrderRepository saleOrderRepo;
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderController.class);
 	
@@ -43,7 +48,7 @@ public class SaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		try {		
-			Beans.get(SaleOrderService.class).computeSaleOrder(saleOrder);
+			Beans.get(SaleOrderService.class).computeSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
