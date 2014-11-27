@@ -22,7 +22,7 @@ import com.axelor.app.AxelorModuleInfo;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.stock.service.LocationLineServiceImpl;
@@ -32,10 +32,10 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
+import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.MinStockRulesServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
@@ -64,5 +64,6 @@ public class SupplychainModule extends AxelorModule {
         bind(SaleOrderPurchaseService.class).to(SaleOrderPurchaseServiceImpl.class);
         bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
         bind(StockMoveInvoiceService.class).to(StockMoveInvoiceServiceImpl.class);
+        bind(SaleOrderManagementRepository.class).to(SaleOrderSupplychainRepository.class);
     }
 }
