@@ -227,13 +227,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	
 	public SaleOrder assignInvoice(SaleOrder saleOrder, Invoice invoice)  {
 		
-		if(saleOrder.getInvoiceSet() != null)  {
-			saleOrder.getInvoiceSet().add(invoice);
-		}
-		else  {
-			saleOrder.setInvoiceSet(new HashSet<Invoice>());
-			saleOrder.getInvoiceSet().add(invoice);
-		}
+		saleOrder.addInvoiceSetItem(invoice);
 		
 		return saleOrder;
 	}

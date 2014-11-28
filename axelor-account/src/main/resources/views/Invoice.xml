@@ -61,15 +61,15 @@
 				<panel title="Accounting details"  colSpan="12">
 					<field name="journal" readonlyIf="statusSelect == 3" domain="self.statusSelect = 1 AND self.company = :company"/>
 					<field name="partnerAccount" readonlyIf="statusSelect == 3" onSelect="action-invoice-partner-account-domain" domain="self.company = :company"/>
-					<field name="move" readonlyIf="statusSelect != 3"/>
+					<field name="move" readonly="true"/>
+					<field name="doubtfulCustomerOk" readonly="true" showIf="doubtfulCustomerOk &amp;&amp; statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
+					<field name="usherPassageOk" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
+					<field name="oldMove" readonly="true" showIf="oldMove"/>
 				</panel>
 				<panel title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
 					<button name="createRefund" title="Generate refund" colSpan="2" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save"/>
-					<field name="originalInvoice" showIf="originalInvoice"/>
-					<panel-related field="refundInvoiceList" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()"  />
-					<field name="doubtfulCustomerOk" readonly="true" showIf="doubtfulCustomerOk &amp;&amp; statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
-					<field name="usherPassageOk" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
-					<field name="oldMove" showIf="oldMove"/>
+					<field name="originalInvoice" readonly="true" showIf="originalInvoice"/>
+					<panel-related field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()"  />
 				</panel>
 				<panel colSpan="12"  title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
 					<field name="irrecoverableStatusSelect"/>

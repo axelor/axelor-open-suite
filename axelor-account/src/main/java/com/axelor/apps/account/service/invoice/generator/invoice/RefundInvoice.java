@@ -27,8 +27,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 
 public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 
@@ -48,7 +48,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		
 		LOG.debug("Créer un avoir pour la facture {}", new Object[] { invoice.getInvoiceId() });
 		
-		Invoice refund = JPA.copy(invoice, true);
+		Invoice refund = Beans.get(InvoiceRepository.class).copy(invoice, true);
 		
 		refund.setOperationTypeSelect(this.inverseOperationType(refund.getOperationTypeSelect()));
 		
@@ -58,13 +58,8 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		}
 		
 		populate( refund, refundLines );
-		refund.setMove(null);
 		
 		refund.setJournal(journalService.getJournal(invoice)); 
-		
-		refund.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
-		
-		refund.setInvoiceId(null);
 		
 		return refund;
 		

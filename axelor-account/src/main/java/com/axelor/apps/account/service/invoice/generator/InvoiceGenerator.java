@@ -45,7 +45,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
 
-public abstract class InvoiceGenerator {
+public abstract class InvoiceGenerator  {
 	
 	// Logger
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceGenerator.class);
