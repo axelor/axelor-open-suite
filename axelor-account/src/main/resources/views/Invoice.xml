@@ -64,7 +64,7 @@
 					<field name="move" readonlyIf="statusSelect != 3"/>
 				</panel>
 				<panel title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
-					<button name="createRefund" title="Generate refund" colSpan="2" onClick="save,action-invoice-method-create-refund,save"/>
+					<button name="createRefund" title="Generate refund" colSpan="2" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save"/>
 					<field name="originalInvoice" showIf="originalInvoice"/>
 					<panel-related field="refundInvoiceList" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()"  />
 					<field name="doubtfulCustomerOk" readonly="true" showIf="doubtfulCustomerOk &amp;&amp; statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
