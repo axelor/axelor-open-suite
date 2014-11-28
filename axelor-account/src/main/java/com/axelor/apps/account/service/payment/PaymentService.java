@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class PaymentService {
@@ -146,9 +147,12 @@ public class PaymentService {
 		Company company = invoice.getCompany();
 		Partner partner = invoice.getPartner();
 
-		// Récupérer les dûs du tiers pour le même compte que celui de l'avoir
-		List<MoveLine> debitMoveLines = ms.getOrignalInvoiceFromRefund(invoice);
+		List<MoveLine> debitMoveLines = Lists.newArrayList();
+		
+		// Ajout de la facture d'origine
+		debitMoveLines.add(ms.getOrignalInvoiceFromRefund(invoice));
 			
+		// Récupérer les dûs du tiers pour le même compte que celui de l'avoir
 		List<? extends MoveLine> othersDebitMoveLines = null;
 		if(useOthersInvoiceDue)  {
 			if(debitMoveLines != null && debitMoveLines.size() != 0)  {

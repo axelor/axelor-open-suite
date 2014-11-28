@@ -758,22 +758,20 @@ public class MoveService extends MoveRepository {
 	
 	
 	
-	public List<MoveLine> getOrignalInvoiceFromRefund(Invoice invoice)  {
-		List<MoveLine> debitMoveLines = new ArrayList<MoveLine>();
-		List<Invoice> originalInvoiceList = invoice.getOriginalInvoiceList();
-		if(originalInvoiceList == null)
-			return debitMoveLines;
-		for(Invoice originalInvoice : originalInvoiceList)  {
-			if(originalInvoice.getMove() != null)  {
-				for(MoveLine moveLine : originalInvoice.getMove().getMoveLineList())  {
-					if(moveLine.getAccount().getReconcileOk() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0 
-							&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
-						debitMoveLines.add(moveLine);
-					}
+	public MoveLine getOrignalInvoiceFromRefund(Invoice invoice)  {
+
+		Invoice originalInvoice = invoice.getOriginalInvoice();		
+		
+		if(originalInvoice != null && originalInvoice.getMove() != null)  {
+			for(MoveLine moveLine : originalInvoice.getMove().getMoveLineList())  {
+				if(moveLine.getAccount().getReconcileOk() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0 
+						&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
+					return moveLine;
 				}
 			}
 		}
-		return debitMoveLines;
+		
+		return null;
 	}
 	
 	

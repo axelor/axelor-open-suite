@@ -50,9 +50,8 @@
     
     <!-- Configuration -->
     <boolean name="alreadyPrintedOk" title="Already printed ?" default="true" help="true"/>
-    <many-to-one name="previousInvoice" ref="Invoice" title="Previous invoice" />
-    <many-to-one name="refundInvoice" ref="Invoice" title="Refund" />
-    <one-to-many name="originalInvoiceList" ref="com.axelor.apps.account.db.Invoice" mappedBy="refundInvoice" title="Invoice of origin"/>
+    <many-to-one name="originalInvoice" ref="Invoice" title="Invoice of origin"/>
+    <one-to-many name="refundInvoiceList" ref="Invoice" mappedBy="originalInvoice" title="Refunds"/>
     <integer name="irrecoverableStatusSelect" title="Irrecouvrable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
 	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shifting reason"/>
     <many-to-one name="standardInvoice" ref="Invoice" title="Standard Invoice" />

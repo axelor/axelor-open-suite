@@ -238,7 +238,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 		LOG.debug("Créer un avoir pour la facture {}", new Object[] { invoice.getInvoiceId() });
 		
-		invoice.setRefundInvoice((new RefundInvoice(invoice)).generate());
+		invoice.addRefundInvoiceListItem((new RefundInvoice(invoice)).generate());
 		save(invoice);
 		
 	}

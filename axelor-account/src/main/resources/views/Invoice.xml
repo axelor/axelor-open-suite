@@ -63,10 +63,10 @@
 					<field name="partnerAccount" readonlyIf="statusSelect == 3" onSelect="action-invoice-partner-account-domain" domain="self.company = :company"/>
 					<field name="move" readonlyIf="statusSelect != 3"/>
 				</panel>
-				<panel title="Refund" showIf="statusSelect == 3"  colSpan="12" showTitle="false">
+				<panel title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
 					<button name="createRefund" title="Generate refund" colSpan="2" onClick="save,action-invoice-method-create-refund,save"/>
-					<field name="refundInvoice" showIf="operationTypeSelect == 1 || operationTypeSelect == 3"/>
-					<panel-related field="originalInvoiceList" showIf="operationTypeSelect == 2 || operationTypeSelect == 4"  />
+					<field name="originalInvoice" showIf="originalInvoice"/>
+					<panel-related field="refundInvoiceList" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()"  />
 					<field name="doubtfulCustomerOk" readonly="true" showIf="doubtfulCustomerOk &amp;&amp; statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
 					<field name="usherPassageOk" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
 					<field name="oldMove" showIf="oldMove"/>
