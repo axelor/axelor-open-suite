@@ -8,16 +8,19 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	
 	@Override
 	public SaleOrder copy(SaleOrder entity, boolean deep) {
-		entity.setStatusSelect(ISaleOrder.STATUS_DRAFT);
-		entity.setSaleOrderSeq(null);
-		entity.clearBatchSet();
-		entity.setImportId(null);
-		entity.setCreationDate(GeneralService.getTodayDate());
-		entity.setValidationDate(null);
-		entity.setValidatedByUser(null);
-		entity.setOrderDate(null);
-		entity.setOrderNumber(null);
 		
-		return super.copy(entity, deep);
+		SaleOrder copy = super.copy(entity, deep);
+		
+		copy.setStatusSelect(ISaleOrder.STATUS_DRAFT);
+		copy.setSaleOrderSeq(null);
+		copy.clearBatchSet();
+		copy.setImportId(null);
+		copy.setCreationDate(GeneralService.getTodayDate());
+		copy.setValidationDate(null);
+		copy.setValidatedByUser(null);
+		copy.setOrderDate(null);
+		copy.setOrderNumber(null);
+		
+		return copy;
 	}
 }

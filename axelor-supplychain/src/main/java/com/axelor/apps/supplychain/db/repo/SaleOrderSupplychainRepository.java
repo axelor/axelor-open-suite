@@ -7,8 +7,12 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
 	
 	@Override
 	public SaleOrder copy(SaleOrder entity, boolean deep) {
-		entity.setShipmentDate(null);
-		entity.clearInvoiceSet();
-		return super.copy(entity, deep);
+		
+		SaleOrder copy = super.copy(entity, deep);
+		
+		copy.setShipmentDate(null);
+		copy.clearInvoiceSet();
+		
+		return copy;
 	}
 }
