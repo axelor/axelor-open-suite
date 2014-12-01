@@ -347,6 +347,8 @@
     	<field name="team"  expr="eval: _parent.team" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
     	<field name="user"  expr="eval:__user__" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
     	<field name="team"  expr="eval:__user__.activeTeam" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="mainPartner" expr="eval:__repo__.of(Partner).find(_parent.id)" if="_parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="mainInvoicingAddress" expr="eval:__repo__.of(Address).find(_parent.mainInvoicingAddress.id)" if="_parent.mainInvoicingAddress?.id != null &amp;&amp;_parent._model == 'com.axelor.apps.base.db.Partner'"/>
     </action-record>
     
     <action-record name="action-partner-set-non-contact-fields" model="com.axelor.apps.base.db.Partner">
