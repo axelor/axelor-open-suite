@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Template;
+import com.axelor.apps.message.db.Template;
 import com.axelor.apps.base.db.TemplateRule;
 import com.axelor.apps.base.db.TemplateRuleLine;
 import com.axelor.apps.base.db.repo.PartnerRepository;
