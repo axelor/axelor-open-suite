@@ -9,33 +9,35 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 	@Override
 	public Invoice copy(Invoice entity, boolean deep) {
 		
-		entity.setStatusSelect(STATUS_DRAFT);
-		entity.setInvoiceId(null);
-		entity.setInvoiceDate(GeneralService.getTodayDate());
-		entity.setDueDate(entity.getInvoiceDate());
-		entity.setValidatedByUser(null);
-		entity.setMove(null);
-		entity.setOriginalInvoice(null);
-		entity.setInTaxTotalRemaining(BigDecimal.ZERO);
-		entity.setIrrecoverableStatusSelect(IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
-		entity.setAmountRejected(BigDecimal.ZERO);
-		entity.clearBatchSet();
-		entity.setDebitNumber(null);
-		entity.setDirectDebitManagement(null);
-		entity.setDoubtfulCustomerOk(false);
-		entity.setMove(null);
-		entity.setEndOfCycleOk(false);
-		entity.setInterbankCodeLine(null);
-		entity.setPaymentMove(null);
-		entity.clearRefundInvoiceList();
-		entity.setRejectDate(null);
-		entity.setOriginalInvoice(null);
-		entity.setUsherPassageOk(false);
-		entity.setAlreadyPrintedOk(false);
-		entity.setCanceledPaymentSchedule(null);
-		entity.setDirectDebitAmount(BigDecimal.ZERO);
-		entity.setImportId(null);
+		Invoice copy = super.copy(entity, deep);
 		
-		return super.copy(entity, deep);
+		copy.setStatusSelect(STATUS_DRAFT);
+		copy.setInvoiceId(null);
+		copy.setInvoiceDate(GeneralService.getTodayDate());
+		copy.setDueDate(entity.getInvoiceDate());
+		copy.setValidatedByUser(null);
+		copy.setMove(null);
+		copy.setOriginalInvoice(null);
+		copy.setInTaxTotalRemaining(BigDecimal.ZERO);
+		copy.setIrrecoverableStatusSelect(IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
+		copy.setAmountRejected(BigDecimal.ZERO);
+		copy.clearBatchSet();
+		copy.setDebitNumber(null);
+		copy.setDirectDebitManagement(null);
+		copy.setDoubtfulCustomerOk(false);
+		copy.setMove(null);
+		copy.setEndOfCycleOk(false);
+		copy.setInterbankCodeLine(null);
+		copy.setPaymentMove(null);
+		copy.clearRefundInvoiceList();
+		copy.setRejectDate(null);
+		copy.setOriginalInvoice(null);
+		copy.setUsherPassageOk(false);
+		copy.setAlreadyPrintedOk(false);
+		copy.setCanceledPaymentSchedule(null);
+		copy.setDirectDebitAmount(BigDecimal.ZERO);
+		copy.setImportId(null);
+		
+		return copy;
 	}
 }
