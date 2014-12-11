@@ -21,15 +21,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.message.db.Template;
 import com.axelor.apps.base.db.TemplateRule;
 import com.axelor.apps.base.db.TemplateRuleLine;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.template.TemplateRuleService;
 import com.axelor.apps.base.test.TestModule;
+import com.axelor.apps.message.db.Template;
 import com.axelor.db.Model;
-import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.test.GuiceModules;
 import com.axelor.test.GuiceRunner;
 import com.google.inject.Inject;
@@ -47,10 +46,13 @@ public class TemplateRuleTest {
 	@Inject
 	private PartnerRepository partnerRepo;
 	
+	@Inject
+	private MetaModelRepository metaModelRepository;
+	
 	@Before
 	public void before() {
 		tr = new TemplateRule();
-		tr.setMetaModel(MetaModel.findByName("Partner"));
+		tr.setMetaModel(metaModelRepository.findByName("Partner"));
 		
 		TemplateRuleLine line = new TemplateRuleLine();
 		line.setSequence(1);
