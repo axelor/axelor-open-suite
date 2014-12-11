@@ -1,18 +1,33 @@
 package com.axelor.apps.account.db.repo;
 
-import org.joda.time.DateTime;
-
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.base.service.administration.GeneralService;
 
 public class PaymentVoucherManagementRepository extends
 		PaymentVoucherRepository {
 	@Override
 	public PaymentVoucher copy(PaymentVoucher entity, boolean deep) {
-		entity.setStatusSelect(1);
-		entity.setRef(null);
-		entity.setPaymentDateTime(DateTime.now());
-		entity.setPaymentInvoiceList(null);
-		entity.setPaymentInvoiceToPayList(null);
-		return super.copy(entity, deep);
+		
+		PaymentVoucher copy = super.copy(entity, deep);
+		
+		copy.setStatusSelect(STATUS_DRAFT);
+		copy.setRef(null);
+		copy.setPaymentDateTime(GeneralService.getTodayDateTime());
+		copy.clearPaymentInvoiceList();
+		copy.clearPaymentInvoiceToPayList();
+		copy.setGeneratedMove(null);
+		copy.setBankCardTransactionNumber(null);
+		copy.clearBatchSet();
+		copy.setImportId(null);
+		copy.setPayboxAmountPaid(null);
+		copy.setPayboxPaidOk(false);
+		copy.setReceiptNo(null);
+		copy.setRemainingAmount(null);
+		copy.setRemainingAllocatedAmount(null);
+		copy.setToSaveEmailOk(false);
+		copy.setDefaultEmailOk(false);
+		copy.setEmail(null);
+		
+		return copy;
 	}
 }
