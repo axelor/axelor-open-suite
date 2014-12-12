@@ -34,11 +34,11 @@
 		  <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 		</toolbar>
 	  
-		<panel  readonlyIf="statusSelect != 1">
-			<field name="invoiceId" readonlyIf="!invoiceId"/>
-			<field name="operationTypeSelect" onChange="action-group-account-invoice-operationtype-onchange"/>
-			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-form"/>
-			<field name="currency" onChange="action-invoice-attrs-change-total-title"/>
+		<panel >
+			<field name="invoiceId" readonlyIf="!invoiceId &amp;&amp; statusSelect &gt; 2"/>
+			<field name="operationTypeSelect" onChange="action-group-account-invoice-operationtype-onchange" readonlyIf="statusSelect != 1"/>
+			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-form" readonlyIf="statusSelect != 1"/>
+			<field name="currency" onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"/>
 		</panel>
 	  
 		<panel title="Invoicing informations">
