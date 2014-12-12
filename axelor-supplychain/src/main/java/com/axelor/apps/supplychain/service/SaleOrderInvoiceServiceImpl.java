@@ -201,14 +201,35 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		BigDecimal total = BigDecimal.ZERO;
 		
 		for(Invoice invoice : saleOrder.getInvoiceSet())  {
-			if(invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED)  {
-				total = total.add(invoice.getInTaxTotal());
-			}
+			total = total.add(this.computeInTaxTotalInvoiced(invoice));
 		}
 		
 		if(total.compareTo(saleOrder.getInTaxTotal()) == 0)  {
 			throw new AxelorException(String.format("Le devis est déjà complêtement facturé"), IException.CONFIGURATION_ERROR);
 		}
+		
+	}
+		
+	public BigDecimal computeInTaxTotalInvoiced(Invoice invoice)  {
+		
+		BigDecimal total = BigDecimal.ZERO;
+		
+		if(invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED)  {
+			if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)  {
+				total = total.add(invoice.getInTaxTotal());
+			}
+			if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)  {
+				total = total.subtract(invoice.getInTaxTotal());
+			}
+		}
+		
+		if(invoice.getRefundInvoiceList() != null)  {
+			for(Invoice refund : invoice.getRefundInvoiceList())  {
+				total = total.add(this.computeInTaxTotalInvoiced(refund));
+			}
+		}
+		
+		return total;
 		
 	}
 	
