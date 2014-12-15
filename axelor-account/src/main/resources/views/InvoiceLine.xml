@@ -46,34 +46,6 @@
         
     </form>
     
-    <grid name="tax-invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="invoiceLineType.name,qty">
-        <field name="invoiceLineType"/>
-        <field name="productName"/>
-        <field name="qty"/>
-        <field name="price"/>
-        <field name="product.unit"/>
-        <field name="exTaxTotal"/>
-        <field name="taxLine.vat"/>
-    </grid>
-    
-    <form name="tax-invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
-    onLoad="action-invoice-line-method-product-management">
-        <panel >
-        	 <field name="product" required="true" onChange="action-group-account-tax-invoice-line-product-onchange"/>
-	        <field name="invoiceLineType"/>
-	        <field name="productName"/>
-	        <field name="qty" required="true" onChange="action-group-account-tax-invoice-line-qty-onchange"/>
-	        <field name="price" required="true" onChange="action-invoice-line-method-compute"/>
-	        <field name="product.unit"/>
-	        <field name="exTaxTotal"/>
-	    	<field name="taxLine"/>
-			<field name="taxLine.tax.name"/>
-			<field name="taxLine.value"/>
-        </panel>
-       
-    </form>
-    
-    
     <!-- ACTION GROUPs -->
     <action-group name="action-account-invoice-line-onnew-group">
 	    <action name="action-invoice-line-record-new"/>
@@ -94,16 +66,6 @@
     	<action name="action-invoice-line-record-invoice-line-type"/>    	
     </action-group>
     
-    <action-group name="action-group-account-tax-invoice-line-product-onchange">
-    	<action name="action-invoice-line-method-get-product-information"/>
-    	<action name="action-invoice-line-method-compute"/>
-    	<action name="action-invoice-line-record-invoice-line-type"/>
-    </action-group>
-    
-    <action-group name="action-group-account-tax-invoice-line-qty-onchange">
-    	<action name="action-invoice-line-method-get-discount"/>
-    	<action name="action-invoice-line-method-compute"/>
-    </action-group>
     
     <!--     ACTION RECORDS -->
     
