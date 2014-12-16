@@ -40,7 +40,7 @@
 	    	<panel title="Configurations">
 	  			<field name="logoPath"/>
 	  			<field name="currency"/>
-	  			<field name="printingSettings"/>
+	  			<field name="printingSettings" canNew="true"/>
 	  		</panel>
 	    	<panel title="Bank details">
 	      		<field name="defaultBankDetails"/>
