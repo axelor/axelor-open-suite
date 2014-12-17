@@ -43,5 +43,6 @@ public interface ITranslation {
 	public static final String SALES_ORDER_BANKING_INFO = /*$$(*/ "SaleOrder.bankingInfo"; /*)*/
 	public static final String SALES_ORDER_CHEQUE = /*$$(*/ "SaleOrder.cheque"; /*)*/
 	public static final String SALES_ORDER_BANK_DETAILS = /*$$(*/ "SaleOrder.bankDetails"; /*)*/
+	public static final String SALES_ORDER_CUSTOMER_STAMP_AND_PURCHASE = /*$$(*/ "SaleOrder.customerStampAndPurchase"; /*)*/
 	
 }
