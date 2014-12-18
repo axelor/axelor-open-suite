@@ -99,7 +99,7 @@
 	</action-view>
 
 	<menuitem name="contact-conf-address" parent="contact-conf"
-		title="Addresses" action="contact.conf.address" icon="img/16px/addressBook_16px.png" />
+		title="Addresses" action="contact.conf.address"  />
 
 	<action-view name="contact.conf.address" title="Addresses"
 		model="com.axelor.apps.base.db.Address" icon="img/16px/addressBook_16px.png">
