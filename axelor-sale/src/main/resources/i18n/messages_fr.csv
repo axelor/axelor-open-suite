@@ -215,7 +215,8 @@ resources/views/SaleOrder.xml:6"
 "SaleOrder.totalInclTax","Total T.T.C.",,"java/com/axelor/apps/sale/report/ITranslation.java:41"
 "SaleOrder.totalTax","Total T.V.A.",,"java/com/axelor/apps/sale/report/ITranslation.java:40"
 "SaleOrder.unitPrice","Prix unitaire",,"java/com/axelor/apps/sale/report/ITranslation.java:35"
-"SaleOrder.customerStampAndPurchase","Signature et/ou tampon client",,"java/com/axelor/apps/sale/report/ITranslation.java:46"
+"SaleOrder.customerSignatureAndStamp","Tampon et Signature Client",,"java/com/axelor/apps/sale/report/ITranslation.java:46"
+"SaleOrder.customerSignature","Signature Client",,"java/com/axelor/apps/sale/report/ITranslation.java:47"
 "Sales","Vente",,"resources/views/Menu.xml:123
 resources/views/Menu.xml:71
 resources/views/Menu.xml:8" 

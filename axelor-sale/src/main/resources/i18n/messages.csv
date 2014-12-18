@@ -215,7 +215,8 @@ resources/views/SaleOrder.xml:6"
 "SaleOrder.totalInclTax",,,"java/com/axelor/apps/sale/report/ITranslation.java:41"
 "SaleOrder.totalTax",,,"java/com/axelor/apps/sale/report/ITranslation.java:40"
 "SaleOrder.unitPrice",,,"java/com/axelor/apps/sale/report/ITranslation.java:35"
-"SaleOrder.customerStampAndPurchase",,,"java/com/axelor/apps/sale/report/ITranslation.java:46"
+"SaleOrder.customerSignatureAndStamp",,,"java/com/axelor/apps/sale/report/ITranslation.java:46"
+"SaleOrder.customerSignature",,,"java/com/axelor/apps/sale/report/ITranslation.java:47"
 "Sales",,,"resources/views/Menu.xml:123
 resources/views/Menu.xml:71
 resources/views/Menu.xml:8"
