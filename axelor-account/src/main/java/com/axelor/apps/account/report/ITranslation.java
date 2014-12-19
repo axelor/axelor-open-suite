@@ -41,10 +41,14 @@ public interface ITranslation {
 	public static final String INVOICE_BANKING_INFO = /*$$(*/ "Invoice.bankingInfo"; /*)*/
 	public static final String INVOICE_CLIENT_REF = /*$$(*/ "Invoice.clientRef"; /*)*/
 	public static final String INVOICE_SUPPLY_REF = /*$$(*/ "Invoice.supplyRef"; /*)*/
-	public static final String INVOICE_PURCHASE_INVOICE_NO = /*$$(*/ "Invoice.purchaseInvoiceNo"; /*)*/
-	public static final String INVOICE_PURCHASE_REFUND_NO = /*$$(*/ "Invoice.purchaseRefundNo"; /*)*/
+	public static final String INVOICE_SUPPLY_INVOICE_NO = /*$$(*/ "Invoice.supplyInvoiceNo"; /*)*/
+	public static final String INVOICE_SUPPLY_REFUND_NO = /*$$(*/ "Invoice.supplyRefundNo"; /*)*/
 	public static final String INVOICE_INVOICE_NO = /*$$(*/ "Invoice.invoiceNo"; /*)*/
 	public static final String INVOICE_REFUND_NO = /*$$(*/ "Invoice.refundNo"; /*)*/
+	public static final String INVOICE_PROFORMA_SUPPLY_INVOICE_NO = /*$$(*/ "Invoice.proFormaSupplyInvoiceNo"; /*)*/
+	public static final String INVOICE_PROFORMA_SUPPLY_REFUND_NO = /*$$(*/ "Invoice.proFormaSupplyRefundNo"; /*)*/
+	public static final String INVOICE_PROFORMA_INVOICE_NO = /*$$(*/ "Invoice.proFormaInvoiceNo"; /*)*/
+	public static final String INVOICE_PROFORMA_REFUND_NO = /*$$(*/ "Invoice.proFormaRefundNo"; /*)*/
 	
 	
 	

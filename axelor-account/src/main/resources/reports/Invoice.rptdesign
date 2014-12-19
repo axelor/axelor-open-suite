@@ -2042,14 +2042,27 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">if(row["operation_type_select"] == "1" ){
-'Invoice.purchaseInvoiceNo'
-}else if(row["operation_type_select"] == "2" ){
-'Invoice.purchaseRefundNo'
-}else if(row["operation_type_select"] == "3" ){
-'Invoice.invoiceNo'
-}else if(row["operation_type_select"] == "4" ){
-'Invoice.refundNo'
+                                                    <value type="javascript">if(row["status_select"] == "3"){
+	if(row["operation_type_select"] == "1" ){
+		'Invoice.supplyInvoiceNo'
+	}else if(row["operation_type_select"] == "2" ){
+		'Invoice.supplyRefundNo'
+	}else if(row["operation_type_select"] == "3" ){
+		'Invoice.invoiceNo'
+	}else if(row["operation_type_select"] == "4" ){
+		'Invoice.refundNo'
+	}
+}else{
+	if(row["operation_type_select"] == "1" ){
+		'Invoice.proFormaSupplyInvoiceNo'
+	}else if(row["operation_type_select"] == "2" ){
+		'Invoice.proFormaSupplyRefundNo'
+	}else if(row["operation_type_select"] == "3" ){
+		'Invoice.proFormaInvoiceNo'
+	}else if(row["operation_type_select"] == "4" ){
+		'Invoice.proFormaRefundNo'
+	}
+
 }</value>
                                                 </simple-property-list>
                                             </structure>
@@ -2070,7 +2083,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row._outer["status_select"] == "3"){
-"N° "+ row._outer["invoice_id"]
+" N° "+ row._outer["invoice_id"]
 }</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
