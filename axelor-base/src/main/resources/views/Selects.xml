@@ -591,5 +591,12 @@
 		<option value="1">Opened</option>
 		<option value="2">Closed</option>
 	</selection>
+
+	<selection name="printing.setting.logo.position">
+		<option value="0">None</option>
+		<option value="1">Left</option>
+		<option value="2">Center</option>
+		<option value="3">Right</option>
+	</selection>
 	
 </object-views>

@@ -13,33 +13,9 @@
             <expression name="value" type="javascript">params["UserName"].value</expression>
         </structure>
         <structure>
-            <property name="name">odaDriverClass</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -53,10 +29,11 @@
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">6</value>
+                <value type="constant">1</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -131,7 +108,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
-            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -140,6 +116,12 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id</text-property>
+                    <text-property name="heading">id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">id_2</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
                     <text-property name="heading">id</text-property>
@@ -224,7 +206,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">ClientTitle</property>
-                    <property name="analysis">dimension</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">ClientTitle</text-property>
                     <text-property name="heading">ClientTitle</text-property>
                 </structure>
@@ -366,6 +348,18 @@
                     <text-property name="displayName">external_reference</text-property>
                     <text-property name="heading">external_reference</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">logo_position_select</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_position_select</text-property>
+                    <text-property name="heading">logo_position_select</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">pdf_header</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">pdf_header</text-property>
+                    <text-property name="heading">pdf_header</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -375,6 +369,7 @@
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -459,7 +454,7 @@
                     <structure>
                         <property name="position">16</property>
                         <property name="name">ClientTitle</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">17</property>
@@ -576,6 +571,16 @@
                         <property name="name">external_reference</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">40</property>
+                        <property name="name">logo_position_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">41</property>
+                        <property name="name">pdf_header</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -689,8 +694,8 @@
                     <property name="position">16</property>
                     <property name="name">ClientTitle</property>
                     <property name="nativeName">ClientTitle</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
@@ -853,6 +858,20 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">40</property>
+                    <property name="name">logo_position_select</property>
+                    <property name="nativeName">logo_position_select</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">41</property>
+                    <property name="name">pdf_header</property>
+                    <property name="nativeName">pdf_header</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Partner.id, SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", Company.name as "CopmanyName", Company.logo_path,
 PartnerAddress.addressl2 as "Address2", PartnerAddress.addressl3 as "Address3", 
@@ -869,7 +888,8 @@ DeliveryAddress.addressl2 as "delAddress2", DeliveryAddress.addressl3 as "delAdd
 DeliveryAddress.addressl4 as "delAddress4", DeliveryAddress.addressl5 as "delAddress5", 
 DeliveryAddress.addressl6 as "delAddress6", DeliveryCountry.name as "DeliveryCountry",
 SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total,
-DefBankDetail.iban, DefBankDetail.bic, Currency.code as "CurrencyCode", SaleOrder.external_reference
+DefBankDetail.iban, DefBankDetail.bic, Currency.code as "CurrencyCode", SaleOrder.external_reference,
+PrintingSettings.logo_position_select, PrintingSettings.pdf_header
 from public.sale_sale_order as SaleOrder
 left outer join public.base_company as Company on (SaleOrder.company = Company.id)
 left outer join public.base_partner as Partner on (Company.partner = Partner.id)
@@ -885,6 +905,7 @@ left outer join public.base_address as DeliveryAddress on (SaleOrder.delivery_ad
 left outer join public.base_country as DeliveryCountry on (DeliveryAddress.addressl7country = DeliveryCountry.id)
 left outer join public.base_bank_details as DefBankDetail on (Company.default_bank_details = DefBankDetail.id)
 left outer join public.base_currency as Currency on (SaleOrder.currency = Currency.id)
+left outer join public.base_printing_settings as PrintingSettings on (Company.printing_settings = PrintingSettings.id)
 where SaleOrder.id = ?
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1510,7 +1531,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">id_2</property>
-                    <text-property name="displayName">id_2</text-property>
+                    <text-property name="displayName">id</text-property>
                     <expression name="expression" type="javascript">dataSetRow["id_2"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
@@ -1596,7 +1617,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="name">ClientTitle</property>
                     <text-property name="displayName">ClientTitle</text-property>
                     <expression name="expression" type="javascript">dataSetRow["ClientTitle"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">ContactName</property>
@@ -1736,6 +1757,24 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["external_reference"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_position_select</property>
+                    <text-property name="displayName">logo_position_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_position_select"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">pdf_header</property>
+                    <text-property name="displayName">pdf_header</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["pdf_header"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <expression name="expression" type="javascript">dataSetRow["pdf_header"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="3343">
                 <property name="width">2.9897916666666666cm</property>
@@ -1757,51 +1796,129 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             </column>
             <row id="3349">
                 <property name="height">0.9583333333333334in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["logo_position_select"] == null || row["logo_position_select"] == "0" || row["logo_position_select"] == "2"</expression>
+                    </structure>
+                </list-property>
                 <cell id="3350">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
+                    <property name="textAlign">left</property>
                     <image id="3419">
                         <property name="height">2.169583333333333cm</property>
                         <property name="width">6.138333333333333cm</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logo_position_select"] != "1"</expression>
+                            </structure>
+                        </list-property>
                         <property name="source">file</property>
                         <expression name="uri" type="javascript">row["logo_path"]</expression>
                     </image>
+                    <text id="3868">
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logo_position_select"] != "3"</expression>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["pdf_header"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
                 <cell id="3352"/>
                 <cell id="3353"/>
                 <cell id="3354">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
-                    <text id="3618">
-                        <property name="fontSize">9pt</property>
+                    <property name="textAlign">right</property>
+                    <image id="3858">
+                        <property name="height">2.169583333333333cm</property>
+                        <property name="width">6.138333333333333cm</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logo_position_select"] != "3"</expression>
+                            </structure>
+                        </list-property>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">row["logo_path"]</expression>
+                    </image>
+                    <text id="3869">
+                        <property name="textAlign">left</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logo_position_select"] != "1"</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["Address2"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["pdf_header"]</VALUE-OF>]]></text-property>
                     </text>
-                    <text id="3619">
-                        <property name="fontSize">9pt</property>
+                </cell>
+            </row>
+            <row id="3859">
+                <property name="height">0.9583333333333334in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["logo_position_select"] == null || row["logo_position_select"] == "1" || row["logo_position_select"] == "3"</expression>
+                    </structure>
+                </list-property>
+                <cell id="3860">
+                    <property name="colSpan">6</property>
+                    <property name="rowSpan">1</property>
+                    <property name="textAlign">center</property>
+                    <image id="3866">
+                        <property name="height">2.169583333333333cm</property>
+                        <property name="width">6.138333333333333cm</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logo_position_select"] != "2"</expression>
+                            </structure>
+                        </list-property>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">row["logo_path"]</expression>
+                    </image>
+                    <text id="3867">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="textAlign">left</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logo_position_select"] != "0"</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["Address3"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["pdf_header"]</VALUE-OF>]]></text-property>
                     </text>
-                    <text id="3620">
-                        <property name="fontSize">9pt</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["Address4"]</VALUE-OF>]]></text-property>
-                    </text>
-                    <text id="3621">
-                        <property name="fontSize">9pt</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["Address5"]</VALUE-OF>]]></text-property>
-                    </text>
-                    <text id="3622">
-                        <property name="fontSize">9pt</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["Address6"]</VALUE-OF>]]></text-property>
-                    </text>
-                    <text id="3623">
-                        <property name="fontSize">9pt</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["partnercountry"]</VALUE-OF>]]></text-property>
-                    </text>
+                </cell>
+            </row>
+            <row id="3870">
+                <property name="height">0.53125in</property>
+                <cell id="3871">
+                    <property name="textAlign">center</property>
+                    <text id="3877"/>
+                    <text id="3878"/>
+                </cell>
+                <cell id="3872">
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="3873">
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="3874">
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="3875">
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="3876">
+                    <property name="textAlign">center</property>
                 </cell>
             </row>
             <row id="3363">

@@ -3,11 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
-	<form name="printing-setting-form" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings">
+	<form name="printing-setting-form" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings"
+		onNew="action-printing-setting-record-default">
 		<panel>
 			<field name="name"/>
 			<field name="languageSelect"/>
 			<field name="defaultMailBirtTemplate" />
+			<field name="logoPositionSelect" />
 			<panel title="Company Header" colSpan="12">
 				<field name="pdfHeader" colSpan="12" widget="html" showTitle="false"/>
 			</panel>
@@ -22,4 +24,7 @@
     	<field name="languageSelect"/>
     </grid>
 
+	<action-record name="action-printing-setting-record-default" model="com.axelor.apps.base.db.PrintingSettings">
+    	<field name="logoPositionSelect" expr="1" />
+    </action-record>
 </object-views>
