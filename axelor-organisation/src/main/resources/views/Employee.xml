@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
 	<grid name="employee-grid" title="Employee"	model="com.axelor.apps.organisation.db.Employee">
+		<toolbar>
+	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook-employee"/>
+	    </toolbar>
 		<field name="internalContact.name" />
 		<field name="internalContact.firstName" />
 		<field name="function"/>
@@ -125,6 +128,9 @@
 		<call class="com.axelor.apps.organisation.web.EmployeeController" method="showEmployee" />
 	</action-method>
 	
+	<action-method name="action-print-compnay-phonebook-employee" >
+		<call class="com.axelor.apps.organisation.web.EmployeeController" method="printCompanyPhonebook"/>
+	</action-method>
 	
     <search-filters name="employee-filters" model="com.axelor.apps.organisation.db.Employee" title="Employee filters">
 		<filter title="Current Employees">

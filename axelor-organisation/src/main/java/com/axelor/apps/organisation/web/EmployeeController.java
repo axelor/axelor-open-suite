@@ -23,6 +23,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.organisation.db.Employee;
 import com.axelor.apps.organisation.report.IReport;
@@ -31,6 +32,13 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 
 public class EmployeeController {
 
@@ -76,4 +84,45 @@ public class EmployeeController {
 			response.setFlash(urlNotExist);
 		}
 	}
+
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void printCompanyPhonebook(ActionRequest request, ActionResponse response) {
+
+		StringBuilder url = new StringBuilder();
+
+		User user = AuthUtils.getUser();
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
+		String attachmentPath = AppSettings.get().getPath("file.upload.dir","");
+		attachmentPath = attachmentPath.endsWith("/") ? attachmentPath : attachmentPath+"/";
+
+		url.append(new ReportSettings(IReport.COMPANY_PHONE_BOOK)
+					.addParam("Locale", language)
+					.addParam("__locale", "fr_FR")
+					.addParam("UserId", user.getId().toString())
+					.addParam("AttachmentPath",attachmentPath)
+					.getUrl());
+		
+		LOG.debug("URL : {}", url);
+		String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist == null){
+
+			LOG.debug("Impression des informations sur le partenaire Company PhoneBook");
+
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Company PhoneBook");
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);		   
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
+	
 }
