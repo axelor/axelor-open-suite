@@ -75,8 +75,8 @@
 		
 		<panel readonlyIf="statusSelect == 2 || payboxPaidOk" colSpan="12">
 		 	<field name="paidAmount" colSpan="3"/>
-			<label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="3"/>
-			<field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs" colSpan="3"/>
+			<label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="3" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+			<field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs" colSpan="3" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 			<field name="remainingAmount" readonly="true" colSpan="3"/>
 		</panel>
 		
