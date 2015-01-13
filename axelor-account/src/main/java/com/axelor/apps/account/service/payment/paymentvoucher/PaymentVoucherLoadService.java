@@ -258,6 +258,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			}
 			else{
 				paidAmount = paymentVoucherContext.getPaidAmount();
+				paymentVoucher.setPaidAmount(paidAmount);
 				
 				int lineSeq = 1;
 				List<PaymentInvoice> paymentInvoiceSelectedList = new ArrayList<PaymentInvoice>();
@@ -334,7 +335,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 						else  {
 							paymentInvoiceToPay.setCurrency(move.getCurrency());
 						}
-						
+						 
 						BigDecimal paidAmountConverted = currencyService.getAmountCurrencyConverted(
 								paymentVoucher.getCurrency(),
 								paymentInvoiceToPay.getCurrency(), 
