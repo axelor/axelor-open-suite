@@ -144,7 +144,7 @@
 		           &lt;dd&gt;{{record.exTaxTotal}}&lt;/dd&gt;
 		           &lt;dt x-translate&gt;Total tax&lt;/dt&gt;
 		           &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
-		           &lt;dt class="order-subtotal-total x-translate"&gt;Total A.T.I.&lt;/dt&gt;
+		           &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
 		           &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
 		           &lt;dt x-translate&gt;Remaining to pay&lt;/dt&gt;
 		           &lt;dd&gt;{{record.inTaxTotalRemaining}}&lt;/dd&gt;
