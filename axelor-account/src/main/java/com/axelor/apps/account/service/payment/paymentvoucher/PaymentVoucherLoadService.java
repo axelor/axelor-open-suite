@@ -258,7 +258,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			}
 			else{
 				paidAmount = paymentVoucherContext.getPaidAmount();
-				BigDecimal amountToPay = BigDecimal.ZERO;
+				
 				int lineSeq = 1;
 				List<PaymentInvoice> paymentInvoiceSelectedList = new ArrayList<PaymentInvoice>();
 				for (PaymentInvoice pilContext : paymentVoucherContext.getPaymentInvoiceList())  {
@@ -338,7 +338,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 						BigDecimal paidAmountConverted = currencyService.getAmountCurrencyConverted(
 								paymentVoucher.getCurrency(),
 								paymentInvoiceToPay.getCurrency(), 
-								paymentInvoiceToPay.getRemainingAmount(), 
+								paidAmount, 
 								paymentVoucher.getPaymentDateTime().toLocalDate());
 						
 						//On convertit dans la devise de la saisie paiement, pour comparer le restant à payer de la facture avec le restant à utilsier de la saisie paiement
@@ -359,9 +359,9 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 //									paymentVoucher.getPaymentDateTime().toLocalDate());
 //							piToPay.setCurrency(move.getCurrency());
 //						}
-						
+
 //						amountToPay = paidAmount.min(pil.getInvoiceAmount().subtract(pil.getPaidAmount()));
-						amountToPay = paidAmountConverted.min(paymentInvoiceToPay.getRemainingAmount());
+						BigDecimal amountToPay = paidAmountConverted.min(paymentInvoiceToPay.getRemainingAmount());
 						paymentInvoiceToPay.setAmountToPay(amountToPay);
 						
 						piToPayLine.add(paymentInvoiceToPay);
