@@ -35,9 +35,7 @@
         <field name="priority"/>
         <field name="statusSelect"/>	  	
 	  </panel-related>
-	  <!-- TODO: remove this comment if portlet works with panel
-	  <dashlet   action="action-production-order-view-operation-order"/>
-	  -->
+	  <panel-dashlet   action="action-production-order-view-operation-order"/>
 	</form>
     
     
