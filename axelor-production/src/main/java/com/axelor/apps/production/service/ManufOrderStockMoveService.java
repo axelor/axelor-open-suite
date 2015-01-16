@@ -167,18 +167,20 @@ public class ManufOrderStockMoveService extends ManufOrderRepository {
 	
 	public void finish(ManufOrder manufOrder) throws AxelorException  {
 		
-		if(manufOrder.getInStockMove() != null && manufOrder.getInStockMove().getStatusSelect() == IStockMove.STATUS_PLANNED)  {
+		this.finishStockMove(manufOrder.getInStockMove());
+		this.finishStockMove(manufOrder.getOutStockMove());
+		
+	}
+	
+	
+	public void finishStockMove(StockMove stockMove) throws AxelorException  {
+		
+		if(stockMove != null && stockMove.getStatusSelect() == IStockMove.STATUS_PLANNED)  {
 			
-			stockMoveService.realize(manufOrder.getInStockMove());
+			stockMoveService.copyQtyToRealQty(stockMove);
+			stockMoveService.realize(stockMove);
 			
 		}
-		
-		if(manufOrder.getOutStockMove() != null && manufOrder.getOutStockMove().getStatusSelect() == IStockMove.STATUS_PLANNED)  {
-			
-			stockMoveService.realize(manufOrder.getOutStockMove());
-			
-		}
-		
 	}
 	
 	
