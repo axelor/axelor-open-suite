@@ -19,7 +19,7 @@
   	<one-to-many name="billOfMaterialList" ref="com.axelor.apps.production.db.BillOfMaterial" mappedBy="parentBillOfMaterial" title="BOMs"/>
   	<many-to-one name="parentBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Parent BOM"/>
   	<one-to-many name="prodRemainsList" ref="com.axelor.apps.production.db.ProdRemains" title="Production remains"/>
-  	<decimal name="costPrice" title="Cost price" precision="20" scale="5"/>
+  	<decimal name="costPrice" title="Cost price" precision="20" scale="2"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <boolean name="hasNoManageStock" title="Not manage stock"/>
     <boolean name="personalized" title="Personalized"/>

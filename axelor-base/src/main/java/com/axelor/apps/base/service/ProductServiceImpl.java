@@ -84,7 +84,7 @@ public class ProductServiceImpl extends ProductRepository implements ProductServ
 		
 		if(product.getCostPrice() != null && managePriceCoef != null)  {
 			
-			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(5, BigDecimal.ROUND_HALF_UP));
+			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(2, BigDecimal.ROUND_HALF_UP));
 			
 			if(product.getProductVariant() != null)  {
 				

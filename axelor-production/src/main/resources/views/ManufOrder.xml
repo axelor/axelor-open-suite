@@ -66,7 +66,7 @@
 			<field name="product" required="true" readonlyIf="statusSelect &gt; 1"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
 			<field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>
-			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"/>
+			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production"/>
 			<button name="preFillOperations" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1" onClick="save,action-manuf-order-method-pre-fill-operations" />
 		</panel>  
 		<panel-tabs colSpan="4">
@@ -96,11 +96,11 @@
 				<panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
 				<panel-related field="diffConsumeProdProductList" colSpan="12"/>
 			</panel>
-<!--   		<panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
-	 	      <dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
-	 	      <dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
-	 	      <dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/> 
-			</panel> -->
+   			<panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
+	 	      <panel-dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
+	 	      <panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
+	 	      <panel-dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/> 
+			</panel>
 			<panel title="Finished products">
 				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
 				<panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>

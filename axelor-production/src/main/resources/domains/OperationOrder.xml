@@ -15,8 +15,6 @@
     
     <string name="operationName" title="Operation name" initParam="true"/>
   
-  	<boolean name="isToInvoice" title="To invoice ?" initParam="true"/>
-  	
   	<many-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order" initParam="true"/>
   
 <!--   	<decimal name="qty" title="Quantity"/> -->
@@ -41,8 +39,6 @@
   	<datetime name="realEndDateT" title="Real end date"/>
     
     <many-to-one name="inStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
-    
-<!--     <one-to-many name="timesheetLineList" ref="com.axelor.apps.organisation.db.TimesheetLine" mappedBy="operationOrder" title="Timesheet lines"/> -->
     
     <long name="plannedDuration" title="Planned duration"/>
     <long name="realDuration" title="Real duration"/>

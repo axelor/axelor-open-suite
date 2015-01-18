@@ -48,25 +48,6 @@ public class ProductionOrderController {
 	@Inject
 	private ProductRepository productRepo;
 	
-	public void propagateIsToInvoice (ActionRequest request, ActionResponse response) {
-
-		ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
-
-		productionOrderService.propagateIsToInvoice(productionOrderService.find(productionOrder.getId()));
-		
-		response.setReload(true);
-		
-	}
-	
-	public void generateSaleOrder (ActionRequest request, ActionResponse response) throws AxelorException {
-
-		ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
-
-		productionOrderSaleOrderService.createSaleOrder(productionOrderService.find(productionOrder.getId()));
-		
-		response.setReload(true);
-		
-	}
 	
 	public void addManufOrder (ActionRequest request, ActionResponse response) throws AxelorException {
 

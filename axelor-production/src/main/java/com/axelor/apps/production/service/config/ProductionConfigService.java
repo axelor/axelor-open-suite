@@ -28,9 +28,7 @@ public class ProductionConfigService extends ProductionConfigRepository {
 	
 	public ProductionConfig getProductionConfig(Company company) throws AxelorException  {
 		
-//		ProductionConfig productionConfig = company.getProductionConfig();  // TODO après heritage
-		
-		ProductionConfig productionConfig = findByCompany(company);
+		ProductionConfig productionConfig = company.getProductionConfig(); 
 		
 		if(productionConfig == null)  {
 			throw new AxelorException(String.format("Veuillez configurer la production pour la société %s",

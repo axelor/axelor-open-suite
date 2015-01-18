@@ -3,13 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
 
-  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+  <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="TimesheetLine" lang="java">
+  <entity name="ProdHumanResource" lang="java">
   
-<!-- 	<many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/> -->
-<string name="ee"></string>
-	
+    <many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="Employee" initParam="true"/>
+    
   </entity>
-
 </domain-models>

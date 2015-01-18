@@ -17,127 +17,31 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 //import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResource;
-import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public class OperationOrderService extends OperationOrderRepository{
+public interface OperationOrderService extends Repository<OperationOrder>{
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine, boolean isToInvoice) throws AxelorException  {
-		
-		OperationOrder operationOrder = this.createOperationOrder(
-				manufOrder,
-				prodProcessLine.getPriority(), 
-				isToInvoice, 
-				prodProcessLine.getProdResource(), 
-				prodProcessLine.getProdResource(), 
-				prodProcessLine);
-		
-		return save(operationOrder);
-	}
+	public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine) throws AxelorException;
 	
 	
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public OperationOrder createOperationOrder(ManufOrder manufOrder, int priority, boolean isToInvoice, ProdResource prodResource, ProdResource machineProdResource,
-			ProdProcessLine prodProcessLine) throws AxelorException  {
-		
-		logger.debug("Création d'une opération {} pour l'OF {}", priority, manufOrder.getManufOrderSeq());
-		
-		String operationName = prodProcessLine.getName();
-		
-		OperationOrder operationOrder = new OperationOrder(
-				priority, 
-				this.computeName(manufOrder, priority, operationName), 
-				operationName,
-				isToInvoice, 
-				manufOrder, 
-				prodResource, 
-				machineProdResource, 
-				IOperationOrder.STATUS_DRAFT, 
-				prodProcessLine);
-		
-		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
-		
-		this._createHumanResourceList(operationOrder, machineProdResource);
-		
-		return save(operationOrder);
-	}
+	public OperationOrder createOperationOrder(ManufOrder manufOrder, int priority, ProdResource prodResource, ProdResource machineProdResource,
+			ProdProcessLine prodProcessLine) throws AxelorException;
 	
 	
 	
-	private void _createHumanResourceList(OperationOrder operationOrder, ProdResource prodResource)  {
-		
-		if(prodResource != null && prodResource.getProdHumanResourceList() != null)  {
-			
-//			for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
-				
-//				operationOrder.addProdHumanResourceListItem(
-//						new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getEmployee(), prodHumanResource.getDuration()));
-//				
-//			}
-			
-		}
-		
-	}
-
-	
-	public String computeName(ManufOrder manufOrder, int priority, String operationName)  {
-		
-		String name = "";
-		if(manufOrder != null)  {
-			
-			if(manufOrder.getManufOrderSeq() != null)  {
-				name += manufOrder.getManufOrderSeq();
-			}
-			else  {
-				name += manufOrder.getId();
-			}
-			
-		}
-		
-		name += "-" + priority + "-" + operationName;
-		
-		return name;
-	}
-	
-	
-	
-	private void _createToConsumeProdProductList(OperationOrder operationOrder, ProdProcessLine prodProcessLine)  {
-		
-		BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
-		
-		if(prodProcessLine.getToConsumeProdProductList() != null)  {
-			
-			for(ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList())  {
-				
-				operationOrder.addToConsumeProdProductListItem(
-						new ProdProduct(prodProduct.getProduct(), prodProduct.getQty().multiply(manufOrderQty), prodProduct.getUnit()));
-				
-			}
-			
-		}
-		
-	}
-	
-	
+	public String computeName(ManufOrder manufOrder, int priority, String operationName);
 	
 	
 //	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

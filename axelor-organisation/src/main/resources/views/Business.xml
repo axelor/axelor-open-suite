@@ -106,13 +106,7 @@
 				<field name="isTimeSheetImputable"/>
 			</panel>
 	    
-			<panel title="Production informations">
-		<!-- 	        	<include view="business-project-production-form" from="axelor-production"/> -->      
-				<field name="prodInvTypeSelect" if-module="axelor-production"/>
-				<!-- TODO: remove this comment if portlet is allowed in panel
-				<dashlet colSpan="12" action="action-business-project-view-production-manuf-order"/>
-			  -->
-			</panel>   
+	    	<panel-include view="business-project-production-form" if-module="axelor-business-production" from="axelor-business-production"/>
 		</panel-tabs> 
 		
 		<panel sidebar="true" title="Actions">

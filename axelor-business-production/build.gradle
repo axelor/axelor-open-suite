@@ -1,0 +1,13 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-business-production"
+	version "3.0.0"
+	title "Axelor :: Business Production"
+	
+	removable true
+
+	module "modules:axelor-production"
+	module "modules:axelor-account-organisation"
+}
+

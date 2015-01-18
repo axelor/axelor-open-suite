@@ -123,8 +123,15 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 			
 			for(OperationOrder operationOrder : manufOrder.getOperationOrderList())  {
 				
-				operationOrderWorkflowService.finish(operationOrder);
+				if(operationOrder.getStatusSelect() != IManufOrder.STATUS_FINISHED)  {
 					
+					if (operationOrder.getStatusSelect() != IManufOrder.STATUS_IN_PROGRESS && operationOrder.getStatusSelect() != IManufOrder.STATUS_STANDBY) {
+						operationOrderWorkflowService.start(operationOrder);
+					}
+					
+					operationOrderWorkflowService.finish(operationOrder);
+				}
+				
 			}
 			
 		}

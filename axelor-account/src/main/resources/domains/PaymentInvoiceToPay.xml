@@ -12,12 +12,11 @@
 	<decimal name="totalAmount" title="Total amount" readonly="true"/>
 	<decimal name="remainingAmount" title="Amount remaining before cashing" readonly="true"/>
 	
-	<decimal name="amountToPay" title="Amount charged"/>
 	<many-to-one name="moveLineGenerated" ref="com.axelor.apps.account.db.MoveLine" title="Move Line generated" readonly="true"/>
 	<many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment" readonly="true"/>
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
-<!-- 	<decimal name="amountToPayCurrency" title="Montant imputé en devise"/> -->
-
+	<decimal name="amountToPayCurrency" title="Montant imputé en devise"/>
+	<decimal name="amountToPay" title="Amount charged"/>
 
 	<decimal name="remainingAmountAfterPayment" title="Remaining to pay after cashing" readonly="true">
 		<![CDATA[

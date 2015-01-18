@@ -45,17 +45,6 @@ public class ManufOrderController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
 	
-	public void propagateIsToInvoice (ActionRequest request, ActionResponse response) {
-		
-		ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
-		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
-
-		manufOrderService.propagateIsToInvoice(manufOrderService.find(manufOrder.getId()));
-		
-		response.setReload(true);
-		
-	}
-	
 	
 //	public void copyToConsume (ActionRequest request, ActionResponse response) {
 //

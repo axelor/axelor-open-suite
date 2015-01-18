@@ -9,8 +9,6 @@
   
   	<integer name="importId"/>
   
-  	<boolean name="isToInvoice" title="To invoice ?" initParam="true"/>
-  	
   	<many-to-one name="productionOrder" ref="com.axelor.apps.production.db.ProductionOrder" title="Production order"/>
   	
   	<one-to-many name="operationOrderList" ref="com.axelor.apps.production.db.OperationOrder" mappedBy="manufOrder" title="Operation orders"/>

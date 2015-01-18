@@ -150,8 +150,12 @@ public class PaymentService {
 		List<MoveLine> debitMoveLines = Lists.newArrayList();
 		
 		// Ajout de la facture d'origine
-		debitMoveLines.add(ms.getOrignalInvoiceFromRefund(invoice));
-			
+		MoveLine originalInvoice = ms.getOrignalInvoiceFromRefund(invoice);
+		
+		if(originalInvoice != null)  {
+			debitMoveLines.add(originalInvoice);
+		}	
+		
 		// Récupérer les dûs du tiers pour le même compte que celui de l'avoir
 		List<? extends MoveLine> othersDebitMoveLines = null;
 		if(useOthersInvoiceDue)  {
@@ -159,7 +163,7 @@ public class PaymentService {
 				othersDebitMoveLines = mls.all()
 						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
-						 " AND self.partner = ?4 AND self NOT IN ?5 ORDER BY self.date ASC ",
+						 " AND self.partner = ?4 AND self NOT IN (?5) ORDER BY self.date ASC ",
 						 company, MoveService.STATUS_VALIDATED, true, partner, debitMoveLines).fetch();
 			}
 			else  {
