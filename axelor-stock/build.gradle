@@ -8,7 +8,5 @@ module {
 	removable true
 
 	module "modules:axelor-base"
-//	module "modules:axelor-account"
-//	module "modules:axelor-account-organisation"
 }
 
