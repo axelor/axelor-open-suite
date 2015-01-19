@@ -4,6 +4,10 @@ def modules = new File('modules/abs').listFiles().findAll { dir ->
 	new File(dir, 'build.gradle').exists()
 }
 
+def installedModules = new File('modules/abs').listFiles().findAll { dir ->
+	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('-demo-fr') && !dir.name.endsWith('-l10n-fr')
+}
+
 application {
 
 	name "axelor-erp"
@@ -15,6 +19,12 @@ application {
 	modules.each { dir ->
 		module "modules:$dir.name"
 	}
+	
+	// install all modules
+	installedModules.each { dir ->
+			install "$dir.name"
+	}
+	
 }
 
 tomcat {
@@ -28,4 +38,19 @@ task("dataImport", type: JavaExec) {
 	if(System.getProperty("exec.args") != null) {
 		args System.getProperty("exec.args").split()
 	}
+}
+
+build.doLast{
+	archiveReports.execute()
+}
+
+task archiveReports(type: Zip){
+	from 'modules/abs'
+    include '*/src/main/resources/reports/*'
+	classifier 'reports'
+	eachFile { fileCopyDetails ->
+		fileCopyDetails.path = fileCopyDetails.path.replaceAll(".*/src/main/resources/reports/", '')
+	}
+	includeEmptyDirs = false
+	destinationDir = new File("$buildDir/libs")
 }

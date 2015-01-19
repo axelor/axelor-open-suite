@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.erp;
 
+import com.axelor.app.AppModule;
 import com.axelor.auth.AuthModule;
 import com.axelor.data.Commander;
 import com.axelor.data.Listener;
@@ -82,6 +83,7 @@ public class Main {
 			protected void configure() {
 				install(new JpaModule("persistenceUnit", true, true));
 				install(new AuthModule.Simple());
+				install(new AppModule());
 				bindConstant().annotatedWith(Names.named("axelor.data.config")).to(cmd.getConfig().toString());
 				bindConstant().annotatedWith(Names.named("axelor.data.dir")).to(cmd.getDataDir().toString());
 				bind(String.class).annotatedWith(Names.named("axelor.error.dir")).toProvider(Providers.<String>of(errorDir));
