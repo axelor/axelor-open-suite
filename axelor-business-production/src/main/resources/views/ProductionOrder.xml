@@ -9,7 +9,7 @@
     </action-method>
     
     <action-method name="action-production-order-method-generate-sale-order">
-    	<call class="com.axelor.apps.production.web.ProductionOrderController" method="generateSaleOrder"/>
+    	<call class="com.axelor.apps.production.web.ProductionOrderBusinessController" method="generateSaleOrder"/>
     </action-method>
     
 	

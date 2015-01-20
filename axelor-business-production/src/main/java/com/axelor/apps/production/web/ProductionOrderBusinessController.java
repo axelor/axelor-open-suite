@@ -27,7 +27,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
-public class ProductionOrderController {
+public class ProductionOrderBusinessController {
 
 	@Inject
 	ProductionOrderService productionOrderService;
