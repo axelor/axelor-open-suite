@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.production.db.IOperationOrder;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
@@ -87,13 +88,17 @@ public class OperationOrderServiceImpl extends OperationOrderRepository implemen
 			
 			for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
 				
-				operationOrder.addProdHumanResourceListItem(
-						new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getDuration()));
+				operationOrder.addProdHumanResourceListItem(this.copyProdHumanResource(prodHumanResource));
 				
 			}
 			
 		}
 		
+	}
+	
+	protected ProdHumanResource copyProdHumanResource(ProdHumanResource prodHumanResource)  {
+		
+		return new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getDuration());
 	}
 
 	

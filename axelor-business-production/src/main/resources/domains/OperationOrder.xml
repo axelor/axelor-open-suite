@@ -7,7 +7,7 @@
 
   <entity name="OperationOrder" lang="java">
   	
-  	<boolean name="isToInvoice" title="To invoice ?" initParam="true"/>
+  	<boolean name="isToInvoice" title="To invoice ?"/>
   	
     <one-to-many name="timesheetLineList" ref="com.axelor.apps.organisation.db.TimesheetLine" mappedBy="operationOrder" title="Timesheet lines"/>
     

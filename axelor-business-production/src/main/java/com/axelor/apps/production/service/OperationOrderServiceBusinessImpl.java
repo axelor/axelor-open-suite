@@ -67,8 +67,9 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 				prodResource, 
 				machineProdResource, 
 				IOperationOrder.STATUS_DRAFT, 
-				prodProcessLine,
-				isToInvoice);
+				prodProcessLine);
+		
+		operationOrder.setIsToInvoice(isToInvoice);
 		
 		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
 		
@@ -79,21 +80,13 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 	
 	
 	@Override
-	protected void _createHumanResourceList(OperationOrder operationOrder, ProdResource prodResource)  {
+	protected ProdHumanResource copyProdHumanResource(ProdHumanResource prodHumanResource)  {
 		
-		if(prodResource != null && prodResource.getProdHumanResourceList() != null)  {
+		ProdHumanResource prodHumanResourceCopy = new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getDuration());
+		prodHumanResourceCopy.setEmployee(prodHumanResource.getEmployee());
+		return prodHumanResourceCopy;
 			
-			for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
-				
-				operationOrder.addProdHumanResourceListItem(
-						new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getDuration(), prodHumanResource.getEmployee()));
-				
-			}
-			
-		}
-		
 	}
-
 	
 	
 }

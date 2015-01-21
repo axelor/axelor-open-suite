@@ -62,10 +62,11 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
 
 	public ProductionOrder createProductionOrder(Project businessProject, boolean isToInvoice) throws AxelorException  {
 		
-		return new ProductionOrder(
-				this.getProductionOrderSeq(), 
-				isToInvoice, 
-				businessProject);
+		ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
+		productionOrder.setBusinessProject(businessProject);
+		productionOrder.setIsToInvoice(isToInvoice);
+		
+		return productionOrder;
 		
 	}
 	

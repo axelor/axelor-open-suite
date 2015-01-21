@@ -82,8 +82,9 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
 				product,
 				prodProcess, 
 				plannedStartDateT, 
-				IManufOrder.STATUS_DRAFT,
-				isToInvoice);
+				IManufOrder.STATUS_DRAFT);
+		
+		manufOrder.setIsToInvoice(isToInvoice);
 			
 		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
 			for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
