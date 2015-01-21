@@ -1,4 +1,4 @@
-# 3.0.0 (2015-01-19)
+# 3.0.0 (2015-01-21)
 
 Fully responsive mobile ready views, gradle based build system and much more.
 
