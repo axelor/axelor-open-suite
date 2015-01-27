@@ -27,10 +27,12 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -84,7 +86,7 @@ public abstract class AbstractBatch {
 				unarchived();  throw new RuntimeException(e);
 			}
 		}
-		else { throw new RuntimeException("This batch is not runnable !"); }
+		else { throw new RuntimeException(I18n.get(IExceptionMessage.ABSTRACT_BATCH_1)); }
 		
 	}
 	

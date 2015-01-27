@@ -23,8 +23,10 @@ import javax.persistence.Query;
 
 import com.axelor.apps.base.db.IndicatorGenerator;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 
 public class IndicatorGeneratorService extends IndicatorGeneratorRepository{
@@ -39,7 +41,7 @@ public class IndicatorGeneratorService extends IndicatorGeneratorRepository{
 		String request = indicatorGenerator.getRequest();
 		
 		if(request == null || request.isEmpty())  {
-			log = String.format("Erreur : Aucun requête de paramêtrée pour le générateur d'indicateur %s", indicatorGenerator.getCode());
+			log = String.format(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_1), indicatorGenerator.getCode());
 		}
 		
 		String result = "";
@@ -61,7 +63,7 @@ public class IndicatorGeneratorService extends IndicatorGeneratorRepository{
 		}
 		catch (Exception e) {
 			
-			log += String.format("Erreur : Requête incorrect pour le générateur d'indicateur %s", indicatorGenerator.getCode());
+			log += String.format(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_2), indicatorGenerator.getCode());
 			
 		}
 		

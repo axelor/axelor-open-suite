@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -33,6 +34,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -50,7 +52,7 @@ public class ProductController {
 		if(product.getProductVariantConfig() != null)  {
 			productService.generateProductVariants(product);
 			
-			response.setFlash("Variants generated");
+			response.setFlash(I18n.get(IExceptionMessage.PRODUCT_1));
 			response.setReload(true);
 		}
 	}
@@ -63,7 +65,7 @@ public class ProductController {
 		
 		productService.updateProductPrice(product);
 		
-		response.setFlash("Prices updated");
+		response.setFlash(I18n.get(IExceptionMessage.PRODUCT_2));
 		response.setReload(true);
 	}
 	
@@ -103,7 +105,7 @@ public class ProductController {
 			LOG.debug("Impression des informations sur le partenaire Product Catelog "+currentYear);
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Product Catalog "+currentYear);
+			mapView.put("title", I18n.get(IExceptionMessage.PRODUCT_3)+" "+currentYear);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);		
@@ -136,7 +138,7 @@ public class ProductController {
 			LOG.debug("Impression des informations sur le partenaire Product "+product.getName());
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Product "+product.getCode());
+			mapView.put("title", I18n.get(IExceptionMessage.PRODUCT_4)+" "+product.getCode());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);		

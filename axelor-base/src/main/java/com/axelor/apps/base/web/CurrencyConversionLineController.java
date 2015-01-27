@@ -30,9 +30,11 @@ import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -61,16 +63,16 @@ public class CurrencyConversionLineController {
 		LOG.debug("Currency Conversion Line Id : {}",ccl.getId());
 
 		if (ccl.getId() != null && cclRepo.all().filter("self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3) and self.id != ?4)",ccl.getStartCurrency().getId(),ccl.getEndCurrency().getId(),ccl.getFromDate(),ccl.getId()).count() > 0) {
-			response.setFlash("ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.");
+			response.setFlash(I18n.get(IExceptionMessage.CURRENCY_3));
 //			response.setValue("fromDate", "");
 		}
 		else if(ccl.getId() == null && cclRepo.all().filter("self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3))",ccl.getStartCurrency().getId(),ccl.getEndCurrency().getId(),ccl.getFromDate()).count() > 0) {
-			response.setFlash("ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.");
+			response.setFlash(I18n.get(IExceptionMessage.CURRENCY_3));
 //			response.setValue("fromDate", "");
 		}
 		
 		if(ccl.getFromDate() != null && ccl.getToDate() != null && ccl.getFromDate().isAfter(ccl.getToDate())){
-			response.setFlash("La date de fin doit impérativement être égale ou supérieur à la date de début.");
+			response.setFlash(I18n.get(IExceptionMessage.CURRENCY_4));
 //			response.setValue("fromDate", "");
 		}
 	
@@ -112,11 +114,11 @@ public class CurrencyConversionLineController {
 				
 			}
 			else
-				response.setFlash("ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle");
+				response.setFlash(I18n.get(IExceptionMessage.CURRENCY_3));
 		}
 		else
-			response.setFlash("Both currencies must be saved before currency rate apply");
-		LOG.debug("Set can close for wizard");
+			response.setFlash(I18n.get(IExceptionMessage.CURRENCY_5));
+		LOG.debug("Set can close for wizarBoth currencies must be saved before currency rate applyd");
 		response.setCanClose(true);
 	}
 	
@@ -139,7 +141,7 @@ public class CurrencyConversionLineController {
 			BigDecimal rate = ccs.convert(fromCurrency, toCurrency);
 			
 			if(rate.compareTo(new BigDecimal(-1)) == 0)
-				response.setFlash("Currency conversion webservice not working");
+				response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
 			else {
 				response.setValue("variations", "0");
 				if(context.get("_model").equals("com.axelor.apps.base.db.Wizard"))

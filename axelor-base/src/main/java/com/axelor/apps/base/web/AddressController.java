@@ -34,10 +34,12 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.db.repo.AddressRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -62,7 +64,7 @@ public class AddressController {
 		LOG.debug("validate g = {}", g);
 		LOG.debug("validate g.qasWsdlUrl = {}", g.getQasWsdlUrl());
 
-		String msg = Beans.get(AddressService.class).check(g.getQasWsdlUrl())? g.getQasWsdlUrl()+" Ok":"Service indisponible, veuillez contacter votre adminstrateur";
+		String msg = Beans.get(AddressService.class).check(g.getQasWsdlUrl())? g.getQasWsdlUrl()+" "+I18n.get(IExceptionMessage.ADDRESS_1):I18n.get(IExceptionMessage.ADDRESS_2);
 		response.setFlash(msg);		
 	}
 
@@ -128,7 +130,7 @@ public class AddressController {
 
 		} else if (verifyLevel != null && verifyLevel.value().equals("None")) {
 			LOG.debug("address None");
-			response.setFlash("Aucune addresse correspondante dans la base QAS");
+			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_3));
 		} 
 	}
 
@@ -172,7 +174,7 @@ public class AddressController {
 
 		} 
 		else 
-			response.setFlash("NA");
+			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_4));
 	}
 
 	public void export(ActionRequest request,ActionResponse response) throws IOException{
@@ -206,7 +208,7 @@ public class AddressController {
 			}
 		}
 		else
-			response.setFlash(String.format("<B>%s</B> not found",qString));
+			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),qString));
 	}
 
 	public void directionsMap(ActionRequest request, ActionResponse response)  {
@@ -235,16 +237,16 @@ public class AddressController {
 						response.setValue("longit", result.get("longitude"));
 					}
 				}
-				else response.setFlash(String.format("<B>%s</B> not found",aString));
+				else response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),aString));
 			}
 			else 
-				response.setFlash("Feature currently not available with Open Street Maps.");
+				response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
 		} else 
-			response.setFlash("Current user's partner delivery address not set");
+			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
 	}
 
 	public void checkMapApi(ActionRequest request, ActionResponse response)  {
-		response.setFlash("Not implemented yet!");
+		response.setFlash(I18n.get(IExceptionMessage.NOT_IMPLEMENTED_METHOD));
 	}
 
 }

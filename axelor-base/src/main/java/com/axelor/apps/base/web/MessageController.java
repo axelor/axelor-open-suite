@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.message.db.Message;
@@ -32,6 +33,7 @@ import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -60,7 +62,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 			response.setView(mapView);	
 		}
 		else
-			response.setFlash("Error in print. Please check report configuration and print setting.");
+			response.setFlash(I18n.get(IExceptionMessage.MESSAGE_1));
 	}
 	
 	public void print(ActionRequest request, ActionResponse response) {
@@ -127,7 +129,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 				response.setFlash(urlNotExist);
 			}
 		}else{
-			response.setFlash("Please select the Message(s) to print.");
+			response.setFlash(I18n.get(IExceptionMessage.MESSAGE_2));
 		}	
 	}
 	

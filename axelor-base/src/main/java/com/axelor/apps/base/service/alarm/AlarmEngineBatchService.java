@@ -29,10 +29,12 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.repo.AlarmRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 
 public class AlarmEngineBatchService extends AbstractBatch {
@@ -69,7 +71,7 @@ public class AlarmEngineBatchService extends AbstractBatch {
 
 			} catch (Exception e) {
 
-				TraceBackService.trace(new Exception(String.format("Moteur d'alarme %s", alarmEngine.getCode()), e), "", batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_1), alarmEngine.getCode()), e), "", batch.getId());
 				incrementAnomaly();
 
 			} finally {
@@ -85,9 +87,9 @@ public class AlarmEngineBatchService extends AbstractBatch {
 	@Override
 	protected void stop() {
 
-		String comment = "Compte rendu de la relève des alarmes :\n";
-		comment += String.format("\t* %s objet(s) en alarme(s)\n", batch.getDone() );
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly() );
+		String comment = I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_2);
+		comment += String.format(I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_3), batch.getDone() );
+		comment += String.format(I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly() );
 		
 		super.stop();
 		addComment(comment);

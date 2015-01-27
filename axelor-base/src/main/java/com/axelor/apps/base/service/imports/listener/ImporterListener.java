@@ -20,11 +20,13 @@ package com.axelor.apps.base.service.imports.listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.data.Listener;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 
 public class ImporterListener implements Listener {
 
@@ -41,8 +43,8 @@ public class ImporterListener implements Listener {
 	public String getImportLog(){
 		
 		String log = importLog;
-		log += "\nTotal : "+ totalRecord + " - Réussi : " + successRecord + " - Non null : " + notNull;
-		log += "\nAnomalies générées : " + anomaly;
+		log += I18n.get(IExceptionMessage.IMPORTER_LISTERNER_1)+ totalRecord + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_2)  + successRecord + " - Non null : " + notNull;
+		log += I18n.get(IExceptionMessage.IMPORTER_LISTERNER_3) + anomaly;
 		
 		return log;
 	}
@@ -60,7 +62,7 @@ public class ImporterListener implements Listener {
 		anomaly++;
 		importLog += "\n"+e;
 		TraceBackService.trace( new AxelorException (
-				String.format( "La ligne ne peut être importée (import : %s)", name ), 
+				String.format(I18n.get(IExceptionMessage.IMPORTER_LISTERNER_4), name ), 
 				e, IException.FUNCTIONNAL )
 		, IException.IMPORT );
 	}

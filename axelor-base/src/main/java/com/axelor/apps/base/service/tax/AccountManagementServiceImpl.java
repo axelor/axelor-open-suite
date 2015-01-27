@@ -172,7 +172,7 @@ public class AccountManagementServiceImpl extends AccountManagementRepository im
 			return taxLine;
 		}
 
-		throw new AxelorException(String.format("Aucune taxe trouvée pour le produit %s", product.getCode()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2), product.getCode()), IException.CONFIGURATION_ERROR);
 		
 	}
 	

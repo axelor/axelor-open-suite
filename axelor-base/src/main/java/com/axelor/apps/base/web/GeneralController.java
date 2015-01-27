@@ -30,9 +30,11 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.db.JPA;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
@@ -87,26 +89,26 @@ public class GeneralController {
 			LOG.debug("Duplicate record joinList: {}",fieldList);
 			String ids =findDuplicateRecords(fieldList,model);
 			if(ids.isEmpty())
-				response.setFlash("No duplicate records found");
+				response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
 			else
 				response.setView(ActionView
-						  .define("Duplicate records")
+						  .define(I18n.get(IExceptionMessage.GENERAL_2))
 						  .model(model)
 						  .domain("self.id in ("+ids+")")
 						  .map());
 		}
 		else 
-			response.setFlash("Please select key fields to check duplicate");
+			response.setFlash(I18n.get(IExceptionMessage.GENERAL_3));
 	}
 	
 	public void exportObjects(ActionRequest request, ActionResponse response){
 		MetaFile metaFile = eos.exportObject();
 		if(metaFile == null){
-			response.setFlash("Attachment directory OR Application source does not exist");
+			response.setFlash(I18n.get(IExceptionMessage.GENERAL_4));
 		}
 		else {
 			response.setView(ActionView
-					  .define("Export Object")
+					  .define(I18n.get(IExceptionMessage.GENERAL_5))
 					  .model("com.axelor.meta.db.MetaFile")
 					  .add("form", "meta-files-form")
 					  .add("grid", "meta-files-grid")

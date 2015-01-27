@@ -18,8 +18,10 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Querie;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.querie.QuerieService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -33,7 +35,7 @@ public class QuerieController {
 		
 		try {
 			qs.checkQuerie(request.getContext().asType(Querie.class));
-			response.setFlash("Valid query.");
+			response.setFlash(I18n.get(IExceptionMessage.QUERIE_3));
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
 	}

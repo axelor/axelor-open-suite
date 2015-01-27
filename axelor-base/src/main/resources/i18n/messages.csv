@@ -3,6 +3,8 @@
 "%M : Month",,,"resources/views/Sequence.xml:43"
 "%WY : Week number",,,"resources/views/Sequence.xml:45"
 "%Y : Year",,,"resources/views/Sequence.xml:42"
+"%s : Le chemin vers le template Birt est incorrect",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:119"
+"%s :\n Erreur : Fichier de mapping inacessible.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:106"
 "&",,,"resources/views/Selects.xml:211
 resources/views/Selects.xml:219
 resources/views/Selects.xml:223
@@ -13,6 +15,7 @@ resources/views/Selects.xml:230"
 "(LE)",,,"resources/views/Selects.xml:194"
 "(LES)",,,"resources/views/Selects.xml:195"
 "(LOS)",,,"resources/views/Selects.xml:196"
+"- Réussi :",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:112"
 "0",,,"resources/views/Selects.xml:10
 resources/views/Selects.xml:19
 resources/views/Selects.xml:33
@@ -214,6 +217,7 @@ resources/views/Selects.xml:66"
 "97",,,"resources/views/Selects.xml:154"
 "98",,,"resources/views/Selects.xml:155"
 "99",,,"resources/views/Selects.xml:156"
+"<B>%s</B> not found",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:151"
 "<a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' />",,,"resources/views/Partner.xml:222
 resources/views/Partner.xml:68"
 "<a class='fa fa-google-plus' href='http://www.google.com' target='_blank' />",,,"resources/views/Partner.xml:221
@@ -227,6 +231,7 @@ resources/views/Partner.xml:71"
 "=",,,"resources/views/UnitConversion.xml:16"
 "A product of type service can't be procured from stock.",,,"resources/views/Product.xml:219"
 "ARTMIN",,,"resources/domains/Canton.xml:12"
+"ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:36"
 "Account Number",,,"resources/domains/BankDetails.xml:18"
 "Account config",,,"resources/views/Company.xml:24
 resources/views/Company.xml:52"
@@ -250,6 +255,7 @@ resources/views/Batch.xml:32"
 "Accounts/Partners",,,"resources/views/Menu.xml:39"
 "Action",,,"resources/domains/BaseBatch.xml:12
 resources/domains/TemplateRuleLine.xml:13"
+"Action %s inconnu pour le traitement %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:100"
 "Actions",,,"resources/views/PartnerList.xml:31
 resources/views/Routing.xml:22"
 "Activate Logs ?",,,"resources/domains/General.xml:11"
@@ -329,8 +335,14 @@ resources/views/Batch.xml:53"
 resources/views/Partner.xml:140
 resources/views/Partner.xml:254"
 "Attached files",,,"resources/views/Template.xml:24"
+"Attachment directory OR Application source does not exist",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:167"
 "Attributes",,,"resources/views/Country.xml:14"
+"Aucun Bic correspondant pour l'établissement bancaire.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:159"
+"Aucune addresse correspondante dans la base QAS",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:149"
 "Aucune conversion trouvée de la devise '%s' à la devise '%s' à la date du %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:34"
+"Aucune période trouvée ou celle-ci clôturée pour la société: %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:65"
+"Aucune séquence configurée pour les tiers",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:179"
+"Aucune taxe trouvée pour le produit %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:59"
 "August",,,"resources/views/Selects.xml:285"
 "Authority Partner",,,"resources/domains/Territory.xml:15"
 "Auto sale tracking Nbr. order",,,"resources/domains/TrackingNumberConfiguration.xml:19"
@@ -362,6 +374,8 @@ resources/views/Menu.xml:494
 resources/views/Menu.xml:497"
 "Based on",,,"resources/domains/PriceList.xml:20"
 "Batch",,,"resources/views/Batch.xml:18"
+"Batch %s inconnu",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:101"
+"Batch d'alarme",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:95"
 "Batches",,,"resources/domains/Partner.xml:60
 resources/views/AlarmEngineBatch.xml:24
 resources/views/Batch.xml:7
@@ -369,6 +383,7 @@ resources/views/Menu.xml:491"
 "Batchs",,,"resources/domains/AlarmEngineBatch.xml:15
 resources/domains/BaseBatch.xml:17"
 "Be aware that the address is already in use on other documents, do you still want to modify it ?",,,"resources/views/Address.xml:77"
+"Bean is not an instance of",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:142"
 "Beverage",,,"resources/views/Selects.xml:223"
 "Bill of materials",,,"resources/views/Product.xml:293"
 "Binding file",,,"resources/domains/ImportConfiguration.xml:12"
@@ -403,6 +418,7 @@ resources/domains/Blocking.xml:33
 resources/views/StopReason.xml:9"
 "Blocking reasons",,,"resources/views/StopReason.xml:5"
 "Blockings",,,"resources/views/Blocking.xml:6"
+"Both currencies must be saved before currency rate apply",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:38"
 "Branch Name",,,"resources/domains/Bic.xml:12"
 "Buy",,,"resources/views/Selects.xml:242"
 "COG",,,"resources/domains/Country.xml:13"
@@ -559,6 +575,7 @@ resources/views/PrintingSetting.xml:14"
 resources/views/PrintingSetting.xml:11"
 "Company phoneBook",,,"resources/views/Partner.xml:9"
 "Complement",,,"resources/domains/PickListEntry.xml:11"
+"Compte rendu de la relève des alarmes :\n",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:92"
 "Compute payers quality",,,"resources/views/General.xml:42"
 "Configuration",,,"resources/views/AlarmEngineBatch.xml:20
 resources/views/Menu.xml:207
@@ -636,7 +653,9 @@ resources/views/Currency.xml:12"
 "Currency conversion line",,,"resources/views/CurrencyConversionLine.xml:18"
 "Currency conversion lines",,,"resources/views/CurrencyConversionLine.xml:6"
 "Currency conversion table",,,"resources/domains/General.xml:28"
+"Currency conversion webservice not working",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:39"
 "Current Products",,,"resources/views/Product.xml:266"
+"Current user's partner delivery address not set",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:153"
 "Customer Refund",,,"resources/views/Selects.xml:348"
 "Customer Type",,,"resources/domains/Partner.xml:23"
 "Customer invoice",,,"resources/views/Selects.xml:346"
@@ -722,6 +741,7 @@ resources/views/Selects.xml:352"
 resources/views/Selects.xml:304
 resources/views/Selects.xml:329
 resources/views/Selects.xml:424"
+"Duplicate records",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:165"
 "Duration",,,"resources/domains/Batch.xml:18"
 "EAN13 Code",,,"resources/domains/Product.xml:12"
 "ERP Administration",,,"resources/views/Menu.xml:238"
@@ -739,6 +759,13 @@ resources/views/Selects.xml:266"
 "Enterprise Partner",,,"resources/domains/Site.xml:10"
 "Entertainment",,,"resources/views/Selects.xml:220"
 "Equal",,,"resources/views/Selects.xml:447"
+"Erreur : Aucun requête de paramêtrée pour le générateur d'indicateur %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:83"
+"Erreur : Requête incorrect pour le générateur d'indicateur %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:84"
+"Erreur lors de l'écriture du fichier",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:78"
+"Erreur lors de l'édition du fichier : \n %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:120"
+"Error : Incorrect query for the querie %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:126"
+"Error : There is no query set for the querie %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:125"
+"Error in print. Please check report configuration and print setting.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:173"
 "Every",,,"resources/views/Scheduler.xml:21
 resources/views/Scheduler.xml:25
 resources/views/Scheduler.xml:41
@@ -758,7 +785,8 @@ resources/views/Product.xml:284"
 resources/views/IndicatorGeneratorGrouping.xml:29"
 "Export Address",,,"resources/views/AddressExport.xml:11"
 "Export Date",,,"resources/domains/AddressExport.xml:10"
-"Export Object",,,"resources/views/General.xml:25"
+"Export Object",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:168
+resources/views/General.xml:25"
 "Export addresses",,,"resources/views/AddressExport.xml:6"
 "Export indicators",,,"resources/views/IndicatorGeneratorGrouping.xml:31"
 "External ?",,,"resources/domains/AlarmEngine.xml:17"
@@ -767,6 +795,7 @@ resources/views/IndicatorGeneratorGrouping.xml:29"
 "Family Code",,,"resources/domains/ProductFamily.xml:9"
 "Family Name",,,"resources/domains/ProductFamily.xml:10"
 "Fax",,,"resources/domains/Partner.xml:41"
+"Feature currently not available with Open Street Maps.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:152"
 "February",,,"resources/views/Selects.xml:279"
 "Field",,,"resources/domains/RoutingActionCreateLine.xml:12
 resources/domains/RoutingRule.xml:12"
@@ -931,7 +960,10 @@ resources/views/Keyword.xml:11"
 resources/views/Menu.xml:433
 resources/views/Menu.xml:436
 resources/views/Site.xml:23"
+"L'IBAN saisi est invalide. <br> Soit l'IBAN ne respecte pas la norme, soit le format de saisie n'est pas correct. L'IBAN doit être saisi sans espaces tel que présenté ci-dessous: <br> FR0000000000000000000000000",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:158"
 "LIFO",,,"resources/views/Selects.xml:457"
+"La date de fin doit impérativement être égale ou supérieur à la date de début.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:37"
+"La ligne ne peut être importée (import : %s)",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:114"
 "Label",,,"resources/domains/AlarmMessage.xml:8
 resources/domains/PaymentMode.xml:11
 resources/domains/Scheduler.xml:11
@@ -996,6 +1028,7 @@ resources/views/Selects.xml:545"
 "Month",,,"resources/domains/Scheduler.xml:32"
 "Monthly",,,"resources/domains/Scheduler.xml:14
 resources/views/Scheduler.xml:39"
+"Moteur d'alarme %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:91"
 "Mother company",,,"resources/domains/Partner.xml:29"
 "Move",,,"resources/views/Selects.xml:345"
 "Move exports",,,"resources/views/Batch.xml:110"
@@ -1029,6 +1062,7 @@ resources/views/ClientView.xml:20"
 resources/views/ClientView.xml:6"
 "My tickets",,,"resources/views/ClientView.xml:16
 resources/views/ClientView.xml:35"
+"NA",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:150"
 "Name",,,"resources/domains/Agency.xml:11
 resources/domains/BirtTemplate.xml:11
 resources/domains/BirtTemplateParameter.xml:10
@@ -1082,9 +1116,11 @@ resources/views/General.xml:9"
 "No",,,"resources/views/Selects.xml:169
 resources/views/Selects.xml:175
 resources/views/Selects.xml:187"
+"No duplicate records found",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:164"
 "Non-profit",,,"resources/views/Selects.xml:228"
 "None",,,"resources/views/Selects.xml:253"
 "Not contains",,,"resources/views/Selects.xml:446"
+"Not implemented yet!",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:28"
 "Notes",,,"resources/domains/Company.xml:18
 resources/views/Company.xml:32
 resources/views/Company.xml:37
@@ -1093,6 +1129,7 @@ resources/views/Partner.xml:260"
 "Notification",,,"resources/views/Selects.xml:405"
 "November",,,"resources/views/Selects.xml:288"
 "N° and Street label",,,"resources/domains/Address.xml:13"
+"OK",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:147"
 "OSM",,,"resources/views/Selects.xml:452"
 "Object",,,"resources/domains/RoutingActionCreate.xml:10"
 "Obsolete Products",,,"resources/views/Product.xml:287"
@@ -1213,6 +1250,8 @@ resources/views/General.xml:109
 resources/views/General.xml:110"
 "Please input first character as capital and other as lower case",,,"resources/views/General.xml:101"
 "Please select active company",,,"resources/views/User.xml:48"
+"Please select key fields to check duplicate",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:166"
+"Please select the Message(s) to print.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:174"
 "Please, enter date of next execution.",,,"resources/views/SchedulerInstance.xml:29"
 "Postal addresses",,,"resources/views/Partner.xml:187
 resources/views/Partner.xml:83"
@@ -1227,6 +1266,7 @@ resources/views/PriceListLine.xml:7"
 "Price lists",,,"resources/views/Menu.xml:149
 resources/views/Menu.xml:152
 resources/views/PriceList.xml:7"
+"Prices updated",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:185"
 "Print",,,"resources/views/Message.xml:9"
 "Print Informations",,,"resources/views/Partner.xml:213
 resources/views/Partner.xml:47"
@@ -1238,13 +1278,15 @@ resources/views/PrintingSetting.xml:6"
 "Procurement settings",,,"resources/views/Product.xml:85"
 "Produce",,,"resources/views/Selects.xml:243
 resources/views/Selects.xml:256"
-"Product",,,"resources/domains/AccountManagement.xml:14
+"Product",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:187
+resources/domains/AccountManagement.xml:14
 resources/domains/PriceListLine.xml:10
 resources/domains/SupplierCatalog.xml:10
 resources/domains/TrackingNumber.xml:11
 resources/views/AccountManagement.xml:56
 resources/views/Product.xml:28
 resources/views/Selects.xml:247"
+"Product Catalog",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:186"
 "Product Family",,,"resources/domains/ProductCategory.xml:12"
 "Product categories",,,"resources/views/Menu.xml:210
 resources/views/Menu.xml:213
@@ -1413,9 +1455,11 @@ resources/views/Message.xml:38"
 "Replace",,,"resources/views/Selects.xml:475"
 "Replacement Tax",,,"resources/domains/TaxEquiv.xml:12"
 "Reports to",,,"resources/domains/Partner.xml:64"
+"Requête exécutée",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:85"
 "Reset",,,"resources/views/Sequence.xml:24
 resources/views/Sequence.xml:8"
 "Result",,,"resources/domains/IndicatorGeneratorGrouping.xml:11"
+"Resultat exporté",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:79"
 "Retaile",,,"resources/views/Selects.xml:229"
 "Rhythm",,,"resources/domains/Scheduler.xml:17
 resources/domains/Scheduler.xml:19
@@ -1506,6 +1550,7 @@ resources/views/Menu.xml:426
 resources/views/Sequence.xml:6"
 "Service",,,"resources/views/Selects.xml:237"
 "Service Products",,,"resources/views/Product.xml:272"
+"Service indisponible, veuillez contacter votre adminstrateur",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:148"
 "Services",,,"resources/views/Selects.xml:216"
 "Settings",,,"resources/views/Partner.xml:137
 resources/views/Partner.xml:251"
@@ -1574,7 +1619,7 @@ resources/views/Tax.xml:11
 resources/views/Tax.xml:6"
 "Tax N°",,,"resources/domains/Partner.xml:70"
 "Tax active version",,,"resources/domains/Tax.xml:13"
-"Tax configuration is missing for Product: %s (company: %s)",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:54"
+"Tax configuration is missing for Product: %s (company: %s)",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:58"
 "Tax equivalence",,,"resources/views/TaxEquiv.xml:11"
 "Tax equivalences",,,"resources/domains/FiscalPosition.xml:14"
 "Tax rate",,,"resources/views/Tax.xml:31"
@@ -1625,6 +1670,7 @@ resources/views/Territory.xml:6"
 "The product pulled-off date must be greater than the launch date.",,,"resources/views/Product.xml:239"
 "The quantity by lot must be greater than 0",,,"resources/views/TrackingNumberConfiguration.xml:71"
 "The tags below can be used as a prefix or a suffix :",,,"resources/views/Sequence.xml:41"
+"This batch is not runnable !",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:71"
 "Thursday",,,"resources/domains/Scheduler.xml:23
 resources/views/Selects.xml:548"
 "Ticket",,,"resources/views/Selects.xml:368"
@@ -1696,6 +1742,7 @@ resources/views/Menu.xml:311"
 "Users/Employees",,,"resources/domains/Team.xml:13"
 "Utilities",,,"resources/views/Selects.xml:219"
 "Valid from",,,"resources/domains/PriceList.xml:10"
+"Valid query.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:127"
 "Valid to",,,"resources/domains/PriceList.xml:11"
 "Validate",,,"resources/views/Address.xml:40"
 "Validated",,,"resources/views/Selects.xml:294
@@ -1706,17 +1753,21 @@ resources/views/Selects.xml:426"
 resources/domains/RoutingActionCreateLine.xml:14
 resources/domains/RoutingRule.xml:14"
 "Variants",,,"resources/views/Product.xml:116"
+"Variants generated",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:184"
 "Variation",,,"resources/domains/CurrencyConversionLine.xml:17
 resources/views/CurrencyConversionLine.xml:47"
-"Veuillez configurer les conversions d'unités de '%s' à '%s'.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:43"
-"Veuillez configurer les conversions d'unités.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:44"
+"Version",,,"resources/domains/Product.xml:57"
+"Veuillez configurer les conversions d'unités de '%s' à '%s'.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:47"
+"Veuillez configurer les conversions d'unités.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:48"
+"Veuillez configurer une version de taxe pour la taxe %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:137"
+"Veuillez saisir une périodicité pour le planificateur %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:132"
 "View Accounts",,,"resources/views/Menu.xml:581"
 "View Contacts",,,"resources/views/Menu.xml:583"
 "View Products",,,"resources/views/ProductCategory.xml:15
 resources/views/ProductFamily.xml:13"
 "View map",,,"resources/views/Address.xml:26"
-"WARNING : Please close the current conversion period before creating new one",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:46"
-"WARNING : To Date must be after or equals to From Date",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:47"
+"WARNING : Please close the current conversion period before creating new one",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:50"
+"WARNING : To Date must be after or equals to From Date",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:51"
 "Warranty ?",,,"resources/domains/Product.xml:43"
 "Warranty expiration date",,,"resources/domains/TrackingNumber.xml:12"
 "Warranty length (in months)",,,"resources/domains/Product.xml:45"
@@ -1747,6 +1798,12 @@ resources/views/Selects.xml:186"
 "Zip On Right ?",,,"resources/domains/Commune.xml:18"
 "Zip code",,,"resources/domains/Commune.xml:17"
 "Zip/City",,,"resources/domains/Address.xml:15"
+"\nAnomalies générées :",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:113"
+"\nErreur : Aucun chemin d'export de paramétré",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:76"
+"\nErreur : Aucun code de paramétré",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:77"
+"\nTotal :",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:111"
+"\t* %s anomalie(s)",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:94"
+"\t* %s objet(s) en alarme(s)\n",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:93"
 "cost price",,,"resources/views/Selects.xml:556"
 "day(s)",,,"resources/views/Scheduler.xml:22"
 "e.g. Building A, Entry 2, 2nd Floor, Door 2E",,,"resources/views/Address.xml:19"

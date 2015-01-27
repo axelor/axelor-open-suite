@@ -29,11 +29,13 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.tool.template.TemplateMaker;
 
 public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
@@ -75,7 +77,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 			LOG.debug("URL : {}", url);
 			String urlNotExist = URLService.notExist(url.toString());
 			if (urlNotExist != null){
-				throw new AxelorException(String.format("%s : Le chemin vers le template Birt est incorrect"), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_1)), IException.CONFIGURATION_ERROR);
 			}
 			result.put("url",url);
 			final int random = new Random().nextInt();
@@ -85,7 +87,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 			try {
 				URLService.fileDownload(url, filePath, fileName);
 			} catch (IOException e) {
-				throw new AxelorException(String.format("Erreur lors de l'édition du fichier : \n %s", e), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2), e), IException.CONFIGURATION_ERROR);
 			}
 			
 			result.put("filePath",filePath+fileName);

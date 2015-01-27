@@ -30,9 +30,11 @@ import com.axelor.apps.base.db.SchedulerInstance;
 import com.axelor.apps.base.db.SchedulerInstanceHistory;
 import com.axelor.apps.base.db.repo.SchedulerInstanceRepository;
 import com.axelor.apps.base.db.repo.SchedulerRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -165,7 +167,7 @@ public class SchedulerService extends SchedulerRepository{
 		else if(scheduler.getDaily())
 			return this.getDailyComputeDate(scheduler,date);
 		else
-			throw new AxelorException(String.format("Veuillez saisir une périodicité pour le planificateur %s",scheduler.getName()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SCHEDULER_1),scheduler.getName()), IException.MISSING_FIELD);
 	}
 	
 	

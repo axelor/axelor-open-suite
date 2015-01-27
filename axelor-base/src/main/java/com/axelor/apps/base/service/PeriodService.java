@@ -24,8 +24,10 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class PeriodService extends PeriodRepository  {
@@ -46,7 +48,7 @@ public class PeriodService extends PeriodRepository  {
 	
 		Period period = this.getPeriod(date, company);
 		if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
-			throw new AxelorException(String.format("Aucune période trouvée ou celle-ci clôturée pour la société %s", company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_1), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		LOG.debug("Period : {}",period);	
 		return period;
@@ -64,7 +66,7 @@ public class PeriodService extends PeriodRepository  {
 		Period nextPeriod = all().filter("self.fromDate > ?1 AND self.company = ?2 AND self.statusSelect = ?3", period.getToDate(), period.getCompany(), PeriodRepository.STATUS_OPENED).fetchOne();
 		
 		if (nextPeriod == null || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
-			throw new AxelorException(String.format("Aucune période trouvée ou celle-ci clôturée pour la société %s", period.getCompany().getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_1), period.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		LOG.debug("Next Period : {}",nextPeriod);	
 		return period;

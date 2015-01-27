@@ -18,8 +18,10 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.IndicatorGenerator;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.IndicatorGeneratorService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -36,7 +38,7 @@ public class IndicatorGeneratorController {
 		try {
 			indicatorGeneratorService.run(indicatorGeneratorService.find(indicatorGenerator.getId()));
 			response.setReload(true);
-			response.setFlash("Requête exécutée");
+			response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
 	}

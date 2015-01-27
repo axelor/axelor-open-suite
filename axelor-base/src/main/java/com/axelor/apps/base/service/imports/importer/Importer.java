@@ -33,11 +33,13 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
@@ -87,7 +89,7 @@ public abstract class Importer {
 
 		if (!bind.exists() || !data.exists()) {
 			throw new AxelorException(String.format(
-					"%s :\n Erreur : Fichier de mapping inacessible.",
+					I18n.get(IExceptionMessage.IMPORTER_1),
 					GeneralService.getGeneral().getExceptionDefaultMsg()),
 					IException.CONFIGURATION_ERROR);
 		}

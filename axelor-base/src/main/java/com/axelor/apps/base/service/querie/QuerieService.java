@@ -25,11 +25,13 @@ import java.util.Set;
 import com.axelor.apps.base.db.IQuerie;
 import com.axelor.apps.base.db.Querie;
 import com.axelor.apps.base.db.repo.QuerieRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaModel;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -54,7 +56,7 @@ public class QuerieService extends QuerieRepository{
 		String filter = querie.getQuery();
 	
 		if(filter == null || filter.isEmpty())  {
-			throw new AxelorException(String.format("Error : There is no query set for the querie %s", querie.getId()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.QUERIE_1), querie.getId()), IException.MISSING_FIELD);
 		}
 		
 		Class<?> klass = this.getClass(querie.getMetaModel());
@@ -68,7 +70,7 @@ public class QuerieService extends QuerieRepository{
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			throw new AxelorException(String.format("Error : Incorrect query for the querie %s", querie.getId()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.QUERIE_2), querie.getId()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return result;

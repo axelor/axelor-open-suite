@@ -22,9 +22,11 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.AlarmEngineBatch;
 import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.alarm.AlarmEngineBatchService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -52,7 +54,7 @@ public class AlarmEngineBatchController {
 		AlarmEngineBatch alarmEngineBatch = alarmEngineBatchRepo.findByCode("code");
 		
 		if (alarmEngineBatch == null) {
-			TraceBackService.trace(new AxelorException("Batch d'alarme "+request.getContext().get("code"), 3));
+			TraceBackService.trace(new AxelorException(I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_5)+" "+request.getContext().get("code"), 3));
 		}
 		else {
 			Map<String,Object> mapData = new HashMap<String,Object>();

@@ -24,8 +24,11 @@ import java.util.List;
 import com.axelor.apps.base.db.IndicatorGenerator;
 import com.axelor.apps.base.db.IndicatorGeneratorGrouping;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorGroupingRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -68,13 +71,13 @@ public class IndicatorGeneratorGroupingService extends IndicatorGeneratorGroupin
 		
 		if(indicatorGeneratorGrouping.getPath() == null || indicatorGeneratorGrouping.getPath().isEmpty())  {
 			
-			log += String.format("\nErreur : Aucun chemin d'export de paramétré ");
+			log += I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_1);
 
 		}
 		
 		if(indicatorGeneratorGrouping.getCode() == null || indicatorGeneratorGrouping.getCode().isEmpty())  {
 			
-			log += String.format("\nErreur : Aucun code de paramétré ");
+			log += I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_2);
 
 		}
 		
@@ -92,7 +95,7 @@ public class IndicatorGeneratorGroupingService extends IndicatorGeneratorGroupin
 		try {
 			CsvTool.csvWriter(indicatorGeneratorGrouping.getPath(), indicatorGeneratorGrouping.getCode()+".csv", ';',null, resultList);
 		} catch (IOException e) {
-			log += String.format("Erreur lors de l'écriture du fichier");
+			log += I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_3);
 		}
 		
 		if(!log.isEmpty() && log.length() != 0)  {

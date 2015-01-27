@@ -25,9 +25,11 @@ import java.util.Map;
 import com.axelor.apps.base.db.TemplateRule;
 import com.axelor.apps.base.db.TemplateRuleLine;
 import com.axelor.apps.base.db.repo.TemplateRuleRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateService;
 import com.axelor.db.Model;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.ActionHandler;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
@@ -63,7 +65,7 @@ public class TemplateRuleService extends TemplateRuleRepository{
 
 		Class<?> klass = this.getTemplateClass(templateRule.getMetaModel());
 		if (!klass.isInstance(bean)) {
-			throw new IllegalArgumentException("Bean is not an instance of " + klass.getSimpleName());
+			throw new IllegalArgumentException(I18n.get(IExceptionMessage.TEMPLATE_RULE_1) + klass.getSimpleName());
 		}
 
 		List<TemplateRuleLine> lines = _sortRuleLine(templateRule.getTemplateRuleLineList());
