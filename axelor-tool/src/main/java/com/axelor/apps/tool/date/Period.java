@@ -20,6 +20,8 @@ package com.axelor.apps.tool.date;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
 
+import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 /**
@@ -166,7 +168,7 @@ public class Period {
 	
 	@Override
 	public String toString() {
-		return this.from + " - " + this.to + "(Années sur 360 jours :" + this.days360 + ")";
+		return this.from + " - " + this.to + "("+I18n.get(IExceptionMessage.PERIOD_1)+" :" + this.days360 + ")";
 	}
 	
 }

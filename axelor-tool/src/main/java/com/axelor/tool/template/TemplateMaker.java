@@ -37,10 +37,12 @@ import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.StringRenderer;
 import org.stringtemplate.v4.misc.ObjectModelAdaptor;
 
+import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
@@ -114,7 +116,7 @@ public class TemplateMaker {
 	
 	public void setTemplate(File file) throws FileNotFoundException {
 		if (!file.isFile()) {
-			throw new FileNotFoundException("No such template: " + file.getName());
+			throw new FileNotFoundException(I18n.get(IExceptionMessage.TEMPLATE_MAKER_1)+": " + file.getName());
 		}
 		
 		String text;
@@ -147,7 +149,7 @@ public class TemplateMaker {
 	
 	public String make() {
 		if (Strings.isNullOrEmpty(this.template)) {
-			throw new IllegalArgumentException("Templating can not be empty");
+			throw new IllegalArgumentException(I18n.get(IExceptionMessage.TEMPLATE_MAKER_2));
 		}
 		
 		ST st = new ST(stGroup, template);

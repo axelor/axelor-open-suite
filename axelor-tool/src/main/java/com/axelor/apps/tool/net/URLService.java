@@ -29,7 +29,9 @@ import java.net.URLConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.apps.tool.file.FileTool;
+import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 
 public final class URLService {
@@ -49,7 +51,7 @@ public final class URLService {
 	public static String notExist(String url) {
 
 		if(Strings.isNullOrEmpty(url)) {
-			return "Can not opening the connection to a empty URL.";
+			return I18n.get(IExceptionMessage.URL_SERVICE_1);
 		}
 
 		try {
@@ -59,11 +61,11 @@ public final class URLService {
 		}
 		catch(java.net.MalformedURLException ex) {
 			ex.printStackTrace();
-			return "Url " + url + " is malformed.";
+			return String.format(I18n.get(IExceptionMessage.URL_SERVICE_2), url);
 		}
 		catch(java.io.IOException ex) {
 			ex.printStackTrace();
-			return "An error occurs while opening the connection. Please verify the following URL : " + url;
+			return String.format(I18n.get(IExceptionMessage.URL_SERVICE_3), url);
 		}
 		
 	}
