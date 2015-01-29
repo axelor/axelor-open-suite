@@ -18,7 +18,9 @@
 package com.axelor.apps.message.web;
 
 import com.axelor.apps.message.db.MailAccount;
+import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MailAccountService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -31,11 +33,11 @@ public class MailAccountController {
 		String validationError = mailAccountService.validateSmtpMailAccount(account);
 		if(validationError == null){
 			response.setValue("isValid",new Boolean(true));
-			response.setFlash("Connection successful");
+			response.setFlash(I18n.get(IExceptionMessage.MAIL_ACCOUNT_3));
 			response.setReadonly("loginPanel", true);
 			response.setReadonly("configPanel",true);
 		}else{
-			response.setFlash("Provided settings are wrong, please modify them and try again<br/>Error:"+validationError);
+			response.setFlash(I18n.get(IExceptionMessage.MAIL_ACCOUNT_4)+"<br/>"+I18n.get("Error")+":"+validationError);
 			response.setValue("isValid",new Boolean(false));
 		}
 		

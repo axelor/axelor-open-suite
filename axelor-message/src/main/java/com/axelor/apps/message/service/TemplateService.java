@@ -23,11 +23,13 @@ import java.util.Map;
 
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
+import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Splitter;
@@ -45,14 +47,14 @@ public class TemplateService extends TemplateRepository {
 			return;
 		}
 		if(metaModel == null) {
-			throw new AxelorException("Model empty. Please configure a model.", IException.MISSING_FIELD);
+			throw new AxelorException(I18n.get(IExceptionMessage.TEMPLATE_SERVICE_1), IException.MISSING_FIELD);
 		}
 		
 		try {
 			this.validTarget(target, metaModel);
 		}
 		catch(Exception ex) {
-			throw new AxelorException("Your target receptor is not valid. Please check it.", IException.INCONSISTENCY);
+			throw new AxelorException(I18n.get(IExceptionMessage.TEMPLATE_SERVICE_2), IException.INCONSISTENCY);
 		}
 	}
 

@@ -28,10 +28,12 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
+import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.tool.ObjectTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -61,7 +63,7 @@ public class GenerateMessageController {
 			LOG.debug("Template number : {} ", templateNumber);
 			
 			if(templateNumber == 0)  {
-				response.setFlash("Veuillez configurer un template");
+				response.setFlash(I18n.get(IExceptionMessage.MESSAGE_1));
 			}
 			else if(templateNumber > 1 || templateNumber == 0)  {
 
@@ -78,7 +80,7 @@ public class GenerateMessageController {
 				items.add(map);
 				
 				Map<String,Object> view = new HashMap<String,Object>();
-				view.put("title", "Select template ");
+				view.put("title", I18n.get(IExceptionMessage.MESSAGE_2));
 				view.put("resource", Wizard.class.getName());
 				view.put("viewType", "form");
 				view.put("views", items);
@@ -154,7 +156,7 @@ public class GenerateMessageController {
 		items.add(map);
 		
 		Map<String,Object> view = new HashMap<String,Object>();
-		view.put("title", "Create message ");
+		view.put("title", I18n.get(IExceptionMessage.MESSAGE_3));
 		view.put("resource",Message.class.getName());
 		view.put("viewType", "form");
 		view.put("views", items);

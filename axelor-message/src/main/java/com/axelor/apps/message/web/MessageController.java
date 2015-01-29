@@ -19,7 +19,9 @@ package com.axelor.apps.message.web;
 
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -38,15 +40,15 @@ public class MessageController {
 		
 		if(message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 			if(message.getSentByEmail())  {
-				response.setFlash("Email envoyé");
+				response.setFlash(I18n.get(IExceptionMessage.MESSAGE_4));
 			}
 			else  {
-				response.setFlash("Message envoyé");
+				response.setFlash(I18n.get(IExceptionMessage.MESSAGE_5));
 			}
 			
 		}
 		else  {
-			response.setFlash("Echec envoie email");
+			response.setFlash(I18n.get(IExceptionMessage.MESSAGE_6));
 		}
 	}
 	

@@ -25,6 +25,8 @@ import javax.mail.Transport;
 
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.repo.MailAccountRepository;
+import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.i18n.I18n;
 import com.axelor.mail.SmtpAccount;
 
 public class MailAccountServiceImpl extends MailAccountRepository implements MailAccountService {
@@ -46,9 +48,9 @@ public class MailAccountServiceImpl extends MailAccountRepository implements Mai
 			transport.connect(account.getHost(),account.getPort(),account.getLogin(),account.getPassword());
 			transport.close();
 		} catch (AuthenticationFailedException e){
-			errorMessage = "Incorrect login or password ";
+			errorMessage = I18n.get(IExceptionMessage.MAIL_ACCOUNT_1);
 		} catch (NoSuchProviderException e) {
-			errorMessage = "Unable to reach server. Please check Host,Port and SSL/TLS";
+			errorMessage = I18n.get(IExceptionMessage.MAIL_ACCOUNT_2);
 		} catch (MessagingException e) {
 			errorMessage = e.getMessage();
 		} catch (Exception e){
