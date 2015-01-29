@@ -38,8 +38,10 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -183,7 +185,7 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 	public String getSequence(Company company) throws AxelorException  {
 		String seq = sequenceService.getSequenceNumber(IAdministration.PURCHASE_ORDER, company);
 		if (seq == null)  {
-			throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les commandes fournisseur", company.getName()),
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName()),
 							IException.CONFIGURATION_ERROR);
 		}
 		return seq;

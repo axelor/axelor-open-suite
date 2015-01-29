@@ -32,6 +32,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -124,7 +125,7 @@ public class PurchaseOrderController {
 		
 			LOG.debug("Impression du devis "+purchaseOrder.getPurchaseOrderSeq() +" : "+url.toString());
 			
-			String title = "Devis ";
+			String title = I18n.get("Devis");
 			if(purchaseOrder.getPurchaseOrderSeq() != null)  {
 				title += purchaseOrder.getPurchaseOrderSeq();
 			}
