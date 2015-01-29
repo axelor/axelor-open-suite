@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
@@ -43,6 +44,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public abstract class InvoiceGenerator  {
@@ -132,7 +134,7 @@ public abstract class InvoiceGenerator  {
 			case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
 				return InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
 			default:
-				throw new AxelorException(String.format("%s :\nLe type de facture n'est pas rempli %s", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_1), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		
 	}
@@ -150,7 +152,7 @@ public abstract class InvoiceGenerator  {
 		invoice.setInvoiceDate(this.today);
 		
 		if(partner == null)  {
-			throw new AxelorException(String.format("%s :\nAucun tiers selectionné", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_2), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setPartner(partner);
 		
@@ -158,7 +160,7 @@ public abstract class InvoiceGenerator  {
 			paymentCondition = partner.getPaymentCondition();
 		}
 		if(paymentCondition == null)  {
-			throw new AxelorException(String.format("%s :\nCondition de paiement absent", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_3), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setPaymentCondition(paymentCondition);
 		
@@ -168,7 +170,7 @@ public abstract class InvoiceGenerator  {
 			paymentMode = partner.getPaymentMode();
 		}
 		if(paymentMode == null)  {
-			throw new AxelorException(String.format("%s :\nMode de paiement absent", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setPaymentMode(paymentMode);
 		
@@ -176,7 +178,7 @@ public abstract class InvoiceGenerator  {
 			mainInvoicingAddress = partner.getMainInvoicingAddress();
 		}
 		if(mainInvoicingAddress == null)  {
-			throw new AxelorException(String.format("%s :\nAdresse de facturation absente", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_5), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		
 		invoice.setAddress(mainInvoicingAddress);
@@ -187,7 +189,7 @@ public abstract class InvoiceGenerator  {
 			currency = partner.getCurrency();
 		}
 		if(currency == null)  {
-			throw new AxelorException(String.format("%s :\nDevise absente", GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_6), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setCurrency(currency);
 		

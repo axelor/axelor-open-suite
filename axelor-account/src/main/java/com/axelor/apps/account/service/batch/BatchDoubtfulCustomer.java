@@ -29,12 +29,14 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 
 public class BatchDoubtfulCustomer extends BatchStrategy {
 
@@ -137,12 +139,12 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 			
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Facture %s", move.getInvoice().getInvoiceId()), e, e.getcategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", move.getInvoice().getInvoiceId()), e, e.getcategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Facture %s", move.getInvoice().getInvoiceId()), e), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Invoice")+" %s", move.getInvoice().getInvoiceId()), e), IException.DOUBTFUL_CUSTOMER, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -182,12 +184,12 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 				
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Facture %s", moveLine.getInvoiceReject().getInvoiceId()), e, e.getcategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", moveLine.getInvoiceReject().getInvoiceId()), e, e.getcategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Facture %s", moveLine.getInvoiceReject().getInvoiceId()), e), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Invoice")+" %s", moveLine.getInvoiceReject().getInvoiceId()), e), IException.DOUBTFUL_CUSTOMER, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -214,9 +216,9 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 	@Override
 	protected void stop() {
 
-		String comment = "Compte rendu de la détermination des créances douteuses :\n";
-		comment += String.format("\t* %s Facture(s) traitée(s)\n", batch.getDone());
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		String comment = I18n.get(IExceptionMessage.BATCH_DOUBTFUL_1)+" :\n";
+		comment += String.format(I18n.get(IExceptionMessage.BATCH_DOUBTFUL_2), batch.getDone());
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 		
 		comment += String.format("\t* ------------------------------- \n");
 		comment += String.format("\t* %s ", updateCustomerAccountLog);

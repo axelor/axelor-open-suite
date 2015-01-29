@@ -26,13 +26,16 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -120,7 +123,7 @@ public class InvoiceController {
 		invoice = is.find(invoice.getId());
 
 		is.cancel(invoice);
-		response.setFlash("Facture annulée");
+		response.setFlash(I18n.get(IExceptionMessage.INVOICE_1));
 		response.setReload(true);
 	}
 	
@@ -138,7 +141,7 @@ public class InvoiceController {
 		try {
 			is.createRefund(is.find(invoice.getId()));
 			response.setReload(true);
-			response.setFlash("Avoir créé"); 
+			response.setFlash(I18n.get(IExceptionMessage.INVOICE_2)); 
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
@@ -250,7 +253,7 @@ public class InvoiceController {
 			
 				LOG.debug("Impression de la facture "+invoice.getInvoiceId()+" : "+url.toString());
 				
-				String title = "Facture ";
+				String title = I18n.get("Invoice ");
 				if(invoice.getInvoiceId() != null)  {
 					title += invoice.getInvoiceId();
 				}
@@ -266,7 +269,7 @@ public class InvoiceController {
 				response.setFlash(urlNotExist);
 			}
 		}else{
-			response.setFlash("Please select the invoice(s) to print.");
+			response.setFlash(I18n.get(IExceptionMessage.INVOICE_3));
 		}	
 	}
 	

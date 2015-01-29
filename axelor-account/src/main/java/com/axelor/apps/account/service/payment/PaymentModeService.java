@@ -25,11 +25,13 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class PaymentModeService extends PaymentModeRepository{
 	
@@ -77,7 +79,7 @@ public class PaymentModeService extends PaymentModeRepository{
 			return accountManagement.getCashAccount();
 		}
 		
-		throw new AxelorException(String.format("Société : %s, Mode de paiement : %S: Compte comptable associé non configuré",
+		throw new AxelorException(String.format(I18n.get("Company")+" : %s, "+I18n.get("Payment mode")+" : %s: "+I18n.get(IExceptionMessage.PAYMENT_MODE_1),
 				company.getName(),paymentMode.getName()), IException.CONFIGURATION_ERROR);
 		
 	}
@@ -105,7 +107,7 @@ public class PaymentModeService extends PaymentModeRepository{
 		
 		if(accountManagement == null || accountManagement.getSequence() == null)  {
 			throw new AxelorException(String.format(
-							"%s :\n Erreur : Veuillez configurer une séquence pour la société %s et le mode de paiement %s",
+							I18n.get(IExceptionMessage.PAYMENT_MODE_2),
 							GeneralServiceAccount.getExceptionAccountingMsg(), company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -118,7 +120,7 @@ public class PaymentModeService extends PaymentModeRepository{
 		
 		if(accountManagement == null || accountManagement.getJournal() == null)  {
 			throw new AxelorException(String.format(
-							"%s :\n Erreur : Veuillez configurer un journal pour la société %s et le mode de paiement %s",
+							I18n.get(IExceptionMessage.PAYMENT_MODE_3),
 							GeneralServiceAccount.getExceptionAccountingMsg(), company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
 		}
 		

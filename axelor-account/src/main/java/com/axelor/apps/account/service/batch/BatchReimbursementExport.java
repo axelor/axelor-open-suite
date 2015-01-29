@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.ReimbursementExportService;
@@ -39,6 +40,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 
 public class BatchReimbursementExport extends BatchStrategy {
 
@@ -91,7 +93,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			break;
 			
 		default:
-			TraceBackService.trace(new AxelorException(String.format("Type de donnée inconnu pour le traitement %s", batch.getAccountingBatch().getActionSelect()), IException.INCONSISTENCY));
+			TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_1), batch.getAccountingBatch().getActionSelect()), IException.INCONSISTENCY));
 			incrementAnomaly();
 			stop = true;
 		}
@@ -171,13 +173,13 @@ public class BatchReimbursementExport extends BatchStrategy {
 				}
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Tiers %s", partnerService.find(partner.getId()).getName()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Tiers")+"%s", partnerService.find(partner.getId()).getName()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Tiers %s", partnerService.find(partner.getId()).getName()), e), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+"%s", partnerService.find(partner.getId()).getName()), e), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -226,13 +228,13 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Remboursement %s", reimbursementService.find(reimbursement.getId()).getRef()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Reimbursement")+" %s", reimbursementService.find(reimbursement.getId()).getRef()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Remboursement %s", reimbursementService.find(reimbursement.getId()).getRef()), e), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Reimbursement")+" %s", reimbursementService.find(reimbursement.getId()).getRef()), e), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -253,7 +255,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Bug(Anomalie) généré(e)e dans l'export SEPA - Batch %s", batch.getId()), e), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()), e), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -267,7 +269,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Bug(Anomalie) généré(e)e dans l'export CFONB - Batch %s", batch.getId()), e), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()), e), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -289,17 +291,17 @@ public class BatchReimbursementExport extends BatchStrategy {
 		batch = batchRepo.find(batch.getId());
 		switch (batch.getAccountingBatch().getReimbursementExportTypeSelect()) {
 		case AccountingBatchService.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
-			comment = "Compte rendu de création de remboursement :\n";
-			comment += String.format("\t* %s remboursement(s) créé(s)\n", batch.getDone());
-			comment += String.format("\t* Montant total : %s \n", this.totalAmount);
+			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_2);
+			comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_3)+"\n", batch.getDone());
+			comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
 
 			break;
 			
 		case AccountingBatchService.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
 			
-			comment = "Compte rendu d'export de remboursement :\n";
-			comment += String.format("\t* %s remboursement(s) traité(s)\n", batch.getDone());
-			comment += String.format("\t* Montant total : %s \n", this.totalAmount);
+			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_4);
+			comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_5)+"\n", batch.getDone());
+			comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
 
 			comment += String.format("\t* ------------------------------- \n");
 			comment += String.format("\t* %s ", updateCustomerAccountLog);
@@ -310,7 +312,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			break;
 		}
 		
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_5), batch.getAnomaly());
 
 		super.stop();
 		addComment(comment);

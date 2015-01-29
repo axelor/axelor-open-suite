@@ -25,10 +25,12 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class PaymentVoucherControlService  {
@@ -49,17 +51,17 @@ public class PaymentVoucherControlService  {
 	 */
 	public void checkPaymentVoucherField(PaymentVoucher paymentVoucher, Company company, Account paymentModeAccount, Journal journal) throws AxelorException  {
 		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) < 0)  {
-			throw new AxelorException(String.format("%s :\n Attention, saisie paiement n° %s, le total des montants imputés par ligne est supérieur au montant payé par le client", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_1), 
 					GeneralServiceAccount.getExceptionAccountingMsg(), paymentVoucher.getRef()), IException.INCONSISTENCY);
 		}
 		
 		// Si on a des lignes à payer (dans le deuxième tableau)
 		if(!paymentVoucher.getHasAutoInput() && (paymentVoucher.getPaymentInvoiceToPayList() == null || paymentVoucher.getPaymentInvoiceToPayList().size() == 0))  {
-			throw new AxelorException(String.format("%s :\n Aucune ligne à payer.", GeneralServiceAccount.getExceptionAccountingMsg()), IException.INCONSISTENCY);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),  GeneralServiceAccount.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}	
 		
 		if(journal == null || paymentModeAccount == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez renseigner un journal et un compte de trésorerie dans le mode de règlement.", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_3), 
 					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -71,7 +73,7 @@ public class PaymentVoucherControlService  {
 	
 	public void checkPayboxAmount(PaymentVoucher paymentVoucher) throws AxelorException  {
 		if(paymentVoucher.getPayboxAmountPaid() != null && paymentVoucher.getPayboxAmountPaid().compareTo(paymentVoucher.getPaidAmount()) != 0)  {
-				throw new AxelorException(String.format("%s :\n Le montant de la saisie paiement (%s) est différent du montant encaissé par Paybox (%s)",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_4),
 						GeneralServiceAccount.getExceptionAccountingMsg(),paymentVoucher.getPaidAmount(),paymentVoucher.getPayboxAmountPaid()), IException.INCONSISTENCY);
 		}
 	}

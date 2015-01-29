@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
@@ -35,6 +36,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 
 public class BatchMoveLineExport extends BatchStrategy {
 
@@ -126,15 +128,15 @@ public class BatchMoveLineExport extends BatchStrategy {
 	public void testAccountingBatchField() throws AxelorException  {
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
 		if(accountingBatch.getCompany() == null)  {
-			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une société pour le configurateur de batch %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(), accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 		if(accountingBatch.getEndDate() == null)  {
-			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une date de fin pour le configurateur de batch %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_2),
 					GeneralServiceAccount.getExceptionAccountingMsg(), accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 		if(accountingBatch.getMoveLineExportTypeSelect() == null)  {
-			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer un type d'export pour le configurateur de batch %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_3),
 					GeneralServiceAccount.getExceptionAccountingMsg(), accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 	}
@@ -148,12 +150,12 @@ public class BatchMoveLineExport extends BatchStrategy {
 	@Override
 	protected void stop() {
 
-		String comment = "Compte rendu du batch d'export des écritures :\n";
-		comment += String.format("\t* %s (%s) Lignes d'écritures (Ecritures) exportées\n", moveLineDone, moveDone);
-		comment += String.format("\t* Débit : %s\n", debit);
-		comment += String.format("\t* Crédit : %s\n", credit);
-		comment += String.format("\t* Solde : %s\n", balance);
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		String comment = I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_4);
+		comment += String.format("\t* %s (%s)"+I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_5)+"\n", moveLineDone, moveDone);
+		comment += String.format("\t* "+I18n.get("Debit")+" : %s\n", debit);
+		comment += String.format("\t* "+I18n.get("Credit")+" : %s\n", credit);
+		comment += String.format("\t* "+I18n.get("Balance")+" : %s\n", balance);
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 		super.stop();
 		addComment(comment);

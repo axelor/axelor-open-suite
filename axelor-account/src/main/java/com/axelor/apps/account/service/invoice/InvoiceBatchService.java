@@ -24,8 +24,10 @@ import com.axelor.apps.account.service.invoice.generator.batch.BatchStrategy;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchValidation;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchVentilation;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 /**
@@ -55,11 +57,11 @@ public class InvoiceBatchService extends InvoiceBatchRepository{
 				batch = wkf(invoiceBatch);
 				break;
 			default:
-				throw new AxelorException(String.format("Action %s inconnu pour le traitement %s", invoiceBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), invoiceBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
 			}
 		}
 		else {
-			throw new AxelorException(String.format("Batch %s inconnu", batchCode), IException.INCONSISTENCY);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode), IException.INCONSISTENCY);
 		}
 		
 		return batch;
@@ -78,7 +80,7 @@ public class InvoiceBatchService extends InvoiceBatchRepository{
 			strategy = Beans.get(BatchVentilation.class);
 		}
 		else {
-			throw new AxelorException(String.format("Statut %s inconnu pour le traitement %s", invoiceBatch.getToStatusSelect(), invoiceBatch.getCode()), IException.INCONSISTENCY);
+			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.INVOICE_BATCH_1), invoiceBatch.getToStatusSelect(), invoiceBatch.getCode()), IException.INCONSISTENCY);
 		}
 
 		return strategy.run(invoiceBatch);

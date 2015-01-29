@@ -30,11 +30,13 @@ import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -100,7 +102,7 @@ public class ReimbursementImportService {
 		
 		Reimbursement reimbursement = reimbursementService.all().filter("UPPER(self.ref) = ?1 AND self.company = ?2", refReject, company).fetchOne();
 		if(reimbursement == null)  {
-			throw new AxelorException(String.format("Aucun remboursement trouvé pour la ref %s et la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_3),
 					refReject, company.getName()), IException.INCONSISTENCY);
 		}
 		

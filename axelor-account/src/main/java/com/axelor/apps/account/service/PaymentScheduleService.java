@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -42,6 +43,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -167,8 +169,8 @@ public class PaymentScheduleService extends PaymentScheduleRepository {
 	public String getPaymentScheduleSequence(Company company) throws AxelorException  {
 		String seq = sequenceService.getSequenceNumber(IAdministration.PAYMENT_SCHEDULE, company);
 		if(seq == null)  {
-			throw new AxelorException(String.format(
-							"%s :\n Veuillez configurer une séquence Echéancier pour la société %s ",
+			throw new AxelorException(String.format("%s :\n"+
+							I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5)+" %s",
 							GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		return seq;
@@ -307,7 +309,7 @@ public class PaymentScheduleService extends PaymentScheduleRepository {
 		LOG.debug("Validation de l'échéancier {}", paymentSchedule.getScheduleId());
 		
 		if(paymentSchedule.getPaymentScheduleLineList() == null || paymentSchedule.getPaymentScheduleLineList().size() == 0)  {
-			throw new AxelorException(String.format("%s :\n Erreur : Veuillez d'abord créer les lignes d'échéancier pour l'échéancier %s ",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6),
 					GeneralServiceAccount.getExceptionAccountingMsg(), paymentSchedule.getScheduleId()), IException.INCONSISTENCY);
 		}
 			

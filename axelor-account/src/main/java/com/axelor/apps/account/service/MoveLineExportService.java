@@ -37,6 +37,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -47,6 +48,7 @@ import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -178,7 +180,7 @@ public class MoveLineExportService {
 		
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.SALES_INTERFACE, company);
 		if(exportNumber == null)  {  
-			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Vente pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -191,7 +193,7 @@ public class MoveLineExportService {
 		
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.REFUND_INTERFACE, company);
 		if(exportNumber == null)  {  
-			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Avoir pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_2),
 					GeneralServiceAccount.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 			
@@ -204,7 +206,7 @@ public class MoveLineExportService {
 		
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.TREASURY_INTERFACE, company);
 		if(exportNumber == null)  {  
-			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Trésorerie pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_3),
 					GeneralServiceAccount.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 			
@@ -217,7 +219,7 @@ public class MoveLineExportService {
 	
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.PURCHASE_INTERFACE, company);
 		if(exportNumber == null)  {  
-			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Achat pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_4),
 					GeneralServiceAccount.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		

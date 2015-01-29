@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -31,6 +32,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 
 public class BatchReminder extends BatchStrategy {
 
@@ -100,12 +102,12 @@ public class BatchReminder extends BatchStrategy {
 
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Tiers %s", partner.getName()), e, e.getcategory()), IException.REMINDER, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Tiers")+" %s", partner.getName()), e, e.getcategory()), IException.REMINDER, batch.getId());
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Tiers %s", partner.getName()), e), IException.REMINDER, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+" %s", partner.getName()), e), IException.REMINDER, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -160,9 +162,9 @@ public class BatchReminder extends BatchStrategy {
 	@Override
 	protected void stop() {
 
-		String comment = "Compte rendu de relance :\n";
-		comment += String.format("\t* %s tiers(s) traité(s)\n", batch.getDone());
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		String comment = I18n.get(IExceptionMessage.BATCH_REMINDER_1);
+		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REMINDER_2)+"\n", batch.getDone());
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 		
 //		comment += String.format("\t* %s email(s) traité(s)\n", mailDone);
 //		comment += String.format("\t* %s anomalie(s)", mailAnomaly);

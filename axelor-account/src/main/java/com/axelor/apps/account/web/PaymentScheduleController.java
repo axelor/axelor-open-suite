@@ -18,11 +18,13 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.PaymentSchedule;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -68,7 +70,7 @@ public class PaymentScheduleController {
 		
 			if(num == null || num.isEmpty()) {
 				
-				response.setFlash("Veuillez configurer une séquence Echéancier pour la société "+paymentSchedule.getCompany().getName()); 
+				response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5)+" "+paymentSchedule.getCompany().getName()); 
 			}
 			else {
 				response.setValue("scheduleId", num);			

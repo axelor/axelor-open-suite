@@ -30,10 +30,12 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -69,7 +71,7 @@ public class MoveLineReportController {
 			
 			Map<String, Object> view = Maps.newHashMap();
 			
-			view.put("title", "Lignes d'écritures récupérées");
+			view.put("title", I18n.get(IExceptionMessage.MOVE_LINE_REPORT_3));
 			view.put("resource", MoveLine.class.getName());
 			view.put("domain", queryFilter);
 			
@@ -185,7 +187,7 @@ public class MoveLineReportController {
 
 		try {	
 			if(moveLineReport.getExportTypeSelect() == null || moveLineReport.getExportTypeSelect().isEmpty() || moveLineReport.getTypeSelect() == 0) {
-				response.setFlash("Veuillez selectionner un type d'export");
+				response.setFlash(I18n.get(IExceptionMessage.MOVE_LINE_REPORT_4));
 				response.setReload(true);
 				return;
 			}
@@ -236,7 +238,7 @@ public class MoveLineReportController {
 					LOG.debug("URL : {}", url);
 
 					Map<String,Object> viewMap = new HashMap<String,Object>();
-					viewMap.put("title", "Reporting comptable "+moveLineReport.getRef());
+					viewMap.put("title", I18n.get(IExceptionMessage.MOVE_LINE_REPORT_5)+" "+moveLineReport.getRef());
 					viewMap.put("resource", url);
 					viewMap.put("viewType", "html");
 					response.setView(viewMap);						
@@ -251,7 +253,7 @@ public class MoveLineReportController {
 		
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
 		Map<String,Object> mapView = new HashMap<String,Object>();
-		mapView.put("title", "Ecritures exportées");
+		mapView.put("title", I18n.get(IExceptionMessage.MOVE_LINE_REPORT_6));
 		mapView.put("resource", Move.class.getName());
 		mapView.put("domain", "self.moveLineReport.id = "+moveLineReport.getId());
 		response.setView(mapView);		

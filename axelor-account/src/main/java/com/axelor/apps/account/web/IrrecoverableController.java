@@ -25,9 +25,12 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.account.db.Irrecoverable;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -73,7 +76,7 @@ public class IrrecoverableController {
 			
 			response.setReload(true);
 			
-			response.setFlash("Traitement terminé - "+anomaly+" anomalies générées");
+			response.setFlash(I18n.get(IExceptionMessage.IRRECOVERABLE_5)+" - "+anomaly+" "+I18n.get(IExceptionMessage.IRRECOVERABLE_6));
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
@@ -83,7 +86,7 @@ public class IrrecoverableController {
 		Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
 
 		if(irrecoverable.getExportTypeSelect() == null) {
-			response.setFlash("Veuillez selectionner un type d'impression"); 
+			response.setFlash(I18n.get(IExceptionMessage.IRRECOVERABLE_7)); 
 		} 
 		else {
 			StringBuilder url = new StringBuilder();
@@ -95,7 +98,7 @@ public class IrrecoverableController {
 			LOG.debug("URL : {}", url);
 
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Passage en irrécouvrable "+irrecoverable.getName());
+			mapView.put("title", I18n.get(IExceptionMessage.IRRECOVERABLE_8)+" "+irrecoverable.getName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);			

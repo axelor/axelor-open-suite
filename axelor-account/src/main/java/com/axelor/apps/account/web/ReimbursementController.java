@@ -18,7 +18,9 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ReimbursementService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -37,7 +39,7 @@ public class ReimbursementController {
 			response.setValue("statusSelect", ReimbursementService.STATUS_VALIDATED);
 		}
 		else {
-			response.setFlash("Vous devez configurer un RIB");
+			response.setFlash(I18n.get(IExceptionMessage.REIMBURSEMENT_4));
 		}
 	}
 }

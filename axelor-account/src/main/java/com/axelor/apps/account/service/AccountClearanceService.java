@@ -37,6 +37,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountClearanceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -48,6 +49,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -198,32 +200,32 @@ public class AccountClearanceService extends AccountClearanceRepository {
 		AccountConfig accountConfig = company.getAccountConfig();
 		
 		if(accountConfig == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer des informations comptables pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		if(accountConfig.getProfitAccount() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte de profit pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_2),
 					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 			
 		if(accountConfig.getStandardRateTax() == null) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une taxe taux normal pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3),
 					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 			
 		if(accountConfig.getClearanceAccountSet() == null || accountConfig.getClearanceAccountSet().size() == 0)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer les comptes d'apurements pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_4),
 					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 			
 		if(!sequenceService.hasSequence(IAdministration.ACCOUNT_CLEARANCE, company)) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Apurement des trop-perçus pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_5),
 					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		if(accountConfig.getAccountClearanceJournal() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal d'apurements des trop-perçus pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_6),
 					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		

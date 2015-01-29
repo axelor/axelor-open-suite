@@ -25,12 +25,14 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -106,7 +108,7 @@ public class PaymentVoucherController {
 		LOG.debug("Follow the URL: "+url);
 		
 		Map<String,Object> mapView = new HashMap<String,Object>();
-		mapView.put("title", "Reçu saisie paiement "+paymentVoucher.getReceiptNo());
+		mapView.put("title", I18n.get(IExceptionMessage.PAYMENT_VOUCHER_1)+" "+paymentVoucher.getReceiptNo());
 		mapView.put("resource", url);
 		mapView.put("viewType", "html");
 		response.setView(mapView);	

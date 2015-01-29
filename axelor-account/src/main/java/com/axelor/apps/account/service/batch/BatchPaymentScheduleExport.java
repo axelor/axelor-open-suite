@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentScheduleExportService;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
@@ -40,6 +41,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 
 public class BatchPaymentScheduleExport extends BatchStrategy {
 
@@ -110,7 +112,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			break;	
 			
 		default:
-			TraceBackService.trace(new AxelorException(String.format("Type de donnée inconnu pour le traitement %s", batch.getAccountingBatch().getActionSelect()),IException.INCONSISTENCY ), IException.DIRECT_DEBIT, batch.getId());
+			TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_1), batch.getAccountingBatch().getActionSelect()),IException.INCONSISTENCY ), IException.DIRECT_DEBIT, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}
@@ -219,13 +221,13 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 
 		} catch (AxelorException e) {
 
-			TraceBackService.trace(new AxelorException(String.format("Batch d'export des prélèvements %s", batch.getId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+			TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_2), batch.getId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
 
 			incrementAnomaly();
 
 		} catch (Exception e) {
 
-			TraceBackService.trace(new Exception(String.format("Batch d'export des prélèvements %s", batch.getId()), e), IException.DIRECT_DEBIT, batch.getId());
+			TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_2), batch.getId()), e), IException.DIRECT_DEBIT, batch.getId());
 
 			incrementAnomaly();
 
@@ -269,13 +271,13 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 					
 				} catch (AxelorException e) {
 					
-					TraceBackService.trace(new AxelorException(String.format("Prélèvement de l'échéance %s", paymentScheduleLineService.find(paymentScheduleLine.getId()).getName()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+					TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_3), paymentScheduleLineService.find(paymentScheduleLine.getId()).getName()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
 					
 					incrementAnomaly();
 					
 				} catch (Exception e) {
 					
-					TraceBackService.trace(new Exception(String.format("Prélèvement de l'échéance %s", paymentScheduleLineService.find(paymentScheduleLine.getId()).getName()), e), IException.DIRECT_DEBIT, batch.getId());
+					TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_3), paymentScheduleLineService.find(paymentScheduleLine.getId()).getName()), e), IException.DIRECT_DEBIT, batch.getId());
 					
 					incrementAnomaly();
 					
@@ -335,13 +337,13 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Batch d'export des prélèvements %s", this.getInvoiceName(moveLine)), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_2), this.getInvoiceName(moveLine)), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Batch d'export des prélèvements %s", this.getInvoiceName(moveLine)), e), IException.DIRECT_DEBIT, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_2), this.getInvoiceName(moveLine)), e), IException.DIRECT_DEBIT, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -371,13 +373,13 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		
 		} catch (AxelorException e) {
 			
-			TraceBackService.trace(new AxelorException(String.format("Batch d'export des prélèvements %s", batch.getId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+			TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_2), batch.getId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
 			
 			incrementAnomaly();
 			
 		} catch (Exception e) {
 			
-			TraceBackService.trace(new Exception(String.format("Batch d'export des prélèvements %s", batch.getId()), e), IException.DIRECT_DEBIT, batch.getId());
+			TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_2), batch.getId()), e), IException.DIRECT_DEBIT, batch.getId());
 			
 			incrementAnomaly();
 			
@@ -417,18 +419,18 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		switch (batchRepo.find(batch.getId()).getAccountingBatch().getDirectDebitExportTypeSelect()) {
 		
 			case AccountingBatchService.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
-				comment = "Compte rendu d'export des prélèvements factures :\n";
-				comment += String.format("\t* %s prélèvements(s) facture(s) traité(s)\n", batch.getDone());
-				comment += String.format("\t* Montant total : %s \n", this.totalAmount);
-				comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+				comment = I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_4);
+				comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_5)+"\n", batch.getDone());
+				comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
+				comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 				
 				break;
 				
 			case AccountingBatchService.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
-	            comment = "Compte rendu d'export des prélèvements de mensualité :\n";
-	            comment += String.format("\t* %s prélèvements(s) mensualité(s) traité(s)\n", batch.getDone());
-	            comment += String.format("\t* Montant total : %s \n", this.totalAmount);
-	            comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+	            comment = I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_6);
+	            comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_7)+"\n", batch.getDone());
+	            comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
+	            comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 	            
 	            break;	
 				

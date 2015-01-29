@@ -36,6 +36,7 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,7 +64,7 @@ public class CashRegisterLineService extends CashRegisterLineRepository{
 	public Message closeCashRegister(CashRegisterLine cashRegisterLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
 		Company company = this.user.getActiveCompany();
 		if(company == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une société active pour l'utilisateur %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CASH_REGISTER_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(), this.user.getFullName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -74,14 +75,14 @@ public class CashRegisterLineService extends CashRegisterLineRepository{
 						cashRegisterLine.getCashRegister(), cashRegisterLine.getCashRegisterDate()).fetchOne();
 		
 		if(cashRegisterLineFound != null)  {
-			throw new AxelorException(String.format("%s :\n Une fermeture de caisse existe déjà pour la même date et la même caisse",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CASH_REGISTER_2),
 					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
 			AccountConfig accountConfig = company.getAccountConfig();
 			
 			if(accountConfig.getCashRegisterAddressEmail() == null)  {
-				throw new AxelorException(String.format("%s :\n Veuillez configurer une adresse email Caisses pour la société %s",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CASH_REGISTER_3),
 						GeneralServiceAccount.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 			}
 			

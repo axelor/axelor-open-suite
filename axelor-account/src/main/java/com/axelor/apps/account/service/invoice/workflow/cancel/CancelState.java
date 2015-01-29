@@ -22,12 +22,14 @@ import java.math.BigDecimal;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class CancelState extends WorkflowInvoice {
@@ -59,17 +61,17 @@ public class CancelState extends WorkflowInvoice {
 			
 		if(invoice.getInTaxTotalRemaining().compareTo(invoice.getInTaxTotal()) != 0)  {
 			
-			throw new AxelorException(String.format("Move should be unreconcile before to cancel the invoice"), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.CANCEL_STATE_1), IException.CONFIGURATION_ERROR);
 		}
 		
 		if(invoice.getOldMove() != null)  {
 			
-			throw new AxelorException(String.format("Invoice is passed in doubfult debit, and can't be canceled"), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.CANCEL_STATE_2), IException.CONFIGURATION_ERROR);
 		}
 		
 		Period period = Beans.get(PeriodService.class).getPeriod(move.getDate(), move.getCompany());
 		if(period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
-			throw new AxelorException(String.format("Invoice is ventilated on a closed period, and can't be canceled"), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.CANCEL_STATE_3), IException.CONFIGURATION_ERROR);
 		}
 		
 		try{
@@ -87,7 +89,7 @@ public class CancelState extends WorkflowInvoice {
 		}
 		catch(Exception e)  {
 			
-			throw new AxelorException(String.format("oo many accounting operations are used on this invoice, so invoice can't be canceled"), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.CANCEL_STATE_4), IException.CONFIGURATION_ERROR);
 			
 		}
 		

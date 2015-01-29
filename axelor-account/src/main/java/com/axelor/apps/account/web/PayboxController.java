@@ -26,10 +26,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.payment.PayboxService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherPayboxService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -53,7 +55,7 @@ public class PayboxController {
 				String url = Beans.get(PayboxService.class).paybox(paymentVoucher);
 				
 				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", "Paiement par Paybox");
+				mapView.put("title", I18n.get(IExceptionMessage.PAYBOX_5));
 				mapView.put("resource", url);
 				mapView.put("viewType", "html");
 				response.setView(mapView);
@@ -122,20 +124,20 @@ public class PayboxController {
             if(verified) {       
                 if(operation == "1" && (String) context.get("idtrans") != null && (String) context.get("montant") != null ) {
                 	    paymentVoucherPayboxService.authorizeConfirmPaymentVoucher(paymentVoucher, (String) context.get("idtrans"), (String) context.get("montant"));
-                        response.setFlash("Paiement réalisé"); 
+                        response.setFlash(I18n.get(IExceptionMessage.PAYBOX_6)); 
                         LOG.debug("Paiement réalisé");
                 }
                 else if(operation == "2") {
-                        response.setFlash("Paiement échoué"); 
+                        response.setFlash(I18n.get(IExceptionMessage.PAYBOX_7));  
                         LOG.debug("Paiement échoué");
                 }
                 else if(operation == "3") {
-                        response.setFlash("Paiement annulé");
+                        response.setFlash(I18n.get(IExceptionMessage.PAYBOX_8));  
                         LOG.debug("Paiement annulé");
                 }
             }
             else  {
-                response.setFlash("Retour d'information de Paybox erroné");
+                response.setFlash(I18n.get(IExceptionMessage.PAYBOX_9));  
                 LOG.debug("Retour d'information de Paybox erroné");
             }      
         }

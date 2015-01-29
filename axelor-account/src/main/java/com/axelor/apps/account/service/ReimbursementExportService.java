@@ -40,6 +40,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.BankDetails;
@@ -53,6 +54,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.xml.Marschaller;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.apps.xsd.sepa.AccountIdentification3Choice;
 import com.axelor.apps.xsd.sepa.AmountType2Choice;
 import com.axelor.apps.xsd.sepa.BranchAndFinancialInstitutionIdentification3;
@@ -262,7 +264,7 @@ public class ReimbursementExportService {
 		accountConfigService.getReimbursementExportFolderPath(accountConfig);
 		
 		if(!sequenceService.hasSequence(IAdministration.REIMBOURSEMENT, company)) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Remboursement pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -349,7 +351,7 @@ public class ReimbursementExportService {
 		String exportFolderPath = accountConfigService.getReimbursementExportFolderPath(accountConfigService.getAccountConfig(company));
 		
 		if (exportFolderPath == null)  {
-			throw new AxelorException(String.format("Le dossier d'export des remboursement (format SEPA) n'est pas configuré pour la société %s.",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_2),
 					company.getName()), IException.MISSING_FIELD);
 		}
 			

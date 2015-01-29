@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
@@ -27,6 +28,7 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class PaymentVoucherSequenceService  {
@@ -80,7 +82,7 @@ public class PaymentVoucherSequenceService  {
 		Company company = paymentVoucher.getCompany();
 		
 		if(!sequenceService.hasSequence(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company))  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Numéro de reçu (Saisie paiement) pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_SEQUENCE_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		

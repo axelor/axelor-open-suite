@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.Company;
@@ -33,6 +34,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 
 public class BatchAccountCustomer extends BatchStrategy {
 
@@ -87,7 +89,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Situation compable %s", 
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_1), 
 						accountingSituationService.find(accountingSituation.getId()).getName()), e), IException.ACCOUNT_CUSTOMER, batch.getId());
 				
 				incrementAnomaly();
@@ -112,9 +114,9 @@ public class BatchAccountCustomer extends BatchStrategy {
 	@Override
 	protected void stop() {
 		String comment = "";
-		comment = "Compte rendu de la détermination des soldes des comptes clients :\n";
-		comment += String.format("\t* %s Situation(s) compable(s) traitée(s)\n", batch.getDone());
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		comment = I18n.get(IExceptionMessage.BATCH_ACCOUNT_2);
+		comment += String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_3), batch.getDone());
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 		super.stop();
 		addComment(comment);
@@ -151,7 +153,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Situation comptable %s", accountingSituationService.find(accountingSituation.getId()).getName()), e), IException.ACCOUNT_CUSTOMER, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_1),  accountingSituationService.find(accountingSituation.getId()).getName()), e), IException.ACCOUNT_CUSTOMER, batch.getId());
 				
 				anomaly++;
 				
@@ -165,10 +167,10 @@ public class BatchAccountCustomer extends BatchStrategy {
 		}
 		
 		if(anomaly!=0)  {		
-			return "Les soldes de "+anomaly+" situations comptables n'ont pas été mis à jour, merci de lancer le batch de mise à jour des comptes clients ";
+			return String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_4),anomaly);
 		}
 		else  {
-			return "Les soldes de l'ensemble des situations compables ("+i+") ont été mis à jour.";
+			return String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_5),i);
 		}
 	}
 	

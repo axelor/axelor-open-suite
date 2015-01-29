@@ -37,6 +37,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -49,6 +50,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -302,7 +304,7 @@ public class MoveService extends MoveRepository {
 			break;
 		
 		default:
-			throw new AxelorException(String.format("Type de facture absent de la facture %s", invoice.getInvoiceId()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_1), invoice.getInvoiceId()), IException.MISSING_FIELD);
 		}	
 		
 		// Si le montant est négatif, alors on inverse le sens
@@ -345,7 +347,7 @@ public class MoveService extends MoveRepository {
 			break;
 		
 		default:
-			throw new AxelorException(String.format("Type de facture absent de la facture %s", invoice.getInvoiceId()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_1), invoice.getInvoiceId()), IException.MISSING_FIELD);
 		}	
 		
 		return isPurchase;
@@ -828,18 +830,18 @@ public class MoveService extends MoveRepository {
 		Journal journal = move.getJournal();
 		Company company = move.getCompany();
 		if(journal == null)  {
-			throw new AxelorException(String.format("Veuillez selectionner un journal pour l'écriture"),IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_2)),IException.CONFIGURATION_ERROR);
 		}
 		if(company == null)  {
-			throw new AxelorException(String.format("Veuillez selectionner une société pour l'écriture"),IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_3)),IException.CONFIGURATION_ERROR);
 		}
 		
 		if(move.getPeriod() == null)  {
-			throw new AxelorException(String.format("Veuillez selectionner une période pour l'écriture"),IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_4)),IException.CONFIGURATION_ERROR);
 		}
 		
 		if (journal.getSequence() == null)  {
-			throw new AxelorException(String.format("Le journal %s n'a pas de séquence d'écriture comptable configurée", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_5), 
 					journal.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -903,7 +905,7 @@ public class MoveService extends MoveRepository {
 			for (MoveLine moveLine : move.getMoveLineList()){
 				
 				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) == 1 && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 1)  {
-					throw new AxelorException(String.format("Le sens de l'écriture comptable %s ne peut être déterminé",
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_6),
 							moveLine.getName()), IException.INCONSISTENCY);
 				}
 				
@@ -912,7 +914,7 @@ public class MoveService extends MoveRepository {
 			}
 			
 			if (totalDebit.compareTo(totalCredit) != 0){
-				throw new AxelorException(String.format("L'écriture comptable %s comporte un total débit différent du total crédit : %s <> %s", 
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_7), 
 						move.getReference(), totalDebit, totalCredit), IException.INCONSISTENCY);
 			}
 			move.setStatusSelect(STATUS_VALIDATED);

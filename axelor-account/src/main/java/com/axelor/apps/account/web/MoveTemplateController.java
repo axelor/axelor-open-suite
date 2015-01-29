@@ -27,7 +27,9 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveTemplateService;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -73,7 +75,7 @@ public class MoveTemplateController {
 			response.setReload(true);
 		}
 		else
-			response.setFlash("Template move is not balanced");
+			response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_1));
 			
 	}
 	
@@ -86,10 +88,10 @@ public class MoveTemplateController {
 		if(dataList != null && !dataList.isEmpty()){
 			List<Long> moveList = mts.generateMove(moveTemplate, dataList);
 			if(moveList == null)
-				response.setFlash("Error in move generation");
+				response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_2));
 			else
 				response.setView(ActionView
-			            .define("Generated moves")
+			            .define(I18n.get(IExceptionMessage.MOVE_TEMPLATE_3))
 			            .model(Move.class.getName())
 			            .add("grid", "move-grid")
 			            .add("form", "move-form")
@@ -97,7 +99,7 @@ public class MoveTemplateController {
 			            .map());
 		}
 		else 
-			response.setFlash("Please fill input lines");
+			response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_4));
 		
 	}
 	

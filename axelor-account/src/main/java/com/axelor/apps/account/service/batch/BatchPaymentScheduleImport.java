@@ -36,6 +36,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentScheduleImportService;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.RejectImportService;
@@ -47,6 +48,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 
 public class BatchPaymentScheduleImport extends BatchStrategy {
@@ -123,7 +125,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 			
 		} catch (AxelorException e) {
 			
-			TraceBackService.trace(new AxelorException(String.format("Batch %s", batch.getId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+			TraceBackService.trace(new AxelorException(String.format(I18n.get("Batch")+" %s", batch.getId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
 			
 			incrementAnomaly();
 			
@@ -131,7 +133,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 			
 		} catch (Exception e) {
 			
-			TraceBackService.trace(new Exception(String.format("Batch %s", batch.getId()), e), IException.DIRECT_DEBIT, batch.getId());
+			TraceBackService.trace(new Exception(String.format(I18n.get("Batch")+" %s", batch.getId()), e), IException.DIRECT_DEBIT, batch.getId());
 			
 			incrementAnomaly();
 			
@@ -164,7 +166,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 						
 						/***  Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement  ***/
 						if((invoiceRejectedList == null || invoiceRejectedList.isEmpty()) && (paymentScheduleLineRejectedList == null || paymentScheduleLineRejectedList.isEmpty()))  {
-							throw new AxelorException(String.format("%s :\n Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement : %s", 
+							throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_8), 
 									GeneralServiceAccount.getExceptionAccountingMsg(),refDebitReject), IException.NO_VALUE);
 						}
 						else  {
@@ -173,13 +175,13 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 						
 					} catch (AxelorException e) {
 						
-						TraceBackService.trace(new AxelorException(String.format("Rejet %s", reject[1]), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+						TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_9), reject[1]), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
 						
 						incrementAnomaly();
 						
 					} catch (Exception e) {
 						
-						TraceBackService.trace(new Exception(String.format("Rejet %s", reject[1]), e), IException.DIRECT_DEBIT, batch.getId());
+						TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_9), reject[1]), e), IException.DIRECT_DEBIT, batch.getId());
 						
 						incrementAnomaly();
 						
@@ -258,7 +260,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 			move = paymentScheduleImportService.createRejectMove(company, date);
 		} catch (AxelorException e) {
 			
-			TraceBackService.trace(new AxelorException(String.format("Batch %s", batch.getId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+			TraceBackService.trace(new AxelorException(String.format(I18n.get("Batch")+" %s", batch.getId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
 			
 			incrementAnomaly();
 			
@@ -266,7 +268,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 			
 		} catch (Exception e) {
 			
-			TraceBackService.trace(new Exception(String.format("Batch %s", batch.getId()), e), IException.DIRECT_DEBIT, batch.getId());
+			TraceBackService.trace(new Exception(String.format(I18n.get("Batch")+" %s", batch.getId()), e), IException.DIRECT_DEBIT, batch.getId());
 			
 			incrementAnomaly();
 			
@@ -295,13 +297,13 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 			}
 		} catch (AxelorException e) {
 			
-			TraceBackService.trace(new AxelorException(String.format("Batch %s", batch.getId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+			TraceBackService.trace(new AxelorException(String.format(I18n.get("Batch")+" %s", batch.getId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
 			
 			incrementAnomaly();
 			
 		} catch (Exception e) {
 			
-			TraceBackService.trace(new Exception(String.format("Batch %s", batch.getId()), e), IException.DIRECT_DEBIT, batch.getId());
+			TraceBackService.trace(new Exception(String.format(I18n.get("Batch")+" %s", batch.getId()), e), IException.DIRECT_DEBIT, batch.getId());
 			
 			incrementAnomaly();
 			
@@ -341,13 +343,13 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 				}
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Création de l'écriture de rejet de l'échéance %s", paymentScheduleLine.getName()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_10), paymentScheduleLine.getName()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Création de l'écriture de rejet de l'échéance %s", paymentScheduleLine.getName()), e), IException.DIRECT_DEBIT, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_10), paymentScheduleLine.getName()), e), IException.DIRECT_DEBIT, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -385,13 +387,13 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 				}
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Création de l'écriture de rejet de la facture %s", invoice.getInvoiceId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_11), invoice.getInvoiceId()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Création de l'écriture de rejet de la facture %s", invoice.getInvoiceId()), e), IException.DIRECT_DEBIT, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_11), invoice.getInvoiceId()), e), IException.DIRECT_DEBIT, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -427,10 +429,10 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 	@Override
 	protected void stop() {
 		String comment = "";
-		comment = "Compte rendu de l'import des rejets de prélèvement :\n";
-		comment += String.format("\t* %s prélèvement(s) rejeté(s)\n", batch.getDone());
-		comment += String.format("\t* Montant total : %s \n", this.totalAmount);
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		comment = I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_12);
+		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_13)+"\n", batch.getDone());
+		comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 		
 		comment += String.format("\t* ------------------------------- \n");
 		comment += String.format("\t* %s ", updateCustomerAccountLog);

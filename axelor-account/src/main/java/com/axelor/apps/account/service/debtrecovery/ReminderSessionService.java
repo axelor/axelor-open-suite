@@ -32,12 +32,14 @@ import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderConfigLine;
 import com.axelor.apps.account.db.ReminderMethod;
 import com.axelor.apps.account.db.ReminderMethodLine;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -227,7 +229,7 @@ public class ReminderSessionService {
 		if(reminder.getReminderMethod() == null 
 				|| reminder.getReminderMethod().getReminderMethodLineList() == null
 				|| reminder.getReminderMethod().getReminderMethodLineList().isEmpty())  {
-			throw new AxelorException(String.format("%s :\nTiers %s: Ligne de method de relance absente.", GeneralServiceAccount.getExceptionReminderMsg(), 
+			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: +"+I18n.get(IExceptionMessage.REMINDER_SESSION_1), GeneralServiceAccount.getExceptionReminderMsg(), 
 					reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		for(ReminderMethodLine reminderMatrixLine : reminder.getReminderMethod().getReminderMethodLineList())  {

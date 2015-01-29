@@ -19,11 +19,13 @@ package com.axelor.apps.account.service.cfonb;
 
 import java.util.List;
 
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class CfonbToolService {
 	
@@ -47,13 +49,13 @@ public class CfonbToolService {
 		if(!StringTool.isDigital(s))  {
 			switch(type)  {
 				case 0:
-					throw new AxelorException(String.format("%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour l'émetteur",
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_1),
 							GeneralServiceAccount.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
 				case 1:
-					throw new AxelorException(String.format("%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le destinataire",
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_2),
 							GeneralServiceAccount.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
 				case 2:
-					throw new AxelorException(String.format("%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le total",
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_3),
 							GeneralServiceAccount.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
 				
 				default:
@@ -132,7 +134,7 @@ public class CfonbToolService {
 				default:
 					break;
 			}	
-			throw new AxelorException(String.format("%s :\n Annomlie détectée (l'enregistrement ne fait pas %s caractères : %s) pour l'enregistrement %s, société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_4),
 					GeneralServiceAccount.getExceptionAccountingMsg(),size,s,concerned,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}

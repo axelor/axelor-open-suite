@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -42,6 +43,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -140,7 +142,7 @@ public class InterbankPaymentOrderImportService {
 	public Invoice getInvoice(String ref, Company company) throws AxelorException  {
 		Invoice invoice = invoiceRepo.all().filter("UPPER(self.invoiceId) = ?1", ref).fetchOne();
 		if(invoice == null)  {
-			throw new AxelorException(String.format("%s :\n La facture n°%s n'a pas été trouvée pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_IMPORT_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(), ref, company.getName()), IException.INCONSISTENCY);
 		}
 		return invoice;

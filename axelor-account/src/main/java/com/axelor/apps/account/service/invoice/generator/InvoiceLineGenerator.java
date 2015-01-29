@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineType;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
@@ -46,6 +47,7 @@ import com.axelor.apps.tool.date.Period;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 /**
@@ -193,7 +195,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		Currency partnerCurrency = partner.getCurrency();
 		
 		if(partnerCurrency == null)  {
-			throw new AxelorException(String.format("Veuillez selectionner une devise pour le tiers %s (%s)", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_1), 
 					partner.getFullName(), partner.getPartnerSeq()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -206,7 +208,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		Currency companyCurrency = company.getCurrency();
 		
 		if(companyCurrency == null)  {
-			throw new AxelorException(String.format("Veuillez selectionner une devise pour la société %s", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2), 
 					company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		

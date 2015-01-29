@@ -24,12 +24,14 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -81,7 +83,7 @@ public class VentilateState extends WorkflowInvoice {
 		
 		if(all().filter("self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3", 
 				InvoiceRepository.STATUS_VENTILATED, invoice.getInvoiceDate(), invoice.getOperationTypeSelect()).count() > 0)  {
-			throw new AxelorException(String.format("La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée"), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_1), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -173,11 +175,11 @@ public class VentilateState extends WorkflowInvoice {
 			break;
 			
 		default:
-			throw new AxelorException(String.format("Type de facture absent de la facture"), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.JOURNAL_1),invoice.getInvoiceId()), IException.MISSING_FIELD);
 		}
 		
 		if (invoice.getInvoiceId() == null) {
-			throw new AxelorException(String.format("La société %s n'a pas de séquence de facture ou d'avoir", invoice.getCompany().getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.VENTILATE_STATE_2), invoice.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 	}

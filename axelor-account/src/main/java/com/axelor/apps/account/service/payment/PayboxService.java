@@ -48,6 +48,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PayboxConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PayboxRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.PayboxConfigService;
@@ -57,6 +58,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -248,7 +250,7 @@ public class PayboxService extends PayboxRepository {
 	 */
 	public void checkPayboxPaymentVoucherFields(PaymentVoucher paymentVoucher) throws AxelorException  {
 		if (paymentVoucher.getPaidAmount() == null || paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) > 1)  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Montant réglé pour la saisie paiement %s.", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_1), 
 					GeneralServiceAccount.getExceptionAccountingMsg(), paymentVoucher.getRef()), IException.CONFIGURATION_ERROR);
 		}
 	}
@@ -268,7 +270,7 @@ public class PayboxService extends PayboxRepository {
 		BigDecimal partnerBalance = accountingSituation.getBalanceCustAccount();
 		
 		if(paidAmount.compareTo(partnerBalance) > 0)  {
-			throw new AxelorException(String.format("%s :\n Le montant réglé pour la saisie paiement par CB ne doit pas être supérieur au solde du payeur.", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_2), 
 					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 		}
 
@@ -278,7 +280,7 @@ public class PayboxService extends PayboxRepository {
 	public void checkPaidAmount(PaymentVoucher paymentVoucher) throws AxelorException  {
 		
 		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0 )  {
-			throw new AxelorException(String.format("%s :\n Attention - Vous ne pouvez pas régler un montant supérieur aux factures selectionnées.", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_3), 
 					GeneralServiceAccount.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}
 	
@@ -293,7 +295,7 @@ public class PayboxService extends PayboxRepository {
 	 */
 	public void checkPayboxPartnerFields(Partner partner) throws AxelorException  {
 		if (partner.getEmailAddress().getAddress() == null || partner.getEmailAddress().getAddress().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Email pour le tiers %s.", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_4), 
 					GeneralServiceAccount.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}

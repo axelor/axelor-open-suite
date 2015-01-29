@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineReportRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -40,6 +41,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
@@ -224,7 +226,7 @@ public class MoveLineReportService extends MoveLineReportRepository {
 
 			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_REPORT, moveLineReport.getCompany());
 			if(seq == null)  {  
-				throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Reporting comptable pour la société %s",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_REPORT_1),
 						GeneralServiceAccount.getExceptionAccountingMsg(), moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
 			
@@ -233,7 +235,7 @@ public class MoveLineReportService extends MoveLineReportRepository {
 		else  {
 			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_EXPORT, moveLineReport.getCompany());
 			if(seq == null)  {  
-				throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Export comptable pour la société %s",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_REPORT_2),
 						GeneralServiceAccount.getExceptionAccountingMsg(), moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
 			

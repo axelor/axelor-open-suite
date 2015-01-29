@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -40,6 +41,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class CfonbImportService {
@@ -146,7 +148,7 @@ public class CfonbImportService {
 		this.importFile = FileTool.reader(fileName);
 		
 		if(GeneralService.getGeneral().getTransferAndDirectDebitInterbankCode() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une Liste des codes motifs de rejet/retour relatifs aux Virements, Prélèvements et TIP dans l'administration générale",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_1),
 					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);	
 		}
 		
@@ -162,14 +164,14 @@ public class CfonbImportService {
 		while(this.importFile != null && this.importFile.size() != 0)  {
 			headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
 			if(headerCFONB == null)  {
-				throw new AxelorException(String.format("%s :\n Il manque un enregistrement en-tête dans le fichier %s",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_2),
 						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(headerCFONB);
 			
 			multiDetailsCFONB = this.getDetailsCFONB(this.importFile, operation, optionalOperation);
 			if(multiDetailsCFONB.isEmpty())  {
-				throw new AxelorException(String.format("%s :\n Il manque un ou plusieurs enregistrements détail dans le fichier %s",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_3),
 						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			for(String detail : multiDetailsCFONB)  {
@@ -178,7 +180,7 @@ public class CfonbImportService {
 			
 			endingCFONB = this.getEndingCFONB(this.importFile, operation, optionalOperation);
 			if(endingCFONB == null)  {
-				throw new AxelorException(String.format("%s :\n Il manque un enregistrement fin dans le fichier %s",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_4),
 						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(endingCFONB);
@@ -220,7 +222,7 @@ public class CfonbImportService {
 		this.importFile = FileTool.reader(fileName);
 		
 		if(GeneralService.getGeneral().getTransferAndDirectDebitInterbankCode() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une Liste des codes motifs de rejet/retour relatifs aux Virements, Prélèvements et TIP dans l'administration générale",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_1),
 					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);	
 		}
 		
@@ -236,14 +238,14 @@ public class CfonbImportService {
 		while(this.importFile != null && this.importFile.size() != 0)  {
 			headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
 			if(headerCFONB == null)  {
-				throw new AxelorException(String.format("%s :\n Il manque un enregistrement en-tête dans le fichier %s",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_2),
 						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(headerCFONB);
 			
 			multiDetailsCFONB = this.getDetailsCFONB(this.importFile, operation, optionalOperation);
 			if(multiDetailsCFONB.isEmpty())  {
-				throw new AxelorException(String.format("%s :\n Il manque un ou plusieurs enregistrements détail dans le fichier %s",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_3),
 						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			for(String detail : multiDetailsCFONB)  {
@@ -252,7 +254,7 @@ public class CfonbImportService {
 			
 			endingCFONB = this.getEndingCFONB(this.importFile, operation, optionalOperation);
 			if(endingCFONB == null)  {
-				throw new AxelorException(String.format("%s :\n Il manque un enregistrement fin dans le fichier %s",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_4),
 						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(endingCFONB);
@@ -317,7 +319,7 @@ public class CfonbImportService {
 				new Object[]{totalAmount,totalRecord});
 		
 		if(totalAmount != totalRecord)  {
-			throw new AxelorException(String.format("%s :\n Le montant total de l'enregistrement suivant n'est pas correct (fichier %s) :\n %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_5),
 					GeneralServiceAccount.getExceptionAccountingMsg(),fileName, endingCFONB), IException.CONFIGURATION_ERROR);
 		}
 	}
@@ -416,7 +418,7 @@ public class CfonbImportService {
 		else if(code.equals(this.cfonbConfig.getIpoAndChequeOperationCodeImportCFONB()))  {
 			return paymentModeService.findByCode("TIC");
 		}
-		throw new AxelorException(String.format("%s :\n Aucun mode de paiement trouvé pour le code %s et la société %s",
+		throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_6),
 				GeneralServiceAccount.getExceptionAccountingMsg(), code, company.getName()), IException.INCONSISTENCY);
 	}
 	

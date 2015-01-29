@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.repo.ReminderRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.MoveLineService;
@@ -47,6 +48,7 @@ import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -346,7 +348,7 @@ public class ReminderService extends ReminderRepository{
 		}
 		
 		else  {
-			throw new AxelorException(String.format("%s :\nTiers %s, Société %s : Pas de situation comptable.", 
+			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_1), 
 					GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
@@ -411,7 +413,7 @@ public class ReminderService extends ReminderRepository{
 					reminder.setReferenceDate(referenceDate);	
 				}
 				else {
-					throw new AxelorException(String.format("%s :\nTiers %s, Société %s : Date de reference non determinée.", 
+					throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_2), 
 							GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				if(reminder.getReminderMethod() == null)  {
@@ -420,7 +422,7 @@ public class ReminderService extends ReminderRepository{
 						rss.reminderSession(reminder);
 					}
 					else  {
-						throw new AxelorException(String.format("%s :\nTiers %s, Société %s : Méthode de relance absente pour la configuration", 
+						throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_3),  
 								GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 					}
 				}
@@ -438,7 +440,7 @@ public class ReminderService extends ReminderRepository{
 					LOG.debug("Tiers {}, Société {} - Niveau de relance en attente ", partner.getName(), company.getName());	
 					// TODO Alarm ?
 					TraceBackService.trace(new AxelorException(
-						String.format("%s :\nTiers %s, Société %s : Niveau de relance en attente de validation", 
+						String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_4),  
 								GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.INCONSISTENCY));
 				}	
 			}

@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.InterbankPaymentOrderRejectImportService;
@@ -49,6 +50,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
@@ -207,7 +209,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 	public void testAccountingBatchBankDetails(AccountingBatch accountingBatch) throws AxelorException  {
 		
 		if(accountingBatch.getBankDetails() == null) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le configurateur de batch %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_STRATEGY_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(),accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 		

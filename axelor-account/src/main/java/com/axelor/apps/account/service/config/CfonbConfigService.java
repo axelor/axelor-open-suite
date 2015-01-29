@@ -19,10 +19,12 @@ package com.axelor.apps.account.service.config;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CfonbConfig;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class CfonbConfigService extends AccountConfigService  {
 	
@@ -31,7 +33,7 @@ public class CfonbConfigService extends AccountConfigService  {
 		CfonbConfig cfonbConfig = accountConfig.getCfonbConfig();
 		
 		if(cfonbConfig == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -58,7 +60,7 @@ public class CfonbConfigService extends AccountConfigService  {
 		String senderRecordCodeExportCFONB = cfonbConfig.getSenderRecordCodeExportCFONB();
 		
 		if(senderRecordCodeExportCFONB == null || senderRecordCodeExportCFONB.isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement émetteur CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_2),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -69,7 +71,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getSenderNumExportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getSenderNumExportCFONB() == null || cfonbConfig.getSenderNumExportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Numéro d'émetteur CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_3),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -78,7 +80,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getSenderNameCodeExportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getSenderNameCodeExportCFONB() == null || cfonbConfig.getSenderNameCodeExportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Nom/Raison sociale émetteur CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_4),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -87,7 +89,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getRecipientRecordCodeExportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getRecipientRecordCodeExportCFONB() == null || cfonbConfig.getRecipientRecordCodeExportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement destinataire CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_5),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -96,7 +98,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getTotalRecordCodeExportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getTotalRecordCodeExportCFONB() == null || cfonbConfig.getTotalRecordCodeExportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement total CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_6),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -105,7 +107,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getTransferOperationCodeExportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getTransferOperationCodeExportCFONB() == null || cfonbConfig.getTransferOperationCodeExportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération Virement CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_7),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -114,7 +116,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getDirectDebitOperationCodeExportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getDirectDebitOperationCodeExportCFONB() == null || cfonbConfig.getDirectDebitOperationCodeExportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération Prélèvement CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_8),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -125,7 +127,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getHeaderRecordCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getHeaderRecordCodeImportCFONB() == null || cfonbConfig.getHeaderRecordCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement en-tête CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_9),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -134,7 +136,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getDetailRecordCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getDetailRecordCodeImportCFONB() == null || cfonbConfig.getDetailRecordCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement detail CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_10),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -143,7 +145,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getEndingRecordCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getEndingRecordCodeImportCFONB() == null || cfonbConfig.getEndingRecordCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement fin CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_11),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -152,7 +154,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getTransferOperationCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getTransferOperationCodeImportCFONB() == null || cfonbConfig.getTransferOperationCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération Virement rejeté CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_12),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -161,7 +163,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getDirectDebitOperationCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getDirectDebitOperationCodeImportCFONB() == null || cfonbConfig.getDirectDebitOperationCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération Prélèvement impayé CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_13),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -170,7 +172,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getIpoRejectOperationCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getIpoRejectOperationCodeImportCFONB() == null || cfonbConfig.getIpoRejectOperationCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération TIP impayé CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_14),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -179,7 +181,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getIpoAndChequeOperationCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getIpoAndChequeOperationCodeImportCFONB() == null || cfonbConfig.getIpoAndChequeOperationCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération TIP + chèque CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_15),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -188,7 +190,7 @@ public class CfonbConfigService extends AccountConfigService  {
 	public void getIpoOperationCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
 		
 		if(cfonbConfig.getIpoOperationCodeImportCFONB() == null || cfonbConfig.getIpoOperationCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération TIP CFONB pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_16),
 					GeneralServiceAccount.getExceptionAccountingMsg(),cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 		

@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.ReportedBalance;
 import com.axelor.apps.account.db.ReportedBalanceLine;
 import com.axelor.apps.account.db.repo.ReportedBalanceLineRepository;
 import com.axelor.apps.account.db.repo.ReportedBalanceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -46,6 +47,7 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -82,7 +84,7 @@ public class YearService extends YearRepository {
 		}
 		Company company = year.getCompany();
 		if(company == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez renseigner une société pour l'année fiscale %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.YEAR_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(),year.getName()), IException.CONFIGURATION_ERROR);
 		}
 

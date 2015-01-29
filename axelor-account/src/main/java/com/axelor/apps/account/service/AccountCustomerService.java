@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -43,6 +44,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -352,7 +354,7 @@ public class AccountCustomerService {
 		
 		if(customerAccount == null)  {
 			
-			throw new AxelorException(String.format("%s :\nCompte comptable Client manquant pour la société %s", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1), 
 					GeneralServiceAccount.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
 			
 		}
@@ -383,7 +385,7 @@ public class AccountCustomerService {
 		
 		if(supplierAccount == null)  {
 			
-			throw new AxelorException(String.format("%s :\nCompte comptable Fournisseur manquant pour la société %s", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2), 
 					GeneralServiceAccount.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
 			
 		}

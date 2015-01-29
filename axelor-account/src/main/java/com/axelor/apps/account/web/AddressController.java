@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
@@ -36,6 +37,7 @@ import com.axelor.apps.base.db.PartnerList;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -105,14 +107,14 @@ public class AddressController {
 				url = "http://localhost/HTML/gmaps_xhr.html?file=latlng_"+partnerList.getId()+".csv";
 
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Sales map");
+			mapView.put("title", I18n.get(IExceptionMessage.ADDRESS_1));
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);
 			//response.reload = true
 
 		} else {
-			response.setFlash("Not implemented for OSM");
+			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_2));
 		}
 	}
 }

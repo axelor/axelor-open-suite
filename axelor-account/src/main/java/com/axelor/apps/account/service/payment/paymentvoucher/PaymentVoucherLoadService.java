@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentInvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
@@ -40,6 +41,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -151,7 +153,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 		
 		PaymentInvoiceToPay paymentInvoiceToPay = new PaymentInvoiceToPay();
 		if (paymentVoucher.getPaidAmount() == null)  {
-			throw new AxelorException(String.format("%s :\n Merci de renseigner le montant payé svp.", GeneralServiceAccount.getExceptionAccountingMsg()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1), GeneralServiceAccount.getExceptionAccountingMsg()), IException.MISSING_FIELD);
 		}
 		
 		if(moveLine == null)  {  return paymentInvoiceToPayList;  }
@@ -254,7 +256,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			BigDecimal paidAmount = BigDecimal.ZERO;
 			if (paymentVoucherContext.getPaidAmount() == null){
 				throw new AxelorException(
-					String.format("%s :\n Merci de renseigner le montant payé svp.", GeneralServiceAccount.getExceptionAccountingMsg()), IException.MISSING_FIELD);			
+					String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1), GeneralServiceAccount.getExceptionAccountingMsg()), IException.MISSING_FIELD);			
 			}
 			else{
 				paidAmount = paymentVoucherContext.getPaidAmount();

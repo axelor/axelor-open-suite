@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.ReimbursementService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
@@ -47,6 +48,7 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class CfonbExportService {
@@ -488,7 +490,7 @@ public class CfonbExportService {
 		BankDetails bankDetails = reimbursement.getBankDetails();
  
 		if(bankDetails == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le remboursement %s",
+			throw new AxelorException(String.format("%s :\n "+I18n.get(IExceptionMessage.CFONB_EXPORT_1)+" %s",
 					GeneralServiceAccount.getExceptionAccountingMsg(),reimbursement.getRef()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -520,7 +522,7 @@ public class CfonbExportService {
 		}
 		
 		if(bankDetails == null) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
 					GeneralServiceAccount.getExceptionAccountingMsg(),partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -554,7 +556,7 @@ public class CfonbExportService {
 			bankDetails = partner.getBankDetails();
 			partnerName = this.getPayeurPartnerName(invoice.getPartner());			// Nom/Raison sociale du débiteur
 			if(bankDetails == null) {
-				throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
 						GeneralServiceAccount.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
 			}
 		}
@@ -568,7 +570,7 @@ public class CfonbExportService {
 				bankDetails = partner.getBankDetails();
 			}
 			if(bankDetails == null) {
-				throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
 						GeneralServiceAccount.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
 			}
 		}
@@ -615,7 +617,7 @@ public class CfonbExportService {
 		Partner partner = invoice.getPartner();
 		BankDetails bankDetails = partner.getBankDetails();
 		if(bankDetails == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
 					GeneralServiceAccount.getExceptionAccountingMsg(),partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 	
@@ -829,7 +831,7 @@ public class CfonbExportService {
 		try {
 			FileTool.writer(destinationFolder, fileName, cFONB);
 		} catch (IOException e) {
-			throw new AxelorException(String.format("%s :\n Erreur detectée pendant l'ecriture du fichier CFONB : %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_2),
 					GeneralServiceAccount.getExceptionAccountingMsg(),e), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -948,19 +950,19 @@ public class CfonbExportService {
 	 */
 	public void testBankDetailsField(BankDetails bankDetails) throws AxelorException  {
 		if(bankDetails.getSortCode() == null || bankDetails.getSortCode().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code Guichet pour le RIB %s du tiers payeur %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_3),
 					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(bankDetails.getAccountNbr() == null || bankDetails.getAccountNbr().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Numéro de compte pour le RIB %s du tiers payeur %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_4),
 					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(bankDetails.getBankCode() == null || bankDetails.getBankCode().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code Banque pour le RIB %s du tiers payeur %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_5),
 					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(bankDetails.getBankAddress() == null || bankDetails.getBankAddress().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une Adresse de Banque pour le RIB %s du tiers payeur %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_6),
 					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 	}

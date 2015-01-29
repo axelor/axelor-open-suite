@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
@@ -36,6 +37,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 
 public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 
@@ -102,13 +104,13 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 				
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Batch d'import des paiements par TIP et TIP chèque %s", batch.getId()), e, e.getcategory()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_1), batch.getId()), e, e.getcategory()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Batch d'import des paiements par TIP et TIP chèque %s", batch.getId()), e), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_1), batch.getId()), e), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -136,13 +138,13 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 				
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Paiement de la facture %s", payment[1]), e, e.getcategory()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_2), payment[1]), e, e.getcategory()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Paiement de la facture %s", payment[1]), e), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_2), payment[1]), e), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -165,10 +167,10 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 	@Override
 	protected void stop() {
 
-		String comment = "Compte rendu de l'import des paiements par TIP et TIP chèque :\n";
-		comment += String.format("\t* %s paiement(s) traité(s)\n", batch.getDone());
-		comment += String.format("\t* Montant total : %s \n", this.totalAmount);
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		String comment = I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_3)+"\n";
+		comment += String.format("\t*"+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_4)+"\n", batch.getDone());
+		comment += String.format("\t*"+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+": %s \n", this.totalAmount);
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 		comment += String.format("\t* ------------------------------- \n");
 		comment += String.format("\t* %s ", updateCustomerAccountLog);

@@ -19,8 +19,10 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class PaymentVoucherToolService  {
 	
@@ -54,7 +56,7 @@ public class PaymentVoucherToolService  {
 			break;
 		
 		default:
-			throw new AxelorException(String.format("Type de la saisie paiement absent de la saisie paiement %s", paymentVoucher.getRef()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef()), IException.MISSING_FIELD);
 		}	
 		
 		return isDebitToPay;
@@ -93,7 +95,7 @@ public class PaymentVoucherToolService  {
 			break;
 		
 		default:
-			throw new AxelorException(String.format("Type de la saisie paiement absent de la saisie paiement %s", paymentVoucher.getRef()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef()), IException.MISSING_FIELD);
 		}	
 		
 		return isPurchase;

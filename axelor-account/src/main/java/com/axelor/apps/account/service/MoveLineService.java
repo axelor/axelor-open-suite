@@ -42,12 +42,14 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -191,10 +193,10 @@ public class MoveLineService extends MoveLineRepository{
 		int moveLineId = 1;
 		
 		if (partner == null)  {
-			throw new AxelorException(String.format("Tiers absent de la facture %s", invoice.getInvoiceId()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_1), invoice.getInvoiceId()), IException.MISSING_FIELD);
 		}
 		if (account2 == null)  {
-			throw new AxelorException(String.format("Compte tiers absent de la facture %s", invoice.getInvoiceId()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_2), invoice.getInvoiceId()), IException.MISSING_FIELD);
 		}
 		
 		moveLines.add( this.createMoveLine(move, partner, account2, invoice.getInTaxTotal(), isDebitCustomer, isMinus, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId()));
@@ -207,7 +209,7 @@ public class MoveLineService extends MoveLineRepository{
 			Product product = invoiceLine.getProduct();
 			
 			if(product == null)  {
-				throw new AxelorException(String.format("Produit absent de la ligne de facture, facture : %s (société : %s)", 
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_3), 
 						invoice.getInvoiceId(), company.getName()), IException.CONFIGURATION_ERROR);
 			}
 			
@@ -216,13 +218,13 @@ public class MoveLineService extends MoveLineRepository{
 			account2 = accountManagementService.getProductAccount(accountManagement, isPurchase);
 			
 			if(account2 == null)  {
-				throw new AxelorException(String.format("Compte comptable absent de la configuration pour la ligne : %s (société : %s)", 
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_4),  
 						invoiceLine.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 			}
 			
 			for (AnalyticAccountManagement analyticAccountManagement : accountManagement.getAnalyticAccountManagementList()){
 				if(analyticAccountManagement.getAnalyticAccount() == null){
-					throw new AxelorException(String.format("Le compte analytique %s associé au compte comptable de vente pour le produit %s n'est pas configuré: (société : %s)", 
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_5), 
 							analyticAccountManagement.getAnalyticAxis().getName(),invoiceLine.getProductName(), company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				else{
@@ -252,7 +254,7 @@ public class MoveLineService extends MoveLineRepository{
 			exTaxTotal = invoiceLineTax.getAccountingTaxTotal();
 			
 			if (account2 == null)  {
-				throw new AxelorException(String.format("Compte comptable absent de la ligne de taxe : %s (société : %s)", 
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_6), 
 						tax.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 			}
 			

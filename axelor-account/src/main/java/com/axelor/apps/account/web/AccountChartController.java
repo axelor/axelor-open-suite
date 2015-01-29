@@ -24,10 +24,12 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountChart;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountChartService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -54,13 +56,13 @@ public class AccountChartController {
 		List<? extends Account> accountList = accountRepo.all().filter("self.company.id = ?1 AND self.parent != null", company.getId()).fetch();
 		if(accountList.isEmpty()){
 			if(acts.installAccountChart(act,company,accountConfig))
-				response.setFlash("The chart of account has been loaded successfully");
+				response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_1));
 			else
-				response.setFlash("Error in account chart import please check log");
+				response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_2));
 			response.setReload(true);
 		}
 		else 
-			response.setFlash("A chart or chart structure of accounts already exists, please delete the hierarchy between accounts in order to import a new chart.");
+			response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_3));
 		
 	}
 }

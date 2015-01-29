@@ -27,10 +27,12 @@ import com.axelor.apps.account.service.debtrecovery.PayerQualityService;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -73,7 +75,7 @@ public class GeneralController {
 			if(ccl.isSelected() && ccl.getToDate() == null & cclCoverd == null){
 				BigDecimal currentRate = ccs.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
 				if(currentRate.compareTo(new BigDecimal(-1)) == 0){
-					response.setFlash("Currency conversion webservice not working");
+					response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
 					break;
 				}
 				ccl = cclRepo.find(ccl.getId());

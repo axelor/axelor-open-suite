@@ -37,6 +37,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.DirectDebitManagementRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -54,6 +55,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class PaymentScheduleImportService {
@@ -133,7 +135,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		Journal rejectJournal = accountConfigService.getRejectJournal(accountConfig);
 		
 		if(rejectJournal.getSequence() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de rejet des prélèvements\n pour la société %s pour le journal %s", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_4), 
 					GeneralServiceAccount.getExceptionAccountingMsg(), company.getName(), rejectJournal.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}

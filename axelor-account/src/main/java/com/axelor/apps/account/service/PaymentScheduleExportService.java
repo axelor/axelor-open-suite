@@ -40,6 +40,7 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.DirectDebitManagementRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -56,6 +57,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -144,7 +146,7 @@ public class PaymentScheduleExportService{
 			bankDetails = partner.getBankDetails();
 		}
 		if(bankDetails == null) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour l'échéancier de paiement %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(),paymentSchedule.getScheduleId()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
@@ -157,7 +159,7 @@ public class PaymentScheduleExportService{
 		BankDetails bankDetails = invoice.getPartner().getBankDetails();
 		
 		if(bankDetails == null) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
 					GeneralServiceAccount.getExceptionAccountingMsg(), invoice.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
@@ -170,7 +172,7 @@ public class PaymentScheduleExportService{
 		BankDetails bankDetails = partner.getBankDetails();
 		
 		if(bankDetails == null) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
 					GeneralServiceAccount.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
@@ -187,7 +189,7 @@ public class PaymentScheduleExportService{
 	public void checkDebitDate(AccountingBatch accountingBatch) throws AxelorException  {
 		if(accountingBatch.getDebitDate() == null)  {
 			throw new AxelorException(String.format(
-					"%s :\n Erreur : Veuillez configurer une date de prélèvement pour la configuration de batch %s"
+					I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_3)
 					,GeneralServiceAccount.getExceptionAccountingMsg(),accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 	}

@@ -53,6 +53,7 @@ import com.axelor.apps.account.db.repo.IrrecoverableCustomerLineRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableRepository;
 import com.axelor.apps.account.db.repo.ManagementObjectRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -66,6 +67,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -377,12 +379,12 @@ public class IrrecoverableService extends IrrecoverableRepository{
 					
 				} catch (AxelorException e) {
 					anomaly++;
-					TraceBackService.trace(new AxelorException(String.format("Facture %s", invoice.getInvoiceId()), e, e.getcategory()), IException.IRRECOVERABLE, irrecoverable.getId());
+					TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", invoice.getInvoiceId()), e, e.getcategory()), IException.IRRECOVERABLE, irrecoverable.getId());
 					LOG.error("Bug(Anomalie) généré(e) pour la facture : {}", invoice.getInvoiceId());	
 					
 				} catch (Exception e) {
 					anomaly++;
-					TraceBackService.trace(new Exception(String.format("Facture %s", invoice.getInvoiceId()), e), IException.IRRECOVERABLE, irrecoverable.getId());
+					TraceBackService.trace(new Exception(String.format(I18n.get("Invoice")+" %s", invoice.getInvoiceId()), e), IException.IRRECOVERABLE, irrecoverable.getId());
 					LOG.error("Bug(Anomalie) généré(e) pour la facture : {}", invoice.getInvoiceId());
 		
 				} finally {
@@ -414,12 +416,12 @@ public class IrrecoverableService extends IrrecoverableRepository{
 					
 				} catch (AxelorException e) {
 					anomaly++;
-					TraceBackService.trace(new AxelorException(String.format("Ligne d'échéancier %s", paymentScheduleLine.getName()), e, e.getcategory()), IException.IRRECOVERABLE, irrecoverable.getId());
+					TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_1), paymentScheduleLine.getName()), e, e.getcategory()), IException.IRRECOVERABLE, irrecoverable.getId());
 					LOG.error("Bug(Anomalie) généré(e) pour la ligne d'échéancier : {}", paymentScheduleLine.getName());
 					
 				} catch (Exception e) {
 					anomaly++;
-					TraceBackService.trace(new Exception(String.format("Ligne d'échéancier %s", paymentScheduleLine.getName()), e), IException.IRRECOVERABLE, irrecoverable.getId());
+					TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_1), paymentScheduleLine.getName()), e), IException.IRRECOVERABLE, irrecoverable.getId());
 					LOG.error("Bug(Anomalie) généré(e) pour la ligne d'échéancier : {}", paymentScheduleLine.getName());
 		
 				} finally {
@@ -445,7 +447,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		
 		Move move = this.createIrrecoverableMove(paymentScheduleLine.getRejectMoveLine());
 		if(move == null)  {
-			throw new AxelorException(String.format("%s :\n Erreur généré lors de la création de l'écriture de passage en irrécouvrable %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_2),
 					GeneralServiceAccount.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}
 		moveService.validateMove(move);
@@ -463,7 +465,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		// Ajout de l'écriture générée
 		Move move = this.createIrrecoverableMove(invoice, prorataRate, invoice.getRejectMoveLine() != null);
 		if(move == null)  {
-			throw new AxelorException(String.format("%s :\n Erreur généré lors de la création de l'écriture de passage en irrécouvrable %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_2),
 					GeneralServiceAccount.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}
 		moveService.validateMove(move);
@@ -809,7 +811,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		// Getting customer MoveLine from Facture
 		MoveLine customerMoveLine = moveService.getCustomerMoveLineByQuery(invoice);
 		if(customerMoveLine == null)  {
-			throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_3),
 					GeneralServiceAccount.getExceptionAccountingMsg(), invoice.getInvoiceId()), IException.INCONSISTENCY);
 		}
 		customerMoveLine.setIrrecoverableStatusSelect(MoveLineService.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
@@ -909,7 +911,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		
 		String seq = sequenceService.getSequenceNumber(IAdministration.IRRECOVERABLE, company);
 		if(seq == null) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de Passage en irrécouvrable pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_4),
 					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -939,7 +941,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 			MoveLine moveLine = moveService.getCustomerMoveLineByQuery(invoice);
 			
 			if(moveLine == null)  {
-				throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_3),
 						GeneralServiceAccount.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
 			}
 			
@@ -965,7 +967,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		MoveLine moveLine = moveService.getCustomerMoveLineByQuery(invoice);
 		
 		if(moveLine == null)  {
-			throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_3),
 					GeneralServiceAccount.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
 		}
 		

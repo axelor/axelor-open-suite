@@ -23,11 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 
 public class BatchVentilation extends BatchWkf {
 
@@ -52,12 +54,12 @@ public class BatchVentilation extends BatchWkf {
 
 			} catch (AxelorException e) {
 
-				TraceBackService.trace(new AxelorException(String.format("Facture %s", invoice.getInvoiceId()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Facture")+" %s", invoice.getInvoiceId()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
 				incrementAnomaly();
 
 			} catch (Exception e) {
 
-				TraceBackService.trace(new Exception(String.format("Facture %s", invoice.getInvoiceId()), e), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Facture")+" %s", invoice.getInvoiceId()), e), IException.INVOICE_ORIGIN, batch.getId());
 				incrementAnomaly();
 
 			} finally {
@@ -73,9 +75,9 @@ public class BatchVentilation extends BatchWkf {
 	@Override
 	protected void stop() {
 
-		String comment = "Compte rendu de la ventilation de facture :\n";
-		comment += String.format("\t* %s facture(s) ventilée(s)\n", batch.getDone() );
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly() );
+		String comment = I18n.get(IExceptionMessage.BATCH_VENTILATION_1);
+		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_VENTILATION_2)+"\n", batch.getDone() );
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly() );
 		
 		super.stop();
 		addComment(comment);

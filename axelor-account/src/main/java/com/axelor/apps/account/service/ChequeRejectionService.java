@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -36,6 +37,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -162,7 +164,7 @@ public class ChequeRejectionService extends ChequeRejectionRepository{
 		String seq = sequenceService.getSequenceNumber(IAdministration.CHEQUE_REJECT, chequeRejection.getCompany());
 		
 		if(seq == null)   {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Rejet de chèque pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHECK_REJECTION_1),
 					GeneralServiceAccount.getExceptionAccountingMsg(),chequeRejection.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
