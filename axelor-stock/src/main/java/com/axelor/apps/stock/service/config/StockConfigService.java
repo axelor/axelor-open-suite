@@ -21,8 +21,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class StockConfigService extends StockConfigRepository
 {
@@ -32,7 +34,7 @@ public class StockConfigService extends StockConfigRepository
 		StockConfig stockConfig = company.getStockConfig();
 		
 		if(stockConfig == null)  {
-			throw new AxelorException(String.format("Veuillez configurer le module stock pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_CONFIG_1),
 					company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -47,7 +49,7 @@ public class StockConfigService extends StockConfigRepository
 	public Location getInventoryVirtualLocation(StockConfig stockConfig) throws AxelorException  {
 		
 		if(stockConfig.getInventoryVirtualLocation() == null)  {
-			throw new AxelorException(String.format("Veuillez configurer un Emplacement Virtuel Inventaire pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_CONFIG_2),
 					stockConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -58,7 +60,7 @@ public class StockConfigService extends StockConfigRepository
 	public Location getSupplierVirtualLocation(StockConfig stockConfig) throws AxelorException  {
 		
 		if(stockConfig.getSupplierVirtualLocation() == null)  {
-			throw new AxelorException(String.format("Veuillez configurer un Emplacement Virtuel Fournisseur pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_CONFIG_3),
 					stockConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -69,7 +71,7 @@ public class StockConfigService extends StockConfigRepository
 	public Location getCustomerVirtualLocation(StockConfig stockConfig) throws AxelorException  {
 		
 		if(stockConfig.getCustomerVirtualLocation() == null)  {
-			throw new AxelorException(String.format("Veuillez configurer un Emplacement Virtuel Client pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_CONFIG_4),
 					stockConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		

@@ -34,8 +34,10 @@ import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -69,7 +71,7 @@ public class StockMoveController {
 			
 			if(newSeq != null)  {
 				
-				response.setFlash(String.format("A partial stock move has been generated (%s)", newSeq));
+				response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_9), newSeq));
 				
 			}
 		}
@@ -143,7 +145,7 @@ public class StockMoveController {
 				
 				String title = " ";
 				if(stockMove.getStockMoveSeq() != null)  {
-					title += lstSelectedMove == null ? "StockMove "+stockMove.getStockMoveSeq():"StockMove(s)";
+					title += lstSelectedMove == null ? I18n.get("StockMove")+" "+stockMove.getStockMoveSeq():I18n.get("StockMove(s)");
 				}
 				
 				Map<String,Object> mapView = new HashMap<String,Object>();
@@ -157,7 +159,7 @@ public class StockMoveController {
 				response.setFlash(urlNotExist);
 			}
 		}else{
-			response.setFlash("Please select the StockMove(s) to print.");
+			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_10));
 		}	
 	}
 	
@@ -176,9 +178,9 @@ public class StockMoveController {
 		if(toAddress == null)
 			toAddress =  stockMove.getCompany().getAddress();
 		if(fromAddress == null || toAddress == null)
-			msg = "Company address is empty.";
+			msg = I18n.get(IExceptionMessage.STOCK_MOVE_11);
 		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_OSM)
-			msg = "Feature currently not available with Open Street Maps.";
+			msg = I18n.get(IExceptionMessage.STOCK_MOVE_12);
 		if(msg.isEmpty()){
 			String dString = fromAddress.getAddressL4()+" ,"+fromAddress.getAddressL6();
 			String aString = toAddress.getAddressL4()+" ,"+toAddress.getAddressL6();
@@ -189,12 +191,12 @@ public class StockMoveController {
 			Map<String, Object> result = Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
 			if(result != null){
 				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", "Map");
+				mapView.put("title", I18n.get("Map"));
 				mapView.put("resource", result.get("url"));
 				mapView.put("viewType", "html");
 			    response.setView(mapView);
 			}
-			else response.setFlash(String.format("<B>%s or %s</B> not found",dString,aString));
+			else response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_13),dString,aString));
 		}else response.setFlash(msg);
 		
 	}
@@ -202,13 +204,13 @@ public class StockMoveController {
 	public void  splitStockMoveLinesUnit(ActionRequest request, ActionResponse response) {
 		List<StockMoveLine> stockMoveLines = (List<StockMoveLine>) request.getContext().get("stockMoveLineList");
 		if(stockMoveLines == null){
-			response.setFlash("No move lines to split");
+			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
 			return;
 		}
 		Boolean selected = Beans.get(StockMoveService.class).splitStockMoveLinesUnit(stockMoveLines, new BigDecimal(1));
 		
 		if(!selected)
-			response.setFlash("Please select lines to split");
+			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
 		response.setReload(true);
 		response.setCanClose(true);
 	}
@@ -216,17 +218,17 @@ public class StockMoveController {
 	public void  splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
 		List<HashMap> stockMoveLines = (List<HashMap>) request.getContext().get("stockMoveLineList");
 		if(stockMoveLines == null){
-			response.setFlash("No move lines to split");
+			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
 			return;
 		}
 		Integer splitQty = (Integer)request.getContext().get("splitQty");
 		if(splitQty < 1){
-			response.setFlash("Please entry proper split qty");
+			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
 			return ;
 		}
 		Boolean selected = Beans.get(StockMoveService.class).splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
 		if(!selected)
-			response.setFlash("Please select lines to split");
+			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
 		response.setReload(true);
 		response.setCanClose(true);
 	}

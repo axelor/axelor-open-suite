@@ -35,10 +35,12 @@ import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -64,7 +66,7 @@ public class LocationController {
 			Location findLocation = locationRepo.all().filter("company = ? and typeSelect = ? and isDefaultLocation = ?", location.getCompany(),location.getTypeSelect(),location.getIsDefaultLocation()).fetchOne();
 			
 			if(findLocation != null) {
-				response.setFlash("Il existe déjà un entrepot par défaut, veuillez d'abord désactiver l'entrepot "+findLocation.getName());
+				response.setFlash(I18n.get(IExceptionMessage.LOCATION_1)+" "+findLocation.getName());
 				response.setValue("isDefaultLocation", false);
 			}
 		}
@@ -168,7 +170,7 @@ public class LocationController {
 				
 				String title = " ";
 				if(location.getName() != null)  {
-					title += lstSelectedLocations == null ? "Stock "+location.getName():"Stocks";
+					title += lstSelectedLocations == null ? I18n.get("Stock")+" "+location.getName():I18n.get("Stocks");
 				}
 				
 				Map<String,Object> mapView = new HashMap<String,Object>();
@@ -182,7 +184,7 @@ public class LocationController {
 				response.setFlash(urlNotExist);
 			}
 		}else{
-			response.setFlash("Please select the Stock Location(s) to print.");
+			response.setFlash(I18n.get(IExceptionMessage.LOCATION_2));
 		}	
 	}
 	

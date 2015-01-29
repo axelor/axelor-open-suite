@@ -35,11 +35,13 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -81,7 +83,7 @@ public class InventoryController {
 		if (urlNotExist == null){
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Inventory "+inventory.getInventorySeq());
+			mapView.put("title", I18n.get("Inventory")+" "+inventory.getInventorySeq());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);
@@ -98,7 +100,7 @@ public class InventoryController {
 		char separator = ',';
 		
 		inventoryService.importFile(filePath, separator, inventory);
-		response.setFlash("File "+filePath+" successfully imported.");
+		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),filePath));
 	}
 	
 	public void generateStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -113,14 +115,14 @@ public class InventoryController {
 		if(inventory != null) {
 			List<InventoryLine> inventoryLineList = inventoryService.fillInventoryLineList(inventory);
 			if(inventoryLineList == null)  {
-				response.setFlash("Il n'y a aucun produit contenu dans l'emplacement de stock.");
+				response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
 			}
 			else {
 				if(inventoryLineList.size() > 0) {
-					response.setFlash("La liste des lignes d'inventaire a été rempli.");
+					response.setFlash(I18n.get(IExceptionMessage.INVENTORY_10));
 				}
 				else  {
-					response.setFlash("Aucune lignes d'inventaire n'a été créée.");
+					response.setFlash(I18n.get(IExceptionMessage.INVENTORY_11));
 				}
 			}
 		}

@@ -28,8 +28,10 @@ import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.repo.TrackingNumberRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -88,7 +90,7 @@ public class TrackingNumberService extends TrackingNumberRepository{
 		TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
 		
 		if (trackingNumberConfiguration.getSequence() == null)  {
-			throw new AxelorException(String.format("Aucune séquence configurée pour les Numéros de suivi pour le produit %s ",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TRACKING_NUMBER_1),
 					company.getName(), product.getCode()), IException.CONFIGURATION_ERROR);
 		}
 		

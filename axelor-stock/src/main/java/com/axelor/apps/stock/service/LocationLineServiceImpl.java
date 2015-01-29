@@ -31,8 +31,10 @@ import com.axelor.apps.stock.db.IMinStockRules;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -112,7 +114,7 @@ public class LocationLineServiceImpl extends LocationLineRepository implements L
 	
 	public void checkStockMin(LocationLine locationLine, boolean isDetailLocationLine) throws AxelorException  {
 		if(!isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() == ILocation.INTERNAL)  {
-			throw new AxelorException(String.format("Les stocks du produit %s (%s) sont insuffisants pour réaliser la livraison", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_1), 
 					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
 		}
 		else if(isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 
@@ -124,7 +126,7 @@ public class LocationLineServiceImpl extends LocationLineRepository implements L
 				trackingNumber = locationLine.getTrackingNumber().getTrackingNumberSeq();
 			}
 			
-			throw new AxelorException(String.format("Les stocks du produit %s (%s), numéro de suivi {}  sont insuffisants pour réaliser la livraison", 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_2), 
 					locationLine.getProduct().getName(), locationLine.getProduct().getCode(), trackingNumber), IException.CONFIGURATION_ERROR);
 		}
 	}

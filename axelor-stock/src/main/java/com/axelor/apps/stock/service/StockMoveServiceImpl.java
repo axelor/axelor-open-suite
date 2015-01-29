@@ -38,9 +38,11 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -81,7 +83,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 			case IStockMove.TYPE_INTERNAL:
 				ref = sequenceService.getSequenceNumber(IAdministration.INTERNAL, company);
 				if (ref == null)  {
-					throw new AxelorException(String.format("Aucune séquence configurée pour les mouvements internes de stock pour la société %s",
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_1),
 							company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				break;
@@ -89,7 +91,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 			case IStockMove.TYPE_INCOMING:
 				ref = sequenceService.getSequenceNumber(IAdministration.INCOMING, company);
 				if (ref == null)  {
-					throw new AxelorException(String.format("Aucune séquence configurée pour les receptions de stock pour la société %s",
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_2),
 							company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				break;
@@ -97,13 +99,13 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 			case IStockMove.TYPE_OUTGOING:
 				ref = sequenceService.getSequenceNumber(IAdministration.OUTGOING, company);
 				if (ref == null)  {
-					throw new AxelorException(String.format("Aucune séquence configurée pour les livraisons de stock pour la société %s",
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_3),
 							company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				break;
 			
 			default:
-				throw new AxelorException(String.format("Type de mouvement de stock non déterminé ",
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_4),
 						company.getName()), IException.CONFIGURATION_ERROR);
 		
 		}
@@ -184,11 +186,11 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 		Location toLocation = stockMove.getToLocation();
 		
 		if(fromLocation == null)  {
-			throw new AxelorException(String.format("Aucun emplacement source selectionné pour le mouvement de stock %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_5),
 					stockMove.getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(toLocation == null)  {
-			throw new AxelorException(String.format("Aucun emplacement destination selectionné pour le mouvement de stock %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_6),
 					stockMove.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -301,7 +303,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 		newStockMove.setStatusSelect(IStockMove.STATUS_PLANNED);
 		newStockMove.setRealDate(null);
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
-		newStockMove.setName(newStockMove.getStockMoveSeq() + " Partial stock move (From " + stockMove.getStockMoveSeq() + " )" );
+		newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_7) + " " + stockMove.getStockMoveSeq() + " )" );
 		
 		return save(newStockMove);
 		
@@ -347,7 +349,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 		newStockMove.setStatusSelect(IStockMove.STATUS_PLANNED);
 		newStockMove.setRealDate(null);
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
-		newStockMove.setName(newStockMove.getStockMoveSeq() + " Reverse stock move (From " + stockMove.getStockMoveSeq() + " )" );
+		newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " " + stockMove.getStockMoveSeq() + " )" );
 		
 		return save(newStockMove);
 		

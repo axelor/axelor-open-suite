@@ -1,11 +1,23 @@
 "key","message","comment","context"
+"<B>%s or %s</B> not found",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:48"
+"A partial stock move has been generated (%s)",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:44"
 "Accordance",,,"resources/domains/StockMoveLine.xml:22"
 "Actions",,,"resources/views/CreateInventoryWizard.xml:19
 resources/views/Inventory.xml:29
 resources/views/StockMove.xml:93"
 "Address",,,"resources/domains/Location.xml:19"
 "Alert",,,"resources/views/Selects.xml:46"
+"An error occurred while importing the file data, product not found with code :",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:18"
+"An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:17"
 "Arrivals History",,,"resources/views/StockMove.xml:310"
+"Aucun emplacement destination selectionné pour le mouvement de stock %s",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:41"
+"Aucun emplacement source selectionné pour le mouvement de stock %s",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:40"
+"Aucune lignes d'inventaire n'a été créée.",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:25"
+"Aucune séquence configurée pour les Numéros de suivi pour le produit %s:%s",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:56"
+"Aucune séquence configurée pour les inventaires pour la société",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:16"
+"Aucune séquence configurée pour les livraisons de stock pour la société %s",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:38"
+"Aucune séquence configurée pour les mouvements internes de stock pour la société %s",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:36"
+"Aucune séquence configurée pour les receptions de stock pour la société %s",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:37"
 "Basic",,,"resources/views/CreateInventoryWizard.xml:8"
 "Both source location address and delivery (to) address are required to define the delivery itinerary",,,"resources/views/StockMove.xml:283"
 "Cancel",,,"resources/views/Inventory.xml:32
@@ -17,6 +29,7 @@ resources/views/Selects.xml:31"
 "Company",,,"resources/domains/Location.xml:13
 resources/domains/StockConfig.xml:11
 resources/domains/StockMove.xml:26"
+"Company address is empty.",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:46"
 "Compliant",,,"resources/views/Selects.xml:52"
 "Configuration",,,"resources/views/Menu.xml:138
 resources/views/StockMove.xml:86"
@@ -72,6 +85,8 @@ resources/views/Charts.xml:364"
 "Expected Qty",,,"resources/domains/StockMoveLine.xml:15"
 "Export",,,"resources/views/Inventory.xml:35"
 "External",,,"resources/views/Selects.xml:11"
+"Feature currently not available with Open Street Maps.",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:47"
+"File %s successfully imported.",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:22"
 "File Format",,,"resources/domains/Inventory.xml:17"
 "File Path",,,"resources/domains/Inventory.xml:18"
 "Fill inventory",,,"resources/views/Inventory.xml:26"
@@ -96,6 +111,8 @@ resources/views/Charts.xml:137
 resources/views/Charts.xml:37
 resources/views/Charts.xml:69
 resources/views/Charts.xml:8"
+"Il existe déjà un entrepot par défaut, veuillez d'abord désactiver l'entrepot",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:69"
+"Il n'y a aucun produit contenu dans l'emplacement de stock.",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:23"
 "Import",,,"resources/domains/Inventory.xml:10
 resources/domains/Location.xml:10
 resources/domains/StockConfig.xml:9
@@ -116,7 +133,8 @@ resources/views/Menu.xml:39"
 resources/views/Menu.xml:122"
 "Inventories History",,,"resources/views/Inventory.xml:135"
 "Inventories filters",,,"resources/views/Inventory.xml:131"
-"Inventory",,,"resources/domains/InventoryLine.xml:10
+"Inventory",,,"java/com/axelor/apps/stock/web/InventoryController.java:86
+resources/domains/InventoryLine.xml:10
 resources/views/Inventory.xml:13
 resources/views/Inventory.xml:6"
 "Inventory N°",,,"resources/domains/Inventory.xml:11"
@@ -134,10 +152,13 @@ resources/views/InventoryLine.xml:6"
 "Inventory.realQty",,,"java/com/axelor/apps/stock/report/ITranslation.java:44"
 "Inventory.title",,,"java/com/axelor/apps/stock/report/ITranslation.java:38"
 "Inventory.unit",,,"java/com/axelor/apps/stock/report/ITranslation.java:43"
+"La liste des lignes d'inventaire a été rempli.",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:24"
 "Last Future Stock Move",,,"resources/domains/LocationLine.xml:15"
 "Late Deliveries",,,"resources/views/StockMove.xml:292"
 "Late customer deliveries",,,"resources/views/Dashboard.xml:79"
 "Late supplier arrivals",,,"resources/views/Dashboard.xml:93"
+"Les stocks du produit %s (%s) sont insuffisants pour réaliser la livraison",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:30"
+"Les stocks du produit %s (%s), numéro de suivi {}  sont insuffisants pour réaliser la livraison",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:31"
 "Location",,,"resources/domains/Inventory.xml:12
 resources/domains/LocationLine.xml:10
 resources/domains/MinStockRules.xml:12
@@ -151,6 +172,7 @@ resources/views/CreateInventoryWizard.xml:9"
 "Location value",,,"resources/views/Charts.xml:165
 resources/views/Dashboard.xml:132"
 "Manage BackOrder",,,"resources/domains/StockMove.xml:32"
+"Map",,,"java/com/axelor/apps/stock/web/StockMoveController.java:194"
 "Min. Qty",,,"resources/domains/MinStockRules.xml:14"
 "Minimum stock rule",,,"resources/views/MinStockRules.xml:19"
 "Minimum stock rules",,,"resources/views/Menu.xml:150
@@ -165,10 +187,12 @@ resources/views/MinStockRules.xml:6"
 "Name",,,"resources/domains/Location.xml:11
 resources/domains/MinStockRules.xml:10
 resources/domains/StockMove.xml:13"
+"No move lines to split",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:49"
 "Non compliant",,,"resources/views/Selects.xml:53"
 "Outgoing move",,,"resources/views/Selects.xml:36"
 "PDF",,,"resources/views/Selects.xml:16"
 "Parent",,,"resources/domains/Location.xml:12"
+"Partial stock move (From",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:42"
 "Partner",,,"resources/domains/Location.xml:14
 resources/domains/StockMove.xml:27"
 "Periodical processing",,,"resources/views/Menu.xml:116"
@@ -177,8 +201,12 @@ resources/views/StockMove.xml:94"
 "Planned",,,"resources/views/Selects.xml:22
 resources/views/Selects.xml:29"
 "Planned Inventories",,,"resources/views/Inventory.xml:132"
+"Please entry proper split qty",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:51"
 "Please fill in the delivery (to) address to get the delivery itinerary.",,,"resources/views/StockMove.xml:285"
 "Please fill in the source (from) location address to get the delivery itinerary.",,,"resources/views/StockMove.xml:284"
+"Please select lines to split",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:50"
+"Please select the Stock Location(s) to print.",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:70"
+"Please select the StockMove(s) to print.",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:45"
 "Print",,,"resources/views/Inventory.xml:37
 resources/views/Location.xml:22
 resources/views/Location.xml:8
@@ -212,6 +240,7 @@ resources/views/Menu.xml:56"
 "Production order",,,"resources/views/Selects.xml:48"
 "Production stock move in realized",,,"resources/views/Dashboard.xml:119"
 "Production stock move out realized",,,"resources/views/Dashboard.xml:125"
+"Produit incorrect dans la ligne de l'inventaire",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:21"
 "Purchase order",,,"resources/views/Selects.xml:47"
 "Quantity",,,"resources/views/Charts.xml:222
 resources/views/Charts.xml:282
@@ -231,9 +260,11 @@ resources/views/Selects.xml:30"
 "Refill type",,,"resources/domains/MinStockRules.xml:18"
 "Reordering managed by",,,"resources/views/MinStockRules.xml:28"
 "Return surplus",,,"resources/domains/StockMove.xml:31"
+"Reverse stock move (From",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:43"
 "Ship/Receive all products",,,"resources/views/StockMove.xml:107"
 "Shipped date",,,"resources/domains/StockMoveLine.xml:26"
 "Shipped qty",,,"resources/domains/StockMoveLine.xml:25"
+"Société manquante pour l'entrepot %s",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:20"
 "Special split",,,"resources/views/StockMove.xml:106
 resources/views/StockMove.xml:111
 resources/views/StockMove.xml:119"
@@ -244,7 +275,8 @@ resources/views/StockMove.xml:119"
 "Status",,,"resources/domains/Inventory.xml:13
 resources/domains/StockMove.xml:20
 resources/views/Charts.xml:130"
-"Stock",,,"resources/views/Charts.xml:179
+"Stock",,,"java/com/axelor/apps/stock/web/LocationController.java:173
+resources/views/Charts.xml:179
 resources/views/Charts.xml:316
 resources/views/Dashboard.xml:138
 resources/views/Dashboard.xml:144
@@ -321,6 +353,8 @@ resources/views/StockMove.xml:6"
 "StockLocation.totalAccountingValue",,,"java/com/axelor/apps/stock/report/ITranslation.java:27"
 "StockLocation.totalSaleValue",,,"java/com/axelor/apps/stock/report/ITranslation.java:26"
 "StockLocation.unitValue",,,"java/com/axelor/apps/stock/report/ITranslation.java:34"
+"StockMove",,,"java/com/axelor/apps/stock/web/StockMoveController.java:148"
+"StockMove(s)",,,"java/com/axelor/apps/stock/web/StockMoveController.java:148"
 "StockMove.customer",,,"java/com/axelor/apps/stock/report/ITranslation.java:54"
 "StockMove.date",,,"java/com/axelor/apps/stock/report/ITranslation.java:50"
 "StockMove.deliveryAddress",,,"java/com/axelor/apps/stock/report/ITranslation.java:58"
@@ -338,6 +372,7 @@ resources/views/StockMove.xml:6"
 "StockMove.stockPreparedBy",,,"java/com/axelor/apps/stock/report/ITranslation.java:56"
 "StockMove.variant",,,"java/com/axelor/apps/stock/report/ITranslation.java:60"
 "StockMove.weight",,,"java/com/axelor/apps/stock/report/ITranslation.java:53"
+"Stocks",,,"java/com/axelor/apps/stock/web/LocationController.java:173"
 "Supplier Arrivals",,,"resources/views/Menu.xml:22
 resources/views/Menu.xml:25"
 "Supplier arrivals filters",,,"resources/views/StockMove.xml:303"
@@ -349,6 +384,7 @@ resources/views/Menu.xml:86"
 "Supplier virtual location",,,"resources/domains/StockConfig.xml:14"
 "Team",,,"resources/domains/MinStockRules.xml:21"
 "The move doesn't contain any product, do you wish to continue ?",,,"resources/views/StockMove.xml:279"
+"There is currently no such file in the specified folder or the folder may not exists.",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:19"
 "To",,,"resources/views/Charts.xml:228
 resources/views/Charts.xml:377"
 "To address",,,"resources/domains/StockMove.xml:24"
@@ -365,6 +401,7 @@ resources/views/Menu.xml:163"
 resources/domains/MinStockRules.xml:16
 resources/views/StockMove.xml:62"
 "Type Status",,,"resources/domains/StockMove.xml:21"
+"Type de mouvement de stock non déterminé",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:39"
 "Unit",,,"resources/domains/StockMoveLine.xml:17"
 "Unit price",,,"resources/domains/StockMoveLine.xml:18"
 "Upcoming arrivals",,,"resources/views/StockMove.xml:307"
@@ -373,6 +410,11 @@ resources/views/StockMove.xml:62"
 "User",,,"resources/domains/MinStockRules.xml:20"
 "Validate",,,"resources/views/CreateInventoryWizard.xml:20"
 "Value",,,"resources/views/Charts.xml:176"
+"Veuillez configurer le module stock pour la société %s",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:61"
+"Veuillez configurer un Emplacement Virtuel Client pour la société %s",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:64"
+"Veuillez configurer un Emplacement Virtuel Fournisseur pour la société %s",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:63"
+"Veuillez configurer un Emplacement Virtuel Inventaire pour la société %s",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:62"
+"Veuillez selectionner un entrepot",,,"java/com/axelor/apps/stock/exception/IExceptionMessage.java:15"
 "View Customer deliveries",,,"resources/views/Menu.xml:209"
 "View Direction",,,"resources/views/StockMove.xml:101
 resources/views/StockMove.xml:20

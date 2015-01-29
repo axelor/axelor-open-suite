@@ -46,9 +46,11 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -85,7 +87,7 @@ public class InventoryService extends InventoryRepository{
 			ProductFamily productFamily, ProductCategory productCategory) throws AxelorException  {
 		
 		if(location == null)  {
-			throw new AxelorException("Veuillez selectionner un entrepot",IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_1),IException.CONFIGURATION_ERROR);
 		}
 		
 		Inventory inventory = new Inventory();
@@ -118,7 +120,7 @@ public class InventoryService extends InventoryRepository{
 		
 		String ref = sequenceService.getSequenceNumber(IAdministration.INVENTORY, company);
 		if (ref == null)
-			throw new AxelorException("Aucune séquence configurée pour les inventaires pour la société "+company.getName(),
+			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_2)+" "+company.getName(),
 							IException.CONFIGURATION_ERROR);
 		
 		return ref;
@@ -137,7 +139,7 @@ public class InventoryService extends InventoryRepository{
 
 		for (String[] line : data) {
 			if (line.length < 6)
-				throw new AxelorException("An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.", IException.CONFIGURATION_ERROR);
+				throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_3), IException.CONFIGURATION_ERROR);
 
 			String code = line[1].replace("\"", "");
 			String trackingNumberSeq = line[3].replace("\"", "");
@@ -146,7 +148,7 @@ public class InventoryService extends InventoryRepository{
 			try {
 				realQty = Integer.valueOf(line[6].replace("\"", ""));
 			}catch(NumberFormatException e) {
-				throw new AxelorException("An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.", IException.CONFIGURATION_ERROR);
+				throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_3), IException.CONFIGURATION_ERROR);
 			}
 
 			String description = line[7].replace("\"", "");
@@ -160,13 +162,13 @@ public class InventoryService extends InventoryRepository{
 				try {
 					currentQty = Integer.valueOf(line[4].replace("\"", ""));
 				}catch(NumberFormatException e) {
-					throw new AxelorException("An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.", IException.CONFIGURATION_ERROR);
+					throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_3), IException.CONFIGURATION_ERROR);
 				}
 
 				InventoryLine inventoryLine = new InventoryLine();
 				Product product = productRepo.findByCode(code);
 				if (product == null || product.getApplicationTypeSelect() != IProduct.APPLICATION_TYPE_PRODUCT || !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE))
-					throw new AxelorException("An error occurred while importing the file data, product not found with code : "+code, IException.CONFIGURATION_ERROR);
+					throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_4)+" "+code, IException.CONFIGURATION_ERROR);
 				inventoryLine.setProduct(product);
 				inventoryLine.setInventory(inventory);
 				inventoryLine.setCurrentQty(new BigDecimal(currentQty));
@@ -188,11 +190,11 @@ public class InventoryService extends InventoryRepository{
 		try {
 			data = CsvTool.cSVFileReader(filePath, separator);
 		} catch(Exception e) {
-			throw new AxelorException("There is currently no such file in the specified folder or the folder may not exists.", IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_5), IException.CONFIGURATION_ERROR);
 		}
 
 		if (data == null || data.isEmpty())  {
-			throw new AxelorException("An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.", IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_3), IException.CONFIGURATION_ERROR);
 		}
 
 		return data;
@@ -237,7 +239,7 @@ public class InventoryService extends InventoryRepository{
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 
 		if (company == null) {
-			throw new AxelorException(String.format("Société manquante pour l'entrepot {}", toLocation.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVENTORY_6), toLocation.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		String inventorySeq = inventory.getInventorySeq();
@@ -254,7 +256,7 @@ public class InventoryService extends InventoryRepository{
 
 				StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(product, diff, product.getUnit(), null, stockMove, 0);
 				if (stockMoveLine == null)  {
-					throw new AxelorException("Produit incorrect dans la ligne de l'inventaire "+inventorySeq, IException.CONFIGURATION_ERROR);
+					throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_7)+" "+inventorySeq, IException.CONFIGURATION_ERROR);
 				}
 
 				stockMove.addStockMoveLineListItem(stockMoveLine);
@@ -286,7 +288,7 @@ public class InventoryService extends InventoryRepository{
 	public List<InventoryLine> fillInventoryLineList(Inventory inventory) throws AxelorException {
 
 		if(inventory.getLocation() == null)  {
-			throw new AxelorException("Veuillez selectionner un entrepot",IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_1),IException.CONFIGURATION_ERROR);
 		}
 		
 		this.initInventoryLines(inventory);
