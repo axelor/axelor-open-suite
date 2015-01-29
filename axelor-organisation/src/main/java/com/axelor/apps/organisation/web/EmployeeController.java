@@ -29,6 +29,7 @@ import com.axelor.apps.organisation.report.IReport;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
@@ -67,7 +68,7 @@ public class EmployeeController {
 			LOG.debug("Impression des informations sur l'employe "+employee.getName() + " : "+url.toString());
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Employee "+employee.getName());
+			mapView.put("title", I18n.get("Employee")+" "+employee.getName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);		

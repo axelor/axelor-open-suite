@@ -24,10 +24,12 @@ import java.util.Map;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.organisation.db.Expense;
 import com.axelor.apps.organisation.db.ExpenseLine;
+import com.axelor.apps.organisation.exceptions.IExceptionMessage;
 import com.axelor.apps.organisation.report.IReport;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
@@ -49,7 +51,7 @@ public class ExpenseController {
 		}
 		if ((list != null && list.isEmpty()) || checkFileReceived) {
 			response.setValue("validationStatusSelect", 2);
-			response.setFlash("All expenses proof haven't been provided (file received for each expense line).");
+			response.setFlash(I18n.get(IExceptionMessage.EXPENSE_1));
 		}
 		else {
 			response.setValue("validationStatusSelect", 1);
@@ -84,7 +86,7 @@ public class ExpenseController {
 		if (urlNotExist == null){
 
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Name "+expense.getUser().getFullName());
+			mapView.put("title", I18n.get("Name")+" "+expense.getUser().getFullName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);	

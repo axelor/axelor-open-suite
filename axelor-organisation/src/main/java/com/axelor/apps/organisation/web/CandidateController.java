@@ -39,6 +39,7 @@ import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -128,7 +129,7 @@ public class CandidateController {
 			LOG.debug("Impression des informations sur le candidat "+candidate.getName()+" "+candidate.getFirstName()+" : "+url.toString());
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Candidat "+candidate.getName()+" "+candidate.getFirstName());
+			mapView.put("title", I18n.get("Candidat")+" "+candidate.getName()+" "+candidate.getFirstName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);		

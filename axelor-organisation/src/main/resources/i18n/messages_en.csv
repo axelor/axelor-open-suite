@@ -1,4 +1,5 @@
 "key","message","comment","context"
+"%s :\n Veuillez configurer le module Projet/RH pour la société %s",,,"java/com/axelor/apps/organisation/exceptions/IExceptionMessage.java:79"
 "*",,,"resources/views/MissionOrder.xml:29"
 "+/- n day(s)",,,"resources/domains/TimesheetPeriodConfig.xml:17"
 "1 month",,,"resources/views/Selects.xml:21"
@@ -33,7 +34,7 @@
 "Accounted",,,"resources/domains/LeaveRequest.xml:29"
 "Accounting day",,,"resources/domains/Task.xml:67"
 "Accreditation",,,"resources/domains/PersonalInfo.xml:14"
-"Actions",,,"resources/views/Business.xml:118
+"Actions",,,"resources/views/Business.xml:112
 resources/views/Expense.xml:50
 resources/views/Overtime.xml:36
 resources/views/Project.xml:65
@@ -61,6 +62,7 @@ resources/views/Employee.xml:60"
 "All Overtimes",,,"resources/views/Dashboard.xml:46"
 "All Timesheets",,,"resources/views/Dashboard.xml:34"
 "All Travel Expenses",,,"resources/views/Dashboard.xml:40"
+"All expenses proof haven't been provided (file received for each expense line).",,,"java/com/axelor/apps/organisation/exceptions/IExceptionMessage.java:84"
 "All leave requests",,,"resources/views/Dashboard.xml:52"
 "All supporting files have not been provided",,,"resources/views/Expense.xml:142"
 "Allow expenses input ?",,,"resources/domains/Project.xml:53"
@@ -85,7 +87,8 @@ resources/domains/FinancialInformationUpdate.xml:14"
 "Bonus",,,"resources/views/Bonus.xml:14"
 "Bonuses",,,"resources/views/Bonus.xml:7"
 "Branch",,,"resources/domains/JobOffer.xml:31"
-"Business",,,"resources/domains/Expense.xml:22
+"Business",,,"java/com/axelor/apps/organisation/web/ProjectController.java:183
+resources/domains/Expense.xml:22
 resources/domains/Invoice.xml:8
 resources/domains/JobOffer.xml:11
 resources/domains/MissionOrder.xml:14
@@ -121,6 +124,7 @@ resources/views/Timesheet.xml:69"
 "Canceled",,,"resources/views/Selects.xml:105
 resources/views/Selects.xml:135
 resources/views/Selects.xml:268"
+"Candidat",,,"java/com/axelor/apps/organisation/web/CandidateController.java:132"
 "Candidate",,,"resources/domains/CandidateOtherOpportunity.xml:9
 resources/domains/Competence.xml:34
 resources/domains/EvaluationLine.xml:9
@@ -267,8 +271,8 @@ resources/views/Menu.xml:435"
 resources/views/Menu.xml:440"
 "Create Timesheet",,,"resources/views/Menu.xml:411
 resources/views/Menu.xml:412"
-"Create production order",,,"resources/views/Business.xml:121
-resources/views/Business.xml:232"
+"Create production order",,,"resources/views/Business.xml:115
+resources/views/Business.xml:226"
 "Criteria evaluated",,,"resources/domains/EvaluationLine.xml:10"
 "Cumulate ?",,,"resources/domains/Task.xml:66"
 "Cumulation",,,"resources/domains/EmployeeLeave.xml:13"
@@ -277,7 +281,7 @@ resources/domains/Overtime.xml:12"
 "Current Employees",,,"resources/views/Employee.xml:130"
 "Current Function",,,"resources/domains/Candidate.xml:16"
 "Customer",,,"resources/domains/Project.xml:12"
-"Customer invoice lines",,,"resources/views/Business.xml:195
+"Customer invoice lines",,,"resources/views/Business.xml:189
 resources/views/Task.xml:321"
 "DEPT",,,"resources/domains/Department.xml:12"
 "Daily periods",,,"resources/domains/ScheduleLine.xml:12"
@@ -370,7 +374,9 @@ resources/domains/JobOffer.xml:27"
 "Emergency",,,"resources/views/Employee.xml:43"
 "Emergency Contact",,,"resources/domains/Employee.xml:33"
 "Emergency Phone Nbr.",,,"resources/domains/Employee.xml:34"
-"Employee",,,"resources/domains/Advance.xml:9
+"Employee",,,"java/com/axelor/apps/organisation/web/EmployeeController.java:71
+java/com/axelor/apps/organisation/web/TimesheetController.java:110
+resources/domains/Advance.xml:9
 resources/domains/Bonus.xml:9
 resources/domains/Competence.xml:35
 resources/domains/EmployeeLeave.xml:9
@@ -491,7 +497,7 @@ resources/views/Project.xml:51"
 "Expense Line",,,"resources/views/ExpenseLine.xml:25
 resources/views/ExpenseLine.xml:36"
 "Expense lines",,,"resources/domains/Expense.xml:14
-resources/views/Business.xml:216
+resources/views/Business.xml:210
 resources/views/Task.xml:342
 resources/views/Task.xml:363"
 "Expense.amount","Amount",,"java/com/axelor/apps/organisation/report/ITranslation.java:46"
@@ -536,9 +542,9 @@ resources/views/Task.xml:76"
 "Financial information historicals",,,"resources/views/FinancialInformationHistoryLine.xml:6"
 "Financial information history",,,"resources/domains/Task.xml:52"
 "Financial information updates",,,"resources/domains/Task.xml:54
-resources/views/Business.xml:167
-resources/views/Business.xml:188
-resources/views/Business.xml:223
+resources/views/Business.xml:161
+resources/views/Business.xml:182
+resources/views/Business.xml:217
 resources/views/Task.xml:293
 resources/views/Task.xml:307
 resources/views/Task.xml:349"
@@ -754,7 +760,10 @@ resources/views/Menu.xml:112"
 resources/views/Menu.xml:90"
 "My timesheet calendar",,,"resources/views/Menu.xml:71
 resources/views/Menu.xml:74"
-"Name",,,"resources/domains/Employee.xml:10
+"Name",,,"java/com/axelor/apps/organisation/web/ExpenseController.java:89
+java/com/axelor/apps/organisation/web/ProjectController.java:116
+java/com/axelor/apps/organisation/web/TaskController.java:130
+resources/domains/Employee.xml:10
 resources/domains/MobilityChoice.xml:9
 resources/domains/Project.xml:15
 resources/domains/PublicHolidays.xml:10
@@ -873,6 +882,7 @@ resources/views/PlanningLine.xml:29
 resources/views/PlanningLine.xml:6"
 "Plannings",,,"resources/views/Menu.xml:239
 resources/views/Menu.xml:242"
+"Please select the Business(s) to print.",,,"java/com/axelor/apps/organisation/exceptions/IExceptionMessage.java:89"
 "Position title",,,"resources/domains/CandidateOtherOpportunity.xml:11"
 "Positive  (green)",,,"resources/views/Selects.xml:62"
 "Pre-selected",,,"resources/views/Candidate.xml:72
@@ -886,7 +896,6 @@ resources/views/Employee.xml:20"
 "Product",,,"resources/domains/ExpenseLine.xml:13
 resources/domains/FinancialInformationUpdate.xml:13
 resources/domains/Task.xml:57"
-"Production informations",,,"resources/views/Business.xml:109"
 "Production invoicing type",,,"resources/domains/Project.xml:63"
 "Professional background",,,"resources/views/Position.xml:31
 resources/views/Position.xml:8"
@@ -1088,7 +1097,7 @@ resources/views/Overtime.xml:38"
 "Submitted",,,"resources/views/Selects.xml:185"
 "Subscription",,,"resources/views/Selects.xml:248"
 "Supervised by",,,"resources/domains/Employee.xml:46"
-"Supplier invoice lines",,,"resources/views/Business.xml:202
+"Supplier invoice lines",,,"resources/views/Business.xml:196
 resources/views/Task.xml:328"
 "TImesheet project/task time input",,,"resources/views/TimesheetLine.xml:7"
 "TMA",,,"resources/views/Selects.xml:254"
@@ -1155,7 +1164,7 @@ resources/views/Timesheet.xml:19"
 "Timesheet Period Config",,,"resources/views/TimesheetPeriodConfig.xml:16"
 "Timesheet details",,,"resources/domains/Timesheet.xml:22"
 "Timesheet input required ?",,,"resources/domains/Project.xml:19"
-"Timesheet lines",,,"resources/views/Business.xml:209
+"Timesheet lines",,,"resources/views/Business.xml:203
 resources/views/Task.xml:335
 resources/views/Task.xml:356"
 "Timesheet period config",,,"resources/domains/User.xml:12"
@@ -1219,7 +1228,7 @@ resources/views/Training.xml:6"
 "Trainings",,,"resources/views/Menu.xml:230
 resources/views/Menu.xml:233"
 "Transform into employee",,,"resources/views/Candidate.xml:26"
-"Transform to project",,,"resources/views/Business.xml:119"
+"Transform to project",,,"resources/views/Business.xml:113"
 "Turnover",,,"resources/domains/FinancialInformationHistoryLine.xml:12
 resources/domains/Project.xml:30
 resources/domains/Project.xml:33
@@ -1243,7 +1252,7 @@ resources/domains/Task.xml:59"
 resources/domains/OvertimeLine.xml:13"
 "Update and historize",,,"resources/views/Task.xml:91"
 "Update financial information",,,"resources/views/Task.xml:107"
-"Update task progress",,,"resources/views/Business.xml:120
+"Update task progress",,,"resources/views/Business.xml:114
 resources/views/Project.xml:68"
 "User",,,"resources/domains/FinancialInformationHistoryLine.xml:15
 resources/domains/FinancialInformationUpdate.xml:12
@@ -1257,12 +1266,12 @@ resources/views/OvertimeLine.xml:24
 resources/views/Timesheet.xml:68"
 "Validated",,,"resources/views/Selects.xml:155
 resources/views/Selects.xml:267"
-"Validated Customer order lines",,,"resources/views/Business.xml:174
+"Validated Customer order lines",,,"resources/views/Business.xml:168
 resources/views/Task.xml:300"
 "Validated by",,,"resources/domains/Expense.xml:19
 resources/domains/Overtime.xml:16
 resources/domains/Timesheet.xml:28"
-"Validated supplier order lines",,,"resources/views/Business.xml:181
+"Validated supplier order lines",,,"resources/views/Business.xml:175
 resources/views/Task.xml:314"
 "Validation Date",,,"resources/domains/ExpenseLine.xml:23"
 "Validation Status",,,"resources/domains/Expense.xml:15"
@@ -1275,6 +1284,10 @@ resources/domains/Timesheet.xml:29"
 "Vehicle Fiscal Power",,,"resources/domains/Employee.xml:39"
 "Verified",,,"resources/views/Selects.xml:139"
 "Very positive (green)",,,"resources/views/Selects.xml:61"
+"Veuillez configurer un projet sur la tâche",,,"java/com/axelor/apps/organisation/exceptions/IExceptionMessage.java:67"
+"Veuillez configurer une unité sur le projet",,,"java/com/axelor/apps/organisation/exceptions/IExceptionMessage.java:68"
+"Veuillez configurer une unité sur les lignes de plannification",,,"java/com/axelor/apps/organisation/exceptions/IExceptionMessage.java:69"
+"Veuillez configurer une unité sur les lignes de temps passé",,,"java/com/axelor/apps/organisation/exceptions/IExceptionMessage.java:70"
 "View Employees",,,"resources/views/Menu.xml:410"
 "View Expenses",,,"resources/views/Menu.xml:426"
 "View Job Offers",,,"resources/views/Menu.xml:431"

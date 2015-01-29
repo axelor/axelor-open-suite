@@ -64,13 +64,29 @@ public interface IExceptionMessage {
 	/**
 	 * Task Service
 	 */
-	static final String TASK_1 = "Veuillez configurer un projet sur la tâche";
-	static final String TASK_2 = "Veuillez configurer une unité sur le projet";
-	static final String TASK_3 = "Veuillez configurer une unité sur les lignes de plannification";
-	static final String TASK_4 = "Veuillez configurer une unité sur les lignes de temps passé";
+	static final String TASK_1 = /*$$(*/ "Veuillez configurer un projet sur la tâche" /*)*/;
+	static final String TASK_2 = /*$$(*/ "Veuillez configurer une unité sur le projet" /*)*/;
+	static final String TASK_3 = /*$$(*/ "Veuillez configurer une unité sur les lignes de plannification" /*)*/;
+	static final String TASK_4 = /*$$(*/ "Veuillez configurer une unité sur les lignes de temps passé" /*)*/;
 	
 	/**
 	 * Timesheet Service
 	 */
+	
+	/**
+	 * Organisation Config Service
+	 */
+	static final String ORGANISATION_CONFIG_1 = /*$$(*/ "%s :\n Veuillez configurer le module Projet/RH pour la société %s" /*)*/;
+	
+	/**
+	 * Expense controller
+	 */
+	static final String EXPENSE_1 = /*$$(*/ "All expenses proof haven't been provided (file received for each expense line)." /*)*/;
+	
+	/**
+	 * Project controller
+	 */
+	static final String PROJECT_1 = /*$$(*/ "Please select the Business(s) to print." /*)*/;
+	
 	
 }

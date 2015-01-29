@@ -30,6 +30,7 @@ import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -126,7 +127,7 @@ public class TaskController {
 		if (urlNotExist == null){
 
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Name "+task.getName());
+			mapView.put("title", I18n.get("Name")+" "+task.getName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);	

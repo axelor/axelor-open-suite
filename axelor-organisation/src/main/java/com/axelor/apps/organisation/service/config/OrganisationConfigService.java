@@ -19,8 +19,10 @@ package com.axelor.apps.organisation.service.config;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.organisation.db.OrganisationConfig;
+import com.axelor.apps.organisation.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 
 public class OrganisationConfigService {
@@ -30,7 +32,7 @@ public class OrganisationConfigService {
 		OrganisationConfig organisationConfig = company.getOrganisationConfig();
 		
 		if(organisationConfig == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer le module Projet/RH pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ORGANISATION_CONFIG_1),
 					company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		

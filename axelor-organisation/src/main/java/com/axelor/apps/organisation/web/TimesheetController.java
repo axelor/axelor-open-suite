@@ -32,6 +32,7 @@ import com.axelor.apps.organisation.service.TimesheetService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -106,7 +107,7 @@ public class TimesheetController {
 			LOG.debug("Impression des informations timesheet "+timesheet.getUser().getPartner().getName()+" "+timesheet.getUser().getPartner().getFirstName()+" : "+url.toString());
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Employee "+timesheet.getUser().getPartner().getName()+" "+timesheet.getUser().getPartner().getFirstName());
+			mapView.put("title", I18n.get("Employee")+" "+timesheet.getUser().getPartner().getName()+" "+timesheet.getUser().getPartner().getFirstName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);		

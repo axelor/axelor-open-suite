@@ -27,12 +27,14 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.organisation.db.Project;
+import com.axelor.apps.organisation.exceptions.IExceptionMessage;
 import com.axelor.apps.organisation.report.IReport;
 import com.axelor.apps.organisation.service.ProjectService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
@@ -111,7 +113,7 @@ public class ProjectController {
 		if (urlNotExist == null){
 
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Name "+project.getName());
+			mapView.put("title", I18n.get("Name")+" "+project.getName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);	
@@ -178,7 +180,7 @@ public class ProjectController {
 				
 				String title = " ";
 				if(business.getName() != null)  {
-					title += lstSelectedBusiness == null ? " Business "+business.getName():" Business ";
+					title += lstSelectedBusiness == null ? I18n.get("Business")+" "+business.getName():I18n.get("Business");
 				}
 				
 				Map<String,Object> mapView = new HashMap<String,Object>();
@@ -192,7 +194,7 @@ public class ProjectController {
 				response.setFlash(urlNotExist);
 			}
 		}else{
-			response.setFlash("Please select the Business(s) to print.");
+			response.setFlash(I18n.get(IExceptionMessage.PROJECT_1));
 		}	
 	}
 	
