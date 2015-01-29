@@ -31,6 +31,7 @@ import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -90,13 +91,13 @@ public class SaleOrderController {
 		
 			LOG.debug("Impression du devis "+saleOrder.getSaleOrderSeq()+" : "+url.toString());
 			
-			String title = "Devis ";
+			String title = I18n.get("Devis");
 			if(saleOrder.getSaleOrderSeq() != null)  {
 				title += saleOrder.getSaleOrderSeq();
 			}
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Devis "+title);
+			mapView.put("title", title);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);	
@@ -135,13 +136,13 @@ public class SaleOrderController {
 		
 			LOG.debug("Impression du devis "+saleOrder.getSaleOrderSeq()+" : "+url.toString());
 			
-			String title = "Devis ";
+			String title = I18n.get("Devis");
 			if(saleOrder.getSaleOrderSeq() != null)  {
 				title += saleOrder.getSaleOrderSeq();
 			}
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Devis "+title);
+			mapView.put("title", title);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);	
@@ -181,13 +182,13 @@ public class SaleOrderController {
 		
 			LOG.debug("Impression du devis "+saleOrder.getSaleOrderSeq()+" : "+url.toString());
 			
-			String title = "Devis ";
+			String title = I18n.get("Devis");
 			if(saleOrder.getSaleOrderSeq() != null)  {
 				title += saleOrder.getSaleOrderSeq();
 			}
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Devis "+title);
+			mapView.put("title", title);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);	

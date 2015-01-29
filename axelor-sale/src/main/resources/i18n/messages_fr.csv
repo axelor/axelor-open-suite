@@ -1,4 +1,5 @@
 "key","message","comment","context"
+"%s :\n Veuillez configurer le module vente pour la société %s",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:42"
 "Action","Action",,"resources/domains/SaleBatch.xml:12"
 "Actions","Actions",,"resources/views/SaleOrder.xml:117
 resources/views/SaleOrder.xml:39
@@ -49,6 +50,9 @@ resources/domains/SaleOrder.xml:56
 resources/domains/SaleOrderLine.xml:21
 resources/domains/SaleOrderSubLine.xml:15
 resources/views/SaleOrder.xml:94"
+"Devis",,,"java/com/axelor/apps/sale/web/SaleOrderController.java:139
+java/com/axelor/apps/sale/web/SaleOrderController.java:185
+java/com/axelor/apps/sale/web/SaleOrderController.java:94"
 "Discount","Remise",,"resources/views/SaleOrderLine.xml:33
 resources/views/SaleOrderSubLine.xml:33"
 "Discount amount","Montant remise",,"resources/domains/SaleOrderLine.xml:25
@@ -92,6 +96,8 @@ resources/views/Selects.xml:10"
 "Invoicing address","Adresse de facturation",,"resources/domains/SaleOrder.xml:30"
 "Invoicing follow-up","Suivi Facturation",,"resources/views/SaleOrderLine.xml:55"
 "Invoicing informations","Informations Facturation",,"resources/views/SaleConfig.xml:14"
+"La facturation par expédition impose que l'ensemble des lignes de devis comporte des produits de service ou stockable avec un approvisionnement depuis le stock",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:32"
+"La société %s n'a pas de séquence de configurée pour les devis clients",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:37"
 "Label","Libellé",,"resources/domains/SaleOrderSubLine.xml:14"
 "Last Year To Date","Année N-1 à Ajd",,"resources/views/Charts.xml:164"
 "Marketing","Marketing",,"resources/views/SaleOrder.xml:76"
@@ -168,8 +174,6 @@ resources/domains/SaleOrderSubLine.xml:17"
 "SO line","Ligne de devis",,"resources/views/SaleOrderLine.xml:18"
 "SO lines","Lignes de devis",,"resources/views/SaleOrderLine.xml:54
 resources/views/SaleOrderLine.xml:6"
-"SO schedule line","Ligne d'échéance de devis",,"resources/views/SaleOrderScheduleLine.xml:17"
-"SO schedule lines","Lignes d'échéances de devis",,"resources/views/SaleOrderScheduleLine.xml:6"
 "SO subline","Sous-ligne de devis/cmde",,"resources/views/SaleOrderSubLine.xml:19"
 "SO sublines","Sous-lignes de devis",,"resources/views/SaleOrderSubLine.xml:6"
 "Sale batch","Traitement de masse Ventes",,"resources/domains/Batch.xml:11"

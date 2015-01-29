@@ -20,8 +20,10 @@ package com.axelor.apps.sale.service.config;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
+import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class SaleConfigService extends SaleConfigRepository {
 	
@@ -31,7 +33,7 @@ public class SaleConfigService extends SaleConfigRepository {
 		SaleConfig saleConfig = company.getSaleConfig();
 		
 		if(saleConfig == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer le module vente pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_CONFIG_1),
 					company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
