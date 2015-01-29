@@ -24,6 +24,7 @@ import java.util.Map;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
@@ -36,6 +37,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -120,7 +122,7 @@ public class LeadService extends LeadRepository {
 		
 		String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
 		if (seq == null)  {
-			throw new AxelorException("Aucune séquence configurée pour les tiers",
+			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
 							IException.CONFIGURATION_ERROR);
 		}
 		return seq;

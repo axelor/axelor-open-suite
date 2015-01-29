@@ -24,9 +24,11 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -97,7 +99,7 @@ public class ConvertLeadWizardController {
 		
 		leadService.convertLead(lead, partner, contactPartner, opportunity, callEvent, meetingEvent, taskEvent);
 		
-		response.setFlash("Prospect converti");
+		response.setFlash(I18n.get(IExceptionMessage.CONVERT_LEAD_1));
 	}
 	
 	

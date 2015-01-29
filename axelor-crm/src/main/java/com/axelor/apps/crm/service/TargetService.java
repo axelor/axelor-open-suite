@@ -30,9 +30,11 @@ import com.axelor.auth.db.User;
 import com.axelor.apps.crm.db.Target;
 import com.axelor.apps.crm.db.TargetConfiguration;
 import com.axelor.apps.crm.db.repo.TargetRepository;
+import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -73,7 +75,7 @@ public class TargetService extends TargetRepository{
 					oldDate = date;
 				}
 				else {
-					throw new AxelorException(String.format("L'objectif %s est en contradiction avec la configuration d'objectif %s", 
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.TARGET_1), 
 							target2.getCode(), targetConfiguration.getCode()), IException.CONFIGURATION_ERROR);
 				}
 			}

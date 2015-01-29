@@ -19,11 +19,13 @@ package com.axelor.apps.crm.service.batch;
 
 
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.crm.db.CrmBatch;
 import com.axelor.apps.crm.db.ICrmBatch;
 import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 /**
@@ -64,11 +66,11 @@ public class CrmBatchService extends CrmBatchRepository{
 				break;
 				
 			default:
-				throw new AxelorException(String.format("Action %s inconnu pour le traitement %s", crmBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), crmBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
 			}
 		}
 		else {
-			throw new AxelorException(String.format("Batch %s inconnu", batchCode), IException.INCONSISTENCY);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode), IException.INCONSISTENCY);
 		}
 		
 		return batch;

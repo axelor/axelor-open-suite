@@ -90,6 +90,7 @@ resources/views/Event.xml:227
 resources/views/Event.xml:292
 resources/views/Event.xml:371
 resources/views/Event.xml:66"
+"Aucune séquence configurée pour les tickets",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:44"
 "Authorized users to follow me",,,"resources/domains/User.xml:12"
 "Batchs",,,"resources/domains/CrmBatch.xml:17
 resources/domains/EventReminder.xml:16"
@@ -158,6 +159,8 @@ resources/views/Dashboard.xml:347"
 resources/views/Dashboard.xml:338"
 "Calls type by user",,,"resources/views/Charts.xml:295
 resources/views/Dashboard.xml:333"
+"Can not open map, Please Check your Internet connection.",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:52"
+"Can not open map, Please Configure Application Home First.",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:51"
 "Cancel",,,"resources/views/Event.xml:131
 resources/views/Event.xml:138
 resources/views/Event.xml:202
@@ -202,8 +205,11 @@ resources/domains/TargetConfiguration.xml:11"
 resources/domains/Opportunity.xml:23
 resources/views/ConvertLeadWizard.xml:266"
 "Company name",,,"resources/domains/Lead.xml:72"
+"Compte rendu de la génération de rappel des évènements :\n",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:21"
+"Compte rendu de la génération des objectifs :\n",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:33"
 "Concerns",,,"resources/views/TargetConfiguration.xml:60"
 "Configuration",,,"resources/views/Menu.xml:199"
+"Configuration des objectifs(s) traité(s)",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:34"
 "Confirmed",,,"resources/views/Selects.xml:108"
 "Connection settings",,,"resources/views/Calendar.xml:14"
 "Contact",,,"resources/domains/Event.xml:40
@@ -331,7 +337,8 @@ resources/views/Selects.xml:140"
 "End Date",,,"resources/domains/Event.xml:16"
 "Enterprise",,,"resources/domains/Lead.xml:15"
 "Enterprise name",,,"resources/views/Lead.xml:66"
-"Event",,,"resources/domains/EventAttendee.xml:10
+"Event",,,"java/com/axelor/apps/crm/service/batch/BatchEventReminderMessage.java:81
+resources/domains/EventAttendee.xml:10
 resources/domains/EventReminder.xml:10
 resources/domains/Message.xml:10
 resources/views/Menu.xml:356
@@ -347,6 +354,8 @@ resources/views/Menu.xml:360"
 "Event configuration categories",,,"resources/views/EventCategory.xml:10"
 "Event reminder",,,"resources/views/EventReminder.xml:14
 resources/views/Selects.xml:156"
+"Event reminder %s",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:20
+java/com/axelor/apps/crm/exception/IExceptionMessage.java:32"
 "Event reminder batch",,,"resources/views/CrmBatch.xml:23"
 "Event reminder page",,,"resources/views/CrmBatch.xml:21"
 "Event reminders",,,"resources/views/EventReminder.xml:6"
@@ -417,7 +426,7 @@ resources/domains/Lead.xml:10
 resources/domains/MeetingType.xml:10"
 "Import calendar",,,"resources/views/Event.xml:42
 resources/views/Event.xml:9"
-"Import lead",,,"java/com/axelor/apps/crm/web/LeadController.java:171"
+"Import lead",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:54"
 "Import leads",,,"resources/views/Lead.xml:12"
 "In process",,,"resources/views/Selects.xml:12"
 "In progress",,,"resources/views/Selects.xml:121"
@@ -434,11 +443,13 @@ resources/views/ConvertLeadWizard.xml:512
 resources/views/ConvertLeadWizard.xml:547
 resources/views/ConvertLeadWizard.xml:580
 resources/views/ConvertLeadWizard.xml:68"
+"Input location please",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:45"
 "Invoicing address",,,"resources/views/ConvertLeadWizard.xml:337"
 "Invoicing/Payment",,,"resources/views/ConvertLeadWizard.xml:363"
 "Job Title",,,"resources/domains/Lead.xml:17"
 "KMS",,,"resources/views/Selects.xml:72"
 "Key accounts",,,"resources/views/Dashboard.xml:87"
+"L'objectif %s est en contradiction avec la configuration d'objectif %s",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:15"
 "Last name",,,"resources/domains/Lead.xml:13"
 "Late Tickets",,,"resources/views/Dashboard.xml:464"
 "Lead",,,"resources/domains/EmailAddress.xml:10
@@ -466,7 +477,8 @@ resources/views/Selects.xml:51"
 "Lead.source","Source",,"java/com/axelor/apps/crm/db/report/ITranslation.java:32"
 "Lead.status","Status",,"java/com/axelor/apps/crm/db/report/ITranslation.java:33"
 "Lead.title","Title",,"java/com/axelor/apps/crm/db/report/ITranslation.java:25"
-"Leads",,,"resources/views/Charts.xml:224
+"Leads",,,"java/com/axelor/apps/crm/web/LeadController.java:145
+resources/views/Charts.xml:224
 resources/views/Charts.xml:258
 resources/views/Charts.xml:292
 resources/views/Charts.xml:693
@@ -609,7 +621,7 @@ resources/views/Event.xml:647"
 resources/views/Opportunity.xml:45
 resources/views/Opportunity.xml:76"
 "Next step",,,"resources/domains/Opportunity.xml:20"
-"No lead import configuration found",,,"java/com/axelor/apps/crm/web/LeadController.java:167"
+"No lead import configuration found",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:53"
 "No of Tickets",,,"resources/views/Charts.xml:769"
 "Non-participant",,,"resources/views/Selects.xml:134"
 "None",,,"resources/views/Selects.xml:161"
@@ -631,7 +643,8 @@ resources/views/Dashboard.xml:360"
 resources/views/Dashboard.xml:365"
 "Open tickets distribution by Priority",,,"resources/views/Charts.xml:553
 resources/views/Dashboard.xml:379"
-"Opportunities",,,"resources/views/Charts.xml:113
+"Opportunities",,,"java/com/axelor/apps/crm/web/OpportunityController.java:79
+resources/views/Charts.xml:113
 resources/views/Lead.xml:273
 resources/views/Menu.xml:136
 resources/views/Menu.xml:139
@@ -725,6 +738,7 @@ resources/views/ConvertLeadWizard.xml:61"
 resources/views/Dashboard.xml:193"
 "Pipeline next 90 days",,,"resources/views/Charts.xml:166"
 "Planified",,,"resources/views/Selects.xml:101"
+"Please select the Lead(s) to print.",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:50"
 "Port",,,"resources/domains/Calendar.xml:16"
 "Postal addresses",,,"resources/views/ConvertLeadWizard.xml:336"
 "Postal code",,,"resources/domains/Lead.xml:28
@@ -747,10 +761,13 @@ resources/views/Charts.xml:574"
 "Project/Business",,,"resources/views/Selects.xml:56"
 "Proposal/Quote",,,"resources/views/Selects.xml:89"
 "Proposition",,,"resources/views/Selects.xml:86"
+"Prospect converti",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:39"
 "Prospection",,,"resources/views/Menu.xml:330
 resources/views/Selects.xml:83"
 "Qualification",,,"resources/views/Selects.xml:84"
 "Quote/Order",,,"resources/views/Selects.xml:55"
+"Rappel(s) traité(s)",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:22
+java/com/axelor/apps/crm/exception/IExceptionMessage.java:27"
 "Real",,,"resources/views/Target.xml:108
 resources/views/Target.xml:94"
 "Realized",,,"resources/views/Selects.xml:102"

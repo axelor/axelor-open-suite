@@ -28,12 +28,14 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.IEventReminder;
+import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.EventReminderService;
 import com.axelor.apps.crm.service.EventReminderThread;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Injector;
 
 public class BatchEventReminder extends BatchStrategy {
@@ -97,7 +99,7 @@ public class BatchEventReminder extends BatchStrategy {
 					
 				} catch (Exception e) {
 					
-					TraceBackService.trace(new Exception(String.format("Event reminder %s", 
+					TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_1), 
 							eventReminderService.find(eventReminder.getId()).getEvent().getSubject()), e), IException.CRM, batch.getId());
 					
 					incrementAnomaly();
@@ -169,9 +171,9 @@ public class BatchEventReminder extends BatchStrategy {
 	@Override
 	protected void stop() {
 
-		String comment = "Compte rendu de la génération de rappel des évènements :\n";
-		comment += String.format("\t* %s Rappel(s) traité(s)\n", batch.getDone());
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		String comment = I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_2);
+		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_3)+"\n", batch.getDone());
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 		
 		super.stop();
 		addComment(comment);

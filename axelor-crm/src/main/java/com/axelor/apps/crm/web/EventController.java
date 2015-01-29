@@ -32,10 +32,12 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -120,7 +122,7 @@ public class EventController {
 		if(event.getTicketNumberSeq() ==  null && event.getTypeSelect() == IEvent.TICKET){
 			String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.EVENT_TICKET);
 			if (seq == null)
-				throw new AxelorException("Aucune séquence configurée pour les tickets",
+				throw new AxelorException(I18n.get(IExceptionMessage.EVENT_1),
 								IException.CONFIGURATION_ERROR);
 			else
 				response.setValue("ticketNumberSeq", seq);
@@ -172,9 +174,9 @@ public class EventController {
 				response.setView(mapView);
 			}
 			else
-				response.setFlash(String.format("<B>%s</B> not found",event.getLocation()));
+				response.setFlash(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ADDRESS_5),event.getLocation()));
 		}else
-			response.setFlash("Input location please !");
+			response.setFlash(I18n.get(IExceptionMessage.EVENT_2));
 	}	
 	
 	

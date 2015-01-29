@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.report.IReport;
+import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
@@ -124,7 +125,7 @@ public class LeadController {
 				response.setFlash(urlNotExist);
 			}
 		}else{
-			response.setFlash("Please select the Lead(s) to print.");
+			response.setFlash(I18n.get(IExceptionMessage.LEAD_1));
 		}	
 	}
 	
@@ -132,16 +133,16 @@ public class LeadController {
 		
 		String appHome = AppSettings.get().get("application.home");
 		if (Strings.isNullOrEmpty(appHome)) {
-			response.setFlash("Can not open map, Please Configure Application Home First.");
+			response.setFlash(I18n.get(IExceptionMessage.LEAD_2));
 			return;
 		}
 		if (!Beans.get(MapService.class).isInternetAvailable()) {
-			response.setFlash("Can not open map, Please Check your Internet connection.");
+			response.setFlash(I18n.get(IExceptionMessage.LEAD_3));
 			return;			
 		}		
 		String mapUrl = new String(appHome + "/map/gmap-objs.html?apphome=" + appHome + "&object=lead");
 		Map<String, Object> mapView = new HashMap<String, Object>();
-		mapView.put("title", "Leads");
+		mapView.put("title", I18n.get("Leads"));
 		mapView.put("resource", mapUrl);
 		mapView.put("viewType", "html");		
 		response.setView(mapView);
@@ -164,11 +165,11 @@ public class LeadController {
 		ImportConfiguration leadImportConfig  = Beans.get(ImportConfigurationRepository.class).all().filter("self.bindMetaFile.fileName = ?1","import-config-lead.xml").fetchOne();
 		LOG.debug("ImportConfig for lead: {}",leadImportConfig);
 		if(leadImportConfig == null){
-			response.setFlash(I18n.get("No lead import configuration found"));
+			response.setFlash(I18n.get(IExceptionMessage.LEAD_4));
 		}
 		else{
 			response.setView(ActionView
-							  .define(I18n.get("Import lead"))
+							  .define(I18n.get(IExceptionMessage.LEAD_5))
 							  .model("com.axelor.apps.base.db.ImportConfiguration")
 							  .add("form", "import-configuration-form")
 							  .param("popup", "reload")

@@ -27,11 +27,13 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.crm.db.TargetConfiguration;
 import com.axelor.apps.crm.db.repo.TargetConfigurationRepository;
+import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.TargetService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 
 public class BatchTarget extends BatchStrategy {
 
@@ -75,7 +77,7 @@ public class BatchTarget extends BatchStrategy {
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Event reminder %s", 
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_TARGET_1), 
 						targetConfigurationRepo.find(targetConfiguration.getId()).getCode()), e), IException.CRM, batch.getId());  //TODO
 				
 				incrementAnomaly();
@@ -99,9 +101,9 @@ public class BatchTarget extends BatchStrategy {
 	@Override
 	protected void stop() {
 
-		String comment = "Compte rendu de la génération des objectifs :\n";
-		comment += String.format("\t* %s Configuration des objectifs(s) traité(s)\n", batch.getDone());
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		String comment = I18n.get(IExceptionMessage.BATCH_TARGET_2);
+		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_TARGET_3)+"\n", batch.getDone());
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 		
 		super.stop();
 		addComment(comment);
