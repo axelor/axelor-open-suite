@@ -18,11 +18,13 @@
 package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.db.ISaleBatch;
 import com.axelor.apps.sale.db.SaleBatch;
 import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class SaleBatchService extends SaleBatchRepository {
@@ -48,11 +50,11 @@ public class SaleBatchService extends SaleBatchRepository {
 				return invoicing(saleBatch);
 			
 			default:
-				throw new AxelorException(String.format("Action %s inconnu pour le traitement %s", saleBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), saleBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
 			}
 		}
 		else {
-			throw new AxelorException(String.format("Batch %s inconnu", batchCode), IException.INCONSISTENCY);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), batchCode), IException.INCONSISTENCY);
 		}
 		
 	}

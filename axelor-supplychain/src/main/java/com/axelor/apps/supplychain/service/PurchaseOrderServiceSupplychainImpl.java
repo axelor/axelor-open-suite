@@ -45,8 +45,10 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
@@ -90,7 +92,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				startLocation = stockConfigService.getSupplierVirtualLocation(stockConfig);
 			}
 			if(startLocation == null)  {
-				throw new AxelorException(String.format("%s Veuillez configurer un entrepot virtuel fournisseur pour la société %s ", 
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_1), 
 						company.getName()), IException.CONFIGURATION_ERROR);
 			}
 			

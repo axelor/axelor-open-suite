@@ -20,8 +20,10 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -42,7 +44,7 @@ public class SaleOrderInvoiceController {
 			
 			if(invoice != null)  {
 				response.setReload(true);
-				response.setFlash("Facture créée");
+				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

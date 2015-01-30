@@ -43,8 +43,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderSubLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -138,14 +140,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	public void checkSubscriptionSaleOrder(SaleOrder saleOrder) throws AxelorException  {
 		
 		if(saleOrder.getSchedulerInstance() == null || saleOrder.getSchedulerInstance().getScheduler() == null)  {
-			throw new AxelorException(String.format("Il est nécessaire de définir un plannificateur."), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_1)), IException.CONFIGURATION_ERROR);
 		}
 		
 		if(saleOrder.getSubscriptionStartDate() == null)  {
-			throw new AxelorException(String.format("Il est nécessaire de définir une date de début d'abonnement."), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_2)), IException.CONFIGURATION_ERROR);
 		}
 		if(saleOrder.getInvoicedFirstDate() == null)  {
-			throw new AxelorException(String.format("Il est nécessaire de définir une date de première facturation."), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_3)), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -187,7 +189,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			LocalDate nextDate = schedulerService.getTheoricalExecutionDate(saleOrder.getSchedulerInstance());
 			
 			LOG.debug(String.format("La facturation n'est pas prête à etre lancée : %s < %s", today, nextDate));
-			throw new AxelorException(String.format("Le devis %s sera facturé le %s.", saleOrder.getSaleOrderSeq(), nextDate), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_4), saleOrder.getSaleOrderSeq(), nextDate), IException.CONFIGURATION_ERROR);
 		}
 		
 		return invoice;
@@ -205,7 +207,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		}
 		
 		if(total.compareTo(saleOrder.getInTaxTotal()) == 0)  {
-			throw new AxelorException(String.format("Le devis est déjà complêtement facturé"), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_5)), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -270,7 +272,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException  {
 		
 		if(saleOrder.getCurrency() == null)  {
-			throw new AxelorException(String.format("Veuillez selectionner une devise pour le devis %s ", saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(),saleOrder.getPaymentCondition(), 

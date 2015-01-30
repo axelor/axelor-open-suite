@@ -28,11 +28,13 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 
 public class BatchInvoicing extends BatchStrategy {
 
@@ -73,12 +75,12 @@ public class BatchInvoicing extends BatchStrategy {
 
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format("Devis %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Devis")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format("Devis %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Devis")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e), IException.INVOICE_ORIGIN, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -103,9 +105,9 @@ public class BatchInvoicing extends BatchStrategy {
 	@Override
 	protected void stop() {
 
-		String comment = "Compte rendu de génération de facture d'abonnement :\n";
-		comment += String.format("\t* %s Devis(s) traité(s)\n", batch.getDone());
-		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		String comment = I18n.get(IExceptionMessage.BATCH_INVOICING_1);
+		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_INVOICING_2)+"\n", batch.getDone());
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 		
 		super.stop();
 		addComment(comment);

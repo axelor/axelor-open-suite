@@ -37,10 +37,12 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -92,7 +94,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				
 				if(supplierPartner == null)  {
 					
-					throw new AxelorException(String.format("Veuillez choisir un fournisseur pour la ligne %s", saleOrderLine.getProductName()), IException.CONFIGURATION_ERROR);
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_PURCHASE_1), saleOrderLine.getProductName()), IException.CONFIGURATION_ERROR);
 				}
 				
 				if(!saleOrderLinesBySupplierPartner.containsKey(supplierPartner))  {
