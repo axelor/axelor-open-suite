@@ -21,8 +21,10 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.ProductionOrderWizardService;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -37,10 +39,10 @@ public class ProductionOrderWizardController {
 		Context context = request.getContext();
 		
 		if(context.get("qty") == null || new BigDecimal((String)context.get("qty")).compareTo(BigDecimal.ZERO) <= 0)  {
-			response.setFlash("Veuillez entrer une quantité positive !");
+			response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_3)+" !");
 		}
 		else if(context.get("billOfMaterial") == null)  {
-			response.setFlash("Veuillez sélectionner une nomenclature !");
+			response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_4)+" !");
 		}
 		else  {
 			

@@ -32,9 +32,11 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdResource;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -179,7 +181,7 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 		if(billOfMaterial != null)  {
 			BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, true);
 			save(personalizedBOM);
-			personalizedBOM.setName(personalizedBOM.getName() + " (Personalized " + personalizedBOM.getId() + ")");
+			personalizedBOM.setName(personalizedBOM.getName() + " ("+I18n.get(IExceptionMessage.BOM_1)+" " + personalizedBOM.getId() + ")");
 			personalizedBOM.setPersonalized(true);
 			return personalizedBOM;
 		}

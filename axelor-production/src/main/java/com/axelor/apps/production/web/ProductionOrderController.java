@@ -26,10 +26,12 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
 import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -54,10 +56,10 @@ public class ProductionOrderController {
 		Context context = request.getContext();
 		
 		if(context.get("qty") == null || new BigDecimal((String)context.get("qty")).compareTo(BigDecimal.ZERO) <= 0)  {
-			response.setFlash("Veuillez entrer une quantité positive !");
+			response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_3)+"!");
 		}
 		else if(context.get("billOfMaterial") == null)  {
-			response.setFlash("Veuillez sélectionner une nomenclature !");
+			response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_4)+"!");
 		}
 		else  {
 			Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");

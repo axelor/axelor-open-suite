@@ -20,9 +20,11 @@ package com.axelor.apps.production.service.config;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class ProductionConfigService extends ProductionConfigRepository {
 	
@@ -31,7 +33,7 @@ public class ProductionConfigService extends ProductionConfigRepository {
 		ProductionConfig productionConfig = company.getProductionConfig(); 
 		
 		if(productionConfig == null)  {
-			throw new AxelorException(String.format("Veuillez configurer la production pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_CONFIG_1),
 					company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -46,7 +48,7 @@ public class ProductionConfigService extends ProductionConfigRepository {
 	public Location getProductionVirtualLocation(ProductionConfig productionConfig) throws AxelorException  {
 		
 		if(productionConfig.getProductionVirtualLocation() == null)  {
-			throw new AxelorException(String.format("Veuillez configurer un Emplacement Virtuel Production pour la société %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2),
 					productionConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		

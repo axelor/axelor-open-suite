@@ -31,14 +31,14 @@ public interface IExceptionMessage {
 	 * Production order service
 	 */
 	
-	static final String PRODUCTION_ORDER_SEQ = "Aucune séquence configurée pour les Ordres de production";
+	static final String PRODUCTION_ORDER_SEQ = /*$$(*/ "Aucune séquence configurée pour les Ordres de production" /*)*/;
 	
 	
 	/**
 	 * Production order sale order service
 	 */
 	
-	static final String PRODUCTION_ORDER_SALES_ORDER_NO_BOM = "Aucune nomenclature définie pour le produit %s (%s)";
+	static final String PRODUCTION_ORDER_SALES_ORDER_NO_BOM = /*$$(*/ "Aucune nomenclature définie pour le produit %s (%s)" /*)*/;
 	
 	
 	
@@ -46,6 +46,40 @@ public interface IExceptionMessage {
 	 * Manuf order service
 	 */
 	
-	static final String MANUF_ORDER_SEQ = "Aucune séquence configurée pour les Ordres de fabrication";
+	static final String MANUF_ORDER_SEQ = /*$$(*/ "Aucune séquence configurée pour les Ordres de fabrication" /*)*/;
 	
+	/**
+	 * Bill of Material Service 
+	 */
+	static final String BOM_1 = /*$$(*/ "Personalized" /*)*/;
+	
+	/**
+	 * Production Order Wizard and controller
+	 */
+	static final String PRODUCTION_ORDER_1 = /*$$(*/ "Ordre de production créé" /*)*/;
+	static final String PRODUCTION_ORDER_2 = /*$$(*/ "Erreur lors de la création de l'ordre de production" /*)*/;
+	static final String PRODUCTION_ORDER_3 = /*$$(*/ "Veuillez entrer une quantité positive" /*)*/;
+	static final String PRODUCTION_ORDER_4 = /*$$(*/ "Veuillez sélectionner une nomenclature" /*)*/;
+	
+	/**
+	 * Production Config Service
+	 */
+	static final String PRODUCTION_CONFIG_1 = /*$$(*/ "Veuillez configurer la production pour la société %s" /*)*/;
+	static final String PRODUCTION_CONFIG_2 = /*$$(*/ "Veuillez configurer un Emplacement Virtuel Production pour la société %s" /*)*/;
+	
+	/**
+	 * Manuf Order Controller
+	 */
+	static final String MANUF_ORDER_1 = /*$$(*/ "Please select the Manufacturing order(s) to print." /*)*/;
+	
+	/**
+	 * Operation Order Controller
+	 */
+	static final String OPERATION_ORDER_1 = /*$$(*/ "Please select the Operation order(s) to print." /*)*/;
+	
+	/**
+	 * Sale Order Line Controller
+	 */
+	static final String SALE_ORDER_LINE_1 = /*$$(*/ "Nomenclature personnalisé créée" /*)*/;
 }
+

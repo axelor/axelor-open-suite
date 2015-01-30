@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ManufOrderWorkflowService;
@@ -200,7 +201,7 @@ public class ManufOrderController {
 				response.setFlash(urlNotExist);
 			}
 		}else{
-			response.setFlash("Please select the Manufacturing order(s) to print.");
+			response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_1));
 		}	
 	}
 	

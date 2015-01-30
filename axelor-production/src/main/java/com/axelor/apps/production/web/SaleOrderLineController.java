@@ -18,8 +18,10 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -39,7 +41,7 @@ public class SaleOrderLineController {
 		if(copyBillOfMaterial != null)  {
 		
 			response.setValue("billOfMaterial", copyBillOfMaterial);
-			response.setFlash("Nomenclature personnalisé créée");
+			response.setFlash(I18n.get(IExceptionMessage.SALE_ORDER_LINE_1));
 		}
 		
 	}

@@ -76,10 +76,10 @@ public class ProductionOrderWizardServiceImpl extends ProductionOrderRepository 
 		ProductionOrder productionOrder = productionOrderService.generateProductionOrder(product, billOfMaterial, qty);
 		
 		if(productionOrder != null)  {
-			return "Ordre de production créé ("+productionOrder.getProductionOrderSeq()+")";
+			return I18n.get(IExceptionMessage.PRODUCTION_ORDER_1)+" ("+productionOrder.getProductionOrderSeq()+")";
 		}
 		else  {
-			return "Erreur lors de la création de l'ordre de production";
+			return I18n.get(IExceptionMessage.PRODUCTION_ORDER_2);
 		}
 	}
 	
