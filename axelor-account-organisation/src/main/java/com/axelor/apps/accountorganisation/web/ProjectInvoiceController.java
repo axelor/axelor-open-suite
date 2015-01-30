@@ -18,9 +18,11 @@
 package com.axelor.apps.accountorganisation.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.accountorganisation.exceptions.IExceptionMessage;
 import com.axelor.apps.accountorganisation.service.ProjectInvoiceService;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -41,10 +43,10 @@ public class ProjectInvoiceController {
 
 				if(invoice != null) {
 					response.setReload(true);
-					response.setFlash("Facture créée");
+					response.setFlash(I18n.get(com.axelor.apps.supplychain.exception.IExceptionMessage.PO_INVOICE_2));
 				}
 				else {
-					response.setFlash("Aucune facture générée. Veuillez vérifier que les champs Client, Contact et Société sont bien remplis.");
+					response.setFlash(I18n.get(IExceptionMessage.PROJECT_INVOICE_1));
 				}
 			}
 			catch(Exception e)  { TraceBackService.trace(response, e); }

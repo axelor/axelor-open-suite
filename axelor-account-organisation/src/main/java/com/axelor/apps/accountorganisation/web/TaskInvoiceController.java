@@ -21,7 +21,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.accountorganisation.service.TaskInvoiceService;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.db.repo.TaskRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -45,7 +47,7 @@ public class TaskInvoiceController {
 			
 			if(invoice != null)  {
 				response.setReload(true);
-				response.setFlash("Facture créée");
+				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

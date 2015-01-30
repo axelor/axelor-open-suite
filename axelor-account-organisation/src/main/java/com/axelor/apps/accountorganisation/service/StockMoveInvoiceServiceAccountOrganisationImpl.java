@@ -27,9 +27,11 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.service.invoice.InvoiceLineGeneratorOrganisation;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class StockMoveInvoiceServiceAccountOrganisationImpl extends StockMoveInvoiceServiceImpl  {
 	
@@ -39,7 +41,7 @@ public class StockMoveInvoiceServiceAccountOrganisationImpl extends StockMoveInv
 		Product product = stockMoveLine.getProduct();
 		
 		if (product == null)
-			throw new AxelorException(String.format("Produit incorrect dans le mouvement de stock %s ", stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1), stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
 
 		Task task = null;
 		if(invoice.getProject() != null)  {

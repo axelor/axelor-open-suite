@@ -25,9 +25,11 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.organisation.service.invoice.InvoiceGeneratorOrganisation;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class PurchaseOrderInvoiceServiceAccountOrganisationImpl extends PurchaseOrderInvoiceServiceImpl {
@@ -41,7 +43,7 @@ public class PurchaseOrderInvoiceServiceAccountOrganisationImpl extends Purchase
 	public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		if(purchaseOrder.getCurrency() == null)  {
-			throw new AxelorException(String.format("Veuillez selectionner une devise pour la commande %s ", purchaseOrder.getPurchaseOrderSeq()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 
 		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(invoiceRepo.OPERATION_TYPE_SUPPLIER_PURCHASE, purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner(), 

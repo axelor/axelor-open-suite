@@ -35,9 +35,11 @@ import com.axelor.apps.organisation.service.invoice.InvoiceLineGeneratorOrganisa
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderSubLine;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class SaleOrderInvoiceServiceAccountOrganisationImpl extends SaleOrderInvoiceServiceImpl {
@@ -46,7 +48,7 @@ public class SaleOrderInvoiceServiceAccountOrganisationImpl extends SaleOrderInv
 	public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException  {
 		
 		if(saleOrder.getCurrency() == null)  {
-			throw new AxelorException(String.format("Veuillez selectionner une devise pour le devis %s ", saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 		
 		InvoiceGeneratorOrganisation invoiceGenerator = new InvoiceGeneratorOrganisation(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(),saleOrder.getPaymentCondition(), 

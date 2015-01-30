@@ -26,8 +26,10 @@ import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -63,11 +65,11 @@ public class StockMoveServiceAccountOrganisationImpl extends StockMoveServiceImp
 		Location toLocation = stockMove.getToLocation();
 		
 		if(fromLocation == null)  {
-			throw new AxelorException(String.format("Aucun emplacement source selectionné pour le mouvement de stock %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_5),
 					 stockMove.getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(toLocation == null)  {
-			throw new AxelorException(String.format("Aucun emplacement destination selectionné pour le mouvement de stock %s",
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_6),
 					stockMove.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
