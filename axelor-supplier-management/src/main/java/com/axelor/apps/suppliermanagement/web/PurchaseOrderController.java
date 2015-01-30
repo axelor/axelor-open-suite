@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.suppliermanagement.web;
 
+import com.axelor.apps.suppliermanagement.exceptions.IExceptionMessage;
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -39,7 +41,7 @@ public class PurchaseOrderController {
 		
 		try {
 			purchaseOrderSupplierService.generateSuppliersPurchaseOrder(purchaseOrderRepo.find(purchaseOrder.getId()));
-			response.setFlash("Demande de consultations fournisseurs créées");
+			response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_1));
 			response.setReload(true);
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
@@ -52,7 +54,7 @@ public class PurchaseOrderController {
 		
 		try {
 			purchaseOrderSupplierService.generateAllSuppliersRequests(purchaseOrderRepo.find(purchaseOrder.getId()));
-			response.setFlash("Génération des devis fournisseurs terminée");
+			response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_2));
 			response.setReload(true);
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }

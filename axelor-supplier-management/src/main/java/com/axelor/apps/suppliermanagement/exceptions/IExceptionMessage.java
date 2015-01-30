@@ -26,6 +26,12 @@ public interface IExceptionMessage {
 	 * Purchase order supplier line service
 	 */
 	
-	static final String CURRENCY_CONVERSION_2 = "WARNING : To Date must be after or equals to From Date";
+	static final String CURRENCY_CONVERSION_2 = /*$$(*/ "WARNING : To Date must be after or equals to From Date" /*)*/;
+	
+	/**
+	 * Purchase Order Controller
+	 */
+	static final String PURCHASE_ORDER_1 = /*$$(*/ "Demande de consultations fournisseurs créées" /*)*/;
+	static final String PURCHASE_ORDER_2 = /*$$(*/ "Génération des devis fournisseurs terminée" /*)*/;
 	
 }
