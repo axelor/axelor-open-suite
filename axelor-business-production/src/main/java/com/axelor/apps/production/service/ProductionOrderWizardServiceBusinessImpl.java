@@ -29,7 +29,9 @@ import com.axelor.apps.organisation.db.repo.ProjectRepository;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
@@ -67,10 +69,10 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 		ProductionOrder productionOrder = productionOrderServiceBusinessImpl.generateProductionOrder(product, billOfMaterial, qty, businessProject);
 		
 		if(productionOrder != null)  {
-			return "Ordre de production créé ("+productionOrder.getProductionOrderSeq()+")";
+			return I18n.get(IExceptionMessage.PRODUCTION_ORDER_1)+" ("+productionOrder.getProductionOrderSeq()+")";
 		}
 		else  {
-			return "Erreur lors de la création de l'ordre de production";
+			return I18n.get(IExceptionMessage.PRODUCTION_ORDER_2);
 		}
 	}
 	
