@@ -34,6 +34,7 @@
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>
 				<field name="isInvoiceMoveConsolidated"/>
+				<field name="manageCustomerCredit" />
 				<panel title="Rejects reasons and codes list" colSpan="12">
 					<field name="transferAndDirectDebitInterbankCode"/>
 					<field name="chequeInterbankCode"/>

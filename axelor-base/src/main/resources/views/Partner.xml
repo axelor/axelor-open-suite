@@ -40,7 +40,7 @@
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" 
+    onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-set-virtual-fields" 
     onSave="action-group-base-partner-onsave">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
@@ -94,8 +94,8 @@
 							<field name="address" colSpan="12"/>
 						</editor>
 					</field>
-					
 					<field name="webSite"/>
+					<field name="manageCustomerCredit" type="boolean" hidden="true" />
 				</panel>
 				<panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12" >
 					<panel colSpan="6">
@@ -114,6 +114,10 @@
 					</panel>
 		      	</panel>
 	    	</panel>
+	    	<panel name="supplierDetails" title="Supplier Details" colSpan="12" showIf="supplierTypeSelect ==  2 || supplierTypeSelect == 3" >
+	    	    <field name="supplierStatusSelect" />
+	    	    <panel-related field="productCategorySet" colSpan="12"/>
+	    	</panel>
 			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12" >
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
 				<panel-include if-module="axelor-account" view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
@@ -124,7 +128,7 @@
 			</panel>
 			
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account" />
-			
+			<panel-include if-module="axelor-account" view="incl-customer-credit-partner-form" from="axelor-account" />
 			
 			<panel title="Activities" showIf="id != null" if-module="axelor-crm">
 				<panel-include if-module="axelor-organisation" view="incl-show-project-partner-form" from="axelor-organisation"/>
@@ -269,6 +273,7 @@
 	
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
+		<action name="action-partner-record-set-virtual-fields" />
 		<action name="action-partner-record-set-default"/>
 		<action name="action-partner-record-customer-supplier-type"/>
 	</action-group>
@@ -355,8 +360,12 @@
     	<field name="currency" expr="eval:null" if="!isContact"/>
     	<field name="invoiceSendingFormatSelect" expr="eval:null" if="!isContact"/>
     </action-record>
-	
-	<action-method name="action-set-partner-seq" >
+    
+    <action-record name="action-partner-record-set-virtual-fields" model="com.axelor.apps.base.db.Partner">
+    	<field name="manageCustomerCredit" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral()?.manageCustomerCredit" />
+    </action-record>
+
+    <action-method name="action-set-partner-seq" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="setPartnerSequence"/>
 	</action-method>
     

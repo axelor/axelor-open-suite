@@ -19,6 +19,9 @@
 
 		<!-- TVA -->
 		<many-to-one name="defaultExemptionTax" ref="com.axelor.apps.account.db.Tax" title="Tax 0%" />
+		
+		<!-- Manage CustomerCreditLines -->
+		<boolean name="manageCustomerCredit" title="Manage customerCredit"/>
 
 	</entity>
 

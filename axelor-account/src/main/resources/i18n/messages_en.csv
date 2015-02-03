@@ -154,6 +154,7 @@ resources/views/MoveTemplateLine.xml:22"
 resources/views/PaymentVoucher.xml:78"
 "A chart or chart structure of accounts already exists, please delete the hierarchy between accounts in order to import a new chart.",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:496"
 "Acc. Clearance",,,"resources/views/AccountConfig.xml:120"
+"Accepted Credit",,,"resources/domains/CustomerCreditLine.xml:11"
 "Account",,,"resources/domains/BankStatementLine.xml:14
 resources/domains/MoveLine.xml:11
 resources/domains/MoveLineReport.xml:15
@@ -510,6 +511,7 @@ resources/domains/AnalyticJournal.xml:12
 resources/domains/BankStatement.xml:9
 resources/domains/CashRegister.xml:14
 resources/domains/ChequeRejection.xml:10
+resources/domains/CustomerCreditLine.xml:10
 resources/domains/DirectDebitManagement.xml:8
 resources/domains/Invoice.xml:17
 resources/domains/InvoiceBatch.xml:13
@@ -619,6 +621,9 @@ resources/domains/IrrecoverablePaymentScheduleLineLine.xml:10
 resources/views/IrrecoverableCustomerLine.xml:10
 resources/views/Selects.xml:200"
 "Customer Credit note Journal",,,"resources/domains/AccountConfig.xml:15"
+"Customer Credits",,,"resources/domains/Partner.xml:24
+resources/views/CustomerCreditLine.xml:12
+resources/views/CustomerCreditLine.xml:6"
 "Customer Invoices remaining To Collect",,,"resources/views/Dashboard.xml:133"
 "Customer Paybox payments",,,"resources/views/PaymentVoucher.xml:298"
 "Customer Payment mode by amount",,,"resources/views/Dashboard.xml:149
@@ -764,6 +769,7 @@ resources/domains/AccountingSituation.xml:20"
 "Email template for invoice and payment schedule rejections",,,"resources/domains/AccountConfig.xml:77"
 "Email to use",,,"resources/domains/PaymentVoucher.xml:31"
 "Email used by Paybox",,,"resources/views/PaymentVoucher.xml:273"
+"Encours utilisé",,,"resources/domains/CustomerCreditLine.xml:12"
 "End Date",,,"resources/domains/InvoiceLineEvent.xml:14"
 "End date",,,"resources/domains/AccountingBatch.xml:45"
 "End of cycle",,,"resources/domains/Invoice.xml:25"
@@ -871,7 +877,7 @@ resources/views/charts.xml:650
 resources/views/charts.xml:682
 resources/views/charts.xml:774
 resources/views/charts.xml:850"
-"History",,,"resources/views/Partner.xml:57"
+"History",,,"resources/views/Partner.xml:61"
 "IPO",,,"resources/views/Selects.xml:184"
 "IPO + Cheque",,,"resources/views/Selects.xml:185"
 "IPO Payments and IPO Cheque",,,"resources/views/AccountConfig.xml:135"
@@ -1031,7 +1037,7 @@ resources/views/Invoice.xml:185
 resources/views/Invoice.xml:8
 resources/views/IrrecoverableInvoiceLine.xml:5
 resources/views/Menu.xml:665
-resources/views/Partner.xml:65
+resources/views/Partner.xml:69
 resources/views/PaymentSchedule.xml:40"
 "Invoices selection",,,"resources/domains/InvoiceBatch.xml:19"
 "Invoices to pay",,,"resources/views/PaymentInvoice.xml:14
@@ -1117,6 +1123,7 @@ resources/domains/ReminderMethodLine.xml:11"
 "Long term debt duration (month)",,,"resources/domains/AccountConfig.xml:48"
 "Lower reimbursement limit",,,"resources/domains/AccountConfig.xml:58"
 "Mail transit time",,,"resources/domains/AccountConfig.xml:53"
+"Manage customerCredit",,,"resources/domains/General.xml:24"
 "Management",,,"resources/views/ManagementObject.xml:10"
 "Managements",,,"resources/views/ManagementObject.xml:5"
 "Mandate signature city",,,"resources/domains/Rum.xml:15"
@@ -1290,7 +1297,8 @@ resources/domains/Rum.xml:16
 resources/views/Partner.xml:23
 resources/views/Partner.xml:27
 resources/views/Partner.xml:31
-resources/views/Partner.xml:54
+resources/views/Partner.xml:35
+resources/views/Partner.xml:58
 resources/views/Partner.xml:6"
 "Partner Balance due",,,"resources/domains/Reminder.xml:18
 resources/domains/ReminderHistory.xml:17"
@@ -1635,7 +1643,7 @@ resources/views/charts.xml:451"
 "Run",,,"resources/views/InvoiceBatch.xml:44"
 "Run export again",,,"resources/views/MoveLineReport.xml:113"
 "SEPA ?",,,"resources/domains/AccountingBatch.xml:30"
-"SEPA Direct Debit",,,"resources/views/Partner.xml:55"
+"SEPA Direct Debit",,,"resources/views/Partner.xml:59"
 "Sale Entries",,,"resources/views/MoveLine.xml:255"
 "Sale account",,,"resources/domains/AccountManagement.xml:9"
 "Sales",,,"resources/views/Menu.xml:36"
@@ -1883,7 +1891,7 @@ resources/views/Invoice.xml:404"
 "Unpaid IPO operation code",,,"resources/domains/CfonbConfig.xml:34"
 "Unpaid Supplier's Invoices",,,"resources/views/Dashboard.xml:121"
 "Unpaid direct debit operation code",,,"resources/domains/CfonbConfig.xml:33"
-"Unpaid invoices",,,"resources/views/Partner.xml:72"
+"Unpaid invoices",,,"resources/views/Partner.xml:76"
 "Unreconcile",,,"resources/views/Reconcile.xml:32"
 "Update customer account",,,"resources/views/Selects.xml:141"
 "Upper reimbursement limit",,,"resources/domains/AccountConfig.xml:59"

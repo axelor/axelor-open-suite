@@ -56,6 +56,9 @@
   
   	<integer name="versionSelect" title="Version" selection="base.product.version.select"/>
   	
+  	<boolean name="sellable" title="Sellable" default="true" />
+  	<boolean name="purchasable" title="Purchasable" default="true"/>
+  	
   </entity>
 
 </domain-models>

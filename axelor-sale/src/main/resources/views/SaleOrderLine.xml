@@ -21,7 +21,7 @@
 	    <field name="isToPrintLineSubTotal"/>
 	  </panel>
 	  <panel>
-	    <field name="product" onChange="action-group-sale-saleorderline-product-onchange" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
+	    <field name="product" onChange="action-group-sale-saleorderline-product-onchange" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
 	    <field name="unit"/>
