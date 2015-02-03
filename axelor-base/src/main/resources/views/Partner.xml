@@ -114,10 +114,6 @@
 					</panel>
 		      	</panel>
 	    	</panel>
-	    	<panel name="supplierDetails" title="Supplier Details" colSpan="12" showIf="supplierTypeSelect ==  2 || supplierTypeSelect == 3" >
-	    	    <field name="supplierStatusSelect" />
-	    	    <panel-related field="productCategorySet" colSpan="12"/>
-	    	</panel>
 			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12" >
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
 				<panel-include if-module="axelor-account" view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>

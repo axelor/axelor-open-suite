@@ -1602,7 +1602,6 @@ resources/views/SupplierCatalog.xml:6"
 "Supplier Catalog Lines",,,"resources/domains/Product.xml:40"
 "Supplier Details",,,"resources/views/Partner.xml:117"
 "Supplier Refund",,,"resources/views/Selects.xml:349"
-"Supplier Status",,,"resources/domains/Partner.xml:75"
 "Supplier Type",,,"resources/domains/Partner.xml:24"
 "Supplier invoice",,,"resources/views/Selects.xml:347"
 "Suppliers",,,"resources/views/Charts.xml:82

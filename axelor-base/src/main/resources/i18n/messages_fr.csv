@@ -1602,7 +1602,6 @@ resources/views/SupplierCatalog.xml:6"
 "Supplier Catalog Lines","Lignes catalogue fournisseur",,"resources/domains/Product.xml:40"
 "Supplier Details",,,"resources/views/Partner.xml:117"
 "Supplier Refund","Avoir fournisseur",,"resources/views/Selects.xml:349"
-"Supplier Status","Statut fournisseur",,"resources/domains/Partner.xml:75"
 "Supplier Type","Type Fournisseur",,"resources/domains/Partner.xml:24"
 "Supplier invoice","Facture fournisseur",,"resources/views/Selects.xml:347"
 "Suppliers","Fournisseurs",,"resources/views/Charts.xml:82

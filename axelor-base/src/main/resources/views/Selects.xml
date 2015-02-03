@@ -592,11 +592,4 @@
 		<option value="2">Closed</option>
 	</selection>
 	
-	<selection name="base.supplier.status.select">
-		<option value="1">En cours de validation</option>
-		<option value="2">Validé non référencé</option>
-		<option value="3">Validé référencé</option>
-		<option value="4">Refusé</option>
-	</selection>
-	
 </object-views>
