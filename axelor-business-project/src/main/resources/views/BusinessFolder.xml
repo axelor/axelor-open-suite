@@ -11,11 +11,13 @@
 
 	<form name="business-folder-form" title="Business Folder" model="com.axelor.business.project.db.BusinessFolder" onSave="action-business-folder-set-seq">
 		<panel title="Overview">
-		    <field name="name" colSpan="8"/>
-			<field name="code" colSpan="4" readonly="true"/>
+		    <field name="name"/>
+			<field name="code" readonly="true"/>
 			<field name="customer"/>
 			<field name="userResponible" />
 			<field name="statusSelect" readonly="true" colSpan="2"/>
+			<button name="close" title="Close" colSpan="3" onClick="action-business-project-set-status-close,save" showIf="statusSelect == 1"/>
+			<button name="open" title="Open" colSpan="3" onClick="action-business-project-set-status-open,save" showIf="statusSelect == 2"/>
 			<button name="createSalesOrder" title="Create Sales Order" colSpan="4"/>
 		</panel>
 		<panel>
@@ -28,6 +30,16 @@
 	
 	<action-record name="action-business-folder-set-seq" model="com.axelor.business.project.db.BusinessFolder">
 	    <field name="code" expr="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber('businessFolder')" if="code == null"/>
+	</action-record>
+	
+	<action-record name="action-business-project-set-status-close" model="com.axelor.business.project.db.BusinessFolder">
+	    <field name="statusSelect" expr="eval:2" />
+	    <field name="dateClosed" expr="eval:__date__" />
+	    <field name="userClosed" expr="eval:__user__" />
+	</action-record>
+	
+	<action-record name="action-business-project-set-status-open" model="com.axelor.business.project.db.BusinessFolder">
+	    <field name="statusSelect" expr="eval:1" />
 	</action-record>
 	    
 </object-views>
