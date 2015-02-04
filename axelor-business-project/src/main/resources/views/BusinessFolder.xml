@@ -16,9 +16,9 @@
 			<field name="customer"/>
 			<field name="userResponible" />
 			<field name="statusSelect" readonly="true" colSpan="2"/>
-			<button name="close" title="Close" colSpan="3" onClick="action-business-project-set-status-close,save" showIf="statusSelect == 1"/>
-			<button name="open" title="Open" colSpan="3" onClick="action-business-project-set-status-open,save" showIf="statusSelect == 2"/>
-			<button name="createSalesOrder" title="Create Sales Order" colSpan="4"/>
+			<button name="close" title="Close" colSpan="3" onClick="action-business-project-set-status-close,save" showIf="statusSelect == 1" readonlyIf="id == null"/>
+			<button name="open" title="Open" colSpan="3" onClick="action-business-project-set-status-open,save" showIf="statusSelect == 2" readonlyIf="id == null"/>
+			<button name="createSalesOrder" title="Create Sales Order" colSpan="4"  readonlyIf="id == null"/>
 		</panel>
 		<panel>
 			<field name="createdBy" title="User Opened"/>
