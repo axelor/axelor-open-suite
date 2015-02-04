@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="business-project" package="com.axelor.business.project.db"/>
+
+  <entity name="BusinessFolder" cachable="true">
+      
+    <string name="code" namecolumn="true" unique="true"/>
+    <many-to-one name="userClosed" ref="com.axelor.auth.db.User" title="User closed" />
+    <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer" />
+    <date name="dateClosed" title="Date closed"/>
+    <string name="name" title="Folder name" required="true"/>
+    <integer name="statusSelect" title="Status" selection="business.project.business.folder.status.select" />
+    <many-to-one name="userResponible" ref="com.axelor.auth.db.User" title="User Responisble" />
+    
+  </entity>
+  
+</domain-models>

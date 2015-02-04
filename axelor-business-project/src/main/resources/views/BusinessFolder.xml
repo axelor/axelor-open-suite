@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="business-folder-grid" title="Business Folders" model="com.axelor.business.project.db.BusinessFolder">
+		<field name="code"/>
+		<field name="name"/>
+		<field name="customer"/>
+		<field name="statusSelect" />
+	</grid>
+
+	<form name="business-folder-form" title="Business Folder" model="com.axelor.business.project.db.BusinessFolder" onSave="action-business-folder-set-seq">
+		<panel title="Overview">
+		    <field name="name" colSpan="8"/>
+			<field name="code" colSpan="4" readonly="true"/>
+			<field name="customer"/>
+			<field name="userResponible" />
+			<field name="statusSelect" readonly="true" colSpan="2"/>
+			<button name="createSalesOrder" title="Create Sales Order" colSpan="4"/>
+		</panel>
+		<panel>
+			<field name="createdBy" title="User Opened"/>
+			<field name="userClosed" readonly="true"/>
+			<field name="createdOn" title="Date Opened"/>
+			<field name="dateClosed" readonly="true"/>
+		</panel>
+	</form>
+	
+	<action-record name="action-business-folder-set-seq" model="com.axelor.business.project.db.BusinessFolder">
+	    <field name="code" expr="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber('businessFolder')" if="code == null"/>
+	</action-record>
+	    
+</object-views>
