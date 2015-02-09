@@ -17,11 +17,8 @@
  */
 package com.axelor.apps.base.service.message;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-
-import javax.mail.MessagingException;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -63,12 +60,12 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	
 	@Override
 	@Transactional
-	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
+	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath, String addressBlock, int mediaTypeSelect)  {
 		
 		Message message = save(super.createMessage(
 				content, 
-				null, 
+				fromEmailAddress, 
 				model, 
 				id, 
 				null, 

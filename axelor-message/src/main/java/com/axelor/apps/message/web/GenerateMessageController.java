@@ -114,9 +114,9 @@ public class GenerateMessageController {
 		
 		Context context = request.getContext();
 		
-		Map<String, Object> object = (Map<String, Object>) context.get("_object");
+		Map<?,?> object = (Map<?,?>) context.get("_object");
 		
-		Map<String, Object> templateContext = (Map<String, Object>) context.get("template");
+		Map<?,?> templateContext = (Map<?,?>) context.get("template");
 		
 		Integer objectId =  (Integer) object.get("id");
 		

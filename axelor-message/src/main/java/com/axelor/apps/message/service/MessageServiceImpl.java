@@ -49,23 +49,22 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 	
 	@Inject
 	public MessageServiceImpl() {
-
 		this.todayTime = new DateTime();
 	}
 
 	@Inject
-	protected MailAccountService mailAccoutService;
+	protected MailAccountService mailAccountService;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
 	
 	@Transactional
-	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
+	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath, String addressBlock, int mediaTypeSelect)  {
 		
 		
 		return save(this.createMessage(
 				content, 
-				null, 
+				fromEmailAddress, 
 				model, 
 				id, 
 				null, 
@@ -169,7 +168,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 			String port = mailAccount.getPort()<=0?null:mailAccount.getPort().toString();
 			
 			com.axelor.mail.MailAccount account = new SmtpAccount(
-					mailAccount.getHost(), port, mailAccount.getLogin(), mailAccount.getPassword(), mailAccoutService.getSmtpSecurity(mailAccount));
+					mailAccount.getHost(), port, mailAccount.getLogin(), mailAccount.getPassword(), mailAccountService.getSmtpSecurity(mailAccount));
 					                               
 			MailSender sender = new MailSender(account);
 

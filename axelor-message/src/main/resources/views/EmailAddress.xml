@@ -7,19 +7,19 @@
        <toolbar>
         <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
        </toolbar>
-        <field name="name"/>
+       <field name="name"/>
     </grid>
     
     <form name="email-address-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress">
     	<panel>
-			<field name="address" widget="Email" onChange="action-check-string-email-address" />
-			<field name="partner"/>
+			<field name="address" widget="Email" onChange="action-check-string-email-address" placeholder="user@mydomain.com" />
+			<field name="partner" if-module="axelor-base"/>
 		</panel>
     </form>
     
     <form name="email-address-simple-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress">
     	<panel>
-			<field name="address" widget="Email" onChange="action-check-string-email-address" />
+			<field name="address" widget="Email" onChange="action-check-string-email-address" placeholder="user@mydomain.com" />
 		</panel>	
     </form>
     

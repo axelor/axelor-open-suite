@@ -30,14 +30,12 @@ import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.axelor.tool.template.TemplateMaker;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -76,6 +74,7 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 		LOG.debug("tag : "+tag);
 		LOG.debug("object id : "+objectId);
 		LOG.debug("object : "+object);
+		LOG.debug("template : "+template);
 		
 		this.initMaker(objectId, model, tag);
 		
@@ -85,6 +84,7 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 		String ccRecipients = "";
 		String bccRecipients = "";
 		String addressBlock= "";
+		String fromEmailAddress= "";
 		int mediaTypeSelect;
 		
 		if(template.getContent() != null)  {
@@ -106,29 +106,42 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 		
 		if(mailAccount != null){
 			mailAccount = mailAccountService.find(mailAccount.getId());
+			LOG.debug( "Mail account :::", mailAccount );
 		}
 		
-		if(template.getSubject() != null)  {
+		if ( template.getSubject() != null)  {
 			this.maker.setTemplate(template.getSubject());
 			subject = this.maker.make();
+			LOG.debug( "Subject :::", subject );
+		}
+		
+		if(template.getFromEmailAddress() != null)  {
+			this.maker.setTemplate(template.getFromEmailAddress());
+			fromEmailAddress = this.maker.make();
+			LOG.debug( "Reply to :::", fromEmailAddress );
 		}
 		
 		if(template.getToRecipients() != null)  {
 			this.maker.setTemplate(template.getToRecipients());
 			toRecipients = this.maker.make();
+			LOG.debug( "To :::", toRecipients );
 		}
 		
 		if(template.getCcRecipients() != null)  {
 			this.maker.setTemplate(template.getCcRecipients());
 			ccRecipients = this.maker.make();
+			LOG.debug( "CC :::", ccRecipients );
 		}
 		
 		if(template.getBccRecipients() != null)  {
 			this.maker.setTemplate(template.getBccRecipients());
 			bccRecipients = this.maker.make();
+			LOG.debug( "BCC :::", bccRecipients );
 		}
 		
 		mediaTypeSelect=template.getMediaTypeSelect();
+		LOG.debug( "Media :::", mediaTypeSelect );
+		LOG.debug( "Content :::", content );
 		
 		String filePath = this.getFilePath(template);
 		
@@ -138,6 +151,7 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 				new Long(objectId).intValue(), 
 				subject, 
 				content, 
+				Strings.isNullOrEmpty(fromEmailAddress) ? null : emailAddressRepo.findByAddress( fromEmailAddress ),
 				this.getEmailAddress(toRecipients),
 				this.getEmailAddress(ccRecipients),
 				this.getEmailAddress(bccRecipients),
@@ -165,7 +179,7 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 	
 	public TemplateMaker initMaker(long objectId, String model, String tag) throws InstantiationException, IllegalAccessException, ClassNotFoundException  {
 		//Init the maker
-		this.maker = new TemplateMaker(new Locale("fr"), '$', '$');
+		this.maker = new TemplateMaker( Locale.FRENCH, '$', '$');
 		
 		Class<? extends Model> myClass = (Class<? extends Model>) Class.forName( model );
 

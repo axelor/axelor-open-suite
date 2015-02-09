@@ -25,6 +25,9 @@
 		<panel title="Recipient address" showIf="mediaTypeSelect == 1">
 			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false"/>
 		</panel>
+        <panel title="Reply to" showIf="mediaTypeSelect == 2">
+        	<field name="fromEmailAddress" height="1" colSpan="12"/>
+        </panel>
         <panel title="Recipients" showIf="mediaTypeSelect == 2">
         	<field name="toRecipients" height="2" colSpan="12"/>
         	<field name="ccRecipients" height="2" colSpan="12"/>
