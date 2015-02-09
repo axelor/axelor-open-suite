@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="Project" cachable="true">
+      
+      <string name="name" title="Project Name" required="true"/>
+      <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer/Partner"/>
+      <boolean name="businessProject" title="Business Project"/>
+	  <string name="code" title="Project code" />
+	  <many-to-many name="membersSet" ref="com.axelor.auth.db.User" title="Membres"/>
+	  <one-to-many name="taskList" ref="com.axelor.apps.project.db.Task" title="Task" mappedBy="project"/>
+	          
+  </entity>
+  
+</domain-models>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="task-grid" title="Tasks" model="com.axelor.apps.project.db.Task">
+		<field name="name"/>
+		<field name="assignedTo"/>
+	</grid>
+
+	<form name="task-form" title="Task" model="com.axelor.apps.project.db.Task">
+	    <panel>
+	        <field name="project" hideIf="$popup()" />
+		    <field name="name" colSpan="12" />
+			<panel-related field="assignedToSet" colSpan="12" onSelect="action-project-task-attrs-assigned-to-domain" canNew="false"/>
+		</panel>
+	</form>
+	
+	<action-attrs name="action-project-task-attrs-assigned-to-domain">
+	    <attribute name="domain" for="assignedToSet" expr="eval:&quot;self.id in (${(_parent?.membersSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;"/>
+	</action-attrs>
+
+</object-views>

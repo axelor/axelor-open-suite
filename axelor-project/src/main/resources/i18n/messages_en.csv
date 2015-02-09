@@ -1,0 +1,18 @@
+"key","message","comment","context"
+"Business Project",,,"resources/domains/Project.xml:12"
+"Assigned to",,,"resources/domains/Task.xml:12"
+"Customer/Partner",,,"resources/domains/Project.xml:11"
+"Membres",,,"resources/domains/Project.xml:14"
+"Overview",,,"resources/views/Project.xml:10"
+"Project",,,"resources/domains/Task.xml:10
+resources/views/Menu.xml:5
+resources/views/Project.xml:9"
+"Project Name",,,"resources/domains/Project.xml:10"
+"Project code",,,"resources/domains/Project.xml:13"
+"Projects",,,"resources/views/Menu.xml:11
+resources/views/Menu.xml:9
+resources/views/Project.xml:5"
+"Task",,,"resources/domains/Project.xml:15
+resources/views/Task.xml:10"
+"Task name",,,"resources/domains/Task.xml:11"
+"Tasks",,,"resources/views/Task.xml:5"

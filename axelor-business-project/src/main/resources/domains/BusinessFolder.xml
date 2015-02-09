@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
 
-  <module name="business-project" package="com.axelor.business.project.db"/>
+  <module name="business-project" package="com.axelor.apps.business.project.db"/>
 
   <entity name="BusinessFolder" cachable="true">
       

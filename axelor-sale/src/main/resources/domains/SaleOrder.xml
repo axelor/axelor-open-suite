@@ -67,7 +67,11 @@
 	<date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
 	<date name="subscriptionEndDate" title="Subscription end date"/>
     
-    <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>  	
+    <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>
+    
+    <boolean name="template" title="Template"/>
+    <string name="alert" large="true" title="Alert" />
+    <integer name="versionNumber" title="Version Number" readonly="true" />	
     
   </entity>
 

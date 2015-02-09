@@ -5,5 +5,5 @@ module {
 	title "Axelor Business Project"
 
 	// module dependencies
-	module "modules:axelor-account-organisation"
+	module "modules:axelor-project"
 }
