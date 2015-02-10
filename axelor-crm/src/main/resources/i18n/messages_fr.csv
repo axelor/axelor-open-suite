@@ -311,7 +311,7 @@ resources/views/Event.xml:284"
 "Days","Jours",,"resources/views/Selects.xml:146"
 "Dead","Perdu",,"resources/views/Selects.xml:15"
 "Delete menu entrie","Supprimer entrée de menu",,"resources/views/CalendarConfiguration.xml:22"
-"Delivery address","Adresse livraison",,"resources/views/ConvertLeadWizard.xml:344"
+"Delivery address","Adresse de livraison",,"resources/views/ConvertLeadWizard.xml:344"
 "Dep./Div.","Dépt/Div.",,"resources/domains/Lead.xml:20"
 "Description","Description",,"resources/domains/CrmBatch.xml:16
 resources/domains/Event.xml:27
@@ -444,7 +444,7 @@ resources/views/ConvertLeadWizard.xml:547
 resources/views/ConvertLeadWizard.xml:580
 resources/views/ConvertLeadWizard.xml:68"
 "Input location please",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:45"
-"Invoicing address","Adresse facturation",,"resources/views/ConvertLeadWizard.xml:337"
+"Invoicing address","Adresse de facturation",,"resources/views/ConvertLeadWizard.xml:337"
 "Invoicing/Payment","Facturation/Paiement",,"resources/views/ConvertLeadWizard.xml:363"
 "Job Title","Fonction",,"resources/domains/Lead.xml:17"
 "KMS",,,"resources/views/Selects.xml:72"

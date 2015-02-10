@@ -28,17 +28,17 @@
 		</panel>
 	</form>
 	
-	<action-record name="action-business-folder-set-seq" model="com.axelor.business.project.db.BusinessFolder">
+	<action-record name="action-business-folder-set-seq" model="com.axelor.apps.business.project.db.BusinessFolder">
 	    <field name="code" expr="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber('businessFolder')" if="code == null"/>
 	</action-record>
 	
-	<action-record name="action-business-project-set-status-close" model="com.axelor.business.project.db.BusinessFolder">
+	<action-record name="action-business-project-set-status-close" model="com.axelor.apps.business.project.db.BusinessFolder">
 	    <field name="statusSelect" expr="eval:2" />
 	    <field name="dateClosed" expr="eval:__date__" />
 	    <field name="userClosed" expr="eval:__user__" />
 	</action-record>
 	
-	<action-record name="action-business-project-set-status-open" model="com.axelor.business.project.db.BusinessFolder">
+	<action-record name="action-business-project-set-status-open" model="com.axelor.apps.business.project.db.BusinessFolder">
 	    <field name="statusSelect" expr="eval:1" />
 	</action-record>
 	    
