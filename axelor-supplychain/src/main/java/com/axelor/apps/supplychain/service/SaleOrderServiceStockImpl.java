@@ -128,6 +128,8 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 			
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
 					product, 
+					saleOrderLine.getProductName(),
+					saleOrderLine.getDescription(),
 					saleOrderLine.getQty(), 
 					saleOrderLine.getUnit(), 
 					saleOrderLineService.computeDiscount(saleOrderLine), 

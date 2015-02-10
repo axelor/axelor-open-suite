@@ -53,7 +53,7 @@ public interface StockMoveLineService extends Repository<StockMoveLine>{
 	 * @return l'objet StockMoveLine
 	 * @throws AxelorException 
 	 */
-	public StockMoveLine createStockMoveLine(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, int type ) throws AxelorException;;
+	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, int type ) throws AxelorException;;
 	
 	
 	public void generateTrackingNumber(StockMoveLine stockMoveLine, TrackingNumberConfiguration trackingNumberConfiguration, Product product, BigDecimal qtyByTracking) throws AxelorException;
@@ -70,7 +70,7 @@ public interface StockMoveLineService extends Repository<StockMoveLine>{
 	 * @return
 	 * @throws AxelorException
 	 */
-	public StockMoveLine createStockMoveLine(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException;
+	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException;
 	
 	
 	

@@ -1,6 +1,6 @@
 "key","message","comment","context"
-"Business Project",,,"resources/domains/Project.xml:12"
 "Assigned to",,,"resources/domains/Task.xml:12"
+"Business Project",,,"resources/domains/Project.xml:12"
 "Customer/Partner",,,"resources/domains/Project.xml:11"
 "Membres",,,"resources/domains/Project.xml:14"
 "Overview",,,"resources/views/Project.xml:10"

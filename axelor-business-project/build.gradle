@@ -6,4 +6,5 @@ module {
 
 	// module dependencies
 	module "modules:axelor-project"
+	module "modules:axelor-supplychain"
 }

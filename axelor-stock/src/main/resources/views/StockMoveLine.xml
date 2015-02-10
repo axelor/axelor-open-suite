@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
     <grid name="stock-move-line-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
+        <field name="productName" required="true" />
         <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
         <field name="productModel"/>
         <field name="qty" onChange="action-stock-move-line-record-qty"/>
@@ -17,6 +18,7 @@
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
     	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number">
         <panel>
+            <field name="productName" />
 	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
 	        <field name="productModel"/>
 	        <field name="qty" onChange="action-stock-move-line-record-qty" colSpan="3"/>
@@ -25,6 +27,8 @@
 	        <field name="price" colSpan="3"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="accordanceSelect"/>
+	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true"/>
+	        <field name="productDescription" colSpan="12" widget="html" />
         </panel>
     </form>
     
@@ -33,6 +37,7 @@
     	<field name="stockMove.realDate"/>
         <field name="stockMove.fromLocation"/>
         <field name="stockMove.toLocation"/>
+        <field name="productName" />
         <field name="product"/>
         <field name="realQty"/>
         <field name="unit"/>
@@ -51,6 +56,7 @@
 	        <field name="stockMove.toLocation"/>
         </panel>
         <panel title="Move details">
+            <field name="productName" required="true"/>
 	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
 	        <field name="productModel"/>
 			<field name="qty" colSpan="3" onChange="action-stock-move-line-record-qty"/>
@@ -59,6 +65,8 @@
 	        <field name="unit" colSpan="3"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
+	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true"/>
+	        <field name="productDescription" colSpan="12" widget="html" />
         </panel>
     </form>
 
@@ -73,18 +81,20 @@
     <form name="stock-move-line-production-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
     	onNew="action-group-stock-stockmoveline-production-onnew">
 		<panel>
-	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-stock-move-line-set-product-price-unit" onSelect="action-stock-move-line-product-domain"/>
+		    <field name="productName" required="true" />
+	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-product-domain"/>
 	        <field name="productModel"/>
 	        <field name="qty" onChange="action-stock-move-line-record-qty"/>
 	        <field name="unit"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
+	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true"/>
 	        <field name="stockMove" hidden="true"/>
         </panel>
     </form>
     
     <action-group name="action-group-stock-stockmoveline-product-onchange">
     	<action name="action-inventory-line-attrs-tracking-number"/>
-    	<action name="action-stock-move-line-set-product-price-unit"/>
+    	<action name="action-stock-move-line-set-product-info"/>
     </action-group>
     
     <action-group name="action-group-stock-stockmoveline-production-onnew">
@@ -107,9 +117,10 @@
 		<field name="realQty" expr="eval: qty" if="_parent?.statusSelect == 1"/>
 	</action-record>
 	
-	<action-record name="action-stock-move-line-set-product-price-unit" model="com.axelor.apps.stock.db.StockMoveLine">
+	<action-record name="action-stock-move-line-set-product-info" model="com.axelor.apps.stock.db.StockMoveLine">
 	    <field name="unit" expr="eval: product.unit"/>
 	    <field name="price" expr="eval: product.costPrice"/>
+	    <field name="productName" expr="eval: product.name"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-line-record-product" model="com.axelor.apps.stock.db.StockMoveLine">

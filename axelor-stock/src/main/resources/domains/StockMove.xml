@@ -29,8 +29,12 @@
     <one-to-many name="stockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="stockMove" title="Stock move content"/>
     
     <boolean name="isWithReturnSurplus" title="Return surplus"/>
-    <boolean name="isWithBackorder" title="Manage BackOrder "/>
+    <boolean name="isWithBackorder" title="Manage BackOrder" default="true"/>
     
+    <string name="trackingNumber" title="Tracking Number"/>
+    <integer name="numOfPackages" title="Number Of Packages"/>
+    <integer name="numOfPalettes" title="Number Of Palettes"/>
+    <decimal name="grossWeight" title="Gross Weight"/>
     
   </entity>
 </domain-models>

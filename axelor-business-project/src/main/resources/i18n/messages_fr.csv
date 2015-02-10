@@ -3,7 +3,8 @@
 "Business Folders","Dossier ",,"resources/views/BusinessFolder.xml:5
 resources/views/Menu.xml:11
 resources/views/Menu.xml:9"
-"Business Project",,,"resources/views/Menu.xml:5"
+"Business Project","Affaire",,"resources/domains/StockMoveLine.xml:10
+resources/views/Menu.xml:5"
 "Close",,,"resources/views/BusinessFolder.xml:19"
 "Closed","Fermé",,"resources/views/Selects.xml:8"
 "Code",,,"resources/domains/BusinessFolder.xml:10"

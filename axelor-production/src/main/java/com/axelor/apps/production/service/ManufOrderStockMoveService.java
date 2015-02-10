@@ -155,7 +155,9 @@ public class ManufOrderStockMoveService extends ManufOrderRepository {
 	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct) throws AxelorException  {
 		
 		return stockMoveLineService.createStockMoveLine(
-				prodProduct.getProduct(), 
+				prodProduct.getProduct(),
+				prodProduct.getProduct().getName(),
+				prodProduct.getProduct().getDescription(),
 				prodProduct.getQty(), 
 				prodProduct.getUnit(), 
 				null,

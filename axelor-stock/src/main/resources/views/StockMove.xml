@@ -79,6 +79,12 @@
 	      <field name="isWithReturnSurplus" showIf="typeSelect &gt;= 2" colSpan="6"/>
 	      <field name="isWithBackorder" colSpan="6"/>
 	    </panel>
+		<panel colSpan="12">
+	    	<field name="trackingNumber" />
+			<field name="numOfPackages" />
+			<field name="numOfPalettes" />
+			<field name="grossWeight" />
+		</panel>
 	  </panel>  
 	  <panel-tabs>
 	   

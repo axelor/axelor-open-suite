@@ -59,11 +59,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 * @return l'objet StockMoveLine
 	 * @throws AxelorException 
 	 */
-	public StockMoveLine createStockMoveLine(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, int type ) throws AxelorException {
+	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, int type ) throws AxelorException {
 
 		if(product != null && product.getApplicationTypeSelect() == IProduct.APPLICATION_TYPE_PRODUCT) {
 
-			StockMoveLine stockMoveLine = this.createStockMoveLine(product, quantity, unit, price, stockMove, null);
+			StockMoveLine stockMoveLine = this.createStockMoveLine(product, productName, description, quantity, unit, price, stockMove, null);
 			
 			TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
 			if(trackingNumberConfiguration != null)  {
@@ -139,11 +139,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public StockMoveLine createStockMoveLine(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException {
+	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException {
 
 		StockMoveLine stockMoveLine = new StockMoveLine();
 		stockMoveLine.setStockMove(stockMove);
 		stockMoveLine.setProduct(product);
+		stockMoveLine.setProductName(productName);
+		stockMoveLine.setProductDescription(description);
 		stockMoveLine.setQty(quantity);
 		stockMoveLine.setUnit(unit);
 		stockMoveLine.setPrice(price);
@@ -191,7 +193,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	public StockMoveLine splitStockMoveLine(StockMoveLine stockMoveLine, BigDecimal qty, TrackingNumber trackingNumber) throws AxelorException  {
 		
 		StockMoveLine newStockMoveLine = this.createStockMoveLine(
-				stockMoveLine.getProduct(), 
+				stockMoveLine.getProduct(),
+				stockMoveLine.getProductName(),
+				stockMoveLine.getProductDescription(),
 				qty, 
 				stockMoveLine.getUnit(), 
 				stockMoveLine.getPrice(), 
