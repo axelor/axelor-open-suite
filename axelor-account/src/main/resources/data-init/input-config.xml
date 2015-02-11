@@ -14,6 +14,7 @@
     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
+    	<bind to="resetDate" eval="com.axelor.apps.base.service.administration.GeneralService.getTodayDate()" />
     </input>
     
     <input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year"  search="self.importId = :importId" />
