@@ -32,8 +32,8 @@ resources/domains/SaleOrder.xml:10"
 "Contact",,,"resources/domains/SaleOrder.xml:29"
 "Content",,,"resources/views/SaleOrder.xml:64"
 "Country",,,"resources/views/Charts.xml:390"
-"Create Quote",,,"resources/views/Menu.xml:107"
-"Create SO",,,"resources/views/Menu.xml:96"
+"Create Quote",,,"resources/views/Menu.xml:106"
+"Create SO",,,"resources/views/Menu.xml:95"
 "Create SaleOrder template",,,"resources/views/Menu.xml:42
 resources/views/Menu.xml:45"
 "Creation date",,,"resources/domains/SaleOrder.xml:23"
@@ -135,7 +135,7 @@ resources/views/Menu.xml:14"
 "Notes",,,"resources/views/SaleOrderLine.xml:45"
 "Order Date",,,"resources/domains/SaleOrder.xml:59"
 "Order Number",,,"resources/domains/SaleOrder.xml:60"
-"Orders",,,"resources/views/Menu.xml:126"
+"Orders",,,"resources/views/Menu.xml:125"
 "Other informations",,,"resources/views/SaleOrder.xml:68"
 "Partner Type",,,"resources/views/Charts.xml:658"
 "Plan a call",,,"resources/views/SaleOrder.xml:10
@@ -170,8 +170,8 @@ resources/views/Dashboard.xml:156"
 resources/domains/SaleOrderSubLine.xml:25"
 "Qty",,,"resources/domains/SaleOrderLine.xml:14
 resources/domains/SaleOrderSubLine.xml:17"
-"Quotes",,,"resources/views/Menu.xml:113"
-"Quotes & Orders",,,"resources/views/Menu.xml:108"
+"Quotes",,,"resources/views/Menu.xml:112"
+"Quotes & Orders",,,"resources/views/Menu.xml:107"
 "Reference",,,"resources/domains/SaleOrder.xml:20"
 "SO Tax line",,,"resources/views/SaleOrderLineTax.xml:14"
 "SO Tax lines",,,"resources/views/SaleOrderLineTax.xml:6"
@@ -181,12 +181,12 @@ resources/views/SaleOrderLine.xml:6"
 "SO subline",,,"resources/views/SaleOrderSubLine.xml:19"
 "SO sublines",,,"resources/views/SaleOrderSubLine.xml:6"
 "Sale batch",,,"resources/domains/Batch.xml:11"
-"Sale batches",,,"resources/views/Menu.xml:74
-resources/views/Menu.xml:77"
+"Sale batches",,,"resources/views/Menu.xml:73
+resources/views/Menu.xml:76"
 "Sale config",,,"resources/domains/Company.xml:10"
 "Sale configuration",,,"resources/views/SaleConfig.xml:10"
-"Sale configurations",,,"resources/views/Menu.xml:84
-resources/views/Menu.xml:87
+"Sale configurations",,,"resources/views/Menu.xml:83
+resources/views/Menu.xml:86
 resources/views/SaleConfig.xml:6"
 "Sale order",,,"resources/domains/SaleOrderLine.xml:10
 resources/domains/SaleOrderLineTax.xml:8
@@ -223,17 +223,17 @@ resources/views/SaleOrder.xml:6"
 "SaleOrder.totalInclTax","Total incl. Tax",,"java/com/axelor/apps/sale/report/ITranslation.java:41"
 "SaleOrder.totalTax","Total Tax",,"java/com/axelor/apps/sale/report/ITranslation.java:40"
 "SaleOrder.unitPrice","Qty / Unit",,"java/com/axelor/apps/sale/report/ITranslation.java:35"
-"Sales",,,"resources/views/Menu.xml:105
-resources/views/Menu.xml:157
+"Sales",,,"resources/views/Menu.xml:104
+resources/views/Menu.xml:156
 resources/views/Menu.xml:8"
 "Sales Dashboard 1",,,"resources/views/Dashboard.xml:171"
 "Sales Dashboard 2",,,"resources/views/Dashboard.xml:183"
-"Sales Db 1",,,"resources/views/Menu.xml:160
-resources/views/Menu.xml:163"
-"Sales Db 2",,,"resources/views/Menu.xml:171
-resources/views/Menu.xml:174"
-"Sales Manager Dashboard",,,"resources/views/Menu.xml:151"
-"Sales Manager Db",,,"resources/views/Menu.xml:148"
+"Sales Db 1",,,"resources/views/Menu.xml:159
+resources/views/Menu.xml:162"
+"Sales Db 2",,,"resources/views/Menu.xml:170
+resources/views/Menu.xml:173"
+"Sales Manager Dashboard",,,"resources/views/Menu.xml:150"
+"Sales Manager Db",,,"resources/views/Menu.xml:147"
 "Sales Order filters",,,"resources/views/SaleOrder.xml:373"
 "Sales TurnOver by Product this year vs last year",,,"resources/views/Charts.xml:105
 resources/views/Dashboard.xml:93"
@@ -247,7 +247,7 @@ resources/views/Dashboard.xml:129"
 "Sales distribution per product family",,,"resources/views/Charts.xml:293
 resources/views/Dashboard.xml:123"
 "Sales follow-up",,,"resources/views/SaleOrder.xml:69"
-"Sales order",,,"resources/views/Menu.xml:99"
+"Sales order",,,"resources/views/Menu.xml:98"
 "Sales order invoicing type",,,"resources/domains/SaleConfig.xml:13"
 "Sales per country",,,"resources/views/Charts.xml:361
 resources/views/Dashboard.xml:135"
@@ -262,8 +262,8 @@ resources/views/Dashboard.xml:87"
 "Salesman",,,"resources/domains/SaleOrder.xml:51
 resources/views/Charts.xml:289
 resources/views/Charts.xml:609"
-"Salesman Dashboard",,,"resources/views/Menu.xml:140"
-"Salesman Db",,,"resources/views/Menu.xml:137"
+"Salesman Dashboard",,,"resources/views/Menu.xml:139"
+"Salesman Db",,,"resources/views/Menu.xml:136"
 "Scheduler instance",,,"resources/domains/SaleOrder.xml:64"
 "Schedules",,,"resources/views/SaleOrder.xml:100"
 "See SalesOrder templates",,,"resources/views/Menu.xml:56
@@ -355,8 +355,8 @@ resources/domains/SaleOrderSubLine.xml:18"
 "Validated by",,,"resources/domains/SaleOrder.xml:70"
 "Validation date",,,"resources/domains/SaleOrder.xml:24"
 "Version Number",,,"resources/domains/SaleOrder.xml:74"
-"View Orders",,,"resources/views/Menu.xml:123"
-"View Quotes",,,"resources/views/Menu.xml:111"
+"View Orders",,,"resources/views/Menu.xml:122"
+"View Quotes",,,"resources/views/Menu.xml:110"
 "Word Export",,,"resources/views/SaleOrder.xml:36"
 "Year",,,"resources/views/Charts.xml:101
 resources/views/Charts.xml:127

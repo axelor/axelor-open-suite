@@ -34,7 +34,8 @@
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>
 				<field name="isInvoiceMoveConsolidated"/>
-				<field name="manageCustomerCredit" />
+				<field name="manageCustomerCredit" if-module="axelor-account"/>
+				<field name="defaultDiscountProduct" if-module="axelor-account"/>
 				<panel title="Rejects reasons and codes list" colSpan="12">
 					<field name="transferAndDirectDebitInterbankCode"/>
 					<field name="chequeInterbankCode"/>

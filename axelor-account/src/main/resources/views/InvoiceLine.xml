@@ -20,7 +20,7 @@
     	<panel-tabs>
     		<panel title="Informations">
     			<field name="sequence"/>
-    			<spacer/>
+    			<field name="project" if-module="axelor-business-project" />
 		        <field name="product" required="true" onChange="action-group-account-invoice-line-product-onchange"/>
 		        <field name="invoiceLineType"/>
 		        <field name="productName"/>
@@ -29,6 +29,7 @@
 		        <field name="product.unit"/>
 		        <field name="exTaxTotal"/>
 		        <field name="task"/>
+		        <field name="analyticAccount" />
 		        <panel title="Tax informations" colSpan="12">
 		    		<field name="taxLine"/>
 					<field name="taxLine.tax.name"/>

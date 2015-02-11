@@ -22,6 +22,8 @@
 		
 		<!-- Manage CustomerCreditLines -->
 		<boolean name="manageCustomerCredit" title="Manage customerCredit"/>
+		
+		<many-to-one name="defaultDiscountProduct" title="Discount product" ref="com.axelor.apps.base.db.Product"/>
 
 	</entity>
 
