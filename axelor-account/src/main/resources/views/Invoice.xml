@@ -51,8 +51,6 @@
 			<field name="priceList" readonlyIf="statusSelect != 1" domain="((self.typeSelect = 2 and (:operationTypeSelect = 1 or :operationTypeSelect = 2)) or (self.typeSelect = 1 and (:operationTypeSelect = 3 or :operationTypeSelect = 4)) or :operationTypeSelect = null or :operationTypeSelect = 0) and (self.partner = null or self.partner = :partner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
 			<field name="project" domain="self.isBusiness = true" if-module="axelor-organisation"/>
 			<field name="message" />
-			<field name="discount" />
-			<field name="discountProduct" />
 			<field name="supplierInvoiceNumber" showIf="operationTypeSelect == 1" />
 		</panel>
 	  
@@ -133,7 +131,6 @@
 	 
 	    <panel sidebar="true" title="Actions" >
 	   		<button name="compute" title="Compute" showIf="statusSelect == 1" onClick="save,action-invoice-method-compute,save"/>
-	   		<button name="applyDiscount" title="Apply discount" />
 	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-compute,action-invoice-method-validate,save"/>
 	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save"/>
 	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save"/>
@@ -246,7 +243,6 @@
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
         <field name="dueDate" expr="eval: __date__"/>
-        <field name="discountProduct" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getDefaultDiscountProduct()" />
     </action-record>
     
     <action-record name="action-invoice-record-company-change" model="com.axelor.apps.account.db.Invoice">
