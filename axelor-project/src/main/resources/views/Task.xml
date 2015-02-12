@@ -11,7 +11,7 @@
 	    <panel>
 	        <field name="project" hideIf="$popup()" />
 		    <field name="name" colSpan="12" />
-			<panel-related field="assignedToSet" colSpan="12" onSelect="action-project-task-attrs-assigned-to-domain" canNew="false"/>
+			<field name="assignedTo" onSelect="action-project-task-attrs-assigned-to-domain"/>
 		</panel>
 	</form>
 	

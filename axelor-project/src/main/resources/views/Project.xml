@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
-		<field name="title"/>
+		<field name="fullName"/>
 	</grid>
 
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project">

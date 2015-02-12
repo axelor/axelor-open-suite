@@ -50,6 +50,7 @@
 	    <field name="currency"/>
 	    <field name="template" readonly="true"/>
 	    <field name="versionNumber" />
+	    <field name="project" if-module="axelor-business-project"/>
 	  </panel>
 	  
 	  <panel title="Customer information">
@@ -125,7 +126,13 @@
 	  </panel>    
 	  
 	  <panel sidebar="true" title="Alert">
-          <field name="alert" colSpan="12" />
+	      <field name="alert" colSpan="12" css="text-red-bold" showTitle="false">
+			  <viewer>
+			      &lt;span class="text-red-bold"&gt;
+			      {{record.alert}}
+			      &lt;/span&gt;
+			  </viewer>
+	      </field>
       </panel>      
 	  
 	  <panel sidebar="true" title="Info." showIf="id">

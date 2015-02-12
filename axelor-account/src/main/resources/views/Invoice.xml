@@ -51,7 +51,7 @@
 			<field name="priceList" readonlyIf="statusSelect != 1" domain="((self.typeSelect = 2 and (:operationTypeSelect = 1 or :operationTypeSelect = 2)) or (self.typeSelect = 1 and (:operationTypeSelect = 3 or :operationTypeSelect = 4)) or :operationTypeSelect = null or :operationTypeSelect = 0) and (self.partner = null or self.partner = :partner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
 			<field name="project" domain="self.isBusiness = true" if-module="axelor-organisation"/>
 			<field name="message" />
-			<field name="supplierInvoiceNumber" showIf="operationTypeSelect == 1" />
+			<field name="discount" />
 		</panel>
 	  
 		<panel-tabs>

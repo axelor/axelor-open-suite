@@ -101,7 +101,7 @@
     
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>
     <string name="message" title="Message"/>
-    <string name="supplierInvoiceNumber" title="Supplier invoice number"/>  
+    <decimal name="discount" title="Discount"/>
 
 	<extra-code><![CDATA[
 	

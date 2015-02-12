@@ -3,6 +3,7 @@
 "Business Project",,,"resources/domains/Project.xml:12"
 "Customer/Partner",,,"resources/domains/Project.xml:11"
 "Membres",,,"resources/domains/Project.xml:14"
+"Name",,,"resources/domains/Project.xml:17"
 "Overview",,,"resources/views/Project.xml:10"
 "Project",,,"resources/domains/Task.xml:10
 resources/views/Menu.xml:5

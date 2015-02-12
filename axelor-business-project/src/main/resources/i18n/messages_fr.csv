@@ -16,7 +16,9 @@ resources/views/Menu.xml:5"
 "Open","Ouvert",,"resources/views/BusinessFolder.xml:20
 resources/views/Selects.xml:7"
 "Overview",,,"resources/views/BusinessFolder.xml:13"
-"Project",,,"resources/domains/InvoiceLine.xml:8"
+"Project",,,"resources/domains/InvoiceLine.xml:8
+resources/domains/SaleOrder.xml:10"
+"Sale order",,,"resources/views/SaleOrder.xml:9"
 "Status","Statut",,"resources/domains/BusinessFolder.xml:15"
 "User Opened","Ouvert par",,"resources/views/BusinessFolder.xml:24"
 "User Responisble","Référent Commercial",,"resources/domains/BusinessFolder.xml:16"

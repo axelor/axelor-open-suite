@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="expense-grid" title="Expenses" model="com.axelor.apps.human.resource.db.Expense">
+		<field name="sentDate"/>
+		<field name="period"/>
+		<field name="user"/>
+		<field name="statusSelect"/>
+	</grid>
+
+	<form name="expense-form" title="Expense" model="com.axelor.apps.human.resource.db.Expense"
+	    onNew="action-expense-record-default">
+		<panel>
+			<field name="sentDate"/>
+			<field name="period"/>
+			<field name="user"/>
+			<field name="statusSelect"/>
+			<button name="sendExpenses" title="Send Expenses"/>
+		</panel>
+		<panel-related field="expenseLineList" />
+	</form>
+	
+	<action-record name="action-expense-record-default" model="com.axelor.apps.human.resource.db.Expense">
+	    <field name="user" expr="eval:__user__"/>
+	</action-record>
+
+</object-views>

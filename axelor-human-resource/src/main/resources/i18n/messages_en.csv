@@ -1,0 +1,27 @@
+"key","message","comment","context"
+"Canceled",,,"resources/views/Selects.xml:11"
+"Comments",,,"resources/domains/ExpenseLine.xml:17"
+"Draft",,,"resources/views/Selects.xml:7"
+"Expense",,,"resources/views/Expense.xml:13"
+"Expense Type",,,"resources/domains/ExpenseLine.xml:12"
+"Expense date",,,"resources/domains/ExpenseLine.xml:13"
+"Expense line",,,"resources/views/ExpenseLine.xml:13"
+"Expense lines",,,"resources/domains/Expense.xml:14
+resources/views/ExpenseLine.xml:5"
+"Expenses",,,"resources/views/Expense.xml:5
+resources/views/Menu.xml:11
+resources/views/Menu.xml:9"
+"Human resources",,,"resources/views/Menu.xml:5"
+"Period",,,"resources/domains/Expense.xml:11"
+"Project",,,"resources/domains/ExpenseLine.xml:11"
+"Refused",,,"resources/views/Selects.xml:10"
+"Send Expenses",,,"resources/views/Expense.xml:19"
+"Sent Date",,,"resources/domains/Expense.xml:10"
+"Status",,,"resources/domains/Expense.xml:12"
+"Total amount with tax",,,"resources/domains/ExpenseLine.xml:16"
+"Total tax",,,"resources/domains/ExpenseLine.xml:15"
+"Untaxed amount",,,"resources/domains/ExpenseLine.xml:14"
+"User",,,"resources/domains/Expense.xml:13
+resources/domains/ExpenseLine.xml:10"
+"Validated",,,"resources/views/Selects.xml:9"
+"Waiting validation",,,"resources/views/Selects.xml:8"

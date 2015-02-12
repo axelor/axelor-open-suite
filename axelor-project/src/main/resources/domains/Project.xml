@@ -13,6 +13,15 @@
 	  <string name="code" title="Project code" />
 	  <many-to-many name="membersSet" ref="com.axelor.auth.db.User" title="Membres"/>
 	  <one-to-many name="taskList" ref="com.axelor.apps.project.db.Task" title="Task" mappedBy="project"/>
+	  
+	  <string name="fullName" namecolumn="true" search="name,code,partner" title="Name">
+	       <![CDATA[
+	       		String fullName = name;
+	       		if(partner != null) { fullName = fullName + " "+ partner.getName(); }
+	       		if(code != null && !code.isEmpty()) { fullName = fullName + " "+ code; }
+	       		return fullName;
+	       ]]>
+	  </string>
 	          
   </entity>
   

@@ -279,7 +279,7 @@ resources/views/Partner.xml:249"
 "Address precisions","Complément d'adresse",,"resources/domains/Address.xml:12"
 "Addresses","Adresses",,"resources/views/Menu.xml:102
 resources/views/Menu.xml:105"
-"Addresses validation","Validation d'adresse",,"resources/views/General.xml:57"
+"Addresses validation","Validation d'adresse",,"resources/views/General.xml:56"
 "Administration","Administration",,"resources/domains/Company.xml:16
 resources/domains/CurrencyConversionLine.xml:11"
 "Agriculture","Agriculture",,"resources/views/Selects.xml:210"
@@ -446,8 +446,8 @@ resources/views/Partner.xml:10
 resources/views/UnitConversion.xml:7"
 "Check currency exhange rate","Vérifier taux de change",,"resources/views/CurrencyConversionLine.xml:96"
 "Check currency exhange rates","Vérifier taux de change",,"resources/views/CurrencyConversionLine.xml:35"
-"Check duplicate","Vérifier les doublons",,"resources/views/General.xml:141
-resources/views/General.xml:76"
+"Check duplicate","Vérifier les doublons",,"resources/views/General.xml:140
+resources/views/General.xml:75"
 "Check query","Tester la requête",,"resources/views/Querie.xml:19"
 "Check rate","Vérifier taux",,"resources/views/CurrencyConversionLine.xml:14"
 "Chemistry","Chimie",,"resources/views/Selects.xml:213"
@@ -577,7 +577,7 @@ resources/views/PrintingSetting.xml:11"
 "Company phoneBook","Annuaire société",,"resources/views/Partner.xml:9"
 "Complement","Complément",,"resources/domains/PickListEntry.xml:11"
 "Compte rendu de la relève des alarmes :\n",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:92"
-"Compute payers quality","Calculer les qualités payeurs",,"resources/views/General.xml:44"
+"Compute payers quality","Calculer les qualités payeurs",,"resources/views/General.xml:43"
 "Configuration","Configuration",,"resources/views/AlarmEngineBatch.xml:20
 resources/views/Menu.xml:207
 resources/views/Menu.xml:379
@@ -650,7 +650,7 @@ resources/views/Menu.xml:394"
 resources/domains/Partner.xml:55
 resources/views/Currency.xml:12"
 "Currency Ws URL","URL WS Devises",,"resources/domains/General.xml:26"
-"Currency conversion","Conversions des devises",,"resources/views/General.xml:47"
+"Currency conversion","Conversions des devises",,"resources/views/General.xml:46"
 "Currency conversion line","Ligne de conversion de devise",,"resources/views/CurrencyConversionLine.xml:18"
 "Currency conversion lines","Lignes de conversion de devise",,"resources/views/CurrencyConversionLine.xml:6"
 "Currency conversion table","Tableau de conversion des devises",,"resources/domains/General.xml:28"
@@ -771,7 +771,7 @@ resources/views/Selects.xml:266"
 resources/views/Scheduler.xml:25
 resources/views/Scheduler.xml:41
 resources/views/Scheduler.xml:45"
-"Exceptions","Exceptions",,"resources/views/General.xml:66"
+"Exceptions","Exceptions",,"resources/views/General.xml:65"
 "Exchange rate","Taux",,"resources/domains/CurrencyConversionLine.xml:14
 resources/views/CurrencyConversionLine.xml:43"
 "Execute","Exécuter",,"resources/views/IndicatorGenerator.xml:19
@@ -802,7 +802,7 @@ resources/views/General.xml:25"
 "Field","Champ",,"resources/domains/RoutingActionCreateLine.xml:12
 resources/domains/RoutingRule.xml:12"
 "Fields","Champs",,"resources/domains/RoutingActionCreate.xml:11
-resources/views/General.xml:77"
+resources/views/General.xml:76"
 "File format can be a csv, xml, or zip depending on the binding file settings.",,,"resources/domains/ImportConfiguration.xml:13"
 "Filters","Filtres",,"resources/views/Routing.xml:21"
 "Finance","Finance",,"resources/views/Selects.xml:222"
@@ -932,7 +932,7 @@ resources/views/Charts.xml:59"
 resources/views/Partner.xml:181
 resources/views/Partner.xml:78"
 "Insurance","Assurance",,"resources/views/Selects.xml:211"
-"Interfaces","Interfaces",,"resources/views/General.xml:52"
+"Interfaces","Interfaces",,"resources/views/General.xml:51"
 "Internal companies","Sociétés internes",,"resources/views/User.xml:28"
 "Internal description","Description interne",,"resources/domains/Product.xml:15
 resources/views/Product.xml:68"
@@ -955,7 +955,7 @@ resources/views/Batch.xml:61"
 "July","Juillet",,"resources/views/Selects.xml:284"
 "June","Juin",,"resources/views/Selects.xml:283"
 "Key","Clé",,"resources/domains/TemplateContextLine.xml:11"
-"Key fields to check duplicate records","Champs clés pour vérifier les doublons.",,"resources/views/General.xml:77"
+"Key fields to check duplicate records","Champs clés pour vérifier les doublons.",,"resources/views/General.xml:76"
 "Keyword","Mot clé",,"resources/domains/Keyword.xml:10
 resources/views/Keyword.xml:11"
 "Keywords","Mots clés",,"resources/views/Keyword.xml:6
@@ -1007,7 +1007,7 @@ resources/views/Partner.xml:27"
 "Manager Type","Type de gestionnaire",,"resources/domains/AlarmEngine.xml:14"
 "Manufacturing","Production",,"resources/views/Selects.xml:227"
 "Manufacturing order","Ordre de fabrication",,"resources/views/Selects.xml:376"
-"Mapping",,,"resources/views/General.xml:53"
+"Mapping",,,"resources/views/General.xml:52"
 "Mapping service provider","API pour cartes",,"resources/domains/General.xml:23"
 "Maps","Cartes",,"resources/views/Menu.xml:63"
 "March","Mars",,"resources/views/Selects.xml:280"
@@ -1208,7 +1208,7 @@ resources/views/SpentTime.xml:6"
 "Path to export file","Chemin fichier de sortie",,"resources/domains/AddressExport.xml:11"
 "Path to export folder","Chemin vers le dossier d'export",,"resources/domains/IndicatorGeneratorGrouping.xml:13"
 "Payer","Payeur",,"resources/views/Selects.xml:325"
-"Payer quality","Qualité payeur",,"resources/views/General.xml:43"
+"Payer quality","Qualité payeur",,"resources/views/General.xml:42"
 "Payment","Paiement",,"resources/views/Selects.xml:392"
 "Payment Mode","Moyen de paiement",,"resources/views/PaymentMode.xml:11
 resources/views/PaymentMode.xml:6"
@@ -1244,13 +1244,13 @@ resources/views/Scheduler.xml:82"
 "Please enter a month for rhythm.","Veuillez saisir un mois pour le rythme.",,"resources/views/Scheduler.xml:83
 resources/views/Scheduler.xml:85"
 "Please enter a year for rhythm.","Veuillez saisir une année pour le rythme.",,"resources/views/Scheduler.xml:84"
-"Please input all character as capital","Toutes les lettres saisies doivent être en majuscule.",,"resources/views/General.xml:107
+"Please input all character as capital","Toutes les lettres saisies doivent être en majuscule.",,"resources/views/General.xml:106
+resources/views/General.xml:107
 resources/views/General.xml:108
 resources/views/General.xml:109
 resources/views/General.xml:110
-resources/views/General.xml:111
-resources/views/General.xml:112"
-"Please input first character as capital and other as lower case","La première lettre doit être en majuscule suivie de minuscules.",,"resources/views/General.xml:103"
+resources/views/General.xml:111"
+"Please input first character as capital and other as lower case","La première lettre doit être en majuscule suivie de minuscules.",,"resources/views/General.xml:102"
 "Please select active company","Veuillez sélectionner une société active.",,"resources/views/User.xml:48"
 "Please select key fields to check duplicate",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:166"
 "Please select the Message(s) to print.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:174"
@@ -1448,7 +1448,7 @@ resources/views/Batch.xml:69
 resources/views/Selects.xml:355"
 "Reject","Rejet",,"resources/views/Selects.xml:262
 resources/views/Selects.xml:395"
-"Rejects reasons and codes list","Listes des codes et motifs de rejets",,"resources/views/General.xml:39"
+"Rejects reasons and codes list","Listes des codes et motifs de rejets",,"resources/views/General.xml:38"
 "Related to","Associé à ",,"resources/domains/RoutingAction.xml:12
 resources/domains/RoutingAction.xml:13
 resources/views/Message.xml:38"
@@ -1560,7 +1560,7 @@ resources/views/Sequence.xml:6"
 resources/views/Partner.xml:251"
 "Shift to doubtful receivables","Passage en créance douteuse",,"resources/views/Selects.xml:365"
 "Shift to irrecoverable","Passage en irrécouvrable",,"resources/views/Selects.xml:358"
-"Show","Afficher",,"resources/views/General.xml:79"
+"Show","Afficher",,"resources/views/General.xml:78"
 "Show all stock move","Mouvements de stock",,"resources/views/Product.xml:92"
 "Site","Site",,"resources/domains/Partner.xml:46
 resources/views/Site.xml:13
@@ -1668,8 +1668,8 @@ resources/views/TemplateRule.xml:11"
 resources/views/Menu.xml:247
 resources/views/Territory.xml:6"
 "Territory","Territoire",,"resources/views/Territory.xml:11"
-"Test connection to QAS webservice","Tester la connexion vers le service web QAS",,"resources/views/General.xml:59"
-"Test mapping service connection","Tester le service de connexion",,"resources/views/General.xml:55"
+"Test connection to QAS webservice","Tester la connexion vers le service web QAS",,"resources/views/General.xml:58"
+"Test mapping service connection","Tester le service de connexion",,"resources/views/General.xml:54"
 "Testing","Recette",,"resources/views/User.xml:23"
 "The product pulled-off date must be greater than the launch date.","La date de retrait doit être supérieure à la date de lancement.",,"resources/views/Product.xml:241"
 "The quantity by lot must be greater than 0","La quantité par lot doit être supérieure à 0.",,"resources/views/TrackingNumberConfiguration.xml:71"
@@ -1730,7 +1730,7 @@ resources/views/UnitConversion.xml:5"
 "Units","Unités",,"resources/views/Menu.xml:382
 resources/views/Menu.xml:385
 resources/views/Unit.xml:5"
-"Update & Historize conversion rate","MàJ & Historiser le taux actuel",,"resources/views/General.xml:48"
+"Update & Historize conversion rate","MàJ & Historiser le taux actuel",,"resources/views/General.xml:47"
 "Update current product prices and variants","MàJ prix produits & variantes",,"resources/views/Product.xml:151"
 "Update products prices","Maj prix produits",,"resources/views/Product.xml:151"
 "Use QAS Validation ?","Utiliser la validation QAS ? ",,"resources/domains/General.xml:30"
@@ -1775,7 +1775,7 @@ resources/views/ProductFamily.xml:13"
 "Warranty ?","Garantie ?",,"resources/domains/Product.xml:43"
 "Warranty expiration date","Date de fin de garantie",,"resources/domains/TrackingNumber.xml:12"
 "Warranty length (in months)","Durée de la garantie (Mois)",,"resources/domains/Product.xml:45"
-"Webservices",,,"resources/views/General.xml:62"
+"Webservices",,,"resources/views/General.xml:61"
 "Website","Site Web",,"resources/domains/Partner.xml:44"
 "Wednesday","Mercredi",,"resources/domains/Scheduler.xml:22
 resources/views/Selects.xml:548"

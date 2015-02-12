@@ -1,0 +1,27 @@
+"key","message","comment","context"
+"Canceled","Annulé",,"resources/views/Selects.xml:11"
+"Comments","Commentaire",,"resources/domains/ExpenseLine.xml:17"
+"Draft","Brouillon",,"resources/views/Selects.xml:7"
+"Expense","Note de frais",,"resources/views/Expense.xml:13"
+"Expense Type","Type de frais",,"resources/domains/ExpenseLine.xml:12"
+"Expense date","Date de dépense",,"resources/domains/ExpenseLine.xml:13"
+"Expense line","Ligne de NdeF",,"resources/views/ExpenseLine.xml:13"
+"Expense lines","Lignes de NdeF",,"resources/domains/Expense.xml:14
+resources/views/ExpenseLine.xml:5"
+"Expenses","Note de frais",,"resources/views/Expense.xml:5
+resources/views/Menu.xml:11
+resources/views/Menu.xml:9"
+"Human resources",,,"resources/views/Menu.xml:5"
+"Period","Période",,"resources/domains/Expense.xml:11"
+"Project","Projet",,"resources/domains/ExpenseLine.xml:11"
+"Refused","Refusé",,"resources/views/Selects.xml:10"
+"Send Expenses","Envoyer note de frais",,"resources/views/Expense.xml:19"
+"Sent Date","Date d'envoi",,"resources/domains/Expense.xml:10"
+"Status","Statut",,"resources/domains/Expense.xml:12"
+"Total amount with tax","Montant TTC",,"resources/domains/ExpenseLine.xml:16"
+"Total tax","Montant TVA",,"resources/domains/ExpenseLine.xml:15"
+"Untaxed amount","Montant HT",,"resources/domains/ExpenseLine.xml:14"
+"User","Utilisateur",,"resources/domains/Expense.xml:13
+resources/domains/ExpenseLine.xml:10"
+"Validated","Validé",,"resources/views/Selects.xml:9"
+"Waiting validation","Attente validation",,"resources/views/Selects.xml:8"
