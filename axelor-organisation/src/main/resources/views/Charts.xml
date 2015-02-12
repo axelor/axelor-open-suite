@@ -9,7 +9,7 @@
 				COUNT(employee.id) AS num_emp,
 				(CASE 
 		    		WHEN _item.title IN ('M.', 'Dr', 'Prof.') THEN 'Male' 
-		            WHEN _item.title IN ('Ms.', 'Mss.') THEN 'Female'
+		            WHEN _item.title IN ('Ms.') THEN 'Female'
 				END) AS gender	
 		  	FROM
 				organisation_employee AS employee         		 

@@ -1240,10 +1240,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
 		}else if(row._outer["client_title"] == "2"){
 			"Ms."
 		}else if(row._outer["client_title"] == "3"){
-			"Mss."
-		}else if(row._outer["client_title"] == "4"){
 			"Dr"
-		}else if(row._outer["client_title"] == "5"){
+		}else if(row._outer["client_title"] == "4"){
 			"Prof."
 		}
 }</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>if(row._outer["client_partner_type"] == "2"){
@@ -1288,10 +1286,8 @@ row._outer["client_first_name"]
 		}else if(row._outer["contact_title"] == "2"){
 			"Ms."
 		}else if(row._outer["contact_title"] == "3"){
-			"Mss."
-		}else if(row._outer["contact_title"] == "4"){
 			"Dr"
-		}else if(row._outer["contact_title"] == "5"){
+		}else if(row._outer["contact_title"] == "4"){
 			"Prof."
 		}</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row._outer["contact_first_name"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row._outer["contact_name"]</VALUE-OF>]]></text-property>
                                     </text>
