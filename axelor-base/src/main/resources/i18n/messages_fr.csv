@@ -1035,7 +1035,6 @@ resources/views/Scheduler.xml:39"
 "Move","Écriture comptable",,"resources/views/Selects.xml:345"
 "Move exports","Exports des écritures",,"resources/views/Batch.xml:110"
 "Ms.","Mme",,"resources/views/Selects.xml:162"
-"Mss.","Mlle",,"resources/views/Selects.xml:163"
 "My  Timesheets","Mes feuilles de temps",,"resources/views/MenuConsultant.xml:61"
 "My Customers","Mes Clients",,"resources/views/Dashboard.xml:39"
 "My DashBord","Mon Tableau de bord",,"resources/views/MenuConsultant.xml:10

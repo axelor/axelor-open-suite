@@ -3258,10 +3258,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
 }else if(row["title_select"] == "2"){
 "Ms. "
 }else if(row["title_select"] == "3"){
-"Mss. "
-}else if(row["title_select"] == "4"){
 "Dr. "
-}else if(row["title_select"] == "5"){
+}else if(row["title_select"] == "4"){
 "Prof.  "
 }</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row["lead_first_name"]</VALUE-OF>  <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["lead_name"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -3328,10 +3326,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
 }else if(row["title_select"] == "2"){
 "Ms. "
 }else if(row["title_select"] == "3"){
-"Mss. "
-}else if(row["title_select"] == "4"){
 "Dr. "
-}else if(row["title_select"] == "5"){
+}else if(row["title_select"] == "4"){
 "Prof.  "
 }</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row["lead_first_name"]</VALUE-OF>  <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["lead_name"]</VALUE-OF>]]></text-property>
                                     </text>
