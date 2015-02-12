@@ -34,6 +34,9 @@
     <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
     
     <decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
+    
+    <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
+    <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
    	
    	<many-to-one name="cashRegisterTemplate" ref="com.axelor.apps.message.db.Template" title="Cashier email template"/>
    	<string name="cashRegisterAddressEmail" title="Cashier email address"/>
