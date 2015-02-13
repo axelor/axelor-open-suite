@@ -34,7 +34,7 @@ import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 
 @Singleton
-public class GeneralService extends GeneralRepository{
+public class GeneralService extends GeneralRepository {
 
 	protected static final String EXCEPTION = "Warning !";
 	
@@ -57,7 +57,7 @@ public class GeneralService extends GeneralRepository{
 	
 	private static GeneralService get() {
 		
-		if (INSTANCE == null) { INSTANCE = new GeneralService(); }
+		if ( INSTANCE == null ) { INSTANCE = new GeneralService(); }
 		
 		return INSTANCE;
 	}
