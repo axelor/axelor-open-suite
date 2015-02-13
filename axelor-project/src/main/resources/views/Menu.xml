@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<menuitem name="menu-project-root" priority="103" title="Project" icon="img/tree-folder.png" />
+	<menuitem name="menu-project-root" priority="103" title="Project" icon="img/tree-folder.png" groups="admins,ERP"/> 	
 
 	<menuitem name="project-all" parent="menu-project-root"
     	title="Projects"

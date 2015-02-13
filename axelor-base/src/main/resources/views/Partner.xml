@@ -267,6 +267,20 @@
 <!-- 		</panel> -->
 	</form>
 	
+	<form name="partner-contact-summary-form" title="Contact" model="com.axelor.apps.base.db.Partner"> 
+	    <panel>
+	        <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+				<editor>
+					<field name="address"/>
+				</editor>
+			</field>
+			<field name="fax"/>
+			<field name="fixedPhone"/>
+			<field name="mobilePhone"/>
+           <field name="webSite"/>
+	     </panel>
+	</form>
+	
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
 		<action name="action-partner-record-set-virtual-fields" />

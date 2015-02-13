@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.human.resource.db"/>
+
+  <entity name="TimesheetLine" cachable="true">
+      
+      <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" readonly="true"/>
+      <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" required="true"/>
+      <many-to-one name="activity" ref="com.axelor.apps.human.resource.db.TimeActivity" title="Activity" required="true"/>
+	  <date name="date" title="Date" />
+	  <decimal name="visibleDuration" title="Duration" required="true" />
+	  <decimal name="durationStored" title="Duration" />
+	  <string name="comment" large="true" title="Comment" />
+      
+  </entity>
+  
+</domain-models>

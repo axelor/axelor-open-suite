@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="auth" package="com.axelor.auth.db"/>
+
+  <entity name="User" sequential="true" lang="java">
+  
+      <boolean name="isAnEmployee" title="Is employee ?"/>
+      <decimal name="hourlyRate" title="Hourly rate" scale="2" precision="20" />
+      <string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="human.resource.user.time.logging.preference.select"/>
+      <decimal name="weeklyWorkHours" title="Weekly work hours" scale="2" precision="20" />
+      <decimal name="dailyWorkHours" title="Daily work hours" scale="2" precision="20" />
+      <many-to-one name="manager" ref="com.axelor.auth.db.User" title="Manager" />
+      <many-to-one name="department" ref="com.axelor.apps.human.resource.db.ServiceDepartment" title="Department " />
+      <boolean name="timesheetReminder" title="Timesheet reminder" />
+      <boolean name="external" title="External" />
+		    	
+  </entity>
+
+</domain-models>

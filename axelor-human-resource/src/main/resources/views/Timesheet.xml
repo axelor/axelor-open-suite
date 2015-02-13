@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.human.resource.db.Timesheet">
+		<field name="sentDate"/>
+		<field name="statusSelect"/>
+		<field name="user"/>
+	</grid>
+
+	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.human.resource.db.Timesheet"
+	    onNew="action-timesheeet-record-default">
+		<panel>
+			<field name="sentDate"/>
+			<field name="statusSelect"/>
+			<field name="user"/>
+			<button name="getTimeFromTask" title="Get time from Tasks"/>
+		</panel>
+		<panel-related field="timesheetLineList" />
+	</form>
+	
+	<action-record name="action-timesheeet-record-default" model="com.axelor.apps.human.resource.db.Timesheet">
+	    <field name="user" expr="eval:__user__"/>
+	</action-record>
+
+</object-views>

@@ -1,7 +1,20 @@
 "key","message","comment","context"
-"Canceled",,,"resources/views/Selects.xml:11"
+"Activity",,,"resources/domains/TimesheetLine.xml:12"
+"Canceled",,,"resources/views/Selects.xml:11
+resources/views/Selects.xml:19"
+"Comment",,,"resources/domains/TimesheetLine.xml:16"
 "Comments",,,"resources/domains/ExpenseLine.xml:17"
-"Draft",,,"resources/views/Selects.xml:7"
+"Confirmed",,,"resources/views/Selects.xml:16"
+"Daily work hours",,,"resources/domains/User.xml:14"
+"Date",,,"resources/domains/TimesheetLine.xml:13"
+"Days",,,"resources/views/Selects.xml:23"
+"Department",,,"resources/domains/User.xml:16
+resources/views/Department.xml:5
+resources/views/Department.xml:9"
+"Draft",,,"resources/views/Selects.xml:15
+resources/views/Selects.xml:7"
+"Duration",,,"resources/domains/TimesheetLine.xml:14
+resources/domains/TimesheetLine.xml:15"
 "Expense",,,"resources/views/Expense.xml:13"
 "Expense Type",,,"resources/domains/ExpenseLine.xml:12"
 "Expense date",,,"resources/domains/ExpenseLine.xml:13"
@@ -11,17 +24,47 @@ resources/views/ExpenseLine.xml:5"
 "Expenses",,,"resources/views/Expense.xml:5
 resources/views/Menu.xml:11
 resources/views/Menu.xml:9"
+"External",,,"resources/domains/User.xml:18"
+"Get time from Tasks",,,"resources/views/Timesheet.xml:17"
+"Hourly price",,,"resources/domains/TimeActivity.xml:11"
+"Hourly rate",,,"resources/domains/User.xml:11"
+"Hours",,,"resources/views/Selects.xml:24
+resources/views/TimesheetLine.xml:19"
 "Human resources",,,"resources/views/Menu.xml:5"
+"Is employee ?",,,"resources/domains/User.xml:10"
+"Log time",,,"resources/domains/Timesheet.xml:13
+resources/views/TimesheetLine.xml:13
+resources/views/TimesheetLine.xml:5"
+"Manager",,,"resources/domains/User.xml:15"
+"Minutes",,,"resources/views/Selects.xml:25"
+"Name",,,"resources/domains/ServiceDepartment.xml:10
+resources/domains/TimeActivity.xml:10"
 "Period",,,"resources/domains/Expense.xml:11"
-"Project",,,"resources/domains/ExpenseLine.xml:11"
-"Refused",,,"resources/views/Selects.xml:10"
+"Project",,,"resources/domains/ExpenseLine.xml:11
+resources/domains/TimesheetLine.xml:11"
+"Refused",,,"resources/views/Selects.xml:10
+resources/views/Selects.xml:18"
 "Send Expenses",,,"resources/views/Expense.xml:19"
-"Sent Date",,,"resources/domains/Expense.xml:10"
-"Status",,,"resources/domains/Expense.xml:12"
+"Sent Date",,,"resources/domains/Expense.xml:10
+resources/domains/Timesheet.xml:10"
+"Status",,,"resources/domains/Expense.xml:12
+resources/domains/Timesheet.xml:11"
+"Time Activity",,,"resources/views/TimeActivity.xml:10
+resources/views/TimeActivity.xml:5"
+"Time logging preference",,,"resources/domains/User.xml:12"
+"Timesheet",,,"resources/views/Timesheet.xml:12
+resources/views/Timesheet.xml:5"
+"Timesheet reminder",,,"resources/domains/User.xml:17"
+"Timesheets",,,"resources/views/Menu.xml:18
+resources/views/Menu.xml:20"
 "Total amount with tax",,,"resources/domains/ExpenseLine.xml:16"
 "Total tax",,,"resources/domains/ExpenseLine.xml:15"
 "Untaxed amount",,,"resources/domains/ExpenseLine.xml:14"
 "User",,,"resources/domains/Expense.xml:13
-resources/domains/ExpenseLine.xml:10"
-"Validated",,,"resources/views/Selects.xml:9"
+resources/domains/ExpenseLine.xml:10
+resources/domains/Timesheet.xml:12
+resources/domains/TimesheetLine.xml:10"
+"Validated",,,"resources/views/Selects.xml:17
+resources/views/Selects.xml:9"
 "Waiting validation",,,"resources/views/Selects.xml:8"
+"Weekly work hours",,,"resources/domains/User.xml:13"

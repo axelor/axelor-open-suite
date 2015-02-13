@@ -14,11 +14,12 @@
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
     onNew="action-user-default-record,action-user-check-company" onLoad="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
     	<panel sidebar="true">
-	        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
+    	    <field name="partner" domain="self.partnerTypeSelect = 2 || self.isContact = true" grid-view="partner-grid" form-view="partner-form" />
 	        <field name="activeCompany" widget="SuggestBox"/>
 	        <field name="activeCashRegister"/>
 	        <field name="timesheetPeriodConfig"/>
 	        <field name="employee"/>
+	        <field name="isAnEmployee" if-module="axelor-human-resource" />
         </panel>
 		<panel title="Testing" sidebar="true">
 			<field name="today"/>
@@ -34,6 +35,16 @@
         	<panel title="Calendars">
         		<panel-related field="followersCalUserSet" colSpan="12"/>
         		<panel-related field="authorizeCalUserSet" colSpan="12"/>
+        	</panel>
+        	<panel title="Employee" showIf="isAnEmployee" if-module="axelor-human-resource">
+        	    <field name="hourlyRate" />
+        	    <field name="timeLoggingPreferenceSelect" />
+        	    <field name="weeklyWorkHours" />
+        	    <field name="dailyWorkHours" />
+        	    <field name="manager" />
+        	    <field name="department" />
+        	    <field name="timesheetReminder" />
+        	    <field name="external" />
         	</panel>
         </panel-tabs>
     </form>

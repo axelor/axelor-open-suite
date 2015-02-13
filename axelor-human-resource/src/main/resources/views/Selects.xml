@@ -11,4 +11,18 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
+	<selection name="human.resources.timesheet.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Confirmed</option>
+		<option value="3">Validated</option>
+		<option value="4">Refused</option>
+		<option value="5">Canceled</option>
+	</selection>
+	
+	<selection name="human.resource.user.time.logging.preference.select">
+		<option value="days">Days</option>
+		<option value="hours">Hours</option>
+		<option value="minutes">Minutes</option>
+	</selection>
+	
 </object-views>

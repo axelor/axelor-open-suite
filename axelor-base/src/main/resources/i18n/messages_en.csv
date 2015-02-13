@@ -302,17 +302,17 @@ resources/views/Menu.xml:525"
 "Alarms",,,"resources/views/Alarm.xml:14"
 "All Alarms",,,"resources/views/Menu.xml:510
 resources/views/Menu.xml:513"
-"All Clients",,,"resources/views/Partner.xml:386"
-"All Enterprises",,,"resources/views/Partner.xml:377"
-"All Individuals",,,"resources/views/Partner.xml:380"
+"All Clients",,,"resources/views/Partner.xml:400"
+"All Enterprises",,,"resources/views/Partner.xml:391"
+"All Individuals",,,"resources/views/Partner.xml:394"
 "All Messages",,,"resources/views/Menu.xml:531
 resources/views/Menu.xml:534"
 "All Partners",,,"resources/views/Menu.xml:66
 resources/views/Menu.xml:67"
-"All Prospects",,,"resources/views/Partner.xml:383"
-"All Suppliers",,,"resources/views/Partner.xml:389"
+"All Prospects",,,"resources/views/Partner.xml:397"
+"All Suppliers",,,"resources/views/Partner.xml:403"
 "All friends",,,"resources/views/Selects.xml:464"
-"All qualified supplier",,,"resources/views/Partner.xml:392"
+"All qualified supplier",,,"resources/views/Partner.xml:406"
 "Amount",,,"resources/views/Selects.xml:334"
 "Amount/%",,,"resources/domains/PriceListLine.xml:14"
 "Anniversary date",,,"resources/views/Selects.xml:405"
@@ -426,7 +426,7 @@ resources/views/StopReason.xml:9"
 "CSV File",,,"resources/views/Selects.xml:273"
 "Calculated price/Qty",,,"resources/domains/SupplierCatalog.xml:17"
 "Calculation method",,,"resources/views/PriceListLine.xml:23"
-"Calendars",,,"resources/views/User.xml:34"
+"Calendars",,,"resources/views/User.xml:37"
 "Calling code",,,"resources/domains/Country.xml:14"
 "Campaign",,,"resources/views/Selects.xml:433"
 "Canceled",,,"resources/views/Selects.xml:428"
@@ -589,7 +589,9 @@ resources/views/Menu.xml:90"
 "Contact",,,"resources/domains/EmailAddress.xml:10
 resources/views/Partner.xml:191
 resources/views/Partner.xml:210
-resources/views/Selects.xml:432"
+resources/views/Partner.xml:270
+resources/views/Selects.xml:432
+resources/views/User.xml:28"
 "Contact ?",,,"resources/domains/Partner.xml:25"
 "Contact details",,,"resources/views/Partner.xml:238
 resources/views/Partner.xml:88"
@@ -753,6 +755,7 @@ resources/views/Selects.xml:425"
 resources/views/Message.xml:7
 resources/views/Selects.xml:266"
 "Email and paper",,,"resources/views/Selects.xml:268"
+"Employee",,,"resources/views/User.xml:41"
 "Employees (Nbr)",,,"resources/domains/Partner.xml:67"
 "End Date",,,"resources/domains/Batch.xml:17"
 "Energy",,,"resources/views/Selects.xml:219"
@@ -933,7 +936,7 @@ resources/views/Partner.xml:181
 resources/views/Partner.xml:78"
 "Insurance",,,"resources/views/Selects.xml:211"
 "Interfaces",,,"resources/views/General.xml:51"
-"Internal companies",,,"resources/views/User.xml:28"
+"Internal companies",,,"resources/views/User.xml:31"
 "Internal description",,,"resources/domains/Product.xml:15
 resources/views/Product.xml:68"
 "Internal stock move",,,"resources/views/Selects.xml:369"
@@ -1186,7 +1189,7 @@ resources/views/Menu.xml:96
 resources/views/PartnerCategory.xml:6"
 "Partner category",,,"resources/views/PartnerCategory.xml:11"
 "Partner details",,,"resources/views/Partner.xml:182"
-"Partner filters",,,"resources/views/Partner.xml:376"
+"Partner filters",,,"resources/views/Partner.xml:390"
 "Partner list",,,"resources/views/PartnerList.xml:11"
 "Partner lists",,,"resources/views/PartnerList.xml:6"
 "Partner name",,,"resources/domains/User.xml:19"
@@ -1251,7 +1254,7 @@ resources/views/General.xml:109
 resources/views/General.xml:110
 resources/views/General.xml:111"
 "Please input first character as capital and other as lower case",,,"resources/views/General.xml:102"
-"Please select active company",,,"resources/views/User.xml:48"
+"Please select active company",,,"resources/views/User.xml:61"
 "Please select key fields to check duplicate",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:166"
 "Please select the Message(s) to print.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:174"
 "Please, enter date of next execution.",,,"resources/views/SchedulerInstance.xml:29"
@@ -1369,9 +1372,9 @@ resources/views/Menu.xml:197"
 "Prof.",,,"resources/views/Selects.xml:165"
 "Professional training",,,"resources/views/Selects.xml:374"
 "Profile",,,"resources/views/Selects.xml:248"
-"Profiles",,,"resources/views/Partner.xml:302
+"Profiles",,,"resources/views/Partner.xml:316
 resources/views/Product.xml:283"
-"Projects",,,"resources/views/User.xml:33"
+"Projects",,,"resources/views/User.xml:36"
 "Prospect",,,"resources/views/Selects.xml:170"
 "Prospects",,,"resources/views/Menu.xml:78
 resources/views/Menu.xml:79"
@@ -1638,7 +1641,7 @@ resources/views/Team.xml:11"
 resources/views/Menu.xml:317
 resources/views/Menu.xml:320
 resources/views/Team.xml:6
-resources/views/User.xml:29"
+resources/views/User.xml:32"
 "Technical maintenance",,,"resources/views/Menu.xml:452"
 "Technical manager",,,"resources/views/AlarmEngine.xml:11"
 "Technical topic",,,"resources/domains/Topic.xml:9"
