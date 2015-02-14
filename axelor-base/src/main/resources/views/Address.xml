@@ -13,7 +13,7 @@
 	</grid>
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
-	onSave="action-group-base-address-onsave" onLoad="action-address-get-general-qas" onNew="default-address-record,action-address-get-general-qas" readonlyIf="id != null &amp;&amp; fromMain == null" >
+	onSave="action-group-base-address-onsave" onLoad="action-address-get-general-qas" onNew="default-address-record,action-address-get-general-qas" >
 		<panel name="main" title="Address details" colSpan="12">
 			<field name="addressL2" onChange="action-check-string-capital-case" placeholder="e.g. Financial department, CEO"/>
 			<field name="addressL3" onChange="action-check-string-capital-case" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>

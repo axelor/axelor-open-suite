@@ -234,12 +234,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * @throws AxelorException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createRefund(Invoice invoice) throws AxelorException {
+	public Invoice createRefund(Invoice invoice) throws AxelorException {
 		
 		LOG.debug("Créer un avoir pour la facture {}", new Object[] { invoice.getInvoiceId() });
-		
-		invoice.addRefundInvoiceListItem((new RefundInvoice(invoice)).generate());
+		Invoice refund = new RefundInvoice(invoice).generate();
+		invoice.addRefundInvoiceListItem( refund );
 		save(invoice);
+		
+		return refund;
 		
 	}
 	

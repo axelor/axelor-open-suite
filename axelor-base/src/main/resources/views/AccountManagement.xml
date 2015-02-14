@@ -27,14 +27,11 @@
 		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account"/>
 		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'income'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account"/>
 		</panel>
-		
-		<panel-tabs>
-			<panel-related field="analyticAccountManagementList" colSpan="12" if-module="axelor-account"/>
-			<panel name="taxPage" title="Tax" showTitle="false">
-				<field name="purchaseTax"/>
-				<field name="saleTax"/>
-			</panel>
-		</panel-tabs>
+		<panel name="taxPage" title="Tax" showTitle="false">
+			<field name="purchaseTax"/>
+			<field name="saleTax"/>
+		</panel>
+		<panel-related field="analyticAccountManagementList" colSpan="12" if-module="axelor-account"/>
 	</form>
 	
 	<form name="account-management-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement"    
@@ -50,22 +47,24 @@
 				<field name="cashAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" if-module="axelor-account"/>
 			</panel>
 		</panel>
+		
+		<panel name="productPage" title="Product" showIf="typeSelect == 1" showTitle="false">
+			<field name="product"  colSpan="12"/>
+		</panel>
+		
+		<panel name="taxPage" title="Tax" hideIf="typeSelect == 3" showTitle="false">
+		  <field name="purchaseTax"/>
+		  <field name="saleTax"/>
+		</panel>
+		
+		<panel name="paymentModePage" showIf="typeSelect == 3" title="Payment mode" showTitle="false">
+		  <field name="paymentMode"  />
+		  <field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
+		  <field name="sequence" domain="self.company = :company" canNew="true"/>
+		</panel>
 	  
-		<panel-tabs>
-			<panel-related field="analyticAccountManagementList" colSpan="12" if-module="axelor-account"/>
-			<panel name="productPage" title="Product" showIf="typeSelect == 1" showTitle="false">
-			  <field name="product"  colSpan="12"/>
-			</panel>
-			<panel name="taxPage" title="Tax" hideIf="typeSelect == 3" showTitle="false">
-			  <field name="purchaseTax"/>
-			  <field name="saleTax"/>
-			</panel>
-			<panel name="paymentModePage" showIf="typeSelect == 3" title="Payment mode" showTitle="false">
-			  <field name="paymentMode"  />
-			  <field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
-			  <field name="sequence" domain="self.company = :company" canNew="true"/>
-			</panel>
-		</panel-tabs>
+		<panel-related field="analyticAccountManagementList" colSpan="12" if-module="axelor-account"/>
+		
 	</form>
     
     

@@ -33,10 +33,10 @@ import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
@@ -139,9 +139,17 @@ public class InvoiceController {
 		InvoiceService is = Beans.get(InvoiceService.class);
 		
 		try {
-			is.createRefund(is.find(invoice.getId()));
+			
+			invoice = is.find(invoice.getId());
+			Invoice refund = is.createRefund( invoice );
 			response.setReload(true);
-			response.setFlash(I18n.get(IExceptionMessage.INVOICE_2)); 
+			response.setFlash(I18n.get(IExceptionMessage.INVOICE_2));
+			
+			ActionView.define( String.format("Avoirs de la facture %s", invoice.getInvoiceId() ) )
+			.add("grid", "invoice-grid")
+			.add("form", "invoice-form")
+			.context("_showRecord", refund.getId().toString())
+			.domain("self.originalInvoice = " + invoice.getId());
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
