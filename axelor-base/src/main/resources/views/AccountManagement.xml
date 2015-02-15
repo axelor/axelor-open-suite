@@ -27,7 +27,7 @@
 		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account"/>
 		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'income'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account"/>
 		</panel>
-		<panel name="taxPage" title="Tax" showTitle="false">
+		<panel name="taxPage" title="Tax">
 			<field name="purchaseTax"/>
 			<field name="saleTax"/>
 		</panel>
@@ -48,16 +48,16 @@
 			</panel>
 		</panel>
 		
-		<panel name="productPage" title="Product" showIf="typeSelect == 1" showTitle="false">
+		<panel name="productPage" title="Product" showIf="typeSelect == 1">
 			<field name="product"  colSpan="12"/>
 		</panel>
 		
-		<panel name="taxPage" title="Tax" hideIf="typeSelect == 3" showTitle="false">
+		<panel name="taxPage" title="Tax" hideIf="typeSelect == 3">
 		  <field name="purchaseTax"/>
 		  <field name="saleTax"/>
 		</panel>
 		
-		<panel name="paymentModePage" showIf="typeSelect == 3" title="Payment mode" showTitle="false">
+		<panel name="paymentModePage" showIf="typeSelect == 3" title="Payment mode">
 		  <field name="paymentMode"  />
 		  <field name="journal" domain="self.company = :company AND self.statusSelect = 1"/>
 		  <field name="sequence" domain="self.company = :company" canNew="true"/>
