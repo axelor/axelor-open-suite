@@ -14,18 +14,25 @@
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
     onNew="action-user-default-record,action-user-check-company" onLoad="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
     	<panel sidebar="true">
-    	    <field name="partner" domain="self.partnerTypeSelect = 2 || self.isContact = true" grid-view="partner-grid" form-view="partner-form" />
 	        <field name="activeCompany" widget="SuggestBox"/>
 	        <field name="activeCashRegister"/>
-	        <field name="timesheetPeriodConfig"/>
-	        <field name="employee"/>
-	        <field name="isAnEmployee" if-module="axelor-human-resource" />
+<!-- 	        <field name="timesheetPeriodConfig"/> -->
+	        <field name="employee" if-module="axelor-human-resource" />
+	        <button name="createEmployee" onClick="action-user-create-employee,save,action-human-resource-user-show-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null"/>
         </panel>
 		<panel title="Testing" sidebar="true">
 			<field name="today"/>
 		</panel>
         <panel-include view="user-form" from="axelor-core"/>
         <panel-tabs>
+             <panel title="Contact">
+                <field name="partner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-grid" form-view="partner-form" colSpan="12" />
+                <field name="partner.emailAddress" colSpan="6" />
+				<field name="partner.fax" colSpan="6" />
+				<field name="partner.fixedPhone" colSpan="6" />
+				<field name="partner.mobilePhone" colSpan="6" />
+	           	<field name="partner.webSite" colSpan="6" />
+	         </panel>
         	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
         	 <panel title="Teams">
         		<field name="activeTeam"/>
@@ -35,16 +42,6 @@
         	<panel title="Calendars">
         		<panel-related field="followersCalUserSet" colSpan="12"/>
         		<panel-related field="authorizeCalUserSet" colSpan="12"/>
-        	</panel>
-        	<panel title="Employee" showIf="isAnEmployee" if-module="axelor-human-resource">
-        	    <field name="hourlyRate" />
-        	    <field name="timeLoggingPreferenceSelect" />
-        	    <field name="weeklyWorkHours" />
-        	    <field name="dailyWorkHours" />
-        	    <field name="manager" />
-        	    <field name="department" />
-        	    <field name="timesheetReminder" />
-        	    <field name="external" />
         	</panel>
         </panel-tabs>
     </form>
@@ -59,4 +56,8 @@
         <notify message="Please select active company"  if="__repo__.of(Company).all().fetch().size != 1"/>
     </action-validate>
     
+    <action-record name="action-user-create-employee" model="com.axelor.auth.db.User">
+        <field name="employee" expr="action:action-human-resource-create-user-employee" />
+    </action-record>
+        
 </object-views>

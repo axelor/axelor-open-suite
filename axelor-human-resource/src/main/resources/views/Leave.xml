@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="leave-grid" title="Leave" model="com.axelor.apps.human.resource.db.Leave">
+		 <field name="employee" />
+		 <field name="requestDate" />
+		 <field name="dateFrom" />
+		 <field name="startOnSelect" />
+		 <field name="dateTo" />
+		 <field name="endOnSelect" />
+		 <field name="statusSelect" />
+	</grid>
+	
+	<form name="leave-form" title="Leave" model="com.axelor.apps.human.resource.db.Leave"
+	    onNew="action-leave-record-default">
+		<panel>
+			<field name="statusSelect" colSpan="12" widget="NavSelect" />
+			<field name="employee" />
+			<field name="requestDate" />
+			<field name="dateFrom" />
+			<field name="startOnSelect" />
+			<field name="dateTo" />
+			<field name="endOnSelect" />
+			<field name="duration" />
+			<field name="reason" canNew="true" />
+			<field name="comments" colSpan="12" />
+		</panel>
+	</form>
+	
+	<action-record name="action-leave-record-default" model="com.axelor.apps.human.resource.db.Leave">
+	    <field name="requestDate" expr="eval:__date__"/>
+	</action-record>
+	
+</object-views>

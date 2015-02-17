@@ -5,9 +5,9 @@
 
   <module name="human-resource" package="com.axelor.apps.human.resource.db"/>
 
-  <entity name="ServiceDepartment" cachable="true">
-	
-      <string name="name" title="Name"/>
+  <entity name="LeaveReason" cachable="true">
+      
+      <string name="leaveReason" namecolumn="true" title="Leave reason" required="true"/>
       
   </entity>
   

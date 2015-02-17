@@ -6,6 +6,8 @@
 		<field name="code"/>
 		<field name="name"/>
 		<field name="customer"/>
+		<field name="userResponible" />
+		<field name="createdOn" />
 		<field name="statusSelect" />
 	</grid>
 
@@ -13,7 +15,7 @@
 		<panel title="Overview">
 		    <field name="name"/>
 			<field name="code" readonly="true"/>
-			<field name="customer"/>
+			<field name="customer" domain="self.clientTypeSelect &gt; 1"/>
 			<field name="userResponible" />
 			<field name="statusSelect" readonly="true" colSpan="2"/>
 			<button name="close" title="Close" colSpan="3" onClick="action-business-project-set-status-close,save" showIf="statusSelect == 1" readonlyIf="id == null"/>

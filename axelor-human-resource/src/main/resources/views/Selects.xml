@@ -19,10 +19,15 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
-	<selection name="human.resource.user.time.logging.preference.select">
+	<selection name="human.resource.time.logging.preference.select">
 		<option value="days">Days</option>
 		<option value="hours">Hours</option>
 		<option value="minutes">Minutes</option>
+	</selection>
+	
+	<selection name="human.resource.start.on.select">
+		<option value="1">Morning</option>
+		<option value="2">Afternoon</option>
 	</selection>
 	
 </object-views>

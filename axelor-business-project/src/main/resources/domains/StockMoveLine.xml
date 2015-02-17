@@ -7,7 +7,7 @@
 
   <entity name="StockMoveLine" lang="java">
   
-    <many-to-one name="businessProject" ref="com.axelor.apps.project.db.Project" title="Business Project"/>
+    <many-to-one name="businessProject" ref="com.axelor.apps.project.db.Project" title="Business project"/>
     
   </entity>
 </domain-models>

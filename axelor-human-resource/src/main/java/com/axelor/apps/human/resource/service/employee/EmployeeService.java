@@ -1,10 +1,10 @@
-package com.axelor.apps.human.resource.service.user;
+package com.axelor.apps.human.resource.service.employee;
 
 import java.math.BigDecimal;
 
 import com.axelor.apps.base.service.user.UserService;
 
-public interface UserServiceHr extends UserService{
+public interface EmployeeService extends UserService{
 	
 	public BigDecimal getDurationHours(BigDecimal userDuration);
 		

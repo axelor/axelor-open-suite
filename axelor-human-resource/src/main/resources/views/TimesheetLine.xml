@@ -4,8 +4,12 @@
 
 	<grid name="timesheet-line-grid" title="Log time" model="com.axelor.apps.human.resource.db.TimesheetLine">
 		<field name="project"/>
+		<field name="date" />
 		<field name="activity"/>
 		<field name="visibleDuration" />
+		<field name="durationStored" />
+		<field name="user" />
+		<field name="comment" />
 	</grid>
 
 	<form name="timesheet-line-form" title="Log time" model="com.axelor.apps.human.resource.db.TimesheetLine"
@@ -28,11 +32,11 @@
 	</action-attrs>
 	
 	<action-record name="action-timesheet-line-record-set-visible-duration" model="com.axelor.apps.human.resource.db.TimesheetLine">
-	    <field name="visibleDuration" expr="call:com.axelor.apps.human.resource.service.user.UserServiceHr:getUserDuration(durationStored)"/>
+	    <field name="visibleDuration" expr="call:com.axelor.apps.human.resource.service.employee.EmployeeService:getUserDuration(durationStored)"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-stored-duration" model="com.axelor.apps.human.resource.db.TimesheetLine">
-	    <field name="durationStored" expr="call:com.axelor.apps.human.resource.service.user.UserServiceHr:getDurationHours(visibleDuration)"/>
+	    <field name="durationStored" expr="call:com.axelor.apps.human.resource.service.employee.EmployeeService:getDurationHours(visibleDuration)"/>
 	</action-record>
 	
 	<action-method name="action-timesheet-line-method-record-set-stored-duration">

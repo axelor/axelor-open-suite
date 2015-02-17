@@ -10,13 +10,13 @@
 	</grid>
 
 	<form name="expense-form" title="Expense" model="com.axelor.apps.human.resource.db.Expense"
-	    onNew="action-expense-record-default">
+	    onNew="action-expense-record-default" width="large">
 		<panel>
-			<field name="sentDate"/>
-			<field name="period"/>
-			<field name="user"/>
-			<field name="statusSelect"/>
-			<button name="sendExpenses" title="Send Expenses"/>
+		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
+			<field name="sentDate" colSpan="3"/>
+			<field name="period" colSpan="3"/>
+			<field name="user" colSpan="3"/>
+			<button name="sendExpenses" title="Send Expenses" colSpan="3"/>
 		</panel>
 		<panel-related field="expenseLineList" />
 	</form>

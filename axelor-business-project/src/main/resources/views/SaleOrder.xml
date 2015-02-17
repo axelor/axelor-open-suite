@@ -18,7 +18,7 @@
 	<action-record name="action-business-project-create-sale-order-project" model="com.axelor.apps.project.db.Project">
 	    <field name="partner" expr="eval:clientPartner"/>
 	    <field name="code" expr="eval:saleOrderSeq"/>
-	    <field name="name" expr="eval:saleOrderSeq"/>
+	    <field name="name" expr="eval:clientPartner?.name"/>
 	    <field name="businessProject" expr="eval:true"/>
 	</action-record>
 	

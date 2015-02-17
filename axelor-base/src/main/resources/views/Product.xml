@@ -42,6 +42,7 @@
 					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" colSpan="12"/>
 					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" colSpan="12"/>
 					<field name="invoiceLineType" colSpan="12" if-module="axelor-account"/>
+					<field name="expense" if-module="axelor-human-resource" colSpan="12"/>
 				</panel>
 				<panel title="Categorization" colSpan="6" colWidths="30%,70%">
 					<field name="applicationTypeSelect" onChange="action-set-product-type-select" colSpan="12"/>

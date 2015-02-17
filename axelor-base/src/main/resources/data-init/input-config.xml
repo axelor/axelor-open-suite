@@ -80,7 +80,7 @@
     
     <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId"/>
     
-    <input file="auth_user.csv" separator=";" search="self.code = :code" type="com.axelor.auth.db.User" update="true"/>
+    <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" />
     
 </csv-inputs>
 	

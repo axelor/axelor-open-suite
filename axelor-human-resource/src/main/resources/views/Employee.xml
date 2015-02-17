@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="employee-grid" title="Employee" model="com.axelor.apps.human.resource.db.Employee">
+		 <field name="hourlyRate" />
+		 <field name="timeLoggingPreferenceSelect" />
+		 <field name="manager" />
+		 <field name="department" />
+	</grid>
+
+	<form name="employee-form" title="Employee" model="com.axelor.apps.human.resource.db.Employee">
+	    <panel title="Contact">
+            <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-grid" form-view="partner-form" colSpan="12" />
+            <field name="contactPartner.emailAddress" colSpan="6" />
+			<field name="contactPartner.fax" colSpan="6" />
+			<field name="contactPartner.fixedPhone" colSpan="6" />
+			<field name="contactPartner.mobilePhone" colSpan="6" />
+           	<field name="contactPartner.webSite" colSpan="6" />
+        </panel>
+		<panel>
+       	    <field name="hourlyRate" />
+       	    <field name="timeLoggingPreferenceSelect" />
+       	    <field name="weeklyWorkHours" />
+       	    <field name="dailyWorkHours" />
+       	    <field name="manager" />
+       	    <field name="department" />
+       	    <field name="timesheetReminder" />
+       	    <field name="external" />
+       	</panel>
+	</form>
+	
+	<action-record name="action-human-resource-create-user-employee" model="com.axelor.apps.human.resource.db.Employee">
+	    <field name="contactPartner" expr="eval:partner" />
+	</action-record>
+	
+	<action-view name="action-human-resource-user-show-employee" title="Employee" model="com.axelor.apps.human.resource.db.Employee">
+	    <view type="grid" name="employee-grid"/>
+	    <view type="form" name="employee-form"/>
+	    <context name="_showRecord" expr="eval:employee?.id"/>
+	</action-view>
+	
+</object-views>

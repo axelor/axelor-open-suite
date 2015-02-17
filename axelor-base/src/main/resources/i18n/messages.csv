@@ -229,7 +229,7 @@ resources/views/Partner.xml:69"
 "<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />",,,"resources/views/Partner.xml:225
 resources/views/Partner.xml:71"
 "=",,,"resources/views/UnitConversion.xml:16"
-"A product of type service can't be procured from stock.",,,"resources/views/Product.xml:221"
+"A product of type service can't be procured from stock.",,,"resources/views/Product.xml:222"
 "ARTMIN",,,"resources/domains/Canton.xml:12"
 "ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:36"
 "Account Number",,,"resources/domains/BankDetails.xml:18"
@@ -240,7 +240,7 @@ resources/views/AccountManagement.xml:41"
 "Account management list",,,"resources/views/AccountManagement.xml:6"
 "Account managements",,,"resources/views/AccountManagement.xml:14"
 "Accounting",,,"resources/views/General.xml:34
-resources/views/Product.xml:85"
+resources/views/Product.xml:86"
 "Accounting Export",,,"resources/views/Batch.xml:34"
 "Accounting balance",,,"resources/views/Partner.xml:121"
 "Accounting configuration",,,"resources/views/Tax.xml:21"
@@ -385,7 +385,7 @@ resources/domains/BaseBatch.xml:17"
 "Be aware that the address is already in use on other documents, do you still want to modify it ?",,,"resources/views/Address.xml:78"
 "Bean is not an instance of",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:142"
 "Beverage",,,"resources/views/Selects.xml:223"
-"Bill of materials",,,"resources/views/Product.xml:295"
+"Bill of materials",,,"resources/views/Product.xml:296"
 "Binding file",,,"resources/domains/ImportConfiguration.xml:12"
 "Biotechnologies",,,"resources/views/Selects.xml:212"
 "Birt Template",,,"resources/domains/PrintingSettings.xml:14
@@ -426,7 +426,7 @@ resources/views/StopReason.xml:9"
 "CSV File",,,"resources/views/Selects.xml:273"
 "Calculated price/Qty",,,"resources/domains/SupplierCatalog.xml:17"
 "Calculation method",,,"resources/views/PriceListLine.xml:23"
-"Calendars",,,"resources/views/User.xml:37"
+"Calendars",,,"resources/views/User.xml:42"
 "Calling code",,,"resources/domains/Country.xml:14"
 "Campaign",,,"resources/views/Selects.xml:433"
 "Canceled",,,"resources/views/Selects.xml:428"
@@ -436,7 +436,7 @@ resources/views/StopReason.xml:9"
 resources/views/Menu.xml:295
 resources/views/Menu.xml:298"
 "Catalog",,,"resources/views/Product.xml:8"
-"Categorization",,,"resources/views/Product.xml:46"
+"Categorization",,,"resources/views/Product.xml:47"
 "Category",,,"resources/domains/Partner.xml:11"
 "Chart",,,"resources/views/welcome.xml:14"
 "Check / Update rate",,,"resources/views/CurrencyConversionLine.xml:48"
@@ -609,7 +609,7 @@ resources/views/Template.xml:36"
 "Copy",,,"resources/views/General.xml:11
 resources/views/General.xml:23"
 "Cost price",,,"resources/domains/Product.xml:33"
-"Costs",,,"resources/views/Product.xml:79"
+"Costs",,,"resources/views/Product.xml:80"
 "Counter",,,"resources/domains/TrackingNumber.xml:15"
 "Countries",,,"resources/views/Country.xml:5
 resources/views/Menu.xml:285
@@ -638,7 +638,8 @@ resources/views/Menu.xml:582"
 "Create Leave request",,,"resources/views/MenuConsultant.xml:113"
 "Create Timesheet",,,"resources/views/MenuConsultant.xml:69"
 "Create currency conversion lines with new rate",,,"resources/views/CurrencyConversionLine.xml:49"
-"Create production order",,,"resources/views/Product.xml:103"
+"Create employee",,,"resources/views/User.xml:21"
+"Create production order",,,"resources/views/Product.xml:104"
 "Created by",,,"resources/views/BaseBatch.xml:29"
 "Created on",,,"resources/views/BaseBatch.xml:28"
 "Creation",,,"resources/views/RoutingActionCreate.xml:10
@@ -657,7 +658,7 @@ resources/views/Currency.xml:12"
 "Currency conversion lines",,,"resources/views/CurrencyConversionLine.xml:6"
 "Currency conversion table",,,"resources/domains/General.xml:28"
 "Currency conversion webservice not working",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:39"
-"Current Products",,,"resources/views/Product.xml:268"
+"Current Products",,,"resources/views/Product.xml:269"
 "Current user's partner delivery address not set",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:153"
 "Customer Refund",,,"resources/views/Selects.xml:348"
 "Customer Type",,,"resources/domains/Partner.xml:23"
@@ -723,7 +724,7 @@ resources/domains/Product.xml:14
 resources/domains/SupplierCatalog.xml:16
 resources/views/AlarmEngine.xml:42
 resources/views/ImportConfiguration.xml:28
-resources/views/Product.xml:65
+resources/views/Product.xml:66
 resources/views/SupplierCatalog.xml:24"
 "Destination Currency",,,"resources/domains/CurrencyConversionLine.xml:13
 resources/views/CurrencyConversionLine.xml:38"
@@ -755,7 +756,6 @@ resources/views/Selects.xml:425"
 resources/views/Message.xml:7
 resources/views/Selects.xml:266"
 "Email and paper",,,"resources/views/Selects.xml:268"
-"Employee",,,"resources/views/User.xml:41"
 "Employees (Nbr)",,,"resources/domains/Partner.xml:67"
 "End Date",,,"resources/domains/Batch.xml:17"
 "Energy",,,"resources/views/Selects.xml:219"
@@ -784,7 +784,7 @@ resources/views/IndicatorGeneratorGrouping.xml:26"
 "Executions history",,,"resources/domains/SchedulerInstance.xml:15"
 "Expense",,,"resources/views/Selects.xml:249"
 "Expenses",,,"resources/views/MenuConsultant.xml:94
-resources/views/Product.xml:286"
+resources/views/Product.xml:287"
 "Export",,,"resources/views/AddressExport.xml:15
 resources/views/IndicatorGeneratorGrouping.xml:29"
 "Export Address",,,"resources/views/AddressExport.xml:11"
@@ -848,7 +848,7 @@ resources/views/Menu.xml:372"
 "Generate new purchase auto tracking Nbr. ?",,,"resources/domains/TrackingNumberConfiguration.xml:14"
 "Generate new sale auto tracking Nbr. ?",,,"resources/domains/TrackingNumberConfiguration.xml:16"
 "Generate product variant wizard",,,"resources/views/GenerateProductVariantWizard.xml:8"
-"Generate product variants",,,"resources/views/Product.xml:132"
+"Generate product variants",,,"resources/views/Product.xml:133"
 "Generated file path",,,"resources/domains/BirtTemplate.xml:14"
 "Geographical area",,,"resources/domains/Site.xml:14
 resources/views/GeographicalArea.xml:11
@@ -936,9 +936,9 @@ resources/views/Partner.xml:181
 resources/views/Partner.xml:78"
 "Insurance",,,"resources/views/Selects.xml:211"
 "Interfaces",,,"resources/views/General.xml:51"
-"Internal companies",,,"resources/views/User.xml:31"
+"Internal companies",,,"resources/views/User.xml:36"
 "Internal description",,,"resources/domains/Product.xml:15
-resources/views/Product.xml:68"
+resources/views/Product.xml:69"
 "Internal stock move",,,"resources/views/Selects.xml:369"
 "Inventory",,,"resources/views/Selects.xml:372"
 "Invoice",,,"resources/views/Selects.xml:260"
@@ -987,7 +987,7 @@ resources/views/Language.xml:11"
 "Leave request",,,"resources/views/MenuConsultant.xml:116"
 "Leave request calendar",,,"resources/views/MenuConsultant.xml:124"
 "Legal form",,,"resources/views/Selects.xml:310"
-"Links",,,"resources/views/Product.xml:153"
+"Links",,,"resources/views/Product.xml:154"
 "Localisation",,,"resources/views/Address.xml:32"
 "Localization",,,"resources/views/Commune.xml:22"
 "Locate",,,"resources/views/Address.xml:11"
@@ -1137,7 +1137,7 @@ resources/views/Partner.xml:260"
 "OK",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:147"
 "OSM",,,"resources/views/Selects.xml:453"
 "Object",,,"resources/domains/RoutingActionCreate.xml:10"
-"Obsolete Products",,,"resources/views/Product.xml:289"
+"Obsolete Products",,,"resources/views/Product.xml:290"
 "October",,,"resources/views/Selects.xml:287"
 "On",,,"resources/views/Scheduler.xml:40"
 "On :",,,"resources/views/Scheduler.xml:28"
@@ -1152,7 +1152,7 @@ resources/views/PriceListLine.xml:20"
 resources/views/Company.xml:82"
 "Organization",,,"resources/views/Menu.xml:240"
 "Other",,,"resources/views/Selects.xml:233"
-"Other variants",,,"resources/views/Product.xml:256"
+"Other variants",,,"resources/views/Product.xml:257"
 "Overpayment clearance",,,"resources/views/Selects.xml:357"
 "Owner",,,"resources/views/BankDetails.xml:15
 resources/views/Selects.xml:324"
@@ -1254,7 +1254,7 @@ resources/views/General.xml:109
 resources/views/General.xml:110
 resources/views/General.xml:111"
 "Please input first character as capital and other as lower case",,,"resources/views/General.xml:102"
-"Please select active company",,,"resources/views/User.xml:61"
+"Please select active company",,,"resources/views/User.xml:56"
 "Please select key fields to check duplicate",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:166"
 "Please select the Message(s) to print.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:174"
 "Please, enter date of next execution.",,,"resources/views/SchedulerInstance.xml:29"
@@ -1280,7 +1280,7 @@ resources/views/PrintingSetting.xml:6"
 "Printing Settings",,,"resources/domains/Company.xml:27"
 "Priority",,,"resources/domains/Routing.xml:12"
 "Procurement method",,,"resources/domains/Product.xml:25"
-"Procurement settings",,,"resources/views/Product.xml:87"
+"Procurement settings",,,"resources/views/Product.xml:88"
 "Produce",,,"resources/views/Selects.xml:243
 resources/views/Selects.xml:256"
 "Product",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:187
@@ -1290,6 +1290,7 @@ resources/domains/SupplierCatalog.xml:10
 resources/domains/TrackingNumber.xml:11
 resources/views/AccountManagement.xml:56
 resources/views/Product.xml:28
+resources/views/Selects.xml:238
 resources/views/Selects.xml:247"
 "Product Catalog",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:186"
 "Product Family",,,"resources/domains/ProductCategory.xml:12"
@@ -1300,7 +1301,7 @@ resources/views/ProductCategory.xml:6"
 resources/domains/Product.xml:17
 resources/views/ProductCategory.xml:13"
 "Product code on catalog",,,"resources/domains/SupplierCatalog.xml:13"
-"Product dates",,,"resources/views/Product.xml:61"
+"Product dates",,,"resources/views/Product.xml:62"
 "Product families",,,"resources/views/Menu.xml:219
 resources/views/Menu.xml:222"
 "Product family",,,"resources/domains/AccountManagement.xml:15
@@ -1309,9 +1310,8 @@ resources/views/ProductFamily.xml:11"
 "Product name on catalog",,,"resources/domains/SupplierCatalog.xml:12"
 "Product pulled off market Date",,,"resources/domains/Product.xml:38"
 "Product sheet",,,"resources/views/Product.xml:31"
-"Product specific attributes",,,"resources/views/Product.xml:53"
+"Product specific attributes",,,"resources/views/Product.xml:54"
 "Product tracking number",,,"resources/views/Selects.xml:373"
-"Product type",,,"resources/domains/Product.xml:24"
 "Product typology",,,"resources/views/Product.xml:41"
 "Product variant",,,"resources/domains/Product.xml:49
 resources/views/ProductVariant.xml:18"
@@ -1352,7 +1352,7 @@ resources/domains/ProductVariantConfig.xml:13"
 "Production Qty by tracking",,,"resources/domains/TrackingNumberConfiguration.xml:23"
 "Production config",,,"resources/views/Company.xml:28
 resources/views/Company.xml:76"
-"Production informations",,,"resources/views/Product.xml:99"
+"Production informations",,,"resources/views/Product.xml:100"
 "Production order",,,"resources/views/Selects.xml:375"
 "Production tracking management",,,"resources/views/TrackingNumberConfiguration.xml:31"
 "Products",,,"resources/views/Menu.xml:178
@@ -1362,19 +1362,19 @@ resources/views/Product.xml:20
 resources/views/Product.xml:6
 resources/views/ProductCategory.xml:32
 resources/views/ProductFamily.xml:23"
-"Products With Variant",,,"resources/views/Product.xml:277"
+"Products With Variant",,,"resources/views/Product.xml:278"
 "Products families",,,"resources/views/ProductFamily.xml:6"
-"Products filters",,,"resources/views/Product.xml:267"
+"Products filters",,,"resources/views/Product.xml:268"
 "Products models",,,"resources/views/Menu.xml:194
 resources/views/Menu.xml:197"
-"Products variants",,,"resources/views/Product.xml:249"
+"Products variants",,,"resources/views/Product.xml:250"
 "Products/Goods",,,"resources/views/Menu.xml:33"
 "Prof.",,,"resources/views/Selects.xml:165"
 "Professional training",,,"resources/views/Selects.xml:374"
 "Profile",,,"resources/views/Selects.xml:248"
 "Profiles",,,"resources/views/Partner.xml:316
-resources/views/Product.xml:283"
-"Projects",,,"resources/views/User.xml:36"
+resources/views/Product.xml:284"
+"Projects",,,"resources/views/User.xml:41"
 "Prospect",,,"resources/views/Selects.xml:170"
 "Prospects",,,"resources/views/Menu.xml:78
 resources/views/Menu.xml:79"
@@ -1396,8 +1396,8 @@ resources/views/Company.xml:58"
 resources/views/Selects.xml:434"
 "Purchase price W.T.",,,"resources/domains/Product.xml:30"
 "Purchase tracking management",,,"resources/views/TrackingNumberConfiguration.xml:24"
-"Purchase/Costs",,,"resources/views/Product.xml:72"
-"Purchases",,,"resources/views/Product.xml:73"
+"Purchase/Costs",,,"resources/views/Product.xml:73"
+"Purchases",,,"resources/views/Product.xml:74"
 "QAS Moniker",,,"resources/domains/PickListEntry.xml:18"
 "QAS Proposal lists",,,"resources/domains/Address.xml:23"
 "QAS certification",,,"resources/views/Address.xml:38"
@@ -1420,7 +1420,7 @@ resources/views/AlarmEngine.xml:39"
 resources/views/CurrencyConversionLine.xml:28"
 "Rate Date",,,"resources/views/CurrencyConversionLine.xml:42"
 "Rate updation",,,"resources/views/CurrencyConversionLine.xml:45"
-"Raw Materials",,,"resources/views/Product.xml:280"
+"Raw Materials",,,"resources/views/Product.xml:281"
 "Raw material",,,"resources/domains/Product.xml:26"
 "Real Estate",,,"resources/views/Selects.xml:215"
 "Receipt N°(Payment voucher)",,,"resources/views/Selects.xml:356"
@@ -1494,7 +1494,7 @@ resources/views/RoutingRule.xml:6"
 "SWIFT address",,,"resources/domains/BankDetails.xml:13"
 "SWIFT codes",,,"resources/views/Menu.xml:122
 resources/views/Menu.xml:125"
-"Sale",,,"resources/views/Product.xml:54
+"Sale",,,"resources/views/Product.xml:55
 resources/views/Selects.xml:469"
 "Sale Qty by tracking",,,"resources/domains/TrackingNumberConfiguration.xml:21"
 "Sale Tax",,,"resources/domains/AccountManagement.xml:12"
@@ -1506,7 +1506,7 @@ resources/views/Company.xml:64"
 "Sale price W.T.",,,"resources/domains/Product.xml:28"
 "Sale supply default method",,,"resources/domains/Product.xml:22"
 "Sale tracking management",,,"resources/views/TrackingNumberConfiguration.xml:38"
-"Sales",,,"resources/views/Product.xml:55"
+"Sales",,,"resources/views/Product.xml:56"
 "Sales Manager",,,"resources/views/AlarmEngine.xml:10"
 "Sales Turnover",,,"resources/views/ProductCategory.xml:27"
 "Sales attributes",,,"resources/views/Site.xml:20"
@@ -1556,7 +1556,7 @@ resources/views/Sequence.xml:22"
 resources/views/Menu.xml:426
 resources/views/Sequence.xml:6"
 "Service",,,"resources/views/Selects.xml:237"
-"Service Products",,,"resources/views/Product.xml:274"
+"Service Products",,,"resources/views/Product.xml:275"
 "Service indisponible, veuillez contacter votre adminstrateur",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:148"
 "Services",,,"resources/views/Selects.xml:216"
 "Settings",,,"resources/views/Partner.xml:137
@@ -1564,7 +1564,7 @@ resources/views/Partner.xml:251"
 "Shift to doubtful receivables",,,"resources/views/Selects.xml:365"
 "Shift to irrecoverable",,,"resources/views/Selects.xml:358"
 "Show",,,"resources/views/General.xml:78"
-"Show all stock move",,,"resources/views/Product.xml:92"
+"Show all stock move",,,"resources/views/Product.xml:93"
 "Site",,,"resources/domains/Partner.xml:46
 resources/views/Site.xml:13
 resources/views/Site.xml:6"
@@ -1585,12 +1585,11 @@ resources/views/Menu.xml:446"
 "Start Date",,,"resources/domains/Batch.xml:16"
 "Status",,,"resources/domains/Period.xml:16
 resources/domains/Year.xml:17"
-"Stock",,,"resources/views/Product.xml:165
-resources/views/Product.xml:86"
+"Stock",,,"resources/views/Product.xml:166
+resources/views/Product.xml:87"
 "Stock config",,,"resources/views/Company.xml:26
 resources/views/Company.xml:70"
-"Storable",,,"resources/views/Selects.xml:238"
-"Storable Products",,,"resources/views/Product.xml:271"
+"Storable Products",,,"resources/views/Product.xml:272"
 "Subject",,,"resources/views/Message.xml:35"
 "Subscription",,,"resources/views/Selects.xml:421"
 "Succeeded",,,"resources/domains/Batch.xml:19"
@@ -1609,7 +1608,7 @@ resources/views/Menu.xml:84
 resources/views/Menu.xml:85"
 "Suppliers by country",,,"resources/views/Charts.xml:63
 resources/views/Dashboard.xml:53"
-"Suppliers catalog",,,"resources/views/Product.xml:83"
+"Suppliers catalog",,,"resources/views/Product.xml:84"
 "Supply chain message",,,"resources/domains/General.xml:17"
 "Suspend Alarm ?",,,"resources/domains/Alarm.xml:12"
 "Symbol",,,"resources/domains/Currency.xml:12"
@@ -1641,7 +1640,7 @@ resources/views/Team.xml:11"
 resources/views/Menu.xml:317
 resources/views/Menu.xml:320
 resources/views/Team.xml:6
-resources/views/User.xml:32"
+resources/views/User.xml:37"
 "Technical maintenance",,,"resources/views/Menu.xml:452"
 "Technical manager",,,"resources/views/AlarmEngine.xml:11"
 "Technical topic",,,"resources/domains/Topic.xml:9"
@@ -1674,7 +1673,7 @@ resources/views/Territory.xml:6"
 "Test connection to QAS webservice",,,"resources/views/General.xml:58"
 "Test mapping service connection",,,"resources/views/General.xml:54"
 "Testing",,,"resources/views/User.xml:23"
-"The product pulled-off date must be greater than the launch date.",,,"resources/views/Product.xml:241"
+"The product pulled-off date must be greater than the launch date.",,,"resources/views/Product.xml:242"
 "The quantity by lot must be greater than 0",,,"resources/views/TrackingNumberConfiguration.xml:71"
 "The tags below can be used as a prefix or a suffix :",,,"resources/views/Sequence.xml:41"
 "This batch is not runnable !",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:71"
@@ -1705,7 +1704,7 @@ resources/views/Menu.xml:458"
 resources/views/TrackingNumber.xml:6"
 "Tracking Number Configuration",,,"resources/views/TrackingNumberConfiguration.xml:21
 resources/views/TrackingNumberConfiguration.xml:6"
-"Tracking number",,,"resources/views/Product.xml:107"
+"Tracking number",,,"resources/views/Product.xml:108"
 "Tracking number configuration",,,"resources/views/Menu.xml:229
 resources/views/Menu.xml:232"
 "Transport",,,"resources/views/Selects.xml:230"
@@ -1719,6 +1718,7 @@ resources/domains/Keyword.xml:11
 resources/domains/PaymentCondition.xml:13
 resources/domains/PaymentMode.xml:13
 resources/domains/PriceList.xml:19
+resources/domains/Product.xml:24
 resources/domains/Querie.xml:11
 resources/domains/Year.xml:19"
 "URL to QAS WSDL",,,"resources/domains/General.xml:20"
@@ -1734,8 +1734,8 @@ resources/views/UnitConversion.xml:5"
 resources/views/Menu.xml:385
 resources/views/Unit.xml:5"
 "Update & Historize conversion rate",,,"resources/views/General.xml:47"
-"Update current product prices and variants",,,"resources/views/Product.xml:151"
-"Update products prices",,,"resources/views/Product.xml:151"
+"Update current product prices and variants",,,"resources/views/Product.xml:152"
+"Update products prices",,,"resources/views/Product.xml:152"
 "Use QAS Validation ?",,,"resources/domains/General.xml:30"
 "Use for stock only",,,"resources/domains/ProductVariant.xml:20"
 "User",,,"resources/domains/ImportConfiguration.xml:11
@@ -1759,7 +1759,7 @@ resources/views/Selects.xml:427"
 "Value",,,"resources/domains/BirtTemplateParameter.xml:11
 resources/domains/RoutingActionCreateLine.xml:14
 resources/domains/RoutingRule.xml:14"
-"Variants",,,"resources/views/Product.xml:118"
+"Variants",,,"resources/views/Product.xml:119"
 "Variants generated",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:184"
 "Variation",,,"resources/domains/CurrencyConversionLine.xml:17
 resources/views/CurrencyConversionLine.xml:47"

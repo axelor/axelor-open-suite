@@ -8,13 +8,13 @@
 		<field name="user"/>
 	</grid>
 
-	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.human.resource.db.Timesheet"
+	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.human.resource.db.Timesheet" cols="12" width="large"
 	    onNew="action-timesheeet-record-default">
 		<panel>
-			<field name="sentDate"/>
-			<field name="statusSelect"/>
-			<field name="user"/>
-			<button name="getTimeFromTask" title="Get time from Tasks"/>
+		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
+			<field name="sentDate" colSpan="4"/>
+			<field name="user" colSpan="4"/>
+			<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4"/>
 		</panel>
 		<panel-related field="timesheetLineList" />
 	</form>

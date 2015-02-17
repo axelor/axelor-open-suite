@@ -13,7 +13,7 @@
 	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.human.resource.db.ExpenseLine">
 		<panel>
 			<field name="project"/>
-			<field name="expenseType"/>
+			<field name="expenseType" domain="self.expense = true"/>
 			<field name="expenseDate"/>
 			<field name="untaxedAmount" onChange="action-expense-on-change-tax-untaxt-amount"/>
 			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount"/>

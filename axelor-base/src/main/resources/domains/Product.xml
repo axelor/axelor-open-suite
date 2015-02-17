@@ -21,7 +21,7 @@
     <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select" initParam="true" help="true"/>
     <integer name="saleSupplySelect" title="Sale supply default method" selection="product.sale.supply.select" initParam="true" help="true"/>
      
-    <string name="productTypeSelect" title="Product type" required="true" selection="product.product.type.select" initParam="true" help="true"/>
+    <string name="productTypeSelect" title="Type" required="true" selection="product.product.type.select" initParam="true" help="true"/>
     <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select" initParam="true" help="true"/>
     <boolean name="isRawMaterial" title="Raw material" initParam="true" help="true"/>
     

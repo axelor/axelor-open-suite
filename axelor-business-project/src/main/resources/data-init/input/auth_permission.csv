@@ -1,3 +1,2 @@
 "name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"readCondition";"readParams";"writeCondition";"writeParams";"createCondition";"createParams";"removeCondition";"removeParams"
-"perm.base.all";"com.axelor.apps.base.db.*";"true";"true";"true";"true";"true";;;;;;;;
-"perm.meta.all";"com.axelor.meta.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"perm.business.project.all";"com.axelor.apps.business.project.db.*";"true";"true";"true";"true";"true";;;;;;;;

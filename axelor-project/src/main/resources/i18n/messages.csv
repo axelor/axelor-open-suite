@@ -4,10 +4,10 @@
 "Customer/Partner",,,"resources/domains/Project.xml:11"
 "Membres",,,"resources/domains/Project.xml:14"
 "Name",,,"resources/domains/Project.xml:17"
-"Overview",,,"resources/views/Project.xml:10"
+"Overview",,,"resources/views/Project.xml:12"
 "Project",,,"resources/domains/Task.xml:10
 resources/views/Menu.xml:5
-resources/views/Project.xml:9"
+resources/views/Project.xml:11"
 "Project Name",,,"resources/domains/Project.xml:10"
 "Project code",,,"resources/domains/Project.xml:13"
 "Projects",,,"resources/views/Menu.xml:11

@@ -154,7 +154,7 @@ resources/views/MoveTemplateLine.xml:22"
 resources/views/PaymentVoucher.xml:78"
 "A chart or chart structure of accounts already exists, please delete the hierarchy between accounts in order to import a new chart.",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:496"
 "Acc. Clearance","Apurage comptes",,"resources/views/AccountConfig.xml:120"
-"Accepted Credit",,,"resources/domains/CustomerCreditLine.xml:11"
+"Accepted Credit","Encours accordé",,"resources/domains/CustomerCreditLine.xml:11"
 "Account","Compte comptable",,"resources/domains/BankStatementLine.xml:14
 resources/domains/MoveLine.xml:11
 resources/domains/MoveLineReport.xml:15

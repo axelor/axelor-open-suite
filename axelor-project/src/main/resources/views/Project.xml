@@ -4,6 +4,8 @@
 
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<field name="fullName"/>
+		<field name="partner" />
+		<field name="businessProject" />
 	</grid>
 
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project">

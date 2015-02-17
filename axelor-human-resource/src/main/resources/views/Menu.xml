@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<menuitem name="hr-root" priority="108" title="Human resources" icon="img/tree-folder.png" groups="admins,ERP"/> 	
+	<menuitem name="hr-root" priority="108" title="Human resources" icon="img/16px/crmSmall_16px.png" groups="admins,ERP"/> 	
 
 	<menuitem name="expense-all" parent="hr-root"
     	title="Expenses"
@@ -21,5 +21,41 @@
     	<view type="grid" name="timesheet-grid"/>
 	    <view type="form" name="timesheet-form"/>
 	</action-view>
+	
+	<menuitem name="employee-all" parent="hr-root"
+    	title="Employee"
+    	action="employee.all"/>
 
+	<action-view name="employee.all" title="Employee" model="com.axelor.apps.human.resource.db.Employee">
+    	<view type="grid" name="employee-grid"/>
+	    <view type="form" name="employee-form"/>
+	</action-view>
+	
+	<menuitem name="leave-all" parent="hr-root"
+    	title="Leaves"
+    	action="leave.all"/>
+
+	<action-view name="leave.all" title="Leaves" model="com.axelor.apps.human.resource.db.Leave">
+    	<view type="grid" name="leave-grid"/>
+	    <view type="form" name="leave-form"/>
+	</action-view>
+	
+	<menuitem name="leave-reason-all" parent="hr-root"
+    	title="Leave reason"
+    	action="leave.reason.all"/>
+
+	<action-view name="leave.reason.all" title="Leave reason" model="com.axelor.apps.human.resource.db.LeaveReason">
+    	<view type="grid" name="leave-reason-grid"/>
+	    <view type="form" name="leave-reason-form"/>
+	</action-view>
+	
+	<menuitem name="company-department-all" parent="hr-root"
+    	title="Departments"
+    	action="company.department.all"/>
+
+	<action-view name="company.department.all" title="Departments" model="com.axelor.apps.base.db.CompanyDepartment">
+    	<view type="grid" name="company-department-grid"/>
+	    <view type="form" name="company-department-form"/>
+	</action-view>
+	
 </object-views>
