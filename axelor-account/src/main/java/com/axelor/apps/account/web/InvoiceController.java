@@ -145,11 +145,11 @@ public class InvoiceController {
 			response.setReload(true);
 			response.setFlash(I18n.get(IExceptionMessage.INVOICE_2));
 			
-			ActionView.define( String.format("Avoirs de la facture %s", invoice.getInvoiceId() ) )
+			response.setView ( ActionView.define( String.format(I18n.get(IExceptionMessage.INVOICE_4), invoice.getInvoiceId() ) )
 			.add("grid", "invoice-grid")
 			.add("form", "invoice-form")
 			.context("_showRecord", refund.getId().toString())
-			.domain("self.originalInvoice = " + invoice.getId());
+			.domain("self.originalInvoice.id = " + invoice.getId()).map() );
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
