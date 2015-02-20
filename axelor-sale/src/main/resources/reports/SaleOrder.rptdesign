@@ -1409,7 +1409,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 <property name="borderBottomColor">#68B022</property>
                 <property name="borderBottomStyle">solid</property>
                 <property name="borderBottomWidth">thin</property>
-                <property name="height">0.958cm</property>
+                <property name="height">1.5cm</property>
                 <cell id="3350">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
@@ -1433,7 +1433,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 </cell>
             </row>
             <row id="3833">
-                <property name="height">0.2916666666666667in</property>
+                <property name="height">0.5cm</property>
                 <cell id="3834">
                     <property name="colSpan">6</property>
                     <property name="rowSpan">1</property>
