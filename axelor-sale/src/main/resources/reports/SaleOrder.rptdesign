@@ -113,218 +113,7 @@
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SaleOrderDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">id</text-property>
-                    <text-property name="heading">id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">saleOrderSeq</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">saleOrderSeq</text-property>
-                    <text-property name="heading">saleOrderSeq</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">CompanyName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">CompanyName</text-property>
-                    <text-property name="heading">CompanyName</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">creation_date</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">creation_date</text-property>
-                    <text-property name="heading">creation_date</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">partner_type_select</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">partner_type_select</text-property>
-                    <text-property name="heading">partner_type_select</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">ClientPartName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">ClientPartName</text-property>
-                    <text-property name="heading">ClientPartName</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">ClientPartFirstName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">ClientPartFirstName</text-property>
-                    <text-property name="heading">ClientPartFirstName</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">ClientTitle</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">ClientTitle</text-property>
-                    <text-property name="heading">ClientTitle</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">ContactName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">ContactName</text-property>
-                    <text-property name="heading">ContactName</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">ContactFirstName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">ContactFirstName</text-property>
-                    <text-property name="heading">ContactFirstName</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">invAddress2</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">invAddress2</text-property>
-                    <text-property name="heading">invAddress2</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">invAddress3</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">invAddress3</text-property>
-                    <text-property name="heading">invAddress3</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">invAddress4</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">invAddress4</text-property>
-                    <text-property name="heading">invAddress4</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">invAddress5</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">invAddress5</text-property>
-                    <text-property name="heading">invAddress5</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">invAddress6</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">invAddress6</text-property>
-                    <text-property name="heading">invAddress6</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">invoicecountry</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">invoicecountry</text-property>
-                    <text-property name="heading">invoicecountry</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">PaymentCondName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">PaymentCondName</text-property>
-                    <text-property name="heading">PaymentCondName</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">PaymentMode</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">PaymentMode</text-property>
-                    <text-property name="heading">PaymentMode</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">delAddress2</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">delAddress2</text-property>
-                    <text-property name="heading">delAddress2</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">delAddress3</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">delAddress3</text-property>
-                    <text-property name="heading">delAddress3</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">delAddress4</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">delAddress4</text-property>
-                    <text-property name="heading">delAddress4</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">delAddress5</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">delAddress5</text-property>
-                    <text-property name="heading">delAddress5</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">delAddress6</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">delAddress6</text-property>
-                    <text-property name="heading">delAddress6</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">DeliveryCountry</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">DeliveryCountry</text-property>
-                    <text-property name="heading">DeliveryCountry</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">ex_tax_total</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">ex_tax_total</text-property>
-                    <text-property name="heading">ex_tax_total</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">tax_total</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">tax_total</text-property>
-                    <text-property name="heading">tax_total</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">in_tax_total</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">in_tax_total</text-property>
-                    <text-property name="heading">in_tax_total</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">bank_address</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">bank_address</text-property>
-                    <text-property name="heading">bank_address</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">iban</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">iban</text-property>
-                    <text-property name="heading">iban</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">bic</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">bic</text-property>
-                    <text-property name="heading">bic</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">CurrencyCode</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">CurrencyCode</text-property>
-                    <text-property name="heading">CurrencyCode</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">external_reference</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">external_reference</text-property>
-                    <text-property name="heading">external_reference</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">header</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">header</text-property>
-                    <text-property name="heading">header</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">footer</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">footer</text-property>
-                    <text-property name="heading">footer</text-property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -515,6 +304,11 @@
                         <property name="name">footer</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">36</property>
+                        <property name="name">description</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -524,245 +318,216 @@
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">saleOrderSeq</property>
                     <property name="nativeName">saleOrderSeq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">CompanyName</property>
                     <property name="nativeName">CompanyName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">creation_date</property>
                     <property name="nativeName">creation_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">partner_type_select</property>
                     <property name="nativeName">partner_type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">ClientPartName</property>
                     <property name="nativeName">ClientPartName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">ClientPartFirstName</property>
                     <property name="nativeName">ClientPartFirstName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">ClientTitle</property>
                     <property name="nativeName">ClientTitle</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">ContactName</property>
                     <property name="nativeName">ContactName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">ContactFirstName</property>
                     <property name="nativeName">ContactFirstName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">invAddress2</property>
                     <property name="nativeName">invAddress2</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">invAddress3</property>
                     <property name="nativeName">invAddress3</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">invAddress4</property>
                     <property name="nativeName">invAddress4</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">invAddress5</property>
                     <property name="nativeName">invAddress5</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">invAddress6</property>
                     <property name="nativeName">invAddress6</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">invoicecountry</property>
                     <property name="nativeName">invoicecountry</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">PaymentCondName</property>
                     <property name="nativeName">PaymentCondName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">PaymentMode</property>
                     <property name="nativeName">PaymentMode</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
                     <property name="name">delAddress2</property>
                     <property name="nativeName">delAddress2</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
                     <property name="name">delAddress3</property>
                     <property name="nativeName">delAddress3</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
                     <property name="name">delAddress4</property>
                     <property name="nativeName">delAddress4</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">23</property>
                     <property name="name">delAddress5</property>
                     <property name="nativeName">delAddress5</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">24</property>
                     <property name="name">delAddress6</property>
                     <property name="nativeName">delAddress6</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">25</property>
                     <property name="name">DeliveryCountry</property>
                     <property name="nativeName">DeliveryCountry</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">26</property>
                     <property name="name">ex_tax_total</property>
                     <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">27</property>
                     <property name="name">tax_total</property>
                     <property name="nativeName">tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">28</property>
                     <property name="name">in_tax_total</property>
                     <property name="nativeName">in_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">29</property>
                     <property name="name">bank_address</property>
                     <property name="nativeName">bank_address</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">30</property>
                     <property name="name">iban</property>
                     <property name="nativeName">iban</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">31</property>
                     <property name="name">bic</property>
                     <property name="nativeName">bic</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">32</property>
                     <property name="name">CurrencyCode</property>
                     <property name="nativeName">CurrencyCode</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">33</property>
                     <property name="name">external_reference</property>
                     <property name="nativeName">external_reference</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">34</property>
                     <property name="name">header</property>
                     <property name="nativeName">header</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">35</property>
                     <property name="name">footer</property>
                     <property name="nativeName">footer</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">36</property>
+                    <property name="name">description</property>
+                    <property name="nativeName">description</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", Company.name as "CompanyName", Company.logo_path,
@@ -778,7 +543,7 @@ DeliveryAddress.addressl4 as "delAddress4", DeliveryAddress.addressl5 as "delAdd
 DeliveryAddress.addressl6 as "delAddress6", DeliveryCountry.name as "DeliveryCountry",
 SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, BankDetail.bank_address, 
 BankDetail.iban, BankDetail.bic, Currency.code as "CurrencyCode", SaleOrder.external_reference, 
-PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer" 
+PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer", SaleOrder.description as "description" 
 from public.sale_sale_order as SaleOrder
 left outer join public.base_company as Company on (SaleOrder.company = Company.id)
 left outer join public.base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
@@ -810,6 +575,9 @@ where SaleOrder.id = ?]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>
@@ -1641,13 +1409,13 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 <property name="borderBottomColor">#68B022</property>
                 <property name="borderBottomStyle">solid</property>
                 <property name="borderBottomWidth">thin</property>
-                <property name="height">0.9583333333333334in</property>
+                <property name="height">0.958cm</property>
                 <cell id="3350">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <image id="3419">
-                        <property name="height">2.169583333333333cm</property>
-                        <property name="width">6.138333333333333cm</property>
+                        <property name="height">71px</property>
+                        <property name="width">198px</property>
                         <property name="source">file</property>
                         <expression name="uri" type="javascript">row["logo_path"]</expression>
                     </image>
@@ -3418,6 +3186,12 @@ row["ClientPartFirstName"]
                     <expression name="expression" type="javascript">dataSetRow["footer"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">description</property>
+                    <text-property name="displayName">description</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="3474">
                 <property name="width">1.2170833333333333cm</property>
@@ -3426,10 +3200,10 @@ row["ClientPartFirstName"]
                 <property name="width">2.8958333333333335in</property>
             </column>
             <column id="3476">
-                <property name="width">0.8645833333333334in</property>
+                <property name="width">0.8in</property>
             </column>
             <column id="3477">
-                <property name="width">8.678333333333333cm</property>
+                <property name="width">3.4in</property>
             </column>
             <row id="3478">
                 <property name="height">1.4022916666666667cm</property>
@@ -3681,17 +3455,19 @@ row["ClientPartFirstName"]
                     <grid id="3512">
                         <property name="height">1.0054166666666666cm</property>
                         <property name="width">8.625416666666666cm</property>
+                        <column id="3848"/>
                         <column id="3513">
-                            <property name="width">1.84375in</property>
+                            <property name="width">1in</property>
                         </column>
                         <column id="3514">
-                            <property name="width">2.4077083333333333cm</property>
+                            <property name="width">2.5cm</property>
                         </column>
                         <column id="3515">
-                            <property name="width">1.508125cm</property>
+                            <property name="width">1.3cm</property>
                         </column>
                         <row id="3516">
                             <property name="height">0.3175cm</property>
+                            <cell id="3845"/>
                             <cell id="3517">
                                 <property name="backgroundColor">#606062</property>
                                 <text id="3528">
@@ -3765,6 +3541,7 @@ row["ClientPartFirstName"]
                         </row>
                         <row id="3520">
                             <property name="height">0.3439583333333333cm</property>
+                            <cell id="3846"/>
                             <cell id="3521">
                                 <property name="backgroundColor">#606062</property>
                                 <text id="3529">
@@ -3838,6 +3615,7 @@ row["ClientPartFirstName"]
                         </row>
                         <row id="3524">
                             <property name="height">0.3439583333333333cm</property>
+                            <cell id="3847"/>
                             <cell id="3525">
                                 <property name="backgroundColor">#606062</property>
                                 <text id="3530">
@@ -3984,9 +3762,20 @@ row["ClientPartFirstName"]
                     <property name="colSpan">4</property>
                     <property name="rowSpan">1</property>
                     <text id="3548">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontStyle">italic</property>
                         <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">row["description"]</VALUE-OF></I>
+]]></text-property>
                     </text>
                 </cell>
+            </row>
+            <row id="3840">
+                <property name="height">0.3cm</property>
+                <cell id="3841"/>
+                <cell id="3842"/>
+                <cell id="3843"/>
+                <cell id="3844"/>
             </row>
             <row id="3554">
                 <cell id="3555">
