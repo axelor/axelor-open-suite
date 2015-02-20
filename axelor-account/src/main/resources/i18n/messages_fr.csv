@@ -148,7 +148,7 @@
 "%s :\nReconciliation : Merci de renseigner les lignes d'écritures concernées.",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:168"
 "%s \nAucune facture trouvée pour le numéro de facture %s et la société %s",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:94"
 "%s paiement(s) traité(s)",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:208"
-80,,,"resources/views/MoveTemplate.xml:27
+"80",,,"resources/views/MoveTemplate.xml:27
 resources/views/MoveTemplateLine.xml:22"
 "<font color=#953B39> OR </font>","<font color=#953B39> OU </font>",,"resources/views/PaymentVoucher.xml:72
 resources/views/PaymentVoucher.xml:78"
@@ -1011,6 +1011,7 @@ resources/views/InvoiceLineEvent.xml:6"
 "Invoice.documentRef","Référence interne",,"java/com/axelor/apps/account/report/ITranslation.java:26"
 "Invoice.dueDate","Date d'échéance ",,"java/com/axelor/apps/account/report/ITranslation.java:25"
 "Invoice.invoiceNo","FACTURE N°",,"java/com/axelor/apps/account/report/ITranslation.java:46"
+"Invoice.law","Dans le cadre de la loi N°92-1442 du décembre 1992 nous vous précisons que tout retard de paiement donnera lieu à une application d'une pénalité égale à une fois et demi le taux d'intérêt légal.",,"java/com/axelor/apps/account/report/ITranslation.java:48"
 "Invoice.note","Remarques",,"java/com/axelor/apps/account/report/ITranslation.java:38"
 "Invoice.paymentTerms","Conditions de paiement",,"java/com/axelor/apps/account/report/ITranslation.java:24"
 "Invoice.priceExclTax","Prix HT",,"java/com/axelor/apps/account/report/ITranslation.java:32"
