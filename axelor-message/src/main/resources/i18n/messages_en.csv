@@ -1,9 +1,9 @@
 "key","message","comment","context"
 "Address",,,"resources/domains/EmailAddress.xml:11"
 "Address Block",,,"resources/domains/Message.xml:23
-resources/domains/Template.xml:18"
+resources/domains/Template.xml:19"
 "Attached File path",,,"resources/domains/Message.xml:20
-resources/domains/Template.xml:21"
+resources/domains/Template.xml:22"
 "Attached files",,,"resources/views/Template.xml:22"
 "Bcc",,,"resources/domains/Message.xml:28
 resources/domains/Template.xml:15"
@@ -18,9 +18,9 @@ resources/domains/Template.xml:14"
 "Content",,,"resources/domains/Message.xml:12
 resources/domains/Template.xml:11
 resources/views/Message.xml:40
-resources/views/Template.xml:33"
+resources/views/Template.xml:36"
 "Create message",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:31"
-"Default ?",,,"resources/domains/Template.xml:20"
+"Default ?",,,"resources/domains/Template.xml:21"
 "Default account ?",,,"resources/domains/MailAccount.xml:17"
 "Delete",,,"resources/views/Message.xml:17"
 "Deleted",,,"resources/views/Selects.xml:28"
@@ -58,14 +58,14 @@ resources/views/MailAccount.xml:21"
 resources/views/MailAccount.xml:14"
 "Mail accounts",,,"resources/views/MailAccount.xml:6"
 "Media Type",,,"resources/domains/Message.xml:22
-resources/domains/Template.xml:17"
+resources/domains/Template.xml:18"
 "Message Box",,,"resources/views/Menu.xml:27"
 "Message destinated to",,,"resources/views/Message.xml:37"
 "Message envoyé",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:33"
 "Messages",,,"resources/views/Menu.xml:20
 resources/views/Menu.xml:22"
 "Messaging",,,"resources/views/Menu.xml:14"
-"Model",,,"resources/domains/Template.xml:19"
+"Model",,,"resources/domains/Template.xml:20"
 "Model empty. Please configure a model.",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:23"
 "NONE",,,"resources/views/Selects.xml:44"
 "Name",,,"resources/domains/MailAccount.xml:10
@@ -90,12 +90,13 @@ resources/views/Menu.xml:52"
 "Recipient address",,,"resources/views/Message.xml:29
 resources/views/Template.xml:25"
 "Recipients",,,"resources/views/Message.xml:32
-resources/views/Template.xml:28"
+resources/views/Template.xml:31"
 "Related to",,,"resources/domains/Message.xml:15
 resources/domains/Message.xml:17
 resources/views/Message.xml:44"
 "Related to1 select",,,"resources/domains/Message.xml:16"
 "Related to2 select",,,"resources/domains/Message.xml:18"
+"Reply to",,,"resources/views/Template.xml:28"
 "Routings",,,"resources/views/Menu.xml:101
 resources/views/Menu.xml:98"
 "SMTP",,,"resources/views/Selects.xml:32"
@@ -103,6 +104,7 @@ resources/views/Menu.xml:98"
 "SSL/TLS",,,"resources/domains/MailAccount.xml:16"
 "Select template",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:30"
 "Send",,,"resources/views/Message.xml:16"
+"Sender",,,"resources/domains/Template.xml:16"
 "Sender (Email)",,,"resources/domains/Message.xml:29"
 "Sender (User)",,,"resources/domains/Message.xml:34"
 "Sent",,,"resources/views/Selects.xml:22
@@ -118,7 +120,7 @@ resources/views/Menu.xml:83"
 resources/views/Message.xml:41"
 "Suject",,,"resources/domains/Template.xml:12"
 "TLS",,,"resources/views/Selects.xml:46"
-"Target receptor",,,"resources/domains/Template.xml:16"
+"Target receptor",,,"resources/domains/Template.xml:17"
 "Task (Project)",,,"resources/views/Selects.xml:17"
 "Template",,,"resources/views/GenerateMessageWizard.xml:10
 resources/views/Template.xml:14"
@@ -149,8 +151,10 @@ resources/views/Menu.xml:72"
 "help:Message.mediaTypeSelect",,,"resources/domains/Message.xml:22"
 "help:Message.sentDateT",,,"resources/domains/Message.xml:13"
 "help:Message.typeSelect",,,"resources/domains/Message.xml:10"
-"help:Template.addressBlock",,,"resources/domains/Template.xml:18"
-"help:Template.filePath",,,"resources/domains/Template.xml:21"
-"help:Template.isDefault",,,"resources/domains/Template.xml:20"
-"help:Template.mediaTypeSelect",,,"resources/domains/Template.xml:17"
-"help:Template.metaModel",,,"resources/domains/Template.xml:19"
+"help:Template.addressBlock",,,"resources/domains/Template.xml:19"
+"help:Template.filePath",,,"resources/domains/Template.xml:22"
+"help:Template.isDefault",,,"resources/domains/Template.xml:21"
+"help:Template.mediaTypeSelect",,,"resources/domains/Template.xml:18"
+"help:Template.metaModel",,,"resources/domains/Template.xml:20"
+"user@mydomain.com",,,"resources/views/EmailAddress.xml:15
+resources/views/EmailAddress.xml:22"
