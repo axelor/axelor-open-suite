@@ -2,11 +2,11 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<grid name="leave-reason-grid" title="Leave reason" model="com.axelor.apps.human.resource.db.LeaveReason">
+	<grid name="leave-reason-grid" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
 		 <field name="leaveReason" />
 	</grid>
 	
-	<form name="leave-reason-form" title="Leave reason" model="com.axelor.apps.human.resource.db.LeaveReason">
+	<form name="leave-reason-form" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
 		<panel>
 			<field name="leaveReason" />
 		</panel>

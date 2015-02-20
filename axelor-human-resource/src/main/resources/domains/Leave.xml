@@ -3,19 +3,19 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
 
-  <module name="human-resource" package="com.axelor.apps.human.resource.db"/>
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="Leave" cachable="true">
       
-      <many-to-one name="employee" ref="com.axelor.apps.human.resource.db.Employee" title="Employee" required="true"/>
-      <integer name="statusSelect" title="Status" selection="human.resources.expenses.status.select" default="1" />
+      <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" required="true"/>
+      <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1" />
       <date name="requestDate" title="Request date" readonly="true" />
       <date name="dateFrom" title="Date from" required="true"/>
-      <integer name="startOnSelect" title="Start On" selection="human.resource.start.on.select" required="true" default="1"/>
+      <integer name="startOnSelect" title="Start On" selection="hr.start.on.select" required="true" default="1"/>
       <date name="dateTo" title="Date to (Included)" />
-      <integer name="endOnSelect" title="End On" selection="human.resource.start.on.select" required="true" default="2"/>
+      <integer name="endOnSelect" title="End On" selection="hr.start.on.select" required="true" default="2"/>
       <decimal name="duration" title="Duration" scale="1" precision="5"/>
-      <many-to-one name="reason" ref="com.axelor.apps.human.resource.db.LeaveReason" title="Reason" />
+      <many-to-one name="reason" ref="com.axelor.apps.hr.db.LeaveReason" title="Reason" />
       <string name="comments" title="Comments" large="true"/>
 	 	      
   </entity>

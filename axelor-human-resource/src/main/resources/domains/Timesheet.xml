@@ -3,14 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
 
-  <module name="human-resource" package="com.axelor.apps.human.resource.db"/>
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="Timesheet" cachable="true">
       
       <date name="sentDate" title="Sent Date" />
-      <integer name="statusSelect" title="Status" selection="human.resources.timesheet.status.select" default="1"/>
+      <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select" default="1"/>
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" required="true"/>
-      <one-to-many name="timesheetLineList" ref="com.axelor.apps.human.resource.db.TimesheetLine" title="Log time"/>
+      <one-to-many name="timesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine" title="Log time"/>
       
   </entity>
   

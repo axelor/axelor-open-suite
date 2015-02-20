@@ -8,7 +8,7 @@
     	title="Business Folders"
     	action="business.folder.all"/>
 
-	<action-view name="business.folder.all" title="Business Folders" model="com.axelor.apps.business.project.db.BusinessFolder">
+	<action-view name="business.folder.all" title="Business Folders" model="com.axelor.apps.businessproject.db.BusinessFolder">
     	<view type="grid" name="business-folder-grid"/>
 	    <view type="form" name="business-folder-form"/>
 	</action-view>

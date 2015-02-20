@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<grid name="business-folder-grid" title="Business Folders" model="com.axelor.apps.business.project.db.BusinessFolder">
+	<grid name="business-folder-grid" title="Business Folders" model="com.axelor.apps.businessproject.db.BusinessFolder">
 		<field name="code"/>
 		<field name="name"/>
 		<field name="customer"/>
@@ -11,7 +11,7 @@
 		<field name="statusSelect" />
 	</grid>
 
-	<form name="business-folder-form" title="Business Folder" model="com.axelor.apps.business.project.db.BusinessFolder" onSave="action-business-folder-set-seq">
+	<form name="business-folder-form" title="Business Folder" model="com.axelor.apps.businessproject.db.BusinessFolder" onSave="action-business-folder-set-seq">
 		<panel title="Overview">
 		    <field name="name"/>
 			<field name="code" readonly="true"/>
@@ -30,17 +30,17 @@
 		</panel>
 	</form>
 	
-	<action-record name="action-business-folder-set-seq" model="com.axelor.apps.business.project.db.BusinessFolder">
+	<action-record name="action-business-folder-set-seq" model="com.axelor.apps.businessproject.db.BusinessFolder">
 	    <field name="code" expr="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber('businessFolder')" if="code == null"/>
 	</action-record>
 	
-	<action-record name="action-business-project-set-status-close" model="com.axelor.apps.business.project.db.BusinessFolder">
+	<action-record name="action-business-project-set-status-close" model="com.axelor.apps.businessproject.db.BusinessFolder">
 	    <field name="statusSelect" expr="eval:2" />
 	    <field name="dateClosed" expr="eval:__date__" />
 	    <field name="userClosed" expr="eval:__user__" />
 	</action-record>
 	
-	<action-record name="action-business-project-set-status-open" model="com.axelor.apps.business.project.db.BusinessFolder">
+	<action-record name="action-business-project-set-status-open" model="com.axelor.apps.businessproject.db.BusinessFolder">
 	    <field name="statusSelect" expr="eval:1" />
 	</action-record>
 	    

@@ -1,2 +1,2 @@
 "name";"description";"permissions"
-"role.admin";"Access to all objects for all modules";"perm.human.resource.all"
+"role.admin";"Access to all objects for all modules";"perm.hr.all"

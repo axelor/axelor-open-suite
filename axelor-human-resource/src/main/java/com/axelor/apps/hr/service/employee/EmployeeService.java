@@ -1,4 +1,4 @@
-package com.axelor.apps.human.resource.service.employee;
+package com.axelor.apps.hr.service.employee;
 
 import java.math.BigDecimal;
 

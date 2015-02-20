@@ -1,2 +1,2 @@
 "name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"readCondition";"readParams";"writeCondition";"writeParams";"createCondition";"createParams";"removeCondition";"removeParams"
-"perm.human.resource.all";"com.axelor.apps.human.resource.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"perm.hr.all";"com.axelor.apps.hr.db.*";"true";"true";"true";"true";"true";;;;;;;;

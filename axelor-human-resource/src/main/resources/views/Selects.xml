@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<selection name="human.resources.expenses.status.select">
+	<selection name="hrs.expenses.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Waiting validation</option>
 		<option value="3">Validated</option>
@@ -11,7 +11,7 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
-	<selection name="human.resources.timesheet.status.select">
+	<selection name="hrs.timesheet.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Confirmed</option>
 		<option value="3">Validated</option>
@@ -19,13 +19,13 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
-	<selection name="human.resource.time.logging.preference.select">
+	<selection name="hr.time.logging.preference.select">
 		<option value="days">Days</option>
 		<option value="hours">Hours</option>
 		<option value="minutes">Minutes</option>
 	</selection>
 	
-	<selection name="human.resource.start.on.select">
+	<selection name="hr.start.on.select">
 		<option value="1">Morning</option>
 		<option value="2">Afternoon</option>
 	</selection>

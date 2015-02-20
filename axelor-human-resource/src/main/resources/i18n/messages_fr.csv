@@ -1,5 +1,5 @@
 "key","message","comment","context"
-"Activity","Activité temps",,"resources/domains/TimesheetLine.xml:12"
+"Activity","Activité",,"resources/domains/TimesheetLine.xml:12"
 "Afternoon","L'après-midi",,"resources/views/Selects.xml:30"
 "Canceled","Annulé",,"resources/views/Selects.xml:11
 resources/views/Selects.xml:19"

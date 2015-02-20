@@ -18,7 +18,7 @@
 	        <field name="activeCashRegister"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
 	        <field name="employee" if-module="axelor-human-resource" />
-	        <button name="createEmployee" onClick="action-user-create-employee,save,action-human-resource-user-show-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null"/>
+	        <button name="createEmployee" onClick="action-user-create-employee,save,action-hr-user-show-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null"/>
         </panel>
 		<panel title="Testing" sidebar="true">
 			<field name="today"/>
@@ -57,7 +57,7 @@
     </action-validate>
     
     <action-record name="action-user-create-employee" model="com.axelor.auth.db.User">
-        <field name="employee" expr="action:action-human-resource-create-user-employee" />
+        <field name="employee" expr="action:action-hr-create-user-employee" />
     </action-record>
         
 </object-views>

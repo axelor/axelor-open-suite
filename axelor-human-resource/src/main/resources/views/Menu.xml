@@ -8,7 +8,7 @@
     	title="Expenses"
     	action="expense.all"/>
 
-	<action-view name="expense.all" title="Expenses" model="com.axelor.apps.human.resource.db.Expense">
+	<action-view name="expense.all" title="Expenses" model="com.axelor.apps.hr.db.Expense">
     	<view type="grid" name="expense-grid"/>
 	    <view type="form" name="expense-form"/>
 	</action-view>
@@ -17,7 +17,7 @@
     	title="Timesheets"
     	action="timesheet.all"/>
 
-	<action-view name="timesheet.all" title="Timesheets" model="com.axelor.apps.human.resource.db.Timesheet">
+	<action-view name="timesheet.all" title="Timesheets" model="com.axelor.apps.hr.db.Timesheet">
     	<view type="grid" name="timesheet-grid"/>
 	    <view type="form" name="timesheet-form"/>
 	</action-view>
@@ -26,7 +26,7 @@
     	title="Employee"
     	action="employee.all"/>
 
-	<action-view name="employee.all" title="Employee" model="com.axelor.apps.human.resource.db.Employee">
+	<action-view name="employee.all" title="Employee" model="com.axelor.apps.hr.db.Employee">
     	<view type="grid" name="employee-grid"/>
 	    <view type="form" name="employee-form"/>
 	</action-view>
@@ -35,7 +35,7 @@
     	title="Leaves"
     	action="leave.all"/>
 
-	<action-view name="leave.all" title="Leaves" model="com.axelor.apps.human.resource.db.Leave">
+	<action-view name="leave.all" title="Leaves" model="com.axelor.apps.hr.db.Leave">
     	<view type="grid" name="leave-grid"/>
 	    <view type="form" name="leave-form"/>
 	</action-view>
@@ -44,7 +44,7 @@
     	title="Leave reason"
     	action="leave.reason.all"/>
 
-	<action-view name="leave.reason.all" title="Leave reason" model="com.axelor.apps.human.resource.db.LeaveReason">
+	<action-view name="leave.reason.all" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
     	<view type="grid" name="leave-reason-grid"/>
 	    <view type="form" name="leave-reason-form"/>
 	</action-view>
