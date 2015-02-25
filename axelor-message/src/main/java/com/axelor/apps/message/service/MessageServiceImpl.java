@@ -33,6 +33,7 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailSender;
 import com.axelor.mail.SmtpAccount;
@@ -57,7 +58,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath, String addressBlock, int mediaTypeSelect)  {
 		
@@ -120,7 +121,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 	}	
 	
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message sendMessageByEmail(Message message)  {
 		try {
 			
@@ -151,7 +152,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 	
 	private void sendMessage(Message message){
 		
-		if(message.getMediaTypeSelect() == 1){
+		if(message.getMediaTypeSelect() == MEDIA_TYPE_MAIL){
 			message.setStatusSelect(MessageRepository.STATUS_SENT);
 			message.setSentByEmail(false);
 			message.setSentDateT(LocalDateTime.now());
@@ -164,7 +165,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		
 		MailAccount mailAccount = message.getMailAccount();
 		
-		if(mailAccount != null && message.getMediaTypeSelect() == 2)  {
+		if(mailAccount != null && message.getMediaTypeSelect() == MEDIA_TYPE_EMAIL)  {
 			String port = mailAccount.getPort()<=0?null:mailAccount.getPort().toString();
 			
 			com.axelor.mail.MailAccount account = new SmtpAccount(

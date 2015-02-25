@@ -145,16 +145,15 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 		
 		String filePath = this.getFilePath(template);
 		
-		JPA.clear();
 		Message message = messageService.createMessage(
 				model, 
 				new Long(objectId).intValue(), 
 				subject, 
 				content, 
-				Strings.isNullOrEmpty(fromEmailAddress) ? null : emailAddressRepo.findByAddress( fromEmailAddress ),
-				this.getEmailAddress(toRecipients),
-				this.getEmailAddress(ccRecipients),
-				this.getEmailAddress(bccRecipients),
+				this.getEmailAddress(fromEmailAddress),
+				this.getEmailAddresses(toRecipients),
+				this.getEmailAddresses(ccRecipients),
+				this.getEmailAddresses(bccRecipients),
 				mailAccount,
 				filePath,
 				addressBlock,
@@ -190,20 +189,14 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 		
 	}
 	
-	public List<EmailAddress> getEmailAddress(String recipients)  {
+	protected List<EmailAddress> getEmailAddresses(String recipients)  {
 		
 		List<EmailAddress> emailAddressList = Lists.newArrayList(); 
 		
 		if(recipients!=null && !recipients.isEmpty())  {
 			String[] toTab = recipients.split(";");
 			for(String s : toTab)  {
-				EmailAddress emailAddress = emailAddressRepo.findByAddress(s);
-				if(emailAddress == null)  {
-					Map<String, Object> values = new HashMap<String,Object>();
-					values.put("address", s);
-					emailAddress = emailAddressRepo.create(values);
-				}
-				emailAddressList.add(emailAddress);
+				emailAddressList.add(this.getEmailAddress(s));
 			}
 		}
 		
@@ -211,5 +204,18 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 	}
 	
 	
-	
+	protected EmailAddress getEmailAddress(String recipient)  {
+		
+		if(Strings.isNullOrEmpty(recipient))  {  return null;  }
+		
+		EmailAddress emailAddress = emailAddressRepo.findByAddress(recipient);
+		
+		if(emailAddress == null)  {
+			Map<String, Object> values = new HashMap<String,Object>();
+			values.put("address", recipient);
+			emailAddress = emailAddressRepo.create(values);
+		}
+		
+		return emailAddress;
+	}
 }

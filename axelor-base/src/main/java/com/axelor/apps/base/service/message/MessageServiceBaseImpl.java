@@ -59,7 +59,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	
 	
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath, String addressBlock, int mediaTypeSelect)  {
 		
@@ -112,7 +112,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	
 	
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message sendMessageByEmail(Message message)  {
 		super.sendMessageByEmail(message);
 		if(message.getStatusSelect() != null && message.getStatusSelect().equals(MessageRepository.STATUS_SENT)){

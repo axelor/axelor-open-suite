@@ -23,17 +23,18 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.db.Repository;
+import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface MessageService extends Repository<Message> {
 	
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath,String addressBlock,int mediaTypeSelect);
 	
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message sendMessageByEmail(Message message);
 
 

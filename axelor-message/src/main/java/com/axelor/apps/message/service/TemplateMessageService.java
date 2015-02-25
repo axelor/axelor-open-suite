@@ -32,8 +32,6 @@ public interface TemplateMessageService extends Repository<Template> {
 	
 	public Message generateMessage(Object object, long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException;
 	
-	public List<EmailAddress> getEmailAddress(String recipients);
-	
 	public TemplateMaker initMaker(long objectId, String model, String tag) throws InstantiationException, IllegalAccessException, ClassNotFoundException;
 	
 	
