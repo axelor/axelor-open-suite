@@ -178,7 +178,7 @@ public class SequenceService extends SequenceRepository {
 	
 	private boolean reset( Sequence sequence ){
 		
-		if ( this.refDate == null ) { return false; }
+		if ( this.refDate == null || sequence.getResetDate() == null) { return false; }
 		if ( !sequence.getYearlyResetOk() && !sequence.getMonthlyResetOk() ){ return false; }
 		if ( !this.refDate.isAfter( sequence.getResetDate() ) ) { return false; }
 		if ( sequence.getYearlyResetOk() && !this.refDate.equals( this.refDate.monthOfYear().withMinimumValue().dayOfMonth().withMinimumValue() ) ) { return false; }
