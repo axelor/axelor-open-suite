@@ -21,11 +21,13 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.accountorganisation.exceptions.IExceptionMessage;
 import com.axelor.apps.accountorganisation.service.ProjectInvoiceService;
 import com.axelor.apps.organisation.db.Project;
+import com.axelor.apps.organisation.db.repo.ProjectRepository;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.axelor.i18n.I18n;
 
 public class ProjectInvoiceController {
 
@@ -39,7 +41,7 @@ public class ProjectInvoiceController {
 		if(project != null) {
 
 			try {
-				Invoice invoice = projectInvoiceService.generateInvoice(project);
+				Invoice invoice = projectInvoiceService.generateInvoice(Beans.get(ProjectRepository.class).find(project.getId()));
 
 				if(invoice != null) {
 					response.setReload(true);
@@ -53,3 +55,4 @@ public class ProjectInvoiceController {
 		}
 	}
 }
+
