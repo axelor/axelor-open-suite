@@ -15,11 +15,11 @@
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
 	onSave="action-group-base-address-onsave" onLoad="action-address-get-general-qas" onNew="default-address-record,action-address-get-general-qas" >
 		<panel name="main" title="Address details" colSpan="12">
-			<field name="addressL2" onChange="action-check-string-capital-case" placeholder="e.g. Financial department, CEO"/>
-			<field name="addressL3" onChange="action-check-string-capital-case" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-			<field name="addressL4" onChange="action-check-string-capital-case"/>
-			<field name="addressL5" onChange="action-check-string-capital-case" placeholder="e.g. POB 254"/>
-			<field name="addressL6" onChange="action-check-string-capital-case" required="true"/>
+			<field name="addressL2"  placeholder="e.g. Financial department, CEO"/>
+			<field name="addressL3"  placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
+			<field name="addressL4" />
+			<field name="addressL5"  placeholder="e.g. POB 254"/>
+			<field name="addressL6"  required="true"/>
 			<field name="commune" onChange="action-address-change-commune"/>
 			<field name="addressL7Country" required="true"/>
 			<field name="exteralReference" />
