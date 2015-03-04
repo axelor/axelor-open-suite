@@ -5,11 +5,11 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Source" lang="java" cachable="true">
+  <entity name="Source" lang="java">
   	
   	<integer name="importId" />
-    <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="name" title="Name"/>
+    <string name="code" title="Code"/>
     
     
   </entity>
