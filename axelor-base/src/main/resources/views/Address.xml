@@ -22,7 +22,6 @@
 			<field name="addressL6" onChange="action-check-string-capital-case" required="true"/>
 			<field name="commune" onChange="action-address-change-commune"/>
 			<field name="addressL7Country" required="true"/>
-			<field name="exteralReference" />
 			<button-group colSpan="6">
 				<button name="map" title="View map" icon="fa-map-marker" onClick="com.axelor.apps.base.web.AddressController:viewMap,save"/>
 				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="com.axelor.apps.base.web.AddressController:directionsMap"/>
