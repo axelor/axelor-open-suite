@@ -27,6 +27,7 @@
        	    <field name="department" />
        	    <field name="timesheetReminder" />
        	    <field name="external" />
+       	    <field name="planning" canNew="true"/>
        	</panel>
 	</form>
 	

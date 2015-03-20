@@ -10,8 +10,13 @@
       <date name="sentDate" title="Sent Date" />
       <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select" default="1"/>
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" required="true"/>
-      <one-to-many name="timesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine" title="Log time"/>
-      
+      <one-to-many name="logTimes" ref="com.axelor.apps.hr.db.LogTime" title="Log time" mappedBy="affectedToTimeSheet"/>
+      <date name="fromDate"/>
+      <date name="toDate"/>
+      <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+      <many-to-one name="task" ref="com.axelor.apps.project.db.Task" title="Task"/>
+      <decimal name="logTime" title="Duration(by day)"/>
+      <many-to-one name="activity" ref="com.axelor.apps.hr.db.TimeActivity" title="Activity"/>
   </entity>
   
 </domain-models>

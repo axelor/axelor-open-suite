@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="logTime-project-grid" title="Log Times" model="com.axelor.apps.hr.db.LogTime">
+		<field name="user"/>
+		<field name="date" />
+		<field name="visibleDuration" />
+		<field name="affectedToTimeSheet"/>
+		<field name="comments" />
+	</grid>
+	
+	<grid name="logTime-timesheet-grid" title="Log Times" model="com.axelor.apps.hr.db.LogTime">
+		<field name="project"/>
+		<field name="task"/>
+		<field name="date" />
+		<field name="visibleDuration" />
+		<field name="comments" />
+	</grid>
+
+	<form name="logTime-project-form" title="Log Time" model="com.axelor.apps.hr.db.LogTime" onNew="action-hr-default-logTime,action-logTime-attrs-set-duration-label"
+	onLoad="action-logTime-attrs-set-duration-label,action-logTime-record-set-visible-duration">
+		<panel title="Overview">
+			<field name="user"/>
+			<field name="date" />
+			<field name="activity" canNew="true"/>
+			<field name="visibleDuration" colSpan="3" onChange="action-logTime-record-set-stored-duration"/>
+			<label name="durationLabel" title="Hours" colSpan="1"/>
+			<field name="durationStored" hidden="true" />
+			<field name="affectedToTimeSheet"/>
+			<field name="comments" />
+		</panel>
+	</form>
+	
+	<form name="logTime-timesheet-form" title="Log Time" model="com.axelor.apps.hr.db.LogTime" onNew="action-hr-default-logTime,action-logTime-attrs-set-duration-label"
+	onLoad="action-logTime-attrs-set-duration-label,action-logTime-record-set-visible-duration">
+		<panel title="Overview">
+			<field name="project"/>
+			<field name="task"/>
+			<field name="date" />
+			<field name="activity"/>
+			<field name="visibleDuration" colSpan="3" onChange="action-logTime-record-set-stored-duration"/>
+			<label name="durationLabel" title="Hours" colSpan="1"/>
+			<field name="durationStored" hidden="true" />
+			<field name="comments" />
+		</panel>
+	</form>
+	
+	<action-attrs name="action-logTime-attrs-set-duration-label">
+	    <attribute name="title" for="durationLabel" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
+	</action-attrs>
+	
+	<action-record name="action-hr-default-logTime" model="com.axelor.apps.hr.db.LogTime">
+	    <field name="user" expr="eval:__user__" />
+	</action-record>
+	
+	<action-record name="action-logTime-record-set-visible-duration" model="com.axelor.apps.hr.db.LogTime">
+	    <field name="visibleDuration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(durationStored)"/>
+	</action-record>
+	
+	<action-record name="action-logTime-record-set-stored-duration" model="com.axelor.apps.hr.db.LogTime">
+	    <field name="durationStored" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours(visibleDuration)"/>
+	</action-record>
+	
+</object-views>

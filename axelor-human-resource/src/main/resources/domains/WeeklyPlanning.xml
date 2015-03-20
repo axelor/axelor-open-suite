@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="WeeklyPlanning" cachable="true">
+  	  <string name="name" required="true" namecolumn="true"/>
+  	  <one-to-many name="weekDays" ref="com.axelor.apps.hr.db.DayPlanning" mappedBy="weeklyPlann"/>
+  </entity>
+  
+  <entity name="DayPlanning">
+  	<many-to-one name="weeklyPlann" ref="com.axelor.apps.hr.db.WeeklyPlanning"/>
+  	<string name="name" required="true" namecolumn="true" title="Day" selection="hrs.weekly.day.select"/>
+  	<time name="morningFrom" title="Morning From"/>
+    <time name="morningTo" title="To"/>
+    <time name="afternoonFrom" title="Afternoon From"/>
+    <time name="afternoonTo" title="To"/>
+  </entity>
+  
+</domain-models>

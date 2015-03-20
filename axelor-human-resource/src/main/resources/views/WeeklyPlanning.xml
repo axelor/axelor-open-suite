@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="weekly-planning-grid" title="Weekly Planning" model="com.axelor.apps.hr.db.WeeklyPlanning">
+		<field name="name"/>
+	</grid>
+	
+	<form name="weekly-planning-form" title="Weekly Planning" model="com.axelor.apps.hr.db.WeeklyPlanning" 
+		  onNew="com.axelor.apps.hr.web.weeklyplanning.WeeklyPlanningController:initPlanning" 
+		  onSave="com.axelor.apps.hr.web.weeklyplanning.WeeklyPlanningController:checkPlanning">
+		<panel>
+			<field name="name"/>
+		</panel>
+	    <panel-related field="weekDays" editable="true"/>
+	</form>
+	
+	<grid name="day-planning-grid" title="Day" model="com.axelor.apps.hr.db.DayPlanning" editable="true" orderBy="id">
+		<field name="name" readonly="true"/>
+		<field name="morningFrom"/>
+		<field name="morningTo"/>
+		<field name="afternoonFrom"/>
+		<field name="afternoonTo"/>
+	</grid>
+	
+	<form name="day-planning-form" title="Day" model="com.axelor.apps.hr.db.DayPlanning">
+		<panel>
+			<field name="name" readonly="true"/>
+			<field name="morningFrom"/>
+		    <field name="morningTo"/>
+		    <field name="afternoonFrom"/>
+		    <field name="afternoonTo"/>
+		</panel>
+	</form>
+
+</object-views>

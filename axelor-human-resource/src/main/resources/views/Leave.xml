@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
 	<grid name="leave-grid" title="Leave" model="com.axelor.apps.hr.db.Leave">
-		 <field name="employee" />
+		 <field name="user" />
 		 <field name="requestDate" />
 		 <field name="dateFrom" />
 		 <field name="startOnSelect" />
@@ -16,7 +16,7 @@
 	    onNew="action-leave-record-default">
 		<panel>
 			<field name="statusSelect" colSpan="12" widget="NavSelect" />
-			<field name="employee" />
+			<field name="user" />
 			<field name="requestDate" />
 			<field name="dateFrom" />
 			<field name="startOnSelect" />
@@ -30,6 +30,7 @@
 	
 	<action-record name="action-leave-record-default" model="com.axelor.apps.hr.db.Leave">
 	    <field name="requestDate" expr="eval:__date__"/>
+	    <field name="user" expr="eval:__user__"/>
 	</action-record>
 	
 </object-views>

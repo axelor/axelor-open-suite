@@ -10,17 +10,44 @@
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
 	    onNew="action-timesheeet-record-default">
-		<panel>
+	    <toolbar>
+	    	<button name="valid" onClick="action-timesheet-record-valid,save" help="Valid" readonlyIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+	    	<button name="cancelButt" onClick="action-timesheet-record-cancel,save,com.axelor.apps.hr.web.timesheet.TimesheetController:cancelTimesheet" readonlyIf="statusSelect = 5" help="Cancel" icon="fa-close"/>
+	    </toolbar>
+		<panel readonlyIf="statusSelect &gt; 1">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
 			<field name="sentDate" colSpan="4"/>
 			<field name="user" colSpan="4"/>
-			<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4"/>
+			<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4" onClick="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
 		</panel>
-		<panel-related field="timesheetLineList" />
+		<panel title="Generate Lines automatically" readonlyIf="statusSelect &gt; 1">
+		    <field name="fromDate"/>
+			<field name="toDate"/>
+			<field name="project"/>
+			<field name="task"/>
+			<field name="activity"/>
+			<field name="logTime"/>
+			<button name="generateLines" title="Generate lines" onClick="save,com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines"/>
+		</panel>
+		<panel-related field="logTimes" readonlyIf="statusSelect &gt; 1" grid-view="logTime-timesheet-grid" form-view="logTime-timesheet-form"/>
 	</form>
 	
 	<action-record name="action-timesheeet-record-default" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="user" expr="eval:__user__"/>
 	</action-record>
+	
+	<action-record name="action-timesheet-record-valid" model="com.axelor.apps.hr.db.Timesheet">
+	    <field name="statusSelect" expr="2"/>
+	    <field name="sentDate" expr="eval:__date__"/>
+	</action-record>
+	
+	<action-record name="action-timesheet-record-cancel" model="com.axelor.apps.hr.db.Timesheet">
+	    <field name="statusSelect" expr="5"/>
+	</action-record>
+	
+	<action-validate name="action-timesheet-validate-tasks">
+		<error message="No log time found or all log times already added" if="__repo__.of(LogTime).all().filter('self.user = ?1 AND self.affectedToTimeSheet = null',__user__).fetchOne() == null"/>
+	</action-validate>
+	
 
 </object-views>
