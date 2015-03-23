@@ -10,7 +10,7 @@
     <string name="importId"/>
     <string name="addressL2" title="Recipient details"/>
     <string name="addressL3" title="Address precisions" />
-    <string name="addressL4" title="N° and Street label"/>
+    <string name="addressL4" title="N° and Street label" required="true"/>
     <string name="addressL5" title="Distribution precisions (POB, Village...)"/>
     <string name="addressL6" title="Zip/City"/>
     <many-to-one name="addressL7Country" ref="com.axelor.apps.base.db.Country" title="Country"/>

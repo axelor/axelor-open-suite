@@ -165,7 +165,7 @@ public class EventController {
 	public void viewMap(ActionRequest request, ActionResponse response)  {
 		Event event = request.getContext().asType(Event.class);
 		if(event.getLocation() != null){
-			Map<String,Object> result = Beans.get(MapService.class).getMap(event.getLocation(), BigDecimal.ZERO, BigDecimal.ZERO);
+			Map<String,Object> result = Beans.get(MapService.class).getMap(event.getLocation());
 			if(result != null){
 				Map<String,Object> mapView = new HashMap<String,Object>();
 				mapView.put("title", "Map");
