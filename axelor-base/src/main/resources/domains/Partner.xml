@@ -53,6 +53,7 @@
     <!--  Page règle de facturation/paiement -->
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Details" help="true"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" help="true"/>
+  	<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price List"/>
    
     <!-- PAGE Blocage -->
 	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner"/>

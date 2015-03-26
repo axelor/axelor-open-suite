@@ -18,6 +18,10 @@
 	    	</panel>
 	    </panel>
 	    <panel-related field="bankDetailsList" showTitle="false"  form-view="bank-details-form" grid-view="bank-details-grid" colSpan="12"/>
+	    <panel title="Price List" colSpan="12">
+	    	<field name="priceList" canNew="true"/>
+	    </panel>
+	    <panel-related colSpan="12" field="priceList.priceListLineList" hideIf="priceList == null"/>
 	</form>
 	
 	<form name="incl-customer-balance-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner" >

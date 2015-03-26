@@ -58,7 +58,7 @@
    	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field name="mainInvoicingAddress" canNew="true"/>
 	      <field name="deliveryAddress" canNew="true"/>
-	      <field name="priceList" domain="self.typeSelect = 1 and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
+	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true"/>
       	  <field name="externalReference"/>
       </panel>
 	  <panel-tabs>
@@ -342,7 +342,7 @@
  		<field name="paymentMode" expr="eval: clientPartner?.paymentMode"/>
  		<field name="mainInvoicingAddress" expr="eval: clientPartner?.mainInvoicingAddress"/>
 		<field name="deliveryAddress" expr="eval: clientPartner?.deliveryAddress"/>
-		<field name="priceList" expr="eval: __repo__.of(PriceList).all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 1 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',clientPartner, __date__).fetchOne()"/>
+		<field name="priceList" expr="eval: clientPartner?.priceList"/>
     </action-record>
     
     <action-method name="action-sale-order-method-compute">

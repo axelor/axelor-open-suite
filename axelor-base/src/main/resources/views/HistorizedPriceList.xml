@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	
+    <grid name="historized-price-list-grid" title="Historized Price lists" model="com.axelor.apps.base.db.HistorizedPriceList"> 
+    	<field name="date"/>
+    </grid>
+    
+   <form name="historized-price-list-form" title="Historized Price list" model="com.axelor.apps.base.db.HistorizedPriceList" onNew="action-price-list-record-default">
+   		<panel>
+		    <field name="date"/>
+    	</panel>
+		<panel-related field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="12"/>
+   </form>
+   
+   <action-record name="action-historized-price-list-record-default" model="com.axelor.apps.base.db.HistorizedPriceList">
+   		<field name="date" expr="__datetime__"/>
+   </action-record>
+   
+</object-views>
