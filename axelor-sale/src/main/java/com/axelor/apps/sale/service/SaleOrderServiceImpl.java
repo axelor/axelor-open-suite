@@ -53,7 +53,7 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOrderService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CopyOfSaleOrderServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceImpl.class);
 
 	@Inject
 	private SaleOrderLineService saleOrderLineService;

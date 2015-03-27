@@ -41,7 +41,7 @@ public class SaleOrderController {
 	@Inject
 	private SaleOrderService saleOrderService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(CopyOfSaleOrderController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderController.class);
 
 	public void compute(ActionRequest request, ActionResponse response)  {
 
