@@ -423,8 +423,8 @@
 
 	<selection name="default.status.select">
 		<option value="1">Draft</option>
-		<option value="2">Confirmed</option>
-		<option value="3">Validated</option>
+		<option value="2">Finalize</option>
+		<option value="3">Order confirmed</option>
 		<option value="4">Canceled</option>
 	</selection>
 												

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.web;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,37 +26,35 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class SaleOrderController {
-	
+
 	@Inject
-	private SaleOrderRepository saleOrderRepo;
+	private SaleOrderService saleOrderService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderController.class);
-	
+
 	public void compute(ActionRequest request, ActionResponse response)  {
-		
+
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		try {		
-			Beans.get(SaleOrderService.class).computeSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+		try {
+			saleOrderService.computeSaleOrder(saleOrderService.find(saleOrder.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
-	
-	
+
+
 	/**
 	 * Fonction appeler par le bouton imprimer
 	 *
@@ -68,55 +67,59 @@ public class SaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		StringBuilder url = new StringBuilder();
-		
-		String language="";
-		try{
-			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
-		
-		url.append(
-				new ReportSettings(IReport.SALES_ORDER, ReportSettings.FORMAT_PDF)
-				.addParam("Locale", language)
-				.addParam("__locale", "fr_FR")
-				.addParam("SaleOrderId", saleOrder.getId().toString())
-				.getUrl());
+
+		url.append(this.getURLSaleOrderPDF(saleOrder));
 
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
-		
+
 		if(urlNotExist == null) {
-		
+
 			LOG.debug("Impression du devis "+saleOrder.getSaleOrderSeq()+" : "+url.toString());
-			
+
 			String title = I18n.get("Devis");
 			if(saleOrder.getSaleOrderSeq() != null)  {
 				title += saleOrder.getSaleOrderSeq();
 			}
-			
+
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", title);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
-			response.setView(mapView);	
+			response.setView(mapView);
 		}
 		else {
 			response.setFlash(urlNotExist);
 		}
 	}
-	
-	
+
+	private String getURLSaleOrderPDF(SaleOrder saleOrder){
+		String language="";
+		try{
+			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
+		}catch (NullPointerException e) {
+			language = "en";
+		}
+		language = language.equals("")? "en": language;
+
+
+		return new ReportSettings(IReport.SALES_ORDER, ReportSettings.FORMAT_PDF)
+							.addParam("Locale", language)
+							.addParam("__locale", "fr_FR")
+							.addParam("SaleOrderId", saleOrder.getId().toString())
+							.getUrl();
+	}
+
+
 	public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		StringBuilder url = new StringBuilder();
-		
+
 		String language="";
 		try{
-			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
 		}catch (NullPointerException e) {
 			language = "en";
 		}
@@ -131,38 +134,38 @@ public class SaleOrderController {
 
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
-		
+
 		if(urlNotExist == null) {
-		
+
 			LOG.debug("Impression du devis "+saleOrder.getSaleOrderSeq()+" : "+url.toString());
-			
+
 			String title = I18n.get("Devis");
 			if(saleOrder.getSaleOrderSeq() != null)  {
 				title += saleOrder.getSaleOrderSeq();
 			}
-			
+
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", title);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
-			response.setView(mapView);	
+			response.setView(mapView);
 		}
 		else {
 			response.setFlash(urlNotExist);
 		}
 	}
-	
-	
-	
+
+
+
 	public void exportSaleOrderWord(ActionRequest request, ActionResponse response) {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		StringBuilder url = new StringBuilder();
-		
+
 		String language="";
 		try{
-			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
 		}catch (NullPointerException e) {
 			language = "en";
 		}
@@ -174,57 +177,64 @@ public class SaleOrderController {
 				.addParam("__locale", "fr_FR")
 				.addParam("SaleOrderId", saleOrder.getId().toString())
 				.getUrl());
-		
+
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
-		
+
 		if(urlNotExist == null) {
-		
+
 			LOG.debug("Impression du devis "+saleOrder.getSaleOrderSeq()+" : "+url.toString());
-			
+
 			String title = I18n.get("Devis");
 			if(saleOrder.getSaleOrderSeq() != null)  {
 				title += saleOrder.getSaleOrderSeq();
 			}
-			
+
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", title);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
-			response.setView(mapView);	
+			response.setView(mapView);
 		}
 		else {
 			response.setFlash(urlNotExist);
 		}
 	}
-	
-	
-	
+
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		if(saleOrder != null &&  saleOrder.getCompany() != null) {
-			
-			response.setValue("saleOrderSeq", Beans.get(SaleOrderService.class).getSequence(saleOrder.getCompany()));
-			
+
+			response.setValue("saleOrderSeq", saleOrderService.getSequence(saleOrder.getCompany()));
+
 		}
 	}
-	
-	
-	
+
 	public void validateCustomer(ActionRequest request, ActionResponse response) {
-		
+
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		
-		response.setValue("clientPartner", Beans.get(SaleOrderService.class).validateCustomer(saleOrder));
-		
+
+		response.setValue("clientPartner", saleOrderService.validateCustomer(saleOrder));
+
 	}
+
 	public void setDraftSequence(ActionRequest request,ActionResponse response){
 		SaleOrder saleOrder=request.getContext().asType(SaleOrder.class);
 		if(saleOrder.getSaleOrderSeq()!=null){
 			return;
 		}
 		response.setValue("saleOrderSeq","*"+saleOrder.getId().toString());
+	}
+
+	public void saveSaleOrderPDFAsAttachment(ActionRequest request, ActionResponse response) throws IOException {
+
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+		String birtReportURL = this.getURLSaleOrderPDF(saleOrder);
+
+		saleOrderService.saveSaleOrderPDFAsAttachment(saleOrder, birtReportURL);
+
 	}
 }

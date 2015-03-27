@@ -21,7 +21,7 @@
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>
   	<string name="externalReference" title="Customer reference"/>
   	<date name="creationDate" title="Creation date" required="true" readonly="true"/>
-  	<date name="validationDate" title="Validation date" readonly="true"/>
+  	<date name="confirmationDate" title="Confirmation date" readonly="true"/>
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	
 <!--   	Onglet Coordonnées client -->
@@ -67,7 +67,7 @@
 	<date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
 	<date name="subscriptionEndDate" title="Subscription end date"/>
     
-    <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>
+    <many-to-one name="confirmedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Confirmed by"/>
     
     <boolean name="template" title="Template"/>
     <string name="alert" large="true" title="Alert" />

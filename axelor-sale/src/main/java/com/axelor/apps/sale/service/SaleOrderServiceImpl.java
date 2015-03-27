@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -24,13 +25,13 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.MetaFilesTemp;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.auth.db.User;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.ISaleOrder;
@@ -39,25 +40,30 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaAttachment;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOrderService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceImpl.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceImpl.class);
 
 	@Inject
 	private SaleOrderLineService saleOrderLineService;
 
 	@Inject
 	private SaleOrderLineTaxService saleOrderLineTaxService;
-	
+
 	@Inject
 	private SequenceService sequenceService;
-	
+
 	@Inject
 	private PartnerService partnerService;
 
@@ -93,11 +99,11 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	/**
 	 * Peupler un devis.
 	 * <p>
-	 * Cette fonction permet de déterminer les tva d'un devis. 
+	 * Cette fonction permet de déterminer les tva d'un devis.
 	 * </p>
-	 * 
+	 *
 	 * @param saleOrder
-	 * 
+	 *
 	 * @throws AxelorException
 	 */
 	public void _populateSaleOrder(SaleOrder saleOrder) throws AxelorException {
@@ -111,13 +117,13 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 	/**
 	 * Calculer le montant d'une facture.
-	 * <p> 
+	 * <p>
 	 * Le calcul est basé sur les lignes de TVA préalablement créées.
 	 * </p>
-	 * 
+	 *
 	 * @param invoice
 	 * @param vatLines
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
@@ -155,15 +161,15 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateCustomer(SaleOrder saleOrder)  {
-		
+
 		Partner clientPartner = partnerService.find(saleOrder.getClientPartner().getId());
 		clientPartner.setCustomerTypeSelect(IPartner.CUSTOMER_TYPE_SELECT_YES);
-		
+
 		return partnerService.save(clientPartner);
 	}
-	
-	
-	
+
+
+
 	public String getSequence(Company company) throws AxelorException  {
 		String seq = sequenceService.getSequenceNumber(IAdministration.SALES_ORDER, company);
 		if (seq == null)  {
@@ -172,15 +178,15 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		}
 		return seq;
 	}
-	
 
-	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 
-			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate, 
+
+	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
+			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner) throws AxelorException  {
-		
+
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
 				new Object[] { company.getName(), externalReference, clientPartner.getFullName() });
-		
+
 		SaleOrder saleOrder = new SaleOrder();
 		saleOrder.setCompany(company);
 		saleOrder.setContactPartner(contactPartner);
@@ -189,14 +195,29 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		saleOrder.setOrderDate(orderDate);
 		saleOrder.setPriceList(priceList);
 		saleOrder.setSaleOrderLineList(new ArrayList<SaleOrderLine>());
-		
+
 		saleOrder.setSaleOrderSeq(this.getSequence(company));
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_DRAFT);
 		saleOrder.setClientPartner(clientPartner);
-		
+
 		return saleOrder;
 	}
-	
+
+	@Override
+	@Transactional
+	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder, String birtReportURL) throws IOException{
+		String fileName = saleOrder.getSaleOrderSeq();
+		if (saleOrder.getVersionNumber() > 1){
+			fileName += "-V" + saleOrder.getVersionNumber();
+		}
+		fileName += ".pdf";
+
+		MetaFilesTemp metaFilesTemp = Beans.get(MetaFilesTemp.class);
+		MetaFile metaFile = metaFilesTemp.uploadURL(birtReportURL, fileName);
+		MetaAttachment metaAttachment = metaFilesTemp.attach(metaFile, saleOrder);
+		JPA.save(metaAttachment);
+	}
+
 }
 
 

@@ -23,7 +23,6 @@
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
-
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
 		onNew="action-group-sale-saleorder-onnew"
 		onLoad="action-group-sale-saleorder-onload"
@@ -118,8 +117,9 @@
 	  
 	  <panel sidebar="true" title="Actions">      
 	    <button name="compute" title="Compute" showIf="statusSelect != 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
-	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-group-confirm,save"/>
-	    <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-validate,save"/>
+	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-group-finalize,save"/>
+	    <button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-newVersion,save"/>
+	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed,save"/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
 	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="12" onClick="action-sale-order-view-invoice" if-module="axelor-supplychain"/>
@@ -240,7 +240,7 @@
     	<attribute name="domain" for="team" expr="eval: salemanUser?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salemanUser?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
     </action-attrs>
     
-    <action-attrs name="action-sale-order-attrs-validated-read-only">
+    <action-attrs name="action-sale-order-attrs-confirmed-read-only">
 <!--     	<attribute name="readonly" for="saleOrderLineList" expr="true"/> -->
     	<attribute name="readonly" for="saleOrderLineTaxList" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="currency" expr="statusSelect == 3"/>
@@ -257,22 +257,23 @@
     	<action name="action-sale-order-record-company-configuration"/>
     	<action name="action-sale-order-method-get-location" />
     </action-group>
-    
-    <action-group name="action-sale-group-confirm">
+
+    <action-group name="action-sale-group-finalize">
     	<action name="action-sale-order-set-sequence"/>
     	<action name="action-sale-order-method-compute"/>
-    	<action name="action-sale-order-record-confirm"/>
+    	<action name="action-sale-order-record-finalize"/>
+    	<action name="action-sale-order-method-save-PDF-attachment"/>
     </action-group>
-    
-    <action-group name="action-sale-group-validate">
+
+    <action-group name="action-sale-group-confirmed">
     	<action name="action-supplychain-sale-order-validate-check-location" />
     	<action name="action-account-organisation-sale-order-create-tasks" />
     	<action name="action-supplychain-sale-order-create-stock-move" />
     	<action name="action-supplychain-sale-order-create-purchase-order" />
     	<action name="action-supplychain-sale-order-create-production-order" />
     	<action name="action-sale-order-method-validate-customer"/>
-    	<action name="action-sale-order-record-validate"/>
-    	<action name="action-sale-order-attrs-validated-read-only"/>
+    	<action name="action-sale-order-record-confirmed"/>
+    	<action name="action-sale-order-attrs-confirmed-read-only"/>
     	<action name="action-sale-order-set-sequence"/>
     </action-group>
     
@@ -285,7 +286,7 @@
     
     <action-group name="action-group-sale-saleorder-onload">
     	<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
-    	<action name="action-sale-order-attrs-validated-read-only"/>
+    	<action name="action-sale-order-attrs-confirmed-read-only"/>
     	<action name="action-partner-attrs-hide-contact-partner" />
     </action-group>
     
@@ -300,20 +301,37 @@
 	<action-method name="action-sale-order-method-export-sale-order-word">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="exportSaleOrderWord"/>
 	</action-method>
+	
+	<action-method name="action-sale-order-method-save-PDF-attachment">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="saveSaleOrderPDFAsAttachment"/>
+	</action-method>
     
-    <action-record name="action-sale-order-record-confirm" model="com.axelor.apps.sale.db.SaleOrder">
+    <action-record name="action-sale-order-record-finalize" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="statusSelect" expr="eval: 2"/>
     </action-record>
     
-    <action-record name="action-sale-order-record-validate" model="com.axelor.apps.sale.db.SaleOrder">
+    <action-record name="action-sale-order-record-confirmed" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="statusSelect" expr="eval: 3"/>
-    	<field name="validationDate" expr="eval: __date__"/>
-    	<field name="validatedByUser" expr="eval:___user___"/>
+    	<field name="confirmationDate" expr="eval: __date__"/>
+    	<field name="confirmedByUser" expr="eval:___user___"/>
     </action-record>
     
-     <action-record name="action-sale-order-record-cancel" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="statusSelect" expr="eval: 4"/>
+    <action-record name="action-sale-group-newVersion" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="statusSelect" expr="eval: 1"/>
+    	<field name="versionNumber" expr="eval: versionNumber + 1"/>
     </action-record>
+    
+   	<action-record name="action-sale-order-record-cancel" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="statusSelect" expr="eval: 4"/>
+	</action-record>
+    
+    <action-condition name="action-sale-order-cancel-reason-check">
+		<check error="A cancel reason must be selected" field="cancelReason" if="cancelReason == null || cancelReason == 0"/>
+	</action-condition>
+	
+	<action-method name="action-sale-order-method-confirm-cancel">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="cancelSaleOrder"/>
+	</action-method>
     
     <action-record name="action-sale-order-record-currency" model="com.axelor.apps.sale.db.SaleOrder">
 	    <field name="currency" expr="eval: company?.currency"/>
@@ -329,6 +347,7 @@
     	<field name="salemanUser" expr="eval:__user__"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     	<field name="template" expr="eval:_template" />
+    	<field name="versionNumber" expr="eval: 1" />
     </action-record>
     
     <action-record name="action-sale-order-record-company-configuration" model="com.axelor.apps.sale.db.SaleOrder">

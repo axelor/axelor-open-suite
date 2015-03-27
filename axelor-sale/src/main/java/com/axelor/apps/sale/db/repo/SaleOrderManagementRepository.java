@@ -16,8 +16,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 		copy.clearBatchSet();
 		copy.setImportId(null);
 		copy.setCreationDate(GeneralService.getTodayDate());
-		copy.setValidationDate(null);
-		copy.setValidatedByUser(null);
+		copy.setConfirmationDate(null);
+		copy.setConfirmedByUser(null);
 		copy.setOrderDate(null);
 		copy.setOrderNumber(null);
 		
