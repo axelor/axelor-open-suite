@@ -41,7 +41,7 @@ public class SaleOrderController {
 	@Inject
 	private SaleOrderService saleOrderService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CopyOfSaleOrderController.class);
 
 	public void compute(ActionRequest request, ActionResponse response)  {
 
@@ -226,6 +226,17 @@ public class SaleOrderController {
 			return;
 		}
 		response.setValue("saleOrderSeq","*"+saleOrder.getId().toString());
+	}
+
+	public void cancelSaleOrder(ActionRequest request, ActionResponse response) {
+
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+		saleOrderService.cancelSaleOrder(saleOrderService.find(saleOrder.getId()));
+
+		response.setFlash("The sale order was canceled");
+		response.setCanClose(true);
+
 	}
 
 	public void saveSaleOrderPDFAsAttachment(ActionRequest request, ActionResponse response) throws IOException {

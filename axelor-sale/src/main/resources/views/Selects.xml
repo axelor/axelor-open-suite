@@ -10,4 +10,9 @@
 		<option value="1">Invoicing</option>
 	</selection>
 	
+	<selection name="sale.order.cancel.reason">
+		<option value="1">Abandon</option>
+		<option value="2">Offre refusée</option>
+	</selection>
+
 </object-views>

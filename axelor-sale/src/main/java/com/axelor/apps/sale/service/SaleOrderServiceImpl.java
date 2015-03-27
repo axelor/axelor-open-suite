@@ -53,7 +53,7 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOrderService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CopyOfSaleOrderServiceImpl.class);
 
 	@Inject
 	private SaleOrderLineService saleOrderLineService;
@@ -201,6 +201,13 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		saleOrder.setClientPartner(clientPartner);
 
 		return saleOrder;
+	}
+
+	@Override
+	@Transactional
+	public void cancelSaleOrder(SaleOrder saleOrder){
+		saleOrder.setStatusSelect(4);
+		this.save(saleOrder);
 	}
 
 	@Override

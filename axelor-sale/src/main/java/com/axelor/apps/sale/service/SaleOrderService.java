@@ -86,6 +86,8 @@ public interface SaleOrderService extends Repository<SaleOrder>{
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner) throws AxelorException;
 
+	public void cancelSaleOrder(SaleOrder saleOrder);
+
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder, String birtReportURL) throws IOException;
 
 }

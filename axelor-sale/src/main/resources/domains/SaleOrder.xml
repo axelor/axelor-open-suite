@@ -72,6 +72,7 @@
     <boolean name="template" title="Template"/>
     <string name="alert" large="true" title="Alert" />
     <integer name="versionNumber" title="Version Number" readonly="true" />	
+    <integer name="cancelReason" title="Cancel reason"/>
     
   </entity>
 

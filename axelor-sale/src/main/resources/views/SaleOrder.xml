@@ -23,6 +23,13 @@
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
+    <form name="sale-order-subscription-cancel-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirmation annulation" >
+		<panel>
+			<field name="cancelReason" selection="sale.order.cancel.reason" colspan="12" />
+			<button name="cancelConfirm" title="Confirmer annulation" onClick="action-sale-order-cancel-reason-check, action-sale-order-method-confirm-cancel" colspan="12"/>
+		</panel>
+    </form>
+
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
 		onNew="action-group-sale-saleorder-onnew"
 		onLoad="action-group-sale-saleorder-onload"
@@ -321,9 +328,14 @@
     	<field name="versionNumber" expr="eval: versionNumber + 1"/>
     </action-record>
     
-   	<action-record name="action-sale-order-record-cancel" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="statusSelect" expr="eval: 4"/>
-	</action-record>
+    <action-view name="action-sale-order-record-cancel" title="Annulation" model="com.axelor.apps.sale.db.SaleOrder">
+	  <view type="form" name="sale-order-subscription-cancel-form"/>
+	  <view-param name="popup" value="reload"/>
+	  <view-param name="show-toolbar" value="false"/>
+	  <view-param name="show-confirm" value="false" />
+	  <view-param name="forceEdit" value="true" />
+	  <context name="_showRecord" expr="eval: __this__.id" />
+	</action-view>
     
     <action-condition name="action-sale-order-cancel-reason-check">
 		<check error="A cancel reason must be selected" field="cancelReason" if="cancelReason == null || cancelReason == 0"/>
