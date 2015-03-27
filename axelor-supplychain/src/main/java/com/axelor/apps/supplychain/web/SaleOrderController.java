@@ -23,6 +23,7 @@ import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -32,40 +33,45 @@ public class SaleOrderController {
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
-	
+
 	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		
+
 		if(saleOrder.getId() != null) {
-			
-			Beans.get(SaleOrderServiceStockImpl.class).createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+
+			SaleOrderServiceStockImpl saleOrderServiceStock = Beans.get(SaleOrderServiceStockImpl.class);
+			if (saleOrderServiceStock.existActiveStockMoveForSaleOrder(saleOrder.getId())){
+				response.setFlash(I18n.get("An active stockMove already exists for this saleOrder"));
+			}else{
+				saleOrderServiceStock.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+			}
 		}
 	}
-	
+
 	public void getLocation(ActionRequest request, ActionResponse response) {
-		
+
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		
+
 		if(saleOrder != null) {
-			
+
 			Location location = Beans.get(SaleOrderServiceStockImpl.class).getLocation(saleOrder.getCompany());
-			
+
 			if(location != null) {
 				response.setValue("location", location);
 			}
 		}
 	}
-	
-	
+
+
 	public void createPurchaseOrders(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		
+
 		if(saleOrder.getId() != null) {
-			
+
 			Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrderRepo.find(saleOrder.getId()));
 		}
 	}
-	
+
 }

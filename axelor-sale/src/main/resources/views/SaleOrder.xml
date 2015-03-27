@@ -122,10 +122,11 @@
 	    </panel>
 	  </panel-tabs>
 	  
-	  <panel sidebar="true" title="Actions">      
+	  <panel sidebar="true" title="Actions">
 	    <button name="compute" title="Compute" showIf="statusSelect != 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
 	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-group-finalize,save"/>
 	    <button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-newVersion,save"/>
+	    <button name="generateStockMove" title="Generate stock move"  colSpan="12" showIf="statusSelect == 3" onClick="action-supplychain-sale-order-create-stock-move" />
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed,save"/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
 	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
@@ -275,7 +276,6 @@
     <action-group name="action-sale-group-confirmed">
     	<action name="action-supplychain-sale-order-validate-check-location" />
     	<action name="action-account-organisation-sale-order-create-tasks" />
-    	<action name="action-supplychain-sale-order-create-stock-move" />
     	<action name="action-supplychain-sale-order-create-purchase-order" />
     	<action name="action-supplychain-sale-order-create-production-order" />
     	<action name="action-sale-order-method-validate-customer"/>
