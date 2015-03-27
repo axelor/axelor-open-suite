@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="LogTime" cachable="true">
+      
+      <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+      <many-to-one name="task" ref="com.axelor.apps.project.db.Task" title="Task"/>
+      <many-to-one name="activity" ref="com.axelor.apps.hr.db.TimeActivity" title="Activity" required="true"/>
+      <many-to-one name="user" title="User" ref="com.axelor.auth.db.User" readonly="true" column="user_id"/>
+      <date name="date" default="now"/>
+      <many-to-one name="affectedToTimeSheet" ref="com.axelor.apps.hr.db.Timesheet" title="Time Sheet" readonly="true"/>
+      <decimal name="visibleDuration" title="Duration" required="true" />
+	  <decimal name="durationStored" title="Duration" />
+      <string name="comments" large="true"/>
+	          
+  </entity>
+  
+</domain-models>

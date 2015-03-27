@@ -7,7 +7,7 @@
 
   <entity name="Leave" cachable="true">
       
-      <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" required="true"/>
+      <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
       <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1" />
       <date name="requestDate" title="Request date" readonly="true" />
       <date name="dateFrom" title="Date from" required="true"/>

@@ -16,6 +16,7 @@
       <many-to-one name="department" ref="com.axelor.apps.base.db.CompanyDepartment" title="Department" />
       <boolean name="timesheetReminder" title="Timesheet reminder" />
       <boolean name="external" title="External" />
+      <many-to-one name="planning" ref="com.axelor.apps.hr.db.WeeklyPlanning"/>
       
       <string name="name" title="Name" search="contactPartner">
           

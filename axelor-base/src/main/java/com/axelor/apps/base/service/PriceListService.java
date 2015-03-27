@@ -19,11 +19,14 @@ package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.HistorizedPriceList;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -31,6 +34,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class PriceListService extends PriceListRepository {
 	
@@ -169,4 +173,20 @@ public class PriceListService extends PriceListRepository {
 		
 		return discounts;
 	}
+	
+	@Transactional
+	public PriceList historizePriceList (PriceList priceList){
+		HistorizedPriceList historizedPriceList = new HistorizedPriceList();
+		historizedPriceList.setDate(new LocalDateTime());
+		List<PriceListLine> priceListLineList = priceList.getPriceListLineList();
+		for (PriceListLine priceListLine : priceListLineList) {
+			PriceListLine newPriceListLine = priceListLineRepo.copy(priceListLine, false);
+			newPriceListLine.setPriceList(null);
+			historizedPriceList.addPriceListLineListItem(newPriceListLine);
+		}
+		priceList.addHistorizedPriceList(historizedPriceList);
+		save(priceList);
+		return priceList;
+	}
+	
 }

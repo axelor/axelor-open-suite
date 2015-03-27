@@ -23,7 +23,7 @@
   	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
   	<decimal name="discountAmount" title="Discount amount"/>
-  	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
+  	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
   	
   	<date name="estimatedDelivDate" title="Estimated delivery date"/>
   	

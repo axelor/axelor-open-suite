@@ -7,6 +7,7 @@
 			
 		<entity name="PriceListLine"  lang="java">
 			<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
+			<many-to-one name="histPriceList" ref="com.axelor.apps.base.db.HistorizedPriceList"/>
 			<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" help="true"/>
 			<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category" help="true"/>
 			<integer name="typeSelect" title="Discount/Additionnal/Replace" selection="base.price.list.line.type.select" help="true"/>

@@ -6,9 +6,6 @@
 	<module name="base" package="com.axelor.apps.base.db" />
 		
 		<entity name="PriceList"  lang="java">
-			<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner" help="true"/>
-			<date name="validFromDate" title="Valid from" required="true"/>
-			<date name="validToDate" title="Valid to"/>
 			<string name="title" title="Title" namecolumn="true" required="true"/>
 			<boolean name="isActive" title="Active?" help="true"/>
 			<string name="comments" title="Comments" large="true"/>
@@ -18,6 +15,7 @@
 			
 			<integer name="typeSelect" title="Type" selection="base.price.list.type.select" required="true" help="true"/>
 			<integer name="basedOnSelect" title="Based on" selection="base.price.list.based.on.select" help="true"/>
+			<one-to-many name="historizedPriceLists" ref="com.axelor.apps.base.db.HistorizedPriceList" mappedBy="priceList" title="Historized Price Lists"/>
 		</entity>
 		
 </domain-models>
