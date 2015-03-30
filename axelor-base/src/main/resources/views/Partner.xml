@@ -328,7 +328,7 @@
     </action-attrs>
     
     <action-attrs name="action-partner-attrs-hide-customer-credit-lines">
-        <attribute name="hidden" for="incl-customer-credit-partner-form" expr="eval: isContact || (customerTypeSelect != 2 &amp;&amp; customerTypeSelect != 3) || !com.axelor.apps.base.service.administration.GeneralService.getGeneral()?.manageCustomerCredit" />
+        <attribute name="hidden" for="customerCreditLineList" expr="eval: isContact || (customerTypeSelect != 2 &amp;&amp; customerTypeSelect != 3) || !com.axelor.apps.base.service.administration.GeneralService.getGeneral()?.manageCustomerCredit" />
     </action-attrs>
     
     
