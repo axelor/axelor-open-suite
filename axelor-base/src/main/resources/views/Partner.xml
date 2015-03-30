@@ -40,7 +40,7 @@
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-set-virtual-fields" 
+    onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-attrs-hide-customer-credit-lines" 
     onSave="action-group-base-partner-onsave">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
@@ -95,7 +95,6 @@
 						</editor>
 					</field>
 					<field name="webSite"/>
-					<field name="manageCustomerCredit" type="boolean" hidden="true" />
 				</panel>
 				<panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12" >
 					<panel colSpan="6">
@@ -283,7 +282,7 @@
 	
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
-		<action name="action-partner-record-set-virtual-fields" />
+		<action name="action-partner-attrs-hide-customer-credit-lines" />
 		<action name="action-partner-record-set-default"/>
 		<action name="action-partner-record-customer-supplier-type"/>
 	</action-group>
@@ -328,6 +327,11 @@
         <attribute name="hidden" for="contactPartner" expr="eval: clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2" />
     </action-attrs>
     
+    <action-attrs name="action-partner-attrs-hide-customer-credit-lines">
+        <attribute name="hidden" for="incl-customer-credit-partner-form" expr="eval: isContact || (customerTypeSelect != 2 &amp;&amp; customerTypeSelect != 3) || !com.axelor.apps.base.service.administration.GeneralService.getGeneral()?.manageCustomerCredit" />
+    </action-attrs>
+    
+    
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
     	<field name="partnerTypeSelect" expr="eval:_partnerTypeSelect"/>
     </action-record>
@@ -371,9 +375,9 @@
     	<field name="invoiceSendingFormatSelect" expr="eval:null" if="!isContact"/>
     </action-record>
     
-    <action-record name="action-partner-record-set-virtual-fields" model="com.axelor.apps.base.db.Partner">
-    	<field name="manageCustomerCredit" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral()?.manageCustomerCredit" />
-    </action-record>
+<!--     <action-record name="action-partner-record-set-virtual-fields" model="com.axelor.apps.base.db.Partner"> -->
+<!--     	<field name="manageCustomerCredit" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral()?.manageCustomerCredit" /> -->
+<!--     </action-record> -->
 
     <action-method name="action-set-partner-seq" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="setPartnerSequence"/>

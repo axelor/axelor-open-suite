@@ -37,7 +37,7 @@
 	</form>
 	
 	<form name="incl-customer-credit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >	
-	     <panel-related  field="customerCreditLineList" colSpan="12"  showIf="!isContact &amp;&amp; (customerTypeSelect == 2|| customerTypeSelect == 3) &amp;&amp; manageCustomerCredit"/>
+	     <panel-related  field="customerCreditLineList" colSpan="12" />
 	</form>
 	
 	<!-- TODO: find the domain of below form and grid and add it in reportedBalanceList in above form-->
