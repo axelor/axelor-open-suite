@@ -16,6 +16,33 @@ if "%DIRNAME%" == "" set DIRNAME=.
 set APP_BASE_NAME=%~n0
 set APP_HOME=%DIRNAME%
 
+rem Check for valid AXELOR_HOME
+set AXELOR_HOME=%AXELOR_HOME:"=%
+if exist "%AXELOR_HOME%\bin\axelor.bat" goto initScriptCheck
+
+echo.
+echo Please set the AXELOR_HOME variable in your environment to match the
+echo location of your Axelor SDK installation."
+echo.
+
+goto fail
+
+:initScriptCheck
+
+rem Add Axelot init scripts.
+set INIT_SCRIPT_ARGS=
+
+cd "%AXELOR_HOME%\init.d"
+for /f %%f in ('dir /b /on "*.gradle"') do call :initScriptAdd %%~dpnxf
+cd "%DIRNAME%"
+
+goto :initScriptDone
+
+:initScriptAdd
+set "INIT_SCRIPT_ARGS=%INIT_SCRIPT_ARGS% -I %1"
+goto :EOF
+:initScriptDone
+
 @rem Find java.exe
 if defined JAVA_HOME goto findJavaFromJavaHome
 
@@ -72,7 +99,7 @@ set CMD_LINE_ARGS=%$
 set CLASSPATH=%APP_HOME%\gradle\wrapper\gradle-wrapper.jar
 
 @rem Execute Gradle
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% "-Dorg.gradle.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" org.gradle.wrapper.GradleWrapperMain %CMD_LINE_ARGS%
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% "-Dorg.gradle.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" org.gradle.wrapper.GradleWrapperMain %INIT_SCRIPT_ARGS% %CMD_LINE_ARGS%
 
 :end
 @rem End local scope for the variables with windows NT shell
