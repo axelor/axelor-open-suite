@@ -9,7 +9,6 @@ module {
 
 	module "modules:axelor-account"
 	module "modules:axelor-crm"
-	module "modules:axelor-organisation"
 	module "modules:axelor-production"
 	module "modules:axelor-supplychain"
 	module "modules:axelor-l10n-fr"
