@@ -31,7 +31,7 @@ import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.exception.AxelorException;
 
-public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
+public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceStockImpl {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceSupplychainImpl.class); 
 
