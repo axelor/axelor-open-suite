@@ -12,7 +12,14 @@
 	
 	<selection name="sale.order.cancel.reason">
 		<option value="1">Abandon</option>
-		<option value="2">Offre refusée</option>
+		<option value="2">Offer rejected</option>
 	</selection>
-
+	
+	<selection name="sale.order.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Finalize</option>
+		<option value="3">Order confirmed</option>
+		<option value="4">Canceled</option>
+	</selection>
+	
 </object-views>

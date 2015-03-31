@@ -45,7 +45,7 @@
     <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     
-    <integer name="statusSelect" title="Status" selection="default.status.select" readonly="true"/>
+    <integer name="statusSelect" title="Status" selection="sale.order.status.select" readonly="true"/>
   	
 <!--   	Onglet Autres informations -->
 	<many-to-one name="salemanUser" ref="com.axelor.auth.db.User" title="Salesman" massUpdate="true"/>
