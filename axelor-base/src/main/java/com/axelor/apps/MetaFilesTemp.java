@@ -2,14 +2,8 @@ package com.axelor.apps;
 
 import static com.axelor.common.StringUtils.isBlank;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,7 +12,6 @@ import java.nio.file.StandardCopyOption;
 import javax.persistence.PersistenceException;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.tool.file.FileTool;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAttachment;
@@ -28,14 +21,14 @@ import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;
 
 public class MetaFilesTemp {
-	
+
 	private static final String DEFAULT_UPLOAD_PATH = "{java.io.tmpdir}/axelor/attachments";
 	private static final String UPLOAD_PATH = AppSettings.get().getPath("file.upload.dir", DEFAULT_UPLOAD_PATH);
 
 	public MetaFilesTemp() {
 
 	}
-	
+
 	/**
 	 * Upload the given file to the file upload directory and create an instance
 	 * of {@link MetaFile} for the given file.
@@ -51,60 +44,6 @@ public class MetaFilesTemp {
 	@Transactional
 	public MetaFile upload(File file) throws IOException {
 		return upload(file, new MetaFile());
-	}
-	
-	@Transactional
-	public MetaFile uploadURL(String fAddress, String fileName) throws IOException {
-
-		final String targetName = fileName;
-		
-		int ByteRead = 0;
-		byte[] buf = new byte[1024];
-		OutputStream outStream = null;
-		InputStream is = null;
-
-		try {
-			
-			// make sure the upload path exists
-			Files.createDirectories(Paths.get(UPLOAD_PATH));
-			
-			URL Url = new URL(fAddress);
-			File file = FileTool.create(UPLOAD_PATH, targetName);
-			outStream = new BufferedOutputStream(new FileOutputStream(file));
-			URLConnection uCon = Url.openConnection();
-			is = uCon.getInputStream();
-			
-			while ((ByteRead = is.read(buf)) != -1) {
-				outStream.write(buf, 0, ByteRead);
-			}
-			
-			is.close();
-			outStream.close();
-			
-			final String mime = Files.probeContentType(file.toPath());
-
-			MetaFile metaFile = new MetaFile();
-			metaFile.setFileName(file.getName());
-			metaFile.setMime(mime);
-			metaFile.setSize(Files.size(file.toPath()));
-			metaFile.setFilePath(UPLOAD_PATH);
-
-			final MetaFileRepository repo = Beans.get(MetaFileRepository.class);
-			try {
-				return repo.save(metaFile);
-			} catch (Exception e) {
-				// delete the uploaded file
-//				Files.deleteIfExists(target);
-				throw new PersistenceException(e);
-			}
-		} finally {			
-			if(is != null)  {
-				is.close();
-			}
-			if(outStream != null)  {
-				outStream.close();
-			}
-		}
 	}
 
 	/**
@@ -171,7 +110,7 @@ public class MetaFilesTemp {
 			}
 		}
 	}
-	
+
 	private Path getNextPath(String fileName) {
 		int dotIndex = fileName.lastIndexOf('.');
 		int counter = 1;

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -25,7 +26,9 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.MetaFilesTemp;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
@@ -40,6 +43,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -213,18 +217,19 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	@Override
 	@Transactional
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder, String birtReportURL) throws IOException{
-		String fileName = saleOrder.getSaleOrderSeq();
-		if (saleOrder.getVersionNumber() > 1){
-			fileName += "-V" + saleOrder.getVersionNumber();
+		String
+	    		filePath = AppSettings.get().get("file.upload.dir"),
+	    		fileName = saleOrder.getSaleOrderSeq() + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "") + "." + ReportSettings.FORMAT_PDF;
+
+	    File file = URLService.fileDownload(birtReportURL, filePath, fileName);
+
+		if (file != null){
+			MetaFilesTemp metaFilesTemp = Beans.get(MetaFilesTemp.class);
+			MetaFile metaFile = metaFilesTemp.upload(file, new MetaFile());
+			MetaAttachment metaAttachment = metaFilesTemp.attach(metaFile, saleOrder);
+			JPA.save(metaAttachment);
 		}
-		fileName += ".pdf";
-
-		MetaFilesTemp metaFilesTemp = Beans.get(MetaFilesTemp.class);
-		MetaFile metaFile = metaFilesTemp.uploadURL(birtReportURL, fileName);
-		MetaAttachment metaAttachment = metaFilesTemp.attach(metaFile, saleOrder);
-		JPA.save(metaAttachment);
 	}
-
 }
 
 
