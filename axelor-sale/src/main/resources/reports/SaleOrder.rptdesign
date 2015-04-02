@@ -108,6 +108,7 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
             <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -308,6 +309,16 @@
                         <property name="position">36</property>
                         <property name="name">description</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">37</property>
+                        <property name="name">invAddressId</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">38</property>
+                        <property name="name">delAddressId</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -529,6 +540,18 @@
                     <property name="nativeName">description</property>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="position">37</property>
+                    <property name="name">invAddressId</property>
+                    <property name="nativeName">invAddressId</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">38</property>
+                    <property name="name">delAddressId</property>
+                    <property name="nativeName">delAddressId</property>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", Company.name as "CompanyName", Company.logo_path,
 SaleOrder.creation_date, ClientPartner.partner_type_select, ClientPartner.name as "ClientPartName",
@@ -543,7 +566,8 @@ DeliveryAddress.addressl4 as "delAddress4", DeliveryAddress.addressl5 as "delAdd
 DeliveryAddress.addressl6 as "delAddress6", DeliveryCountry.name as "DeliveryCountry",
 SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, BankDetail.bank_address, 
 BankDetail.iban, BankDetail.bic, Currency.code as "CurrencyCode", SaleOrder.external_reference, 
-PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer", SaleOrder.description as "description" 
+PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer", SaleOrder.description as "description",  
+InvoicingAddress.id as "invAddressId", DeliveryAddress.id as "delAddressId"
 from public.sale_sale_order as SaleOrder
 left outer join public.base_company as Company on (SaleOrder.company = Company.id)
 left outer join public.base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
@@ -1386,6 +1410,24 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["footer"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">description</property>
+                    <text-property name="displayName">description</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">invAddressId</property>
+                    <text-property name="displayName">invAddressId</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["invAddressId"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">delAddressId</property>
+                    <text-property name="displayName">delAddressId</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["delAddressId"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <column id="3343">
                 <property name="width">2.9897916666666666cm</property>
@@ -1730,6 +1772,12 @@ row["ClientPartFirstName"]
                         <property name="textUnderline">underline</property>
                         <property name="marginLeft">2pt</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["invAddressId"]==null</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -1798,6 +1846,12 @@ row["ClientPartFirstName"]
                         <property name="textUnderline">underline</property>
                         <property name="marginLeft">2pt</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["delAddressId"]==null</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>

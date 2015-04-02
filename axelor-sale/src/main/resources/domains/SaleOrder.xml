@@ -27,9 +27,9 @@
 <!--   	Onglet Coordonnées client -->
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Customer" massUpdate="true"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
-  	<many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" required="true" title="Invoicing address"/>
+  	<many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Invoicing address"/>
 	<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
-    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" required="true" title="Delivery address"/>  	
+    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address"/>  	
   
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
   	<boolean name="hasSubLineDefaultValue" title="Default value for sublines"/>
