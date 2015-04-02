@@ -448,6 +448,15 @@
 		<view type="form" name="source-form"/>
 	</action-view>
 
+	<menuitem name="admin-conf-general-cancelreason" parent="admin-conf-general"
+		title="Cancel Reasons" action="admin.conf.general.cancelreason" />
+
+	<action-view name="admin.conf.general.cancelreason"
+		title="Cancel Reason" model="com.axelor.apps.sale.db.CancelReason" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" name="cancel-reason-grid" />
+		<view type="form" name="cancel-reason-form" />
+	</action-view>
+
 	<menuitem name="admin-root-maintenance" parent="admin-root"
 		title="Technical maintenance" />
 

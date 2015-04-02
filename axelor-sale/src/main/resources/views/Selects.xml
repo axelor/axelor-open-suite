@@ -10,11 +10,6 @@
 		<option value="1">Invoicing</option>
 	</selection>
 	
-	<selection name="sale.order.cancel.reason">
-		<option value="1">Abandon</option>
-		<option value="2">Offer rejected</option>
-	</selection>
-	
 	<selection name="sale.order.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Finalize</option>

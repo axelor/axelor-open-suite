@@ -25,8 +25,8 @@
     
     <form name="sale-order-subscription-cancel-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirmation annulation" >
 		<panel>
-			<field name="cancelReason" selection="sale.order.cancel.reason" colspan="12" />
-			<button name="cancelConfirm" title="Confirmer annulation" onClick="action-sale-order-cancel-reason-check, action-sale-order-method-confirm-cancel" colspan="12"/>
+			<field name="cancelReason" colSpan="12" width="200px" widget="SuggestBox"/>
+			<button name="cancelConfirm" title="Confirmer annulation" onClick="action-sale-order-cancel-reason-check, action-sale-order-method-confirm-cancel" colSpan="12" width="200px"/>
 		</panel>
     </form>
 
