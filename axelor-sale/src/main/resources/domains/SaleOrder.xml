@@ -73,6 +73,15 @@
     <string name="alert" large="true" title="Alert" />
     <integer name="versionNumber" title="Version Number" readonly="true" />	
     <integer name="cancelReason" title="Cancel reason"/>
+    <integer name="deliveryState" title="Delivery State" selection="sale.order.delivery.state" readonly="true" default="1"/>
+
+    <extra-code>
+   		<![CDATA[
+   			public static final Integer STATE_NOT_DELIVERED = 1;
+   			public static final Integer STATE_PARTIALLY_DELIVERED = 2;
+   			public static final Integer STATE_DELIVERED = 3;
+   		]]>
+   	</extra-code>
     
   </entity>
 

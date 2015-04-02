@@ -22,4 +22,10 @@
 		<option value="4">Canceled</option>
 	</selection>
 	
+	<selection name="sale.order.delivery.state">
+		<option value="1">Not delivered</option>
+		<option value="2">Partially delivered</option>
+		<option value="3">Delivered</option>
+	</selection>
+
 </object-views>
