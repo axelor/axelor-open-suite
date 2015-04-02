@@ -1830,7 +1830,7 @@ row["first_name"]
                                                 <structure>
                                                     <property name="paramName">param_1</property>
                                                     <simple-property-list name="expression">
-                                                        <value type="javascript">'PurchaseOrder.productDescription'</value>
+                                                        <value type="javascript">'PurchaseOrder.description'</value>
                                                     </simple-property-list>
                                                 </structure>
                                             </list-property>

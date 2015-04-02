@@ -28,7 +28,7 @@
     <many-to-one name="productModel" ref="com.axelor.apps.base.db.Product" title="Product model"/>
     
     <string name="productName" title="Title" />
-    <string name="productDescription" title="Description" />
+    <string name="description" title="Description" />
     
   </entity>
 </domain-models>

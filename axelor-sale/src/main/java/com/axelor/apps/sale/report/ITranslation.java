@@ -29,7 +29,7 @@ public interface ITranslation {
 	public static final String SALES_ORDER_CUSTOMER = /*$$(*/ "SaleOrder.customer"; /*)*/
 	public static final String SALES_ORDER_INVOICING_ADDRS = /*$$(*/ "SaleOrder.invoicingAddrs"; /*)*/
 	public static final String SALES_ORDER_DELIVERY_ADDRESS = /*$$(*/ "SaleOrder.deliveryAddress"; /*)*/
-	public static final String SALES_ORDER_PRODUCT_DESCRIPTION = /*$$(*/ "SaleOrder.productDescription"; /*)*/
+	public static final String SALES_ORDER_DESCRIPTION = /*$$(*/ "SaleOrder.description"; /*)*/
 	public static final String SALES_ORDER_TAX = /*$$(*/ "SaleOrder.tax"; /*)*/
 	public static final String SALES_ORDER_QTY_UNIT = /*$$(*/ "SaleOrder.qtyUnit"; /*)*/
 	public static final String SALES_ORDER_UNIT_PRICE = /*$$(*/ "SaleOrder.unitPrice"; /*)*/
@@ -43,5 +43,5 @@ public interface ITranslation {
 	public static final String SALES_ORDER_BANKING_INFO = /*$$(*/ "SaleOrder.bankingInfo"; /*)*/
 	public static final String SALES_ORDER_CHEQUE = /*$$(*/ "SaleOrder.cheque"; /*)*/
 	public static final String SALES_ORDER_BANK_DETAILS = /*$$(*/ "SaleOrder.bankDetails"; /*)*/
-	
+
 }

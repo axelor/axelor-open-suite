@@ -36,5 +36,7 @@
     <integer name="numOfPalettes" title="Number Of Palettes"/>
     <decimal name="grossWeight" title="Gross Weight"/>
     
+    <string name="description" title="Description" large="true"/>
+    
   </entity>
 </domain-models>

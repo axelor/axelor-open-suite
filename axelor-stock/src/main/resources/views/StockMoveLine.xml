@@ -28,7 +28,7 @@
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="accordanceSelect"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true"/>
-	        <field name="productDescription" colSpan="12" widget="html" />
+	        <field name="description" colSpan="12" widget="html" />
         </panel>
     </form>
     
@@ -66,7 +66,7 @@
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true"/>
-	        <field name="productDescription" colSpan="12" widget="html" />
+	        <field name="description" colSpan="12" widget="html" />
         </panel>
     </form>
 

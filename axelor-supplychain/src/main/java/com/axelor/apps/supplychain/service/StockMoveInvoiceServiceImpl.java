@@ -39,97 +39,97 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
-	
+
 	@Inject
 	private SaleOrderInvoiceService saleOrderInvoiceService;
-	
+
 	@Inject
 	private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
-	
+
 	@Inject
 	private StockMoveRepository stockMoveRepo;
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder) throws AxelorException  {
-		
+
 		InvoiceGenerator invoiceGenerator = saleOrderInvoiceService.createInvoiceGenerator(saleOrder);
-		
+
 		Invoice invoice = invoiceGenerator.generate();
-		
+
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
-		
+
 		if (invoice != null) {
-		
+
 			this.extendInternalReference(stockMove, invoice);
-			
+
 			stockMove.setInvoice(invoice);
 			stockMoveRepo.save(stockMove);
 		}
 		return invoice;
-		
+
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createInvoiceFromPurchaseOrder(StockMove stockMove, PurchaseOrder purchaseOrder) throws AxelorException  {
-		
+
 		InvoiceGenerator invoiceGenerator = purchaseOrderInvoiceService.createInvoiceGenerator(purchaseOrder);
-		
+
 		Invoice invoice = invoiceGenerator.generate();
-		
+
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
-		
+
 		if (invoice != null) {
-			
+
 			this.extendInternalReference(stockMove, invoice);
-			
+
 			stockMove.setInvoice(invoice);
 			stockMoveRepo.save(stockMove);
 		}
-		return invoice;	
-	}
-	
-	
-	public Invoice extendInternalReference(StockMove stockMove, Invoice invoice)  {
-		
-		invoice.setInternalReference(stockMove.getStockMoveSeq()+":"+invoice.getInternalReference());
-		
 		return invoice;
 	}
-	
-	
+
+
+	public Invoice extendInternalReference(StockMove stockMove, Invoice invoice)  {
+
+		invoice.setInternalReference(stockMove.getStockMoveSeq()+":"+invoice.getInternalReference());
+
+		return invoice;
+	}
+
+
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<StockMoveLine> stockMoveLineList) throws AxelorException {
-		
+
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-		
+
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, stockMoveLine));
 		}
-		
+
 		return invoiceLineList;
 	}
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
-		
+
 		Product product = stockMoveLine.getProduct();
-		
+
 		if (product == null)
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1), stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), stockMoveLine.getPrice(), 
-				product.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), product.getInvoiceLineType(), 
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), stockMoveLine.getPrice(),
+				stockMoveLine.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), product.getInvoiceLineType(),
 				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO, 0, null, false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
-				
+
 				InvoiceLine invoiceLine = this.createInvoiceLine();
-				
+
 				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
 				invoiceLines.add(invoiceLine);
-				
+
 				return invoiceLines;
 			}
 		};
-		
+
 		return invoiceLineGenerator.creates();
 	}
 }

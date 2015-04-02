@@ -2433,7 +2433,7 @@ row["ClientPartFirstName"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'SaleOrder.productDescription'</value>
+                                        <value type="javascript">'SaleOrder.description'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2777,7 +2777,7 @@ row["ClientPartFirstName"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'SaleOrder.productDescription'</value>
+                                            <value type="javascript">'SaleOrder.description'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>

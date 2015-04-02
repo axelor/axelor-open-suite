@@ -2750,7 +2750,7 @@ row["partnerFirstName"]
                                                 <structure>
                                                     <property name="paramName">param_1</property>
                                                     <simple-property-list name="expression">
-                                                        <value type="javascript">'Invoice.productDescription'</value>
+                                                        <value type="javascript">'Invoice.description'</value>
                                                     </simple-property-list>
                                                 </structure>
                                             </list-property>

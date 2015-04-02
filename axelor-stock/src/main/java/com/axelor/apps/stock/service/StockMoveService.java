@@ -34,7 +34,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface StockMoveService extends Repository<StockMove> {
-	
+
 	/**
 	 * Méthode permettant d'obtenir la séquence du StockMove.
 	 * @param stockMoveType Type de mouvement de stock
@@ -43,7 +43,7 @@ public interface StockMoveService extends Repository<StockMove> {
 	 * @throws AxelorException Aucune séquence de StockMove n'a été configurée
 	 */
 	public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException;
-	
+
 	/**
 	 * Méthode générique permettant de créer un StockMove.
 	 * @param fromAddress l'adresse destination
@@ -53,9 +53,9 @@ public interface StockMoveService extends Repository<StockMove> {
 	 * @return l'objet StockMove
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, 
-			Location toLocation, LocalDate estimatedDate) throws AxelorException;
-	
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
+			Location toLocation, LocalDate estimatedDate, String description) throws AxelorException;
+
 	/**
 	 * Méthode générique permettant de créer un StockMove.
 	 * @param toAddress l'adresse destination
@@ -65,43 +65,43 @@ public interface StockMoveService extends Repository<StockMove> {
 	 * @return l'objet StockMove
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, 
-			Location toLocation, LocalDate realDate, LocalDate estimatedDate) throws AxelorException;
-	
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
+			Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description) throws AxelorException;
+
 	public int getStockMoveType(Location fromLocation, Location toLocation);
-	
-	public void validate(StockMove stockMove) throws AxelorException; 
-	
-	
+
+	public void validate(StockMove stockMove) throws AxelorException;
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void plan(StockMove stockMove) throws AxelorException;
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String realize(StockMove stockMove) throws AxelorException;
-	
+
 	public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList);
 
-	
+
 	public StockMove copyAndSplitStockMove(StockMove stockMove) throws AxelorException;
-	
-	
+
+
 	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split) throws AxelorException;
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(StockMove stockMove) throws AxelorException;
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesSpecial(List<HashMap> stockMoveLines, BigDecimal splitQty);
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void copyQtyToRealQty(StockMove stockMove);
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateReversion(StockMove stockMove) throws AxelorException;
-	
+
 }
