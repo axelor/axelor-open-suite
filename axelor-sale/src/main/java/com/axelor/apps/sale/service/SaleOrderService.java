@@ -81,6 +81,8 @@ public interface SaleOrderService extends Repository<SaleOrder>{
 
 	public String getSequence(Company company) throws AxelorException;
 
+	public String getDraftSequence(Long saleOrderId);
+
 
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,

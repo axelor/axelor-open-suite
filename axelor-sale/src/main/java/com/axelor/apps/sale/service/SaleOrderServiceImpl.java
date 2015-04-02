@@ -183,6 +183,10 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		return seq;
 	}
 
+	public String getDraftSequence(Long saleOrderId){
+		return "*"+saleOrderId.toString();
+	}
+
 
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,

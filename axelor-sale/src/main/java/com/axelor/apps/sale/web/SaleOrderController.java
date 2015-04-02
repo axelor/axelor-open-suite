@@ -225,7 +225,7 @@ public class SaleOrderController {
 		if(saleOrder.getSaleOrderSeq()!=null){
 			return;
 		}
-		response.setValue("saleOrderSeq","*"+saleOrder.getId().toString());
+		response.setValue("saleOrderSeq", saleOrderService.getDraftSequence(saleOrder.getId()));
 	}
 
 	public void cancelSaleOrder(ActionRequest request, ActionResponse response) {
@@ -246,6 +246,8 @@ public class SaleOrderController {
 		String birtReportURL = this.getURLSaleOrderPDF(saleOrder);
 
 		saleOrderService.saveSaleOrderPDFAsAttachment(saleOrder, birtReportURL);
+
+		response.setReload(true);
 
 	}
 }
