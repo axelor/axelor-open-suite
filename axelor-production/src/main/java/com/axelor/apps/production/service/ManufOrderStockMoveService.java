@@ -101,7 +101,8 @@ public class ManufOrderStockMoveService extends ManufOrderRepository {
 				null, 
 				fromLocation, 
 				virtualLocation, 
-				manufOrder.getPlannedStartDateT().toLocalDate());
+				manufOrder.getPlannedStartDateT().toLocalDate(),
+				null);
 		
 		return stockMove;
 	}
@@ -146,7 +147,8 @@ public class ManufOrderStockMoveService extends ManufOrderRepository {
 				null, 
 				virtualLocation, 
 				manufOrder.getProdProcess().getLocation(), 
-				plannedEndDate);
+				plannedEndDate,
+				null);
 		
 		return stockMove;
 	}

@@ -96,7 +96,8 @@ public class OperationOrderStockMoveService extends OperationOrderRepository {
 				null, 
 				fromLocation, 
 				virtualLocation, 
-				operationOrder.getPlannedStartDateT().toLocalDate());
+				operationOrder.getPlannedStartDateT().toLocalDate(),
+				null);
 		
 		return stockMove;
 	}
