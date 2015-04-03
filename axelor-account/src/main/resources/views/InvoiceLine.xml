@@ -20,7 +20,7 @@
     	<panel-tabs>
     		<panel title="Informations">
     			<field name="sequence"/>
-    			<field name="project" if-module="axelor-business-project" />
+    			<field name="saleOrderLine" if-module="axelor-supplychain" />
 		        <field name="product" required="true" onChange="action-group-account-invoice-line-product-onchange"/>
 		        <field name="invoiceLineType"/>
 		        <field name="productName"/>

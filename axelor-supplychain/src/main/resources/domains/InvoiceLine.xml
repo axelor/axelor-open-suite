@@ -5,8 +5,8 @@
   
   <entity name="InvoiceLine" lang="java">
   	
-      <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" />
-      
+  	<many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine" title="SO line" />
+  	
   </entity>
   
 </domain-models>
