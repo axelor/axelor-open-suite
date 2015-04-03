@@ -1,6 +1,6 @@
 //Include all modules
 def modules = new File('modules/abs').listFiles().findAll { dir ->
-	new File(dir, 'build.gradle').exists()
+	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('business-production') && !dir.name.endsWith('organisation')
 }
 
 modules.each { dir ->

@@ -1,11 +1,11 @@
 apply plugin: 'axelor-app'
 
 def modules = new File('modules/abs').listFiles().findAll { dir ->
-	new File(dir, 'build.gradle').exists()
+	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('business-production') && !dir.name.endsWith('organisation')
 }
 
 def installedModules = new File('modules/abs').listFiles().findAll { dir ->
-	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('-demo-fr') && !dir.name.endsWith('-l10n-fr')
+	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('-demo-fr') && !dir.name.endsWith('-l10n-fr') && !dir.name.endsWith('business-production')
 }
 
 application {
