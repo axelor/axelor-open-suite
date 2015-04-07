@@ -83,7 +83,7 @@ resources/domains/FinancialInformationUpdate.xml:14"
 "Aware skill set","Connaissances",,"resources/domains/Competence.xml:42"
 "Awareness","Notions",,"resources/views/Competence.xml:36"
 "Back to draft","Remettre à Brouillon",,"resources/views/LeaveRequest.xml:62"
-"Billable","Facturable",,"resources/views/Project.xml:138"
+"Billable","Facturable",,"resources/views/Project.xml:137"
 "Bonus","Bonus",,"resources/views/Bonus.xml:14"
 "Bonuses","Les Bonus",,"resources/views/Bonus.xml:7"
 "Branch","Etablissement",,"resources/domains/JobOffer.xml:31"
@@ -580,7 +580,6 @@ resources/views/Charts.xml:49"
 "Generate draft invoice","Générer facture brouillon",,"resources/views/Project.xml:66
 resources/views/Task.xml:134
 resources/views/Task.xml:69"
-"Generating invoice is impossible, please link the task to a saleOrderLine to do so.","La génération de facture est impossible, veuillez rattacher la tâche à une ligne de devis/commande pour continuer.",,"resources/views/Project.xml:117"
 "Generating invoice is impossible, the fields clientPartner and contactPartner must be filled.","La génération de facture est impossible, les champs Tiers et Contact doivent être remplis.",,"resources/views/Project.xml:116"
 "Geo. Zone","Zone géographique",,"resources/domains/JobOffer.xml:21"
 "Geo. Zone Complement","Complément Zone Géographique",,"resources/domains/JobOffer.xml:22"
@@ -742,7 +741,7 @@ resources/views/Menu.xml:403"
 "My Leave requests","Mes demandes de congé",,"resources/views/LeaveRequest.xml:28"
 "My Overtimes","Mes heures supplémentaires",,"resources/views/Dashboard.xml:72
 resources/views/Overtime.xml:16"
-"My Projects","Mes Projets",,"resources/views/Project.xml:135"
+"My Projects","Mes Projets",,"resources/views/Project.xml:134"
 "My Tasks","Mes Tâches",,"resources/views/Task.xml:378"
 "My Timesheets","Mes feuilles de temps",,"resources/views/Dashboard.xml:58
 resources/views/Timesheet.xml:13"
@@ -925,7 +924,7 @@ resources/views/Selects.xml:121
 resources/views/Timesheet.xml:32"
 "Project ?","Projet ? ",,"resources/domains/Project.xml:17"
 "Project Dashboard","Tableau de bord Projet",,"resources/views/Dashboard.xml:120"
-"Project filters","Filtres projets",,"resources/views/Project.xml:134"
+"Project filters","Filtres projets",,"resources/views/Project.xml:133"
 "Project recruitment","Besoin projet",,"resources/views/Selects.xml:57"
 "Project satisfaction","Satisfaction projet",,"resources/domains/Timesheet.xml:13"
 "Project unit","Unité projet",,"resources/domains/Project.xml:46"
@@ -1152,7 +1151,7 @@ resources/domains/Training.xml:21"
 "The holiday end date must be after the start date.","La date de fin des congés doit précéder la date de fin de congés.",,"resources/views/LeaveRequest.xml:132
 resources/views/LeaveRequest.xml:133"
 "The holiday request date should be equal or before the today date.","La date de demande de congés ne peut être effectué après la date de début des congés.",,"resources/views/LeaveRequest.xml:131"
-"There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in.","Actuellement, aucune tâche n'est à facturer. Si vous devez générer une facture depuis une tâche, veuillez cocher la case 'A facturer' et vérifiez que l'ensemble des informations nécessaires sont remplies.",,"resources/views/Project.xml:118"
+"There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in.","Actuellement, aucune tâche n'est à facturer. Si vous devez générer une facture depuis une tâche, veuillez cocher la case 'A facturer' et vérifiez que l'ensemble des informations nécessaires sont remplies.",,"resources/views/Project.xml:117"
 "Third interview","3ème entretien",,"resources/views/Selects.xml:176"
 "Times","Temps",,"resources/views/Business.xml:33
 resources/views/Project.xml:33

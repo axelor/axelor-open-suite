@@ -939,7 +939,7 @@ java/com/axelor/apps/account/service/batch/BatchDoubtfulCustomer.java:142
 java/com/axelor/apps/account/service/batch/BatchDoubtfulCustomer.java:147
 java/com/axelor/apps/account/service/batch/BatchDoubtfulCustomer.java:187
 java/com/axelor/apps/account/service/batch/BatchDoubtfulCustomer.java:192
-java/com/axelor/apps/account/web/InvoiceController.java:264
+java/com/axelor/apps/account/web/InvoiceController.java:265
 resources/domains/Alarm.xml:10
 resources/domains/InvoiceLine.xml:8
 resources/domains/InvoiceLineTax.xml:10
@@ -1092,7 +1092,7 @@ resources/views/Menu.xml:404"
 "LCR/BOR","LCR/BOR",,"resources/domains/InterbankCodeLine.xml:16"
 "La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:445"
 "La société %s n'a pas de séquence de facture ou d'avoir",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:446"
-"Label","Libellé",,"resources/domains/AccountType.xml:10
+"Label","Libellé",,"resources/domains/AccountType.xml:12
 resources/domains/BankStatement.xml:8
 resources/domains/BankStatementLine.xml:8
 resources/domains/IrrecoverableReportLine.xml:13
@@ -1714,10 +1714,10 @@ resources/views/charts.xml:843
 resources/views/charts.xml:919"
 "Situation comptable %s",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:190"
 "So many accounting operations are used on this invoice, so invoice can't be canceled",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:440"
-"Société",,,"java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:351
-java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:416
-java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:425
-java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:443"
+"Société",,,"java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:352
+java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:418
+java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:427
+java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:445"
 "Special","Spéciaux",,"resources/views/Selects.xml:32"
 "Standard Invoice","Facture normale",,"resources/domains/Invoice.xml:57"
 "Standard delay (days)","Délai standard (jours)",,"resources/domains/ReminderMethodLine.xml:13"
@@ -1813,14 +1813,14 @@ resources/views/AccountManagement.xml:39"
 java/com/axelor/apps/account/service/batch/BatchReimbursementExport.java:182
 java/com/axelor/apps/account/service/batch/BatchReminder.java:105
 java/com/axelor/apps/account/service/batch/BatchReminder.java:110
-java/com/axelor/apps/account/service/debtrecovery/ReminderActionService.java:196
-java/com/axelor/apps/account/service/debtrecovery/ReminderActionService.java:201
-java/com/axelor/apps/account/service/debtrecovery/ReminderActionService.java:93
-java/com/axelor/apps/account/service/debtrecovery/ReminderActionService.java:98
-java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:351
-java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:416
-java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:425
-java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:443
+java/com/axelor/apps/account/service/debtrecovery/ReminderActionService.java:100
+java/com/axelor/apps/account/service/debtrecovery/ReminderActionService.java:200
+java/com/axelor/apps/account/service/debtrecovery/ReminderActionService.java:205
+java/com/axelor/apps/account/service/debtrecovery/ReminderActionService.java:95
+java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:352
+java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:418
+java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:427
+java/com/axelor/apps/account/service/debtrecovery/ReminderService.java:445
 java/com/axelor/apps/account/service/debtrecovery/ReminderSessionService.java:232"
 "Tiers absent de la facture %s",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:137"
 "To","A",,"resources/domains/Invoice.xml:35
@@ -1865,7 +1865,7 @@ resources/views/charts.xml:50"
 "Turnover On Supplier Invoices On Last 12 Month","Montant produits achetés (facturés) sur 12 mois",,"resources/views/Dashboard.xml:113
 resources/views/charts.xml:274"
 "Type","Type",,"resources/domains/AccountCategory.xml:11
-resources/domains/AccountType.xml:9
+resources/domains/AccountType.xml:11
 resources/domains/AnalyticJournal.xml:11
 resources/domains/BankStatementLine.xml:13
 resources/domains/Journal.xml:13
