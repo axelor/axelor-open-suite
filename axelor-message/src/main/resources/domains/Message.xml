@@ -57,7 +57,7 @@
 		public static final String RELATED_TO_PRODUCT = "com.axelor.apps.base.db.Product";
 		public static final String RELATED_TO_EVENT = "com.axelor.apps.crm.db.Event";
 		public static final String RELATED_TO_SALESORDER = "com.axelor.apps.sale.db.SaleOrder";
-		public static final String RELATED_TO_PROJECT = "com.axelor.apps.organisation.db.Project";
+		public static final String RELATED_TO_PROJECT = "com.axelor.apps.project.db.Project";
 		public static final String RELATED_TO_TASK = "com.axelor.apps.organisation.db.Task";
 	
 	]]></extra-code>

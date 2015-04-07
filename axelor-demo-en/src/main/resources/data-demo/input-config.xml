@@ -271,13 +271,13 @@
 	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType" search="self.importId = :importId"/>
 	
-	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project">
+	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.project.db.Project">
  	    <bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
  	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
  	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
  	</input>	
 
-	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project" search="self.importId = :importId" update="true">
+	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.project.db.Project" search="self.importId = :importId" update="true">
  	    <bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
  	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
  	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
@@ -295,7 +295,7 @@
  		<bind to="name" column="name"/>
  	</input>
  	
- 	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project" search="self.importId = :importId" update="true" call="com.axelor.apps.organisation.service.ProjectService:importProject" >
+ 	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.project.db.Project" search="self.importId = :importId" update="true" call="com.axelor.apps.organisation.service.ProjectService:importProject" >
  		<bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
  	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
  	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>

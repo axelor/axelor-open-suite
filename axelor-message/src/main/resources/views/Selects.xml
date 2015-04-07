@@ -13,7 +13,7 @@
 		<option value="com.axelor.apps.base.db.Product">Product</option>
 		<option value="com.axelor.apps.crm.db.Event">Event</option>
 		<option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
-		<option value="com.axelor.apps.organisation.db.Project">Project/Business</option>
+		<option value="com.axelor.apps.project.db.Project">Project/Business</option>
 		<option value="com.axelor.apps.organisation.db.Task">Task (Project)</option>
 	</selection>
 
