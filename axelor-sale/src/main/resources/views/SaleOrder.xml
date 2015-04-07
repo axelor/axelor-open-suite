@@ -33,7 +33,7 @@
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
 		onNew="action-group-sale-saleorder-onnew"
 		onLoad="action-group-sale-saleorder-onload"
-		onSave="save,action-method-set-sale-order-draft-sequence,save">
+		onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-method-compute,save">
 		
 	  <toolbar>
 	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
@@ -187,7 +187,7 @@
 
 	<form name="sale-order-form-client" title="Sale order"
 		model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form-client"
-		onLoad="action-group-sale-saleorder-onload" onSave="save,action-method-set-sale-order-draft-sequence,save"
+		onLoad="action-group-sale-saleorder-onload" onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-method-compute,save"
 		onNew="action-group-sale-saleorder-onnew">
 	  <toolbar>
 	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
@@ -384,6 +384,10 @@
     
     <action-method name="action-sale-order-method-compute">
         <call class="com.axelor.apps.sale.web.SaleOrderController" method="compute"/>
+  	</action-method>
+  	
+  	<action-method name="action-sale-order-method-computeTemp">
+        <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeTemp"/>
   	</action-method>
     
     <action-method name="action-sale-order-method-validate-customer">
