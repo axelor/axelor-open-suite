@@ -15,7 +15,7 @@
         <field name="company"/>
         <field name="currency"/>
         <field name="clientPartner"/>
-        <field name="clientReference"/>
+        <field name="externalReference"/>
         <field name="creationDate"/>
         <field name="inTaxTotal"/>
         <field name="statusSelect"/>
