@@ -18,8 +18,8 @@
 			<panel colSpan="12" showIf="mediaTypeSelect == 2">
 			    <field name="fromEmailAddress" />
 				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature" requiredIf="mediaTypeSelect == 2"/>
-			</panel>
-        </panel>
+        		<field name="replyToEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>			</panel>
+        	</panel>
 		<panel title="Recipient address" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 1">
 			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false" showIf="mediaTypeSelect == 1" requiredIf="mediaTypeSelect == 1"/>
 		</panel>
@@ -36,7 +36,6 @@
        	 	<field name="content" colSpan="12" showTitle="false" widget="html"/>
         </panel>
         <panel title="Related to" sidebar="true" colSpan="12" readonlyIf="statusSelect == 3">
-			<field name="filePath" widget="url" colSpan="12"/>
 			<field name="company" colSpan="12"/>
 			<panel colSpan="12">
 				<field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" colSpan="12"/>

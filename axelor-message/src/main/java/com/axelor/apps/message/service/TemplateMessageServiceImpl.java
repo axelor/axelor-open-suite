@@ -17,77 +17,85 @@
  */
 package com.axelor.apps.message.service;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
+import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaAttachment;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 public class TemplateMessageServiceImpl extends TemplateRepository implements TemplateMessageService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TemplateMessageServiceImpl.class); 
 
-	@Inject
-	private MessageService messageService;
-	
-	@Inject
-	private MailAccountService mailAccountService;
-	
 	protected TemplateMaker maker;
 	
-	@Inject
+	private MessageService messageService;
+	
 	private EmailAddressRepository emailAddressRepo;
-	
-	
-	
-	public Message generateMessage(Object object, long objectId, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException  {
 
-		return this.generateMessage(
-				object, 
-				objectId, 
-				object.getClass().getCanonicalName(), 
-				object.getClass().getSimpleName(), 
-				template);
+	@Inject
+	public TemplateMessageServiceImpl( MessageService messageService, EmailAddressRepository emailAddressRepo ){
+		this.messageService = messageService;
+		this.emailAddressRepo = emailAddressRepo;
+	}
+
+	@Override
+	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
+
+		return this.generateMessage( model.getId(), model.getClass().getCanonicalName(), model.getClass().getSimpleName(), template);
 		
 	}
 	
-	
-	public Message generateMessage(Object object, long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException  {
+	@Override
+	public Message generateMessage( long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		LOG.debug("model : "+model);
-		LOG.debug("tag : "+tag);
-		LOG.debug("object id : "+objectId);
-		LOG.debug("object : "+object);
-		LOG.debug("template : "+template);
+		if ( !model.equals( template.getMetaModel().getFullName() ) ){
+			throw new AxelorException( I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3 ), IException.INCONSISTENCY, template.getMetaModel().getFullName() );
+		}
+		
+		LOG.debug("model : {}", model);
+		LOG.debug("tag : {}", tag);
+		LOG.debug("object id : {}", objectId);
+		LOG.debug("template : {}", template);
 		
 		this.initMaker(objectId, model, tag);
 		
 		String content = "";
 		String subject = "";
+		String from= "";
+		String replyToRecipients = "";
 		String toRecipients = "";
 		String ccRecipients = "";
 		String bccRecipients = "";
 		String addressBlock= "";
-		String fromEmailAddress= "";
 		int mediaTypeSelect;
 		
-		if(template.getContent() != null)  {
+		if ( !Strings.isNullOrEmpty( template.getContent() ) )  {
 			//Set template
 			this.maker.setTemplate(template.getContent());
 			//Make it
@@ -95,30 +103,28 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 		}
 		
 		
-		if(template.getAddressBlock() != null)  {
+		if( !Strings.isNullOrEmpty( template.getAddressBlock() ) )  {
 			this.maker.setTemplate(template.getAddressBlock());
 			//Make it
 			addressBlock = this.maker.make();
 		}
 		
-		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
-		content += "<p></p><p></p>" + mailAccountService.getSignature(mailAccount);
-		
-		if(mailAccount != null){
-			mailAccount = mailAccountService.find(mailAccount.getId());
-			LOG.debug( "Mail account :::", mailAccount );
-		}
-		
-		if ( template.getSubject() != null)  {
+		if ( !Strings.isNullOrEmpty( template.getSubject() ) )  {
 			this.maker.setTemplate(template.getSubject());
 			subject = this.maker.make();
 			LOG.debug( "Subject :::", subject );
 		}
 		
-		if(template.getFromEmailAddress() != null)  {
-			this.maker.setTemplate(template.getFromEmailAddress());
-			fromEmailAddress = this.maker.make();
-			LOG.debug( "Reply to :::", fromEmailAddress );
+		if( !Strings.isNullOrEmpty( template.getFromAdress() ) )  {
+			this.maker.setTemplate(template.getFromAdress());
+			from = this.maker.make();
+			LOG.debug( "From :::", from );
+		}
+		
+		if( !Strings.isNullOrEmpty( template.getReplyToRecipients() ) )  {
+			this.maker.setTemplate(template.getReplyToRecipients());
+			replyToRecipients = this.maker.make();
+			LOG.debug( "Reply to :::", replyToRecipients );
 		}
 		
 		if(template.getToRecipients() != null)  {
@@ -143,19 +149,17 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 		LOG.debug( "Media :::", mediaTypeSelect );
 		LOG.debug( "Content :::", content );
 		
-		String filePath = this.getFilePath(template);
-		
 		Message message = messageService.createMessage(
 				model, 
 				new Long(objectId).intValue(), 
 				subject, 
 				content, 
-				this.getEmailAddress(fromEmailAddress),
+				this.getEmailAddress(from),
+				this.getEmailAddresses(replyToRecipients),
 				this.getEmailAddresses(toRecipients),
 				this.getEmailAddresses(ccRecipients),
 				this.getEmailAddresses(bccRecipients),
-				mailAccount,
-				filePath,
+				getMetaFiles(template),
 				addressBlock,
 				mediaTypeSelect
 				);
@@ -164,18 +168,19 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 		
 	}
 	
-	protected String getFilePath(Template template)  throws AxelorException{
+	public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
+		
+		List<MetaAttachment> metaAttachments = Beans.get( MetaAttachmentRepository.class ).all().filter( "self.objectId = ?1 AND self.objectName = ?2", template.getId(), Template.class.getName() ).fetch();
+		
+		Set<MetaFile> metaFiles = Sets.newHashSet();
+		for ( MetaAttachment metaAttachment: metaAttachments ){ metaFiles.add( metaAttachment.getMetaFile() ); }
+		
+		return metaFiles;
 
-		String filePath = null;
-		if(filePath == null)  {
-			filePath = template.getFilePath();
-		}
-		
-		return filePath;
-		
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public TemplateMaker initMaker(long objectId, String model, String tag) throws InstantiationException, IllegalAccessException, ClassNotFoundException  {
 		//Init the maker
 		this.maker = new TemplateMaker( Locale.FRENCH, '$', '$');

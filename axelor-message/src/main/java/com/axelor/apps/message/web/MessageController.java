@@ -17,39 +17,40 @@
  */
 package com.axelor.apps.message.web;
 
+import java.io.IOException;
+
+import javax.mail.MessagingException;
+
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class MessageController {
-
 	
 	public void sendByEmail(ActionRequest request, ActionResponse response) {
 		
 		Message message = request.getContext().asType(Message.class);
 		MessageService messageService =  Beans.get(MessageService.class);
 		
-		message = messageService.sendMessageByEmail(messageService.find(message.getId()));
-		
-		response.setReload(true);
-		
-		if(message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
-			if(message.getSentByEmail())  {
-				response.setFlash(I18n.get(IExceptionMessage.MESSAGE_4));
-			}
-			else  {
-				response.setFlash(I18n.get(IExceptionMessage.MESSAGE_5));
-			}
+		try {
+			message = messageService.sendByEmail( messageService.find( message.getId() ) );
 			
-		}
-		else  {
-			response.setFlash(I18n.get(IExceptionMessage.MESSAGE_6));
-		}
+			response.setReload(true);
+			
+			if ( message.getStatusSelect() == MessageRepository.STATUS_SENT ) {
+				
+				if ( message.getSentByEmail() ) { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_4 ) ); }
+				else { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_5 ) ); }
+				
+			} else  { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_6 ) );	}
+			
+		} catch (MessagingException | IOException e) { TraceBackService.trace(e); }
 	}
 	
 	

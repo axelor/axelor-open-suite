@@ -3,9 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	
-	
-
 <!-- 	<menuitem name="mail-root" title="Emails/Mails" priority="70" -->
 <!-- 		icon="img/64px/mail_64px.png" groups="admins,ERP"/> -->
 
@@ -25,13 +22,34 @@
 	</action-view>	
 
 	<menuitem name="mail-root-email-box" parent="mail-root" title="Message Box" priority="100"/>
+	
 	<menuitem name="mail-root-email-new-message" parent="mail-root-email-box" title="New Message" priority="100" icon="img/16px/create_16px.png" action="mail.root.message.new"/>
-	<action-view name="mail.root.message.new" title="New Message"
-		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
+	
+	<action-view name="mail.root.message.new" title="New Message" model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="form" name="message-form" />
 		<domain>self.statusSelect = 1</domain>
+		<context name="defaultMediaType" expr="3"></context>
+	</action-view>
+		
+<!-- 	title-f="Nouveau message" -->
+	<menuitem name="mail-root-email-new" parent="mail-root-email-box" title="New email" icon="img/16px/create_16px.png" action="mail.root.email.new" priority="90" />	
+		
+<!-- 	title-f="Nouveau message -->
+	<action-view name="mail.root.email.new" title="New Email" model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
+		<view type="form" name="message-form"/>
+		<domain>self.statusSelect = 1</domain>
+		<context name="defaultMediaType" expr="2"></context>
+	</action-view>
+		
+<!-- 	title-f="Nouveau message" -->
+	<menuitem name="mail-root-mail-new" parent="mail-root-email-box" title="New Mail" icon="img/16px/create_16px.png" action="mail.root.mail.new" priority="90" />	
+		
+<!-- 	title-f="Nouveau message -->
+	<action-view name="mail.root.mail.new" title="New Mail" model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
+		<view type="form" name="message-form"/>
+		<domain>self.statusSelect = 1</domain>
 		<context name="defaultMediaType" expr="1"></context>
-	</action-view>		
+	</action-view>
 		
 <!-- 	title-f="Boite de réception" -->
 	<menuitem name="mail-root-email-inbox" parent="mail-root-email-box" title="Inbox" priority="80" action="mail.root.email.inbox" />
@@ -42,17 +60,6 @@
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
 		<domain>self.recipientUser = :__user__ AND self.statusSelect = 2</domain>
-	</action-view>	
-		
-<!-- 	title-f="Nouveau message" -->
-	<menuitem name="mail-root-email-new" parent="mail-root-email-box" title="New email" icon="img/16px/create_16px.png" action="mail.root.email.new" priority="90" />	
-		
-<!-- 	title-f="Nouveau message -->
-	<action-view name="mail.root.email.new" title="New email"
-		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
-		<view type="form" name="message-form"/>
-		<domain>self.statusSelect = 1</domain>
-		<context name="defaultMediaType" expr="2"></context>
 	</action-view>	
 		
 <!-- 	title-f="Brouillons" -->

@@ -18,7 +18,6 @@
 package com.axelor.apps.message.service;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
 
@@ -33,11 +32,18 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.auth.AuthUtils;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailSender;
 import com.axelor.mail.SmtpAccount;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaAttachment;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -45,69 +51,87 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MessageServiceImpl extends MessageRepository implements MessageService {
+	
+	private final Logger LOG = LoggerFactory.getLogger( getClass() );
 
 	private DateTime todayTime;
 	
+	private MetaAttachmentRepository metaAttachmentRepository;
+
+	private MailAccountService mailAccountService;
+	
 	@Inject
-	public MessageServiceImpl() {
-		this.todayTime = new DateTime();
+	public MessageServiceImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService ) {
+		this.todayTime = DateTime.now();
+		this.metaAttachmentRepository = metaAttachmentRepository;
+		this.mailAccountService = mailAccountService;
+	}
+	
+	public DateTime getTodayTime(){ return this.todayTime; }
+	public LocalDateTime getTodayLocalTime(){ return this.todayTime.toLocalDateTime(); }
+	
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replayToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
+			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect)  {
+		
+		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, getTodayLocalTime(), false,	STATUS_DRAFT, subject, TYPE_SENT,
+				replayToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect) ;
+		
+		save( message );
+		
+		attachMetaFiles(message, metaFiles);
+		
+		return message;
 	}
 
-	@Inject
-	protected MailAccountService mailAccountService;
-	
-	private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
-			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath, String addressBlock, int mediaTypeSelect)  {
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public void attachMetaFiles( Message message, Set<MetaFile> metaFiles ){
 		
+		Preconditions.checkNotNull( message.getId() );
 		
-		return save(this.createMessage(
-				content, 
-				fromEmailAddress, 
-				model, 
-				id, 
-				null, 
-				0, 
-				todayTime.toLocalDateTime(), 
-				false, 
-				STATUS_DRAFT, 
-				subject, 
-				TYPE_SENT,
-				toEmailAddressList,
-				ccEmailAddressList,
-				bccEmailAddressList,
-				mailAccount,
-				linkPath,
-				addressBlock,
-				mediaTypeSelect));
-	}	
-	
-	
-	protected Message createMessage(String content, EmailAddress fromEmailAddress, String relatedTo1Select, int relatedTo1SelectId,
-			String relatedTo2Select, int relatedTo2SelectId, LocalDateTime sentDate, boolean sentByEmail, int statusSelect, 
-			String subject, int typeSelect, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, 
-			MailAccount mailAccount, String filePath,String addressBlock,int mediaTypeSelect)  {
-		
-		
-		Set<EmailAddress> toEmailAddressSet = Sets.newHashSet();
-		if(toEmailAddressList != null)  {
-			toEmailAddressSet.addAll(toEmailAddressList);
+		if ( metaFiles == null || metaFiles.isEmpty() ){ return; }
+
+		Long messageId = message.getId();
+		String messageObjectName = Message.class.getName();
+						
+		for ( MetaFile metaFile: metaFiles ){
+			MetaAttachment metaAttachment = new MetaAttachment();
+			metaAttachment.setObjectId(messageId);
+			metaAttachment.setObjectName(messageObjectName);
+			metaAttachment.setMetaFile(metaFile);
+			metaAttachmentRepository.save(metaAttachment);
 		}
 		
-		Set<EmailAddress> ccEmailAddressSet = Sets.newHashSet();
-		if(ccEmailAddressList != null)  {
-			ccEmailAddressSet.addAll(ccEmailAddressList);
+	}
+	
+	protected Message createMessage(String content, EmailAddress fromEmailAddress, String relatedTo1Select, int relatedTo1SelectId, String relatedTo2Select, int relatedTo2SelectId, 
+			LocalDateTime sentDate, boolean sentByEmail, int statusSelect, String subject, int typeSelect,List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, 
+			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, String addressBlock, int mediaTypeSelect)  {
+
+		Set<EmailAddress> 
+			replyToEmailAddressSet = Sets.newHashSet(),
+			bccEmailAddressSet = Sets.newHashSet(),
+			toEmailAddressSet = Sets.newHashSet(),
+			ccEmailAddressSet = Sets.newHashSet();
+		
+		if ( mediaTypeSelect == MEDIA_TYPE_EMAIL ) {
+			
+			if ( replyToEmailAddressSet != null) { replyToEmailAddressSet.addAll(bccEmailAddressList); }
+			if ( bccEmailAddressList != null) { bccEmailAddressSet.addAll(bccEmailAddressList); }
+			if ( toEmailAddressList != null ) { toEmailAddressSet.addAll(toEmailAddressList); }
+			if ( ccEmailAddressList != null ) { ccEmailAddressSet.addAll(ccEmailAddressList); }
 		}
 		
-		Set<EmailAddress> bccEmailAddressSet = Sets.newHashSet();
-		if(bccEmailAddressList != null)  {
-			bccEmailAddressSet.addAll(bccEmailAddressList);
+		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
+		if ( mailAccount != null ) {
+			mailAccount = mailAccountService.find( mailAccount.getId() );
+			content += "<p></p><p></p>" + mailAccountService.getSignature(mailAccount);
+			LOG.debug( "Mail account ::: {}", mailAccount );
 		}
 		
-		Message message = new Message(typeSelect, subject, content, statusSelect, mediaTypeSelect, addressBlock, toEmailAddressSet, ccEmailAddressSet, bccEmailAddressSet, 
-                fromEmailAddress, sentByEmail, mailAccount);
+		Message message = new Message(typeSelect, subject, content, statusSelect, mediaTypeSelect, addressBlock, fromEmailAddress, replyToEmailAddressSet, toEmailAddressSet, ccEmailAddressSet, bccEmailAddressSet, sentByEmail, mailAccount);
 
 		message.setRelatedTo1Select(relatedTo1Select);
 		message.setRelatedTo1SelectId(relatedTo1SelectId);
@@ -115,109 +139,103 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		message.setRelatedTo2SelectId(relatedTo2SelectId);
 		message.setSentDateT(sentDate);
 		
-		message.setFilePath(filePath);
-		
 		return message;
 	}	
 	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message sendMessageByEmail(Message message)  {
+	public Message sendMessage ( Message message )  {
+		
 		try {
+
+			if ( message.getMediaTypeSelect() == MEDIA_TYPE_MAIL ) { return sendByMail(message); }
+			else if ( message.getMediaTypeSelect() == MEDIA_TYPE_EMAIL ) { return sendByEmail(message); }
+			else if ( message.getMediaTypeSelect() == MEDIA_TYPE_CHAT ) { return sendToUser(message); }
 			
-			this.sendByEmail(message);
-			this.sendToUser(message);
-			this.sendMessage(message);
-			
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (MessagingException | IOException  e) {
+			LOG.error(e.getMessage());
 		}
+		
 		return message;
 		
 	}
-	
-	private void sendToUser(Message message)  {
+
+	@Transactional(rollbackOn = Exception.class)
+	public Message sendToUser(Message message)  {
+
+		if ( message.getRecipientUser() == null ){ return message; }
+
+		message.setSenderUser( AuthUtils.getUser() );
+		LOG.debug("Sent internal message to user ::: {}", message.getRecipientUser());
 		
-		if(!message.getSentByEmail() && message.getRecipientUser()!=null)  {
-			message.setStatusSelect(MessageRepository.STATUS_SENT);
-			message.setSentByEmail(false);
-			message.setSentDateT(LocalDateTime.now());
-			save(message);
-		}
+		message.setStatusSelect(MessageRepository.STATUS_SENT);
+		message.setSentByEmail(false);
+		message.setSentDateT(LocalDateTime.now());
+		return save(message);
+		
 	}
-	
-	private void sendMessage(Message message){
-		
-		if(message.getMediaTypeSelect() == MEDIA_TYPE_MAIL){
-			message.setStatusSelect(MessageRepository.STATUS_SENT);
-			message.setSentByEmail(false);
-			message.setSentDateT(LocalDateTime.now());
-			save(message);
-		}
+
+	@Transactional(rollbackOn = Exception.class)
+	public Message sendByMail(Message message){
+
+		LOG.debug("Sent mail");
+		message.setStatusSelect(MessageRepository.STATUS_SENT);
+		message.setSentByEmail(false);
+		message.setSentDateT(LocalDateTime.now());
+		return save(message);
 			
 	}
-	
-	protected void sendByEmail(Message message) throws MessagingException, IOException  {
+
+	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
+	public Message sendByEmail(Message message) throws MessagingException, IOException  {
 		
 		MailAccount mailAccount = message.getMailAccount();
 		
-		if(mailAccount != null && message.getMediaTypeSelect() == MEDIA_TYPE_EMAIL)  {
-			String port = mailAccount.getPort()<=0?null:mailAccount.getPort().toString();
-			
-			com.axelor.mail.MailAccount account = new SmtpAccount(
-					mailAccount.getHost(), port, mailAccount.getLogin(), mailAccount.getPassword(), mailAccountService.getSmtpSecurity(mailAccount));
-					                               
-			MailSender sender = new MailSender(account);
+		if ( mailAccount == null ){ return message; }
 
-			List<String> toRecipients = this.getEmailAddresses(message.getToEmailAddressSet());
-			List<String> ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet());
-			List<String> bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
+		LOG.debug("Sent email");
+		com.axelor.mail.MailAccount account = new SmtpAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), mailAccountService.getSmtpSecurity(mailAccount) );
 
-			MailBuilder mailBuilder = sender.compose();
+		List<String> 
+			replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet()),
+			toRecipients = this.getEmailAddresses(message.getToEmailAddressSet()),
+			ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet()),
+			bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
 
-			mailBuilder.subject(message.getSubject());
-			
-			mailBuilder.from(message.getSenderUser().getName());
+		MailSender sender = new MailSender(account);
+		MailBuilder mailBuilder = sender.compose();
 
-			LOG.debug("Mail from: {}",message.getSenderUser().getName());
-			
-			if(message.getFromEmailAddress() != null ){
-				mailBuilder.replyTo(message.getFromEmailAddress().getAddress());
-			}
-			
-			if(!Strings.isNullOrEmpty(message.getContent()))  {
-				mailBuilder.html(message.getContent());
-			}
-			
-			if(!Strings.isNullOrEmpty(message.getFilePath()))  {
-				mailBuilder.attach("File", message.getFilePath());
-			}
-
-			if(toRecipients != null && !toRecipients.isEmpty())  {
-				mailBuilder.to(Joiner.on(",").join(toRecipients));
-			}
-
-			if(ccRecipients != null && !ccRecipients.isEmpty())  {
-				mailBuilder.cc(Joiner.on(",").join(ccRecipients));
-			}
-
-			if(bccRecipients != null && !bccRecipients.isEmpty())  {
-				mailBuilder.bcc(Joiner.on(",").join(bccRecipients));
-			}
-				
-			mailBuilder.send();
-			
-			message.setSentByEmail(true);
-			message.setStatusSelect(MessageRepository.STATUS_SENT);
-			message.setSentDateT(LocalDateTime.now());
-			save(message);
-			
+		mailBuilder.subject(message.getSubject());
+		
+		if ( message.getFromEmailAddress() != null ) {
+			LOG.debug( "Override from :::  {}", message.getFromEmailAddress().getAddress() );
+			mailBuilder.from( message.getFromEmailAddress().getAddress() );
 		}
+		
+		if ( replytoRecipients != null && !replytoRecipients.isEmpty() ) { mailBuilder.replyTo(Joiner.on(",").join(toRecipients)); }
+		if ( toRecipients != null && !toRecipients.isEmpty() ) { mailBuilder.to(Joiner.on(",").join(toRecipients));	}
+		if ( ccRecipients != null && !ccRecipients.isEmpty() ) { mailBuilder.cc(Joiner.on(",").join(ccRecipients)); }
+		if ( bccRecipients != null && !bccRecipients.isEmpty() ) { mailBuilder.bcc(Joiner.on(",").join(bccRecipients)); }
+		if ( !Strings.isNullOrEmpty( message.getContent() ) ) { mailBuilder.html(message.getContent()); }
+		
+		for ( MetaAttachment metaAttachment: getMetaAttachments(message) ){
+			MetaFile metaFile = metaAttachment.getMetaFile();
+			mailBuilder.attach( metaFile.getFileName(), MetaFiles.getPath( metaFile ).toString() );
+		}
+			
+		mailBuilder.send();
+		
+		message.setSentByEmail(true);
+		message.setStatusSelect(MessageRepository.STATUS_SENT);
+		message.setSentDateT(LocalDateTime.now());
+		
+		return save(message);
 	
+	}
+	
+	public Set<MetaAttachment> getMetaAttachments( Message message ){
+
+		Query<MetaAttachment> query = metaAttachmentRepository.all().filter("self.objectId = ?1 AND self.objectName = ?2", message.getId(), Message.class.getName());
+		return Sets.newHashSet( query.fetch() );
+		
 	}
 	
 	
@@ -227,10 +245,9 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 	   
 	   for(EmailAddress emailAddress : emailAddressSet)  {
 	           
-	           if(!Strings.isNullOrEmpty(emailAddress.getAddress()))  {
-	           
-	                   recipients.add(emailAddress.getAddress());
-	           }
+           if( Strings.isNullOrEmpty( emailAddress.getAddress() ) ) { continue; }
+           recipients.add( emailAddress.getAddress() );
+           
 	   }
 	   
 	   return recipients;
@@ -238,10 +255,6 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 
 
 	@Override
-	public String printMessage(Message message) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	public String printMessage(Message message) { return null; }
 
 }

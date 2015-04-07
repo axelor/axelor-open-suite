@@ -17,20 +17,24 @@
  */
 package com.axelor.apps.message.service;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.Set;
 
-import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.db.Model;
 import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.tool.template.TemplateMaker;
 
 public interface TemplateMessageService extends Repository<Template> {
 
-	public Message generateMessage(Object object, long objectId, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException;
+	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException;
 	
-	public Message generateMessage(Object object, long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException;
+	public Message generateMessage(long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException;
+	
+	public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException ;
 	
 	public TemplateMaker initMaker(long objectId, String model, String tag) throws InstantiationException, IllegalAccessException, ClassNotFoundException;
 	

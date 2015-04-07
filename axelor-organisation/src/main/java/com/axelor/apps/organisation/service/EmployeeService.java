@@ -26,7 +26,7 @@ import com.axelor.apps.organisation.db.Employee;
 import com.axelor.apps.organisation.db.repo.EmployeeRepository;
 import com.google.inject.persist.Transactional;
 
-public class EmployeeService extends EmployeeRepository{
+public class EmployeeService extends EmployeeRepository {
 
 	@Transactional
 	public Employee createEmployee(Candidate candidate)  {

@@ -10,8 +10,7 @@
         <field name="isDefault"/>
     </grid>
     
-    <form name="mail-account-form" title="Mail account" model="com.axelor.apps.message.db.MailAccount"  
-    onNew="action-mail-account-default-record">
+    <form name="mail-account-form" title="Mail account" model="com.axelor.apps.message.db.MailAccount" onNew="action-mail-account-default-record">
     	<panel title="Informations">
             <field name="name"/>
             <field name="user" column="user_id"/>

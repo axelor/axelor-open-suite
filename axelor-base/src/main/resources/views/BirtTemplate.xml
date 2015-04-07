@@ -3,18 +3,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<grid name="birt-template-grid" title="Birt Templates"
-		model="com.axelor.apps.base.db.BirtTemplate">
+	<grid name="birt-template-grid" title="Birt Templates" model="com.axelor.apps.base.db.BirtTemplate">
 		<field name="name" />
 		<field name="templateLink" />
 	</grid>
 
 	<form name="birt-template-form" title="Birt Template" model="com.axelor.apps.base.db.BirtTemplate" onNew="action-birt-template-record-default">
 		<panel>
-			<field name="name" />
-			<field name="templateLink" />
-			<field name="format" />
-			<field name="generatedFilePath" />
+			<field name="name" colSpan="5" />
+			<field name="templateLink" colSpan="5" />
+			<field name="format" colSpan="2" />
 			<panel title="Parameters" colSpan="12">
 				<field name="birtTemplateParameterList" showTitle="false" colSpan="12">
 					<viewer>

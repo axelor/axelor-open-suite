@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -474,8 +475,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
-	public MoveLine createMajorAccountRejectMoveLine(PaymentScheduleLine paymentScheduleLine, Company company, Account customerAccount, Move move, int ref) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public MoveLine createMajorAccountRejectMoveLine(PaymentScheduleLine paymentScheduleLine, Company company, Account customerAccount, Move move, int ref) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 			
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		if(paymentSchedule.getCompany().equals(company))  {
@@ -523,8 +525,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
-	public MoveLine createInvoiceRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move move, int ref) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public MoveLine createInvoiceRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move move, int ref) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 		if(invoice.getCompany().equals(company))  {
 			
 			MoveLine moveLine = this.createRejectMoveLine(invoice, invoice.getCompany(), customerAccount, move, ref);
@@ -593,8 +596,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
-	public void rejectLimitExceeded(PaymentScheduleLine paymentScheduleLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public void rejectLimitExceeded(PaymentScheduleLine paymentScheduleLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 		
 		LOG.debug("Action suite à un rejet sur une échéancier");
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
@@ -626,8 +630,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
-	public void rejectLimitExceeded(Invoice invoice) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public void rejectLimitExceeded(Invoice invoice) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 		LOG.debug("Action suite à un rejet sur une facture");
 		Partner partner = invoice.getPartner();
 		Company company = invoice.getCompany();
@@ -658,12 +663,13 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
-	public Message createImportRejectMessage(Partner partner, Company company, Template template, MoveLine rejectMoveLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public Message createImportRejectMessage(Partner partner, Company company, Template template, MoveLine rejectMoveLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 		
 		TemplateMessageService templateMessageService = Beans.get(TemplateMessageService.class);
 		
-		Message message = templateMessageService.generateMessage(rejectMoveLine, rejectMoveLine.getId(), template);
+		Message message = templateMessageService.generateMessage(rejectMoveLine, template);
 		
 		Beans.get(MessageRepository.class).save(message);
 		

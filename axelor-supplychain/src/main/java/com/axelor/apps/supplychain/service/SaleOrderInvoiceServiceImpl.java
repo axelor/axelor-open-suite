@@ -100,9 +100,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generatePerOrderInvoice(SaleOrder saleOrder) throws AxelorException  {
-		
-		this.checkIfSaleOrderIsCompletelyInvoiced(saleOrder);
-		
+				
 		Invoice invoice = this.createInvoice(saleOrder);
 		
 		this.assignInvoice(saleOrder, invoice);
@@ -197,7 +195,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	
 	
 	
-	public void checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder) throws AxelorException  {
+	public boolean checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder)  {
 		
 		BigDecimal total = BigDecimal.ZERO;
 		
@@ -205,9 +203,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			total = total.add(this.computeInTaxTotalInvoiced(invoice));
 		}
 		
-		if(total.compareTo(saleOrder.getInTaxTotal()) == 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_5)), IException.CONFIGURATION_ERROR);
-		}
+		return total.compareTo(saleOrder.getInTaxTotal()) == 0;
 		
 	}
 		

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.message.web;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +97,6 @@ public class GenerateMessageController {
 				
 				response.setView(
 						this.generateMessage(
-								object, 
 								id,
 								object.getClass().getCanonicalName(),
 								object.getClass().getSimpleName(),
@@ -128,22 +128,21 @@ public class GenerateMessageController {
 		try {		
 		
 			response.setView(
-					this.generateMessage(object, objectId.longValue(), model, tag, template));
+					this.generateMessage( objectId.longValue(), model, tag, template ) );
 			
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 	
 	
-	public Map<String,Object> generateMessage(Object object, long objectId, String model, String tag, Template template) throws SecurityException, NoSuchFieldException, ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException  {
+	public Map<String,Object> generateMessage(long objectId, String model, String tag, Template template) throws SecurityException, NoSuchFieldException, ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		LOG.debug("object : {} ", object);
 		LOG.debug("template : {} ", template);
 		LOG.debug("object id : {} ", objectId);
 		LOG.debug("model : {} ", model);
 		LOG.debug("tag : {} ", tag);
 		
-		Message message = templateMessageService.generateMessage(object, objectId, model, tag, template);
+		Message message = templateMessageService.generateMessage(objectId, model, tag, template);
 
 		Map<String,Object> context = new HashMap<String,Object>();
 		context.put("_showRecord", message.getId());

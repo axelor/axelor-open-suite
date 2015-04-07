@@ -12,7 +12,7 @@
 		<string name="login" title="Login" required="true" help="true"/>
 		<string name="password" title="Password" required="true"/>
 		<string name="host" title="Host" required="true" help="true"/>
-		<integer name="port" title="Port"/>
+		<integer name="port" title="Port" min="1" nullable="true"/>
 		<integer name="securitySelect" title="SSL/TLS" selection="mail.account.security.select" help="true"/>
 		<boolean name="isDefault" title="Default account ?" help="true"/>
 		<boolean name="isValid" title="Valid ?" help="true"/>
