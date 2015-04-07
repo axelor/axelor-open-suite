@@ -13,6 +13,7 @@
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal / line"/>
+  	<boolean name="hideDiscount" title="Hide Discount ?" help="true"/>
   	<string name="productName" title="Product name"/>
   	<decimal name="price" title="Unit price"/>
   	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>

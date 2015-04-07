@@ -15,7 +15,7 @@
 		    <field name="title"/>
 			<field name="typeSelect" colSpan="4"/>
 			<field name="isActive" colSpan="2"/>
-			<field name="isDisplayed"/>
+			<field name="hideDiscount"/>
     	</panel>
 		<panel name="priceListLine" title="Price list lines" >
 			<field name="generalDiscount"/>
@@ -38,7 +38,7 @@
    		<field name="typeSelect" expr="2" if="_parent._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent.operationTypeSelect == 1 || _parent.operationTypeSelect == 2)"/>
    		<field name="typeSelect" expr="1" if="_parent._model == 'com.axelor.apps.protraining.db.ProTraining'"/>
    		<field name="isActive" expr="true"/>
-   		<field name="isDisplayed" expr="true"/>
+   		<field name="hideDiscount" expr="false"/>
    </action-record>
    
 </object-views>

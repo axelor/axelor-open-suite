@@ -19,6 +19,7 @@
 	  <panel>
 	    <field name="sequence"/>
 	    <field name="isToPrintLineSubTotal"/>
+	    <field name="hideDiscount"/>
 	  </panel>
 	  <panel>
 	    <field name="product" onChange="action-group-sale-saleorderline-product-onchange" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true"/>
@@ -101,6 +102,7 @@
     	<field name="qty" expr="eval: 1"/>
     	<field name="isOrdered" expr="true"/>
     	<field name="isToPrintLineSubTotal" expr="true" if="eval: _parent?.isToPrintLineSubTotal == true"/>
+    	<field name="hideDiscount" expr="true" if="eval: _parent?.priceList?.hideDiscount == true"/>
     	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
     </action-record>
     

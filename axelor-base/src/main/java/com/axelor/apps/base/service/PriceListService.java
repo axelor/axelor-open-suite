@@ -153,22 +153,13 @@ public class PriceListService extends PriceListRepository {
 		Map<String, Object> discounts = new HashMap<String, Object>();
 		
 		if(priceListLine != null)  {
-			if(priceList.getIsDisplayed())  {
-				discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price));
-				discounts.put("discountTypeSelect", this.getDiscountTypeSelect(priceListLine));
-			}
-			else  {
-				discounts.put("price", this.getUnitPriceDiscounted(priceListLine, price));
-			}
+			discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price));
+			discounts.put("discountTypeSelect", this.getDiscountTypeSelect(priceListLine));
+
 		}
 		else  {
-			if(priceList.getIsDisplayed())  {
-				discounts.put("discountAmount", priceList.getGeneralDiscount());
-				discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_PERCENT);
-			}
-			else  {
-				discounts.put("price", this.getUnitPriceDiscounted(priceList, price));
-			}
+			discounts.put("discountAmount", priceList.getGeneralDiscount());
+			discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_PERCENT);
 		}
 		
 		return discounts;
