@@ -101,8 +101,8 @@
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="isOrdered" expr="true"/>
-    	<field name="isToPrintLineSubTotal" expr="true" if="eval: _parent?.isToPrintLineSubTotal == true"/>
-    	<field name="hideDiscount" expr="true" if="eval: _parent?.priceList?.hideDiscount == true"/>
+    	<field name="isToPrintLineSubTotal" expr="_parent?.isToPrintLineSubTotal"/>
+    	<field name="hideDiscount" expr="_parent?.priceList?.hideDiscount"/>
     	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
     </action-record>
     
