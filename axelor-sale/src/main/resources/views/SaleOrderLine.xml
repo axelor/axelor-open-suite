@@ -47,9 +47,7 @@
 	    </panel>
 	    <panel title="Delivery">
 	      <field name="estimatedDelivDate"/>
-	      <!-- TODO: remove this comment if portlet works in panel
-	      <dashlet   action="action-sale-order-line-view-stock-move-line"/>
-	      -->
+	      <panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12"/>
 	    </panel>
 	    <panel-related title="SO lines" field="saleOrderSubLineList"/>    
 	    <panel title="Invoicing follow-up" if-module="axelor-supplychain">
