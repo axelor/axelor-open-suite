@@ -50,6 +50,9 @@
 	  </menubar>
 	  
 	  <panel>
+	  	<field name="clientPartner.saleOrderInformation" css="label-bold bold" colSpan="12">
+	  		<hilite strong="true" if="true" color="danger"/>
+	  	</field>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="6"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
@@ -61,7 +64,7 @@
 	  </panel>
 	  
 	  <panel title="Customer information">
-	      <field name="clientPartner" onChange="action-sale-order-record-partner,action-partner-attrs-hide-contact-partner" domain="self.isContact = false and self.customerTypeSelect != 1" form-view="partner-form" grid-view="partner-grid"/>
+	      <field name="clientPartner" onChange="action-sale-order-record-partner,action-partner-attrs-hide-contact-partner,action-sale-order-validate-information" domain="self.isContact = false and self.customerTypeSelect != 1" form-view="partner-form" grid-view="partner-grid"/>
    	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field name="mainInvoicingAddress" canNew="true"/>
 	      <field name="deliveryAddress" canNew="true"/>
@@ -451,5 +454,8 @@
     	<context name="_typeSelect" expr="3"/>
     </action-view>
 	
+	<action-validate name="action-sale-order-validate-information">
+		<info message="${clientPartner.saleOrderInformation}" if="clientPartner.saleOrderInformation != null"/>
+	</action-validate>
 	
 </object-views>

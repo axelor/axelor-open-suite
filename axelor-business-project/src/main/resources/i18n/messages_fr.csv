@@ -16,8 +16,7 @@ resources/views/Menu.xml:9"
 "Open","Ouvert",,"resources/views/BusinessFolder.xml:22
 resources/views/Selects.xml:7"
 "Overview",,,"resources/views/BusinessFolder.xml:15"
-"Project",,,"resources/domains/InvoiceLine.xml:8
-resources/domains/SaleOrder.xml:10"
+"Project",,,"resources/domains/SaleOrder.xml:10"
 "Sale order",,,"resources/views/SaleOrder.xml:9"
 "Status","Statut",,"resources/domains/BusinessFolder.xml:15"
 "User Opened","Ouvert par",,"resources/views/BusinessFolder.xml:26"

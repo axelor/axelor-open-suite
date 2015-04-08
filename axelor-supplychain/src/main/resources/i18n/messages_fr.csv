@@ -4,6 +4,7 @@
 "Amount invoiced","Montant facturé",,"resources/domains/SaleOrderLine.xml:16"
 "Amount remaining to invoice","Montant restant à facturer",,"resources/domains/SaleOrder.xml:15"
 "Amount to invoice","Montant à facturer",,"resources/domains/SaleOrderScheduleLine.xml:12"
+"An active stockMove already exists for this saleOrder",,,"java/com/axelor/apps/supplychain/web/SaleOrderController.java:45"
 "Associated invoice lines","Lignes de facture associées",,"resources/domains/SaleOrderLine.xml:20"
 "Category","Catégorie",,"resources/views/Menu.xml:18"
 "Category Dashboard","Tb Catégories",,"resources/views/Menu.xml:30"
@@ -71,11 +72,13 @@ resources/views/Menu.xml:7"
 "Purchase order","Devis fournisseurs",,"resources/domains/StockMove.xml:12"
 "Purchase order line","Lignes de devis fournisseur",,"resources/domains/StockMoveLine.xml:11"
 "Remaining to invoice","Reste à facturer",,"resources/domains/SaleOrderLine.xml:17"
+"SO line",,,"resources/domains/InvoiceLine.xml:8"
 "SO schedule line",,,"resources/views/SaleOrderScheduleLine.xml:17"
 "SO schedule lines",,,"resources/views/SaleOrderScheduleLine.xml:6"
 "Sale Batch","Batch Ventes",,"resources/views/SaleBatch.xml:14"
 "Sale batches","Batchs Ventes",,"resources/views/SaleBatch.xml:6"
-"Sale order","Devis",,"resources/domains/SaleOrderScheduleLine.xml:10
+"Sale order","Devis",,"resources/domains/Invoice.xml:8
+resources/domains/SaleOrderScheduleLine.xml:10
 resources/domains/StockMove.xml:11
 resources/views/SaleOrder.xml:17
 resources/views/SaleOrder.xml:9"

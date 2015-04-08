@@ -413,7 +413,7 @@ resources/views/InterbankCodeLine.xml:5"
 "Blocking until","Blocage jusqu'au",,"resources/domains/Invoice.xml:63
 resources/domains/Invoice.xml:68"
 "Blockings","Blocages",,"resources/views/Invoice.xml:84
-resources/views/Partner.xml:28"
+resources/views/Partner.xml:32"
 "Bug(Anomalie) généré(e)e dans l'export SEPA - Batch %s",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:248"
 "Burden (weight)","Contrainte (poid)",,"resources/domains/PayerQualityConfigLine.xml:21"
 "CC Transaction N°","N° transaction CB",,"resources/domains/PaymentVoucher.xml:28"
@@ -641,7 +641,7 @@ resources/domains/Invoice.xml:23"
 "Customer balance","Solde client",,"resources/domains/AccountingBatch.xml:38
 resources/views/AccountingSituation.xml:24
 resources/views/AccountingSituation.xml:56
-resources/views/Partner.xml:24"
+resources/views/Partner.xml:28"
 "Customer invoices filters","Factures clients",,"resources/views/Invoice.xml:337"
 "Customer payments","Paiements Clients",,"resources/views/PaymentVoucher.xml:286"
 "Customer payments with remaining","Paiements Clients avec reste",,"resources/views/PaymentVoucher.xml:295"
@@ -879,7 +879,7 @@ resources/views/charts.xml:650
 resources/views/charts.xml:682
 resources/views/charts.xml:774
 resources/views/charts.xml:850"
-"History","Historique",,"resources/views/Partner.xml:61"
+"History","Historique",,"resources/views/Partner.xml:65"
 "IPO","TIP",,"resources/views/Selects.xml:184"
 "IPO + Cheque","TIP + Chèque",,"resources/views/Selects.xml:185"
 "IPO Payments and IPO Cheque","Paiement par TIP et TIP chèque",,"resources/views/AccountConfig.xml:135"
@@ -1007,13 +1007,13 @@ resources/views/InvoiceLineEvent.xml:6"
 "Invoice.cheque","Règlement par virement bancaire ou par Chèque à l'ordre d'",,"java/com/axelor/apps/account/report/ITranslation.java:39"
 "Invoice.clientRef","Réf. Client",,"java/com/axelor/apps/account/report/ITranslation.java:42"
 "Invoice.date","Date facture",,"java/com/axelor/apps/account/report/ITranslation.java:23"
+"Invoice.description","Description",,"java/com/axelor/apps/account/report/ITranslation.java:28"
 "Invoice.documentRef","Référence interne",,"java/com/axelor/apps/account/report/ITranslation.java:26"
 "Invoice.dueDate","Date d'échéance ",,"java/com/axelor/apps/account/report/ITranslation.java:25"
 "Invoice.invoiceNo","FACTURE N°",,"java/com/axelor/apps/account/report/ITranslation.java:46"
 "Invoice.note","Remarques",,"java/com/axelor/apps/account/report/ITranslation.java:38"
 "Invoice.paymentTerms","Conditions de paiement",,"java/com/axelor/apps/account/report/ITranslation.java:24"
 "Invoice.priceExclTax","Prix HT",,"java/com/axelor/apps/account/report/ITranslation.java:32"
-"Invoice.description","Description",,"java/com/axelor/apps/account/report/ITranslation.java:28"
 "Invoice.purchaseInvoiceNo","FACTURE FOURNISSEUR N°",,"java/com/axelor/apps/account/report/ITranslation.java:44"
 "Invoice.purchaseRefundNo","AVOIR FOURNISSEUR N°",,"java/com/axelor/apps/account/report/ITranslation.java:45"
 "Invoice.qtyUnit","Qté / Unité",,"java/com/axelor/apps/account/report/ITranslation.java:30"
@@ -1039,7 +1039,7 @@ resources/views/Invoice.xml:188
 resources/views/Invoice.xml:8
 resources/views/IrrecoverableInvoiceLine.xml:5
 resources/views/Menu.xml:665
-resources/views/Partner.xml:69
+resources/views/Partner.xml:73
 resources/views/PaymentSchedule.xml:40"
 "Invoices selection","Les factures",,"resources/domains/InvoiceBatch.xml:19"
 "Invoices to pay","Factures à payer",,"resources/views/PaymentInvoice.xml:14
@@ -1297,12 +1297,12 @@ resources/domains/PaymentVoucher.xml:10
 resources/domains/Reimbursement.xml:13
 resources/domains/ReportedBalance.xml:10
 resources/domains/Rum.xml:16
-resources/views/Partner.xml:23
 resources/views/Partner.xml:27
 resources/views/Partner.xml:31
 resources/views/Partner.xml:35
-resources/views/Partner.xml:58
-resources/views/Partner.xml:6"
+resources/views/Partner.xml:39
+resources/views/Partner.xml:6
+resources/views/Partner.xml:62"
 "Partner Balance due","Solde exigible",,"resources/domains/Reminder.xml:18
 resources/domains/ReminderHistory.xml:17"
 "Partner account","Compte comptable Tiers",,"resources/domains/PaymentVoucher.xml:11"
@@ -1437,6 +1437,7 @@ resources/views/Menu.xml:394"
 "Please select 'Draft' or 'Simulated' moves","Veuillez sélectionner une écriture 'Brouillon' ou 'Simulée'",,"java/com/axelor/apps/account/exception/IExceptionMessage.java:42"
 "Please select the invoice(s) to print.",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:509"
 "Previous Move","Ancienne pièce comptable",,"resources/domains/Invoice.xml:42"
+"Price List",,,"resources/views/Partner.xml:21"
 "Price list","Liste de prix",,"resources/domains/Invoice.xml:29"
 "Pricinglist unit","Unité du barème",,"resources/domains/InvoiceLine.xml:17"
 "Print","Imprimer",,"resources/views/Invoice.xml:25
@@ -1620,7 +1621,7 @@ resources/views/ReminderHistory.xml:6"
 "Report execution","Exécuter le rapport",,"resources/views/Irrecoverable.xml:34"
 "Reported Balance","A nouveau",,"resources/domains/Partner.xml:9"
 "Reported balance","A nouveau",,"resources/domains/ReportedBalanceLine.xml:10
-resources/views/Partner.xml:32
+resources/views/Partner.xml:36
 resources/views/ReportedBalance.xml:9"
 "Reported balance Date","Date des à nouveaux",,"resources/domains/Year.xml:10"
 "Reported balance line","Ligne de report à nouveau",,"resources/views/ReportedBalance.xml:23
@@ -1646,7 +1647,7 @@ resources/views/charts.xml:451"
 "Run","Lancer",,"resources/views/InvoiceBatch.xml:44"
 "Run export again","Rejouer l'export",,"resources/views/MoveLineReport.xml:113"
 "SEPA ?","SEPA ? ",,"resources/domains/AccountingBatch.xml:30"
-"SEPA Direct Debit",,,"resources/views/Partner.xml:59"
+"SEPA Direct Debit",,,"resources/views/Partner.xml:63"
 "Sale Entries","Lignes Ecritures Vente",,"resources/views/MoveLine.xml:255"
 "Sale account","Compte comptable à la vente",,"resources/domains/AccountManagement.xml:9"
 "Sales","Vente",,"resources/views/Menu.xml:36"
@@ -1894,7 +1895,7 @@ resources/views/Invoice.xml:407"
 "Unpaid IPO operation code","Code Opér. TIP impayés",,"resources/domains/CfonbConfig.xml:34"
 "Unpaid Supplier's Invoices","Factures fournisseurs à régler",,"resources/views/Dashboard.xml:121"
 "Unpaid direct debit operation code","Code Opér. Prélèvement impayés",,"resources/domains/CfonbConfig.xml:33"
-"Unpaid invoices","Facture impayées",,"resources/views/Partner.xml:76"
+"Unpaid invoices","Facture impayées",,"resources/views/Partner.xml:80"
 "Unreconcile","Déréconcilier",,"resources/views/Reconcile.xml:32"
 "Update customer account","Màj Compte client",,"resources/views/Selects.xml:141"
 "Upper reimbursement limit","Seuil sup. de remboursement",,"resources/domains/AccountConfig.xml:59"

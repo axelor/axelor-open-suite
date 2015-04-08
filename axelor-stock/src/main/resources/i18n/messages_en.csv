@@ -71,6 +71,7 @@ resources/views/Charts.xml:435"
 "Deliveries to prepare",,,"resources/views/StockMove.xml:295"
 "Description",,,"resources/domains/Inventory.xml:15
 resources/domains/InventoryLine.xml:14
+resources/domains/StockMove.xml:39
 resources/domains/StockMoveLine.xml:31
 resources/views/CreateInventoryWizard.xml:11"
 "Details Location lines",,,"resources/domains/Location.xml:18"
