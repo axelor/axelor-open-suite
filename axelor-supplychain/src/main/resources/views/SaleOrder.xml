@@ -57,7 +57,7 @@
 	</action-method>
 
     <action-method name="action-umbrellai-sale-order-alert-generate-invoice">
-        <call class="com.axelor.apps.umbrellai.web.SaleOrderController" method="alertGenerateInvoice"/>
+        <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="alertGenerateInvoice"/>
     </action-method>
 	
 	<action-validate name="action-supplychain-sale-order-validate-check-location">
