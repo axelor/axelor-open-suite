@@ -149,8 +149,6 @@ public abstract class InvoiceGenerator  {
 		
 		invoice.setOperationTypeSelect(operationType);
 		
-		invoice.setInvoiceDate(this.today);
-		
 		if(partner == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_2), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
@@ -163,8 +161,6 @@ public abstract class InvoiceGenerator  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_3), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setPaymentCondition(paymentCondition);
-		
-		invoice.setDueDate(this.today.plusDays(paymentCondition.getPaymentTime()));
 		
 		if(paymentMode == null)  {
 			paymentMode = partner.getPaymentMode();

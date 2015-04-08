@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -41,13 +42,14 @@ public class VentilateState extends WorkflowInvoice {
 
 	protected SequenceService sequenceService;
 	protected MoveService moveService;
+	protected LocalDate today;
 	
 	public VentilateState(SequenceService sequenceService, MoveService moveService, Invoice invoice) {
 		
 		super(invoice);
 		this.sequenceService = sequenceService;
 		this.moveService = moveService;
-		
+		this.today = GeneralService.getTodayDate();
 	}
 	
 	
@@ -72,9 +74,12 @@ public class VentilateState extends WorkflowInvoice {
 	
 	protected void setDueDate( ) throws AxelorException{
 		
+		if(invoice.getInvoiceDate() == null)  {
+			invoice.setInvoiceDate(this.today);
+		}
 		this.checkInvoiceDate();
 		
-		if(!invoice.getPaymentCondition().getIsFree())  {
+		if(!invoice.getPaymentCondition().getIsFree() || invoice.getDueDate() == null)  {
 			invoice.setDueDate(this.getDueDate());
 		}
 		
