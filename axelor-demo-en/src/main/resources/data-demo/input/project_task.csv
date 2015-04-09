@@ -1,5 +1,5 @@
-project.importId,name,assignedTo.importId
-1,Prepare offer for tender,1
-1,Audit,2
-1,Document preparation,3
-1,Presentation,4
+project.importId;name;assignedTo.importId
+1;Prepare offer for tender;1
+1;Audit;2
+1;Document preparation;3
+1;Presentation;4

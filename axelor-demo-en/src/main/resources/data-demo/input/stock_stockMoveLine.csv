@@ -1,5 +1,5 @@
-importId,stockMove.importId,product.importId,qty,unit.importId,price,trackingNumber.importId,productVariant.importId
-1,1,111,10,1,2500,,
-2,1,121,6,1,429,,
-3,2,110,18,1,1500,,
-4,2,120,2,1,329,,
+importId;stockMove.importId;product.importId;qty;unit.importId;price;trackingNumber.importId;productVariant.importId
+1;1;111;10;1;2500;;
+2;1;121;6;1;429;;
+3;2;110;18;1;1500;;
+4;2;120;2;1;329;;

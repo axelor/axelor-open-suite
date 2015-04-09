@@ -301,13 +301,13 @@
  	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
  	</input>    -->
  		
- 	<input file="project_project.csv" type="com.axelor.apps.project.db.Project" search="self.importId = :importId"/>
+ 	<input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";" search="self.importId = :importId"/>
  	
- 	<input file="project_task.csv" type="com.axelor.apps.project.db.Task" search="self.importId = :importId"/>
+ 	<input file="project_task.csv" type="com.axelor.apps.project.db.Task" separator=";" search="self.importId = :importId"/>
  	
- 	<input file="hr_timeActivity.csv" type="com.axelor.apps.hr.db.TimeActivity" search="self.importId = :importId"/>
+ 	<input file="hr_timeActivity.csv" type="com.axelor.apps.hr.db.TimeActivity" separator=";" search="self.importId = :importId"/>
  	
- 	<input file="hr_logTime.csv" type="com.axelor.apps.hr.db.LogTime" search="self.importId = :importId">
+ 	<input file="hr_logTime.csv" type="com.axelor.apps.hr.db.LogTime" separator=";" search="self.importId = :importId">
 		<bind to="durationStored" eval="call:com.axelor.csv.script.ImportDurationStored:getDurationHoursImport(visibleDuration)"/>
 	</input>
  	    
@@ -471,7 +471,7 @@
  	
 	<input file="stock_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove"/>
 	
-	<input file="stock_stockMoveLine.csv" type="com.axelor.apps.stock.db.StockMoveLine"/>
+	<input file="stock_stockMoveLine.csv" separator=";" type="com.axelor.apps.stock.db.StockMoveLine"/>
 	
 	
 <!-- 	  	PRODUCTION -->
