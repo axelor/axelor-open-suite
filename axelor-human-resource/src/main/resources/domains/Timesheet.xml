@@ -7,6 +7,7 @@
 
   <entity name="Timesheet" cachable="true">
       
+      <integer name="importId"/>
       <date name="sentDate" title="Sent Date" />
       <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select" default="1"/>
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" required="true"/>

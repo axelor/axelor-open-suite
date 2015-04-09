@@ -7,6 +7,7 @@
 
   <entity name="Project" cachable="true">
       
+      <integer name="importId"/>
       <string name="name" title="Project Name" required="true"/>
       <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer/Partner"/>
       <boolean name="businessProject" title="Business Project"/>

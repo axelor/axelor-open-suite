@@ -271,7 +271,7 @@
 	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType" search="self.importId = :importId"/>
 	
-	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.project.db.Project">
+	<!--  <input file="organisation_project.csv" separator=";" type="com.axelor.apps.project.db.Project">
  	    <bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
  	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
  	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
@@ -299,7 +299,17 @@
  		<bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
  	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
  	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
- 	</input>    
+ 	</input>    -->
+ 		
+ 	<input file="project_project.csv" type="com.axelor.apps.project.db.Project" search="self.importId = :importId"/>
+ 	
+ 	<input file="project_task.csv" type="com.axelor.apps.project.db.Task" search="self.importId = :importId"/>
+ 	
+ 	<input file="hr_timeActivity.csv" type="com.axelor.apps.hr.db.TimeActivity" search="self.importId = :importId"/>
+ 	
+ 	<input file="hr_logTime.csv" type="com.axelor.apps.hr.db.LogTime" search="self.importId = :importId">
+		<bind to="durationStored" eval="call:com.axelor.csv.script.ImportDurationStored:getDurationHoursImport(visibleDuration)"/>
+	</input>
  	    
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event">
 		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)" column="startDateTime"/>
@@ -360,6 +370,12 @@
 	</input>
 	
 	<input file="organisation_employee_Serv.csv" separator=";" type="com.axelor.apps.organisation.db.Employee" search="self.importId  = :importId" update="true" />
+	
+	<input file="hr_weeklyPlanning.csv" type="com.axelor.apps.hr.db.WeeklyPlanning" search="self.importId  = :importId"/>
+  
+  	<input file="hr_dayPlanning.csv" type="com.axelor.apps.hr.db.DayPlanning" search="self.importId  = :importId"/>
+	
+	<input file="hr_employee.csv" type="com.axelor.apps.hr.db.Employee" search="self.importId  = :importId"/>
 	
 	
 <!-- 	Mise à jour de l'employé sur l'utilisateur -->
@@ -453,9 +469,9 @@
 <!--  		<bind to="paymentDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(paymentDateTime)" column="paymentDateTime"/> -->
 <!--  	</input> -->
  	
-<!-- 	<input file="supplychain_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove"/> -->
+	<input file="stock_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove"/>
 	
-<!-- 	<input file="supplychain_stockMoveLine.csv" separator=";" type="com.axelor.apps.stock.db.StockMoveLine"/> -->
+	<input file="stock_stockMoveLine.csv" type="com.axelor.apps.stock.db.StockMoveLine"/>
 	
 	
 <!-- 	  	PRODUCTION -->

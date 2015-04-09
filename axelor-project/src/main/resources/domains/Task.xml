@@ -7,6 +7,7 @@
 
   <entity name="Task" cachable="true">
       
+      <integer name="importId"/>
       <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 	  <string name="name" title="Task name" required="true"/>
 	  <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>

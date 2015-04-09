@@ -3,6 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
+		 <field name="contactPartner"/>
 		 <field name="hourlyRate" />
 		 <field name="timeLoggingPreferenceSelect" />
 		 <field name="manager" />

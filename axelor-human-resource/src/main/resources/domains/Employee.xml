@@ -7,6 +7,7 @@
 
   <entity name="Employee" cachable="true">
       
+      <integer name="importId"/>
       <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
       <decimal name="hourlyRate" title="Hourly rate" scale="2" precision="20" />
       <string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select"/>

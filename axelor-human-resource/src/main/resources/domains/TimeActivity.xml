@@ -6,7 +6,8 @@
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="TimeActivity" cachable="true">
-	
+	  
+	  <integer name="importId"/>
       <string name="name" title="Name"/>
       <decimal name="hourlyPrice" title="Hourly price" />
       
