@@ -71,7 +71,7 @@
     
     <boolean name="template" title="Template"/>
     <string name="alert" large="true" title="Alert" />
-    <integer name="versionNumber" title="Version Number" readonly="true" />	
+    <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
     <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.sale.db.CancelReason"/>
     <integer name="deliveryState" title="Delivery State" selection="sale.order.delivery.state" readonly="true" default="1"/>
 
