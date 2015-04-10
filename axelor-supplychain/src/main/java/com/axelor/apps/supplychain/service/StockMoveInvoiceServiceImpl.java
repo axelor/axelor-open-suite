@@ -47,6 +47,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -149,52 +150,45 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 				invoicePriceList = saleOrder.getPriceList();
 			}else{
 
-				if (invoiceCurrency != null){
-					if (!invoiceCurrency.equals(saleOrder.getCurrency())){
-						invoiceCurrency = null;
-					}
+				if (invoiceCurrency != null
+						&& !invoiceCurrency.equals(saleOrder.getCurrency())){
+					invoiceCurrency = null;
 				}
 
-				if (invoiceClientPartner != null){
-					if (!invoiceClientPartner.equals(saleOrder.getClientPartner())){
-						invoiceClientPartner = null;
-					}
+				if (invoiceClientPartner != null
+						&& !invoiceClientPartner.equals(saleOrder.getClientPartner())){
+					invoiceClientPartner = null;
+
 				}
 
-				if (invoiceCompany != null){
-					if (!invoiceCompany.equals(saleOrder.getCompany())){
-						invoiceCompany = null;
-					}
+				if (invoiceCompany != null
+						&& !invoiceCompany.equals(saleOrder.getCompany())){
+					invoiceCompany = null;
 				}
 
-				if (invoicePaymentCondition != null){
-					if (!invoicePaymentCondition.equals(saleOrder.getPaymentCondition())){
-						invoicePaymentCondition = null;
-					}
+				if (invoicePaymentCondition != null
+						&& !invoicePaymentCondition.equals(saleOrder.getPaymentCondition())){
+					invoicePaymentCondition = null;
 				}
 
-				if (invoicePaymentMode != null){
-					if (!invoicePaymentMode.equals(saleOrder.getPaymentMode())){
-						invoicePaymentMode = null;
-					}
+				if (invoicePaymentMode != null
+						&& !invoicePaymentMode.equals(saleOrder.getPaymentMode())){
+					invoicePaymentMode = null;
 				}
 
-				if (invoiceMainInvoicingAddress != null){
-					if (!invoiceMainInvoicingAddress.equals(saleOrder.getMainInvoicingAddress())){
-						invoiceMainInvoicingAddress = null;
-					}
+				if (invoiceMainInvoicingAddress != null
+						&& !invoiceMainInvoicingAddress.equals(saleOrder.getMainInvoicingAddress())){
+					invoiceMainInvoicingAddress = null;
 				}
 
-				if (invoiceContactPartner != null){
-					if (!invoiceContactPartner.equals(saleOrder.getContactPartner())){
-						invoiceContactPartner = null;
-					}
+				if (invoiceContactPartner != null
+						&& !invoiceContactPartner.equals(saleOrder.getContactPartner())){
+					invoiceContactPartner = null;
 				}
 
-				if (invoicePriceList != null){
-					if (!invoicePriceList.equals(saleOrder.getPriceList())){
-						invoicePriceList = null;
-					}
+				if (invoicePriceList != null
+						&& !invoicePriceList.equals(saleOrder.getPriceList())){
+					invoicePriceList = null;
 				}
 			}
 			stockMoveToInvoiceList.add(stockMove);
@@ -327,7 +321,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		invoiceGenerator.populate(invoice, invoiceLineList);
 
 		if (invoice != null) {
-			JPA.save(invoice);
+			Beans.get(InvoiceRepository.class).save(invoice);
 			//Save the link to the invoice for all stockMove
 			JPA.all(StockMove.class).filter("self.id IN (:idStockMoveList)").bind("idStockMoveList", stockMoveIdList).update("invoice", invoice);
 
@@ -372,28 +366,24 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 				invoicePriceList = purchaseOrder.getPriceList();
 			}else{
 
-				if (invoiceCompany != null){
-					if (!invoiceCompany.equals(purchaseOrder.getCompany())){
-						invoiceCompany = null;
-					}
+				if (invoiceCompany != null
+						&& !invoiceCompany.equals(purchaseOrder.getCompany())){
+					invoiceCompany = null;
 				}
 
-				if (invoiceSupplierPartner != null){
-					if (!invoiceSupplierPartner.equals(purchaseOrder.getSupplierPartner())){
-						invoiceSupplierPartner = null;
-					}
+				if (invoiceSupplierPartner != null
+						&& !invoiceSupplierPartner.equals(purchaseOrder.getSupplierPartner())){
+					invoiceSupplierPartner = null;
 				}
 
-				if (invoiceContactPartner != null){
-					if (!invoiceContactPartner.equals(purchaseOrder.getContactPartner())){
-						invoiceContactPartner = null;
-					}
+				if (invoiceContactPartner != null
+						&& !invoiceContactPartner.equals(purchaseOrder.getContactPartner())){
+					invoiceContactPartner = null;
 				}
 
-				if (invoicePriceList != null){
-					if (!invoicePriceList.equals(purchaseOrder.getPriceList())){
-						invoicePriceList = null;
-					}
+				if (invoicePriceList != null
+						&& !invoicePriceList.equals(purchaseOrder.getPriceList())){
+					invoicePriceList = null;
 				}
 			}
 			stockMoveToInvoiceList.add(stockMove);
@@ -492,7 +482,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		invoiceGenerator.populate(invoice, invoiceLineList);
 
 		if (invoice != null) {
-			JPA.save(invoice);
+			Beans.get(InvoiceRepository.class).save(invoice);
 			//Save the link to the invoice for all stockMove
 			JPA.all(StockMove.class).filter("self.id IN (:idStockMoveList)").bind("idStockMoveList", stockMoveIdList).update("invoice", invoice);
 

@@ -24,8 +24,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
 public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
@@ -47,7 +47,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 				saleOrder.setDeliveryState(SaleOrderRepository.STATE_DELIVERED);
 			}
 
-			JPA.save(saleOrder);
+			Beans.get(SaleOrderRepository.class).save(saleOrder);
 		}
 
 		return newStockSeq;
