@@ -6,5 +6,27 @@
 	<action-method name="action-supplychain-stock-move-method-generate-invoice">
 		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoice"/>
 	</action-method>
+	
+	<action-method name="action-supplychain-stock-move-method-generate-multi-invoice">
+		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateMultiInvoice"/>
+	</action-method>
+	
+	<action-method name="action-supplychain-stock-move-method-generate-concat-invoice">
+		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoiceConcatStockMove"/>
+	</action-method>
+	
+	<action-validate name="action-validate-supplychain-customer-stock-move-check-selection">
+		<error message="You have to choose at least one stock move" if="customerStockMoveToInvoice == null || customerStockMoveToInvoice.size() == 0"/>
+	</action-validate>
+	
+	<action-validate name="action-validate-supplychain-supplier-stock-move-check-selection">
+		<error message="You have to choose at least one stock move" if="supplierStockMoveToInvoice == null || supplierStockMoveToInvoice.size() == 0"/>
+	</action-validate>
+	
+	<action-condition name="action-supplychain-stock-move-confirm-concat-invoice-check">
+		<check error="A payment condition must be selected" field="$paymentCondition" if="paymentConditionToCheck &amp;&amp; paymentCondition == null"/>
+		<check error="A payment mode must be selected" field="$paymentMode" if="paymentModeToCheck &amp;&amp; paymentMode == null"/>
+		<check error="A contact partner must be selected" field="$contactPartner" if="contactPartnerToCheck &amp;&amp; contactPartner == null"/>
+	</action-condition>
 
 </object-views>	

@@ -17,6 +17,22 @@
 		<domain>self.toLocation.typeSelect = 2</domain>
 		<context name="_typeSelect" expr="2"/>
 	</action-view>
+	
+	<menuitem name="stock-multi-sale-invoicing" parent="stock-root"
+		title="Mass Sale Invoicing" action="stock.root.multi.sale.invoicing" />
+		
+	<menuitem name="stock-multi-purchase-invoicing" parent="stock-root"
+		title="Mass Purchase Invoicing" action="stock.root.multi.purchase.invoicing" />
+
+	<action-view name="stock.root.multi.sale.invoicing" title="Mass Customer Invoicing"
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="form" name="stock-move-multi-sale-invoicing-form"/>
+	</action-view>
+	
+	<action-view name="stock.root.multi.purchase.invoicing" title="Mass Supplier Invoicing"
+		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="form" name="stock-move-multi-purchase-invoicing-form"/>
+	</action-view>
 					
 	<menuitem name="stock-root-suparrivals" parent="stock-root"
 		title="Supplier Arrivals" action="stock.root.suparrivals" />

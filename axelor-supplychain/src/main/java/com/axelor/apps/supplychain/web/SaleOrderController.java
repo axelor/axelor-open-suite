@@ -20,11 +20,13 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -44,7 +46,13 @@ public class SaleOrderController {
 			if (saleOrderServiceStock.existActiveStockMoveForSaleOrder(saleOrder.getId())){
 				response.setFlash(I18n.get("An active stockMove already exists for this saleOrder"));
 			}else{
-				saleOrderServiceStock.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+				Long stockMoveId = saleOrderServiceStock.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+				response.setView(ActionView
+						.define("StockMove")
+						.model(StockMove.class.getName())
+						.add("grid", "stock-move-grid")
+						.add("form", "stock-move-form")
+						.context("_showRecord", String.valueOf(stockMoveId)).map());
 			}
 		}
 	}

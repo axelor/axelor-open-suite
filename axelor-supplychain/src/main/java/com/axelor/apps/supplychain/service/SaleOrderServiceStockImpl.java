@@ -73,7 +73,7 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 	 * @param saleOrder l'objet saleOrder
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	public void createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
+	public Long createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
 		Company company = saleOrder.getCompany();
 
@@ -92,7 +92,10 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMoveService.plan(stockMove);
 			}
+
+			return stockMove.getId();
 		}
+		return null;
 	}
 
 

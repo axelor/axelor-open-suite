@@ -38,15 +38,17 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 		String newStockSeq = super.realize(stockMove);
 
-		//Update linked saleOrder delivery state depending on BackOrder's existence
-		SaleOrder saleOrder = stockMove.getSaleOrder();
-		if (newStockSeq != null){
-			saleOrder.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
-		}else{
-			saleOrder.setDeliveryState(SaleOrderRepository.STATE_DELIVERED);
-		}
+		if (stockMove.getSaleOrder() != null){
+			//Update linked saleOrder delivery state depending on BackOrder's existence
+			SaleOrder saleOrder = stockMove.getSaleOrder();
+			if (newStockSeq != null){
+				saleOrder.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
+			}else{
+				saleOrder.setDeliveryState(SaleOrderRepository.STATE_DELIVERED);
+			}
 
-		JPA.save(saleOrder);
+			JPA.save(saleOrder);
+		}
 
 		return newStockSeq;
 	}
