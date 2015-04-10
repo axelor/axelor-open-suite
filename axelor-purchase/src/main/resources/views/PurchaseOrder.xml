@@ -240,7 +240,7 @@
 	</action-validate> 
 
 	<action-validate name="action-purchase-order-validate-information">
-		<info message="${clientPartner.saleOrderInformation}" if="clientPartner.saleOrderInformation != null"/>
+		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner.purchaseOrderInformation != null"/>
 	</action-validate>
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
