@@ -39,6 +39,7 @@
 		</toolbar>
 	  
 		<panel readonlyIf="statusSelect == 5">
+			<field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
 			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="3"/>
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="9"/> 
 			<field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form"/>
@@ -48,7 +49,7 @@
 		</panel>
 		
 		<panel title="Supplier information">
-			<field name="supplierPartner" onChange="action-purchase-order-record-partner,action-purchase-order-attrs-hide-contact-partner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" form-view="partner-form"/>
+			<field name="supplierPartner" onChange="action-purchase-order-record-partner,action-purchase-order-attrs-hide-contact-partner,action-purchase-order-validate-information" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" form-view="partner-form"/>
 			<field name="contactPartner" 
 				domain="self.isContact = true AND self.mainPartner = :supplierPartner"
 				form-view="partner-contact-form" grid-view="partner-contact-grid" />
@@ -237,6 +238,10 @@
   	<action-validate name="action-purchase-order-validate-location">
    		<error message="The field 'Location' must be filled." if="location == null"/>
 	</action-validate> 
+
+	<action-validate name="action-purchase-order-validate-information">
+		<info message="${clientPartner.saleOrderInformation}" if="clientPartner.saleOrderInformation != null"/>
+	</action-validate>
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">

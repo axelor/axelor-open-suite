@@ -133,6 +133,9 @@
 			<panel title="Sale Order" if-module="axelor-sale">
 				<field name="saleOrderInformation" colSpan="12"/>
 			</panel>
+			<panel title="Purchase Order" if-module="axelor-purchase">
+				<field name="purchaseOrderInformation" colSpan="12"/>
+			</panel>
 		</panel-tabs>
 		
 		<panel title="Settings" colSpan="12" sidebar="true">
