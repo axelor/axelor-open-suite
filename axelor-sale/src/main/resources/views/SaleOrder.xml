@@ -128,7 +128,7 @@
 	    <button name="compute" title="Compute" showIf="statusSelect != 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
 	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-group-finalize,save, action-sale-order-method-save-PDF-attachment"/>
 	    <button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-newVersion,save"/>
-	    <button name="generateStockMove" title="Generate stock move"  colSpan="12" showIf="statusSelect == 3" onClick="action-supplychain-sale-order-create-stock-move" />
+	    <button name="generateStockMove" title="Generate stock move"  colSpan="12" showIf="statusSelect == 3" onClick="action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed,save"/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
 	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
