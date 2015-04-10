@@ -57,7 +57,7 @@
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form"/>
 	    <field name="currency"/>
 	    <field name="template" readonly="true"/>
-	    <field name="versionNumber" />
+	    <field name="versionNumber"/>
 	    <field name="project" if-module="axelor-business-project"/>
 	  </panel>
 	  
@@ -366,7 +366,6 @@
     	<field name="salemanUser" expr="eval:__user__"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     	<field name="template" expr="eval:_template" />
-    	<field name="versionNumber" expr="eval: 1" />
     </action-record>
     
     <action-record name="action-sale-order-record-company-configuration" model="com.axelor.apps.sale.db.SaleOrder">
