@@ -177,6 +177,7 @@
     <action-group name="action-group-base-product-producttype-onchange">
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
+    	<action name="action-product-attrs-title-sale-price"/>
     </action-group>
     
     <action-group name="action-group-base-product-enddate-onchange">
@@ -263,6 +264,10 @@
 	
 	<action-attrs name="action-product-attrs-bill-of-material-domain">
 		<attribute name="domain" for="defaultBillOfMaterial" expr="eval: &quot;(self.product.id = ${parentProduct?.id} OR self.product.id = ${id}) AND self.isRawMaterial = 'false'&quot;"/>
+	</action-attrs>
+	
+	<action-attrs name="action-product-attrs-title-sale-price">
+		<attribute name="title" for="salePrice" expr="Sale Price W.T. (by month)" if="productTypeSelect == 'subscriptable'"/>
 	</action-attrs>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">

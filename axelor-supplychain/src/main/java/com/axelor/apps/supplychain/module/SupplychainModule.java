@@ -45,6 +45,8 @@ import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.SubscriptionService;
+import com.axelor.apps.supplychain.service.SubscriptionServiceImpl;
 
 @AxelorModuleInfo(name = "axelor-supplychain")
 public class SupplychainModule extends AxelorModule {
@@ -65,5 +67,6 @@ public class SupplychainModule extends AxelorModule {
         bind(StockMoveInvoiceService.class).to(StockMoveInvoiceServiceImpl.class);
         bind(SaleOrderManagementRepository.class).to(SaleOrderSupplychainRepository.class);
         bind(StockMoveServiceImpl.class).to(StockMoveServiceSupplychainImpl.class);
+        bind(SubscriptionService.class).to(SubscriptionServiceImpl.class);
     }
 }
