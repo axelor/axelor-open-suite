@@ -31,6 +31,9 @@
 		    <field name="defaultPartnerLanguage" />
 		</panel>
 		<panel-tabs>
+		    <panel title="Configuration">
+		    	<field name="mailAccountByUser" />
+		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>
 				<field name="isInvoiceMoveConsolidated"/>
