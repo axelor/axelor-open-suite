@@ -6,7 +6,7 @@
 	<module name="organisation" package="com.axelor.apps.organisation.db" />
 
  	<entity name="PersonalInfo" lang="java">
- 		<integer name="importId"/>
+ 		<string name="importId"/>
 		<one-to-one name="candidate" ref="Candidate" title="Candidate"/>
 		<one-to-one name="employee" ref="Employee" title="Employee"/>
 		<date name="dob" title="Date of Birth"/>
