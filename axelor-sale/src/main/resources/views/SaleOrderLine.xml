@@ -22,7 +22,7 @@
 	    <field name="hideDiscount"/>
 	  </panel>
 	  <panel>
-	    <field name="product" onChange="action-group-sale-saleorderline-product-onchange"/>
+	    <field name="product" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
 	    <field name="unit"/>
@@ -73,16 +73,16 @@
     	<action name="action-sale-order-line-record-new"/>
     	<action name="action-sale-order-line-record-sequence"/>
     	<action name="action-sale-order-line-attrs-hide-product-variant"/>
-    	<action name="action-sale-order-line-attrs-domain-product"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
+    	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
     </action-group>
     
     <action-group name="action-group-sale-saleorderline-onload">
     	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-hide-product-variant"/>
     	<action name="action-sale-order-line-attrs-task-readonly"/>
-    	<action name="action-sale-order-line-attrs-domain-product"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
+    	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -178,6 +178,9 @@
 		<attribute name="domain" for="product" expr="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true" if="__parent__.invoicingTypeSelect == 6"/>
 	</action-attrs>
 	
+	<action-attrs name="action-supplychain-attrs-readonly-invoice-subscription" if-module="axelor-supplychain">
+		<attribute name="hidden" for="subscriptionList.invoiceSubscription" expr="eval: __parent__.statusSelect &lt; 3" />
+	</action-attrs>
 	
 <!-- 	ACTION VIEW -->
 	<action-view name="action-sale-order-line-view-stock-move-line" title="" model="com.axelor.apps.stock.db.StockMoveLine">

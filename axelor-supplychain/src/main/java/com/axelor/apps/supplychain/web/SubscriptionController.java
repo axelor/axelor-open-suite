@@ -1,12 +1,18 @@
 package com.axelor.apps.supplychain.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SubscriptionService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -16,34 +22,39 @@ import com.google.inject.Inject;
 
 public class SubscriptionController {
 	
+	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderInvoiceServiceImpl.class); 
+	
 	@Inject
 	protected SubscriptionService subscriptionService;
 	
-	public void generateSubscriptions(ActionRequest request, ActionResponse response){
+	public void generateSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 		saleOrderLine = subscriptionService.generateSubscriptions(saleOrderLine);
-		response.setValue("subscriptionList", saleOrderLine.getSubscriptionList());
+		if(saleOrderLine.getId()>0){
+			response.setReload(true);
+		}
+		else{
+			response.setValue("subscriptionList", saleOrderLine.getSubscriptionList());
+		}
 	}
 	
 	public void generateInvoice(ActionRequest request, ActionResponse response)  {
 		
 		Subscription subscription = request.getContext().asType(Subscription.class);
 		
-		SaleOrderLine saleOrderLine = new SaleOrderLine();
+		if(subscriptionService.find(subscription.getId())!=null){
+			subscription=subscriptionService.find(subscription.getId());
+		}		
 		
-		if(subscription.getSaleOrderLine()!=null){
-			saleOrderLine = subscription.getSaleOrderLine();
-		}
-		else{
-			saleOrderLine = request.getContext().getParentContext().asType(SaleOrderLine.class);
-		}
+		SaleOrderLine saleOrderLine = subscription.getSaleOrderLine();
 		
-		SaleOrder saleOrder = new SaleOrder();
+		saleOrderLine  = Beans.get(SaleOrderLineService.class).find(saleOrderLine.getId());
 		
-		if(saleOrderLine.getSaleOrder()!=null){
-			saleOrder = saleOrderLine.getSaleOrder();
-		}
-		else{
+		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+		
+		saleOrder  = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+		
+		if(saleOrder == null){
 			saleOrder = request.getContext().getParentContext().getParentContext().asType(SaleOrder.class);
 		}
 		
