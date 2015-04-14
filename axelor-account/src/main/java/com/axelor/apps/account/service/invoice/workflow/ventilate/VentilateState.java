@@ -57,7 +57,7 @@ public class VentilateState extends WorkflowInvoice {
 	public void process( ) throws AxelorException {
 		
 		Preconditions.checkNotNull(invoice.getPartner());
-		setDueDate( );
+		setDate( );
 		
 		setInvoiceId( );
 		updatePaymentSchedule( );
@@ -72,7 +72,7 @@ public class VentilateState extends WorkflowInvoice {
 		
 	}
 	
-	protected void setDueDate( ) throws AxelorException{
+	protected void setDate( ) throws AxelorException{
 		
 		if(invoice.getInvoiceDate() == null)  {
 			invoice.setInvoiceDate(this.today);

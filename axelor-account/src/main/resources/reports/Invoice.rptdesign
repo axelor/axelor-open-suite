@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140225-1404></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140218-1056></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -774,68 +774,7 @@ left outer join public.base_printing_settings as PrintingSettings on (Company.pr
 --where Invoice.id in (1,3)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineDS" id="3421">
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">inv_id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">inv_id</text-property>
-                    <text-property name="heading">inv_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">product_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_name</text-property>
-                    <text-property name="heading">product_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">note</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">note</text-property>
-                    <text-property name="heading">note</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">TaxValue</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">TaxValue</text-property>
-                    <text-property name="heading">TaxValue</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">qty</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">qty</text-property>
-                    <text-property name="heading">qty</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">unitName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">unitName</text-property>
-                    <text-property name="heading">unitName</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">price</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">price</text-property>
-                    <text-property name="heading">price</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">ex_tax_total</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">ex_tax_total</text-property>
-                    <text-property name="heading">ex_tax_total</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">currencyCode</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">currencyCode</text-property>
-                    <text-property name="heading">currencyCode</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">sequence</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">sequence</text-property>
-                    <text-property name="heading">sequence</text-property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="filter">
                 <structure>
                     <property name="operator">in</property>
@@ -847,140 +786,16 @@ left outer join public.base_printing_settings as PrintingSettings on (Company.pr
                 </structure>
             </list-property>
             <list-property name="parameters"/>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">inv_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">product_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">note</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">TaxValue</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">qty</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">unitName</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">price</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">ex_tax_total</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">currencyCode</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">sequence</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">inv_id</property>
-                    <property name="nativeName">inv_id</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">product_name</property>
-                    <property name="nativeName">product_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">note</property>
-                    <property name="nativeName">note</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">TaxValue</property>
-                    <property name="nativeName">TaxValue</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">qty</property>
-                    <property name="nativeName">qty</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">unitName</property>
-                    <property name="nativeName">unitName</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">price</property>
-                    <property name="nativeName">price</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">ex_tax_total</property>
-                    <property name="nativeName">ex_tax_total</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">currencyCode</property>
-                    <property name="nativeName">currencyCode</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
-                    <property name="name">sequence</property>
-                    <property name="nativeName">sequence</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
-                </structure>
-            </list-property>
+            <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, InvoiceLine.product_name, InvoiceLine.note, TaxLine.value as "TaxValue", InvoiceLine.qty,
 Unit.name as "unitName", InvoiceLine.price, InvoiceLine.ex_tax_total, Currency.code as "currencyCode", InvoiceLine.sequence as "sequence" 
 from public.account_invoice_line as InvoiceLine
 inner join public.account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
 left outer join public.account_tax_line as TaxLine on (InvoiceLine.tax_line = TaxLine.id)
 left outer join public.base_product as Product on (InvoiceLine.product = Product.id)
-left outer join public.base_unit as Unit on (Product.unit = Unit.id)
+left outer join public.base_unit as Unit on (InvoiceLine.unit = Unit.id)
 left outer join public.base_currency as Currency on (Invoice.currency = Currency.id)
 ]]></xml-property>
         </oda-data-set>
