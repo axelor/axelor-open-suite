@@ -22,7 +22,7 @@
 	    <field name="hideDiscount"/>
 	  </panel>
 	  <panel>
-	    <field name="product" onChange="action-group-sale-saleorderline-product-onchange" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true"/>
+	    <field name="product" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
 	    <field name="unit"/>
@@ -36,6 +36,9 @@
 	    <field name="discountAmount" onChange="action-sale-order-line-method-compute" hideIf="discountTypeSelect == 3"/>
 	  </panel>
 	  <panel-tabs>
+	  	<panel name="subscription" title="Subscription">
+	  		<panel-include view="subscription-sale-order-line-form" from="axelor-supplychain" if-module="axelor-supplychain"/>
+	  	</panel>
 	    <panel title="Settings">
 	        <field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain"/>        
 	        <field name="supplierPartner" showIf="saleSupplySelect == 2" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
@@ -70,12 +73,16 @@
     	<action name="action-sale-order-line-record-new"/>
     	<action name="action-sale-order-line-record-sequence"/>
     	<action name="action-sale-order-line-attrs-hide-product-variant"/>
+    	<action name="action-sale-order-line-attrs-hidden-subscription"/>
+    	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
     </action-group>
     
     <action-group name="action-group-sale-saleorderline-onload">
     	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-hide-product-variant"/>
     	<action name="action-sale-order-line-attrs-task-readonly"/>
+    	<action name="action-sale-order-line-attrs-hidden-subscription"/>
+    	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -85,6 +92,8 @@
     	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-hide-product-variant"/>
     	<action name="action-sale-order-line-get-production-information" if="axelor-production"/>
+    	<action name="action-sale-order-line-attrs-title-price"/>
+    	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-qty-onchange">
@@ -155,6 +164,23 @@
 		<attribute name="title" for="discountAmount" expr="Discount Amount" if="discountTypeSelect == 2"/>
 	</action-attrs>
 	
+	<action-attrs name="action-sale-order-line-attrs-title-price">
+		<attribute name="title" for="price" expr="Unit Price (by month)" if="product?.productTypeSelect == 'subscriptable'"/>
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-line-attrs-hidden-subscription">
+		<attribute name="hidden" for="subscription" expr="true" if="product?.productTypeSelect != 'subscriptable'"/>
+		<attribute name="hidden" for="subscription" expr="false" if="product?.productTypeSelect == 'subscriptable'"/>
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-line-attrs-domain-product">
+		<attribute name="domain" for="product" expr="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and self.productTypeSelect!='subscriptable'" if="__parent__.invoicingTypeSelect != 6"/>
+		<attribute name="domain" for="product" expr="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true" if="__parent__.invoicingTypeSelect == 6"/>
+	</action-attrs>
+	
+	<action-attrs name="action-supplychain-attrs-readonly-invoice-subscription" if-module="axelor-supplychain">
+		<attribute name="hidden" for="subscriptionList.invoiceSubscription" expr="eval: __parent__.statusSelect &lt; 3" />
+	</action-attrs>
 	
 <!-- 	ACTION VIEW -->
 	<action-view name="action-sale-order-line-view-stock-move-line" title="" model="com.axelor.apps.stock.db.StockMoveLine">

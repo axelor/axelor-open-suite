@@ -15,5 +15,10 @@
 		<option value="1">Invoicing</option>
 	</selection>
 	
+	<selection name="supplychain.invoicing.type.select">
+		<option value="1">Period Beginning</option>
+		<option value="2">Period Ending</option>
+	</selection>
+	
 	
 </object-views>

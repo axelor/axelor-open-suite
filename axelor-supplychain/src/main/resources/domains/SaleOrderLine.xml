@@ -23,6 +23,13 @@
 <!-- Bon de livraison -->
   	<boolean name="isInvoiceControlled" title="Invoice controlled"/>
   	
+  	<integer name="periodicity"/>
+  	<date name="fromSubDate" title="Date From"/>
+  	<integer name="periodNumber" title="Number of Periods"/>
+  	<date name="toSubDate" title="Date To"/>
+  	<integer name="invoicingTypeSelect" title="Invoicing Type" selection="supplychain.invoicing.type.select"/>
+  	<one-to-many name="subscriptionList" ref="com.axelor.apps.supplychain.db.Subscription" mappedBy="saleOrderLine" title="Subscription List"/>
+  	
   	
   </entity>
 

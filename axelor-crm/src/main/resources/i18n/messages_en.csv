@@ -39,7 +39,7 @@ resources/views/ConvertLeadWizard.xml:39"
 "All Upcoming Holidays",,,"resources/views/Dashboard.xml:470"
 "Allow calls ?",,,"resources/domains/Lead.xml:52"
 "Allow emails ?",,,"resources/domains/Lead.xml:53"
-"Amount",,,"resources/domains/Opportunity.xml:14
+"Amount",,,"resources/domains/Opportunity.xml:15
 resources/views/Charts.xml:134
 resources/views/Charts.xml:163
 resources/views/Charts.xml:194
@@ -67,7 +67,7 @@ resources/views/Opportunity.xml:8"
 "Assigned",,,"resources/views/Selects.xml:11"
 "Assigned to",,,"resources/domains/Event.xml:29
 resources/domains/Lead.xml:58
-resources/domains/Opportunity.xml:27
+resources/domains/Opportunity.xml:28
 resources/domains/Target.xml:12
 resources/domains/TargetConfiguration.xml:12
 resources/views/ConvertLeadWizard.xml:112
@@ -95,7 +95,7 @@ resources/views/Event.xml:66"
 "Batchs",,,"resources/domains/CrmBatch.xml:17
 resources/domains/EventReminder.xml:16"
 "Best Open Deals",,,"resources/views/Dashboard.xml:62"
-"Best case",,,"resources/domains/Opportunity.xml:16"
+"Best case",,,"resources/domains/Opportunity.xml:17"
 "CALENDAR_SERVER",,,"resources/views/Selects.xml:69"
 "CGP",,,"resources/views/Selects.xml:73"
 "CHANDLER",,,"resources/views/Selects.xml:74"
@@ -202,7 +202,7 @@ resources/domains/OpportunityType.xml:11
 resources/domains/Target.xml:11
 resources/domains/TargetConfiguration.xml:11"
 "Company",,,"resources/domains/CrmBatch.xml:13
-resources/domains/Opportunity.xml:23
+resources/domains/Opportunity.xml:24
 resources/views/ConvertLeadWizard.xml:266"
 "Company name",,,"resources/domains/Lead.xml:72"
 "Compte rendu de la génération de rappel des évènements :\n",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:21"
@@ -285,9 +285,9 @@ resources/views/Dashboard.xml:283"
 "Created on",,,"resources/views/CrmBatch.xml:30"
 "Credentials",,,"resources/views/Calendar.xml:20"
 "Crm batch",,,"resources/domains/Batch.xml:10"
-"Currency",,,"resources/domains/Opportunity.xml:12"
+"Currency",,,"resources/domains/Opportunity.xml:13"
 "Customer",,,"resources/domains/Event.xml:39
-resources/domains/Opportunity.xml:11
+resources/domains/Opportunity.xml:12
 resources/views/Charts.xml:666"
 "Daily",,,"resources/views/Selects.xml:164"
 "Daily team call summary by user",,,"resources/views/Charts.xml:494"
@@ -316,7 +316,7 @@ resources/views/Event.xml:284"
 "Description",,,"resources/domains/CrmBatch.xml:16
 resources/domains/Event.xml:27
 resources/domains/Lead.xml:43
-resources/domains/Opportunity.xml:21
+resources/domains/Opportunity.xml:22
 resources/views/ConvertLeadWizard.xml:141
 resources/views/ConvertLeadWizard.xml:166
 resources/views/ConvertLeadWizard.xml:189
@@ -365,7 +365,7 @@ resources/views/Event.xml:6
 resources/views/Partner.xml:14
 resources/views/Target.xml:101"
 "Existing business",,,"resources/views/Selects.xml:78"
-"Expected close date",,,"resources/domains/Opportunity.xml:13"
+"Expected close date",,,"resources/domains/Opportunity.xml:14"
 "Export calendar",,,"resources/views/Event.xml:41
 resources/views/Event.xml:8"
 "Fax",,,"resources/domains/Lead.xml:21"
@@ -423,7 +423,8 @@ resources/views/Partner.xml:63"
 "Import",,,"resources/domains/Event.xml:11
 resources/domains/EventCategory.xml:9
 resources/domains/Lead.xml:10
-resources/domains/MeetingType.xml:10"
+resources/domains/MeetingType.xml:10
+resources/domains/Opportunity.xml:10"
 "Import calendar",,,"resources/views/Event.xml:42
 resources/views/Event.xml:9"
 "Import lead",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:54"
@@ -455,7 +456,7 @@ resources/views/ConvertLeadWizard.xml:68"
 "Lead",,,"resources/domains/EmailAddress.xml:10
 resources/domains/Event.xml:41
 resources/domains/EventAttendee.xml:14
-resources/domains/Opportunity.xml:25
+resources/domains/Opportunity.xml:26
 resources/views/Lead.xml:36
 resources/views/Menu.xml:364
 resources/views/Selects.xml:51"
@@ -597,7 +598,7 @@ resources/views/Lead.xml:306"
 resources/domains/CalendarConfiguration.xml:10
 resources/domains/EventCategory.xml:10
 resources/domains/MeetingType.xml:11
-resources/domains/Opportunity.xml:10
+resources/domains/Opportunity.xml:11
 resources/domains/OpportunityType.xml:10
 resources/domains/Target.xml:10
 resources/domains/TargetConfiguration.xml:10
@@ -620,7 +621,7 @@ resources/views/Event.xml:647"
 "Next Stage",,,"resources/views/Opportunity.xml:26
 resources/views/Opportunity.xml:45
 resources/views/Opportunity.xml:76"
-"Next step",,,"resources/domains/Opportunity.xml:20"
+"Next step",,,"resources/domains/Opportunity.xml:21"
 "No lead import configuration found",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:53"
 "No of Tickets",,,"resources/views/Charts.xml:769"
 "Non-participant",,,"resources/views/Selects.xml:134"
@@ -755,7 +756,7 @@ resources/views/Lead.xml:9"
 "Priority",,,"resources/domains/Event.xml:22
 resources/views/Charts.xml:549
 resources/views/Charts.xml:574"
-"Probability (%)",,,"resources/domains/Opportunity.xml:19"
+"Probability (%)",,,"resources/domains/Opportunity.xml:20"
 "Product",,,"resources/views/Selects.xml:53"
 "Progress",,,"resources/domains/Event.xml:55"
 "Project/Business",,,"resources/views/Selects.xml:56"
@@ -797,7 +798,7 @@ resources/views/Charts.xml:1403"
 resources/views/Charts.xml:1458"
 "Sales orders created won target completed",,,"resources/views/Charts.xml:1443"
 "Sales orders created won target completed (%)",,,"resources/views/Charts.xml:1116"
-"Sales stage",,,"resources/domains/Opportunity.xml:18"
+"Sales stage",,,"resources/domains/Opportunity.xml:19"
 "Salesman",,,"resources/views/Charts.xml:133
 resources/views/Charts.xml:291
 resources/views/Charts.xml:491
@@ -817,7 +818,7 @@ resources/views/ConvertLeadWizard.xml:290
 resources/views/ConvertLeadWizard.xml:371
 resources/views/ConvertLeadWizard.xml:47"
 "Source",,,"resources/domains/Lead.xml:47
-resources/domains/Opportunity.xml:22
+resources/domains/Opportunity.xml:23
 resources/views/Charts.xml:112
 resources/views/Charts.xml:162
 resources/views/Charts.xml:223
@@ -882,7 +883,7 @@ resources/views/Menu.xml:63"
 "Tasks filters",,,"resources/views/Event.xml:595"
 "Team",,,"resources/domains/Event.xml:30
 resources/domains/Lead.xml:59
-resources/domains/Opportunity.xml:28
+resources/domains/Opportunity.xml:29
 resources/domains/Target.xml:13
 resources/domains/TargetConfiguration.xml:13
 resources/views/Charts.xml:1176
@@ -947,7 +948,7 @@ resources/views/Dashboard.xml:395"
 resources/domains/Event.xml:12
 resources/domains/EventCategory.xml:12
 resources/domains/EventReminder.xml:11
-resources/domains/Opportunity.xml:15
+resources/domains/Opportunity.xml:16
 resources/views/Charts.xml:1501"
 "UID (Calendar)",,,"resources/domains/Event.xml:35"
 "Unassigned Leads",,,"resources/views/Dashboard.xml:266
@@ -994,7 +995,7 @@ resources/views/Target.xml:91"
 "Website",,,"resources/domains/Lead.xml:22"
 "Weekly",,,"resources/views/Selects.xml:163"
 "Weeks",,,"resources/views/Selects.xml:147"
-"Worst case",,,"resources/domains/Opportunity.xml:17"
+"Worst case",,,"resources/domains/Opportunity.xml:18"
 "ZIMBRA",,,"resources/views/Selects.xml:71"
 "amount",,,"java/com/axelor/web/MapRest.java:147
 java/com/axelor/web/MapRest.java:148"
@@ -1012,9 +1013,9 @@ java/com/axelor/web/MapRest.java:148"
 "help:Lead.referredBy",,,"resources/domains/Lead.xml:51"
 "help:Lead.source",,,"resources/domains/Lead.xml:47"
 "help:Lead.statusSelect",,,"resources/domains/Lead.xml:46"
-"help:Opportunity.nextStep",,,"resources/domains/Opportunity.xml:20"
-"help:Opportunity.probability",,,"resources/domains/Opportunity.xml:19"
-"help:Opportunity.source",,,"resources/domains/Opportunity.xml:22"
+"help:Opportunity.nextStep",,,"resources/domains/Opportunity.xml:21"
+"help:Opportunity.probability",,,"resources/domains/Opportunity.xml:20"
+"help:Opportunity.source",,,"resources/domains/Opportunity.xml:23"
 "help:User.authorizeCalUserSet",,,"resources/domains/User.xml:12"
 "help:User.followersCalUserSet",,,"resources/domains/User.xml:11"
 "portal.daily.team.calls.summary.by.user",,,"resources/views/Dashboard.xml:355"

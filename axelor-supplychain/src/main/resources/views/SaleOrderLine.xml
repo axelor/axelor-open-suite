@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+	<form name="subscription-sale-order-line-form" title="Subscription" model="com.axelor.apps.sale.db.SaleOrderLine">
+		<panel colSpan="12">
+			<field name="periodicity" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
+			<field name="fromSubDate" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
+			<field name="periodNumber" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
+			<field name="toSubDate" readonly="true" colSpan="3"/>
+			<field name="invoicingTypeSelect"/>
+			<button name="generateSubscriptions" title="Generate Subscriptions" onClick="com.axelor.apps.supplychain.web.SubscriptionController:generateSubscriptions"/>
+			<field name="subscriptionList" colSpan="12"/>
+		</panel>
+	</form>
+	
+	<action-record name="action-supplychain-record-set-dateSubTo" model="com.axelor.apps.sale.db.SaleOrderLine">
+		<field name="toSubDate" expr="eval:fromSubDate.plusMonths(periodicity*periodNumber)" if="periodicity &gt; 0 &amp;&amp; fromSubDate != null &amp;&amp; periodNumber &gt; 0"/>
+	</action-record>
+	
+	
+	
+</object-views>	

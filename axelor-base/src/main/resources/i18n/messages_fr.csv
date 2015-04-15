@@ -218,15 +218,15 @@ resources/views/Selects.xml:66"
 98,98,,resources/views/Selects.xml:155
 99,99,,resources/views/Selects.xml:156
 <B>%s</B> not found,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:151
-<a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' />,,,"resources/views/Partner.xml:223
+<a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' />,,,"resources/views/Partner.xml:226
 resources/views/Partner.xml:68"
-<a class='fa fa-google-plus' href='http://www.google.com' target='_blank' />,,,"resources/views/Partner.xml:222
+<a class='fa fa-google-plus' href='http://www.google.com' target='_blank' />,,,"resources/views/Partner.xml:225
 resources/views/Partner.xml:67"
-<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />,,,"resources/views/Partner.xml:225
+<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />,,,"resources/views/Partner.xml:228
 resources/views/Partner.xml:70"
-<a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' />,,,"resources/views/Partner.xml:224
+<a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' />,,,"resources/views/Partner.xml:227
 resources/views/Partner.xml:69"
-<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />,,,"resources/views/Partner.xml:226
+<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />,,,"resources/views/Partner.xml:229
 resources/views/Partner.xml:71"
 =,,,resources/views/UnitConversion.xml:16
 A product of type service can't be procured from stock.,Un produit de type service ne peut être réapprovisionné du stock.,,resources/views/Product.xml:222
@@ -272,7 +272,7 @@ resources/domains/PickListEntry.xml:19
 resources/domains/PickListEntry.xml:21
 resources/domains/Site.xml:12
 resources/views/Address.xml:16
-resources/views/Partner.xml:250"
+resources/views/Partner.xml:253"
 Address certified by QAS engine,Adresse certifiée par moteur QAS,,resources/domains/Address.xml:22
 Address details,Détails adresse,,resources/views/Address.xml:17
 Address list,Liste d'adresses,,resources/views/Address.xml:6
@@ -302,17 +302,17 @@ Alarmes,Alarmes,,resources/views/Menu.xml:516
 Alarms,Alarmes,,resources/views/Alarm.xml:14
 All Alarms,Les Alarmes,,"resources/views/Menu.xml:519
 resources/views/Menu.xml:522"
-All Clients,Clients,,resources/views/Partner.xml:406
-All Enterprises,Entreprises,,resources/views/Partner.xml:397
-All Individuals,Particuliers,,resources/views/Partner.xml:400
+All Clients,Clients,,resources/views/Partner.xml:409
+All Enterprises,Entreprises,,resources/views/Partner.xml:400
+All Individuals,Particuliers,,resources/views/Partner.xml:403
 All Messages,Messages,,"resources/views/Menu.xml:540
 resources/views/Menu.xml:543"
 All Partners,Tiers,,"resources/views/Menu.xml:66
 resources/views/Menu.xml:67"
-All Prospects,Prospects,,resources/views/Partner.xml:403
-All Suppliers,Fournisseurs,,resources/views/Partner.xml:409
+All Prospects,Prospects,,resources/views/Partner.xml:406
+All Suppliers,Fournisseurs,,resources/views/Partner.xml:412
 All friends,Amis,,resources/views/Selects.xml:464
-All qualified supplier,Fournisseurs qualifiés,,resources/views/Partner.xml:412
+All qualified supplier,Fournisseurs qualifiés,,resources/views/Partner.xml:415
 Amount,Montant,,resources/views/Selects.xml:334
 Amount/%,Montant/%,,resources/domains/PriceListLine.xml:15
 Anniversary date,Date d'anniversaire,,resources/views/Selects.xml:405
@@ -332,8 +332,8 @@ Are you sure you want to start the import?,Etes-vous sûr de vouloir démarrer l
 Area name,Nom zone,,resources/domains/GeographicalArea.xml:9
 Artmin,Artmin,,resources/domains/Commune.xml:11
 Assigned to,Assigné à,,"resources/domains/Partner.xml:63
-resources/views/Partner.xml:141
-resources/views/Partner.xml:255"
+resources/views/Partner.xml:144
+resources/views/Partner.xml:258"
 Attached files,Fichiers attachés,,resources/views/Template.xml:24
 Attachment directory OR Application source does not exist,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:167
 Attributes,Attributs,,resources/views/Country.xml:14
@@ -466,10 +466,10 @@ Civil Year,Année civile,,resources/views/Selects.xml:583
 Civil year already exist for ${fromDate.toString('dd/MM/yyyy')} and ${toDate.toString('dd/MM/yyyy')}.,Une année civile existe déjà pour la période du ${fromDate.toString('dd/MM/yyyy')} au ${toDate.toString('dd/MM/yyyy')}.,,"resources/views/Year.xml:34
 resources/views/Year.xml:35"
 Civility,Civilité,,"resources/domains/Partner.xml:16
-resources/views/Partner.xml:230
+resources/views/Partner.xml:233
 resources/views/Partner.xml:63
 resources/views/Selects.xml:309"
-Client Situation,Situation comptable,,"resources/views/Partner.xml:215
+Client Situation,Situation comptable,,"resources/views/Partner.xml:218
 resources/views/Partner.xml:48"
 Client invoice,Facture client,,resources/views/Selects.xml:436
 ClientSituation.12MonthTurnover,C.A. annuel,,java/com/axelor/apps/base/report/ITranslation.java:58
@@ -571,7 +571,7 @@ resources/domains/Sequence.xml:11
 resources/domains/User.xml:11
 resources/domains/Year.xml:16
 resources/views/Company.xml:12
-resources/views/Partner.xml:233
+resources/views/Partner.xml:236
 resources/views/Selects.xml:181
 resources/views/Selects.xml:200"
 Company Footer,Pied de page société,,"resources/domains/PrintingSettings.xml:13
@@ -590,19 +590,19 @@ resources/views/Menu.xml:90"
 Configuration file,Fichier configuration,,resources/domains/ImportConfiguration.xml:12
 Configurations,Configurations,,resources/views/Company.xml:40
 Contact,Contact,,"resources/domains/EmailAddress.xml:10
-resources/views/Partner.xml:192
-resources/views/Partner.xml:211
-resources/views/Partner.xml:271
+resources/views/Partner.xml:195
+resources/views/Partner.xml:214
+resources/views/Partner.xml:274
 resources/views/Selects.xml:432
 resources/views/User.xml:28"
 Contact ?,Est Contact ?,,resources/domains/Partner.xml:25
-Contact details,Coordonnées,,"resources/views/Partner.xml:239
+Contact details,Coordonnées,,"resources/views/Partner.xml:242
 resources/views/Partner.xml:88"
 Contacts,Contacts,,"resources/domains/Partner.xml:35
 resources/views/Menu.xml:23
 resources/views/Menu.xml:53
 resources/views/Menu.xml:56
-resources/views/Partner.xml:152
+resources/views/Partner.xml:155
 resources/views/Partner.xml:22"
 Contacts Db,Db Contacts,,resources/views/Menu.xml:26
 Contains,Contient,,resources/views/Selects.xml:446
@@ -814,7 +814,7 @@ Finalize,,,resources/views/Selects.xml:426
 Finance,Finance,,resources/views/Selects.xml:222
 First Name,Prénom,,resources/domains/Partner.xml:18
 First execution date,Date 1ère exécution,,resources/domains/SchedulerInstance.xml:12
-First name,Prénom,,"resources/views/Partner.xml:232
+First name,Prénom,,"resources/views/Partner.xml:235
 resources/views/Partner.xml:62"
 Fiscal Year,Année fiscale,,resources/views/Selects.xml:584
 Fiscal position,Position fiscale,,"resources/domains/Partner.xml:75
@@ -941,7 +941,7 @@ Industry Sector,Secteur d'Activité,,"resources/views/Charts.xml:121
 resources/views/Charts.xml:59"
 Information,Information,,resources/views/BaseBatch.xml:27
 Informations,Informations,,"resources/views/Message.xml:13
-resources/views/Partner.xml:182
+resources/views/Partner.xml:185
 resources/views/Partner.xml:78"
 Insurance,Assurance,,resources/views/Selects.xml:211
 Interfaces,Interfaces,,resources/views/General.xml:51
@@ -1114,7 +1114,7 @@ resources/domains/TemplateRule.xml:10
 resources/domains/Territory.xml:10
 resources/domains/UnitConversion.xml:15
 resources/domains/Year.xml:11
-resources/views/Partner.xml:231
+resources/views/Partner.xml:234
 resources/views/Partner.xml:61
 resources/views/Product.xml:39"
 Name/Company Name,Nom/Raison Sociale,,resources/domains/Partner.xml:17
@@ -1139,8 +1139,8 @@ Not implemented yet!,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.ja
 Notes,Remarques,,"resources/domains/Company.xml:18
 resources/views/Company.xml:32
 resources/views/Company.xml:37
-resources/views/Partner.xml:147
-resources/views/Partner.xml:261"
+resources/views/Partner.xml:150
+resources/views/Partner.xml:264"
 Notification,Notification,,resources/views/Selects.xml:406
 November,Novembre,,resources/views/Selects.xml:288
 N° and Street label,N° et Libellé de la voie,,resources/domains/Address.xml:13
@@ -1185,7 +1185,7 @@ resources/domains/Blocking.xml:13
 resources/domains/Company.xml:14
 resources/domains/User.xml:13
 resources/views/Menu.xml:17
-resources/views/Partner.xml:163
+resources/views/Partner.xml:166
 resources/views/Partner.xml:32
 resources/views/Partner.xml:44"
 Partner (Cust/Suppl),Tiers,,resources/views/Selects.xml:344
@@ -1198,8 +1198,8 @@ Partner categories,Catégories de tiers,,"resources/views/Menu.xml:93
 resources/views/Menu.xml:96
 resources/views/PartnerCategory.xml:6"
 Partner category,Les Tiers,,resources/views/PartnerCategory.xml:11
-Partner details,Détails du tiers,,resources/views/Partner.xml:183
-Partner filters,Filtres Tiers,,resources/views/Partner.xml:396
+Partner details,Détails du tiers,,resources/views/Partner.xml:186
+Partner filters,Filtres Tiers,,resources/views/Partner.xml:399
 Partner list,Liste de tiers,,resources/views/PartnerList.xml:11
 Partner lists,Liste des tiers,,resources/views/PartnerList.xml:6
 Partner name,Nom du tiers,,resources/domains/User.xml:19
@@ -1268,7 +1268,7 @@ Please select active company,Veuillez sélectionner une société active.,,resou
 Please select key fields to check duplicate,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:166
 Please select the Message(s) to print.,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:174
 "Please, enter date of next execution.",Veuillez saisir une date de prochaine exécution.,,resources/views/SchedulerInstance.xml:29
-Postal addresses,Adresses postales,,"resources/views/Partner.xml:188
+Postal addresses,Adresses postales,,"resources/views/Partner.xml:191
 resources/views/Partner.xml:83"
 Prefix,Préfixe,,resources/domains/Sequence.xml:14
 Price Extra,Surcoût variante,,resources/domains/ProductVariantValue.xml:12
@@ -1286,7 +1286,7 @@ resources/views/Menu.xml:152
 resources/views/PriceList.xml:7"
 Prices updated,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:185
 Print,Imprimer,,resources/views/Message.xml:9
-Print Informations,Imprimer informations,,"resources/views/Partner.xml:214
+Print Informations,Imprimer informations,,"resources/views/Partner.xml:217
 resources/views/Partner.xml:47"
 Printing Setting,Paramètre impression,,"resources/views/PrintingSetting.xml:20
 resources/views/PrintingSetting.xml:6"
@@ -1385,7 +1385,7 @@ Products/Goods,Produits/Articles,,resources/views/Menu.xml:33
 Prof.,Prof.,,resources/views/Selects.xml:165
 Professional training,Formation professionelle,,resources/views/Selects.xml:374
 Profile,Profil,,resources/views/Selects.xml:248
-Profiles,Profils,,"resources/views/Partner.xml:317
+Profiles,Profils,,"resources/views/Partner.xml:320
 resources/views/Product.xml:284"
 Projects,Les projets,,resources/views/User.xml:41
 Prospect,Prospect,,resources/views/Selects.xml:170
@@ -1400,6 +1400,7 @@ Purchasable,Achetable,,resources/domains/Product.xml:60
 Purchase,Achat,,"resources/views/Selects.xml:255
 resources/views/Selects.xml:470"
 Purchase / Cost currency,Devise d'achat,,resources/domains/Product.xml:31
+Purchase Order,Commande Fournisseur,,resources/views/Partner.xml:136
 Purchase Qty by tracking,Qté par lot à l'achat,,resources/domains/TrackingNumberConfiguration.xml:22
 Purchase Tax,T.V.A. à l'achat,,resources/domains/AccountManagement.xml:11
 Purchase config,Config. Module Achats,,"resources/views/Company.xml:27
@@ -1558,8 +1559,8 @@ Send Email,Envoyer email,,"resources/views/Partner.xml:19
 resources/views/Partner.xml:29
 resources/views/Product.xml:17
 resources/views/Product.xml:30"
-Send email,Envoyer email,,"resources/views/Partner.xml:165
-resources/views/Partner.xml:213
+Send email,Envoyer email,,"resources/views/Partner.xml:168
+resources/views/Partner.xml:216
 resources/views/Partner.xml:46"
 September,Septembre,,resources/views/Selects.xml:286
 Sequence,Séquence,,"resources/domains/TemplateRuleLine.xml:10
@@ -1573,8 +1574,8 @@ Service,Service,,resources/views/Selects.xml:237
 Service Products,Produits services,,resources/views/Product.xml:275
 "Service indisponible, veuillez contacter votre adminstrateur",,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:148
 Services,Services,,resources/views/Selects.xml:216
-Settings,Configurations,,"resources/views/Partner.xml:138
-resources/views/Partner.xml:252"
+Settings,Configurations,,"resources/views/Partner.xml:141
+resources/views/Partner.xml:255"
 Shift to doubtful receivables,Passage en créance douteuse,,resources/views/Selects.xml:365
 Shift to irrecoverable,Passage en irrécouvrable,,resources/views/Selects.xml:358
 Show,Afficher,,resources/views/General.xml:78
