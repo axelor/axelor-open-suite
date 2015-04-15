@@ -17,7 +17,7 @@
 	  		return saleOrderSeq + "-" + clientPartner.getName();
 	  	]]>
   	</string>
-  	<string name="saleOrderSeq"  title="Reference" readonly="true" unique="true"/>
+  	<string name="saleOrderSeq"  title="Reference" readonly="true"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>
   	<string name="externalReference" title="Customer reference"/>
   	<date name="creationDate" title="Creation date" required="true" readonly="true"/>
@@ -68,6 +68,8 @@
 	<date name="subscriptionEndDate" title="Subscription end date"/>
     
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>  	
+    
+    <unique-constraint columns="saleOrderSeq,company"/>
     
   </entity>
 
