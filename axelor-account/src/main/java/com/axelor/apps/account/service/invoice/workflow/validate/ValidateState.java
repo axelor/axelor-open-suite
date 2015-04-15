@@ -24,22 +24,25 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 
 public class ValidateState extends WorkflowInvoice {
-	
+
 	protected User user;
-	
-	public ValidateState(Invoice invoice) {
-		
-		super(invoice);
+
+	public ValidateState() {
+		super();
 		this.user = AuthUtils.getUser();
-		
+
 	}
-	
+
+	public void init(Invoice invoice){
+		this.invoice = invoice;
+	}
+
 	@Override
 	public void process( ) throws AxelorException {
-		
+
 		invoice.setStatusSelect(STATUS_VALIDATED);
 		invoice.setValidatedByUser( user );
-		
+
 	}
-	
+
 }

@@ -48,12 +48,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public abstract class InvoiceGenerator  {
-	
+
 	// Logger
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceGenerator.class);
 
 	protected JournalService journalService;
-	
+
 	protected boolean months30days;
 	protected int operationType;
 	protected Company company;
@@ -67,10 +67,10 @@ public abstract class InvoiceGenerator  {
 	protected PriceList priceList;
 	protected String internalReference;
 	protected String externalReference;
-	
-	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress, 
+
+	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
 			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference) throws AxelorException {
-		
+
 		this.operationType = operationType;
 		this.company = company;
 		this.paymentCondition = paymentCondition;
@@ -82,13 +82,13 @@ public abstract class InvoiceGenerator  {
 		this.priceList = priceList;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
-		
+
 		this.today = GeneralService.getTodayDate();
 		this.journalService = new JournalService();
-		
+
 	}
-	
-	
+
+
 	/**
 	 * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency récupérés du tiers
 	 * @param operationType
@@ -97,9 +97,9 @@ public abstract class InvoiceGenerator  {
 	 * @param contactPartner
 	 * @throws AxelorException
 	 */
-	protected InvoiceGenerator(int operationType, Company company, Partner partner, Partner contactPartner, PriceList priceList, 
+	protected InvoiceGenerator(int operationType, Company company, Partner partner, Partner contactPartner, PriceList priceList,
 			String internalReference, String externalReference) throws AxelorException {
-		
+
 		this.operationType = operationType;
 		this.company = company;
 		this.partner = partner;
@@ -107,24 +107,24 @@ public abstract class InvoiceGenerator  {
 		this.priceList = priceList;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
-		
+
 		this.today = GeneralService.getTodayDate();
 		this.journalService = new JournalService();
-		
+
 	}
-	
-	
+
+
 	protected InvoiceGenerator() {
-		
+
 		this.today = GeneralService.getTodayDate();
 		this.journalService = new JournalService();
-		
+
 	}
-	
+
 	protected int inverseOperationType(int operationType) throws AxelorException  {
 
 		switch(operationType)  {
-		
+
 			case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
 				return InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
 			case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
@@ -134,188 +134,188 @@ public abstract class InvoiceGenerator  {
 			case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
 				return InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
 			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_1), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_1), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);
 		}
-		
+
 	}
-	
-	
+
+
 	abstract public Invoice generate() throws AxelorException;
-	
-	
+
+
 	protected Invoice createInvoiceHeader() throws AxelorException  {
-		
+
 		Invoice invoice = new Invoice();
-		
+
 		invoice.setOperationTypeSelect(operationType);
-		
+
 		invoice.setInvoiceDate(this.today);
-		
+
 		if(partner == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_2), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_2), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);
 		}
 		invoice.setPartner(partner);
-		
+
 		if(paymentCondition == null)  {
 			paymentCondition = partner.getPaymentCondition();
 		}
 		if(paymentCondition == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_3), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_3), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);
 		}
 		invoice.setPaymentCondition(paymentCondition);
-		
+
 		invoice.setDueDate(this.today.plusDays(paymentCondition.getPaymentTime()));
-		
+
 		if(paymentMode == null)  {
 			paymentMode = partner.getPaymentMode();
 		}
 		if(paymentMode == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);
 		}
 		invoice.setPaymentMode(paymentMode);
-		
+
 		if(mainInvoicingAddress == null)  {
 			mainInvoicingAddress = partner.getMainInvoicingAddress();
 		}
 		if(mainInvoicingAddress == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_5), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_5), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);
 		}
-		
+
 		invoice.setAddress(mainInvoicingAddress);
-		
+
 		invoice.setContactPartner(contactPartner);
-		
+
 		if(currency == null)  {
 			currency = partner.getCurrency();
 		}
 		if(currency == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_6), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_6), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);
 		}
 		invoice.setCurrency(currency);
-		
+
 		invoice.setCompany(company);
-		
+
 		invoice.setPartnerAccount(Beans.get(AccountCustomerService.class).getPartnerAccount(partner, company, operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
-		
-		invoice.setJournal(journalService.getJournal(invoice)); 
-		
+
+		invoice.setJournal(journalService.getJournal(invoice));
+
 		invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
-		
+
 		invoice.setPriceList(priceList);
-		
+
 		invoice.setInternalReference(internalReference);
-		
+
 		invoice.setExternalReference(externalReference);
-		
+
 		initCollections(invoice);
-		
+
 		return invoice;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Peupler une facture.
 	 * <p>
-	 * Cette fonction permet de déterminer de déterminer les tva d'une facture à partir des lignes de factures  en paramètres. 
+	 * Cette fonction permet de déterminer de déterminer les tva d'une facture à partir des lignes de factures  en paramètres.
 	 * </p>
-	 * 
+	 *
 	 * @param invoice
 	 * @param invoiceLines
-	 * 
+	 *
 	 * @throws AxelorException
 	 */
 	public void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
-		
+
 		LOG.debug("Peupler une facture => lignes de factures: {} ", new Object[] {  invoiceLines.size() });
-		
+
 		initCollections( invoice );
-		
+
 		invoice.getInvoiceLineList().addAll(invoiceLines);
-		
+
 		// create Tva lines
 		invoice.getInvoiceLineTaxList().addAll((new TaxInvoiceLine(invoice, invoiceLines)).creates());
-		
+
 		computeInvoice(invoice);
-		
+
 	}
-	
-	
+
+
 	/**
-	 * Initialiser l'ensemble des Collections d'une facture 
-	 * 
+	 * Initialiser l'ensemble des Collections d'une facture
+	 *
 	 * @param invoice
 	 */
 	protected void initCollections(Invoice invoice){
 
 		initInvoiceLineTaxList(invoice);
 		initInvoiceLineList(invoice);
-		
+
 	}
-	
+
 	/**
-	 * Initialiser l'ensemble des listes de ligne de facture d'une facture 
-	 * 
+	 * Initialiser l'ensemble des listes de ligne de facture d'une facture
+	 *
 	 * @param invoice
 	 */
 	protected void initInvoiceLineList(Invoice invoice) {
-		
+
 		if (invoice.getInvoiceLineList() == null) { invoice.setInvoiceLineList(new ArrayList<InvoiceLine>()); }
 		else  {  invoice.getInvoiceLineList().clear();  }
-		
+
 	}
-	
-	
+
+
 	/**
-	 * Initialiser l'ensemble des listes de ligne de tva d'une facture 
-	 * 
+	 * Initialiser l'ensemble des listes de ligne de tva d'une facture
+	 *
 	 * @param invoice
 	 */
 	protected void initInvoiceLineTaxList(Invoice invoice) {
-		
+
 		if (invoice.getInvoiceLineTaxList() == null) { invoice.setInvoiceLineTaxList(new ArrayList<InvoiceLineTax>()); }
 		else { invoice.getInvoiceLineTaxList().clear(); }
-		
+
 	}
 
 	/**
 	 * Calculer le montant d'une facture.
-	 * <p> 
+	 * <p>
 	 * Le calcul est basé sur les lignes de TVA préalablement créées.
 	 * </p>
-	 * 
+	 *
 	 * @param invoice
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public void computeInvoice(Invoice invoice) throws AxelorException {
-		
+
 		// Dans la devise de la comptabilité du tiers
 		invoice.setExTaxTotal( BigDecimal.ZERO );
 		invoice.setTaxTotal( BigDecimal.ZERO );
 		invoice.setInTaxTotal( BigDecimal.ZERO );
-		
+
 		// Dans la devise de la facture
 		invoice.setInvoiceExTaxTotal(BigDecimal.ZERO);
 		invoice.setInvoiceTaxTotal(BigDecimal.ZERO);
 		invoice.setInvoiceInTaxTotal(BigDecimal.ZERO);
-		
+
 		for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
-			
+
 			// Dans la devise de la comptabilité du tiers
 			invoice.setExTaxTotal(invoice.getExTaxTotal().add( invoiceLineTax.getAccountingExTaxBase() ));
 			invoice.setTaxTotal(invoice.getTaxTotal().add( invoiceLineTax.getAccountingTaxTotal() ));
 			invoice.setInTaxTotal(invoice.getInTaxTotal().add( invoiceLineTax.getAccountingInTaxTotal() ));
-			
+
 			// Dans la devise de la facture
 			invoice.setInvoiceExTaxTotal(invoice.getInvoiceExTaxTotal().add( invoiceLineTax.getExTaxBase() ));
 			invoice.setInvoiceTaxTotal(invoice.getInvoiceTaxTotal().add( invoiceLineTax.getTaxTotal() ));
 			invoice.setInvoiceInTaxTotal(invoice.getInvoiceInTaxTotal().add( invoiceLineTax.getInTaxTotal() ));
-			
+
 		}
-		
+
 		LOG.debug("Montant de la facture: HT = {}, TVA = {}, TTC = {}",
 			new Object[] { invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal() });
-		
+
 	}
 
 }

@@ -61,7 +61,7 @@ public class SaleOrderLineController {
 				}
 
 				if(saleOrder != null) {
-					companyExTaxTotal = saleOrderLineService.getCompanyExTaxTotal(exTaxTotal, saleOrder);
+					companyExTaxTotal = saleOrderLineService.getAmountInCompanyCurrency(exTaxTotal, saleOrder);
 				}
 			}
 			

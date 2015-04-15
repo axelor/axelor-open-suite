@@ -111,7 +111,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 	}
 
 	
-	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, SaleOrder saleOrder) throws AxelorException  {
+	public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder) throws AxelorException  {
 		
 		return currencyService.getAmountCurrencyConverted(
 				saleOrder.getCurrency(), saleOrder.getCompany().getCurrency(), exTaxTotal, saleOrder.getCreationDate());  

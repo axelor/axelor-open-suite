@@ -19,6 +19,8 @@ package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.app.AxelorModuleInfo;
+import com.axelor.apps.account.service.invoice.workflow.cancel.CancelState;
+import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
@@ -45,6 +47,8 @@ import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.workflow.CancelStateSupplyChain;
+import com.axelor.apps.supplychain.service.workflow.VentilateStateSupplyChain;
 
 @AxelorModuleInfo(name = "axelor-supplychain")
 public class SupplychainModule extends AxelorModule {
@@ -65,5 +69,7 @@ public class SupplychainModule extends AxelorModule {
         bind(StockMoveInvoiceService.class).to(StockMoveInvoiceServiceImpl.class);
         bind(SaleOrderManagementRepository.class).to(SaleOrderSupplychainRepository.class);
         bind(StockMoveServiceImpl.class).to(StockMoveServiceSupplychainImpl.class);
+        bind(VentilateState.class).to(VentilateStateSupplyChain.class);
+        bind(CancelState.class).to(CancelStateSupplyChain.class);
     }
 }

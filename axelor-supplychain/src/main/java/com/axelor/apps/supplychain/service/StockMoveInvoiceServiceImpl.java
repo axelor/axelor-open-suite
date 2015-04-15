@@ -43,6 +43,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -522,9 +523,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1), stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
 		}
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), stockMoveLine.getPrice(),
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, product.getName(), stockMoveLine.getPrice(),
 				stockMoveLine.getDescription(), stockMoveLine.getRealQty(), stockMoveLine.getUnit(), product.getInvoiceLineType(),
-				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO, 0, null, false)  {
+				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO, 0, null, false, stockMoveLine.getSaleOrderLine())  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 

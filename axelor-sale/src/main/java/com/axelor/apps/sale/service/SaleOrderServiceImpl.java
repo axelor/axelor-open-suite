@@ -77,7 +77,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		if(saleOrder.getSaleOrderLineList() != null)  {
 			for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList())  {
 				saleOrderLine.setExTaxTotal(saleOrderLineService.computeSaleOrderLine(saleOrderLine));
-				saleOrderLine.setCompanyExTaxTotal(saleOrderLineService.getCompanyExTaxTotal(saleOrderLine.getExTaxTotal(), saleOrder));
+				saleOrderLine.setCompanyExTaxTotal(saleOrderLineService.getAmountInCompanyCurrency(saleOrderLine.getExTaxTotal(), saleOrder));
 			}
 		}
 

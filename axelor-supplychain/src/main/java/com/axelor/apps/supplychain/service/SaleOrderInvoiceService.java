@@ -34,67 +34,71 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface SaleOrderInvoiceService {
-	
+
 	public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException;
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generatePerOrderInvoice(SaleOrder saleOrder) throws AxelorException;
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateSubscriptionInvoice(SaleOrder saleOrder) throws AxelorException;
-	
-	
+
+
 	public void checkSubscriptionSaleOrder(SaleOrder saleOrder) throws AxelorException;
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Cree une facture mémoire à partir d'un devis.
-	 * 
+	 *
 	 * Le planificateur doit être prêt.
-	 * 
+	 *
 	 * @param saleOrder
 	 * 		Le devis
-	 * 
+	 *
 	 * @return Invoice
 	 * 		La facture d'abonnement
-	 * 
-	 * @throws AxelorException 
-	 * @throws Exception 
+	 *
+	 * @throws AxelorException
+	 * @throws Exception
 	 */
 	public Invoice runSubscriptionInvoicing(SaleOrder saleOrder) throws AxelorException;
-	
-	
-	
+
+
+
 	public void checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder) throws AxelorException;
-	
-	
+
+
 	public SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice);
-	
-	
+
+
 	public SaleOrder assignInvoice(SaleOrder saleOrder, Invoice invoice);
-	
+
 	public Invoice createInvoice(SaleOrder saleOrder) throws AxelorException;
-	
+
 
 	public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException;
-	
-	
-	
+
+
+
 	// TODO ajouter tri sur les séquences
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList, boolean showDetailsInInvoice) throws AxelorException;
-	
+
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, int sequence) throws AxelorException;
-	
-	
+			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, int sequence, SaleOrderLine saleOrderLine) throws AxelorException;
+
+
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException;
-	
+
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderSubLine saleOrderSubLine) throws AxelorException;
-	
+
+	public BigDecimal getAmountRemainingToBeInvoiced(SaleOrder saleOrder);
+
+	public BigDecimal getAmountRemainingToBeInvoiced(SaleOrder saleOrder, Long exceptInvoiceId, boolean includeInvoice);
+
 }
 
 

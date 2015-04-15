@@ -25,52 +25,51 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.auth.db.User;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceStockImpl {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceSupplychainImpl.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceSupplychainImpl.class);
 
 	/**
 	 * Calculer le montant d'une facture.
-	 * <p> 
+	 * <p>
 	 * Le calcul est basé sur les lignes de TVA préalablement créées.
 	 * </p>
-	 * 
+	 *
 	 * @param invoice
 	 * @param vatLines
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	@Override
 	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
 		super._computeSaleOrder(saleOrder);
 
-		saleOrder.setAmountRemainingToBeInvoiced(saleOrder.getInTaxTotal());
+		saleOrder.setAmountRemainingToBeInvoiced(saleOrder.getExTaxTotal());
 
 	}
 
 
-	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 
-			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
+	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
+			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner) throws AxelorException  {
-		
+
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
 				new Object[] { company.getName(), externalReference, clientPartner.getFullName() });
-		
-		SaleOrder saleOrder = super.createSaleOrder(buyerUser, company, contactPartner, currency, deliveryDate, internalReference, 
+
+		SaleOrder saleOrder = super.createSaleOrder(buyerUser, company, contactPartner, currency, deliveryDate, internalReference,
 				externalReference, orderDate, priceList, clientPartner);
-		
+
 		saleOrder.setLocation(location);
 		saleOrder.setInvoicingTypeSelect(invoicingTypeSelect);
-		
+
 		return saleOrder;
 	}
-	
+
 }
 
 

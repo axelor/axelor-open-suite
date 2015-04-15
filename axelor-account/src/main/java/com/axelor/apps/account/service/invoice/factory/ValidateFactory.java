@@ -24,14 +24,14 @@ import com.axelor.apps.account.service.invoice.workflow.validate.ValidateState;
 //import com.axelor.apps.base.service.alarm.AlarmEngineService;
 
 public class ValidateFactory {
-	
+
 //	@Inject
 //	private AlarmEngineService<Invoice> alarmEngineService;
 
 	public ValidateState getValidator(Invoice invoice){
-		
-		return new ValidateState(invoice);
-		
+		ValidateState validateState = new ValidateState();
+		validateState.init(invoice);
+		return validateState;
 	}
-	
+
 }

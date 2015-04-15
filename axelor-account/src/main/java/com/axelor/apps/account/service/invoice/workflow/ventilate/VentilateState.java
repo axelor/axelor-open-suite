@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
+import javax.inject.Inject;
+
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
@@ -37,151 +39,149 @@ import com.google.common.base.Strings;
 
 public class VentilateState extends WorkflowInvoice {
 
-	protected SequenceService sequenceService;
-	protected MoveService moveService;
-	
-	public VentilateState(SequenceService sequenceService, MoveService moveService, Invoice invoice) {
-		
-		super(invoice);
-		this.sequenceService = sequenceService;
-		this.moveService = moveService;
-		
+	@Inject
+	private SequenceService sequenceService;
+
+	@Inject
+	private MoveService moveService;
+
+	@Override
+	public void init(Invoice invoice){
+		this.invoice = invoice;
 	}
-	
-	
+
 	@Override
 	public void process( ) throws AxelorException {
-		
+
 		Preconditions.checkNotNull(invoice.getPartner());
 		setDueDate( );
-		
+
 		setInvoiceId( );
 		updatePaymentSchedule( );
 		setMove( );
 		setStatus( );
-		
 	}
-	
+
 	protected void updatePaymentSchedule( ){
-		
+
 		if ( invoice.getPaymentSchedule() != null ) { invoice.getPaymentSchedule().addInvoiceSetItem( invoice ); }
-		
+
 	}
-	
+
 	protected void setDueDate( ) throws AxelorException{
-		
+
 		this.checkInvoiceDate();
-		
+
 		if(!invoice.getPaymentCondition().getIsFree())  {
 			invoice.setDueDate(this.getDueDate());
 		}
-		
+
 	}
-	
-	
+
+
 	protected void checkInvoiceDate() throws AxelorException  {
-		
-		if(all().filter("self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3", 
+
+		if(all().filter("self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3",
 				InvoiceRepository.STATUS_VENTILATED, invoice.getInvoiceDate(), invoice.getOperationTypeSelect()).count() > 0)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_1), IException.CONFIGURATION_ERROR);
 		}
-		
+
 	}
-	
-	
+
+
 	protected LocalDate getDueDate()  {
-		
+
 		PaymentCondition paymentCondition = invoice.getPaymentCondition();
-		
+
 		switch (paymentCondition.getTypeSelect()) {
 		case PaymentConditionRepository.TYPE_NET:
-			
+
 			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime());
-			
+
 		case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
-					
+
 			return invoice.getInvoiceDate().dayOfMonth().withMaximumValue().plusDays(paymentCondition.getPaymentTime());
-					
+
 		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
-			
+
 			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue();
-			
+
 		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
-			
+
 			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue().plusDays(paymentCondition.getDaySelect());
 
 		default:
 			return invoice.getInvoiceDate();
 		}
-		
+
 	}
-	
+
 	protected void setMove( ) throws AxelorException {
-		
+
 		// Création de l'écriture comptable
 		Move move = moveService.createMove(invoice);
-		
+
 		if (move != null)  {
-			
+
 			moveService.createMoveUseExcessPaymentOrDue(invoice);
-			
+
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Détermine le numéro de facture
-	 * 
+	 *
 	 * @param invoice
 	 * @param company
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	protected void setStatus( ) {
 		invoice.setStatusSelect(InvoiceRepository.STATUS_VENTILATED);
 	}
-	
+
 	/**
 	 * Détermine le numéro de facture
-	 * 
+	 *
 	 * @param invoice
 	 * @param company
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	protected void setInvoiceId( ) throws AxelorException{
-		
+
 		if(!Strings.isNullOrEmpty(invoice.getInvoiceId()))  {  return;  }
-		
+
 		switch (invoice.getOperationTypeSelect()) {
-		
+
 		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-			
+
 			invoice.setInvoiceId(sequenceService.getSequenceNumber(IAdministration.SUPPLIER_INVOICE, invoice.getCompany()));
 			break;
-			
+
 		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-			
+
 			invoice.setInvoiceId(sequenceService.getSequenceNumber(IAdministration.SUPPLIER_REFUND, invoice.getCompany()));
 			break;
 
 		case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-			
+
 			invoice.setInvoiceId(sequenceService.getSequenceNumber(IAdministration.CUSTOMER_INVOICE, invoice.getCompany()));
 			break;
-			
+
 		case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-				
+
 			invoice.setInvoiceId(sequenceService.getSequenceNumber(IAdministration.CUSTOMER_REFUND, invoice.getCompany()));
 			break;
-			
+
 		default:
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.JOURNAL_1),invoice.getInvoiceId()), IException.MISSING_FIELD);
 		}
-		
+
 		if (invoice.getInvoiceId() == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.VENTILATE_STATE_2), invoice.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
-		
+
 	}
 
 }

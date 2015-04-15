@@ -17,45 +17,30 @@
  */
 package com.axelor.apps.account.service.invoice.factory;
 
-import javax.inject.Inject;
-
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.service.MoveService;
-import com.axelor.apps.account.service.PaymentScheduleService;
-import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.MajorEndCycleVentilateState;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
-import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.inject.Beans;
 
 public class VentilateFactory {
-	
-	@Inject
-	private SequenceService sequenceService;
-	
-	@Inject
-	private MoveService moveService;
-	
-	@Inject
-	private PaymentScheduleService paymentScheduleService;
-	
-	@Inject
-	private ReimbursementExportService reimbursementExportService;
 
 	public VentilateState getVentilator(Invoice invoice){
-		
-		return ventilatorByType(invoice);
-		
+
+		VentilateState ventilateState = ventilatorByType(invoice.getEndOfCycleOk());
+		ventilateState.init(invoice);
+		return ventilateState;
+
 	}
-	
-	protected VentilateState ventilatorByType(Invoice invoice){
-		
-		if(invoice.getEndOfCycleOk())  {
-			return new MajorEndCycleVentilateState(sequenceService, moveService, paymentScheduleService, reimbursementExportService, invoice);
+
+	protected VentilateState ventilatorByType(boolean endOfCycleOk){
+
+		if(endOfCycleOk)  {
+			return Beans.get(MajorEndCycleVentilateState.class);
 		}
 		else  {
-			return new VentilateState(sequenceService, moveService, invoice);
+			return Beans.get(VentilateState.class);
 		}
-		
+
 	}
-	
+
 }

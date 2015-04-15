@@ -24,11 +24,9 @@ import com.axelor.exception.AxelorException;
 public abstract class WorkflowInvoice extends InvoiceRepository {
 
 	protected Invoice invoice;
-	
-	protected WorkflowInvoice (Invoice invoice){
-		this.invoice = invoice;
-	}
-	
+
+	public abstract void init(Invoice invoice);
+
 	public abstract void process() throws AxelorException;
-	
+
 }
