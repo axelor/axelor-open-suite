@@ -17,19 +17,19 @@
 			<field name="isDefault" onChange="action-mail-account-validate-is-default" />
         	<field name="signature" widget="Html" x-lite="true" height="7" colSpan="12"/>
         </panel>
-        <panel name="loginPanel" title="Login" readonlyIf="isValid" >
-       	 	<field name="login"/>
-        	<field name="password" widget="password"/>
-        </panel>
         <panel name="configPanel" title="Configurations" readonlyIf="isValid">
         	<field name="serverTypeSelect"/>
         	<field name="host"/>
         	<field name="port"/>
         	<field name="securitySelect"/>
         </panel>
+        <panel name="loginPanel" title="Login" readonlyIf="isValid" >
+       	 	<field name="login"/>
+        	<field name="password" widget="password"/>
+        </panel>
 		<panel title="User" sidebar="true" showIf="_mailAccountByUser">
         	<field name="user" requiredIf="_mailAccountByUser" showTitle="false" colSpan="12"/>
-        	<field name="_mailAccountByUser" widget="BOOLEAN" hidden="true" readonly="true" />
+        	<field name="$_mailAccountByUser" widget="BOOLEAN" hidden="true" readonly="true" />
 		</panel>
 		<panel sidebar="true" >
 			<button name="testConnection" onClick="save,action-method-mail-account-validate,save" title="Test connection" colSpan="10"/>

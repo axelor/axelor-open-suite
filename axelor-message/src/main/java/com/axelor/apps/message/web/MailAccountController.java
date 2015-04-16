@@ -41,8 +41,6 @@ public class MailAccountController {
 
 			response.setValue("isValid", Boolean.TRUE );
 			response.setFlash( I18n.get(IExceptionMessage.MAIL_ACCOUNT_3) );
-			response.setReadonly("loginPanel", true);
-			response.setReadonly("configPanel",true);
 			
 		} catch ( Exception e) {
 			

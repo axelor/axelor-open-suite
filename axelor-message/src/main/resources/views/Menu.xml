@@ -99,7 +99,6 @@
 		model="com.axelor.apps.message.db.MailAccount" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.user = :__user__</domain>
 	</action-view>
 	
 	<menuitem name="mail-root-email-conf-routing" parent="mail-conf" priority="60" title="Routings" action="mail.root.email.conf.routing" />	
