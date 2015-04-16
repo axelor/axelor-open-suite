@@ -25,7 +25,7 @@
 	    <field name="salePrice" width="120"/>
     </grid>
 
-   <form   name="product-form" onNew="action-group-base-product-onnew" title="Product" model="com.axelor.apps.base.db.Product" >
+   <form   name="product-form" onNew="action-group-base-product-onnew" onLoad="action-product-attrs-title-sale-price" title="Product" model="com.axelor.apps.base.db.Product" >
     <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
@@ -40,6 +40,7 @@
 				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
 				<panel title="Product typology" colSpan="6" colWidths="30%,70%">
 					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" colSpan="12"/>
+					<field name="periodicitySelect" if-module="axelor-supplychain" showIf="productTypeSelect == 'subscriptable'"/>
 					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" colSpan="12"/>
 					<field name="invoiceLineType" colSpan="12" if-module="axelor-account"/>
 					<field name="expense" if-module="axelor-human-resource" colSpan="12"/>
@@ -267,7 +268,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-product-attrs-title-sale-price">
-		<attribute name="title" for="salePrice" expr="Sale Price W.T. (by month)" if="productTypeSelect == 'subscriptable'"/>
+		<attribute name="title" for="salePrice" expr="Sale Price W.T. (for periodicity selected)" if="productTypeSelect == 'subscriptable'"/>
 	</action-attrs>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">

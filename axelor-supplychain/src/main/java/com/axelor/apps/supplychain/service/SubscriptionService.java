@@ -13,9 +13,9 @@ public interface SubscriptionService extends Repository<Subscription>{
 	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLine) throws AxelorException;
 	
 	@Transactional
-	public Invoice generateInvoice(Subscription subscription,SaleOrderLine saleOrderLine,SaleOrder saleOrder) throws AxelorException;
+	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLineIt,SaleOrderLine saleOrderLine) throws AxelorException;
 	
 	@Transactional
-	public SaleOrderLine saveSaleOrderLine(SaleOrderLine saleOrderLine);
+	public Invoice generateInvoice(Subscription subscription,SaleOrderLine saleOrderLine,SaleOrder saleOrder) throws AxelorException;
 	
 }

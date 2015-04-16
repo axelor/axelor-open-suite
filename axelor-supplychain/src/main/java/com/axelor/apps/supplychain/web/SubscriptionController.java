@@ -38,6 +38,24 @@ public class SubscriptionController {
 		}
 	}
 	
+	public void generateAllSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+		
+		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+		
+		if(saleOrder == null){
+			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+		}
+		
+		saleOrder  = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+		
+		for (SaleOrderLine saleOrderLineIt : saleOrder.getSaleOrderLineList()) {
+			subscriptionService.generateSubscriptions(saleOrderLineIt,saleOrderLine);
+		}
+		
+		response.setReload(true);
+	}
+	
 	public void generateInvoice(ActionRequest request, ActionResponse response)  {
 		
 		Subscription subscription = request.getContext().asType(Subscription.class);

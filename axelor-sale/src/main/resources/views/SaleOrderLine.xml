@@ -94,6 +94,7 @@
     	<action name="action-sale-order-line-get-production-information" if="axelor-production"/>
     	<action name="action-sale-order-line-attrs-title-price"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
+    	<action name="action-supplychain-record-periodicity"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-qty-onchange">
@@ -181,6 +182,10 @@
 	<action-attrs name="action-supplychain-attrs-readonly-invoice-subscription" if-module="axelor-supplychain">
 		<attribute name="hidden" for="subscriptionList.invoiceSubscription" expr="eval: __parent__.statusSelect &lt; 3" />
 	</action-attrs>
+	
+	<action-record name="action-supplychain-record-periodicity" model="com.axelor.apps.sale.db.SaleOrderLine" if-module="axelor-supplychain">
+		<field name="periodicity" expr="eval: product?.periodicitySelect"/>
+	</action-record>
 	
 <!-- 	ACTION VIEW -->
 	<action-view name="action-sale-order-line-view-stock-move-line" title="" model="com.axelor.apps.stock.db.StockMoveLine">
