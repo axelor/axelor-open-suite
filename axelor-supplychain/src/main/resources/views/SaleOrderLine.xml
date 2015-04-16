@@ -10,11 +10,16 @@
 			<field name="periodNumber" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
 			<field name="toSubDate" readonly="true" colSpan="3"/>
 			<field name="invoicingTypeSelect"/>
-			<button colSpan="3" name="generateSubscriptions" title="Generate Subscriptions" onClick="com.axelor.apps.supplychain.web.SubscriptionController:generateSubscriptions"/>
+			<button colSpan="3" name="generateSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-group-button-generate-subscriptions"/>
 			<button icon="fa-thumbs-o-up" colSpan="3" name="generateAllSubscriptions" help="Generate Subscriptions for each Subscriptable product of this order with these parameters" onClick="action-supplychain-validate-generate-all-subscriptions,save,com.axelor.apps.supplychain.web.SubscriptionController:generateAllSubscriptions"/>
 			<field name="subscriptionList" colSpan="12"/>
 		</panel>
 	</form>
+	
+	<action-group name="action-supplychain-group-button-generate-subscriptions">
+		<action name="save" if="__this__.id &gt; 0"/>
+		<action name="com.axelor.apps.supplychain.web.SubscriptionController:generateSubscriptions"/>
+	</action-group>
 	
 	<action-record name="action-supplychain-record-set-dateSubTo" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<field name="toSubDate" expr="eval:fromSubDate.plusMonths(periodicity*periodNumber)" if="periodicity &gt; 0 &amp;&amp; fromSubDate != null &amp;&amp; periodNumber &gt; 0"/>
