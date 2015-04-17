@@ -221,6 +221,7 @@
 				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
 				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
 				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
+				<button name="rescheduleButton" colSpan="3" onClick="save,action-view-popup-event-reschedule" title="Reschedule" showIf="statusSelect != 1"/>
 			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false"/>
 		</panel>
@@ -235,6 +236,20 @@
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 		</panel>
 	</form>
+	
+	<form model="com.axelor.apps.crm.db.Event" title="Reschedule" name="popup-event-form">
+		 <field name="startDateTime" title=""/>
+		 <button name="confirm" title="Confirm" onClick="com.axelor.apps.crm.web.EventController:reschedule"/>
+	</form>
+	
+	<action-view name="action-view-popup-event-reschedule" title="Reschedule" model="com.axelor.apps.crm.db.Event">
+	    <view type="form" name="popup-event-form"/>
+	    <view-param name="popup" value="reload"/>
+	    <view-param name="show-toolbar" value="false"/>
+	    <view-param name="show-confirm" value="false" />
+	    <view-param name="forceEdit" value="true" />
+	    <context name="_showRecord" expr="eval: __this__.id" />
+	  </action-view>
     
     <action-group name="action-group-crm-meeting-accept-click">
     	<action name="action-set-status-select-2"/>

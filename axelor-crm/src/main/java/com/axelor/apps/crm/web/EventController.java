@@ -35,13 +35,14 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.auth.AuthUtils;
+import com.google.inject.persist.Transactional;
 
 public class EventController {
 
@@ -238,5 +239,25 @@ public class EventController {
 		
 	}
 	
+	@Transactional
+	public void reschedule(ActionRequest request, ActionResponse response)  {
+		EventService eventService = Beans.get(EventService.class);
+		
+		Event eventPopup = request.getContext().asType(Event.class);
+		Event event = eventService.find((Long)request.getContext().get("id"));
+		event.setStartDateTime(eventPopup.getStartDateTime());
+		if(event.getStartDateTime() != null) {
+			if(event.getDuration() != null) {
+				event.setEndDateTime(eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
+			}
+			else if(event.getEndDateTime() != null && event.getEndDateTime().isAfter(event.getStartDateTime())) {
+				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
+				event.setDuration(new Long(eventService.getDuration(duration)));
+			}
+		}
+		event.setStatusSelect(1);
+		eventService.save(event);
+		response.setCanClose(true);
+	}
 	
 }
