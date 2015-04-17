@@ -199,6 +199,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		
 		BigDecimal total = BigDecimal.ZERO;
 		
+		saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+				
 		for(Invoice invoice : saleOrder.getInvoiceSet())  {
 			total = total.add(this.computeInTaxTotalInvoiced(invoice));
 		}
