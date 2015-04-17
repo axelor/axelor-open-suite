@@ -23,7 +23,7 @@
 <!-- Bon de livraison -->
   	<boolean name="isInvoiceControlled" title="Invoice controlled"/>
   	
-  	<integer name="periodicity"/>
+  	<integer name="periodicity" selection="product.periodicity.subscription.select"/>
   	<date name="fromSubDate" title="Date From"/>
   	<integer name="periodNumber" title="Number of Periods"/>
   	<date name="toSubDate" title="Date To"/>

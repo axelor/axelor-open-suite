@@ -9,7 +9,6 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.exception.AxelorException;
@@ -42,7 +41,12 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 			subscription.setFromPeriodDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*iterator));
 			subscription.setToPeriodDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*(iterator+1)).minusDays(1));
 			subscription.setQuantity(saleOrderLine.getQty());
-			subscription.setAmount(saleOrderLine.getPrice().multiply(new BigDecimal(saleOrderLine.getPeriodicity())));
+			if(saleOrderLine.getPeriodicity() == saleOrderLine.getProduct().getPeriodicitySelect()){
+				subscription.setUnitPrice(saleOrderLine.getPrice().multiply(new BigDecimal(saleOrderLine.getPeriodicity())));
+			}
+			else{
+				subscription.setUnitPrice(saleOrderLine.getPrice().multiply(new BigDecimal(saleOrderLine.getPeriodicity()).divide(new BigDecimal(saleOrderLine.getProduct().getPeriodicitySelect()))));
+			}
 			subscription.setInvoiced(false);
 			saleOrderLine.addSubscriptionListItem(subscription);
 			iterator++;
@@ -51,6 +55,47 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 		if(saleOrderLine.getId()>0){
 			Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
 		}
+		
+		return saleOrderLine;
+	}
+	
+	@Transactional
+	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLineIt,SaleOrderLine saleOrderLine) throws AxelorException{
+		int iterator = 0;
+		
+		if(saleOrderLine.getToSubDate() == null){
+			throw new AxelorException(I18n.get("Fied Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
+		}
+		
+		for (Subscription subscription : saleOrderLineIt.getSubscriptionList()) {
+			if(!subscription.getInvoiced()){
+				subscription.setSaleOrderLine(null);
+			}
+		}
+		
+		while(iterator != saleOrderLine.getPeriodNumber()){
+			Subscription subscription = new Subscription();
+			if(saleOrderLine.getInvoicingTypeSelect() == 1){
+				subscription.setInvoicingDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*iterator));
+			}
+			else{
+				subscription.setInvoicingDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*(iterator+1)).minusDays(1));
+			}
+			subscription.setFromPeriodDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*iterator));
+			subscription.setToPeriodDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*(iterator+1)).minusDays(1));
+			subscription.setQuantity(saleOrderLine.getQty());
+			if(saleOrderLine.getPeriodicity() == saleOrderLine.getProduct().getPeriodicitySelect()){
+				subscription.setUnitPrice(saleOrderLine.getPrice().multiply(new BigDecimal(saleOrderLine.getPeriodicity())));
+			}
+			else{
+				subscription.setUnitPrice(saleOrderLine.getPrice().multiply(new BigDecimal(saleOrderLine.getPeriodicity()).divide(new BigDecimal(saleOrderLine.getProduct().getPeriodicitySelect()))));
+			}
+			subscription.setInvoiced(false);
+			saleOrderLineIt.addSubscriptionListItem(subscription);
+			iterator++;
+		}
+		
+		Beans.get(SaleOrderLineRepository.class).save(saleOrderLineIt);
 		
 		return saleOrderLine;
 	}
@@ -84,19 +129,6 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 		
 		
 		return invoice;
-	}
-	
-	@Transactional
-	public SaleOrderLine saveSaleOrderLine(SaleOrderLine saleOrderLine){
-		
-		/*List<Subscription> subList = SubscriptionRepository.of(Subscription.class).all().filter("self.saleOrderLine.id = ?", saleOrderLine.getId()).fetch();
-		
-		for (Subscription subscription : subList) {
-			saleOrderLine.addSubscriptionListItem(subscription);
-		}*/
-		
-		Beans.get(SaleOrderLineService.class).save(saleOrderLine);
-		return saleOrderLine;
 	}
 	
 }

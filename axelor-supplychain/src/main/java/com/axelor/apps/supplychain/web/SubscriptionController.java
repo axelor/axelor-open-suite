@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.supplychain.db.Subscription;
@@ -29,6 +30,11 @@ public class SubscriptionController {
 	
 	public void generateSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+		
+		if(Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId())!=null){
+			saleOrderLine=Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+		}
+		
 		saleOrderLine = subscriptionService.generateSubscriptions(saleOrderLine);
 		if(saleOrderLine.getId()>0){
 			response.setReload(true);
@@ -36,6 +42,24 @@ public class SubscriptionController {
 		else{
 			response.setValue("subscriptionList", saleOrderLine.getSubscriptionList());
 		}
+	}
+	
+	public void generateAllSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+		
+		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+		
+		if(saleOrder == null){
+			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+		}
+		
+		saleOrder  = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+		
+		for (SaleOrderLine saleOrderLineIt : saleOrder.getSaleOrderLineList()) {
+			subscriptionService.generateSubscriptions(saleOrderLineIt,saleOrderLine);
+		}
+		
+		response.setReload(true);
 	}
 	
 	public void generateInvoice(ActionRequest request, ActionResponse response)  {
