@@ -509,7 +509,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, stockMoveLine));
+			if (stockMoveLine.getRealQty().compareTo(new BigDecimal(0)) == 1){
+				invoiceLineList.addAll(this.createInvoiceLine(invoice, stockMoveLine));
+			}
 		}
 
 		return invoiceLineList;
