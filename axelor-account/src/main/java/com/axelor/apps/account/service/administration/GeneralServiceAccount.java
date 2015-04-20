@@ -33,18 +33,7 @@ public class GeneralServiceAccount extends GeneralService {
 	 */
 	public static String getExceptionInvoiceMsg(){
 		
-		if (getGeneral() != null) {
-			
-			if (getGeneral().getExceptionInvoiceMsg() != null ) {
-				return getGeneral().getExceptionInvoiceMsg();
-			}
-			else {
-				return getGeneral().getExceptionDefaultMsg();
-			}
-		}
-		else {
 			return EXCEPTION;
-		}
 		
 	}
 	
@@ -55,18 +44,7 @@ public class GeneralServiceAccount extends GeneralService {
 	 */
 	public static String getExceptionReminderMsg(){
 		
-		if (getGeneral() != null) {
-			
-			if (getGeneral().getExceptionReminderMsg() != null ) {
-				return getGeneral().getExceptionReminderMsg();
-			}
-			else {
-				return getGeneral().getExceptionDefaultMsg();
-			}
-		}
-		else {
 			return EXCEPTION;
-		}
 		
 	}
 	
@@ -77,18 +55,7 @@ public class GeneralServiceAccount extends GeneralService {
 	 */
 	public static String getExceptionAccountingMsg(){
 		
-		if (getGeneral() != null) {
-			
-			if (getGeneral().getExceptionAccountingMsg() != null ) {
-				return getGeneral().getExceptionAccountingMsg();
-			}
-			else {
-				return getGeneral().getExceptionDefaultMsg();
-			}
-		}
-		else {
 			return EXCEPTION;
-		}
 		
 	}
 	

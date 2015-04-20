@@ -55,13 +55,13 @@ resources/domains/TargetConfiguration.xml:16"
 "Assign to me","Prendre en charge",,"resources/views/Event.xml:120
 resources/views/Event.xml:129
 resources/views/Event.xml:139
-resources/views/Event.xml:322
 resources/views/Event.xml:337
-resources/views/Event.xml:345
+resources/views/Event.xml:352
+resources/views/Event.xml:360
 resources/views/Lead.xml:125
 resources/views/Lead.xml:28
 resources/views/Lead.xml:8
-resources/views/Opportunity.xml:112
+resources/views/Opportunity.xml:113
 resources/views/Opportunity.xml:25
 resources/views/Opportunity.xml:8"
 "Assigned","Assigné",,"resources/views/Selects.xml:11"
@@ -80,15 +80,15 @@ resources/views/ConvertLeadWizard.xml:373
 resources/views/ConvertLeadWizard.xml:49
 resources/views/ConvertLeadWizard.xml:503
 resources/views/ConvertLeadWizard.xml:594
-resources/views/Opportunity.xml:110"
+resources/views/Opportunity.xml:111"
 "Assignment","Assignation",,"resources/views/ConvertLeadWizard.xml:526
 resources/views/ConvertLeadWizard.xml:561"
 "Attendee","Nom",,"resources/domains/EventAttendee.xml:16"
 "Attendees","Participants",,"resources/domains/Event.xml:32"
 "Attributes","Attributs",,"resources/views/Event.xml:157
-resources/views/Event.xml:227
-resources/views/Event.xml:292
-resources/views/Event.xml:371
+resources/views/Event.xml:228
+resources/views/Event.xml:307
+resources/views/Event.xml:386
 resources/views/Event.xml:66"
 "Aucune séquence configurée pour les tickets",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:44"
 "Authorized users to follow me","Utilisateur autorisés à me suivre",,"resources/domains/User.xml:12"
@@ -127,7 +127,7 @@ resources/views/Selects.xml:19"
 resources/domains/Target.xml:34"
 "Call emitted historical","Histo. appels émis",,"resources/views/Charts.xml:847
 resources/views/Dashboard.xml:501"
-"Call filters","Filtres Appels",,"resources/views/Event.xml:622"
+"Call filters","Filtres Appels",,"resources/views/Event.xml:637"
 "Call type","Type d'appel",,"resources/domains/Event.xml:44"
 "Calls","Appels",,"resources/views/Charts.xml:335
 resources/views/Charts.xml:378
@@ -186,7 +186,7 @@ resources/views/ConvertLeadWizard.xml:64
 resources/views/Lead.xml:61"
 "Closed","Fermé",,"resources/views/Selects.xml:124"
 "Closed Opportunities","Opportunités fermées",,"resources/views/Dashboard.xml:7"
-"Closed Tickets","Tickets Clôturés",,"resources/views/Event.xml:653"
+"Closed Tickets","Tickets Clôturés",,"resources/views/Event.xml:668"
 "Closed lost","Fermée perdue",,"resources/views/Opportunity.xml:28
 resources/views/Opportunity.xml:47
 resources/views/Opportunity.xml:78
@@ -210,6 +210,7 @@ resources/views/ConvertLeadWizard.xml:266"
 "Concerns","Concerne",,"resources/views/TargetConfiguration.xml:60"
 "Configuration","Configuration",,"resources/views/Menu.xml:199"
 "Configuration des objectifs(s) traité(s)",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:34"
+"Confirm",,,"resources/views/Event.xml:242"
 "Confirmed","Confirmé",,"resources/views/Selects.xml:108"
 "Connection settings","Paramètres de connexion",,"resources/views/Calendar.xml:14"
 "Contact","Coordonnées",,"resources/domains/Event.xml:40
@@ -227,7 +228,7 @@ resources/views/EventAttendee.xml:11"
 "Contacts","Contacts",,"resources/views/Event.xml:111
 resources/views/EventAttendee.xml:6"
 "Context","Contexte",,"resources/views/ConvertLeadWizard.xml:479
-resources/views/Event.xml:355"
+resources/views/Event.xml:370"
 "Convert into Contact","Convertir en Contact",,"resources/views/ConvertLeadWizard.xml:21"
 "Convert into Contact ?","Convertir en Contact ?",,"resources/views/ConvertLeadWizard.xml:11"
 "Convert into Partner","Convertir en Tiers",,"resources/views/ConvertLeadWizard.xml:58"
@@ -307,7 +308,7 @@ resources/views/ConvertLeadWizard.xml:556
 resources/views/ConvertLeadWizard.xml:588
 resources/views/Event.xml:149
 resources/views/Event.xml:220
-resources/views/Event.xml:284"
+resources/views/Event.xml:299"
 "Days","Jours",,"resources/views/Selects.xml:146"
 "Dead","Perdu",,"resources/views/Selects.xml:15"
 "Delete menu entrie","Supprimer entrée de menu",,"resources/views/CalendarConfiguration.xml:22"
@@ -373,10 +374,10 @@ resources/views/Event.xml:8"
 "Financial terms","Termes financiers",,"resources/views/ConvertLeadWizard.xml:135
 resources/views/ConvertLeadWizard.xml:492
 resources/views/Opportunity.xml:94"
-"Finish","Terminer",,"resources/views/Event.xml:264
-resources/views/Event.xml:273
-resources/views/Event.xml:340
-resources/views/Event.xml:348"
+"Finish","Terminer",,"resources/views/Event.xml:279
+resources/views/Event.xml:288
+resources/views/Event.xml:355
+resources/views/Event.xml:363"
 "Finished","Terminé",,"resources/views/Selects.xml:115"
 "First name","Prénom",,"resources/domains/Lead.xml:14
 resources/views/ConvertLeadWizard.xml:261
@@ -390,7 +391,7 @@ resources/views/ConvertLeadWizard.xml:483
 resources/views/Lead.xml:122
 resources/views/Opportunity.xml:87"
 "Followers users","Suiveurs",,"resources/domains/User.xml:11"
-"Followers/Comments",,,"resources/views/Event.xml:377"
+"Followers/Comments",,,"resources/views/Event.xml:392"
 "For all","Pour tous",,"resources/views/Selects.xml:152"
 "For me","Pour moi",,"resources/views/Selects.xml:151"
 "From Date","Date de",,"resources/views/Charts.xml:204
@@ -502,8 +503,8 @@ resources/views/Dashboard.xml:236"
 resources/views/Dashboard.xml:246"
 "Limit Date","Date limite",,"resources/domains/Event.xml:17"
 "Linked to","Lié à",,"resources/views/Event.xml:162
-resources/views/Event.xml:231
-resources/views/Event.xml:297
+resources/views/Event.xml:232
+resources/views/Event.xml:312
 resources/views/Event.xml:76
 resources/views/Opportunity.xml:105"
 "Location","Lieu",,"resources/domains/Event.xml:48"
@@ -528,7 +529,7 @@ resources/domains/Target.xml:35"
 resources/views/Menu.xml:223"
 "Meeting Types","Types de rendez-vous",,"resources/views/Menu.xml:211
 resources/views/Menu.xml:214"
-"Meeting filters","Filtres sur les meetings",,"resources/views/Event.xml:610"
+"Meeting filters","Filtres sur les meetings",,"resources/views/Event.xml:625"
 "Meeting number historical","Historique Nbre Rendez-vous",,"resources/views/Charts.xml:1218
 resources/views/Dashboard.xml:571"
 "Meeting type","Type de rendez-vous",,"resources/domains/Event.xml:47
@@ -561,38 +562,38 @@ resources/views/Charts.xml:825"
 resources/views/Menu.xml:150
 resources/views/Menu.xml:153
 resources/views/Menu.xml:297"
-"My Calls","Mes Appels",,"resources/views/Event.xml:623"
+"My Calls","Mes Appels",,"resources/views/Event.xml:638"
 "My Closed Opportunities","Mes Opportunités fermées",,"resources/views/Dashboard.xml:128"
 "My Key accounts","Mes meilleurs comptes",,"resources/views/Dashboard.xml:95"
 "My Late Tickets","Mes Tickets en retard",,"resources/views/Dashboard.xml:457"
 "My Leads","Mes Pistes",,"resources/views/Dashboard.xml:258
 resources/views/Lead.xml:159
 resources/views/Lead.xml:300"
-"My Meetings","Mes Rendez-vous",,"resources/views/Event.xml:611"
+"My Meetings","Mes Rendez-vous",,"resources/views/Event.xml:626"
 "My New Tickets","Mes nouveaux Tickets",,"resources/views/Dashboard.xml:416"
 "My New Urgent Tickets","Mes nouveaux Tickets urgents",,"resources/views/Dashboard.xml:442"
 "My Open Opportunities","Mes Opportunités en cours",,"resources/views/Dashboard.xml:136"
-"My Opportunities","Mes Opportunités",,"resources/views/Opportunity.xml:186
+"My Opportunities","Mes Opportunités",,"resources/views/Opportunity.xml:187
 resources/views/Opportunity.xml:31"
-"My Tasks","Mes Tâches",,"resources/views/Event.xml:596"
+"My Tasks","Mes Tâches",,"resources/views/Event.xml:611"
 "My Team Best Open Deals","Meilleures Opportunités de mon équipe",,"resources/views/Dashboard.xml:78"
 "My Team Calendar","Calendrier Equipe",,"resources/views/Menu.xml:299"
-"My Team Calls","Les Appels de mon Equipe",,"resources/views/Event.xml:629"
+"My Team Calls","Les Appels de mon Equipe",,"resources/views/Event.xml:644"
 "My Team Closed Opportunities","Opp. Fermées de mon Equipe",,"resources/views/Dashboard.xml:32"
 "My Team Key accounts","Meilleurs comptes de mon équipe",,"resources/views/Dashboard.xml:104"
 "My Team Leads","Pistes de mon Equipe",,"resources/views/Dashboard.xml:274
 resources/views/Lead.xml:306"
-"My Team Meetings","Rendez-vous de mon Equipe",,"resources/views/Event.xml:617"
+"My Team Meetings","Rendez-vous de mon Equipe",,"resources/views/Event.xml:632"
 "My Team Open Opportunities","Opp. Ouvertes de mon Equipe",,"resources/views/Dashboard.xml:42"
-"My Team Opportunities","Opportunités de mon Equipe",,"resources/views/Opportunity.xml:192"
-"My Team Tasks","Tâches de mon Equipe",,"resources/views/Event.xml:605"
-"My Team Tickets","Tickets de mon Equipe",,"resources/views/Event.xml:638"
-"My Tickets","Mes tickets",,"resources/views/Event.xml:635"
-"My Today Calls","Mes Appels du jour",,"resources/views/Event.xml:626"
+"My Team Opportunities","Opportunités de mon Equipe",,"resources/views/Opportunity.xml:193"
+"My Team Tasks","Tâches de mon Equipe",,"resources/views/Event.xml:620"
+"My Team Tickets","Tickets de mon Equipe",,"resources/views/Event.xml:653"
+"My Tickets","Mes tickets",,"resources/views/Event.xml:650"
+"My Today Calls","Mes Appels du jour",,"resources/views/Event.xml:641"
 "My Today Support Activities","Mes Activités support du jour",,"resources/views/Dashboard.xml:449"
-"My Today Tasks","Mes tâches du jour",,"resources/views/Event.xml:599"
-"My Upcoming Meetings","Mes prochains Rendez-vous",,"resources/views/Event.xml:614"
-"My Upcoming Tasks","Mes Tâches à venir",,"resources/views/Event.xml:602"
+"My Today Tasks","Mes tâches du jour",,"resources/views/Event.xml:614"
+"My Upcoming Meetings","Mes prochains Rendez-vous",,"resources/views/Event.xml:629"
+"My Upcoming Tasks","Mes Tâches à venir",,"resources/views/Event.xml:617"
 "My Urgent Tickets","Mes Tickets urgent",,"resources/views/Dashboard.xml:403"
 "Name","Intitulé",,"resources/domains/Calendar.xml:18
 resources/domains/CalendarConfiguration.xml:10
@@ -615,7 +616,7 @@ resources/views/Selects.xml:120"
 "New Cases by Customer","Nouveau tickets par Client",,"resources/views/Charts.xml:638
 resources/views/Dashboard.xml:373"
 "New Tickets","Nouveaux Tickets",,"resources/views/Dashboard.xml:435
-resources/views/Event.xml:647"
+resources/views/Event.xml:662"
 "New Urgent Tickets","Nouveaux Tickets urgents",,"resources/views/Dashboard.xml:429"
 "New business","Nouveau marché",,"resources/views/Selects.xml:79"
 "Next Stage","Prochaine étape",,"resources/views/Opportunity.xml:26
@@ -634,7 +635,7 @@ resources/views/ConvertLeadWizard.xml:360
 resources/views/ConvertLeadWizard.xml:45"
 "Office name","Nom bureau",,"resources/domains/Lead.xml:16"
 "On going","En cours",,"resources/views/Selects.xml:113"
-"Ongoing Tickets","Tickets en Cours",,"resources/views/Event.xml:650"
+"Ongoing Tickets","Tickets en Cours",,"resources/views/Event.xml:665"
 "Open Cases by Agents","Tickets ouverts par agent",,"resources/views/Charts.xml:607
 resources/views/Dashboard.xml:369"
 "Open Opportunities","Opportunités en cours",,"resources/views/Dashboard.xml:16"
@@ -698,7 +699,7 @@ resources/views/Dashboard.xml:595"
 resources/views/Charts.xml:996
 resources/views/Dashboard.xml:529
 resources/views/Dashboard.xml:591"
-"Opportunities filters","Filtres Opportunités",,"resources/views/Opportunity.xml:185"
+"Opportunities filters","Filtres Opportunités",,"resources/views/Opportunity.xml:186"
 "Opportunity","Opportunité",,"resources/views/ConvertLeadWizard.xml:477
 resources/views/Opportunity.xml:73
 resources/views/Selects.xml:52
@@ -722,8 +723,8 @@ resources/views/Partner.xml:6"
 resources/views/ConvertLeadWizard.xml:72"
 "Partner/Contact","Tiers/Contact",,"resources/views/Selects.xml:50"
 "Password","Mot de passe",,"resources/domains/Calendar.xml:13"
-"Pause","Pause",,"resources/views/Event.xml:263
-resources/views/Event.xml:272"
+"Pause","Pause",,"resources/views/Event.xml:278
+resources/views/Event.xml:287"
 "Pending","En attente",,"resources/views/Selects.xml:114"
 "Period","Période",,"resources/views/Target.xml:78
 resources/views/TargetConfiguration.xml:64"
@@ -738,7 +739,7 @@ resources/views/ConvertLeadWizard.xml:61"
 "Pipeline by Stage and Type","Pipeline par Etape par Type",,"resources/views/Charts.xml:32
 resources/views/Dashboard.xml:193"
 "Pipeline next 90 days","Pipeline à 90 jrs.",,"resources/views/Charts.xml:166"
-"Planified","Planifié",,"resources/views/Selects.xml:101"
+"Planned",,,"resources/views/Selects.xml:101"
 "Please select the Lead(s) to print.",,,"java/com/axelor/apps/crm/exception/IExceptionMessage.java:50"
 "Port","Port",,"resources/domains/Calendar.xml:16"
 "Postal addresses","Les adresses postales",,"resources/views/ConvertLeadWizard.xml:336"
@@ -782,6 +783,9 @@ resources/views/Target.xml:94"
 "Reminders","Rappels",,"resources/domains/Event.xml:37"
 "Reported","Reporté",,"resources/views/Selects.xml:116"
 "Required participant","Participants requis",,"resources/views/Selects.xml:136"
+"Reschedule",,,"resources/views/Event.xml:224
+resources/views/Event.xml:240
+resources/views/Event.xml:245"
 "Resolved","Résolu",,"resources/views/Selects.xml:122"
 "SSL ?","Connexion SSL ?",,"resources/domains/Calendar.xml:15"
 "Sales Stage","Etape vente",,"resources/views/Charts.xml:28
@@ -824,10 +828,10 @@ resources/views/Charts.xml:162
 resources/views/Charts.xml:223
 resources/views/Charts.xml:72"
 "Source description","Description provenance",,"resources/domains/Lead.xml:50"
-"Start","Démarrer",,"resources/views/Event.xml:262
-resources/views/Event.xml:271
-resources/views/Event.xml:338
-resources/views/Event.xml:346"
+"Start","Démarrer",,"resources/views/Event.xml:277
+resources/views/Event.xml:286
+resources/views/Event.xml:353
+resources/views/Event.xml:361"
 "Start Date","Date début",,"resources/domains/Event.xml:15"
 "State","Statut",,"resources/domains/Lead.xml:27
 resources/domains/Lead.xml:34
@@ -844,7 +848,7 @@ resources/views/Charts.xml:603
 resources/views/ConvertLeadWizard.xml:162"
 "Status description","Détail Etat",,"resources/domains/Lead.xml:48"
 "Subject","Sujet",,"resources/domains/Event.xml:13
-resources/views/Event.xml:352"
+resources/views/Event.xml:367"
 "Synchronize calendar","Synchroniser calendrier",,"resources/views/Event.xml:10"
 "Synchronize calendars","Synchroniser calendrier",,"resources/views/Event.xml:43"
 "Target","Objectifs",,"resources/views/Menu.xml:268
@@ -870,17 +874,17 @@ resources/views/TargetConfiguration.xml:69"
 "Targets configurations","Configuration des objectifs",,"resources/domains/CrmBatch.xml:21
 resources/views/Menu.xml:256"
 "Task","Tâche",,"resources/views/ConvertLeadWizard.xml:579
-resources/views/Event.xml:269
+resources/views/Event.xml:284
 resources/views/Menu.xml:15
 resources/views/Menu.xml:18
 resources/views/Selects.xml:21"
 "Task (Project)","Tâche (Projet)",,"resources/views/Selects.xml:57"
-"Tasks","Tâches",,"resources/views/Event.xml:254
+"Tasks","Tâches",,"resources/views/Event.xml:269
 resources/views/Menu.xml:423
 resources/views/Menu.xml:60
 resources/views/Menu.xml:63"
 "Tasks Db","Tb Tâches",,"resources/views/Menu.xml:426"
-"Tasks filters","Filtres Tâches",,"resources/views/Event.xml:595"
+"Tasks filters","Filtres Tâches",,"resources/views/Event.xml:610"
 "Team","Equipe",,"resources/domains/Event.xml:30
 resources/domains/Lead.xml:59
 resources/domains/Opportunity.xml:29
@@ -903,14 +907,14 @@ resources/views/Charts.xml:497"
 resources/views/Menu.xml:165"
 "Tentative","Tentative",,"resources/views/Selects.xml:107"
 "Ticket","Ticket",,"resources/domains/SpentTime.xml:10
-resources/views/Event.xml:320
-resources/views/Event.xml:343
+resources/views/Event.xml:335
+resources/views/Event.xml:358
 resources/views/Menu.xml:48
 resources/views/Menu.xml:51
 resources/views/Selects.xml:23"
 "Ticket N°","Ticket N°",,"resources/domains/Event.xml:56
-resources/views/Event.xml:351"
-"Ticket filters","Filtres tickets",,"resources/views/Event.xml:634"
+resources/views/Event.xml:366"
+"Ticket filters","Filtres tickets",,"resources/views/Event.xml:649"
 "Tickets","Tickets",,"resources/views/Charts.xml:550
 resources/views/Charts.xml:575
 resources/views/Charts.xml:604
@@ -954,13 +958,13 @@ resources/views/Charts.xml:1501"
 "Unassigned Leads","Pistes non-assignées",,"resources/views/Dashboard.xml:266
 resources/views/Lead.xml:303"
 "Unassigned Opportunities","Opportunités non-assignées",,"resources/views/Dashboard.xml:23
-resources/views/Opportunity.xml:189"
-"Unassigned Tickets","Tickets",,"resources/views/Event.xml:641"
+resources/views/Opportunity.xml:190"
+"Unassigned Tickets","Tickets",,"resources/views/Event.xml:656"
 "Upcoming events","Prochains Evènements",,"resources/views/Lead.xml:257
 resources/views/Partner.xml:55"
 "Urgent","Urgent",,"resources/views/Selects.xml:31"
 "Urgent Tickets","Tickets urgents",,"resources/views/Dashboard.xml:422
-resources/views/Event.xml:644"
+resources/views/Event.xml:659"
 "Url","URL",,"resources/domains/Calendar.xml:11"
 "User","Utilisateur",,"resources/domains/CalendarConfiguration.xml:12
 resources/views/Charts.xml:1013
@@ -979,8 +983,8 @@ resources/views/Event.xml:130
 resources/views/Event.xml:137
 resources/views/Event.xml:201
 resources/views/Event.xml:208
-resources/views/Event.xml:339
-resources/views/Event.xml:347"
+resources/views/Event.xml:354
+resources/views/Event.xml:362"
 "View Calls","Voir Appels",,"resources/views/Menu.xml:307"
 "View Leads","Voir Pistes",,"resources/views/Menu.xml:332"
 "View Meetings","Voir Rendez-vous",,"resources/views/Menu.xml:311"

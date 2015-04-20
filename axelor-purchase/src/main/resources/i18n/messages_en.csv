@@ -1,5 +1,5 @@
 "key","message","comment","context"
-"${clientPartner.saleOrderInformation}",,,"resources/views/PurchaseOrder.xml:243"
+"${supplierPartner.purchaseOrderInformation}",,,"resources/views/PurchaseOrder.xml:243"
 "%s :\n Veuillez configurer le module Achat pour la société %s",,,"java/com/axelor/apps/purchase/exception/IExceptionMessage.java:20"
 "50 Latest Supplier Orders",,,"resources/views/Dashboard.xml:130"
 "Account",,,"resources/views/PurchaseOrderLine.xml:82"

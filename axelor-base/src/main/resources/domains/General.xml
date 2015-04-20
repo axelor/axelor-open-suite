@@ -12,10 +12,6 @@
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit" help="true"/>
 		<string name="defaultPartnerLanguage" title="Default Partner language" selection="select.language" help="true"/>
 		
-		<!-- Exception -->
-		<string name="exceptionDefaultMsg" multiline="true" title="Default Message" required="true" />
-		<string name="exceptionSupplychainMsg" multiline="true" title="Supply chain message" />
-
 		<!-- Interfaces QAS et SVI -->
 		<string name="qasWsdlUrl" title="URL to QAS WSDL" help="true" />
 

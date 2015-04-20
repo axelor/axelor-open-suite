@@ -223,7 +223,6 @@ resources/views/MoveLineReport.xml:95"
 "Accounting exports","Exports comptables",,"resources/views/Menu.xml:356
 resources/views/Menu.xml:359
 resources/views/MoveLineReport.xml:78"
-"Accounting message","Message comptable",,"resources/domains/General.xml:17"
 "Accounting report","Rapport comptable",,"resources/views/MoveLineReport.xml:28"
 "Accounting reports","Rapports comptables",,"resources/views/Menu.xml:346
 resources/views/Menu.xml:349
@@ -681,7 +680,6 @@ resources/domains/PaymentScheduleLine.xml:29"
 "Debited schedule lines List","Echéances prélevées",,"resources/domains/DirectDebitManagement.xml:10"
 "Debt","Dette",,"resources/views/Selects.xml:24"
 "Debt recovery","Recouvrement",,"resources/views/Menu.xml:296"
-"Debt recovery message","Message recouvrement",,"resources/domains/General.xml:18"
 "Debtor Name","Nom du débiteur",,"resources/domains/Rum.xml:11"
 "Debtor address","Adresse du débiteur",,"resources/domains/Rum.xml:12"
 "Default email address","Adresse email par défaut",,"resources/domains/PaymentVoucher.xml:33"
@@ -1049,7 +1047,6 @@ resources/views/PaymentInvoice.xml:5"
 resources/views/Menu.xml:574"
 "Invoicing","Facturation",,"resources/views/Selects.xml:130"
 "Invoicing informations","Informations Facturation",,"resources/views/Invoice.xml:44"
-"Invoicing message","Message de facturation",,"resources/domains/General.xml:16"
 "Invoicing type","Type facturation",,"resources/domains/PurchaseOrder.xml:10"
 "Irrecouvrable status","Etat Irrecouvrable",,"resources/domains/Invoice.xml:55"
 "Irrecoverable","Irrécouvrable",,"resources/domains/IrrecoverableCustomerLine.xml:14
@@ -1125,7 +1122,7 @@ resources/domains/ReminderMethodLine.xml:11"
 "Long term debt duration (month)","Nbre de mois (créance + 6 mois)",,"resources/domains/AccountConfig.xml:48"
 "Lower reimbursement limit","Seuil inf. de remboursement",,"resources/domains/AccountConfig.xml:58"
 "Mail transit time","Délai envoi courrier",,"resources/domains/AccountConfig.xml:53"
-"Manage customerCredit","Géréer les crédit d'encours client",,"resources/domains/General.xml:24"
+"Manage customerCredit","Géréer les crédit d'encours client",,"resources/domains/General.xml:20"
 "Management","Gestion",,"resources/views/ManagementObject.xml:10"
 "Managements","Gestions",,"resources/views/ManagementObject.xml:5"
 "Mandate signature city","Ville de signature du mandat",,"resources/domains/Rum.xml:15"
@@ -1778,7 +1775,7 @@ resources/domains/MoveLine.xml:31
 resources/domains/TaxAccount.xml:10
 resources/views/Selects.xml:100
 resources/views/Selects.xml:33"
-"Tax 0%","Taxe à 0 %",,"resources/domains/General.xml:21"
+"Tax 0%","Taxe à 0 %",,"resources/domains/General.xml:17"
 "Tax Line","Ligne de TVA",,"resources/views/InvoiceLineTax.xml:14"
 "Tax Lines","Les lignes de TVA",,"resources/domains/Invoice.xml:49
 resources/views/InvoiceLineTax.xml:6"

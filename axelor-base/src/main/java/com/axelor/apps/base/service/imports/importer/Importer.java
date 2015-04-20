@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -88,10 +87,7 @@ public abstract class Importer {
 			data = MetaFiles.getPath( configuration.getDataMetaFile() ).toFile();
 
 		if (!bind.exists() || !data.exists()) {
-			throw new AxelorException(String.format(
-					I18n.get(IExceptionMessage.IMPORTER_1),
-					GeneralService.getGeneral().getExceptionDefaultMsg()),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.IMPORTER_1), IException.CONFIGURATION_ERROR);
 		}
 
 		File workspace = createFinalWorkspace(data);

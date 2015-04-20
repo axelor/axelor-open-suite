@@ -223,7 +223,6 @@ resources/views/MoveLineReport.xml:95"
 "Accounting exports",,,"resources/views/Menu.xml:356
 resources/views/Menu.xml:359
 resources/views/MoveLineReport.xml:78"
-"Accounting message",,,"resources/domains/General.xml:17"
 "Accounting report",,,"resources/views/MoveLineReport.xml:28"
 "Accounting reports",,,"resources/views/Menu.xml:346
 resources/views/Menu.xml:349
@@ -681,7 +680,6 @@ resources/domains/PaymentScheduleLine.xml:29"
 "Debited schedule lines List",,,"resources/domains/DirectDebitManagement.xml:10"
 "Debt",,,"resources/views/Selects.xml:24"
 "Debt recovery",,,"resources/views/Menu.xml:296"
-"Debt recovery message",,,"resources/domains/General.xml:18"
 "Debtor Name",,,"resources/domains/Rum.xml:11"
 "Debtor address",,,"resources/domains/Rum.xml:12"
 "Default email address",,,"resources/domains/PaymentVoucher.xml:33"
@@ -1049,7 +1047,6 @@ resources/views/PaymentInvoice.xml:5"
 resources/views/Menu.xml:574"
 "Invoicing",,,"resources/views/Selects.xml:130"
 "Invoicing informations",,,"resources/views/Invoice.xml:44"
-"Invoicing message",,,"resources/domains/General.xml:16"
 "Invoicing type",,,"resources/domains/PurchaseOrder.xml:10"
 "Irrecouvrable status",,,"resources/domains/Invoice.xml:55"
 "Irrecoverable",,,"resources/domains/IrrecoverableCustomerLine.xml:14
@@ -1125,7 +1122,7 @@ resources/domains/ReminderMethodLine.xml:11"
 "Long term debt duration (month)",,,"resources/domains/AccountConfig.xml:48"
 "Lower reimbursement limit",,,"resources/domains/AccountConfig.xml:58"
 "Mail transit time",,,"resources/domains/AccountConfig.xml:53"
-"Manage customerCredit",,,"resources/domains/General.xml:24"
+"Manage customerCredit",,,"resources/domains/General.xml:20"
 "Management",,,"resources/views/ManagementObject.xml:10"
 "Managements",,,"resources/views/ManagementObject.xml:5"
 "Mandate signature city",,,"resources/domains/Rum.xml:15"
@@ -1778,7 +1775,7 @@ resources/domains/MoveLine.xml:31
 resources/domains/TaxAccount.xml:10
 resources/views/Selects.xml:100
 resources/views/Selects.xml:33"
-"Tax 0%",,,"resources/domains/General.xml:21"
+"Tax 0%",,,"resources/domains/General.xml:17"
 "Tax Line",,,"resources/views/InvoiceLineTax.xml:14"
 "Tax Lines",,,"resources/domains/Invoice.xml:49
 resources/views/InvoiceLineTax.xml:6"
