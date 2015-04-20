@@ -21,23 +21,24 @@ import com.google.inject.persist.Transactional;
 
 
 public class TimesheetServiceImp extends TimesheetRepository implements TimesheetService{
-	
+
 	@Inject
 	private EmployeeService employeeService;
-	
+
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
-		
+
 		List<LogTime> logTimeList = LogTimeRepository.of(LogTime.class).all().filter("self.user = ?1 AND self.affectedToTimeSheet = null AND self.task != null", timesheet.getUser()).fetch();
 		for (LogTime logTime : logTimeList) {
 			logTime.setProject(logTime.getTask().getProject());
-			timesheet.addLogTime(logTime);	
+			timesheet.addLogTime(logTime);
 		}
 		JPA.save(timesheet);
-	}	
-	
+	}
+
 	@Transactional(rollbackOn={Exception.class})
 	public void cancelTimesheet(Timesheet timesheet){
+		timesheet.setStatusSelect(5);
 		List<LogTime> logTimeList = timesheet.getLogTimes();
 		for (LogTime logTime : logTimeList) {
 			if(logTime.getTask() != null){
@@ -46,15 +47,15 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 			}
 		}
 	}
-	
+
 	@Transactional(rollbackOn={Exception.class})
 	public void generateLines(Timesheet timesheet) throws AxelorException{
-		
+
 		if(timesheet.getFromDate() == null) throw new AxelorException("Please enter from date", 1);
 		if(timesheet.getToDate() == null) throw new AxelorException("Please enter to date", 1);
 		if(timesheet.getActivity() == null) throw new AxelorException("Please enter an activity", 1);
 		if(timesheet.getUser().getEmployee().getTimeLoggingPreferenceSelect() == null) throw new AxelorException("Please configure your Time logging preference in your employee form", 1);
-		
+
 		LocalDate fromDate = timesheet.getFromDate();
 		LocalDate toDate = timesheet.getToDate();
 		Map<Integer,String> correspMap = new HashMap<Integer,String>();
@@ -94,7 +95,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 					logTime.setUser(timesheet.getUser());
 					if(timesheet.getProject()!=null)logTime.setProject(timesheet.getProject());
 					if(timesheet.getTask()!=null)logTime.setTask(timesheet.getTask());
-					logTime.setVisibleDuration(timesheet.getLogTime()); 
+					logTime.setVisibleDuration(timesheet.getLogTime());
 					logTime.setDurationStored(employeeService.getDurationHours(timesheet.getLogTime()));
 					logTime.setActivity(timesheet.getActivity());
 					timesheet.addLogTime(logTime);

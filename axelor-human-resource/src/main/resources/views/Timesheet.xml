@@ -9,10 +9,10 @@
 	</grid>
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
-	    onNew="action-timesheeet-record-default">
+	    onNew="action-timesheet-record-default">
 	    <toolbar>
-	    	<button name="valid" onClick="action-timesheet-record-valid,save" help="Valid" readonlyIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
-	    	<button name="cancelButt" onClick="action-timesheet-record-cancel,save,com.axelor.apps.hr.web.timesheet.TimesheetController:cancelTimesheet" readonlyIf="statusSelect = 5" help="Cancel" icon="fa-close"/>
+	    	<button name="confirm" onClick="save,action-timesheet-record-confirm,save" help="Valid" readonlyIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+	    	<button name="cancelButt" onClick="save,com.axelor.apps.hr.web.timesheet.TimesheetController:cancelTimesheet" readonlyIf="statusSelect = 5" help="Cancel" icon="fa-close"/>
 	    </toolbar>
 		<panel readonlyIf="statusSelect &gt; 1">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
@@ -32,17 +32,13 @@
 		<panel-related field="logTimes" readonlyIf="statusSelect &gt; 1" grid-view="logTime-timesheet-grid" form-view="logTime-timesheet-form"/>
 	</form>
 	
-	<action-record name="action-timesheeet-record-default" model="com.axelor.apps.hr.db.Timesheet">
+	<action-record name="action-timesheet-record-default" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="user" expr="eval:__user__"/>
 	</action-record>
 	
-	<action-record name="action-timesheet-record-valid" model="com.axelor.apps.hr.db.Timesheet">
+	<action-record name="action-timesheet-record-confirm" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="statusSelect" expr="2"/>
 	    <field name="sentDate" expr="eval:__date__"/>
-	</action-record>
-	
-	<action-record name="action-timesheet-record-cancel" model="com.axelor.apps.hr.db.Timesheet">
-	    <field name="statusSelect" expr="5"/>
 	</action-record>
 	
 	<action-validate name="action-timesheet-validate-tasks">
