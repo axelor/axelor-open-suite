@@ -44,7 +44,7 @@
 	<action-attrs name="action-timesheet-attrs-domain-timesheet-select">
 		<attribute name="domain" for="timesheetSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
 	</action-attrs>
-	
+
 	<action-record name="action-timesheet-record-default" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="user" expr="eval:__user__"/>
 	</action-record>
@@ -69,7 +69,7 @@
 	<action-record name="action-timesheet-record-draft" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="statusSelect" expr="1"/>
 	</action-record>
-	
+
 	<action-validate name="action-timesheet-validate-tasks">
 		<error message="No log time found or all log times already added" if="__repo__.of(LogTime).all().filter('self.user = ?1 AND self.affectedToTimeSheet = null',__user__).fetchOne() == null"/>
 	</action-validate>
