@@ -26,6 +26,7 @@
 
   	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings" help="true"/>
   	
+  	<integer name="defaultPartnerTypeSelect" title="Partner Type" selection="company.partner.type.select" default="1"/>
   	
   </entity>
   
