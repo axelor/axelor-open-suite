@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -43,6 +44,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -219,11 +221,25 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	}
 
 	@Override
+	@Transactional(rollbackOn = {Exception.class})
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception{
+		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
+		if (saleOrder.getVersionNumber() == 1){
+			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+		}
+		this.save(saleOrder);
+		if (GeneralService.getGeneral().getManageSaleOrderVersion()){
+			this.saveSaleOrderPDFAsAttachment(saleOrder);
+		}
+	}
+
+	@Override
 	@Transactional
-	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder, String birtReportURL) throws IOException{
+	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws IOException{
 		String
 	    		filePath = AppSettings.get().get("file.upload.dir"),
-	    		fileName = saleOrder.getSaleOrderSeq() + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "") + "." + ReportSettings.FORMAT_PDF;
+	    		fileName = saleOrder.getSaleOrderSeq() + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "") + "." + ReportSettings.FORMAT_PDF,
+	    		birtReportURL = this.getURLSaleOrderPDF(saleOrder);
 
 	    File file = URLService.fileDownload(birtReportURL, filePath, fileName);
 
@@ -233,6 +249,23 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 			MetaAttachment metaAttachment = metaFilesTemp.attach(metaFile, saleOrder);
 			JPA.save(metaAttachment);
 		}
+	}
+
+	public String getURLSaleOrderPDF(SaleOrder saleOrder){
+		String language="";
+		try{
+			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
+		}catch (NullPointerException e) {
+			language = "en";
+		}
+		language = language.equals("")? "en": language;
+
+
+		return new ReportSettings(IReport.SALES_ORDER, ReportSettings.FORMAT_PDF)
+							.addParam("Locale", language)
+							.addParam("__locale", "fr_FR")
+							.addParam("SaleOrderId", saleOrder.getId().toString())
+							.getUrl();
 	}
 }
 

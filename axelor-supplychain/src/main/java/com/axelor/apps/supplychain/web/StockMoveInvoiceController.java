@@ -70,6 +70,7 @@ public class StockMoveInvoiceController {
 									.model(Invoice.class.getName())
 									.add("grid", "invoice-grid")
 									.add("form", "invoice-form")
+									.param("forceEdit", "true")
 									.context("_showRecord", String.valueOf(invoice.getId())).map());
 			}
 		}
@@ -149,6 +150,7 @@ public class StockMoveInvoiceController {
 									.model(Invoice.class.getName())
 									.add("grid", "invoice-grid")
 									.add("form", "invoice-form")
+									.param("forceEdit", "true")
 									.context("_showRecord", String.valueOf(mapResult.get("invoiceId"))).map());
 				response.setCanClose(true);
 				if (mapResult.get("information") != null){

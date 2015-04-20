@@ -52,6 +52,7 @@ public class SaleOrderController {
 						.model(StockMove.class.getName())
 						.add("grid", "stock-move-grid")
 						.add("form", "stock-move-form")
+						.param("forceEdit", "true")
 						.context("_showRecord", String.valueOf(stockMoveId)).map());
 			}
 		}

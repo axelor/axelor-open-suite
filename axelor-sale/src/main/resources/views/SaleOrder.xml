@@ -126,7 +126,7 @@
 	  
 	  <panel sidebar="true" title="Actions">
 	    <button name="compute" title="Compute" showIf="statusSelect != 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
-	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-group-finalize,save, action-sale-order-method-save-PDF-attachment"/>
+	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-newVersion,save"/>
 	    <button name="generateStockMove" title="Generate stock move"  colSpan="12" showIf="statusSelect == 3" onClick="action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed,save"/>
@@ -262,12 +262,6 @@
     	<action name="action-sale-order-method-get-location" />
     </action-group>
 
-    <action-group name="action-sale-group-finalize">
-    	<action name="action-sale-order-set-sequence"/>
-    	<action name="action-sale-order-method-compute"/>
-    	<action name="action-sale-order-record-finalize"/>
-    </action-group>
-
     <action-group name="action-sale-group-confirmed">
     	<action name="action-supplychain-sale-order-validate-check-location" />
     	<action name="action-account-organisation-sale-order-create-tasks" />
@@ -293,6 +287,10 @@
     	<action name="action-sale-oder-attrs-generate-stockmove-readonly"/>
     </action-group>
     
+    <action-method name="action-sale-order-method-finalize">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="finalizeSaleOrder"/>
+	</action-method>
+    
     <action-method name="action-sale-order-method-show-sale-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="showSaleOrder"/>
 	</action-method>
@@ -303,10 +301,6 @@
 	
 	<action-method name="action-sale-order-method-export-sale-order-word">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="exportSaleOrderWord"/>
-	</action-method>
-	
-	<action-method name="action-sale-order-method-save-PDF-attachment">
-		<call class="com.axelor.apps.sale.web.SaleOrderController" method="saveSaleOrderPDFAsAttachment"/>
 	</action-method>
     
     <action-record name="action-sale-order-record-finalize" model="com.axelor.apps.sale.db.SaleOrder">

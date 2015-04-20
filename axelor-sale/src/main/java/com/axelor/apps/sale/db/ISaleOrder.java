@@ -25,8 +25,8 @@ public interface ISaleOrder {
 	 */
 
 	static final int STATUS_DRAFT = 1;
-	static final int STATUS_CONFIRMED = 2;
-	static final int STATUS_VALIDATED = 3;
+	static final int STATUS_FINALIZE = 2;
+	static final int STATUS_ORDER_CONFIRMED = 3;
 	static final int STATUS_CANCELED = 4;
 
 	

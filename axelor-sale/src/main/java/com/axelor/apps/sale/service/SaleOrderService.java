@@ -90,7 +90,11 @@ public interface SaleOrderService extends Repository<SaleOrder>{
 
 	public void cancelSaleOrder(SaleOrder saleOrder);
 
-	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder, String birtReportURL) throws IOException;
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;
+
+	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws IOException;
+
+	public String getURLSaleOrderPDF(SaleOrder saleOrder);
 
 }
 

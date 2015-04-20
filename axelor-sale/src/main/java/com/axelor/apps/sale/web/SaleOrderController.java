@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.sale.web;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +67,7 @@ public class SaleOrderController {
 
 		StringBuilder url = new StringBuilder();
 
-		url.append(this.getURLSaleOrderPDF(saleOrder));
+		url.append(saleOrderService.getURLSaleOrderPDF(saleOrder));
 
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
@@ -92,24 +91,6 @@ public class SaleOrderController {
 			response.setFlash(urlNotExist);
 		}
 	}
-
-	private String getURLSaleOrderPDF(SaleOrder saleOrder){
-		String language="";
-		try{
-			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
-
-
-		return new ReportSettings(IReport.SALES_ORDER, ReportSettings.FORMAT_PDF)
-							.addParam("Locale", language)
-							.addParam("__locale", "fr_FR")
-							.addParam("SaleOrderId", saleOrder.getId().toString())
-							.getUrl();
-	}
-
 
 	public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) {
 
@@ -239,13 +220,11 @@ public class SaleOrderController {
 
 	}
 
-	public void saveSaleOrderPDFAsAttachment(ActionRequest request, ActionResponse response) throws IOException {
+	public void finalizeSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String birtReportURL = this.getURLSaleOrderPDF(saleOrder);
-
-		saleOrderService.saveSaleOrderPDFAsAttachment(saleOrder, birtReportURL);
+		saleOrderService.finalizeSaleOrder(saleOrderService.find(saleOrder.getId()));
 
 		response.setReload(true);
 
