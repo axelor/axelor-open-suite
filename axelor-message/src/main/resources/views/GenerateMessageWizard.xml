@@ -27,7 +27,7 @@
     </action-method>
     
     <action-attrs name="action-generate-message-attrs-template-domain">
-    	<attribute name="domain" for="template" expr="eval: &quot;self.metaModel.fullName = '${_templateContextModel}'&quot;"/>
+    	<attribute name="domain" for="template" expr="eval: &quot;self.metaModel.fullName = '${_templateContextModel} and self.isSystem != true'&quot;"/>
     </action-attrs>
     
 </object-views>

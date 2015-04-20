@@ -58,7 +58,7 @@ public class GenerateMessageController {
 
 		try {		
 		
-			long templateNumber = templateRepo.all().filter("self.metaModel.fullName = ?1", 
+			long templateNumber = templateRepo.all().filter("self.metaModel.fullName = ?1 AND self.isSystem != true", 
 					object.getClass().getCanonicalName()).count();
 			
 			LOG.debug("Template number : {} ", templateNumber);
@@ -100,7 +100,7 @@ public class GenerateMessageController {
 								id,
 								object.getClass().getCanonicalName(),
 								object.getClass().getSimpleName(),
-								templateRepo.all().filter("self.metaModel.fullName = ?1", 
+								templateRepo.all().filter("self.metaModel.fullName = ?1 AND self.isSystem != true", 
 										object.getClass().getCanonicalName()).fetchOne()));
 			}
 			
