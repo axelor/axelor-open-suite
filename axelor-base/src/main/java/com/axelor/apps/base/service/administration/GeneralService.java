@@ -22,6 +22,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.hibernate.proxy.HibernateProxy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -31,20 +32,21 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 
 @Singleton
 public class GeneralService extends GeneralRepository{
 
 	protected static final String EXCEPTION = "Warning !";
-	
+
 	private static GeneralService INSTANCE;
-	
+
 	private Long administrationId;
-	
+
 	@Inject
 	protected GeneralService() {
-	
+
 		General general = all().fetchOne();
 		if(general != null)  {
 			administrationId = all().fetchOne().getId();
@@ -52,21 +54,21 @@ public class GeneralService extends GeneralRepository{
 		else  {
 			throw new RuntimeException("Veuillez configurer l'administration générale.");
 		}
-		
+
 	}
-	
+
 	private static GeneralService get() {
-		
+
 		if (INSTANCE == null) { INSTANCE = new GeneralService(); }
-		
+
 		return INSTANCE;
 	}
 
-// Accesseur	
-	
+// Accesseur
+
 	/**
 	 * Récupérer l'administration générale
-	 * 
+	 *
 	 * @return
 	 */
 	public static General getGeneral() {
@@ -74,7 +76,7 @@ public class GeneralService extends GeneralRepository{
 	}
 
 // Date du jour
-	
+
 	/**
 	 * Récupérer la date du jour avec l'heure.
 	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
@@ -83,90 +85,100 @@ public class GeneralService extends GeneralRepository{
 	 * private
 	 * @return
 	 */
-	public static DateTime getTodayDateTime(){	
-		
+	public static DateTime getTodayDateTime(){
+
 		DateTime todayDateTime = new DateTime();
-		
+
 		User user = AuthUtils.getUser();
-		
+
 		if (user != null && user.getToday() != null){
 			todayDateTime = user.getToday();
 		}
 		else if (getGeneral() != null && getGeneral().getToday() != null){
 			todayDateTime = getGeneral().getToday();
 		}
-		
+
 		return todayDateTime;
 	}
-	
+
 	/**
 	 * Récupérer la date du jour.
 	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
 	 * sinon récupère celle de l'administration générale,
 	 * sinon date du jour.
-	 * 
+	 *
 	 * @return
 	 */
 	public static LocalDate getTodayDate(){
-		
-		return getTodayDateTime().toLocalDate();
-		
-	}
-	
 
-	
+		return getTodayDateTime().toLocalDate();
+
+	}
+
+
+
 // Log
-	
+
 	/**
 	 * Savoir si le logger est activé
-	 * 
+	 *
 	 * @return
 	 */
 	public static boolean isLogEnabled(){
-		
+
 		if (getGeneral() != null){
 			return getGeneral().getLogOk();
 		}
-		
+
 		return false;
 	}
-	
+
 	public static Unit getUnit(){
-		
+
 		if (getGeneral() != null){
 			return getGeneral().getDefaultProjectUnit();
 		}
-		
+
 		return null;
 	}
 
 
-// Message exception	
-	
-	
-	
+// Message exception
+
+
+
 	/**
 	 * Obtenir le message d'erreur pour les achats/ventes.
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getExceptionSupplychainMsg(){
-		
+
 			return EXCEPTION;
-		
+
 	}
 
 
 // Conversion de devise
-	
+
 	/**
 	 * Obtenir la tva à 0%
-	 * 
+	 *
 	 * @return
 	 */
 	public static List<CurrencyConversionLine> getCurrencyConfigurationLineList(){
 		if (getGeneral() != null) { return getGeneral().getCurrencyConversionLineList(); }
 		else { return null; }
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public static Class<? extends Model> getPersistentClass(Model model){
+
+		if (model instanceof HibernateProxy) {
+		      return ((HibernateProxy) model).getHibernateLazyInitializer().getPersistentClass();
+		}
+		else { return model.getClass(); }
+
+	}
+
 }

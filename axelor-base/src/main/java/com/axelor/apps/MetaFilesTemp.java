@@ -12,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import javax.persistence.PersistenceException;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAttachment;
@@ -151,7 +152,7 @@ public class MetaFilesTemp {
 		MetaAttachment attachment = new MetaAttachment();
 		attachment.setMetaFile(file);
 		attachment.setObjectId(entity.getId());
-		attachment.setObjectName(entity.getClass().getName());
+		attachment.setObjectName(GeneralService.getPersistentClass(entity).getCanonicalName());
 
 		return attachment;
 	}
