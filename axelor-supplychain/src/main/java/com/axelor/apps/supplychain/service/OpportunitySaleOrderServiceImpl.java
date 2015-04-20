@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
@@ -25,6 +26,9 @@ public class OpportunitySaleOrderServiceImpl extends OpportunityRepository imple
 	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity){
 		SaleOrder saleOrder = new SaleOrder();
 		saleOrder.setCompany(opportunity.getCompany());
+		if(saleOrder.getCompany() == null){
+			saleOrder.setCompany(Beans.get(CompanyRepository.class).all().fetchOne());
+		}
 		saleOrder.setCurrency(opportunity.getCurrency());
 		saleOrder.setClientPartner(opportunity.getPartner());
 		saleOrder.setMainInvoicingAddress(saleOrder.getClientPartner().getMainInvoicingAddress());
@@ -38,6 +42,7 @@ public class OpportunitySaleOrderServiceImpl extends OpportunityRepository imple
 		saleOrder.setPaymentCondition(saleOrder.getClientPartner().getPaymentCondition());
 		saleOrder.setInvoicingTypeSelect(1);
 		saleOrder.setLocation(Beans.get(LocationRepository.class).find(new Long(1)));
+		saleOrder.setShowDetailsInInvoice(saleOrder.getCompany().getAccountConfig().getShowDetailsInInvoice());
 		opportunity.setSaleOrder(saleOrder);
 		save(opportunity);
 		saleOrder.setSaleOrderSeq(Beans.get(SaleOrderServiceImpl.class).getDraftSequence(saleOrder.getId()));
