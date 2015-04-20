@@ -238,7 +238,7 @@
 	</form>
 	
 	<form model="com.axelor.apps.crm.db.Event" title="Reschedule" name="popup-event-form">
-		 <field name="startDateTime" title=""/>
+		 <field name="startDateTime" title="New start date"/>
 		 <button name="confirm" title="Confirm" onClick="com.axelor.apps.crm.web.EventController:reschedule"/>
 	</form>
 	

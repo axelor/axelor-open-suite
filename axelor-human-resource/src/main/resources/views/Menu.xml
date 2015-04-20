@@ -7,20 +7,32 @@
 	<menuitem name="expense-all" parent="hr-root"
     	title="Expenses"
     	action="expense.all"/>
-
-	<action-view name="expense.all" title="Expenses" model="com.axelor.apps.hr.db.Expense">
+    	
+    <action-view name="expense.all" title="Expenses" model="com.axelor.apps.hr.db.Expense">
     	<view type="grid" name="expense-grid"/>
 	    <view type="form" name="expense-form"/>
 	</action-view>
 	
-	<menuitem name="timesheet-all" parent="hr-root"
-    	title="Timesheets"
-    	action="timesheet.all"/>
-
-	<action-view name="timesheet.all" title="Timesheets" model="com.axelor.apps.hr.db.Timesheet">
-    	<view type="grid" name="timesheet-grid"/>
-	    <view type="form" name="timesheet-form"/>
-	</action-view>
+	<menuitem name="timesheet-root" parent="hr-root"
+    	title="Timesheets"/>
+	
+	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my time sheet" action="edit.timesheet"/>
+	
+	<action-method name="edit.timesheet">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheet"/>
+	</action-method>
+	
+	<menuitem name="historic-timesheet" parent="timesheet-root" title="My Timesheets Historic" action="timesheet.historic"/>
+	
+	<action-method name="timesheet.historic">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
+	</action-method>
+	
+	<menuitem name="validate-timesheet" groups="MNGT,admins" parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate"/>
+	
+	<action-method name="timesheet.validate">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>
+	</action-method>
 	
 	<menuitem name="employee-all" parent="hr-root"
     	title="Employee"

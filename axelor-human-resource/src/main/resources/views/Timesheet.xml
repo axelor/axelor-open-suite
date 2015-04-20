@@ -9,18 +9,22 @@
 	</grid>
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
-	    onNew="action-timesheet-record-default">
+	    onNew="action-timesheet-record-default,action-timesheet-attrs-buttons"
+	    onLoad="action-timesheet-attrs-buttons">
 	    <toolbar>
-	    	<button name="confirm" onClick="save,action-timesheet-record-confirm,save" help="Valid" readonlyIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
-	    	<button name="cancelButt" onClick="save,com.axelor.apps.hr.web.timesheet.TimesheetController:cancelTimesheet" readonlyIf="statusSelect = 5" help="Cancel" icon="fa-close"/>
+	    	<button name="confirmButton" onClick="action-timesheet-record-confirm,save,action-timesheet-attrs-buttons" title="Confirm" readonlyIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+	    	<button name="validButton" onClick="action-timesheet-record-valid,save,action-timesheet-attrs-buttons" title="Valid"/>
+	    	<button name="refuseButton" onClick="action-timesheet-record-refuse,save,action-timesheet-attrs-buttons" title="Refuse"/>
+	    	<button name="cancelButton" onClick="action-timesheet-record-cancel,save,com.axelor.apps.hr.web.timesheet.TimesheetController:cancelTimesheet,action-timesheet-attrs-buttons" readonlyIf="statusSelect = 5" title="Cancel" icon="fa-close"/>
+	    	<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </toolbar>
-		<panel readonlyIf="statusSelect &gt; 1">
+		<panel name="head">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
 			<field name="sentDate" colSpan="4"/>
 			<field name="user" colSpan="4"/>
 			<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4" onClick="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
 		</panel>
-		<panel title="Generate Lines automatically" readonlyIf="statusSelect &gt; 1">
+		<panel name="generateLinesPanel" title="Generate Lines automatically">
 		    <field name="fromDate"/>
 			<field name="toDate"/>
 			<field name="project"/>
@@ -29,9 +33,18 @@
 			<field name="logTime"/>
 			<button name="generateLines" title="Generate lines" onClick="save,com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines"/>
 		</panel>
-		<panel-related field="logTimes" readonlyIf="statusSelect &gt; 1" grid-view="logTime-timesheet-grid" form-view="logTime-timesheet-form"/>
+		<panel-related name="logTimesRelated" field="logTimes" grid-view="logTime-timesheet-grid" form-view="logTime-timesheet-form"/>
 	</form>
 	
+	<form name="popup-timesheet-form" title="Select the timesheet you want to edit" model="com.axelor.apps.hr.db.Timesheet" onNew="action-timesheet-attrs-domain-timesheet-select">
+		<field name="$timesheetSelect" type="many-to-one" target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox" />
+		<button name="editTimesheetSelected" title="Edit Timesheet Selected" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:editTimesheetSelected"/>
+	</form>
+	
+	<action-attrs name="action-timesheet-attrs-domain-timesheet-select">
+		<attribute name="domain" for="timesheetSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
+	</action-attrs>
+
 	<action-record name="action-timesheet-record-default" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="user" expr="eval:__user__"/>
 	</action-record>
@@ -41,9 +54,32 @@
 	    <field name="sentDate" expr="eval:__date__"/>
 	</action-record>
 	
+	<action-record name="action-timesheet-record-valid" model="com.axelor.apps.hr.db.Timesheet">
+	    <field name="statusSelect" expr="3"/>
+	</action-record>
+	
+	<action-record name="action-timesheet-record-refuse" model="com.axelor.apps.hr.db.Timesheet">
+	    <field name="statusSelect" expr="4"/>
+	</action-record>
+	
+	<action-record name="action-timesheet-record-cancel" model="com.axelor.apps.hr.db.Timesheet">
+	    <field name="statusSelect" expr="5"/>
+	</action-record>
+	
+	<action-record name="action-timesheet-record-draft" model="com.axelor.apps.hr.db.Timesheet">
+	    <field name="statusSelect" expr="1"/>
+	</action-record>
+
 	<action-validate name="action-timesheet-validate-tasks">
 		<error message="No log time found or all log times already added" if="__repo__.of(LogTime).all().filter('self.user = ?1 AND self.affectedToTimeSheet = null',__user__).fetchOne() == null"/>
 	</action-validate>
 	
+	<action-attrs name="action-timesheet-attrs-buttons">
+		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null)))"/>
+		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null)))"/>
+		<attribute name="readonly" for="head" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null))) || statusSelect &gt; 2"/>
+		<attribute name="readonly" for="generateLinesPanel" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null))) || statusSelect &gt; 2"/>
+		<attribute name="readonly" for="logTimesRelated" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null))) || statusSelect &gt; 2"/>
+	</action-attrs>
 
 </object-views>
