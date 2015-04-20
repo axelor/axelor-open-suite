@@ -20,6 +20,7 @@
   	<string name="addressBlock" large="true" multiline="true" title="Address Block" help="true"/>
 	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" help="true"/>
 	<boolean name="isDefault" title="Default ?" help="true"/>
+	<boolean name="isSystem" title="System ?" help="true"/>
     
   </entity>
 

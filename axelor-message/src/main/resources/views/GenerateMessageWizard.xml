@@ -19,7 +19,7 @@
     </action-group>
     
     <action-record name="action-generate-message-record-on-new" model="com.axelor.apps.base.db.Wizard">
-    	<field name="template" expr="eval:__repo__.of(Template).all().filter('self.metaModel.fullName = ?1 and self.isDefault = true',_templateContextModel).fetchOne()"/> 
+    	<field name="template" expr="eval:__repo__.of(Template).all().filter('self.metaModel.fullName = ?1 and self.isDefault = true and self.isSystem != true',_templateContextModel).fetchOne()"/> 
    	</action-record>
     
     <action-method name="action-generate-message-method-generate-message">

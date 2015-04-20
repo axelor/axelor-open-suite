@@ -14,9 +14,10 @@
 		onSave="action-template-check-receptor" 
 		onNew="action-template-record-new">
 		<panel colSpan="12">
-			<field name="name"/>
+			<field name="name" colSpan="4" />
 			<field name="mediaTypeSelect" colSpan="4" />
 			<field name="isDefault" colSpan="2"/>
+			<field name="isSystem" colSpan="2"/>
 			<field name="metaModel"/>
 			<field name="target"/>
 			<field name="templateContext" colSpan="12"/>
