@@ -152,18 +152,7 @@ public class GeneralService extends GeneralRepository{
 	 */
 	public static String getExceptionSupplychainMsg(){
 		
-		if (getGeneral() != null) {
-			
-			if (getGeneral().getExceptionSupplychainMsg() != null ) {
-				return getGeneral().getExceptionSupplychainMsg();
-			}
-			else {
-				return getGeneral().getExceptionDefaultMsg();
-			}
-		}
-		else {
 			return EXCEPTION;
-		}
 		
 	}
 

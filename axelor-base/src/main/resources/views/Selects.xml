@@ -595,4 +595,9 @@
 		<option value="2">Closed</option>
 	</selection>
 	
+	<selection name="company.partner.type.select">
+		<option value="1">Company</option>
+		<option value="2">Individual</option>
+	</selection>
+	
 </object-views>

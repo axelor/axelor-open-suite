@@ -105,7 +105,8 @@
 		<panel title="Linked to"  readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" sidebar="true">
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="lead"/>
-		</panel>
+			<panel-include view="convert-opportunity-form" from="axelor-supplychain" if-module="axelor-supplychain"/>
+			</panel>
 		
 		<panel title="Assigned to" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" sidebar="true">
 		  <field name="user"/>

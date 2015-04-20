@@ -65,13 +65,6 @@
 					<field name="currencyWsURL" colSpan="12"/>
 				</panel>
 		    </panel>
-		    <panel title="Exceptions">
-				<field name="exceptionDefaultMsg" colSpan="12"/>
-				<field name="exceptionInvoiceMsg" colSpan="12"/>
-				<field name="exceptionAccountingMsg" colSpan="12"/>
-				<field name="exceptionReminderMsg" colSpan="12"/>
-				<field name="exceptionSupplychainMsg" colSpan="12"/>
-		    </panel>
 		</panel-tabs>
 	</form>
 	

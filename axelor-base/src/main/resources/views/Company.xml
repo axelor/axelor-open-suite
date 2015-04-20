@@ -41,6 +41,7 @@
 	  			<field name="logoPath"/>
 	  			<field name="currency"/>
 	  			<field name="printingSettings" canNew="true"/>
+	  			<field name="defaultPartnerTypeSelect"/>
 	  		</panel>
 	    	<panel title="Bank details">
 	      		<field name="defaultBankDetails"/>

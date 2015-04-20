@@ -338,7 +338,7 @@
     
     
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
-    	<field name="partnerTypeSelect" expr="eval:_partnerTypeSelect"/>
+    	<field name="partnerTypeSelect" expr="eval: __user__.activeCompany?.defaultPartnerTypeSelect"/>
     </action-record>
     
     <action-record name="action-partner-record-full-name" model="com.axelor.apps.base.db.Partner" >
