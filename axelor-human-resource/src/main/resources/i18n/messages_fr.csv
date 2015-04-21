@@ -17,7 +17,7 @@ Contact,,,"resources/domains/Employee.xml:11
 resources/views/Employee.xml:14"
 Daily work hours,Nombre d'heures de travail journalier,,resources/domains/Employee.xml:15
 Date,Date,,resources/domains/TimesheetLine.xml:15
-Date from,Date de,,resources/domains/Leave.xml:13
+Date from,De,,resources/domains/Leave.xml:13
 Date to (Included),Date à (inclus),,resources/domains/Leave.xml:15
 Day,Jour,,"resources/domains/WeeklyPlanning.xml:17
 resources/views/WeeklyPlanning.xml:18

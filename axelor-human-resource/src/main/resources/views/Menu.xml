@@ -76,4 +76,14 @@
 	    <view type="form" name="company-department-form"/>
 	</action-view>
 	
+	<menuitem name="hr-conf" parent="hr-root" title="Configuration"
+		icon="img/Other/parameter_59px.png" />
+		
+	<menuitem name="hr-conf-time-activity" parent="hr-conf" title="Activities" action="conf.time.activity"/>
+	
+	<action-view name="conf.time.activity" title="Activities" model="com.axelor.apps.hr.db.TimeActivity">
+    	<view type="grid" name="time-activity-grid"/>
+	    <view type="form" name="time-activity-form"/>
+	</action-view>
+	
 </object-views>
