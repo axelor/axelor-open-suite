@@ -8,10 +8,10 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.hr.db.DayPlanning;
 import com.axelor.apps.hr.db.Leave;
-import com.axelor.apps.hr.db.LogTime;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.LeaveRepository;
-import com.axelor.apps.hr.db.repo.LogTimeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.db.JPA;
@@ -28,10 +28,10 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
 
-		List<LogTime> logTimeList = LogTimeRepository.of(LogTime.class).all().filter("self.user = ?1 AND self.affectedToTimeSheet = null AND self.task != null", timesheet.getUser()).fetch();
-		for (LogTime logTime : logTimeList) {
-			logTime.setProject(logTime.getTask().getProject());
-			timesheet.addLogTime(logTime);
+		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.affectedToTimeSheet = null AND self.task != null", timesheet.getUser()).fetch();
+		for (TimesheetLine timesheetLine : timesheetLineList) {
+			timesheetLine.setProject(timesheetLine.getTask().getProject());
+			timesheet.addTimesheetLineListItem(timesheetLine);
 		}
 		JPA.save(timesheet);
 	}
@@ -39,11 +39,11 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 	@Transactional(rollbackOn={Exception.class})
 	public void cancelTimesheet(Timesheet timesheet){
 		timesheet.setStatusSelect(5);
-		List<LogTime> logTimeList = timesheet.getLogTimes();
-		for (LogTime logTime : logTimeList) {
-			if(logTime.getTask() != null){
-				logTime.setAffectedToTimeSheet(null);
-				JPA.save(logTime);
+		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+		for (TimesheetLine timesheetLine : timesheetLineList) {
+			if(timesheetLine.getTask() != null){
+				timesheetLine.setAffectedToTimeSheet(null);
+				JPA.save(timesheetLine);
 			}
 		}
 	}
@@ -90,15 +90,15 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 					}
 				}
 				if(noLeave){
-					LogTime logTime = new LogTime();
-					logTime.setDate(fromDate);
-					logTime.setUser(timesheet.getUser());
-					if(timesheet.getProject()!=null)logTime.setProject(timesheet.getProject());
-					if(timesheet.getTask()!=null)logTime.setTask(timesheet.getTask());
-					logTime.setVisibleDuration(timesheet.getLogTime());
-					logTime.setDurationStored(employeeService.getDurationHours(timesheet.getLogTime()));
-					logTime.setActivity(timesheet.getActivity());
-					timesheet.addLogTime(logTime);
+					TimesheetLine timesheetLine = new TimesheetLine();
+					timesheetLine.setDate(fromDate);
+					timesheetLine.setUser(timesheet.getUser());
+					if(timesheet.getProject()!=null)timesheetLine.setProject(timesheet.getProject());
+					if(timesheet.getTask()!=null)timesheetLine.setTask(timesheet.getTask());
+					timesheetLine.setVisibleDuration(timesheet.getLogTime());
+					timesheetLine.setDurationStored(employeeService.getDurationHours(timesheet.getLogTime()));
+					timesheetLine.setActivity(timesheet.getActivity());
+					timesheet.addTimesheetLineListItem(timesheetLine);
 				}
 			}
 			fromDate=fromDate.plusDays(1);

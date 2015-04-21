@@ -307,7 +307,7 @@
  	
  	<input file="hr_timeActivity.csv" type="com.axelor.apps.hr.db.TimeActivity" separator=";" search="self.importId = :importId"/>
  	
- 	<input file="hr_logTime.csv" type="com.axelor.apps.hr.db.LogTime" separator=";" search="self.importId = :importId">
+ 	<input file="hr_timesheetLine.csv" type="com.axelor.apps.hr.db.TimesheetLine" separator=";" search="self.importId = :importId">
 		<bind to="durationStored" eval="call:com.axelor.csv.script.ImportDurationStored:getDurationHoursImport(visibleDuration)"/>
 	</input>
  	    
