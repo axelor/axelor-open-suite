@@ -39,7 +39,7 @@
 	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="saleOrder" title="Sale order lines"/>
 
 <!--   	Ligne de Taxe -->	
-	<one-to-many name="saleOrderLineTaxList" ref="com.axelor.apps.sale.db.SaleOrderLineTax" mappedBy="saleOrder" title="Tax Lines"/>
+	<one-to-many name="saleOrderLineTaxList" ref="com.axelor.apps.sale.db.SaleOrderLineTax" mappedBy="saleOrder" title="Tax Lines" readonly="true"/>
   	
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
