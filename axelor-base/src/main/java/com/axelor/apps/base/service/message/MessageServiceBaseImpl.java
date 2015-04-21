@@ -62,10 +62,9 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
-			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect) {
+			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect)  {
 		
-		Message message = super.createMessage( content, fromEmailAddress, model, id, null, 0, getTodayLocalTime(), false, STATUS_DRAFT, subject, 
-				TYPE_SENT, replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect );
+		Message message = super.createMessage( model, id, subject, content, fromEmailAddress, replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, metaFiles, addressBlock, mediaTypeSelect) ;
 		
 		message.setCompany(userService.getUserActiveCompany());
 		

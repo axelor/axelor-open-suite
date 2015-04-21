@@ -156,6 +156,7 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 		Set<MetaFile> metaFiles = Sets.newHashSet();
 		for ( MetaAttachment metaAttachment: metaAttachments ){ metaFiles.add( metaAttachment.getMetaFile() ); }
 		
+		log.debug("Metafile to attach: {}", metaFiles);
 		return metaFiles;
 
 	}

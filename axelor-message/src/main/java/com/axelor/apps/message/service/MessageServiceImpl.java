@@ -35,6 +35,7 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailSender;
 import com.axelor.mail.SmtpAccount;
@@ -52,7 +53,7 @@ import com.google.inject.persist.Transactional;
 
 public class MessageServiceImpl extends MessageRepository implements MessageService {
 	
-	private final Logger LOG = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	private DateTime todayTime;
 	
@@ -72,11 +73,11 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 	
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replayToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
+	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect)  {
 		
 		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, getTodayLocalTime(), false,	STATUS_DRAFT, subject, TYPE_SENT,
-				replayToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect) ;
+				replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect) ;
 		
 		save( message );
 		
@@ -95,7 +96,9 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 
 		Long messageId = message.getId();
 		String messageObjectName = Message.class.getName();
-						
+		
+		log.debug("Add metafiles to object {}:{}", messageObjectName, messageId);
+		
 		for ( MetaFile metaFile: metaFiles ){
 			MetaAttachment metaAttachment = new MetaAttachment();
 			metaAttachment.setObjectId(messageId);
@@ -128,7 +131,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		if ( mailAccount != null ) {
 			mailAccount = mailAccountService.find( mailAccount.getId() );
 			content += "<p></p><p></p>" + mailAccountService.getSignature(mailAccount);
-			LOG.debug( "Mail account ::: {}", mailAccount );
+			log.debug( "Mail account ::: {}", mailAccount );
 		}
 		
 		Message message = new Message(typeSelect, subject, content, statusSelect, mediaTypeSelect, addressBlock, fromEmailAddress, replyToEmailAddressSet, toEmailAddressSet, ccEmailAddressSet, bccEmailAddressSet, sentByEmail, mailAccount);
@@ -150,9 +153,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 			else if ( message.getMediaTypeSelect() == MEDIA_TYPE_EMAIL ) { return sendByEmail(message); }
 			else if ( message.getMediaTypeSelect() == MEDIA_TYPE_CHAT ) { return sendToUser(message); }
 			
-		} catch (MessagingException | IOException  e) {
-			LOG.error(e.getMessage());
-		}
+		} catch (MessagingException | IOException  e) { TraceBackService.trace(e); }
 		
 		return message;
 		
@@ -164,7 +165,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		if ( message.getRecipientUser() == null ){ return message; }
 
 		message.setSenderUser( AuthUtils.getUser() );
-		LOG.debug("Sent internal message to user ::: {}", message.getRecipientUser());
+		log.debug("Sent internal message to user ::: {}", message.getRecipientUser());
 		
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
 		message.setSentByEmail(false);
@@ -176,7 +177,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 	@Transactional(rollbackOn = Exception.class)
 	public Message sendByMail(Message message){
 
-		LOG.debug("Sent mail");
+		log.debug("Sent mail");
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
 		message.setSentByEmail(false);
 		message.setSentDateT(LocalDateTime.now());
@@ -191,7 +192,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		
 		if ( mailAccount == null ){ return message; }
 
-		LOG.debug("Sent email");
+		log.debug("Sent email");
 		com.axelor.mail.MailAccount account = new SmtpAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), mailAccountService.getSmtpSecurity(mailAccount) );
 
 		List<String> 
@@ -206,7 +207,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		mailBuilder.subject(message.getSubject());
 		
 		if ( message.getFromEmailAddress() != null ) {
-			LOG.debug( "Override from :::  {}", message.getFromEmailAddress().getAddress() );
+			log.debug( "Override from :::  {}", message.getFromEmailAddress().getAddress() );
 			mailBuilder.from( message.getFromEmailAddress().getAddress() );
 		}
 		
