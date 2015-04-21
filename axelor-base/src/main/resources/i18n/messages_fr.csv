@@ -234,7 +234,7 @@ resources/views/Partner.xml:71"
 "ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:36"
 "Account Number","N° de compte",,"resources/domains/BankDetails.xml:18"
 "Account config","Config. Des comptes comptables",,"resources/views/Company.xml:24
-resources/views/Company.xml:52"
+resources/views/Company.xml:53"
 "Account management","Configuration comptable",,"resources/views/AccountManagement.xml:23
 resources/views/AccountManagement.xml:41"
 "Account management list","Liste des configs. Comptable",,"resources/views/AccountManagement.xml:6"
@@ -363,7 +363,7 @@ resources/domains/Bic.xml:11"
 "Bank accounts","Les RIB",,"resources/domains/Company.xml:25"
 "Bank details","Coordonnées bancaires",,"resources/views/BankDetails.xml:14
 resources/views/BankDetails.xml:6
-resources/views/Company.xml:45
+resources/views/Company.xml:46
 resources/views/Menu.xml:113
 resources/views/Menu.xml:116"
 "Banking","Banques",,"resources/views/Selects.xml:211"
@@ -573,7 +573,8 @@ resources/domains/Year.xml:16
 resources/views/Company.xml:12
 resources/views/Partner.xml:236
 resources/views/Selects.xml:181
-resources/views/Selects.xml:200"
+resources/views/Selects.xml:200
+resources/views/Selects.xml:599"
 "Company Footer","Pied de page société",,"resources/domains/PrintingSettings.xml:13
 resources/views/PrintingSetting.xml:14"
 "Company Header","En-tête société",,"resources/domains/PrintingSettings.xml:12
@@ -934,7 +935,8 @@ resources/views/IndicatorGeneratorGrouping.xml:6
 resources/views/Menu.xml:482
 resources/views/Menu.xml:485"
 "Individual","Individu",,"resources/views/Selects.xml:182
-resources/views/Selects.xml:201"
+resources/views/Selects.xml:201
+resources/views/Selects.xml:600"
 "Industry","Secteur d'Activité",,"resources/domains/Partner.xml:67"
 "Industry Sector","Secteur d'Activité",,"resources/views/Charts.xml:121
 resources/views/Charts.xml:59"
@@ -1159,7 +1161,7 @@ resources/views/Selects.xml:594"
 resources/views/PriceListLine.xml:20"
 "Order confirmed",,,"resources/views/Selects.xml:428"
 "Organisation config","Config. Organisation",,"resources/views/Company.xml:29
-resources/views/Company.xml:82"
+resources/views/Company.xml:83"
 "Organization","Organisation",,"resources/views/Menu.xml:240"
 "Other","Autre",,"resources/views/Selects.xml:233"
 "Other variants","Autres variantes",,"resources/views/Product.xml:259"
@@ -1192,7 +1194,8 @@ resources/views/Partner.xml:44"
 "Partner Db","Tb Tiers",,"resources/views/Menu.xml:20
 resources/views/Menu.xml:28"
 "Partner Details","Détails du tiers",,"resources/views/Partner.xml:99"
-"Partner Type","Type tiers",,"resources/domains/Partner.xml:15"
+"Partner Type","Type tiers",,"resources/domains/Company.xml:29
+resources/domains/Partner.xml:15"
 "Partner categories","Catégories de tiers",,"resources/views/Menu.xml:93
 resources/views/Menu.xml:96
 resources/views/PartnerCategory.xml:6"
@@ -1363,7 +1366,7 @@ resources/domains/ProductVariantConfig.xml:13"
 "ProductSheet.warranty","Garantie",,"java/com/axelor/apps/base/report/ITranslation.java:25"
 "Production Qty by tracking","Qté par lot de production",,"resources/domains/TrackingNumberConfiguration.xml:23"
 "Production config","Config. Module Production",,"resources/views/Company.xml:28
-resources/views/Company.xml:76"
+resources/views/Company.xml:77"
 "Production informations","Information production",,"resources/views/Product.xml:101"
 "Production order","Ordre de production",,"resources/views/Selects.xml:376"
 "Production tracking management","Gestion lots de production",,"resources/views/TrackingNumberConfiguration.xml:31"
@@ -1403,7 +1406,7 @@ resources/views/Selects.xml:471"
 "Purchase Qty by tracking","Qté par lot à l'achat",,"resources/domains/TrackingNumberConfiguration.xml:22"
 "Purchase Tax","T.V.A. à l'achat",,"resources/domains/AccountManagement.xml:11"
 "Purchase config","Config. Module Achats",,"resources/views/Company.xml:27
-resources/views/Company.xml:58"
+resources/views/Company.xml:59"
 "Purchase interface","Interface achat",,"resources/views/Selects.xml:364"
 "Purchase order","Devis fournisseurs",,"resources/views/Selects.xml:368
 resources/views/Selects.xml:435"
@@ -1513,7 +1516,7 @@ resources/views/Selects.xml:470"
 "Sale Qty by tracking","Qté par lot à la vente",,"resources/domains/TrackingNumberConfiguration.xml:21"
 "Sale Tax","T.V.A. à la vente",,"resources/domains/AccountManagement.xml:12"
 "Sale config","Config. Module Ventes",,"resources/views/Company.xml:25
-resources/views/Company.xml:64"
+resources/views/Company.xml:65"
 "Sale currency","Devise de vente",,"resources/domains/Product.xml:29"
 "Sale interface","Interface vente",,"resources/views/Selects.xml:361"
 "Sale price","Prix Vente H.T.",,"resources/views/Selects.xml:558"
@@ -1602,7 +1605,7 @@ resources/domains/Year.xml:17"
 "Stock","Stock",,"resources/views/Product.xml:167
 resources/views/Product.xml:88"
 "Stock config","Config. Module Stock",,"resources/views/Company.xml:26
-resources/views/Company.xml:70"
+resources/views/Company.xml:71"
 "Storable Products","Produits stockables",,"resources/views/Product.xml:278"
 "Subject","Sujet/Objet",,"resources/views/Message.xml:35"
 "Subscription","Abonnement",,"resources/views/Selects.xml:239
