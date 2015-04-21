@@ -76,7 +76,7 @@ public class GenerateMessageController {
 						ActionView.define( I18n.get( IExceptionMessage.MESSAGE_2 ) )
 						.model(Wizard.class.getName())
 						.add("form", "generate-message-wizard-form")
-						.context( "_object", context.toString() )
+						.context( "_objectId", context.getId().toString() )
 						.context( "_templateContextModel", model )
 						.context( "_tag", simpleModel )
 						.map()
@@ -94,18 +94,14 @@ public class GenerateMessageController {
 	public void generateMessage(ActionRequest request, ActionResponse response)  {
 		
 		Context context = request.getContext();
-		
-		Map<?,?> object = (Map<?,?>) context.get("_object");	
 		Map<?,?> templateContext = (Map<?,?>) context.get("template");
+		Template template = templateRepo.find( Long.parseLong( templateContext.get("id").toString() ) );
 		
-		Integer objectId =  (Integer) object.get("id");
-		
+		Long objectId =  Long.parseLong( context.get("_objectId").toString() );
 		String model = (String) context.get("_templateContextModel");
 		String tag = (String) context.get("_tag");
-		
-		Template template = templateRepo.find( Long.parseLong( templateContext.get("id").toString() ) );
 
-		try { response.setView( generateMessage( objectId.longValue(), model, tag, template ) ); } 
+		try { response.setView( generateMessage( objectId, model, tag, template ) ); } 
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 	

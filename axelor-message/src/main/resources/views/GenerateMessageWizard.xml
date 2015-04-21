@@ -4,14 +4,18 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
     
-    <form name="generate-message-wizard-form"  model="com.axelor.apps.base.db.Wizard" title="Generate message" 
-    onNew="action-generate-message-record-on-new">
+    <form name="generate-message-wizard-form"  model="com.axelor.apps.base.db.Wizard" title="Generate message" onNew="action-generate-message-group-on-new">
     	<panel>
-	      	<field name="template" title="Template" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.message.db.Template" target-name="name" onSelect="action-generate-message-attrs-template-domain"/>
+	      	<field name="template" title="Template" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.message.db.Template" target-name="name" />
 	      	<spacer/>
 	      	<button name="validate" title="Validate" onClick="action-generate-message-method-generate-message"/>
       	</panel>
 	</form>
+	
+	<action-group name="action-generate-message-group-on-new">
+		<action name="action-generate-message-record-on-new"/>
+		<action name="action-generate-message-attrs-template-domain"/>
+	</action-group>
     
     <action-record name="action-generate-message-record-on-new" model="com.axelor.apps.base.db.Wizard">
     	<field name="template" expr="eval:__repo__.of(Template).all().filter('self.metaModel.fullName = ?1 and self.isDefault = true and self.isSystem != true',_templateContextModel).fetchOne()"/> 
