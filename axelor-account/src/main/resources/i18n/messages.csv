@@ -354,8 +354,8 @@ resources/views/Irrecoverable.xml:54"
 "Avoir créé",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:508"
 "Axelor Backoffice email",,,"resources/domains/PayboxConfig.xml:20"
 "Axis",,,"resources/domains/AnalyticAccountManagement.xml:12"
-"B2B",,,"resources/views/Invoice.xml:350"
-"B2C",,,"resources/views/Invoice.xml:353"
+"B2B",,,"resources/views/Invoice.xml:348"
+"B2C",,,"resources/views/Invoice.xml:351"
 "BBAN/IBAN to use",,,"resources/domains/AccountingBatch.xml:14"
 "Balance",,,"java/com/axelor/apps/account/service/batch/BatchMoveLineExport.java:157
 resources/domains/MoveLineReport.xml:34
@@ -644,13 +644,13 @@ resources/domains/Invoice.xml:23"
 resources/views/AccountingSituation.xml:24
 resources/views/AccountingSituation.xml:56
 resources/views/Partner.xml:24"
-"Customer invoices filters",,,"resources/views/Invoice.xml:334"
+"Customer invoices filters",,,"resources/views/Invoice.xml:332"
 "Customer payments",,,"resources/views/PaymentVoucher.xml:286"
 "Customer payments with remaining",,,"resources/views/PaymentVoucher.xml:295"
 "Customer refund",,,"resources/views/Selects.xml:108
 resources/views/Selects.xml:115"
 "Customer refunds",,,"resources/views/PaymentVoucher.xml:301"
-"Customer refunds filters",,,"resources/views/Invoice.xml:358"
+"Customer refunds filters",,,"resources/views/Invoice.xml:356"
 "Customer sale",,,"resources/views/Selects.xml:107
 resources/views/Selects.xml:114"
 "Customer(s)",,,"resources/domains/Irrecoverable.xml:11"
@@ -692,7 +692,7 @@ resources/domains/PaymentScheduleLine.xml:29"
 resources/domains/ChequeRejection.xml:20
 resources/domains/InterbankCode.xml:13
 resources/domains/InvoiceBatch.xml:24
-resources/domains/InvoiceLine.xml:26
+resources/domains/InvoiceLine.xml:25
 resources/domains/MoveLine.xml:17
 resources/domains/PayerQualityConfigLine.xml:22
 resources/domains/Reimbursement.xml:18
@@ -723,7 +723,7 @@ resources/views/DirectDebitManagement.xml:18"
 "Direct debits management",,,"resources/views/DirectDebitManagement.xml:10
 resources/views/DirectDebitManagement.xml:6"
 "Discount",,,"resources/views/InvoiceLine.xml:37"
-"Discount amount",,,"resources/domains/InvoiceLine.xml:23"
+"Discount amount",,,"resources/domains/InvoiceLine.xml:22"
 "Do not export ?",,,"resources/domains/Journal.xml:19"
 "Do not shift to irrecoverable",,,"resources/views/MoveLine.xml:167
 resources/views/MoveLine.xml:88
@@ -738,8 +738,8 @@ resources/views/InterbankCodeLine.xml:41"
 "Doubtful customers account",,,"resources/domains/AccountConfig.xml:32"
 "Doubtful receivables",,,"resources/views/AccountConfig.xml:104"
 "Draft",,,"resources/views/Invoice.xml:134
-resources/views/Invoice.xml:374
-resources/views/Invoice.xml:392
+resources/views/Invoice.xml:372
+resources/views/Invoice.xml:390
 resources/views/Reconcile.xml:58
 resources/views/Selects.xml:15
 resources/views/Selects.xml:205
@@ -912,7 +912,7 @@ resources/domains/ReminderMethodLine.xml:10"
 "Import payment rejects by IPO and IPO cheque",,,"resources/views/Selects.xml:166"
 "Import payments by IPO and IPO cheque",,,"resources/views/Selects.xml:165"
 "In",,,"resources/views/Selects.xml:194"
-"In % / fixed amount",,,"resources/domains/InvoiceLine.xml:24"
+"In % / fixed amount",,,"resources/domains/InvoiceLine.xml:23"
 "In progress",,,"resources/views/Selects.xml:246"
 "Inactive",,,"resources/views/Selects.xml:50"
 "Incident type",,,"resources/domains/PayerQualityConfigLine.xml:8"
@@ -1227,7 +1227,7 @@ resources/domains/CashRegister.xml:11
 resources/domains/CashRegisterLine.xml:8
 resources/domains/CfonbConfig.xml:10
 resources/domains/InterbankCode.xml:11
-resources/domains/InvoiceLine.xml:34
+resources/domains/InvoiceLine.xml:33
 resources/domains/InvoiceLineType.xml:11
 resources/domains/Irrecoverable.xml:10
 resources/domains/IrrecoverableInvoiceLine.xml:15
@@ -1254,7 +1254,7 @@ resources/views/Menu.xml:27"
 "Niveau de relance en attente de validation.",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:394"
 "No of Units",,,"resources/views/charts.xml:167"
 "Not implemented for OSM",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:502"
-"Note",,,"resources/domains/InvoiceLine.xml:29"
+"Note",,,"resources/domains/InvoiceLine.xml:28"
 "Notes",,,"resources/domains/Invoice.xml:83
 resources/views/Invoice.xml:111
 resources/views/InvoiceLine.xml:42"
@@ -1439,7 +1439,6 @@ resources/views/Menu.xml:394"
 "Please select the invoice(s) to print.",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:509"
 "Previous Move",,,"resources/domains/Invoice.xml:42"
 "Price list",,,"resources/domains/Invoice.xml:29"
-"Pricinglist unit",,,"resources/domains/InvoiceLine.xml:17"
 "Print",,,"resources/views/Invoice.xml:25
 resources/views/Invoice.xml:33
 resources/views/Irrecoverable.xml:32
@@ -1465,7 +1464,7 @@ resources/views/Menu.xml:660"
 "Purchase account",,,"resources/domains/AccountManagement.xml:8"
 "Purchase journal type",,,"resources/domains/AccountConfig.xml:25"
 "Purchases",,,"resources/views/Menu.xml:66"
-"Qty",,,"resources/domains/InvoiceLine.xml:18
+"Qty",,,"resources/domains/InvoiceLine.xml:17
 resources/domains/InvoiceLineEvent.xml:15"
 "Qty Unit",,,"resources/domains/InvoiceLineEvent.xml:19"
 "RUM N°",,,"resources/domains/Rum.xml:10"
@@ -1764,16 +1763,16 @@ resources/views/Menu.xml:85"
 "Supplier Purchase Journal",,,"resources/domains/AccountConfig.xml:16"
 "Supplier account",,,"resources/domains/AccountConfig.xml:31
 resources/domains/AccountingSituation.xml:15"
-"Supplier invoices filters",,,"resources/views/Invoice.xml:373"
+"Supplier invoices filters",,,"resources/views/Invoice.xml:371"
 "Supplier payments",,,"resources/views/PaymentVoucher.xml:304"
 "Supplier purchase",,,"resources/views/Selects.xml:105
 resources/views/Selects.xml:112"
 "Supplier refund",,,"resources/views/Selects.xml:106
 resources/views/Selects.xml:113"
 "Supplier refunds",,,"resources/views/PaymentVoucher.xml:313"
-"Supplier refunds filters",,,"resources/views/Invoice.xml:391"
+"Supplier refunds filters",,,"resources/views/Invoice.xml:389"
 "Supplier's Invoices Due",,,"resources/views/Dashboard.xml:127"
-"Tax",,,"resources/domains/InvoiceLine.xml:21
+"Tax",,,"resources/domains/InvoiceLine.xml:20
 resources/domains/InvoiceLineTax.xml:17
 resources/domains/MoveLine.xml:31
 resources/domains/TaxAccount.xml:10
@@ -1847,9 +1846,9 @@ resources/views/charts.xml:171"
 resources/domains/Invoice.xml:96"
 "Total W.T.",,,"resources/domains/Invoice.xml:89
 resources/domains/Invoice.xml:95
-resources/domains/InvoiceLine.xml:19"
-"Total W.T. in Acc. currency",,,"resources/domains/InvoiceLine.xml:20
-resources/domains/InvoiceLine.xml:32"
+resources/domains/InvoiceLine.xml:18"
+"Total W.T. in Acc. currency",,,"resources/domains/InvoiceLine.xml:19
+resources/domains/InvoiceLine.xml:31"
 "Total amount",,,"resources/domains/PaymentInvoiceToPay.xml:12"
 "Total balance",,,"resources/domains/AccountingSituation.xml:18"
 "Total record code",,,"resources/domains/CfonbConfig.xml:20"
@@ -1879,20 +1878,21 @@ java/com/axelor/apps/account/exception/IExceptionMessage.java:147"
 "UMR List",,,"resources/domains/Partner.xml:20"
 "Unique Mandate References",,,"resources/views/Rum.xml:16
 resources/views/Rum.xml:6"
+"Unit",,,"resources/domains/InvoiceLine.xml:16"
 "Unit price",,,"resources/domains/InvoiceLine.xml:15
 resources/domains/InvoiceLineEvent.xml:16
 resources/domains/InvoiceLineEvent.xml:18"
 "Units",,,"resources/views/charts.xml:269
 resources/views/charts.xml:314
 resources/views/charts.xml:342"
-"Unpaid",,,"resources/views/Invoice.xml:341
-resources/views/Invoice.xml:365
-resources/views/Invoice.xml:383
-resources/views/Invoice.xml:401"
-"Unpaid Due",,,"resources/views/Invoice.xml:344
-resources/views/Invoice.xml:368
-resources/views/Invoice.xml:386
-resources/views/Invoice.xml:404"
+"Unpaid",,,"resources/views/Invoice.xml:339
+resources/views/Invoice.xml:363
+resources/views/Invoice.xml:381
+resources/views/Invoice.xml:399"
+"Unpaid Due",,,"resources/views/Invoice.xml:342
+resources/views/Invoice.xml:366
+resources/views/Invoice.xml:384
+resources/views/Invoice.xml:402"
 "Unpaid IPO operation code",,,"resources/domains/CfonbConfig.xml:34"
 "Unpaid Supplier's Invoices",,,"resources/views/Dashboard.xml:121"
 "Unpaid direct debit operation code",,,"resources/domains/CfonbConfig.xml:33"
@@ -1923,10 +1923,10 @@ resources/views/Selects.xml:170"
 "Validate account clearances",,,"resources/views/AccountClearance.xml:36"
 "Validate reject",,,"resources/views/ChequeRejection.xml:57"
 "Validated",,,"resources/views/BankStatement.xml:30
-resources/views/Invoice.xml:335
-resources/views/Invoice.xml:359
-resources/views/Invoice.xml:377
-resources/views/Invoice.xml:395
+resources/views/Invoice.xml:333
+resources/views/Invoice.xml:357
+resources/views/Invoice.xml:375
+resources/views/Invoice.xml:393
 resources/views/Selects.xml:206
 resources/views/Selects.xml:216
 resources/views/Selects.xml:224
@@ -1942,13 +1942,13 @@ resources/views/Selects.xml:84"
 "Validation of moves is irrevocable",,,"resources/views/Move.xml:8"
 "Value",,,"resources/domains/IrrecoverableReportLine.xml:14"
 "Variables list returned by Paybox",,,"resources/domains/PayboxConfig.xml:21"
-"Variants",,,"resources/domains/InvoiceLine.xml:27"
+"Variants",,,"resources/domains/InvoiceLine.xml:26"
 "Ventilate",,,"resources/views/Invoice.xml:133
 resources/views/Selects.xml:171"
-"Ventilated",,,"resources/views/Invoice.xml:338
-resources/views/Invoice.xml:362
-resources/views/Invoice.xml:380
-resources/views/Invoice.xml:398
+"Ventilated",,,"resources/views/Invoice.xml:336
+resources/views/Invoice.xml:360
+resources/views/Invoice.xml:378
+resources/views/Invoice.xml:396
 resources/views/Selects.xml:217"
 "Veuillez configurer un RIB pour le remboursement",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:272"
 "Veuillez configurer une séquence Echéancier pour la société",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:162"
@@ -1974,7 +1974,7 @@ resources/views/Selects.xml:217"
 "Weight table (Payer quality)",,,"resources/domains/General.xml:14"
 "Wire Transfer",,,"resources/domains/InterbankCodeLine.xml:13"
 "Wire transfer operation code",,,"resources/domains/CfonbConfig.xml:22"
-"With Payment Rejected",,,"resources/views/Invoice.xml:347"
+"With Payment Rejected",,,"resources/views/Invoice.xml:345"
 "Year",,,"resources/views/charts.xml:454
 resources/views/charts.xml:49"
 "\n (Débit %s compte %s - Crédit %s compte %s)",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:170"

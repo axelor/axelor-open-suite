@@ -9,8 +9,8 @@
 
 		<string name="name" title="Name" required="true" namecolumn="true" />
 		<integer name="serverTypeSelect" title="Server Type" required="true" selection="mail.account.server.type.select" default="1" help="true"/>
-		<string name="login" title="Login" required="true" help="true"/>
-		<string name="password" title="Password" required="true"/>
+		<string name="login" title="Login" help="true"/>
+		<string name="password" title="Password" />
 		<string name="host" title="Host" required="true" help="true"/>
 		<integer name="port" title="Port" min="1" nullable="true"/>
 		<integer name="securitySelect" title="SSL/TLS" selection="mail.account.security.select" help="true"/>

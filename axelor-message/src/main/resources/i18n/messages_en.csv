@@ -10,12 +10,12 @@ resources/domains/Template.xml:16"
 "Check Duplicate",,,"resources/views/EmailAddress.xml:8"
 "Code",,,"resources/domains/Wizard.xml:11"
 "Configuration",,,"resources/views/Menu.xml:14"
-"Configurations",,,"resources/views/MailAccount.xml:24"
+"Configurations",,,"resources/views/MailAccount.xml:19"
 "Connection successful",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:17"
 "Content",,,"resources/domains/Message.xml:12
 resources/domains/Template.xml:11
 resources/views/Message.xml:41
-resources/views/Template.xml:36"
+resources/views/Template.xml:37"
 "Create message",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:32"
 "Default ?",,,"resources/domains/Template.xml:22"
 "Default account ?",,,"resources/domains/MailAccount.xml:17"
@@ -32,16 +32,15 @@ resources/views/Menu.xml:99"
 "Email address",,,"resources/views/EmailAddress.xml:13
 resources/views/EmailAddress.xml:20"
 "Email addresses",,,"resources/views/EmailAddress.xml:6
-resources/views/Menu.xml:113
-resources/views/Menu.xml:116"
+resources/views/Menu.xml:112
+resources/views/Menu.xml:115"
 "Email envoyé",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:33"
 "Emails",,,"resources/views/Message.xml:6"
-"Error",,,"java/com/axelor/apps/message/web/MailAccountController.java:40"
 "Event",,,"resources/views/Selects.xml:13"
 "Forecasted Sent Date",,,"resources/domains/Message.xml:14"
 "From",,,"resources/domains/Message.xml:25
 resources/domains/Template.xml:13
-resources/views/Template.xml:25"
+resources/views/Template.xml:26"
 "Generate message",,,"resources/views/GenerateMessageWizard.xml:8"
 "Host",,,"resources/domains/MailAccount.xml:14"
 "Import",,,"resources/domains/EmailAddress.xml:10"
@@ -52,7 +51,7 @@ resources/views/Menu.xml:59"
 resources/views/Message.xml:19"
 "Lead",,,"resources/views/Selects.xml:10"
 "Login",,,"resources/domains/MailAccount.xml:12
-resources/views/MailAccount.xml:20"
+resources/views/MailAccount.xml:25"
 "Mail",,,"resources/views/Selects.xml:37"
 "Mail account",,,"resources/domains/Message.xml:31
 resources/views/MailAccount.xml:13"
@@ -90,9 +89,9 @@ resources/views/Menu.xml:28"
 "Received",,,"resources/views/Selects.xml:20"
 "Recipient",,,"resources/domains/Message.xml:35"
 "Recipient address",,,"resources/views/Message.xml:30
-resources/views/Template.xml:22"
+resources/views/Template.xml:23"
 "Recipients",,,"resources/views/Message.xml:33
-resources/views/Template.xml:31"
+resources/views/Template.xml:32"
 "Related to",,,"resources/domains/Message.xml:15
 resources/domains/Message.xml:17
 resources/views/Message.xml:45"
@@ -100,9 +99,9 @@ resources/views/Message.xml:45"
 "Related to2 select",,,"resources/domains/Message.xml:18"
 "Reply to",,,"resources/domains/Message.xml:26
 resources/domains/Template.xml:14
-resources/views/Template.xml:28"
-"Routings",,,"resources/views/Menu.xml:105
-resources/views/Menu.xml:108"
+resources/views/Template.xml:29"
+"Routings",,,"resources/views/Menu.xml:104
+resources/views/Menu.xml:107"
 "SMTP",,,"resources/views/Selects.xml:31"
 "SSL",,,"resources/views/Selects.xml:44"
 "SSL/TLS",,,"resources/domains/MailAccount.xml:16"
@@ -121,14 +120,15 @@ resources/views/Menu.xml:90"
 "Subject","Subject",,"resources/domains/Message.xml:11
 resources/views/Message.xml:42"
 "Suject",,,"resources/domains/Template.xml:12"
+"System ?",,,"resources/domains/Template.xml:23"
 "TLS",,,"resources/views/Selects.xml:45"
 "Target receptor",,,"resources/domains/Template.xml:18"
 "Task (Project)",,,"resources/views/Selects.xml:16"
 "Template",,,"resources/views/GenerateMessageWizard.xml:10
 resources/views/Template.xml:14"
 "Templates",,,"resources/views/Template.xml:6"
-"Test connection",,,"resources/views/MailAccount.xml:32"
-"There is already a default mail account",,,"resources/views/MailAccount.xml:46"
+"Test connection",,,"resources/views/MailAccount.xml:31"
+"There is already a default mail account",,,"resources/views/MailAccount.xml:40"
 "To",,,"resources/domains/Message.xml:27
 resources/domains/Template.xml:15"
 "Trash",,,"resources/views/Menu.xml:75
@@ -155,6 +155,7 @@ resources/views/Menu.xml:79"
 "help:Message.typeSelect",,,"resources/domains/Message.xml:10"
 "help:Template.addressBlock",,,"resources/domains/Template.xml:20"
 "help:Template.isDefault",,,"resources/domains/Template.xml:22"
+"help:Template.isSystem",,,"resources/domains/Template.xml:23"
 "help:Template.mediaTypeSelect",,,"resources/domains/Template.xml:19"
 "help:Template.metaModel",,,"resources/domains/Template.xml:21"
 "user@mydomain.com",,,"resources/views/EmailAddress.xml:15

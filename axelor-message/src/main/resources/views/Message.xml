@@ -22,7 +22,7 @@
 			<field name="senderUser"/>
 			<field name="sentDateT" colSpan="4"/>
 			<panel colSpan="12" showIf="mediaTypeSelect == 2">
-			    <field name="fromEmailAddress" />
+			    <field name="fromEmailAddress" widget="SuggestBox"/>
 				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature" requiredIf="mediaTypeSelect == 2"/>
         		<field name="replyToEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
 			</panel>

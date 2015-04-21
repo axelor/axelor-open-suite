@@ -24,6 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +36,12 @@ import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -50,7 +50,10 @@ import com.google.inject.Inject;
 
 public class TemplateMessageServiceImpl extends TemplateRepository implements TemplateMessageService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TemplateMessageServiceImpl.class); 
+	private static final String RECIPIENT_SEPARATOR = ";";
+	private static final char TEMPLATE_DELIMITER = '$';
+	
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	protected TemplateMaker maker;
 	
@@ -66,112 +69,90 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 
 	@Override
 	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
-
-		return this.generateMessage( model.getId(), model.getClass().getCanonicalName(), model.getClass().getSimpleName(), template);
+		
+		Class<?> klass = model.getClass();
+		if ( model instanceof HibernateProxy ) { klass = ( (HibernateProxy) model ).getHibernateLazyInitializer().getPersistentClass(); }
+		return generateMessage( model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template);
 		
 	}
 	
 	@Override
-	public Message generateMessage( long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
+	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
 		if ( !model.equals( template.getMetaModel().getFullName() ) ){
 			throw new AxelorException( I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3 ), IException.INCONSISTENCY, template.getMetaModel().getFullName() );
 		}
 		
-		LOG.debug("model : {}", model);
-		LOG.debug("tag : {}", tag);
-		LOG.debug("object id : {}", objectId);
-		LOG.debug("template : {}", template);
+		log.debug("model : {}", model);
+		log.debug("tag : {}", tag);
+		log.debug("object id : {}", objectId);
+		log.debug("template : {}", template);
 		
-		this.initMaker(objectId, model, tag);
+		initMaker(objectId, model, tag);
 		
-		String content = "";
-		String subject = "";
-		String from= "";
-		String replyToRecipients = "";
-		String toRecipients = "";
-		String ccRecipients = "";
-		String bccRecipients = "";
-		String addressBlock= "";
+		String content = "", subject = "", from= "", replyToRecipients = "", toRecipients = "", ccRecipients = "", bccRecipients = "", addressBlock= "";
 		int mediaTypeSelect;
 		
 		if ( !Strings.isNullOrEmpty( template.getContent() ) )  {
 			//Set template
-			this.maker.setTemplate(template.getContent());
-			//Make it
-			content = this.maker.make();
+			maker.setTemplate(template.getContent());
+			content = maker.make();
 		}
 		
-		
 		if( !Strings.isNullOrEmpty( template.getAddressBlock() ) )  {
-			this.maker.setTemplate(template.getAddressBlock());
+			maker.setTemplate(template.getAddressBlock());
 			//Make it
-			addressBlock = this.maker.make();
+			addressBlock = maker.make();
 		}
 		
 		if ( !Strings.isNullOrEmpty( template.getSubject() ) )  {
-			this.maker.setTemplate(template.getSubject());
-			subject = this.maker.make();
-			LOG.debug( "Subject :::", subject );
+			maker.setTemplate(template.getSubject());
+			subject = maker.make();
+			log.debug( "Subject :::", subject );
 		}
 		
 		if( !Strings.isNullOrEmpty( template.getFromAdress() ) )  {
-			this.maker.setTemplate(template.getFromAdress());
-			from = this.maker.make();
-			LOG.debug( "From :::", from );
+			maker.setTemplate(template.getFromAdress());
+			from = maker.make();
+			log.debug( "From :::", from );
 		}
 		
 		if( !Strings.isNullOrEmpty( template.getReplyToRecipients() ) )  {
-			this.maker.setTemplate(template.getReplyToRecipients());
-			replyToRecipients = this.maker.make();
-			LOG.debug( "Reply to :::", replyToRecipients );
+			maker.setTemplate(template.getReplyToRecipients());
+			replyToRecipients = maker.make();
+			log.debug( "Reply to :::", replyToRecipients );
 		}
 		
 		if(template.getToRecipients() != null)  {
-			this.maker.setTemplate(template.getToRecipients());
-			toRecipients = this.maker.make();
-			LOG.debug( "To :::", toRecipients );
+			maker.setTemplate(template.getToRecipients());
+			toRecipients = maker.make();
+			log.debug( "To :::", toRecipients );
 		}
 		
 		if(template.getCcRecipients() != null)  {
-			this.maker.setTemplate(template.getCcRecipients());
-			ccRecipients = this.maker.make();
-			LOG.debug( "CC :::", ccRecipients );
+			maker.setTemplate(template.getCcRecipients());
+			ccRecipients = maker.make();
+			log.debug( "CC :::", ccRecipients );
 		}
 		
 		if(template.getBccRecipients() != null)  {
-			this.maker.setTemplate(template.getBccRecipients());
-			bccRecipients = this.maker.make();
-			LOG.debug( "BCC :::", bccRecipients );
+			maker.setTemplate(template.getBccRecipients());
+			bccRecipients = maker.make();
+			log.debug( "BCC :::", bccRecipients );
 		}
 		
-		mediaTypeSelect=template.getMediaTypeSelect();
-		LOG.debug( "Media :::", mediaTypeSelect );
-		LOG.debug( "Content :::", content );
+		mediaTypeSelect = template.getMediaTypeSelect();
+		log.debug( "Media :::", mediaTypeSelect );
+		log.debug( "Content :::", content );
 		
-		Message message = messageService.createMessage(
-				model, 
-				new Long(objectId).intValue(), 
-				subject, 
-				content, 
-				this.getEmailAddress(from),
-				this.getEmailAddresses(replyToRecipients),
-				this.getEmailAddresses(toRecipients),
-				this.getEmailAddresses(ccRecipients),
-				this.getEmailAddresses(bccRecipients),
-				getMetaFiles(template),
-				addressBlock,
-				mediaTypeSelect
-				);
-		
-		return message;
-		
+		return messageService.createMessage( model, Long.valueOf(objectId).intValue(), subject,  content, getEmailAddress(from), getEmailAddresses(replyToRecipients),
+				getEmailAddresses(toRecipients), getEmailAddresses(ccRecipients), getEmailAddresses(bccRecipients),
+				getMetaFiles(template), addressBlock, mediaTypeSelect );		
 	}
 	
-	public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
+	public Set<MetaFile> getMetaFiles( Template template ) throws AxelorException, IOException {
 		
-		List<MetaAttachment> metaAttachments = Beans.get( MetaAttachmentRepository.class ).all().filter( "self.objectId = ?1 AND self.objectName = ?2", template.getId(), Template.class.getName() ).fetch();
-		
+		List<MetaAttachment> metaAttachments = Query.of( MetaAttachment.class ).filter( "self.objectId = ?1 AND self.objectName = ?2", template.getId(), Template.class.getName() ).fetch();
 		Set<MetaFile> metaFiles = Sets.newHashSet();
 		for ( MetaAttachment metaAttachment: metaAttachments ){ metaFiles.add( metaAttachment.getMetaFile() ); }
 		
@@ -181,41 +162,34 @@ public class TemplateMessageServiceImpl extends TemplateRepository implements Te
 	
 	
 	@SuppressWarnings("unchecked")
-	public TemplateMaker initMaker(long objectId, String model, String tag) throws InstantiationException, IllegalAccessException, ClassNotFoundException  {
+	public TemplateMaker initMaker( long objectId, String model, String tag ) throws InstantiationException, IllegalAccessException, ClassNotFoundException  {
 		//Init the maker
-		this.maker = new TemplateMaker( Locale.FRENCH, '$', '$');
+		this.maker = new TemplateMaker( Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 		
 		Class<? extends Model> myClass = (Class<? extends Model>) Class.forName( model );
-
-		//Set context
-		this.maker.setContext(JPA.find(myClass.newInstance().getClass(), objectId), tag);
+		maker.setContext( JPA.find( myClass, objectId), tag );
 		
-		return this.maker;
+		return maker;
 		
 	}
 	
-	protected List<EmailAddress> getEmailAddresses(String recipients)  {
+	protected List<EmailAddress> getEmailAddresses( String recipients ) {
+
+		List<EmailAddress> emailAddressList = Lists.newArrayList();
+		if ( Strings.isNullOrEmpty( recipients ) )  { return emailAddressList; }	
 		
-		List<EmailAddress> emailAddressList = Lists.newArrayList(); 
-		
-		if(recipients!=null && !recipients.isEmpty())  {
-			String[] toTab = recipients.split(";");
-			for(String s : toTab)  {
-				emailAddressList.add(this.getEmailAddress(s));
-			}
-		}
-		
+		for ( String recipient : recipients.split(RECIPIENT_SEPARATOR) )  { emailAddressList.add( getEmailAddress( recipient ) ); }
 		return emailAddressList;
 	}
 	
 	
-	protected EmailAddress getEmailAddress(String recipient)  {
+	protected EmailAddress getEmailAddress( String recipient )  {
 		
-		if(Strings.isNullOrEmpty(recipient))  {  return null;  }
+		if ( Strings.isNullOrEmpty(recipient) ) { return null; }
 		
 		EmailAddress emailAddress = emailAddressRepo.findByAddress(recipient);
 		
-		if(emailAddress == null)  {
+		if ( emailAddress == null )  {
 			Map<String, Object> values = new HashMap<String,Object>();
 			values.put("address", recipient);
 			emailAddress = emailAddressRepo.create(values);
