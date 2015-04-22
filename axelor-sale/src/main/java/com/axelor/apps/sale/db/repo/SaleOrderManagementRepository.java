@@ -20,7 +20,6 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 		copy.setConfirmedByUser(null);
 		copy.setOrderDate(null);
 		copy.setOrderNumber(null);
-		copy.setDeliveryState(STATE_NOT_DELIVERED);
 		copy.setVersionNumber(1);
 
 		return copy;
