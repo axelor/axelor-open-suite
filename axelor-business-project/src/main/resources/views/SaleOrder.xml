@@ -4,11 +4,18 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-form"
-	onNew="action-group-supplychain-saleorder-onnew"
+	onNew="action-group-supplychain-saleorder-onnew,action-sale-order-method-create-order"
 	onLoad="action-group-supplychain-saleorder-onload" 
 	onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-check-create-project,action-sale-order-method-compute,save">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
+	</form>
+	
+	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-template-form"
+		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
+		onLoad="action-group-sale-saleorder-onload"
+		onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-check-create-project,action-sale-order-method-compute,save">
+		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
 	
 	<action-record name="action-sale-order-check-create-project" model="com.axelor.apps.sale.db.SaleOrder">
