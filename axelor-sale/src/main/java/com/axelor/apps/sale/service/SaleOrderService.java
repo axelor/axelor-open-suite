@@ -95,7 +95,12 @@ public interface SaleOrderService extends Repository<SaleOrder>{
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws IOException;
 
 	public String getURLSaleOrderPDF(SaleOrder saleOrder);
-
+	
+	@Transactional
+	public SaleOrder createTemplate(SaleOrder context);
+	
+	@Transactional
+	public SaleOrder createSaleOrder(SaleOrder context);
 }
 
 

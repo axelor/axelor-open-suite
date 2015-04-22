@@ -31,7 +31,7 @@
     </form>
 
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
-		onNew="action-group-sale-saleorder-onnew"
+		onNew="action-group-sale-saleorder-onnew,action-sale-order-method-create-order"
 		onLoad="action-group-sale-saleorder-onload"
 		onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-method-compute,save">
 		
@@ -124,7 +124,7 @@
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" title="Actions">
-	    <button name="generateTemplate" title="Make this order as template" onClick="save,action-sale-order-method-create-template"/>
+	    <button name="generateTemplate" title="Make this order as template" onClick="save,action-sale-order-method-generate-template"/>
 	    <button name="compute" title="Compute" showIf="statusSelect != 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
 	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-newVersion,save"/>
@@ -174,7 +174,7 @@
     </grid>
 	
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
-		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template"
+		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
 		onLoad="action-group-sale-saleorder-onload"
 		onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-method-compute,save">
 	  
@@ -251,7 +251,7 @@
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" title="Actions">
-	  	<button name="createOrder" title="Create Order from this Template" onClick="save,action-sale-order-method-create-order"/>
+	  	<button name="createOrder" title="Create Order from this Template" onClick="save,action-sale-order-method-generate-order"/>
 	    <button name="compute" title="Compute" showIf="statusSelect != 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
 	  </panel>        
 	  
@@ -564,12 +564,20 @@
 		<field name="templateUser" expr="eval: __user__"/>
 	</action-record>
 
+	<action-method name="action-sale-order-method-generate-template">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="generateViewTemplate"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-generate-order">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="generateViewTemplate"/>
+	</action-method>
+
 	<action-method name="action-sale-order-method-create-template">
-		<call class="com.axelor.apps.sale.web.TemplateController" method="createTemplate"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createTemplate" if="_isCopy == &quot;true&quot;"/>
 	</action-method>
 	
 	<action-method name="action-sale-order-method-create-order">
-		<call class="com.axelor.apps.sale.web.TemplateController" method="createSaleOrder"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createSaleOrder" if="_isCopy == &quot;true&quot;"/>
 	</action-method>
 	
 </object-views>

@@ -46,6 +46,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -72,6 +73,9 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 	@Inject
 	private PartnerService partnerService;
+	
+	@Inject
+	protected SaleOrderRepository saleOrderRepo;
 
 
 	public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException  {
@@ -267,6 +271,23 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 							.addParam("SaleOrderId", saleOrder.getId().toString())
 							.getUrl();
 	}
+	
+	@Transactional
+	public SaleOrder createSaleOrder(SaleOrder context){
+		SaleOrder copy = saleOrderRepo.copy(context, true);
+		copy.setTemplate(false);
+		copy.setTemplateUser(null);
+		return copy;
+	}
+	
+	@Transactional
+	public SaleOrder createTemplate(SaleOrder context){
+		SaleOrder copy = saleOrderRepo.copy(context, true);
+		copy.setTemplate(true);
+		copy.setTemplateUser(AuthUtils.getUser());
+		return copy;
+	}
+	
 }
 
 
