@@ -5,12 +5,12 @@ import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
-	
+
 	@Override
 	public SaleOrder copy(SaleOrder entity, boolean deep) {
-		
+
 		SaleOrder copy = super.copy(entity, deep);
-		
+
 		copy.setStatusSelect(ISaleOrder.STATUS_DRAFT);
 		copy.setSaleOrderSeq(null);
 		copy.clearBatchSet();
@@ -20,7 +20,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 		copy.setConfirmedByUser(null);
 		copy.setOrderDate(null);
 		copy.setOrderNumber(null);
-		
+		copy.setDeliveryState(STATE_NOT_DELIVERED);
+		copy.setVersionNumber(1);
+
 		return copy;
 	}
 }
