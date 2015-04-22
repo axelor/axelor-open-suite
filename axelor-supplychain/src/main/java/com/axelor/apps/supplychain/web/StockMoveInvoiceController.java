@@ -163,7 +163,7 @@ public class StockMoveInvoiceController {
 				ActionViewBuilder confirmView = ActionView
 											.define("StockMove")
 											.model(StockMove.class.getName())
-											.add("form", "stock-move-concat-invoice-confirm-form")
+											.add("form", "stock-move-supplychain-concat-invoice-confirm-form")
 											.param("popup", "true")
 											.param("show-toolbar", "false")
 											.param("show-confirm", "false")
