@@ -1,7 +1,7 @@
 "key","message","comment","context"
-"${clientPartner.saleOrderInformation}",,,"resources/views/SaleOrder.xml:445"
+"${clientPartner.saleOrderInformation}",,,"resources/views/SaleOrder.xml:439"
 "%s :\n Veuillez configurer le module vente pour la société %s",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:42"
-"A cancel reason must be selected",,,"resources/views/SaleOrder.xml:338"
+"A cancel reason must be selected",,,"resources/views/SaleOrder.xml:332"
 "Action",,,"resources/domains/SaleBatch.xml:12"
 "Actions",,,"resources/views/SaleOrder.xml:127
 resources/views/SaleOrder.xml:45
@@ -14,13 +14,13 @@ resources/views/Charts.xml:391
 resources/views/Charts.xml:418"
 "Amount A.T.I.",,,"resources/domains/SaleOrderLineTax.xml:12"
 "Amount Tax",,,"resources/domains/SaleOrderLineTax.xml:11"
-"Annulation",,,"resources/views/SaleOrder.xml:328"
+"Annulation",,,"resources/views/SaleOrder.xml:322"
 "Base W.T.",,,"resources/domains/SaleOrderLineTax.xml:10"
 "Batchs",,,"resources/domains/SaleBatch.xml:17
 resources/domains/SaleOrder.xml:25"
 "Bi-monthly",,,"resources/views/Selects.xml:28"
 "Business project",,,"resources/views/SaleOrder.xml:97"
-"Call",,,"resources/views/SaleOrder.xml:432"
+"Call",,,"resources/views/SaleOrder.xml:426"
 "Cancel",,,"resources/views/SaleOrder.xml:133"
 "Cancel reason",,,"resources/domains/SaleOrder.xml:74"
 "Canceled",,,"resources/views/Selects.xml:17"
@@ -63,9 +63,9 @@ resources/domains/SaleOrder.xml:56
 resources/domains/SaleOrderLine.xml:22
 resources/domains/SaleOrderSubLine.xml:15
 resources/views/SaleOrder.xml:104"
-"Devis",,,"java/com/axelor/apps/sale/web/SaleOrderController.java:142
-java/com/axelor/apps/sale/web/SaleOrderController.java:188
-java/com/axelor/apps/sale/web/SaleOrderController.java:80"
+"Devis",,,"java/com/axelor/apps/sale/web/SaleOrderController.java:123
+java/com/axelor/apps/sale/web/SaleOrderController.java:169
+java/com/axelor/apps/sale/web/SaleOrderController.java:79"
 "Discount",,,"resources/views/SaleOrderLine.xml:34
 resources/views/SaleOrderSubLine.xml:33"
 "Discount Type",,,"resources/domains/SaleOrderLine.xml:27"
@@ -106,7 +106,7 @@ resources/domains/SaleOrderLine.xml:12"
 "Industry Sector",,,"resources/views/Charts.xml:705"
 "Info.",,,"resources/views/SaleOrder.xml:138"
 "Invoiced first date",,,"resources/domains/SaleOrder.xml:66"
-"Invoices",,,"resources/views/SaleOrder.xml:391"
+"Invoices",,,"resources/views/SaleOrder.xml:385"
 "Invoices dates",,,"resources/views/SaleOrder.xml:117"
 "Invoicing",,,"resources/views/SaleOrder.xml:110
 resources/views/SaleOrder.xml:225
@@ -119,6 +119,8 @@ resources/views/Selects.xml:10"
 "La société %s n'a pas de séquence de configurée pour les devis clients",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:37"
 "Label",,,"resources/domains/SaleOrderSubLine.xml:14"
 "Last Year To Date",,,"resources/views/Charts.xml:164"
+"Manage purchase order versions",,,"resources/domains/General.xml:9"
+"Manage sale order versions",,,"resources/domains/General.xml:8"
 "Marketing",,,"resources/views/SaleOrder.xml:86"
 "Month",,,"resources/views/Charts.xml:32
 resources/views/Charts.xml:417
@@ -134,11 +136,11 @@ resources/views/Charts.xml:779"
 "Monthly",,,"resources/views/Selects.xml:27"
 "My Current Leads",,,"resources/views/Dashboard.xml:29"
 "My Opportunities",,,"resources/views/Dashboard.xml:46"
-"My Proposals",,,"resources/views/SaleOrder.xml:412"
-"My Sales",,,"resources/views/SaleOrder.xml:415"
+"My Proposals",,,"resources/views/SaleOrder.xml:406"
+"My Sales",,,"resources/views/SaleOrder.xml:409"
 "My Sales Orders",,,"resources/views/Dashboard.xml:16"
-"My Team Proposals",,,"resources/views/SaleOrder.xml:418"
-"My Team Sales",,,"resources/views/SaleOrder.xml:421"
+"My Team Proposals",,,"resources/views/SaleOrder.xml:412"
+"My Team Sales",,,"resources/views/SaleOrder.xml:415"
 "My Today Activities",,,"resources/views/Dashboard.xml:38"
 "My Turnover per month",,,"resources/views/Charts.xml:394
 resources/views/Dashboard.xml:23"
@@ -162,11 +164,11 @@ resources/views/Selects.xml:16"
 "Partner Type",,,"resources/views/Charts.xml:658"
 "Plan a call",,,"resources/views/SaleOrder.xml:10
 resources/views/SaleOrder.xml:47"
-"Plan a meeting",,,"resources/views/SaleOrder.xml:426
+"Plan a meeting",,,"resources/views/SaleOrder.xml:420
 resources/views/SaleOrder.xml:46
 resources/views/SaleOrder.xml:9"
 "Plan a task",,,"resources/views/SaleOrder.xml:11
-resources/views/SaleOrder.xml:438
+resources/views/SaleOrder.xml:432
 resources/views/SaleOrder.xml:48"
 "Price list",,,"resources/domains/SaleOrder.xml:31"
 "Print",,,"resources/views/SaleOrder.xml:175
@@ -258,7 +260,7 @@ resources/views/Menu.xml:162"
 resources/views/Menu.xml:173"
 "Sales Manager Dashboard",,,"resources/views/Menu.xml:150"
 "Sales Manager Db",,,"resources/views/Menu.xml:147"
-"Sales Order filters",,,"resources/views/SaleOrder.xml:411"
+"Sales Order filters",,,"resources/views/SaleOrder.xml:405"
 "Sales TurnOver by Product this year vs last year",,,"resources/views/Charts.xml:105
 resources/views/Dashboard.xml:93"
 "Sales Turnover (Orders) by month by category",,,"resources/views/Charts.xml:422

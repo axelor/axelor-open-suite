@@ -234,7 +234,7 @@ resources/views/Partner.xml:71"
 "ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:36"
 "Account Number",,,"resources/domains/BankDetails.xml:18"
 "Account config",,,"resources/views/Company.xml:24
-resources/views/Company.xml:52"
+resources/views/Company.xml:53"
 "Account management",,,"resources/views/AccountManagement.xml:23
 resources/views/AccountManagement.xml:41"
 "Account management list",,,"resources/views/AccountManagement.xml:6"
@@ -363,7 +363,7 @@ resources/domains/Bic.xml:11"
 "Bank accounts",,,"resources/domains/Company.xml:25"
 "Bank details",,,"resources/views/BankDetails.xml:14
 resources/views/BankDetails.xml:6
-resources/views/Company.xml:45
+resources/views/Company.xml:46
 resources/views/Menu.xml:113
 resources/views/Menu.xml:116"
 "Banking",,,"resources/views/Selects.xml:211"
@@ -573,7 +573,8 @@ resources/domains/Year.xml:16
 resources/views/Company.xml:12
 resources/views/Partner.xml:236
 resources/views/Selects.xml:181
-resources/views/Selects.xml:200"
+resources/views/Selects.xml:200
+resources/views/Selects.xml:599"
 "Company Footer",,,"resources/domains/PrintingSettings.xml:13
 resources/views/PrintingSetting.xml:14"
 "Company Header",,,"resources/domains/PrintingSettings.xml:12
@@ -934,7 +935,8 @@ resources/views/IndicatorGeneratorGrouping.xml:6
 resources/views/Menu.xml:482
 resources/views/Menu.xml:485"
 "Individual",,,"resources/views/Selects.xml:182
-resources/views/Selects.xml:201"
+resources/views/Selects.xml:201
+resources/views/Selects.xml:600"
 "Industry",,,"resources/domains/Partner.xml:67"
 "Industry Sector",,,"resources/views/Charts.xml:121
 resources/views/Charts.xml:59"
@@ -1159,7 +1161,7 @@ resources/views/Selects.xml:594"
 resources/views/PriceListLine.xml:20"
 "Order confirmed",,,"resources/views/Selects.xml:428"
 "Organisation config",,,"resources/views/Company.xml:29
-resources/views/Company.xml:82"
+resources/views/Company.xml:83"
 "Organization",,,"resources/views/Menu.xml:240"
 "Other",,,"resources/views/Selects.xml:233"
 "Other variants",,,"resources/views/Product.xml:259"
@@ -1192,7 +1194,8 @@ resources/views/Partner.xml:44"
 "Partner Db",,,"resources/views/Menu.xml:20
 resources/views/Menu.xml:28"
 "Partner Details",,,"resources/views/Partner.xml:99"
-"Partner Type",,,"resources/domains/Partner.xml:15"
+"Partner Type",,,"resources/domains/Company.xml:29
+resources/domains/Partner.xml:15"
 "Partner categories",,,"resources/views/Menu.xml:93
 resources/views/Menu.xml:96
 resources/views/PartnerCategory.xml:6"
@@ -1363,7 +1366,7 @@ resources/domains/ProductVariantConfig.xml:13"
 "ProductSheet.warranty","Price",,"java/com/axelor/apps/base/report/ITranslation.java:25"
 "Production Qty by tracking",,,"resources/domains/TrackingNumberConfiguration.xml:23"
 "Production config",,,"resources/views/Company.xml:28
-resources/views/Company.xml:76"
+resources/views/Company.xml:77"
 "Production informations",,,"resources/views/Product.xml:101"
 "Production order",,,"resources/views/Selects.xml:376"
 "Production tracking management",,,"resources/views/TrackingNumberConfiguration.xml:31"
@@ -1403,7 +1406,7 @@ resources/views/Selects.xml:471"
 "Purchase Qty by tracking",,,"resources/domains/TrackingNumberConfiguration.xml:22"
 "Purchase Tax",,,"resources/domains/AccountManagement.xml:11"
 "Purchase config",,,"resources/views/Company.xml:27
-resources/views/Company.xml:58"
+resources/views/Company.xml:59"
 "Purchase interface",,,"resources/views/Selects.xml:364"
 "Purchase order",,,"resources/views/Selects.xml:368
 resources/views/Selects.xml:435"
@@ -1513,7 +1516,7 @@ resources/views/Selects.xml:470"
 "Sale Qty by tracking",,,"resources/domains/TrackingNumberConfiguration.xml:21"
 "Sale Tax",,,"resources/domains/AccountManagement.xml:12"
 "Sale config",,,"resources/views/Company.xml:25
-resources/views/Company.xml:64"
+resources/views/Company.xml:65"
 "Sale currency",,,"resources/domains/Product.xml:29"
 "Sale interface",,,"resources/views/Selects.xml:361"
 "Sale price",,,"resources/views/Selects.xml:558"
@@ -1602,7 +1605,7 @@ resources/domains/Year.xml:17"
 "Stock",,,"resources/views/Product.xml:167
 resources/views/Product.xml:88"
 "Stock config",,,"resources/views/Company.xml:26
-resources/views/Company.xml:70"
+resources/views/Company.xml:71"
 "Storable Products",,,"resources/views/Product.xml:278"
 "Subject",,,"resources/views/Message.xml:35"
 "Subscription",,,"resources/views/Selects.xml:239

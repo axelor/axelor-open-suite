@@ -22,16 +22,22 @@
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheet"/>
 	</action-method>
 	
-	<menuitem name="historic-timesheet" parent="timesheet-root" title="My Timesheets Historic" action="timesheet.historic"/>
+	<menuitem name="all-timesheet" parent="timesheet-root" title="All my Timesheets" action="timesheet.all"/>
 	
-	<action-method name="timesheet.historic">
-		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
+	<action-method name="timesheet.all">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="allTimesheet"/>
 	</action-method>
 	
 	<menuitem name="validate-timesheet" groups="MNGT,admins" parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate"/>
 	
 	<action-method name="timesheet.validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>
+	</action-method>
+	
+	<menuitem name="historic-timesheet" groups="MNGT,admins" parent="timesheet-root" title="Historic colleague Timesheets" action="timesheet.historic"/>
+	
+	<action-method name="timesheet.historic">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
 	</action-method>
 	
 	<menuitem name="employee-all" parent="hr-root"
@@ -68,6 +74,16 @@
 	<action-view name="company.department.all" title="Departments" model="com.axelor.apps.base.db.CompanyDepartment">
     	<view type="grid" name="company-department-grid"/>
 	    <view type="form" name="company-department-form"/>
+	</action-view>
+	
+	<menuitem name="hr-conf" parent="hr-root" title="Configuration"
+		icon="img/Other/parameter_59px.png" />
+		
+	<menuitem name="hr-conf-time-activity" parent="hr-conf" title="Activities" action="conf.time.activity"/>
+	
+	<action-view name="conf.time.activity" title="Activities" model="com.axelor.apps.hr.db.TimeActivity">
+    	<view type="grid" name="time-activity-grid"/>
+	    <view type="form" name="time-activity-form"/>
 	</action-view>
 	
 </object-views>

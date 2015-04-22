@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -58,45 +61,60 @@ public class TimesheetController {
 		else{
 			response.setView(ActionView
 					.define("Timesheet")
-					.model(Timesheet.class.getName())
+					.model(Wizard.class.getName())
 					.add("form", "popup-timesheet-form")
 					.param("forceEdit", "true")
-					.context("","").map());
+					.param("popup", "true")
+					.param("show-toolbar", "false")
+					.param("show-confirm", "false")
+					.param("forceEdit", "true")
+					.map());
 		}
 	}
 	
-	public void historicTimesheet(ActionRequest request, ActionResponse response){
+	public void allTimesheet(ActionRequest request, ActionResponse response){
 		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1",AuthUtils.getUser()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
 		}
+		
+		String timesheetListIdStr = "-2";
+		if(!timesheetListId.isEmpty()){
+			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
+		}
+		
 		response.setView(ActionView.define("My Timesheets")
 				   .model(Timesheet.class.getName())
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form")
-				   .domain("self.id in ("+Joiner.on(",").join(timesheetListId)+")")
+				   .domain("self.id in ("+timesheetListIdStr+")")
 				   .map());
 	}
 	
 	public void validateTimesheet(ActionRequest request, ActionResponse response){
-		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user.employee.manager = ?1 AND self.statusSelect = 2",AuthUtils.getUser()).fetch();
+		List<Timesheet> timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.statusSelect = 2",AuthUtils.getUser()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
 		}
 		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null){
-			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 AND self.statusSelect = 2",AuthUtils.getUser()).fetch();
+			timesheetList = Query.of(Timesheet.class).filter("self.user = ?1 AND self.statusSelect = 2",AuthUtils.getUser()).fetch();
 		}
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
 		}
+		String timesheetListIdStr = "-2";
+		if(!timesheetListId.isEmpty()){
+			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
+		}
+		
 		response.setView(ActionView.define("Timesheets to Validate")
-				   .model(Timesheet.class.getName())
-				   .add("grid","timesheet-grid")
-				   .add("form","timesheet-form")
-				   .domain("self.id in ("+Joiner.on(",").join(timesheetListId)+")")
-				   .map());
+			   .model(Timesheet.class.getName())
+			   .add("grid","timesheet-grid")
+			   .add("form","timesheet-form")
+			   .domain("self.id in ("+timesheetListIdStr+")")
+			   .map());
 	}
 	
 	public void editTimesheetSelected(ActionRequest request, ActionResponse response){
@@ -106,6 +124,28 @@ public class TimesheetController {
 				.define("Timesheet")
 				.model(Timesheet.class.getName())
 				.add("form", "timesheet-form")
+				.param("forceEdit", "true")
+				.domain("self.id = "+timesheetMap.get("id"))
 				.context("_showRecord", String.valueOf(timesheet.getId())).map());
+	}
+	
+	public void historicTimesheet(ActionRequest request, ActionResponse response){
+		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user.employee.manager = ?1 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser()).fetch();
+		List<Long> timesheetListId = new ArrayList<Long>();
+		for (Timesheet timesheet : timesheetList) {
+			timesheetListId.add(timesheet.getId());
+		}
+		
+		String timesheetListIdStr = "-2";
+		if(!timesheetListId.isEmpty()){
+			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
+		}
+		
+		response.setView(ActionView.define("Colleague Timesheets")
+				   .model(Timesheet.class.getName())
+				   .add("grid","timesheet-grid")
+				   .add("form","timesheet-form")
+				   .domain("self.id in ("+timesheetListIdStr+")")
+				   .map());
 	}
 }

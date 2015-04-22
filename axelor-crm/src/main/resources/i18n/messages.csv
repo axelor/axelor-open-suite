@@ -619,6 +619,7 @@ resources/views/Dashboard.xml:373"
 resources/views/Event.xml:662"
 "New Urgent Tickets",,,"resources/views/Dashboard.xml:429"
 "New business",,,"resources/views/Selects.xml:79"
+"New start date",,,"resources/views/Event.xml:241"
 "Next Stage",,,"resources/views/Opportunity.xml:26
 resources/views/Opportunity.xml:45
 resources/views/Opportunity.xml:76"

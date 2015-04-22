@@ -7,7 +7,7 @@
 
   <entity name="Task">
 
-	  <one-to-many name="logTime" ref="com.axelor.apps.hr.db.LogTime" title="Logged Time" mappedBy="task"/>
+	  <one-to-many name="timesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="task"/>
 	          
   </entity>
   

@@ -1,19 +1,22 @@
 "key","message","comment","context"
-"Activity",,,"resources/domains/LogTime.xml:13
-resources/domains/Timesheet.xml:20"
+"Activity",,,"resources/domains/Timesheet.xml:20
+resources/domains/TimesheetLine.xml:13"
 "Afternoon",,,"resources/views/Selects.xml:40"
 "Afternoon From",,,"resources/domains/WeeklyPlanning.xml:20"
-"Cancel",,,"resources/views/Timesheet.xml:15"
+"All my Timesheets",,,"resources/views/Menu.xml:25"
+"Cancel",,,"resources/views/Timesheet.xml:18"
 "Canceled",,,"resources/views/Selects.xml:11
 resources/views/Selects.xml:19"
 "Comments",,,"resources/domains/ExpenseLine.xml:17
 resources/domains/Leave.xml:19
-resources/domains/LogTime.xml:19"
+resources/domains/TimesheetLine.xml:19"
+"Complete my time sheet",,,"resources/views/Menu.xml:19"
+"Confirm",,,"resources/views/Timesheet.xml:15"
 "Confirmed",,,"resources/views/Selects.xml:16"
 "Contact",,,"resources/domains/Employee.xml:11
 resources/views/Employee.xml:14"
 "Daily work hours",,,"resources/domains/Employee.xml:15"
-"Date",,,"resources/domains/LogTime.xml:15"
+"Date",,,"resources/domains/TimesheetLine.xml:15"
 "Date from",,,"resources/domains/Leave.xml:13"
 "Date to (Included)",,,"resources/domains/Leave.xml:15"
 "Day",,,"resources/domains/WeeklyPlanning.xml:17
@@ -21,20 +24,21 @@ resources/views/WeeklyPlanning.xml:18
 resources/views/WeeklyPlanning.xml:26"
 "Days",,,"resources/views/Selects.xml:23"
 "Department",,,"resources/domains/Employee.xml:17"
-"Departments",,,"resources/views/Menu.xml:54
-resources/views/Menu.xml:56"
+"Departments",,,"resources/views/Menu.xml:72
+resources/views/Menu.xml:74"
 "Draft",,,"resources/views/Selects.xml:15
 resources/views/Selects.xml:7"
 "Duration",,,"resources/domains/Leave.xml:17
-resources/domains/LogTime.xml:17
-resources/domains/LogTime.xml:18"
+resources/domains/TimesheetLine.xml:17
+resources/domains/TimesheetLine.xml:18"
 "Duration(by day)",,,"resources/domains/Timesheet.xml:19"
+"Edit Timesheet Selected",,,"resources/views/Timesheet.xml:41"
 "Employee",,,"resources/domains/User.xml:10
 resources/views/Employee.xml:13
 resources/views/Employee.xml:39
 resources/views/Employee.xml:5
-resources/views/Menu.xml:27
-resources/views/Menu.xml:29"
+resources/views/Menu.xml:45
+resources/views/Menu.xml:47"
 "End On",,,"resources/domains/Leave.xml:16"
 "Expense",,,"resources/domains/Product.xml:8
 resources/views/Expense.xml:13"
@@ -49,19 +53,21 @@ resources/views/Menu.xml:9"
 "External",,,"resources/domains/Employee.xml:19"
 "Friday",,,"resources/views/Selects.xml:33"
 "From date",,,"resources/domains/Timesheet.xml:15"
-"Generate Lines automatically",,,"resources/views/Timesheet.xml:23"
-"Generate lines",,,"resources/views/Timesheet.xml:30"
-"Get time from Tasks",,,"resources/views/Timesheet.xml:21"
+"Full name",,,"resources/domains/Timesheet.xml:22"
+"Generate Lines automatically",,,"resources/views/Timesheet.xml:27"
+"Generate lines",,,"resources/views/Timesheet.xml:34"
+"Get time from Tasks",,,"resources/views/Timesheet.xml:25"
+"Historic colleague Timesheets",,,"resources/views/Menu.xml:37"
 "Hourly price",,,"resources/domains/TimeActivity.xml:12"
 "Hourly rate",,,"resources/domains/Employee.xml:12"
-"Hours",,,"resources/views/LogTime.xml:28
-resources/views/LogTime.xml:43
-resources/views/Selects.xml:24"
+"Hours",,,"resources/views/Selects.xml:24
+resources/views/TimesheetLine.xml:29
+resources/views/TimesheetLine.xml:44"
 "Human resources",,,"resources/views/Menu.xml:5"
 "Import",,,"resources/domains/Employee.xml:10
-resources/domains/LogTime.xml:10
 resources/domains/TimeActivity.xml:10
 resources/domains/Timesheet.xml:10
+resources/domains/TimesheetLine.xml:10
 resources/domains/WeeklyPlanning.xml:15
 resources/domains/WeeklyPlanning.xml:9"
 "Leave",,,"resources/views/Leave.xml:16
@@ -69,15 +75,12 @@ resources/views/Leave.xml:5"
 "Leave reason",,,"resources/domains/LeaveReason.xml:10
 resources/views/LeaveReason.xml:5
 resources/views/LeaveReason.xml:9
-resources/views/Menu.xml:45
-resources/views/Menu.xml:47"
-"Leaves",,,"resources/views/Menu.xml:36
-resources/views/Menu.xml:38"
-"Log Time",,,"resources/views/LogTime.xml:22
-resources/views/LogTime.xml:36"
-"Log Times",,,"resources/views/LogTime.xml:13
-resources/views/LogTime.xml:5"
-"Log time",,,"resources/domains/Timesheet.xml:14"
+resources/views/Menu.xml:63
+resources/views/Menu.xml:65"
+"Leaves",,,"resources/views/Menu.xml:54
+resources/views/Menu.xml:56"
+"Log Time",,,"resources/views/TimesheetLine.xml:23"
+"Log Times",,,"resources/views/TimesheetLine.xml:5"
 "Logged Time",,,"resources/domains/Task.xml:10"
 "Manager",,,"resources/domains/Employee.xml:16"
 "Minutes",,,"resources/views/Selects.xml:25"
@@ -87,19 +90,23 @@ resources/views/LogTime.xml:5"
 "Name",,,"resources/domains/Employee.xml:22
 resources/domains/TimeActivity.xml:11
 resources/domains/WeeklyPlanning.xml:10"
-"No log time found or all log times already added",,,"resources/views/Timesheet.xml:49"
-"Overview",,,"resources/views/LogTime.xml:23
-resources/views/LogTime.xml:37"
+"No log time found or all log times already added",,,"resources/views/Timesheet.xml:74"
+"Overview",,,"resources/views/TimesheetLine.xml:24
+resources/views/TimesheetLine.xml:38"
 "Period",,,"resources/domains/Expense.xml:11"
 "Planning",,,"resources/domains/Employee.xml:20"
 "Project",,,"resources/domains/ExpenseLine.xml:11
-resources/domains/LogTime.xml:11
-resources/domains/Timesheet.xml:17"
+resources/domains/Timesheet.xml:17
+resources/domains/TimesheetLine.xml:11"
 "Reason",,,"resources/domains/Leave.xml:18"
+"Refuse",,,"resources/views/Timesheet.xml:17"
 "Refused",,,"resources/views/Selects.xml:10
 resources/views/Selects.xml:18"
 "Request date",,,"resources/domains/Leave.xml:12"
+"Return to draft status",,,"resources/views/Timesheet.xml:19"
 "Saturday",,,"resources/views/Selects.xml:34"
+"Select Timesheet",,,"resources/views/Timesheet.xml:40"
+"Select the timesheet you want to edit",,,"resources/views/Timesheet.xml:39"
 "Send Expenses",,,"resources/views/Expense.xml:19"
 "Sent Date",,,"resources/domains/Expense.xml:10
 resources/domains/Timesheet.xml:11"
@@ -108,20 +115,23 @@ resources/domains/Timesheet.xml:11"
 resources/domains/Leave.xml:11
 resources/domains/Timesheet.xml:12"
 "Sunday",,,"resources/views/Selects.xml:35"
-"Task",,,"resources/domains/LogTime.xml:12
-resources/domains/Timesheet.xml:18
+"Task",,,"resources/domains/Timesheet.xml:18
+resources/domains/TimesheetLine.xml:12
 resources/views/Task.xml:10"
 "Tasks",,,"resources/views/Task.xml:5"
 "Thursday",,,"resources/views/Selects.xml:32"
 "Time Activity",,,"resources/views/TimeActivity.xml:10
 resources/views/TimeActivity.xml:5"
-"Time Sheet",,,"resources/domains/LogTime.xml:16"
+"Time Sheet",,,"resources/domains/TimesheetLine.xml:16"
 "Time logging preference",,,"resources/domains/Employee.xml:13"
-"Timesheet",,,"resources/views/Timesheet.xml:12
+"Timesheet",,,"resources/views/Timesheet.xml:13
 resources/views/Timesheet.xml:5"
+"Timesheet Line",,,"resources/views/TimesheetLine.xml:37"
+"Timesheet Lines",,,"resources/domains/Timesheet.xml:14
+resources/views/TimesheetLine.xml:13"
 "Timesheet reminder",,,"resources/domains/Employee.xml:18"
-"Timesheets",,,"resources/views/Menu.xml:18
-resources/views/Menu.xml:20"
+"Timesheets",,,"resources/views/Menu.xml:17"
+"Timesheets to Validate",,,"resources/views/Menu.xml:31"
 "To",,,"resources/domains/WeeklyPlanning.xml:19
 resources/domains/WeeklyPlanning.xml:21"
 "To date",,,"resources/domains/Timesheet.xml:16"
@@ -132,9 +142,9 @@ resources/domains/WeeklyPlanning.xml:21"
 "User",,,"resources/domains/Expense.xml:13
 resources/domains/ExpenseLine.xml:10
 resources/domains/Leave.xml:10
-resources/domains/LogTime.xml:14
-resources/domains/Timesheet.xml:13"
-"Valid",,,"resources/views/Timesheet.xml:14"
+resources/domains/Timesheet.xml:13
+resources/domains/TimesheetLine.xml:14"
+"Valid",,,"resources/views/Timesheet.xml:16"
 "Validated",,,"resources/views/Selects.xml:17
 resources/views/Selects.xml:9"
 "Waiting validation",,,"resources/views/Selects.xml:8"

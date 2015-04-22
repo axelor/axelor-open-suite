@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="LogTime" cachable="true">
+  <entity name="TimesheetLine" cachable="true">
       
       <integer name="importId"/>
       <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
