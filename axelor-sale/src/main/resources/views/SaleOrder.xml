@@ -569,7 +569,7 @@
 	</action-method>
 	
 	<action-method name="action-sale-order-method-generate-order">
-		<call class="com.axelor.apps.sale.web.SaleOrderController" method="generateViewTemplate"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="generateViewSaleOrder"/>
 	</action-method>
 
 	<action-method name="action-sale-order-method-create-template">
