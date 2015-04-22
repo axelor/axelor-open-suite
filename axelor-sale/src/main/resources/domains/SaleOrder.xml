@@ -69,10 +69,12 @@
     
     <many-to-one name="confirmedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Confirmed by"/>
     
-    <boolean name="template" title="Template"/>
+    <boolean name="template" title="Template" hidden="true"/>
     <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
     <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.sale.db.CancelReason"/>
     <integer name="deliveryState" title="Delivery State" selection="sale.order.delivery.state" readonly="true" default="1"/>
+    
+    <many-to-one name="templateUser" ref="com.axelor.auth.db.User" title="Template created by" readonly="true"/>
 
     <extra-code>
    		<![CDATA[

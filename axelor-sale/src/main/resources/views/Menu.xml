@@ -6,6 +6,49 @@
 	
 	<menuitem name="sc-root-sale" title="Sales" priority="150"
 		icon="img/32px/order_32px.png" groups="admins,ERP,CRM"/>
+		
+	<menuitem name="sc-root-sale-templates" title="Templates" parent="sc-root-sale" groups="admins,ERP"/>
+	
+	<menuitem name="sale-templates-new-template" title="Create a template" icon="img/16px/create_16px.png" groups="admins,ERP"
+		 action="sale.templates.new.template" parent="sc-root-sale-templates"/>
+		 
+	<action-view name="sale.templates.new.template" title="New Template"
+		model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="form" name="sale-order-template-form"/>
+		<view type="grid" name="sale-order-template-grid"/>
+		<domain>self.template = true AND templateUser = :_user</domain>
+		<context name="_user" expr="eval: __user__.id"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="_template" expr="eval:true" />
+	</action-view>
+	
+	<menuitem name="sale-templates-all-templates" title="All Templates" groups="admins,ERP"
+		 action="sale.templates.all.templates" parent="sc-root-sale-templates"/>
+		 
+	<action-view name="sale.templates.all.templates" title="All Templates"
+		model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="grid" name="sale-order-template-grid"/>
+		<view type="form" name="sale-order-template-form"/>
+		<domain>self.template = true</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="_template" expr="eval:true" />
+	</action-view>
+	
+	<menuitem name="sale-templates-my-templates" title="My Templates" groups="admins,ERP"
+		 action="sale.templates.my.templates" parent="sc-root-sale-templates"/>
+		 
+	<action-view name="sale.templates.my.templates" title="My Templates"
+		model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="grid" name="sale-order-template-grid"/>
+		<view type="form" name="sale-order-template-form"/>
+		<domain>self.template = true AND self.templateUser = :_user</domain>
+		<context name="_user" expr="eval: __user__"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="_template" expr="eval:true" />
+	</action-view>
 			
 	<menuitem name="sc-root-sale-new-so" title="New Sale order" priority="3" icon="img/16px/create_16px.png"
 		 groups="admins,ERP" action="sc.root.sale.new.so" parent="sc-root-sale"/>
@@ -34,23 +77,6 @@
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
 	</action-view>	
-	
-	<menuitem name="sc-root-sale-template" title="Template" priority="1" 
-		 groups="admins,ERP" parent="sc-root-sale"/>
-	
-	<menuitem name="sc-root-sale-new-template" title="Create SaleOrder template" priority="2" icon="img/16px/create_16px.png"
-		 groups="admins,ERP" action="sc.root.sale.new.template" parent="sc-root-sale-template"/>
-		
-	<action-view name="sc.root.sale.new.template" title="Create SaleOrder template"
-		model="com.axelor.apps.sale.db.SaleOrder" icon="img/16px/create_16px.png">
-		<view type="form" name="sale-order-form"/>
-		<view type="grid" name="sale-order-grid"/>
-		<view-param name="search-filters" value="sale-order-filters"/>
-		<domain>self.template = true</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="_template" expr="eval:true" />
-	</action-view>
 	
 	<menuitem name="sc-root-sale-templates" parent="sc-root-sale-template" priority="1"
 		groups="admins,ERP" title="See SalesOrder templates" action="sc.root.sale.templates" />
