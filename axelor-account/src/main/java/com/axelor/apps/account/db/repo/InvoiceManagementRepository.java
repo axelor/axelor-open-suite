@@ -3,7 +3,6 @@ package com.axelor.apps.account.db.repo;
 import java.math.BigDecimal;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.service.administration.GeneralService;
 
 public class InvoiceManagementRepository extends InvoiceRepository {
 	@Override
@@ -13,26 +12,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setInvoiceId(null);
-		copy.setInvoiceDate(GeneralService.getTodayDate());
-		switch (entity.getPaymentCondition().getTypeSelect()) {
-		case 1:
-			copy.setDueDate(copy.getInvoiceDate().plusDays(entity.getPaymentCondition().getPaymentTime()));
-			break;
-		
-		case 2:
-			copy.setDueDate(copy.getInvoiceDate().dayOfMonth().withMaximumValue().plusDays(entity.getPaymentCondition().getPaymentTime()));
-			break;
-		case 3:
-			copy.setDueDate(copy.getInvoiceDate().plusDays(entity.getPaymentCondition().getPaymentTime()).dayOfMonth().withMaximumValue());
-			break;
-		case 4:
-			copy.setDueDate(copy.getInvoiceDate().plusDays(entity.getPaymentCondition().getPaymentTime()).dayOfMonth().withMaximumValue().plusDays(entity.getPaymentCondition().getDaySelect()));
-			break;
-
-		default:
-			copy.setDueDate(copy.getInvoiceDate());
-			break;
-		}
+		copy.setInvoiceDate(null);
+		copy.setDueDate(null);
 		copy.setValidatedByUser(null);
 		copy.setMove(null);
 		copy.setOriginalInvoice(null);
