@@ -1,4 +1,6 @@
 "key","message","comment","context"
+"Activities",,,"resources/views/Menu.xml:82
+resources/views/Menu.xml:84"
 "Activity",,,"resources/domains/Timesheet.xml:20
 resources/domains/TimesheetLine.xml:13"
 "Afternoon",,,"resources/views/Selects.xml:40"
@@ -11,6 +13,7 @@ resources/views/Selects.xml:19"
 resources/domains/Leave.xml:19
 resources/domains/TimesheetLine.xml:19"
 "Complete my time sheet",,,"resources/views/Menu.xml:19"
+"Configuration",,,"resources/views/Menu.xml:80"
 "Confirm",,,"resources/views/Timesheet.xml:15"
 "Confirmed",,,"resources/views/Selects.xml:16"
 "Contact",,,"resources/domains/Employee.xml:11

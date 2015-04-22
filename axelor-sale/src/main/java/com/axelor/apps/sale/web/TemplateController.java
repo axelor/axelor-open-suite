@@ -25,4 +25,17 @@ public class TemplateController extends SaleOrderRepository{
 	            .context("_showRecord", copy.getId().toString())
 	            .map());
 	}
+	
+	public void createTemplate(ActionRequest request, ActionResponse response)  {
+		SaleOrder context = request.getContext().asType(SaleOrder.class);
+		context = find(context.getId());
+		SaleOrder copy = templateService.createTemplate(context);
+		response.setView(ActionView
+	            .define("Template")
+	            .model(SaleOrder.class.getName())
+	            .add("grid", "sale-order-template-grid")
+	            .add("form", "sale-order-template-form")
+	            .context("_showRecord", copy.getId().toString())
+	            .map());
+	}
 }

@@ -124,7 +124,7 @@
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" title="Actions">
-	    <button name="generateTemplate" title="Make this order as template" onClick="save,action-saleorder-record-template,action-sale-order-view-template"/>
+	    <button name="generateTemplate" title="Make this order as template" onClick="save,action-sale-order-method-create-template"/>
 	    <button name="compute" title="Compute" showIf="statusSelect != 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
 	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-newVersion,save"/>
@@ -164,13 +164,6 @@
 	</form>
 	
 	<grid name="sale-order-template-grid" title="Templates" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
-    	<menubar>
-	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
-	            <item title="Plan a meeting" action="action-sale-order-view-plan-meeting" />
-	            <item title="Plan a call" action="action-sale-order-view-plan-call" />
-	            <item title="Plan a task" action="action-sale-order-view-plan-task"/>
-	        </menu>
-	    </menubar>
         <field name="saleOrderSeq"/>
         <field name="company"/>
         <field name="currency"/>
@@ -178,39 +171,19 @@
         <field name="externalReference"/>
         <field name="creationDate"/>
         <field name="inTaxTotal"/>
-        <field name="statusSelect"/>
-        <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
-        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
 	
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
 		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template"
 		onLoad="action-group-sale-saleorder-onload"
 		onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-method-compute,save">
-		
-	  <toolbar>
-	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
-	    <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
-	    <button name="excelExport" title="Excel Export" icon="fa-file-text" onClick="save,action-sale-order-method-export-sale-order-excel"/>
-	    <button name="wordExport" title="Word Export" icon="fa-file-text" onClick="save,action-sale-order-method-export-sale-order-word"/>
-	  </toolbar>
-	  <menubar>
-	    <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
-	      <item title="Plan a meeting" action="action-sale-order-view-plan-meeting"/>
-	      <item title="Plan a call" action="action-sale-order-view-plan-call"/>
-	      <item title="Plan a task" action="action-sale-order-view-plan-task"/>
-	    </menu>
-	  </menubar>
 	  
 	  <panel>
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
-	    <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="6"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form"/>
 	    <field name="currency"/>
-	    <field name="versionNumber"/>
-	    <field name="project" if-module="axelor-business-project"/>
 	    <field name="templateUser"/>
 	  </panel>
 	  
@@ -278,7 +251,7 @@
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" title="Actions">
-	  	<button name="createOrder" title="Create Order" onClick="save,action-sale-order-method-create-order"/>
+	  	<button name="createOrder" title="Create Order from this Template" onClick="save,action-sale-order-method-create-order"/>
 	    <button name="compute" title="Compute" showIf="statusSelect != 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
 	  </panel>        
 	  
@@ -590,11 +563,10 @@
 		<field name="template" expr="true"/>
 		<field name="templateUser" expr="eval: __user__"/>
 	</action-record>
-	
-	<action-view name="action-sale-order-view-template" title="Template" model="com.axelor.apps.sale.db.SaleOrder">
-		<view type="form" name="sale-order-template-form"/>
-		<context name="_showRecord" expr="eval: __this__.id"/>
-	</action-view>
+
+	<action-method name="action-sale-order-method-create-template">
+		<call class="com.axelor.apps.sale.web.TemplateController" method="createTemplate"/>
+	</action-method>
 	
 	<action-method name="action-sale-order-method-create-order">
 		<call class="com.axelor.apps.sale.web.TemplateController" method="createSaleOrder"/>
