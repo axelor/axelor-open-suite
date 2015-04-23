@@ -48,7 +48,7 @@ import com.axelor.tool.template.TemplateMaker;
 
 public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
-	private final Logger LOG = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	private static final String DEFAULT_UPLOAD_PATH = "{java.io.tmpdir}/axelor/attachments";
 	private static final String UPLOAD_PATH = AppSettings.get().getPath("file.upload.dir", DEFAULT_UPLOAD_PATH);
@@ -68,12 +68,15 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 		if ( birtMetaFile == null ) { return metaFiles; }
 		
 		metaFiles.add(birtMetaFile);
+		log.debug("Metafile to attach: {}", metaFiles);
 		
 		return metaFiles;
 
 	}
 	
 	public MetaFile generateMetaFile( TemplateMaker maker, BirtTemplate birtTemplate ) throws AxelorException, IOException {
+		
+		log.debug("Generate birt metafile: {}", birtTemplate.getName());
 		
 		File file =  generateFile( maker, 
 				birtTemplate.getName(),
@@ -107,7 +110,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 		
 		String url = reportSettings.getUrl();
 		
-		LOG.debug("URL : {}", url);
+		log.debug("Dowload file from: {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist != null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_1)), IException.CONFIGURATION_ERROR);

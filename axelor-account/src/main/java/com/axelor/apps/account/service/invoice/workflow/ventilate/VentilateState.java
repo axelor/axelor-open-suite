@@ -21,12 +21,11 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -98,28 +97,7 @@ public class VentilateState extends WorkflowInvoice {
 	
 	protected LocalDate getDueDate()  {
 		
-		PaymentCondition paymentCondition = invoice.getPaymentCondition();
-		
-		switch (paymentCondition.getTypeSelect()) {
-		case PaymentConditionRepository.TYPE_NET:
-			
-			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime());
-			
-		case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
-					
-			return invoice.getInvoiceDate().dayOfMonth().withMaximumValue().plusDays(paymentCondition.getPaymentTime());
-					
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
-			
-			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue();
-			
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
-			
-			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue().plusDays(paymentCondition.getDaySelect());
-
-		default:
-			return invoice.getInvoiceDate();
-		}
+		return InvoiceServiceImpl.getDueDate(invoice.getPaymentCondition(),invoice.getInvoiceDate());
 		
 	}
 	

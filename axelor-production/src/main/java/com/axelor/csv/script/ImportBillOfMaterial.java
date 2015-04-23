@@ -20,6 +20,7 @@ public class ImportBillOfMaterial {
         	
         BillOfMaterial bom = (BillOfMaterial) bean;
         billOfMaterialService.computeCostPrice(bom);
+        billOfMaterialService.updateProductCostPrice(bom);
 		return bom;
 	}
 }
