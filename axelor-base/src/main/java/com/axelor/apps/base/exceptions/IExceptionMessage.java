@@ -156,7 +156,6 @@ public interface IExceptionMessage {
 	 * Bank details controller
 	 */
 	static final public String BANK_DETAILS_1 = /*$$(*/ "L'IBAN saisi est invalide. <br> Soit l'IBAN ne respecte pas la norme, soit le format de saisie n'est pas correct. L'IBAN doit être saisi sans espaces tel que présenté ci-dessous: <br> FR0000000000000000000000000" /*)*/;
-	static final public String BANK_DETAILS_2 = /*$$(*/ "Aucun Bic correspondant pour l'établissement bancaire." /*)*/;
 	
 	/**
 	 * General controller
