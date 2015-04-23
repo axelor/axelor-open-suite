@@ -262,7 +262,7 @@ public class InvoiceController {
 			
 				LOG.debug("Impression de la facture "+invoice.getInvoiceId()+" : "+url.toString());
 				
-				String title = I18n.get("Invoice ");
+				String title = I18n.get("Invoice");
 				if(invoice.getInvoiceId() != null)  {
 					title += invoice.getInvoiceId();
 				}
