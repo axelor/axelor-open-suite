@@ -62,7 +62,10 @@ public class ReportSettings {
 		
 		String appsUrl = appsSettings.get("axelor.report.engine", defaultUrl);
 		
-		this.url +=  appsUrl + "/frameset?__report=report/" + rptdesign;
+		String resourcePath = appsSettings.get("axelor.report.resource.path", "report");
+		resourcePath = resourcePath.endsWith("/") ? resourcePath : resourcePath + "/";
+		
+		this.url +=  appsUrl + "/frameset?__report=" + resourcePath + rptdesign;
 		return this;
 		
 	}	
