@@ -110,7 +110,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void compute(final Invoice invoice) throws AxelorException {
+	public Invoice compute(final Invoice invoice) throws AxelorException {
 
 		LOG.debug("Calcule de la facture");
 		
@@ -129,7 +129,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			
 		};
 		
-		save(invoiceGenerator.generate());
+		return invoiceGenerator.generate();
 		
 	}
 	

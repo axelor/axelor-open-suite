@@ -57,8 +57,8 @@ public class PurchaseOrderController {
 
 		if(purchaseOrder != null) {
 			try {
-				Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
-				response.setReload(true);
+				purchaseOrder = Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
+				response.setValues(purchaseOrder);
 			}
 			catch(Exception e)  { TraceBackService.trace(response, e); }
 		}

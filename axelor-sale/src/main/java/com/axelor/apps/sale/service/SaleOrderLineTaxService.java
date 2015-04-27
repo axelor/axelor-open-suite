@@ -135,7 +135,6 @@ public class SaleOrderLineTaxService extends SaleOrderLineTaxRepository{
 				saleOrderLineTax.setTaxTotal(taxTotal);
 			}
 			saleOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
-			
 			saleOrderLineTaxList.add(saleOrderLineTax);
 
 			LOG.debug("Ligne de TVA : Total TVA => {}, Total HT => {}", new Object[] {saleOrderLineTax.getTaxTotal(), saleOrderLineTax.getInTaxTotal()});

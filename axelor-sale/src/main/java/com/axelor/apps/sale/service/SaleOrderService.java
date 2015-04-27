@@ -38,7 +38,7 @@ public interface SaleOrderService extends Repository<SaleOrder>{
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
+	public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
 
 	/**

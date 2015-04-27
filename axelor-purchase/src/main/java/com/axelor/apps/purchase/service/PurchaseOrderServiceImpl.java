@@ -75,7 +75,7 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 	
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  {
+	public PurchaseOrder computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  {
 		
 		this.initPurchaseOrderLineVats(purchaseOrder);
 		
@@ -85,7 +85,7 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 		
 		this._computePurchaseOrder(purchaseOrder);
 		
-		save(purchaseOrder);
+		return purchaseOrder;
 	}
 	
 	/**

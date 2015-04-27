@@ -92,7 +92,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void computeSaleOrder(SaleOrder saleOrder) throws AxelorException  {
+	public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException  {
 
 		this.initSaleOrderLineTaxList(saleOrder);
 
@@ -102,7 +102,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 		this._computeSaleOrder(saleOrder);
 
-		save(saleOrder);
+		return saleOrder;
 	}
 
 

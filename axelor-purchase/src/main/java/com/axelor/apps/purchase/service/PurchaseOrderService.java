@@ -36,7 +36,7 @@ public interface PurchaseOrderService extends Repository<PurchaseOrder> {
 	
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	void computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  ;
+	PurchaseOrder computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  ;
 	
 	/**
 	 * Peupler une commande.

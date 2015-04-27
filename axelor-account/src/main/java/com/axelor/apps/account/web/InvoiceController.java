@@ -55,11 +55,10 @@ public class InvoiceController {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		InvoiceService is = Beans.get(InvoiceService.class);
-		invoice = is.find(invoice.getId());
 
 		try{
-			is.compute(invoice);
-			response.setReload(true);
+			invoice = is.compute(invoice);
+			response.setValues(invoice);
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);

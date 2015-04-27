@@ -32,7 +32,7 @@
 	</grid>
 
 	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-purchase-order-attrs-hide-contact-partner"
-	 onSave="save,action-method-set-purchase-order-draft-sequence,action-purchase-order-method-compute,save" onNew="action-group-purchase-order-on-new-actions" >
+	 onSave="save,action-method-set-purchase-order-draft-sequence,save" onNew="action-group-purchase-order-on-new-actions" >
 		<toolbar>
 			<button name="print" title="Print" icon="fa-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
 			<button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
@@ -64,7 +64,7 @@
 	    </panel>	  
 		<panel-tabs>
 			<panel title="Content" colSpan="12">
-				<panel-related field="purchaseOrderLineList" grid-view="purchase-order-line-purchase-order-grid" title="PO Lines" colSpan="12" />    
+				<panel-related field="purchaseOrderLineList" grid-view="purchase-order-line-purchase-order-grid" title="PO Lines" colSpan="12" onChange="action-purchase-order-method-compute"/>    
 				<panel-related field="purchaseOrderLineTaxList" title="Tax Lines" colSpan="12"/>
 			</panel>
 			<panel title="Other information">
@@ -86,7 +86,6 @@
 		</panel-tabs>
 	  
 		<panel sidebar="true" title="Actions">
-			<button name="compute" title="Compute" hideIf="statusSelect == 4 || statusSelect == 5"  onClick="action-group-purchase-purchase-order-compute-click"/>
 			<button name="draft" title="Draft" showIf="statusSelect == 6"   onClick="action-purchase-order-record-draft,save"/>
 			<button name="requested" title="Requested" showIf="statusSelect == 1"   onClick="action-purchase-order-record-requested,save"/>
 			<button name="receipt" title="Receipt" showIf="statusSelect == 2"   onClick="action-purchase-order-record-receipt,save"/>
@@ -153,14 +152,12 @@
     	<action name="action-purchase-order-set-sequence"/>
     	<action name="save"/>
     </action-group>
-    
-    <action-group name="action-group-purchase-purchase-order-compute-click">
-    	<action name="save"/>
-    	<action name="action-purchase-order-method-compute"/>
-    	<action name="save"/>
-    </action-group>
      
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    	<field name="exTaxTotal" expr="eval: 0"/>
+    	<field name="taxTotal" expr="eval: 0"/>
+    	<field name="inTaxTotal" expr="eval: 0"/>
+    	<field name="amountRemainingToBeInvoiced" expr="eval: 0"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="invoicingTypeSelect" expr="1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>

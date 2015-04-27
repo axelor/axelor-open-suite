@@ -27,7 +27,7 @@
     </grid>
     
 	<form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"  
-	onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group" onSave="action-account-invoice-onsave-group">
+	onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group">
 	
 		<toolbar>
 		  <button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
@@ -56,7 +56,7 @@
 	  
 		<panel-tabs>
 			<panel title="Invoice content" showTitle="false">
-				<panel-related field="invoiceLineList" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
+				<panel-related field="invoiceLineList" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute"/>
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 			<panel title="Accounting" showTitle="false">
@@ -130,7 +130,6 @@
 		</panel-stack>
 	 
 	    <panel sidebar="true" title="Actions" >
-	   		<button name="compute" title="Compute" showIf="statusSelect == 1" onClick="save,action-invoice-method-compute,save"/>
 	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-compute,action-invoice-method-validate,save"/>
 	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save"/>
 	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save"/>
@@ -209,14 +208,7 @@
 	    <action name="action-invoice-attrs-hide-cancel-button"/>
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-attrs-hide-contact-partner"/>
-    </action-group>
-    
-     <action-group name="action-account-invoice-onsave-group">
-     	<action name="save"/>
-	    <action name="action-invoice-method-compute" if="statusSelect == 1"/>
-	    <action name="save"/>
-    </action-group>
-    
+    </action-group>   
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
     	<action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
@@ -237,6 +229,10 @@
 
 	<!-- ACTION RECORD -->
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
+    	<field name="exTaxTotal" expr="eval: 0"/>
+    	<field name="taxTotal" expr="eval: 0"/>
+    	<field name="inTaxTotal" expr="eval: 0"/>
+    	<field name="inTaxTotalRemaining" expr="eval: 0"/>
         <field name="invoiceDate" expr="eval: __date__"/>
         <field name="currency" expr="eval:__repo__.of(User).find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect"/>

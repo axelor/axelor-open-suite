@@ -48,8 +48,8 @@ public class SaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		try {
-			saleOrderService.computeSaleOrder(saleOrderService.find(saleOrder.getId()));
-			response.setReload(true);
+			saleOrder = saleOrderService.computeSaleOrder(saleOrder);
+			response.setValues(saleOrder);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}

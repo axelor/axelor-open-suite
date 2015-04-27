@@ -33,7 +33,7 @@
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
 		onNew="action-group-sale-saleorder-onnew,action-sale-order-method-create-order"
 		onLoad="action-group-sale-saleorder-onload"
-		onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-method-compute,save">
+		onSave="save,action-method-set-sale-order-draft-sequence,save">
 		
 	  <toolbar>
 	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
@@ -70,7 +70,7 @@
       </panel>
 	  <panel-tabs>
 	    <panel title="Content">
-	    	<panel-related field="saleOrderLineList" colSpan="12"/>
+	    	<panel-related field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute"/>
 	    	<panel-related field="saleOrderLineTaxList" colSpan="12"/>
 	    </panel>
 	    <panel title="Other informations" showTitle="false">
@@ -125,7 +125,6 @@
 	  
 	  <panel sidebar="true" title="Actions">
 	    <button name="generateTemplate" title="Make this order as template" onClick="save,action-sale-order-method-generate-template"/>
-	    <button name="compute" title="Compute" showIf="statusSelect != 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
 	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-newVersion,save"/>
 	    <button name="generateStockMove" title="Generate stock move"  colSpan="12" showIf="statusSelect == 3" onClick="action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
@@ -144,7 +143,7 @@
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain"/>
 	  </panel>
 	  
-	  <panel sidebar="true" readonly="true"  colSpan="4" showIf="id">  
+	  <panel sidebar="true" readonly="true"  colSpan="4">  
 	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
 	          <viewer>
 	            &lt;dl class="dl-horizontal"&gt;
@@ -176,7 +175,7 @@
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
 		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
 		onLoad="action-group-sale-saleorder-onload"
-		onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-method-compute,save">
+		onSave="save,action-method-set-sale-order-draft-sequence,save">
 	  
 	  <panel>
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
@@ -197,7 +196,7 @@
       </panel>
 	  <panel-tabs>
 	    <panel title="Content">
-	    	<panel-related field="saleOrderLineList" colSpan="12"/>
+	    	<panel-related field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute"/>
 	    	<panel-related field="saleOrderLineTaxList" colSpan="12"/>
 	    </panel>
 	    <panel title="Other informations" showTitle="false">
@@ -252,7 +251,6 @@
 	  
 	  <panel sidebar="true" title="Actions">
 	  	<button name="createOrder" title="Create Order from this Template" onClick="save,action-sale-order-method-generate-order"/>
-	    <button name="compute" title="Compute" showIf="statusSelect != 3" colSpan="12" onClick="save,action-sale-order-method-compute,save"/>
 	  </panel>        
 	  
 	  <panel sidebar="true" title="Info." showIf="id">
@@ -264,7 +262,7 @@
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain"/>
 	  </panel>
 	  
-	  <panel sidebar="true" readonly="true"  colSpan="4" showIf="id">  
+	  <panel sidebar="true" readonly="true"  colSpan="4">  
 	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
 	          <viewer>
 	            &lt;dl class="dl-horizontal"&gt;
@@ -461,6 +459,10 @@
 	</action-record>
     
     <action-record name="action-sale-order-record-default" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="exTaxTotal" expr="eval: 0"/>
+    	<field name="taxTotal" expr="eval: 0"/>
+    	<field name="inTaxTotal" expr="eval: 0"/>
+    	<field name="amountRemainingToBeInvoiced" expr="eval: 0"/>
     	<field name="creationDate" expr="eval: __date__"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
