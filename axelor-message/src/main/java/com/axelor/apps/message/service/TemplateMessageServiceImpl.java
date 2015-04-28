@@ -50,7 +50,7 @@ import com.google.inject.Inject;
 
 public class TemplateMessageServiceImpl extends TemplateRepository implements TemplateMessageService {
 
-	private static final String RECIPIENT_SEPARATOR = ";";
+	private static final String RECIPIENT_SEPARATOR = ";|,";
 	private static final char TEMPLATE_DELIMITER = '$';
 	
 	private final Logger log = LoggerFactory.getLogger( getClass() );
