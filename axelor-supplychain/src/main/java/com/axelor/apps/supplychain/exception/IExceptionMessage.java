@@ -35,6 +35,7 @@ public interface IExceptionMessage {
 	 * Sale Order Purchase Service
 	 */
 	static final String SO_PURCHASE_1 = /*$$(*/ "Veuillez choisir un fournisseur pour la ligne %s" /*)*/;
+	static final String SO_LINE_PURCHASE_AT_LEAST_ONE = /*$$(*/ "At least one sale order line msut be selected" /*)*/;
 
 	/**
 	 * Stock Move Invoice Service

@@ -17,18 +17,28 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class SaleOrderController {
@@ -80,6 +90,68 @@ public class SaleOrderController {
 		if(saleOrder.getId() != null) {
 
 			Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrderRepo.find(saleOrder.getId()));
+		}
+	}
+
+	public void generatePurchaseOrdersFromSelectedSOLines(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+		if(saleOrder.getId() != null) {
+
+			if (request.getContext().get("supplierPartnerSelect") != null){
+				Partner partner = JPA.em().find(Partner.class, new Long((Integer)((Map)request.getContext().get("supplierPartnerSelect")).get("id")));
+				List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+				String saleOrderLineIdSelectedStr = (String)request.getContext().get("saleOrderLineIdSelected");
+				for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
+					saleOrderLineIdSelected.add(new Long(saleOrderId));
+				}
+				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
+				PurchaseOrder purchaseOrder = Beans.get(SaleOrderPurchaseService.class).createPurchaseOrder(partner, saleOrderLinesSelected, saleOrderRepo.find(saleOrder.getId()));
+				response.setView(ActionView
+						.define(I18n.get("Purchase Order"))
+						.model(PurchaseOrder.class.getName())
+						.param("forceEdit", "true")
+						.context("_showRecord", String.valueOf(purchaseOrder.getId()))
+						.map());
+				response.setCanClose(true);
+			}else{
+				Partner supplierPartner = null;
+				List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+
+				//Check if supplier partners of each sale order line are the same. If it is, send the partner id to view to load this partner by default into select
+				for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+					if (saleOrderLine.isSelected()){
+						if (supplierPartner == null){
+							supplierPartner = saleOrderLine.getSupplierPartner();
+						}else{
+							if (!supplierPartner.equals(saleOrderLine.getSupplierPartner())){
+								supplierPartner = null;
+								break;
+							}
+						}
+						saleOrderLineIdSelected.add(saleOrderLine.getId());
+					}
+				}
+				
+				if (saleOrderLineIdSelected.isEmpty()){
+					response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+				}else{
+					response.setView(ActionView
+									.define("SaleOrder")
+									.model(SaleOrder.class.getName())
+									.add("form", "sale-order-generate-po-select-supplierpartner-form")
+									.param("popup", "true")
+									.param("show-toolbar", "false")
+									.param("show-confirm", "false")
+									.param("forceEdit", "true")
+									.context("_showRecord", String.valueOf(saleOrder.getId()))
+									.context("supplierPartnerId", ((supplierPartner != null) ? String.valueOf(supplierPartner.getId()) : "NULL"))
+									.context("saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
+									.map());
+				}
+			}
+
 		}
 	}
 

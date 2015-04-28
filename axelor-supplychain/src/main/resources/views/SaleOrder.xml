@@ -11,7 +11,13 @@
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
 
-	
+	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onNew="action-record-load-dummy-supplier-partner">
+		<panel>
+			<field name="supplierPartnerSelect" title="Select supplier partner" colSpan="12" width="200px" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" />
+			<button name="generatePOConfirm" title="Confirm Purchase order generation" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" colSpan="12" width="200px"/>
+		</panel>
+    </form>
+
 	<form name="sale-order-form-client" id="supplychain-sale-order-form-client" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
 		  onNew="action-group-supplychain-saleorder-onnew"
 		  onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-method-compute,save" onLoad="action-group-supplychain-saleorder-onload">
@@ -24,6 +30,15 @@
 		onSave="save,action-method-set-sale-order-draft-sequence,save">
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
+	
+	<action-view name="action-sale-order-view-select-supplier-partner" title="Annulation" model="com.axelor.apps.sale.db.SaleOrder">
+	  <view type="form" name="sale-order-generate-po-select-supplierpartner-form"/>
+	  <view-param name="popup" value="reload"/>
+	  <view-param name="show-toolbar" value="false"/>
+	  <view-param name="show-confirm" value="false" />
+	  <view-param name="forceEdit" value="true" />
+	  <context name="_showRecord" expr="eval: __this__.id" />
+	</action-view>
 	
 	<action-group name="action-group-supplychain-saleorder-onnew">
 		<action name="action-sale-order-record-default"/>
@@ -63,9 +78,16 @@
 		<call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController" method="createProductionOrders"/>
 	</action-method>
 	
+	<action-method name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" >
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generatePurchaseOrdersFromSelectedSOLines"/>
+	</action-method>
+	
 	<action-validate name="action-supplychain-sale-order-validate-check-location">
 		<error message="The location must be filled." if="location == null"/>
 	</action-validate>
 	
+	<action-record name="action-record-load-dummy-supplier-partner" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="supplierPartnerSelect" expr="eval:__repo__.of(Partner).find(:supplierPartnerId)"/>
+	</action-record>
 	
 </object-views>	

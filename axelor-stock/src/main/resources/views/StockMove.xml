@@ -333,11 +333,4 @@
 		</filter>
 	</search-filters>
 	
-	<action-record name="action-record-load-dummy-field" model="com.axelor.apps.stock.db.StockMove">
-		<field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck"/>
-		<field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"/>
-		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
-		<field name="partnerId" expr="eval: contextPartnerId"/>
-	</action-record>
-		
 </object-views>

@@ -28,10 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -111,7 +108,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createPurchaseOrder(Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder) throws AxelorException  {
+	public PurchaseOrder createPurchaseOrder(Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder) throws AxelorException  {
 		
 		LOG.debug("Création d'une commande fournisseur pour le devis client : {}",
 				new Object[] { saleOrder.getSaleOrderSeq() });
@@ -127,7 +124,10 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				IPurchaseOrder.INVOICING_FREE, 
 				purchaseOrderServiceSupplychainImpl.getLocation(saleOrder.getCompany()), 
 				today, 
-				Beans.get(PriceListRepository.class).all().filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
+				//Beans.get(PriceListRepository.class).all().filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(),
+				//TODO
+				//Beans.get(PartnerRepository.class).all().filter("self.id = ?1 AND self.priceList.typeSelect = 2", supplierPartner.getId()).fetchOne().getPriceList(),
+				null,
 				supplierPartner);
 		
 		
@@ -140,6 +140,8 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 		purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 		
 		Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
+		
+		return purchaseOrder;
 	}
 }
 

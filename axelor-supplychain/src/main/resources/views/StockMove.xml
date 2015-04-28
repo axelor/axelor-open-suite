@@ -19,7 +19,7 @@
 	  	</panel>
     </form>
     
-    <form name="stock-move-supplychain-concat-invoice-confirm-form" model="com.axelor.apps.stock.db.StockMove" title="Confirmation" onNew="action-record-load-dummy-field">
+    <form name="stock-move-supplychain-concat-invoice-confirm-form" model="com.axelor.apps.stock.db.StockMove" title="Confirmation" onNew="action-record-load-dummy-field-generate-invoice">
 		<panel>
 			<field name="$paymentCondition" title="Payment condition" target="com.axelor.apps.account.db.PaymentCondition" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentConditionToCheck"/>
 			<field name="$paymentMode" title="Payment mode" target="com.axelor.apps.account.db.PaymentMode" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentModeToCheck"/>
@@ -53,5 +53,12 @@
 		<check error="A payment mode must be selected" field="$paymentMode" if="paymentModeToCheck &amp;&amp; paymentMode == null"/>
 		<check error="A contact partner must be selected" field="$contactPartner" if="contactPartnerToCheck &amp;&amp; contactPartner == null"/>
 	</action-condition>
+	
+	<action-record name="action-record-load-dummy-field-generate-invoice" model="com.axelor.apps.stock.db.StockMove">
+		<field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck"/>
+		<field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"/>
+		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
+		<field name="partnerId" expr="eval: contextPartnerId"/>
+	</action-record>
 
 </object-views>	
