@@ -89,7 +89,7 @@
 	        </panel>
 	    	
 		    <panel title="Others" readonly="true">
-		        <field name="taxLine"/>
+		        <field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		        <field name="exportedDirectDebitOk"/>
 		        <field name="reimbursementstatusSelect"/>
 		    </panel>
@@ -168,7 +168,7 @@
 	        </panel>
 			
 		    <panel title="Others"  readonly="true">
-		        <field name="taxLine"/>
+		        <field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		        <field name="exportedDirectDebitOk"/>
 		    </panel>
         </panel-tabs>

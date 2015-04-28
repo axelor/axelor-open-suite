@@ -45,7 +45,7 @@
 			<field name="qty" colSpan="3" onChange="action-expense-line-method-compute"/>
 			<field name="unit" colSpan="3"/>
 			<field name="price" onChange="action-expense-line-method-compute"/>
-			<field name="taxLine"/>
+			<field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="inTaxTotal" required="true" css="bold"/>
 		</panel>  
 		<panel title="Proofs" colSpan="12">

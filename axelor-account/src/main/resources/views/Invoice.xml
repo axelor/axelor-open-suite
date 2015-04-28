@@ -55,7 +55,7 @@
 		<panel-tabs>
 			<panel title="Invoice content" showTitle="false">
 				<panel-related field="invoiceLineList" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
-				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
+				<panel-related field="invoiceLineTaxList" colSpan="12"/>
 			</panel>
 			<panel title="Accounting" showTitle="false">
 				<panel title="Accounting details"  colSpan="12">
