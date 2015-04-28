@@ -47,6 +47,8 @@
 <!-- Notes -->
 	<string name="notes" large="true" multiline="true" title="Notes"/>
 	
+	<integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
+	
 	
 	
   </entity>

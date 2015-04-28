@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.purchase.service;
 
+import java.io.IOException;
+
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
@@ -80,14 +82,15 @@ public interface PurchaseOrderService extends Repository<PurchaseOrder> {
 	
 	
 	String getSequence(Company company) throws AxelorException ;
-		
+	
+	public String getDraftSequence(Long purchaseOrderId);
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateSupplier(PurchaseOrder purchaseOrder);
 	
-	
-	
+	@Transactional
+	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws IOException;	
 	
 	
 }

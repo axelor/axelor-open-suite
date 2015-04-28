@@ -92,6 +92,7 @@
 			<button name="validate" title="Validate" showIf="statusSelect == 3"   onClick="action-group-purchase-order-on-validate-actions"/>
 			<button name="completed" title="Completed" showIf="statusSelect == 4"   onClick="action-purchase-order-record-completed,save"/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
+			<button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-purchase-record-newVersion,save"/>
 			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 4 || statusSelect == 5"   onClick="action-purchase-order-show-invoice"/>
 			<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
 			<button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect &gt;= 4"   onClick="save,action-purchase-order-method-clear-purchase-order"/>
@@ -239,6 +240,11 @@
 	<action-validate name="action-purchase-order-validate-information">
 		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner.purchaseOrderInformation != null"/>
 	</action-validate>
+	
+	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="statusSelect" expr="eval: 1"/>
+    	<field name="versionNumber" expr="eval: versionNumber + 1"/>
+    </action-record>
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">

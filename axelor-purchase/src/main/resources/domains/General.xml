@@ -5,7 +5,7 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="General" lang="java" cachable="true">
-		<boolean name="manageSaleOrderVersion" title="Manage sale order versions" default="false"/>
+		<boolean name="managePurchaseOrderVersion" title="Manage purchase order versions" default="false"/>
 	</entity>
 
 </domain-models>

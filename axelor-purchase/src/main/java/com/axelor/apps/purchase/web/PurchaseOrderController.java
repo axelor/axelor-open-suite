@@ -40,19 +40,19 @@ import com.axelor.rpc.ActionResponse;
 public class PurchaseOrderController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderController.class);
-	
+
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		
+
 		if(purchaseOrder != null &&  purchaseOrder.getCompany() != null) {
-			
+
 			response.setValue("purchaseOrderSeq", Beans.get(PurchaseOrderService.class).getSequence(purchaseOrder.getCompany()));
 		}
 	}
-	
+
 	public void compute(ActionRequest request, ActionResponse response)  {
-		
+
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
 		if(purchaseOrder != null) {
@@ -63,18 +63,18 @@ public class PurchaseOrderController {
 			catch(Exception e)  { TraceBackService.trace(response, e); }
 		}
 	}
-	
-	
+
+
 	public void validateSupplier(ActionRequest request, ActionResponse response) {
-		
+
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-			
+
 		response.setValue("supplierPartner", Beans.get(PurchaseOrderService.class).validateSupplier(purchaseOrder));
-		
+
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Fonction appeler par le bouton imprimer
 	 *
@@ -96,7 +96,7 @@ public class PurchaseOrderController {
 				purchaseOrderIds+= it.toString()+",";
 			}
 		}
-			
+
 		if(!purchaseOrderIds.equals("")){
 			purchaseOrderIds = purchaseOrderIds.substring(0,purchaseOrderIds.length()-1);
 			purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(new Long(lstSelectedPurchaseOrder.get(0)));
@@ -105,36 +105,36 @@ public class PurchaseOrderController {
 		}
 		String language="";
 		try{
-			language = purchaseOrder.getSupplierPartner().getLanguageSelect() != null? purchaseOrder.getSupplierPartner().getLanguageSelect() : purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+			language = purchaseOrder.getSupplierPartner().getLanguageSelect() != null? purchaseOrder.getSupplierPartner().getLanguageSelect() : purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
 		}catch (NullPointerException e) {
 			language = "en";
 		}
 		language = language.equals("")? "en": language;
-		
+
 		url.append(
 				new ReportSettings(IReport.PURCHASE_ORDER)
 				.addParam("Locale", language)
 				.addParam("__locale", "fr_FR")
 				.addParam("PurchaseOrderId", purchaseOrderIds)
 				.getUrl());
-		
+
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
-		
+
 		if(urlNotExist == null) {
-		
+
 			LOG.debug("Impression du devis "+purchaseOrder.getPurchaseOrderSeq() +" : "+url.toString());
-			
+
 			String title = I18n.get("Devis");
 			if(purchaseOrder.getPurchaseOrderSeq() != null)  {
 				title += purchaseOrder.getPurchaseOrderSeq();
 			}
-			
+
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", title);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
-			response.setView(mapView);	
+			response.setView(mapView);
 		}
 		else {
 			response.setFlash(urlNotExist);
@@ -145,6 +145,6 @@ public class PurchaseOrderController {
 		if(purchaseOrder.getPurchaseOrderSeq()!=null){
 			return;
 		}
-		response.setValue("purchaseOrderSeq","*"+purchaseOrder.getId().toString());
+		response.setValue("purchaseOrderSeq", Beans.get(PurchaseOrderService.class).getDraftSequence(purchaseOrder.getId()));
 	}
 }
