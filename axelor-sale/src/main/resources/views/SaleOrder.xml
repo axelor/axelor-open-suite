@@ -486,7 +486,7 @@
  		<field name="paymentMode" expr="eval: clientPartner?.paymentMode"/>
  		<field name="mainInvoicingAddress" expr="eval: clientPartner?.mainInvoicingAddress"/>
 		<field name="deliveryAddress" expr="eval: clientPartner?.deliveryAddress"/>
-		<field name="priceList" expr="eval: clientPartner?.priceList"/>
+		<field name="priceList" expr="eval: clientPartner?.salePriceList"/>
     </action-record>
     
     <action-method name="action-sale-order-method-compute">

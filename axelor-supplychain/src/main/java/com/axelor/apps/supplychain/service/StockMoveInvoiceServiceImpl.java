@@ -270,7 +270,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		}
 
 		if (invoicePriceList == null){
-			invoicePriceList = invoiceClientPartner.getPriceList();
+			invoicePriceList = invoiceClientPartner.getSalePriceList();
 		}
 
 		//Concat sequence, internal ref and external ref from all saleOrder
@@ -439,7 +439,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		 */
 
 		if (invoicePriceList == null){
-			invoicePriceList = invoiceSupplierPartner.getPriceList();
+			invoicePriceList = invoiceSupplierPartner.getPurchasePriceList();
 		}
 
 		//Concat sequence, internal ref and external ref from all saleOrder
