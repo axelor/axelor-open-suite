@@ -131,11 +131,15 @@ public class AccountManagementServiceImpl extends AccountManagementRepository im
 		LOG.debug("Obtention du compte comptable pour le produit {} (société : {}, achat ? {})",
 			new Object[]{product.getCode(), company.getName(), isPurchase});
 		
-		return new FiscalPositionServiceImpl().getTax(
+		Tax tax = new FiscalPositionServiceImpl().getTax(
 					fiscalPosition,
 					this.getProductTax(
 						this.getAccountManagement(product, company), 
 						isPurchase));
+		
+		if(tax != null)  {  return tax;  }
+		
+		throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3), product.getCode(), company.getName()), IException.CONFIGURATION_ERROR);
 			
 	}
 	

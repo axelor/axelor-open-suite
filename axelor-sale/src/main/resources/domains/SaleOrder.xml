@@ -17,7 +17,7 @@
 	  		return saleOrderSeq + "-" + clientPartner.getName();
 	  	]]>
   	</string>
-  	<string name="saleOrderSeq"  title="Reference" readonly="true" unique="true"/>
+  	<string name="saleOrderSeq"  title="Reference" readonly="true"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>
   	<string name="externalReference" title="Customer reference"/>
   	<date name="creationDate" title="Creation date" required="true" readonly="true"/>
@@ -27,9 +27,9 @@
 <!--   	Onglet Coordonnées client -->
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Customer" massUpdate="true"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Customer contact"/>
-  	<many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" required="true" title="Invoicing address"/>
+  	<many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Invoicing address"/>
 	<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
-    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" required="true" title="Delivery address"/>  	
+    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address"/>  	
   
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
   	<boolean name="hasSubLineDefaultValue" title="Default value for sublines"/>
@@ -39,7 +39,7 @@
 	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="saleOrder" title="Sale order lines"/>
 
 <!--   	Ligne de Taxe -->	
-	<one-to-many name="saleOrderLineTaxList" ref="com.axelor.apps.sale.db.SaleOrderLineTax" mappedBy="saleOrder" title="Tax Lines"/>
+	<one-to-many name="saleOrderLineTaxList" ref="com.axelor.apps.sale.db.SaleOrderLineTax" mappedBy="saleOrder" title="Tax Lines" readonly="true"/>
   	
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
@@ -75,6 +75,8 @@
     <integer name="deliveryState" title="Delivery State" selection="sale.order.delivery.state" readonly="true" default="1"/>
     
     <many-to-one name="templateUser" ref="com.axelor.auth.db.User" title="Template created by" readonly="true"/>
+
+ 	<unique-constraint columns="saleOrderSeq,company"/>
 
     <extra-code>
    		<![CDATA[

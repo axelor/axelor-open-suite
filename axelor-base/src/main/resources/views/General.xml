@@ -31,6 +31,9 @@
 		    <field name="defaultPartnerLanguage" />
 		</panel>
 		<panel-tabs>
+		    <panel title="Configuration">
+		    	<field name="mailAccountByUser" />
+		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>
 				<field name="isInvoiceMoveConsolidated"/>
@@ -50,6 +53,8 @@
 		    </panel>
 		    <panel title="General Settings">
 				<field name="manageAmountInvoiceByLine" if-module="axelor-supplychain"/>
+				<field name="manageSaleOrderVersion" if-module="axelor-sale"/>
+				<field name="managePurchaseOrderVersion" if-module="axelor-purchase"/>
 		    </panel>
 		    <panel title="Interfaces">
 				<panel name="map" title="Mapping"  colSpan="12">

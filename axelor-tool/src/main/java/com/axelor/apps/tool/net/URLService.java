@@ -70,31 +70,26 @@ public final class URLService {
 
 	}
 
-
 	public static File fileUrl(String fAddress, String localFileName, String destinationDir) throws IOException {
 		int ByteRead, ByteWritten = 0;
 		byte[] buf = new byte[size];
 
 		URL Url = new URL(fAddress);
 		File file = FileTool.create(destinationDir, localFileName);
-		OutputStream outStream = new BufferedOutputStream(new FileOutputStream(file));
-		URLConnection uCon = Url.openConnection();
-		InputStream is = uCon.getInputStream();
-
-		while ((ByteRead = is.read(buf)) != -1) {
-			outStream.write(buf, 0, ByteRead);
+		OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
+		URLConnection urlConnection = Url.openConnection();
+		InputStream inputStream = urlConnection.getInputStream();
+		
+		while ((ByteRead = inputStream.read(buf)) != -1) {
+			outputStream.write(buf, 0, ByteRead);
 			ByteWritten += ByteRead;
 		}
 
 		LOG.info("Downloaded Successfully.");
 		LOG.debug("No of bytes :" + ByteWritten);
 
-		if(is != null)  {
-			is.close();
-		}
-		if(outStream != null)  {
-			outStream.close();
-		}
+		if ( inputStream != null )  { inputStream.close(); }
+		if ( outputStream != null ) { outputStream.close(); }
 
 		return file;
 	}
@@ -104,17 +99,13 @@ public final class URLService {
 		int slashIndex = fAddress.lastIndexOf('/');
 		int periodIndex = fAddress.lastIndexOf('.');
 
-		File file = null;
-
-		if (periodIndex >= 1 && slashIndex >= 0 && slashIndex < fAddress.length() - 1) {
+		if ( periodIndex >= 1 && slashIndex >= 0 && slashIndex < fAddress.length() - 1 ) {
 			LOG.debug("Downloading file {} from {} to {}", fileName, fAddress, destinationDir);
-			file = fileUrl(fAddress, fileName, destinationDir);
-		}
-		else {
+			return fileUrl(fAddress, fileName, destinationDir);
+		}  else {
 			LOG.error("Destination path or filename is not well formatted.");
+			return null;
 		}
-
-		return file;
 	}
 
 }

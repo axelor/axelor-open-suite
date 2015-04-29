@@ -75,7 +75,7 @@ public class BatchEventReminderMessage extends BatchStrategy {
 				
 			for(Event event : eventList)  {
 				try {
-					messageServiceCrmImpl.createMessage(event, mailAccountService.getDefaultMailAccount());
+					messageServiceCrmImpl.createMessage( event );
 				} catch (Exception e) {
 					
 					TraceBackService.trace(new Exception(String.format(I18n.get("Event")+" %s", 

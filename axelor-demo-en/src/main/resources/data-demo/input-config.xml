@@ -485,7 +485,8 @@
 	
 	<input file="production_prodProcessLine.csv" separator=";" type="com.axelor.apps.production.db.ProdProcessLine"/>
 
-	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial" />
+	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial" call="com.axelor.csv.script.ImportBillOfMaterial:computeCostPrice"/>
+
 	
 <!-- 	<input file="production_prodProduct.csv" separator=";" type="com.axelor.apps.production.db.ProdProduct"/> -->
 	

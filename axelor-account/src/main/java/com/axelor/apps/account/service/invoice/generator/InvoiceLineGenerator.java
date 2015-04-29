@@ -184,6 +184,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setDescription(description);
 		invoiceLine.setPrice(price);
 		invoiceLine.setQty(qty);
+		invoiceLine.setUnit(unit);
 
 		if(exTaxTotal == null)  {
 			exTaxTotal = computeAmount(qty, price);
@@ -201,8 +202,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		invoiceLine.setAccountingExTaxTotal(
 				currencyService.getAmountCurrencyConverted(
-						invoice.getCurrency(), partnerCurrency, exTaxTotal, invoice.getInvoiceDate()));
-
+						invoice.getCurrency(), partnerCurrency, exTaxTotal, today));  
+	
 		Company company = invoice.getCompany();
 
 		Currency companyCurrency = company.getCurrency();
@@ -214,16 +215,14 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		invoiceLine.setCompanyExTaxTotal(
 				currencyService.getAmountCurrencyConverted(
-						invoice.getCurrency(), companyCurrency, exTaxTotal, invoice.getInvoiceDate()));
-
-		invoiceLine.setPricingListUnit(unit);
+						invoice.getCurrency(), companyCurrency, exTaxTotal, today));
 
 		if(taxLine == null)  {
 			boolean isPurchase = false;
 			if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)  {
 				isPurchase = true;
 			}
-			taxLine =  accountManagementServiceImpl.getTaxLine(invoice.getInvoiceDate(), product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
+			taxLine =  accountManagementServiceImpl.getTaxLine(today, product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
 		}
 
 		invoiceLine.setTaxLine(taxLine);

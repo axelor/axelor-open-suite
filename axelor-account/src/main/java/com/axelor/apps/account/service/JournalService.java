@@ -59,7 +59,7 @@ public class JournalService extends JournalRepository{
 		
 		if(company != null)  {
 			
-			AccountConfig accountConfig = company.getAccountConfig();
+			AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 			
 			switch(invoice.getOperationTypeSelect())  {
 			case 1:

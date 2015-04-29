@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -85,9 +86,10 @@ public class ReminderActionService {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void runAction(Reminder reminder) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public void runAction(Reminder reminder) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 		
 		if(reminder.getReminderMethod()==null )  {
 			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_1), 
@@ -132,8 +134,9 @@ public class ReminderActionService {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
-	public Message runStandardMessage(Reminder reminder) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public Message runStandardMessage(Reminder reminder) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 
 		ReminderMethodLine reminderMethodLine = reminder.getReminderMethodLine(); 
 		Partner partner =  reminder.getAccountingSituation().getPartner();
@@ -148,7 +151,7 @@ public class ReminderActionService {
 			
 		ReminderHistory reminderHistory = this.getReminderHistory(partner, company);
 		
-		reminderHistory.setReminderMessage(templateMessageService.generateMessage(reminderHistory, reminderHistory.getId(), template));
+		reminderHistory.setReminderMessage(templateMessageService.generateMessage(reminderHistory, template));
 		
 		return reminderHistory.getReminderMessage();
 		
@@ -187,9 +190,10 @@ public class ReminderActionService {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void runManualAction(Reminder reminder) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public void runManualAction(Reminder reminder) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 		
 		LOG.debug("Begin runManualAction service ...");
 		if(reminder.getReminderMethod()==null )  {

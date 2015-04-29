@@ -293,10 +293,19 @@ resources/views/Menu.xml:552"
 Alarm engine,Moteur d'alarme,,"resources/domains/Alarm.xml:11
 resources/views/AlarmEngine.xml:26
 resources/views/AlarmEngineBatch.xml:12"
-Alarm engine batch,Batch du moteur d'alarme,,resources/domains/Batch.xml:11
-Alarm engine batches,Routine Moteur d'alarme,,resources/views/AlarmEngineBatch.xml:6
-Alarm engines,Moteur d'alarme,,"resources/views/AlarmEngine.xml:14
-resources/views/Menu.xml:531
+"Alarm engine batch","Batch du moteur d'alarme",,"resources/domains/Batch.xml:11"
+"Alarm engine batches","Routine Moteur d'alarme",,"resources/views/AlarmEngineBatch.xml:6"
+"Alarm engines","Moteur d'alarme",,"resources/views/AlarmEngine.xml:14
+resources/views/Menu.xml:522
+resources/views/Menu.xml:525"
+"Alarmes","Alarmes",,"resources/views/Menu.xml:507"
+"Alarms","Alarmes",,"resources/views/Alarm.xml:14"
+"All Alarms","Les Alarmes",,"resources/views/Menu.xml:510
+resources/views/Menu.xml:513"
+"All Clients","Clients",,"resources/views/Partner.xml:386"
+"All Enterprises","Entreprises",,"resources/views/Partner.xml:377"
+"All Individuals","Particuliers",,"resources/views/Partner.xml:380"
+"All Messages","Messages",,"resources/views/Menu.xml:531
 resources/views/Menu.xml:534"
 Alarmes,Alarmes,,resources/views/Menu.xml:516
 Alarms,Alarmes,,resources/views/Alarm.xml:14
@@ -579,11 +588,12 @@ Company Footer,Pied de page société,,"resources/domains/PrintingSettings.xml:1
 resources/views/PrintingSetting.xml:14"
 Company Header,En-tête société,,"resources/domains/PrintingSettings.xml:12
 resources/views/PrintingSetting.xml:11"
-Company phoneBook,Annuaire société,,resources/views/Partner.xml:9
-Complement,Complément,,resources/domains/PickListEntry.xml:11
-Compte rendu de la relève des alarmes :\n,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:92
-Compute payers quality,Calculer les qualités payeurs,,resources/views/General.xml:43
-Configuration,Configuration,,"resources/views/AlarmEngineBatch.xml:20
+"Company phoneBook","Annuaire société",,"resources/views/Partner.xml:9"
+"Complement","Complément",,"resources/domains/PickListEntry.xml:11"
+"Compte rendu de la relève des alarmes :\n",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:92"
+"Compute payers quality","Calculer les qualités payeurs",,"resources/views/General.xml:46"
+"Configuration","Configuration",,"resources/views/AlarmEngineBatch.xml:20
+resources/views/General.xml:34
 resources/views/Menu.xml:207
 resources/views/Menu.xml:379
 resources/views/Menu.xml:528
@@ -603,7 +613,7 @@ Contacts,Contacts,,"resources/domains/Partner.xml:35
 resources/views/Menu.xml:23
 resources/views/Menu.xml:53
 resources/views/Menu.xml:56
-resources/views/Partner.xml:155
+resources/views/Partner.xml:151
 resources/views/Partner.xml:22"
 Contacts Db,Db Contacts,,resources/views/Menu.xml:26
 Contains,Contient,,resources/views/Selects.xml:447
@@ -1115,7 +1125,7 @@ resources/domains/TemplateRule.xml:10
 resources/domains/Territory.xml:10
 resources/domains/UnitConversion.xml:15
 resources/domains/Year.xml:11
-resources/views/Partner.xml:234
+resources/views/Partner.xml:230
 resources/views/Partner.xml:61
 resources/views/Product.xml:39"
 Name/Company Name,Nom/Raison Sociale,,resources/domains/Partner.xml:17
@@ -1186,7 +1196,7 @@ resources/domains/Blocking.xml:13
 resources/domains/Company.xml:14
 resources/domains/User.xml:13
 resources/views/Menu.xml:17
-resources/views/Partner.xml:166
+resources/views/Partner.xml:162
 resources/views/Partner.xml:32
 resources/views/Partner.xml:44"
 Partner (Cust/Suppl),Tiers,,resources/views/Selects.xml:345
@@ -1258,19 +1268,19 @@ Please enter a day of week for rhythm.,Veuillez saisir un jour de la semaine pou
 Please enter a frequency.,Veuillez saisir une fréquence.,,resources/views/Scheduler.xml:78
 Please enter a month for rhythm.,Veuillez saisir un mois pour le rythme.,,"resources/views/Scheduler.xml:83
 resources/views/Scheduler.xml:85"
-Please enter a year for rhythm.,Veuillez saisir une année pour le rythme.,,resources/views/Scheduler.xml:84
-Please input all character as capital,Toutes les lettres saisies doivent être en majuscule.,,"resources/views/General.xml:102
-resources/views/General.xml:103
-resources/views/General.xml:104
-resources/views/General.xml:105
-resources/views/General.xml:106
-resources/views/General.xml:107"
-Please input first character as capital and other as lower case,La première lettre doit être en majuscule suivie de minuscules.,,resources/views/General.xml:98
-Please select active company,Veuillez sélectionner une société active.,,resources/views/User.xml:56
-Please select key fields to check duplicate,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:166
-Please select the Message(s) to print.,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:174
-"Please, enter date of next execution.",Veuillez saisir une date de prochaine exécution.,,resources/views/SchedulerInstance.xml:29
-Postal addresses,Adresses postales,,"resources/views/Partner.xml:191
+"Please enter a year for rhythm.","Veuillez saisir une année pour le rythme.",,"resources/views/Scheduler.xml:84"
+"Please input all character as capital","Toutes les lettres saisies doivent être en majuscule.",,"resources/views/General.xml:109
+resources/views/General.xml:110
+resources/views/General.xml:111
+resources/views/General.xml:112
+resources/views/General.xml:113
+resources/views/General.xml:114"
+"Please input first character as capital and other as lower case","La première lettre doit être en majuscule suivie de minuscules.",,"resources/views/General.xml:105"
+"Please select active company","Veuillez sélectionner une société active.",,"resources/views/User.xml:49"
+"Please select key fields to check duplicate",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:166"
+"Please select the Message(s) to print.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:174"
+"Please, enter date of next execution.","Veuillez saisir une date de prochaine exécution.",,"resources/views/SchedulerInstance.xml:29"
+"Postal addresses","Adresses postales",,"resources/views/Partner.xml:187
 resources/views/Partner.xml:83"
 Prefix,Préfixe,,resources/domains/Sequence.xml:14
 Price Extra,Surcoût variante,,resources/domains/ProductVariantValue.xml:12
@@ -1286,30 +1296,30 @@ resources/views/PriceListLine.xml:7"
 Price lists,Listes de prix,,"resources/views/Menu.xml:149
 resources/views/Menu.xml:152
 resources/views/PriceList.xml:7"
-Prices updated,Prix mis à jour,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:185
-Print,Imprimer,,resources/views/Message.xml:9
-Print Informations,Imprimer informations,,"resources/views/Partner.xml:217
+"Prices updated",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:185"
+"Print","Imprimer",,"resources/views/Message.xml:9"
+"Print Informations","Imprimer informations",,"resources/views/Partner.xml:213
 resources/views/Partner.xml:47"
 Printing Setting,Paramètre impression,,"resources/views/PrintingSetting.xml:20
 resources/views/PrintingSetting.xml:6"
-Printing Settings,Impressions,,resources/domains/Company.xml:27
-Priority,Priorité,,resources/domains/Routing.xml:12
-Procurement method,Méthode d'approvisionnement,,resources/domains/Product.xml:25
-Procurement settings,Paramètres réapprovisionnement,,resources/views/Product.xml:89
-Produce,Produire,,"resources/views/Selects.xml:244
-resources/views/Selects.xml:257"
-Product,Produit,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:187
+"Printing Settings","Impressions",,"resources/domains/Company.xml:27"
+"Priority","Priorité",,"resources/domains/Routing.xml:12"
+"Procurement method","Méthode d'approvisionnement",,"resources/domains/Product.xml:25"
+"Procurement settings","Paramètres réapprovisionnement",,"resources/views/Product.xml:87"
+"Produce","Produire",,"resources/views/Selects.xml:242
+resources/views/Selects.xml:255"
+"Product","Produit",,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:187
 resources/domains/AccountManagement.xml:14
 resources/domains/PriceListLine.xml:11
 resources/domains/SupplierCatalog.xml:10
 resources/domains/TrackingNumber.xml:11
-resources/views/AccountManagement.xml:56
+resources/views/AccountManagement.xml:51
 resources/views/Product.xml:28
 resources/views/Selects.xml:238
-resources/views/Selects.xml:248"
-Product Catalog,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:186
-Product Family,Famille produit,,resources/domains/ProductCategory.xml:12
-Product categories,Catégories de produit,,"resources/views/Menu.xml:210
+resources/views/Selects.xml:246"
+"Product Catalog",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:186"
+"Product Family","Famille produit",,"resources/domains/ProductCategory.xml:12"
+"Product categories","Catégories de produit",,"resources/views/Menu.xml:210
 resources/views/Menu.xml:213
 resources/views/ProductCategory.xml:6"
 Product category,Catégorie produit,,"resources/domains/PriceListLine.xml:12
@@ -1321,14 +1331,15 @@ Product families,Familles de produit,,"resources/views/Menu.xml:219
 resources/views/Menu.xml:222"
 Product family,Famille produit,,"resources/domains/AccountManagement.xml:15
 resources/views/ProductFamily.xml:11"
-Product launch Date,Date de mise en application du produit,,resources/domains/Product.xml:37
-Product name on catalog,Nom produit sur catalogue,,resources/domains/SupplierCatalog.xml:12
-Product pulled off market Date,Date de fin d'application du produit,,resources/domains/Product.xml:38
-Product sheet,Fiche produit,,resources/views/Product.xml:31
-Product specific attributes,Typologie spécifique associée au produit,,resources/views/Product.xml:55
-Product tracking number,N° de suivi produit,,resources/views/Selects.xml:374
-Product typology,Typologie Produit,,resources/views/Product.xml:41
-Product variant,Variante produit,,"resources/domains/Product.xml:49
+"Product launch Date","Date de mise en application du produit",,"resources/domains/Product.xml:37"
+"Product name on catalog","Nom produit sur catalogue",,"resources/domains/SupplierCatalog.xml:12"
+"Product pulled off market Date","Date de fin d'application du produit",,"resources/domains/Product.xml:38"
+"Product sheet","Fiche produit",,"resources/views/Product.xml:31"
+"Product specific attributes","Typologie spécifique associée au produit",,"resources/views/Product.xml:53"
+"Product tracking number","N° de suivi produit",,"resources/views/Selects.xml:372"
+"Product type","Type produit",,"resources/domains/Product.xml:24"
+"Product typology","Typologie Produit",,"resources/views/Product.xml:41"
+"Product variant","Variante produit",,"resources/domains/Product.xml:49
 resources/views/ProductVariant.xml:18"
 Product variant attr,Attributs Variantes Produits,,resources/domains/ProductVariantValue.xml:14
 Product variant attr1,Attribut 1,,"resources/domains/ProductVariant.xml:11
@@ -1339,38 +1350,38 @@ Product variant attr3,Attribut 3,,"resources/domains/ProductVariant.xml:13
 resources/domains/ProductVariantConfig.xml:12"
 Product variant attr4,Attribut 4,,"resources/domains/ProductVariant.xml:14
 resources/domains/ProductVariantConfig.xml:13"
-Product variant attribute,Attributs Variantes Produits,,resources/views/ProductVariantAttr.xml:12
-Product variant attributes,Attributs variantes produits,,resources/views/ProductVariantAttr.xml:6
-Product variant config,Config. variantes produit,,resources/domains/Product.xml:48
-Product variant configuration,Configuration variantes produit,,resources/views/ProductVariantConfig.xml:18
-Product variant configurations,Configuration variantes produit,,resources/views/ProductVariantConfig.xml:6
-Product variant value,Valeur Attribut,,resources/views/ProductVariantValue.xml:13
-Product variant value list,Liste des attributs,,resources/domains/ProductVariantAttr.xml:12
-Product variant value1,Valeur(s) 1ère Attribut,,resources/domains/ProductVariant.xml:15
-Product variant value1 set,Valeurs 1ère variante,,resources/domains/ProductVariantConfig.xml:14
-Product variant value2,Valeur(s) 2ème Attribut,,resources/domains/ProductVariant.xml:16
-Product variant value2 set,Valeur(s) 2ème attribut,,resources/domains/ProductVariantConfig.xml:15
-Product variant value3,Valeur(s) 3ème Attribut,,resources/domains/ProductVariant.xml:17
-Product variant value3 set,Valeur(s) 3ème attribut,,resources/domains/ProductVariantConfig.xml:16
-Product variant value4,Valeur(e)s 4ème Attribut,,resources/domains/ProductVariant.xml:18
-Product variant value4 set,Valeur(s) 4ème Attribut,,resources/domains/ProductVariantConfig.xml:17
-Product variant values,Valeurs des attributs de variante produit,,resources/views/ProductVariantValue.xml:6
-Product variants,Variantes produit,,resources/views/ProductVariant.xml:6
-ProductCatalog.description,Description,,java/com/axelor/apps/base/report/ITranslation.java:72
-ProductCatalog.price,Prix,,java/com/axelor/apps/base/report/ITranslation.java:73
-ProductCatalog.reference,Référence,,java/com/axelor/apps/base/report/ITranslation.java:71
-ProductCatalog.summary,Sommaire,,java/com/axelor/apps/base/report/ITranslation.java:70
-ProductSheet.description,Description,,java/com/axelor/apps/base/report/ITranslation.java:23
-ProductSheet.price,Prix,,java/com/axelor/apps/base/report/ITranslation.java:24
-ProductSheet.title,FICHE TECHNIQUE PRODUIT,,java/com/axelor/apps/base/report/ITranslation.java:22
-ProductSheet.warranty,Garantie,,java/com/axelor/apps/base/report/ITranslation.java:25
-Production Qty by tracking,Qté par lot de production,,resources/domains/TrackingNumberConfiguration.xml:23
-Production config,Config. Module Production,,"resources/views/Company.xml:28
-resources/views/Company.xml:77"
-Production informations,Information production,,resources/views/Product.xml:101
-Production order,Ordre de production,,resources/views/Selects.xml:376
-Production tracking management,Gestion lots de production,,resources/views/TrackingNumberConfiguration.xml:31
-Products,Produits,,"resources/views/Menu.xml:178
+"Product variant attribute","Attributs Variantes Produits",,"resources/views/ProductVariantAttr.xml:12"
+"Product variant attributes","Attributs variantes produits",,"resources/views/ProductVariantAttr.xml:6"
+"Product variant config","Config. variantes produit",,"resources/domains/Product.xml:48"
+"Product variant configuration","Configuration variantes produit",,"resources/views/ProductVariantConfig.xml:18"
+"Product variant configurations","Configuration variantes produit",,"resources/views/ProductVariantConfig.xml:6"
+"Product variant value","Valeur Attribut",,"resources/views/ProductVariantValue.xml:13"
+"Product variant value list","Liste des attributs",,"resources/domains/ProductVariantAttr.xml:12"
+"Product variant value1","Valeur(s) 1ère Attribut",,"resources/domains/ProductVariant.xml:15"
+"Product variant value1 set","Valeurs 1ère variante",,"resources/domains/ProductVariantConfig.xml:14"
+"Product variant value2","Valeur(s) 2ème Attribut",,"resources/domains/ProductVariant.xml:16"
+"Product variant value2 set","Valeur(s) 2ème attribut",,"resources/domains/ProductVariantConfig.xml:15"
+"Product variant value3","Valeur(s) 3ème Attribut",,"resources/domains/ProductVariant.xml:17"
+"Product variant value3 set","Valeur(s) 3ème attribut",,"resources/domains/ProductVariantConfig.xml:16"
+"Product variant value4","Valeur(e)s 4ème Attribut",,"resources/domains/ProductVariant.xml:18"
+"Product variant value4 set","Valeur(s) 4ème Attribut",,"resources/domains/ProductVariantConfig.xml:17"
+"Product variant values","Valeurs des attributs de variante produit",,"resources/views/ProductVariantValue.xml:6"
+"Product variants","Variantes produit",,"resources/views/ProductVariant.xml:6"
+"ProductCatalog.description","Description",,"java/com/axelor/apps/base/report/ITranslation.java:72"
+"ProductCatalog.price","Prix",,"java/com/axelor/apps/base/report/ITranslation.java:73"
+"ProductCatalog.reference","Référence",,"java/com/axelor/apps/base/report/ITranslation.java:71"
+"ProductCatalog.summary","Sommaire",,"java/com/axelor/apps/base/report/ITranslation.java:70"
+"ProductSheet.description","Description",,"java/com/axelor/apps/base/report/ITranslation.java:23"
+"ProductSheet.price","Prix",,"java/com/axelor/apps/base/report/ITranslation.java:24"
+"ProductSheet.title","FICHE TECHNIQUE PRODUIT",,"java/com/axelor/apps/base/report/ITranslation.java:22"
+"ProductSheet.warranty","Garantie",,"java/com/axelor/apps/base/report/ITranslation.java:25"
+"Production Qty by tracking","Qté par lot de production",,"resources/domains/TrackingNumberConfiguration.xml:23"
+"Production config","Config. Module Production",,"resources/views/Company.xml:28
+resources/views/Company.xml:76"
+"Production informations","Information production",,"resources/views/Product.xml:99"
+"Production order","Ordre de production",,"resources/views/Selects.xml:374"
+"Production tracking management","Gestion lots de production",,"resources/views/TrackingNumberConfiguration.xml:31"
+"Products","Produits",,"resources/views/Menu.xml:178
 resources/views/Menu.xml:181
 resources/views/Menu.xml:184
 resources/views/Product.xml:20
@@ -1397,34 +1408,33 @@ Prospects by Industry Sector,Prospects par secteur d'activité,,"resources/views
 resources/views/Dashboard.xml:61"
 Prospects by country,Prospects par pays,,"resources/views/Charts.xml:85
 resources/views/Dashboard.xml:57"
-Public,Publique,,resources/views/Selects.xml:463
-Purchasable,Achetable,,resources/domains/Product.xml:60
-Purchase,Achat,,"resources/views/Selects.xml:256
-resources/views/Selects.xml:471"
-Purchase / Cost currency,Devise d'achat,,resources/domains/Product.xml:31
-Purchase Order,Commande Fournisseur,,resources/views/Partner.xml:136
-Purchase Qty by tracking,Qté par lot à l'achat,,resources/domains/TrackingNumberConfiguration.xml:22
-Purchase Tax,T.V.A. à l'achat,,resources/domains/AccountManagement.xml:11
-Purchase config,Config. Module Achats,,"resources/views/Company.xml:27
-resources/views/Company.xml:59"
-Purchase interface,Interface achat,,resources/views/Selects.xml:364
-Purchase order,Devis fournisseurs,,"resources/views/Selects.xml:368
-resources/views/Selects.xml:435"
-Purchase price W.T.,Prix d'achat HT,,resources/domains/Product.xml:30
-Purchase tracking management,Suivi Achats,,resources/views/TrackingNumberConfiguration.xml:24
-Purchase/Costs,Achat/Coûts,,resources/views/Product.xml:74
-Purchases,Achats,,resources/views/Product.xml:75
-QAS Moniker,Moniker QAS,,resources/domains/PickListEntry.xml:18
-QAS Proposal lists,Liste QAS,,resources/domains/Address.xml:23
-QAS certification,Certification QAS,,resources/views/Address.xml:37
-QAS score,Score QAS,,resources/domains/PickListEntry.xml:17
-Qty,Quantité,,resources/views/Selects.xml:336
-Qty min (by product),Qté Min. (par produit),,resources/domains/PriceListLine.xml:16
-Quantity,Quantité,,resources/views/GenerateProductVariantWizard.xml:10
-Quantity min,Qté Min.,,resources/domains/SupplierCatalog.xml:18
-Querie,Requête,,resources/views/Querie.xml:13
-Queries,Requêtes,,resources/views/Querie.xml:6
-Query,Requête,,"resources/domains/AlarmEngine.xml:19
+"Public","Publique",,"resources/views/Selects.xml:460"
+"Purchasable","Achetable",,"resources/domains/Product.xml:60"
+"Purchase","Achat",,"resources/views/Selects.xml:254
+resources/views/Selects.xml:468"
+"Purchase / Cost currency","Devise d'achat",,"resources/domains/Product.xml:31"
+"Purchase Qty by tracking","Qté par lot à l'achat",,"resources/domains/TrackingNumberConfiguration.xml:22"
+"Purchase Tax","T.V.A. à l'achat",,"resources/domains/AccountManagement.xml:11"
+"Purchase config","Config. Module Achats",,"resources/views/Company.xml:27
+resources/views/Company.xml:58"
+"Purchase interface","Interface achat",,"resources/views/Selects.xml:362"
+"Purchase order","Devis fournisseurs",,"resources/views/Selects.xml:366
+resources/views/Selects.xml:432"
+"Purchase price W.T.","Prix d'achat HT",,"resources/domains/Product.xml:30"
+"Purchase tracking management","Suivi Achats",,"resources/views/TrackingNumberConfiguration.xml:24"
+"Purchase/Costs","Achat/Coûts",,"resources/views/Product.xml:72"
+"Purchases","Achats",,"resources/views/Product.xml:73"
+"QAS Moniker","Moniker QAS",,"resources/domains/PickListEntry.xml:18"
+"QAS Proposal lists","Liste QAS",,"resources/domains/Address.xml:23"
+"QAS certification","Certification QAS",,"resources/views/Address.xml:32"
+"QAS score","Score QAS",,"resources/domains/PickListEntry.xml:17"
+"Qty","Quantité",,"resources/views/Selects.xml:334"
+"Qty min (by product)","Qté Min. (par produit)",,"resources/domains/PriceListLine.xml:15"
+"Quantity","Quantité",,"resources/views/GenerateProductVariantWizard.xml:10"
+"Quantity min","Qté Min.",,"resources/domains/SupplierCatalog.xml:18"
+"Querie","Requête",,"resources/views/Querie.xml:13"
+"Queries","Requêtes",,"resources/views/Querie.xml:6"
+"Query","Requête",,"resources/domains/AlarmEngine.xml:19
 resources/domains/IndicatorGenerator.xml:11
 resources/domains/Querie.xml:12
 resources/domains/TemplateContextLine.xml:12
@@ -1458,32 +1468,32 @@ Region name,Nom Région,,resources/domains/Region.xml:11
 Regions,Régions,,"resources/views/Menu.xml:275
 resources/views/Menu.xml:278
 resources/views/Region.xml:5"
-Registration code,N° SIRET,,resources/domains/Partner.xml:70
-Reimbursed,Remboursé,,resources/views/Selects.xml:316
-Reimbursement,Remboursement,,resources/views/Selects.xml:300
-Reimbursement blocking,Blocage remboursement,,resources/views/Blocking.xml:33
-Reimbursements,Remboursements,,"resources/views/Batch.xml:29
+"Registration code","N° SIRET",,"resources/domains/Partner.xml:69"
+"Reimbursed","Remboursé",,"resources/views/Selects.xml:314"
+"Reimbursement","Remboursement",,"resources/views/Selects.xml:298"
+"Reimbursement blocking","Blocage remboursement",,"resources/views/Blocking.xml:33"
+"Reimbursements","Remboursements",,"resources/views/Batch.xml:29
 resources/views/Batch.xml:69
-resources/views/Selects.xml:356"
-Reject,Rejet,,"resources/views/Selects.xml:263
-resources/views/Selects.xml:396"
-Rejects reasons and codes list,Listes des codes et motifs de rejets,,resources/views/General.xml:38
-Related to,Associé à ,,"resources/domains/RoutingAction.xml:12
+resources/views/Selects.xml:354"
+"Reject","Rejet",,"resources/views/Selects.xml:261
+resources/views/Selects.xml:393"
+"Rejects reasons and codes list","Listes des codes et motifs de rejets",,"resources/views/General.xml:41"
+"Related to","Associé à ",,"resources/domains/RoutingAction.xml:12
 resources/domains/RoutingAction.xml:13
-resources/views/Message.xml:38"
-Relations,Tiers,,resources/views/Menu.xml:588
-Reminder blocking,Blocage relance,,resources/views/Blocking.xml:39
-Reopen period,Rouvrir la période,,resources/views/Period.xml:29
-Replace,Remplace,,resources/views/Selects.xml:477
-Replacement Tax,Taxe de remplacement,,resources/domains/TaxEquiv.xml:12
-Reports to,Rapporte à,,resources/domains/Partner.xml:65
-Requête exécutée,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:85
-Reset,Réinitialiser,,"resources/views/Sequence.xml:24
-resources/views/Sequence.xml:8"
-Result,Résultat,,resources/domains/IndicatorGeneratorGrouping.xml:11
-Resultat exporté,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:79
-Retaile,Vente au détail,,resources/views/Selects.xml:229
-Rhythm,Toutes les,,"resources/domains/Scheduler.xml:17
+resources/views/Message.xml:39"
+"Relations","Tiers",,"resources/views/Menu.xml:579"
+"Reminder blocking","Blocage relance",,"resources/views/Blocking.xml:39"
+"Reopen period","Rouvrir la période",,"resources/views/Period.xml:28"
+"Replace","Remplace",,"resources/views/Selects.xml:474"
+"Replacement Tax","Taxe de remplacement",,"resources/domains/TaxEquiv.xml:12"
+"Reply to",,,"resources/views/Template.xml:34"
+"Reports to","Rapporte à",,"resources/domains/Partner.xml:64"
+"Requête exécutée",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:85"
+"Reseted on",,,"resources/domains/Sequence.xml:21"
+"Result","Résultat",,"resources/domains/IndicatorGeneratorGrouping.xml:11"
+"Resultat exporté",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:79"
+"Retaile","Vente au détail",,"resources/views/Selects.xml:228"
+"Rhythm","Toutes les",,"resources/domains/Scheduler.xml:17
 resources/domains/Scheduler.xml:19
 resources/domains/Scheduler.xml:28
 resources/domains/Scheduler.xml:31"
@@ -1810,146 +1820,148 @@ resources/views/Year.xml:6"
 Yearly reset,Remise à zéro annuelle,,resources/domains/Sequence.xml:19
 Years,Années,,"resources/views/Menu.xml:412
 resources/views/Menu.xml:415"
-Yes,Oui,,"resources/views/Selects.xml:171
-resources/views/Selects.xml:176
-resources/views/Selects.xml:186"
-Yes (Approved),Oui (Appouvé),,resources/views/Selects.xml:177
-You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?,Vous êtes sur le point de surcharger un taux de change existant. Ce taux est peut-être déjà utilisé par le système. Souhaitez-vous continuer ? ,,resources/views/CurrencyConversionLine.xml:110
-Zip,Code postal,,resources/domains/PickListEntry.xml:15
-Zip On Right ?,Code postal à droite ? ,,resources/domains/Commune.xml:18
-Zip code,Code postal,,resources/domains/Commune.xml:17
-Zip/City,Code Postal - Commune,,resources/domains/Address.xml:15
-\nAnomalies générées :,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:113
-\nErreur : Aucun chemin d'export de paramétré,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:76
-\nErreur : Aucun code de paramétré,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:77
-\nTotal :,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:111
-\t* %s anomalie(s),,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:94
-\t* %s objet(s) en alarme(s)\n,,,java/com/axelor/apps/base/exceptions/IExceptionMessage.java:93
-cost price,Prix de revient,,resources/views/Selects.xml:559
-day(s),jour(s),,resources/views/Scheduler.xml:22
-"e.g. Building A, Entry 2, 2nd Floor, Door 2E","ex. : Bâtiment A, Entrée 2, 2ème étage, Porte 2E",,resources/views/Address.xml:19
-"e.g. Financial department, CEO","ex. : Service comptable, PDG",,resources/views/Address.xml:18
-e.g. POB 254,"ex. : BP254, CS3456",,resources/views/Address.xml:21
-help:BankDetails.bankAddress,Adresse de la banque,,resources/domains/BankDetails.xml:13
-help:BankDetails.bankCode,Code de la banque où le titulaire a son compte enregistré.,,resources/domains/BankDetails.xml:16
-help:BankDetails.bbanKey,Clé RIB,,resources/domains/BankDetails.xml:19
-help:BankDetails.bic,,,resources/domains/BankDetails.xml:14
-help:BankDetails.countryCode,"En référence au code pays tel qu'il est défini sur les 2 premiers caractères de l'IBAN (exemple : EN, FR...)",,resources/domains/BankDetails.xml:20
-help:BankDetails.iban,"Identifiant international de compte bancaire. Le format de cet identifiant étant normé, un contrôle de saisie est effectué sur ce champ.",,resources/domains/BankDetails.xml:15
-help:BankDetails.ownerName,Nom du titulaire du compte,,resources/domains/BankDetails.xml:12
-help:BankDetails.sortCode,Code de l'agence où le titulaire a son compte enregistré.,,resources/domains/BankDetails.xml:17
-help:Bic.bankCode,Code banque,,resources/domains/Bic.xml:11
-help:Bic.bankName,Nom banque,,resources/domains/Bic.xml:12
-help:Bic.countryCode,"This code is expressed with 2 caracters (e.g. : EN, FR …)",,resources/domains/Bic.xml:14
-help:Bic.sortCode,Etablissement,,resources/domains/Bic.xml:13
-help:BirtTemplate.format,Format de sortie du modèle Birt,,resources/domains/BirtTemplate.xml:13
-help:BirtTemplate.generatedFilePath,Chemin vers le dossier où le fichier sera généré.,,resources/domains/BirtTemplate.xml:14
-help:BirtTemplate.templateLink,,,resources/domains/BirtTemplate.xml:12
-help:Company.administration,,,resources/domains/Company.xml:16
-help:Company.currency,,,resources/domains/Company.xml:21
-help:Company.defaultBankDetails,,,resources/domains/Company.xml:24
-help:Company.logoPath,Chemin local permettant de récupérer le logo de la société.,,resources/domains/Company.xml:19
-help:Company.parent,,,resources/domains/Company.xml:15
-help:Company.printingSettings,,,resources/domains/Company.xml:27
-help:Country.code,,,resources/domains/Country.xml:11
-help:Currency.code,,,resources/domains/Currency.xml:11
-help:CurrencyConversionLine.variations,,,resources/domains/CurrencyConversionLine.xml:17
-help:Department.code,,,resources/domains/Department.xml:12
-help:General.currencyConversionLineList,,,resources/domains/General.xml:24
-help:General.currencyWsURL,,,resources/domains/General.xml:22
-help:General.defaultPartnerLanguage,,,resources/domains/General.xml:13
-help:General.defaultProjectUnit,,,resources/domains/General.xml:12
-help:General.hasQasValidation,Activation de la fonctionnalité de validation par QAS des adresses postales.,,resources/domains/General.xml:26
-help:General.logOk,,,resources/domains/General.xml:11
-help:General.qasWsdlUrl,URL pour interroger la webservice QAS permettant de vérifier l'existence d'une adresse.,,resources/domains/General.xml:16
-help:General.today,"Permet de forcer la date du jour sur l'application. Si vide, la date utilisée est la date système.",,resources/domains/General.xml:10
-help:IndicatorGeneratorGrouping.path,Path to the export folder where the indicator report values will be exported.,,resources/domains/IndicatorGeneratorGrouping.xml:13
-help:Keyword.typeSelect,,,resources/domains/Keyword.xml:11
-help:Message.company,,,resources/domains/Message.xml:10
-help:Partner.bankDetails,,,resources/domains/Partner.xml:54
-help:Partner.companySet,,,resources/domains/Partner.xml:49
-help:Partner.currency,,,resources/domains/Partner.xml:55
-help:Partner.customerTypeSelect,,,resources/domains/Partner.xml:23
-help:Partner.deliveryAddress,,,resources/domains/Partner.xml:31
-help:Partner.fiscalPosition,,,resources/domains/Partner.xml:75
-help:Partner.languageSelect,,,resources/domains/Partner.xml:28
-help:Partner.mainInvoicingAddress,,,resources/domains/Partner.xml:30
-help:Partner.mainPartner,,,resources/domains/Partner.xml:36
-help:Partner.registrationCode,,,resources/domains/Partner.xml:70
-help:Partner.reportsTo,,,resources/domains/Partner.xml:65
-help:Partner.supplierTypeSelect,,,resources/domains/Partner.xml:24
-help:Partner.team,,,resources/domains/Partner.xml:64
-help:Partner.user,,,resources/domains/Partner.xml:63
-help:PaymentCondition.daySelect,,,resources/domains/PaymentCondition.xml:15
-help:PaymentCondition.isFree,,,resources/domains/PaymentCondition.xml:16
-help:PaymentCondition.paymentTime,,,resources/domains/PaymentCondition.xml:14
-help:PaymentCondition.typeSelect,,,resources/domains/PaymentCondition.xml:13
-help:PaymentMode.inOutSelect,,,resources/domains/PaymentMode.xml:14
-help:PaymentMode.typeSelect,,,resources/domains/PaymentMode.xml:13
-help:Period.statusSelect,,,resources/domains/Period.xml:16
-help:Period.year,,,resources/domains/Period.xml:12
-help:PriceList.basedOnSelect,,,resources/domains/PriceList.xml:17
-help:PriceList.generalDiscount,,,resources/domains/PriceList.xml:14
-help:PriceList.hideDiscount,,,resources/domains/PriceList.xml:13
-help:PriceList.isActive,,,resources/domains/PriceList.xml:10
-help:PriceList.typeSelect,,,resources/domains/PriceList.xml:16
-help:PriceListLine.amount,,,resources/domains/PriceListLine.xml:15
-help:PriceListLine.amountTypeSelect,,,resources/domains/PriceListLine.xml:14
-help:PriceListLine.minQty,,,resources/domains/PriceListLine.xml:16
-help:PriceListLine.product,,,resources/domains/PriceListLine.xml:11
-help:PriceListLine.productCategory,,,resources/domains/PriceListLine.xml:12
-help:PriceListLine.typeSelect,,,resources/domains/PriceListLine.xml:13
-help:PrintingSettings.defaultMailBirtTemplate,Default Mail Birt Template,,resources/domains/PrintingSettings.xml:14
-help:PrintingSettings.pdfFooter,,,resources/domains/PrintingSettings.xml:13
-help:PrintingSettings.pdfHeader,,,resources/domains/PrintingSettings.xml:12
-help:Product.accountManagementList,"Paramétrage des règles comptables à l'achat et à la vente lors que la génération des factures (comptes de produit, de charge et de TVA).",,resources/domains/Product.xml:55
-help:Product.applicationTypeSelect,,,resources/domains/Product.xml:21
-help:Product.costPrice,,,resources/domains/Product.xml:33
-help:Product.defaultSupplierPartner,,,resources/domains/Product.xml:53
-help:Product.endDate,,,resources/domains/Product.xml:38
-help:Product.isRawMaterial,,,resources/domains/Product.xml:26
-help:Product.managPriceCoef,,,resources/domains/Product.xml:35
-help:Product.parentProduct,Used for variants,,resources/domains/Product.xml:50
-help:Product.procurementMethodSelect,,,resources/domains/Product.xml:25
-help:Product.productCategory,,,resources/domains/Product.xml:17
-help:Product.productFamily,,,resources/domains/Product.xml:18
-help:Product.productTypeSelect,,,resources/domains/Product.xml:24
-help:Product.saleSupplySelect,,,resources/domains/Product.xml:22
-help:Product.startDate,,,resources/domains/Product.xml:37
-help:Product.supplierCatalogList,,,resources/domains/Product.xml:40
-help:Product.trackingNumberConfiguration,,,resources/domains/Product.xml:42
-help:Product.unit,,,resources/domains/Product.xml:19
-help:ProductCategory.parentProductCategory,,,resources/domains/ProductCategory.xml:11
-help:ProductCategory.productFamily,,,resources/domains/ProductCategory.xml:12
-help:ProductFamily.accountManagementList,,,resources/domains/ProductFamily.xml:11
-help:ProductVariant.productVariantAttr1,,,resources/domains/ProductVariant.xml:11
-help:ProductVariant.productVariantValue1,,,resources/domains/ProductVariant.xml:15
-help:ProductVariant.usedForStock,,,resources/domains/ProductVariant.xml:20
-help:ProductVariantAttr.productVariantValueList,,,resources/domains/ProductVariantAttr.xml:12
-help:ProductVariantValue.applicationPriceSelect,,,resources/domains/ProductVariantValue.xml:13
-help:Sequence.padding,,,resources/domains/Sequence.xml:16
-help:Sequence.prefixe,,,resources/domains/Sequence.xml:14
-help:Sequence.suffixe,,,resources/domains/Sequence.xml:15
-help:Sequence.toBeAdded,,,resources/domains/Sequence.xml:17
-help:Sequence.yearlyResetOk,,,resources/domains/Sequence.xml:19
-help:SupplierCatalog.minQty,,,resources/domains/SupplierCatalog.xml:18
-help:SupplierCatalog.price,,,resources/domains/SupplierCatalog.xml:14
-help:TaxEquiv.toTax,,,resources/domains/TaxEquiv.xml:12
-help:TaxLine.value,,,resources/domains/TaxLine.xml:14
-help:Template.birtTemplate,,,resources/domains/Template.xml:11
-help:UnitConversion.coef,,,resources/domains/UnitConversion.xml:13
-help:User.activeCompany,,,resources/domains/User.xml:12
-help:User.activeTeam,,,resources/domains/User.xml:16
-help:User.partner,,,resources/domains/User.xml:13
-help:User.today,,,resources/domains/User.xml:14
-help:Year.periodList,,,resources/domains/Year.xml:15
-help:Year.statusSelect,,,resources/domains/Year.xml:17
-help:Year.typeSelect,,,resources/domains/Year.xml:19
-month,mois,,resources/views/Scheduler.xml:42
-v1,,,resources/views/Selects.xml:564
-v2,,,resources/views/Selects.xml:565
-v3,,,resources/views/Selects.xml:566
-v4,,,resources/views/Selects.xml:567
-v5,,,resources/views/Selects.xml:568
-week(s),semaine(s),,resources/views/Scheduler.xml:26
-year(s),année(s),,resources/views/Scheduler.xml:46
+"Yes","Oui",,"resources/views/Selects.xml:170
+resources/views/Selects.xml:175
+resources/views/Selects.xml:185"
+"Yes (Approved)","Oui (Appouvé)",,"resources/views/Selects.xml:176"
+"You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?","Vous êtes sur le point de surcharger un taux de change existant. Ce taux est peut-être déjà utilisé par le système. Souhaitez-vous continuer ? ",,"resources/views/CurrencyConversionLine.xml:110"
+"Zip","Code postal",,"resources/domains/PickListEntry.xml:15"
+"Zip On Right ?","Code postal à droite ? ",,"resources/domains/Commune.xml:18"
+"Zip code","Code postal",,"resources/domains/Commune.xml:17"
+"Zip/City","Code Postal - Commune",,"resources/domains/Address.xml:15"
+"\nAnomalies générées :",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:113"
+"\nErreur : Aucun chemin d'export de paramétré",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:76"
+"\nErreur : Aucun code de paramétré",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:77"
+"\nTotal :",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:111"
+"\t* %s anomalie(s)",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:94"
+"\t* %s objet(s) en alarme(s)\n",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:93"
+"cost price","Prix de revient",,"resources/views/Selects.xml:555"
+"day(s)","jour(s)",,"resources/views/Scheduler.xml:22"
+"e.g. Building A, Entry 2, 2nd Floor, Door 2E","ex. : Bâtiment A, Entrée 2, 2ème étage, Porte 2E",,"resources/views/Address.xml:19"
+"e.g. Financial department, CEO","ex. : Service comptable, PDG",,"resources/views/Address.xml:18"
+"e.g. POB 254","ex. : BP254, CS3456",,"resources/views/Address.xml:21"
+"help:BankDetails.bankAddress","Adresse de la banque",,"resources/domains/BankDetails.xml:13"
+"help:BankDetails.bankCode","Code de la banque où le titulaire a son compte enregistré.",,"resources/domains/BankDetails.xml:16"
+"help:BankDetails.bbanKey","Clé RIB",,"resources/domains/BankDetails.xml:19"
+"help:BankDetails.bic",,,"resources/domains/BankDetails.xml:14"
+"help:BankDetails.countryCode","En référence au code pays tel qu'il est défini sur les 2 premiers caractères de l'IBAN (exemple : EN, FR...)",,"resources/domains/BankDetails.xml:20"
+"help:BankDetails.iban","Identifiant international de compte bancaire. Le format de cet identifiant étant normé, un contrôle de saisie est effectué sur ce champ.",,"resources/domains/BankDetails.xml:15"
+"help:BankDetails.ownerName","Nom du titulaire du compte",,"resources/domains/BankDetails.xml:12"
+"help:BankDetails.sortCode","Code de l'agence où le titulaire a son compte enregistré.",,"resources/domains/BankDetails.xml:17"
+"help:Bic.bankCode","Code banque",,"resources/domains/Bic.xml:11"
+"help:Bic.bankName","Nom banque",,"resources/domains/Bic.xml:12"
+"help:Bic.countryCode","This code is expressed with 2 caracters (e.g. : EN, FR …)",,"resources/domains/Bic.xml:14"
+"help:Bic.sortCode","Etablissement",,"resources/domains/Bic.xml:13"
+"help:BirtTemplate.format","Format de sortie du modèle Birt",,"resources/domains/BirtTemplate.xml:13"
+"help:BirtTemplate.templateLink",,,"resources/domains/BirtTemplate.xml:12"
+"help:Company.administration",,,"resources/domains/Company.xml:16"
+"help:Company.currency",,,"resources/domains/Company.xml:21"
+"help:Company.defaultBankDetails",,,"resources/domains/Company.xml:24"
+"help:Company.logoPath","Chemin local permettant de récupérer le logo de la société.",,"resources/domains/Company.xml:19"
+"help:Company.parent",,,"resources/domains/Company.xml:15"
+"help:Company.printingSettings",,,"resources/domains/Company.xml:27"
+"help:Country.code",,,"resources/domains/Country.xml:11"
+"help:Currency.code",,,"resources/domains/Currency.xml:11"
+"help:CurrencyConversionLine.variations",,,"resources/domains/CurrencyConversionLine.xml:17"
+"help:Department.code",,,"resources/domains/Department.xml:12"
+"help:General.currencyConversionLineList",,,"resources/domains/General.xml:29"
+"help:General.currencyWsURL",,,"resources/domains/General.xml:27"
+"help:General.defaultPartnerLanguage",,,"resources/domains/General.xml:13"
+"help:General.defaultProjectUnit",,,"resources/domains/General.xml:12"
+"help:General.hasQasValidation","Activation de la fonctionnalité de validation par QAS des adresses postales.",,"resources/domains/General.xml:31"
+"help:General.logOk",,,"resources/domains/General.xml:11"
+"help:General.qasWsdlUrl","URL pour interroger la webservice QAS permettant de vérifier l'existence d'une adresse.",,"resources/domains/General.xml:21"
+"help:General.today","Permet de forcer la date du jour sur l'application. Si vide, la date utilisée est la date système.",,"resources/domains/General.xml:10"
+"help:IndicatorGeneratorGrouping.path","Path to the export folder where the indicator report values will be exported.",,"resources/domains/IndicatorGeneratorGrouping.xml:13"
+"help:Keyword.typeSelect",,,"resources/domains/Keyword.xml:11"
+"help:Message.company",,,"resources/domains/Message.xml:10"
+"help:Partner.bankDetails",,,"resources/domains/Partner.xml:54"
+"help:Partner.companySet",,,"resources/domains/Partner.xml:49"
+"help:Partner.currency",,,"resources/domains/Partner.xml:55"
+"help:Partner.customerTypeSelect",,,"resources/domains/Partner.xml:23"
+"help:Partner.deliveryAddress",,,"resources/domains/Partner.xml:31"
+"help:Partner.fiscalPosition",,,"resources/domains/Partner.xml:74"
+"help:Partner.languageSelect",,,"resources/domains/Partner.xml:28"
+"help:Partner.mainInvoicingAddress",,,"resources/domains/Partner.xml:30"
+"help:Partner.mainPartner",,,"resources/domains/Partner.xml:36"
+"help:Partner.registrationCode",,,"resources/domains/Partner.xml:69"
+"help:Partner.reportsTo",,,"resources/domains/Partner.xml:64"
+"help:Partner.supplierTypeSelect",,,"resources/domains/Partner.xml:24"
+"help:Partner.team",,,"resources/domains/Partner.xml:63"
+"help:Partner.user",,,"resources/domains/Partner.xml:62"
+"help:PaymentCondition.daySelect",,,"resources/domains/PaymentCondition.xml:15"
+"help:PaymentCondition.isFree",,,"resources/domains/PaymentCondition.xml:16"
+"help:PaymentCondition.paymentTime",,,"resources/domains/PaymentCondition.xml:14"
+"help:PaymentCondition.typeSelect",,,"resources/domains/PaymentCondition.xml:13"
+"help:PaymentMode.inOutSelect",,,"resources/domains/PaymentMode.xml:14"
+"help:PaymentMode.typeSelect",,,"resources/domains/PaymentMode.xml:13"
+"help:Period.statusSelect",,,"resources/domains/Period.xml:16"
+"help:Period.year",,,"resources/domains/Period.xml:12"
+"help:PriceList.basedOnSelect",,,"resources/domains/PriceList.xml:20"
+"help:PriceList.generalDiscount",,,"resources/domains/PriceList.xml:17"
+"help:PriceList.isActive",,,"resources/domains/PriceList.xml:13"
+"help:PriceList.isDisplayed",,,"resources/domains/PriceList.xml:16"
+"help:PriceList.partner",,,"resources/domains/PriceList.xml:9"
+"help:PriceList.typeSelect",,,"resources/domains/PriceList.xml:19"
+"help:PriceListLine.amount",,,"resources/domains/PriceListLine.xml:14"
+"help:PriceListLine.amountTypeSelect",,,"resources/domains/PriceListLine.xml:13"
+"help:PriceListLine.minQty",,,"resources/domains/PriceListLine.xml:15"
+"help:PriceListLine.product",,,"resources/domains/PriceListLine.xml:10"
+"help:PriceListLine.productCategory",,,"resources/domains/PriceListLine.xml:11"
+"help:PriceListLine.typeSelect",,,"resources/domains/PriceListLine.xml:12"
+"help:PrintingSettings.defaultMailBirtTemplate","Default Mail Birt Template",,"resources/domains/PrintingSettings.xml:14"
+"help:PrintingSettings.pdfFooter",,,"resources/domains/PrintingSettings.xml:13"
+"help:PrintingSettings.pdfHeader",,,"resources/domains/PrintingSettings.xml:12"
+"help:Product.accountManagementList","Paramétrage des règles comptables à l'achat et à la vente lors que la génération des factures (comptes de produit, de charge et de TVA).",,"resources/domains/Product.xml:55"
+"help:Product.applicationTypeSelect",,,"resources/domains/Product.xml:21"
+"help:Product.costPrice",,,"resources/domains/Product.xml:33"
+"help:Product.defaultSupplierPartner",,,"resources/domains/Product.xml:53"
+"help:Product.endDate",,,"resources/domains/Product.xml:38"
+"help:Product.isRawMaterial",,,"resources/domains/Product.xml:26"
+"help:Product.managPriceCoef",,,"resources/domains/Product.xml:35"
+"help:Product.parentProduct","Used for variants",,"resources/domains/Product.xml:50"
+"help:Product.procurementMethodSelect",,,"resources/domains/Product.xml:25"
+"help:Product.productCategory",,,"resources/domains/Product.xml:17"
+"help:Product.productFamily",,,"resources/domains/Product.xml:18"
+"help:Product.productTypeSelect",,,"resources/domains/Product.xml:24"
+"help:Product.saleSupplySelect",,,"resources/domains/Product.xml:22"
+"help:Product.startDate",,,"resources/domains/Product.xml:37"
+"help:Product.supplierCatalogList",,,"resources/domains/Product.xml:40"
+"help:Product.trackingNumberConfiguration",,,"resources/domains/Product.xml:42"
+"help:Product.unit",,,"resources/domains/Product.xml:19"
+"help:ProductCategory.parentProductCategory",,,"resources/domains/ProductCategory.xml:11"
+"help:ProductCategory.productFamily",,,"resources/domains/ProductCategory.xml:12"
+"help:ProductFamily.accountManagementList",,,"resources/domains/ProductFamily.xml:11"
+"help:ProductVariant.productVariantAttr1",,,"resources/domains/ProductVariant.xml:11"
+"help:ProductVariant.productVariantValue1",,,"resources/domains/ProductVariant.xml:15"
+"help:ProductVariant.usedForStock",,,"resources/domains/ProductVariant.xml:20"
+"help:ProductVariantAttr.productVariantValueList",,,"resources/domains/ProductVariantAttr.xml:12"
+"help:ProductVariantValue.applicationPriceSelect",,,"resources/domains/ProductVariantValue.xml:13"
+"help:Sequence.monthlyResetOk",,,"resources/domains/Sequence.xml:20"
+"help:Sequence.padding",,,"resources/domains/Sequence.xml:16"
+"help:Sequence.prefixe",,,"resources/domains/Sequence.xml:14"
+"help:Sequence.resetDate",,,"resources/domains/Sequence.xml:21"
+"help:Sequence.suffixe",,,"resources/domains/Sequence.xml:15"
+"help:Sequence.toBeAdded",,,"resources/domains/Sequence.xml:17"
+"help:Sequence.yearlyResetOk",,,"resources/domains/Sequence.xml:19"
+"help:SupplierCatalog.minQty",,,"resources/domains/SupplierCatalog.xml:18"
+"help:SupplierCatalog.price",,,"resources/domains/SupplierCatalog.xml:14"
+"help:TaxEquiv.toTax",,,"resources/domains/TaxEquiv.xml:12"
+"help:TaxLine.value",,,"resources/domains/TaxLine.xml:14"
+"help:Template.birtTemplate",,,"resources/domains/Template.xml:11"
+"help:UnitConversion.coef",,,"resources/domains/UnitConversion.xml:13"
+"help:User.activeCompany",,,"resources/domains/User.xml:12"
+"help:User.activeTeam",,,"resources/domains/User.xml:16"
+"help:User.partner",,,"resources/domains/User.xml:13"
+"help:User.today",,,"resources/domains/User.xml:14"
+"help:Year.periodList",,,"resources/domains/Year.xml:15"
+"help:Year.statusSelect",,,"resources/domains/Year.xml:17"
+"help:Year.typeSelect",,,"resources/domains/Year.xml:19"
+"month","mois",,"resources/views/Scheduler.xml:42"
+"v1",,,"resources/views/Selects.xml:560"
+"v2",,,"resources/views/Selects.xml:561"
+"v3",,,"resources/views/Selects.xml:562"
+"v4",,,"resources/views/Selects.xml:563"
+"v5",,,"resources/views/Selects.xml:564"
+"week(s)","semaine(s)",,"resources/views/Scheduler.xml:26"
+"year(s)","année(s)",,"resources/views/Scheduler.xml:46"

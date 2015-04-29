@@ -20,25 +20,33 @@ package com.axelor.apps.message.web;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MailAccountService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class MailAccountController {
+	
 	@Inject
 	MailAccountService mailAccountService;
+	
 	public void validateSmtpAccount(ActionRequest request,ActionResponse response){
-		MailAccount account=request.getContext().asType(MailAccount.class);
-		String validationError = mailAccountService.validateSmtpMailAccount(account);
-		if(validationError == null){
-			response.setValue("isValid",new Boolean(true));
-			response.setFlash(I18n.get(IExceptionMessage.MAIL_ACCOUNT_3));
-			response.setReadonly("loginPanel", true);
-			response.setReadonly("configPanel",true);
-		}else{
-			response.setFlash(I18n.get(IExceptionMessage.MAIL_ACCOUNT_4)+"<br/>"+I18n.get("Error")+":"+validationError);
-			response.setValue("isValid",new Boolean(false));
+		
+		MailAccount account = request.getContext().asType(MailAccount.class);
+		
+		try {
+			
+			mailAccountService.checkMailAccountConfiguration(account);
+
+			response.setValue("isValid", Boolean.TRUE );
+			response.setFlash( I18n.get(IExceptionMessage.MAIL_ACCOUNT_3) );
+			
+		} catch ( Exception e) {
+			
+			TraceBackService.trace(response, e);
+			response.setValue("isValid",Boolean.FALSE);
+			
 		}
 		
 	}

@@ -14,9 +14,11 @@
     <string name="prefixe" title="Prefix" help="true"/>
     <string name="suffixe" title="Suffix" help="true"/>
     <integer name="padding" title="Padding" required="true" help="true"/>
-    <integer name="toBeAdded" title="Increment" required="true" help="true"/>
-    <integer name="nextNum" title="Next N°" required="true"/>
+    <integer name="toBeAdded" title="Increment" required="true" help="true" min="1"/>
+    <integer name="nextNum" title="Next N°" required="true" min="1" default="1"/>
     <boolean name="yearlyResetOk" title="Yearly reset" help="true"/>
+    <boolean name="monthlyResetOk" title="Monthly reset" help="true"/>
+    <date name="resetDate" title="Reseted on" help="true"/>
     
 <!--     <unique-constraint columns="company,code"/> -->
     

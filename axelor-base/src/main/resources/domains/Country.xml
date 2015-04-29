@@ -13,15 +13,6 @@
     <string name="cog" title="COG"/>
     <string name="phonePrefix" title="Calling code"/>
     
-    <string name="fullName" namecolumn="true" search="code,name" title="Country">
-	    <![CDATA[
-	    	return code + '-' + name;
-	    ]]>
-    </string>
-    
   </entity>
 
-  <!--
-  A deplacer dans package Territory
-  -->
 </domain-models>

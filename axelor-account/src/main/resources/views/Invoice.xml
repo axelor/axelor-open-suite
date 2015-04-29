@@ -233,12 +233,10 @@
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
     	<field name="inTaxTotalRemaining" expr="eval: 0"/>
-        <field name="invoiceDate" expr="eval: __date__"/>
         <field name="currency" expr="eval:__repo__.of(User).find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect"/>
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
-        <field name="dueDate" expr="eval: __date__"/>
     </action-record>
     
     <action-record name="action-invoice-record-company-change" model="com.axelor.apps.account.db.Invoice">
@@ -258,10 +256,7 @@
     
     
     <action-record name="action-invoice-record-due-date" model="com.axelor.apps.account.db.Invoice">
-    	<field name="dueDate" expr="eval: invoiceDate.plusDays(paymentCondition?.paymentTime)" if="paymentCondition?.typeSelect == 1"/>
-    	<field name="dueDate" expr="eval: invoiceDate.dayOfMonth().withMaximumValue().plusDays(paymentCondition?.paymentTime)" if="paymentCondition?.typeSelect == 2"/>
-    	<field name="dueDate" expr="eval: invoiceDate.plusDays(paymentCondition?.paymentTime).dayOfMonth().withMaximumValue()" if="paymentCondition?.typeSelect == 3"/>
-    	<field name="dueDate" expr="eval: invoiceDate.plusDays(paymentCondition?.paymentTime).dayOfMonth().withMaximumValue().plusDays(paymentCondition?.daySelect)" if="paymentCondition?.typeSelect == 4"/>
+    	<field name="dueDate" expr="call: com.axelor.apps.account.service.invoice.InvoiceServiceImpl:getDueDate(paymentCondition,invoiceDate)" if="paymentCondition != null &amp;&amp; invoiceDate!=null"/>
     </action-record>
     
     <action-record name="action-invoice-record-draft" model="com.axelor.apps.account.db.Invoice">

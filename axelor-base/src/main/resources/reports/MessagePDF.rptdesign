@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140225-1404></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -16,30 +16,6 @@
             <property name="name">odaPassword</property>
             <property name="id">7</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">odaDriverClass</property>
-            <property name="id">7</property>
-        </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">7</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">7</property>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">7</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">7</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">7</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -142,101 +118,9 @@
                 </structure>
             </list-property>
             <list-property name="parameters"/>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">message_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">pdf_header</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">media_type_select</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">subject</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">content</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">pdf_footer</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">address_block</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">message_id</property>
-                    <property name="nativeName">message_id</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">pdf_header</property>
-                    <property name="nativeName">pdf_header</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">media_type_select</property>
-                    <property name="nativeName">media_type_select</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">subject</property>
-                    <property name="nativeName">subject</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">content</property>
-                    <property name="nativeName">content</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">pdf_footer</property>
-                    <property name="nativeName">pdf_footer</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">address_block</property>
-                    <property name="nativeName">address_block</property>
-                    <property name="dataType">string</property>
-                </structure>
-            </list-property>
+            <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[SELECT 
     baseCompany.logo_path AS logo_path,	
     self.id AS message_id,
@@ -251,7 +135,7 @@ FROM
 JOIN base_company AS baseCompany ON baseCompany.id=self.company
 JOIN base_printing_settings AS basePrintingSettings ON basePrintingSettings.id=baseCompany.id
 LEFT JOIN meta_select AS metaSelect ON metaSelect.name='message.media.type.select'
-LEFT JOIN meta_select_item AS metaSelectItem ON metaSelectItem.select_id=metaSelect.id AND cast(metaSelectItem.value as int)=self.media_type_select
+LEFT JOIN meta_select_item AS metaSelectItem ON metaSelectItem.select_id=metaSelect.id AND metaSelectItem.value= CAST(self.media_type_select AS CHAR)
 WHERE self.media_type_select in (1,2)
 --WHERE self.id=2]]></xml-property>
         </oda-data-set>

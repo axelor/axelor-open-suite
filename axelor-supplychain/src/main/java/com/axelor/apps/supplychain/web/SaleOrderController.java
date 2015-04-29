@@ -29,6 +29,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
 import com.axelor.db.JPA;
@@ -38,7 +39,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.beust.jcommander.internal.Maps;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class SaleOrderController {
@@ -93,6 +97,7 @@ public class SaleOrderController {
 		}
 	}
 
+
 	public void generatePurchaseOrdersFromSelectedSOLines(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -111,6 +116,7 @@ public class SaleOrderController {
 				response.setView(ActionView
 						.define(I18n.get("Purchase Order"))
 						.model(PurchaseOrder.class.getName())
+						.add("form", "purchase-order-form")
 						.param("forceEdit", "true")
 						.context("_showRecord", String.valueOf(purchaseOrder.getId()))
 						.map());
@@ -133,7 +139,7 @@ public class SaleOrderController {
 						saleOrderLineIdSelected.add(saleOrderLine.getId());
 					}
 				}
-				
+
 				if (saleOrderLineIdSelected.isEmpty()){
 					response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
 				}else{
@@ -155,4 +161,17 @@ public class SaleOrderController {
 		}
 	}
 
+
+	public void alertGenerateInvoice( ActionRequest request, ActionResponse response ) throws AxelorException  {
+
+    	Context context = request.getContext();
+    	SaleOrder saleOrder = context.asType(SaleOrder.class);
+
+		if ( !Beans.get(SaleOrderInvoiceService.class).checkIfSaleOrderIsCompletelyInvoiced(saleOrder) ){ return; };
+		
+		Map<String,String> alert = Maps.newHashMap();
+		alert.put("alert", I18n.get(IExceptionMessage.SO_INVOICE_5));
+		response.setData( Lists.newArrayList( alert ) );
+		
+	}
 }

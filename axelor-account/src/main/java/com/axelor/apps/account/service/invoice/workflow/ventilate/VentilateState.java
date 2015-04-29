@@ -23,17 +23,19 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -50,12 +52,13 @@ public class VentilateState extends WorkflowInvoice {
 		this.invoice = invoice;
 	}
 
+
 	@Override
 	public void process( ) throws AxelorException {
 
 		Preconditions.checkNotNull(invoice.getPartner());
-		setDueDate( );
 
+		setDate( );
 		setInvoiceId( );
 		updatePaymentSchedule( );
 		setMove( );
@@ -67,12 +70,15 @@ public class VentilateState extends WorkflowInvoice {
 		if ( invoice.getPaymentSchedule() != null ) { invoice.getPaymentSchedule().addInvoiceSetItem( invoice ); }
 
 	}
-
-	protected void setDueDate( ) throws AxelorException{
-
+	
+	protected void setDate( ) throws AxelorException{
+		
+		if(invoice.getInvoiceDate() == null)  {
+			invoice.setInvoiceDate(GeneralService.getTodayDate());
+		}
 		this.checkInvoiceDate();
-
-		if(!invoice.getPaymentCondition().getIsFree())  {
+		
+		if(!invoice.getPaymentCondition().getIsFree() || invoice.getDueDate() == null)  {
 			invoice.setDueDate(this.getDueDate());
 		}
 
@@ -91,37 +97,16 @@ public class VentilateState extends WorkflowInvoice {
 
 	protected LocalDate getDueDate()  {
 
-		PaymentCondition paymentCondition = invoice.getPaymentCondition();
-
-		switch (paymentCondition.getTypeSelect()) {
-		case PaymentConditionRepository.TYPE_NET:
-
-			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime());
-
-		case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
-
-			return invoice.getInvoiceDate().dayOfMonth().withMaximumValue().plusDays(paymentCondition.getPaymentTime());
-
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
-
-			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue();
-
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
-
-			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue().plusDays(paymentCondition.getDaySelect());
-
-		default:
-			return invoice.getInvoiceDate();
-		}
-
+		return InvoiceServiceImpl.getDueDate(invoice.getPaymentCondition(),invoice.getInvoiceDate());
+		
 	}
 
 	protected void setMove( ) throws AxelorException {
 
 		// Création de l'écriture comptable
 		Move move = moveService.createMove(invoice);
-
-		if (move != null)  {
+		
+		if (move != null && Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany()).getAutoReconcileOnInvoice())  {
 
 			moveService.createMoveUseExcessPaymentOrDue(invoice);
 

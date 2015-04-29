@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    
+    
+    <grid name="tax-line-grid" title="Tax Rates" orderBy="tax,-startDate" model="com.axelor.apps.account.db.TaxLine">
+    	<hilite color="danger" if="$moment(endDate).diff(todayDate,'days') &lt; 0"/>
+    	<hilite color="success" if="$moment(startDate).diff(todayDate,'days') &lt;= 0 &amp;&amp; ($moment(endDate).diff(todayDate,'days') &gt;= 0 || endDate == null)"/>
+    	<field name="tax"/>
+    	<field name="value"/>
+        <field name="startDate"/>
+        <field name="endDate"/>
+    </grid>
+    
+    <form name="tax-line-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine">
+        <panel >
+        	<field name="tax"/>
+	        <field name="value"/>
+	        <field name="startDate"/>
+	        <field name="endDate"/>
+        </panel>
+        
+    </form>
+    
+    <grid name="tax-line-tax-grid" title="Tax Rates" model="com.axelor.apps.account.db.TaxLine">
+        <field name="startDate"/>
+        <field name="endDate"/>
+        <field name="value"/>
+    </grid>
+    
+    <form name="tax-line-tax-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine" onNew="action-base-record-new-tax-line-tax">
+        <panel >
+	        <field name="value"/>
+	        <field name="startDate"/>
+	        <field name="endDate"/>
+        </panel>
+        
+    </form>
+    
+    <action-record name="action-base-record-new-tax-line-tax" model="com.axelor.apps.account.db.TaxLine">
+		<field name="tax" expr="eval: __parent__"/>
+	</action-record>
+    
+</object-views>
