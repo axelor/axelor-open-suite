@@ -20,7 +20,7 @@
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   	
   	<decimal name="discountAmount" title="Discount amount"/>
-  	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
+  	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
   	
   	<boolean name="isOrdered" title="Ordered ?"/>
   	  	

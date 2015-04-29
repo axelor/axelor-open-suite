@@ -36,8 +36,8 @@
 					<field name="taxLine.value"/>
 				</panel>
 				 <panel name="discount" title="Discount" colSpan="12">
-			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute"/>
-			        <field name="discountAmount" onChange="action-invoice-line-method-compute"/>
+			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title"/>
+			        <field name="discountAmount" onChange="action-invoice-line-method-compute" hideIf="discountTypeSelect == 3"/>
 			    </panel>
     		</panel>
     		<panel title="Notes">
@@ -101,5 +101,10 @@
 	<action-attrs name="action-invoice-line-attrs-hide-product-variant">
     	<attribute name="hidden" for="productVariant" expr="product?.productVariantConfiguration == null"/>
     </action-attrs>
+    
+    <action-attrs name="action-invoice-line-attrs-discountamount-title">
+		<attribute name="title" for="discountAmount" expr="Discount Rate" if="discountTypeSelect == 1"/>
+		<attribute name="title" for="discountAmount" expr="Discount Amount" if="discountTypeSelect == 2"/>
+	</action-attrs>
 	
 </object-views>

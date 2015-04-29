@@ -21,7 +21,7 @@
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     
     <decimal name="discountAmount" title="Discount amount"/>
-  	<integer name="discountTypeSelect" title="In % / fixed amount" selection="base.price.list.line.amount.type.select"/>
+  	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
     
     <string name="description" title="Description"/>
     <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
