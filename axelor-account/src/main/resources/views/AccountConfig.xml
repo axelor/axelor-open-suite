@@ -51,6 +51,10 @@
 					<field name="thresholdDistanceFromRegulation"/>
 					<field name="cashPositionVariationAccount" domain="self.company = :company"/>
 				</panel>
+				<panel title="Authorize auto reconcile" colSpan="12">
+					<field name="autoReconcileOnInvoice"/>
+					<field name="autoReconcileOnPayment"/>
+				</panel>
 				<panel title="Exports" colSpan="12">
 					<field name="exportPath"/>
 				</panel>

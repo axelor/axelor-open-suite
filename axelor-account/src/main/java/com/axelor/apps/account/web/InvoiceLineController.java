@@ -91,6 +91,8 @@ public class InvoiceLineController {
 				
 				response.setValue("taxLine", invoiceLineService.getTaxLine(invoice, invoiceLine, isPurchase));
 				response.setValue("productName", invoiceLine.getProduct().getName());
+				response.setValue("unit", invoiceLine.getProduct().getUnit());
+				response.setValue("invoiceLineType", invoiceLine.getInvoiceLineType());
 				
 				PriceList priceList = invoice.getPriceList();
 				if(priceList != null)  {
@@ -122,9 +124,11 @@ public class InvoiceLineController {
 		
 		response.setValue("taxLine", null);
 		response.setValue("productName", null);
+		response.setValue("unit", null);
 		response.setValue("discountAmount", null);
 		response.setValue("discountTypeSelect", null);
 		response.setValue("price", null);
+		response.setValue("invoiceLineType", null);
 		
 	}
 	

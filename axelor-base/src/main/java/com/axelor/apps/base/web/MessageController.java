@@ -27,12 +27,9 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.tool.net.URLService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -89,7 +86,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 		if(!messageIds.equals("")){
 			StringBuilder url = new StringBuilder();			
 			
-			User user = AuthUtils.getUser();
+//			User user = AuthUtils.getUser();
 //			Company company = message.getCompany();
 			
 			String language = "en";

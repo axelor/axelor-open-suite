@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.administration;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.persistence.internal.oxm.schema.model.All;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,53 +30,28 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class SequenceService extends SequenceRepository{
+public class SequenceService extends SequenceRepository {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Sequence.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(SequenceService.class); 
 
-	private LocalDate today;
-	
-	@Inject
-	private SequenceRepository sequenceRepo;
+	private LocalDate today, refDate;
 
 	@Inject
 	public SequenceService() {
 		
 		this.today = GeneralService.getTodayDate();
+		this.refDate = this.today;
 		
 	}
 	
-	public SequenceService(LocalDate today) {
-		
+	public SequenceService(LocalDate today) { 
 		this.today = today;
-		
-	}	
-
-	/**
-	 * Mets à zéro les séquences qui sont configurées peut l'être (check box)
-	 * 
-	 * @param fromBatch
-	 */
-	@Transactional(rollbackOn = {Exception.class})
-	public void resetSequenceAll()  {
-
-		for( Sequence seq : sequenceRepo.all().fetch() )  { 
-			if(seq.getYearlyResetOk())  { resetSequence(seq); }
-		}
-	
+		this.refDate = this.today; 
 	}
 	
-	/**
-	 * Mets à zéro une séquences 
-	 * 
-	 * @param fromBatch
-	 */
-	@Transactional(rollbackOn = {Exception.class})
-	public void resetSequence( Sequence seq )  {
-		
-			seq.setNextNum(1); 
-			sequenceRepo.save(seq);
-		
+	public SequenceService setRefDate( LocalDate refDate ){
+		this.refDate = refDate;
+		return this;
 	}
 	
 	/**
@@ -99,10 +75,10 @@ public class SequenceService extends SequenceRepository{
 		}	
 			
 		if (company == null)  {
-			return sequenceRepo.findByCode(code);
+			return findByCode(code);
 		}
 		else {
-			return sequenceRepo.all().filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
+			return all().filter("self.company = ?1 and self.code = ?2", company, code).fetchOne();
 		}
 	
 	}
@@ -130,7 +106,7 @@ public class SequenceService extends SequenceRepository{
 		
 		if(sequence == null)  {  return null;  }
 		
-		return this.getSequenceNumber(sequence, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
+		return this.getSequenceNumber(sequence);
 			
 	}
 	
@@ -151,15 +127,6 @@ public class SequenceService extends SequenceRepository{
 			
 	}
 	
-	
-	
-	public String getSequenceNumber(Sequence sequence)  {
-		
-		return this.getSequenceNumber(sequence, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
-		
-	}
-	
-	
 	/**
 	 * Fonction retournant une numéro de séquence depuis une séquence générique, et une date
 	 *  
@@ -171,32 +138,56 @@ public class SequenceService extends SequenceRepository{
 	 * @return
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String getSequenceNumber(Sequence seq, int todayYear, int todayMoy, int todayDom, int todayWoy)  {
+	public String getSequenceNumber( Sequence sequence )  {
+		
+		reset(sequence);
+		
+		int todayYear = today.getYearOfCentury(), 
+			todayMoy = today.getMonthOfYear(), 
+			todayDom = today.getDayOfMonth(), 
+			todayWoy = today.getWeekOfWeekyear();
+		
 		String seqPrefixe = "";
 		String seqSuffixe = "";
-		if (seq.getPrefixe() != null)  {
-			seqPrefixe = ((((seq.getPrefixe()
+		
+		if (sequence.getPrefixe() != null)  {
+			seqPrefixe = ((((sequence.getPrefixe()
 					.replaceAll("%Y",String.format("%s",todayYear)))
 					.replaceAll("%M",String.format("%s",todayMoy)))
 					.replaceAll("%D",String.format("%s",todayDom)))
 					.replaceAll("%WY",String.format("%s",todayWoy)));
 		}	
-		if (seq.getSuffixe() != null){
-			seqSuffixe = ((((seq.getSuffixe()
+		if (sequence.getSuffixe() != null){
+			seqSuffixe = ((((sequence.getSuffixe()
 					.replaceAll("%Y",String.format("%s",todayYear)))
 					.replaceAll("%M",String.format("%s",todayMoy)))
 					.replaceAll("%D",String.format("%s",todayDom)))
 					.replaceAll("%WY",String.format("%s",todayWoy)));
 		}
 		
-		String padLeft = StringUtils.leftPad(seq.getNextNum().toString(), seq.getPadding(), "0");
+		String padLeft = StringUtils.leftPad(sequence.getNextNum().toString(), sequence.getPadding(), "0");
 		
 		String nextSeq = seqPrefixe + padLeft + seqSuffixe;
 		
 		LOG.debug("nextSeq : : : : {}",nextSeq);	
 		
-		seq.setNextNum(seq.getNextNum() + seq.getToBeAdded());
-		sequenceRepo.save(seq);
+		sequence.setNextNum(sequence.getNextNum() + sequence.getToBeAdded());
+		save(sequence);
 		return nextSeq;
 	}
+	
+	private boolean reset( Sequence sequence ){
+		
+		if ( this.refDate == null || sequence.getResetDate() == null) { return false; }
+		if ( !sequence.getYearlyResetOk() && !sequence.getMonthlyResetOk() ){ return false; }
+		if ( !this.refDate.isAfter( sequence.getResetDate() ) ) { return false; }
+		if ( sequence.getYearlyResetOk() && !this.refDate.equals( this.refDate.monthOfYear().withMinimumValue().dayOfMonth().withMinimumValue() ) ) { return false; }
+		if ( sequence.getMonthlyResetOk() && !this.refDate.equals( this.refDate.dayOfMonth().withMinimumValue() ) ) { return false; }
+		
+		sequence.setResetDate( refDate );
+		sequence.setNextNum(1);
+		return true;
+		
+	}
+	
 }

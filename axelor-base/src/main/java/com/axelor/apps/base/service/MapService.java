@@ -121,23 +121,19 @@ public class MapService {
 		return restResponse;
 	}
 	
-	public HashMap<String,Object> getMapGoogle(String qString, BigDecimal latitude, BigDecimal longitude){
-		HashMap<String,Object> result = new HashMap<String,Object>();
+	public HashMap<String,Object> getMapGoogle(String qString){
 		try {
-			if(BigDecimal.ZERO.compareTo(latitude) == 0 || BigDecimal.ZERO.compareTo(longitude) == 0){
 				JSONObject googleResponse = geocodeGoogle(qString);
 				if(googleResponse != null){
-					latitude = new BigDecimal(googleResponse.get("lat").toString());
-					longitude = new BigDecimal(googleResponse.get("lng").toString());
+					HashMap<String,Object> result = new HashMap<String,Object>();
+					BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
+					BigDecimal longitude = new BigDecimal(googleResponse.get("lng").toString());
+					LOG.debug("URL:"+"map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
+					result.put("url","map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
+					result.put("latitude", latitude);
+					result.put("longitude",longitude);
+					return result;
 				}
-			}
-			if(BigDecimal.ZERO.compareTo(latitude) != 0 && BigDecimal.ZERO.compareTo(longitude) != 0){
-				LOG.debug("URL:"+"map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
-				result.put("url","map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
-				result.put("latitude", latitude);
-				result.put("longitude",longitude);
-				return result;
-			}
 			
 		}catch(Exception e){
 			TraceBackService.trace(e);
@@ -146,40 +142,40 @@ public class MapService {
 	}
 	
 	
-	public HashMap<String,Object> getMapOsm(String qString, BigDecimal latitude, BigDecimal longitude){
+	public HashMap<String,Object> getMapOsm(String qString){
 		HashMap<String,Object> result = new HashMap<String,Object>();
 		try {
-			if(BigDecimal.ZERO.compareTo(latitude) == 0 ||  BigDecimal.ZERO.compareTo(longitude) == 0 ){
-				RESTClient restClient = new RESTClient("http://nominatim.openstreetmap.org/");
-				Map<String,Object> mapQuery = new HashMap<String,Object>();
-				mapQuery.put("q", qString);
-				mapQuery.put("format", "xml");
-				mapQuery.put("polygon", true);
-				mapQuery.put("addressdetails", true);
-				Map<String,Object> mapHeaders = new HashMap<String,Object>();
-				mapHeaders.put("HTTP referrer", "axelor");
-				Map<String,Object> mapResponse = new HashMap<String,Object>();
-				mapResponse.put("path", "/search");
-				mapResponse.put("accept", ContentType.JSON);
-				mapResponse.put("query", mapQuery);
-				mapResponse.put("headers", mapHeaders);
-				mapResponse.put("connectTimeout", 5000);
-				mapResponse.put("readTimeout", 10000);
-				mapResponse.put("followRedirects", false);
-				mapResponse.put("useCaches", false);
-				mapResponse.put("sslTrustAllCerts", true);
-				Response restResponse = restClient.get(mapResponse);
-				GPathResult searchresults = new XmlSlurper().parseText(restResponse.getContentAsString());
-				Iterator<Node> iterator = searchresults.childNodes();
-				if(iterator.hasNext()){
-					Node node = iterator.next();
-					Map attributes = node.attributes();
-					if(attributes.containsKey("lat") && attributes.containsKey("lon")){
-						if(BigDecimal.ZERO.compareTo(latitude) == 0)
-							latitude = new BigDecimal(node.attributes().get("lat").toString());
-						if(BigDecimal.ZERO.compareTo(longitude) == 0)
-							longitude = new BigDecimal(node.attributes().get("lon").toString());
-					}
+			BigDecimal latitude = BigDecimal.ZERO;
+			BigDecimal longitude = BigDecimal.ZERO;
+			RESTClient restClient = new RESTClient("http://nominatim.openstreetmap.org/");
+			Map<String,Object> mapQuery = new HashMap<String,Object>();
+			mapQuery.put("q", qString);
+			mapQuery.put("format", "xml");
+			mapQuery.put("polygon", true);
+			mapQuery.put("addressdetails", true);
+			Map<String,Object> mapHeaders = new HashMap<String,Object>();
+			mapHeaders.put("HTTP referrer", "axelor");
+			Map<String,Object> mapResponse = new HashMap<String,Object>();
+			mapResponse.put("path", "/search");
+			mapResponse.put("accept", ContentType.JSON);
+			mapResponse.put("query", mapQuery);
+			mapResponse.put("headers", mapHeaders);
+			mapResponse.put("connectTimeout", 5000);
+			mapResponse.put("readTimeout", 10000);
+			mapResponse.put("followRedirects", false);
+			mapResponse.put("useCaches", false);
+			mapResponse.put("sslTrustAllCerts", true);
+			Response restResponse = restClient.get(mapResponse);
+			GPathResult searchresults = new XmlSlurper().parseText(restResponse.getContentAsString());
+			Iterator<Node> iterator = searchresults.childNodes();
+			if(iterator.hasNext()){
+				Node node = iterator.next();
+				Map attributes = node.attributes();
+				if(attributes.containsKey("lat") && attributes.containsKey("lon")){
+					if(BigDecimal.ZERO.compareTo(latitude) == 0)
+						latitude = new BigDecimal(node.attributes().get("lat").toString());
+					if(BigDecimal.ZERO.compareTo(longitude) == 0)
+						longitude = new BigDecimal(node.attributes().get("lon").toString());
 				}
 			}
 			if(BigDecimal.ZERO.compareTo(latitude) != 0 && BigDecimal.ZERO.compareTo(longitude) != 0){
@@ -195,12 +191,12 @@ public class MapService {
 		return null;
 	}
 	
-	public HashMap<String,Object> getMap(String qString, BigDecimal latitude, BigDecimal longitude){
+	public HashMap<String,Object> getMap(String qString){
 		LOG.debug("qString = {}", qString);
 		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) 
-			return getMapGoogle(qString,latitude,longitude);
+			return getMapGoogle(qString);
 		else
-			return getMapOsm(qString,latitude,longitude);
+			return getMapOsm(qString);
 	}
 	
 	public HashMap<String,Object> getDirectionMapGoogle(String dString, BigDecimal dLat, BigDecimal dLon, String aString, BigDecimal aLat, BigDecimal aLon){
@@ -258,22 +254,13 @@ public class MapService {
 	}
 	
 	public String makeAddressString(Address address, ObjectNode objectNode) {
-
-		BigDecimal latit = address.getLatit();
-		BigDecimal longit = address.getLongit();
 		
-		if (BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0) {
 			
-			String qString = address.getFullName();					
-				Map<String,Object> latlng =  this.getMapGoogle(qString, latit, longit);
-				latit = (BigDecimal) latlng.get("latitude");
-				longit = (BigDecimal) latlng.get("longitude");
-				address.setLatit(latit);
-				address.setLongit(longit);
-		}
+		String qString = address.getFullName();					
+		Map<String,Object> latlng =  this.getMapGoogle(qString);
+		objectNode.put("latit",(BigDecimal) latlng.get("latitude"));
+		objectNode.put("longit", (BigDecimal) latlng.get("longitude"));
 		
-		objectNode.put("latit", latit);
-		objectNode.put("longit", longit);
 		StringBuilder addressString = new StringBuilder();
 		
 		if (address.getAddressL2() != null) {
@@ -294,6 +281,7 @@ public class MapService {
 		if (address.getAddressL7Country() != null) {
 			addressString = addressString.append("</br>" + address.getAddressL7Country().getName());
 		}		
+		
 		return addressString.toString();
 	}
 }

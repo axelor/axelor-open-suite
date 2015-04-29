@@ -10,7 +10,6 @@
 	    <field name="qty"/>
 	    <field name="unit"/>
 	    <field name="price"/>
-	    <field name="taxLine.value"/>
 	    <field name="exTaxTotal"/>
 	</grid>
     
@@ -27,9 +26,8 @@
 	    <field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
 	    <field name="unit"/>
 	    <field name="price" onChange="action-sale-order-line-method-compute"/>
-	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 	    <field name="exTaxTotal" readonly="true"/>
-	    <field name="taxLine.value"/>
 	  </panel>
 	  <panel name="discount" title="Discount">
 	    <field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title"/>
@@ -51,9 +49,7 @@
 	    </panel>
 	    <panel title="Delivery">
 	      <field name="estimatedDelivDate"/>
-	      <!-- TODO: remove this comment if portlet works in panel
-	      <dashlet   action="action-sale-order-line-view-stock-move-line"/>
-	      -->
+	      <panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12"/>
 	    </panel>
 	    <panel-related title="SO lines" field="saleOrderSubLineList"/>    
 	    <panel title="Invoicing follow-up" if-module="axelor-supplychain">

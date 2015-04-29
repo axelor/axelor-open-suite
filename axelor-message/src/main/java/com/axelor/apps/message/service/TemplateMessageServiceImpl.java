@@ -17,185 +17,185 @@
  */
 package com.axelor.apps.message.service;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
+import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
+import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaAttachment;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.tool.template.TemplateMaker;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 public class TemplateMessageServiceImpl extends TemplateRepository implements TemplateMessageService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TemplateMessageServiceImpl.class); 
+	private static final String RECIPIENT_SEPARATOR = ";|,";
+	private static final char TEMPLATE_DELIMITER = '$';
+	
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	@Inject
-	private MessageService messageService;
-	
-	@Inject
-	private MailAccountService mailAccountService;
-	
 	protected TemplateMaker maker;
 	
-	@Inject
+	private MessageService messageService;
+	
 	private EmailAddressRepository emailAddressRepo;
-	
-	
-	
-	public Message generateMessage(Object object, long objectId, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException  {
 
-		return this.generateMessage(
-				object, 
-				objectId, 
-				object.getClass().getCanonicalName(), 
-				object.getClass().getSimpleName(), 
-				template);
+	@Inject
+	public TemplateMessageServiceImpl( MessageService messageService, EmailAddressRepository emailAddressRepo ){
+		this.messageService = messageService;
+		this.emailAddressRepo = emailAddressRepo;
+	}
+
+	@Override
+	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
+		
+		Class<?> klass = model.getClass();
+		if ( model instanceof HibernateProxy ) { klass = ( (HibernateProxy) model ).getHibernateLazyInitializer().getPersistentClass(); }
+		return generateMessage( model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template);
 		
 	}
 	
-	
-	public Message generateMessage(Object object, long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException  {
+	@Override
+	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		LOG.debug("model : "+model);
-		LOG.debug("tag : "+tag);
-		LOG.debug("object id : "+objectId);
-		LOG.debug("object : "+object);
+		if ( !model.equals( template.getMetaModel().getFullName() ) ){
+			throw new AxelorException( I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3 ), IException.INCONSISTENCY, template.getMetaModel().getFullName() );
+		}
 		
-		this.initMaker(objectId, model, tag);
+		log.debug("model : {}", model);
+		log.debug("tag : {}", tag);
+		log.debug("object id : {}", objectId);
+		log.debug("template : {}", template);
 		
-		String content = "";
-		String subject = "";
-		String toRecipients = "";
-		String ccRecipients = "";
-		String bccRecipients = "";
-		String addressBlock= "";
+		initMaker(objectId, model, tag);
+		
+		String content = "", subject = "", from= "", replyToRecipients = "", toRecipients = "", ccRecipients = "", bccRecipients = "", addressBlock= "";
 		int mediaTypeSelect;
 		
-		if(template.getContent() != null)  {
+		if ( !Strings.isNullOrEmpty( template.getContent() ) )  {
 			//Set template
-			this.maker.setTemplate(template.getContent());
+			maker.setTemplate(template.getContent());
+			content = maker.make();
+		}
+		
+		if( !Strings.isNullOrEmpty( template.getAddressBlock() ) )  {
+			maker.setTemplate(template.getAddressBlock());
 			//Make it
-			content = this.maker.make();
+			addressBlock = maker.make();
 		}
 		
-		
-		if(template.getAddressBlock() != null)  {
-			this.maker.setTemplate(template.getAddressBlock());
-			//Make it
-			addressBlock = this.maker.make();
+		if ( !Strings.isNullOrEmpty( template.getSubject() ) )  {
+			maker.setTemplate(template.getSubject());
+			subject = maker.make();
+			log.debug( "Subject :::", subject );
 		}
 		
-		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
-		content += "<p></p><p></p>" + mailAccountService.getSignature(mailAccount);
-		
-		if(mailAccount != null){
-			mailAccount = mailAccountService.find(mailAccount.getId());
+		if( !Strings.isNullOrEmpty( template.getFromAdress() ) )  {
+			maker.setTemplate(template.getFromAdress());
+			from = maker.make();
+			log.debug( "From :::", from );
 		}
 		
-		if(template.getSubject() != null)  {
-			this.maker.setTemplate(template.getSubject());
-			subject = this.maker.make();
+		if( !Strings.isNullOrEmpty( template.getReplyToRecipients() ) )  {
+			maker.setTemplate(template.getReplyToRecipients());
+			replyToRecipients = maker.make();
+			log.debug( "Reply to :::", replyToRecipients );
 		}
 		
 		if(template.getToRecipients() != null)  {
-			this.maker.setTemplate(template.getToRecipients());
-			toRecipients = this.maker.make();
+			maker.setTemplate(template.getToRecipients());
+			toRecipients = maker.make();
+			log.debug( "To :::", toRecipients );
 		}
 		
 		if(template.getCcRecipients() != null)  {
-			this.maker.setTemplate(template.getCcRecipients());
-			ccRecipients = this.maker.make();
+			maker.setTemplate(template.getCcRecipients());
+			ccRecipients = maker.make();
+			log.debug( "CC :::", ccRecipients );
 		}
 		
 		if(template.getBccRecipients() != null)  {
-			this.maker.setTemplate(template.getBccRecipients());
-			bccRecipients = this.maker.make();
+			maker.setTemplate(template.getBccRecipients());
+			bccRecipients = maker.make();
+			log.debug( "BCC :::", bccRecipients );
 		}
 		
-		mediaTypeSelect=template.getMediaTypeSelect();
+		mediaTypeSelect = template.getMediaTypeSelect();
+		log.debug( "Media :::", mediaTypeSelect );
+		log.debug( "Content :::", content );
 		
-		String filePath = this.getFilePath(template);
-		
-		JPA.clear();
-		Message message = messageService.createMessage(
-				model, 
-				new Long(objectId).intValue(), 
-				subject, 
-				content, 
-				this.getEmailAddress(toRecipients),
-				this.getEmailAddress(ccRecipients),
-				this.getEmailAddress(bccRecipients),
-				mailAccount,
-				filePath,
-				addressBlock,
-				mediaTypeSelect
-				);
-		
-		return message;
-		
+		return messageService.createMessage( model, Long.valueOf(objectId).intValue(), subject,  content, getEmailAddress(from), getEmailAddresses(replyToRecipients),
+				getEmailAddresses(toRecipients), getEmailAddresses(ccRecipients), getEmailAddresses(bccRecipients),
+				getMetaFiles(template), addressBlock, mediaTypeSelect );		
 	}
 	
-	protected String getFilePath(Template template)  throws AxelorException{
+	public Set<MetaFile> getMetaFiles( Template template ) throws AxelorException, IOException {
+		
+		List<MetaAttachment> metaAttachments = Query.of( MetaAttachment.class ).filter( "self.objectId = ?1 AND self.objectName = ?2", template.getId(), Template.class.getName() ).fetch();
+		Set<MetaFile> metaFiles = Sets.newHashSet();
+		for ( MetaAttachment metaAttachment: metaAttachments ){ metaFiles.add( metaAttachment.getMetaFile() ); }
+		
+		log.debug("Metafile to attach: {}", metaFiles);
+		return metaFiles;
 
-		String filePath = null;
-		if(filePath == null)  {
-			filePath = template.getFilePath();
-		}
-		
-		return filePath;
-		
 	}
 	
 	
-	public TemplateMaker initMaker(long objectId, String model, String tag) throws InstantiationException, IllegalAccessException, ClassNotFoundException  {
+	@SuppressWarnings("unchecked")
+	public TemplateMaker initMaker( long objectId, String model, String tag ) throws InstantiationException, IllegalAccessException, ClassNotFoundException  {
 		//Init the maker
-		this.maker = new TemplateMaker(new Locale("fr"), '$', '$');
+		this.maker = new TemplateMaker( Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 		
 		Class<? extends Model> myClass = (Class<? extends Model>) Class.forName( model );
-
-		//Set context
-		this.maker.setContext(JPA.find(myClass.newInstance().getClass(), objectId), tag);
+		maker.setContext( JPA.find( myClass, objectId), tag );
 		
-		return this.maker;
+		return maker;
 		
 	}
 	
-	public List<EmailAddress> getEmailAddress(String recipients)  {
+	protected List<EmailAddress> getEmailAddresses( String recipients ) {
+
+		List<EmailAddress> emailAddressList = Lists.newArrayList();
+		if ( Strings.isNullOrEmpty( recipients ) )  { return emailAddressList; }	
 		
-		List<EmailAddress> emailAddressList = Lists.newArrayList(); 
-		
-		if(recipients!=null && !recipients.isEmpty())  {
-			String[] toTab = recipients.split(";");
-			for(String s : toTab)  {
-				EmailAddress emailAddress = emailAddressRepo.findByAddress(s);
-				if(emailAddress == null)  {
-					Map<String, Object> values = new HashMap<String,Object>();
-					values.put("address", s);
-					emailAddress = emailAddressRepo.create(values);
-				}
-				emailAddressList.add(emailAddress);
-			}
-		}
-		
+		for ( String recipient : recipients.split(RECIPIENT_SEPARATOR) )  { emailAddressList.add( getEmailAddress( recipient ) ); }
 		return emailAddressList;
 	}
 	
 	
-	
+	protected EmailAddress getEmailAddress( String recipient )  {
+		
+		if ( Strings.isNullOrEmpty(recipient) ) { return null; }
+		
+		EmailAddress emailAddress = emailAddressRepo.findByAddress(recipient);
+		
+		if ( emailAddress == null )  {
+			Map<String, Object> values = new HashMap<String,Object>();
+			values.put("address", recipient);
+			emailAddress = emailAddressRepo.create(values);
+		}
+		
+		return emailAddress;
+	}
 }

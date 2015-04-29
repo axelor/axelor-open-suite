@@ -100,15 +100,9 @@ public class MapRest {
 				addressString.append(lead.getPrimaryCountry().getName());
 			}						 
 			
-			BigDecimal latit = BigDecimal.ZERO;
-			BigDecimal longit = BigDecimal.ZERO;				
 			String qString = addressString.toString().replaceAll("</br>", " ");					
-			Map<String,Object> latlng =  mapService.getMapGoogle(qString, latit, longit);
-			latit = (BigDecimal) latlng.get("latitude");
-			longit = (BigDecimal) latlng.get("longitude");	
+			Map<String,Object> latlng =  mapService.getMapGoogle(qString);
 			
-			objectNode.put("latit", latit);
-			objectNode.put("longit", longit);						
 			objectNode.put("address", addressString.toString());
 			
 			objectNode.put("pinColor", "yellow");

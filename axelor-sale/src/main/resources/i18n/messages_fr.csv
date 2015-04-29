@@ -125,19 +125,19 @@ resources/views/SaleOrder.xml:236
 resources/views/SaleOrder.xml:345
 resources/views/SaleOrder.xml:88
 resources/views/Selects.xml:10"
-Invoicing address,Adresse de facturation,,resources/domains/SaleOrder.xml:30
-Invoicing follow-up,Suivi Facturation,,resources/views/SaleOrderLine.xml:59
-Invoicing informations,Informations Facturation,,resources/views/SaleConfig.xml:14
-La facturation par expédition impose que l'ensemble des lignes de devis comporte des produits de service ou stockable avec un approvisionnement depuis le stock,,,java/com/axelor/apps/sale/exception/IExceptionMessage.java:32
-La société %s n'a pas de séquence de configurée pour les devis clients,,,java/com/axelor/apps/sale/exception/IExceptionMessage.java:37
-Label,Libellé,,resources/domains/SaleOrderSubLine.xml:14
-Last Year To Date,Année N-1 à Ajd,,resources/views/Charts.xml:164
 Make this order as template,Faire de ce devis un modèle,,resources/views/SaleOrder.xml:127
 Manage purchase order versions,,,resources/domains/General.xml:9
 Manage sale order versions,,,resources/domains/General.xml:8
-Marketing,Marketing,,"resources/views/SaleOrder.xml:212
 resources/views/SaleOrder.xml:85"
-Month,Mois,,"resources/views/Charts.xml:32
+"Invoicing address","Adresse de facturation",,"resources/domains/SaleOrder.xml:30"
+"Invoicing follow-up","Suivi Facturation",,"resources/views/SaleOrderLine.xml:53"
+"Invoicing informations","Informations Facturation",,"resources/views/SaleConfig.xml:14"
+"La facturation par expédition impose que l'ensemble des lignes de devis comporte des produits de service ou stockable avec un approvisionnement depuis le stock",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:32"
+"La société %s n'a pas de séquence de configurée pour les devis clients",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:37"
+"Label","Libellé",,"resources/domains/SaleOrderSubLine.xml:14"
+"Last Year To Date","Année N-1 à Ajd",,"resources/views/Charts.xml:164"
+"Marketing","Marketing",,"resources/views/SaleOrder.xml:76"
+"Month","Mois",,"resources/views/Charts.xml:32
 resources/views/Charts.xml:417
 resources/views/Charts.xml:465
 resources/views/Charts.xml:516
@@ -214,13 +214,13 @@ resources/domains/SaleOrderSubLine.xml:25"
 Qty,Qté,,"resources/domains/SaleOrderLine.xml:14
 resources/domains/SaleOrderSubLine.xml:17"
 Quarterly,Trimestriel,,resources/views/Selects.xml:29
-Quotes,Devis,,resources/views/Menu.xml:138
-Quotes & Orders,Devis & Commandes,,resources/views/Menu.xml:133
-Reference,Référence,,resources/domains/SaleOrder.xml:20
-SO Tax line,Ligne de TVA,,resources/views/SaleOrderLineTax.xml:14
-SO Tax lines,Les lignes de TVA,,resources/views/SaleOrderLineTax.xml:6
-SO line,Ligne de devis,,resources/views/SaleOrderLine.xml:18
-SO lines,Lignes de devis,,"resources/views/SaleOrderLine.xml:58
+"Quotes","Devis",,"resources/views/Menu.xml:79"
+"Quotes & Orders","Devis & Commandes",,"resources/views/Menu.xml:74"
+"Reference","Référence",,"resources/domains/SaleOrder.xml:20"
+"SO Tax line","Ligne de TVA",,"resources/views/SaleOrderLineTax.xml:14"
+"SO Tax lines","Les lignes de TVA",,"resources/views/SaleOrderLineTax.xml:6"
+"SO line","Ligne de devis",,"resources/views/SaleOrderLine.xml:18"
+"SO lines","Lignes de devis",,"resources/views/SaleOrderLine.xml:52
 resources/views/SaleOrderLine.xml:6"
 SO subline,Sous-ligne de devis/cmde,,resources/views/SaleOrderSubLine.xml:19
 SO sublines,Sous-lignes de devis,,resources/views/SaleOrderSubLine.xml:6
@@ -239,8 +239,37 @@ resources/views/SaleOrder.xml:36"
 Sale order information,Information à la commande,,resources/domains/Partner.xml:7
 Sale order lines,Lignes de devis,,"resources/domains/SaleOrder.xml:39
 resources/domains/SaleOrderSubLine.xml:10"
-Sale order sub-lines,Sous-ligne de devis,,resources/domains/SaleOrderLine.xml:32
-Sale orders,Devis/Cmdes Clients,,"resources/views/Menu.xml:68
+"Sale order sub-lines","Sous-ligne de devis",,"resources/domains/SaleOrderLine.xml:31"
+"Sale orders","Devis/Cmdes Clients",,"resources/views/Menu.xml:23
+resources/views/Menu.xml:26
+resources/views/SaleOrder.xml:154
+resources/views/SaleOrder.xml:6"
+"SaleOrder.bankDetails","Banque",,"java/com/axelor/apps/sale/report/ITranslation.java:45"
+"SaleOrder.bankingInfo","Informations bancaires",,"java/com/axelor/apps/sale/report/ITranslation.java:43"
+"SaleOrder.base","Base",,"java/com/axelor/apps/sale/report/ITranslation.java:37"
+"SaleOrder.cheque","Chèque",,"java/com/axelor/apps/sale/report/ITranslation.java:44"
+"SaleOrder.customer","Client",,"java/com/axelor/apps/sale/report/ITranslation.java:29"
+"SaleOrder.customerRef","Réf. Client",,"java/com/axelor/apps/sale/report/ITranslation.java:27"
+"SaleOrder.date","Date du devis",,"java/com/axelor/apps/sale/report/ITranslation.java:23"
+"SaleOrder.deliveryAddress","Adresse de livraison",,"java/com/axelor/apps/sale/report/ITranslation.java:31"
+"SaleOrder.invoicingAddrs","Adresse de facturation",,"java/com/axelor/apps/sale/report/ITranslation.java:30"
+"SaleOrder.law","Dans le cadre de la loi N°92-1442 du décembre 1992 nous vous précisons que tout retard de paiement donnera lieu à une application d'une pénalité égale à une fois et demi le taux d'intérêt légal.",,"java/com/axelor/apps/sale/report/ITranslation.java:46"
+"SaleOrder.no","Devis N° ",,"java/com/axelor/apps/sale/report/ITranslation.java:22"
+"SaleOrder.note","Remarques",,"java/com/axelor/apps/sale/report/ITranslation.java:42"
+"SaleOrder.paymentCondition","Conditions de paiement",,"java/com/axelor/apps/sale/report/ITranslation.java:24"
+"SaleOrder.paymentMode","Mode de paiement",,"java/com/axelor/apps/sale/report/ITranslation.java:25"
+"SaleOrder.priceExclTax","Prix H.T.",,"java/com/axelor/apps/sale/report/ITranslation.java:36"
+"SaleOrder.productDescription","Produit/Description",,"java/com/axelor/apps/sale/report/ITranslation.java:32"
+"SaleOrder.qtyUnit","Qté / Unité",,"java/com/axelor/apps/sale/report/ITranslation.java:34"
+"SaleOrder.supplier","Fournisseur",,"java/com/axelor/apps/sale/report/ITranslation.java:28"
+"SaleOrder.supplyRef","Réf. Fournisseur",,"java/com/axelor/apps/sale/report/ITranslation.java:26"
+"SaleOrder.tax","T.V.A",,"java/com/axelor/apps/sale/report/ITranslation.java:33"
+"SaleOrder.taxAmount","Montant T.V.A.",,"java/com/axelor/apps/sale/report/ITranslation.java:38"
+"SaleOrder.totalExclTax","Total H.T.",,"java/com/axelor/apps/sale/report/ITranslation.java:39"
+"SaleOrder.totalInclTax","Total T.T.C.",,"java/com/axelor/apps/sale/report/ITranslation.java:41"
+"SaleOrder.totalTax","Total T.V.A.",,"java/com/axelor/apps/sale/report/ITranslation.java:40"
+"SaleOrder.unitPrice","Prix unitaire",,"java/com/axelor/apps/sale/report/ITranslation.java:35"
+"Sales","Vente",,"resources/views/Menu.xml:123
 resources/views/Menu.xml:71
 resources/views/SaleOrder.xml:286
 resources/views/SaleOrder.xml:6"
@@ -319,14 +348,6 @@ Send email,Envoyer email,,"resources/views/SaleOrder.xml:23
 resources/views/SaleOrder.xml:40"
 Seq.,Séq.,,"resources/domains/SaleOrderLine.xml:11
 resources/domains/SaleOrderSubLine.xml:12"
-Settings,Configurations,,resources/views/SaleOrderLine.xml:42
-Show Invoices,Les factures,,resources/views/SaleOrder.xml:135
-Source,,,resources/domains/SaleOrder.xml:53
-Specific settings,Configuration spécifique,,"resources/views/SaleOrder.xml:100
-resources/views/SaleOrder.xml:227"
-Status,Statut,,resources/domains/SaleOrder.xml:48
-Stock location,Emplacement de stock,,"resources/views/SaleOrder.xml:220
-resources/views/SaleOrder.xml:93"
 Subscription,Abonnement,,"resources/views/SaleOrder.xml:111
 resources/views/SaleOrder.xml:238
 resources/views/SaleOrderLine.xml:39"
@@ -336,6 +357,13 @@ Subscription end date,Date de fin d'abonnement,,resources/domains/SaleOrder.xml:
 Subscription start date,Date de début d'abonnement,,resources/domains/SaleOrder.xml:65
 Supplier,Fournisseur,,resources/domains/SaleOrderLine.xml:25
 Tax,Taxe,,"resources/domains/SaleOrderLine.xml:19
+"Settings","Configurations",,"resources/views/SaleOrderLine.xml:38"
+"Show Invoices","Les factures",,"resources/views/SaleOrder.xml:123"
+"Source",,,"resources/domains/SaleOrder.xml:53"
+"Specific settings","Configuration spécifique",,"resources/views/SaleOrder.xml:91"
+"Status","Statut",,"resources/domains/SaleOrder.xml:48"
+"Stock Moves",,,"resources/views/SaleOrderLine.xml:50"
+"Stock location","Emplacement de stock",,"resources/views/SaleOrder.xml:84"
 resources/domains/SaleOrderLineTax.xml:9
 resources/domains/SaleOrderSubLine.xml:19"
 Tax Lines,Lignes de taxe,,resources/domains/SaleOrder.xml:42

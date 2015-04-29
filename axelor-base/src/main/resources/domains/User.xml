@@ -16,20 +16,15 @@
     <many-to-one name="activeTeam" ref="com.axelor.apps.base.db.Team"  title="Active Team" help="true"/>
     
     
-    <string name="fullName" namecolumn="true" search="partner" title="Partner name">
+    <string name="fullName" namecolumn="true" search="partner,name" title="Partner name">
     	<![CDATA[
-    	if(partner != null && partner.getFirstName() != null && partner.getName() != null)  {
-    		return partner.getFirstName()+ " " + partner.getName();
+    	if(partner != null) {
+    		if(partner.getFirstName() != null){
+    			return partner.getFirstName()+partner.getName();
+    		}
+    		return partner.getName();
     	}
-    	else if(partner != null && partner.getFirstName() != null)  {
-	    	return partner.getFirstName();
-	    }
-    	else if(partner != null && partner.getName() != null)  {
-    	    return partner.getName();
-    	}
-    	else  {
-    		return "";
-    	}
+    	return name;
     	]]>
    	</string>
    	

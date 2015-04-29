@@ -17,112 +17,98 @@
  */
 package com.axelor.apps.base.service.message;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
-import javax.mail.MessagingException;
-
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageServiceImpl;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MessageServiceBaseImpl extends MessageServiceImpl {
-
-	private DateTime todayTime;
+	
+	private final Logger LOG = LoggerFactory.getLogger( getClass() );
 	
 	@Inject
 	private UserService userService;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(MessageServiceBaseImpl.class);
-	
 	@Inject
-	public MessageServiceBaseImpl(UserService userService) {
-
-		this.todayTime = GeneralService.getTodayDateTime();
+	public MessageServiceBaseImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService, UserService userService ) {
+		super(metaAttachmentRepository, mailAccountService);
 		this.userService = userService;
 	}
 	
 	
 	@Override
-	@Transactional
-	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
-			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath, String addressBlock, int mediaTypeSelect)  {
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
+			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect)  {
 		
-		Message message = save(super.createMessage(
-				content, 
-				null, 
-				model, 
-				id, 
-				null, 
-				0, 
-				todayTime.toLocalDateTime(), 
-				false, 
-				STATUS_DRAFT, 
-				subject, 
-				TYPE_SENT,
-				toEmailAddressList,
-				ccEmailAddressList,
-				bccEmailAddressList,
-				mailAccount,
-				linkPath,
-				addressBlock,
-				mediaTypeSelect));
+		Message message = super.createMessage( model, id, subject, content, fromEmailAddress, replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, metaFiles, addressBlock, mediaTypeSelect) ;
 		
 		message.setCompany(userService.getUserActiveCompany());
-		message.setSenderUser(userService.getUser());
-		return message;
 		
-	}	
+		return save(message);
+		
+	}
 	
 	@Override
 	public String printMessage(Message message){
+		
 		Company company = message.getCompany();
-		if(company == null)
-			return null;
+		if(company == null){ return null; }
+		
 		PrintingSettings printSettings = company.getPrintingSettings();
-		printSettings = company.getPrintingSettings();
-		if(printSettings == null || printSettings.getDefaultMailBirtTemplate() == null)
-			return null;
+		if ( printSettings == null || printSettings.getDefaultMailBirtTemplate() == null ) { return null; }
+		
 		BirtTemplate birtTemplate = printSettings.getDefaultMailBirtTemplate();
+		
 		LOG.debug("Default BirtTemplate : {}",birtTemplate);
-		TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
-		maker.setContext(JPA.find(message.getClass(), message.getId()), "Message");
-		try {
-			return Beans.get(TemplateMessageServiceBaseImpl.class).generatePdfFromBirtTemplate(maker, birtTemplate, "url");
-		} catch (AxelorException e) {
-			e.printStackTrace();
+		
+		TemplateMaker maker = new TemplateMaker( new Locale( AuthUtils.getUser().getLanguage() ), '$', '$');
+		maker.setContext( JPA.find( message.getClass(), message.getId() ), "Message" );
+		
+		ReportSettings reportSettings = new ReportSettings(birtTemplate.getTemplateLink(), birtTemplate.getFormat());
+		
+		for ( BirtTemplateParameter birtTemplateParameter : birtTemplate.getBirtTemplateParameterList() )  {
+			maker.setTemplate(birtTemplateParameter.getValue());
+			reportSettings.addParam(birtTemplateParameter.getName(), maker.make());
 		}
-		return null;
+		
+		return reportSettings.getUrl();
+		
 	}
 	
-	
 	@Override
-	@Transactional
-	public Message sendMessageByEmail(Message message)  {
-		super.sendMessageByEmail(message);
-		if(message.getStatusSelect() != null && message.getStatusSelect().equals(MessageRepository.STATUS_SENT)){
-			message.setSentDateT(GeneralService.getTodayDateTime().toLocalDateTime());
-			save(message);
-		}
-		return message;
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Message sendMessage(Message message)  {
+		
+		super.sendMessage(message);
+		
+		if( !message.getStatusSelect().equals( MessageRepository.STATUS_SENT ) ){ return message; }
+		
+		message.setSentDateT( GeneralService.getTodayDateTime().toLocalDateTime() );
+		return save(message);
 	}
 	
 }

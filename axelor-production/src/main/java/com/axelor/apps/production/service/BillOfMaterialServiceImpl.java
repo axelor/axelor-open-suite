@@ -62,8 +62,6 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 		
 		billOfMaterial.setCostPrice(this._computeCostPrice(billOfMaterial).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 		
-		billOfMaterial.getProduct().setCostPrice(billOfMaterial.getCostPrice());
-		
 		save(billOfMaterial);
 	}
 	

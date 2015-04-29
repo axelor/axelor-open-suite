@@ -10,6 +10,8 @@
   	<string name="name" title="Name" required="true" namecolumn="true"/>
   	<string name="content" large="true" multiline="true" title="Content"/>
   	<string name="subject" large="true" multiline="true" title="Suject"/>
+  	<string name="fromAdress" large="true" multiline="true" title="From" />
+  	<string name="replyToRecipients" large="true" multiline="true" title="Reply to" />
   	<string name="toRecipients" large="true" multiline="true" title="To"/>
   	<string name="ccRecipients" large="true" multiline="true" title="Cc"/>
   	<string name="bccRecipients" large="true" multiline="true" title="Bcc"/>
@@ -18,7 +20,7 @@
   	<string name="addressBlock" large="true" multiline="true" title="Address Block" help="true"/>
 	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" help="true"/>
 	<boolean name="isDefault" title="Default ?" help="true"/>
-	<string name="filePath" title="Attached File path" help="true"/>
+	<boolean name="isSystem" title="System ?" help="true"/>
     
   </entity>
 

@@ -87,7 +87,7 @@ public class MoveController {
 		MoveService  moveService = Beans.get(MoveService.class);
 		List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
 		if(!moveIds.isEmpty()){
-			List<? extends Move> moveList = moveService.all().filter("self.id in ?1 AND self.state NOT IN ('validated','canceled')", moveIds).fetch();
+			List<? extends Move> moveList = moveService.all().filter("self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)", moveIds, MoveService.STATUS_VALIDATED, MoveService.STATUS_CANCELED).fetch();
 			if(!moveList.isEmpty()){
 				boolean error = moveService.validateMultiple(moveList);
 				if(error)

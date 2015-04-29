@@ -19,15 +19,19 @@ package com.axelor.apps.message.service;
 
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.db.Repository;
+import com.axelor.exception.AxelorException;
 
 public interface MailAccountService extends Repository<MailAccount> {
 
+	public boolean checkDefaultMailAccount(MailAccount mailAccount);
 	
 	public MailAccount getDefaultMailAccount();
 	
-	public String validateSmtpMailAccount(MailAccount account);
+	public void checkMailAccountConfiguration(MailAccount mailAccount) throws AxelorException, Exception;
 	
 	public String getSmtpSecurity(MailAccount mailAccount);
+	
+	public String getProtocol(MailAccount mailAccount);
 	
 	public String getSignature(MailAccount mailAccount);
 	

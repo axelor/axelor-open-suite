@@ -46,8 +46,8 @@ public class AxelorException extends Exception {
 	 * <li>5: Incohérence</li>
 	 * </ul>
 	 */
-	public AxelorException(String message, int category) {
-		super(message);
+	public AxelorException(String message, int category, Object... messageArgs) {
+		super( String.format(message, messageArgs) );
 		this.category = category;
 	}
 
@@ -90,8 +90,8 @@ public class AxelorException extends Exception {
 	 * 
 	 * @see Throwable
 	 */
-	public AxelorException(String message, Throwable cause, int category) {
-		super(message, cause);
+	public AxelorException(String message, Throwable cause, int category, Object... messageArgs) {
+		super( String.format(message, messageArgs), cause);
 		this.category = category;
 	}
 	

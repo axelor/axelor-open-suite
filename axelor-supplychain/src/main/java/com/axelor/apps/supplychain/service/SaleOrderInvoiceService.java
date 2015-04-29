@@ -66,12 +66,9 @@ public interface SaleOrderInvoiceService {
 	 * @throws Exception
 	 */
 	public Invoice runSubscriptionInvoicing(SaleOrder saleOrder) throws AxelorException;
-
-
-
-	public void checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder) throws AxelorException;
-
-
+	
+	public boolean checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder);
+	
 	public SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice);
 
 

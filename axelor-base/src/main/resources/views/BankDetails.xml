@@ -16,6 +16,11 @@
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
 		</panel>
+		<panel title="IBAN">
+			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
+			<field name="bic" />
+			<field name="ibanBic" readonly="true" />
+		</panel>
 		<panel title="Bank">
 			<field name="countryCode" />
 			<field name="bankAddress" />
@@ -25,11 +30,6 @@
 			<field name="sortCode" colSpan="3"/>
 			<field name="accountNbr" colSpan="3"/>
 			<field name="bbanKey" colSpan="3"/>
-		</panel>
-		<panel title="IBAN">
-			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
-			<field name="bic" />
-			<field name="ibanBic" readonly="true" />
 		</panel>
 	</form>
 

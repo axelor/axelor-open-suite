@@ -6,8 +6,32 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AccountType" lang="java" cachable="true">
-    <string name="nameSelect" title="Type" required="true" unique="true" namecolumn="true" selection="account.account.type.select"/>
+  
+<!--   	TODO - REPLACE PER INTEGER ... -->
+    <string name="nameSelect" title="Type" required="true" unique="true" namecolumn="true" selection="account.account.type.select"/> 
 	<string name="name" title="Label"/>
+	
+	 <extra-code><![CDATA[
+	
+	   	// TYPE SELECT
+		public static final String TYPE_ASSET = "asset";
+		public static final String TYPE_CASH = "cash";
+		public static final String TYPE_COMMITMENT = "commitment";
+		public static final String TYPE_CURRENT_ASSET = "currentAsset";
+		public static final String TYPE_DEBT = "debt";
+		public static final String TYPE_EQUITY = "equity";
+		public static final String TYPE_EXPENSE = "expense";
+		public static final String TYPE_IMMOBILISATION = "immobilisation";
+		public static final String TYPE_INCOME = "income";
+		public static final String TYPE_PAYABLE = "payable";
+		public static final String TYPE_PROVISION = "provision";
+		public static final String TYPE_RECEIVABLE = "receivable";
+		public static final String TYPE_SPECIAL = "special";
+		public static final String TYPE_TAX = "tax";
+		public static final String TYPE_VIEW = "view";
+	
+	]]></extra-code>
+	
   </entity>
-
+  
 </domain-models>
