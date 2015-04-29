@@ -41,7 +41,7 @@ resources/views/Menu.xml:115"
 "From",,,"resources/domains/Message.xml:25
 resources/domains/Template.xml:13
 resources/views/Template.xml:26"
-"Generate message",,,"resources/views/GenerateMessageWizard.xml:8"
+"Generate message",,,"resources/views/GenerateMessageWizard.xml:7"
 "Host",,,"resources/domains/MailAccount.xml:14"
 "Import",,,"resources/domains/EmailAddress.xml:10"
 "Inbox",,,"resources/views/Menu.xml:55
@@ -124,7 +124,7 @@ resources/views/Message.xml:42"
 "TLS",,,"resources/views/Selects.xml:45"
 "Target receptor",,,"resources/domains/Template.xml:18"
 "Task (Project)",,,"resources/views/Selects.xml:16"
-"Template",,,"resources/views/GenerateMessageWizard.xml:10
+"Template",,,"resources/views/GenerateMessageWizard.xml:9
 resources/views/Template.xml:14"
 "Templates",,,"resources/views/Template.xml:6"
 "Test connection",,,"resources/views/MailAccount.xml:31"
@@ -136,7 +136,7 @@ resources/views/Menu.xml:79"
 "Type",,,"resources/domains/Message.xml:10"
 "Unable to reach server. Please check Host,Port and SSL/TLS",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:16"
 "Valid ?",,,"resources/domains/MailAccount.xml:18"
-"Validate",,,"resources/views/GenerateMessageWizard.xml:12"
+"Validate",,,"resources/views/GenerateMessageWizard.xml:11"
 "Veuillez configurer un template",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:30"
 "Waiting model: %s",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:25"
 "Your target receptor is not valid. Please check it.",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:24"
