@@ -87,7 +87,7 @@
 	</action-validate>
 	
 	<action-record name="action-record-load-dummy-supplier-partner" model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="supplierPartnerSelect" expr="eval:__repo__.of(Partner).find(:supplierPartnerId)"/>
+		<field name="supplierPartnerSelect" expr="eval:__repo__.of(Partner).find(Long.valueOf(supplierPartnerId))"/>
 	</action-record>
 	
-</object-views>	
+</object-views>
