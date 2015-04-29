@@ -36,10 +36,14 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
 public class PurchaseOrderController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderController.class);
+	
+	@Inject
+	private PurchaseOrderService purchaseOrderService;
 
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -47,7 +51,7 @@ public class PurchaseOrderController {
 
 		if(purchaseOrder != null &&  purchaseOrder.getCompany() != null) {
 
-			response.setValue("purchaseOrderSeq", Beans.get(PurchaseOrderService.class).getSequence(purchaseOrder.getCompany()));
+			response.setValue("purchaseOrderSeq", purchaseOrderService.getSequence(purchaseOrder.getCompany()));
 		}
 	}
 
@@ -57,7 +61,7 @@ public class PurchaseOrderController {
 
 		if(purchaseOrder != null) {
 			try {
-				purchaseOrder = Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
+				purchaseOrder = purchaseOrderService.computePurchaseOrder(purchaseOrder);
 				response.setValues(purchaseOrder);
 			}
 			catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -69,7 +73,7 @@ public class PurchaseOrderController {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-		response.setValue("supplierPartner", Beans.get(PurchaseOrderService.class).validateSupplier(purchaseOrder));
+		response.setValue("supplierPartner", purchaseOrderService.validateSupplier(purchaseOrder));
 
 	}
 
@@ -145,6 +149,16 @@ public class PurchaseOrderController {
 		if(purchaseOrder.getPurchaseOrderSeq()!=null){
 			return;
 		}
-		response.setValue("purchaseOrderSeq", Beans.get(PurchaseOrderService.class).getDraftSequence(purchaseOrder.getId()));
+		response.setValue("purchaseOrderSeq", purchaseOrderService.getDraftSequence(purchaseOrder.getId()));
+	}
+	
+	public void requestPurchaseOrder(ActionRequest request, ActionResponse response) throws Exception {
+
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+
+		purchaseOrderService.requestPurchaseOrder(purchaseOrderService.find(purchaseOrder.getId()));
+
+		response.setReload(true);
+
 	}
 }
