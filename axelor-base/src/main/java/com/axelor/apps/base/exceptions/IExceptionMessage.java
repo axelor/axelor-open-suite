@@ -57,6 +57,8 @@ public interface IExceptionMessage {
 	
 	static final public  String ACCOUNT_MANAGEMENT_1 = /*$$(*/ "Tax configuration is missing for Product: %s (company: %s)" /*)*/ ;
 	static final public  String ACCOUNT_MANAGEMENT_2 = /*$$(*/ "Aucune taxe trouvée pour le produit %s" /*)*/ ;
+	static final public  String ACCOUNT_MANAGEMENT_3 = /*$$(*/ "Tax is missing for Product: %s (company: %s)" /*)*/ ;
+
 	
 	/**
 	 * Period service
@@ -135,6 +137,7 @@ public interface IExceptionMessage {
 	 * Tax service
 	 */
 	static final public String TAX_1 = /*$$(*/ "Veuillez configurer une version de taxe pour la taxe %s" /*)*/;
+	static final public String TAX_2 = /*$$(*/ "Tax is missing" /*)*/;
 	
 	/**
 	 * Template rule service
