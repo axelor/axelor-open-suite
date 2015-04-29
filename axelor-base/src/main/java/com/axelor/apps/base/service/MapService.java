@@ -254,7 +254,13 @@ public class MapService {
 	}
 	
 	public String makeAddressString(Address address, ObjectNode objectNode) {
-
+		
+			
+		String qString = address.getFullName();					
+		Map<String,Object> latlng =  this.getMapGoogle(qString);
+		objectNode.put("latit",(BigDecimal) latlng.get("latitude"));
+		objectNode.put("longit", (BigDecimal) latlng.get("longitude"));
+		
 		StringBuilder addressString = new StringBuilder();
 		
 		if (address.getAddressL2() != null) {
@@ -275,6 +281,7 @@ public class MapService {
 		if (address.getAddressL7Country() != null) {
 			addressString = addressString.append("</br>" + address.getAddressL7Country().getName());
 		}		
+		
 		return addressString.toString();
 	}
 }
