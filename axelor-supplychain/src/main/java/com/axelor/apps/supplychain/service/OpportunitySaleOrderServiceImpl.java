@@ -33,7 +33,7 @@ public class OpportunitySaleOrderServiceImpl extends OpportunityRepository imple
 		saleOrder.setClientPartner(opportunity.getPartner());
 		saleOrder.setMainInvoicingAddress(saleOrder.getClientPartner().getMainInvoicingAddress());
 		saleOrder.setDeliveryAddress(saleOrder.getClientPartner().getDeliveryAddress());
-		saleOrder.setPriceList(saleOrder.getClientPartner().getPriceList());
+		saleOrder.setPriceList(saleOrder.getClientPartner().getSalePriceList());
 		saleOrder.setCreationDate(new LocalDate());
 		saleOrder.setStatusSelect(1);
 		saleOrder.setSalemanUser(opportunity.getUser());
