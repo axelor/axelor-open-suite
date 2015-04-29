@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -263,5 +264,16 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 							.getUrl();
 	}
 
+	@Transactional(rollbackOn = {Exception.class})
+	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception{
+		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
+		if (purchaseOrder.getVersionNumber() == 1){
+			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
+		}
+		this.save(purchaseOrder);
+		if (GeneralService.getGeneral().getManagePurchaseOrderVersion()){
+			this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
+		}
+	}
 
 }

@@ -90,7 +90,8 @@ public interface PurchaseOrderService extends Repository<PurchaseOrder> {
 	public Partner validateSupplier(PurchaseOrder purchaseOrder);
 	
 	@Transactional
-	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws IOException;	
+	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws IOException;
 	
+	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception;	
 	
 }

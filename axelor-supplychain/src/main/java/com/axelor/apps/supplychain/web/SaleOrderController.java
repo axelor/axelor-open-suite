@@ -116,6 +116,7 @@ public class SaleOrderController {
 				response.setView(ActionView
 						.define(I18n.get("Purchase Order"))
 						.model(PurchaseOrder.class.getName())
+						.add("form", "purchase-order-form")
 						.param("forceEdit", "true")
 						.context("_showRecord", String.valueOf(purchaseOrder.getId()))
 						.map());
@@ -138,7 +139,7 @@ public class SaleOrderController {
 						saleOrderLineIdSelected.add(saleOrderLine.getId());
 					}
 				}
-				
+
 				if (saleOrderLineIdSelected.isEmpty()){
 					response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
 				}else{
