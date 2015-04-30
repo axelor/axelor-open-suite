@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -124,11 +125,22 @@ public class CurrencyConversionLineController {
 	
 	public void convert(ActionRequest request, ActionResponse response) {
 		Context context = request.getContext();
-		Currency fromCurrency = (Currency)context.get("startCurrency");
-		Currency toCurrency =  (Currency)context.get("endCurrency");
+		Currency fromCurrency = null;
+		Currency toCurrency = null;
+		if(context.get("startCurrency") instanceof Currency ){
+			fromCurrency = (Currency)context.get("startCurrency");
+			toCurrency =  (Currency)context.get("endCurrency");
+		}
+		else {
+			Map startCurrency = (Map) context.get("startCurrency");
+			Map endCurrency = (Map) context.get("endCurrency");
+			fromCurrency = currencyRepo.find(Long.parseLong(startCurrency.get("id").toString()));
+			toCurrency = currencyRepo.find(Long.parseLong(endCurrency.get("id").toString()));
+		}
+		
 		CurrencyConversionLine prevLine = null;
 		
-		if(fromCurrency.getId() != null && toCurrency.getId() != null){
+		if(fromCurrency != null && toCurrency != null){
 			
 			if(context.get("id") != null)
 				prevLine = cclRepo.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND id != ?3",fromCurrency.getId(),toCurrency.getId(),context.get("id")).order("-fromDate").fetchOne();
