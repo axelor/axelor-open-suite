@@ -599,4 +599,8 @@
 		<option value="2">Individual</option>
 	</selection>
 	
+	<selection name="base.batch.action.select">
+		<option value="1">Remind time sheets validation</option>
+	</selection>
+	
 </object-views>
