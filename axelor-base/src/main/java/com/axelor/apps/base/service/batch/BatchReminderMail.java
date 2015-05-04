@@ -1,14 +1,10 @@
 package com.axelor.apps.base.service.batch;
 
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.i18n.I18n;
 
-public class BatchReminderMail extends BatchStrategy{
-	
-	
-	protected int mailDone = 0;
-	protected int mailAnomaly = 0;
-	
-	
+public class BatchReminderMail extends AbstractBatch{
+		
 	
 	@Override
 	protected void process() {	
@@ -31,9 +27,6 @@ public class BatchReminderMail extends BatchStrategy{
 
 		String comment = String.format("\t* %s Emails sent \n", batch.getDone());
 		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
-		
-		comment += String.format("\t* %s email(s) traité(s)\n", mailDone);
-		comment += String.format("\t* %s anomalie(s)", mailAnomaly);
 
 		super.stop();
 		addComment(comment);

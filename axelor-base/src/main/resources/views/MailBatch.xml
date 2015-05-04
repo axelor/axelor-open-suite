@@ -13,7 +13,7 @@
  
 	<form  onNew="action-mail-batch-record-on-new" name="mail-batch-form" title="Mail Batch" model="com.axelor.apps.base.db.MailBatch">
 		<panel >
-			<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
+			<field name="actionSelect"/>
 			<field name="code"/>
 			<field name="company" widget="SuggestBox"/>
 			<field name="template" widget="SuggestBox"/>

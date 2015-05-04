@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.service.batch.BatchReminderMail;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.message.db.EmailAddress;
@@ -16,10 +16,13 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class BatchReminderTimesheet extends BatchReminderMail{
+public class BatchReminderTimesheet extends AbstractBatch{
 
 	@Inject
 	private TemplateMessageService templateMessageService;
@@ -34,7 +37,7 @@ public class BatchReminderTimesheet extends BatchReminderMail{
 			this.generateEmail();
 	}
 	
-	@Override
+	
 	public void generateEmailTemplate(){
 		
 		Company company = batch.getMailBatch().getCompany(); 
@@ -52,22 +55,16 @@ public class BatchReminderTimesheet extends BatchReminderMail{
 			try{
 				message = templateMessageService.generateMessage(timesheet.getId(), model, tag, template);
 				message = messageServiceImpl.sendByEmail(message);
-				this.mailDone++;
-				if(message.getSentByEmail()){
-					incrementDone();
-				}
-				else{
-					incrementAnomaly();
-				}
+				incrementDone();
 			}
 			catch(Exception e){
-				this.mailAnomaly++;
-				e.printStackTrace();
+				incrementAnomaly();
+				TraceBackService.trace(new Exception(e),IException.REMINDER,batch.getId());
 			}
 		}
 	}
 	
-	@Override
+	
 	public void generateEmail(){
 		Company company = batch.getMailBatch().getCompany(); 
 		List<Timesheet> timesheetList = null;
@@ -91,18 +88,24 @@ public class BatchReminderTimesheet extends BatchReminderMail{
 				
 				message = messageServiceImpl.sendByEmail(message);
 				
-				this.mailDone++;
-				if(message.getSentByEmail()){
-					incrementDone();
-				}
-				else{
-					incrementAnomaly();
-				}
-			}catch(Exception e){
-				this.mailAnomaly++;
-				e.getStackTrace();
+				incrementDone();
+			}
+			catch(Exception e){
+				incrementAnomaly();
+				TraceBackService.trace(new Exception(e),IException.INVOICE_ORIGIN,batch.getId());
 			}
 		}
 	}
+	
+	
+	@Override
+	protected void stop() {
 
+		String comment = String.format("\t* %s Email(s) sent \n", batch.getDone());
+		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+
+		super.stop();
+		addComment(comment);
+		
+	}
 }

@@ -107,20 +107,7 @@
 	    
 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain"/>          
 	    <panel-related field="invoiceSet" title="Invoicing" showIf="statusSelect == 3" showTitle="false" if-module="axelor-supplychain"/>      
-	    
-	    <panel title="Subscription" showIf="invoicingTypeSelect == 6" showTitle="false" if-module="axelor-supplychain">
-	      <panel title="Subscription dates" colSpan="12">
-	        <field name="subscriptionStartDate" onChange="action-sale-order-record-subscription-start-date"/>
-	        <field name="subscriptionEndDate"/>
-	      </panel>
-	      <panel title="Invoices dates" colSpan="12">
-	        <field name="invoicedFirstDate" onChange="action-scheduler-instance-record-first-execution-date"/>
-	        <field name="nextInvPeriodStartDate"/>
-<!-- 	        	<field name="scheduler"/> -->	        
-	        <field name="schedulerInstance"/>
-	        <field name="schedulerInstance.lastTheoreticalExecutionDate"/>
-	      </panel>
-	    </panel>
+
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" title="Actions">

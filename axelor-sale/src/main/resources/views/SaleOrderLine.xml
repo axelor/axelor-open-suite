@@ -163,6 +163,7 @@
 	
 	<action-attrs name="action-sale-order-line-attrs-title-price">
 		<attribute name="title" for="price" expr="Unit Price (by month)" if="product?.productTypeSelect == 'subscriptable'"/>
+		<attribute name="title" for="price" expr="Unit Price" if="product?.productTypeSelect != 'subscriptable'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-hidden-subscription">
