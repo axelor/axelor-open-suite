@@ -122,8 +122,6 @@ public class VentilateState extends WorkflowInvoice {
 			
 		}
 		
-		System.out.println(query + params.toArray());
-		
 		if(all().filter(query, params.toArray()).count() > 0)  {
 			if(sequence.getMonthlyResetOk())  {
 				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_2), IException.CONFIGURATION_ERROR);
