@@ -34,8 +34,8 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 			<field name="toBeAdded"/>
 			<field name="nextNum"/>
 			<spacer/>
-			<field name="yearlyResetOk" />
-			<field name="monthlyResetOk" />
+			<field name="yearlyResetOk" readonlyIf="monthlyResetOk"/>
+			<field name="monthlyResetOk" onChange="action-sequence-monthly-reset"/>
 			<field name="resetDate" showIf="yearlyResetOk || monthlyResetOk" requiredIf="yearlyResetOk || monthlyResetOk" />
 		</panel>
 	</form>
@@ -60,5 +60,9 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     	<attribute name="hidden" for="company" expr="eval: code in ['contract','contractLine','invoicePaymentCondition','partner']"/>
     	<attribute name="required" for="company" expr="eval: !(code in ['contract','contractLine','invoicePaymentCondition','partner'])"/>
     </action-attrs>
+    
+    <action-record name="action-sequence-monthly-reset" model="com.axelor.apps.base.db.Sequence">
+    	<field name="yearlyResetOk" expr="eval: true" if="monthlyResetOk"/>
+    </action-record>
     
 </object-views>
