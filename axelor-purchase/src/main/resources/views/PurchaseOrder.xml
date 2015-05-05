@@ -30,7 +30,22 @@
 		  <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
 		  <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
-
+	
+	<form name="purchase-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge purchase order" >
+		<panel-related field="$purchaseOrderToMerge" title="Purchase order to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.purchase.db.PurchaseOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false"/>
+		<panel sidebar="true" title="Actions">
+			<button name="generateMergedPurchaseOrder" title="Merge into single purchase order" onClick="action-validate-purchase-order-check-selection,action-purchase-order-method-merge"/>			
+	  	</panel>
+    </form>
+    
+    <form name="purchase-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-purchaseorder">
+		<panel>
+			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="12" width="200px" showIf="priceListToCheck" canSelect="true"/>
+			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"/>
+			<button name="confirm" title="Confirmer" onClick="action-purchase-order-confirm-merge-check,action-purchase-order-method-merge" colSpan="12" width="200px"/>
+		</panel>
+    </form>
+	
 	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-purchase-order-attrs-hide-contact-partner"
 	 onSave="save,action-method-set-purchase-order-draft-sequence,save" onNew="action-group-purchase-order-on-new-actions" >
 		<toolbar>
@@ -245,6 +260,25 @@
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="versionNumber" expr="eval: versionNumber + 1"/>
     </action-record>
+    
+    <action-validate name="action-validate-purchase-order-check-selection">
+		<error message="You have to choose at least one purchase order" if="purchaseOrderToMerge == null || purchaseOrderToMerge.size() == 0"/>
+	</action-validate>
+	
+	<action-method name="action-purchase-order-method-merge">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="mergePurchaseOrder"/>
+	</action-method>
+	
+	<action-record name="action-record-load-dummy-field-confirm-merge-purchaseorder" model="com.axelor.apps.base.db.Wizard">
+		<field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
+		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
+		<field name="partnerId" expr="eval: contextPartnerId"/>
+	</action-record>
+	
+	<action-condition name="action-purchase-order-confirm-merge-check">
+		<check error="A price list must be selected" field="$priceList" if="priceListToCheck &amp;&amp; priceList == null"/>
+		<check error="A contact partner must be selected" field="$contactPartner" if="contactPartnerToCheck &amp;&amp; contactPartner == null"/>
+	</action-condition>
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">

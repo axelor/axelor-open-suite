@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -264,6 +266,7 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 							.getUrl();
 	}
 
+	@Override
 	@Transactional(rollbackOn = {Exception.class})
 	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception{
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
@@ -274,6 +277,61 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 		if (GeneralService.getGeneral().getManagePurchaseOrderVersion()){
 			this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
 		}
+	}
+
+	@Override
+	@Transactional
+	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency, Partner supplierPartner, Company company, Partner contactPartner, PriceList priceList) throws AxelorException{
+
+		String numSeq = "";
+		String externalRef = "";
+		for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
+			if (!numSeq.isEmpty()){
+				numSeq += "-";
+			}
+			numSeq += purchaseOrderLocal.getPurchaseOrderSeq();
+
+			if (!externalRef.isEmpty()){
+				externalRef += "|";
+			}
+			if (purchaseOrderLocal.getExternalReference() != null){
+				externalRef += purchaseOrderLocal.getExternalReference();
+			}
+		}
+
+		PurchaseOrder purchaseOrderMerged = this.createPurchaseOrder(
+				AuthUtils.getUser(),
+				company,
+				contactPartner,
+				currency,
+				null,
+				numSeq,
+				externalRef,
+				IPurchaseOrder.INVOICING_FREE,
+				LocalDate.now(),
+				priceList,
+				supplierPartner);
+
+		//Attachment of all purchase order lines to new purchase order
+		for(PurchaseOrder purchaseOrder : purchaseOrderList)  {
+			int countLine = 1;
+			for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+				purchaseOrderLine.setSequence(countLine * 10);
+				purchaseOrderMerged.addPurchaseOrderLineListItem(purchaseOrderLine);
+				countLine++;
+			}
+		}
+
+		this.computePurchaseOrder(purchaseOrderMerged);
+
+		this.save(purchaseOrderMerged);
+
+		//Remove old purchase orders
+		for(PurchaseOrder purchaseOrder : purchaseOrderList)  {
+			this.remove(purchaseOrder);
+		}
+
+		return purchaseOrderMerged;
 	}
 
 }

@@ -18,6 +18,7 @@
 package com.axelor.apps.purchase.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.joda.time.LocalDate;
 
@@ -34,64 +35,66 @@ import com.google.inject.persist.Transactional;
 public interface PurchaseOrderService extends Repository<PurchaseOrder> {
 
 	PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder) throws AxelorException ;
-		
-	
+
+
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	PurchaseOrder computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  ;
-	
+
 	/**
 	 * Peupler une commande.
 	 * <p>
-	 * Cette fonction permet de déterminer les tva d'une commande à partir des lignes de factures passées en paramètres. 
+	 * Cette fonction permet de déterminer les tva d'une commande à partir des lignes de factures passées en paramètres.
 	 * </p>
-	 * 
+	 *
 	 * @param purchaseOrder
-	 * 
+	 *
 	 * @throws AxelorException
 	 */
 	void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
-		
-		
-	
+
+
+
 	/**
 	 * Calculer le montant d'une commande.
-	 * <p> 
+	 * <p>
 	 * Le calcul est basé sur les lignes de TVA préalablement créées.
 	 * </p>
-	 * 
+	 *
 	 * @param purchaseOrder
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	void _computePurchaseOrder(PurchaseOrder purchaseOrder)  throws AxelorException;
 
-	
+
 	/**
 	 * Permet de réinitialiser la liste des lignes de TVA
 	 * @param purchaseOrder
 	 * 			Une commande.
 	 */
 	void initPurchaseOrderLineVats(PurchaseOrder purchaseOrder);
-	
-	
-	
-	PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 
-			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, LocalDate orderDate, 
+
+
+
+	PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
+			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, LocalDate orderDate,
 			PriceList priceList, Partner supplierPartner) throws AxelorException ;
-		
-	
-	
+
+
+
 	String getSequence(Company company) throws AxelorException ;
-	
+
 	public String getDraftSequence(Long purchaseOrderId);
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateSupplier(PurchaseOrder purchaseOrder);
-	
+
 	@Transactional
 	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws IOException;
-	
-	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception;	
-	
+
+	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception;
+
+	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency, Partner supplierPartner, Company company, Partner contactPartner, PriceList priceList) throws AxelorException;
+
 }
