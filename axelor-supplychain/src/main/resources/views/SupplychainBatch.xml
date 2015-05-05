@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+    <grid name="supplychain-batch-grid" title="Mail batches" model="com.axelor.apps.supplychain.db.SupplychainBatch">
+    	<field name="actionSelect" />
+    	<field name="code" />
+		<field name="company" />
+		<field name="createdOn"/>
+		<field name="createdBy"/>
+    </grid>
+ 
+	<form  onNew="action-supplychain-batch-record-on-new" name="supplychain-batch-form" title="Supplychain Batch" model="com.axelor.apps.supplychain.db.SupplychainBatch">
+		<panel >
+			<field name="actionSelect"/>
+			<field name="code"/>
+			<field name="company" widget="SuggestBox"/>
+			<field name="archived" title="Archived ?"/>
+		</panel>
+		<panel-tabs>
+			<panel title="Information"  >
+				<field name="createdOn" title="Created on"/>
+				<field name="createdBy" title="Created by"/>
+				<field name="description" showTitle="false"  />
+		      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+			</panel>
+		</panel-tabs>
+		<panel sidebar="true" title="Actions">
+		    <button name="billSubBatch" title="Bill Late Subscriptions Batch" showIf="actionSelect == 1"  onClick="save,action-supplychain-batch-method-bill-sub" colSpan="12"/>
+		</panel>
+	</form>
+
+    
+    <!-- ACTION RECORD -->
+    <action-record name="action-supplychain-batch-record-on-new" model="com.axelor.apps.base.db.MailBatch">
+		<field name="createdOn" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		<field name="createdBy" expr="eval:__user__"/>
+		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+	</action-record>
+    
+    
+    <!-- ACTION METHOD -->
+	<action-method name="action-supplychain-batch-method-bill-sub">
+		<call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="billSubscriptions"/>
+	</action-method>
+	
+	
+</object-views>

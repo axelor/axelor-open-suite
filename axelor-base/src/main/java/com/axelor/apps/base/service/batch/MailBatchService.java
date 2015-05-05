@@ -22,8 +22,8 @@ public class MailBatchService extends MailBatchRepository{
 		if (batchCode != null){
 			switch (mailBatch.getActionSelect()) {
 			case ACTION_REMIN_TIMESHEET:
-			batch = null;
-			break;
+				batch = null;
+				break;
 			default:
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), mailBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
 			}
