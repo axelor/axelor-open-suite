@@ -57,22 +57,22 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	private ValidateFactory validateFactory;
 	private VentilateFactory ventilateFactory;
 	private CancelFactory cancelFactory;
-	private AlarmEngineService<Invoice> aes;
+	private AlarmEngineService<Invoice> alarmEngineService;
 	
 	@Inject
-	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory, AlarmEngineService<Invoice> aes) {
+	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService) {
 
 		this.validateFactory = validateFactory;
 		this.ventilateFactory = ventilateFactory;
 		this.cancelFactory = cancelFactory;
-		this.aes = aes;
+		this.alarmEngineService = alarmEngineService;
 	}
 	
 	
 // WKF
 	
 	public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices){
-		return aes.get( Invoice.class, invoices );
+		return alarmEngineService.get( Invoice.class, invoices );
 	}
 	
 	
@@ -86,7 +86,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 */
 	public void raisingAlarms(Invoice invoice, String alarmEngineCode) {
 
-		Alarm alarm = aes.get(alarmEngineCode, invoice, true);
+		Alarm alarm = alarmEngineService.get(alarmEngineCode, invoice, true);
 		
 		if (alarm != null){
 			

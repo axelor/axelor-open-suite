@@ -173,16 +173,16 @@ public class VentilateState extends WorkflowInvoice {
 	 * @param company
 	 * @throws AxelorException 
 	 */
-	protected void setInvoiceId( Sequence sequence ) throws AxelorException{
+	protected void setInvoiceId( Sequence sequence ) throws AxelorException {
 		
-		if(!Strings.isNullOrEmpty(invoice.getInvoiceId()))  {  return;  }
+		if ( !Strings.isNullOrEmpty( invoice.getInvoiceId() ) ) { return; }
 		
-		invoice.setInvoiceId(sequenceService.getSequenceNumber(sequence));
+		invoice.setInvoiceId( sequenceService.setRefDate( invoice.getInvoiceDate() ).getSequenceNumber(sequence) );
 		
-		if (invoice.getInvoiceId() == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.VENTILATE_STATE_4), invoice.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
+		if (invoice.getInvoiceId() != null) { return; }
 		
+		throw new AxelorException(String.format(I18n.get(IExceptionMessage.VENTILATE_STATE_4), invoice.getCompany().getName()), IException.CONFIGURATION_ERROR);
+
 	}
 	
 	protected Sequence getSequence( ) throws AxelorException{
