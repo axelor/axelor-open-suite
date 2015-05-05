@@ -32,7 +32,7 @@
 	</grid>
 	
 	<form name="purchase-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge purchase order" >
-		<panel-related field="$purchaseOrderToMerge" title="Purchase order to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.purchase.db.PurchaseOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false"/>
+		<panel-related field="$purchaseOrderToMerge" form-view="purchase-order-form" title="Purchase order to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.purchase.db.PurchaseOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false"/>
 		<panel sidebar="true" title="Actions">
 			<button name="generateMergedPurchaseOrder" title="Merge into single purchase order" onClick="action-validate-purchase-order-check-selection,action-purchase-order-method-merge"/>			
 	  	</panel>

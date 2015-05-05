@@ -26,6 +26,13 @@
 		<view-param name="search-filters" value="purchase-order-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
+	
+	<menuitem name="purchase-order-merge" parent="sc-root-purchase"
+    	title="Merge purchase orders" action="purchase.order.merge" groups="admins,ERP"/> 
+
+	<action-view name="purchase.order.merge" title="Merge purchase orders" model="com.axelor.apps.base.db.Wizard">
+	    <view type="form" name="purchase-order-merge-form"/>
+	</action-view>
 
 
 
@@ -78,7 +85,7 @@
 		<view type="form" name="purchase-order-form" />
 		<view-param name="search-filters" value="purchase-order-filters"/>
 		<domain>self.statusSelect in (4,5) </domain>
-	</action-view>		
+	</action-view>
 	
 	<menuitem name="menu-purchase-buyer-dashboard-sample" parent="menu-dashboards-sample" priority="190"
 		title="Purchase Buyer Db" icon="img/16px/chart_16px.png" action="purchase.buyer.dashboard.view.sample" />	
