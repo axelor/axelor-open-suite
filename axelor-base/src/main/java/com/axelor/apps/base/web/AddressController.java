@@ -191,21 +191,13 @@ public class AddressController {
 		if(address.getId() != null)
 			address = addressRepo.find(address.getId());
 		String qString = address.getAddressL4()+" ,"+address.getAddressL6();
-		BigDecimal latitude = address.getLatit();
-		BigDecimal longitude = address.getLongit();
-		LOG.debug("latitude...."+latitude);
-		LOG.debug("longitude...."+longitude);
-		Map<String,Object> result = Beans.get(MapService.class).getMap(qString, latitude, longitude);
+		Map<String,Object> result = Beans.get(MapService.class).getMap(qString);
 		if(result != null){
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", "Map");
 			mapView.put("resource", result.get("url"));
 			mapView.put("viewType", "html");
 			response.setView(mapView);
-			if (BigDecimal.ZERO.compareTo(latitude) == 0 || BigDecimal.ZERO.compareTo(longitude) == 0) {
-				response.setValue("latit", result.get("latitude"));
-				response.setValue("longit", result.get("longitude"));
-			}
 		}
 		else
 			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),qString));

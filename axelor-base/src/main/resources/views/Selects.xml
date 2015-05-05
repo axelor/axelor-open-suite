@@ -160,9 +160,8 @@
 	<selection name="partner.title.type.select">
 		<option value="1">M.</option>
 		<option value="2">Ms.</option>
-		<option value="3">Mss.</option>
-		<option value="4">Dr</option>
-		<option value="5">Prof.</option>
+		<option value="3">Dr</option>
+		<option value="4">Prof.</option>
 	</selection>
 
 	<selection name="partner.customer.type.select">
@@ -598,6 +597,10 @@
 	<selection name="company.partner.type.select">
 		<option value="1">Company</option>
 		<option value="2">Individual</option>
+	</selection>
+	
+	<selection name="base.batch.action.select">
+		<option value="1">Remind time sheets validation</option>
 	</selection>
 	
 </object-views>

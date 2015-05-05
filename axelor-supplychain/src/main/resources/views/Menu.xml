@@ -51,6 +51,15 @@
 		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="form" name="stock-move-supplychain-multi-purchase-invoicing-form"/>
 	</action-view>
+	
+	
+	<menuitem name="admin-root-batch-supplychain" parent="admin-root-batch"
+		title="Supplychain batches" action="admin.root.batch.supplychain" />
 
+	<action-view name="admin.root.batch.supplychain" title="Supplychain batches"
+		model="com.axelor.apps.supplychain.db.SupplychainBatch" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" name="supplychain-batch-grid"/>
+		<view type="form" name="supplychain-batch-form"/>
+	</action-view>
 	
 </object-views>

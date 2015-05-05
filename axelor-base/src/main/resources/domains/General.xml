@@ -11,6 +11,7 @@
 		<boolean name="logOk" title="Activate Logs ?" default="true" help="true"/>
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit" help="true"/>
 		<string name="defaultPartnerLanguage" title="Default Partner language" selection="select.language" help="true"/>
+		<boolean name="mailAccountByUser" title="Manage mail account by user ?" default="false"/>
 		
 		<!-- Interfaces QAS et SVI -->
 		<string name="qasWsdlUrl" title="URL to QAS WSDL" help="true" />

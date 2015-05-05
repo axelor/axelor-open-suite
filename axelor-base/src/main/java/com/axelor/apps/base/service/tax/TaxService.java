@@ -57,7 +57,11 @@ public class TaxService extends TaxRepository {
 	 */
 	public TaxLine getTaxLine(Tax tax, LocalDate localDate) throws AxelorException  {
 		
-		if (tax != null && tax.getTaxLineList() != null && !tax.getTaxLineList().isEmpty())  {
+		if(tax == null)  {  throw new AxelorException(I18n.get(IExceptionMessage.TAX_2), IException.CONFIGURATION_ERROR);  }
+		
+		if(tax.getActiveTaxLine() != null)  {  return tax.getActiveTaxLine();  }
+		
+		if (tax.getTaxLineList() != null && !tax.getTaxLineList().isEmpty())  {
 			
 			for (TaxLine taxLine : tax.getTaxLineList()) {
 				
@@ -69,5 +73,6 @@ public class TaxService extends TaxRepository {
 		
 		throw new AxelorException(String.format(I18n.get(IExceptionMessage.TAX_1), tax.getName()), IException.CONFIGURATION_ERROR);
 	}
-
+	
+	
 }

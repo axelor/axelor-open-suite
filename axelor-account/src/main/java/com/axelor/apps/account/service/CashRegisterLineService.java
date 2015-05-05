@@ -18,6 +18,8 @@
 package com.axelor.apps.account.service;
 
 
+import java.io.IOException;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +63,7 @@ public class CashRegisterLineService extends CashRegisterLineRepository{
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message closeCashRegister(CashRegisterLine cashRegisterLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public Message closeCashRegister(CashRegisterLine cashRegisterLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 		Company company = this.user.getActiveCompany();
 		if(company == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CASH_REGISTER_1),
@@ -118,8 +120,9 @@ public class CashRegisterLineService extends CashRegisterLineRepository{
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
-	public Message createCashRegisterLineMail(String address, Company company, CashRegisterLine cashRegisterLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public Message createCashRegisterLineMail(String address, Company company, CashRegisterLine cashRegisterLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 		
 		AccountConfig accountConfig = company.getAccountConfig();
 		
@@ -128,7 +131,7 @@ public class CashRegisterLineService extends CashRegisterLineRepository{
 					GeneralServiceAccount.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		return templateMessageService.generateMessage(cashRegisterLine, cashRegisterLine.getId(), accountConfig.getCashRegisterTemplate());
+		return templateMessageService.generateMessage(cashRegisterLine, accountConfig.getCashRegisterTemplate());
 
 	}
 	

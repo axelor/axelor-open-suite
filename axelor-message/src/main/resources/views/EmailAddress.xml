@@ -7,24 +7,24 @@
        <toolbar>
         <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
        </toolbar>
-        <field name="name"/>
+       <field name="name"/>
     </grid>
     
     <form name="email-address-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress">
     	<panel>
-			<field name="address" widget="Email" onChange="action-check-string-email-address" />
-			<field name="partner"/>
+			<field name="address" widget="Email" onChange="action-check-string-email-address" placeholder="user@mydomain.com" />
+			<field name="partner" if-module="axelor-base"/>
 		</panel>
     </form>
     
     <form name="email-address-simple-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress">
     	<panel>
-			<field name="address" widget="Email" onChange="action-check-string-email-address" />
+			<field name="address" pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$" widget="Email" onChange="action-check-string-email-address" placeholder="user@mydomain.com" />
 		</panel>	
     </form>
     
 	<action-validate name="action-check-string-email-address">
-		<error message="Please input a valid email address" if="address != null &amp;&amp; !address.matches('^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$')" action="action-check-string-email-address-clear"/>
+		<error message="Please input a valid email address" if="address != null" action="action-check-string-email-address-clear"/>
 	</action-validate>
     
     <action-record name="action-check-string-email-address-clear" model="com.axelor.apps.base.db.General">

@@ -14,6 +14,7 @@
     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
+    	<bind to="resetDate" eval="com.axelor.apps.base.service.administration.GeneralService.getTodayDate()" />
     </input>
     
     <input file="purchase_purchaseConfig.csv" separator=";" type="com.axelor.apps.purchase.db.PurchaseConfig" search="self.importId = :importId"/>

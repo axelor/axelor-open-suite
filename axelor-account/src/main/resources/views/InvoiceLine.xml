@@ -9,9 +9,8 @@
         <field name="productName"/>
         <field name="qty"/>
         <field name="price"/>
-        <field name="product.unit"/>
+        <field name="unit"/>
         <field name="exTaxTotal"/>
-        <field name="taxLine.tax"/>
     </grid>
     
     <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
@@ -26,18 +25,14 @@
 		        <field name="productName"/>
 		        <field name="qty" required="true" onChange="action-invoice-line-method-compute"/>
 		        <field name="price" required="true"  onChange="action-invoice-line-method-compute"/>
-		        <field name="product.unit"/>
+		        <field name="unit"/>
 		        <field name="exTaxTotal"/>
 		        <field name="task"/>
 		        <field name="analyticAccount" />
-		        <panel title="Tax informations" colSpan="12">
-		    		<field name="taxLine"/>
-					<field name="taxLine.tax.name"/>
-					<field name="taxLine.value"/>
-				</panel>
+		    	<field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				 <panel name="discount" title="Discount" colSpan="12">
-			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute"/>
-			        <field name="discountAmount" onChange="action-invoice-line-method-compute"/>
+			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title"/>
+			        <field name="discountAmount" onChange="action-invoice-line-method-compute" hideIf="discountTypeSelect == 3"/>
 			    </panel>
     		</panel>
     		<panel title="Notes">
@@ -62,9 +57,7 @@
     <action-group name="action-group-account-invoice-line-product-onchange">
     	<action name="action-invoice-line-attrs-hide-product-variant"/>
     	<action name="action-invoice-line-method-get-product-information"/>
-    	<action name="action-invoice-line-record-product-variant"/>
     	<action name="action-invoice-line-method-compute"/>
-    	<action name="action-invoice-line-record-invoice-line-type"/>    	
     </action-group>
     
     
@@ -78,10 +71,6 @@
     <action-record name="action-invoice-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
-    </action-record>
-    
-    <action-record name="action-invoice-line-record-invoice-line-type" model="com.axelor.apps.account.db.InvoiceLine">
-    	<field name="invoiceLineType" expr="eval: product?.invoiceLineType"/>
     </action-record>
     
 	<!-- ACTION METHOD -->
@@ -101,5 +90,10 @@
 	<action-attrs name="action-invoice-line-attrs-hide-product-variant">
     	<attribute name="hidden" for="productVariant" expr="product?.productVariantConfiguration == null"/>
     </action-attrs>
+    
+    <action-attrs name="action-invoice-line-attrs-discountamount-title">
+		<attribute name="title" for="discountAmount" expr="Discount Rate" if="discountTypeSelect == 1"/>
+		<attribute name="title" for="discountAmount" expr="Discount Amount" if="discountTypeSelect == 2"/>
+	</action-attrs>
 	
 </object-views>

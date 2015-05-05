@@ -1,159 +1,159 @@
-key,message,comment,context
-Activities,Activités,,"resources/views/Menu.xml:82
+"key","message","comment","context"
+"Activities","Activités",,"resources/views/Menu.xml:82
 resources/views/Menu.xml:84"
-Activity,Activité,,"resources/domains/Timesheet.xml:20
+"Activity","Activité",,"resources/domains/Timesheet.xml:20
 resources/domains/TimesheetLine.xml:13"
-Afternoon,L'après-midi,,resources/views/Selects.xml:40
-Afternoon From,L'après-midi de,,resources/domains/WeeklyPlanning.xml:20
-All my Timesheets,Toutes mes feuilles de temps,,resources/views/Menu.xml:25
-Cancel,Annuler,,resources/views/Timesheet.xml:18
-Canceled,Annulé,,"resources/views/Selects.xml:11
+"Afternoon","L'après-midi",,"resources/views/Selects.xml:40"
+"Afternoon From","L'après-midi de",,"resources/domains/WeeklyPlanning.xml:20"
+"All my Timesheets","Toutes mes feuilles de temps",,"resources/views/Menu.xml:25"
+"Cancel","Annuler",,"resources/views/Timesheet.xml:18"
+"Canceled","Annulé",,"resources/views/Selects.xml:11
 resources/views/Selects.xml:19"
-Comments,Commentaire,,"resources/domains/ExpenseLine.xml:17
+"Comments","Commentaire",,"resources/domains/ExpenseLine.xml:17
 resources/domains/Leave.xml:19
 resources/domains/TimesheetLine.xml:19"
-Complete my time sheet,Compléter ma feuille de temps,,resources/views/Menu.xml:19
-Configuration,,,resources/views/Menu.xml:80
-Confirm,Confirmer,,resources/views/Timesheet.xml:15
-Confirmed,Confirmé,,resources/views/Selects.xml:16
-Contact,,,"resources/domains/Employee.xml:11
+"Complete my time sheet","Compléter ma feuille de temps",,"resources/views/Menu.xml:19"
+"Configuration",,,"resources/views/Menu.xml:80"
+"Confirm","Confirmer",,"resources/views/Timesheet.xml:15"
+"Confirmed","Confirmé",,"resources/views/Selects.xml:16"
+"Contact",,,"resources/domains/Employee.xml:11
 resources/views/Employee.xml:14"
-Daily work hours,Nombre d'heures de travail journalier,,resources/domains/Employee.xml:15
-Date,Date,,resources/domains/TimesheetLine.xml:15
-Date from,De,,resources/domains/Leave.xml:13
-Date to (Included),Date à (inclus),,resources/domains/Leave.xml:15
-Day,Jour,,"resources/domains/WeeklyPlanning.xml:17
+"Daily work hours","Nombre d'heures de travail journalier",,"resources/domains/Employee.xml:15"
+"Date","Date",,"resources/domains/TimesheetLine.xml:15"
+"Date from","De",,"resources/domains/Leave.xml:13"
+"Date to (Included)","Date à (inclus)",,"resources/domains/Leave.xml:15"
+"Day","Jour",,"resources/domains/WeeklyPlanning.xml:17
 resources/views/WeeklyPlanning.xml:18
 resources/views/WeeklyPlanning.xml:26"
-Days,Jours,,resources/views/Selects.xml:23
-Department,Service,,resources/domains/Employee.xml:17
-Departments,Services,,"resources/views/Menu.xml:72
+"Days","Jours",,"resources/views/Selects.xml:23"
+"Department","Service",,"resources/domains/Employee.xml:17"
+"Departments","Services",,"resources/views/Menu.xml:72
 resources/views/Menu.xml:74"
-Draft,Brouillon,,"resources/views/Selects.xml:15
+"Draft","Brouillon",,"resources/views/Selects.xml:15
 resources/views/Selects.xml:7"
-Duration,Durée,,"resources/domains/Leave.xml:17
+"Duration","Durée",,"resources/domains/Leave.xml:17
 resources/domains/TimesheetLine.xml:17
 resources/domains/TimesheetLine.xml:18"
-Duration(by day),Durée (par jour),,resources/domains/Timesheet.xml:19
-Edit Timesheet Selected,Editer la feuille de temps sélectionnée,,resources/views/Timesheet.xml:41
-Employee,Employé,,"resources/domains/User.xml:10
+"Duration(by day)","Durée (par jour)",,"resources/domains/Timesheet.xml:19"
+"Edit Timesheet Selected","Editer la feuille de temps sélectionnée",,"resources/views/Timesheet.xml:41"
+"Employee","Employé",,"resources/domains/User.xml:10
 resources/views/Employee.xml:13
 resources/views/Employee.xml:39
 resources/views/Employee.xml:5
 resources/views/Menu.xml:45
 resources/views/Menu.xml:47"
-End On,Se termine,,resources/domains/Leave.xml:16
-Expense,Note de frais,,"resources/domains/Product.xml:8
+"End On","Se termine",,"resources/domains/Leave.xml:16"
+"Expense","Note de frais",,"resources/domains/Product.xml:8
 resources/views/Expense.xml:13"
-Expense Type,Type de frais,,resources/domains/ExpenseLine.xml:12
-Expense date,Date de dépense,,resources/domains/ExpenseLine.xml:13
-Expense line,Ligne de NdeF,,resources/views/ExpenseLine.xml:13
-Expense lines,Lignes de NdeF,,"resources/domains/Expense.xml:14
+"Expense Type","Type de frais",,"resources/domains/ExpenseLine.xml:12"
+"Expense date","Date de dépense",,"resources/domains/ExpenseLine.xml:13"
+"Expense line","Ligne de NdeF",,"resources/views/ExpenseLine.xml:13"
+"Expense lines","Lignes de NdeF",,"resources/domains/Expense.xml:14
 resources/views/ExpenseLine.xml:5"
-Expenses,Note de frais,,"resources/views/Expense.xml:5
+"Expenses","Note de frais",,"resources/views/Expense.xml:5
 resources/views/Menu.xml:11
 resources/views/Menu.xml:9"
-External,Externe,,resources/domains/Employee.xml:19
-Friday,Vendredi,,resources/views/Selects.xml:33
-From date,De,,resources/domains/Timesheet.xml:15
-Full name,,,resources/domains/Timesheet.xml:22
-Generate Lines automatically,Générer les lignes automatiquement,,resources/views/Timesheet.xml:27
-Generate lines,Générer les lignes,,resources/views/Timesheet.xml:34
-Get time from Tasks,Récupérer les temps passés sur les tâches,,resources/views/Timesheet.xml:25
-Historic colleague Timesheets,Historique des f. de temps des collab.,,resources/views/Menu.xml:37
-Hourly price,Prix horaire,,resources/domains/TimeActivity.xml:12
-Hourly rate,Taux horaire,,resources/domains/Employee.xml:12
-Hours,Heures,,"resources/views/Selects.xml:24
+"External","Externe",,"resources/domains/Employee.xml:19"
+"Friday","Vendredi",,"resources/views/Selects.xml:33"
+"From date","De",,"resources/domains/Timesheet.xml:15"
+"Full name",,,"resources/domains/Timesheet.xml:22"
+"Generate Lines automatically","Générer les lignes automatiquement",,"resources/views/Timesheet.xml:27"
+"Generate lines","Générer les lignes",,"resources/views/Timesheet.xml:34"
+"Get time from Tasks","Récupérer les temps passés sur les tâches",,"resources/views/Timesheet.xml:25"
+"Historic colleague Timesheets","Historique des f. de temps des collab.",,"resources/views/Menu.xml:37"
+"Hourly price","Prix horaire",,"resources/domains/TimeActivity.xml:12"
+"Hourly rate","Taux horaire",,"resources/domains/Employee.xml:12"
+"Hours","Heures",,"resources/views/Selects.xml:24
 resources/views/TimesheetLine.xml:29
 resources/views/TimesheetLine.xml:44"
-Human resources,RH,,resources/views/Menu.xml:5
-Import,,,"resources/domains/Employee.xml:10
+"Human resources","RH",,"resources/views/Menu.xml:5"
+"Import",,,"resources/domains/Employee.xml:10
 resources/domains/TimeActivity.xml:10
 resources/domains/Timesheet.xml:10
 resources/domains/TimesheetLine.xml:10
 resources/domains/WeeklyPlanning.xml:15
 resources/domains/WeeklyPlanning.xml:9"
-Leave,Absence,,"resources/views/Leave.xml:16
+"Leave","Absence",,"resources/views/Leave.xml:16
 resources/views/Leave.xml:5"
-Leave reason,Motif absence,,"resources/domains/LeaveReason.xml:10
+"Leave reason","Motif absence",,"resources/domains/LeaveReason.xml:10
 resources/views/LeaveReason.xml:5
 resources/views/LeaveReason.xml:9
 resources/views/Menu.xml:63
 resources/views/Menu.xml:65"
-Leaves,Absences,,"resources/views/Menu.xml:54
+"Leaves","Absences",,"resources/views/Menu.xml:54
 resources/views/Menu.xml:56"
-Log Time,Temps passé,,resources/views/TimesheetLine.xml:23
-Log Times,Temps passés,,resources/views/TimesheetLine.xml:5
-Logged Time,Temps passé,,resources/domains/Task.xml:10
-Manager,Responsable Hiérarchique,,resources/domains/Employee.xml:16
-Minutes,Minutes,,resources/views/Selects.xml:25
-Monday,Lundi,,resources/views/Selects.xml:29
-Morning,Le matin,,resources/views/Selects.xml:39
-Morning From,Le matin de,,resources/domains/WeeklyPlanning.xml:18
-Name,Nom,,"resources/domains/Employee.xml:22
+"Log Time","Temps passé",,"resources/views/TimesheetLine.xml:23"
+"Log Times","Temps passés",,"resources/views/TimesheetLine.xml:5"
+"Logged Time","Temps passé",,"resources/domains/Task.xml:10"
+"Manager","Responsable Hiérarchique",,"resources/domains/Employee.xml:16"
+"Minutes","Minutes",,"resources/views/Selects.xml:25"
+"Monday","Lundi",,"resources/views/Selects.xml:29"
+"Morning","Le matin",,"resources/views/Selects.xml:39"
+"Morning From","Le matin de",,"resources/domains/WeeklyPlanning.xml:18"
+"Name","Nom",,"resources/domains/Employee.xml:22
 resources/domains/TimeActivity.xml:11
 resources/domains/WeeklyPlanning.xml:10"
-No log time found or all log times already added,Aucun temps passé à ajouter,,resources/views/Timesheet.xml:74
-Overview,Entête,,"resources/views/TimesheetLine.xml:24
+"No log time found or all log times already added","Aucun temps passé à ajouter",,"resources/views/Timesheet.xml:74"
+"Overview","Entête",,"resources/views/TimesheetLine.xml:24
 resources/views/TimesheetLine.xml:38"
-Period,Période,,resources/domains/Expense.xml:11
-Planning,,,resources/domains/Employee.xml:20
-Project,Projet,,"resources/domains/ExpenseLine.xml:11
+"Period","Période",,"resources/domains/Expense.xml:11"
+"Planning",,,"resources/domains/Employee.xml:20"
+"Project","Projet",,"resources/domains/ExpenseLine.xml:11
 resources/domains/Timesheet.xml:17
 resources/domains/TimesheetLine.xml:11"
-Reason,Motif,,resources/domains/Leave.xml:18
-Refuse,Refuser,,resources/views/Timesheet.xml:17
-Refused,Refusé,,"resources/views/Selects.xml:10
+"Reason","Motif",,"resources/domains/Leave.xml:18"
+"Refuse","Refuser",,"resources/views/Timesheet.xml:17"
+"Refused","Refusé",,"resources/views/Selects.xml:10
 resources/views/Selects.xml:18"
-Request date,Date de la demande,,resources/domains/Leave.xml:12
-Return to draft status,Retourner à l'état brouillon,,resources/views/Timesheet.xml:19
-Saturday,Samedi,,resources/views/Selects.xml:34
-Select Timesheet,Sélectionner Feuille de temps,,resources/views/Timesheet.xml:40
-Select the timesheet you want to edit,Sélectionnez la feuille de temps à éditer,,resources/views/Timesheet.xml:39
-Send Expenses,Envoyer note de frais,,resources/views/Expense.xml:19
-Sent Date,Date d'envoi,,"resources/domains/Expense.xml:10
+"Request date","Date de la demande",,"resources/domains/Leave.xml:12"
+"Return to draft status","Retourner à l'état brouillon",,"resources/views/Timesheet.xml:19"
+"Saturday","Samedi",,"resources/views/Selects.xml:34"
+"Select Timesheet","Sélectionner Feuille de temps",,"resources/views/Timesheet.xml:40"
+"Select the timesheet you want to edit","Sélectionnez la feuille de temps à éditer",,"resources/views/Timesheet.xml:39"
+"Send Expenses","Envoyer note de frais",,"resources/views/Expense.xml:19"
+"Sent Date","Date d'envoi",,"resources/domains/Expense.xml:10
 resources/domains/Timesheet.xml:11"
-Start On,Commence,,resources/domains/Leave.xml:14
-Status,Statut,,"resources/domains/Expense.xml:12
+"Start On","Commence",,"resources/domains/Leave.xml:14"
+"Status","Statut",,"resources/domains/Expense.xml:12
 resources/domains/Leave.xml:11
 resources/domains/Timesheet.xml:12"
-Sunday,Dimanche,,resources/views/Selects.xml:35
-Task,Tâche,,"resources/domains/Timesheet.xml:18
+"Sunday","Dimanche",,"resources/views/Selects.xml:35"
+"Task","Tâche",,"resources/domains/Timesheet.xml:18
 resources/domains/TimesheetLine.xml:12
 resources/views/Task.xml:10"
-Tasks,Tâches,,resources/views/Task.xml:5
-Thursday,Jeudi,,resources/views/Selects.xml:32
-Time Activity,Activité temps,,"resources/views/TimeActivity.xml:10
+"Tasks","Tâches",,"resources/views/Task.xml:5"
+"Thursday","Jeudi",,"resources/views/Selects.xml:32"
+"Time Activity","Activité temps",,"resources/views/TimeActivity.xml:10
 resources/views/TimeActivity.xml:5"
-Time Sheet,Feuille de temps,,resources/domains/TimesheetLine.xml:16
-Time logging preference,Unité saisie feuille de temps,,resources/domains/Employee.xml:13
-Timesheet,Feuille de temps,,"resources/views/Timesheet.xml:13
+"Time Sheet","Feuille de temps",,"resources/domains/TimesheetLine.xml:16"
+"Time logging preference","Unité saisie feuille de temps",,"resources/domains/Employee.xml:13"
+"Timesheet","Feuille de temps",,"resources/views/Timesheet.xml:13
 resources/views/Timesheet.xml:5"
-Timesheet Line,Ligne de feuille de temps,,resources/views/TimesheetLine.xml:37
-Timesheet Lines,Lignes de feuille de temps,,"resources/domains/Timesheet.xml:14
+"Timesheet Line","Ligne de feuille de temps",,"resources/views/TimesheetLine.xml:37"
+"Timesheet Lines","Lignes de feuille de temps",,"resources/domains/Timesheet.xml:14
 resources/views/TimesheetLine.xml:13"
-Timesheet reminder,Soumis à la saisie des temps,,resources/domains/Employee.xml:18
-Timesheets,Feuille de temps,,resources/views/Menu.xml:17
-Timesheets to Validate,Feuilles de temps à valider,,resources/views/Menu.xml:31
-To,à,,"resources/domains/WeeklyPlanning.xml:19
+"Timesheet reminder","Soumis à la saisie des temps",,"resources/domains/Employee.xml:18"
+"Timesheets","Feuille de temps",,"resources/views/Menu.xml:17"
+"Timesheets to Validate","Feuilles de temps à valider",,"resources/views/Menu.xml:31"
+"To","à",,"resources/domains/WeeklyPlanning.xml:19
 resources/domains/WeeklyPlanning.xml:21"
-To date,à,,resources/domains/Timesheet.xml:16
-Total amount with tax,Montant TTC,,resources/domains/ExpenseLine.xml:16
-Total tax,Montant TVA,,resources/domains/ExpenseLine.xml:15
-Tuesday,Mardi,,resources/views/Selects.xml:30
-Untaxed amount,Montant HT,,resources/domains/ExpenseLine.xml:14
-User,Utilisateur,,"resources/domains/Expense.xml:13
+"To date","à",,"resources/domains/Timesheet.xml:16"
+"Total amount with tax","Montant TTC",,"resources/domains/ExpenseLine.xml:16"
+"Total tax","Montant TVA",,"resources/domains/ExpenseLine.xml:15"
+"Tuesday","Mardi",,"resources/views/Selects.xml:30"
+"Untaxed amount","Montant HT",,"resources/domains/ExpenseLine.xml:14"
+"User","Utilisateur",,"resources/domains/Expense.xml:13
 resources/domains/ExpenseLine.xml:10
 resources/domains/Leave.xml:10
 resources/domains/Timesheet.xml:13
 resources/domains/TimesheetLine.xml:14"
-Valid,Valider,,resources/views/Timesheet.xml:16
-Validated,Validé,,"resources/views/Selects.xml:17
+"Valid","Valider",,"resources/views/Timesheet.xml:16"
+"Validated","Validé",,"resources/views/Selects.xml:17
 resources/views/Selects.xml:9"
-Waiting validation,Attente validation,,resources/views/Selects.xml:8
-Wednesday,Mercredi,,resources/views/Selects.xml:31
-Week days,Jours de la semaine,,resources/domains/WeeklyPlanning.xml:11
-Weekly Planning,Planning hebdomadaire,,"resources/views/WeeklyPlanning.xml:11
+"Waiting validation","Attente validation",,"resources/views/Selects.xml:8"
+"Wednesday","Mercredi",,"resources/views/Selects.xml:31"
+"Week days","Jours de la semaine",,"resources/domains/WeeklyPlanning.xml:11"
+"Weekly Planning","Planning hebdomadaire",,"resources/views/WeeklyPlanning.xml:11
 resources/views/WeeklyPlanning.xml:5"
-Weekly plann,Planning hebdomadaire,,resources/domains/WeeklyPlanning.xml:16
-Weekly work hours,Nombre d'heures de travail hebdomadaire,,resources/domains/Employee.xml:14
+"Weekly plann","Planning hebdomadaire",,"resources/domains/WeeklyPlanning.xml:16"
+"Weekly work hours","Nombre d'heures de travail hebdomadaire",,"resources/domains/Employee.xml:14"

@@ -16,10 +16,11 @@
 			<field name="senderUser"/>
 			<field name="sentDateT" colSpan="4"/>
 			<panel colSpan="12" showIf="mediaTypeSelect == 2">
-			    <field name="fromEmailAddress" />
-				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature" requiredIf="mediaTypeSelect == 2"/>
-			</panel>
-        </panel>
+			    <field name="fromEmailAddress" widget="SuggestBox"/>
+				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature" onSelect="action-message-attribute-mail-account" requiredIf="mediaTypeSelect == 2" />
+        		<field name="replyToEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>			
+        	</panel>
+       	</panel>
 		<panel title="Recipient address" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 1">
 			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false" showIf="mediaTypeSelect == 1" requiredIf="mediaTypeSelect == 1"/>
 		</panel>
@@ -36,7 +37,6 @@
        	 	<field name="content" colSpan="12" showTitle="false" widget="html"/>
         </panel>
         <panel title="Related to" sidebar="true" colSpan="12" readonlyIf="statusSelect == 3">
-			<field name="filePath" widget="url" colSpan="12"/>
 			<field name="company" colSpan="12"/>
 			<panel colSpan="12">
 				<field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" colSpan="12"/>
@@ -55,6 +55,10 @@
     	<action name="action-message-record-default-media-type"/>
     </action-group>
     
+    <action-attrs name="action-message-attribute-mail-account">
+    	<attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE"/>
+    	<attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE AND self.user = :__user__" if="call: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getMailAccountByUser()"/>
+    </action-attrs>
 	
     <action-record model="com.axelor.apps.message.db.Message" name="action-message-record-active-company">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>

@@ -23,6 +23,7 @@
 		    <button name="copy" title="Copy" hidden="true"/>
 		    <button name="search" title="Search" hidden="true"/>
 		    <button name="exportObjects" title="Export Object" onClick="action-method-general-export-objects"/>
+		    <button name="remindTimesheets" title="Timesheets Reminder" onClick="action-method-general-remind-timesheet"/>
 		</toolbar>
 		<panel>
 		    <field name="today"/>
@@ -31,6 +32,9 @@
 		    <field name="defaultPartnerLanguage" />
 		</panel>
 		<panel-tabs>
+		    <panel title="Configuration">
+		    	<field name="mailAccountByUser" />
+		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>
 				<field name="isInvoiceMoveConsolidated"/>
@@ -141,5 +145,9 @@
 		<view-param name="width" value="500" />
 		<context name="object" expr="eval:_model"/>
 	</action-view>
+	
+	<action-method name="action-method-general-remind-timesheet">
+		<call class="com.axelor.apps.base.web.MailBatchController" method="remindTimesheetGeneral"/>
+	</action-method>
 	
 </object-views>

@@ -8,6 +8,7 @@
         <field name="fullName"/>
         <field name="partner"/>
         <field name="activeCompany"/>
+        <field name="group" />
     </grid>
     
     

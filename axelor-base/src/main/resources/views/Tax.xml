@@ -15,25 +15,15 @@
 		</panel>
 	    <panel-tabs>
 			<panel title="Tax rate list">
-				<field name="activeTaxLine"/>
-			 	<panel-related field="taxLineList" colSpan="12"/>
+				<field name="activeTaxLine" onSelect="action-base-attrs-domain-active-tax-line" canNew="true" form-view="tax-line-tax-form"/>
+			 	<panel-related field="taxLineList" colSpan="12" canNew="false" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
 			</panel>
 	    	<panel-related title="Accounting configuration" field="taxAccountList" if-module="axelor-account"/>
 	    </panel-tabs>
 	</form>
 	
-	<grid name="tax-line-custom-grid" model="com.axelor.apps.account.db.TaxLine" title="Tax rate lines">
-		<field name="startDate"/>
-		<field name="endDate"/>
-		<field name="value"/>
-	</grid>
-	
-	<form name="tax-line-custom-form" model="com.axelor.apps.account.db.TaxLine" title="Tax rate"  >
-	    
-    	<field name="value"/>
-	    <field name="startDate"/>
-	    <field name="endDate"/>
-	   
-	</form>
+	<action-attrs name="action-base-attrs-domain-active-tax-line" model="com.axelor.apps.account.db.Tax">
+		<attribute name="domain" for="activeTaxLine" expr="eval: &quot; self.tax.id = ${__this__.id} &quot;"/>
+	</action-attrs>
     
 </object-views>

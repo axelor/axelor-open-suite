@@ -507,6 +507,7 @@ public interface IExceptionMessage {
 	static final String INVOICE_1 = /*$$(*/ "Facture annulée" /*)*/;
 	static final String INVOICE_2 = /*$$(*/ "Avoir créé" /*)*/;
 	static final String INVOICE_3 = /*$$(*/ "Please select the invoice(s) to print." /*)*/;
+	static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;
 	
 	/**
 	 * Move template controller

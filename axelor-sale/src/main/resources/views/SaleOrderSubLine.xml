@@ -26,7 +26,7 @@
 	    <field name="qty" onChange="action-sale-order-sub-line-method-compute"/>
 	    <field name="unit"/>
 	    <field name="price" onChange="action-sale-order-sub-line-method-compute"/>
-	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 	    <field name="exTaxTotal"/>
 	    <field name="taxLine.value"/>
 	  </panel>  

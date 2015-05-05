@@ -28,9 +28,11 @@ import com.google.inject.Inject;
 
 public class AlarmEngineController {
 
+	@SuppressWarnings("rawtypes")
 	@Inject
 	private AlarmEngineService aes;
 	
+	@SuppressWarnings("unchecked")
 	public void validateQuery(ActionRequest request, ActionResponse response) {
 		
 		AlarmEngine alarmEngine = request.getContext().asType(AlarmEngine.class);

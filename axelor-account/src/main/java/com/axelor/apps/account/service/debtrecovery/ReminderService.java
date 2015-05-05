@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -373,9 +374,10 @@ public class ReminderService extends ReminderRepository{
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public boolean reminderGenerate(Partner partner, Company company) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException {			
+	public boolean reminderGenerate(Partner partner, Company company) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {			
 		boolean remindedOk = false;
 		
 		Reminder reminder = this.getReminder(partner, company); // ou getReminder si existe

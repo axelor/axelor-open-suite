@@ -508,6 +508,15 @@
 		<view type="form" />
 	</action-view>
 	
+	<menuitem name="admin-root-batch-mail" parent="admin-root-batch"
+		title="Mail batches" action="admin.root.batch.mail" />
+
+	<action-view name="admin.root.batch.mail" title="Mail batches"
+		model="com.axelor.apps.base.db.MailBatch" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" name="mail-batch-grid"/>
+		<view type="form" name="mail-batch-form"/>
+	</action-view>
+	
 	<menuitem name="admin-root-conf" parent="admin-root"
 		title="Modules configurations" icon="img/Other/parameter_59px.png"/>
 	
