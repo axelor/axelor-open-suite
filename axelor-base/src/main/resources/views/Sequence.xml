@@ -71,8 +71,8 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 	</action-record>
     
     <action-attrs name="action-sequence-attrs">
-    	<attribute name="hidden" for="company" expr="eval: code in ['contract','contractLine','invoicePaymentCondition','partner']"/>
-    	<attribute name="required" for="company" expr="eval: !(code in ['contract','contractLine','invoicePaymentCondition','partner'])"/>
+    	<attribute name="hidden" for="company" expr="eval: code in ['partner','eventTicket','productTrackingNumber']"/>
+    	<attribute name="required" for="company" expr="eval: !(code in ['partner','eventTicket','productTrackingNumber'])"/>
     </action-attrs>
     
     <action-validate name="action-sequence-validate">
