@@ -22,10 +22,8 @@
     <decimal name="discountAmount" title="Discount amount"/>
   	<integer name="discountTypeSelect" title="In % / fixed amount" selection="base.price.list.line.amount.type.select"/>
     
-    <string name="description" title="Description"/>
+    <string name="description" title="Description" large="true"/>
     <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
-    
-    <string name="note" title="Note" large="true"/>
     
     <!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in Acc. currency" hidden="true"/>

@@ -34,8 +34,8 @@
 			        <field name="discountAmount" onChange="action-invoice-line-method-compute"/>
 			    </panel>
     		</panel>
-    		<panel title="Notes">
-    			<field name="note" colSpan="12"/>
+    		<panel title="Description">
+    			<field name="description" colSpan="12" widget="html"/>
     		</panel>
     	</panel-tabs>
         
