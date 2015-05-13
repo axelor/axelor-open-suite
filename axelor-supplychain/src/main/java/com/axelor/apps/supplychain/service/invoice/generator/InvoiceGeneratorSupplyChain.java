@@ -75,7 +75,7 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
 		Invoice invoice = super.createInvoiceHeader();
 
-		if (!GeneralService.getGeneral().getManageAmountInvoiceByLine()){
+		if (!GeneralService.getGeneral().getManageInvoicedAmountByLine()){
 			if(saleOrder != null){
 				invoice.setSaleOrder(saleOrder);
 			}else{

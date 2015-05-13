@@ -54,7 +54,7 @@
 		    </panel>
 		    <panel title="General Settings">
 		    	<panel title="Invoice configuration">
-					<field name="manageAmountInvoiceByLine" if-module="axelor-supplychain"/>
+					<field name="manageInvoicedAmountByLine" if-module="axelor-supplychain"/>
 				</panel>
 				
 				<panel title="Sale order configuration">

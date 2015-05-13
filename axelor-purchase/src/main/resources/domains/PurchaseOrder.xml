@@ -44,6 +44,8 @@
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+    
+    <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
 
 <!-- Notes -->
 	<string name="notes" large="true" multiline="true" title="Notes"/>

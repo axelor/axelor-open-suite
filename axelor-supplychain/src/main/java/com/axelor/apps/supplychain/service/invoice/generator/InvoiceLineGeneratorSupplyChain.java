@@ -62,7 +62,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
 		InvoiceLine invoiceLine = super.createInvoiceLine();
 
-		if (GeneralService.getGeneral().getManageAmountInvoiceByLine()){
+		if (GeneralService.getGeneral().getManageInvoicedAmountByLine()){
 			if (saleOrderLine != null){
 				invoiceLine.setSaleOrderLine(saleOrderLine);
 			}else{

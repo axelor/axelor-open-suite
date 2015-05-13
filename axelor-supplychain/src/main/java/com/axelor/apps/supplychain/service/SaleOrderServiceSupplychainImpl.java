@@ -34,26 +34,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceStockImpl {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceSupplychainImpl.class);
 
-	/**
-	 * Calculer le montant d'une facture.
-	 * <p>
-	 * Le calcul est basé sur les lignes de TVA préalablement créées.
-	 * </p>
-	 *
-	 * @param invoice
-	 * @param vatLines
-	 * @throws AxelorException
-	 */
-	@Override
-	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
-
-		super._computeSaleOrder(saleOrder);
-
-		saleOrder.setAmountRemainingToBeInvoiced(saleOrder.getExTaxTotal());
-
-	}
-
-
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner) throws AxelorException  {

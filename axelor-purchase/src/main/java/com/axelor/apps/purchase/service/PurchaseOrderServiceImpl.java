@@ -146,6 +146,11 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 
 		}
 
+		for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+			//Into company currency
+			purchaseOrder.setCompanyExTaxTotal(purchaseOrder.getCompanyExTaxTotal().add( purchaseOrderLine.getCompanyExTaxTotal() ));
+		}
+
 		LOG.debug("Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
 			new Object[] { purchaseOrder.getExTaxTotal(), purchaseOrder.getTaxTotal(), purchaseOrder.getInTaxTotal() });
 

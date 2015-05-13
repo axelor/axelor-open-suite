@@ -48,8 +48,8 @@ public interface PurchaseOrderInvoiceService {
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
-	public BigDecimal getAmountRemainingToBeInvoiced(PurchaseOrder purchaseOrder);
+	public BigDecimal getAmountInvoiced(PurchaseOrder purchaseOrder);
 
-	public BigDecimal getAmountRemainingToBeInvoiced(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean includeInvoice);
+	public BigDecimal getAmountInvoiced(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean includeInvoice);
 
 }

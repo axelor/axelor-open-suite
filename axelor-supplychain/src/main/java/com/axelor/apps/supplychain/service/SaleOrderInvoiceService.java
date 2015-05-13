@@ -66,9 +66,9 @@ public interface SaleOrderInvoiceService {
 	 * @throws Exception
 	 */
 	public Invoice runSubscriptionInvoicing(SaleOrder saleOrder) throws AxelorException;
-	
+
 	public boolean checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder);
-	
+
 	public SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice);
 
 
@@ -92,9 +92,9 @@ public interface SaleOrderInvoiceService {
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderSubLine saleOrderSubLine) throws AxelorException;
 
-	public BigDecimal getAmountRemainingToBeInvoiced(SaleOrder saleOrder);
+	public BigDecimal getAmountInvoiced(SaleOrder saleOrder);
 
-	public BigDecimal getAmountRemainingToBeInvoiced(SaleOrder saleOrder, Long exceptInvoiceId, boolean includeInvoice);
+	public BigDecimal getAmountInvoiced(SaleOrder saleOrder, Long exceptInvoiceId, boolean includeInvoice);
 
 }
 

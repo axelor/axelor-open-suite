@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service.workflow;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class VentilateStateSupplyChain extends VentilateState {
 
 		super.process();
 		if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
-			//Update amount remaining to invoiced on SaleOrder
+			//Update amount invoiced on SaleOrder
 			if (invoice.getSaleOrder() == null){
 				//Get all different saleOrders from invoice
 				SaleOrder currentSaleOrder = null;
@@ -55,18 +57,28 @@ public class VentilateStateSupplyChain extends VentilateState {
 						saleOrderList.add(invoiceLine.getSaleOrderLine().getSaleOrder());
 						currentSaleOrder = invoiceLine.getSaleOrderLine().getSaleOrder();
 					}
+					//Update invoiced amount on sale order line
+					BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
+					if (!invoice.getCurrency().equals(invoiceLine.getSaleOrderLine().getSaleOrder().getCurrency())){
+						//If the sale order currency is different from the invoice currency, use company currency to calculate a rate. This rate will be applied to sale order line
+						BigDecimal currentCompanyInvoicedAmount = invoiceLine.getCompanyExTaxTotal();
+						BigDecimal rate = currentCompanyInvoicedAmount.divide(invoiceLine.getSaleOrderLine().getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
+						invoicedAmountToAdd = rate.multiply(invoiceLine.getSaleOrderLine().getExTaxTotal());
+					}
+					invoiceLine.getSaleOrderLine().setAmountInvoiced(invoiceLine.getSaleOrderLine().getAmountInvoiced().add(invoicedAmountToAdd));
+					JPA.save(invoiceLine.getSaleOrderLine());
 				}
 
 				for (SaleOrder saleOrder : saleOrderList) {
-					saleOrder.setAmountRemainingToBeInvoiced(saleOrderInvoiceService.getAmountRemainingToBeInvoiced(saleOrder, invoice.getId(), true));
+					saleOrder.setAmountInvoiced(saleOrderInvoiceService.getAmountInvoiced(saleOrder, invoice.getId(), true));
 					JPA.save(saleOrder);
 				}
 
 			}else{
-				invoice.getSaleOrder().setAmountRemainingToBeInvoiced(saleOrderInvoiceService.getAmountRemainingToBeInvoiced(invoice.getSaleOrder(), invoice.getId(), true));
+				invoice.getSaleOrder().setAmountInvoiced(saleOrderInvoiceService.getAmountInvoiced(invoice.getSaleOrder(), invoice.getId(), true));
 			}
 		}else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE){
-			//Update amount remaining to invoiced on PurchaseOrder
+			//Update amount invoiced on PurchaseOrder
 			if (invoice.getPurchaseOrder() == null){
 				//Get all different saleOrders from invoice
 				PurchaseOrder currentPurchaseOrder = null;
@@ -77,15 +89,25 @@ public class VentilateStateSupplyChain extends VentilateState {
 						purchaseOrderList.add(invoiceLine.getPurchaseOrderLine().getPurchaseOrder());
 						currentPurchaseOrder = invoiceLine.getPurchaseOrderLine().getPurchaseOrder();
 					}
+					//Update invoiced amount on purchase order line
+					BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
+					if (!invoice.getCurrency().equals(invoiceLine.getPurchaseOrderLine().getPurchaseOrder().getCurrency())){
+						//If the purchase order currency is different from the invoice currency, use company currency to calculate a rate. This rate will be applied to purchase order line
+						BigDecimal currentCompanyInvoicedAmount = invoiceLine.getCompanyExTaxTotal();
+						BigDecimal rate = currentCompanyInvoicedAmount.divide(invoiceLine.getPurchaseOrderLine().getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
+						invoicedAmountToAdd = rate.multiply(invoiceLine.getPurchaseOrderLine().getExTaxTotal());
+					}
+					invoiceLine.getPurchaseOrderLine().setAmountInvoiced(invoiceLine.getPurchaseOrderLine().getAmountInvoiced().add(invoicedAmountToAdd));
+					JPA.save(invoiceLine.getPurchaseOrderLine());
 				}
 
 				for (PurchaseOrder purchaseOrder : purchaseOrderList) {
-					purchaseOrder.setAmountRemainingToBeInvoiced(purchaseOrderInvoiceService.getAmountRemainingToBeInvoiced(purchaseOrder, invoice.getId(), true));
+					purchaseOrder.setAmountInvoiced(purchaseOrderInvoiceService.getAmountInvoiced(purchaseOrder, invoice.getId(), true));
 					JPA.save(purchaseOrder);
 				}
 
 			}else{
-				invoice.getPurchaseOrder().setAmountRemainingToBeInvoiced(purchaseOrderInvoiceService.getAmountRemainingToBeInvoiced(invoice.getPurchaseOrder(), invoice.getId(), true));
+				invoice.getPurchaseOrder().setAmountInvoiced(purchaseOrderInvoiceService.getAmountInvoiced(invoice.getPurchaseOrder(), invoice.getId(), true));
 			}
 		}
 	}

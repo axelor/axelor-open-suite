@@ -73,11 +73,12 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 	@Inject
 	private PartnerService partnerService;
-	
+
 	@Inject
 	protected SaleOrderRepository saleOrderRepo;
 
 
+	@Override
 	public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException  {
 
 		if(saleOrder.getSaleOrderLineList() != null)  {
@@ -91,6 +92,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	}
 
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException  {
 
@@ -116,6 +118,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	 *
 	 * @throws AxelorException
 	 */
+	@Override
 	public void _populateSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
 		LOG.debug("Peupler un devis => lignes de devis: {} ", new Object[] { saleOrder.getSaleOrderLineList().size() });
@@ -135,6 +138,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	 * @param vatLines
 	 * @throws AxelorException
 	 */
+	@Override
 	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
 		saleOrder.setExTaxTotal(BigDecimal.ZERO);
@@ -150,6 +154,11 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 		}
 
+		for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+			//Into company currency
+			saleOrder.setCompanyExTaxTotal(saleOrder.getCompanyExTaxTotal().add( saleOrderLine.getCompanyExTaxTotal() ));
+		}
+
 		LOG.debug("Montant de la facture: HTT = {},  HT = {}, Taxe = {}, TTC = {}",
 				new Object[] { saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal() });
 
@@ -161,6 +170,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	 * @param saleOrder
 	 * 			Un devis
 	 */
+	@Override
 	public void initSaleOrderLineTaxList(SaleOrder saleOrder) {
 
 		if (saleOrder.getSaleOrderLineTaxList() == null) { saleOrder.setSaleOrderLineTaxList(new ArrayList<SaleOrderLineTax>()); }
@@ -169,6 +179,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 	}
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateCustomer(SaleOrder saleOrder)  {
 
@@ -180,6 +191,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 
 
+	@Override
 	public String getSequence(Company company) throws AxelorException  {
 		String seq = sequenceService.getSequenceNumber(IAdministration.SALES_ORDER, company);
 		if (seq == null)  {
@@ -189,11 +201,13 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		return seq;
 	}
 
+	@Override
 	public String getDraftSequence(Long saleOrderId){
 		return "*"+saleOrderId.toString();
 	}
 
 
+	@Override
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner) throws AxelorException  {
@@ -255,6 +269,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		}
 	}
 
+	@Override
 	public String getURLSaleOrderPDF(SaleOrder saleOrder){
 		String language="";
 		try{
@@ -271,7 +286,8 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 							.addParam("SaleOrderId", saleOrder.getId().toString())
 							.getUrl();
 	}
-	
+
+	@Override
 	@Transactional
 	public SaleOrder createSaleOrder(SaleOrder context){
 		SaleOrder copy = saleOrderRepo.copy(context, true);
@@ -279,7 +295,8 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		copy.setTemplateUser(null);
 		return copy;
 	}
-	
+
+	@Override
 	@Transactional
 	public SaleOrder createTemplate(SaleOrder context){
 		SaleOrder copy = saleOrderRepo.copy(context, true);
@@ -287,7 +304,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		copy.setTemplateUser(AuthUtils.getUser());
 		return copy;
 	}
-	
+
 }
 
 

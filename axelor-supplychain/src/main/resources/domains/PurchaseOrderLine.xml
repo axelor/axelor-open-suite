@@ -7,9 +7,7 @@
 
   <entity name="PurchaseOrderLine" lang="java">
   
-  	<boolean name="isInvoiced" title="Invoiced ?"/>
-  	<decimal name="amountInvoiced" title="Amount invoiced"/>
-  	<decimal name="amountRemainingToBeInvoiced" title="Remaining to invoice"/>
+  	<decimal name="amountInvoiced" title="Amount invoiced" readonly="true"/>
   	
 <!--   Onglet Historique -->
   	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated Invoice lines"/>

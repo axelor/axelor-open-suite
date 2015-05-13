@@ -143,8 +143,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
 
 	@Override
-	public BigDecimal getAmountRemainingToBeInvoiced(PurchaseOrder purchaseOrder){
-		return this.getAmountRemainingToBeInvoiced(purchaseOrder, null, false);
+	public BigDecimal getAmountInvoiced(PurchaseOrder purchaseOrder){
+		return this.getAmountInvoiced(purchaseOrder, null, false);
 	}
 
 	/**
@@ -161,11 +161,10 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 	 * To know if the invoice should be or not integrated in calculation
 	 */
 	@Override
-	public BigDecimal getAmountRemainingToBeInvoiced(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean includeInvoice){
+	public BigDecimal getAmountInvoiced(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean includeInvoice){
 
 		Query q = null;
 		String query;
-		BigDecimal amountRemainingToInvoice = purchaseOrder.getExTaxTotal();
 		query = "SELECT SUM(self.companyExTaxTotal)"
 				+ " FROM InvoiceLine as self"
 				+ " WHERE ( (self.purchaseOrderLine.id IN (SELECT id FROM PurchaseOrderLine WHERE purchaseOrder.id = :purchaseOrderId)"
@@ -189,16 +188,13 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
 		BigDecimal invoicedAmount = (BigDecimal) q.getSingleResult();
 		if(invoicedAmount != null){
-			if (purchaseOrder.getCurrency().equals(purchaseOrder.getCompany().getCurrency())){
-				amountRemainingToInvoice = amountRemainingToInvoice.subtract(invoicedAmount);
-			}else{
-				//Apply "(1 - rate)" on A.T.I total of purchaseOrder
-				BigDecimal rate = invoicedAmount.divide(amountRemainingToInvoice, 4, RoundingMode.HALF_UP);
-				amountRemainingToInvoice = purchaseOrder.getExTaxTotal().multiply(new BigDecimal(1).subtract(rate));
+			if (!purchaseOrder.getCurrency().equals(purchaseOrder.getCompany().getCurrency())){
+				BigDecimal rate = invoicedAmount.divide(purchaseOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
+				invoicedAmount = purchaseOrder.getExTaxTotal().multiply(rate);
 			}
 		}
 
-		return amountRemainingToInvoice;
+		return invoicedAmount;
 
 	}
 

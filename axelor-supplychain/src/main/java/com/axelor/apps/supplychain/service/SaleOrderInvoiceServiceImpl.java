@@ -376,8 +376,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 	@Override
-	public BigDecimal getAmountRemainingToBeInvoiced(SaleOrder saleOrder){
-		return this.getAmountRemainingToBeInvoiced(saleOrder, null, false);
+	public BigDecimal getAmountInvoiced(SaleOrder saleOrder){
+		return this.getAmountInvoiced(saleOrder, null, false);
 	}
 
 	/**
@@ -394,11 +394,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	 * To know if the invoice should be or not integrated in calculation
 	 */
 	@Override
-	public BigDecimal getAmountRemainingToBeInvoiced(SaleOrder saleOrder, Long currentInvoiceId, boolean includeInvoice){
+	public BigDecimal getAmountInvoiced(SaleOrder saleOrder, Long currentInvoiceId, boolean includeInvoice){
 
 		Query q = null;
 		String query;
-		BigDecimal amountRemainingToInvoice = saleOrder.getExTaxTotal();
 		query = "SELECT SUM(self.companyExTaxTotal)"
 				+ " FROM InvoiceLine as self"
 				+ " WHERE ( (self.saleOrderLine.id IN (SELECT id FROM SaleOrderLine WHERE saleOrder.id = :saleOrderId)"
@@ -422,16 +421,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		BigDecimal invoicedAmount = (BigDecimal) q.getSingleResult();
 		if(invoicedAmount != null){
-			if (saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency())){
-				amountRemainingToInvoice = amountRemainingToInvoice.subtract(invoicedAmount);
-			}else{
-				//Apply "(1 - rate)" on A.T.I total of saleOrder
-				BigDecimal rate = invoicedAmount.divide(amountRemainingToInvoice, 4, RoundingMode.HALF_UP);
-				amountRemainingToInvoice = saleOrder.getExTaxTotal().multiply(new BigDecimal(1).subtract(rate));
+			if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency())){
+				BigDecimal rate = invoicedAmount.divide(saleOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
+				invoicedAmount = saleOrder.getExTaxTotal().multiply(rate);
 			}
 		}
 
-		return amountRemainingToInvoice;
+		return invoicedAmount;
 
 	}
 

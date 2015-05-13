@@ -45,6 +45,8 @@
     <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     
+    <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
+    
     <integer name="statusSelect" title="Status" selection="sale.order.status.select" readonly="true"/>
   	
 <!--   	Onglet Autres informations -->

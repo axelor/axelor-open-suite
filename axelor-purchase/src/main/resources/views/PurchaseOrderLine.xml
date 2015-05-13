@@ -79,9 +79,7 @@
 	      <panel-related field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
 	    </panel>
 	    <panel title="Account" if-module="axelor-account">
-	      <field name="isInvoiced"/>
-	      <field name="amountInvoiced"/>
-	      <field name="amountRemainingToBeInvoiced"/>            
+	      <field name="amountInvoiced" showIf="eval: GeneralService.getGeneral().getManageInvoicedAmountByLine()"/>
 	    </panel>
 	    <panel-related field="invoiceSet">
 	      <field name="invoiceId"/>

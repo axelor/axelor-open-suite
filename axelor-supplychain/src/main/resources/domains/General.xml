@@ -5,8 +5,7 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="General" lang="java" cachable="true">
-		<!-- Manage the amount invoiced by line -->
-		<boolean name="manageAmountInvoiceByLine" title="Manage the amount invoiced by line" default="false"/>
+		<boolean name="manageInvoicedAmountByLine" title="Manage the invoiced amount by line" default="false"/>
 		<boolean name="customerStockMoveManagement" title="Customer deliveries management" default="false"/>
 		<boolean name="customerStockMoveGenerationAuto" title="Generate customer deliveries automatically" default="false"/>
 		<boolean name="supplierStockMoveManagement" title="Supplier arrivals management" default="false"/>

@@ -150,16 +150,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 	}
 
-
-	@Override
-	public void _computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
-
-		super._computePurchaseOrder(purchaseOrder);
-
-		purchaseOrder.setAmountRemainingToBeInvoiced(purchaseOrder.getInTaxTotal());
-
-	}
-
 	//Check if existing at least one stockMove not canceled for the purchaseOrder
 	public boolean existActiveStockMoveForPurchaseOrder(Long purchaseOrderId){
 		long nbStockMove = Beans.get(StockMoveRepository.class).all().filter("self.purchaseOrder.id = ? AND self.statusSelect <> ?", purchaseOrderId, IStockMove.STATUS_CANCELED).count();

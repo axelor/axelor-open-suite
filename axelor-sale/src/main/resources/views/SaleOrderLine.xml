@@ -51,13 +51,10 @@
 	      <field name="estimatedDelivDate"/>
 	      <panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12"/>
 	    </panel>
-	    <panel-related title="SO lines" field="saleOrderSubLineList"/>    
+	    <panel-related title="SO lines" field="saleOrderSubLineList"/>
 	    <panel title="Invoicing follow-up" if-module="axelor-supplychain">
-	      <field name="isToInvoice" colSpan="3"/>
-	      <field name="isInvoiced" colSpan="3"/>
 	      <field name="invoicingDate"/>
-	      <field name="amountInvoiced"/>
-	      <field name="amountRemainingToBeInvoiced"/>      
+	      <field name="amountInvoiced" showIf="eval: GeneralService.getGeneral().getManageInvoicedAmountByLine()"/>
 	    </panel>
 	    <panel-related field="invoiceSet"/>
 	    <panel-related field="employeeSet" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>

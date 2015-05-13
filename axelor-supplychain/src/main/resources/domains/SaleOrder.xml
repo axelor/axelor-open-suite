@@ -12,7 +12,7 @@
 	<integer name="invoicingTypeSelect" title="Invoicing type" selection="sale.order.invoicing.type.select"/>
 	<boolean name="showDetailsInInvoice" title="Show details in invoice"/>
 	<integer name="invoicingMomentSelect" title="Invoicing trigger" selection="supplychain.invoicing.moment.select"/>
-	<decimal name="amountRemainingToBeInvoiced" title="Amount remaining to invoice" readonly="true"/>
+	<decimal name="amountInvoiced" title="Amount invoiced" readonly="true"/>
 	
 	<!--    Onglet historique -->
 	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Linked invoices"/>
