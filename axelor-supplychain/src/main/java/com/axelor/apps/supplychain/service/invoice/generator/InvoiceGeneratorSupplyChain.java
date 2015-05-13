@@ -27,12 +27,15 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 
 public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
 	protected SaleOrder saleOrder;
+
+	protected PurchaseOrder purchaseOrder;
 
 	protected InvoiceGeneratorSupplyChain(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
 			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference, SaleOrder saleOrder) throws AxelorException {
@@ -42,6 +45,13 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
 	}
 
+	protected InvoiceGeneratorSupplyChain(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
+			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference, PurchaseOrder purchaseOrder) throws AxelorException {
+
+		super(operationType, company, paymentCondition, paymentMode, mainInvoicingAddress, partner, contactPartner, currency, priceList, internalReference, externalReference);
+		this.purchaseOrder = purchaseOrder;
+
+	}
 
 	/**
 	 * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency récupérés du tiers
@@ -52,20 +62,25 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 	 * @throws AxelorException
 	 */
 	protected InvoiceGeneratorSupplyChain(int operationType, Company company, Partner partner, Partner contactPartner, PriceList priceList,
-			String internalReference, String externalReference, SaleOrder saleOrder) throws AxelorException {
+			String internalReference, String externalReference, PurchaseOrder purchaseOrder) throws AxelorException {
 
 		super(operationType, company, partner, contactPartner, priceList, internalReference, externalReference);
-		this.saleOrder = saleOrder;
+		this.purchaseOrder = purchaseOrder;
 
 	}
 
 
+	@Override
 	protected Invoice createInvoiceHeader() throws AxelorException  {
 
 		Invoice invoice = super.createInvoiceHeader();
 
 		if (!GeneralService.getGeneral().getManageAmountInvoiceByLine()){
-			invoice.setSaleOrder(saleOrder);
+			if(saleOrder != null){
+				invoice.setSaleOrder(saleOrder);
+			}else{
+				invoice.setPurchaseOrder(purchaseOrder);
+			}
 		}
 
 		return invoice;

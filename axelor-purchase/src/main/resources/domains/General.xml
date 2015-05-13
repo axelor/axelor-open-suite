@@ -5,7 +5,9 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="General" lang="java" cachable="true">
+		<boolean name="purchaseOrderManagement" title="purchase order management" default="false"/>
 		<boolean name="managePurchaseOrderVersion" title="Manage purchase order versions" default="false"/>
+		<boolean name="purchaseOrderGenerationAuto" title="Generate purchase orders automatically" default="false"/>
 	</entity>
 
 </domain-models>

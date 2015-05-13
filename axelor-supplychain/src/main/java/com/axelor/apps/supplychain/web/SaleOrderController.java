@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -58,16 +59,20 @@ public class SaleOrderController {
 
 			SaleOrderServiceStockImpl saleOrderServiceStock = Beans.get(SaleOrderServiceStockImpl.class);
 			if (saleOrderServiceStock.existActiveStockMoveForSaleOrder(saleOrder.getId())){
-				response.setFlash(I18n.get("An active stockMove already exists for this saleOrder"));
+				if (!GeneralService.getGeneral().getCustomerStockMoveGenerationAuto()){
+					response.setFlash(I18n.get("An active stockMove already exists for this saleOrder"));
+				}
 			}else{
 				Long stockMoveId = saleOrderServiceStock.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
-				response.setView(ActionView
-						.define("StockMove")
-						.model(StockMove.class.getName())
-						.add("grid", "stock-move-grid")
-						.add("form", "stock-move-form")
-						.param("forceEdit", "true")
-						.context("_showRecord", String.valueOf(stockMoveId)).map());
+				if (!GeneralService.getGeneral().getCustomerStockMoveGenerationAuto()){
+					response.setView(ActionView
+							.define(I18n.get("Stock Move"))
+							.model(StockMove.class.getName())
+							.add("grid", "stock-move-grid")
+							.add("form", "stock-move-form")
+							.param("forceEdit", "true")
+							.context("_showRecord", String.valueOf(stockMoveId)).map());
+				}
 			}
 		}
 	}
@@ -94,6 +99,7 @@ public class SaleOrderController {
 		if(saleOrder.getId() != null) {
 
 			Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrderRepo.find(saleOrder.getId()));
+
 		}
 	}
 
@@ -168,10 +174,10 @@ public class SaleOrderController {
     	SaleOrder saleOrder = context.asType(SaleOrder.class);
 
 		if ( !Beans.get(SaleOrderInvoiceService.class).checkIfSaleOrderIsCompletelyInvoiced(saleOrder) ){ return; };
-		
+
 		Map<String,String> alert = Maps.newHashMap();
 		alert.put("alert", I18n.get(IExceptionMessage.SO_INVOICE_5));
 		response.setData( Lists.newArrayList( alert ) );
-		
+
 	}
 }

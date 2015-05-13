@@ -127,10 +127,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				IPurchaseOrder.INVOICING_FREE,
 				purchaseOrderServiceSupplychainImpl.getLocation(saleOrder.getCompany()),
 				today,
-				//Beans.get(PriceListRepository.class).all().filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(),
-				//TODO
-				//Beans.get(PartnerRepository.class).all().filter("self.id = ?1 AND self.priceList.typeSelect = 2", supplierPartner.getId()).fetchOne().getPriceList(),
-				null,
+				supplierPartner.getPurchasePriceList(),
 				supplierPartner);
 
 

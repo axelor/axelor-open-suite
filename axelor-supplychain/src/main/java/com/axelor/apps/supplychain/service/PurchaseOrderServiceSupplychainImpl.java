@@ -35,6 +35,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.stock.db.ILocation;
+import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
@@ -78,8 +79,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	 * @param purchaseOrder une commande
 	 * @throws AxelorException Aucune séquence de StockMove n'a été configurée
 	 */
-	public void createStocksMoves(PurchaseOrder purchaseOrder) throws AxelorException {
+	public Long createStocksMoves(PurchaseOrder purchaseOrder) throws AxelorException {
 
+		Long stockMoveId = null;
 		if(purchaseOrder.getPurchaseOrderLineList() != null && purchaseOrder.getCompany() != null) {
 			StockConfigService stockConfigService = Beans.get(StockConfigService.class);
 			Company company = purchaseOrder.getCompany();
@@ -122,7 +124,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				Beans.get(StockMoveService.class).plan(stockMove);
 			}
+
+			stockMoveId = stockMove.getId();
 		}
+		return stockMoveId;
 	}
 
 
@@ -155,6 +160,11 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 	}
 
+	//Check if existing at least one stockMove not canceled for the purchaseOrder
+	public boolean existActiveStockMoveForPurchaseOrder(Long purchaseOrderId){
+		long nbStockMove = Beans.get(StockMoveRepository.class).all().filter("self.purchaseOrder.id = ? AND self.statusSelect <> ?", purchaseOrderId, IStockMove.STATUS_CANCELED).count();
+		return nbStockMove > 0;
+	}
 
 
 }

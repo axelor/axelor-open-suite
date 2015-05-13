@@ -63,6 +63,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 	@Inject
 	private StockMoveRepository stockMoveRepo;
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder) throws AxelorException  {
 
@@ -87,6 +88,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 
 	}
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createInvoiceFromPurchaseOrder(StockMove stockMove, PurchaseOrder purchaseOrder) throws AxelorException  {
 
@@ -110,6 +112,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		return invoice;
 	}
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Map<String,Object> createInvoiceFromMultiCustomerStockMove(List<StockMove> stockMoveList, PaymentCondition paymentConditionIn, PaymentMode paymentModeIn, Partner contactPartnerIn) throws AxelorException  {
 
@@ -335,6 +338,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 
 	}
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Map<String,Object> createInvoiceFromMultiSupplierStockMove(List<StockMove> stockMoveList, Partner contactPartnerIn) throws AxelorException  {
 
@@ -496,6 +500,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 
 	}
 
+	@Override
 	public Invoice extendInternalReference(StockMove stockMove, Invoice invoice)  {
 
 		invoice.setInternalReference(stockMove.getStockMoveSeq()+":"+invoice.getInternalReference());
@@ -504,6 +509,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 	}
 
 
+	@Override
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<StockMoveLine> stockMoveLineList) throws AxelorException {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
@@ -517,6 +523,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		return invoiceLineList;
 	}
 
+	@Override
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
 
 		Product product = stockMoveLine.getProduct();
@@ -526,8 +533,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, product.getName(), stockMoveLine.getPrice(),
-				stockMoveLine.getDescription(), stockMoveLine.getRealQty(), stockMoveLine.getUnit(), product.getInvoiceLineType(),
-				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO, 0, null, false, stockMoveLine.getSaleOrderLine())  {
+				stockMoveLine.getDescription(), stockMoveLine.getRealQty(), stockMoveLine.getUnit(), null, product.getInvoiceLineType(),
+				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO, 0, null, false, stockMoveLine.getSaleOrderLine(), stockMoveLine.getPurchaseOrderLine())  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 

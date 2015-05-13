@@ -20,6 +20,9 @@ package com.axelor.apps.supplychain.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.purchase.db.IPurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
@@ -48,6 +51,16 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 			}
 
 			Beans.get(SaleOrderRepository.class).save(saleOrder);
+		}else if (stockMove.getPurchaseOrder() != null){
+			//Update linked purchaseOrder receipt state depending on BackOrder's existence
+			PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
+			if (newStockSeq != null){
+				purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+			}else{
+				purchaseOrder.setReceiptState(IPurchaseOrder.STATE_RECEIVED);
+			}
+
+			Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
 		}
 
 		return newStockSeq;

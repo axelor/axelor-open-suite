@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.production.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,74 +45,83 @@ import com.google.inject.persist.Transactional;
 public class ProductionOrderSaleOrderServiceImpl extends ProductionOrderRepository implements ProductionOrderSaleOrderService {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	protected LocalDate today;
-	
+
 	protected User user;
-	
-	@Inject 
+
+	@Inject
 	protected ProductionOrderService productionOrderService;
-	
+
 	@Inject
 	public ProductionOrderSaleOrderServiceImpl(UserService userInfoService) {
 
 		this.today = GeneralService.getTodayDate();
 		this.user = userInfoService.getUser();
 	}
-	
-	
-	public void generateProductionOrder(SaleOrder saleOrder) throws AxelorException  {
-		
+
+
+	@Override
+	public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException  {
+
+		List<Long> productionOrderIdList = new ArrayList<Long>();
 		if(saleOrder.getSaleOrderLineList() != null)  {
-			
+
+			ProductionOrder productionOrder = null;
 			for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList())  {
-				
-				this.generateProductionOrder(saleOrderLine);
-				
+
+				productionOrder = this.generateProductionOrder(saleOrderLine);
+				if (productionOrder != null){
+					productionOrderIdList.add(productionOrder.getId());
+				}
+
 			}
-			
+
 		}
-		
+
+		return productionOrderIdList;
+
 	}
-	
-	
+
+
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ProductionOrder generateProductionOrder(SaleOrderLine saleOrderLine) throws AxelorException  {
-		
+
 		Product product = saleOrderLine.getProduct();
-		
+
 		if(saleOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_PRODUCE && product != null && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE) )  {
-			
+
 			BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-			
+
 			if(billOfMaterial == null)  {
-				
+
 				billOfMaterial = product.getDefaultBillOfMaterial();
-				
+
 			}
-			
+
 			if(billOfMaterial == null && product.getParentProduct() != null)  {
-				
+
 				billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
-				
+
 			}
-			
+
 			if(billOfMaterial == null)  {
-				
+
 				throw new AxelorException(
-						String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()), 
+						String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()),
 						IException.CONFIGURATION_ERROR);
-				
+
 			}
-			
+
 			return save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty()));
-		
+
 		}
-		
+
 		return null;
-		
+
 	}
-	
-	
-	
+
+
+
 }

@@ -26,7 +26,7 @@
     <form name="sale-order-subscription-cancel-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirmation annulation" >
 		<panel>
 			<field name="cancelReason" colSpan="12" width="200px" widget="SuggestBox"/>
-			<button name="cancelConfirm" title="Confirmer annulation" onClick="action-sale-order-cancel-reason-check, action-sale-order-method-confirm-cancel" colSpan="12" width="200px"/>
+			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check, action-sale-order-method-confirm-cancel" colSpan="12" width="200px"/>
 		</panel>
     </form>
 
@@ -70,7 +70,7 @@
       </panel>
 	  <panel-tabs>
 	    <panel title="Content">
-	    	<panel-related field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute"/>
+	    	<panel-related field="saleOrderLineList" form-view="sale-order-line-form" colSpan="12" onChange="action-sale-order-method-compute"/>
 	    	<panel-related field="saleOrderLineTaxList" colSpan="12"/>
 	    </panel>
 	    <panel title="Other informations" showTitle="false">
@@ -113,13 +113,14 @@
 	  <panel sidebar="true" title="Actions">
 	    <button name="generateTemplate" title="Make this order as template" onClick="save,action-sale-order-method-generate-template"/>
 	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
-	    <button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
-	    <button name="generateStockMove" title="Generate stock move"  colSpan="12" showIf="statusSelect == 3" onClick="action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
+	    <button name="newVersion" title="New version" showIf="eval: !GeneralService.getGeneral().getManageSaleOrderVersion() &amp;&amp; statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
+	    <button name="generateCustomerStockMove" showIf="eval: GeneralService.getGeneral().getCustomerStockMoveManagement() &amp;&amp; !GeneralService.getGeneral().getCustomerStockMoveGenerationAuto() &amp;&amp; statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed,save"/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
-	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-alert-generate-invoice,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="generateInvoice" title="Generate invoice" showIf="GeneralService.getGeneral().getGenerateInvoiceFromSaleOrder() &amp;&amp; statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-alert-generate-invoice,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="12" onClick="action-sale-order-view-invoice" if-module="axelor-supplychain"/>
-	    <button name="generatePO" title="Generate purchase order"  colSpan="12" showIf="statusSelect == 2 || statusSelect == 3" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" hidden="true"/>
+	    <button name="generatePO" title="Generate purchase order"  colSpan="12" showIf="eval: GeneralService.getGeneral().getPurchaseOrderManagement() &amp;&amp; !GeneralService.getGeneral().getPurchaseOrderGenerationAuto() &amp;&amp; (statusSelect == 2 || statusSelect == 3)" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" hidden="true"/>
+	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" showIf="eval: GeneralService.getGeneral().getProductionOrderManagement() &amp;&amp; !GeneralService.getGeneral().getProductionOrderGenerationAuto() &amp;&amp; statusSelect == 3" onClick="action-supplychain-sale-order-create-production-order" hidden="true"/>
 	  </panel>
 	  
 	  <panel sidebar="true" title="Info." showIf="id">
@@ -347,7 +348,7 @@
     </action-attrs>
 
     <action-attrs name="action-sale-oder-attrs-generate-stockmove-readonly">
-		<attribute name="readonly" for="generateStockMove" expr="eval: saleOrderLineList.size() == 0"/>
+		<attribute name="readonly" for="generateCustomerStockMove" expr="eval: saleOrderLineList.size() == 0"/>
     </action-attrs>
 
     <action-attrs name="action-sale-order-attrs-confirmed-read-only">
@@ -371,8 +372,7 @@
     <action-group name="action-sale-group-confirmed">
     	<action name="action-supplychain-sale-order-validate-check-location" />
     	<action name="action-account-organisation-sale-order-create-tasks" />
-    	<action name="action-supplychain-sale-order-create-purchase-order" />
-    	<action name="action-supplychain-sale-order-create-production-order" />
+    	<action name="action-group-supplychain-sale-order-confirmed"/>    	
     	<action name="action-sale-order-method-validate-customer"/>
     	<action name="action-sale-order-record-confirmed"/>
     	<action name="action-sale-order-attrs-confirmed-read-only"/>

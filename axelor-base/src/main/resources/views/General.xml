@@ -53,9 +53,34 @@
 				</panel>
 		    </panel>
 		    <panel title="General Settings">
-				<field name="manageAmountInvoiceByLine" if-module="axelor-supplychain"/>
-				<field name="manageSaleOrderVersion" if-module="axelor-sale"/>
-				<field name="managePurchaseOrderVersion" if-module="axelor-purchase"/>
+		    	<panel title="Invoice configuration">
+					<field name="manageAmountInvoiceByLine" if-module="axelor-supplychain"/>
+				</panel>
+				
+				<panel title="Sale order configuration">
+					<field name="manageSaleOrderVersion" if-module="axelor-sale"/>
+					<field name="generateInvoiceFromSaleOrder" if-module="axelor-sale"/>
+				</panel>
+				
+				<panel title="Purchase order configuration">
+					<field name="purchaseOrderManagement" if-module="axelor-purchase" readonlyIf="managePurchaseOrderVersion || purchaseOrderGenerationAuto"/>
+					<field name="managePurchaseOrderVersion" showIf="purchaseOrderManagement" if-module="axelor-purchase"/>
+					<field name="purchaseOrderGenerationAuto" showIf="purchaseOrderManagement" if-module="axelor-purchase"/>
+				</panel>
+				
+				<panel title="Stock Move configuration">
+					<field name="customerStockMoveManagement" if-module="axelor-supplychain" readonlyIf="customerStockMoveGenerationAuto"/>
+					<field name="customerStockMoveGenerationAuto" showIf="customerStockMoveManagement" if-module="axelor-supplychain"/>
+					
+					<field name="supplierStockMoveManagement" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto"/>
+					<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" if-module="axelor-supplychain"/>
+				</panel>
+				
+				<panel title="Production order configuration">
+					<field name="productionOrderManagement" if-module="axelor-production" readonlyIf="productionOrderGenerationAuto"/>
+					<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" if-module="axelor-production"/>
+				</panel>
+				
 		    </panel>
 		    <panel title="Interfaces">
 				<panel name="map" title="Mapping"  colSpan="12">

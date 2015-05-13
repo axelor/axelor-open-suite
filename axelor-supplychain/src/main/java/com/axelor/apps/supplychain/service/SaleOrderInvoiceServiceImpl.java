@@ -74,6 +74,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 
+	@Override
 	public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException  {
 
 		switch (saleOrder.getInvoicingTypeSelect()) {
@@ -104,6 +105,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generatePerOrderInvoice(SaleOrder saleOrder) throws AxelorException  {
 
@@ -117,6 +119,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateSubscriptionInvoice(SaleOrder saleOrder) throws AxelorException  {
 
@@ -140,6 +143,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 
+	@Override
 	public void checkSubscriptionSaleOrder(SaleOrder saleOrder) throws AxelorException  {
 
 		if(saleOrder.getSchedulerInstance() == null || saleOrder.getSchedulerInstance().getScheduler() == null)  {
@@ -171,6 +175,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	 * @throws AxelorException
 	 * @throws Exception
 	 */
+	@Override
 	public Invoice runSubscriptionInvoicing(SaleOrder saleOrder) throws AxelorException  {
 
 		Invoice invoice = null;
@@ -199,19 +204,20 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	}
 
-	
+
+	@Override
 	public boolean checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder)  {
-		
+
 		BigDecimal total = BigDecimal.ZERO;
-		
+
 		saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-				
+
 		for(Invoice invoice : saleOrder.getInvoiceSet())  {
 			total = total.add(this.computeInTaxTotalInvoiced(invoice));
 		}
-		
+
 		return total.compareTo(saleOrder.getInTaxTotal()) == 0;
-		
+
 	}
 
 	public BigDecimal computeInTaxTotalInvoiced(Invoice invoice)  {
@@ -238,6 +244,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 
+	@Override
 	public SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice)  {
 
 		saleOrder.setOrderDate(this.today);
@@ -250,6 +257,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 
+	@Override
 	public SaleOrder assignInvoice(SaleOrder saleOrder, Invoice invoice)  {
 
 		saleOrder.addInvoiceSetItem(invoice);
@@ -258,6 +266,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 
+	@Override
 	public Invoice createInvoice(SaleOrder saleOrder) throws AxelorException  {
 
 		InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
@@ -271,6 +280,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 
 
+	@Override
 	public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException  {
 
 		if(saleOrder.getCurrency() == null)  {
@@ -295,6 +305,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 
 	// TODO ajouter tri sur les séquences
+	@Override
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList, boolean showDetailsInInvoice) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
@@ -321,11 +332,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	}
 
+	@Override
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
 			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, int sequence, SaleOrderLine saleOrderLine) throws AxelorException  {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, productName, price, description, qty, unit, taxLine, product.getInvoiceLineType(),
-				sequence, discountAmount, discountTypeSelect, exTaxTotal, false, saleOrderLine)  {
+				sequence, discountAmount, discountTypeSelect, exTaxTotal, false, saleOrderLine, null)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 
@@ -342,6 +354,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 
+	@Override
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException  {
 
 		return this.createInvoiceLine(invoice, saleOrderLine.getProduct(), saleOrderLine.getProductName(),
@@ -352,6 +365,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 
+	@Override
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderSubLine saleOrderSubLine) throws AxelorException  {
 
 		return this.createInvoiceLine(invoice, saleOrderSubLine.getProduct(), saleOrderSubLine.getProductName(),
@@ -361,8 +375,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	}
 
+	@Override
 	public BigDecimal getAmountRemainingToBeInvoiced(SaleOrder saleOrder){
-		return this.getAmountRemainingToBeInvoiced(saleOrder, null, true);
+		return this.getAmountRemainingToBeInvoiced(saleOrder, null, false);
 	}
 
 	/**
@@ -378,38 +393,26 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	 * @param includeInvoice
 	 * To know if the invoice should be or not integrated in calculation
 	 */
+	@Override
 	public BigDecimal getAmountRemainingToBeInvoiced(SaleOrder saleOrder, Long currentInvoiceId, boolean includeInvoice){
 
 		Query q = null;
 		String query;
 		BigDecimal amountRemainingToInvoice = saleOrder.getExTaxTotal();
-		if (GeneralService.getGeneral().getManageAmountInvoiceByLine()){
-			query = "SELECT SUM(self.companyExTaxTotal)"
-					+ " FROM InvoiceLine as self"
-					+ " WHERE (self.saleOrderLine.id IN (SELECT id FROM SaleOrderLine WHERE saleOrder.id = :saleOrderId)"
-						+ " AND self.invoice.statusSelect = :statusVentilated)";
-			if (currentInvoiceId != null){
-				if (includeInvoice){
-					query += " OR self.invoice.id = :invoiceId";
-				}else{
-					query += " AND self.invoice.id <> :invoiceId";
-				}
+		query = "SELECT SUM(self.companyExTaxTotal)"
+				+ " FROM InvoiceLine as self"
+				+ " WHERE ( (self.saleOrderLine.id IN (SELECT id FROM SaleOrderLine WHERE saleOrder.id = :saleOrderId)"
+							+ " AND self.invoice.saleOrder IS NULL)"
+						+ " OR self.invoice.saleOrder.id = :saleOrderId )"
+					+ " AND self.invoice.statusSelect = :statusVentilated";
+		if (currentInvoiceId != null){
+			if (includeInvoice){
+				query += " OR self.invoice.id = :invoiceId";
+			}else{
+				query += " AND self.invoice.id <> :invoiceId";
 			}
-			q = JPA.em().createQuery(query, BigDecimal.class);
-		}else{
-			query = "SELECT SUM(self.companyExTaxTotal)"
-					+ " FROM InvoiceLine as self"
-					+ " WHERE (self.invoice.saleOrder.id = :saleOrderId"
-						+ " AND self.invoice.statusSelect = :statusVentilated)";
-			if (currentInvoiceId != null){
-				if (includeInvoice){
-					query += " OR self.invoice.id = :invoiceId";
-				}else{
-					query += " AND self.invoice.id <> :invoiceId";
-				}
-			}
-			q = JPA.em().createQuery(query, BigDecimal.class);
 		}
+		q = JPA.em().createQuery(query, BigDecimal.class);
 
 		q.setParameter("saleOrderId", saleOrder.getId());
 		q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);

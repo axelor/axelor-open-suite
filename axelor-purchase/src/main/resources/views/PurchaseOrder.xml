@@ -53,10 +53,11 @@
 			<button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 		</toolbar>
 	  
-		<panel readonlyIf="statusSelect == 5">
+		<panel readonlyIf="statusSelect == 4">
 			<field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
 			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="3"/>
-			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="9"/> 
+			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="9"/>
+			<field name="receiptState" css="label-bold bold" showIf="statusSelect >= 2" /> 
 			<field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form"/>
 			<field name="currency"/>
 			<field name="buyerUser"/>
@@ -87,7 +88,7 @@
 					<field name="paymentMode" domain="self.inOutSelect = 2" if-module="axelor-account"/>
 					<field name="paymentCondition" if-module="axelor-account"/>
 				</panel>
-				<panel title="Invoicing" readonlyIf="statusSelect == 5" colSpan="6">
+				<panel title="Invoicing" readonlyIf="statusSelect == 4" colSpan="6">
 					<field name="invoicingTypeSelect" if-module="axelor-account"/>
 					<field name="invoice" if-module="axelor-account"/>
 				</panel>
@@ -101,20 +102,20 @@
 		</panel-tabs>
 	  
 		<panel sidebar="true" title="Actions">
-			<button name="draft" title="Draft" showIf="statusSelect == 6"   onClick="action-purchase-order-record-draft,save"/>
+			<button name="draft" title="Draft" showIf="statusSelect == 5"   onClick="action-purchase-order-record-draft,save"/>
 			<button name="requested" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
-			<button name="receipt" title="Receipt" showIf="statusSelect == 2"   onClick="action-purchase-order-record-receipt,save"/>
-			<button name="validate" title="Validate" showIf="statusSelect == 3"   onClick="action-group-purchase-order-on-validate-actions"/>
-			<button name="completed" title="Completed" showIf="statusSelect == 4"   onClick="action-purchase-order-record-completed,save"/>
+			<button name="validate" title="Validate" showIf="statusSelect == 2"   onClick="action-group-purchase-order-on-validate-actions"/>
+			<button name="completed" title="Completed" showIf="statusSelect == 3"   onClick="action-purchase-order-record-completed,save"/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 			<button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-purchase-record-newVersion,save"/>
-			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 4 || statusSelect == 5"   onClick="action-purchase-order-show-invoice"/>
-			<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
-			<button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect &gt;= 4"   onClick="save,action-purchase-order-method-clear-purchase-order"/>
+			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice"/>
+			<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 3"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
+			<button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect &gt;= 3"   onClick="save,action-purchase-order-method-clear-purchase-order"/>
+			<button name="generateSupplierStockMove" title="Generate supplier arrivals" showIf="eval: GeneralService.getGeneral().getSupplierStockMoveManagement() &amp;&amp; !GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
 		</panel>
 	  
 		<panel sidebar="true" title="Info.">
-			<panel readonlyIf="statusSelect == 5">
+			<panel readonlyIf="statusSelect == 4">
 				<field name="orderDate"/>
 				<field name="internalReference"/> 
 		</panel>
@@ -161,7 +162,7 @@
     	<action name="save"/>
     	<action name="action-purchase-order-method-compute"/>
     	<action name="save"/>
-    	<action name="action-purchase-order-create-stock-move"/>
+    	<action name="action-purchase-order-create-stock-move" if="eval: GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()"/>
     	<action name="action-purchase-order-record-validate"/>
     	<action name="action-sale-order-method-validate-supplier"/>
     	<action name="save"/>
@@ -195,7 +196,7 @@
  	</action-record>
     
     <action-record name="action-purchase-order-record-validate" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="statusSelect" expr="4"/>
+    	<field name="statusSelect" expr="3"/>
     	<field name="validationDate" expr="eval: __date__"/>
     	<field name="validatedByUser" expr="eval:__user__"/>
     </action-record>
@@ -208,16 +209,12 @@
     	<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="requestPurchaseOrder"/>
     </action-method>
     
-    <action-record name="action-purchase-order-record-receipt" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="statusSelect" expr="3"/>
-    </action-record>
-    
     <action-record name="action-purchase-order-record-completed" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="statusSelect" expr="5"/>
+    	<field name="statusSelect" expr="4"/>
     </action-record>
     
     <action-record name="action-purchase-order-record-cancel" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="statusSelect" expr="6"/>
+    	<field name="statusSelect" expr="5"/>
     </action-record>
     
     <action-method name="action-sale-order-method-validate-supplier">
@@ -282,10 +279,10 @@
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">
-			<domain>(self.statusSelect = 1 or self.statusSelect = 2 or self.statusSelect = 3) and self.buyerUser.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.internalUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Sales">
-			<domain>(self.statusSelect = 4 or self.statusSelect = 5) and self.buyerUser.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.internalUser.id = :_internalUser</domain>
 		</filter>
 	</search-filters>
 	

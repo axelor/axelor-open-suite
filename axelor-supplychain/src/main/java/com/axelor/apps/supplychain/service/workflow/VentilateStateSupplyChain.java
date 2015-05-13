@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -34,30 +36,57 @@ public class VentilateStateSupplyChain extends VentilateState {
 	@Inject
 	private SaleOrderInvoiceService saleOrderInvoiceService;
 
+	@Inject
+	private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+
 	@Override
 	public void process( ) throws AxelorException {
 
 		super.process();
-		//Update amount remaining to invoiced on SaleOrder
-		if (GeneralService.getGeneral().getManageAmountInvoiceByLine()){
-			//Get all different saleOrders from invoice
-			SaleOrder currentSaleOrder = null;
-			List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
-			for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-				if (currentSaleOrder == null
-						|| !currentSaleOrder.equals(invoiceLine.getSaleOrderLine().getSaleOrder())){
-					saleOrderList.add(invoiceLine.getSaleOrderLine().getSaleOrder());
-					currentSaleOrder = invoiceLine.getSaleOrderLine().getSaleOrder();
+		if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
+			//Update amount remaining to invoiced on SaleOrder
+			if (invoice.getSaleOrder() == null){
+				//Get all different saleOrders from invoice
+				SaleOrder currentSaleOrder = null;
+				List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
+				for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+					if (currentSaleOrder == null
+							|| !currentSaleOrder.equals(invoiceLine.getSaleOrderLine().getSaleOrder())){
+						saleOrderList.add(invoiceLine.getSaleOrderLine().getSaleOrder());
+						currentSaleOrder = invoiceLine.getSaleOrderLine().getSaleOrder();
+					}
 				}
-			}
 
-			for (SaleOrder saleOrder : saleOrderList) {
-				saleOrder.setAmountRemainingToBeInvoiced(saleOrderInvoiceService.getAmountRemainingToBeInvoiced(saleOrder, invoice.getId(), true));
-				JPA.save(saleOrder);
-			}
+				for (SaleOrder saleOrder : saleOrderList) {
+					saleOrder.setAmountRemainingToBeInvoiced(saleOrderInvoiceService.getAmountRemainingToBeInvoiced(saleOrder, invoice.getId(), true));
+					JPA.save(saleOrder);
+				}
 
-		}else{
-			invoice.getSaleOrder().setAmountRemainingToBeInvoiced(saleOrderInvoiceService.getAmountRemainingToBeInvoiced(invoice.getSaleOrder(), invoice.getId(), true));
+			}else{
+				invoice.getSaleOrder().setAmountRemainingToBeInvoiced(saleOrderInvoiceService.getAmountRemainingToBeInvoiced(invoice.getSaleOrder(), invoice.getId(), true));
+			}
+		}else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE){
+			//Update amount remaining to invoiced on PurchaseOrder
+			if (invoice.getPurchaseOrder() == null){
+				//Get all different saleOrders from invoice
+				PurchaseOrder currentPurchaseOrder = null;
+				List<PurchaseOrder> purchaseOrderList = new ArrayList<PurchaseOrder>();
+				for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+					if (currentPurchaseOrder == null
+							|| !currentPurchaseOrder.equals(invoiceLine.getPurchaseOrderLine().getPurchaseOrder())){
+						purchaseOrderList.add(invoiceLine.getPurchaseOrderLine().getPurchaseOrder());
+						currentPurchaseOrder = invoiceLine.getPurchaseOrderLine().getPurchaseOrder();
+					}
+				}
+
+				for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+					purchaseOrder.setAmountRemainingToBeInvoiced(purchaseOrderInvoiceService.getAmountRemainingToBeInvoiced(purchaseOrder, invoice.getId(), true));
+					JPA.save(purchaseOrder);
+				}
+
+			}else{
+				invoice.getPurchaseOrder().setAmountRemainingToBeInvoiced(purchaseOrderInvoiceService.getAmountRemainingToBeInvoiced(invoice.getPurchaseOrder(), invoice.getId(), true));
+			}
 		}
 	}
 }

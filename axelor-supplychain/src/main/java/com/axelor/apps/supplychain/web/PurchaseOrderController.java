@@ -17,46 +17,68 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
 public class PurchaseOrderController {
 
-	
-	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		
-		if(purchaseOrder.getId() != null) {
+	@Inject
+	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain;
 
-			Beans.get(PurchaseOrderServiceSupplychainImpl.class).createStocksMoves(Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
+	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+
+		if(purchaseOrder.getId() != null) {
+			if (purchaseOrderServiceSupplychain.existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())){
+				if(!GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()){
+					response.setFlash(I18n.get("An active stockMove already exists for this purchaseOrder"));
+				}
+			}else{
+				Long stockMoveId = purchaseOrderServiceSupplychain.createStocksMoves(Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
+				if (!GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()){
+					response.setView(ActionView
+							.define(I18n.get("Stock move"))
+							.model(StockMove.class.getName())
+							.add("grid", "stock-move-grid")
+							.add("form", "stock-move-form")
+							.param("forceEdit", "true")
+							.context("_showRecord", String.valueOf(stockMoveId)).map());
+				}
+			}
+
 		}
 	}
-	
+
 	public void getLocation(ActionRequest request, ActionResponse response) {
-		
+
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		
+
 		if(purchaseOrder.getCompany() != null) {
-			
-			response.setValue("location", Beans.get(PurchaseOrderServiceSupplychainImpl.class).getLocation(purchaseOrder.getCompany()));
+
+			response.setValue("location", purchaseOrderServiceSupplychain.getLocation(purchaseOrder.getCompany()));
 		}
 	}
-	
-	
+
+
 	public void clearPurchaseOrder(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-			
-		Beans.get(PurchaseOrderServiceSupplychainImpl.class).clearPurchaseOrder(purchaseOrder);
-		
+
+		purchaseOrderServiceSupplychain.clearPurchaseOrder(purchaseOrder);
+
 	}
-	
-	
-	
+
+
+
 }

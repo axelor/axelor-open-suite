@@ -42,10 +42,14 @@ public interface PurchaseOrderInvoiceService {
 	public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder) throws AxelorException;
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException;
-	
+
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
 			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal) throws AxelorException;
-	
+
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
-			
+
+	public BigDecimal getAmountRemainingToBeInvoiced(PurchaseOrder purchaseOrder);
+
+	public BigDecimal getAmountRemainingToBeInvoiced(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean includeInvoice);
+
 }

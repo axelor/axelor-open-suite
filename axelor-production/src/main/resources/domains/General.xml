@@ -5,8 +5,8 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="General" lang="java" cachable="true">
-		<boolean name="manageSaleOrderVersion" title="Manage sale order versions" default="false"/>
-		<boolean name="generateInvoiceFromSaleOrder" title="Generate invoice from sale order" default="false"/>
+		<boolean name="productionOrderManagement" title="production order management" default="false"/>		
+		<boolean name="productionOrderGenerationAuto" title="Generate production orders automatically" default="false"/>
 	</entity>
 
 </domain-models>

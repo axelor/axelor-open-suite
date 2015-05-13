@@ -54,6 +54,12 @@
 		<action name="action-partner-attrs-hide-contact-partner" />
 	</action-group>
 	
+	<action-group name="action-group-supplychain-sale-order-confirmed">
+		<action name="action-supplychain-sale-order-create-purchase-order" if="eval: GeneralService.getGeneral().getPurchaseOrderGenerationAuto()"/>
+    	<action name="action-supplychain-sale-order-create-stock-move" if="eval: GeneralService.getGeneral().getCustomerStockMoveGenerationAuto()"/>
+    	<action name="action-supplychain-sale-order-create-production-order" if="eval: GeneralService.getGeneral().getProductionOrderGenerationAuto()"/>
+	</action-group>
+	
 	<action-method name="action-supplychain-sale-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
     </action-method>
@@ -67,7 +73,7 @@
 	</action-method>
 	
 	<action-method name="action-supplychain-sale-order-create-purchase-order" >
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createPurchaseOrders"/>
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createPurchaseOrders" />
 	</action-method>
 	
 	<action-method name="action-sale-order-method-get-location" >

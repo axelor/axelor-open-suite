@@ -19,7 +19,8 @@
     	<panel-tabs>
     		<panel title="Informations">
     			<field name="sequence"/>
-    			<field name="saleOrderLine" if-module="axelor-supplychain" />
+    			<field name="saleOrderLine" if-module="axelor-supplychain" showIf="invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4"/>
+    			<field name="purchaseOrderLine" if-module="axelor-supplychain" showIf="invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2"/>
 		        <field name="product" required="true" onChange="action-group-account-invoice-line-product-onchange"/>
 		        <field name="invoiceLineType"/>
 		        <field name="productName"/>

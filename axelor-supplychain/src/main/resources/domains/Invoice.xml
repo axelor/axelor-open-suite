@@ -6,6 +6,7 @@
   <entity sequential="true" name="Invoice" lang="java">
 	
 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order"/>
+	<many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order"/>
 		
   </entity>
   

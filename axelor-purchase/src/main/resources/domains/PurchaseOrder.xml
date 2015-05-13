@@ -31,6 +31,7 @@
   	<integer name="statusSelect" title="Status" selection="purchase.purchase.order.status.select" readonly="true"/>
   	<string name="externalReference" title="Supplier ref."/>
     <string name="internalReference" title="Internal Ref." help="true"/>
+    <integer name="receiptState" title="Receipt State" selection="purchase.order.receipt.state" readonly="true" default="1"/>
   	
   	
   	
