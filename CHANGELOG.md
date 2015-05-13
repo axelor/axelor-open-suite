@@ -15,3 +15,13 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Inventory and Supply Chain Management
 - Production Management
 - Multi-company, multi-currency and multi-lingual
+
+# 3.0.1 (2015-05-13)
+## Bug Fixes
+- Fixed somes issues
+
+## Improvements
+- Sequence management
+- Message management
+
+

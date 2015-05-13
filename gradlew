@@ -167,7 +167,7 @@ if [ -n "$AXELOR_HOME" ] ; then
         die "ERROR: AXELOR_HOME is set to an invalid directory: $AXELOR_HOME
 
 Please set the AXELOR_HOME variable in your environment to match the
-location of your Axelor Platform installation."
+location of your Axelor SDK installation."
     fi
 else
 	AXELOR_CMD=`which axelor 2>&1`
@@ -178,7 +178,7 @@ fi
 
 if [ ! -d "$AXELOR_HOME" ] ; then
 	die "Please set the AXELOR_HOME variable in your environment to match the
-location of your Axelor Platform installation."
+location of your Axelor SDK installation."
 fi
 
 # use axelor init scripts
