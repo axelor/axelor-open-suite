@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
@@ -52,13 +53,16 @@ public class MapService {
 	private static final Logger LOG = LoggerFactory.getLogger(MapService.class);
 	
 	public JSONObject geocodeGoogle(String qString) {
+		if(qString == null){
+			return null;
+		}
 		Map<String,Object> response = new HashMap<String,Object>();
 		//http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
 
 		// TODO inject the rest client, or better, run it in the browser
 		RESTClient restClient = new RESTClient("https://maps.googleapis.com");
 		Map<String,Object> responseQuery = new HashMap<String,Object>();
-		responseQuery.put("address", qString);
+		responseQuery.put("address", qString.trim());
 		responseQuery.put("sensor", "false");
 		Map<String,Object> responseMap = new HashMap<String,Object>();
 		responseMap.put("path", "/maps/api/geocode/json");
@@ -73,6 +77,7 @@ public class MapService {
 		JSONObject restResponse = null;
 		try {
 			restResponse = new JSONObject(restClient.get(responseMap).getContentAsString());
+			LOG.debug("Gmap response: {}",restResponse);
 			if(restResponse != null && restResponse.containsKey("results")){
 				JSONObject result = (JSONObject)((JSONArray)restResponse.get("results")).get(0);
 				if(result != null && result.containsKey("geometry"))
@@ -122,8 +127,10 @@ public class MapService {
 	}
 	
 	public HashMap<String,Object> getMapGoogle(String qString){
+		LOG.debug("Query string: {}",qString);
 		try {
 				JSONObject googleResponse = geocodeGoogle(qString);
+				LOG.debug("Google response: {}",googleResponse);
 				if(googleResponse != null){
 					HashMap<String,Object> result = new HashMap<String,Object>();
 					BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
@@ -199,6 +206,17 @@ public class MapService {
 			return getMapOsm(qString);
 	}
 	
+	public String getMapUrl(BigDecimal latitude, BigDecimal longitude){
+		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) 
+			return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18";
+		else
+			return "map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18";
+	}
+	
+	public String getDirectionUrl(BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){
+			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon;
+	}
+	
 	public HashMap<String,Object> getDirectionMapGoogle(String dString, BigDecimal dLat, BigDecimal dLon, String aString, BigDecimal aLat, BigDecimal aLon){
 		LOG.debug("departureString = {}", dString);
 		LOG.debug("arrivalString = {}", aString);
@@ -255,11 +273,14 @@ public class MapService {
 	
 	public String makeAddressString(Address address, ObjectNode objectNode) {
 		
-			
-		String qString = address.getFullName();					
-		Map<String,Object> latlng =  this.getMapGoogle(qString);
-		objectNode.put("latit",(BigDecimal) latlng.get("latitude"));
-		objectNode.put("longit", (BigDecimal) latlng.get("longitude"));
+		address = Beans.get(AddressService.class).checkLatLang(address,false);
+		BigDecimal latit = address.getLatit();
+		BigDecimal longit = address.getLongit();
+		if(BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0){
+			return null;
+		}
+		objectNode.put("latit",latit);
+		objectNode.put("longit",longit);
 		
 		StringBuilder addressString = new StringBuilder();
 		
