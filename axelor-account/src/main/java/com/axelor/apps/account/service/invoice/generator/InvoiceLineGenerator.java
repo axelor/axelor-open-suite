@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagem
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -202,7 +203,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		invoiceLine.setAccountingExTaxTotal(
 				currencyService.getAmountCurrencyConverted(
-						invoice.getCurrency(), partnerCurrency, exTaxTotal, today));  
+						invoice.getCurrency(), partnerCurrency, exTaxTotal, today).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP));  
 		
 		Company company = invoice.getCompany();
 		
@@ -215,7 +216,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		invoiceLine.setCompanyExTaxTotal(
 				currencyService.getAmountCurrencyConverted(
-						invoice.getCurrency(), companyCurrency, exTaxTotal, today));
+						invoice.getCurrency(), companyCurrency, exTaxTotal, today).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP));
 		
 		if(taxLine == null)  {
 			boolean isPurchase = false;

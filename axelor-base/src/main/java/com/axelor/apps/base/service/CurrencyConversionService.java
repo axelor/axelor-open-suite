@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -90,7 +91,7 @@ public class CurrencyConversionService extends CurrencyConversionLineRepository 
 		if(currentRate != null && previousRate != null && previousRate.compareTo(BigDecimal.ZERO) != 0){
 			BigDecimal diffRate = currentRate.subtract(previousRate);
 			BigDecimal variation = diffRate.multiply(new BigDecimal(100)).divide(previousRate,RoundingMode.HALF_EVEN);
-			variation = variation.setScale(2,RoundingMode.HALF_EVEN);
+			variation = variation.setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_EVEN);
 			variations = variation.toString()+"%";
 		}
 		

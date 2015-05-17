@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,7 @@ import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -170,7 +172,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			paymentInvoiceToPay.setRemainingAmount(move.getInvoice().getInvoiceInTaxTotal().subtract(move.getInvoice().getInvoiceAmountPaid()));
 			
 			// on convertit le montant imputé de la devise de la saisie paiement vers la devise de la facture
-			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getInvoice().getCurrency(), paymentInvoiceToPay.getRemainingAmount(), paymentVoucher.getPaymentDateTime().toLocalDate());
+			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getInvoice().getCurrency(), paymentInvoiceToPay.getRemainingAmount(), paymentVoucher.getPaymentDateTime().toLocalDate()).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);
 
 		}
 		// sinon la facture à une devise identique à l'écriture, ou l'écriture ne possède pas de facture
@@ -342,7 +344,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 								paymentVoucher.getCurrency(),
 								paymentInvoiceToPay.getCurrency(), 
 								paidAmount, 
-								paymentVoucher.getPaymentDateTime().toLocalDate());
+								paymentVoucher.getPaymentDateTime().toLocalDate()).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);
 						
 						//On convertit dans la devise de la saisie paiement, pour comparer le restant à payer de la facture avec le restant à utilsier de la saisie paiement
 						

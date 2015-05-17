@@ -11,7 +11,7 @@
 	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Supplier"/>
 	<string name="productSupplierName" title="Product name on catalog"/>
 	<string name="productSupplierCode" title="Product code on catalog"/>
-	<decimal name="price" title="Unit price" help="true"/>
+	<decimal name="price" title="Unit price" help="true" precision="20" scale="5"/>
 	<date name="updateDate" title="Last update"/>
   	<string name="description" title="Description" large="true"/>
 	<decimal name="calculatedPrice" title="Calculated price/Qty"/>

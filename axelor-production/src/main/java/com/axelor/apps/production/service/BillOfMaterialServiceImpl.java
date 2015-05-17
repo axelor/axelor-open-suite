@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.production.db.IProdResource;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -60,7 +61,7 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
 		
-		billOfMaterial.setCostPrice(this._computeCostPrice(billOfMaterial).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+		billOfMaterial.setCostPrice(this._computeCostPrice(billOfMaterial).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, BigDecimal.ROUND_HALF_EVEN));
 		
 		save(billOfMaterial);
 	}

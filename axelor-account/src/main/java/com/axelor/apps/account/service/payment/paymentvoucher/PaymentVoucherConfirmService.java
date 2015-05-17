@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
@@ -310,7 +312,7 @@ public class PaymentVoucherConfirmService extends PaymentVoucherRepository {
 		
 		LocalDate paymentVoucherDate = paymentVoucher.getPaymentDateTime().toLocalDate();
 		
-		return currencyService.getAmountCurrencyConverted(paymentVoucherCurrency, moveCurrency, amountToPay, paymentVoucherDate);
+		return currencyService.getAmountCurrencyConverted(paymentVoucherCurrency, moveCurrency, amountToPay, paymentVoucherDate).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);
 		
 	}
 	

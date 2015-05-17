@@ -15,11 +15,11 @@
   	<string name="description" title="Description" large="true"/>
 	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 	<decimal name="qty" title="Qty"/>
-	<decimal name="price" title="Unit price"/>
+	<decimal name="price" title="Unit price" precision="20" scale="5"/>
 	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
   	<decimal name="exTaxTotal" title="Total W.T."/>
   	
-  	<decimal name="discountAmount" title="Discount amount"/>
+  	<decimal name="discountAmount" title="Discount amount" precision="20" scale="5"/>
   	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
     
     <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>

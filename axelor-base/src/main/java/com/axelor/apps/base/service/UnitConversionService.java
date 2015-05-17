@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
@@ -59,7 +60,7 @@ public class UnitConversionService extends UnitConversionRepository{
 		/* The endUnit become the start unit and the startUnit become the end unit */
 		for (UnitConversion unitConversion : unitConversionList){
 			
-			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit)) { return BigDecimal.ONE.divide(unitConversion.getCoef(), 6, RoundingMode.HALF_EVEN); }
+			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit)) { return BigDecimal.ONE.divide(unitConversion.getCoef(), IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_EVEN); }
 			
 		}
 		/* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
@@ -96,7 +97,7 @@ public class UnitConversionService extends UnitConversionRepository{
 		else { 		
 			BigDecimal coefficient = this.getCoefficient(unitConversionList, startUnit, endUnit);		
 			
-			return value.multiply(coefficient).setScale(6, RoundingMode.HALF_EVEN);		
+			return value.multiply(coefficient).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_EVEN);		
 		}	
 	}
 	
@@ -126,7 +127,7 @@ public class UnitConversionService extends UnitConversionRepository{
 		else { 		
 			BigDecimal coefficient = this.getCoefficient(all().fetch(), startUnit, endUnit);		
 			
-			return value.multiply(coefficient).setScale(6, RoundingMode.HALF_EVEN);		
+			return value.multiply(coefficient).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_EVEN);		
 		}	
 	}
 }

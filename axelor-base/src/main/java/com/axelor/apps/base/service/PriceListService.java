@@ -18,12 +18,14 @@
 package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -132,12 +134,12 @@ public class PriceListService extends PriceListRepository {
 	public BigDecimal computeDiscount(BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount)  {
 		
 		if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_FIXED)  {
-			return  unitPrice.add(discountAmount);
+			return  unitPrice.add(discountAmount).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP);
 		}
 		else if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
 			return unitPrice.multiply(
 					BigDecimal.ONE.add(
-							discountAmount.divide(new BigDecimal(100))));
+							discountAmount.divide(new BigDecimal(100)))).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP);
 		}
 		
 		return unitPrice;
@@ -150,11 +152,11 @@ public class PriceListService extends PriceListRepository {
 		
 		if(priceListLine != null)  {
 			if(priceList.getIsDisplayed())  {
-				discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price));
+				discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP));
 				discounts.put("discountTypeSelect", this.getDiscountTypeSelect(priceListLine));
 			}
 			else  {
-				discounts.put("price", this.getUnitPriceDiscounted(priceListLine, price));
+				discounts.put("price", this.getUnitPriceDiscounted(priceListLine, price).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP));
 			}
 		}
 		else  {
@@ -163,7 +165,7 @@ public class PriceListService extends PriceListRepository {
 				discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_PERCENT);
 			}
 			else  {
-				discounts.put("price", this.getUnitPriceDiscounted(priceList, price));
+				discounts.put("price", this.getUnitPriceDiscounted(priceList, price).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP));
 			}
 		}
 		

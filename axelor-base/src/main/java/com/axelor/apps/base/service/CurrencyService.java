@@ -25,6 +25,7 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -94,7 +95,7 @@ public class CurrencyService extends CurrencyRepository{
 			
 			CurrencyConversionLine currencyConversionLine = this.getCurrencyConversionLine(currencyStart, currencyEnd, localDate);
 			if(currencyConversionLine != null)  {
-				return amountToPay.multiply(currencyConversionLine.getExchangeRate()).setScale(2, RoundingMode.HALF_UP);
+				return amountToPay.multiply(currencyConversionLine.getExchangeRate());
 			}
 			else  {
 				currencyConversionLine = this.getCurrencyConversionLine(currencyEnd, currencyStart, localDate);
@@ -112,7 +113,7 @@ public class CurrencyService extends CurrencyRepository{
 						currencyStart.getName(), currencyEnd.getName(), today), IException.CONFIGURATION_ERROR);
 			}
 			
-			return amountToPay.divide(exchangeRate, 2, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
+			return amountToPay.divide(exchangeRate, IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP);
 		}
 		
 		return amountToPay;
