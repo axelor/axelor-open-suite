@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +29,10 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -54,22 +57,22 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	private ValidateFactory validateFactory;
 	private VentilateFactory ventilateFactory;
 	private CancelFactory cancelFactory;
-	private AlarmEngineService<Invoice> aes;
+	private AlarmEngineService<Invoice> alarmEngineService;
 	
 	@Inject
-	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory, AlarmEngineService<Invoice> aes) {
+	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService) {
 
 		this.validateFactory = validateFactory;
 		this.ventilateFactory = ventilateFactory;
 		this.cancelFactory = cancelFactory;
-		this.aes = aes;
+		this.alarmEngineService = alarmEngineService;
 	}
 	
 	
 // WKF
 	
 	public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices){
-		return aes.get( Invoice.class, invoices );
+		return alarmEngineService.get( Invoice.class, invoices );
 	}
 	
 	
@@ -83,7 +86,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 */
 	public void raisingAlarms(Invoice invoice, String alarmEngineCode) {
 
-		Alarm alarm = aes.get(alarmEngineCode, invoice, true);
+		Alarm alarm = alarmEngineService.get(alarmEngineCode, invoice, true);
 		
 		if (alarm != null){
 			
@@ -242,6 +245,31 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		save(invoice);
 		
 		return refund;
+		
+	}
+	
+	public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate)  {
+		
+		switch (paymentCondition.getTypeSelect()) {
+		case PaymentConditionRepository.TYPE_NET:
+			
+			return invoiceDate.plusDays(paymentCondition.getPaymentTime());
+			
+		case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
+					
+			return invoiceDate.dayOfMonth().withMaximumValue().plusDays(paymentCondition.getPaymentTime());
+					
+		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
+			
+			return invoiceDate.plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue();
+			
+		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
+			
+			return invoiceDate.plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue().plusDays(paymentCondition.getDaySelect());
+
+		default:
+			return invoiceDate;
+		}
 		
 	}
 	

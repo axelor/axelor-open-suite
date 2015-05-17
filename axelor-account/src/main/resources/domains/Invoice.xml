@@ -10,7 +10,7 @@
   	<many-to-one name="canceledPaymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule"/> <!--  Field not displayed, used to shift to irrecoverable a payment schedule -->
   	
     <!-- HEADER -->
-    <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true" unique="true"/>
+    <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true"/>
 	<integer name="operationTypeSelect" title="Document Type" required="true" selection="iinvoice.operation.type.select"/>
     
     <!-- Legal informations -->
@@ -29,7 +29,7 @@
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
     
     <!-- Dates -->
-    <date name="invoiceDate" title="Invoice Date" required="true" />
+    <date name="invoiceDate" title="Invoice Date" />
     <date name="dueDate" title="Due Date"/>
     <date name="subscriptionFromDate" title="From"/>
     <date name="subscriptionToDate" title="To"/>
@@ -100,6 +100,8 @@
     <integer name="statusSelect" title="Status" selection="iaccount.invoice.status.select" readonly="true" default="1"/>
     
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>  
+
+  	<unique-constraint columns="invoiceId,company"/>
 
 	<extra-code><![CDATA[
 	

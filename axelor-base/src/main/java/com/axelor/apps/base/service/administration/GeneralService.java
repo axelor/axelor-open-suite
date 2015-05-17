@@ -27,6 +27,7 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.auth.AuthUtils;
@@ -139,8 +140,18 @@ public class GeneralService extends GeneralRepository {
 		
 		return null;
 	}
+	
 
-
+	public static int getNbDecimalDigitForUnitPrice(){
+		
+		if (getGeneral() != null){
+			return getGeneral().getNbDecimalDigitForUnitPrice();
+		}
+		
+		return IAdministration.DEFAULT_NB_DECIMAL_DIGITS;
+	}
+	
+	
 // Message exception	
 	
 	

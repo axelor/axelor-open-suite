@@ -11,6 +11,7 @@
 		<boolean name="logOk" title="Activate Logs ?" default="true" help="true"/>
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit" help="true"/>
 		<string name="defaultPartnerLanguage" title="Default Partner language" selection="select.language" help="true"/>
+		<boolean name="mailAccountByUser" title="Manage mail account by user ?" default="false"/>
 		
 		<!-- Exception -->
 		<string name="exceptionDefaultMsg" multiline="true" title="Default Message" required="true" />
@@ -28,6 +29,8 @@
 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="general" title="Currency conversion table" help="true"/>
 		
 		<boolean name="hasQasValidation" title="Use QAS Validation ?" help="true" />
+		
+		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" max="5" default="2"/>
 
 	</entity>
 

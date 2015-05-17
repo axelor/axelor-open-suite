@@ -15,7 +15,7 @@
         <field name="company"/>
         <field name="currency"/>
         <field name="clientPartner"/>
-        <field name="clientReference"/>
+        <field name="externalReference"/>
         <field name="creationDate"/>
         <field name="inTaxTotal"/>
         <field name="statusSelect"/>
@@ -119,8 +119,7 @@
 	    <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-group-confirm,save"/>
 	    <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-validate,save"/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
-	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
-	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="12" onClick="action-sale-order-view-invoice" if-module="axelor-supplychain"/>
+	    <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-alert-generate-invoice,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
 	  </panel>    
 	  
 	  <panel sidebar="true" title="Info." showIf="id">
@@ -156,7 +155,7 @@
         <field name="company"/>
         <field name="currency"/>
         <field name="clientPartner"/>
-        <field name="clientReference"/>
+        <field name="externalReference"/>
         <field name="creationDate"/>
         <field name="inTaxTotal"/>
         <field name="statusSelect"/>
@@ -342,14 +341,7 @@
     
 	<action-method name="action-sale-order-set-sequence">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="setSequence"/>
-	</action-method>
-	
-	 <action-view name="action-sale-order-view-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.id IN :invoiceSet</domain>
-	</action-view>
-	
+	</action-method>	
 	
 	<action-attrs name="action-sale-order-attrs-collapse-specific-settings-group">
 		<attribute name="collapse" for="specificSettings" expr="eval: true"/>

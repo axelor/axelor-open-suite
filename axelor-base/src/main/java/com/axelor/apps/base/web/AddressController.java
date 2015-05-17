@@ -53,7 +53,7 @@ import com.qas.web_2005_02.VerifyLevelType;
 public class AddressController {
 
 	@Inject
-	private AddressRepository addressRepo;
+	private AddressService addressService;
 	
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
@@ -188,65 +188,73 @@ public class AddressController {
 
 	public void viewMap(ActionRequest request, ActionResponse response)  {
 		Address address = request.getContext().asType(Address.class);
-		if(address.getId() != null)
-			address = addressRepo.find(address.getId());
-		String qString = address.getAddressL4()+" ,"+address.getAddressL6();
-		BigDecimal latitude = address.getLatit();
-		BigDecimal longitude = address.getLongit();
-		LOG.debug("latitude...."+latitude);
-		LOG.debug("longitude...."+longitude);
-		Map<String,Object> result = Beans.get(MapService.class).getMap(qString, latitude, longitude);
-		if(result != null){
+		address = addressService.checkLatLang(address,false);
+		BigDecimal latit = address.getLatit();
+		BigDecimal longit = address.getLongit();
+		BigDecimal zero = BigDecimal.ZERO;
+		if(zero.compareTo(latit) != 0 && zero.compareTo(longit) != 0){
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", "Map");
-			mapView.put("resource", result.get("url"));
+			mapView.put("resource",  Beans.get(MapService.class).getMapUrl(latit, longit));
 			mapView.put("viewType", "html");
 			response.setView(mapView);
-			if (BigDecimal.ZERO.compareTo(latitude) == 0 || BigDecimal.ZERO.compareTo(longitude) == 0) {
-				response.setValue("latit", result.get("latitude"));
-				response.setValue("longit", result.get("longitude"));
-			}
 		}
 		else
-			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),qString));
+			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),address.getFullName()));
+		
+		response.setReload(true);
 	}
 
-	public void directionsMap(ActionRequest request, ActionResponse response)  {
+	public void viewDirection(ActionRequest request, ActionResponse response)  {
 		Partner currPartner = Beans.get(UserService.class).getUserPartner();
-		Address departureAddress = currPartner.getDeliveryAddress();
-		if (departureAddress != null) {
-			Address arrivalAddress = request.getContext().asType(Address.class);
-			if(arrivalAddress.getId() != null)
-				arrivalAddress = addressRepo.find(arrivalAddress.getId());
-			String aString = arrivalAddress.getAddressL4()+" ,"+arrivalAddress.getAddressL6();
-			String dString = departureAddress.getAddressL4()+" ,"+departureAddress.getAddressL6();
-			if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
-				BigDecimal dLat = departureAddress.getLatit();
-				BigDecimal dLon = departureAddress.getLongit();
-				BigDecimal aLat = arrivalAddress.getLatit();
-				BigDecimal aLon =  arrivalAddress.getLongit();
-				Map<String, Object> result = Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
-				if(result != null){
-					Map<String,Object> mapView = new HashMap<String,Object>();
-					mapView.put("title", "Map");
-					mapView.put("resource", result.get("url"));
-					mapView.put("viewType", "html");
-					response.setView(mapView);
-					if (BigDecimal.ZERO.compareTo(dLat) == 0 || BigDecimal.ZERO.compareTo(dLon) == 0) {
-						response.setValue("latit", result.get("latitude"));
-						response.setValue("longit", result.get("longitude"));
-					}
-				}
-				else response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),aString));
-			}
-			else 
-				response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
-		} else 
+		if(currPartner == null){
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
+			return;
+		}
+		if (GeneralService.getGeneral().getMapApiSelect() != IAdministration.MAP_API_GOOGLE) {
+			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
+			return;
+		}
+		
+		Address departureAddress = currPartner.getDeliveryAddress();
+		if (departureAddress == null) {
+			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
+			return;
+		}
+		departureAddress = addressService.checkLatLang(departureAddress,false);
+		BigDecimal dLat = departureAddress.getLatit();
+		BigDecimal dLon = departureAddress.getLongit();
+		BigDecimal zero = BigDecimal.ZERO;
+		if(zero.compareTo(dLat) == 0 || zero.compareTo(dLat) == 0){
+			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),departureAddress.getFullName()));
+			return;
+		}
+		
+		Address arrivalAddress = request.getContext().asType(Address.class);
+		arrivalAddress = addressService.checkLatLang(arrivalAddress,false);
+		BigDecimal aLat = arrivalAddress.getLatit();
+		BigDecimal aLon =  arrivalAddress.getLongit();
+		if(zero.compareTo(aLat) == 0 || zero.compareTo(aLat) == 0){
+			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),arrivalAddress.getFullName()));
+			return;
+		}
+		
+		Map<String,Object> mapView = new HashMap<String,Object>();
+		mapView.put("title", "Map");
+		mapView.put("resource", Beans.get(MapService.class).getDirectionUrl(dLat, dLon, aLat, aLon));
+		mapView.put("viewType", "html");
+		response.setView(mapView);
+		response.setReload(true);
+			
 	}
 
 	public void checkMapApi(ActionRequest request, ActionResponse response)  {
 		response.setFlash(I18n.get(IExceptionMessage.NOT_IMPLEMENTED_METHOD));
 	}
-
+	
+	public void checkLatLang(ActionRequest request, ActionResponse response) {
+		Address address = request.getContext().asType(Address.class);
+		addressService.checkLatLang(address, true);
+		response.setReload(true);
+	}
 }

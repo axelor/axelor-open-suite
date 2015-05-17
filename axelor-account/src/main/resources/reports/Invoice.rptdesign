@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140225-1404></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -131,8 +131,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-en</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -788,10 +787,10 @@ left outer join public.base_printing_settings as PrintingSettings on (Company.pr
                     <text-property name="heading">product_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">note</property>
+                    <property name="columnName">description</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">note</text-property>
-                    <text-property name="heading">note</text-property>
+                    <text-property name="displayName">description</text-property>
+                    <text-property name="heading">description</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">TaxValue</property>
@@ -861,7 +860,7 @@ left outer join public.base_printing_settings as PrintingSettings on (Company.pr
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">note</property>
+                        <property name="name">description</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -919,8 +918,8 @@ left outer join public.base_printing_settings as PrintingSettings on (Company.pr
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">note</property>
-                    <property name="nativeName">note</property>
+                    <property name="name">description</property>
+                    <property name="nativeName">description</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -974,13 +973,13 @@ left outer join public.base_printing_settings as PrintingSettings on (Company.pr
                     <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, InvoiceLine.product_name, InvoiceLine.note, TaxLine.value as "TaxValue", InvoiceLine.qty,
+            <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, InvoiceLine.product_name, InvoiceLine.description, TaxLine.value as "TaxValue", InvoiceLine.qty,
 Unit.name as "unitName", InvoiceLine.price, InvoiceLine.ex_tax_total, Currency.code as "currencyCode", InvoiceLine.sequence as "sequence" 
 from public.account_invoice_line as InvoiceLine
 inner join public.account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
 left outer join public.account_tax_line as TaxLine on (InvoiceLine.tax_line = TaxLine.id)
 left outer join public.base_product as Product on (InvoiceLine.product = Product.id)
-left outer join public.base_unit as Unit on (Product.unit = Unit.id)
+left outer join public.base_unit as Unit on (InvoiceLine.unit = Unit.id)
 left outer join public.base_currency as Currency on (Invoice.currency = Currency.id)
 ]]></xml-property>
         </oda-data-set>
@@ -2636,12 +2635,6 @@ row["partnerFirstName"]
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">note</property>
-                                    <text-property name="displayName">note</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["note"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
                                     <property name="name">TaxValue</property>
                                     <text-property name="displayName">TaxValue</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["TaxValue"]</expression>
@@ -2687,6 +2680,12 @@ row["partnerFirstName"]
                                     <property name="name">unitName</property>
                                     <text-property name="displayName">unitName</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["unitName"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">description</property>
+                                    <text-property name="displayName">description</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["description"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                             </list-property>
@@ -2975,7 +2974,7 @@ row["partnerFirstName"]
                                         <text id="3457">
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
-<SUB><I><VALUE-OF>row["note"]</VALUE-OF></I></SUB>]]></text-property>
+<SUB><I><VALUE-OF format="HTML">row["description"]</VALUE-OF></I></SUB>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3436">

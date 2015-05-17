@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,9 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 
 public class AddressServiceImpl extends AddressRepository implements AddressService  {
@@ -127,6 +130,26 @@ public class AddressServiceImpl extends AddressRepository implements AddressServ
 				return true;
 		}
 		return false;
+	}
+	
+	@Transactional
+	public Address checkLatLang(Address address, boolean forceUpdate){
+		
+		address = find(address.getId());
+		BigDecimal latit = address.getLatit();
+		BigDecimal longit = address.getLongit();
+		
+		if((BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0) || forceUpdate){
+			Map<String,Object> result = Beans.get(MapService.class).getMap(address.getFullName());
+			if(result != null){
+				address.setLatit((BigDecimal) result.get("latitude"));
+				address.setLongit((BigDecimal) result.get("longitude"));
+				address = save(address);
+			}
+		}
+		
+		return address;
+		
 	}
 	
 	

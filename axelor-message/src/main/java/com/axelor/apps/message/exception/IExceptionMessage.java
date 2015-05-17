@@ -22,6 +22,7 @@ public interface IExceptionMessage {
 	 */
 	static final String TEMPLATE_SERVICE_1 = /*$$(*/ "Model empty. Please configure a model." /*)*/;
 	static final String TEMPLATE_SERVICE_2 = /*$$(*/ "Your target receptor is not valid. Please check it." /*)*/;
+	static final String TEMPLATE_SERVICE_3 = /*$$(*/ "Waiting model: %s" /*)*/;
 	
 	/**
 	 * General message controller

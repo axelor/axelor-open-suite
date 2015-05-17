@@ -613,11 +613,11 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		List<IrrecoverableReportLine> irlList = new ArrayList<IrrecoverableReportLine>();
 
 		for(InvoiceLine invoiceLine : consolidateInvoiceLine(invoice.getInvoiceLineList()))  {
-			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLine.getInvoiceLineType().getName(), invoiceLine.getExTaxTotal().multiply(prorataRate).setScale(2, RoundingMode.HALF_EVEN), seq));
+			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLine.getInvoiceLineType().getName(), invoiceLine.getExTaxTotal().multiply(prorataRate).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN), seq));
 			seq++;
 		}
 		for(InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList())  {
-			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLineTax.getTaxLine().getTax().getName(), invoiceLineTax.getTaxTotal().multiply(prorataRate).setScale(2, RoundingMode.HALF_EVEN), seq));
+			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLineTax.getTaxLine().getTax().getName(), invoiceLineTax.getTaxTotal().multiply(prorataRate).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN), seq));
 			seq++;
 		}
 		// Afin de ne pas modifier les valeurs des lignes de factures, on les recharges depuis la base
@@ -647,7 +647,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		BigDecimal divid = taxRate.add(BigDecimal.ONE);
 		
 		// Montant hors-Taxe
-		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN);
+		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 		
 		// Montant Tax
 		BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
@@ -860,7 +860,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		
 		// Debit MoveLine 654. (irrecoverable account)
 		BigDecimal divid = taxRate.add(BigDecimal.ONE);
-		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN);
+		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), irrecoverableAmount, true, false, date, 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 

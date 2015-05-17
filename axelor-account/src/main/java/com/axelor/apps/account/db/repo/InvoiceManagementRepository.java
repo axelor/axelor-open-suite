@@ -3,7 +3,6 @@ package com.axelor.apps.account.db.repo;
 import java.math.BigDecimal;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.service.administration.GeneralService;
 
 public class InvoiceManagementRepository extends InvoiceRepository {
 	@Override
@@ -13,8 +12,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setInvoiceId(null);
-		copy.setInvoiceDate(GeneralService.getTodayDate());
-		copy.setDueDate(entity.getInvoiceDate());
+		copy.setInvoiceDate(null);
+		copy.setDueDate(null);
 		copy.setValidatedByUser(null);
 		copy.setMove(null);
 		copy.setOriginalInvoice(null);

@@ -17,27 +17,39 @@
  */
 package com.axelor.apps.base.service.message;
 
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.MailAccount;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
 import com.google.inject.Inject;
 
 public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
-	@Inject
-	private UserService uis;
-	
-	@Inject
-	private MailAccountRepository mailAccountRepo;
+	private UserService userService;
 
-	
+	@Inject	
+	public MailAccountServiceBaseImpl(UserService userService){
+		this.userService = userService;
+	}
+
+	@Override
+	public boolean checkDefaultMailAccount(MailAccount mailAccount) {
+		if ( GeneralService.getGeneral().getMailAccountByUser() ) {
+			return all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).count() == 0 && mailAccount.getIsDefault();
+		}
+
+		return super.checkDefaultMailAccount( mailAccount);
+		
+	}
+
 	@Override
 	public MailAccount getDefaultMailAccount()  {
 		
-		MailAccount mailAccount = mailAccountRepo.all().filter("self.user = ?1 AND self.isDefault = true", uis.getUser()).fetchOne();
+		if ( GeneralService.getGeneral().getMailAccountByUser() ) {
+			return all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).fetchOne();	
+		}
 		
-		return mailAccount;
+		return super.getDefaultMailAccount();
 	}
 	
 }

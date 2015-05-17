@@ -27,6 +27,7 @@ import com.axelor.app.production.db.IProdResource;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
@@ -60,9 +61,7 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
 		
-		billOfMaterial.setCostPrice(this._computeCostPrice(billOfMaterial).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-		
-		billOfMaterial.getProduct().setCostPrice(billOfMaterial.getCostPrice());
+		billOfMaterial.setCostPrice(this._computeCostPrice(billOfMaterial).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN));
 		
 		save(billOfMaterial);
 	}

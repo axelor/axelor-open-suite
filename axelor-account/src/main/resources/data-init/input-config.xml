@@ -17,7 +17,7 @@
     	<bind to="resetDate" eval="com.axelor.apps.base.service.administration.GeneralService.getTodayDate()" />
     </input>
     
-    <input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year"  search="self.importId = :importId" />
+<!--     <input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year"  search="self.importId = :importId" /> -->
     
   	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" />
   	
@@ -33,32 +33,32 @@
 	
 	<input file="account_invoiceLineType.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLineType" search="self.importId = :importId" />
 	
-	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode" search="self.importId = :importId" />
+<!-- 	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode" search="self.importId = :importId" /> -->
 	
-	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId" />
+<!-- 	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId" /> -->
 	
-	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" />
+<!-- 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" /> -->
 	
-	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId" />
+<!-- 	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId" /> -->
 	
-	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" search="self.importId = :importId" >
-		<bind search="self.importId = :company_id" to="company" update="true" />
-	</input>
+<!-- 	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" search="self.importId = :importId" > -->
+<!-- 		<bind search="self.importId = :company_id" to="company" update="true" /> -->
+<!-- 	</input> -->
 	
-	<input file="account_analyticAccountManagement.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccountManagement" search="self.importId = :importId"/>
+<!-- 	<input file="account_analyticAccountManagement.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccountManagement" search="self.importId = :importId"/> -->
 	
-	<input file="account_payboxConfig.csv" separator=";" type="com.axelor.apps.account.db.PayboxConfig" search="self.importId = :importId" />
+<!-- 	<input file="account_payboxConfig.csv" separator=";" type="com.axelor.apps.account.db.PayboxConfig" search="self.importId = :importId" /> -->
 	
-	<input file="account_cfonbConfig.csv" separator=";" type="com.axelor.apps.account.db.CfonbConfig" search="self.importId = :importId" />
+<!-- 	<input file="account_cfonbConfig.csv" separator=";" type="com.axelor.apps.account.db.CfonbConfig" search="self.importId = :importId" /> -->
 	
-	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" />
+<!-- 	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" /> -->
 	
-    <input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" search="self.code = :code" />
+<!--     <input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" search="self.code = :code" /> -->
     
-    <input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId">
-		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
-		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
-	</input>
+<!--     <input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId"> -->
+<!-- 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/> -->
+<!-- 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/> -->
+<!-- 	</input> -->
 	
 	
 </csv-inputs>

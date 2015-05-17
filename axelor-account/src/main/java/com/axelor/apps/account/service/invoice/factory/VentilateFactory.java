@@ -49,13 +49,12 @@ public class VentilateFactory {
 	
 	protected VentilateState ventilatorByType(Invoice invoice){
 		
-		if(invoice.getEndOfCycleOk())  {
+		if ( invoice.getEndOfCycleOk() ) {
 			return new MajorEndCycleVentilateState(sequenceService, moveService, paymentScheduleService, reimbursementExportService, invoice);
 		}
-		else  {
-			return new VentilateState(sequenceService, moveService, invoice);
-		}
-		
+
+		return new VentilateState(sequenceService, moveService, invoice);
+
 	}
 	
 }

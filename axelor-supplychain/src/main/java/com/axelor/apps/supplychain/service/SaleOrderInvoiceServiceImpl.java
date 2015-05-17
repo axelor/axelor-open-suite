@@ -19,7 +19,6 @@ package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -101,9 +100,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generatePerOrderInvoice(SaleOrder saleOrder) throws AxelorException  {
-		
-		this.checkIfSaleOrderIsCompletelyInvoiced(saleOrder);
-		
+				
 		Invoice invoice = this.createInvoice(saleOrder);
 		
 		this.assignInvoice(saleOrder, invoice);
@@ -198,17 +195,17 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	
 	
 	
-	public void checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder) throws AxelorException  {
+	public boolean checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder)  {
 		
 		BigDecimal total = BigDecimal.ZERO;
 		
+		saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+				
 		for(Invoice invoice : saleOrder.getInvoiceSet())  {
 			total = total.add(this.computeInTaxTotalInvoiced(invoice));
 		}
 		
-		if(total.compareTo(saleOrder.getInTaxTotal()) == 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_5)), IException.CONFIGURATION_ERROR);
-		}
+		return total.compareTo(saleOrder.getInTaxTotal()) == 0;
 		
 	}
 		

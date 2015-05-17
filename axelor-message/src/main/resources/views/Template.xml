@@ -13,20 +13,21 @@
 	<form name="template-form" title="Template" model="com.axelor.apps.message.db.Template" 
 		onNew="action-template-record-new">
 		<panel colSpan="12">
-			<field name="name"/>
+			<field name="name" colSpan="4"/>
 			<field name="mediaTypeSelect" colSpan="4"/>
 			<field name="isDefault" colSpan="2"/>
+			<field name="isSystem" colSpan="2"/>
 			<field name="metaModel"/>
 			<field name="target"/>
 		</panel>
-		<panel sidebar="true" name="attachedFiles" title="Attached files" colSpan="12">
-			    <field name="filePath" widget="url" colSpan="12"/>
-  		</panel>
 		<panel title="Recipient address" showIf="mediaTypeSelect == 1">
 			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false"/>
 		</panel>
+        <panel title="From" showIf="mediaTypeSelect == 2">
+        	<field name="fromAdress" height="2" colSpan="12"/>
+        </panel>
         <panel title="Reply to" showIf="mediaTypeSelect == 2">
-        	<field name="fromEmailAddress" height="1" colSpan="12"/>
+        	<field name="replyToRecipients" height="1" colSpan="12"/>
         </panel>
         <panel title="Recipients" showIf="mediaTypeSelect == 2">
         	<field name="toRecipients" height="2" colSpan="12"/>

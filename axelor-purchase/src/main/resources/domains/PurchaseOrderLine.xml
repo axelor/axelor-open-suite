@@ -12,19 +12,19 @@
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<string name="productName" title="Label"/>
-  	<decimal name="price" title="Unit price"/>
+  	<decimal name="price" title="Unit price" precision="20" scale="5"/>
   	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
   	<decimal name="exTaxTotal" title="Subtotal W.T."/>
   	
   	<string name="description" title="Description" large="true"/>
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   	
-  	<decimal name="discountAmount" title="Discount amount"/>
+  	<decimal name="discountAmount" title="Discount amount" precision="20" scale="5"/>
   	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
   	
   	<boolean name="isOrdered" title="Ordered ?"/>
   	  	
-  	<decimal name="saleMinPrice" title="Min sale price"/>
+  	<decimal name="saleMinPrice" title="Min sale price" precision="20" scale="5"/>
   	
   	
 	<date name="estimatedDelivDate" title="Estim. delivery date" help="true"/>
@@ -36,7 +36,7 @@
   	<!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
 <!--   	Highlight -->
-  	<decimal name="salePrice"/> 
+  	<decimal name="salePrice" precision="20" scale="5"/> 
   	
   	
   </entity>

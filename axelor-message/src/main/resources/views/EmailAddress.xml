@@ -19,12 +19,12 @@
     
     <form name="email-address-simple-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress">
     	<panel>
-			<field name="address" widget="Email" onChange="action-check-string-email-address" placeholder="user@mydomain.com" />
+			<field name="address" pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$" widget="Email" onChange="action-check-string-email-address" placeholder="user@mydomain.com" />
 		</panel>	
     </form>
     
 	<action-validate name="action-check-string-email-address">
-		<error message="Please input a valid email address" if="address != null &amp;&amp; !address.matches('^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$')" action="action-check-string-email-address-clear"/>
+		<error message="Please input a valid email address" if="address != null" action="action-check-string-email-address-clear"/>
 	</action-validate>
     
     <action-record name="action-check-string-email-address-clear" model="com.axelor.apps.base.db.General">

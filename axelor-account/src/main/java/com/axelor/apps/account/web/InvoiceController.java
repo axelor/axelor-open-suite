@@ -143,9 +143,10 @@ public class InvoiceController {
 			invoice = is.find(invoice.getId());
 			Invoice refund = is.createRefund( invoice );
 			response.setReload(true);
-			response.setFlash(I18n.get(IExceptionMessage.INVOICE_2));
+			response.setNotify(I18n.get(IExceptionMessage.INVOICE_2));
 			
 			response.setView ( ActionView.define( String.format(I18n.get(IExceptionMessage.INVOICE_4), invoice.getInvoiceId() ) )
+			.model(Invoice.class.getName())
 			.add("grid", "invoice-grid")
 			.add("form", "invoice-form")
 			.context("_showRecord", refund.getId().toString())
@@ -261,7 +262,7 @@ public class InvoiceController {
 			
 				LOG.debug("Impression de la facture "+invoice.getInvoiceId()+" : "+url.toString());
 				
-				String title = I18n.get("Invoice ");
+				String title = I18n.get("Invoice");
 				if(invoice.getInvoiceId() != null)  {
 					title += invoice.getInvoiceId();
 				}

@@ -17,8 +17,7 @@
  */
 package com.axelor.apps.message.web;
 
-import java.util.HashMap;
-import java.util.List;
+import java.io.IOException;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -30,15 +29,15 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.TemplateMessageService;
-import com.axelor.apps.tool.ObjectTool;
+import com.axelor.db.Model;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 public class GenerateMessageController {
@@ -53,59 +52,41 @@ public class GenerateMessageController {
 	
 	public void callMessageWizard(ActionRequest request, ActionResponse response)   {
 		
-		Object object = request.getContext().asType(Object.class);
-
+		Model context = request.getContext().asType( Model.class );
+		String model = request.getModel();
+		
+		LOG.debug("Call message wizard for model : {} ", model);
+		
+		String[] decomposeModel = model.split("\\.");
+		String simpleModel = decomposeModel[ decomposeModel.length - 1 ];
+		
+		Query<? extends Template> templateQuery = templateRepo.all().filter("self.metaModel.fullName = ?1 AND self.isSystem != true",  model );
+		
 		try {		
 		
-			long templateNumber = templateRepo.all().filter("self.metaModel.fullName = ?1", 
-					object.getClass().getCanonicalName()).count();
+			long templateNumber = templateQuery.count();
 			
 			LOG.debug("Template number : {} ", templateNumber);
 			
-			if(templateNumber == 0)  {
-				response.setFlash(I18n.get(IExceptionMessage.MESSAGE_1));
-			}
-			else if(templateNumber > 1 || templateNumber == 0)  {
-
-				Map<String,Object> context = new HashMap<String,Object>();
-				context.put("_object", object);
-				context.put("_tag", object.getClass().getSimpleName());
-				context.put("_templateContextModel", object.getClass().getCanonicalName());
-
-				Map<String, Object> map = Maps.newHashMap();
-				map.put("name", "generate-message-wizard-form");
-				map.put("type", "form");
+			if ( templateNumber == 0 )  { response.setFlash(I18n.get(IExceptionMessage.MESSAGE_1)); }
+			
+			else if ( templateNumber > 1 || templateNumber == 0 )  {
+	
+				response.setView( 
+						ActionView.define( I18n.get( IExceptionMessage.MESSAGE_2 ) )
+						.model(Wizard.class.getName())
+						.add("form", "generate-message-wizard-form")
+						.context( "_objectId", context.getId().toString() )
+						.context( "_templateContextModel", model )
+						.context( "_tag", simpleModel )
+						.map()
+					);
 				
-				List<Object> items = Lists.newArrayList();
-				items.add(map);
-				
-				Map<String,Object> view = new HashMap<String,Object>();
-				view.put("title", I18n.get(IExceptionMessage.MESSAGE_2));
-				view.put("resource", Wizard.class.getName());
-				view.put("viewType", "form");
-				view.put("views", items);
-				view.put("name", "generate-message-wizard-form");
-				view.put("context", context);
-
-				response.setView(view);
-			}
-			else  {
-				Object objectId = ObjectTool.getObject(object, "id");
-				
-				Long id = Long.parseLong(objectId.toString());
-				
-				response.setView(
-						this.generateMessage(
-								object, 
-								id,
-								object.getClass().getCanonicalName(),
-								object.getClass().getSimpleName(),
-								templateRepo.all().filter("self.metaModel.fullName = ?1", 
-										object.getClass().getCanonicalName()).fetchOne()));
+			} else  {
+				response.setView( generateMessage( context.getId(), model, simpleModel, templateQuery.fetchOne() ) );
 			}
 			
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
+		} catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 	
 	
@@ -113,57 +94,32 @@ public class GenerateMessageController {
 	public void generateMessage(ActionRequest request, ActionResponse response)  {
 		
 		Context context = request.getContext();
-		
-		Map<?,?> object = (Map<?,?>) context.get("_object");
-		
 		Map<?,?> templateContext = (Map<?,?>) context.get("template");
+		Template template = templateRepo.find( Long.parseLong( templateContext.get("id").toString() ) );
 		
-		Integer objectId =  (Integer) object.get("id");
-		
+		Long objectId =  Long.parseLong( context.get("_objectId").toString() );
 		String model = (String) context.get("_templateContextModel");
-		
 		String tag = (String) context.get("_tag");
-		
-		Template template = templateRepo.find(((Integer)templateContext.get("id")).longValue());
-		try {		
-		
-			response.setView(
-					this.generateMessage(object, objectId.longValue(), model, tag, template));
-			
-		}
+
+		try { response.setView( generateMessage( objectId, model, tag, template ) ); } 
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 	
 	
-	public Map<String,Object> generateMessage(Object object, long objectId, String model, String tag, Template template) throws SecurityException, NoSuchFieldException, ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException  {
+	public Map<String,Object> generateMessage(long objectId, String model, String tag, Template template) throws SecurityException, NoSuchFieldException, ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		LOG.debug("object : {} ", object);
 		LOG.debug("template : {} ", template);
 		LOG.debug("object id : {} ", objectId);
 		LOG.debug("model : {} ", model);
 		LOG.debug("tag : {} ", tag);
 		
-		Message message = templateMessageService.generateMessage(object, objectId, model, tag, template);
+		Message message = templateMessageService.generateMessage(objectId, model, tag, template);
 
-		Map<String,Object> context = new HashMap<String,Object>();
-		context.put("_showRecord", message.getId());
-		
-		Map<String, Object> map = Maps.newHashMap();
-		map.put("name", "message-form");
-		map.put("type", "form");
-		
-		List<Object> items = Lists.newArrayList();
-		items.add(map);
-		
-		Map<String,Object> view = new HashMap<String,Object>();
-		view.put("title", I18n.get(IExceptionMessage.MESSAGE_3));
-		view.put("resource",Message.class.getName());
-		view.put("viewType", "form");
-		view.put("views", items);
-		view.put("name", "message-form");
-		view.put("context", context);
-
-		return view;
+		return ActionView.define( I18n.get(IExceptionMessage.MESSAGE_3) )
+				.model( Message.class.getName() )
+				.add("form", "message-form")
+				.context("_showRecord", message.getId().toString() )
+				.map();
 			
 	}
 	

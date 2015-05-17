@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.google.inject.Inject;
 
 public class PriceListService extends PriceListRepository {
@@ -132,12 +134,12 @@ public class PriceListService extends PriceListRepository {
 	public BigDecimal computeDiscount(BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount)  {
 		
 		if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_FIXED)  {
-			return  unitPrice.add(discountAmount);
+			return  unitPrice.add(discountAmount).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		}
 		else if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
 			return unitPrice.multiply(
 					BigDecimal.ONE.add(
-							discountAmount.divide(new BigDecimal(100))));
+							discountAmount.divide(new BigDecimal(100)))).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		}
 		
 		return unitPrice;
@@ -150,11 +152,11 @@ public class PriceListService extends PriceListRepository {
 		
 		if(priceListLine != null)  {
 			if(priceList.getIsDisplayed())  {
-				discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price));
+				discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
 				discounts.put("discountTypeSelect", this.getDiscountTypeSelect(priceListLine));
 			}
 			else  {
-				discounts.put("price", this.getUnitPriceDiscounted(priceListLine, price));
+				discounts.put("price", this.getUnitPriceDiscounted(priceListLine, price).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
 			}
 		}
 		else  {
@@ -163,7 +165,7 @@ public class PriceListService extends PriceListRepository {
 				discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_PERCENT);
 			}
 			else  {
-				discounts.put("price", this.getUnitPriceDiscounted(priceList, price));
+				discounts.put("price", this.getUnitPriceDiscounted(priceList, price).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
 			}
 		}
 		

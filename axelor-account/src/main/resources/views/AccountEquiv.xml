@@ -10,9 +10,13 @@
 
     <form name="account-equiv-form" title="Account equivalence" model="com.axelor.apps.account.db.AccountEquiv"  >
         <panel>
-        	<field name="fromAccount"/>
+        	<field name="fromAccount" onChange="action-account-equiv-attrs-domain-to-account"/>
        		<field name="toAccount"/>
         </panel>
     </form>
+    
+    <action-attrs name="action-account-equiv-attrs-domain-to-account">
+    	<attribute name="domain" for="toAccount" expr="eval: &quot; self.company = ${fromAccount.company.id} &quot;"/>
+    </action-attrs>
 
 </object-views>

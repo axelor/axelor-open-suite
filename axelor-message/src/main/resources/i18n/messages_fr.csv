@@ -1,141 +1,144 @@
 "key","message","comment","context"
 "Address","Adresse email",,"resources/domains/EmailAddress.xml:11"
-"Address Block","Bloc d'adresse",,"resources/domains/Message.xml:23
-resources/domains/Template.xml:19"
-"Attached File path","Chemin vers fichier attaché",,"resources/domains/Message.xml:20
-resources/domains/Template.xml:22"
-"Attached files","Fichiers attachés",,"resources/views/Template.xml:22"
-"Bcc","Cci",,"resources/domains/Message.xml:28
-resources/domains/Template.xml:15"
-"Cc","Cc",,"resources/domains/Message.xml:27
-resources/domains/Template.xml:14"
-"Chat","Messagerie interne",,"resources/views/Selects.xml:40"
+"Address Block","Bloc d'adresse",,"resources/domains/Message.xml:22
+resources/domains/Template.xml:20"
+"Bcc","Cci",,"resources/domains/Message.xml:29
+resources/domains/Template.xml:17"
+"Cc","Cc",,"resources/domains/Message.xml:28
+resources/domains/Template.xml:16"
+"Chat","Messagerie interne",,"resources/views/Selects.xml:39"
 "Check Duplicate","Vérifier doublons",,"resources/views/EmailAddress.xml:8"
 "Code","Code",,"resources/domains/Wizard.xml:11"
-"Configuration","Configuration",,"resources/views/Menu.xml:17"
-"Configurations","Configurations",,"resources/views/MailAccount.xml:25"
+"Configuration","Configuration",,"resources/views/Menu.xml:14"
+"Configurations","Configurations",,"resources/views/MailAccount.xml:19"
 "Connection successful",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:17"
 "Content","Contenu",,"resources/domains/Message.xml:12
 resources/domains/Template.xml:11
-resources/views/Message.xml:40
-resources/views/Template.xml:36"
-"Create message",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:31"
-"Default ?","Par défaut ?",,"resources/domains/Template.xml:21"
+resources/views/Message.xml:41
+resources/views/Template.xml:37"
+"Create message",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:32"
+"Default ?","Par défaut ?",,"resources/domains/Template.xml:22"
 "Default account ?","Compte par défaut ?",,"resources/domains/MailAccount.xml:17"
 "Delete","Supprimer",,"resources/views/Message.xml:17"
-"Deleted","Supprimée",,"resources/views/Selects.xml:28"
-"Draft","Brouillon",,"resources/views/Selects.xml:26"
-"Draft emails","Emails Brouillon",,"resources/views/Menu.xml:63"
-"Drafts","Brouillons",,"resources/views/Menu.xml:59"
-"Echec envoie email",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:34"
+"Deleted","Supprimée",,"resources/views/Selects.xml:27"
+"Draft","Brouillon",,"resources/views/Selects.xml:25"
+"Draft emails","Emails Brouillon",,"resources/views/Menu.xml:70"
+"Drafts","Brouillons",,"resources/views/Menu.xml:66"
+"Echec envoie email",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:35"
 "Email","Email",,"resources/views/Message.xml:13
-resources/views/Selects.xml:39"
-"Email Accounts","Comptes SMTP",,"resources/views/Menu.xml:89
-resources/views/Menu.xml:92"
+resources/views/Selects.xml:38"
+"Email Accounts","Comptes SMTP",,"resources/views/Menu.xml:96
+resources/views/Menu.xml:99"
 "Email address","Adresse Email",,"resources/views/EmailAddress.xml:13
 resources/views/EmailAddress.xml:20"
 "Email addresses","Adresses email",,"resources/views/EmailAddress.xml:6
-resources/views/Menu.xml:106
-resources/views/Menu.xml:109"
-"Email envoyé",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:32"
+resources/views/Menu.xml:112
+resources/views/Menu.xml:115"
+"Email envoyé",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:33"
 "Emails","Emails",,"resources/views/Message.xml:6"
-"Error",,,"java/com/axelor/apps/message/web/MailAccountController.java:40"
-"Event","Evènement",,"resources/views/Selects.xml:14"
+"Event","Evènement",,"resources/views/Selects.xml:13"
 "Forecasted Sent Date","Date prévue d'envoi",,"resources/domains/Message.xml:14"
+"From","De",,"resources/domains/Message.xml:25
+resources/domains/Template.xml:13
+resources/views/Template.xml:26"
 "Generate message","Générer message",,"resources/views/GenerateMessageWizard.xml:8"
 "Host","Hôte",,"resources/domains/MailAccount.xml:14"
 "Import","Importer",,"resources/domains/EmailAddress.xml:10"
-"Inbox","Boîte de réception",,"resources/views/Menu.xml:37
-resources/views/Menu.xml:41"
+"Inbox","Boîte de réception",,"resources/views/Menu.xml:55
+resources/views/Menu.xml:59"
 "Incorrect login or password",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:15"
-"Informations","Informations",,"resources/views/MailAccount.xml:15
+"Informations","Informations",,"resources/views/MailAccount.xml:14
 resources/views/Message.xml:19"
-"Lead","Piste",,"resources/views/Selects.xml:11"
+"Lead","Piste",,"resources/views/Selects.xml:10"
 "Login","Identifiant",,"resources/domains/MailAccount.xml:12
-resources/views/MailAccount.xml:21"
-"Mail","Courrier",,"resources/views/Selects.xml:38"
+resources/views/MailAccount.xml:25"
+"Mail","Courrier",,"resources/views/Selects.xml:37"
 "Mail account","Compte email",,"resources/domains/Message.xml:31
-resources/views/MailAccount.xml:14"
+resources/views/MailAccount.xml:13"
 "Mail accounts","Comptes email",,"resources/views/MailAccount.xml:6"
-"Media Type","Type de média",,"resources/domains/Message.xml:22
-resources/domains/Template.xml:18"
-"Message Box","Boîte de réception",,"resources/views/Menu.xml:27"
-"Message destinated to","Message destiné à",,"resources/views/Message.xml:37"
-"Message envoyé",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:33"
-"Messages","Messages",,"resources/views/Menu.xml:20
-resources/views/Menu.xml:22"
-"Messaging","Messenger",,"resources/views/Menu.xml:14"
-"Model","Objet métier",,"resources/domains/Template.xml:20"
+"Media Type","Type de média",,"resources/domains/Message.xml:21
+resources/domains/Template.xml:19"
+"Message Box","Boîte de réception",,"resources/views/Menu.xml:24"
+"Message destinated to","Message destiné à",,"resources/views/Message.xml:38"
+"Message envoyé",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:34"
+"Messages","Messages",,"resources/views/Menu.xml:17
+resources/views/Menu.xml:19"
+"Messaging","Messenger",,"resources/views/Menu.xml:11"
+"Model","Objet métier",,"resources/domains/Template.xml:21"
 "Model empty. Please configure a model.",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:23"
-"NONE","Non",,"resources/views/Selects.xml:44"
+"NONE","Non",,"resources/views/Selects.xml:43"
 "Name","Intitulé",,"resources/domains/MailAccount.xml:10
 resources/domains/Template.xml:10
 resources/domains/Wizard.xml:10"
-"New Message","Créer message",,"resources/views/Menu.xml:28
-resources/views/Menu.xml:30"
-"New email","Nouvel email",,"resources/views/Menu.xml:48
-resources/views/Menu.xml:52"
-"Opportunity","Opportunité",,"resources/views/Selects.xml:12"
-"Partner/Contact","Tiers/Contact",,"resources/views/Selects.xml:10"
+"New Email",,,"resources/views/Menu.xml:38"
+"New Mail",,,"resources/views/Menu.xml:45
+resources/views/Menu.xml:48"
+"New Message","Créer message",,"resources/views/Menu.xml:26
+resources/views/Menu.xml:28"
+"New email","Nouvel email",,"resources/views/Menu.xml:35"
+"Opportunity","Opportunité",,"resources/views/Selects.xml:11"
+"Partner/Contact","Tiers/Contact",,"resources/views/Selects.xml:9"
 "Password","Mot de passe",,"resources/domains/MailAccount.xml:13"
 "Please input a valid email address","Veuillez saisir une adresse valide",,"resources/views/EmailAddress.xml:27"
 "Port","Port",,"resources/domains/MailAccount.xml:15"
 "Print","Imprimer",,"resources/views/Message.xml:15"
-"Product","Produit",,"resources/views/Selects.xml:13"
-"Project/Business","Projet/Affaire",,"resources/views/Selects.xml:16"
+"Product","Produit",,"resources/views/Selects.xml:12"
+"Project/Business","Projet/Affaire",,"resources/views/Selects.xml:15"
 "Provided settings are wrong, please modify them and try again",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:18"
-"Quote/Order","Devis/Commande",,"resources/views/Selects.xml:15"
-"Received","Reçu",,"resources/views/Selects.xml:21"
+"Quote/Order","Devis/Commande",,"resources/views/Selects.xml:14"
+"Received","Reçu",,"resources/views/Selects.xml:20"
 "Recipient","Destinataire",,"resources/domains/Message.xml:35"
-"Recipient address","Adresse destinataire",,"resources/views/Message.xml:29
-resources/views/Template.xml:25"
-"Recipients","Destinataires",,"resources/views/Message.xml:32
-resources/views/Template.xml:31"
+"Recipient address","Adresse destinataire",,"resources/views/Message.xml:30
+resources/views/Template.xml:23"
+"Recipients","Destinataires",,"resources/views/Message.xml:33
+resources/views/Template.xml:32"
 "Related to","Associé à ",,"resources/domains/Message.xml:15
 resources/domains/Message.xml:17
-resources/views/Message.xml:44"
+resources/views/Message.xml:45"
 "Related to1 select","Lié à (1) sélection",,"resources/domains/Message.xml:16"
 "Related to2 select","Lié à (2) sélection",,"resources/domains/Message.xml:18"
-"Reply to",,,"resources/views/Template.xml:28"
-"Routings","Gamme",,"resources/views/Menu.xml:101
-resources/views/Menu.xml:98"
-"SMTP","SMTP",,"resources/views/Selects.xml:32"
-"SSL","SSL",,"resources/views/Selects.xml:45"
+"Reply to","Répondre à",,"resources/domains/Message.xml:26
+resources/domains/Template.xml:14
+resources/views/Template.xml:29"
+"Routings","Gamme",,"resources/views/Menu.xml:104
+resources/views/Menu.xml:107"
+"SMTP","SMTP",,"resources/views/Selects.xml:31"
+"SSL","SSL",,"resources/views/Selects.xml:44"
 "SSL/TLS","SSL/TLS",,"resources/domains/MailAccount.xml:16"
-"Select template",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:30"
+"Select template",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:31"
 "Send","Envoyer",,"resources/views/Message.xml:16"
-"Sender",,,"resources/domains/Template.xml:16"
-"Sender (Email)","Expéditeur (Email)",,"resources/domains/Message.xml:29"
 "Sender (User)","Expéditeur (Utilisateur)",,"resources/domains/Message.xml:34"
-"Sent","Envoyé",,"resources/views/Selects.xml:22
-resources/views/Selects.xml:27"
+"Sent","Envoyé",,"resources/views/Selects.xml:21
+resources/views/Selects.xml:26"
 "Sent by email","Envoyé par email",,"resources/domains/Message.xml:30"
 "Sent date","Date d'envoi",,"resources/domains/Message.xml:13"
-"Sentbox","Emails Envoyés",,"resources/views/Menu.xml:79
-resources/views/Menu.xml:83"
+"Sentbox","Emails Envoyés",,"resources/views/Menu.xml:86
+resources/views/Menu.xml:90"
 "Server Type","Type serveur",,"resources/domains/MailAccount.xml:11"
 "Signature","Signature",,"resources/domains/MailAccount.xml:19"
 "Status","Statut",,"resources/domains/Message.xml:19"
 "Subject","Sujet/Objet",,"resources/domains/Message.xml:11
-resources/views/Message.xml:41"
+resources/views/Message.xml:42"
 "Suject","Sujet",,"resources/domains/Template.xml:12"
-"TLS","TLS",,"resources/views/Selects.xml:46"
-"Target receptor","Destinataire cible",,"resources/domains/Template.xml:17"
-"Task (Project)","Tâche (Projet)",,"resources/views/Selects.xml:17"
+"System ?","Système ?",,"resources/domains/Template.xml:23"
+"TLS","TLS",,"resources/views/Selects.xml:45"
+"Target receptor","Destinataire cible",,"resources/domains/Template.xml:18"
+"Task (Project)","Tâche (Projet)",,"resources/views/Selects.xml:16"
 "Template","Modèle",,"resources/views/GenerateMessageWizard.xml:10
 resources/views/Template.xml:14"
 "Templates","Modèles",,"resources/views/Template.xml:6"
-"Test connection","Tester connexion",,"resources/views/MailAccount.xml:33"
-"There is already a default mail account","Il existe déjà une compte email par défaut.",,"resources/views/MailAccount.xml:47"
-"To","A",,"resources/domains/Message.xml:26
-resources/domains/Template.xml:13"
-"Trash","Corbeille",,"resources/views/Menu.xml:68
-resources/views/Menu.xml:72"
+"Test connection","Tester connexion",,"resources/views/MailAccount.xml:31"
+"There is already a default mail account","Il existe déjà une compte email par défaut.",,"resources/views/MailAccount.xml:40"
+"To","A",,"resources/domains/Message.xml:27
+resources/domains/Template.xml:15"
+"Trash","Corbeille",,"resources/views/Menu.xml:75
+resources/views/Menu.xml:79"
 "Type","Type",,"resources/domains/Message.xml:10"
 "Unable to reach server. Please check Host,Port and SSL/TLS",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:16"
 "Valid ?","Valide ?",,"resources/domains/MailAccount.xml:18"
 "Validate","Valider",,"resources/views/GenerateMessageWizard.xml:12"
-"Veuillez configurer un template",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:29"
+"Veuillez configurer un template",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:30"
+"Waiting model: %s",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:25"
 "Your target receptor is not valid. Please check it.",,,"java/com/axelor/apps/message/exception/IExceptionMessage.java:24"
 "help:EmailAddress.address",,,"resources/domains/EmailAddress.xml:11"
 "help:MailAccount.host",,,"resources/domains/MailAccount.xml:14"
@@ -144,17 +147,16 @@ resources/views/Menu.xml:72"
 "help:MailAccount.login",,,"resources/domains/MailAccount.xml:12"
 "help:MailAccount.securitySelect",,,"resources/domains/MailAccount.xml:16"
 "help:MailAccount.serverTypeSelect",,,"resources/domains/MailAccount.xml:11"
-"help:Message.addressBlock",,,"resources/domains/Message.xml:23"
-"help:Message.bccEmailAddressSet","Destinataire(s) à mettre en copie",,"resources/domains/Message.xml:28"
-"help:Message.ccEmailAddressSet","Destinataire(s) à mettre en copie cachée (non apparent sur l'email envoyé)",,"resources/domains/Message.xml:27"
-"help:Message.filePath",,,"resources/domains/Message.xml:20"
-"help:Message.mediaTypeSelect",,,"resources/domains/Message.xml:22"
+"help:Message.addressBlock",,,"resources/domains/Message.xml:22"
+"help:Message.bccEmailAddressSet","Destinataire(s) à mettre en copie",,"resources/domains/Message.xml:29"
+"help:Message.ccEmailAddressSet","Destinataire(s) à mettre en copie cachée (non apparent sur l'email envoyé)",,"resources/domains/Message.xml:28"
+"help:Message.mediaTypeSelect",,,"resources/domains/Message.xml:21"
 "help:Message.sentDateT",,,"resources/domains/Message.xml:13"
 "help:Message.typeSelect",,,"resources/domains/Message.xml:10"
-"help:Template.addressBlock",,,"resources/domains/Template.xml:19"
-"help:Template.filePath",,,"resources/domains/Template.xml:22"
-"help:Template.isDefault",,,"resources/domains/Template.xml:21"
-"help:Template.mediaTypeSelect",,,"resources/domains/Template.xml:18"
-"help:Template.metaModel",,,"resources/domains/Template.xml:20"
+"help:Template.addressBlock",,,"resources/domains/Template.xml:20"
+"help:Template.isDefault",,,"resources/domains/Template.xml:22"
+"help:Template.isSystem",,,"resources/domains/Template.xml:23"
+"help:Template.mediaTypeSelect",,,"resources/domains/Template.xml:19"
+"help:Template.metaModel",,,"resources/domains/Template.xml:21"
 "user@mydomain.com",,,"resources/views/EmailAddress.xml:15
 resources/views/EmailAddress.xml:22"

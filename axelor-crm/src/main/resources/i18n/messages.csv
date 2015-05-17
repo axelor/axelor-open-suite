@@ -996,8 +996,8 @@ resources/views/Target.xml:91"
 "Weeks",,,"resources/views/Selects.xml:147"
 "Worst case",,,"resources/domains/Opportunity.xml:17"
 "ZIMBRA",,,"resources/views/Selects.xml:71"
-"amount",,,"java/com/axelor/web/MapRest.java:147
-java/com/axelor/web/MapRest.java:148"
+"amount",,,"java/com/axelor/web/MapRest.java:141
+java/com/axelor/web/MapRest.java:142"
 "help:Event.limitDateT",,,"resources/domains/Event.xml:17"
 "help:Event.location",,,"resources/domains/Event.xml:48"
 "help:Event.progressSelect",,,"resources/domains/Event.xml:55"

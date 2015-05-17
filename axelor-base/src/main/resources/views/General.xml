@@ -27,10 +27,14 @@
 		<panel>
 		    <field name="today"/>
 		    <field name="logOk"/>
-		    <field name="defaultProjectUnit"/>
-		    <field name="defaultPartnerLanguage" />
 		</panel>
 		<panel-tabs>
+		    <panel title="Configuration">
+		    	<field name="defaultPartnerLanguage" />
+		    	<field name="mailAccountByUser" />
+		    	<field name="nbDecimalDigitForUnitPrice"/>
+		    	<field name="defaultProjectUnit"/>
+		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>
 				<field name="isInvoiceMoveConsolidated"/>

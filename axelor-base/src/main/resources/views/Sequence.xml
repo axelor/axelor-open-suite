@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
-    
-  
+
     <grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence">
         <field name="name"/>
         <field name="code" />
@@ -11,16 +10,15 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
         <field name="suffixe"/>
         <field name="padding"/>
         <field name="toBeAdded"/>
-        <field name="nextNum"/>
     </grid>
     
-    <form name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence" onNew="action-group-base-sequence-onnew" onLoad="action-sequence-attrs">
+    <form name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence" onNew="action-group-base-sequence-onnew" onLoad="action-sequence-attrs" onSave="action-sequence-validate">
 		<panel itemSpan="12">
 			<field name="code" onChange="action-sequence-attrs"/>
 			<field name="company" widget="SuggestBox"/>
 			<field name="name"/>
 		</panel>
-		<panel title="Tips" sidebar="true" itemSpan="6">
+		<panel title="Tips" sidebar="true" itemSpan="12">
 			<label title="The tags below can be used as a prefix or a suffix :" />
 			<label title="%Y  : Year" />
 			<label title="%M  : Month" />
@@ -32,15 +30,27 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 			<field name="suffixe"/>
 			<field name="padding"/>
 			<field name="toBeAdded"/>
-			<field name="nextNum"/>
-			<spacer/>
-			<field name="yearlyResetOk" />
-			<field name="monthlyResetOk" />
-			<field name="resetDate" showIf="yearlyResetOk || monthlyResetOk" requiredIf="yearlyResetOk || monthlyResetOk" />
+			<field name="yearlyResetOk" readonlyIf="monthlyResetOk" />
+			<field name="monthlyResetOk" onChange="action-sequence-monthly-reset" />
 		</panel>
+		<panel-related field="sequenceVersionList" grid-view="sequence-version-grid" form-view="sequence-version-form"  />
 	</form>
+	
+    <grid editable="true" name="sequence-version-grid" title="Versions" model="com.axelor.apps.base.db.SequenceVersion" orderBy="-startDate">
+    	<field name="startDate" />
+    	<field name="endDate" />
+    	<field name="nextNum" />
+    </grid>
+	
+    <form name="sequence-version-form" title="Version" model="com.axelor.apps.base.db.SequenceVersion" >
+    	<panel itemSpan="4">
+	    	<field name="startDate" />
+	    	<field name="endDate" />
+	    	<field name="nextNum" />
+    	</panel>
+    </form>
     
-    <!-- ACTION GROUPs -->
+    <!-- ACTION GROUPS -->
     <action-group name="action-group-base-sequence-onnew">
     	<action name="action-sequence-default"/>
     	<action name="action-sequence-attrs"/>
@@ -56,9 +66,17 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>
     
+	<action-record name="action-sequence-monthly-reset" model="com.axelor.apps.base.db.Sequence">
+		<field if="monthlyResetOk" name="yearlyResetOk" expr="eval: true"/>
+	</action-record>
+    
     <action-attrs name="action-sequence-attrs">
-    	<attribute name="hidden" for="company" expr="eval: code in ['contract','contractLine','invoicePaymentCondition','partner']"/>
-    	<attribute name="required" for="company" expr="eval: !(code in ['contract','contractLine','invoicePaymentCondition','partner'])"/>
+    	<attribute name="hidden" for="company" expr="eval: code in ['partner','eventTicket','productTrackingNumber']"/>
+    	<attribute name="required" for="company" expr="eval: !(code in ['partner','eventTicket','productTrackingNumber'])"/>
     </action-attrs>
+    
+    <action-validate name="action-sequence-validate">
+    	<error message="Prefix or suffix must contain %Y if yearly reset is true and %M %Y if monthly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isValid(__this__)"/>
+    </action-validate>
     
 </object-views>

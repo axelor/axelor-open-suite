@@ -43,9 +43,6 @@ public class BankDetailsController {
 			}
 			else{
 				bankDetails = bds.detailsIban(bankDetails);
-				if(bankDetails.getBic() == null){
-					response.setFlash(I18n.get(IExceptionMessage.BANK_DETAILS_2));
-				}
 				response.setValue("bankCode", bankDetails.getBankCode());
 				response.setValue("sortCode", bankDetails.getSortCode());
 				response.setValue("accountNbr", bankDetails.getAccountNbr());
