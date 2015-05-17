@@ -50,7 +50,7 @@ public class PurchaseOrderToolService {
 	 */
 	public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
-		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_EVEN);
+		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 
 		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { quantity, price, amount });
 
@@ -61,7 +61,7 @@ public class PurchaseOrderToolService {
 	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder) throws AxelorException  {
 		
 		return currencyService.getAmountCurrencyConverted(
-				purchaseOrder.getCurrency(), purchaseOrder.getSupplierPartner().getCurrency(), exTaxTotal, purchaseOrder.getOrderDate()).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);  
+				purchaseOrder.getCurrency(), purchaseOrder.getSupplierPartner().getCurrency(), exTaxTotal, purchaseOrder.getOrderDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
 	}
 	
 }

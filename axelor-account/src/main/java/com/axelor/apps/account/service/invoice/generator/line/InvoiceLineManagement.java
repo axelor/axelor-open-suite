@@ -47,7 +47,7 @@ public abstract class InvoiceLineManagement {
 	 */
 	public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
-		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_EVEN);
+		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 
 		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { quantity, price, amount });
 

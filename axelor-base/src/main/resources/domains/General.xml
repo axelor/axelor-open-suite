@@ -29,6 +29,8 @@
 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="general" title="Currency conversion table" help="true"/>
 		
 		<boolean name="hasQasValidation" title="Use QAS Validation ?" help="true" />
+		
+		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" max="5" default="2"/>
 
 	</entity>
 

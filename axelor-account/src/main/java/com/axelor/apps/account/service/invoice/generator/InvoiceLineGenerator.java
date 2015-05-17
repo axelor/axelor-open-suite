@@ -203,7 +203,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		invoiceLine.setAccountingExTaxTotal(
 				currencyService.getAmountCurrencyConverted(
-						invoice.getCurrency(), partnerCurrency, exTaxTotal, today).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP));  
+						invoice.getCurrency(), partnerCurrency, exTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));  
 		
 		Company company = invoice.getCompany();
 		
@@ -216,7 +216,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		invoiceLine.setCompanyExTaxTotal(
 				currencyService.getAmountCurrencyConverted(
-						invoice.getCurrency(), companyCurrency, exTaxTotal, today).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP));
+						invoice.getCurrency(), companyCurrency, exTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 		
 		if(taxLine == null)  {
 			boolean isPurchase = false;

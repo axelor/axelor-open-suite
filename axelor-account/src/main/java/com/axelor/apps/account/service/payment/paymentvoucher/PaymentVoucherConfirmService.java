@@ -312,7 +312,7 @@ public class PaymentVoucherConfirmService extends PaymentVoucherRepository {
 		
 		LocalDate paymentVoucherDate = paymentVoucher.getPaymentDateTime().toLocalDate();
 		
-		return currencyService.getAmountCurrencyConverted(paymentVoucherCurrency, moveCurrency, amountToPay, paymentVoucherDate).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);
+		return currencyService.getAmountCurrencyConverted(paymentVoucherCurrency, moveCurrency, amountToPay, paymentVoucherDate).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 		
 	}
 	

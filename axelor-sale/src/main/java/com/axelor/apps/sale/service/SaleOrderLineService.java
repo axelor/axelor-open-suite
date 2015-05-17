@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -66,7 +67,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 	 */
 	public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
-		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_EVEN);
+		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 
 		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { quantity, price, amount });
 
@@ -80,7 +81,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 		
 		return currencyService.getAmountCurrencyConverted(
 			product.getSaleCurrency(), saleOrder.getCurrency(), product.getSalePrice(), saleOrder.getCreationDate())
-			.setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP);
+			.setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		
 	}
 	
@@ -117,7 +118,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 		
 		return currencyService.getAmountCurrencyConverted(
 				saleOrder.getCurrency(), saleOrder.getCompany().getCurrency(), exTaxTotal, saleOrder.getCreationDate())
-				.setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);  
+				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
 	}
 	
 	
@@ -127,7 +128,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 		
 		return currencyService.getAmountCurrencyConverted(
 				product.getPurchaseCurrency(), saleOrder.getCompany().getCurrency(), product.getCostPrice(), saleOrder.getCreationDate())
-				.setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);  
+				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
 	}
 	
 	

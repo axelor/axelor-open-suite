@@ -113,7 +113,7 @@ public class CurrencyService extends CurrencyRepository{
 						currencyStart.getName(), currencyEnd.getName(), today), IException.CONFIGURATION_ERROR);
 			}
 			
-			return amountToPay.divide(exchangeRate, IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP);
+			return amountToPay.divide(exchangeRate, GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		}
 		
 		return amountToPay;

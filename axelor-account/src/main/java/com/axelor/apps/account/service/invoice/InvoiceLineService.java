@@ -67,11 +67,11 @@ public class InvoiceLineService {
 		
 		if(isPurchase)  {  
 			return currencyService.getAmountCurrencyConverted(
-				product.getPurchaseCurrency(), invoice.getCurrency(), product.getPurchasePrice(), invoice.getInvoiceDate()).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP);  
+				product.getPurchaseCurrency(), invoice.getCurrency(), product.getPurchasePrice(), invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
 		}
 		else  {  
 			return currencyService.getAmountCurrencyConverted(
-				product.getSaleCurrency(), invoice.getCurrency(), product.getSalePrice(), invoice.getInvoiceDate()).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP);  
+				product.getSaleCurrency(), invoice.getCurrency(), product.getSalePrice(), invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
 		}
 	}
 	
@@ -86,14 +86,14 @@ public class InvoiceLineService {
 	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
 		
 		return currencyService.getAmountCurrencyConverted(
-				invoice.getCurrency(), invoice.getPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);  
+				invoice.getCurrency(), invoice.getPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
 	}
 	
 	
 	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
 		
 		return currencyService.getAmountCurrencyConverted(
-				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP);  
+				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
 	}
 	
 	

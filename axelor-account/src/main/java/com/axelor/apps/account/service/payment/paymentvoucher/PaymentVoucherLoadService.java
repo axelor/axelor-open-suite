@@ -172,7 +172,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			paymentInvoiceToPay.setRemainingAmount(move.getInvoice().getInvoiceInTaxTotal().subtract(move.getInvoice().getInvoiceAmountPaid()));
 			
 			// on convertit le montant imputé de la devise de la saisie paiement vers la devise de la facture
-			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getInvoice().getCurrency(), paymentInvoiceToPay.getRemainingAmount(), paymentVoucher.getPaymentDateTime().toLocalDate()).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);
+			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getInvoice().getCurrency(), paymentInvoiceToPay.getRemainingAmount(), paymentVoucher.getPaymentDateTime().toLocalDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
 		}
 		// sinon la facture à une devise identique à l'écriture, ou l'écriture ne possède pas de facture
@@ -344,7 +344,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 								paymentVoucher.getCurrency(),
 								paymentInvoiceToPay.getCurrency(), 
 								paidAmount, 
-								paymentVoucher.getPaymentDateTime().toLocalDate()).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);
+								paymentVoucher.getPaymentDateTime().toLocalDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 						
 						//On convertit dans la devise de la saisie paiement, pour comparer le restant à payer de la facture avec le restant à utilsier de la saisie paiement
 						

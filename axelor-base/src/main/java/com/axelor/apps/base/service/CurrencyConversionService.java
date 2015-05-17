@@ -91,7 +91,7 @@ public class CurrencyConversionService extends CurrencyConversionLineRepository 
 		if(currentRate != null && previousRate != null && previousRate.compareTo(BigDecimal.ZERO) != 0){
 			BigDecimal diffRate = currentRate.subtract(previousRate);
 			BigDecimal variation = diffRate.multiply(new BigDecimal(100)).divide(previousRate,RoundingMode.HALF_EVEN);
-			variation = variation.setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_EVEN);
+			variation = variation.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 			variations = variation.toString()+"%";
 		}
 		

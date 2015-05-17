@@ -23,7 +23,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IProductVariant;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
@@ -31,6 +30,7 @@ import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
@@ -85,7 +85,7 @@ public class ProductServiceImpl extends ProductRepository implements ProductServ
 		
 		if(product.getCostPrice() != null && managePriceCoef != null)  {
 			
-			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, BigDecimal.ROUND_HALF_UP));
+			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
 			
 			if(product.getProductVariant() != null)  {
 				

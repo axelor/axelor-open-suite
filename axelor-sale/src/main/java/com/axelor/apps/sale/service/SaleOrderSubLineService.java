@@ -25,12 +25,12 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderSubLine;
@@ -65,7 +65,7 @@ public class SaleOrderSubLineService extends SaleOrderSubLineRepository {
 	 */
 	public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
-		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_EVEN);
+		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 
 		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { quantity, price, amount });
 
@@ -78,7 +78,7 @@ public class SaleOrderSubLineService extends SaleOrderSubLineRepository {
 		Product product = saleOrderSubLine.getProduct();
 		
 		return currencyService.getAmountCurrencyConverted(
-			product.getSaleCurrency(), saleOrder.getCurrency(), product.getSalePrice(), saleOrder.getCreationDate()).setScale(IAdministration.NB_DECIMAL_UNIT_PRICE, RoundingMode.HALF_UP);  
+			product.getSaleCurrency(), saleOrder.getCurrency(), product.getSalePrice(), saleOrder.getCreationDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
 		
 	}
 	
@@ -94,7 +94,7 @@ public class SaleOrderSubLineService extends SaleOrderSubLineRepository {
 	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, SaleOrder saleOrder) throws AxelorException  {
 		
 		return currencyService.getAmountCurrencyConverted(
-				saleOrder.getCurrency(), saleOrder.getCompany().getCurrency(), exTaxTotal, saleOrder.getCreationDate()).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);  
+				saleOrder.getCurrency(), saleOrder.getCompany().getCurrency(), exTaxTotal, saleOrder.getCreationDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
 	}
 	
 	
@@ -103,7 +103,7 @@ public class SaleOrderSubLineService extends SaleOrderSubLineRepository {
 		Product product = saleOrderSubLine.getProduct();
 		
 		return currencyService.getAmountCurrencyConverted(
-				product.getPurchaseCurrency(), saleOrder.getCompany().getCurrency(), product.getCostPrice(), saleOrder.getCreationDate()).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_UP);  
+				product.getPurchaseCurrency(), saleOrder.getCompany().getCurrency(), product.getCostPrice(), saleOrder.getCreationDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
 	}
 	
 	

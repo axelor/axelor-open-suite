@@ -153,7 +153,7 @@ public class AccountClearanceService extends AccountClearanceRepository {
 		
 		// Credit MoveLine 77. (profit account)
 		BigDecimal divid = taxRate.add(BigDecimal.ONE);
-		BigDecimal profitAmount = amount.divide(divid, IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_EVEN).setScale(IAdministration.NB_DECIMAL_TOTAL, RoundingMode.HALF_EVEN);
+		BigDecimal profitAmount = amount.divide(divid, IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, partner, profitAccount, profitAmount, false, false, todayTime.toLocalDate(), 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 

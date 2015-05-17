@@ -16,7 +16,7 @@
     </grid>
     
 	<form name="sale-order-sub-line-form" title="SO subline" model="com.axelor.apps.sale.db.SaleOrderSubLine"
-		 onLoad="action-sale-order-sub-line-attrs-hide-product-variant" onNew="action-group-sale-saleorder-subline-onnew">
+		 onLoad="action-sale-order-sub-line-attrs-scale-and-precision,action-sale-order-sub-line-attrs-hide-product-variant" onNew="action-group-sale-saleorder-subline-onnew">
 	  <panel>
 	    <field name="sequence"/>
 	    <field name="product" onChange="action-group-sale-saleorder-subline-product-onchange" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
@@ -37,6 +37,7 @@
 	</form>
     
     <action-group name="action-group-sale-saleorder-subline-onnew">
+    	<action name="action-sale-order-sub-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-sub-line-record-new"/>
     	<action name="action-sale-order-sub-line-record-sequence"/>
     	<action name="action-sale-order-sub-line-attrs-hide-product-variant"/>
@@ -72,5 +73,10 @@
 	<action-attrs name="action-sale-order-sub-line-attrs-hide-product-variant">
     	<attribute name="hidden" for="productVariant" expr="eval: product?.productVariantConfiguration == null"/>
     </action-attrs>
+    
+      <action-attrs name="action-sale-order-sub-line-attrs-scale-and-precision">
+		<attribute name="scale" for="price" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="discountAmount" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice() &amp;&amp; discountTypeSelect == 2"/>
+	</action-attrs>
     
 </object-views>

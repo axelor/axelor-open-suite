@@ -104,6 +104,5 @@ public interface IAdministration {
 	static final int MAP_API_OSM = 2;
 	
 	// NB DECIMALS
-	static final int NB_DECIMAL_UNIT_PRICE = 5;
-	static final int NB_DECIMAL_TOTAL = 2;
+	static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 }
