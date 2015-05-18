@@ -30,7 +30,7 @@
 		        <field name="task"/>
 		    	<field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				 <panel name="discount" title="Discount" colSpan="12">
-			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute"/>
+			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-scale-and-precision"/>
 			        <field name="discountAmount" onChange="action-invoice-line-method-compute"/>
 			    </panel>
     		</panel>

@@ -25,7 +25,7 @@ import com.google.inject.Inject;
 
 public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
-	private UserService userService;
+	protected UserService userService;
 
 	@Inject	
 	public MailAccountServiceBaseImpl(UserService userService){
