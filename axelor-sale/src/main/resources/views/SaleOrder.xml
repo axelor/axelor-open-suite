@@ -106,7 +106,6 @@
 	    </panel>
 	    
 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain"/>          
-	    <panel-related field="invoiceSet" title="Invoicing" showIf="statusSelect == 3" showTitle="false" if-module="axelor-supplychain"/>      
 
 	  </panel-tabs>
 	  
@@ -118,7 +117,7 @@
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed,save"/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
 	    <button name="generateInvoice" title="Generate invoice" showIf="eval: GeneralService.getGeneral().getGenerateInvoiceFromSaleOrder() &amp;&amp; statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-alert-generate-invoice,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
-	    <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="12" onClick="action-sale-order-view-invoice" if-module="axelor-supplychain"/>
+	    <button name="showInvoices" title="Show Invoices" showIf="statusSelect == 3" colSpan="12" onClick="action-view-show-invoices-from-sale-order" if-module="axelor-supplychain"/>
 	    <button name="generatePO" title="Generate purchase order"  colSpan="12" showIf="eval: GeneralService.getGeneral().getPurchaseOrderManagement() &amp;&amp; !GeneralService.getGeneral().getPurchaseOrderGenerationAuto() &amp;&amp; (statusSelect == 2 || statusSelect == 3)" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" hidden="true"/>
 	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" showIf="eval: GeneralService.getGeneral().getProductionOrderManagement() &amp;&amp; !GeneralService.getGeneral().getProductionOrderGenerationAuto() &amp;&amp; statusSelect == 3" onClick="action-supplychain-sale-order-create-production-order" hidden="true"/>
 	  </panel>
