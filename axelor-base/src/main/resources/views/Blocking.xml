@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
     <grid name="blocking-grid" title="Blockings" model="com.axelor.apps.base.db.Blocking">
+   		<field name="company"/>
         <field name="invoicingBlockingOk"/>
         <field name="debitBlockingOk"/>
         <field name="reimbursementBlockingOk"/>
@@ -12,10 +13,11 @@
     
     <form name="blocking-form" title="Blocking" model="com.axelor.apps.base.db.Blocking"   >
      	<panel>
-		    <field name="invoicingBlockingOk" colSpan="3"/>
-		    <field name="debitBlockingOk" colSpan="3"/>
-		    <field name="reimbursementBlockingOk" colSpan="3"/>
-		    <field name="reminderBlockingOk" colSpan="3"/>
+     		<field name="company" colSpan="12" onSelect="action-base-attrs-domain-company"/>
+		    <field name="invoicingBlockingOk" colSpan="4"/>
+		    <field name="debitBlockingOk" colSpan="4"/>
+		    <field name="reimbursementBlockingOk" colSpan="4"/>
+		    <field name="reminderBlockingOk" colSpan="4"/>
 		</panel>
 		
 		<panel title="Invoicing blocking" showIf="invoicingBlockingOk" colSpan="12">
@@ -41,6 +43,11 @@
 		  <field name="reminderBlockingReason" colSpan="4"/>
 		  <field name="reminderBlockingByUser" colSpan="4"/>
 		</panel>
+		
     </form>
+    
+    <action-attrs name="action-base-attrs-domain-company">
+    	<attribute name="domain" for="company" expr="eval: &quot; self.id IN ${_parent?.companySet?.collect{it.id}.join(',')}&quot;"/>
+    </action-attrs>
 
 </object-views>

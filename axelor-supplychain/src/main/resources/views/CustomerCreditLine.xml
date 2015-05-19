@@ -3,18 +3,22 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-    <grid name="customer-credit-line" title="Customer Credits" model="com.axelor.apps.account.db.CustomerCreditLine">
+    <grid name="customer-credit-line" title="Customer Credits" model="com.axelor.apps.supplychain.db.CustomerCreditLine">
         <field name="company"/>
         <field name="acceptedCredit"/>
         <field name="usedCredit"/>
     </grid>
     
-    <form name="customer-credit-form" title="Customer Credits" model="com.axelor.apps.account.db.CustomerCreditLine">
+    <form name="customer-credit-form" title="Customer Credits" model="com.axelor.apps.supplychain.db.CustomerCreditLine">
         <panel>
-	        <field name="company"/>
+	        <field name="company" onChange="action-account-method-compute-used-credit"/>
 	        <field name="acceptedCredit"/>
 	        <field name="usedCredit"/>
         </panel>
     </form>
+    
+    <action-method name="action-supplychain-method-compute-used-credit">
+    	<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="computeUsedCredit"/>
+    </action-method>
 
 </object-views>

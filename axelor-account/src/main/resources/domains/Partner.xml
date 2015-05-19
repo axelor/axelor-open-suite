@@ -20,9 +20,6 @@
 	<one-to-many name="rumList" ref="com.axelor.apps.account.db.Rum" mappedBy="partner" title="UMR List"/>
 	<many-to-one name="activeRum" ref="com.axelor.apps.account.db.Rum" title="Active UMR"/>
 	
-	<!--  Customer Credit -->
-	<one-to-many name="customerCreditLineList" ref="com.axelor.apps.account.db.CustomerCreditLine" title="Customer Credits" />
-	
   </entity>
   
 </domain-models>

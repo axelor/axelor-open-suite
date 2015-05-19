@@ -22,7 +22,9 @@ import java.util.List;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -36,7 +38,7 @@ public class PartnerController {
 		
 		Partner partner = request.getContext().asType(Partner.class);
 		
-		List<AccountingSituation> accountingSituationList = accountingSituationService.createAccountingSituation(partner);
+		List<AccountingSituation> accountingSituationList = accountingSituationService.createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
 		
 		if(accountingSituationList != null) {
 			response.setValue("accountingSituationList", accountingSituationList);

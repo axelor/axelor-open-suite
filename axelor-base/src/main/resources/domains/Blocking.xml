@@ -32,6 +32,7 @@
     <date name="reimbursementBlockingToDate" title="Block until"/>
     <many-to-one name="reimbursementBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
     <many-to-one name="reimbursementBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
+   
         
     <string name="name" title="Reference" search="company,partner">
 	    <![CDATA[

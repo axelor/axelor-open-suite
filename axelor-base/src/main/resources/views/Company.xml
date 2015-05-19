@@ -47,6 +47,9 @@
 	      		<field name="defaultBankDetails"/>
 	      		<panel-related field="bankDetailsSet" showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    	</panel>
+	    	<panel title="Order Bloqued Message" if-module="axelor-sale">
+	      		<field name="orderBloquedMessage"/>
+	    	</panel>
 	  	</panel-tabs>
    	</form>
     

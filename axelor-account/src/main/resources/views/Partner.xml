@@ -43,9 +43,6 @@
          <panel-related field="reportedBalanceList" colSpan="12" hideIf="isContact || id == null"  title="Reported balance" />
 	</form>
 	
-	<form name="incl-customer-credit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >	
-	     <panel-related  field="customerCreditLineList" colSpan="12" />
-	</form>
 	
 	<!-- TODO: find the domain of below form and grid and add it in reportedBalanceList in above form-->
 

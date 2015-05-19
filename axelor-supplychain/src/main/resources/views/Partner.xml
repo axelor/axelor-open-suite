@@ -11,6 +11,10 @@
 	   <panel-dashlet colSpan="12" action="action-partner-view-sales-orders" title="Sales orders" showIf="id != null"/>
 	</form>
 	
+	<form name="incl-customer-credit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >	
+	     <panel-related  field="customerCreditLineList" colSpan="12" />
+	</form>
+	
     <action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="grid" name="sales-order-grid"/>
 		<view type="form" name="sales-order-form"/>

@@ -40,7 +40,7 @@
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-attrs-hide-customer-credit-lines" 
+    onLoad="action-group-partner-onload" 
     onSave="action-group-base-partner-onsave">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
@@ -77,7 +77,7 @@
   		<panel-tabs>
   			<panel name="information" title="Informations">
 				<panel hideIf="isContact" colSpan="12">
-					<field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
+					<field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)" onChange="action-partner-attrs-hide-customer-credit-lines"/>
 					<field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
 				</panel>
 				<panel title="Postal addresses" colSpan="12">
@@ -123,12 +123,13 @@
 			</panel>
 			
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account" />
-			<panel-include if-module="axelor-account" view="incl-customer-credit-partner-form" from="axelor-account" />
-			
 			<panel title="Activities" showIf="id != null" if-module="axelor-crm">
 				<panel-include if-module="axelor-organisation" view="incl-show-project-partner-form" from="axelor-organisation"/>
 		        <panel-include view="incl-activities-partner-form" from="axelor-crm" />
 		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/>
+			</panel>
+			<panel name="customerCredit" title="Encours Client" if-module="axelor-supplychain" colSpan="12" onTabSelect="action-partner-method-update-customer-credit-line-from-partner">
+				<panel-include if-module="axelor-supplychain" view="incl-customer-credit-partner-form" from="axelor-supplychain" />
 			</panel>
 			<panel title="Sale Order" if-module="axelor-sale">
 				<field name="saleOrderInformation" colSpan="12"/>
@@ -144,7 +145,7 @@
 			<panel title="Assigned to" colSpan="12">
 				<field name="user" colSpan="6"/>
 				<field name="team" colSpan="6"/>
-				<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false"/>
+				<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-company-set-validate,action-partner-method-generate-customer-credit-line" canNew="false"/>
 			</panel>
 		</panel>
 		<panel title="Notes" colSpan="12" sidebar="true">
@@ -285,6 +286,15 @@
 	     </panel>
 	</form>
 	
+	
+	<action-group name="action-group-partner-onload">
+    	<action name="action-partner-method-update-customer-credit-line-from-partner"/>
+    	<action name="save"/>
+    	<action name="action-partner-attrs-change-name"/>
+    	<action name="action-partner-method-set-social-network-url"/>
+    	<action name="action-partner-attrs-hide-customer-credit-lines"/>
+    </action-group>
+	
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
 		<action name="action-partner-attrs-hide-customer-credit-lines" />
@@ -333,7 +343,7 @@
     </action-attrs>
     
     <action-attrs name="action-partner-attrs-hide-customer-credit-lines">
-        <attribute name="hidden" for="customerCreditLineList" expr="eval: isContact || (customerTypeSelect != 2 &amp;&amp; customerTypeSelect != 3) || !com.axelor.apps.base.service.administration.GeneralService.getGeneral()?.manageCustomerCredit" />
+        <attribute name="hidden" for="customerCredit" expr="eval: isContact || (customerTypeSelect != 2 &amp;&amp; customerTypeSelect != 3) || !com.axelor.apps.base.service.administration.GeneralService.getGeneral()?.manageCustomerCredit" />
     </action-attrs>
     
     
@@ -379,10 +389,6 @@
     	<field name="currency" expr="eval:null" if="!isContact"/>
     	<field name="invoiceSendingFormatSelect" expr="eval:null" if="!isContact"/>
     </action-record>
-    
-<!--     <action-record name="action-partner-record-set-virtual-fields" model="com.axelor.apps.base.db.Partner"> -->
-<!--     	<field name="manageCustomerCredit" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral()?.manageCustomerCredit" /> -->
-<!--     </action-record> -->
 
     <action-method name="action-set-partner-seq" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="setPartnerSequence"/>
@@ -394,6 +400,14 @@
 	
 	<action-method name="action-print-phonebook" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printContactPhonebook"/>
+	</action-method>
+	
+	<action-method name="action-partner-method-generate-customer-credit-line" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="generateLines"/>
+	</action-method>
+	
+	<action-method name="action-partner-method-update-customer-credit-line-from-partner" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromPartner"/>
 	</action-method>
 	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
