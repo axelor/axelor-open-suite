@@ -230,41 +230,39 @@ public class SaleOrderController {
 		response.setReload(true);
 
 	}
-	
+
 	public void generateViewSaleOrder(ActionRequest request, ActionResponse response){
 		SaleOrder context = request.getContext().asType(SaleOrder.class);
 		context = saleOrderService.find(context.getId());
 		response.setView(ActionView
 	            .define("Sale Order")
 	            .model(SaleOrder.class.getName())
-	            .add("form", "sale-order-form")
-	            .context("_isCopy", "true")
+	            .add("form", "sale-order-form-wizard")
 	            .context("_idCopy", context.getId().toString())
 	            .map());
 	}
-	
+
 	public void generateViewTemplate(ActionRequest request, ActionResponse response){
 		SaleOrder context = request.getContext().asType(SaleOrder.class);
 		context = saleOrderService.find(context.getId());
 		response.setView(ActionView
 	            .define("Template")
 	            .model(SaleOrder.class.getName())
-	            .add("form", "sale-order-template-form")
-	            .context("_isCopy", "true")
+	            .add("form", "sale-order-template-form-wizard")
 	            .context("_idCopy", context.getId().toString())
 	            .map());
 	}
-	
+
 	public void createSaleOrder(ActionRequest request, ActionResponse response)  {
 		SaleOrder origin = saleOrderService.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
 		SaleOrder copy = saleOrderService.createSaleOrder(origin);
 		response.setValues(copy);
 	}
-	
+
 	public void createTemplate(ActionRequest request, ActionResponse response)  {
 		SaleOrder origin = saleOrderService.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
 		SaleOrder copy = saleOrderService.createTemplate(origin);
 		response.setValues(copy);
 	}
-	
+
 }

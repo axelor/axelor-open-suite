@@ -5,7 +5,7 @@
     
     <grid name="sale-order-grid" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     	<menubar>
-	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
+	        <menu title="Plan" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
 	            <item title="Plan a meeting" action="action-sale-order-view-plan-meeting" />
 	            <item title="Plan a call" action="action-sale-order-view-plan-call" />
 	            <item title="Plan a task" action="action-sale-order-view-plan-task"/>
@@ -29,9 +29,17 @@
 			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check, action-sale-order-method-confirm-cancel" colSpan="12" width="200px"/>
 		</panel>
     </form>
+    
+    <form name="sale-order-form-wizard" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
+		onNew="action-group-sale-saleorder-onnew,action-sale-order-method-create-order"
+		onLoad="action-group-sale-saleorder-onload"
+		onSave="save,action-method-set-sale-order-draft-sequence,save">
+		
+		<panel-include view="sale-order-form"/>
+	</form>
 
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
-		onNew="action-group-sale-saleorder-onnew,action-sale-order-method-create-order"
+		onNew="action-group-sale-saleorder-onnew"
 		onLoad="action-group-sale-saleorder-onload"
 		onSave="save,action-method-set-sale-order-draft-sequence,save">
 		
@@ -42,17 +50,20 @@
 	    <button name="wordExport" title="Word Export" icon="fa-file-text" onClick="save,action-sale-order-method-export-sale-order-word"/>
 	  </toolbar>
 	  <menubar>
-	    <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
+	    <menu title="Plan" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
 	      <item title="Plan a meeting" action="action-sale-order-view-plan-meeting"/>
 	      <item title="Plan a call" action="action-sale-order-view-plan-call"/>
 	      <item title="Plan a task" action="action-sale-order-view-plan-task"/>
 	    </menu>
+	    <menu title="Tools">
+		    <item action="save,action-sale-order-method-generate-template" title="Define as template"/>
+		</menu>
 	  </menubar>
 	  
 	  <panel>
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
 	    <field name="bloqued" colSpan="4" readonly="true"/>
-		<field name="manualUnblock" colSpan="4" showIf="bloqued = true"/>
+		<field name="manualUnblock" colSpan="4" showIf="bloqued == true"/>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="6"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
@@ -112,7 +123,6 @@
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" title="Actions">
-	    <button name="generateTemplate" title="Make this order as template" onClick="save,action-sale-order-method-generate-template"/>
 	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="action-sale-method-update-customer-credit-line,action-sale-order-validate-bloqued,save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" showIf="eval: !GeneralService.getGeneral().getManageSaleOrderVersion() &amp;&amp; statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
 	    <button name="generateCustomerStockMove" showIf="eval: GeneralService.getGeneral().getCustomerStockMoveManagement() &amp;&amp; !GeneralService.getGeneral().getCustomerStockMoveGenerationAuto() &amp;&amp; statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
@@ -161,9 +171,17 @@
         <field name="creationDate"/>
         <field name="inTaxTotal"/>
     </grid>
+    
+    <form name="sale-order-template-form-wizard" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
+		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
+		onLoad="action-group-sale-saleorder-onload"
+		onSave="save,action-method-set-sale-order-draft-sequence,save">
+		
+		<panel-include view="sale-order-template-form"/>
+	</form>
 	
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
-		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
+		onNew="action-group-sale-saleorder-onnew"
 		onLoad="action-group-sale-saleorder-onload"
 		onSave="save,action-method-set-sale-order-draft-sequence,save">
 	  
@@ -561,11 +579,11 @@
 	</action-method>
 
 	<action-method name="action-sale-order-method-create-template">
-		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createTemplate" if="_isCopy == &quot;true&quot;"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createTemplate"/>
 	</action-method>
 	
 	<action-method name="action-sale-order-method-create-order">
-		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createSaleOrder" if="_isCopy == &quot;true&quot;"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createSaleOrder"/>
 	</action-method>
 	
 	<action-validate name="action-sale-order-validate-bloqued" model="com.axelor.apps.sale.db.SaleOrder">
