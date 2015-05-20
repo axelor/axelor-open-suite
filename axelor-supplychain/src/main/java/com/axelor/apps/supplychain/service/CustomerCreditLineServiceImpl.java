@@ -17,7 +17,8 @@ import com.axelor.apps.supplychain.db.CustomerCreditLine;
 import com.axelor.inject.Beans;
 
 public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
-	
+
+	@Override
 	public Partner generateLines(Partner partner){
 		List<Company> companyList = new ArrayList<Company>(partner.getCompanySet());
 		List<CustomerCreditLine> customerCreditLineList = new ArrayList<CustomerCreditLine>();
@@ -36,13 +37,14 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 			CustomerCreditLine customerCreditLine = new CustomerCreditLine();
 			customerCreditLine.setCompany(company);
 			customerCreditLine.setAcceptedCredit(Beans.get(SaleConfigRepository.class).all().filter("self.company = ?", company).fetchOne().getAcceptedCredit());
-			
+
 			partner.addCustomerCreditLineListItem(customerCreditLine);
 		}
-		
+
 		return partner;
 	}
-	
+
+	@Override
 	public Map<String,Object> updateLines(Partner partner){
 		if(partner.getCustomerCreditLineList() == null || partner.getCustomerCreditLineList().isEmpty()){
 			partner = generateLines(partner);
@@ -56,11 +58,12 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 		map.put("customerCreditLineList", customerCreditLineList);
 		return map;
 	}
-	
+
+	@Override
 	public Map<String,Object> updateLinesFromOrder(Partner partner,SaleOrder saleOrder){
-		
+
 		Map<String,Object> map = new HashMap<String,Object>();
-		
+
 		if(partner.getCustomerCreditLineList() == null || partner.getCustomerCreditLineList().isEmpty()){
 			partner = generateLines(partner);
 		}
@@ -79,14 +82,15 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 		}
 		return map;
 	}
-	
+
+	@Override
 	public CustomerCreditLine computeUsedCredit(CustomerCreditLine customerCreditLine){
 		Company company = customerCreditLine.getCompany();
 		if(customerCreditLine.getPartner().getAccountingSituationList()!=null){
 			List<AccountingSituation> accountingSituationList = customerCreditLine.getPartner().getAccountingSituationList();
 			for (AccountingSituation accountingSituation : accountingSituationList) {
 				if(accountingSituation.getCompany().equals(company)){
-					List<SaleOrder> saleOrderList = Beans.get(SaleOrderRepository.class).all().filter("self.company = ?1 AND self.partner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4", company, customerCreditLine.getPartner(),ISaleOrder.STATUS_DRAFT,ISaleOrder.STATUS_CANCELED).fetch();
+					List<SaleOrder> saleOrderList = Beans.get(SaleOrderRepository.class).all().filter("self.company = ?1 AND self.clientPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4", company, customerCreditLine.getPartner(),ISaleOrder.STATUS_DRAFT,ISaleOrder.STATUS_CANCELED).fetch();
 					BigDecimal sum = BigDecimal.ZERO;
 					for (SaleOrder saleOrder : saleOrderList) {
 						sum = sum.add(saleOrder.getExTaxTotal().subtract(saleOrder.getAmountInvoiced()));
@@ -97,7 +101,8 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 		}
 		return customerCreditLine;
 	}
-	
+
+	@Override
 	public boolean testUsedCredit(CustomerCreditLine customerCreditLine){
 		if(customerCreditLine.getUsedCredit().compareTo(customerCreditLine.getAcceptedCredit())>0){
 			return true;
@@ -106,5 +111,5 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 			return false;
 		}
 	}
-	
+
 }

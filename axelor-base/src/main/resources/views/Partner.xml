@@ -128,7 +128,7 @@
 		        <panel-include view="incl-activities-partner-form" from="axelor-crm" />
 		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/>
 			</panel>
-			<panel name="customerCredit" title="Encours Client" if-module="axelor-supplychain" colSpan="12" onTabSelect="action-partner-method-update-customer-credit-line-from-partner">
+			<panel name="customerCredit" title="Encours Client" if-module="axelor-supplychain" colSpan="12">
 				<panel-include if-module="axelor-supplychain" view="incl-customer-credit-partner-form" from="axelor-supplychain" />
 			</panel>
 			<panel title="Sale Order" if-module="axelor-sale">
