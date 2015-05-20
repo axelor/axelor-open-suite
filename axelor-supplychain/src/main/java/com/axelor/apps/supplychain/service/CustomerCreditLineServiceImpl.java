@@ -66,11 +66,10 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 		}
 		List<CustomerCreditLine> customerCreditLineList = partner.getCustomerCreditLineList();
 		for (CustomerCreditLine customerCreditLine : customerCreditLineList) {
-			if(customerCreditLine.getPartner().equals(partner)){
+			if(customerCreditLine.getCompany().equals(saleOrder.getCompany())){
 				customerCreditLine.setAcceptedCredit(Beans.get(SaleConfigRepository.class).all().filter("self.company = ?", customerCreditLine.getCompany()).fetchOne().getAcceptedCredit());
 				customerCreditLine = this.computeUsedCredit(customerCreditLine);
 				customerCreditLine.setUsedCredit(customerCreditLine.getUsedCredit().add(saleOrder.getExTaxTotal().subtract(saleOrder.getAmountInvoiced())));
-				map.put("clientPartner.customerCreditLineList", customerCreditLineList);
 				boolean test = testUsedCredit(customerCreditLine);
 				map.put("bloqued", test);
 				if(test){
