@@ -30,7 +30,7 @@
 		</panel>
     </form>
     
-    <form name="sale-order-form-wizard" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
+    <form name="sale-order-form-wizard" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
 		onNew="action-group-sale-saleorder-onnew,action-sale-order-method-create-order"
 		onLoad="action-group-sale-saleorder-onload"
 		onSave="save,action-method-set-sale-order-draft-sequence,save">
