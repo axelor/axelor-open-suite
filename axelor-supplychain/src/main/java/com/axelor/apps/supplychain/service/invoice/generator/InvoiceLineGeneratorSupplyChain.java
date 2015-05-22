@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
 
 /**
@@ -40,16 +41,20 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
 	protected SaleOrderLine saleOrderLine;
 	protected PurchaseOrderLine purchaseOrderLine;
+	protected StockMove stockMove;
 
 	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
 			Unit unit, TaxLine taxLine, InvoiceLineType invoiceLineType, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice,
-			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine) {
+			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMove stockMove) {
 
 		super(invoice, product, productName, price, description, qty, unit, taxLine, invoiceLineType, sequence, discountAmount, discountTypeSelect, exTaxTotal, isTaxInvoice);
 		if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
 			this.saleOrderLine = saleOrderLine;
 		}else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE){
 			this.purchaseOrderLine = purchaseOrderLine;
+		}
+		if(stockMove != null){
+			this.stockMove = stockMove;
 		}
     }
 
@@ -65,8 +70,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 		if (GeneralService.getGeneral().getManageInvoicedAmountByLine()){
 			if (saleOrderLine != null){
 				invoiceLine.setSaleOrderLine(saleOrderLine);
+				invoiceLine.setOutgoingStockMove(stockMove);
 			}else{
 				invoiceLine.setPurchaseOrderLine(purchaseOrderLine);
+				invoiceLine.setIncomingStockMove(stockMove);
 			}
 		}
 
