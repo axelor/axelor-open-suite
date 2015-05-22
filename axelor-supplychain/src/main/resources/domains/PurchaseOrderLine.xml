@@ -10,7 +10,7 @@
   	<decimal name="amountInvoiced" title="Amount invoiced" readonly="true"/>
   	
 <!--   Onglet Historique -->
-  	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated Invoice lines"/>
+  	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated invoice lines"/>
   	
   	
   </entity>

@@ -1,43 +1,66 @@
 "key","message","comment","context"
 "%","%",,"resources/domains/SaleOrderScheduleLine.xml:13"
 "%s Veuillez configurer un entrepot virtuel fournisseur pour la société %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:22"
-"A contact partner must be selected",,,"resources/views/StockMove.xml:54"
-"A payment condition must be selected",,,"resources/views/StockMove.xml:52"
-"A payment mode must be selected",,,"resources/views/StockMove.xml:53"
+"A contact partner must be selected","Un contact doit être sélectionné",,"resources/views/StockMove.xml:54"
+"A payment condition must be selected","Une condition de paiement doit être sélectionnée",,"resources/views/StockMove.xml:52"
+"A payment mode must be selected","Un mode de paiement doit être sélectionné",,"resources/views/StockMove.xml:53"
+"Accepted Credit","Montant crédit accepté",,"resources/domains/CustomerCreditLine.xml:11"
+"Action",,,"resources/domains/SupplychainBatch.xml:12"
 "Actions",,,"resources/views/StockMove.xml:16
-resources/views/StockMove.xml:8"
-"Amount invoiced","Montant facturé",,"resources/domains/SaleOrderLine.xml:16"
-"Amount remaining to invoice","Montant restant à facturer",,"resources/domains/SaleOrder.xml:15"
+resources/views/StockMove.xml:8
+resources/views/SupplychainBatch.xml:29"
+"Amount invoiced","Montant facturé",,"resources/domains/PurchaseOrder.xml:15
+resources/domains/PurchaseOrderLine.xml:10
+resources/domains/SaleOrder.xml:15
+resources/domains/SaleOrderLine.xml:14"
 "Amount to invoice","Montant à facturer",,"resources/domains/SaleOrderScheduleLine.xml:12"
-"An active stockMove already exists for this saleOrder",,,"java/com/axelor/apps/supplychain/web/SaleOrderController.java:61"
-"An invoice not canceled already exists for the stock move %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:50"
+"An active stockMove already exists for this purchaseOrder","Un BR actif existe déjà pour cette commande fournisseur",,"java/com/axelor/apps/supplychain/web/PurchaseOrderController.java:45"
+"An active stockMove already exists for this saleOrder","Un BL actif existe déjà pour cette commande client",,"java/com/axelor/apps/supplychain/web/SaleOrderController.java:63"
+"An invoice not canceled already exists for the incoming stock move %s","Une facture non annulée existe déjà pour le BR %s",,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:51"
+"An invoice not canceled already exists for the outgoing stock move %s","Une facture non annulée existe déjà pour le BL %s",,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:50"
 "Annulation",,,"resources/views/SaleOrder.xml:34"
-"Associated invoice lines","Lignes de facture associées",,"resources/domains/SaleOrderLine.xml:20"
-"At least one sale order line msut be selected",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:38"
+"Archived ?","Archivé ?",,"resources/views/SupplychainBatch.xml:19"
+"Associated invoice lines","Lignes de facture associées",,"resources/domains/PurchaseOrderLine.xml:13
+resources/domains/SaleOrderLine.xml:17"
+"At least one sale order line must be selected","Au moins une commande client doit être sélectionnée",,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:38"
+"Batchs",,,"resources/domains/SupplychainBatch.xml:17"
+"Bill Late Subscriptions",,,"resources/views/Selects.xml:20"
+"Bill Late Subscriptions Batch",,,"resources/views/SupplychainBatch.xml:30"
 "Category","Catégorie",,"resources/views/Menu.xml:18"
 "Category Dashboard","Tb Catégories",,"resources/views/Menu.xml:30"
 "Category Db","Tb Catégories",,"resources/views/Menu.xml:21"
-"Compte rendu de génération de facture d'abonnement :\n",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:55"
-"Confirm Purchase order generation",,,"resources/views/SaleOrder.xml:14
+"Code",,,"resources/domains/SupplychainBatch.xml:11"
+"Company","Société",,"resources/domains/CustomerCreditLine.xml:10
+resources/domains/SupplychainBatch.xml:13"
+"Compte rendu de génération de facture d'abonnement :\n",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:56"
+"Confirm Purchase order generation","Confirmer la génération de commande fournisseur",,"resources/views/SaleOrder.xml:14
 resources/views/SaleOrder.xml:17"
 "Confirmation",,,"resources/views/StockMove.xml:22"
 "Confirmer",,,"resources/views/StockMove.xml:27"
-"Contact partner",,,"resources/views/StockMove.xml:26"
-"Convert into order",,,"resources/views/Opportunity.xml:8"
-"Created by","Créé par",,"resources/views/SaleBatch.xml:22"
-"Created on","Créé le",,"resources/views/SaleBatch.xml:21"
+"Contact partner","Contact",,"resources/views/StockMove.xml:26"
+"Convert into order","Convertir en commande",,"resources/views/Opportunity.xml:8"
+"Created by","Créé par",,"resources/views/SaleBatch.xml:22
+resources/views/SupplychainBatch.xml:24"
+"Created on","Créé le",,"resources/views/SaleBatch.xml:21
+resources/views/SupplychainBatch.xml:23"
 "Cumulated invoiced %","% Cumulé de facturation",,"resources/domains/SaleOrderScheduleLine.xml:15"
+"Customer Credits","Crédits client",,"resources/domains/Partner.xml:9
+resources/views/CustomerCreditLine.xml:12
+resources/views/CustomerCreditLine.xml:6"
 "Customer Stock Move to invoice",,,"resources/views/StockMove.xml:7"
-"Date From",,,"resources/domains/SaleOrderLine.xml:27
+"Customer deliveries management","Gestion des BL",,"resources/domains/General.xml:9"
+"Date From",,,"resources/domains/SaleOrderLine.xml:24
 resources/domains/Subscription.xml:14"
-"Date To",,,"resources/domains/SaleOrderLine.xml:29
+"Date To",,,"resources/domains/SaleOrderLine.xml:26
 resources/domains/Subscription.xml:15"
 "Date of shipment","Date d'expédition",,"resources/domains/SaleOrder.xml:11"
-"Description","Description",,"resources/views/SaleBatch.xml:26"
+"Description","Description",,"resources/domains/SupplychainBatch.xml:16
+resources/views/SaleBatch.xml:26"
 "Devis",,,"java/com/axelor/apps/supplychain/service/batch/BatchInvoicing.java:78
 java/com/axelor/apps/supplychain/service/batch/BatchInvoicing.java:83"
-"Devis(s) traité(s)",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:56"
+"Devis(s) traité(s)",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:57"
 "Draft invoice N days after order validation","Facture brouillons N jrs après validation Cmde",,"resources/views/Selects.xml:11"
+"Encours utilisé",,,"resources/domains/CustomerCreditLine.xml:12"
 "Facture créée",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:17"
 "Family","Famille",,"resources/views/Menu.xml:24"
 "Family Dashboard","Tb Famille",,"resources/views/Dashboard.xml:14
@@ -50,57 +73,67 @@ java/com/axelor/apps/supplychain/service/SubscriptionServiceImpl.java:67"
 "From Date","Date de",,"resources/views/Charts.xml:69"
 "Generate Subscriptions",,,"resources/views/SaleOrderLine.xml:13"
 "Generate Subscriptions for each Subscriptable product of this order with these parameters",,,"resources/views/SaleOrderLine.xml:14"
-"Generate one invoice per stockMove",,,"resources/views/StockMove.xml:10
-resources/views/StockMove.xml:18"
-"Generate single invoice",,,"resources/views/StockMove.xml:17
+"Generate customer deliveries automatically","Générer les BL automatiquement",,"resources/domains/General.xml:10"
+"Generate one invoice per incoming stockMove","Générer une facture par BR",,"resources/views/StockMove.xml:18"
+"Generate one invoice per outgoing stockMove","Générer une facture par BL",,"resources/views/StockMove.xml:10"
+"Generate single invoice","Générer une unique facture",,"resources/views/StockMove.xml:17
 resources/views/StockMove.xml:9"
-"Il est nécessaire de définir un plannificateur.",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:27"
+"Generate supplier arrivals automatically","Générer les BR automatiquement",,"resources/domains/General.xml:12"
+"Il est nécessaire de définir un planificateur.",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:27"
 "Il est nécessaire de définir une date de début d'abonnement.",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:28"
 "Il est nécessaire de définir une date de première facturation.",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:29"
-"Invoice","Facturer",,"resources/domains/SaleOrderScheduleLine.xml:17
+"Information",,,"resources/views/SupplychainBatch.xml:22"
+"Invoice","Facturer",,"resources/domains/PurchaseOrder.xml:11
+resources/domains/SaleOrderScheduleLine.xml:17
 resources/domains/StockMove.xml:13
 resources/views/Subscription.xml:13
 resources/views/Subscription.xml:23"
-"Invoice controlled","Facture contrôlée",,"resources/domains/SaleOrderLine.xml:24"
-"Invoiced ?","Facturé(e) ? ",,"resources/domains/SaleOrderLine.xml:15
-resources/domains/Subscription.xml:19"
-"Invoicing","Facturation",,"resources/views/Selects.xml:15"
+"Invoice controlled","Facture contrôlée",,"resources/domains/SaleOrderLine.xml:21"
+"Invoiced ?","Facturé(e) ? ",,"resources/domains/Subscription.xml:19"
+"Invoices",,,"resources/views/SaleOrder.xml:103"
 "Invoicing Date","Date de facture",,"resources/domains/SaleOrderLine.xml:12
 resources/domains/Subscription.xml:12"
-"Invoicing Type",,,"resources/domains/SaleOrderLine.xml:30"
+"Invoicing Type",,,"resources/domains/SaleOrderLine.xml:27"
 "Invoicing batch","Batch Facturation",,"resources/views/SaleBatch.xml:23"
 "Invoicing trigger",,,"resources/domains/SaleOrder.xml:14"
-"Invoicing type",,,"resources/domains/SaleOrder.xml:12"
+"Invoicing type",,,"resources/domains/PurchaseOrder.xml:10
+resources/domains/SaleOrder.xml:12"
 "Le devis %s sera facturé le %s.",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:30"
 "Le devis est déjà complêtement facturé",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:31"
 "Linked invoices","Factures associées",,"resources/domains/SaleOrder.xml:18"
-"Location","Emplacement",,"resources/domains/PurchaseOrder.xml:10
+"Location","Emplacement",,"resources/domains/PurchaseOrder.xml:17
 resources/domains/SaleOrder.xml:10"
-"Manage the amount invoiced by line",,,"resources/domains/General.xml:9"
-"Mass Customer Invoicing",,,"resources/views/Menu.xml:46"
-"Mass Purchase Invoicing",,,"resources/views/Menu.xml:43"
-"Mass Sale Invoicing",,,"resources/views/Menu.xml:40"
-"Mass Supplier Invoicing",,,"resources/views/Menu.xml:51"
+"Mail batches",,,"resources/views/SupplychainBatch.xml:6"
+"Manage the invoiced amount by line",,,"resources/domains/General.xml:8"
+"Mass Customer Invoicing","Facturation client en masse",,"resources/views/Menu.xml:40
+resources/views/Menu.xml:46
+resources/views/StockMove.xml:6"
+"Mass Supplier Invoicing","Facturation fournisseur en masse",,"resources/views/Menu.xml:43
+resources/views/Menu.xml:51
+resources/views/StockMove.xml:14"
 "Month","Mois",,"resources/views/Charts.xml:104"
-"Multi. purchase invoicing",,,"resources/views/StockMove.xml:14"
-"Multi. sale invoicing",,,"resources/views/StockMove.xml:6"
 "Nbr of days","Nbr de jours",,"resources/domains/SaleOrderScheduleLine.xml:16"
 "No client selected, a new one will be created from the lead, do you agree?",,,"resources/views/Opportunity.xml:21"
-"No invoice was generated",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:48"
-"Number of Periods",,,"resources/domains/SaleOrderLine.xml:28"
+"No invoice was generated","Aucune facture n'a été générée",,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:48"
+"Number of Periods","Nbr de périodes",,"resources/domains/SaleOrderLine.xml:25"
 "Number of Product per Category","Nbr de produits par catégorie",,"resources/views/Charts.xml:26
 resources/views/Dashboard.xml:35"
 "Number of Product per Family","Nbr de produits par famille",,"resources/views/Charts.xml:6
 resources/views/Dashboard.xml:31"
-"Opportunity",,,"resources/views/Opportunity.xml:6"
-"Partner","Tiers",,"resources/views/Partner.xml:10
+"Opportunity","Opportunité",,"resources/views/Opportunity.xml:6"
+"PO line","Ligne de comm. Fourn.",,"resources/domains/InvoiceLine.xml:9"
+"Partner","Tiers",,"resources/domains/CustomerCreditLine.xml:13
+resources/views/Partner.xml:10
+resources/views/Partner.xml:14
 resources/views/Partner.xml:6"
-"Payment condition",,,"resources/views/StockMove.xml:24"
-"Payment mode",,,"resources/views/StockMove.xml:25"
-"Period Beginning",,,"resources/views/Selects.xml:19"
-"Period Ending",,,"resources/views/Selects.xml:20"
-"Periodicity",,,"resources/domains/Product.xml:8
-resources/domains/SaleOrderLine.xml:26"
+"Payment condition","Condition de paiement",,"resources/domains/PurchaseOrder.xml:13
+resources/views/StockMove.xml:24"
+"Payment mode","mode de paiement",,"resources/domains/PurchaseOrder.xml:12
+resources/views/StockMove.xml:25"
+"Period Beginning",,,"resources/views/Selects.xml:15"
+"Period Ending",,,"resources/views/Selects.xml:16"
+"Periodicity","Périodicité",,"resources/domains/Product.xml:8
+resources/domains/SaleOrderLine.xml:23"
 "Product Category","Catégorie de produit",,"resources/views/Charts.xml:42"
 "Product Db","Tb produits",,"resources/views/Menu.xml:10
 resources/views/Menu.xml:13"
@@ -118,16 +151,16 @@ resources/views/Charts.xml:64
 resources/views/Menu.xml:7"
 "Products DB 1","Tb Produits 1",,"resources/views/Dashboard.xml:6"
 "Produit incorrect dans le mouvement de stock %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:43"
-"Purchase Order",,,"java/com/axelor/apps/supplychain/web/SaleOrderController.java:117"
-"Purchase order","Devis fournisseurs",,"resources/domains/StockMove.xml:12"
+"Purchase Order","Commande fournisseur",,"java/com/axelor/apps/supplychain/web/SaleOrderController.java:123"
+"Purchase order","Devis fournisseurs",,"resources/domains/Invoice.xml:9
+resources/domains/StockMove.xml:12"
 "Purchase order line","Lignes de devis fournisseur",,"resources/domains/StockMoveLine.xml:11"
-"Quantity",,,"resources/domains/Subscription.xml:17"
-"Remaining to invoice","Reste à facturer",,"resources/domains/SaleOrderLine.xml:17"
-"SO line",,,"resources/domains/InvoiceLine.xml:8"
+"Quantity","Quantité",,"resources/domains/Subscription.xml:17"
+"SO line","Ligne de comm. Client",,"resources/domains/InvoiceLine.xml:8"
 "SO schedule line",,,"resources/views/SaleOrderScheduleLine.xml:17"
 "SO schedule lines",,,"resources/views/SaleOrderScheduleLine.xml:6"
 "Sale Batch","Batch Ventes",,"resources/views/SaleBatch.xml:14"
-"Sale Order",,,"resources/domains/Opportunity.xml:10
+"Sale Order","Devis",,"resources/domains/Opportunity.xml:10
 resources/views/Opportunity.xml:9"
 "Sale batches","Batchs Ventes",,"resources/views/SaleBatch.xml:6"
 "Sale order","Devis",,"resources/domains/Invoice.xml:8
@@ -140,35 +173,41 @@ resources/views/SaleOrder.xml:9"
 "Sales Turnover","CA",,"resources/views/ProductFamily.xml:8"
 "Sales order line","Ligne de vente",,"resources/domains/StockMoveLine.xml:10"
 "Sales orders","Devis/Cmdes",,"resources/views/Partner.xml:11
-resources/views/Partner.xml:14
-resources/views/Partner.xml:21"
+resources/views/Partner.xml:18
+resources/views/Partner.xml:25"
 "Schedule line list","Liste des échéanciers",,"resources/domains/SaleOrder.xml:21"
 "Select supplier partner",,,"resources/views/SaleOrder.xml:16"
 "Seq.","Séq.",,"resources/domains/SaleOrderScheduleLine.xml:11"
 "Show details in invoice","Voir détails sur facture",,"resources/domains/SaleOrder.xml:13"
 "Some order lines contain some subscriptions, subscriptions not invoiced will be deleted, do you want to continue?",,,"resources/views/SaleOrderLine.xml:29"
+"Stock Move",,,"java/com/axelor/apps/supplychain/web/SaleOrderController.java:69"
+"Stock move",,,"java/com/axelor/apps/supplychain/web/PurchaseOrderController.java:51"
 "Subscription",,,"resources/views/SaleOrderLine.xml:6
 resources/views/Subscription.xml:16"
-"Subscription List",,,"resources/domains/SaleOrderLine.xml:31"
+"Subscription List",,,"resources/domains/SaleOrderLine.xml:28"
 "Subscriptions",,,"resources/views/Subscription.xml:6"
 "Supplier Stock Move to invoice",,,"resources/views/StockMove.xml:15"
+"Supplier arrivals management",,,"resources/domains/General.xml:11"
 "Supply method","Mode d'appro.",,"resources/domains/SaleOrderLine.xml:10"
+"Supplychain Batch",,,"resources/views/SupplychainBatch.xml:14"
+"Supplychain batch",,,"resources/domains/Batch.xml:11"
+"Supplychain batches",,,"resources/views/Menu.xml:57
+resources/views/Menu.xml:60"
 "Task","Tâche",,"resources/domains/SaleOrderScheduleLine.xml:14"
 "Template",,,"resources/views/SaleOrder.xml:30"
-"The client Partner is required and must be the same for all sale orders",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:45"
-"The company is required and must be the same for all sale orders",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:47"
-"The currency is required and must be the same for all sale orders",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:44"
+"The client Partner is required and must be the same for all sale orders","Le contact client est obligatoire et doit être le même pour toutes les commandes client",,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:45"
+"The company is required and must be the same for all sale orders","La société est obligatoire et doit être la même pour toutes les commandes client",,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:47"
+"The currency is required and must be the same for all sale orders","La devise est obligatoire et doit être la même pour toutes les commandes client",,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:44"
 "The invoice for the stock move %s can't be generated because of this following error : %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:49"
-"The location must be filled.",,,"resources/views/SaleOrder.xml:90"
+"The location must be filled.","L'emplacement de stock doit être renseigné",,"resources/views/SaleOrder.xml:96"
 "The supplier Partner is required and must be the same for all sale orders",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:46"
 "To Date","à Date",,"resources/views/Charts.xml:70"
-"To invoice?","A facturer ?",,"resources/domains/SaleOrderLine.xml:14"
 "Unit price",,,"resources/domains/Subscription.xml:18"
 "Veuillez choisir un fournisseur pour la ligne %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:37"
 "Veuillez selectionner une devise pour la commande %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:16"
 "Veuillez selectionner une devise pour le devis %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:32"
 "When a task is over","Lorsqu'une tâche est terminée",,"resources/views/Selects.xml:10"
-"You have to choose at least one stock move",,,"resources/views/StockMove.xml:44
-resources/views/StockMove.xml:48"
+"You have to choose at least one incoming stock move",,,"resources/views/StockMove.xml:48"
+"You have to choose at least one outgoing stock move",,,"resources/views/StockMove.xml:44"
 "help:SaleOrderScheduleLine.nbOfDay","Si facturation en fonction de nb de jours",,"resources/domains/SaleOrderScheduleLine.xml:16"
 "help:SaleOrderScheduleLine.saleOrderLine","Si facturation à la tâche",,"resources/domains/SaleOrderScheduleLine.xml:14"

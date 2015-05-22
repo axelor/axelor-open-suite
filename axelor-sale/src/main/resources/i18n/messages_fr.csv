@@ -1,12 +1,12 @@
 "key","message","comment","context"
-"${clientPartner.saleOrderInformation}",,,"resources/views/SaleOrder.xml:555"
+"${clientPartner.saleOrderInformation}",,,"resources/views/SaleOrder.xml:565"
+"${company.orderBloquedMessage}",,,"resources/views/SaleOrder.xml:590"
 "%s :\n Veuillez configurer le module vente pour la société %s",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:42"
-"A cancel reason must be selected","Un motif d'annulation doit être sélectionné",,"resources/views/SaleOrder.xml:451"
+"A cancel reason must be selected","Un motif d'annulation doit être sélectionné",,"resources/views/SaleOrder.xml:457"
+"Accepted Credit","Crédit accepté",,"resources/domains/SaleConfig.xml:14"
 "Action","Action",,"resources/domains/SaleBatch.xml:12"
-"Actions","Actions",,"resources/views/SaleOrder.xml:126
-resources/views/SaleOrder.xml:253
-resources/views/SaleOrder.xml:45
-resources/views/SaleOrder.xml:8"
+"Actions","Actions",,"resources/views/SaleOrder.xml:125
+resources/views/SaleOrder.xml:260"
 "All Templates","Tous les modèles",,"resources/views/Menu.xml:27
 resources/views/Menu.xml:30"
 "Amount","Montant",,"resources/views/Charts.xml:260
@@ -17,16 +17,17 @@ resources/views/Charts.xml:391
 resources/views/Charts.xml:418"
 "Amount A.T.I.","Montant T.T.C.",,"resources/domains/SaleOrderLineTax.xml:12"
 "Amount Tax","Montant Taxe",,"resources/domains/SaleOrderLineTax.xml:11"
-"Annulation",,,"resources/views/SaleOrder.xml:441"
+"Annulation",,,"resources/views/SaleOrder.xml:447"
 "Base W.T.","Base H.T.",,"resources/domains/SaleOrderLineTax.xml:10"
 "Batchs","Batch",,"resources/domains/SaleBatch.xml:17
 resources/domains/SaleOrder.xml:25"
 "Bi-monthly","Bimensuel ",,"resources/views/Selects.xml:28"
-"Business project","Affaire/Projet",,"resources/views/SaleOrder.xml:223
-resources/views/SaleOrder.xml:96"
-"Call","Appel",,"resources/views/SaleOrder.xml:542"
-"Cancel","Annuler",,"resources/views/SaleOrder.xml:132"
-"Cancel reason","Raison d'annulation",,"resources/domains/SaleOrder.xml:74"
+"Bloqued",,,"resources/domains/SaleOrder.xml:26"
+"Business project","Affaire/Projet",,"resources/views/SaleOrder.xml:109
+resources/views/SaleOrder.xml:230"
+"Call","Appel",,"resources/views/SaleOrder.xml:552"
+"Cancel","Annuler",,"resources/views/SaleOrder.xml:130"
+"Cancel reason","Raison d'annulation",,"resources/domains/SaleOrder.xml:78"
 "Canceled","Annulé",,"resources/views/Selects.xml:17"
 "Category","Catégorie",,"resources/views/Charts.xml:680"
 "Category sale turnover (Excl. Tax) per month","CA H.T. par catégorie par mois",,"resources/views/Charts.xml:709
@@ -35,40 +36,42 @@ resources/views/Dashboard.xml:228"
 "Company","Société",,"resources/domains/SaleBatch.xml:13
 resources/domains/SaleConfig.xml:11
 resources/domains/SaleOrder.xml:10"
+"Confirm cancellation",,,"resources/views/SaleOrder.xml:29"
 "Confirmation annulation",,,"resources/views/SaleOrder.xml:26"
 "Confirmation date","Date de confirmation",,"resources/domains/SaleOrder.xml:24"
-"Confirmed by","Confirmé par",,"resources/domains/SaleOrder.xml:70"
-"Confirmer annulation",,,"resources/views/SaleOrder.xml:29"
-"Content","Contenu",,"resources/views/SaleOrder.xml:199
-resources/views/SaleOrder.xml:72"
+"Confirmed by","Confirmé par",,"resources/domains/SaleOrder.xml:74"
+"Content","Contenu",,"resources/views/SaleOrder.xml:206
+resources/views/SaleOrder.xml:85"
 "Country","Pays",,"resources/views/Charts.xml:390"
-"Create Order from this Template","Créer Devis depuis ce modèle",,"resources/views/SaleOrder.xml:254"
+"Create Order from this Template","Créer Devis depuis ce modèle",,"resources/views/SaleOrder.xml:261"
 "Create Quote","Créer Devis",,"resources/views/Menu.xml:132"
 "Create SO","Créer Devis",,"resources/views/Menu.xml:121"
 "Create a template","Créer un modèle",,"resources/views/Menu.xml:13"
 "Creation date","Date de création",,"resources/domains/SaleOrder.xml:23"
 "Currency","Devise",,"resources/domains/SaleOrder.xml:21"
-"Customer","Client",,"resources/domains/SaleOrder.xml:28"
-"Customer contact","Contact client",,"resources/domains/SaleOrder.xml:29"
-"Customer information","Informations client",,"resources/views/SaleOrder.xml:190
-resources/views/SaleOrder.xml:312
-resources/views/SaleOrder.xml:63"
+"Customer","Client",,"resources/domains/SaleOrder.xml:30"
+"Customer Credit","Crédit client",,"resources/views/SaleConfig.xml:17"
+"Customer contact","Contact client",,"resources/domains/SaleOrder.xml:31"
+"Customer information","Informations client",,"resources/views/SaleOrder.xml:197
+resources/views/SaleOrder.xml:319
+resources/views/SaleOrder.xml:76"
 "Customer reference","Réf. Client",,"resources/domains/SaleOrder.xml:22"
 "Customize BOM","Nomenclature Personnalisée",,"resources/views/SaleOrderLine.xml:45"
 "Dashboard","Tableau de bord",,"resources/views/Dashboard.xml:56
 resources/views/Dashboard.xml:8"
-"Default value for sublines","Valeur par défaut pour ss-lignes",,"resources/domains/SaleOrder.xml:35"
+"Default value for sublines","Valeur par défaut pour ss-lignes",,"resources/domains/SaleOrder.xml:37"
+"Define as template",,,"resources/views/SaleOrder.xml:59"
 "Delivered","Livré",,"resources/views/Selects.xml:23"
 "Delivery","Livraison",,"resources/views/SaleOrderLine.xml:50"
-"Delivery State","Status de Livraison",,"resources/domains/SaleOrder.xml:75"
-"Delivery address","Adresse de livraison",,"resources/domains/SaleOrder.xml:32"
+"Delivery State","Status de Livraison",,"resources/domains/SaleOrder.xml:79"
+"Delivery address","Adresse de livraison",,"resources/domains/SaleOrder.xml:34"
 "Delivery date","Date de livraison",,"resources/domains/SaleOrderLine.xml:36"
 "Description","Description",,"resources/domains/SaleBatch.xml:16
-resources/domains/SaleOrder.xml:56
+resources/domains/SaleOrder.xml:60
 resources/domains/SaleOrderLine.xml:22
 resources/domains/SaleOrderSubLine.xml:15
-resources/views/SaleOrder.xml:103
-resources/views/SaleOrder.xml:230"
+resources/views/SaleOrder.xml:116
+resources/views/SaleOrder.xml:237"
 "Devis",,,"java/com/axelor/apps/sale/web/SaleOrderController.java:124
 java/com/axelor/apps/sale/web/SaleOrderController.java:170
 java/com/axelor/apps/sale/web/SaleOrderController.java:80"
@@ -79,12 +82,12 @@ resources/views/SaleOrderSubLine.xml:33"
 resources/domains/SaleOrderSubLine.xml:22"
 "Draft","Brouillon",,"resources/views/Selects.xml:14"
 "Estimated delivery date","Date de livraison estimée",,"resources/domains/SaleOrderLine.xml:29"
-"Excel Export","Export Excel",,"resources/views/SaleOrder.xml:41"
+"Excel Export","Export Excel",,"resources/views/SaleOrder.xml:49"
 "Family sale turnover (Excl. Tax) per month","CA H.T. par famille par mois",,"resources/views/Charts.xml:11"
-"Finalize","Finalisé",,"resources/views/SaleOrder.xml:128
+"Finalize","Finalisé",,"resources/views/SaleOrder.xml:126
 resources/views/Selects.xml:15"
-"Financial terms","Termes financiers",,"resources/views/SaleOrder.xml:208
-resources/views/SaleOrder.xml:81"
+"Financial terms","Termes financiers",,"resources/views/SaleOrder.xml:215
+resources/views/SaleOrder.xml:94"
 "From Date","Date de",,"resources/views/Charts.xml:13
 resources/views/Charts.xml:239
 resources/views/Charts.xml:265
@@ -102,9 +105,11 @@ resources/views/Charts.xml:664
 resources/views/Charts.xml:686
 resources/views/Charts.xml:711"
 "Full name","Nom complet",,"resources/domains/SaleOrder.xml:12"
-"Generate invoice","Générer facture",,"resources/views/SaleOrder.xml:133"
-"Generate purchase order",,,"resources/views/SaleOrder.xml:135"
-"Generate stock move","Générer écritures",,"resources/views/SaleOrder.xml:130"
+"Generate customer deliveries","Générer les BL",,"resources/views/SaleOrder.xml:128"
+"Generate invoice","Générer facture",,"resources/views/SaleOrder.xml:131"
+"Generate invoice from sale order","Générer facture à partir de la commande",,"resources/domains/General.xml:9"
+"Generate production order","Générer les ordres de production",,"resources/views/SaleOrder.xml:134"
+"Generate purchase order","Générer les commandes fournisseur",,"resources/views/SaleOrder.xml:133"
 "Half-yearly","Semestriel",,"resources/views/Selects.xml:30"
 "Hide Discount ?","Cacher la remise ?",,"resources/domains/SaleOrderLine.xml:16"
 "Import","Import",,"resources/domains/SaleConfig.xml:9
@@ -112,29 +117,27 @@ resources/domains/SaleOrder.xml:11
 resources/domains/SaleOrderLine.xml:12"
 "In % / fixed","En % / Fixe",,"resources/domains/SaleOrderSubLine.xml:23"
 "Industry Sector","Secteur d'activité",,"resources/views/Charts.xml:705"
-"Info.","Info.",,"resources/views/SaleOrder.xml:138
-resources/views/SaleOrder.xml:257"
-"Invoiced first date","Date de première facture",,"resources/domains/SaleOrder.xml:66"
-"Invoices dates","Dates de factures",,"resources/views/SaleOrder.xml:116
-resources/views/SaleOrder.xml:243"
-"Invoicing","Facturation",,"resources/views/SaleOrder.xml:109
-resources/views/SaleOrder.xml:215
-resources/views/SaleOrder.xml:236
-resources/views/SaleOrder.xml:344
-resources/views/SaleOrder.xml:88
+"Info.","Info.",,"resources/views/SaleOrder.xml:137
+resources/views/SaleOrder.xml:264"
+"Invoiced first date","Date de première facture",,"resources/domains/SaleOrder.xml:70"
+"Invoices dates","Dates de factures",,"resources/views/SaleOrder.xml:250"
+"Invoicing","Facturation",,"resources/views/SaleOrder.xml:101
+resources/views/SaleOrder.xml:222
+resources/views/SaleOrder.xml:243
+resources/views/SaleOrder.xml:351
 resources/views/Selects.xml:10"
-"Invoicing address",,,"resources/domains/SaleOrder.xml:30"
-"Invoicing follow-up",,,"resources/views/SaleOrderLine.xml:55"
-"Invoicing informations",,,"resources/views/SaleConfig.xml:14"
+"Invoicing address","Adresse de facturation",,"resources/domains/SaleOrder.xml:32"
+"Invoicing follow-up","Suivi facturation",,"resources/views/SaleOrderLine.xml:55"
+"Invoicing informations","Informations facturation",,"resources/views/SaleConfig.xml:14"
 "La facturation par expédition impose que l'ensemble des lignes de devis comporte des produits de service ou stockable avec un approvisionnement depuis le stock",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:32"
 "La société %s n'a pas de séquence de configurée pour les devis clients",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:37"
-"Label",,,"resources/domains/SaleOrderSubLine.xml:14"
+"Label","Libellé",,"resources/domains/SaleOrderSubLine.xml:14"
 "Last Year To Date",,,"resources/views/Charts.xml:164"
-"Make this order as template","Faire de ce devis un modèle",,"resources/views/SaleOrder.xml:127"
-"Manage sale order versions",,,"resources/domains/General.xml:8"
-"Marketing",,,"resources/views/SaleOrder.xml:212
-resources/views/SaleOrder.xml:85"
-"Month",,,"resources/views/Charts.xml:32
+"Manage sale order versions","Gérer les version des commandes clients",,"resources/domains/General.xml:8"
+"Manual Unblock","Déblocage manuel",,"resources/domains/SaleOrder.xml:27"
+"Marketing",,,"resources/views/SaleOrder.xml:219
+resources/views/SaleOrder.xml:98"
+"Month","Mois",,"resources/views/Charts.xml:32
 resources/views/Charts.xml:417
 resources/views/Charts.xml:465
 resources/views/Charts.xml:516
@@ -145,70 +148,73 @@ resources/views/Charts.xml:627
 resources/views/Charts.xml:70
 resources/views/Charts.xml:730
 resources/views/Charts.xml:779"
-"Monthly",,,"resources/views/Selects.xml:27"
+"Monthly","Mensuel",,"resources/views/Selects.xml:27"
 "My Current Leads",,,"resources/views/Dashboard.xml:29"
-"My Opportunities",,,"resources/views/Dashboard.xml:46"
-"My Proposals",,,"resources/views/SaleOrder.xml:522"
-"My Sales",,,"resources/views/SaleOrder.xml:525"
-"My Sales Orders",,,"resources/views/Dashboard.xml:16"
-"My Team Proposals",,,"resources/views/SaleOrder.xml:528"
-"My Team Sales",,,"resources/views/SaleOrder.xml:531"
-"My Templates",,,"resources/views/Menu.xml:40
+"My Opportunities","Mes opportunités",,"resources/views/Dashboard.xml:46"
+"My Proposals","Mes propositions",,"resources/views/SaleOrder.xml:532"
+"My Sales","Mes ventes",,"resources/views/SaleOrder.xml:535"
+"My Sales Orders","Mes commandes client",,"resources/views/Dashboard.xml:16"
+"My Team Proposals",,,"resources/views/SaleOrder.xml:538"
+"My Team Sales",,,"resources/views/SaleOrder.xml:541"
+"My Templates","Mes modèles",,"resources/views/Menu.xml:40
 resources/views/Menu.xml:43"
 "My Today Activities",,,"resources/views/Dashboard.xml:38"
 "My Turnover per month",,,"resources/views/Charts.xml:394
 resources/views/Dashboard.xml:23"
 "Name",,,"resources/domains/CancelReason.xml:10"
-"Nbr of Units sold (Orders) by category",,,"resources/views/Charts.xml:471
+"Nbr of Units sold (Orders) by category","Nombre d'unités vendues (commande) par catégorie",,"resources/views/Charts.xml:471
 resources/views/Dashboard.xml:147"
-"New Sale order",,,"resources/views/Menu.xml:54
+"New Sale order","Nouvelle commande client",,"resources/views/Menu.xml:54
 resources/views/Menu.xml:57"
-"New Template",,,"resources/views/Menu.xml:16"
-"New version",,,"resources/views/SaleOrder.xml:129"
-"Next invoiced period start date",,,"resources/domains/SaleOrder.xml:67"
+"New Template","Nouveau model",,"resources/views/Menu.xml:16"
+"New version","Nouvelle version",,"resources/views/SaleOrder.xml:127"
+"Next invoiced period start date",,,"resources/domains/SaleOrder.xml:71"
 "No Of Units",,,"resources/views/Charts.xml:517"
-"Not delivered",,,"resources/views/Selects.xml:21"
+"Not delivered","Non livrée",,"resources/views/Selects.xml:21"
 "Notes",,,"resources/views/SaleOrderLine.xml:47"
-"Order Date",,,"resources/domains/SaleOrder.xml:59"
-"Order Number",,,"resources/domains/SaleOrder.xml:60"
-"Order confirmed",,,"resources/views/SaleOrder.xml:131
+"Order Date","Date de commande",,"resources/domains/SaleOrder.xml:63"
+"Order Number","Numéro de commande",,"resources/domains/SaleOrder.xml:64"
+"Order bloqued message","message pour commande bloquée",,"resources/domains/Company.xml:11"
+"Order confirmed","Confirmé client",,"resources/views/SaleOrder.xml:129
 resources/views/Selects.xml:16"
-"Orders",,,"resources/views/Menu.xml:151"
-"Other informations",,,"resources/views/SaleOrder.xml:203
-resources/views/SaleOrder.xml:76"
-"Partially delivered",,,"resources/views/Selects.xml:22"
-"Partner Type",,,"resources/views/Charts.xml:658"
-"Plan a call",,,"resources/views/SaleOrder.xml:10
-resources/views/SaleOrder.xml:47"
-"Plan a meeting",,,"resources/views/SaleOrder.xml:46
-resources/views/SaleOrder.xml:536
+"Orders","Commandes",,"resources/views/Menu.xml:151"
+"Other informations","Autres informations",,"resources/views/SaleOrder.xml:210
+resources/views/SaleOrder.xml:89"
+"Partially delivered","Partiellement livrée",,"resources/views/Selects.xml:22"
+"Partner Type","Type tiers",,"resources/views/Charts.xml:658"
+"Plan","Planifier",,"resources/views/SaleOrder.xml:53
+resources/views/SaleOrder.xml:8"
+"Plan a call","Planifier un appel",,"resources/views/SaleOrder.xml:10
+resources/views/SaleOrder.xml:55"
+"Plan a meeting","Planifier un RDV",,"resources/views/SaleOrder.xml:54
+resources/views/SaleOrder.xml:546
 resources/views/SaleOrder.xml:9"
-"Plan a task",,,"resources/views/SaleOrder.xml:11
-resources/views/SaleOrder.xml:48
-resources/views/SaleOrder.xml:548"
-"Price list",,,"resources/domains/SaleOrder.xml:31"
-"Print",,,"resources/views/SaleOrder.xml:22
-resources/views/SaleOrder.xml:294
-resources/views/SaleOrder.xml:303
-resources/views/SaleOrder.xml:39"
-"Print subtotal / line",,,"resources/domains/SaleOrderLine.xml:15"
-"Print subtotal per line",,,"resources/domains/SaleOrder.xml:34"
-"Product",,,"resources/domains/SaleOrderLine.xml:13
+"Plan a task","Planifier une tâche",,"resources/views/SaleOrder.xml:11
+resources/views/SaleOrder.xml:558
+resources/views/SaleOrder.xml:56"
+"Price list","Liste de prix",,"resources/domains/SaleOrder.xml:33"
+"Print","Imprimer",,"resources/views/SaleOrder.xml:22
+resources/views/SaleOrder.xml:301
+resources/views/SaleOrder.xml:310
+resources/views/SaleOrder.xml:47"
+"Print subtotal / line","Imprimer sous-total / ligne",,"resources/domains/SaleOrderLine.xml:15"
+"Print subtotal per line","Imprimer sous total par ligne",,"resources/domains/SaleOrder.xml:36"
+"Product","Produit",,"resources/domains/SaleOrderLine.xml:13
 resources/domains/SaleOrderSubLine.xml:13
 resources/views/Charts.xml:553"
-"Product Category",,,"resources/views/Charts.xml:357"
-"Product Family",,,"resources/views/Charts.xml:222
+"Product Category","Catégorie produit ",,"resources/views/Charts.xml:357"
+"Product Family","Famille de produit",,"resources/views/Charts.xml:222
 resources/views/Charts.xml:324"
 "Product Family Sales Turnover this year vs last year",,,"resources/views/Charts.xml:196
 resources/views/Dashboard.xml:105"
-"Product name",,,"resources/domains/SaleOrderLine.xml:17"
+"Product name","Nom du produit",,"resources/domains/SaleOrderLine.xml:17"
 "Product sale turnover (Excl. Tax) last 12 month",,,"resources/views/Charts.xml:550
 resources/views/Dashboard.xml:162"
 "Product sale turnover (Excl. Tax) per month",,,"resources/views/Charts.xml:523
 resources/views/Dashboard.xml:156"
 "Product variant",,,"resources/domains/SaleOrderLine.xml:38
 resources/domains/SaleOrderSubLine.xml:25"
-"Qty",,,"resources/domains/SaleOrderLine.xml:14
+"Qty","Qte",,"resources/domains/SaleOrderLine.xml:14
 resources/domains/SaleOrderSubLine.xml:17"
 "Quarterly",,,"resources/views/Selects.xml:29"
 "Quotes",,,"resources/views/Menu.xml:138"
@@ -231,15 +237,16 @@ resources/views/Menu.xml:112
 resources/views/SaleConfig.xml:6"
 "Sale order",,,"resources/domains/SaleOrderLine.xml:10
 resources/domains/SaleOrderLineTax.xml:8
-resources/views/SaleOrder.xml:301
-resources/views/SaleOrder.xml:36"
+resources/views/SaleOrder.xml:308
+resources/views/SaleOrder.xml:36
+resources/views/SaleOrder.xml:44"
 "Sale order information",,,"resources/domains/Partner.xml:7"
-"Sale order lines",,,"resources/domains/SaleOrder.xml:39
+"Sale order lines",,,"resources/domains/SaleOrder.xml:41
 resources/domains/SaleOrderSubLine.xml:10"
 "Sale order sub-lines",,,"resources/domains/SaleOrderLine.xml:32"
 "Sale orders",,,"resources/views/Menu.xml:68
 resources/views/Menu.xml:71
-resources/views/SaleOrder.xml:285
+resources/views/SaleOrder.xml:292
 resources/views/SaleOrder.xml:6"
 "SaleOrder.bankDetails",,,"java/com/axelor/apps/sale/report/ITranslation.java:45"
 "SaleOrder.bankingInfo",,,"java/com/axelor/apps/sale/report/ITranslation.java:43"
@@ -277,7 +284,7 @@ resources/views/Menu.xml:188"
 resources/views/Menu.xml:199"
 "Sales Manager Dashboard",,,"resources/views/Menu.xml:176"
 "Sales Manager Db",,,"resources/views/Menu.xml:173"
-"Sales Order filters",,,"resources/views/SaleOrder.xml:521"
+"Sales Order filters",,,"resources/views/SaleOrder.xml:531"
 "Sales TurnOver by Product this year vs last year",,,"resources/views/Charts.xml:105
 resources/views/Dashboard.xml:93"
 "Sales Turnover (Orders) by month by category",,,"resources/views/Charts.xml:422
@@ -289,8 +296,8 @@ resources/views/Dashboard.xml:99"
 resources/views/Dashboard.xml:129"
 "Sales distribution per product family",,,"resources/views/Charts.xml:293
 resources/views/Dashboard.xml:123"
-"Sales follow-up",,,"resources/views/SaleOrder.xml:204
-resources/views/SaleOrder.xml:77"
+"Sales follow-up",,,"resources/views/SaleOrder.xml:211
+resources/views/SaleOrder.xml:90"
 "Sales order",,,"resources/views/Menu.xml:124"
 "Sales order invoicing type",,,"resources/domains/SaleConfig.xml:13"
 "Sales per country",,,"resources/views/Charts.xml:361
@@ -303,48 +310,47 @@ resources/views/Dashboard.xml:235"
 "Sales turnover this year vs past years",,,"resources/views/Charts.xml:161
 resources/views/Dashboard.xml:87"
 "SalesMan",,,"resources/views/Charts.xml:578"
-"Salesman",,,"resources/domains/SaleOrder.xml:51
+"Salesman",,,"resources/domains/SaleOrder.xml:55
 resources/views/Charts.xml:289
 resources/views/Charts.xml:609"
 "Salesman Dashboard",,,"resources/views/Menu.xml:165"
 "Salesman Db",,,"resources/views/Menu.xml:162"
-"Scheduler instance",,,"resources/domains/SaleOrder.xml:64"
-"Schedules",,,"resources/views/SaleOrder.xml:108
-resources/views/SaleOrder.xml:235"
+"Scheduler instance",,,"resources/domains/SaleOrder.xml:68"
+"Schedules",,,"resources/views/SaleOrder.xml:121
+resources/views/SaleOrder.xml:242"
 "See SalesOrder templates",,,"resources/views/Menu.xml:82
 resources/views/Menu.xml:85"
 "Send email",,,"resources/views/SaleOrder.xml:23
-resources/views/SaleOrder.xml:40"
+resources/views/SaleOrder.xml:48"
 "Seq.",,,"resources/domains/SaleOrderLine.xml:11
 resources/domains/SaleOrderSubLine.xml:12"
 "Settings","Configurations",,"resources/views/SaleOrderLine.xml:40"
-"Show Invoices","Les factures",,"resources/views/SaleOrder.xml:134"
-"Source",,,"resources/domains/SaleOrder.xml:53"
-"Specific settings","Configuration spécifique",,"resources/views/SaleOrder.xml:100
-resources/views/SaleOrder.xml:227"
-"Status","Statut",,"resources/domains/SaleOrder.xml:48"
+"Show Invoices","Les factures",,"resources/views/SaleOrder.xml:132"
+"Source",,,"resources/domains/SaleOrder.xml:57"
+"Specific settings","Configuration spécifique",,"resources/views/SaleOrder.xml:113
+resources/views/SaleOrder.xml:234"
+"Status","Statut",,"resources/domains/SaleOrder.xml:52"
 "Stock Moves",,,"resources/views/SaleOrderLine.xml:52"
-"Stock location","Emplacement de stock",,"resources/views/SaleOrder.xml:220
-resources/views/SaleOrder.xml:93"
-"Subscription",,,"resources/views/SaleOrder.xml:111
-resources/views/SaleOrder.xml:238
+"Stock location","Emplacement de stock",,"resources/views/SaleOrder.xml:106
+resources/views/SaleOrder.xml:227"
+"Subscription","Souscription",,"resources/views/SaleOrder.xml:245
 resources/views/SaleOrderLine.xml:37"
-"Subscription dates",,,"resources/views/SaleOrder.xml:112
-resources/views/SaleOrder.xml:239"
-"Subscription end date",,,"resources/domains/SaleOrder.xml:68"
-"Subscription start date",,,"resources/domains/SaleOrder.xml:65"
-"Supplier",,,"resources/domains/SaleOrderLine.xml:25"
+"Subscription dates",,,"resources/views/SaleOrder.xml:246"
+"Subscription end date",,,"resources/domains/SaleOrder.xml:72"
+"Subscription start date",,,"resources/domains/SaleOrder.xml:69"
+"Supplier","Fournisseur",,"resources/domains/SaleOrderLine.xml:25"
 "Tax",,,"resources/domains/SaleOrderLine.xml:19
 resources/domains/SaleOrderLineTax.xml:9
 resources/domains/SaleOrderSubLine.xml:19"
-"Tax Lines",,,"resources/domains/SaleOrder.xml:42"
-"Team",,,"resources/domains/SaleOrder.xml:52
+"Tax Lines",,,"resources/domains/SaleOrder.xml:44"
+"Team","Equipe",,"resources/domains/SaleOrder.xml:56
 resources/views/Charts.xml:259"
-"Template",,,"resources/domains/SaleOrder.xml:72
-resources/views/SaleOrder.xml:179"
-"Template created by",,,"resources/domains/SaleOrder.xml:77"
-"Templates",,,"resources/views/Menu.xml:10
-resources/views/SaleOrder.xml:166"
+"Template","Modèle",,"resources/domains/SaleOrder.xml:76
+resources/views/SaleOrder.xml:178
+resources/views/SaleOrder.xml:186"
+"Template created by","Modèle créé par",,"resources/domains/SaleOrder.xml:81"
+"Templates","Modèles",,"resources/views/Menu.xml:10
+resources/views/SaleOrder.xml:165"
 "This Year To Date",,,"resources/views/Charts.xml:163"
 "To Date",,,"resources/views/Charts.xml:14
 resources/views/Charts.xml:240
@@ -361,13 +367,15 @@ resources/views/Charts.xml:640
 resources/views/Charts.xml:665
 resources/views/Charts.xml:687
 resources/views/Charts.xml:712"
-"Total A.T.I.",,,"resources/domains/SaleOrder.xml:46"
-"Total W.T.",,,"resources/domains/SaleOrder.xml:44
+"Tools","Outils",,"resources/views/SaleOrder.xml:58"
+"Total A.T.I.",,,"resources/domains/SaleOrder.xml:48"
+"Total W.T.","Total H.T",,"resources/domains/SaleOrder.xml:46
+resources/domains/SaleOrder.xml:50
 resources/domains/SaleOrderLine.xml:20
 resources/domains/SaleOrderSubLine.xml:20"
-"Total W.T. in company currency",,,"resources/domains/SaleOrderLine.xml:41
+"Total W.T. in company currency","Total H.T dans la devise de la société",,"resources/domains/SaleOrderLine.xml:41
 resources/domains/SaleOrderSubLine.xml:28"
-"Total tax",,,"resources/domains/SaleOrder.xml:45"
+"Total tax","total taxe",,"resources/domains/SaleOrder.xml:47"
 "TurnOver",,,"resources/views/Charts.xml:102
 resources/views/Charts.xml:128
 resources/views/Charts.xml:193
@@ -399,16 +407,16 @@ resources/views/Dashboard.xml:209"
 resources/views/Dashboard.xml:203"
 "Turnover per month per saleman (6 month)",,,"resources/views/Charts.xml:575
 resources/views/Dashboard.xml:197"
-"Unit",,,"resources/domains/SaleOrderLine.xml:23
+"Unit","Unité",,"resources/domains/SaleOrderLine.xml:23
 resources/domains/SaleOrderSubLine.xml:16"
 "Unit cost price in company currency",,,"resources/domains/SaleOrderLine.xml:42
 resources/domains/SaleOrderSubLine.xml:29"
-"Unit price",,,"resources/domains/SaleOrderLine.xml:18
+"Unit price","Prix unitaire",,"resources/domains/SaleOrderLine.xml:18
 resources/domains/SaleOrderSubLine.xml:18"
-"Version Number",,,"resources/domains/SaleOrder.xml:73"
+"Version Number","Numéro de version",,"resources/domains/SaleOrder.xml:77"
 "View Orders",,,"resources/views/Menu.xml:148"
 "View Quotes",,,"resources/views/Menu.xml:136"
-"Word Export",,,"resources/views/SaleOrder.xml:42"
+"Word Export",,,"resources/views/SaleOrder.xml:50"
 "Year",,,"resources/views/Charts.xml:101
 resources/views/Charts.xml:127
 resources/views/Charts.xml:157

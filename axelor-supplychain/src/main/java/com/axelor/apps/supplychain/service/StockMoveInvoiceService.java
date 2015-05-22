@@ -41,10 +41,10 @@ public interface StockMoveInvoiceService {
 	public Invoice createInvoiceFromPurchaseOrder(StockMove stockMove, PurchaseOrder purchaseOrder) throws AxelorException;
 
 	@Transactional
-	public Map<String,Object> createInvoiceFromMultiCustomerStockMove(List<StockMove> stockMoveList, PaymentCondition paymentCondition, PaymentMode paymentMode, Partner contactPartner) throws AxelorException;
+	public Map<String,Object> createInvoiceFromMultiOutgoingStockMove(List<StockMove> stockMoveList, PaymentCondition paymentCondition, PaymentMode paymentMode, Partner contactPartner) throws AxelorException;
 
 	@Transactional
-	public Map<String,Object> createInvoiceFromMultiSupplierStockMove(List<StockMove> stockMoveList, Partner contactPartnerIn) throws AxelorException;
+	public Map<String,Object> createInvoiceFromMultiIncomingStockMove(List<StockMove> stockMoveList, Partner contactPartnerIn) throws AxelorException;
 
 	public Invoice extendInternalReference(StockMove stockMove, Invoice invoice);
 

@@ -23,7 +23,7 @@
   	<date name="creationDate" title="Creation date" required="true" readonly="true"/>
   	<date name="confirmationDate" title="Confirmation date" readonly="true"/>
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-	<boolean name="bloqued" title="*Bloqued*"/>
+	<boolean name="bloqued" title="Bloqued"/>
 	<boolean name="manualUnblock" title="Manual Unblock"/>
 	
 <!--   	Onglet Coordonnées client -->

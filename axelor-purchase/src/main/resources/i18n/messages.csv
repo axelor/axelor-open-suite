@@ -1,9 +1,12 @@
 "key","message","comment","context"
-"${supplierPartner.purchaseOrderInformation}",,,"resources/views/PurchaseOrder.xml:241"
+"${supplierPartner.purchaseOrderInformation}",,,"resources/views/PurchaseOrder.xml:253"
 "%s :\n Veuillez configurer le module Achat pour la société %s",,,"java/com/axelor/apps/purchase/exception/IExceptionMessage.java:20"
 "50 Latest Supplier Orders",,,"resources/views/Dashboard.xml:130"
+"A contact partner must be selected",,,"resources/views/PurchaseOrder.xml:277"
+"A price list must be selected",,,"resources/views/PurchaseOrder.xml:276"
 "Account",,,"resources/views/PurchaseOrderLine.xml:81"
-"Actions",,,"resources/views/PurchaseOrder.xml:88"
+"Actions",,,"resources/views/PurchaseOrder.xml:104
+resources/views/PurchaseOrder.xml:36"
 "Amount",,,"resources/views/Charts.xml:152
 resources/views/Charts.xml:326
 resources/views/Charts.xml:79"
@@ -11,38 +14,41 @@ resources/views/Charts.xml:79"
 "Base W.T.",,,"resources/domains/PurchaseOrderLineTax.xml:10"
 "Buyer",,,"resources/domains/PurchaseOrder.xml:26
 resources/views/Charts.xml:113"
-"By delivery",,,"resources/views/Selects.xml:21"
-"Cancel",,,"resources/views/PurchaseOrder.xml:94"
-"Canceled",,,"resources/views/Selects.xml:15"
-"Clear purchase order",,,"resources/views/PurchaseOrder.xml:98"
+"By delivery",,,"resources/views/Selects.xml:26"
+"Cancel",,,"resources/views/PurchaseOrder.xml:109"
+"Canceled",,,"resources/views/Selects.xml:14"
+"Clear purchase order",,,"resources/views/PurchaseOrder.xml:113"
 "Closed Purchase orders",,,"resources/views/Dashboard.xml:163"
 "Company",,,"resources/domains/PurchaseConfig.xml:11
 resources/domains/PurchaseOrder.xml:20"
-"Completed",,,"resources/views/PurchaseOrder.xml:93"
+"Completed",,,"resources/views/PurchaseOrder.xml:108"
+"Confirmation",,,"resources/views/PurchaseOrder.xml:41"
+"Confirmer",,,"resources/views/PurchaseOrder.xml:45"
 "Contact",,,"resources/domains/PurchaseOrder.xml:23"
-"Content",,,"resources/views/PurchaseOrder.xml:66"
-"Create RFQ",,,"resources/views/Menu.xml:60"
+"Contact partner",,,"resources/views/PurchaseOrder.xml:44"
+"Content",,,"resources/views/PurchaseOrder.xml:82"
+"Create RFQ",,,"resources/views/Menu.xml:67"
 "Currency",,,"resources/domains/PurchaseOrder.xml:27"
 "Current Purchase Orders",,,"resources/views/Dashboard.xml:99"
 "Dashboard",,,"resources/views/Dashboard.xml:137
 resources/views/Dashboard.xml:8
 resources/views/Dashboard.xml:89"
-"Delivery",,,"resources/views/PurchaseOrder.xml:60
+"Delivery",,,"resources/views/PurchaseOrder.xml:76
 resources/views/PurchaseOrderLine.xml:66"
 "Delivery Date",,,"resources/domains/PurchaseOrder.xml:28"
 "Description",,,"resources/domains/PurchaseOrderLine.xml:19"
 "Desired delivery date",,,"resources/domains/PurchaseOrderLine.xml:31"
 "Details",,,"resources/views/PurchaseOrderLine.xml:62"
-"Devis",,,"java/com/axelor/apps/purchase/web/PurchaseOrderController.java:132"
+"Devis",,,"java/com/axelor/apps/purchase/web/PurchaseOrderController.java:143"
 "Discount",,,"resources/views/PurchaseOrderLine.xml:57"
 "Discount Type",,,"resources/domains/PurchaseOrderLine.xml:23"
 "Discount amount",,,"resources/domains/PurchaseOrderLine.xml:22"
-"Draft",,,"resources/views/PurchaseOrder.xml:89
+"Draft",,,"resources/views/PurchaseOrder.xml:105
 resources/views/Selects.xml:10"
 "Estim. delivery date",,,"resources/domains/PurchaseOrderLine.xml:30"
-"Financial terms",,,"resources/views/PurchaseOrder.xml:71"
-"Finished",,,"resources/views/Selects.xml:14"
-"Free",,,"resources/views/Selects.xml:20"
+"Financial terms",,,"resources/views/PurchaseOrder.xml:87"
+"Finished",,,"resources/views/Selects.xml:13"
+"Free",,,"resources/views/Selects.xml:25"
 "From Date",,,"resources/views/Charts.xml:120
 resources/views/Charts.xml:158
 resources/views/Charts.xml:20
@@ -53,21 +59,27 @@ resources/views/Charts.xml:299
 resources/views/Charts.xml:53
 resources/views/Charts.xml:86"
 "Full name",,,"resources/domains/PurchaseOrder.xml:11"
-"Generate control invoice",,,"resources/views/PurchaseOrder.xml:97"
+"Generate control invoice",,,"resources/views/PurchaseOrder.xml:112"
+"Generate purchase orders automatically",,,"resources/domains/General.xml:10"
+"Generate supplier arrivals",,,"resources/views/PurchaseOrder.xml:114"
 "Generate suppliers requests",,,"resources/views/PurchaseOrderLine.xml:77"
 "Historical Period",,,"resources/views/Charts.xml:210
 resources/views/Charts.xml:239
 resources/views/Charts.xml:271"
 "Import",,,"resources/domains/PurchaseConfig.xml:9
 resources/domains/PurchaseOrder.xml:10"
-"Info.",,,"resources/views/PurchaseOrder.xml:101"
+"Info.",,,"resources/views/PurchaseOrder.xml:117"
 "Internal Ref.",,,"resources/domains/PurchaseOrder.xml:33"
-"Invoicing",,,"resources/views/PurchaseOrder.xml:75"
+"Invoicing",,,"resources/views/PurchaseOrder.xml:91"
 "Invoicing Information",,,"resources/views/PurchaseConfig.xml:14"
 "La société %s n'a pas de séquence de configurée pour les commandes fournisseur",,,"java/com/axelor/apps/purchase/exception/IExceptionMessage.java:15"
 "Label",,,"resources/domains/PurchaseOrderLine.xml:14"
 "Links",,,"resources/views/PurchaseOrderLine.xml:73"
-"Manage purchase order versions",,,"resources/domains/General.xml:8"
+"Manage purchase order versions",,,"resources/domains/General.xml:9"
+"Merge into single purchase order",,,"resources/views/PurchaseOrder.xml:37"
+"Merge purchase orders",,,"resources/views/Menu.xml:31
+resources/views/Menu.xml:33
+resources/views/PurchaseOrder.xml:34"
 "Min sale price",,,"resources/domains/PurchaseOrderLine.xml:27"
 "Month",,,"resources/views/Charts.xml:231
 resources/views/Charts.xml:263
@@ -76,9 +88,9 @@ resources/views/Charts.xml:292"
 "My Ongoing Purchase Orders",,,"resources/views/Dashboard.xml:157"
 "My Orders to process",,,"resources/views/Dashboard.xml:145"
 "My Purchase Orders",,,"resources/views/Dashboard.xml:29"
-"My RFQs",,,"resources/views/PurchaseOrder.xml:250"
+"My RFQs",,,"resources/views/PurchaseOrder.xml:281"
 "My RFQs and POs To Validate (Requested & Received)",,,"resources/views/Dashboard.xml:37"
-"My Sales",,,"resources/views/PurchaseOrder.xml:253"
+"My Sales",,,"resources/views/PurchaseOrder.xml:284"
 "My Validated POs",,,"resources/views/Dashboard.xml:21"
 "My purchased amount by product family",,,"resources/views/Charts.xml:51
 resources/views/Dashboard.xml:53"
@@ -88,17 +100,18 @@ resources/views/Dashboard.xml:45"
 resources/views/Dashboard.xml:67"
 "New Purchase order",,,"resources/views/Menu.xml:11
 resources/views/Menu.xml:14"
-"New version",,,"resources/views/PurchaseOrder.xml:95"
-"Notes",,,"resources/domains/PurchaseOrder.xml:48
-resources/views/PurchaseOrder.xml:80"
+"New version",,,"resources/views/PurchaseOrder.xml:110"
+"Not received",,,"resources/views/Selects.xml:18"
+"Notes",,,"resources/domains/PurchaseOrder.xml:51
+resources/views/PurchaseOrder.xml:96"
 "Ongoing Purchase orders",,,"resources/views/Dashboard.xml:151"
 "Order Date",,,"resources/domains/PurchaseOrder.xml:29"
 "Ordered ?",,,"resources/domains/PurchaseOrderLine.xml:25"
 "Orders",,,"resources/views/Charts.xml:293
-resources/views/Menu.xml:76"
-"Other information",,,"resources/views/PurchaseOrder.xml:70"
-"PO Lines",,,"resources/views/PurchaseOrder.xml:67"
-"PO Management",,,"resources/views/PurchaseOrder.xml:83"
+resources/views/Menu.xml:83"
+"Other information",,,"resources/views/PurchaseOrder.xml:86"
+"PO Lines",,,"resources/views/PurchaseOrder.xml:83"
+"PO Management",,,"resources/views/PurchaseOrder.xml:99"
 "PO Tax line",,,"resources/views/PurchaseOrderLineTax.xml:12"
 "PO Tax lines",,,"resources/views/PurchaseOrderLineTax.xml:6"
 "PO line",,,"resources/views/PurchaseOrderLine.xml:40"
@@ -106,12 +119,14 @@ resources/views/Menu.xml:76"
 resources/views/PurchaseOrderLine.xml:7"
 "POs Volume by buyer by family",,,"resources/views/Charts.xml:83
 resources/views/Dashboard.xml:112"
-"Per order",,,"resources/views/Selects.xml:22"
+"Partially received",,,"resources/views/Selects.xml:19"
+"Per order",,,"resources/views/Selects.xml:27"
 "Percent",,,"resources/views/Charts.xml:204"
+"Price List",,,"resources/views/PurchaseOrder.xml:43"
 "Price list",,,"resources/domains/PurchaseOrder.xml:24"
 "Print",,,"resources/views/PurchaseOrder.xml:18
 resources/views/PurchaseOrder.xml:30
-resources/views/PurchaseOrder.xml:37
+resources/views/PurchaseOrder.xml:52
 resources/views/PurchaseOrder.xml:8"
 "Product",,,"resources/domains/PurchaseOrderLine.xml:12"
 "Product Family",,,"resources/views/Charts.xml:151
@@ -121,24 +136,25 @@ resources/views/Charts.xml:46
 resources/views/Charts.xml:78"
 "Product variant",,,"resources/domains/PurchaseOrderLine.xml:33"
 "Products list",,,"resources/domains/PurchaseOrder.xml:30"
-"Purchase Buyer Dashboard",,,"resources/views/Menu.xml:87"
-"Purchase Buyer Db",,,"resources/views/Menu.xml:84"
-"Purchase Manager Dashboard",,,"resources/views/Menu.xml:97"
-"Purchase Manager Db",,,"resources/views/Menu.xml:94"
-"Purchase Order Dashboard",,,"resources/views/Menu.xml:105"
-"Purchase Order Db",,,"resources/views/Menu.xml:102"
-"Purchase batches",,,"resources/views/Menu.xml:36
-resources/views/Menu.xml:39"
+"Purchase Buyer Dashboard",,,"resources/views/Menu.xml:94"
+"Purchase Buyer Db",,,"resources/views/Menu.xml:91"
+"Purchase Manager Dashboard",,,"resources/views/Menu.xml:104"
+"Purchase Manager Db",,,"resources/views/Menu.xml:101"
+"Purchase Order Dashboard",,,"resources/views/Menu.xml:112"
+"Purchase Order Db",,,"resources/views/Menu.xml:109"
+"Purchase batches",,,"resources/views/Menu.xml:43
+resources/views/Menu.xml:46"
 "Purchase config",,,"resources/domains/Company.xml:10"
 "Purchase configuration",,,"resources/views/PurchaseConfig.xml:10"
-"Purchase configurations",,,"resources/views/Menu.xml:46
-resources/views/Menu.xml:49
+"Purchase configurations",,,"resources/views/Menu.xml:53
+resources/views/Menu.xml:56
 resources/views/PurchaseConfig.xml:6"
 "Purchase order",,,"resources/domains/PurchaseOrderLine.xml:10
 resources/domains/PurchaseOrderLineTax.xml:8"
 "Purchase order information",,,"resources/domains/Partner.xml:7"
 "Purchase orders",,,"resources/views/Menu.xml:20
 resources/views/Menu.xml:23"
+"Purchase orders to merge",,,"resources/views/PurchaseOrder.xml:35"
 "PurchaseOrder.bankDetails",,,"java/com/axelor/apps/purchase/report/ITranslation.java:43"
 "PurchaseOrder.bankingInfo",,,"java/com/axelor/apps/purchase/report/ITranslation.java:41"
 "PurchaseOrder.base",,,"java/com/axelor/apps/purchase/report/ITranslation.java:35"
@@ -168,79 +184,85 @@ resources/views/Dashboard.xml:118"
 resources/views/Dashboard.xml:61"
 "Purchased amount distribution by family",,,"resources/views/Charts.xml:156
 resources/views/Dashboard.xml:124"
-"Purchases",,,"resources/views/Menu.xml:110
-resources/views/Menu.xml:58
+"Purchases",,,"resources/views/Menu.xml:117
+resources/views/Menu.xml:65
 resources/views/Menu.xml:8"
 "Purchases Dashboard 1",,,"resources/views/Dashboard.xml:178"
 "Purchases Dashboard 2",,,"resources/views/Dashboard.xml:191"
 "Purchases Dashboard 3",,,"resources/views/Dashboard.xml:204"
-"Purchases Db 1",,,"resources/views/Menu.xml:113
-resources/views/Menu.xml:116"
-"Purchases Db 2",,,"resources/views/Menu.xml:122
-resources/views/Menu.xml:125"
-"Purchases Db 3",,,"resources/views/Menu.xml:130
-resources/views/Menu.xml:133"
-"Purchases Order filters",,,"resources/views/PurchaseOrder.xml:249"
+"Purchases Db 1",,,"resources/views/Menu.xml:120
+resources/views/Menu.xml:123"
+"Purchases Db 2",,,"resources/views/Menu.xml:129
+resources/views/Menu.xml:132"
+"Purchases Db 3",,,"resources/views/Menu.xml:137
+resources/views/Menu.xml:140"
+"Purchases Order filters",,,"resources/views/PurchaseOrder.xml:280"
 "Purchases order invoicing type",,,"resources/domains/PurchaseConfig.xml:13"
 "Qty",,,"resources/domains/PurchaseOrderLine.xml:13"
 "Quantity",,,"resources/views/Charts.xml:114
 resources/views/Charts.xml:47"
-"RFQ",,,"resources/views/Menu.xml:66"
+"RFQ",,,"resources/views/Menu.xml:73"
 "RFQ And PO To Validate",,,"resources/views/Dashboard.xml:106"
-"RFQs & Orders",,,"resources/views/Menu.xml:61"
-"Receipt",,,"resources/views/PurchaseOrder.xml:91"
-"Received",,,"resources/views/Selects.xml:12"
+"RFQs & Orders",,,"resources/views/Menu.xml:68"
+"Receipt State",,,"resources/domains/PurchaseOrder.xml:34"
+"Received",,,"resources/views/Selects.xml:20"
 "Ref.",,,"resources/domains/PurchaseOrder.xml:19"
-"Remaining",,,"resources/views/PurchaseOrderLine.xml:94"
-"Requested",,,"resources/views/PurchaseOrder.xml:90
+"Remaining",,,"resources/views/PurchaseOrderLine.xml:92"
+"Requested",,,"resources/views/PurchaseOrder.xml:106
 resources/views/Selects.xml:11"
 "Sale price",,,"resources/domains/PurchaseOrderLine.xml:39"
 "Send Email",,,"resources/views/PurchaseOrder.xml:19
 resources/views/PurchaseOrder.xml:31"
-"Send email",,,"resources/views/PurchaseOrder.xml:38"
+"Send email",,,"resources/views/PurchaseOrder.xml:53"
 "Seq.",,,"resources/domains/PurchaseOrderLine.xml:11"
-"Show invoice",,,"resources/views/PurchaseOrder.xml:96"
+"Show invoice",,,"resources/views/PurchaseOrder.xml:111"
 "Status",,,"resources/domains/PurchaseOrder.xml:31"
 "Subtotal W.T.",,,"resources/domains/PurchaseOrderLine.xml:17"
 "Supplier",,,"resources/domains/PurchaseOrder.xml:22"
-"Supplier RFQ/PO",,,"resources/views/PurchaseOrder.xml:35"
+"Supplier RFQ/PO",,,"resources/views/PurchaseOrder.xml:50"
 "Supplier RFQs/POs",,,"resources/views/PurchaseOrder.xml:22
 resources/views/PurchaseOrder.xml:6"
-"Supplier information",,,"resources/views/PurchaseOrder.xml:52"
-"Supplier invoices",,,"resources/views/PurchaseOrder.xml:229"
+"Supplier information",,,"resources/views/PurchaseOrder.xml:68"
+"Supplier invoices",,,"resources/views/PurchaseOrder.xml:241"
 "Supplier ref.",,,"resources/domains/PurchaseOrder.xml:32"
 "Suppliers requests",,,"resources/views/PurchaseOrderLine.xml:76"
 "Tax",,,"resources/domains/PurchaseOrderLine.xml:16"
-"Tax Lines",,,"resources/domains/PurchaseOrder.xml:38
-resources/views/PurchaseOrder.xml:68"
+"Tax Lines",,,"resources/domains/PurchaseOrder.xml:39
+resources/views/PurchaseOrder.xml:84"
 "Tax amount",,,"resources/domains/PurchaseOrderLineTax.xml:11"
-"The field 'Location' must be filled.",,,"resources/views/PurchaseOrder.xml:237"
+"The company is required and must be the same for all purchase orders",,,"java/com/axelor/apps/purchase/exception/IExceptionMessage.java:28"
+"The currency is required and must be the same for all purchase orders",,,"java/com/axelor/apps/purchase/exception/IExceptionMessage.java:26"
+"The field 'Location' must be filled.",,,"resources/views/PurchaseOrder.xml:249"
+"The supplier Partner is required and must be the same for all purchase orders",,,"java/com/axelor/apps/purchase/exception/IExceptionMessage.java:27"
 "To Date",,,"resources/views/Charts.xml:121
 resources/views/Charts.xml:159
 resources/views/Charts.xml:21
 resources/views/Charts.xml:300
 resources/views/Charts.xml:54
 resources/views/Charts.xml:87"
-"Total",,,"resources/views/PurchaseOrderLine.xml:93"
-"Total A.T.I.",,,"resources/domains/PurchaseOrder.xml:45"
+"Total",,,"resources/views/PurchaseOrderLine.xml:91"
+"Total A.T.I.",,,"resources/domains/PurchaseOrder.xml:46"
 "Total Purchased Amount by month",,,"resources/views/Charts.xml:207
 resources/views/Dashboard.xml:73"
 "Total Purchased Qty by month",,,"resources/views/Charts.xml:236
 resources/views/Dashboard.xml:79"
-"Total Tax",,,"resources/domains/PurchaseOrder.xml:44"
-"Total W.T.",,,"resources/domains/PurchaseOrder.xml:43"
+"Total Tax",,,"resources/domains/PurchaseOrder.xml:45"
+"Total W.T.",,,"resources/domains/PurchaseOrder.xml:44
+resources/domains/PurchaseOrder.xml:48"
 "Total W.T. in company currency",,,"resources/domains/PurchaseOrderLine.xml:37"
 "Turn Over",,,"resources/views/Charts.xml:232"
 "Unit",,,"resources/domains/PurchaseOrderLine.xml:20"
 "Unit price",,,"resources/domains/PurchaseOrderLine.xml:15"
 "Units",,,"resources/views/Charts.xml:264"
 "V.A.T.",,,"resources/domains/PurchaseOrderLineTax.xml:9"
-"Validate",,,"resources/views/PurchaseOrder.xml:92"
-"Validated",,,"resources/views/Selects.xml:13"
-"Validated by",,,"resources/domains/PurchaseOrder.xml:41"
-"Validation date",,,"resources/domains/PurchaseOrder.xml:42"
-"Version Number",,,"resources/domains/PurchaseOrder.xml:50"
-"View Orders",,,"resources/views/Menu.xml:73"
-"View RFQ",,,"resources/views/Menu.xml:63"
+"Validate",,,"resources/views/PurchaseOrder.xml:107"
+"Validated",,,"resources/views/Selects.xml:12"
+"Validated by",,,"resources/domains/PurchaseOrder.xml:42"
+"Validation date",,,"resources/domains/PurchaseOrder.xml:43"
+"Version Number",,,"resources/domains/PurchaseOrder.xml:53"
+"View Orders",,,"resources/views/Menu.xml:80"
+"View RFQ",,,"resources/views/Menu.xml:70"
+"You have to choose at least one purchase order",,,"resources/views/PurchaseOrder.xml:262"
 "help:PurchaseOrder.internalReference",,,"resources/domains/PurchaseOrder.xml:33"
 "help:PurchaseOrderLine.estimatedDelivDate",,,"resources/domains/PurchaseOrderLine.xml:30"
+"purchase order management",,,"resources/domains/General.xml:8"

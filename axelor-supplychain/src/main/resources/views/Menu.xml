@@ -37,10 +37,10 @@
 	</action-view>
 
 	<menuitem name="stock-multi-sale-invoicing" parent="stock-root"
-		title="Mass Sale Invoicing" action="stock.root.multi.sale.invoicing" />
+		title="Mass Customer Invoicing" action="stock.root.multi.sale.invoicing" />
 
 	<menuitem name="stock-multi-purchase-invoicing" parent="stock-root"
-		title="Mass Purchase Invoicing" action="stock.root.multi.purchase.invoicing" />
+		title="Mass Supplier Invoicing" action="stock.root.multi.purchase.invoicing" />
 
 	<action-view name="stock.root.multi.sale.invoicing" title="Mass Customer Invoicing"
 		model="com.axelor.apps.stock.db.StockMove" icon="img/16px/productSmall_16px.png">
