@@ -25,6 +25,8 @@
 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="general" title="Currency conversion table" help="true"/>
 		
 		<boolean name="hasQasValidation" title="Use QAS Validation ?" help="true" />
+		
+		<boolean name="productInAti" title="Products In ATI"/>
 
 	</entity>
 

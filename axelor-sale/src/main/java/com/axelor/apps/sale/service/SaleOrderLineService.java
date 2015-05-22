@@ -40,27 +40,27 @@ import com.google.inject.Inject;
 
 public class SaleOrderLineService extends SaleOrderLineRepository{
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderLineService.class); 
-	
+	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderLineService.class);
+
 	@Inject
 	private CurrencyService currencyService;
-	
+
 	@Inject
 	private PriceListService priceListService;
-	
+
 	@Inject
 	private SaleOrderSubLineService saleOrderSubLineService;
-	
-	
+
+
 	/**
 	 * Calculer le montant HT d'une ligne de devis.
-	 * 
+	 *
 	 * @param quantity
 	 *          Quantité.
 	 * @param price
 	 *          Le prix.
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * 			Le montant HT de la ligne.
 	 */
 	public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
@@ -71,74 +71,98 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 
 		return amount;
 	}
-	
-	
+
+
 	public BigDecimal getUnitPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException  {
-		
+
 		Product product = saleOrderLine.getProduct();
-		
+
 		return currencyService.getAmountCurrencyConverted(
-			product.getSaleCurrency(), saleOrder.getCurrency(), product.getSalePrice(), saleOrder.getCreationDate());  
-		
+			product.getSaleCurrency(), saleOrder.getCurrency(), product.getSalePrice(), saleOrder.getCreationDate());
+
 	}
-	
-	
+
+
 	public TaxLine getTaxLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException  {
-		
+
 		return Beans.get(AccountManagementService.class).getTaxLine(
 				saleOrder.getCreationDate(), saleOrderLine.getProduct(), saleOrder.getCompany(), saleOrder.getClientPartner().getFiscalPosition(), false);
-		
+
 	}
-	
-	
+
+
 	public BigDecimal computeSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException  {
-		
+
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
-		
+
 		if(saleOrderLine.getSaleOrderSubLineList() != null && !saleOrderLine.getSaleOrderSubLineList().isEmpty())  {
 			for(SaleOrderSubLine saleOrderSubLine : saleOrderLine.getSaleOrderSubLineList())  {
-				
+
 				saleOrderSubLine.setCompanyExTaxTotal(saleOrderSubLineService.getCompanyExTaxTotal(saleOrderLine.getExTaxTotal(), saleOrderLine.getSaleOrder()));
-				
+
 				exTaxTotal = exTaxTotal.add(saleOrderSubLine.getExTaxTotal());
 			}
 		}
 		else  {
 			return saleOrderLine.getExTaxTotal();
 		}
-		
+
 		return exTaxTotal;
 	}
 
-	
+
 	public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder) throws AxelorException  {
-		
+
 		return currencyService.getAmountCurrencyConverted(
-				saleOrder.getCurrency(), saleOrder.getCompany().getCurrency(), exTaxTotal, saleOrder.getCreationDate());  
+				saleOrder.getCurrency(), saleOrder.getCompany().getCurrency(), exTaxTotal, saleOrder.getCreationDate());
 	}
-	
-	
+
+
 	public BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException  {
-		
+
 		Product product = saleOrderLine.getProduct();
-		
+
 		return currencyService.getAmountCurrencyConverted(
-				product.getPurchaseCurrency(), saleOrder.getCompany().getCurrency(), product.getCostPrice(), saleOrder.getCreationDate());  
+				product.getPurchaseCurrency(), saleOrder.getCompany().getCurrency(), product.getCostPrice(), saleOrder.getCreationDate());
 	}
-	
-	
+
+
 	public PriceListLine getPriceListLine(SaleOrderLine saleOrderLine, PriceList priceList)  {
-		
+
 		return priceListService.getPriceListLine(saleOrderLine.getProduct(), saleOrderLine.getQty(), priceList);
-	
+
 	}
-	
-	
+
+
 	public BigDecimal computeDiscount(SaleOrderLine saleOrderLine)  {
-		
-		return priceListService.computeDiscount(saleOrderLine.getPrice(), saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getDiscountAmount());
-		
+
+		return priceListService.computeDiscount(saleOrderLine.getPrice(), saleOrderLine.getDiscountTypeSelect(),saleOrderLine.getDiscountAmount());
+
 	}
-	
-	
+
+	public BigDecimal convertUnitPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder){
+		BigDecimal price = saleOrderLine.getProduct().getSalePrice();
+
+		if(saleOrderLine.getProduct().getInAti() && !saleOrder.getInAti()){
+			price = price.subtract(price.multiply(saleOrderLine.getTaxLine().getValue()));
+
+		}
+		else if(!saleOrderLine.getProduct().getInAti() && saleOrder.getInAti()){
+			price = price.add(price.multiply(saleOrderLine.getTaxLine().getValue()));
+		}
+		return price;
+	}
+
+	public BigDecimal convertDiscountAmount(SaleOrderLine saleOrderLine, SaleOrder saleOrder){
+		BigDecimal discountAmount = this.computeDiscount(saleOrderLine).subtract(saleOrderLine.getProduct().getSalePrice());
+
+		if(saleOrderLine.getProduct().getInAti() && !saleOrder.getInAti()){
+			discountAmount = discountAmount.subtract(discountAmount.multiply(saleOrderLine.getTaxLine().getValue()));
+
+		}
+		else if(!saleOrderLine.getProduct().getInAti() && saleOrder.getInAti()){
+			discountAmount = discountAmount.add(discountAmount.multiply(saleOrderLine.getTaxLine().getValue()));
+		}
+		return discountAmount;
+	}
 }

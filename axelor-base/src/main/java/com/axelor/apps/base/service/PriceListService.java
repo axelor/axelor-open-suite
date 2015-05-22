@@ -37,61 +37,64 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class PriceListService extends PriceListRepository {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PriceListService.class); 
+
+	private static final Logger LOG = LoggerFactory.getLogger(PriceListService.class);
 
 	@Inject
 	private PriceListLineRepository priceListLineRepo;
-	
+
 	public PriceListLine getPriceListLine(Product product, BigDecimal qty, PriceList priceList)  {
-		
+
 		PriceListLine priceListLine = null;
-		
+
 		if(product != null && priceList != null)  {
-			priceListLine = priceListLineRepo.all().filter("self.product = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product, qty).fetchOne();
-			
+			for (PriceListLine priceListLineIt : priceList.getPriceListLineList()) {
+				if(priceListLineIt.getProduct().equals(product)){
+					priceListLine = priceListLineIt;
+				}
+			}
 			if(priceListLine == null && product.getProductCategory() != null)  {
 				priceListLine = priceListLineRepo.all().filter("self.productCategory = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product.getProductCategory(), qty).fetchOne();
 			}
 		}
-		
+
 		return priceListLine;
 	}
-	
-	
+
+
 	public int getDiscountTypeSelect(PriceListLine priceListLine)  {
-		
+
 		return priceListLine.getAmountTypeSelect();
-		
+
 	}
-	
-	
+
+
 	public BigDecimal getDiscountAmount(PriceListLine priceListLine, BigDecimal unitPrice)  {
-		
+
 		switch (priceListLine.getTypeSelect()) {
 			case IPriceListLine.TYPE_ADDITIONNAL:
-				
+
 				return priceListLine.getAmount();
-				
+
 			case IPriceListLine.TYPE_DISCOUNT:
-				
+
 				return priceListLine.getAmount().negate();
-				
+
 			case IPriceListLine.TYPE_REPLACE:
-		
+
 				return priceListLine.getAmount().subtract(unitPrice);
-	
+
 			default:
 				return BigDecimal.ZERO;
 		}
 	}
-	
-	
+
+
 	public BigDecimal getUnitPriceDiscounted(PriceListLine priceListLine, BigDecimal unitPrice)  {
-		
+
 		switch (priceListLine.getTypeSelect()) {
 			case IPriceListLine.TYPE_ADDITIONNAL:
-				
+
 				if(priceListLine.getAmountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
 					return unitPrice.add(priceListLine.getAmount());
 				}
@@ -100,9 +103,9 @@ public class PriceListService extends PriceListRepository {
 							BigDecimal.ONE.add(
 									priceListLine.getAmount().divide(new BigDecimal(100))));
 				}
-				
+
 			case IPriceListLine.TYPE_DISCOUNT:
-				
+
 				if(priceListLine.getAmountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
 					return unitPrice.subtract(priceListLine.getAmount());
 				}
@@ -111,30 +114,30 @@ public class PriceListService extends PriceListRepository {
 							BigDecimal.ONE.subtract(
 									priceListLine.getAmount().divide(new BigDecimal(100))));
 				}
-				
+
 			case IPriceListLine.TYPE_REPLACE:
-		
+
 				return priceListLine.getAmount();
-	
+
 			default:
 				return unitPrice;
 		}
 	}
-	
-	
+
+
 	public BigDecimal getUnitPriceDiscounted(PriceList priceList, BigDecimal unitPrice)  {
-		
-		BigDecimal discountPercent = priceList.getGeneralDiscount(); 
-		
+
+		BigDecimal discountPercent = priceList.getGeneralDiscount();
+
 		return unitPrice.multiply(
 				BigDecimal.ONE.subtract(
 						discountPercent.divide(new BigDecimal(100))));
-		
+
 	}
-	
-	
-	public BigDecimal computeDiscount(BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount)  {
-		
+
+
+	public BigDecimal computeDiscount(BigDecimal unitPrice, int discountTypeSelect,BigDecimal discountAmount)  {
+
 		if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_FIXED)  {
 			return  unitPrice.add(discountAmount);
 		}
@@ -143,15 +146,15 @@ public class PriceListService extends PriceListRepository {
 					BigDecimal.ONE.add(
 							discountAmount.divide(new BigDecimal(100))));
 		}
-		
+
 		return unitPrice;
 	}
-	
-	
+
+
 	public Map<String, Object>  getDiscounts(PriceList priceList, PriceListLine priceListLine, BigDecimal price)  {
-		
+
 		Map<String, Object> discounts = new HashMap<String, Object>();
-		
+
 		if(priceListLine != null)  {
 			discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price));
 			discounts.put("discountTypeSelect", this.getDiscountTypeSelect(priceListLine));
@@ -161,10 +164,10 @@ public class PriceListService extends PriceListRepository {
 			discounts.put("discountAmount", priceList.getGeneralDiscount());
 			discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_PERCENT);
 		}
-		
+
 		return discounts;
 	}
-	
+
 	@Transactional
 	public PriceList historizePriceList (PriceList priceList){
 		HistorizedPriceList historizedPriceList = new HistorizedPriceList();
@@ -179,5 +182,5 @@ public class PriceListService extends PriceListRepository {
 		save(priceList);
 		return priceList;
 	}
-	
+
 }

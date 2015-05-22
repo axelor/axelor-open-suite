@@ -71,6 +71,7 @@
 	    <field name="currency"/>
 	    <field name="versionNumber"/>
 	    <field name="project" if-module="axelor-business-project"/>
+	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
 	  </panel>
 	  
 	  <panel title="Customer information">
@@ -403,6 +404,8 @@
     	<action name="action-sale-order-record-company-configuration"/>
     	<action name="action-sale-order-record-currency"/>
     	<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
+    	<action name="action-sale-order-record-in-ati"/>
+    	<action name="action-sale-order-attrs-in-ati"/>
     </action-group>
     
     <action-group name="action-group-sale-saleorder-onload">
@@ -411,6 +414,15 @@
     	<action name="action-partner-attrs-hide-contact-partner" />
     	<action name="action-sale-oder-attrs-generate-stockmove-readonly"/>
     </action-group>
+    
+    <action-attrs name="action-sale-order-attrs-in-ati">
+    	<attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
+    	<attribute name="hidden" for="saleOrderLineList.inTaxTotal" expr="!inAti"/>
+    </action-attrs>
+    
+    <action-record name="action-sale-order-record-in-ati" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="inAti" expr="eval: __repo__.of(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAti"/>
+    </action-record>
     
     <action-method name="action-sale-order-method-finalize">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="finalizeSaleOrder"/>

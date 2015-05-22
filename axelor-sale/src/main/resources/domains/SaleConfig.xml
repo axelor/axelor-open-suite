@@ -12,6 +12,7 @@
 
   	<integer name="saleOrderInvoicingTypeSelect" title="Sales order invoicing type" selection="sale.order.invoicing.type.select"/>
   	<decimal name="acceptedCredit" title="Accepted Credit"/>
+  	<boolean name="saleOrderInAti" title="Sale Orders In ATI"/>
   	
   </entity>
   

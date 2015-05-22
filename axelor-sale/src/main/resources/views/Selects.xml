@@ -30,5 +30,10 @@
 		<option value="6">Half-yearly</option>
 		<option value="12">Yearly</option>
 	</selection>
+	
+	<selection name="sale.order.line.discount.amount.type.select">
+		<option value="1">Discount</option>
+		<option value="2">Addition</option>
+	</selection>
 
 </object-views>

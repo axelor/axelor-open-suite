@@ -39,6 +39,7 @@
 			<field name="operationTypeSelect" onChange="action-group-account-invoice-operationtype-onchange" readonlyIf="statusSelect != 1"/>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-form" readonlyIf="statusSelect != 1"/>
 			<field name="currency" onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"/>
+			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 		</panel>
 	  
 		<panel title="Invoicing informations">
@@ -202,6 +203,8 @@
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
 	    <action name="action-invoice-attrs-hide-contact-partner" />
+	    <action name="action-invoice-record-in-ati"/>
+	    <action name="action-invoice-attrs-in-ati"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group">
@@ -227,7 +230,16 @@
     	<action name="action-invoice-attrs-hide-contact-partner" />
     </action-group>
 
+	<action-attrs name="action-invoice-attrs-in-ati">
+    	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
+    	<attribute name="hidden" for="invoiceLineList.inTaxTotal" expr="!inAti"/>
+    </action-attrs>
+	
 	<!-- ACTION RECORD -->
+	<action-record name="action-invoice-record-in-ati" model="com.axelor.apps.account.db.Invoice">
+		<field name="inAti" expr="eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAti"/>
+	</action-record>
+	
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
     	<field name="exTaxTotal" expr="eval: 0"/>
     	<field name="taxTotal" expr="eval: 0"/>

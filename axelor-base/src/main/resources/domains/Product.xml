@@ -58,6 +58,7 @@
   	
   	<boolean name="sellable" title="Sellable" default="true" />
   	<boolean name="purchasable" title="Purchasable" default="true"/>
+  	<boolean name="inAti" title="In ATI"/>
   	
   </entity>
 

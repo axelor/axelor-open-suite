@@ -10,6 +10,7 @@
 	<form name="sale-config-form" title="Sale configuration" model="com.axelor.apps.sale.db.SaleConfig" onNew="action-sale-config-record-default">
 	  <panel >
 	    <field name="company" form-view="company-form" colSpan="4"/>
+	    <field name="saleOrderInAti"/>
 	  </panel>
 	  <panel title="Invoicing informations">
 	    <field name="saleOrderInvoicingTypeSelect"/>

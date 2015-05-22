@@ -52,7 +52,7 @@
 	
 	<integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
 	
-	
+	<boolean name="inAti" title="In ATI"/>
 	
   </entity>
 

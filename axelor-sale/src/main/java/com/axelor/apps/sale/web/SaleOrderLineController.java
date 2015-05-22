@@ -34,48 +34,79 @@ public class SaleOrderLineController {
 
 	@Inject
 	private SaleOrderLineService saleOrderLineService;
-	
+
 	@Inject
 	private PriceListService priceListService;
 
 	public void compute(ActionRequest request, ActionResponse response) {
 
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-		
+
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyExTaxTotal = BigDecimal.ZERO;
-
+		BigDecimal inTaxTotal = BigDecimal.ZERO;
+		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
+		BigDecimal priceDiscounted = BigDecimal.ZERO;
 		try{
-			if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
-				if(saleOrderLine.getSaleOrderSubLineList() == null || saleOrderLine.getSaleOrderSubLineList().isEmpty()) {
-					exTaxTotal = SaleOrderLineService.computeAmount(saleOrderLine.getQty(), saleOrderLineService.computeDiscount(saleOrderLine));
+			if(!request.getContext().getParentContext().asType(SaleOrder.class).getInAti()){
+				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
+					if(saleOrderLine.getSaleOrderSubLineList() == null || saleOrderLine.getSaleOrderSubLineList().isEmpty()) {
+						exTaxTotal = SaleOrderLineService.computeAmount(saleOrderLine.getQty(), saleOrderLineService.computeDiscount(saleOrderLine));
+						priceDiscounted = saleOrderLineService.computeDiscount(saleOrderLine);
+					}
 				}
+
+				if(exTaxTotal != null) {
+
+					SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+
+					if(saleOrder == null) {
+						saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+					}
+
+					if(saleOrder != null) {
+						companyExTaxTotal = saleOrderLineService.getAmountInCompanyCurrency(exTaxTotal, saleOrder);
+					}
+				}
+
+				response.setValue("exTaxTotal", exTaxTotal);
+				response.setValue("companyExTaxTotal", companyExTaxTotal);
+				response.setValue("priceDiscounted", priceDiscounted);
 			}
-			
-			if(exTaxTotal != null) {
-
-				SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-
-				if(saleOrder == null) {
-					saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+			else{
+				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
+					if(saleOrderLine.getSaleOrderSubLineList() == null || saleOrderLine.getSaleOrderSubLineList().isEmpty()) {
+						inTaxTotal = SaleOrderLineService.computeAmount(saleOrderLine.getQty(), saleOrderLineService.computeDiscount(saleOrderLine));
+						priceDiscounted = saleOrderLineService.computeDiscount(saleOrderLine);
+					}
 				}
 
-				if(saleOrder != null) {
-					companyExTaxTotal = saleOrderLineService.getAmountInCompanyCurrency(exTaxTotal, saleOrder);
+				if(inTaxTotal != null) {
+
+					SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+
+					if(saleOrder == null) {
+						saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+					}
+
+					if(saleOrder != null) {
+						companyInTaxTotal = saleOrderLineService.getAmountInCompanyCurrency(inTaxTotal, saleOrder);
+					}
 				}
+
+				response.setValue("inTaxTotal", inTaxTotal);
+				response.setValue("companyInTaxTotal", companyInTaxTotal);
+				response.setValue("priceDiscounted", priceDiscounted);
 			}
-			
-			response.setValue("exTaxTotal", exTaxTotal);
-			response.setValue("companyExTaxTotal", companyExTaxTotal);
 		}
 		catch(Exception e) {
-			response.setFlash(e.getMessage()); 
+			response.setFlash(e.getMessage());
 		}
 	}
 
 	public void getProductInformation(ActionRequest request, ActionResponse response) {
 
-		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);	
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
 		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 		if(saleOrder == null)  {
@@ -86,31 +117,31 @@ public class SaleOrderLineController {
 
 			try  {
 				BigDecimal price = saleOrderLineService.getUnitPrice(saleOrder, saleOrderLine);
-				
+
 				response.setValue("taxLine", saleOrderLineService.getTaxLine(saleOrder, saleOrderLine));
 				response.setValue("productName", saleOrderLine.getProduct().getName());
 				response.setValue("saleSupplySelect", saleOrderLine.getProduct().getSaleSupplySelect());
 				response.setValue("unit", saleOrderLine.getProduct().getUnit());
 				response.setValue("companyCostPrice", saleOrderLineService.getCompanyCostPrice(saleOrder, saleOrderLine));
-				
+
 				PriceList priceList = saleOrder.getPriceList();
 				if(priceList != null)  {
 					PriceListLine priceListLine = saleOrderLineService.getPriceListLine(saleOrderLine, priceList);
-					
+
 					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-					
+
 					response.setValue("discountAmount", discounts.get("discountAmount"));
 					response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 					if(discounts.get("price") != null)  {
 						price = (BigDecimal) discounts.get("price");
 					}
 				}
-				
+
 				response.setValue("price", price);
-				
+
 			}
 			catch(Exception e)  {
-				response.setFlash(e.getMessage()); 
+				response.setFlash(e.getMessage());
 				this.resetProductInformation(response);
 			}
 		}
@@ -118,10 +149,10 @@ public class SaleOrderLineController {
 			this.resetProductInformation(response);
 		}
 	}
-	
-	
+
+
 	public void resetProductInformation(ActionResponse response)  {
-		
+
 		response.setValue("taxLine", null);
 		response.setValue("productName", null);
 		response.setValue("saleSupplySelect", null);
@@ -130,13 +161,13 @@ public class SaleOrderLineController {
 		response.setValue("discountAmount", null);
 		response.setValue("discountTypeSelect", null);
 		response.setValue("price", null);
-		
+
 	}
-	
-	
+
+
 	public void getDiscount(ActionRequest request, ActionResponse response) {
 
-		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);	
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
 		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 		if(saleOrder == null)  {
@@ -146,29 +177,55 @@ public class SaleOrderLineController {
 		if(saleOrder != null && saleOrderLine.getProduct() != null) {
 
 			try  {
-				BigDecimal price = saleOrderLine.getPrice();
-				
+				BigDecimal price = saleOrderLine.getProduct().getSalePrice();
+
 				PriceList priceList = saleOrder.getPriceList();
 				if(priceList != null)  {
 					PriceListLine priceListLine = saleOrderLineService.getPriceListLine(saleOrderLine, priceList);
-					
+
 					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-					
+
 					response.setValue("discountAmount", discounts.get("discountAmount"));
 					response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 					if(discounts.get("price") != null)  {
 						price = (BigDecimal) discounts.get("price");
 					}
 				}
-				
+
 				response.setValue("price", price);
-				
+
 			}
 			catch(Exception e)  {
-				response.setFlash(e.getMessage()); 
+				response.setFlash(e.getMessage());
 			}
 		}
 	}
-	
-	
+
+	public void convertUnitPrice(ActionRequest request, ActionResponse response) {
+
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+		if(saleOrder == null)  {
+			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+		}
+
+		if(saleOrder != null) {
+
+			try  {
+
+				BigDecimal price = saleOrderLineService.convertUnitPrice(saleOrderLine, saleOrder);
+				BigDecimal discountAmount = saleOrderLineService.convertDiscountAmount(saleOrderLine, saleOrder);
+
+				response.setValue("price", price);
+				response.setValue("discountAmount",discountAmount);
+
+			}
+			catch(Exception e)  {
+				response.setFlash(e.getMessage());
+			}
+		}
+	}
+
+
 }

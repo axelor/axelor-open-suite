@@ -21,6 +21,7 @@
 		  <field name="showDetailsInInvoice"/>
 		  <field name="allowCancelVentilatedInvoice"/>
 	   	  <field name="allowRemovalValidatedMove" showIf="allowCancelVentilatedInvoice"/>
+	   	  <field name="invoiceInAti"/>
     
 		</panel>
 		

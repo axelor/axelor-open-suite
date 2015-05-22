@@ -34,6 +34,7 @@
 		<panel-tabs>
 		    <panel title="Configuration">
 		    	<field name="mailAccountByUser" />
+		    	<field name="productInAti"/>
 		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>
