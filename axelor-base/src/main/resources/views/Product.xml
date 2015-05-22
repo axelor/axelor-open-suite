@@ -44,6 +44,7 @@
 					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" colSpan="12"/>
 					<field name="invoiceLineType" colSpan="12" if-module="axelor-account"/>
 					<field name="expense" if-module="axelor-human-resource" colSpan="12"/>
+					<field name="inAti"/>
 				</panel>
 				<panel title="Categorization" colSpan="6" colWidths="30%,70%">
 					<field name="applicationTypeSelect" onChange="action-set-product-type-select" colSpan="12"/>
@@ -173,6 +174,7 @@
     <action-group name="action-group-base-product-onnew">
     	<action name="action-product-record-default-new"/>
     	<action name="action-product-record-sale-supply-select"/>
+    	<action name="action-product-record-in-ati"/>
     </action-group>
     
     <action-group name="action-group-base-product-producttype-onchange">
@@ -185,6 +187,10 @@
     	<action name="action-product-validate-end-date"/>
     	<action name="action-product-method-reset-end-date"/>
     </action-group>
+    
+    <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
+    	<field name="inAti" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInAti()"/>
+    </action-record>
     
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="applicationTypeSelect" expr="1"/>

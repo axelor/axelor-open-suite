@@ -15,6 +15,7 @@
         <field name="unit"/>
         <field name="price"/>
         <field name="exTaxTotal"/>
+	    <field name="inTaxTotal"/>
         <field name="saleMinPrice"/>
         <field name="createdBy"/>
         <field name="createdOn"/>
@@ -30,6 +31,7 @@
         <field name="unit"/>
         <field name="price"/>
         <field name="exTaxTotal"/>
+	    <field name="inTaxTotal"/>
         <field name="saleMinPrice"/>
         <field name="salePrice" hidden="true"/>
     </grid>
@@ -45,11 +47,13 @@
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
 	    <field name="unit"/>
-	    <field name="price" onChange="action-purchase-order-line-method-compute,save">
+	    <field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+	    <field name="price" onChange="action-purchase-order-line-method-compute">
 	      <hilite color="danger" if="salePrice &lt; saleMinPrice"/>
 	    </field>
-	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
-	    <field name="exTaxTotal"/>
+	    <field name="priceDiscounted" colSpan="4" hideIf="price == priceDiscounted"/>
+	    <field name="exTaxTotal" readonly="true"/>
+	    <field name="inTaxTotal" readonly="true"/>
 	    <field name="saleMinPrice" readonly="true"/>
 	    <field name="salePrice" hidden="true"/>
 	  </panel>  
@@ -99,21 +103,29 @@
 	<action-group name="action-group-purchase-purchase-orderline-onnew">
 		<action name="action-purchase-order-line-record-new"/>
 		<action name="action-purchase-order-line-attrs-hide-product-variant"/>
+		<action name="action-purchase-order-attrs-hide-ati"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-onload">
+		<action name="action-purchase-order-line-method-convert-tax"/>
+    	<action name="action-purchase-order-line-method-compute"/>
+    	<action name="save"/>
 		<action name="action-purchase-order-line-attrs-task-readonly"/>
 		<action name="action-purchase-order-line-attrs-hide-product-variant"/>
+		<action name="action-purchase-order-attrs-hide-ati"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-product-onchange">
 		<action name="action-purchase-order-line-method-get-product-information"/>
+		<action name="action-purchase-order-line-method-convert-tax"/>
 		<action name="action-purchase-order-line-method-compute"/>
 		<action name="action-purchase-order-line-attrs-hide-product-variant"/>
+		<action name="action-purchase-order-line-record-in-tax-total"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-qty-onchange">
 		<action name="action-purchase-order-line-method-get-discount"/>
+		<action name="action-purchase-order-line-method-convert-tax"/>
 		<action name="action-purchase-order-line-method-compute"/>
 	</action-group>
 	
@@ -123,7 +135,14 @@
 		<action name="save"/>
 	</action-group>
 	
+	<action-attrs name="action-purchase-order-attrs-hide-ati">
+		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent.inAti"/>
+	</action-attrs>
+	
 	<!-- ACTION RECORD -->
+	
+	
 	
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
@@ -132,6 +151,10 @@
     
     
    	<!-- ACTION METHOD -->
+   	
+   	<action-method name="action-purchase-order-line-method-convert-tax">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="convertUnitPrice"/>
+	</action-method>
 	
 	<action-method name="action-purchase-order-line-method-compute">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="compute"/>

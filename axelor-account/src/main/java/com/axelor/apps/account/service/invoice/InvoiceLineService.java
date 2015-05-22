@@ -39,72 +39,72 @@ import com.google.inject.Inject;
 public class InvoiceLineService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceLineService.class);
-	
-	
+
+
 	@Inject
 	private AccountManagementService accountManagementService;
 
 	@Inject
 	private CurrencyService currencyService;
-	
+
 	@Inject
 	private PriceListService priceListService;
-	
-	
+
+
 	public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
-		
+
 		return accountManagementService.getTaxLine(
 				GeneralService.getTodayDate(), invoiceLine.getProduct(), invoice.getCompany(), invoice.getPartner().getFiscalPosition(), isPurchase);
-		
+
 	}
-	
-	
+
+
 	public BigDecimal getUnitPrice(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
-		
+
 		Product product = invoiceLine.getProduct();
-		
-		if(isPurchase)  {  
+
+		if(isPurchase)  {
 			return currencyService.getAmountCurrencyConverted(
-				product.getPurchaseCurrency(), invoice.getCurrency(), product.getPurchasePrice(), invoice.getInvoiceDate());  
+				product.getPurchaseCurrency(), invoice.getCurrency(), product.getPurchasePrice(), invoice.getInvoiceDate());
 		}
-		else  {  
+		else  {
 			return currencyService.getAmountCurrencyConverted(
-				product.getSaleCurrency(), invoice.getCurrency(), product.getSalePrice(), invoice.getInvoiceDate());  
+				product.getSaleCurrency(), invoice.getCurrency(), product.getSalePrice(), invoice.getInvoiceDate());
 		}
 	}
-	
-	
+
+
 	public boolean isPurchase(Invoice invoice)  {
 		int operation = invoice.getOperationTypeSelect();
 		if(operation == 1 || operation == 2)  { return true; }
 		else  { return false; }
 	}
-	
-	
+
+
 	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
-		
+
 		return currencyService.getAmountCurrencyConverted(
-				invoice.getCurrency(), invoice.getPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate());  
+				invoice.getCurrency(), invoice.getPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate());
 	}
-	
-	
+
+
 	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
-		
+
 		return currencyService.getAmountCurrencyConverted(
-				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate());  
+				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate());
 	}
-	
-	
+
+
 	public PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList)  {
-		
+
 		return priceListService.getPriceListLine(invoiceLine.getProduct(), invoiceLine.getQty(), priceList);
-	
+
 	}
-	
-	
+
+
 	public BigDecimal computeDiscount(InvoiceLine invoiceLine)  {
 		BigDecimal unitPrice = invoiceLine.getPrice();
-		
+
 		if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
 			return  unitPrice.add(invoiceLine.getDiscountAmount());
 		}
@@ -113,7 +113,39 @@ public class InvoiceLineService {
 					BigDecimal.ONE.add(
 							invoiceLine.getDiscountAmount().divide(new BigDecimal(100))));
 		}
-		
+
 		return unitPrice;
+	}
+
+	public BigDecimal convertUnitPrice(InvoiceLine invoiceLine, Invoice invoice){
+		BigDecimal price = invoiceLine.getProduct().getSalePrice();
+		if(invoice.getOperationTypeSelect()<2){
+			price = invoiceLine.getProduct().getPurchasePrice();
+		}
+
+		if(invoiceLine.getProduct().getInAti() && !invoice.getInAti()){
+			price = price.subtract(price.multiply(invoiceLine.getTaxLine().getValue()));
+
+		}
+		else if(!invoiceLine.getProduct().getInAti() && invoice.getInAti()){
+			price = price.add(price.multiply(invoiceLine.getTaxLine().getValue()));
+		}
+		return price;
+	}
+
+	public BigDecimal convertDiscountAmount(InvoiceLine invoiceLine, Invoice invoice){
+		BigDecimal discountAmount = this.computeDiscount(invoiceLine).subtract(invoiceLine.getProduct().getSalePrice());
+		if(invoice.getOperationTypeSelect()<2){
+			discountAmount = this.computeDiscount(invoiceLine).subtract(invoiceLine.getProduct().getPurchasePrice());
+		}
+
+		if(invoiceLine.getProduct().getInAti() && !invoice.getInAti()){
+			discountAmount = discountAmount.subtract(discountAmount.multiply(invoiceLine.getTaxLine().getValue()));
+
+		}
+		else if(!invoiceLine.getProduct().getInAti() && invoice.getInAti()){
+			discountAmount = discountAmount.add(discountAmount.multiply(invoiceLine.getTaxLine().getValue()));
+		}
+		return discountAmount;
 	}
 }

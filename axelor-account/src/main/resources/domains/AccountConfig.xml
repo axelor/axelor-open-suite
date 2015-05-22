@@ -105,6 +105,7 @@
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
 	<boolean name="hasChartImported"  title="Chart imported?" />
+	<boolean name="invoiceInAti" title="Invoice In ATI"/>
 	   
   </entity>
   

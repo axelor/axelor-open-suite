@@ -11,6 +11,7 @@
 	    <field name="unit"/>
 	    <field name="price"/>
 	    <field name="exTaxTotal"/>
+	    <field name="inTaxTotal"/>
 	</grid>
     
 	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"
@@ -25,9 +26,11 @@
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
 	    <field name="unit"/>
-	    <field name="price" onChange="action-sale-order-line-method-compute"/>
-	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+	    <field name="taxLine" colSpan="4" onChange="action-sale-order-line-method-convert-tax,action-sale-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+	    <field name="price" onChange="action-sale-order-line-method-compute" colSpan="4"/>
+	    <field name="priceDiscounted" colSpan="4" hideIf="price == priceDiscounted"/>
 	    <field name="exTaxTotal" readonly="true"/>
+	    <field name="inTaxTotal" readonly="true"/>
 	  </panel>
 	  <panel name="discount" title="Discount">
 	    <field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title"/>
@@ -68,19 +71,25 @@
     	<action name="action-sale-order-line-attrs-hide-product-variant"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
+    	<action name="action-sale-order-attrs-hide-ati"/>
     </action-group>
     
     <action-group name="action-group-sale-saleorderline-onload">
+    	<action name="action-sale-order-line-method-convert-tax"/>
+    	<action name="action-sale-order-line-method-compute"/>
+    	<action name="save"/>
     	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-hide-product-variant"/>
     	<action name="action-sale-order-line-attrs-task-readonly"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
+    	<action name="action-sale-order-attrs-hide-ati"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-product-onchange">
     	<action name="action-sale-order-line-record-product-variant"/>
     	<action name="action-sale-order-line-method-get-product-information"/>
+    	<action name="action-sale-order-line-method-convert-tax"/>
     	<action name="action-sale-order-line-method-compute"/>
     	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-hide-product-variant"/>
@@ -92,6 +101,7 @@
 
     <action-group name="action-group-sale-saleorderline-qty-onchange">
     	<action name="action-sale-order-line-method-get-discount"/>
+    	<action name="action-sale-order-line-method-convert-tax"/>
     	<action name="action-sale-order-line-method-compute"/>
     </action-group>
 
@@ -99,13 +109,19 @@
     	<action name="action-sale-order-line-get-production-information" if="axelor-production"/>
     	<action name="action-sale-order-line-attrs-hide-product-variant"/>
     </action-group>
+    
+    <action-attrs name="action-sale-order-attrs-hide-ati">
+		<attribute name="hidden" for="exTaxTotal" expr="eval: _parent.inAti"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval: !_parent.inAti"/>
+	</action-attrs>
 
     <!-- ACTION RECORD -->
+    
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="isOrdered" expr="true"/>
-    	<field name="isToPrintLineSubTotal" expr="_parent?.isToPrintLineSubTotal"/>
-    	<field name="hideDiscount" expr="_parent?.priceList?.hideDiscount"/>
+    	<field name="isToPrintLineSubTotal" expr="eval: _parent?.isToPrintLineSubTotal"/>
+    	<field name="hideDiscount" expr="eval: _parent?.priceList?.hideDiscount"/>
     	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
     </action-record>
     
@@ -123,6 +139,10 @@
    	<!-- ACTION METHOD -->
 	<action-method name="action-sale-order-line-method-compute">
 		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-line-method-convert-tax">
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="convertUnitPrice"/>
 	</action-method>
 	
 	<action-method name="action-sale-order-line-method-get-product-information">

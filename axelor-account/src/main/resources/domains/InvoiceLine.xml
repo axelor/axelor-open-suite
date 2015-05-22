@@ -13,9 +13,11 @@
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <string name="productName"  title="Product Name"/>
     <decimal name="price" title="Unit price" precision="20" scale="2"/>
+    <decimal name="priceDiscounted" title="Unit price discounted"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="qty" title="Qty" precision="20" scale="2"/>
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2" readonly="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I."/>
     <decimal name="accountingExTaxTotal" title="Total W.T. in Acc. currency" precision="20" scale="2" hidden="true"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     
@@ -29,6 +31,7 @@
     
     <!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in Acc. currency" hidden="true"/>
+  	<decimal name="companyInTaxTotal" title="Total A.T.I. in company currency" hidden="true"/>
   	
   	<many-to-one name="analyticAccount" ref="com.axelor.apps.account.db.AnalyticAccount" title="Analytical account" />
     

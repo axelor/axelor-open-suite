@@ -46,12 +46,15 @@
 		<action name="action-supplychain-sale-order-method-get-location"/>
 		<action name="action-sale-order-record-currency"/>
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
+		<action name="action-sale-order-record-in-ati"/>
+		<action name="action-sale-order-attrs-in-ati"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-saleorder-onload">
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
 		<action name="action-sale-order-attrs-validated-read-only"/>
 		<action name="action-partner-attrs-hide-contact-partner" />
+		<action name="action-sale-order-attrs-in-ati"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-sale-order-confirmed">

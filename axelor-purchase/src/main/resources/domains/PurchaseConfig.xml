@@ -11,7 +11,7 @@
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
   	<integer name="purchaseOrderInvoicingTypeSelect" title="Purchases order invoicing type" selection="purchase.purchase.order.invoicing.type.select"/>
-  	
+  	<boolean name="purchaseOrderInAti" title="Purchase Orders In ATI"/>
   </entity>
   
 </domain-models>

@@ -102,6 +102,8 @@
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>
     <string name="message" title="Message"/>
     <decimal name="discount" title="Discount"/>
+    
+    <boolean name="inAti" title="In ATI"/>
 
   	<unique-constraint columns="invoiceId,company"/>
 

@@ -62,7 +62,8 @@
 			<field name="currency"/>
 			<field name="buyerUser"/>
 			<field name="versionNumber"/>
-			<field name="project" domain="self.isBusiness = true" if-module="axelor-account-organisation" form-view="project-form"/>   
+			<field name="project" domain="self.isBusiness = true" if-module="axelor-account-organisation" form-view="project-form"/>
+			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
 		</panel>
 		
 		<panel title="Supplier information">
@@ -150,6 +151,8 @@
     	<action name="action-purchase-order-record-new"/>
     	<action name="action-purchase-order-record-company-configuration"/>
     	<action name="action-purchase-order-method-get-location"/>
+    	<action name="action-purchase-order-record-in-ati"/>
+    	<action name="action-purchase-order-attrs-in-ati"/>
     </action-group>
     
     <action-group name="action-group-purchase-order-company-change-actions">
@@ -169,6 +172,15 @@
     	<action name="action-purchase-order-set-sequence"/>
     	<action name="save"/>
     </action-group>
+    
+    <action-attrs name="action-purchase-order-attrs-in-ati">
+    	<attribute name="hidden" for="purchaseOrderLineList.exTaxTotal" expr="inAti"/>
+    	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
+    </action-attrs>
+    
+    <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    	<field name="inAti" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAti"/>
+    </action-record>
      
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="exTaxTotal" expr="eval: 0"/>

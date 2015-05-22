@@ -36,7 +36,7 @@ public class InvoiceLineController {
 
 	@Inject
 	private InvoiceLineService invoiceLineService;
-	
+
 	@Inject
 	private PriceListService priceListService;
 
@@ -46,28 +46,59 @@ public class InvoiceLineController {
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		BigDecimal accountingExTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyExTaxTotal = BigDecimal.ZERO;
+		BigDecimal inTaxTotal = BigDecimal.ZERO;
+		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
+		BigDecimal priceDiscounted = BigDecimal.ZERO;
+		if(!request.getContext().getParentContext().asType(Invoice.class).getInAti()){
+			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
 
-		if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
-
-			exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine));
-		}
-
-		if(exTaxTotal != null) {
-
-			Invoice invoice = invoiceLine.getInvoice();
-
-			if(invoice == null) {
-				invoice = request.getContext().getParentContext().asType(Invoice.class);
+				exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine));
+				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine);
 			}
 
-			if(invoice != null) {
-				accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(exTaxTotal, invoice);
-				companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
+			if(exTaxTotal != null) {
+
+				Invoice invoice = invoiceLine.getInvoice();
+
+				if(invoice == null) {
+					invoice = request.getContext().getParentContext().asType(Invoice.class);
+				}
+
+				if(invoice != null) {
+					accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(exTaxTotal, invoice);
+					companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
+				}
 			}
+			response.setValue("exTaxTotal", exTaxTotal);
+			response.setValue("accountingExTaxTotal", accountingExTaxTotal);
+			response.setValue("companyExTaxTotal", companyExTaxTotal);
+			response.setValue("priceDiscounted", priceDiscounted);
 		}
-		response.setValue("exTaxTotal", exTaxTotal);
-		response.setValue("accountingExTaxTotal", accountingExTaxTotal);
-		response.setValue("companyExTaxTotal", companyExTaxTotal);
+		else{
+			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
+
+				inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine));
+				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine);
+			}
+
+			if(inTaxTotal != null) {
+
+				Invoice invoice = invoiceLine.getInvoice();
+
+				if(invoice == null) {
+					invoice = request.getContext().getParentContext().asType(Invoice.class);
+				}
+
+				if(invoice != null) {
+					accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(inTaxTotal, invoice);
+					companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
+				}
+			}
+			response.setValue("inTaxTotal", inTaxTotal);
+			response.setValue("accountingExTaxTotal", accountingExTaxTotal);
+			response.setValue("companyInTaxTotal", companyInTaxTotal);
+			response.setValue("priceDiscounted", priceDiscounted);
+		}
 
 	}
 
@@ -84,29 +115,29 @@ public class InvoiceLineController {
 		if(invoice != null && invoiceLine.getProduct() != null)  {
 
 			try  {
-			
+
 				boolean isPurchase = invoiceLineService.isPurchase(invoice);
-				
+
 				BigDecimal price = invoiceLineService.getUnitPrice(invoice, invoiceLine, isPurchase);
-				
+
 				response.setValue("taxLine", invoiceLineService.getTaxLine(invoice, invoiceLine, isPurchase));
 				response.setValue("productName", invoiceLine.getProduct().getName());
 				response.setValue("unit", invoiceLine.getProduct().getUnit());
 				response.setValue("invoiceLineType", invoiceLine.getInvoiceLineType());
-				
+
 				PriceList priceList = invoice.getPriceList();
 				if(priceList != null)  {
 					PriceListLine priceListLine = invoiceLineService.getPriceListLine(invoiceLine, priceList);
-					
+
 					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-					
+
 					response.setValue("discountAmount", discounts.get("discountAmount"));
 					response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 					if(discounts.get("price") != null)  {
 						price = (BigDecimal) discounts.get("price");
 					}
 				}
-				
+
 				response.setValue("price", price);
 			}
 			catch(Exception e) {
@@ -118,10 +149,10 @@ public class InvoiceLineController {
 			this.resetProductInformation(response);
 		}
 	}
-	
-	
+
+
 	public void resetProductInformation(ActionResponse response)  {
-		
+
 		response.setValue("taxLine", null);
 		response.setValue("productName", null);
 		response.setValue("unit", null);
@@ -129,10 +160,10 @@ public class InvoiceLineController {
 		response.setValue("discountTypeSelect", null);
 		response.setValue("price", null);
 		response.setValue("invoiceLineType", null);
-		
+
 	}
-	
-	
+
+
 	public void getDiscount(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
@@ -146,25 +177,54 @@ public class InvoiceLineController {
 		if(invoice != null && invoiceLine.getProduct() != null)  {
 
 			try  {
-			
-				BigDecimal price = invoiceLine.getPrice();
-				
+
+				BigDecimal price = invoiceLine.getProduct().getSalePrice();
+				if(invoice.getOperationTypeSelect()<2){
+					price = invoiceLine.getProduct().getPurchasePrice();
+				}
+
 				PriceList priceList = invoice.getPriceList();
 				if(priceList != null)  {
 					PriceListLine priceListLine = invoiceLineService.getPriceListLine(invoiceLine, priceList);
-					
+
 					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-					
+
 					response.setValue("discountAmount", discounts.get("discountAmount"));
 					response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 					if(discounts.get("price") != null)  {
 						price = (BigDecimal) discounts.get("price");
 					}
 				}
-				
+
 				response.setValue("price", price);
 			}
 			catch(Exception e) {
+				response.setFlash(e.getMessage());
+			}
+		}
+	}
+
+	public void convertUnitPrice(ActionRequest request, ActionResponse response) {
+
+		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+
+		Invoice invoice = invoiceLine.getInvoice();
+		if(invoice == null)  {
+			invoice = request.getContext().getParentContext().asType(Invoice.class);
+		}
+
+		if(invoice != null) {
+
+			try  {
+
+				BigDecimal price = invoiceLineService.convertUnitPrice(invoiceLine, invoice);
+				BigDecimal discountAmount = invoiceLineService.convertDiscountAmount(invoiceLine, invoice);
+
+				response.setValue("price", price);
+				response.setValue("discountAmount",discountAmount);
+
+			}
+			catch(Exception e)  {
 				response.setFlash(e.getMessage());
 			}
 		}
