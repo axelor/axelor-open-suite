@@ -138,9 +138,9 @@ public class StockMoveInvoiceController {
 			Map<String,Object> mapResult = null;
 
 			if (isCustomerStockMove){
-				mapResult = stockMoveInvoiceService.createInvoiceFromMultiCustomerStockMove(stockMoveList, paymentCondition, paymentMode, contactPartner);
+				mapResult = stockMoveInvoiceService.createInvoiceFromMultiOutgoingStockMove(stockMoveList, paymentCondition, paymentMode, contactPartner);
 			}else{
-				mapResult = stockMoveInvoiceService.createInvoiceFromMultiSupplierStockMove(stockMoveList, contactPartner);
+				mapResult = stockMoveInvoiceService.createInvoiceFromMultiIncomingStockMove(stockMoveList, contactPartner);
 			}
 			if (mapResult.get("invoiceId") != null){
 				//No need to display intermediate screen

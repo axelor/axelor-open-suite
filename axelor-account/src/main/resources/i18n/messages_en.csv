@@ -154,7 +154,6 @@ resources/views/MoveTemplateLine.xml:22"
 resources/views/PaymentVoucher.xml:78"
 "A chart or chart structure of accounts already exists, please delete the hierarchy between accounts in order to import a new chart.",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:496"
 "Acc. Clearance",,,"resources/views/AccountConfig.xml:124"
-"Accepted Credit",,,"resources/domains/CustomerCreditLine.xml:11"
 "Account",,,"resources/domains/BankStatementLine.xml:14
 resources/domains/MoveLine.xml:11
 resources/domains/MoveLineReport.xml:15
@@ -297,7 +296,6 @@ resources/domains/PaymentScheduleLine.xml:12"
 "Amount charged",,,"resources/domains/PaymentInvoiceToPay.xml:19"
 "Amount exported for direct debit",,,"resources/domains/MoveLine.xml:41"
 "Amount in Acc. currency",,,"resources/domains/MoveLine.xml:34"
-"Amount invoiced",,,"resources/domains/PurchaseOrderLine.xml:11"
 "Amount paid",,,"resources/domains/Invoice.xml:98
 resources/domains/PaymentVoucher.xml:14
 resources/views/charts.xml:415
@@ -309,7 +307,6 @@ resources/views/charts.xml:444"
 "Amount rejected",,,"resources/domains/PaymentScheduleLine.xml:26"
 "Amount remaining before cashing",,,"resources/domains/PaymentInvoiceToPay.xml:13"
 "Amount remaining to allocate",,,"resources/domains/PaymentVoucher.xml:42"
-"Amount remaining to invoice",,,"resources/domains/PurchaseOrder.xml:15"
 "Amount to reimburse",,,"resources/domains/Reimbursement.xml:26"
 "Amounts to register",,,"resources/views/CashRegisterLine.xml:27"
 "An accounting moveline must have higher a credit value or a debit value.",,,"resources/views/MoveLine.xml:245"
@@ -344,7 +341,6 @@ resources/views/Irrecoverable.xml:54"
 "Archived ?",,,"resources/views/AccountingBatch.xml:20"
 "Article code",,,"resources/domains/InvoiceLineEvent.xml:10"
 "Asset",,,"resources/views/Selects.xml:20"
-"Associated Invoice lines",,,"resources/domains/PurchaseOrderLine.xml:15"
 "Associated MoveLine",,,"resources/views/BankStatementLine.xml:27"
 "Aucun remboursement trouvé pour la ref %s et la société %s.",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:179"
 "Authorize auto reconcile",,,"resources/views/AccountConfig.xml:54"
@@ -514,7 +510,6 @@ resources/domains/AnalyticJournal.xml:12
 resources/domains/BankStatement.xml:9
 resources/domains/CashRegister.xml:14
 resources/domains/ChequeRejection.xml:10
-resources/domains/CustomerCreditLine.xml:10
 resources/domains/DirectDebitManagement.xml:8
 resources/domains/Invoice.xml:17
 resources/domains/InvoiceBatch.xml:13
@@ -623,9 +618,6 @@ resources/domains/IrrecoverablePaymentScheduleLineLine.xml:10
 resources/views/IrrecoverableCustomerLine.xml:10
 resources/views/Selects.xml:200"
 "Customer Credit note Journal",,,"resources/domains/AccountConfig.xml:15"
-"Customer Credits",,,"resources/domains/Partner.xml:24
-resources/views/CustomerCreditLine.xml:12
-resources/views/CustomerCreditLine.xml:6"
 "Customer Invoices remaining To Collect",,,"resources/views/Dashboard.xml:133"
 "Customer Paybox payments",,,"resources/views/PaymentVoucher.xml:298"
 "Customer Payment mode by amount",,,"resources/views/Dashboard.xml:149
@@ -721,7 +713,7 @@ resources/views/DirectDebitManagement.xml:18"
 "Direct debits management",,,"resources/views/DirectDebitManagement.xml:10
 resources/views/DirectDebitManagement.xml:6"
 "Discount",,,"resources/domains/Invoice.xml:104
-resources/views/InvoiceLine.xml:33"
+resources/views/InvoiceLine.xml:34"
 "Discount Type",,,"resources/domains/InvoiceLine.xml:23"
 "Discount amount",,,"resources/domains/InvoiceLine.xml:22"
 "Do not export ?",,,"resources/domains/Journal.xml:19"
@@ -772,7 +764,6 @@ resources/domains/AccountingSituation.xml:20"
 "Email template for invoice and payment schedule rejections",,,"resources/domains/AccountConfig.xml:80"
 "Email to use",,,"resources/domains/PaymentVoucher.xml:31"
 "Email used by Paybox",,,"resources/views/PaymentVoucher.xml:273"
-"Encours utilisé",,,"resources/domains/CustomerCreditLine.xml:12"
 "End Date",,,"resources/domains/InvoiceLineEvent.xml:14"
 "End date",,,"resources/domains/AccountingBatch.xml:45"
 "End of cycle",,,"resources/domains/Invoice.xml:25"
@@ -880,7 +871,7 @@ resources/views/charts.xml:650
 resources/views/charts.xml:682
 resources/views/charts.xml:774
 resources/views/charts.xml:850"
-"History",,,"resources/views/Partner.xml:72"
+"History",,,"resources/views/Partner.xml:69"
 "IPO",,,"resources/views/Selects.xml:184"
 "IPO + Cheque",,,"resources/views/Selects.xml:185"
 "IPO Payments and IPO Cheque",,,"resources/views/AccountConfig.xml:139"
@@ -946,7 +937,6 @@ resources/domains/IrrecoverableInvoiceLine.xml:12
 resources/domains/IrrecoverableReportLine.xml:10
 resources/domains/Move.xml:17
 resources/domains/PaymentSchedule.xml:11
-resources/domains/PurchaseOrder.xml:11
 resources/views/Invoice.xml:30
 resources/views/IrrecoverableInvoiceLine.xml:9
 resources/views/Menu.xml:632
@@ -1028,7 +1018,6 @@ resources/views/InvoiceLineEvent.xml:6"
 "Invoice.totalTax","Total Tax",,"java/com/axelor/apps/account/report/ITranslation.java:36"
 "Invoice.unitPrice","Unit price",,"java/com/axelor/apps/account/report/ITranslation.java:31"
 "Invoice/Refund",,,"resources/domains/PaymentVoucher.xml:24"
-"Invoiced ?",,,"resources/domains/PurchaseOrderLine.xml:10"
 "Invoiced Turnover This year vs Last year",,,"resources/views/Dashboard.xml:80
 resources/views/charts.xml:30"
 "Invoices",,,"resources/domains/IrrecoverableCustomerLine.xml:12
@@ -1040,7 +1029,7 @@ resources/views/Invoice.xml:187
 resources/views/Invoice.xml:8
 resources/views/IrrecoverableInvoiceLine.xml:5
 resources/views/Menu.xml:665
-resources/views/Partner.xml:80
+resources/views/Partner.xml:77
 resources/views/PaymentSchedule.xml:40"
 "Invoices selection",,,"resources/domains/InvoiceBatch.xml:19"
 "Invoices to pay",,,"resources/views/PaymentInvoice.xml:14
@@ -1050,7 +1039,6 @@ resources/views/PaymentInvoice.xml:5"
 resources/views/Menu.xml:574"
 "Invoicing",,,"resources/views/Selects.xml:130"
 "Invoicing informations",,,"resources/views/Invoice.xml:44"
-"Invoicing type",,,"resources/domains/PurchaseOrder.xml:10"
 "Irrecouvrable status",,,"resources/domains/Invoice.xml:55"
 "Irrecoverable",,,"resources/domains/IrrecoverableCustomerLine.xml:14
 resources/views/Invoice.xml:77
@@ -1256,7 +1244,7 @@ resources/views/Menu.xml:27"
 "Note",,,"resources/domains/InvoiceLine.xml:28"
 "Notes",,,"resources/domains/Invoice.xml:83
 resources/views/Invoice.xml:114
-resources/views/InvoiceLine.xml:38"
+resources/views/InvoiceLine.xml:39"
 "Number Of Supplier Invoices Per Month",,,"resources/views/Dashboard.xml:117
 resources/views/charts.xml:318"
 "Number Of Units On Supplier Invoices On Last 12 Month",,,"resources/views/Dashboard.xml:109
@@ -1300,9 +1288,8 @@ resources/domains/Rum.xml:16
 resources/views/Partner.xml:34
 resources/views/Partner.xml:38
 resources/views/Partner.xml:42
-resources/views/Partner.xml:46
 resources/views/Partner.xml:6
-resources/views/Partner.xml:69"
+resources/views/Partner.xml:66"
 "Partner Balance due",,,"resources/domains/Reminder.xml:18
 resources/domains/ReminderHistory.xml:17"
 "Partner account",,,"resources/domains/PaymentVoucher.xml:11"
@@ -1370,7 +1357,6 @@ resources/views/Menu.xml:104"
 "Payment collection journal",,,"resources/views/Selects.xml:63"
 "Payment condition",,,"resources/domains/Invoice.xml:21
 resources/domains/Partner.xml:15
-resources/domains/PurchaseOrder.xml:13
 resources/domains/SaleOrder.xml:11"
 "Payment conditions",,,"resources/views/Menu.xml:516
 resources/views/Menu.xml:519"
@@ -1381,7 +1367,6 @@ resources/views/Selects.xml:70"
 resources/domains/AccountManagement.xml:14
 resources/domains/Invoice.xml:20
 resources/domains/PaymentVoucher.xml:12
-resources/domains/PurchaseOrder.xml:12
 resources/domains/SaleOrder.xml:10"
 "Payment mode after rejection",,,"resources/domains/AccountConfig.xml:75"
 "Payment mode for direct debit",,,"resources/domains/AccountConfig.xml:74"
@@ -1572,7 +1557,6 @@ resources/views/Menu.xml:261"
 "Rejet de paiement de la facture %s",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:215"
 "Rejet de remboursement %s",,,"java/com/axelor/apps/account/exception/IExceptionMessage.java:254"
 "Related to",,,"resources/views/Move.xml:50"
-"Remaining to invoice",,,"resources/domains/PurchaseOrderLine.xml:12"
 "Remaining to pay",,,"resources/domains/Invoice.xml:92"
 "Remaining to pay after cashing",,,"resources/domains/PaymentInvoiceToPay.xml:21"
 "Reminder",,,"resources/domains/AccountingSituation.xml:24
@@ -1647,7 +1631,7 @@ resources/views/charts.xml:451"
 "Run",,,"resources/views/InvoiceBatch.xml:44"
 "Run export again",,,"resources/views/MoveLineReport.xml:113"
 "SEPA ?",,,"resources/domains/AccountingBatch.xml:30"
-"SEPA Direct Debit",,,"resources/views/Partner.xml:70"
+"SEPA Direct Debit",,,"resources/views/Partner.xml:67"
 "Sale Entries",,,"resources/views/MoveLine.xml:255"
 "Sale Price List",,,"resources/views/Partner.xml:22"
 "Sale account",,,"resources/domains/AccountManagement.xml:9"
@@ -1894,7 +1878,7 @@ resources/views/Invoice.xml:403"
 "Unpaid IPO operation code",,,"resources/domains/CfonbConfig.xml:34"
 "Unpaid Supplier's Invoices",,,"resources/views/Dashboard.xml:121"
 "Unpaid direct debit operation code",,,"resources/domains/CfonbConfig.xml:33"
-"Unpaid invoices",,,"resources/views/Partner.xml:87"
+"Unpaid invoices",,,"resources/views/Partner.xml:84"
 "Unreconcile",,,"resources/views/Reconcile.xml:32"
 "Update customer account",,,"resources/views/Selects.xml:141"
 "Upper reimbursement limit",,,"resources/domains/AccountConfig.xml:62"

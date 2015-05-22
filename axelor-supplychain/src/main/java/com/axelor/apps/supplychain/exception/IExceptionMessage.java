@@ -24,7 +24,7 @@ public interface IExceptionMessage {
 	/**
 	 * Sale Order Invoice Service
 	 */
-	static final String SO_INVOICE_1 = /*$$(*/ "Il est nécessaire de définir un plannificateur." /*)*/;
+	static final String SO_INVOICE_1 = /*$$(*/ "Il est nécessaire de définir un planificateur." /*)*/;
 	static final String SO_INVOICE_2 = /*$$(*/ "Il est nécessaire de définir une date de début d'abonnement." /*)*/;
 	static final String SO_INVOICE_3 = /*$$(*/ "Il est nécessaire de définir une date de première facturation." /*)*/;
 	static final String SO_INVOICE_4 = /*$$(*/ "Le devis %s sera facturé le %s." /*)*/;
@@ -35,7 +35,7 @@ public interface IExceptionMessage {
 	 * Sale Order Purchase Service
 	 */
 	static final String SO_PURCHASE_1 = /*$$(*/ "Veuillez choisir un fournisseur pour la ligne %s" /*)*/;
-	static final String SO_LINE_PURCHASE_AT_LEAST_ONE = /*$$(*/ "At least one sale order line msut be selected" /*)*/;
+	static final String SO_LINE_PURCHASE_AT_LEAST_ONE = /*$$(*/ "At least one sale order line must be selected" /*)*/;
 
 	/**
 	 * Stock Move Invoice Service
@@ -47,7 +47,8 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_MULTI_INVOICE_COMPANY = /*$$(*/ "The company is required and must be the same for all sale orders" /*)*/;
 	static final String STOCK_MOVE_NO_INVOICE_GENERATED = /*$$(*/ "No invoice was generated" /*)*/;
 	static final String STOCK_MOVE_GENERATE_INVOICE = /*$$(*/ "The invoice for the stock move %s can't be generated because of this following error : %s" /*)*/;
-	static final String STOCK_MOVE_INVOICE_EXISTS = /*$$(*/ "An invoice not canceled already exists for the stock move %s" /*)*/;
+	static final String OUTGOING_STOCK_MOVE_INVOICE_EXISTS = /*$$(*/ "An invoice not canceled already exists for the outgoing stock move %s" /*)*/;
+	static final String INCOMING_STOCK_MOVE_INVOICE_EXISTS = /*$$(*/ "An invoice not canceled already exists for the incoming stock move %s" /*)*/;
 
 	/**
 	 * Batch Invoicing

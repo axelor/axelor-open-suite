@@ -69,7 +69,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 
 		if (stockMove.getInvoice() != null
 				&& stockMove.getInvoice().getStatusSelect() != InvoiceRepository.STATUS_CANCELED){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
 		}
 		InvoiceGenerator invoiceGenerator = saleOrderInvoiceService.createInvoiceGenerator(saleOrder);
 
@@ -94,7 +94,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 
 		if (stockMove.getInvoice() != null
 				&& stockMove.getInvoice().getStatusSelect() != InvoiceRepository.STATUS_CANCELED){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
 		}
 		InvoiceGenerator invoiceGenerator = purchaseOrderInvoiceService.createInvoiceGenerator(purchaseOrder);
 
@@ -114,7 +114,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Map<String,Object> createInvoiceFromMultiCustomerStockMove(List<StockMove> stockMoveList, PaymentCondition paymentConditionIn, PaymentMode paymentModeIn, Partner contactPartnerIn) throws AxelorException  {
+	public Map<String,Object> createInvoiceFromMultiOutgoingStockMove(List<StockMove> stockMoveList, PaymentCondition paymentConditionIn, PaymentMode paymentModeIn, Partner contactPartnerIn) throws AxelorException  {
 
 		Currency invoiceCurrency = null;
 		Partner invoiceClientPartner = null;
@@ -134,7 +134,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		for (StockMove stockMove : stockMoveList) {
 			if (stockMove.getInvoice() != null){
 				if (stockMove.getInvoice().getStatusSelect() != IStockMove.STATUS_CANCELED){
-					message = String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
+					message = String.format(I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 					if (mapResult.get("information") != null){
 						message = mapResult.get("information") + "<br/>" + message;
 					}
@@ -340,7 +340,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Map<String,Object> createInvoiceFromMultiSupplierStockMove(List<StockMove> stockMoveList, Partner contactPartnerIn) throws AxelorException  {
+	public Map<String,Object> createInvoiceFromMultiIncomingStockMove(List<StockMove> stockMoveList, Partner contactPartnerIn) throws AxelorException  {
 
 		Company invoiceCompany = null;
 		Partner invoiceSupplierPartner = null;
@@ -355,7 +355,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		for (StockMove stockMove : stockMoveList) {
 			if (stockMove.getInvoice() != null){
 				if (stockMove.getInvoice().getStatusSelect() != IStockMove.STATUS_CANCELED){
-					message = String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
+					message = String.format(I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 					if (mapResult.get("information") != null){
 						message = mapResult.get("information") + "<br/>" + message;
 					}
