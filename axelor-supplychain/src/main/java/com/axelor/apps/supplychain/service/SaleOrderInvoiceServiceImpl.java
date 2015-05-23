@@ -337,7 +337,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, int sequence, SaleOrderLine saleOrderLine) throws AxelorException  {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, productName, price, description, qty, unit, taxLine, product.getInvoiceLineType(),
-				sequence, discountAmount, discountTypeSelect, exTaxTotal, false, saleOrderLine, null)  {
+				sequence, discountAmount, discountTypeSelect, exTaxTotal, false, saleOrderLine, null, null)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 
