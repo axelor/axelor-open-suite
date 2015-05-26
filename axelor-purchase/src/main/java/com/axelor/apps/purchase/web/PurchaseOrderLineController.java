@@ -53,6 +53,7 @@ public class PurchaseOrderLineController {
 				if (purchaseOrderLine.getPrice() != null && purchaseOrderLine.getQty() != null){
 
 					exTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLineService.computeDiscount(purchaseOrderLine));
+					inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
 					priceDiscounted = purchaseOrderLineService.computeDiscount(purchaseOrderLine);
 				}
 
@@ -73,6 +74,7 @@ public class PurchaseOrderLineController {
 				}
 
 				response.setValue("exTaxTotal", exTaxTotal);
+				response.setValue("inTaxTotal", inTaxTotal);
 				response.setValue("companyExTaxTotal", companyExTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
 			}
@@ -80,6 +82,7 @@ public class PurchaseOrderLineController {
 				if (purchaseOrderLine.getPrice() != null && purchaseOrderLine.getQty() != null){
 
 					inTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLineService.computeDiscount(purchaseOrderLine));
+					exTaxTotal = inTaxTotal.subtract(inTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
 					priceDiscounted = purchaseOrderLineService.computeDiscount(purchaseOrderLine);
 				}
 
@@ -99,6 +102,7 @@ public class PurchaseOrderLineController {
 
 				}
 
+				response.setValue("exTaxTotal", exTaxTotal);
 				response.setValue("inTaxTotal", inTaxTotal);
 				response.setValue("companyInTaxTotal", companyInTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
