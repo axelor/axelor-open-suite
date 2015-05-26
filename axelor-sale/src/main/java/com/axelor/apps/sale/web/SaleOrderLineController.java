@@ -52,6 +52,7 @@ public class SaleOrderLineController {
 				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
 					if(saleOrderLine.getSaleOrderSubLineList() == null || saleOrderLine.getSaleOrderSubLineList().isEmpty()) {
 						exTaxTotal = SaleOrderLineService.computeAmount(saleOrderLine.getQty(), saleOrderLineService.computeDiscount(saleOrderLine));
+						inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(saleOrderLine.getTaxLine().getValue()));
 						priceDiscounted = saleOrderLineService.computeDiscount(saleOrderLine);
 					}
 				}
@@ -70,6 +71,7 @@ public class SaleOrderLineController {
 				}
 
 				response.setValue("exTaxTotal", exTaxTotal);
+				response.setValue("inTaxTotal", inTaxTotal);
 				response.setValue("companyExTaxTotal", companyExTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
 			}
@@ -77,6 +79,7 @@ public class SaleOrderLineController {
 				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
 					if(saleOrderLine.getSaleOrderSubLineList() == null || saleOrderLine.getSaleOrderSubLineList().isEmpty()) {
 						inTaxTotal = SaleOrderLineService.computeAmount(saleOrderLine.getQty(), saleOrderLineService.computeDiscount(saleOrderLine));
+						exTaxTotal = inTaxTotal.subtract(inTaxTotal.multiply(saleOrderLine.getTaxLine().getValue()));
 						priceDiscounted = saleOrderLineService.computeDiscount(saleOrderLine);
 					}
 				}
@@ -94,6 +97,7 @@ public class SaleOrderLineController {
 					}
 				}
 
+				response.setValue("exTaxTotal", exTaxTotal);
 				response.setValue("inTaxTotal", inTaxTotal);
 				response.setValue("companyInTaxTotal", companyInTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);

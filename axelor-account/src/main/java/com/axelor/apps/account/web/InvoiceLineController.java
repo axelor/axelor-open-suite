@@ -53,6 +53,7 @@ public class InvoiceLineController {
 			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
 
 				exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine));
+				inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(invoiceLine.getTaxLine().getValue()));
 				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine);
 			}
 
@@ -70,6 +71,7 @@ public class InvoiceLineController {
 				}
 			}
 			response.setValue("exTaxTotal", exTaxTotal);
+			response.setValue("inTaxTotal", inTaxTotal);
 			response.setValue("accountingExTaxTotal", accountingExTaxTotal);
 			response.setValue("companyExTaxTotal", companyExTaxTotal);
 			response.setValue("priceDiscounted", priceDiscounted);
@@ -78,6 +80,7 @@ public class InvoiceLineController {
 			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
 
 				inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine));
+				exTaxTotal = inTaxTotal.subtract(inTaxTotal.multiply(invoiceLine.getTaxLine().getValue()));
 				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine);
 			}
 
@@ -94,6 +97,8 @@ public class InvoiceLineController {
 					companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
 				}
 			}
+
+			response.setValue("exTaxTotal", exTaxTotal);
 			response.setValue("inTaxTotal", inTaxTotal);
 			response.setValue("accountingExTaxTotal", accountingExTaxTotal);
 			response.setValue("companyInTaxTotal", companyInTaxTotal);
