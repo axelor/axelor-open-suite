@@ -59,6 +59,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 * @return l'objet StockMoveLine
 	 * @throws AxelorException
 	 */
+	@Override
 	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, int type ) throws AxelorException {
 
 		if(product != null && product.getApplicationTypeSelect() == IProduct.APPLICATION_TYPE_PRODUCT) {
@@ -108,6 +109,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	}
 
 
+	@Override
 	public void generateTrackingNumber(StockMoveLine stockMoveLine, TrackingNumberConfiguration trackingNumberConfiguration, Product product, BigDecimal qtyByTracking) throws AxelorException  {
 
 		StockMove stockMove = stockMoveLine.getStockMove();
@@ -139,6 +141,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 * @return
 	 * @throws AxelorException
 	 */
+	@Override
 	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException {
 
 		StockMoveLine stockMoveLine = new StockMoveLine();
@@ -147,6 +150,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.setProductName(productName);
 		stockMoveLine.setDescription(description);
 		stockMoveLine.setQty(quantity);
+		stockMoveLine.setRealQty(quantity);
 		stockMoveLine.setUnit(unit);
 		stockMoveLine.setPrice(price);
 		stockMoveLine.setTrackingNumber(trackingNumber);
@@ -156,6 +160,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 
+	@Override
 	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, Location location) throws AxelorException  {
 
 		List<? extends LocationLine> locationLineList = this.getLocationLines(product, location);
@@ -178,6 +183,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 
+	@Override
 	public List<? extends LocationLine> getLocationLines(Product product, Location location) throws AxelorException  {
 
 		List<? extends LocationLine> locationLineList = Beans.get(LocationLineRepository.class).all().
@@ -190,6 +196,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 
+	@Override
 	public StockMoveLine splitStockMoveLine(StockMoveLine stockMoveLine, BigDecimal qty, TrackingNumber trackingNumber) throws AxelorException  {
 
 		StockMoveLine newStockMoveLine = this.createStockMoveLine(
@@ -211,6 +218,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 
+	@Override
 	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
 			LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException  {
 
@@ -239,6 +247,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	}
 
 
+	@Override
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException  {
 

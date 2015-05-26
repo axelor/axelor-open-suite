@@ -107,12 +107,13 @@
 			<button name="requested" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
 			<button name="validate" title="Validate" showIf="statusSelect == 2"   onClick="action-group-purchase-order-on-validate-actions"/>
 			<button name="completed" title="Completed" showIf="statusSelect == 3"   onClick="action-purchase-order-record-completed,save"/>
-			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 			<button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-purchase-record-newVersion,save"/>
 			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice"/>
 			<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 3"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
 			<button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect &gt;= 3"   onClick="save,action-purchase-order-method-clear-purchase-order"/>
 			<button name="generateSupplierStockMove" title="Generate supplier arrivals" showIf="eval: GeneralService.getGeneral().getSupplierStockMoveManagement() &amp;&amp; !GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
+			<spacer/>
+			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 		</panel>
 	  
 		<panel sidebar="true" title="Info.">

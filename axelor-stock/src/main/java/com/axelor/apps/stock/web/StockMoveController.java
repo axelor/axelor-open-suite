@@ -30,66 +30,66 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.stock.report.IReport;
-import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.report.IReport;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
 public class StockMoveController {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(StockMoveController.class);
 
-	
-	public void plan(ActionRequest request, ActionResponse response) {
-		
-		StockMove stockMove = request.getContext().asType(StockMove.class);
-		StockMoveService sotckMoveService = Beans.get(StockMoveService.class);
+	@Inject
+	private StockMoveService stockMoveService;
 
+	public void plan(ActionRequest request, ActionResponse response) {
+
+		StockMove stockMove = request.getContext().asType(StockMove.class);
 		try {
-			sotckMoveService.plan(sotckMoveService.find(stockMove.getId()));
+			stockMoveService.plan(stockMoveService.find(stockMove.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
-	
+
 	public void realize(ActionRequest request, ActionResponse response)  {
-		
+
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		StockMoveService sotckMoveService = Beans.get(StockMoveService.class);
 
 		try {
-			String newSeq = sotckMoveService.realize(sotckMoveService.find(stockMove.getId()));
-			
+			String newSeq = stockMoveService.realize(stockMoveService.find(stockMove.getId()));
+
 			response.setReload(true);
-			
+
 			if(newSeq != null)  {
-				
+
 				response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_9), newSeq));
-				
+
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
-	
+
 	public void cancel(ActionRequest request, ActionResponse response)  {
-		
+
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		StockMoveService sotckMoveService = Beans.get(StockMoveService.class);
-		
+
 		try {
-			sotckMoveService.cancel(sotckMoveService.find(stockMove.getId()));		
+			stockMoveService.cancel(stockMoveService.find(stockMove.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
-	
+
 
 	/**
 	 * Fonction appeler par le bouton imprimer
@@ -110,18 +110,18 @@ public class StockMoveController {
 			for(Integer it : lstSelectedMove) {
 				stockMoveIds+= it.toString()+",";
 			}
-		}	
-			
-		if(!stockMoveIds.equals("")){
-			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);	
-			stockMove = Beans.get(StockMoveService.class).find(new Long(lstSelectedMove.get(0)));
-		}else if(stockMove.getId() != null){
-			stockMoveIds = stockMove.getId().toString();			
 		}
-		
+
 		if(!stockMoveIds.equals("")){
-			StringBuilder url = new StringBuilder();			
-			
+			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);
+			stockMove = stockMoveService.find(new Long(lstSelectedMove.get(0)));
+		}else if(stockMove.getId() != null){
+			stockMoveIds = stockMove.getId().toString();
+		}
+
+		if(!stockMoveIds.equals("")){
+			StringBuilder url = new StringBuilder();
+
 			String language="";
 			try{
 				language = stockMove.getPartner().getLanguageSelect() != null? stockMove.getPartner().getLanguageSelect() : stockMove.getCompany().getPrintingSettings().getLanguageSelect() != null ? stockMove.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
@@ -129,47 +129,47 @@ public class StockMoveController {
 				language = "en";
 			}
 			language = language.equals("")? "en": language;
-			
+
 			url.append(
 					new ReportSettings(IReport.STOCK_MOVE)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
 					.addParam("StockMoveId", stockMoveIds)
 					.getUrl());
-			
+
 			LOG.debug("URL : {}", url);
-			
+
 			String urlNotExist = URLService.notExist(url.toString());
 			if (urlNotExist == null){
 				LOG.debug("Impression du stock move "+stockMove.getStockMoveSeq()+" : "+url.toString());
-				
+
 				String title = " ";
 				if(stockMove.getStockMoveSeq() != null)  {
 					title += lstSelectedMove == null ? I18n.get("StockMove")+" "+stockMove.getStockMoveSeq():I18n.get("StockMove(s)");
 				}
-				
+
 				Map<String,Object> mapView = new HashMap<String,Object>();
 				mapView.put("title", title);
 				mapView.put("resource", url);
 				mapView.put("viewType", "html");
-				response.setView(mapView);	
-					
+				response.setView(mapView);
+
 			}
 			else {
 				response.setFlash(urlNotExist);
 			}
 		}else{
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_10));
-		}	
+		}
 	}
-	
-	
-	
-	
+
+
+
+
 	public void  viewDirection(ActionRequest request, ActionResponse response) {
-		
+
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		
+
 		Address fromAddress = stockMove.getFromAddress();
 		Address toAddress = stockMove.getToAddress();
 		String msg = "";
@@ -198,23 +198,23 @@ public class StockMoveController {
 			}
 			else response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_13),dString,aString));
 		}else response.setFlash(msg);
-		
+
 	}
-	
+
 	public void  splitStockMoveLinesUnit(ActionRequest request, ActionResponse response) {
 		List<StockMoveLine> stockMoveLines = (List<StockMoveLine>) request.getContext().get("stockMoveLineList");
 		if(stockMoveLines == null){
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
 			return;
 		}
-		Boolean selected = Beans.get(StockMoveService.class).splitStockMoveLinesUnit(stockMoveLines, new BigDecimal(1));
-		
+		Boolean selected = stockMoveService.splitStockMoveLinesUnit(stockMoveLines, new BigDecimal(1));
+
 		if(!selected)
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
 		response.setReload(true);
 		response.setCanClose(true);
 	}
-	
+
 	public void  splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
 		List<HashMap> stockMoveLines = (List<HashMap>) request.getContext().get("stockMoveLineList");
 		if(stockMoveLines == null){
@@ -226,30 +226,49 @@ public class StockMoveController {
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
 			return ;
 		}
-		Boolean selected = Beans.get(StockMoveService.class).splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
+		Boolean selected = stockMoveService.splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
 		if(!selected)
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
 		response.setReload(true);
 		response.setCanClose(true);
 	}
-	
+
 	public void shipReciveAllProducts(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		StockMoveService sotckMoveService = Beans.get(StockMoveService.class);
-		sotckMoveService.copyQtyToRealQty(sotckMoveService.find(stockMove.getId()));
+		stockMoveService.copyQtyToRealQty(stockMoveService.find(stockMove.getId()));
 		response.setReload(true);
 	}
-	
+
 	public void generateReversion(ActionRequest request, ActionResponse response)  {
-		
+
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		StockMoveService sotckMoveService = Beans.get(StockMoveService.class);
-		
+
 		try {
-			sotckMoveService.generateReversion(sotckMoveService.find(stockMove.getId()));		
+			stockMoveService.generateReversion(stockMoveService.find(stockMove.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
-	
+
+	public void  splitInto2(ActionRequest request, ActionResponse response) {
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		Long newStockMoveId = stockMoveService.splitInto2(stockMove.getId(), stockMove.getStockMoveLineList());
+
+		if (newStockMoveId == null){
+			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_SPLIT_NOT_GENERATED));
+		}else{
+			response.setCanClose(true);
+
+			response.setView(ActionView
+					.define("Stock move")
+					.model(StockMove.class.getName())
+					.add("grid", "stock-move-grid")
+					.add("form", "stock-move-form")
+					.param("forceEdit", "true")
+					.context("_showRecord", String.valueOf(newStockMoveId)).map());
+
+		}
+
+	}
+
 }

@@ -104,4 +104,6 @@ public interface StockMoveService extends Repository<StockMove> {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateReversion(StockMove stockMove) throws AxelorException;
 
+	public Long splitInto2(Long originalStockMoveId, List<StockMoveLine> stockMoveLines);
+
 }

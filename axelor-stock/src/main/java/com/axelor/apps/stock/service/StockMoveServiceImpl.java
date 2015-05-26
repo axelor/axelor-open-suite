@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,12 +38,14 @@ import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -75,6 +78,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	 * @return la chaine contenant la séquence du StockMove
 	 * @throws AxelorException Aucune séquence de StockMove n'a été configurée
 	 */
+	@Override
 	public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException {
 
 		String ref = "";
@@ -122,6 +126,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	 * @return l'objet StockMove
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
+	@Override
 	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate estimatedDate, String description) throws AxelorException {
 
 		return this.createStockMove(fromAddress, toAddress, company, clientPartner, fromLocation, toLocation, null, estimatedDate, description);
@@ -137,6 +142,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	 * @return l'objet StockMove
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
+	@Override
 	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description) throws AxelorException {
 
 		StockMove stockMove = new StockMove();
@@ -155,6 +161,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	}
 
 
+	@Override
 	public int getStockMoveType(Location fromLocation, Location toLocation)  {
 
 		if(fromLocation.getTypeSelect() == ILocation.INTERNAL && toLocation.getTypeSelect() == ILocation.INTERNAL) {
@@ -170,6 +177,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	}
 
 
+	@Override
 	public void validate(StockMove stockMove) throws AxelorException  {
 
 		this.plan(stockMove);
@@ -178,6 +186,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	}
 
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void plan(StockMove stockMove) throws AxelorException  {
 
@@ -234,6 +243,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 
 	}
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String realize(StockMove stockMove) throws AxelorException  {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
@@ -268,6 +278,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 		return newStockSeq;
 	}
 
+	@Override
 	public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList)  {
 
 		for(StockMoveLine stockMoveLine : stockMoveLineList)  {
@@ -285,6 +296,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	}
 
 
+	@Override
 	public StockMove copyAndSplitStockMove(StockMove stockMove) throws AxelorException  {
 
 		StockMove newStockMove = JPA.copy(stockMove, false);
@@ -294,8 +306,8 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 			if(stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) > 0)   {
 				StockMoveLine newStockMoveLine = JPA.copy(stockMoveLine, false);
 
-				newStockMoveLine.setRealQty(BigDecimal.ZERO);
 				newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
+				newStockMoveLine.setRealQty(newStockMoveLine.getQty());
 
 				newStockMove.addStockMoveLineListItem(newStockMoveLine);
 			}
@@ -311,6 +323,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	}
 
 
+	@Override
 	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split) throws AxelorException  {
 
 		StockMove newStockMove = new StockMove();
@@ -337,11 +350,11 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 			if(stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0)   {
 				StockMoveLine newStockMoveLine = JPA.copy(stockMoveLine, false);
 
-				newStockMoveLine.setRealQty(BigDecimal.ZERO);
-
 				if(!split)  {
 					newStockMoveLine.setQty(stockMoveLine.getRealQty().subtract(stockMoveLine.getQty()));
 				}
+
+				newStockMoveLine.setRealQty(newStockMoveLine.getQty());
 
 				newStockMove.addStockMoveLineListItem(newStockMoveLine);
 			}
@@ -357,6 +370,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	}
 
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(StockMove stockMove) throws AxelorException  {
 
@@ -376,6 +390,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 		save(stockMove);
 	}
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty){
 
@@ -391,12 +406,14 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 					totalQty = totalQty.subtract(splitQty);
 					StockMoveLine newLine = JPA.copy(line, false);
 					newLine.setQty(splitQty);
+					newLine.setRealQty(splitQty);
 					stockMoveLineRepo.save(newLine);
 				}
 				LOG.debug("Qty remains: {}",totalQty);
 				if(totalQty.compareTo(BigDecimal.ZERO) > 0){
 					StockMoveLine newLine = JPA.copy(line, false);
 					newLine.setQty(totalQty);
+					newLine.setRealQty(totalQty);
 					stockMoveLineRepo.save(newLine);
 					LOG.debug("New line created: {}",newLine);
 				}
@@ -407,6 +424,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 		return selected;
 	}
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesSpecial(List<HashMap> stockMoveLines, BigDecimal splitQty){
 
@@ -424,12 +442,14 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 					totalQty = totalQty.subtract(splitQty);
 					StockMoveLine newLine = JPA.copy(line, false);
 					newLine.setQty(splitQty);
+					newLine.setRealQty(splitQty);
 					stockMoveLineRepo.save(newLine);
 				}
 				LOG.debug("Qty remains: {}",totalQty);
 				if(totalQty.compareTo(BigDecimal.ZERO) > 0){
 					StockMoveLine newLine = JPA.copy(line, false);
 					newLine.setQty(totalQty);
+					newLine.setRealQty(totalQty);
 					stockMoveLineRepo.save(newLine);
 					LOG.debug("New line created: {}",newLine);
 				}
@@ -441,6 +461,63 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Override
+	public Long splitInto2(Long originalStockMoveId, List<StockMoveLine> stockMoveLines){
+
+		//Get original stock move
+		StockMove originalStockMove = this.find(originalStockMoveId);
+
+		//Copy this stock move
+		StockMove newStockMove = Beans.get(StockMoveManagementRepository.class).copy(originalStockMove, true);
+
+		List<StockMoveLine> newStockMoveLineToRemove = new ArrayList<StockMoveLine>();
+		List<StockMoveLine> originalStockMoveLineToRemove = new ArrayList<StockMoveLine>();
+		int lineNumber = 0;
+		for(StockMoveLine moveLine : stockMoveLines){
+			if (BigDecimal.ZERO.compareTo(moveLine.getQty()) == 0){
+				//Remove stock move line from new stock move
+				newStockMoveLineToRemove.add(newStockMove.getStockMoveLineList().get(lineNumber));
+			}else{
+				//Set quantity in new stock move
+				newStockMove.getStockMoveLineList().get(lineNumber).setQty(moveLine.getQty());
+				newStockMove.getStockMoveLineList().get(lineNumber).setRealQty(moveLine.getQty());
+
+				//Update quantity in original stock move.
+				//If the remaining quantity is 0, remove the stock move line
+				StockMoveLine currentOriginalStockMoveLine = originalStockMove.getStockMoveLineList().get(lineNumber);
+				BigDecimal remainingQty = currentOriginalStockMoveLine.getQty().subtract(moveLine.getQty());
+				if (BigDecimal.ZERO.compareTo(remainingQty) == 0){
+					//Remove the stock move line
+					originalStockMoveLineToRemove.add(currentOriginalStockMoveLine);
+				}else{
+					currentOriginalStockMoveLine.setQty(remainingQty);
+					currentOriginalStockMoveLine.setRealQty(remainingQty);
+				}
+			}
+
+			lineNumber++;
+		}
+
+		for (StockMoveLine stockMoveLineToRemove : newStockMoveLineToRemove) {
+			newStockMove.getStockMoveLineList().remove(stockMoveLineToRemove);
+		}
+
+		if (!newStockMove.getStockMoveLineList().isEmpty()){
+			//Update original stock move
+			for (StockMoveLine stockMoveLineToRemove : originalStockMoveLineToRemove) {
+				originalStockMove.getStockMoveLineList().remove(stockMoveLineToRemove);
+			}
+			this.save(originalStockMove);
+
+			//Save new stock move
+			return this.save(newStockMove).getId();
+		}else{
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void copyQtyToRealQty(StockMove stockMove){
 		for(StockMoveLine line : stockMove.getStockMoveLineList())
 			line.setRealQty(line.getQty());
@@ -448,6 +525,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	}
 
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateReversion(StockMove stockMove) throws AxelorException  {
 

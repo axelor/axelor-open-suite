@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.axelor.apps.stock.exception;
 
@@ -8,7 +8,7 @@ package com.axelor.apps.stock.exception;
  *
  */
 public interface IExceptionMessage {
-	
+
 	/**
 	 * Inventory service and controller
 	 */
@@ -23,13 +23,13 @@ public interface IExceptionMessage {
 	static final String INVENTORY_9 = /*$$(*/ "Il n'y a aucun produit contenu dans l'emplacement de stock." /*)*/;
 	static final String INVENTORY_10 = /*$$(*/ "La liste des lignes d'inventaire a été rempli." /*)*/;
 	static final String INVENTORY_11 = /*$$(*/ "Aucune lignes d'inventaire n'a été créée." /*)*/;
-	
+
 	/**
 	 * Location Line Service Impl
 	 */
 	static final String LOCATION_LINE_1 = /*$$(*/ "Les stocks du produit %s (%s) sont insuffisants pour réaliser la livraison" /*)*/;
 	static final String LOCATION_LINE_2 = /*$$(*/ "Les stocks du produit %s (%s), numéro de suivi {}  sont insuffisants pour réaliser la livraison" /*)*/;
-	
+
 	/**
 	 * Stock Move Service and Controller
 	 */
@@ -49,12 +49,13 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_14 = /*$$(*/ "No move lines to split" /*)*/;
 	static final String STOCK_MOVE_15 = /*$$(*/ "Please select lines to split" /*)*/;
 	static final String STOCK_MOVE_16 = /*$$(*/ "Please entry proper split qty" /*)*/;
-	
+	static final String STOCK_MOVE_SPLIT_NOT_GENERATED = /*$$(*/ "No new stock move was generated" /*)*/;
+
 	/**
 	 * Tracking Number Service
 	 */
 	static final String TRACKING_NUMBER_1 = /*$$(*/ "Aucune séquence configurée pour les Numéros de suivi pour le produit %s:%s" /*)*/;
-	
+
 	/**
 	 * Stock Config Service
 	 */
@@ -62,12 +63,12 @@ public interface IExceptionMessage {
 	static final String STOCK_CONFIG_2 = /*$$(*/ "Veuillez configurer un Emplacement Virtuel Inventaire pour la société %s" /*)*/;
 	static final String STOCK_CONFIG_3 = /*$$(*/ "Veuillez configurer un Emplacement Virtuel Fournisseur pour la société %s" /*)*/;
 	static final String STOCK_CONFIG_4 = /*$$(*/ "Veuillez configurer un Emplacement Virtuel Client pour la société %s" /*)*/;
-	
+
 	/**
 	 * Location Controller
 	 */
 	static final String LOCATION_1 = /*$$(*/ "Il existe déjà un entrepot par défaut, veuillez d'abord désactiver l'entrepot" /*)*/;
 	static final String LOCATION_2 = /*$$(*/ "Please select the Stock Location(s) to print." /*)*/;
-	
-	
+
+
 }
