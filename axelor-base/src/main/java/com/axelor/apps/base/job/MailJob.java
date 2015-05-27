@@ -14,7 +14,7 @@ public class MailJob implements Job{
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException{
 		try{
-			Beans.get(MailBatchService.class).run(MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
+			Beans.get(MailBatchService.class).run(MailBatchRepository.CODE_BATCH_EMAIL_ALL_TIME_SHEET);
 		}
 		catch(AxelorException e){
 			TraceBackService.trace(new Exception(e));
