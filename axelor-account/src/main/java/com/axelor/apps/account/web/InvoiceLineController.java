@@ -80,7 +80,7 @@ public class InvoiceLineController {
 			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
 
 				inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine));
-				exTaxTotal = inTaxTotal.subtract(inTaxTotal.multiply(invoiceLine.getTaxLine().getValue()));
+				exTaxTotal = inTaxTotal.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)));
 				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine);
 			}
 

@@ -79,7 +79,7 @@ public class SaleOrderLineController {
 				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
 					if(saleOrderLine.getSaleOrderSubLineList() == null || saleOrderLine.getSaleOrderSubLineList().isEmpty()) {
 						inTaxTotal = SaleOrderLineService.computeAmount(saleOrderLine.getQty(), saleOrderLineService.computeDiscount(saleOrderLine));
-						exTaxTotal = inTaxTotal.subtract(inTaxTotal.multiply(saleOrderLine.getTaxLine().getValue()));
+						exTaxTotal = inTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)));
 						priceDiscounted = saleOrderLineService.computeDiscount(saleOrderLine);
 					}
 				}

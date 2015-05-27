@@ -82,7 +82,7 @@ public class PurchaseOrderLineController {
 				if (purchaseOrderLine.getPrice() != null && purchaseOrderLine.getQty() != null){
 
 					inTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLineService.computeDiscount(purchaseOrderLine));
-					exTaxTotal = inTaxTotal.subtract(inTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
+					exTaxTotal = inTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)));
 					priceDiscounted = purchaseOrderLineService.computeDiscount(purchaseOrderLine);
 				}
 
