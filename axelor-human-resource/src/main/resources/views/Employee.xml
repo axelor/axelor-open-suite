@@ -35,11 +35,13 @@
 	
 	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
 		<field name="timeLoggingPreferenceSelect" expr="eval: 'hours'"/>
+		<field name="dailyWorkHours" expr="eval: __repo__.of(HRConfig).all().filter('self.company = ?',company).fetchOne()?.dailyWorkHours"/>
 	</action-record>
 	
 	<action-record name="action-hr-create-user-employee" model="com.axelor.apps.hr.db.Employee">
 	    <field name="contactPartner" expr="eval:partner" />
 	    <field name="timeLoggingPreferenceSelect" expr="eval: 'hours'"/>
+	    <field name="dailyWorkHours" expr="eval: __repo__.of(HRConfig).all().filter('self.company = ?',company).fetchOne()?.dailyWorkHours"/>
 	</action-record>
 	
 	<action-view name="action-hr-user-show-employee" title="Employee" model="com.axelor.apps.hr.db.Employee">
