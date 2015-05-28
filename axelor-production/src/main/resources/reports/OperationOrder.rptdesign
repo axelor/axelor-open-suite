@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -88,6 +88,21 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="4408">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -108,14 +123,134 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp-v2</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/abs</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="OperationOrderDS" id="3692">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">operation_order_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">operation_order_id</text-property>
+                    <text-property name="heading">operation_order_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">operation_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">operation_name</text-property>
+                    <text-property name="heading">operation_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id</text-property>
+                    <text-property name="heading">id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">manuf_order_seq</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">manuf_order_seq</text-property>
+                    <text-property name="heading">manuf_order_seq</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">priority</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">priority</text-property>
+                    <text-property name="heading">priority</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_name</text-property>
+                    <text-property name="heading">product_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">bom_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">bom_name</text-property>
+                    <text-property name="heading">bom_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">planned_start_datet</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">planned_start_datet</text-property>
+                    <text-property name="heading">planned_start_datet</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">planned_end_datet</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">planned_end_datet</text-property>
+                    <text-property name="heading">planned_end_datet</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">real_start_datet</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">real_start_datet</text-property>
+                    <text-property name="heading">real_start_datet</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">real_end_datet</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">real_end_datet</text-property>
+                    <text-property name="heading">real_end_datet</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">machine_serial_num</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">machine_serial_num</text-property>
+                    <text-property name="heading">machine_serial_num</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">machine_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">machine_name</text-property>
+                    <text-property name="heading">machine_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">description</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">description</text-property>
+                    <text-property name="heading">description</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">status_select</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">status_select</text-property>
+                    <text-property name="heading">status_select</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">duration_per_cycle</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">duration_per_cycle</text-property>
+                    <text-property name="heading">duration_per_cycle</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">starting_duration</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">starting_duration</text-property>
+                    <text-property name="heading">starting_duration</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">setup_duration</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">setup_duration</text-property>
+                    <text-property name="heading">setup_duration</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ending_duration</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">ending_duration</text-property>
+                    <text-property name="heading">ending_duration</text-property>
+                </structure>
+            </list-property>
             <list-property name="filter">
                 <structure>
                     <property name="operator">in</property>
@@ -238,124 +373,144 @@
                     <property name="name">operation_order_id</property>
                     <property name="nativeName">operation_order_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">operation_name</property>
                     <property name="nativeName">operation_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">manuf_order_seq</property>
                     <property name="nativeName">manuf_order_seq</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">priority</property>
                     <property name="nativeName">priority</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">product_name</property>
                     <property name="nativeName">product_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">bom_name</property>
                     <property name="nativeName">bom_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">planned_start_datet</property>
                     <property name="nativeName">planned_start_datet</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">planned_end_datet</property>
                     <property name="nativeName">planned_end_datet</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">real_start_datet</property>
                     <property name="nativeName">real_start_datet</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">real_end_datet</property>
                     <property name="nativeName">real_end_datet</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">machine_serial_num</property>
                     <property name="nativeName">machine_serial_num</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">machine_name</property>
                     <property name="nativeName">machine_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">description</property>
                     <property name="nativeName">description</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">status_select</property>
                     <property name="nativeName">status_select</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">duration_per_cycle</property>
                     <property name="nativeName">duration_per_cycle</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">starting_duration</property>
                     <property name="nativeName">starting_duration</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">setup_duration</property>
                     <property name="nativeName">setup_duration</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
                     <property name="name">ending_duration</property>
                     <property name="nativeName">ending_duration</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-		OperationOrder.id as operation_order_id,OperationOrder.operation_name as operation_name,ManufOrder.id, Company.logo_path, ManufOrder.manuf_order_seq,
+		OperationOrder.id as operation_order_id,OperationOrder.operation_name as operation_name,ManufOrder.id, MetaFile.file_path as logo_path, ManufOrder.manuf_order_seq,
 		OperationOrder.priority, Product.name as product_name, BOM.name as bom_name, OperationOrder.planned_start_datet,
 		OperationOrder.planned_end_datet, OperationOrder.real_start_datet, OperationOrder.real_end_datet,
 		Machine.serial_number as machine_serial_num, Machine.name as machine_name,
@@ -371,10 +526,12 @@ LEFT JOIN
 LEFT JOIN 
 	base_company AS Company ON (Company.id = ManufOrder.company)
 LEFT JOIN 
+    meta_file AS MetaFile ON (MetaFile.id = Company.logo)
+LEFT JOIN 
 	production_bill_of_material AS BOM ON (BOM.id = ManufOrder.bill_of_material) 
 LEFT JOIN 
 	base_product AS Product ON (Product.id = BOM.product)
-LEFT JOIN 
+LEFT JOIN
 	base_unit AS Unit ON (Unit.id = BOM.unit)
 LEFT JOIN 
 	production_prod_resource AS MachineProdResource ON (MachineProdResource.id = OperationOrder.machine_prod_resource)
@@ -1016,9 +1173,10 @@ LEFT JOIN
                                     <property name="rowSpan">1</property>
                                     <image id="3419">
                                         <property name="height">2.169583333333333cm</property>
-                                        <property name="width">6.138333333333333cm</property>
+                                        <property name="width">350px</property>
                                         <property name="source">file</property>
-                                        <expression name="uri" type="javascript">row["logo_path"]</expression>
+                                        <property name="proportionalScale">true</property>
+                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                                     </image>
                                 </cell>
                                 <cell id="4032">

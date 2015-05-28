@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -109,6 +109,21 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="4782">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -129,7 +144,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -180,7 +195,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">client_title</property>
-                    <property name="analysis">dimension</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">client_title</text-property>
                     <text-property name="heading">client_title</text-property>
                 </structure>
@@ -204,7 +219,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">contact_title</property>
-                    <property name="analysis">dimension</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">contact_title</text-property>
                     <text-property name="heading">contact_title</text-property>
                 </structure>
@@ -326,7 +341,7 @@
                     <structure>
                         <property name="position">8</property>
                         <property name="name">client_title</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
@@ -346,7 +361,7 @@
                     <structure>
                         <property name="position">12</property>
                         <property name="name">contact_title</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">13</property>
@@ -460,8 +475,8 @@
                     <property name="position">8</property>
                     <property name="name">client_title</property>
                     <property name="nativeName">client_title</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
@@ -488,8 +503,8 @@
                     <property name="position">12</property>
                     <property name="name">contact_title</property>
                     <property name="nativeName">contact_title</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
@@ -570,7 +585,7 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-	Business.id as business_id, Business.name as business_name, Company.logo_path, 
+	Business.id as business_id, Business.name as business_name, MetaFile.file_path as logo_path, 
 	AuthUser.name as user_name, Currency.code as currency_code, Business.description as business_description,
 	ClientPartner.partner_type_select as client_partner_type, ClientPartner.title_select as client_title, 
 	ClientPartner.name as client_name, ClientPartner.first_name AS client_first_name, 
@@ -584,6 +599,8 @@ FROM
 	organisation_project AS Business
 LEFT JOIN 
 	base_company AS Company ON (Company.id = Business.company)
+LEFT JOIN 
+    meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 LEFT JOIN
 	auth_user as AuthUser ON (AuthUser.id = Business.responsible_user)
 LEFT JOIN 
@@ -1052,7 +1069,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                         <property name="height">2.169583333333333cm</property>
                                         <property name="width">6.138333333333333cm</property>
                                         <property name="source">file</property>
-                                        <expression name="uri" type="javascript">row["logo_path"]</expression>
+                                        <property name="proportionalScale">true</property>
+                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                                     </image>
                                 </cell>
                                 <cell id="4032">

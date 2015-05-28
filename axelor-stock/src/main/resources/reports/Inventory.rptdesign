@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
-        <structure>
-            <property name="name">odaDriverClass</property>
-            <property name="id">209</property>
-        </structure>
         <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
@@ -17,29 +13,9 @@
             <expression name="value" type="javascript">params["UserName"].value</expression>
         </structure>
         <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -113,6 +89,21 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="3896">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -133,8 +124,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/abs</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -234,10 +224,11 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Inventory.inventory_seq as "inventoryName", Location.name as "inventoryLocation", 
-Inventory.dateT as "inventoryDate", Company.logo_path
+Inventory.dateT as "inventoryDate", MetaFile.file_path as logo_path
 from stock_inventory as Inventory 
 left outer join stock_location as Location on (Inventory.location = Location.id)
 left outer join base_company as Company on (Location.company = Company.id)
+left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 where Inventory.id = ?]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InventoryLineDS" id="3692">
@@ -709,7 +700,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         <property name="backgroundColor">white</property>
                         <image id="3894">
                             <property name="height">117px</property>
-                            <property name="width">205px</property>
+                            <property name="width">298px</property>
                             <property name="dataSet">InventoryDS</property>
                             <list-property name="boundDataColumns">
                                 <structure>
@@ -738,7 +729,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 </structure>
                             </list-property>
                             <property name="source">file</property>
-                            <expression name="uri" type="constant">row["logo_path"]</expression>
+                            <property name="proportionalScale">true</property>
+                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                         </image>
                     </cell>
                     <cell id="3819">

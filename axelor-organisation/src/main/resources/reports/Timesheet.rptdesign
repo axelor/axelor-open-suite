@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -112,6 +112,21 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="3949">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -132,7 +147,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -195,7 +210,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">title_select</property>
-                    <property name="analysis">dimension</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">title_select</text-property>
                     <text-property name="heading">title_select</text-property>
                 </structure>
@@ -275,7 +290,7 @@
                     <structure>
                         <property name="position">10</property>
                         <property name="name">title_select</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">11</property>
@@ -358,8 +373,8 @@
                     <property name="position">10</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
@@ -376,7 +391,7 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Timesheet.id, Company.logo_path, Timesheet.from_date, Timesheet.to_date,
+            <xml-property name="queryText"><![CDATA[select Timesheet.id, MetaFile.file_path as logo_path, Timesheet.from_date, Timesheet.to_date,
 Partner.name, Partner.first_name, Project.name as business,
 Unit.name as unit_name, Unit.code as unit_code,
 Partner.title_select, Partner.partner_type_select, PrintingSetting.pdf_header
@@ -384,6 +399,7 @@ from organisation_timesheet as Timesheet
 left join auth_user as AuthUser on (Timesheet.user_id = AuthUser.id)
 left join base_partner as Partner on (AuthUser.partner = Partner.id)
 left join base_company as Company on (AuthUser.active_company = Company.id)
+left join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left join base_unit as Unit on (Timesheet.unit = Unit.id)
 left join organisation_project as Project on (Timesheet.project = Project.id)
 left join public.base_printing_settings as PrintingSetting on (Company.printing_settings = PrintingSetting.id)
@@ -941,7 +957,7 @@ where Timesheet.id = ?
                     <property name="rowSpan">1</property>
                     <image id="3419">
                         <property name="height">2.169583333333333cm</property>
-                        <property name="width">6.138333333333333cm</property>
+                        <property name="width">238px</property>
                         <property name="dataSet">TimesheetDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -1018,7 +1034,8 @@ where Timesheet.id = ?
                             </structure>
                         </list-property>
                         <property name="source">file</property>
-                        <expression name="uri" type="javascript">row["logo_path"]</expression>
+                        <property name="proportionalScale">true</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                     </image>
                 </cell>
                 <cell id="3352">

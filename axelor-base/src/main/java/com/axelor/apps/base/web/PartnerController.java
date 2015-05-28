@@ -89,14 +89,11 @@ public class PartnerController {
 		User user = AuthUtils.getUser();
 
 		StringBuilder url = new StringBuilder();
-		String attachmentPath = AppSettings.get().getPath("file.upload.dir","");
-		attachmentPath = attachmentPath.endsWith("/") ? attachmentPath : attachmentPath+"/";
 		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect(); 
 		
 		url.append(new ReportSettings(IReport.PARTNER)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
-					.addParam("AttachmentPath",attachmentPath)
 					.addParam("PartnerId", partner.getId().toString())
 					.getUrl());
 		
@@ -130,14 +127,11 @@ public class PartnerController {
 		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		String attachmentPath = AppSettings.get().getPath("file.upload.dir","");
-		attachmentPath = attachmentPath.endsWith("/") ? attachmentPath : attachmentPath+"/";
 		
 		url.append(new ReportSettings(IReport.PHONE_BOOK)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
 					.addParam("UserId", user.getId().toString())
-					.addParam("AttachmentPath",attachmentPath)
 					.getUrl());
 		
 		LOG.debug("URL : {}", url);
@@ -170,14 +164,11 @@ public class PartnerController {
 
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
-		String attachmentPath = AppSettings.get().getPath("file.upload.dir","");
-		attachmentPath = attachmentPath.endsWith("/") ? attachmentPath : attachmentPath+"/";
 
 		url.append(new ReportSettings(IReport.COMPANY_PHONE_BOOK)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
 					.addParam("UserId", user.getId().toString())
-					.addParam("AttachmentPath",attachmentPath)
 					.getUrl());
 		
 		LOG.debug("URL : {}", url);

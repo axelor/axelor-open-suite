@@ -16,7 +16,7 @@
     <many-to-one name="administration" ref="com.axelor.apps.base.db.General" title="Administration" help="true"/>
     
     <string name="notes" large="true" title="Notes"/>
-    <string name="logoPath" title="Path to company logo" help="true"/>
+    <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo" help="true"/>
 
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" help="true"/>
 
