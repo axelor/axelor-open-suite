@@ -10,11 +10,13 @@
 		<field name="totalAmount"/>
 	</grid>
 
-	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine">
+	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
+		onNew="action-expense-line-default"
+		onSave="action-expense-line-validate-expenseDate">
 		<panel>
 			<field name="project"/>
-			<field name="expenseType" domain="self.expense = true"/>
-			<field name="expenseDate"/>
+			<field name="expenseType" domain="self.expense = true" widget="SuggestBox"/>
+			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 			<field name="untaxedAmount" onChange="action-expense-on-change-tax-untaxt-amount"/>
 			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount"/>
 			<field name="totalAmount"/>
@@ -23,8 +25,16 @@
 		</panel>
 	</form>
 	
+	<action-record name="action-expense-line-default" model="com.axelor.apps.hr.db.ExpenseLine">
+		<field name="user" expr="eval: _parent?.user"/>
+	</action-record>
+	
 	<action-record name="action-expense-on-change-tax-untaxt-amount" model="com.axelor.apps.hr.db.ExpenseLine">
 	    <field name="totalAmount" expr="eval:untaxedAmount+totalTax" />
 	</action-record>
+	
+	<action-validate name="action-expense-line-validate-expenseDate">
+		<error message="Date can't be in the future" if="expenseDate &gt; __date__"/>
+	</action-validate>
 
 </object-views>

@@ -8,7 +8,7 @@
   <entity name="Expense" cachable="true">
       
       <date name="sentDate" title="Sent Date" readonly="true"  />
-      <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period" />
+      <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period" readonly="true"/>
       <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1"/>
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" readonly="true"/>
       <one-to-many name="expenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines"/>

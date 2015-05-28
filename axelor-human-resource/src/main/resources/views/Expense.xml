@@ -16,13 +16,23 @@
 			<field name="sentDate" colSpan="3"/>
 			<field name="period" colSpan="3"/>
 			<field name="user" colSpan="3"/>
-			<button name="sendExpenses" title="Send Expenses" colSpan="3"/>
+			<button name="sendExpenses" title="Send Expenses" onClick="action-expense-record-status-confirmed, save, action-expense-view-new-expense" colSpan="3" readonlyIf="statusSelect &gt; 1"/>
 		</panel>
-		<panel-related field="expenseLineList" />
+		<panel-related field="expenseLineList" readonlyIf="statusSelect &gt; 1"/>
 	</form>
 	
 	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
 	    <field name="user" expr="eval:__user__"/>
+	    <field name="period" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
 	</action-record>
+	
+	<action-record name="action-expense-record-status-confirmed" model="com.axelor.apps.hr.db.Expense">
+	    <field name="statusSelect" expr="2"/>
+	</action-record>
+	
+	<action-view name="action-expense-view-new-expense" title="Expense" model="com.axelor.apps.hr.db.Expense">
+		<view type="form" name="expense-form"/>
+		<view type="grid" name="expense-grid"/>
+	</action-view>
 
 </object-views>
