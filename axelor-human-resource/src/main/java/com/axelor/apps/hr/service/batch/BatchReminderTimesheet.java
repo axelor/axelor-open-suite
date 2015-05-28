@@ -55,7 +55,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		Template template = batch.getMailBatch().getTemplate();
 		List<Timesheet> timesheetList = null;
 		if(Beans.get(CompanyRepository.class).all().fetch().size() >1){
-			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user.activeCompany.id = ?1 AND self.statusSelect = 1 AND self.user.employee.timesheetReminder = true", company.getId()).fetch();
+			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.company.id = ?1 AND self.statusSelect = 1 AND self.user.employee.timesheetReminder = true", company.getId()).fetch();
 		}else{
 			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.employee.timesheetReminder = true").fetch();
 		}
@@ -80,7 +80,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		Company company = batch.getMailBatch().getCompany(); 
 		List<Timesheet> timesheetList = null;
 		if(Beans.get(CompanyRepository.class).all().fetch().size() >1){
-			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user.activeCompany.id = ?1 AND self.statusSelect = 1 AND self.user.employee.timesheetReminder = true", company.getId()).fetch();
+			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.company.id = ?1 AND self.statusSelect = 1 AND self.user.employee.timesheetReminder = true", company.getId()).fetch();
 		}else{
 			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.employee.timesheetReminder = true").fetch();
 		}
@@ -114,9 +114,9 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		Template template = batch.getMailBatch().getTemplate();
 		List<Employee> employeeList = null;
 		if(Beans.get(CompanyRepository.class).all().fetch().size() >1){
-			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.user.employee.timesheetReminder = true").fetch();
+			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
 		}else{
-			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.user.employee.timesheetReminder = true").fetch();
+			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
 		}
 		String model = template.getMetaModel().getFullName();
 		String tag = template.getMetaModel().getName();
@@ -139,9 +139,9 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		Company company = batch.getMailBatch().getCompany(); 
 		List<Employee> employeeList = null;
 		if(Beans.get(CompanyRepository.class).all().fetch().size() >1){
-			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.user.employee.timesheetReminder = true").fetch();
+			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
 		}else{
-			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.user.employee.timesheetReminder = true").fetch();
+			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
 		}
 		for (Employee employee : employeeList) {
 			Message message = new Message();

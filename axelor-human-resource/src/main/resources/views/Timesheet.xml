@@ -7,6 +7,15 @@
 		<field name="statusSelect"/>
 		<field name="user"/>
 	</grid>
+	
+	<grid name="timesheet-validate-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false">
+		<toolbar>
+			<button name="showSubordinateTimesheetToValidate" title="Show timesheets to be validated by my subordinates" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets"/>
+		</toolbar>
+		<field name="sentDate"/>
+		<field name="statusSelect"/>
+		<field name="user"/>
+	</grid>
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
 	    onNew="action-timesheet-record-default,action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title"
