@@ -10,7 +10,8 @@
 		 <field name="department" />
 	</grid>
 
-	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee">
+	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
+		onNew="action-employee-record-default">
 	    <panel title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-grid" form-view="partner-form" colSpan="12" />
             <field name="contactPartner.emailAddress" colSpan="6" />
@@ -32,8 +33,15 @@
        	</panel>
 	</form>
 	
+	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
+		<field name="timeLoggingPreferenceSelect" expr="eval: 'hours'"/>
+		<field name="dailyWorkHours" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getDailyWorkHours()"/>
+	</action-record>
+	
 	<action-record name="action-hr-create-user-employee" model="com.axelor.apps.hr.db.Employee">
 	    <field name="contactPartner" expr="eval:partner" />
+	    <field name="timeLoggingPreferenceSelect" expr="eval: 'hours'"/>
+	    <field name="dailyWorkHours" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getDailyWorkHours()"/>
 	</action-record>
 	
 	<action-view name="action-hr-user-show-employee" title="Employee" model="com.axelor.apps.hr.db.Employee">
