@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
@@ -111,7 +112,7 @@ public class TimesheetController {
 		
 		response.setView(ActionView.define("Timesheets to Validate")
 			   .model(Timesheet.class.getName())
-			   .add("grid","timesheet-grid")
+			   .add("grid","timesheet-validate-grid")
 			   .add("form","timesheet-form")
 			   .domain("self.id in ("+timesheetListIdStr+")")
 			   .map());
@@ -147,5 +148,32 @@ public class TimesheetController {
 				   .add("form","timesheet-form")
 				   .domain("self.id in ("+timesheetListIdStr+")")
 				   .map());
+	}
+	
+	public void showSubordinateTimesheets(ActionRequest request, ActionResponse response){
+		List<Timesheet> timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.statusSelect = 2",AuthUtils.getUser()).fetch();
+		List<Long> timesheetListId = new ArrayList<Long>();
+		for (Timesheet timesheet : timesheetList) {
+			List<Timesheet> timesheetList2 = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.statusSelect = 2",timesheet.getUser()).fetch();
+			for (Timesheet timesheet2 : timesheetList2) {
+				timesheetListId.add(timesheet2.getId());
+			}
+		}
+		if(timesheetListId.isEmpty()){
+			response.setNotify(I18n.get("No timesheet to be validated by your subordinates"));
+		}
+		else{
+			String timesheetListIdStr = "-2";
+			if(!timesheetListId.isEmpty()){
+				timesheetListIdStr = Joiner.on(",").join(timesheetListId);
+			}
+			
+			response.setView(ActionView.define("Timesheets to be Validated by your subordinates")
+				   .model(Expense.class.getName())
+				   .add("grid","timesheet-grid")
+				   .add("form","timesheet-form")
+				   .domain("self.id in ("+timesheetListIdStr+")")
+				   .map());
+		}
 	}
 }

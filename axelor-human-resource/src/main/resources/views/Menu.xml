@@ -40,6 +40,33 @@
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
 	</action-method>
 	
+	<menuitem name="expense-root" parent="hr-root"
+    	title="Expenses"/>
+	
+	<menuitem name="edit-expense" parent="expense-root" title="Complete my expense" action="edit.expense"/>
+	
+	<action-method name="edit.expense">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="editExpense"/>
+	</action-method>
+	
+	<menuitem name="all-expense" parent="expense-root" title="All my Expenses" action="expense.all"/>
+	
+	<action-method name="expense.all">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="allExpense"/>
+	</action-method>
+	
+	<menuitem name="validate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Validate" action="expense.validate"/>
+	
+	<action-method name="expense.validate">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateExpense"/>
+	</action-method>
+	
+	<menuitem name="historic-expense" groups="MNGT,admins" parent="expense-root" title="Historic colleague Expenses" action="expense.historic"/>
+	
+	<action-method name="expense.historic">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="historicExpense"/>
+	</action-method>
+	
 	<menuitem name="employee-all" parent="hr-root"
     	title="Employee"
     	action="employee.all"/>
@@ -85,5 +112,6 @@
     	<view type="grid" name="time-activity-grid"/>
 	    <view type="form" name="time-activity-form"/>
 	</action-view>
+	
 	
 </object-views>

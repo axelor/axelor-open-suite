@@ -10,7 +10,7 @@
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" readonly="true"/>
       <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" />
       <many-to-one name="expenseType" ref="com.axelor.apps.base.db.Product" title="Expense Type" required="true" />
-      <date name="expenseDate" title="Expense date" required="true"/>
+      <date name="expenseDate" title="Expense date" required="true" default="now"/>
       <decimal name="untaxedAmount" title="Untaxed amount" required="true"/>
       <decimal name="totalTax" title="Total tax" />
       <decimal name="totalAmount" title="Total amount with tax" readonly="true"/>

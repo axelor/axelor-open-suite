@@ -5,8 +5,11 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
@@ -30,11 +33,19 @@ public class BatchReminderTimesheet extends AbstractBatch{
 	@Inject MessageServiceImpl messageServiceImpl;
 	
 	@Override 
-	protected void process() {	
-		if(batch.getMailBatch().getTemplate() != null)
-			this.generateEmailTemplate();
-		else
-			this.generateEmail();
+	protected void process() {
+		if(batch.getMailBatch().getCode() == MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET){
+			if(batch.getMailBatch().getTemplate() != null)
+				this.generateEmailTemplate();
+			else
+				this.generateEmail();
+		}
+		else if(batch.getMailBatch().getCode() == MailBatchRepository.CODE_BATCH_EMAIL_ALL_TIME_SHEET){
+			if(batch.getMailBatch().getTemplate() != null)
+				this.generateAllEmailTemplate();
+			else
+				this.generateAllEmail();
+		}
 	}
 	
 	
@@ -44,9 +55,9 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		Template template = batch.getMailBatch().getTemplate();
 		List<Timesheet> timesheetList = null;
 		if(Beans.get(CompanyRepository.class).all().fetch().size() >1){
-			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user.activeCompany.id = ?1 AND self.statusSelect = 1", company.getId()).fetch();
+			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.company.id = ?1 AND self.statusSelect = 1 AND self.user.employee.timesheetReminder = true", company.getId()).fetch();
 		}else{
-			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1").fetch();
+			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.employee.timesheetReminder = true").fetch();
 		}
 		String model = template.getMetaModel().getFullName();
 		String tag = template.getMetaModel().getName();
@@ -69,9 +80,9 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		Company company = batch.getMailBatch().getCompany(); 
 		List<Timesheet> timesheetList = null;
 		if(Beans.get(CompanyRepository.class).all().fetch().size() >1){
-			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user.activeCompany.id = ?1 AND self.statusSelect = 1", company.getId()).fetch();
+			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.company.id = ?1 AND self.statusSelect = 1 AND self.user.employee.timesheetReminder = true", company.getId()).fetch();
 		}else{
-			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1").fetch();
+			timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.employee.timesheetReminder = true").fetch();
 		}
 		for (Timesheet timesheet : timesheetList) {
 			Message message = new Message();
@@ -81,6 +92,65 @@ public class BatchReminderTimesheet extends AbstractBatch{
 				message.setCcEmailAddressSet(new HashSet<EmailAddress>());
 				message.setBccEmailAddressSet(new HashSet<EmailAddress>());
 				message.addToEmailAddressSetItem(timesheet.getUser().getEmployee().getContactPartner().getEmailAddress());
+				message.setSenderUser(AuthUtils.getUser());
+				message.setSubject(batch.getMailBatch().getSubject());
+				message.setContent(batch.getMailBatch().getContent());
+				message.setMailAccount(Beans.get(MailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
+				
+				message = messageServiceImpl.sendByEmail(message);
+				
+				incrementDone();
+			}
+			catch(Exception e){
+				incrementAnomaly();
+				TraceBackService.trace(new Exception(e),IException.INVOICE_ORIGIN,batch.getId());
+			}
+		}
+	}
+	
+	public void generateAllEmailTemplate(){
+		
+		Company company = batch.getMailBatch().getCompany(); 
+		Template template = batch.getMailBatch().getTemplate();
+		List<Employee> employeeList = null;
+		if(Beans.get(CompanyRepository.class).all().fetch().size() >1){
+			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
+		}else{
+			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
+		}
+		String model = template.getMetaModel().getFullName();
+		String tag = template.getMetaModel().getName();
+		for (Employee employee : employeeList) {
+			Message message = new Message();
+			try{
+				message = templateMessageService.generateMessage(employee.getId(), model, tag, template);
+				message = messageServiceImpl.sendByEmail(message);
+				incrementDone();
+			}
+			catch(Exception e){
+				incrementAnomaly();
+				TraceBackService.trace(new Exception(e),IException.REMINDER,batch.getId());
+			}
+		}
+	}
+	
+	
+	public void generateAllEmail(){
+		Company company = batch.getMailBatch().getCompany(); 
+		List<Employee> employeeList = null;
+		if(Beans.get(CompanyRepository.class).all().fetch().size() >1){
+			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
+		}else{
+			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
+		}
+		for (Employee employee : employeeList) {
+			Message message = new Message();
+			try{
+				message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);
+				message.setReplyToEmailAddressSet(new HashSet<EmailAddress>());
+				message.setCcEmailAddressSet(new HashSet<EmailAddress>());
+				message.setBccEmailAddressSet(new HashSet<EmailAddress>());
+				message.addToEmailAddressSetItem(employee.getContactPartner().getEmailAddress());
 				message.setSenderUser(AuthUtils.getUser());
 				message.setSubject(batch.getMailBatch().getSubject());
 				message.setContent(batch.getMailBatch().getContent());

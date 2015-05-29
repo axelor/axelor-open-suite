@@ -82,6 +82,10 @@
 					<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" if-module="axelor-production"/>
 				</panel>
 				
+				<panel title="Human Resource configuration">
+					<field name="dailyWorkHours" if-module="axelor-human-resource"/>
+				</panel>
+				
 		    </panel>
 		    <panel title="Interfaces">
 				<panel name="map" title="Mapping"  colSpan="12">
