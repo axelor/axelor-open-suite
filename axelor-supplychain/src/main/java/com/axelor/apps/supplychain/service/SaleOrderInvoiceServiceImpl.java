@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -273,6 +274,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		Invoice invoice = invoiceGenerator.generate();
 
+		invoice.setInAti(Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getInvoiceInAti());
+
+
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrder.getSaleOrderLineList(), saleOrder.getShowDetailsInInvoice()));
 		return invoice;
 
@@ -333,11 +337,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 	@Override
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, int sequence, SaleOrderLine saleOrderLine) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted,String description, BigDecimal qty,
+			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, BigDecimal inTaxTotal, int sequence, SaleOrderLine saleOrderLine) throws AxelorException  {
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, productName, price, description, qty, unit, taxLine, product.getInvoiceLineType(),
-				sequence, discountAmount, discountTypeSelect, exTaxTotal, false, saleOrderLine, null, null)  {
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, productName, price, priceDiscounted,description, qty, unit, taxLine, product.getInvoiceLineType(),
+				sequence, discountAmount, discountTypeSelect, exTaxTotal, inTaxTotal, false, saleOrderLine, null, null)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 
@@ -354,12 +358,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 
+
 	@Override
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException  {
 
 		return this.createInvoiceLine(invoice, saleOrderLine.getProduct(), saleOrderLine.getProductName(),
-				saleOrderLine.getPrice(), saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(), saleOrderLine.getTaxLine(),
-				saleOrderLine.getProductVariant(), saleOrderLine.getDiscountAmount(), saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getExTaxTotal(), saleOrderLine.getSequence(), saleOrderLine);
+				saleOrderLine.getPrice(), saleOrderLine.getPriceDiscounted(),saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(), saleOrderLine.getTaxLine(),
+				saleOrderLine.getProductVariant(), saleOrderLine.getDiscountAmount(), saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getExTaxTotal(), saleOrderLine.getInTaxTotal(),saleOrderLine.getSequence(), saleOrderLine);
 
 
 	}
@@ -369,9 +374,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderSubLine saleOrderSubLine) throws AxelorException  {
 
 		return this.createInvoiceLine(invoice, saleOrderSubLine.getProduct(), saleOrderSubLine.getProductName(),
-				saleOrderSubLine.getPrice(), saleOrderSubLine.getDescription(), saleOrderSubLine.getQty(), saleOrderSubLine.getUnit(),
+				saleOrderSubLine.getPrice(), null,saleOrderSubLine.getDescription(), saleOrderSubLine.getQty(), saleOrderSubLine.getUnit(),
 				saleOrderSubLine.getTaxLine(), saleOrderSubLine.getProductVariant(),
-				saleOrderSubLine.getDiscountAmount(), saleOrderSubLine.getDiscountTypeSelect(), saleOrderSubLine.getExTaxTotal(), saleOrderSubLine.getSequence(), saleOrderSubLine.getSaleOrderLine());
+				saleOrderSubLine.getDiscountAmount(), saleOrderSubLine.getDiscountTypeSelect(), saleOrderSubLine.getExTaxTotal(), null,saleOrderSubLine.getSequence(), saleOrderSubLine.getSaleOrderLine());
 
 	}
 

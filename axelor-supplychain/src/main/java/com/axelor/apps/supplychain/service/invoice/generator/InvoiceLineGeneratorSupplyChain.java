@@ -43,11 +43,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected PurchaseOrderLine purchaseOrderLine;
 	protected StockMove stockMove;
 
-	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, InvoiceLineType invoiceLineType, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice,
+	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted,String description, BigDecimal qty,
+			Unit unit, TaxLine taxLine, InvoiceLineType invoiceLineType, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, BigDecimal inTaxTotal,boolean isTaxInvoice,
 			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMove stockMove) {
 
-		super(invoice, product, productName, price, description, qty, unit, taxLine, invoiceLineType, sequence, discountAmount, discountTypeSelect, exTaxTotal, isTaxInvoice);
+		super(invoice, product, productName, price, priceDiscounted, description, qty, unit, taxLine, invoiceLineType, sequence, discountAmount, discountTypeSelect, exTaxTotal, inTaxTotal, isTaxInvoice);
 		if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
 			this.saleOrderLine = saleOrderLine;
 		}else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE){
@@ -57,6 +57,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.stockMove = stockMove;
 		}
     }
+
 
 	/**
 	 * @return

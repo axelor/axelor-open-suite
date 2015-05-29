@@ -185,12 +185,34 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 		}
 		purchaseOrderLine.setPrice(price);
 
-		BigDecimal exTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
+		purchaseOrderLine.setPrice(this.convertUnitPrice(purchaseOrderLine, purchaseOrder));
+		purchaseOrderLine.setDiscountAmount(this.convertDiscountAmount(purchaseOrderLine, purchaseOrder));
+		if(!purchaseOrder.getInAti()){
+			BigDecimal exTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
+			BigDecimal inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
+			BigDecimal priceDiscounted = this.computeDiscount(purchaseOrderLine);
+			BigDecimal companyExTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
+			BigDecimal companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
 
-		BigDecimal companyExTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
+			purchaseOrderLine.setExTaxTotal(exTaxTotal);
+			purchaseOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
+			purchaseOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
+			purchaseOrderLine.setInTaxTotal(inTaxTotal);
+			purchaseOrderLine.setPriceDiscounted(priceDiscounted);
+		}
+		else{
+			BigDecimal inTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
+			BigDecimal exTaxTotal = inTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)));
+			BigDecimal priceDiscounted = this.computeDiscount(purchaseOrderLine);
+			BigDecimal companyInTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
+			BigDecimal companyExTaxTotal = companyInTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)));
 
-		purchaseOrderLine.setExTaxTotal(exTaxTotal);
-		purchaseOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
+			purchaseOrderLine.setExTaxTotal(exTaxTotal);
+			purchaseOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
+			purchaseOrderLine.setCompanyExTaxTotal(companyInTaxTotal);
+			purchaseOrderLine.setInTaxTotal(inTaxTotal);
+			purchaseOrderLine.setPriceDiscounted(priceDiscounted);
+		}
 
 		return purchaseOrderLine;
 	}

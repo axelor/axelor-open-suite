@@ -67,12 +67,14 @@ public class SaleOrderLineController {
 
 					if(saleOrder != null) {
 						companyExTaxTotal = saleOrderLineService.getAmountInCompanyCurrency(exTaxTotal, saleOrder);
+						companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(saleOrderLine.getTaxLine().getValue()));
 					}
 				}
 
 				response.setValue("exTaxTotal", exTaxTotal);
 				response.setValue("inTaxTotal", inTaxTotal);
 				response.setValue("companyExTaxTotal", companyExTaxTotal);
+				response.setValue("companyInTaxTotal", companyInTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
 			}
 			else{
@@ -94,12 +96,14 @@ public class SaleOrderLineController {
 
 					if(saleOrder != null) {
 						companyInTaxTotal = saleOrderLineService.getAmountInCompanyCurrency(inTaxTotal, saleOrder);
+						companyExTaxTotal = companyInTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)));
 					}
 				}
 
 				response.setValue("exTaxTotal", exTaxTotal);
 				response.setValue("inTaxTotal", inTaxTotal);
 				response.setValue("companyInTaxTotal", companyInTaxTotal);
+				response.setValue("companyExTaxTotal", companyExTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
 			}
 		}

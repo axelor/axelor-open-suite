@@ -532,9 +532,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1), stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
 		}
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, product.getName(), stockMoveLine.getPrice(),
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, product.getName(), stockMoveLine.getPrice(),null,
 				stockMoveLine.getDescription(), stockMoveLine.getRealQty(), stockMoveLine.getUnit(), null, product.getInvoiceLineType(),
-				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO, 0, null, false, stockMoveLine.getSaleOrderLine(), stockMoveLine.getPurchaseOrderLine(), stockMoveLine.getStockMove())  {
+				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO, 0, null, null,false, stockMoveLine.getSaleOrderLine(), stockMoveLine.getPurchaseOrderLine(), stockMoveLine.getStockMove())  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 

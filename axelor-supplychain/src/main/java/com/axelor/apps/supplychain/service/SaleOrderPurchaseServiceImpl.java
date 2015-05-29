@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -130,6 +131,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				supplierPartner.getPurchasePriceList(),
 				supplierPartner);
 
+		purchaseOrder.setInAti(Beans.get(PurchaseConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getPurchaseOrderInAti());
 
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
