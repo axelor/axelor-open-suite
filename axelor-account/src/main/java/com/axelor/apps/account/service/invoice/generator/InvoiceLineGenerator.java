@@ -221,7 +221,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			taxLine =  accountManagementServiceImpl.getTaxLine(today, product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
 		}
 		invoiceLine.setTaxLine(taxLine);
-		price = invoiceLineService.convertUnitPrice(invoiceLine, invoice);
+
+
 
 		invoiceLine.setPrice(price);
 
@@ -231,6 +232,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setUnit(unit);
 
 		if(exTaxTotal == null || inTaxTotal == null)  {
+			price = invoiceLineService.convertUnitPrice(invoiceLine, invoice);
+			invoiceLine.setPrice(price);
 			if(!invoice.getInAti()){
 				exTaxTotal = computeAmount(qty, price);
 				inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(invoiceLine.getTaxLine().getValue()));
