@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Customer Invoicing" >
+	<form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Cust. Stock Move Invoicing" >
 		<panel-related field="$customerStockMoveToInvoice" title="Customer Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 2" canNew="false" canEdit="false"/>
 		<panel sidebar="true" title="Actions">
 			<button name="generateInvoiceConcatStockMove" title="Generate single invoice" onClick="action-validate-supplychain-customer-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
@@ -11,7 +11,7 @@
 	  	</panel>
     </form>
     
-    <form name="stock-move-multi-purchase-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Supplier Invoicing" >
+    <form name="stock-move-multi-purchase-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Suppl. Stock Move Invoicing" >
 		<panel-related field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 3" canNew="false" canEdit="false"/>
 		<panel sidebar="true" title="Actions">
 			<button name="generateInvoiceConcatStockMove" title="Generate single invoice" onClick="action-validate-supplychain-supplier-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>

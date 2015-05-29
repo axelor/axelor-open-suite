@@ -19,6 +19,8 @@ package com.axelor.apps.base.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.app.AxelorModuleInfo;
+import com.axelor.apps.base.db.repo.PartnerBaseRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.ProductService;
@@ -52,5 +54,6 @@ public class BaseModule extends AxelorModule {
         bind(ProductService.class).to(ProductServiceImpl.class);
         bind(TemplateService.class).to(TemplateBaseService.class);
         bind(TemplateMessageServiceImpl.class).to(TemplateMessageServiceBaseImpl.class);
+        bind(PartnerRepository.class).to(PartnerBaseRepository.class);
     }
 }

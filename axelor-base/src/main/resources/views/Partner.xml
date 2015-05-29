@@ -40,8 +40,7 @@
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload" 
-    onSave="action-group-base-partner-onsave">
+    onLoad="action-group-partner-onload">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
@@ -300,12 +299,6 @@
 		<action name="action-partner-attrs-hide-customer-credit-lines" />
 		<action name="action-partner-record-set-default"/>
 		<action name="action-partner-record-customer-supplier-type"/>
-	</action-group>
-	
-	<action-group name="action-group-base-partner-onsave">
-		<action name="save"/>
-		<action name="action-set-partner-seq"/>
-		<action name="action-create-accounting-situation"/>
 	</action-group>
 	
 	<action-group name="action-group-base-partner-contact-name-onchange">
