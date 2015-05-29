@@ -2,16 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<menuitem name="hr-root" priority="108" title="Human resources" icon="img/16px/crmSmall_16px.png" groups="admins,ERP"/> 	
-
-	<menuitem name="expense-all" parent="hr-root"
-    	title="Expenses"
-    	action="expense.all"/>
-    	
-    <action-view name="expense.all" title="Expenses" model="com.axelor.apps.hr.db.Expense">
-    	<view type="grid" name="expense-grid"/>
-	    <view type="form" name="expense-form"/>
-	</action-view>
+	<menuitem name="hr-root" priority="108" title="Human resources" icon="img/16px/crmSmall_16px.png" groups="admins,ERP"/> 
 	
 	<menuitem name="timesheet-root" parent="hr-root"
     	title="Timesheets"/>
@@ -67,6 +58,33 @@
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="historicExpense"/>
 	</action-method>
 	
+	<menuitem name="leave-root" parent="hr-root"
+    	title="Leaves"/>
+	
+	<menuitem name="edit-leave" parent="leave-root" title="Complete my leave" action="edit.leave"/>
+	
+	<action-method name="edit.leave">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="editLeave"/>
+	</action-method>
+	
+	<menuitem name="all-leave" parent="leave-root" title="All my Leaves" action="leave.all"/>
+	
+	<action-method name="leave.all">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="allLeave"/>
+	</action-method>
+	
+	<menuitem name="validate-leave" groups="MNGT,admins" parent="leave-root" title="Leaves to Validate" action="leave.validate"/>
+	
+	<action-method name="leave.validate">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="validateLeave"/>
+	</action-method>
+	
+	<menuitem name="historic-leave" groups="MNGT,admins" parent="leave-root" title="Historic colleague Leaves" action="leave.historic"/>
+	
+	<action-method name="leave.historic">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
+	</action-method>
+	
 	<menuitem name="employee-all" parent="hr-root"
     	title="Employee"
     	action="employee.all"/>
@@ -74,15 +92,6 @@
 	<action-view name="employee.all" title="Employee" model="com.axelor.apps.hr.db.Employee">
     	<view type="grid" name="employee-grid"/>
 	    <view type="form" name="employee-form"/>
-	</action-view>
-	
-	<menuitem name="leave-all" parent="hr-root"
-    	title="Leaves"
-    	action="leave.all"/>
-
-	<action-view name="leave.all" title="Leaves" model="com.axelor.apps.hr.db.Leave">
-    	<view type="grid" name="leave-grid"/>
-	    <view type="form" name="leave-form"/>
 	</action-view>
 	
 	<menuitem name="leave-reason-all" parent="hr-root"

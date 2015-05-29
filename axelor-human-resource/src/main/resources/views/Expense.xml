@@ -25,9 +25,9 @@
 	    onNew="action-expense-record-default,action-expense-attrs-buttons" onLoad="action-expense-attrs-buttons" width="large" canNew="false">
 	    <toolbar>
 	    	<button name="validButton" onClick="action-expense-record-valid,save,action-expense-attrs-buttons" title="Valid"/>
-	    	<button name="refuseButton" onClick="action-texpense-record-refuse,save,action-expense-attrs-buttons" title="Refuse"/>
+	    	<button name="refuseButton" onClick="action-expense-record-refuse,save,action-expense-attrs-buttons" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-expense-record-cancel,save,com.axelor.apps.hr.web.expense.ExpenseController:cancelExpense,action-expense-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
-	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-exoense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
+	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </toolbar>
 		<panel>
 		    <field name="statusSelect" colSpan="8" widget="NavSelect"/>
@@ -86,7 +86,7 @@
 		<attribute name="domain" for="$expenseSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
 	</action-attrs>
 	
-	<action-attrs name="action-expense-attrs-domain-expense-select">
+	<action-attrs name="action-expense-attrs-domain-period">
 		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= {__date__} AND self.statusSelect = 1 &quot;"/>
 	</action-attrs>
 	

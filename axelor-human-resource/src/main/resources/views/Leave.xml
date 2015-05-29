@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<grid name="leave-grid" title="Leave" model="com.axelor.apps.hr.db.Leave">
+	<grid name="leave-grid" title="Leaves" model="com.axelor.apps.hr.db.Leave">
 		 <field name="company"/>
 		 <field name="user" />
 		 <field name="requestDate" />
@@ -13,8 +13,28 @@
 		 <field name="statusSelect" />
 	</grid>
 	
+	<grid name="leave-validate-grid" title="Leaves" model="com.axelor.apps.hr.db.Leave">
+		 <toolbar>
+			<button name="showSubordinateLeaveToValidate" title="Show leaves to be validated by my subordinates" onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
+		 </toolbar>
+		 <field name="company"/>
+		 <field name="user" />
+		 <field name="requestDate" />
+		 <field name="dateFrom" />
+		 <field name="startOnSelect" onChange="action-leave-validate-dates"/>
+		 <field name="dateTo" onChange="action-leave-validate-dates"/>
+		 <field name="endOnSelect" />
+		 <field name="statusSelect" />
+	</grid>
+	
 	<form name="leave-form" title="Leave" model="com.axelor.apps.hr.db.Leave"
-	    onNew="action-leave-record-default">
+	    onNew="action-leave-record-default,action-leave-attrs-buttons" onLoad="action-leave-attrs-buttons">
+	    <toolbar>
+	    	<button name="validButton" onClick="action-leave-record-valid,save,action-leave-attrs-buttons" title="Valid"/>
+	    	<button name="refuseButton" onClick="action-leave-record-refuse,save,action-leave-attrs-buttons" title="Refuse"/>
+	    	<button name="cancelButton" onClick="action-leave-record-cancel,save,action-leave-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
+	    	<button name="draftButton" onClick="action-leave-record-draft,save,action-leave-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
+	    </toolbar>
 		<panel>
 			<field name="statusSelect" colSpan="12" widget="NavSelect" />
 			<field name="company"/>
@@ -26,6 +46,7 @@
 			<field name="endOnSelect" />
 			<field name="duration" />
 			<field name="reason" canNew="true" />
+			<button name="sendLeave" colSpan="4" title="Send Leave" onClick="action-leave-record-status-confirmed, save,action-leave-attrs-buttons" readonlyIf="statusSelect &gt; 1"/>
 			<field name="comments" colSpan="12" />
 		</panel>
 	</form>
@@ -35,5 +56,39 @@
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.activeCompany"/>
 	</action-record>
+	
+	<action-record name="action-leave-record-status-confirmed" model="com.axelor.apps.hr.db.Leave">
+	    <field name="statusSelect" expr="2"/>
+	    <field name="sentDate" expr="__date__"/>
+	</action-record>
+	
+	<action-attrs name="action-leave-attrs-domain-leave-select">
+		<attribute name="domain" for="$leaveSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
+	</action-attrs>
+	
+	<action-record name="action-leave-record-valid" model="com.axelor.apps.hr.db.Leave">
+	    <field name="statusSelect" expr="3"/>
+	</action-record>
+	
+	<action-record name="action-leave-record-refuse" model="com.axelor.apps.hr.db.Leave">
+	    <field name="statusSelect" expr="4"/>
+	</action-record>
+	
+	<action-record name="action-leave-record-cancel" model="com.axelor.apps.hr.db.Leave">
+	    <field name="statusSelect" expr="5"/>
+	</action-record>
+	
+	<action-record name="action-leave-record-draft" model="com.axelor.apps.hr.db.Leave">
+	    <field name="statusSelect" expr="1"/>
+	</action-record>
+	
+	<action-attrs name="action-leave-attrs-buttons">
+		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager))"/>
+		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager))"/>
+	</action-attrs>
+	
+	<action-validate name="action-leave-validate-dates">
+		<error message="Invalide dates" if="(!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager) &amp;&amp; dateFrom &lt; __date__) || (dateTo &lt; dateFrom)"/>
+	</action-validate>
 	
 </object-views>
