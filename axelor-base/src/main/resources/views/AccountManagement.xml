@@ -20,7 +20,7 @@
     </grid>
     
 	<form name="account-management-product-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement"  
-	onNew="action-account-management-record-product">
+	onNew="action-account-management-record-product,action-account-management-attrs-hide-sale" onLoad="action-account-management-attrs-hide-sale">
 		<panel >
 			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
 		   	<field name="company" widget="SuggestBox" form-view="company-form" onChange="action-group-account-account-management-onchange-common"/>
@@ -85,6 +85,13 @@
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>
+    
+    <action-attrs name="action-account-management-attrs-hide-sale">
+    	<attribute name="hidden" for="saleAccount" expr="eval: !_parent?.sellable || _parent?.expense" if="_parent?._model == 'com.axelor.apps.base.db.Partner'"/>
+    	<attribute name="hidden" for="saleTax" expr="eval: !_parent?.sellable || _parent?.expense" if="_parent?._model == 'com.axelor.apps.base.db.Partner'"/>
+    	<attribute name="hidden" for="saleAccount" expr="eval: !_parent?._parent?.sellable || _parent?._parent?.expense" if="!_parent?._model == 'com.axelor.apps.base.db.Partner'"/>
+    	<attribute name="hidden" for="saleTax" expr="eval: !_parent?._parent?.sellable || _parent?._parent?.expense" if="!_parent?._model == 'com.axelor.apps.base.db.Partner'"/>
+    </action-attrs>
     
     
 </object-views>

@@ -43,7 +43,6 @@
 					<field name="periodicitySelect" if-module="axelor-supplychain" showIf="productTypeSelect == 'subscriptable'"/>
 					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" colSpan="12"/>
 					<field name="invoiceLineType" colSpan="12" if-module="axelor-account"/>
-					<field name="expense" if-module="axelor-human-resource" colSpan="12"/>
 					<field name="inAti"/>
 				</panel>
 				<panel title="Categorization" colSpan="6" colWidths="30%,70%">
@@ -57,9 +56,9 @@
 			<panel title="Sale" showTitle="false">
 				<panel colSpan="6" title="Sales">
 				    <field name="sellable" colSpan="12"/>
-					<field name="salePrice" colSpan="12"/>
-					<field name="saleCurrency" colSpan="12"/>
-					<field name="unit" colSpan="12"/>
+					<field name="salePrice" colSpan="12" hideIf="!sellable"/>
+					<field name="saleCurrency" colSpan="12" hideIf="!sellable"/>
+					<field name="unit" colSpan="12" hideIf="!sellable"/>
 				</panel>
 				<panel colSpan="6" title="Product dates">
 					<field name="startDate" colSpan="12"/>

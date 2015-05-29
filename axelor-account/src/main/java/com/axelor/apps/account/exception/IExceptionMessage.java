@@ -521,4 +521,11 @@ public interface IExceptionMessage {
 	 * Payment voucher controller
 	 */
 	static final String PAYMENT_VOUCHER_1 = /*$$(*/ "Reçu saisie paiement" /*)*/;
+	
+	/**
+	 *  Expense service
+	 */
+	static final String EXPENSE_JOURNAL = /*$$(*/ "Veuillez configurer un journal pour les notes de frais (société : %s)" /*)*/;
+	static final String EXPENSE_ACCOUNT = /*$$(*/ "Veuillez configurer un compte pour les notes de frais (société : %s)" /*)*/;
+	static final String EXPENSE_ACCOUNT_TAX = /*$$(*/ "Veuillez configurer un compte pour les taxes des notes de frais (société : %s)" /*)*/;
 }

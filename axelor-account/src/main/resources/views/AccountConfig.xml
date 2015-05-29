@@ -41,6 +41,7 @@
 					<field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 					<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 					<field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 				</panel>
 				<panel title="Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company"/>
@@ -69,6 +70,10 @@
 				</panel>
 				 <panel title="Tax payment" colSpan="12">
 				    <field name="payingBackTax"/>
+				</panel>
+				<panel	title="Expense" colSpan="12">
+					<field name="expenseEmployeeAccount" domain="self.company = :company"/>
+					<field name="expenseTaxAccount" domain="self.company = :company"/>
 				</panel>
 			</panel>
 			<panel title="CFONB">

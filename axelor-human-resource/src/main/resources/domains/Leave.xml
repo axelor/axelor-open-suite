@@ -17,6 +17,7 @@
       <decimal name="duration" title="Duration" scale="1" precision="5"/>
       <many-to-one name="reason" ref="com.axelor.apps.hr.db.LeaveReason" title="Reason" />
       <string name="comments" title="Comments" large="true"/>
+      <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
 	 	      
   </entity>
   

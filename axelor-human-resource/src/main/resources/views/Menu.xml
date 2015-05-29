@@ -113,5 +113,16 @@
 	    <view type="form" name="time-activity-form"/>
 	</action-view>
 	
+	<menuitem name="hr-conf-expense-type" parent="hr-conf" title="Expense Type" action="conf.expense.type"/>
+	
+	<action-view name="conf.expense.type" title="Expense Type" model="com.axelor.apps.base.db.Product">
+    	<view type="grid" name="product-expense-grid"/>
+	    <view type="form" name="product-expense-form"/>
+	    <view-param name="search-filters" value="products-filters"/>
+		<domain>self.isModel = false AND self.expense = true</domain>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_isModel" expr="false"/>
+	</action-view>
+	
 	
 </object-views>

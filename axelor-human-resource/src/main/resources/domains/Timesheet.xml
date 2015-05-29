@@ -18,6 +18,7 @@
       <many-to-one name="task" ref="com.axelor.apps.project.db.Task" title="Task"/>
       <decimal name="logTime" title="Duration(by day)"/>
       <many-to-one name="activity" ref="com.axelor.apps.hr.db.TimeActivity" title="Activity"/>
+      <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
       
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

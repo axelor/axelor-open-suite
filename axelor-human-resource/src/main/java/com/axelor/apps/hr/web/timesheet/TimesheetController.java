@@ -10,6 +10,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -43,7 +44,7 @@ public class TimesheetController {
 	}
 	
 	public void editTimesheet(ActionRequest request, ActionResponse response){
-		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 AND self.statusSelect = 1",AuthUtils.getUser()).fetch();
+		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(timesheetList.isEmpty()){
 			response.setView(ActionView
 									.define("Timesheet")
@@ -74,7 +75,7 @@ public class TimesheetController {
 	}
 	
 	public void allTimesheet(ActionRequest request, ActionResponse response){
-		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1",AuthUtils.getUser()).fetch();
+		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
@@ -94,13 +95,13 @@ public class TimesheetController {
 	}
 	
 	public void validateTimesheet(ActionRequest request, ActionResponse response){
-		List<Timesheet> timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.statusSelect = 2",AuthUtils.getUser()).fetch();
+		List<Timesheet> timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
 		}
 		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null){
-			timesheetList = Query.of(Timesheet.class).filter("self.user = ?1 AND self.statusSelect = 2",AuthUtils.getUser()).fetch();
+			timesheetList = Query.of(Timesheet.class).filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		}
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
@@ -131,7 +132,7 @@ public class TimesheetController {
 	}
 	
 	public void historicTimesheet(ActionRequest request, ActionResponse response){
-		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user.employee.manager = ?1 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser()).fetch();
+		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
@@ -151,12 +152,12 @@ public class TimesheetController {
 	}
 	
 	public void showSubordinateTimesheets(ActionRequest request, ActionResponse response){
-		List<Timesheet> timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.statusSelect = 2",AuthUtils.getUser()).fetch();
+		List<User> userList = Query.of(User.class).filter("self.employee.manager = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
-		for (Timesheet timesheet : timesheetList) {
-			List<Timesheet> timesheetList2 = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.statusSelect = 2",timesheet.getUser()).fetch();
-			for (Timesheet timesheet2 : timesheetList2) {
-				timesheetListId.add(timesheet2.getId());
+		for (User user : userList) {
+			List<Timesheet> timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",user,AuthUtils.getUser().getActiveCompany()).fetch();
+			for (Timesheet timesheet : timesheetList) {
+				timesheetListId.add(timesheet.getId());
 			}
 		}
 		if(timesheetListId.isEmpty()){

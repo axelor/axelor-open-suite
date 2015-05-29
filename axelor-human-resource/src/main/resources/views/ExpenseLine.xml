@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
 	<grid name="expense-line-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
-		<field name="project"/>
+		<field name="task"/>
 		<field name="expenseType"/>
 		<field name="expenseDate"/>
 		<field name="untaxedAmount"/>
@@ -14,7 +14,7 @@
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate">
 		<panel>
-			<field name="project"/>
+			<field name="task"/>
 			<field name="expenseType" domain="self.expense = true" widget="SuggestBox"/>
 			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 			<field name="untaxedAmount" onChange="action-expense-on-change-tax-untaxt-amount"/>

@@ -3,6 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false">
+		<field name="company"/>
 		<field name="sentDate"/>
 		<field name="statusSelect"/>
 		<field name="user"/>
@@ -12,6 +13,7 @@
 		<toolbar>
 			<button name="showSubordinateTimesheetToValidate" title="Show timesheets to be validated by my subordinates" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets"/>
 		</toolbar>
+		<field name="company"/>
 		<field name="sentDate"/>
 		<field name="statusSelect"/>
 		<field name="user"/>
@@ -30,6 +32,7 @@
 		<panel name="head">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
 			<field name="sentDate" colSpan="4"/>
+			<field name="company" colSpan="3"/>
 			<field name="user" colSpan="4"/>
 			<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4" onClick="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
 		</panel>
@@ -56,6 +59,7 @@
 
 	<action-record name="action-timesheet-record-default" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="user" expr="eval:__user__"/>
+	    <field name="company" expr="eval: __user__.activeCompany"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-record-confirm" model="com.axelor.apps.hr.db.Timesheet">

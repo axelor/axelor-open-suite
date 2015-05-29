@@ -4,24 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.hr.db.Expense;
-import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
+import com.google.inject.Inject;
 
 public class ExpenseController {
 	
+	@Inject
+	 private ExpenseService expenseService;
+	
 	public void editExpense(ActionRequest request, ActionResponse response){
-		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.statusSelect = 1",AuthUtils.getUser()).fetch();
+		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(expenseList.isEmpty()){
 			response.setView(ActionView
 									.define("Expense")
@@ -64,7 +70,7 @@ public class ExpenseController {
 	}
 	
 	public void allExpense(ActionRequest request, ActionResponse response){
-		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1",AuthUtils.getUser()).fetch();
+		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> expenseListId = new ArrayList<Long>();
 		for (Expense expense : expenseList) {
 			expenseListId.add(expense.getId());
@@ -84,13 +90,13 @@ public class ExpenseController {
 	}
 	
 	public void validateExpense(ActionRequest request, ActionResponse response){
-		List<Expense> expenseList = Query.of(Expense.class).filter("self.user.employee.manager = ?1 AND self.statusSelect = 2",AuthUtils.getUser()).fetch();
+		List<Expense> expenseList = Query.of(Expense.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> expenseListId = new ArrayList<Long>();
 		for (Expense expense : expenseList) {
 			expenseListId.add(expense.getId());
 		}
 		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null){
-			expenseList = Query.of(Expense.class).filter("self.user = ?1 AND self.statusSelect = 2",AuthUtils.getUser()).fetch();
+			expenseList = Query.of(Expense.class).filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 2 ",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		}
 		for (Expense expense : expenseList) {
 			expenseListId.add(expense.getId());
@@ -109,7 +115,7 @@ public class ExpenseController {
 	}
 	
 	public void historicExpense(ActionRequest request, ActionResponse response){
-		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user.employee.manager = ?1 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser()).fetch();
+		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> expenseListId = new ArrayList<Long>();
 		for (Expense expense : expenseList) {
 			expenseListId.add(expense.getId());
@@ -130,12 +136,12 @@ public class ExpenseController {
 	
 	
 	public void showSubordinateExpenses(ActionRequest request, ActionResponse response){
-		List<Expense> expenseList = Query.of(Expense.class).filter("self.user.employee.manager = ?1 AND self.statusSelect = 2",AuthUtils.getUser()).fetch();
+		List<User> userList = Query.of(User.class).filter("self.employee.manager = ?1",AuthUtils.getUser()).fetch();
 		List<Long> expenseListId = new ArrayList<Long>();
-		for (Expense expense : expenseList) {
-			List<Expense> expenseList2 = Query.of(Expense.class).filter("self.user.employee.manager = ?1 AND self.statusSelect = 2",expense.getUser()).fetch();
-			for (Expense expense2 : expenseList2) {
-				expenseListId.add(expense2.getId());
+		for (User user : userList) {
+			List<Expense> expenseList = Query.of(Expense.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",user,AuthUtils.getUser().getActiveCompany()).fetch();
+			for (Expense expense : expenseList) {
+				expenseListId.add(expense.getId());
 			}
 		}
 		if(expenseListId.isEmpty()){
@@ -154,6 +160,32 @@ public class ExpenseController {
 				   .domain("self.id in ("+expenseListIdStr+")")
 				   .map());
 		}
+	}
+	
+	public void compute(ActionRequest request, ActionResponse response){
+		Expense expense = request.getContext().asType(Expense.class);
+		expense = expenseService.compute(expense);
+		response.setValues(expense);
+	}
+		
+	public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException{
+		Expense expense = request.getContext().asType(Expense.class);
+		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+		Move move = expenseService.ventilate(expense);
+		response.setReload(true);
+		response.setView(ActionView.define("Move")
+				   .model(Move.class.getName())
+				   .add("grid","move-grid")
+				   .add("form","move-form")
+				   .context("_showRecord", String.valueOf(move.getId()))
+				   .map());
+	}
+	
+	public void cancelExpense(ActionRequest request, ActionResponse response) throws AxelorException{
+		Expense expense = request.getContext().asType(Expense.class);
+		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+		expenseService.cancel(expense);
+		response.setReload(true);
 	}
 	
 }
