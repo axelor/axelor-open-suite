@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.InvoiceLineType;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
@@ -87,8 +86,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	@Inject
 	protected UnitConversionService unitConversionService;
 
-	@Inject
-	protected InvoiceLineService invoiceLineService;
 
 	protected InvoiceLineGenerator() { }
 
@@ -222,8 +219,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		}
 		invoiceLine.setTaxLine(taxLine);
 
-
-
 		invoiceLine.setPrice(price);
 
 		if(priceDiscounted!=null)
@@ -232,7 +227,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setUnit(unit);
 
 		if(exTaxTotal == null || inTaxTotal == null)  {
-			price = invoiceLineService.convertUnitPrice(invoiceLine, invoice);
+			price = this.convertUnitPrice(invoiceLine, invoice).setScale(2,BigDecimal.ROUND_HALF_UP);
 			invoiceLine.setPrice(price);
 			if(!invoice.getInAti()){
 				exTaxTotal = computeAmount(qty, price);
@@ -425,6 +420,22 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		}
 
+	}
+
+	public BigDecimal convertUnitPrice(InvoiceLine invoiceLine, Invoice invoice){
+		BigDecimal price = invoiceLine.getProduct().getSalePrice();
+		if(invoice.getOperationTypeSelect()<2){
+			price = invoiceLine.getProduct().getPurchasePrice();
+		}
+
+		if(invoiceLine.getProduct().getInAti() && !invoice.getInAti()){
+			price = price.subtract(price.multiply(invoiceLine.getTaxLine().getValue()));
+
+		}
+		else if(!invoiceLine.getProduct().getInAti() && invoice.getInAti()){
+			price = price.add(price.multiply(invoiceLine.getTaxLine().getValue()));
+		}
+		return price;
 	}
 
 }
