@@ -34,12 +34,12 @@ import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 
 public interface StockMoveLineService extends Repository<StockMoveLine>{
-	
+
 	public static final int TYPE_SALES = 1;
 	public static final int TYPE_PURCHASES = 2;
 	public static final int TYPE_PRODUCTIONS = 3;
-	
-	
+
+
 	/**
 	 * Méthode générique permettant de créer une ligne de mouvement de stock en gérant les numéros de suivi en fonction du type d'opération.
 	 * @param product le produit
@@ -49,16 +49,16 @@ public interface StockMoveLineService extends Repository<StockMoveLine>{
 	 * 1 : Sales
 	 * 2 : Purchases
 	 * 3 : Productions
-	 * 
+	 *
 	 * @return l'objet StockMoveLine
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
-	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, int type ) throws AxelorException;;
-	
-	
+	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, StockMove stockMove, int type ) throws AxelorException;;
+
+
 	public void generateTrackingNumber(StockMoveLine stockMoveLine, TrackingNumberConfiguration trackingNumberConfiguration, Product product, BigDecimal qtyByTracking) throws AxelorException;
-	
-	
+
+
 	/**
 	 * Méthode générique permettant de créer une ligne de mouvement de stock
 	 * @param product
@@ -70,36 +70,36 @@ public interface StockMoveLineService extends Repository<StockMoveLine>{
 	 * @return
 	 * @throws AxelorException
 	 */
-	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException;
-	
-	
-	
+	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException;
+
+
+
 	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, Location location) throws AxelorException;
-	
-	
-	
+
+
+
 	public List<? extends LocationLine> getLocationLines(Product product, Location location) throws AxelorException;
 
-	
-	
-	public StockMoveLine splitStockMoveLine(StockMoveLine stockMoveLine, BigDecimal qty, TrackingNumber trackingNumber) throws AxelorException;
-	
-	
 
-	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList, 
+
+	public StockMoveLine splitStockMoveLine(StockMoveLine stockMoveLine, BigDecimal qty, TrackingNumber trackingNumber) throws AxelorException;
+
+
+
+	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
 			LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException;
-	
-	
-	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate 
+
+
+	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
 }

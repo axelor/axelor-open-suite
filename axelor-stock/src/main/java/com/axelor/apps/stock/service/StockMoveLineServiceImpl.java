@@ -60,11 +60,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 * @throws AxelorException
 	 */
 	@Override
-	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, int type ) throws AxelorException {
+	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, StockMove stockMove, int type ) throws AxelorException {
 
 		if(product != null && product.getApplicationTypeSelect() == IProduct.APPLICATION_TYPE_PRODUCT) {
 
-			StockMoveLine stockMoveLine = this.createStockMoveLine(product, productName, description, quantity, unit, price, stockMove, null);
+			StockMoveLine stockMoveLine = this.createStockMoveLine(product, productName, description, quantity, unit, stockMove, null);
 
 			TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
 			if(trackingNumberConfiguration != null)  {
@@ -142,7 +142,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 * @throws AxelorException
 	 */
 	@Override
-	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException {
+	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException {
 
 		StockMoveLine stockMoveLine = new StockMoveLine();
 		stockMoveLine.setStockMove(stockMove);
@@ -152,7 +152,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.setQty(quantity);
 		stockMoveLine.setRealQty(quantity);
 		stockMoveLine.setUnit(unit);
-		stockMoveLine.setPrice(price);
 		stockMoveLine.setTrackingNumber(trackingNumber);
 
 		return stockMoveLine;
@@ -205,7 +204,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				stockMoveLine.getDescription(),
 				qty,
 				stockMoveLine.getUnit(),
-				stockMoveLine.getPrice(),
 				stockMoveLine.getStockMove(),
 				trackingNumber);
 

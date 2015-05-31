@@ -175,6 +175,22 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
     }
 
+	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
+			Unit unit, InvoiceLineType invoiceLineType, int sequence, boolean isTaxInvoice) {
+		this.invoice = invoice;
+        this.product = product;
+        this.productName = productName;
+        this.description = description;
+        this.qty = qty;
+        this.unit = unit;
+        this.invoiceLineType = invoiceLineType;
+        this.sequence = sequence;
+        this.isTaxInvoice = isTaxInvoice;
+        this.today = GeneralService.getTodayDate();
+        this.currencyService = new CurrencyService(this.today);
+        this.accountManagementServiceImpl = new AccountManagementServiceImpl();
+	}
+
 	public Invoice getInvoice() {
 		return invoice;
 	}

@@ -32,7 +32,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.stock.db.ILocation;
 import com.axelor.apps.stock.db.IStockMove;
@@ -111,8 +110,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				if(product != null && ((stockConfig.getHasInSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE))
 						|| (stockConfig.getHasInSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)))) {
 
-					StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(product, purchaseOrderLine.getProductName(), purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(),
-							Beans.get(PurchaseOrderLineService.class).computeDiscount(purchaseOrderLine), stockMove, 2);
+					StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(product, purchaseOrderLine.getProductName(), purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), stockMove, 2);
 					if(stockMoveLine != null) {
 
 						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);

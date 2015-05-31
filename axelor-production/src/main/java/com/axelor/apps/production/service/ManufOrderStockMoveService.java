@@ -27,14 +27,14 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.db.ILocation;
 import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -42,174 +42,173 @@ public class ManufOrderStockMoveService extends ManufOrderRepository {
 
 	@Inject
 	private StockMoveService stockMoveService;
-	
+
 	@Inject
 	private StockMoveLineService stockMoveLineService;
-	
+
 	@Inject
 	private ProductionConfigService productionConfigService;
-	
+
 	@Inject
 	private LocationRepository locationRepo;
-	
+
 	private static final Logger log = LoggerFactory.getLogger(ManufOrderStockMoveService.class);
 
 	public void createToConsumeStockMove(ManufOrder manufOrder) throws AxelorException {
-		
+
 		Company company = manufOrder.getCompany();
-		
+
 		if(manufOrder.getToConsumeProdProductList() != null && company != null) {
-			
+
 			StockMove stockMove = this._createToConsumeStockMove(manufOrder, company);
-			
+
 			for(ProdProduct prodProduct: manufOrder.getToConsumeProdProductList()) {
-				
+
 				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct);
 				stockMove.addStockMoveLineListItem(stockMoveLine);
 				manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
-				
+
 			}
-			
+
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMoveService.plan(stockMove);
 				manufOrder.setInStockMove(stockMove);
 			}
 		}
-		
+
 	}
-	
-	
+
+
 	private StockMove _createToConsumeStockMove(ManufOrder manufOrder, Company company) throws AxelorException  {
-		
+
 		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfigService.getProductionConfig(company));
-		
+
 		Location fromLocation = null;
-		
+
 		if(manufOrder.getProdProcess() != null && manufOrder.getProdProcess().getLocation() != null)  {
-			
+
 			fromLocation = manufOrder.getProdProcess().getLocation();
 		}
 		else  {
-			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
+			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3",
 					company, true, ILocation.INTERNAL).fetchOne();
 		}
-		
+
 		StockMove stockMove = stockMoveService.createStockMove(
-				null, 
-				null, 
-				company, 
-				null, 
-				fromLocation, 
-				virtualLocation, 
+				null,
+				null,
+				company,
+				null,
+				fromLocation,
+				virtualLocation,
 				manufOrder.getPlannedStartDateT().toLocalDate(),
 				null);
-		
+
 		return stockMove;
 	}
-	
-	
+
+
 	public void createToProduceStockMove(ManufOrder manufOrder) throws AxelorException {
-		
+
 		Company company = manufOrder.getCompany();
-		
+
 		if(manufOrder.getToProduceProdProductList() != null && company != null) {
-			
+
 			StockMove stockMove = this._createToProduceStockMove(manufOrder, company);
-			
+
 			for(ProdProduct prodProduct: manufOrder.getToProduceProdProductList()) {
-				
+
 				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct);
 				stockMove.addStockMoveLineListItem(stockMoveLine);
 				manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
-				
+
 			}
-			
+
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMoveService.plan(stockMove);
 				manufOrder.setOutStockMove(stockMove);
 			}
 		}
-		
+
 	}
-	
-	
+
+
 	private StockMove _createToProduceStockMove(ManufOrder manufOrder, Company company) throws AxelorException  {
-		
+
 		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfigService.getProductionConfig(company));
-		
+
 		LocalDateTime plannedEndDateT = manufOrder.getPlannedEndDateT();
 		LocalDate plannedEndDate = plannedEndDateT != null ? plannedEndDateT.toLocalDate() : null;
-		
+
 		StockMove stockMove = stockMoveService.createStockMove(
-				null, 
-				null, 
-				company, 
-				null, 
-				virtualLocation, 
-				manufOrder.getProdProcess().getLocation(), 
+				null,
+				null,
+				company,
+				null,
+				virtualLocation,
+				manufOrder.getProdProcess().getLocation(),
 				plannedEndDate,
 				null);
-		
+
 		return stockMove;
 	}
-	
-	
+
+
 	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct) throws AxelorException  {
-		
+
 		return stockMoveLineService.createStockMoveLine(
 				prodProduct.getProduct(),
 				prodProduct.getProduct().getName(),
 				prodProduct.getProduct().getDescription(),
-				prodProduct.getQty(), 
-				prodProduct.getUnit(), 
+				prodProduct.getQty(),
+				prodProduct.getUnit(),
 				null,
-				null, 
 				StockMoveLineService.TYPE_PRODUCTIONS);
-			
+
 	}
-	
-	
+
+
 	public void finish(ManufOrder manufOrder) throws AxelorException  {
-		
+
 		this.finishStockMove(manufOrder.getInStockMove());
 		this.finishStockMove(manufOrder.getOutStockMove());
-		
+
 	}
-	
-	
+
+
 	public void finishStockMove(StockMove stockMove) throws AxelorException  {
-		
+
 		if(stockMove != null && stockMove.getStatusSelect() == IStockMove.STATUS_PLANNED)  {
-			
+
 			stockMoveService.copyQtyToRealQty(stockMove);
 			stockMoveService.realize(stockMove);
-			
+
 		}
 	}
-	
-	
+
+
 	public void cancel(ManufOrder manufOrder) throws AxelorException  {
-		
+
 		this.cancel(manufOrder.getInStockMove());
 		this.cancel(manufOrder.getOutStockMove());
-		
+
 	}
-	
-	
+
+
 	public void cancel(StockMove stockMove) throws AxelorException  {
-		
+
 		if(stockMove != null)  {
-			
+
 			stockMoveService.cancel(stockMove);
-			
+
 			for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList())  {
-				
+
 				stockMoveLine.setProducedManufOrder(null);
-				
+
 			}
-			
+
 		}
-		
-	} 
-	
+
+	}
+
 }

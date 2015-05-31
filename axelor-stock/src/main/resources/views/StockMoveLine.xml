@@ -10,7 +10,6 @@
         <field name="qty" onChange="action-stock-move-line-record-qty"/>
         <field name="realQty"/>
         <field name="unit"/>
-        <field name="price"/>
         <field name="trackingNumber"/>
         <field name="accordanceSelect"/>
     </grid>
@@ -21,7 +20,6 @@
         <field name="productModel" readonly="true"/>
         <field name="qty"/>
         <field name="unit" readonly="true"/>
-        <field name="price" readonly="true"/>
         <field name="trackingNumber" readonly="true"/>
         <field name="accordanceSelect" readonly="true"/>
     </grid>
@@ -35,7 +33,6 @@
 	        <field name="qty" onChange="action-stock-move-line-record-qty" colSpan="3"/>
 	        <field name="realQty" colSpan="3"/>
 	        <field name="unit" colSpan="3"/>
-	        <field name="price" colSpan="3"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="accordanceSelect"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true"/>
@@ -72,7 +69,6 @@
 	        <field name="productModel"/>
 			<field name="qty" colSpan="3" onChange="action-stock-move-line-record-qty"/>
 	        <field name="realQty" colSpan="3"/>
-			<field name="price" colSpan="3"/>
 	        <field name="unit" colSpan="3"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>

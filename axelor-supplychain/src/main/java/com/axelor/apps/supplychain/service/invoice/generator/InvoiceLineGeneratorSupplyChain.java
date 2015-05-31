@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineType;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
@@ -43,16 +42,32 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected PurchaseOrderLine purchaseOrderLine;
 	protected StockMove stockMove;
 
-	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted,String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, InvoiceLineType invoiceLineType, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, BigDecimal inTaxTotal,boolean isTaxInvoice,
+	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
+			Unit unit, InvoiceLineType invoiceLineType, int sequence, boolean isTaxInvoice,
 			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMove stockMove) {
 
-		super(invoice, product, productName, price, priceDiscounted, description, qty, unit, taxLine, invoiceLineType, sequence, discountAmount, discountTypeSelect, exTaxTotal, inTaxTotal, isTaxInvoice);
+		super(invoice, product, productName, description, qty, unit, invoiceLineType, sequence, isTaxInvoice);
+
 		if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
 			this.saleOrderLine = saleOrderLine;
+			this.discountAmount = saleOrderLine.getDiscountAmount();
+			this.price = saleOrderLine.getPrice();
+			this.priceDiscounted = saleOrderLine.getPriceDiscounted();
+			this.taxLine = saleOrderLine.getTaxLine();
+			this.exTaxTotal = saleOrderLine.getExTaxTotal();
+			this.inTaxTotal = saleOrderLine.getInTaxTotal();
+			this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
 		}else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE){
 			this.purchaseOrderLine = purchaseOrderLine;
+			this.discountAmount = purchaseOrderLine.getDiscountAmount();
+			this.price = purchaseOrderLine.getPrice();
+			this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
+			this.taxLine = purchaseOrderLine.getTaxLine();
+			this.exTaxTotal = purchaseOrderLine.getExTaxTotal();
+			this.inTaxTotal = purchaseOrderLine.getInTaxTotal();
+			this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
 		}
+
 		if(stockMove != null){
 			this.stockMove = stockMove;
 		}

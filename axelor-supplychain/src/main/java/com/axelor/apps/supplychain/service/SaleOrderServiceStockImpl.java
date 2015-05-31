@@ -137,7 +137,6 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 					saleOrderLine.getDescription(),
 					saleOrderLine.getQty(),
 					saleOrderLine.getUnit(),
-					saleOrderLineService.computeDiscount(saleOrderLine),
 					stockMove,
 					1);
 
