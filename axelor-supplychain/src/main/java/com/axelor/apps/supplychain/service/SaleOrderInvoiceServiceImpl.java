@@ -30,13 +30,11 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.Scheduler;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -337,8 +335,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 	@Override
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted,String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, BigDecimal inTaxTotal, int sequence, SaleOrderLine saleOrderLine) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, String description, BigDecimal qty,
+			Unit unit, int sequence, SaleOrderLine saleOrderLine) throws AxelorException  {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, productName,description, qty, unit, product.getInvoiceLineType(),
 				sequence, false, saleOrderLine, null, null)  {
@@ -363,8 +361,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException  {
 
 		return this.createInvoiceLine(invoice, saleOrderLine.getProduct(), saleOrderLine.getProductName(),
-				saleOrderLine.getPrice(), saleOrderLine.getPriceDiscounted(),saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(), saleOrderLine.getTaxLine(),
-				saleOrderLine.getProductVariant(), saleOrderLine.getDiscountAmount(), saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getExTaxTotal(), saleOrderLine.getInTaxTotal(),saleOrderLine.getSequence(), saleOrderLine);
+				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),saleOrderLine.getSequence(), saleOrderLine);
 
 
 	}
@@ -374,9 +371,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderSubLine saleOrderSubLine) throws AxelorException  {
 
 		return this.createInvoiceLine(invoice, saleOrderSubLine.getProduct(), saleOrderSubLine.getProductName(),
-				saleOrderSubLine.getPrice(), null,saleOrderSubLine.getDescription(), saleOrderSubLine.getQty(), saleOrderSubLine.getUnit(),
-				saleOrderSubLine.getTaxLine(), saleOrderSubLine.getProductVariant(),
-				saleOrderSubLine.getDiscountAmount(), saleOrderSubLine.getDiscountTypeSelect(), saleOrderSubLine.getExTaxTotal(), null,saleOrderSubLine.getSequence(), saleOrderSubLine.getSaleOrderLine());
+				saleOrderSubLine.getDescription(), saleOrderSubLine.getQty(), saleOrderSubLine.getUnit(),saleOrderSubLine.getSequence(), saleOrderSubLine.getSaleOrderLine());
 
 	}
 
