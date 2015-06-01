@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
@@ -67,6 +68,7 @@ public abstract class InvoiceGenerator  {
 	protected PriceList priceList;
 	protected String internalReference;
 	protected String externalReference;
+	protected boolean inAti;
 
 	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
 			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference) throws AxelorException {
@@ -82,7 +84,7 @@ public abstract class InvoiceGenerator  {
 		this.priceList = priceList;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
-
+		this.inAti = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAti();
 		this.today = GeneralService.getTodayDate();
 		this.journalService = new JournalService();
 
@@ -107,7 +109,7 @@ public abstract class InvoiceGenerator  {
 		this.priceList = priceList;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
-
+		this.inAti = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAti();
 		this.today = GeneralService.getTodayDate();
 		this.journalService = new JournalService();
 
@@ -115,7 +117,7 @@ public abstract class InvoiceGenerator  {
 
 
 	protected InvoiceGenerator() {
-
+		this.inAti = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAti();
 		this.today = GeneralService.getTodayDate();
 		this.journalService = new JournalService();
 
@@ -148,7 +150,7 @@ public abstract class InvoiceGenerator  {
 		Invoice invoice = new Invoice();
 
 		invoice.setOperationTypeSelect(operationType);
-		
+
 		if(partner == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_2), GeneralServiceAccount.getExceptionInvoiceMsg()), IException.MISSING_FIELD);
 		}
@@ -202,6 +204,8 @@ public abstract class InvoiceGenerator  {
 		invoice.setInternalReference(internalReference);
 
 		invoice.setExternalReference(externalReference);
+
+		invoice.setInAti(inAti);
 
 		initCollections(invoice);
 

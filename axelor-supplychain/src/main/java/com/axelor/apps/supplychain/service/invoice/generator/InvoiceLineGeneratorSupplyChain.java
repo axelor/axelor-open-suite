@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineType;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -48,7 +47,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
 		super(invoice, product, productName, description, qty, unit, invoiceLineType, sequence, isTaxInvoice);
 
-		if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
+		if (saleOrderLine != null){
 			this.saleOrderLine = saleOrderLine;
 			this.discountAmount = saleOrderLine.getDiscountAmount();
 			this.price = saleOrderLine.getPrice();
@@ -57,7 +56,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.exTaxTotal = saleOrderLine.getExTaxTotal();
 			this.inTaxTotal = saleOrderLine.getInTaxTotal();
 			this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
-		}else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE){
+		}else if (purchaseOrderLine != null){
 			this.purchaseOrderLine = purchaseOrderLine;
 			this.discountAmount = purchaseOrderLine.getDiscountAmount();
 			this.price = purchaseOrderLine.getPrice();

@@ -202,10 +202,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 		}
 		else{
 			BigDecimal inTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
-			BigDecimal exTaxTotal = inTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)));
+			BigDecimal exTaxTotal = inTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 			BigDecimal priceDiscounted = this.computeDiscount(purchaseOrderLine);
-			BigDecimal companyInTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
-			BigDecimal companyExTaxTotal = companyInTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)));
+			BigDecimal companyInTaxTotal = this.getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
+			BigDecimal companyExTaxTotal = companyInTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 
 			purchaseOrderLine.setExTaxTotal(exTaxTotal);
 			purchaseOrderLine.setCompanyExTaxTotal(companyExTaxTotal);

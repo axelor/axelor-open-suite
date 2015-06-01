@@ -251,7 +251,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			}
 			else{
 				inTaxTotal = computeAmount(qty, price);
-				exTaxTotal = inTaxTotal.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)));
+				exTaxTotal = inTaxTotal.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 			}
 		}
 

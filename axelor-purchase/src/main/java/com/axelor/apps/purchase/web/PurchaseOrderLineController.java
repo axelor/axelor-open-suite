@@ -18,11 +18,14 @@
 package com.axelor.apps.purchase.web;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
+import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -38,6 +41,9 @@ public class PurchaseOrderLineController {
 
 	@Inject
 	private PriceListService priceListService;
+
+	@Inject
+	private ProductService productService;
 
 	public void compute(ActionRequest request, ActionResponse response){
 
@@ -84,7 +90,7 @@ public class PurchaseOrderLineController {
 				if (purchaseOrderLine.getPrice() != null && purchaseOrderLine.getQty() != null){
 
 					inTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLineService.computeDiscount(purchaseOrderLine));
-					exTaxTotal = inTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)));
+					exTaxTotal = inTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 					priceDiscounted = purchaseOrderLineService.computeDiscount(purchaseOrderLine);
 				}
 
@@ -98,7 +104,7 @@ public class PurchaseOrderLineController {
 
 					if(purchaseOrder != null) {
 						companyInTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
-						companyExTaxTotal = companyInTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)));
+						companyExTaxTotal = companyInTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 						response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
 						response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getPrice()));
 					}
@@ -150,6 +156,21 @@ public class PurchaseOrderLineController {
 						price = (BigDecimal) discounts.get("price");
 					}
 				}
+
+				else{
+					List<SupplierCatalog> supplierCatalogList = purchaseOrderLine.getProduct().getSupplierCatalogList();
+					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
+						for (SupplierCatalog supplierCatalog : supplierCatalogList) {
+							if(supplierCatalog.getProduct().equals(purchaseOrderLine.getProduct()) && supplierCatalog.getMinQty().compareTo(purchaseOrderLine.getQty())<=0 && supplierCatalog.getSupplierPartner().equals(purchaseOrder.getSupplierPartner())){
+								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
+								response.setValue("discountAmount", discounts.get("discountAmount"));
+								response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+							}
+						}
+
+					}
+				}
+
 				response.setValue("price", price);
 			}
 			catch(Exception e) {
@@ -203,6 +224,20 @@ public class PurchaseOrderLineController {
 					response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 					if(discounts.get("price") != null)  {
 						price = (BigDecimal) discounts.get("price");
+					}
+				}
+
+				else{
+					List<SupplierCatalog> supplierCatalogList = purchaseOrderLine.getProduct().getSupplierCatalogList();
+					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
+						for (SupplierCatalog supplierCatalog : supplierCatalogList) {
+							if(supplierCatalog.getProduct().equals(purchaseOrderLine.getProduct()) && supplierCatalog.getMinQty().compareTo(purchaseOrderLine.getQty())<=0 && supplierCatalog.getSupplierPartner().equals(purchaseOrder.getSupplierPartner())){
+								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
+								response.setValue("discountAmount", discounts.get("discountAmount"));
+								response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+							}
+						}
+
 					}
 				}
 

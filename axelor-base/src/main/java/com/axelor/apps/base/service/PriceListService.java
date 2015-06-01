@@ -49,7 +49,7 @@ public class PriceListService extends PriceListRepository {
 
 		if(product != null && priceList != null)  {
 			for (PriceListLine priceListLineIt : priceList.getPriceListLineList()) {
-				if(priceListLineIt.getProduct().equals(product)){
+				if(priceListLineIt.getProduct().equals(product) && priceListLineIt.getMinQty().compareTo(qty)<=0){
 					priceListLine = priceListLineIt;
 				}
 			}

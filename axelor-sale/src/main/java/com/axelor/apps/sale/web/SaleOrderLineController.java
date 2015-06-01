@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.SaleOrderLineService;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -38,7 +39,8 @@ public class SaleOrderLineController {
 	@Inject
 	private PriceListService priceListService;
 
-	public void compute(ActionRequest request, ActionResponse response) {
+
+	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
@@ -47,7 +49,7 @@ public class SaleOrderLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = BigDecimal.ZERO;
-		try{
+//		try{
 			if(!request.getContext().getParentContext().asType(SaleOrder.class).getInAti()){
 				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
 					if(saleOrderLine.getSaleOrderSubLineList() == null || saleOrderLine.getSaleOrderSubLineList().isEmpty()) {
@@ -81,7 +83,7 @@ public class SaleOrderLineController {
 				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
 					if(saleOrderLine.getSaleOrderSubLineList() == null || saleOrderLine.getSaleOrderSubLineList().isEmpty()) {
 						inTaxTotal = SaleOrderLineService.computeAmount(saleOrderLine.getQty(), saleOrderLineService.computeDiscount(saleOrderLine));
-						exTaxTotal = inTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)));
+						exTaxTotal = inTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 						priceDiscounted = saleOrderLineService.computeDiscount(saleOrderLine);
 					}
 				}
@@ -96,7 +98,7 @@ public class SaleOrderLineController {
 
 					if(saleOrder != null) {
 						companyInTaxTotal = saleOrderLineService.getAmountInCompanyCurrency(inTaxTotal, saleOrder);
-						companyExTaxTotal = companyInTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)));
+						companyExTaxTotal = companyInTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 					}
 				}
 
@@ -106,10 +108,10 @@ public class SaleOrderLineController {
 				response.setValue("companyExTaxTotal", companyExTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
 			}
-		}
-		catch(Exception e) {
-			response.setFlash(e.getMessage());
-		}
+//		}
+//		catch(Exception e) {
+//			response.setFlash(e.getMessage());
+//		}
 	}
 
 	public void getProductInformation(ActionRequest request, ActionResponse response) {

@@ -18,15 +18,19 @@
 package com.axelor.apps.account.web;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
+import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -39,6 +43,9 @@ public class InvoiceLineController {
 
 	@Inject
 	private PriceListService priceListService;
+
+	@Inject
+	private ProductService productService;
 
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -80,7 +87,7 @@ public class InvoiceLineController {
 			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
 
 				inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine));
-				exTaxTotal = inTaxTotal.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)));
+				exTaxTotal = inTaxTotal.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine);
 			}
 
@@ -143,6 +150,20 @@ public class InvoiceLineController {
 					}
 				}
 
+				else if (invoice.getOperationTypeSelect()<InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
+					List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
+					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
+						for (SupplierCatalog supplierCatalog : supplierCatalogList) {
+							if(supplierCatalog.getProduct().equals(invoiceLine.getProduct()) && supplierCatalog.getMinQty().compareTo(invoiceLine.getQty())<=0 && supplierCatalog.getSupplierPartner().equals(invoice.getPartner())){
+								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
+								response.setValue("discountAmount", discounts.get("discountAmount"));
+								response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+							}
+						}
+
+					}
+				}
+
 				response.setValue("price", price);
 			}
 			catch(Exception e) {
@@ -198,6 +219,20 @@ public class InvoiceLineController {
 					response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 					if(discounts.get("price") != null)  {
 						price = (BigDecimal) discounts.get("price");
+					}
+				}
+
+				else if (invoice.getOperationTypeSelect()<InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
+					List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
+					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
+						for (SupplierCatalog supplierCatalog : supplierCatalogList) {
+							if(supplierCatalog.getProduct().equals(invoiceLine.getProduct()) && supplierCatalog.getMinQty().compareTo(invoiceLine.getQty())<=0 && supplierCatalog.getSupplierPartner().equals(invoice.getPartner())){
+								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
+								response.setValue("discountAmount", discounts.get("discountAmount"));
+								response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+							}
+						}
+
 					}
 				}
 
