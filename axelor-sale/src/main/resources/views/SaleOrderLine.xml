@@ -184,8 +184,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-hidden-subscription">
-		<attribute name="hidden" for="subscription" expr="true" if="product?.productTypeSelect != 'subscriptable'"/>
-		<attribute name="hidden" for="subscription" expr="false" if="product?.productTypeSelect == 'subscriptable'"/>
+		<attribute name="hidden" for="subscription" expr="product?.productTypeSelect != 'subscriptable'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-product">

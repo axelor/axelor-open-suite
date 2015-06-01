@@ -62,7 +62,7 @@
 	  
 	  <panel>
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
-	    <field name="bloqued" colSpan="4" readonly="true"/>
+	    <field name="bloqued" colSpan="4" readonly="true" showIf="bloqued"/>
 		<field name="manualUnblock" colSpan="4" showIf="bloqued == true"/>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="6"/>
