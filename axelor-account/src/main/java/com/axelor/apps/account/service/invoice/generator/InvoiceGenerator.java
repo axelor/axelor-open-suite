@@ -117,7 +117,6 @@ public abstract class InvoiceGenerator  {
 
 
 	protected InvoiceGenerator() {
-		this.inAti = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAti();
 		this.today = GeneralService.getTodayDate();
 		this.journalService = new JournalService();
 

@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -144,8 +145,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 		BigDecimal price = saleOrderLine.getProduct().getSalePrice();
 
 		if(saleOrderLine.getProduct().getInAti() && !saleOrder.getInAti()){
-			price = price.subtract(price.multiply(saleOrderLine.getTaxLine().getValue()));
-
+			price = price.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 		}
 		else if(!saleOrderLine.getProduct().getInAti() && saleOrder.getInAti()){
 			price = price.add(price.multiply(saleOrderLine.getTaxLine().getValue()));
@@ -154,10 +154,15 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 	}
 
 	public BigDecimal convertDiscountAmount(SaleOrderLine saleOrderLine, SaleOrder saleOrder){
-		BigDecimal discountAmount = this.computeDiscount(saleOrderLine).subtract(saleOrderLine.getProduct().getSalePrice());
-
+		BigDecimal discountAmount = BigDecimal.ZERO;
+		if(saleOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED){
+			discountAmount = this.computeDiscount(saleOrderLine).subtract(saleOrderLine.getProduct().getSalePrice());
+		}
+		else{
+			discountAmount = (this.computeDiscount(saleOrderLine).subtract((saleOrderLine.getProduct().getSalePrice()))).multiply(new BigDecimal(100)).divide(saleOrderLine.getProduct().getSalePrice());
+		}
 		if(saleOrderLine.getProduct().getInAti() && !saleOrder.getInAti()){
-			discountAmount = discountAmount.subtract(discountAmount.multiply(saleOrderLine.getTaxLine().getValue()));
+			discountAmount = discountAmount.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 
 		}
 		else if(!saleOrderLine.getProduct().getInAti() && saleOrder.getInAti()){

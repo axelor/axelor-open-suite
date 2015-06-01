@@ -56,21 +56,19 @@ public class InvoiceLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = BigDecimal.ZERO;
+		Invoice invoice = invoiceLine.getInvoice();
+		if(invoice == null){
+			invoice = request.getContext().getParentContext().asType(Invoice.class);
+		}
 		if(!request.getContext().getParentContext().asType(Invoice.class).getInAti()){
 			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
 
-				exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine));
+				exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 				inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(invoiceLine.getTaxLine().getValue()));
-				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine);
+				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine,invoice);
 			}
 
 			if(exTaxTotal != null) {
-
-				Invoice invoice = invoiceLine.getInvoice();
-
-				if(invoice == null) {
-					invoice = request.getContext().getParentContext().asType(Invoice.class);
-				}
 
 				if(invoice != null) {
 					accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(exTaxTotal, invoice);
@@ -86,18 +84,12 @@ public class InvoiceLineController {
 		else{
 			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
 
-				inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine));
+				inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 				exTaxTotal = inTaxTotal.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
-				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine);
+				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine,invoice);
 			}
 
 			if(inTaxTotal != null) {
-
-				Invoice invoice = invoiceLine.getInvoice();
-
-				if(invoice == null) {
-					invoice = request.getContext().getParentContext().asType(Invoice.class);
-				}
 
 				if(invoice != null) {
 					accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(inTaxTotal, invoice);

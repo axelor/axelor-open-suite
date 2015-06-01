@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -273,7 +274,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 		BigDecimal price = purchaseOrderLine.getProduct().getPurchasePrice();
 
 		if(purchaseOrderLine.getProduct().getInAti() && !purchaseOrder.getInAti()){
-			price = price.subtract(price.multiply(purchaseOrderLine.getTaxLine().getValue()));
+			price = price.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 
 		}
 		else if(!purchaseOrderLine.getProduct().getInAti() && purchaseOrder.getInAti()){
@@ -284,11 +285,15 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 
 	@Override
 	public BigDecimal convertDiscountAmount(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder){
-		BigDecimal discountAmount = this.computeDiscount(purchaseOrderLine).subtract(purchaseOrderLine.getProduct().getPurchasePrice());
-
+		BigDecimal discountAmount = BigDecimal.ZERO;
+		if(purchaseOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED){
+			discountAmount = this.computeDiscount(purchaseOrderLine).subtract(purchaseOrderLine.getProduct().getSalePrice());
+		}
+		else{
+			discountAmount = (this.computeDiscount(purchaseOrderLine).subtract((purchaseOrderLine.getProduct().getSalePrice()))).multiply(new BigDecimal(100)).divide(purchaseOrderLine.getProduct().getSalePrice());
+		}
 		if(purchaseOrderLine.getProduct().getInAti() && !purchaseOrder.getInAti()){
-			discountAmount = discountAmount.subtract(discountAmount.multiply(purchaseOrderLine.getTaxLine().getValue()));
-
+			discountAmount = discountAmount.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 		}
 		else if(!purchaseOrderLine.getProduct().getInAti() && purchaseOrder.getInAti()){
 			discountAmount = discountAmount.add(discountAmount.multiply(purchaseOrderLine.getTaxLine().getValue()));

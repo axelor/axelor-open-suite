@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -102,8 +103,16 @@ public class InvoiceLineService {
 	}
 
 
-	public BigDecimal computeDiscount(InvoiceLine invoiceLine)  {
-		BigDecimal unitPrice = invoiceLine.getPrice();
+	public BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice)  {
+		BigDecimal unitPrice = BigDecimal.ZERO;
+		
+		if(invoice.getOperationTypeSelect()<InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
+			unitPrice = invoiceLine.getProduct().getCostPrice();
+		}
+		
+		if(invoice.getOperationTypeSelect()>=InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
+			unitPrice = invoiceLine.getProduct().getSalePrice();
+		}
 
 		if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
 			return  unitPrice.add(invoiceLine.getDiscountAmount());
@@ -124,8 +133,7 @@ public class InvoiceLineService {
 		}
 
 		if(invoiceLine.getProduct().getInAti() && !invoice.getInAti()){
-			price = price.subtract(price.multiply(invoiceLine.getTaxLine().getValue()));
-
+			price = price.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 		}
 		else if(!invoiceLine.getProduct().getInAti() && invoice.getInAti()){
 			price = price.add(price.multiply(invoiceLine.getTaxLine().getValue()));
@@ -134,14 +142,22 @@ public class InvoiceLineService {
 	}
 
 	public BigDecimal convertDiscountAmount(InvoiceLine invoiceLine, Invoice invoice){
-		BigDecimal discountAmount = this.computeDiscount(invoiceLine).subtract(invoiceLine.getProduct().getSalePrice());
-		if(invoice.getOperationTypeSelect()<2){
-			discountAmount = this.computeDiscount(invoiceLine).subtract(invoiceLine.getProduct().getPurchasePrice());
+		BigDecimal discountAmount = BigDecimal.ZERO;
+		if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED){
+			discountAmount = this.computeDiscount(invoiceLine,invoice).subtract(invoiceLine.getProduct().getSalePrice());
+			if(invoice.getOperationTypeSelect()<2){
+				discountAmount = this.computeDiscount(invoiceLine,invoice).subtract(invoiceLine.getProduct().getPurchasePrice());
+			}
+		}
+		else{
+			discountAmount = (this.computeDiscount(invoiceLine,invoice).subtract((invoiceLine.getProduct().getSalePrice()))).multiply(new BigDecimal(100)).divide(invoiceLine.getProduct().getSalePrice());
+			if(invoice.getOperationTypeSelect()<2){
+				discountAmount = (this.computeDiscount(invoiceLine,invoice).subtract((invoiceLine.getProduct().getCostPrice()))).multiply(new BigDecimal(100)).divide(invoiceLine.getProduct().getCostPrice());
+			}
 		}
 
 		if(invoiceLine.getProduct().getInAti() && !invoice.getInAti()){
-			discountAmount = discountAmount.subtract(discountAmount.multiply(invoiceLine.getTaxLine().getValue()));
-
+			discountAmount = discountAmount.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 		}
 		else if(!invoiceLine.getProduct().getInAti() && invoice.getInAti()){
 			discountAmount = discountAmount.add(discountAmount.multiply(invoiceLine.getTaxLine().getValue()));
