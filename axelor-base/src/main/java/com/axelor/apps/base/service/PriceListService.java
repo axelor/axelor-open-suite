@@ -139,11 +139,11 @@ public class PriceListService extends PriceListRepository {
 	public BigDecimal computeDiscount(BigDecimal unitPrice, int discountTypeSelect,BigDecimal discountAmount)  {
 
 		if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_FIXED)  {
-			return  unitPrice.add(discountAmount);
+			return  unitPrice.subtract(discountAmount);
 		}
 		else if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
 			return unitPrice.multiply(
-					BigDecimal.ONE.add(
+					BigDecimal.ONE.subtract(
 							discountAmount.divide(new BigDecimal(100))));
 		}
 

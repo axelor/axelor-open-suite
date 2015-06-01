@@ -156,10 +156,10 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 	public BigDecimal convertDiscountAmount(SaleOrderLine saleOrderLine, SaleOrder saleOrder){
 		BigDecimal discountAmount = BigDecimal.ZERO;
 		if(saleOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED){
-			discountAmount = this.computeDiscount(saleOrderLine).subtract(saleOrderLine.getProduct().getSalePrice());
+			discountAmount = saleOrderLine.getProduct().getSalePrice().subtract(this.computeDiscount(saleOrderLine));
 		}
 		else{
-			discountAmount = (this.computeDiscount(saleOrderLine).subtract((saleOrderLine.getProduct().getSalePrice()))).multiply(new BigDecimal(100)).divide(saleOrderLine.getProduct().getSalePrice());
+			discountAmount = (saleOrderLine.getProduct().getSalePrice().subtract(this.computeDiscount(saleOrderLine))).multiply(new BigDecimal(100)).divide(saleOrderLine.getProduct().getSalePrice());
 		}
 		if(saleOrderLine.getProduct().getInAti() && !saleOrder.getInAti()){
 			discountAmount = discountAmount.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
