@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -142,6 +143,8 @@ public class VentilateState extends WorkflowInvoice {
 	}
 	
 	protected void setMove( ) throws AxelorException {
+		
+		if(invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == 0)  {  return;  }
 		
 		// Création de l'écriture comptable
 		Move move = moveService.createMove(invoice);
