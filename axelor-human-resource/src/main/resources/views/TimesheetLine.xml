@@ -11,8 +11,8 @@
 	</grid>
 	
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" onNew="action-hr-default-timesheet-line-timesheet">
-		<field name="project"/>
-		<field name="task"/>
+		<field name="project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+		<field name="task" domain="self.taskTypeSelect = 'task'" form-view="task-form" grid-view="task-grid"/>
 		<field name="date" />
 		<field name="activity"/>
 		<field name="visibleDuration"/>
