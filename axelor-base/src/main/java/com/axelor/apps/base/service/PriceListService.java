@@ -74,15 +74,15 @@ public class PriceListService extends PriceListRepository {
 		switch (priceListLine.getTypeSelect()) {
 			case IPriceListLine.TYPE_ADDITIONNAL:
 
-				return priceListLine.getAmount();
+				return priceListLine.getAmount().negate();
 
 			case IPriceListLine.TYPE_DISCOUNT:
 
-				return priceListLine.getAmount().negate();
+				return priceListLine.getAmount();
 
 			case IPriceListLine.TYPE_REPLACE:
 
-				return priceListLine.getAmount().subtract(unitPrice);
+				return unitPrice.subtract(priceListLine.getAmount());
 
 			default:
 				return BigDecimal.ZERO;
