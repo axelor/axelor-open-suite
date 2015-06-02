@@ -104,6 +104,8 @@
     <decimal name="discount" title="Discount"/>
     
     <boolean name="inAti" title="In ATI"/>
+    
+    <string name="supplierInvoiceNb" title="Supplier invoice number"/>
 
   	<unique-constraint columns="invoiceId,company"/>
 

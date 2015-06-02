@@ -53,6 +53,7 @@
 			<field name="saleOrder" if-module="axelor-supplychain" />
 			<field name="message" />
 			<field name="discount" />
+			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		</panel>
 	  
 		<panel-tabs>
