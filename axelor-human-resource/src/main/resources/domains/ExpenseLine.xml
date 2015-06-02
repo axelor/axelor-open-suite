@@ -8,7 +8,7 @@
   <entity name="ExpenseLine" cachable="true">
       
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" readonly="true"/>
-      <many-to-one name="task" ref="com.axelor.apps.project.db.Task" title="Task" />
+      <many-to-one name="task" ref="com.axelor.apps.project.db.ProjectTask" title="Task" />
       <many-to-one name="expenseType" ref="com.axelor.apps.base.db.Product" title="Expense Type" required="true" />
       <date name="expenseDate" title="Expense date" required="true" default="now"/>
       <decimal name="untaxedAmount" title="Untaxed amount" required="true"/>

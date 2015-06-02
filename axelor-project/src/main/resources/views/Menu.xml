@@ -8,9 +8,10 @@
     	title="Projects"
     	action="project.all"/>
 
-	<action-view name="project.all" title="Projects" model="com.axelor.apps.project.db.Project">
+	<action-view name="project.all" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
     	<view type="grid" name="project-grid"/>
 	    <view type="form" name="project-form"/>
+	    <domain>self.taskTypeSelect = 'project'</domain>
 	</action-view>
 
 </object-views>

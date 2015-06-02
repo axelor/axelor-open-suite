@@ -53,8 +53,7 @@
 		<option value="com.axelor.apps.base.db.Product">Product</option>
 		<option value="com.axelor.apps.crm.db.Event">Event</option>
 		<option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
-		<option value="com.axelor.apps.project.db.Project">Project/Business</option>
-		<option value="com.axelor.apps.project.db.Task">Task (Project)</option>
+		<option value="com.axelor.apps.project.db.ProjectTask">Project/Business/Task (Project)</option>
 	</selection>
 	
 	<selection name="crm.event.call.duration.minutes.select">

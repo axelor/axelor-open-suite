@@ -5,6 +5,7 @@ module {
 	title "Axelor human resource"
 
 	//module dependencies
+	module "modules:axelor-account"
 	module "modules:axelor-business-project"
 	
 }
