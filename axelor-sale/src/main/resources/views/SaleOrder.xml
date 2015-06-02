@@ -70,7 +70,7 @@
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form"/>
 	    <field name="currency"/>
 	    <field name="versionNumber"/>
-	    <field name="project" if-module="axelor-business-project"/>
+	    <field name="project" if-module="axelor-business-project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
 	  </panel>
 	  
@@ -108,7 +108,7 @@
    		      <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
 	      </panel>
 	      <panel title="Business project" colSpan="12" if-module="axelor-account-organisation">
-      		  <field name="project" domain="self.isBusiness = true"/>
+      		  <field name="project" domain="self.isBusiness = true AND self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 	          <field name="hasGlobalTask" if-module="axelor-organisation"/>
        	  </panel>
        	  <panel title="Specific settings" colSpan="12">
@@ -230,7 +230,7 @@
    		      <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
 	      </panel>
 	      <panel title="Business project" colSpan="12" if-module="axelor-account-organisation">
-      		  <field name="project" domain="self.isBusiness = true"/>
+      		  <field name="project" domain="self.isBusiness = true AND self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 	          <field name="hasGlobalTask" if-module="axelor-organisation"/>
        	  </panel>
        	  <panel title="Specific settings" colSpan="12">

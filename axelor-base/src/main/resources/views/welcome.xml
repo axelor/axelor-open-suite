@@ -28,7 +28,7 @@
 	</action-view>
 
 	<action-view name="dashlet.task" title="Tasks"
-		model="com.axelor.apps.project.db.Project">
+		model="com.axelor.apps.project.db.ProjectTask">
 		<view type="grid" name="task-grid" />
 		<view type="form" name="task-form" />
 	</action-view>

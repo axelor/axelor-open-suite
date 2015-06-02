@@ -5,7 +5,7 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="Task">
+  <entity name="ProjectTask">
 
 	  <one-to-many name="timesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="task"/>
 	          

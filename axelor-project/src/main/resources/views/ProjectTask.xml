@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="name"/>
+		<field name="assignedTo"/>
+	</grid>
+
+	<form name="task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-default">
+	    <panel>
+	        <field name="project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+		    <field name="name" colSpan="12" />
+			<field name="assignedTo" onSelect="action-project-task-attrs-assigned-to-domain"/>
+			<field name="taskTypeSelect" hidden="true" />
+		</panel>
+	</form>
+	
+	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="fullName"/>
+		<field name="partner" />
+		<field name="businessProject" />
+	</grid>
+
+	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-project-default">
+		<panel title="Overview">
+			<field name="code" colSpan="4"/>
+			<field name="name" colSpan="8"/>
+			<field name="businessProject" colSpan="4"/>
+			<field name="partner" colSpan="8"/>
+			<field name="taskTypeSelect" hidden="true" />
+		</panel>
+		<panel-related field="taskList" form-view="task-form" grid-view="task-grid" />
+		<panel-related field="membersSet" sidebar="true" />
+	</form>
+	
+	<action-attrs name="action-project-task-attrs-assigned-to-domain">
+	    <attribute name="domain" for="assignedToSet" expr="eval:&quot;self.id in (${(_parent?.membersSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;"/>
+	</action-attrs>
+	
+	<action-record name="action-project-project-default" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="taskTypeSelect" expr="eval:'project'" />
+	</action-record>
+	
+	<action-record name="action-project-task-default" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="taskTypeSelect" expr="eval:'task'" />
+	</action-record>
+
+</object-views>

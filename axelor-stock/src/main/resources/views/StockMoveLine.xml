@@ -35,7 +35,7 @@
 	        <field name="unit" colSpan="3"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="accordanceSelect"/>
-	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true"/>
+	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
     </form>
@@ -72,7 +72,7 @@
 	        <field name="unit" colSpan="3"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
-	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true"/>
+	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
     </form>
@@ -94,7 +94,7 @@
 	        <field name="qty" onChange="action-stock-move-line-record-qty"/>
 	        <field name="unit"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
-	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true"/>
+	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 	        <field name="stockMove" hidden="true"/>
         </panel>
     </form>

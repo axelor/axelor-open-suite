@@ -22,8 +22,9 @@
 	    <field name="project" expr="action:action-business-project-create-sale-order-project" if="project == null"/>
 	</action-record>
 	
-	<action-record name="action-business-project-create-sale-order-project" model="com.axelor.apps.project.db.Project">
+	<action-record name="action-business-project-create-sale-order-project" model="com.axelor.apps.project.db.ProjectTask">
 	    <field name="partner" expr="eval:clientPartner"/>
+	    <field name="taskTypeSelect" expr="eval:'project'"/>
 	    <field name="code" expr="eval:saleOrderSeq"/>
 	    <field name="name" expr="eval:clientPartner?.name"/>
 	    <field name="businessProject" expr="eval:true"/>

@@ -39,8 +39,8 @@
 		<panel name="generateLinesPanel" title="Generate Lines automatically">
 		    <field name="fromDate"/>
 			<field name="toDate"/>
-			<field name="project"/>
-			<field name="task"/>
+			<field name="project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+			<field name="task" domain="self.taskTypeSelect = 'task'" form-view="task-form" grid-view="task-grid"/>
 			<field name="activity"/>
 			<field name="logTime"/>
 			<button name="generateLines" title="Generate lines" onClick="save,com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines"/>
