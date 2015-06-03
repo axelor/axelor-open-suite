@@ -51,7 +51,6 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 		}
 		List<CustomerCreditLine> customerCreditLineList = partner.getCustomerCreditLineList();
 		for (CustomerCreditLine customerCreditLine : customerCreditLineList) {
-			customerCreditLine.setAcceptedCredit(Beans.get(SaleConfigRepository.class).all().filter("self.company = ?", customerCreditLine.getCompany()).fetchOne().getAcceptedCredit());
 			customerCreditLine = this.computeUsedCredit(customerCreditLine);
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -70,7 +69,6 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 		List<CustomerCreditLine> customerCreditLineList = partner.getCustomerCreditLineList();
 		for (CustomerCreditLine customerCreditLine : customerCreditLineList) {
 			if(customerCreditLine.getCompany().equals(saleOrder.getCompany())){
-				customerCreditLine.setAcceptedCredit(Beans.get(SaleConfigRepository.class).all().filter("self.company = ?", customerCreditLine.getCompany()).fetchOne().getAcceptedCredit());
 				customerCreditLine = this.computeUsedCredit(customerCreditLine);
 				customerCreditLine.setUsedCredit(customerCreditLine.getUsedCredit().add(saleOrder.getExTaxTotal().subtract(saleOrder.getAmountInvoiced())));
 				boolean test = testUsedCredit(customerCreditLine);
