@@ -52,21 +52,23 @@ public class VentilateStateSupplyChain extends VentilateState {
 				SaleOrder currentSaleOrder = null;
 				List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
 				for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-					if (currentSaleOrder == null
-							|| !currentSaleOrder.equals(invoiceLine.getSaleOrderLine().getSaleOrder())){
-						saleOrderList.add(invoiceLine.getSaleOrderLine().getSaleOrder());
-						currentSaleOrder = invoiceLine.getSaleOrderLine().getSaleOrder();
+					if (invoiceLine.getSaleOrderLine() != null){
+						if (currentSaleOrder == null
+								|| !currentSaleOrder.equals(invoiceLine.getSaleOrderLine().getSaleOrder())){
+							saleOrderList.add(invoiceLine.getSaleOrderLine().getSaleOrder());
+							currentSaleOrder = invoiceLine.getSaleOrderLine().getSaleOrder();
+						}
+						//Update invoiced amount on sale order line
+						BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
+						if (!invoice.getCurrency().equals(invoiceLine.getSaleOrderLine().getSaleOrder().getCurrency())){
+							//If the sale order currency is different from the invoice currency, use company currency to calculate a rate. This rate will be applied to sale order line
+							BigDecimal currentCompanyInvoicedAmount = invoiceLine.getCompanyExTaxTotal();
+							BigDecimal rate = currentCompanyInvoicedAmount.divide(invoiceLine.getSaleOrderLine().getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
+							invoicedAmountToAdd = rate.multiply(invoiceLine.getSaleOrderLine().getExTaxTotal());
+						}
+						invoiceLine.getSaleOrderLine().setAmountInvoiced(invoiceLine.getSaleOrderLine().getAmountInvoiced().add(invoicedAmountToAdd));
+						JPA.save(invoiceLine.getSaleOrderLine());
 					}
-					//Update invoiced amount on sale order line
-					BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
-					if (!invoice.getCurrency().equals(invoiceLine.getSaleOrderLine().getSaleOrder().getCurrency())){
-						//If the sale order currency is different from the invoice currency, use company currency to calculate a rate. This rate will be applied to sale order line
-						BigDecimal currentCompanyInvoicedAmount = invoiceLine.getCompanyExTaxTotal();
-						BigDecimal rate = currentCompanyInvoicedAmount.divide(invoiceLine.getSaleOrderLine().getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
-						invoicedAmountToAdd = rate.multiply(invoiceLine.getSaleOrderLine().getExTaxTotal());
-					}
-					invoiceLine.getSaleOrderLine().setAmountInvoiced(invoiceLine.getSaleOrderLine().getAmountInvoiced().add(invoicedAmountToAdd));
-					JPA.save(invoiceLine.getSaleOrderLine());
 				}
 
 				for (SaleOrder saleOrder : saleOrderList) {
