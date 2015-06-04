@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
-import com.axelor.apps.sale.db.SaleOrderSubLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineTaxRepository;
 import com.google.inject.Inject;
 
@@ -72,55 +71,26 @@ public class SaleOrderLineTaxService extends SaleOrderLineTaxRepository{
 			
 			for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 				
-				if(saleOrderLine.getSaleOrderSubLineList() != null && !saleOrderLine.getSaleOrderSubLineList().isEmpty())  {
-					
-					for(SaleOrderSubLine saleOrderSubLine : saleOrderLine.getSaleOrderSubLineList())  {
-						TaxLine taxLine = saleOrderSubLine.getTaxLine();
-						LOG.debug("Tax {}", taxLine);
-
-						if (map.containsKey(taxLine)) {
-						
-							SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
-							
-							saleOrderLineTax.setExTaxBase(saleOrderLineTax.getExTaxBase().add(saleOrderSubLine.getExTaxTotal()));
-							
-						}
-						else {
-							
-							SaleOrderLineTax saleOrderLineTax = new SaleOrderLineTax();
-							saleOrderLineTax.setSaleOrder(saleOrder);
-							
-							saleOrderLineTax.setExTaxBase(saleOrderSubLine.getExTaxTotal());
-							
-							saleOrderLineTax.setTaxLine(taxLine);
-							map.put(taxLine, saleOrderLineTax);
-							
-						}
-					}
-				}
-				else  {
+				TaxLine taxLine = saleOrderLine.getTaxLine();
+				LOG.debug("Tax {}", taxLine);
 				
-					TaxLine taxLine = saleOrderLine.getTaxLine();
-					LOG.debug("Tax {}", taxLine);
+				if (map.containsKey(taxLine)) {
+				
+					SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
 					
-					if (map.containsKey(taxLine)) {
+					saleOrderLineTax.setExTaxBase(saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal()));
 					
-						SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
-						
-						saleOrderLineTax.setExTaxBase(saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal()));
-						
-					}
-					else {
-						
-						SaleOrderLineTax saleOrderLineTax = new SaleOrderLineTax();
-						saleOrderLineTax.setSaleOrder(saleOrder);
-						
-						saleOrderLineTax.setExTaxBase(saleOrderLine.getExTaxTotal());
-						
-						saleOrderLineTax.setTaxLine(taxLine);
-						map.put(taxLine, saleOrderLineTax);
-						
-					}
+				}
+				else {
+					
+					SaleOrderLineTax saleOrderLineTax = new SaleOrderLineTax();
+					saleOrderLineTax.setSaleOrder(saleOrder);
+					
+					saleOrderLineTax.setExTaxBase(saleOrderLine.getExTaxTotal());
+					
+					saleOrderLineTax.setTaxLine(taxLine);
+					map.put(taxLine, saleOrderLineTax);
+					
 				}
 			}
 		}

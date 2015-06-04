@@ -102,7 +102,6 @@
     <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments rejects" help="true"/>
   
     <!-- Onglet Facturation -->
-    <boolean name="showDetailsInInvoice" title="Show details on invoice"/>
     <boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
     <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
     

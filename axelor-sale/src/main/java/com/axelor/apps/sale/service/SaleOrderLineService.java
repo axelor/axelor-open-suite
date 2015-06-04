@@ -33,7 +33,6 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.SaleOrderSubLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -48,9 +47,6 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 
 	@Inject
 	private PriceListService priceListService;
-
-	@Inject
-	private SaleOrderSubLineService saleOrderSubLineService;
 
 
 	/**
@@ -89,26 +85,6 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 		return Beans.get(AccountManagementService.class).getTaxLine(
 				saleOrder.getCreationDate(), saleOrderLine.getProduct(), saleOrder.getCompany(), saleOrder.getClientPartner().getFiscalPosition(), false);
 
-	}
-
-
-	public BigDecimal computeSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException  {
-
-		BigDecimal exTaxTotal = BigDecimal.ZERO;
-
-		if(saleOrderLine.getSaleOrderSubLineList() != null && !saleOrderLine.getSaleOrderSubLineList().isEmpty())  {
-			for(SaleOrderSubLine saleOrderSubLine : saleOrderLine.getSaleOrderSubLineList())  {
-
-				saleOrderSubLine.setCompanyExTaxTotal(saleOrderSubLineService.getCompanyExTaxTotal(saleOrderLine.getExTaxTotal(), saleOrderLine.getSaleOrder()));
-
-				exTaxTotal = exTaxTotal.add(saleOrderSubLine.getExTaxTotal());
-			}
-		}
-		else  {
-			return saleOrderLine.getExTaxTotal();
-		}
-
-		return exTaxTotal;
 	}
 
 

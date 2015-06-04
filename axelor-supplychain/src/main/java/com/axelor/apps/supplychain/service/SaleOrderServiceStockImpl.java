@@ -26,7 +26,6 @@ import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.IExceptionMessage;
-import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.ILocation;
 import com.axelor.apps.stock.db.IStockMove;
@@ -44,9 +43,6 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
-
-	@Inject
-	private SaleOrderLineService saleOrderLineService;
 
 	@Inject
 	private StockMoveService stockMoveService;

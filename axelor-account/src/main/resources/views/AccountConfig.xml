@@ -18,7 +18,6 @@
 		  <button name="installTemplate" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" colSpan="4" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 	
 		  <field name="hasChartImported"/>
-		  <field name="showDetailsInInvoice"/>
 		  <field name="allowCancelVentilatedInvoice"/>
 	   	  <field name="allowRemovalValidatedMove" showIf="allowCancelVentilatedInvoice"/>
 	   	  <field name="invoiceInAti"/>

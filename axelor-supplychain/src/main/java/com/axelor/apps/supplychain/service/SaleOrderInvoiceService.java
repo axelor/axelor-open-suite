@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.SaleOrderSubLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -80,14 +79,12 @@ public interface SaleOrderInvoiceService {
 
 
 	// TODO ajouter tri sur les séquences
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList, boolean showDetailsInInvoice) throws AxelorException;
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList) throws AxelorException;
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, SaleOrderLine saleOrderLine) throws AxelorException;
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException;
-
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderSubLine saleOrderSubLine) throws AxelorException;
 
 	public BigDecimal getAmountInvoiced(SaleOrder saleOrder);
 
