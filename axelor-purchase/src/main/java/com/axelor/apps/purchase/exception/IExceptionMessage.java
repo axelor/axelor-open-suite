@@ -8,7 +8,8 @@ package com.axelor.apps.purchase.exception;
  *
  */
 public interface IExceptionMessage {
-
+	
+	static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "Il manque une ligne de taxe"/*)*/ ;
 	/**
 	 * Purchase order service impl
 	 */

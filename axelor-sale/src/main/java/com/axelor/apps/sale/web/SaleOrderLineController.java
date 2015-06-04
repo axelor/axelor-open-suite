@@ -25,8 +25,11 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -49,6 +52,9 @@ public class SaleOrderLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = BigDecimal.ZERO;
+		if(saleOrderLine.getTaxLine()==null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_ORDER_LINE_TAX_LINE)), IException.CONFIGURATION_ERROR);
+		}
 //		try{
 			if(!request.getContext().getParentContext().asType(SaleOrder.class).getInAti()){
 				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {

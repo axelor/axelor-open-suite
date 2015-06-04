@@ -28,8 +28,12 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -45,7 +49,7 @@ public class PurchaseOrderLineController {
 	@Inject
 	private ProductService productService;
 
-	public void compute(ActionRequest request, ActionResponse response){
+	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
 
 		PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
@@ -53,7 +57,9 @@ public class PurchaseOrderLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = BigDecimal.ZERO;
-
+		if(purchaseOrderLine.getTaxLine()==null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_TAX_LINE)), IException.CONFIGURATION_ERROR);
+		}
 		try{
 			if(!request.getContext().getParentContext().asType(PurchaseOrder.class).getInAti()){
 				if (purchaseOrderLine.getPrice() != null && purchaseOrderLine.getQty() != null){
