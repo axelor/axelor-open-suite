@@ -26,7 +26,7 @@ package com.axelor.apps.account.exception;
 public interface IExceptionMessage {
 
 	
-	
+	static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "Il manque une ligne de taxe"/*)*/ ;
 	/**
 	 * Bank statement service
 	 */

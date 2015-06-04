@@ -606,7 +606,7 @@
 	</action-method>
 
 	<action-method name="action-sale-order-method-create-template">
-		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createTemplate"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createTemplate" if="_idCopy != null"/>
 	</action-method>
 	
 	<action-method name="action-sale-order-method-create-order">

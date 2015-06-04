@@ -24,12 +24,18 @@ import java.util.Map;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -45,7 +51,7 @@ public class PurchaseOrderLineController {
 	@Inject
 	private ProductService productService;
 
-	public void compute(ActionRequest request, ActionResponse response){
+	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
 
 		PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
@@ -53,7 +59,9 @@ public class PurchaseOrderLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = BigDecimal.ZERO;
-
+		if(purchaseOrderLine.getTaxLine()==null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_TAX_LINE)), IException.CONFIGURATION_ERROR);
+		}
 		try{
 			if(!request.getContext().getParentContext().asType(PurchaseOrder.class).getInAti()){
 				if (purchaseOrderLine.getPrice() != null && purchaseOrderLine.getQty() != null){
@@ -160,14 +168,12 @@ public class PurchaseOrderLineController {
 				else{
 					List<SupplierCatalog> supplierCatalogList = purchaseOrderLine.getProduct().getSupplierCatalogList();
 					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
-						for (SupplierCatalog supplierCatalog : supplierCatalogList) {
-							if(supplierCatalog.getProduct().equals(purchaseOrderLine.getProduct()) && supplierCatalog.getMinQty().compareTo(purchaseOrderLine.getQty())<=0 && supplierCatalog.getSupplierPartner().equals(purchaseOrder.getSupplierPartner())){
-								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
-								response.setValue("discountAmount", discounts.get("discountAmount"));
-								response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-							}
+						SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",purchaseOrderLine.getProduct(),purchaseOrderLine.getQty(),purchaseOrder.getSupplierPartner()).fetchOne();
+						if(supplierCatalog!=null){
+							Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
+							response.setValue("discountAmount", discounts.get("discountAmount"));
+							response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 						}
-
 					}
 				}
 
