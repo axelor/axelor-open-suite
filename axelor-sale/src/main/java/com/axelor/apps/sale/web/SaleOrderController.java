@@ -265,4 +265,18 @@ public class SaleOrderController {
 		response.setValues(copy);
 	}
 
+	public void computeEndOfValidityDate(ActionRequest request, ActionResponse response)  {
+
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+		try {
+			saleOrder = saleOrderService.computeEndOfValidityDate(saleOrder);
+			response.setValue("endOfValidityDate", saleOrder.getEndOfValidityDate());
+		}
+		catch(Exception e)  { TraceBackService.trace(response, e); }
+	}
+	
+	
+	
+	
 }

@@ -42,7 +42,6 @@ public class OpportunitySaleOrderServiceImpl extends OpportunityRepository imple
 		saleOrder.setPaymentCondition(saleOrder.getClientPartner().getPaymentCondition());
 		saleOrder.setInvoicingTypeSelect(1);
 		saleOrder.setLocation(Beans.get(LocationRepository.class).find(new Long(1)));
-		saleOrder.setShowDetailsInInvoice(saleOrder.getCompany().getAccountConfig().getShowDetailsInInvoice());
 		opportunity.setSaleOrder(saleOrder);
 		save(opportunity);
 		saleOrder.setSaleOrderSeq(Beans.get(SaleOrderServiceImpl.class).getDraftSequence(saleOrder.getId()));

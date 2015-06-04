@@ -101,7 +101,6 @@
 	      </panel>
 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
 	      	<field name="invoicingTypeSelect"/>
-	        <field name="showDetailsInInvoice"/>
 	        <field name="invoicingMomentSelect" showIf="invoicingTypeSelect == 2"/>
 	      </panel>
 	      <panel title="Stock location" if-module="axelor-supplychain">
@@ -136,13 +135,17 @@
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
 	  </panel>
 	  
-	  <panel sidebar="true" title="Info." showIf="id">
-	    <field name="creationDate" readonly="true" colSpan="6"/>
+	  <panel sidebar="true" title="Info.">
+	    <field name="creationDate" readonlyIf="statusSelect != 1" colSpan="6" showIf="id" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="confirmedByUser" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="confirmationDate" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain"/>
+	    <field name="duration" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
+	    <field name="endOfValidityDate" colSpan="6" readonly="true">
+	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &lt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
+	    </field>
 	  </panel>
 	  
 	  <panel sidebar="true" readonly="true"  colSpan="4">  
@@ -223,7 +226,6 @@
 	      </panel>
 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
 	      	<field name="invoicingTypeSelect"/>
-	        <field name="showDetailsInInvoice"/>
 	        <field name="invoicingMomentSelect" showIf="invoicingTypeSelect == 2"/>
 	      </panel>
 	      <panel title="Stock location" if-module="axelor-supplychain">
@@ -263,13 +265,17 @@
 	  	<button name="createOrder" title="Create Order from this Template" onClick="save,action-sale-order-method-generate-order"/>
 	  </panel>        
 	  
-	  <panel sidebar="true" title="Info." showIf="id">
-	    <field name="creationDate" readonly="true" colSpan="6"/>
+	  <panel sidebar="true" title="Info.">
+	    <field name="creationDate"  readonlyIf="statusSelect != 1" colSpan="6" showIf="id" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="confirmedByUser" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="confirmationDate" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain"/>
+	    <field name="duration" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
+	    <field name="endOfValidityDate" colSpan="6" readonly="true">
+	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &lt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
+	    </field>
 	  </panel>
 	  
 	  <panel sidebar="true" readonly="true"  colSpan="4">  
@@ -328,6 +334,10 @@
 	        <field name="creationDate" readonly="true"/>
 	        <field name="orderDate" readonly="true"/>
 	        <field name="shipmentDate" readonly="true" if-module="axelor-supplychain"/>  
+	        <field name="duration" readonly="true"/>
+	        <field name="endOfValidityDate" readonly="true">
+	    		<hilite if="$moment().diff(endOfValidityDate, 'days') &lt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
+	    	</field>
 	        <field name="salemanUser" colSpan="10"/>
 	        <field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	      </panel>      
@@ -495,8 +505,8 @@
     </action-record>
     
     <action-record name="action-sale-order-record-company-configuration" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="showDetailsInInvoice" expr="eval: company?.accountConfig?.showDetailsInInvoice" if="company"/>
     	<field name="invoicingTypeSelect" expr="eval: company?.saleConfig?.saleOrderInvoicingTypeSelect" if="eval: company?.saleConfig?.saleOrderInvoicingTypeSelect != 0"/>
+    	<field name="duration" expr="eval: company?.saleConfig?.defaultValidityDuration"/>
     </action-record>
     
     <action-record name="action-sale-order-record-partner" model="com.axelor.apps.sale.db.SaleOrder">
@@ -507,6 +517,10 @@
 		<field name="deliveryAddress" expr="eval: clientPartner?.deliveryAddress"/>
 		<field name="priceList" expr="eval: clientPartner?.salePriceList"/>
     </action-record>
+    
+    <action-method name="action-sale-order-record-compute-end-of-validity-date">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="computeEndOfValidityDate"/>
+    </action-method>
     
     <action-method name="action-sale-order-method-compute">
         <call class="com.axelor.apps.sale.web.SaleOrderController" method="compute"/>

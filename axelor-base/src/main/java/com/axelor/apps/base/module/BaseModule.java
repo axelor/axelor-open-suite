@@ -19,10 +19,14 @@ package com.axelor.apps.base.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.app.AxelorModuleInfo;
+import com.axelor.apps.base.db.repo.DurationBaseRepository;
+import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
@@ -55,5 +59,7 @@ public class BaseModule extends AxelorModule {
         bind(TemplateService.class).to(TemplateBaseService.class);
         bind(TemplateMessageServiceImpl.class).to(TemplateMessageServiceBaseImpl.class);
         bind(PartnerRepository.class).to(PartnerBaseRepository.class);
+        bind(DurationRepository.class).to(DurationBaseRepository.class);
+        bind(DurationService.class).to(DurationServiceImpl.class);
     }
 }

@@ -13,6 +13,10 @@
   	<integer name="saleOrderInvoicingTypeSelect" title="Sales order invoicing type" selection="sale.order.invoicing.type.select"/>
   	<decimal name="acceptedCredit" title="Accepted Credit"/>
   	<boolean name="saleOrderInAti" title="Sale Orders In ATI"/>
+  	<string name="saleOrderClientBox" large="true" multiline="true" title="Client box in sale order"/>
+  	<boolean name="displaySalemanOnPrinting" title="Display saleman on printing ?"/>
+  	<boolean name="displayDelCondOnPrinting" title="Display delivery condition on pringing ?"/>
+  	<many-to-one name="defaultValidityDuration" ref="com.axelor.apps.base.db.Duration" title="Validity duration per default"/>
   	
   </entity>
   

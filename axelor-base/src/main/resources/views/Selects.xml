@@ -603,4 +603,9 @@
 		<option value="1">Remind time sheets validation</option>
 	</selection>
 	
+	<selection name="base.duration.type.select">
+		<option value="1">Month</option>
+		<option value="2">Day</option>
+	</selection>
+	
 </object-views>
