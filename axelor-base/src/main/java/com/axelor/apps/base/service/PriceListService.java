@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -48,11 +49,7 @@ public class PriceListService extends PriceListRepository {
 		PriceListLine priceListLine = null;
 
 		if(product != null && priceList != null)  {
-			for (PriceListLine priceListLineIt : priceList.getPriceListLineList()) {
-				if(priceListLineIt.getProduct().equals(product) && priceListLineIt.getMinQty().compareTo(qty)<=0){
-					priceListLine = priceListLineIt;
-				}
-			}
+			priceListLine = Beans.get(PriceListLineRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC",product,qty).fetchOne();
 			if(priceListLine == null && product.getProductCategory() != null)  {
 				priceListLine = priceListLineRepo.all().filter("self.productCategory = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product.getProductCategory(), qty).fetchOne();
 			}

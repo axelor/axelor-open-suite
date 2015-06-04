@@ -30,11 +30,13 @@ import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagem
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -151,14 +153,12 @@ public class InvoiceLineController {
 				else if (invoice.getOperationTypeSelect()<InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
 					List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
 					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
-						for (SupplierCatalog supplierCatalog : supplierCatalogList) {
-							if(supplierCatalog.getProduct().equals(invoiceLine.getProduct()) && supplierCatalog.getMinQty().compareTo(invoiceLine.getQty())<=0 && supplierCatalog.getSupplierPartner().equals(invoice.getPartner())){
-								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
-								response.setValue("discountAmount", discounts.get("discountAmount"));
-								response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-							}
+						SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",invoiceLine.getProduct(),invoiceLine.getQty(),invoice.getPartner()).fetchOne();
+						if(supplierCatalog!=null){
+							Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
+							response.setValue("discountAmount", discounts.get("discountAmount"));
+							response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 						}
-
 					}
 				}
 
