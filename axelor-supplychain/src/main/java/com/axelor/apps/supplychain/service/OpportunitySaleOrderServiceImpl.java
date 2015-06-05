@@ -1,80 +1,73 @@
 package com.axelor.apps.supplychain.service;
 
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderServiceImpl;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class OpportunitySaleOrderServiceImpl extends OpportunityRepository implements OpportunitySaleOrderService{
 	
 	@Inject
-	private PartnerRepository partnerRepo;
+	private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychain;
 	
 	@Transactional
-	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity){
-		SaleOrder saleOrder = new SaleOrder();
-		saleOrder.setCompany(opportunity.getCompany());
-		if(saleOrder.getCompany() == null){
-			saleOrder.setCompany(Beans.get(CompanyRepository.class).all().fetchOne());
+	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException{
+		User buyerUser = AuthUtils.getUser();
+		Company company = opportunity.getCompany();
+		if(company == null){
+			company = buyerUser.getActiveCompany();
 		}
-		saleOrder.setCurrency(opportunity.getCurrency());
-		saleOrder.setClientPartner(opportunity.getPartner());
+		Location location = saleOrderServiceSupplychain.getLocation(company);
+		SaleOrder saleOrder = saleOrderServiceSupplychain.createSaleOrder(buyerUser, company, null, opportunity.getCurrency(), null, null, null, ISaleOrder.INVOICING_TYPE_PER_ORDER, location, GeneralService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner());
+
 		saleOrder.setMainInvoicingAddress(saleOrder.getClientPartner().getMainInvoicingAddress());
 		saleOrder.setDeliveryAddress(saleOrder.getClientPartner().getDeliveryAddress());
-		saleOrder.setPriceList(saleOrder.getClientPartner().getSalePriceList());
-		saleOrder.setCreationDate(new LocalDate());
-		saleOrder.setStatusSelect(1);
+		
 		saleOrder.setSalemanUser(opportunity.getUser());
 		saleOrder.setTeam(opportunity.getTeam());
 		saleOrder.setPaymentMode(saleOrder.getClientPartner().getPaymentMode());
 		saleOrder.setPaymentCondition(saleOrder.getClientPartner().getPaymentCondition());
-		saleOrder.setInvoicingTypeSelect(1);
-		saleOrder.setLocation(Beans.get(LocationRepository.class).find(new Long(1)));
+
 		opportunity.setSaleOrder(saleOrder);
 		save(opportunity);
-		saleOrder.setSaleOrderSeq(Beans.get(SaleOrderServiceImpl.class).getDraftSequence(saleOrder.getId()));
-		Beans.get(SaleOrderRepository.class).save(saleOrder);
+
 		return saleOrder;
 	}
 	
 	@Transactional
-	public Partner createClientFromLead(Opportunity opportunity){
+	public Partner createClientFromLead(Opportunity opportunity) throws AxelorException{
 		Lead lead = opportunity.getLead();
-		Partner partner = new Partner();
-		partner.setPartnerTypeSelect(1);
-		partner.setName(lead.getEnterpriseName());
-		partner.setCustomerTypeSelect(2);
-		partner.setFixedPhone(lead.getFixedPhone());
-		partner.setMobilePhone(lead.getMobilePhone());
-		partner.setEmailAddress(lead.getEmailAddress());
-		partner.setCurrency(opportunity.getCurrency());
-		Address address = new Address();
-		address.setAddressL4(lead.getPrimaryAddress());
-		address.setAddressL6(lead.getPrimaryPostalCode()+" "+lead.getPrimaryCity());
-		address.setAddressL7Country(lead.getPrimaryCountry());
-		partner.setDeliveryAddress(address);
-		partner.setMainInvoicingAddress(address);
-		partner.setFullName(partner.getName());
-		Partner contact = new Partner();
-		contact.setPartnerTypeSelect(2);
-		contact.setIsContact(true);
-		contact.setName(lead.getName());
-		contact.setFirstName(lead.getFirstName());
-		contact.setMainPartner(partner);
-		contact.setFullName(contact.getName()+" "+contact.getFirstName());
-		partner.addContactPartnerSetItem(contact);
+		if(lead == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAD_PARTNER)),IException.CONFIGURATION_ERROR);
+		}
+
+		String name = lead.getCompanyName();
+		if(Strings.isNullOrEmpty(name)){
+			name = lead.getFullName();
+		}
+		
+		Address address = Beans.get(AddressService.class).createAddress(null, null, lead.getPrimaryAddress(), null, lead.getPrimaryPostalCode()+" "+lead.getPrimaryCity(), lead.getPrimaryCountry());
+		
+		Partner partner = Beans.get(PartnerService.class).createPartner(name, null, lead.getFixedPhone(), lead.getMobilePhone(), lead.getEmailAddress(), opportunity.getCurrency(), address, address);
+		
 		opportunity.setPartner(partner);
 		save(opportunity);
 		

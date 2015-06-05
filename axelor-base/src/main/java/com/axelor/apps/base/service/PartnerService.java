@@ -23,14 +23,47 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 
 
 public class PartnerService extends PartnerRepository{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerService.class);
+	
+	public Partner createPartner(String name, String firstName, String fixedPhone, String mobilePhone, EmailAddress emailAddress, Currency currency, Address deliveryAddress, Address mainInvoicingAddress){
+		Partner partner = new Partner();
+		
+		partner.setName(name);
+		partner.setFirstName(firstName);
+		partner.setFullName(this.computeFullName(partner));
+		partner.setPartnerTypeSelect(IPartner.PARTNER_TYPE_SELECT_ENTERPRISE);
+		partner.setCustomerTypeSelect(IPartner.CUSTOMER_TYPE_SELECT_PROSPECT);
+		partner.setFixedPhone(fixedPhone);
+		partner.setMobilePhone(mobilePhone);
+		partner.setEmailAddress(emailAddress);
+		partner.setCurrency(currency);
+		
+		partner.setDeliveryAddress(deliveryAddress);
+		partner.setMainInvoicingAddress(mainInvoicingAddress);
+		
+		Partner contact = new Partner();
+		contact.setPartnerTypeSelect(IPartner.PARTNER_TYPE_SELECT_INDIVIDUAL);
+		contact.setIsContact(true);
+		contact.setName(name);
+		contact.setFirstName(firstName);
+		contact.setMainPartner(partner);
+		contact.setFullName(this.computeFullName(partner));
+		partner.addContactPartnerSetItem(contact);
+		
+		return partner;
+	}
 	
 	public void setPartnerFullName(Partner partner)  {
 		
