@@ -535,7 +535,7 @@
 	</action-method>	
 	
 	<action-method name="action-sale-method-update-customer-credit-line" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder"/>
+		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="call: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getManageCustomerCredit()"/>
 	</action-method>
 	
 	<action-attrs name="action-sale-order-attrs-collapse-specific-settings-group">
