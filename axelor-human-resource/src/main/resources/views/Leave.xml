@@ -29,12 +29,14 @@
 	
 	<form name="leave-form" title="Leave" model="com.axelor.apps.hr.db.Leave"
 	    onNew="action-leave-record-default,action-leave-attrs-buttons" onLoad="action-leave-attrs-buttons">
-	    <toolbar>
+
+	    <panel sidebar="true" title="Actions" stacked="true">
+	    	<button name="sendLeave" colSpan="4" title="Send Leave" onClick="action-leave-record-status-confirmed, save,action-leave-attrs-buttons" readonlyIf="statusSelect &gt; 1"/>
 	    	<button name="validButton" onClick="action-leave-record-valid,save,action-leave-attrs-buttons" title="Valid"/>
 	    	<button name="refuseButton" onClick="action-leave-record-refuse,save,action-leave-attrs-buttons" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-leave-record-cancel,save,action-leave-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-leave-record-draft,save,action-leave-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
-	    </toolbar>
+	    </panel>
 		<panel>
 			<field name="statusSelect" colSpan="12" widget="NavSelect" />
 			<field name="company"/>
@@ -46,7 +48,6 @@
 			<field name="endOnSelect" />
 			<field name="duration" />
 			<field name="reason" canNew="true" />
-			<button name="sendLeave" colSpan="4" title="Send Leave" onClick="action-leave-record-status-confirmed, save,action-leave-attrs-buttons" readonlyIf="statusSelect &gt; 1"/>
 			<field name="comments" colSpan="12" />
 		</panel>
 	</form>
