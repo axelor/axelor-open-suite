@@ -525,10 +525,6 @@
     <action-method name="action-sale-order-method-compute">
         <call class="com.axelor.apps.sale.web.SaleOrderController" method="compute"/>
   	</action-method>
-  	
-  	<action-method name="action-sale-order-method-computeTemp">
-        <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeTemp"/>
-  	</action-method>
     
     <action-method name="action-sale-order-method-validate-customer">
     	<call class="com.axelor.apps.sale.web.SaleOrderController" method="validateCustomer"/>
