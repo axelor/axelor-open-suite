@@ -42,7 +42,6 @@ import com.axelor.apps.base.service.scheduler.SchedulerService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.SaleOrderSubLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
@@ -275,7 +274,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		invoice.setInAti(Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getInvoiceInAti());
 
 
-		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrder.getSaleOrderLineList(), saleOrder.getShowDetailsInInvoice()));
+		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrder.getSaleOrderLineList()));
 		return invoice;
 
 	}
@@ -308,26 +307,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	// TODO ajouter tri sur les séquences
 	@Override
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList, boolean showDetailsInInvoice) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
-			if(showDetailsInInvoice == true && saleOrderLine.getSaleOrderSubLineList() != null && !saleOrderLine.getSaleOrderSubLineList().isEmpty())  {
-
-				for(SaleOrderSubLine saleOrderSubLine : saleOrderLine.getSaleOrderSubLineList())  {
-
-					invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderSubLine));
-
-				}
-
-			}
-			else  {
-
-				invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
-
-			}
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
+			
 		}
 
 		return invoiceLineList;
@@ -366,14 +353,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	}
 
-
-	@Override
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderSubLine saleOrderSubLine) throws AxelorException  {
-
-		return this.createInvoiceLine(invoice, saleOrderSubLine.getProduct(), saleOrderSubLine.getProductName(),
-				saleOrderSubLine.getDescription(), saleOrderSubLine.getQty(), saleOrderSubLine.getUnit(),saleOrderSubLine.getSequence(), saleOrderSubLine.getSaleOrderLine());
-
-	}
 
 	@Override
 	public BigDecimal getAmountInvoiced(SaleOrder saleOrder){

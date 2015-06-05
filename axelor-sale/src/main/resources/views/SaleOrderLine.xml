@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
-    	<field name="sequence"/>
+		<field name="sequence"/>
 	    <field name="productName"/>
 	    <field name="estimatedDelivDate"/>
 	    <field name="qty"/>
@@ -14,55 +14,52 @@
 	    <field name="inTaxTotal"/>
 	</grid>
     
-	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"
-	 	  onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew">
-	  <panel>
-	    <field name="sequence"/>
-	    <field name="isToPrintLineSubTotal"/>
-	    <field name="hideDiscount"/>
-	  </panel>
-	  <panel>
-	    <field name="product" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product"/>
-	    <field name="productName"/>
-	    <field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
-	    <field name="unit"/>
-	    <field name="taxLine" colSpan="4" onChange="action-sale-order-line-method-convert-tax,action-sale-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
-	    <field name="price" onChange="action-sale-order-line-method-compute" colSpan="4"/>
-	    <field name="priceDiscounted" colSpan="4" hideIf="price == priceDiscounted"/>
-	    <field name="exTaxTotal" readonly="true"/>
-	    <field name="inTaxTotal" readonly="true"/>
-	  </panel>
-	  <panel name="discount" title="Discount">
-	    <field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title"/>
-	    <field name="discountAmount" onChange="action-sale-order-line-method-compute" hideIf="discountTypeSelect == 3"/>
-	  </panel>
-	  <panel-tabs>
-	  	<panel name="subscription" title="Subscription">
-	  		<panel-include view="subscription-sale-order-line-form" from="axelor-supplychain" if-module="axelor-supplychain"/>
-	  	</panel>
-	    <panel title="Settings">
-	        <field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain"/>        
-	        <field name="supplierPartner" showIf="saleSupplySelect == 2" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
-	        <field name="task"/>
-	        <field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production"/>
-	        <button name="customizeBOM" title="Customize BOM"   onClick="action-production-method-customize-bill-of-material" if-module="axelor-production"/>
-	    </panel>
-	    <panel title="Notes">
-	      <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
-	    </panel>
-	    <panel title="Delivery">
-	      <field name="estimatedDelivDate"/>
-	      <panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12"/>
-	    </panel>
-	    <panel-related title="SO lines" field="saleOrderSubLineList"/>
-	    <panel title="Invoicing follow-up" if-module="axelor-supplychain">
-	      <field name="invoicingDate"/>
-	      <field name="amountInvoiced" showIf="eval: GeneralService.getGeneral().getManageInvoicedAmountByLine()"/>
-	    </panel>
-	    <panel-related field="invoiceSet"/>
-	    <panel-related field="employeeSet" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
-	    <panel-related field="candidateSet"/>
-	  </panel-tabs>
+	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
+	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew">
+		<panel>
+			<field name="sequence"/>
+		   	<field name="isToPrintLineSubTotal"/>
+		  	<field name="hideDiscount"/>
+		</panel>
+		<panel>
+		   	<field name="product" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product"/>
+		   	<field name="productName"/>
+		   	<field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
+		   	<field name="unit"/>
+		   	<field name="taxLine" colSpan="4" onChange="action-sale-order-line-method-convert-tax,action-sale-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+		   	<field name="price" onChange="action-sale-order-line-method-compute" colSpan="4"/>
+		   	<field name="priceDiscounted" colSpan="4" hideIf="price == priceDiscounted"/>
+		   	<field name="exTaxTotal" readonly="true"/>
+		   	<field name="inTaxTotal" readonly="true"/>
+		</panel>
+		<panel name="discount" title="Discount">
+		   	<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title"/>
+		   	<field name="discountAmount" onChange="action-sale-order-line-method-compute" hideIf="discountTypeSelect == 3"/>
+		</panel>
+		<panel-tabs>
+			<panel name="subscription" title="Subscription">
+				<panel-include view="subscription-sale-order-line-form" from="axelor-supplychain" if-module="axelor-supplychain"/>
+			</panel>
+		   	<panel title="Settings">
+		      	<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain"/>        
+		       	<field name="supplierPartner" showIf="saleSupplySelect == 2" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
+		       	<field name="task"/>
+		       	<field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production"/>
+		       	<button name="customizeBOM" title="Customize BOM" onClick="action-production-method-customize-bill-of-material" if-module="axelor-production"/>
+		   	</panel>
+		   	<panel title="Notes">
+		   		<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
+		   	</panel>
+		   	<panel title="Delivery">
+		   		<field name="estimatedDelivDate"/>
+		   		<panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12"/>
+		   	</panel>
+		   	<panel title="Invoicing follow-up" if-module="axelor-supplychain">
+		   		<field name="invoicingDate"/>
+		  		<field name="amountInvoiced" showIf="eval: GeneralService.getGeneral().getManageInvoicedAmountByLine()"/>
+		   	</panel>
+			<panel-related field="invoiceSet"/>
+		</panel-tabs>
 	</form>
     
     <action-group name="action-group-sale-saleorderline-onnew">

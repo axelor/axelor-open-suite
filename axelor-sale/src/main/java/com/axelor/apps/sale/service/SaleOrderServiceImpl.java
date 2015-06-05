@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -83,7 +84,6 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 		if(saleOrder.getSaleOrderLineList() != null)  {
 			for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList())  {
-				saleOrderLine.setExTaxTotal(saleOrderLineService.computeSaleOrderLine(saleOrderLine));
 				saleOrderLine.setCompanyExTaxTotal(saleOrderLineService.getAmountInCompanyCurrency(saleOrderLine.getExTaxTotal(), saleOrder));
 			}
 		}
@@ -216,6 +216,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 				new Object[] { company.getName(), externalReference, clientPartner.getFullName() });
 
 		SaleOrder saleOrder = new SaleOrder();
+		saleOrder.setCreationDate(GeneralService.getTodayDate());
 		saleOrder.setCompany(company);
 		saleOrder.setContactPartner(contactPartner);
 		saleOrder.setCurrency(currency);
@@ -227,6 +228,8 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		saleOrder.setSaleOrderSeq(this.getSequence(company));
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_DRAFT);
 		saleOrder.setClientPartner(clientPartner);
+		
+		this.computeEndOfValidityDate(saleOrder);
 
 		return saleOrder;
 	}
@@ -304,6 +307,17 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		copy.setTemplateUser(AuthUtils.getUser());
 		return copy;
 	}
+	
+	
+	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder)  {
+		
+		saleOrder.setEndOfValidityDate(
+				Beans.get(DurationService.class).computeDuration(saleOrder.getDuration(), saleOrder.getCreationDate()));
+		
+		return saleOrder;
+		
+	}
+	
 
 }
 

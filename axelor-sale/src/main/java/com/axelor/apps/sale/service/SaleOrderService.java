@@ -101,6 +101,8 @@ public interface SaleOrderService extends Repository<SaleOrder>{
 	
 	@Transactional
 	public SaleOrder createSaleOrder(SaleOrder context);
+	
+	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
 }
 
 

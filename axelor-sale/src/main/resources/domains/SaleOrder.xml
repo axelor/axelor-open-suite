@@ -36,7 +36,8 @@
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
   	<boolean name="hasSubLineDefaultValue" title="Default value for sublines"/>
   	<boolean name="inAti" title="In ATI"/>
-  	
+  	<many-to-one name="duration" ref="com.axelor.apps.base.db.Duration" title="Validity duration"/>
+  	<date name="endOfValidityDate" title="End of validity"/>
   	
 <!--   	Ligne de devis -->
 	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="saleOrder" title="Sale order lines"/>
@@ -80,7 +81,7 @@
     <integer name="deliveryState" title="Delivery State" selection="sale.order.delivery.state" readonly="true" default="1"/>
     
     <many-to-one name="templateUser" ref="com.axelor.auth.db.User" title="Template created by" readonly="true"/>
-
+	
  	<unique-constraint columns="saleOrderSeq,company"/>
 
     <extra-code>
