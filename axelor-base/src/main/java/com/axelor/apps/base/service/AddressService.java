@@ -43,5 +43,7 @@ public interface AddressService extends Repository<Address>{
 	
 	public boolean checkAddressUsed(Long addressId);
 	
+	public Address checkLatLang(Address address, boolean forceUpdate);
+	
 	
 }

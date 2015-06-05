@@ -443,7 +443,9 @@ public interface IExceptionMessage {
 	 * Ventilate state
 	 */
 	static final String VENTILATE_STATE_1 = /*$$(*/ "La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée" /*)*/;
-	static final String VENTILATE_STATE_2 = /*$$(*/ "La société %s n'a pas de séquence de facture ou d'avoir" /*)*/;
+	static final String VENTILATE_STATE_2 = /*$$(*/ "La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée sur le mois" /*)*/;
+	static final String VENTILATE_STATE_3 = /*$$(*/ "La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée sur l'année" /*)*/;
+	static final String VENTILATE_STATE_4 = /*$$(*/ "La société %s n'a pas de séquence de facture ou d'avoir" /*)*/;
 	
 	/**
 	 * Paybox service and controller

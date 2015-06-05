@@ -19,13 +19,13 @@ package com.axelor.apps.purchase.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
@@ -36,15 +36,15 @@ import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.db.Query;
-import com.axelor.db.mapper.Property;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
+public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository implements PurchaseOrderLineService {
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServiceImpl.class);
 
 	@Inject
@@ -71,7 +71,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 	 */
 	public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
-		BigDecimal amount = quantity.multiply(price).setScale(2, RoundingMode.HALF_EVEN);
+		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 
 		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { quantity, price, amount });
 
@@ -85,8 +85,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 		Product product = purchaseOrderLine.getProduct();
 
 		return currencyService.getAmountCurrencyConverted(
-			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), product.getPurchasePrice(), purchaseOrder.getOrderDate());
-
+			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), product.getPurchasePrice(), purchaseOrder.getOrderDate())
+			.setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
 	}
 
 	@Override
@@ -95,8 +95,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 		Product product = purchaseOrderLine.getProduct();
 
 		return currencyService.getAmountCurrencyConverted(
-			product.getSaleCurrency(), purchaseOrder.getCurrency(), product.getSalePrice(), purchaseOrder.getOrderDate());
-
+			product.getSaleCurrency(), purchaseOrder.getCurrency(), product.getSalePrice(), purchaseOrder.getOrderDate())
+			.setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
 	}
 
 	@Override
@@ -127,7 +127,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		return currencyService.getAmountCurrencyConverted(
-				purchaseOrder.getCurrency(), purchaseOrder.getCompany().getCurrency(), exTaxTotal, purchaseOrder.getOrderDate());
+				purchaseOrder.getCurrency(), purchaseOrder.getCompany().getCurrency(), exTaxTotal, purchaseOrder.getOrderDate())
+				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
 	}
 
 
@@ -300,68 +301,5 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 		}
 		return discountAmount;
 	}
-
-	@Override
-	public Query<PurchaseOrderLine> all() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public PurchaseOrderLine copy(PurchaseOrderLine arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public PurchaseOrderLine create(Map<String, Object> arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public List<Property> fields() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public PurchaseOrderLine find(Long arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void flush() {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public void refresh(PurchaseOrderLine arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public void remove(PurchaseOrderLine arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public PurchaseOrderLine save(PurchaseOrderLine arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

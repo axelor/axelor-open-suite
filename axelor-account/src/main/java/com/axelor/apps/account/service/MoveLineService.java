@@ -236,11 +236,12 @@ public class MoveLineService extends MoveLineRepository{
 			
 			LOG.debug("Traitement de la ligne de facture : compte comptable = {}, montant = {}", new Object[]{account2.getName(), exTaxTotal});
 			
-			MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, isMinus, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
-			moveLine.setAnalyticAccountSet(analyticAccounts);
-			moveLine.setTaxLine(invoiceLine.getTaxLine());
-			
-			moveLines.add(moveLine);
+			if(exTaxTotal.compareTo(BigDecimal.ZERO) != 0)  {
+				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, isMinus, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
+				moveLine.setAnalyticAccountSet(analyticAccounts);
+				moveLine.setTaxLine(invoiceLine.getTaxLine());
+				moveLines.add(moveLine);
+			}
 			
 		}
 		
@@ -258,10 +259,13 @@ public class MoveLineService extends MoveLineRepository{
 						tax.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 			}
 			
-			MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, isMinus, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
-			moveLine.setTaxLine(invoiceLineTax.getTaxLine()); 
+			if(exTaxTotal.compareTo(BigDecimal.ZERO) != 0)  {
 			
-			moveLines.add(moveLine);
+				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, isMinus, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
+				moveLine.setTaxLine(invoiceLineTax.getTaxLine()); 
+			
+				moveLines.add(moveLine);
+			}
 			
 		}
 		

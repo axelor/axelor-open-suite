@@ -12,7 +12,8 @@
         <field name="price"/>
     </grid>
     
-    <form name="supplier-catalog-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog">
+    <form name="supplier-catalog-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog" 
+    onNew="action-supplier-catalog-attrs-scale-and-precision" onLoad="action-supplier-catalog-attrs-scale-and-precision">
     	<panel colSpan="12">
 			<field name="supplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
 			<field name="updateDate"/>
@@ -25,5 +26,9 @@
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel>
     </form>
+    
+    <action-attrs name="action-supplier-catalog-attrs-scale-and-precision">
+		<attribute name="scale" for="price" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+	</action-attrs>
         
 </object-views>

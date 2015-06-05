@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
@@ -89,9 +90,9 @@ public class ProductServiceImpl extends ProductRepository implements ProductServ
 		}
 
 		if(product.getCostPrice() != null && managePriceCoef != null)  {
-
-			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(2, BigDecimal.ROUND_HALF_UP));
-
+			
+			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
+			
 			if(product.getProductVariant() != null)  {
 
 				product.setSalePrice(product.getSalePrice().add(this.getProductExtraPrice(product.getProductVariant(), IProductVariant.APPLICATION_SALE_PRICE)));

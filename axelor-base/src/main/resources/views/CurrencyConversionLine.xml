@@ -17,8 +17,8 @@
     <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine"  
     onNew="action-currency-conversion-line-default-record">
         <panel>
-		  <field name="startCurrency"/>
-		  <field name="endCurrency"/>
+		  <field name="startCurrency" widget="SuggestBox"/>
+		  <field name="endCurrency" widget="SuggestBox"/>
 		  <button name="getRate" title="Get rate" readonlyIf="startCurrency == null || endCurrency == null || toDate != null"   onClick="action-group-base-currencyconversionline-getrate-click"/>
 		</panel> 
 		<panel title="Applicable dates" readonlyIf="startCurrency == null || endCurrency == null">
@@ -34,9 +34,9 @@
     <form onNew="action-group-base-checkcurrencyrate-wizard-onnew" 
     name="wizard-check-currency-rate-form" title="Check currency exhange rates" model="com.axelor.apps.base.db.Wizard"  >
       <panel>
-    	<field name="startCurrency" title="Source Currency" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.Currency" target-name="code"/>
-    	<field name="endCurrency" title="Destination Currency" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.Currency" target-name="code"/>
-    	<field name="general" title="General" hidden="true" widget="MANY_TO_ONE" target="com.axelor.apps.base.db.General" target-name="today"/>
+    	<field name="startCurrency" title="Source Currency" widget="SuggestBox" target="com.axelor.apps.base.db.Currency" type="many-to-one"/>
+    	<field name="endCurrency" title="Destination Currency" widget="SuggestBox" target="com.axelor.apps.base.db.Currency" type="many-to-one"/>
+    	<field name="general" title="General" hidden="true" target="com.axelor.apps.base.db.General" type="many-to-one"/>
   	  </panel>    
 	  <panel title="System active rate" colSpan="12">
 	    <field name="date" title="Rate Date" readonly="true" widget="DATE"/>
@@ -99,6 +99,7 @@
 	    <view-param name="forceEdit" value="true"/> 
 	    <view-param name="width" value="800" />
 	    <view-param name="show-confirm" value="false" />
+	    <view-param name="show-toolbar" value="false"/>
 	    <context name="_startCurrency" expr="eval:startCurrency" if="startCurrency != null" />
 	    <context name="_endCurrency" expr="eval:endCurrency" if="endCurrency != null" />
 	    <context name="_general" expr="eval:general"/>

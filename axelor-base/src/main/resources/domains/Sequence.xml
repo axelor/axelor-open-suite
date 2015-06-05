@@ -8,6 +8,7 @@
   <entity name="Sequence" lang="java">
   	
   	<integer name="importId" />
+  	
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="false"/>
     <string name="name" title="Name" required="true" namecolumn="true"/>
     <string name="code" title="Document concerned" required="true" selection="sequence.generic.code.select"/> 
@@ -15,12 +16,15 @@
     <string name="suffixe" title="Suffix" help="true"/>
     <integer name="padding" title="Padding" required="true" help="true"/>
     <integer name="toBeAdded" title="Increment" required="true" help="true" min="1"/>
-    <integer name="nextNum" title="Next N°" required="true" min="1" default="1"/>
+
     <boolean name="yearlyResetOk" title="Yearly reset" help="true"/>
     <boolean name="monthlyResetOk" title="Monthly reset" help="true"/>
-    <date name="resetDate" title="Reseted on" help="true"/>
     
-<!--     <unique-constraint columns="company,code"/> -->
+    <one-to-many name="sequenceVersionList" ref="com.axelor.apps.base.db.SequenceVersion" mappedBy="sequence" title="Versions"/>
+    
+    <index columns="code,company" name="idx_sequence_code_company"/>
+    
+    <finder-method name="find" using="code,company"/>
     
   </entity>
 

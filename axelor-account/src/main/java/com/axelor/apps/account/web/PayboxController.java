@@ -79,6 +79,7 @@ public class PayboxController {
      *
      * @param request
      * @param response
+	 * @throws Exception 
      */
 	public void webServicePaybox(ActionRequest request, ActionResponse response) throws Exception {
         
@@ -122,16 +123,16 @@ public class PayboxController {
                 LOG.debug("L'adresse URL est-elle correcte ? : {}", verified);
             }
             if(verified) {       
-                if(operation == "1" && (String) context.get("idtrans") != null && (String) context.get("montant") != null ) {
+                if(operation.equals("1") && (String) context.get("idtrans") != null && (String) context.get("montant") != null ) {
                 	    paymentVoucherPayboxService.authorizeConfirmPaymentVoucher(paymentVoucher, (String) context.get("idtrans"), (String) context.get("montant"));
                         response.setFlash(I18n.get(IExceptionMessage.PAYBOX_6)); 
                         LOG.debug("Paiement réalisé");
                 }
-                else if(operation == "2") {
+                else if(operation.equals("2")) {
                         response.setFlash(I18n.get(IExceptionMessage.PAYBOX_7));  
                         LOG.debug("Paiement échoué");
                 }
-                else if(operation == "3") {
+                else if(operation.equals("3")) {
                         response.setFlash(I18n.get(IExceptionMessage.PAYBOX_8));  
                         LOG.debug("Paiement annulé");
                 }

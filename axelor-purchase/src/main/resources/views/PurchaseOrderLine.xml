@@ -101,6 +101,7 @@
 	<!-- ACTION GROUPs -->
 	
 	<action-group name="action-group-purchase-purchase-orderline-onnew">
+		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-line-record-new"/>
 		<action name="action-purchase-order-line-attrs-hide-product-variant"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
@@ -110,6 +111,7 @@
 		<action name="action-purchase-order-line-method-convert-tax"/>
     	<action name="action-purchase-order-line-method-compute"/>
     	<action name="save"/>
+		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-line-attrs-task-readonly"/>
 		<action name="action-purchase-order-line-attrs-hide-product-variant"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
@@ -185,6 +187,11 @@
     <action-attrs name="action-purchase-order-line-attrs-discountamount-title">
 		<attribute name="title" for="discountAmount" expr="Discount Rate" if="discountTypeSelect == 1"/>
 		<attribute name="title" for="discountAmount" expr="Discount Amount" if="discountTypeSelect == 2"/>
+	</action-attrs>
+
+    <action-attrs name="action-purchase-order-line-attrs-scale-and-precision">
+		<attribute name="scale" for="price" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="discountAmount" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice() &amp;&amp; discountTypeSelect == 2"/>
 	</action-attrs>
     
 <!--     ACTION VIEW -->

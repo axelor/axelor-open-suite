@@ -572,7 +572,7 @@ resources/domains/Blocking.xml:12
 resources/domains/MailBatch.xml:13
 resources/domains/Message.xml:10
 resources/domains/Period.xml:13
-resources/domains/Sequence.xml:11
+resources/domains/Sequence.xml:12
 resources/domains/User.xml:11
 resources/domains/Year.xml:16
 resources/views/Company.xml:12
@@ -1126,7 +1126,7 @@ resources/domains/ProductVariantConfig.xml:19
 resources/domains/ProductVariantValue.xml:10
 resources/domains/Querie.xml:10
 resources/domains/Routing.xml:10
-resources/domains/Sequence.xml:12
+resources/domains/Sequence.xml:13
 resources/domains/Site.xml:9
 resources/domains/Source.xml:11
 resources/domains/Tax.xml:11
@@ -1968,13 +1968,12 @@ resources/views/Selects.xml:185"
 "help:ProductVariant.usedForStock",,,"resources/domains/ProductVariant.xml:20"
 "help:ProductVariantAttr.productVariantValueList",,,"resources/domains/ProductVariantAttr.xml:12"
 "help:ProductVariantValue.applicationPriceSelect",,,"resources/domains/ProductVariantValue.xml:13"
-"help:Sequence.monthlyResetOk",,,"resources/domains/Sequence.xml:20"
-"help:Sequence.padding",,,"resources/domains/Sequence.xml:16"
-"help:Sequence.prefixe",,,"resources/domains/Sequence.xml:14"
-"help:Sequence.resetDate",,,"resources/domains/Sequence.xml:21"
-"help:Sequence.suffixe",,,"resources/domains/Sequence.xml:15"
-"help:Sequence.toBeAdded",,,"resources/domains/Sequence.xml:17"
-"help:Sequence.yearlyResetOk",,,"resources/domains/Sequence.xml:19"
+"help:Sequence.monthlyResetOk",,,"resources/domains/Sequence.xml:21"
+"help:Sequence.padding",,,"resources/domains/Sequence.xml:17"
+"help:Sequence.prefixe",,,"resources/domains/Sequence.xml:15"
+"help:Sequence.suffixe",,,"resources/domains/Sequence.xml:16"
+"help:Sequence.toBeAdded",,,"resources/domains/Sequence.xml:18"
+"help:Sequence.yearlyResetOk",,,"resources/domains/Sequence.xml:20"
 "help:SupplierCatalog.minQty",,,"resources/domains/SupplierCatalog.xml:18"
 "help:SupplierCatalog.price",,,"resources/domains/SupplierCatalog.xml:14"
 "help:TaxEquiv.toTax",,,"resources/domains/TaxEquiv.xml:12"
