@@ -2,19 +2,6 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<grid name="task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
-		<field name="name"/>
-		<field name="assignedTo"/>
-	</grid>
-
-	<form name="task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-default">
-	    <panel>
-	        <field name="project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
-		    <field name="name" colSpan="12" />
-			<field name="assignedTo" onSelect="action-project-task-attrs-assigned-to-domain"/>
-			<field name="taskTypeSelect" hidden="true" />
-		</panel>
-	</form>
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
@@ -32,6 +19,20 @@
 		</panel>
 		<panel-related field="taskList" form-view="task-form" grid-view="task-grid" />
 		<panel-related field="membersSet" sidebar="true" />
+	</form>
+	
+	<grid name="task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="name"/>
+		<field name="assignedTo"/>
+	</grid>
+
+	<form name="task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-default">
+	    <panel>
+	        <field name="project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+		    <field name="name" colSpan="12" />
+			<field name="assignedTo" onSelect="action-project-task-attrs-assigned-to-domain"/>
+			<field name="taskTypeSelect" hidden="true" />
+		</panel>
 	</form>
 	
 	<action-attrs name="action-project-task-attrs-assigned-to-domain">
