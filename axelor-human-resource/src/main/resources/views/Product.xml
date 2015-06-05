@@ -65,12 +65,6 @@
 	  	</panel-tabs>
 	</form>    
     
-   <action-view name="action-product-view-stock-product-variant" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
-    	<view type="grid" name="location-line-product-group-by-variant-grid"/>
-    	<view type="form" name="location-line-product-form"/>
-    	<domain>self.product.parentProduct.id = :id and self.location.typeSelect = 1</domain>
-    </action-view>
-    
     <action-group name="action-group-base-product-expense-onnew">
     	<action name="action-product-record-default-new-expense"/>
     	<action name="action-product-record-sale-supply-select"/>

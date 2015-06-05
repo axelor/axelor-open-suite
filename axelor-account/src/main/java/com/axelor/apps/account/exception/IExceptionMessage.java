@@ -528,4 +528,5 @@ public interface IExceptionMessage {
 	static final String EXPENSE_JOURNAL = /*$$(*/ "Veuillez configurer un journal pour les notes de frais (société : %s)" /*)*/;
 	static final String EXPENSE_ACCOUNT = /*$$(*/ "Veuillez configurer un compte pour les notes de frais (société : %s)" /*)*/;
 	static final String EXPENSE_ACCOUNT_TAX = /*$$(*/ "Veuillez configurer un compte pour les taxes des notes de frais (société : %s)" /*)*/;
+	static final String EXPENSE_CANCEL_MOVE = /*$$(*/ "Ecriture déjà utilisée, merci de délettrer d'abord" /*)*/;
 }

@@ -227,9 +227,7 @@ public class MoveLineService extends MoveLineRepository{
 					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_5), 
 							analyticAccountManagement.getAnalyticAxis().getName(),invoiceLine.getProductName(), company.getName()), IException.CONFIGURATION_ERROR);
 				}
-				else{
-					analyticAccounts.add(analyticAccountManagement.getAnalyticAccount());
-				}
+				analyticAccounts.add(analyticAccountManagement.getAnalyticAccount());
 			}
 			
 			exTaxTotal = invoiceLine.getAccountingExTaxTotal();
