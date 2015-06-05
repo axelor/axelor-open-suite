@@ -2,12 +2,16 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<grid name="expense-line-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
-		<field name="task"/>
-		<field name="expenseType"/>
-		<field name="expenseDate"/>
-		<field name="untaxedAmount"/>
-		<field name="totalAmount"/>
+	<grid name="expense-line-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine"
+		onNew="action-expense-line-default">
+		<field name="task" domain="self.taskTypeSelect = 'task'" form-view="task-form" grid-view="task-grid"/>
+			<field name="expenseType" domain="self.expense = true" widget="SuggestBox"/>
+			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
+			<field name="untaxedAmount" onChange="action-expense-on-change-tax-untaxt-amount"/>
+			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount"/>
+			<field name="totalAmount"/>
+			<field name="comments"/>
+			<field name="user" hidden="true" />
 	</grid>
 
 	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
@@ -33,8 +37,12 @@
 	    <field name="totalAmount" expr="eval:untaxedAmount+totalTax" />
 	</action-record>
 	
-	<action-validate name="action-expense-line-validate-expenseDate">
-		<error message="Date can't be in the future" if="expenseDate &gt; __date__"/>
+	<action-validate name="action-expense-line-validate-expenseDate" model="com.axelor.apps.hr.db.ExpenseLine">
+		<error message="Date can't be in the future" if="expenseDate &gt; __date__" action="action-expense-line-record-expenseDate-invalide"/>
 	</action-validate>
+	
+	<action-record name="action-expense-line-record-expenseDate-invalide" model="com.axelor.apps.hr.db.ExpenseLine">
+		<field name="expenseDate" expr="eval :__date__"/>
+	</action-record>
 
 </object-views>

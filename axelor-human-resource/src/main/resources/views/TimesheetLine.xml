@@ -11,17 +11,19 @@
 		<field name="comments" />
 	</grid>
 	
-	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" onNew="action-hr-default-timesheet-line-timesheet">
+	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
+	onNew="action-hr-default-timesheet-line-timesheet">
 		<field name="project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 		<field name="task" domain="self.taskTypeSelect = 'task'" form-view="task-form" grid-view="task-grid"/>
 		<field name="date" />
 		<field name="activity"/>
-		<field name="visibleDuration"/>
-		<field name="durationStored" hidden="true"/>
+		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
+		<field name="durationStored" hidden="true" />
 		<field name="comments" />
 	</grid>
 
-	<form name="timesheet-line-project-form" title="Log Time" model="com.axelor.apps.hr.db.TimesheetLine" onNew="action-hr-default-timesheet-line-project,action-timesheet-line-attrs-set-duration-label"
+	<form name="timesheet-line-project-form" title="Log Time" model="com.axelor.apps.hr.db.TimesheetLine" 
+	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-attrs-set-duration-label"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration">
 		<panel title="Overview">
 			<field name="user"/>
@@ -35,7 +37,8 @@
 		</panel>
 	</form>
 	
-	<form name="timesheet-line-timesheet-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label"
+	<form name="timesheet-line-timesheet-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" 
+	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration">
 		<panel title="Overview">
 			<field name="project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
