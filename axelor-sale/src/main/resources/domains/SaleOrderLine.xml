@@ -15,8 +15,9 @@
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal / line"/>
   	<boolean name="hideDiscount" title="Hide Discount ?" help="true"/>
   	<string name="productName" title="Product name"/>
-  	<decimal name="price" title="Unit price"/>
-  	<decimal name="priceDiscounted" title="Unit price discounted"/>
+  	<decimal name="price" title="Unit price" precision="20" scale="5"/>
+  	<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="5"/>
+  	
   	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
   	<decimal name="exTaxTotal" title="Total W.T."/>
   	<decimal name="inTaxTotal" title="Total A.T.I."/>
@@ -25,7 +26,7 @@
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
-  	<decimal name="discountAmount" title="Discount amount"/>
+  	<decimal name="discountAmount" title="Discount amount" precision="20" scale="5"/>
   	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
   	
   	<date name="estimatedDelivDate" title="Estimated delivery date"/>

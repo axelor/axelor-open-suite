@@ -11,13 +11,16 @@
 
 	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" >
 		<panel readonlyIf="$popup()">
-	    	<field name="administration"/>
-	    	<field name="name"/>
-		    <field name="code" x-bind="{{code|uppercase}}"/>
-		    <field name="parent"/>
-		    <field name="partner" canNew="true" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+		    <panel colSpan="4">
+				<field name="logo" widget="Image"/>
+			</panel>
+			<panel colSpan="8">
+		    	<field name="name"/>
+			    <field name="code" x-bind="{{code|uppercase}}"/>
+			    <field name="parent"/>
+			    <field name="partner" canNew="true" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+		    </panel>
 		    <field name="address" canNew="true" colSpan="12"/>
-		    
 	  	</panel>
 	  
 	  	<panel sidebar="true" title="Modules configurations" hideIf="$popup()">
@@ -38,7 +41,7 @@
 	      		<field name="notes" showTitle="false" colSpan="12"/>
 	    	</panel>
 	    	<panel title="Configurations">
-	  			<field name="logoPath"/>
+	    	    <field name="administration"/>
 	  			<field name="currency"/>
 	  			<field name="printingSettings" canNew="true"/>
 	  			<field name="defaultPartnerTypeSelect"/>

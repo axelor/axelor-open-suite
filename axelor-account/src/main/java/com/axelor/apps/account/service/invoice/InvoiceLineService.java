@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -66,11 +68,11 @@ public class InvoiceLineService {
 
 		if(isPurchase)  {
 			return currencyService.getAmountCurrencyConverted(
-				product.getPurchaseCurrency(), invoice.getCurrency(), product.getPurchasePrice(), invoice.getInvoiceDate());
+				product.getPurchaseCurrency(), invoice.getCurrency(), product.getPurchasePrice(), invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
 		}
 		else  {
 			return currencyService.getAmountCurrencyConverted(
-				product.getSaleCurrency(), invoice.getCurrency(), product.getSalePrice(), invoice.getInvoiceDate());
+				product.getSaleCurrency(), invoice.getCurrency(), product.getSalePrice(), invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
 		}
 	}
 
@@ -85,14 +87,14 @@ public class InvoiceLineService {
 	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
 
 		return currencyService.getAmountCurrencyConverted(
-				invoice.getCurrency(), invoice.getPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate());
+				invoice.getCurrency(), invoice.getPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
 	}
 
 
 	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
 
 		return currencyService.getAmountCurrencyConverted(
-				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate());
+				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
 	}
 
 
@@ -101,7 +103,6 @@ public class InvoiceLineService {
 		return priceListService.getPriceListLine(invoiceLine.getProduct(), invoiceLine.getQty(), priceList);
 
 	}
-
 
 	public BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice)  {
 		BigDecimal unitPrice = BigDecimal.ZERO;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -100,6 +100,21 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="3811">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -120,8 +135,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/abs</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -413,147 +427,171 @@
                     <property name="name">purchase_id</property>
                     <property name="nativeName">purchase_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">delivery_date</property>
                     <property name="nativeName">delivery_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">status_select</property>
                     <property name="nativeName">status_select</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">first_name</property>
                     <property name="nativeName">first_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">partner_type_select</property>
                     <property name="nativeName">partner_type_select</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">addressl2</property>
                     <property name="nativeName">addressl2</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">addressl3</property>
                     <property name="nativeName">addressl3</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">addressl4</property>
                     <property name="nativeName">addressl4</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">addressl5</property>
                     <property name="nativeName">addressl5</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">addressl6</property>
                     <property name="nativeName">addressl6</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">countryName</property>
                     <property name="nativeName">countryName</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">PaymentMode</property>
                     <property name="nativeName">PaymentMode</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">PaymentCond</property>
                     <property name="nativeName">PaymentCond</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">ex_tax_total</property>
                     <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">in_tax_total</property>
                     <property name="nativeName">in_tax_total</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">tax_total</property>
                     <property name="nativeName">tax_total</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
                     <property name="name">CurrencyCode</property>
                     <property name="nativeName">CurrencyCode</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
                     <property name="name">iban</property>
                     <property name="nativeName">iban</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
                     <property name="name">bic</property>
                     <property name="nativeName">bic</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">23</property>
                     <property name="name">CopmanyName</property>
                     <property name="nativeName">CopmanyName</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">24</property>
                     <property name="name">notes</property>
                     <property name="nativeName">notes</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select PurchaseOrder.id as purchase_id, Company.logo_path, PurchaseOrder.delivery_date, PurchaseOrder.status_select,
+            <xml-property name="queryText"><![CDATA[select PurchaseOrder.id as purchase_id, MetaFile.file_path AS logo_path, PurchaseOrder.delivery_date, PurchaseOrder.status_select,
 Partner.title_select, Partner.name, Partner.first_name, Partner.partner_type_select,
 Address.addressl2, Address.addressl3, Address.addressl4, Address.addressl5, Address.addressl6,
 Country.name as "countryName", PaymentMode.name as "PaymentMode", PaymentCond.name as "PaymentCond",
@@ -561,6 +599,7 @@ PurchaseOrder.ex_tax_total, PurchaseOrder.in_tax_total, PurchaseOrder.tax_total,
 DefBankDetail.iban, DefBankDetail.bic, Company.name as "CopmanyName", PurchaseOrder.notes
 from public.purchase_purchase_order as PurchaseOrder
 left outer join public.base_company as Company on (PurchaseOrder.company = Company.id)
+left outer join public.meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join public.base_partner as Partner on (PurchaseOrder.supplier_partner = Partner.id)
 left outer join public.base_address as Address on (Partner.main_invoicing_address = Address.id)
 left outer join public.base_country as Country on (Address.addressl7country = Country.id)
@@ -1347,9 +1386,10 @@ left outer join public.account_tax_line as TaxLine on (POLineTax.tax_line = TaxL
                                     <property name="rowSpan">1</property>
                                     <image id="3419">
                                         <property name="height">2.169583333333333cm</property>
-                                        <property name="width">6.138333333333333cm</property>
+                                        <property name="width">307px</property>
                                         <property name="source">file</property>
-                                        <expression name="uri" type="javascript">row["logo_path"]</expression>
+                                        <property name="proportionalScale">true</property>
+                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                                     </image>
                                 </cell>
                                 <cell id="3352"/>

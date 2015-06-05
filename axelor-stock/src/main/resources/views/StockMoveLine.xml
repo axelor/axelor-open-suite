@@ -54,7 +54,7 @@
     </grid>
     
     <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number" readonlyIf="stockMove.statusSelect == 3">
+    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number" readonlyIf="stockMove.statusSelect == 3">
         <panel title="Stock Move">
 	    	<field name="stockMove.stockMoveSeq"/>
 	    	<field name="stockMove"/>
@@ -86,7 +86,7 @@
     </grid>
     
     <form name="stock-move-line-production-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-group-stock-stockmoveline-production-onnew">
+    	onNew="action-group-stock-stockmoveline-production-onnew" onLoad="action-stock-move-line-attrs-scale-and-precision">
 		<panel>
 		    <field name="productName" required="true" />
 	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-product-domain"/>
@@ -105,6 +105,7 @@
     </action-group>
     
     <action-group name="action-group-stock-stockmoveline-production-onnew">
+    	<action name="action-stock-move-line-attrs-scale-and-precision"/>
     	<action name="action-stock-move-line-record-new"/>
     	<action name="stock-move-line-production-record-default"/>
     </action-group>
@@ -138,5 +139,9 @@
 		<attribute name="domain" for="product" expr="eval: self.parentProduct.id = :productModel" if="productModel"/>
 	</action-attrs>
 	
+	
+	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">
+		<attribute name="scale" for="price" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+	</action-attrs>
 	
 </object-views>

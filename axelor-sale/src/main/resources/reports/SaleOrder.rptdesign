@@ -124,14 +124,203 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite-wip</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SaleOrderDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id</property>
+                    <text-property name="displayName">id</text-property>
+                    <text-property name="heading">id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">saleOrderSeq</property>
+                    <text-property name="displayName">saleOrderSeq</text-property>
+                    <text-property name="heading">saleOrderSeq</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CompanyName</property>
+                    <text-property name="displayName">CompanyName</text-property>
+                    <text-property name="heading">CompanyName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_path</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">creation_date</property>
+                    <text-property name="displayName">creation_date</text-property>
+                    <text-property name="heading">creation_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">partner_type_select</property>
+                    <text-property name="displayName">partner_type_select</text-property>
+                    <text-property name="heading">partner_type_select</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ClientPartName</property>
+                    <text-property name="displayName">ClientPartName</text-property>
+                    <text-property name="heading">ClientPartName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ClientPartFirstName</property>
+                    <text-property name="displayName">ClientPartFirstName</text-property>
+                    <text-property name="heading">ClientPartFirstName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ClientTitle</property>
+                    <text-property name="displayName">ClientTitle</text-property>
+                    <text-property name="heading">ClientTitle</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ContactName</property>
+                    <text-property name="displayName">ContactName</text-property>
+                    <text-property name="heading">ContactName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ContactFirstName</property>
+                    <text-property name="displayName">ContactFirstName</text-property>
+                    <text-property name="heading">ContactFirstName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">invAddress2</property>
+                    <text-property name="displayName">invAddress2</text-property>
+                    <text-property name="heading">invAddress2</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">invAddress3</property>
+                    <text-property name="displayName">invAddress3</text-property>
+                    <text-property name="heading">invAddress3</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">invAddress4</property>
+                    <text-property name="displayName">invAddress4</text-property>
+                    <text-property name="heading">invAddress4</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">invAddress5</property>
+                    <text-property name="displayName">invAddress5</text-property>
+                    <text-property name="heading">invAddress5</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">invAddress6</property>
+                    <text-property name="displayName">invAddress6</text-property>
+                    <text-property name="heading">invAddress6</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">invoicecountry</property>
+                    <text-property name="displayName">invoicecountry</text-property>
+                    <text-property name="heading">invoicecountry</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PaymentCondName</property>
+                    <text-property name="displayName">PaymentCondName</text-property>
+                    <text-property name="heading">PaymentCondName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PaymentMode</property>
+                    <text-property name="displayName">PaymentMode</text-property>
+                    <text-property name="heading">PaymentMode</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">delAddress2</property>
+                    <text-property name="displayName">delAddress2</text-property>
+                    <text-property name="heading">delAddress2</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">delAddress3</property>
+                    <text-property name="displayName">delAddress3</text-property>
+                    <text-property name="heading">delAddress3</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">delAddress4</property>
+                    <text-property name="displayName">delAddress4</text-property>
+                    <text-property name="heading">delAddress4</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">delAddress5</property>
+                    <text-property name="displayName">delAddress5</text-property>
+                    <text-property name="heading">delAddress5</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">delAddress6</property>
+                    <text-property name="displayName">delAddress6</text-property>
+                    <text-property name="heading">delAddress6</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DeliveryCountry</property>
+                    <text-property name="displayName">DeliveryCountry</text-property>
+                    <text-property name="heading">DeliveryCountry</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ex_tax_total</property>
+                    <text-property name="displayName">ex_tax_total</text-property>
+                    <text-property name="heading">ex_tax_total</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">tax_total</property>
+                    <text-property name="displayName">tax_total</text-property>
+                    <text-property name="heading">tax_total</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">in_tax_total</property>
+                    <text-property name="displayName">in_tax_total</text-property>
+                    <text-property name="heading">in_tax_total</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">bank_address</property>
+                    <text-property name="displayName">bank_address</text-property>
+                    <text-property name="heading">bank_address</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">iban</property>
+                    <text-property name="displayName">iban</text-property>
+                    <text-property name="heading">iban</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">bic</property>
+                    <text-property name="displayName">bic</text-property>
+                    <text-property name="heading">bic</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CurrencyCode</property>
+                    <text-property name="displayName">CurrencyCode</text-property>
+                    <text-property name="heading">CurrencyCode</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">external_reference</property>
+                    <text-property name="displayName">external_reference</text-property>
+                    <text-property name="heading">external_reference</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">header</property>
+                    <text-property name="displayName">header</text-property>
+                    <text-property name="heading">header</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">footer</property>
+                    <text-property name="displayName">footer</text-property>
+                    <text-property name="heading">footer</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">description</property>
+                    <text-property name="displayName">description</text-property>
+                    <text-property name="heading">description</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">invAddressId</property>
+                    <text-property name="displayName">invAddressId</text-property>
+                    <text-property name="heading">invAddressId</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">delAddressId</property>
+                    <text-property name="displayName">delAddressId</text-property>
+                    <text-property name="heading">delAddressId</text-property>
+                </structure>
+            </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -206,9 +395,6 @@ where SaleOrder.id = ?]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>

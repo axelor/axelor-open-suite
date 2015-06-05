@@ -25,7 +25,9 @@
 	    <field name="salePrice" width="120"/>
     </grid>
 
-   <form   name="product-form" onNew="action-group-base-product-onnew" onLoad="action-product-attrs-title-sale-price" title="Product" model="com.axelor.apps.base.db.Product" >
+   <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" 
+   onNew="action-group-base-product-onnew" 
+   onLoad="action-product-attrs-scale-and-precision,action-product-attrs-title-sale-price">
     <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
@@ -171,6 +173,7 @@
     </action-view>
     
     <action-group name="action-group-base-product-onnew">
+   	 	<action name="action-product-attrs-scale-and-precision"/>
     	<action name="action-product-record-default-new"/>
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-record-in-ati"/>
@@ -190,6 +193,12 @@
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
     	<field name="inAti" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInAti()"/>
     </action-record>
+
+    <action-attrs name="action-product-attrs-scale-and-precision">
+		<attribute name="scale" for="salePrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="purchasePrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="costPrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+	</action-attrs>
     
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="applicationTypeSelect" expr="1"/>

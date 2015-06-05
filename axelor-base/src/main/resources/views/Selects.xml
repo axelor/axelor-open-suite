@@ -458,13 +458,6 @@
 		<option value="2">LIFO</option>
 	</selection>
 	
-	<selection name="socialnetwork.facebook.post.privacy.select">
-		<option value="EVERYONE">Public</option>
-		<option value="FRIENDS_OF_FRIENDS">Friends of friends</option>
-		<option value="ALL_FRIENDS">All friends</option>
-		<option value="SELF">Only Me</option>
-	</selection>
-	
 	<selection name="base.price.list.type.select">
 		<option value="1">Sale</option>
 		<option value="2">Purchase</option>

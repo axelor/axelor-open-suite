@@ -8,12 +8,12 @@
 		<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
 		</toolbar>
 		<field name="fullName" />
-		<button name="map" icon="fa-map-marker" help="Locate" onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
-		<button name="directions" icon="fa-location-arrow" help="Direction" onClick="com.axelor.apps.base.web.AddressController:directionsMap" />
+		<button name="map" icon="fa-map-marker" help="Locate" onClick="action-base-address-method-view-map" />
+		<button name="directions" icon="fa-location-arrow" help="Direction" onClick="action-base-address-method-view-direction" />
 	</grid>
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
-	onSave="action-group-base-address-onsave" onLoad="action-address-get-general-qas" onNew="default-address-record,action-address-get-general-qas" >
+	onSave="action-group-base-address-onsave,save,action-base-address-method-check-lat-lang" onLoad="action-address-get-general-qas" onNew="default-address-record,action-address-get-general-qas" >
 		<panel name="main" title="Address details" colSpan="12">
 			<field name="addressL2"  placeholder="e.g. Financial department, CEO"/>
 			<field name="addressL3"  placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
@@ -23,8 +23,8 @@
 			<field name="addressL6"  required="true"/>
 			<field name="addressL7Country" required="true"/>
 			<button-group colSpan="6">
-				<button name="map" title="View map" icon="fa-map-marker" onClick="com.axelor.apps.base.web.AddressController:viewMap,save" hideIf="$popup()"/>
-				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="com.axelor.apps.base.web.AddressController:directionsMap" hideIf="$popup()"/>
+				<button name="map" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map" hideIf="$popup()"/>
+				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction" hideIf="$popup()"/>
 			</button-group>
 			<field name="isUsed" hidden="true" type="boolean"/>
 		</panel>
@@ -70,4 +70,17 @@
 	<action-validate name="action-base-address-check-address-used">
 		<alert message="Be aware that the address is already in use on other documents, do you still want to modify it ?" if="isUsed == true"/>
 	</action-validate>
+	
+	<action-method name="action-base-address-method-view-map">
+		<call class="com.axelor.apps.base.web.AddressController" method="viewMap"/>
+	</action-method>
+	
+	<action-method name="action-base-address-method-view-direction">
+		<call class="com.axelor.apps.base.web.AddressController" method="viewDirection"/>
+	</action-method>
+	
+	<action-method name="action-base-address-method-check-lat-lang">
+		<call class="com.axelor.apps.base.web.AddressController" method="checkLatLang"/>
+	</action-method>
+	
 </object-views>

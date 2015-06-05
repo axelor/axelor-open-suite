@@ -572,7 +572,7 @@ resources/domains/Blocking.xml:12
 resources/domains/MailBatch.xml:13
 resources/domains/Message.xml:10
 resources/domains/Period.xml:13
-resources/domains/Sequence.xml:11
+resources/domains/Sequence.xml:12
 resources/domains/User.xml:11
 resources/domains/Year.xml:16
 resources/views/Company.xml:12
@@ -752,7 +752,7 @@ resources/views/Selects.xml:352"
 "Discount",,,"resources/views/Selects.xml:474"
 "Discount/Additionnal/Replace",,,"resources/domains/PriceListLine.xml:13"
 "Distribution precisions (POB, Village...)",,,"resources/domains/Address.xml:14"
-"Document concerned",,,"resources/domains/Sequence.xml:13"
+"Document concerned",,,"resources/domains/Sequence.xml:14"
 "Dr",,,"resources/views/Selects.xml:163"
 "Draft",,,"resources/views/Selects.xml:293
 resources/views/Selects.xml:304
@@ -773,6 +773,7 @@ resources/views/Selects.xml:266"
 "Employees (Nbr)",,,"resources/domains/Partner.xml:69"
 "Encours Client",,,"resources/views/Partner.xml:131"
 "End Date",,,"resources/domains/Batch.xml:17"
+"End date",,,"resources/domains/SequenceVersion.xml:12"
 "Energy",,,"resources/views/Selects.xml:218"
 "Enter proper 'From' and 'To' date.",,,"resources/views/Year.xml:39"
 "Enterprise Partner",,,"resources/domains/Site.xml:10"
@@ -936,7 +937,7 @@ resources/views/Menu.xml:476"
 "In %",,,"resources/views/Selects.xml:480"
 "In / Out ?",,,"resources/domains/PaymentMode.xml:14"
 "Incorrect BBAN Key",,,"resources/views/BankDetails.xml:63"
-"Increment",,,"resources/domains/Sequence.xml:17"
+"Increment",,,"resources/domains/Sequence.xml:18"
 "Indicator generator",,,"resources/views/IndicatorGenerator.xml:13"
 "Indicator generator list",,,"resources/domains/IndicatorGeneratorGrouping.xml:10"
 "Indicator generators",,,"resources/views/IndicatorGenerator.xml:6"
@@ -1126,7 +1127,7 @@ resources/domains/ProductVariantConfig.xml:19
 resources/domains/ProductVariantValue.xml:10
 resources/domains/Querie.xml:10
 resources/domains/Routing.xml:10
-resources/domains/Sequence.xml:12
+resources/domains/Sequence.xml:13
 resources/domains/Site.xml:9
 resources/domains/Source.xml:11
 resources/domains/Tax.xml:11
@@ -1149,7 +1150,7 @@ resources/domains/Commune.xml:13"
 "New",,,"resources/views/General.xml:20
 resources/views/General.xml:9"
 "New exchange rate",,,"resources/views/CurrencyConversionLine.xml:46"
-"Next N°",,,"resources/domains/Sequence.xml:18"
+"Next N°",,,"resources/domains/SequenceVersion.xml:13"
 "Next theoretical execution date",,,"resources/domains/SchedulerInstanceHistory.xml:11"
 "No",,,"resources/views/Selects.xml:168
 resources/views/Selects.xml:174
@@ -1296,7 +1297,8 @@ resources/views/General.xml:138"
 "Please, enter date of next execution.",,,"resources/views/SchedulerInstance.xml:29"
 "Postal addresses",,,"resources/views/Partner.xml:192
 resources/views/Partner.xml:83"
-"Prefix",,,"resources/domains/Sequence.xml:14"
+"Prefix",,,"resources/domains/Sequence.xml:15"
+"Prefix or suffix must contain %Y if yearly reset is true and %M %Y if monthly reset is true",,,"resources/views/Sequence.xml:79"
 "Price Extra",,,"resources/domains/ProductVariantValue.xml:12"
 "Price list",,,"resources/domains/HistorizedPriceList.xml:9
 resources/domains/PriceListLine.xml:9
@@ -1599,11 +1601,11 @@ resources/views/Partner.xml:46"
 "September",,,"resources/views/Selects.xml:286"
 "Sequence",,,"resources/domains/TemplateRuleLine.xml:10
 resources/domains/TrackingNumberConfiguration.xml:25
-resources/views/Sequence.xml:17"
-"Sequence Definition",,,"resources/views/Sequence.xml:30"
+resources/views/Sequence.xml:15"
+"Sequence Definition",,,"resources/views/Sequence.xml:28"
 "Sequences",,,"resources/views/Menu.xml:423
 resources/views/Menu.xml:426
-resources/views/Sequence.xml:6"
+resources/views/Sequence.xml:5"
 "Service",,,"resources/views/Selects.xml:236"
 "Service Products",,,"resources/views/Product.xml:282"
 "Service indisponible, veuillez contacter votre adminstrateur",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:151"
@@ -1632,6 +1634,7 @@ resources/views/Menu.xml:446"
 "Spatial information",,,"resources/domains/PickListEntry.xml:12"
 "Specific information",,,"resources/domains/PickListEntry.xml:14"
 "Start Date",,,"resources/domains/Batch.xml:16"
+"Start date",,,"resources/domains/SequenceVersion.xml:11"
 "Status",,,"resources/domains/Period.xml:16
 resources/domains/Year.xml:17"
 "Stock",,,"resources/views/Product.xml:167
@@ -1645,7 +1648,7 @@ resources/views/Message.xml:36"
 "Subscription",,,"resources/views/Selects.xml:238
 resources/views/Selects.xml:421"
 "Succeeded",,,"resources/domains/Batch.xml:19"
-"Suffix",,,"resources/domains/Sequence.xml:15"
+"Suffix",,,"resources/domains/Sequence.xml:16"
 "Sunday",,,"resources/domains/Scheduler.xml:26
 resources/views/Selects.xml:553"
 "Supplier",,,"resources/domains/SupplierCatalog.xml:11"
@@ -1819,7 +1822,10 @@ resources/domains/RoutingRule.xml:14"
 "Variants generated",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:186"
 "Variation",,,"resources/domains/CurrencyConversionLine.xml:17
 resources/views/CurrencyConversionLine.xml:47"
-"Version",,,"resources/domains/Product.xml:57"
+"Version",,,"resources/domains/Product.xml:57
+resources/views/Sequence.xml:45"
+"Versions",,,"resources/domains/Sequence.xml:23
+resources/views/Sequence.xml:39"
 "Veuillez configurer les conversions d'unités de '%s' à '%s'.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:47"
 "Veuillez configurer les conversions d'unités.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:48"
 "Veuillez configurer une version de taxe pour la taxe %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:139"
@@ -1849,14 +1855,14 @@ resources/views/Scheduler.xml:24"
 "Year",,,"resources/domains/Period.xml:12
 resources/views/Year.xml:15
 resources/views/Year.xml:6"
-"Yearly reset",,,"resources/domains/Sequence.xml:19"
+"Yearly reset",,,"resources/domains/Sequence.xml:20"
 "Years",,,"resources/views/Menu.xml:412
 resources/views/Menu.xml:415"
 "Yes",,,"resources/views/Selects.xml:170
 resources/views/Selects.xml:175
 resources/views/Selects.xml:185"
 "Yes (Approved)",,,"resources/views/Selects.xml:176"
-"You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?",,,"resources/views/CurrencyConversionLine.xml:110"
+"You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?",,,"resources/views/CurrencyConversionLine.xml:111"
 "Zip",,,"resources/domains/PickListEntry.xml:15"
 "Zip On Right ?",,,"resources/domains/Commune.xml:18"
 "Zip code",,,"resources/domains/Commune.xml:17"
@@ -1968,13 +1974,12 @@ resources/views/Selects.xml:185"
 "help:ProductVariant.usedForStock",,,"resources/domains/ProductVariant.xml:20"
 "help:ProductVariantAttr.productVariantValueList",,,"resources/domains/ProductVariantAttr.xml:12"
 "help:ProductVariantValue.applicationPriceSelect",,,"resources/domains/ProductVariantValue.xml:13"
-"help:Sequence.monthlyResetOk",,,"resources/domains/Sequence.xml:20"
-"help:Sequence.padding",,,"resources/domains/Sequence.xml:16"
-"help:Sequence.prefixe",,,"resources/domains/Sequence.xml:14"
-"help:Sequence.resetDate",,,"resources/domains/Sequence.xml:21"
-"help:Sequence.suffixe",,,"resources/domains/Sequence.xml:15"
-"help:Sequence.toBeAdded",,,"resources/domains/Sequence.xml:17"
-"help:Sequence.yearlyResetOk",,,"resources/domains/Sequence.xml:19"
+"help:Sequence.monthlyResetOk",,,"resources/domains/Sequence.xml:21"
+"help:Sequence.padding",,,"resources/domains/Sequence.xml:17"
+"help:Sequence.prefixe",,,"resources/domains/Sequence.xml:15"
+"help:Sequence.suffixe",,,"resources/domains/Sequence.xml:16"
+"help:Sequence.toBeAdded",,,"resources/domains/Sequence.xml:18"
+"help:Sequence.yearlyResetOk",,,"resources/domains/Sequence.xml:20"
 "help:SupplierCatalog.minQty",,,"resources/domains/SupplierCatalog.xml:18"
 "help:SupplierCatalog.price",,,"resources/domains/SupplierCatalog.xml:14"
 "help:TaxEquiv.toTax",,,"resources/domains/TaxEquiv.xml:12"

@@ -28,13 +28,13 @@
 		<panel>
 		    <field name="today"/>
 		    <field name="logOk"/>
-		    <field name="defaultProjectUnit"/>
-		    <field name="defaultPartnerLanguage" />
 		</panel>
 		<panel-tabs>
 		    <panel title="Configuration">
+		    	<field name="defaultPartnerLanguage" />
 		    	<field name="mailAccountByUser" />
 		    	<field name="productInAti"/>
+		    	<field name="nbDecimalDigitForUnitPrice"/>
 		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>

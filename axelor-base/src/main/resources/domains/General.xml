@@ -27,6 +27,7 @@
 		<boolean name="hasQasValidation" title="Use QAS Validation ?" help="true" />
 		
 		<boolean name="productInAti" title="Products In ATI"/>
+		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" max="5" default="2"/>
 
 	</entity>
 

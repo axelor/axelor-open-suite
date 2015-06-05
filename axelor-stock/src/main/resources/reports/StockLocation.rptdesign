@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 3.7.2.v20120213 Build &lt;3.7.2.v20120214-1408></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -88,6 +88,21 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="4629">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -108,8 +123,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/abs</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -227,11 +241,13 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT Location.id as location_id, Company.logo_path, Location.name as location_name	
+            <xml-property name="queryText"><![CDATA[SELECT Location.id as location_id, MetaFile.file_path as logo_path, Location.name as location_name	
 FROM 
 	stock_location AS Location
 LEFT JOIN 
 	base_company AS Company ON (Company.id = Location.company)
+LEFT JOIN 
+	meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 WHERE
 	Location.type_select = 1
 ]]></xml-property>
@@ -839,10 +855,11 @@ where LocationLine.current_qty != 0	and Location.type_select = 1
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <image id="3419">
-                        <property name="height">2.169583333333333cm</property>
-                        <property name="width">6.138333333333333cm</property>
+                        <property name="height">86px</property>
+                        <property name="width">318px</property>
                         <property name="source">file</property>
-                        <expression name="uri" type="javascript">row["logo_path"]</expression>
+                        <property name="proportionalScale">true</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                     </image>
                 </cell>
                 <cell id="4032">

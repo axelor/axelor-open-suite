@@ -67,10 +67,9 @@ public class MapRest {
 				objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
 			}
 			
-			if (partner.getMainInvoicingAddress() != null) {
-				Address address = partner.getMainInvoicingAddress();
+			Address address = partner.getMainInvoicingAddress();
+			if (address != null && address.getFullName() != null) {
 				String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
-				addressRepo.save(address);
 				objectNode.put("address", addressString);				
 			}
 			

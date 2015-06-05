@@ -17,6 +17,8 @@
  */
 package com.axelor.apps;
 
+import java.io.File;
+
 import com.axelor.app.AppSettings;
 
 public class ReportSettings {
@@ -34,6 +36,7 @@ public class ReportSettings {
 		
 		this.addAxelorReportPath(rptdesign)
 		.addDataBaseConnection()
+		.addAttachmentPath()
 		.addParam("__format", format);
 		
 	}
@@ -42,6 +45,7 @@ public class ReportSettings {
 		
 		this.addAxelorReportPath(rptdesign)
 		.addDataBaseConnection()
+		.addAttachmentPath()
 		.addParam("__format", FORMAT_PDF);
 		
 	}
@@ -84,6 +88,19 @@ public class ReportSettings {
 		
 		this.url +=  "&" + param + "=" + value;
 		return this;
+		
+	}
+	
+	public ReportSettings addAttachmentPath(){
+		
+		String attachmentPath = AppSettings.get().getPath("file.upload.dir","");
+		if(attachmentPath == null){
+			return this;
+		}
+		
+		attachmentPath = attachmentPath.endsWith(File.separator) ? attachmentPath : attachmentPath+File.separator;
+		
+		return this.addParam("AttachmentPath",attachmentPath);
 		
 	}
 }

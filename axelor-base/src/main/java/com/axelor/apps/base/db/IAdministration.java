@@ -102,4 +102,7 @@ public interface IAdministration {
 	// TYPE
 	static final int MAP_API_GOOGLE = 1;
 	static final int MAP_API_OSM = 2;
+	
+	// NB DECIMALS
+	static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 }
