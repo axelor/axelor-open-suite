@@ -6,6 +6,7 @@
 		<field name="user"/>
 		<field name="date" />
 		<field name="visibleDuration" />
+		<field name="durationStored" hidden="true"/>
 		<field name="affectedToTimeSheet"/>
 		<field name="comments" />
 	</grid>
@@ -16,6 +17,7 @@
 		<field name="date" />
 		<field name="activity"/>
 		<field name="visibleDuration"/>
+		<field name="durationStored" hidden="true"/>
 		<field name="comments" />
 	</grid>
 
