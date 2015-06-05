@@ -6,13 +6,16 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -186,6 +189,25 @@ public class ExpenseController {
 		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
 		expenseService.cancel(expense);
 		response.setReload(true);
+	}
+	
+	public void validateDates(ActionRequest request, ActionResponse response) throws AxelorException{
+		Expense expense = request.getContext().asType(Expense.class);
+		if(expense.getExpenseLineList()!= null){
+			List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
+			List<Integer> expenseLineId = new ArrayList<Integer>(); 
+			int compt = 0;
+			for (ExpenseLine expenseLine : expenseLineList) {
+				compt++;
+				if(expenseLine.getExpenseDate().isAfter(GeneralService.getTodayDate())){
+					expenseLineId.add(compt);
+				}
+			}
+			if(!expenseLineId.isEmpty()){
+				String ids =  Joiner.on(",").join(expenseLineId);
+				throw new AxelorException(String.format(I18n.get("Problème de date pour la (les) ligne(s) : "+ids)), IException.CONFIGURATION_ERROR);
+			}
+		}
 	}
 	
 }
