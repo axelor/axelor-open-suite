@@ -66,7 +66,9 @@ public class VentilateState extends WorkflowInvoice {
 		
 		Sequence sequence = this.getSequence();
 		
-		this.checkInvoiceDate(sequence);
+		if(!moveService.isPurchase(invoice))  {  
+			this.checkInvoiceDate(sequence);
+		}
 		
 		setInvoiceId(sequence);
 		updatePaymentSchedule( );
