@@ -29,6 +29,7 @@
   	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
   	
   	<date name="estimatedDelivDate" title="Estimated delivery date"/>
+  	<many-to-one name="groupingLine" ref="com.axelor.apps.base.db.GroupingLine"/>
   	
 <!--   	Devis-commande fournisseur -->
 	<date name="deliveryDate" title="Delivery date"/>
