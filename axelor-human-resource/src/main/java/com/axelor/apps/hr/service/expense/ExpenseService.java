@@ -84,9 +84,13 @@ public class ExpenseService extends ExpenseRepository{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_ACCOUNT),  
 					 expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
-		
-		Move move = moveService.createMove(accountConfig.getExpenseJournal(), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode());
-		
+		Move move = null;
+		if(expense.getUser().getPartner() != null){
+			move = moveService.createMove(accountConfig.getExpenseJournal(), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode());
+		}
+		else{
+			move = moveService.createMove(accountConfig.getExpenseJournal(), accountConfig.getCompany(), null, null, moveDate, null);
+		}
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 		
 		AccountManagement accountManagement = null;
