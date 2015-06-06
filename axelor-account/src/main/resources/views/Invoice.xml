@@ -72,9 +72,9 @@
 					<field name="oldMove" readonly="true" showIf="oldMove"/>
 				</panel>
 				<panel title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
-					<button name="createRefund" title="Generate refund" colSpan="2" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save"/>
+					<button name="createRefund" title="Generate refund" colSpan="3" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save" />
 					<field name="originalInvoice" readonly="true" showIf="originalInvoice"/>
-					<panel-related field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()"  />
+					<panel-related field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" />
 				</panel>
 				<panel colSpan="12"  title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
 					<field name="irrecoverableStatusSelect"/>
