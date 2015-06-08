@@ -20,7 +20,6 @@
    	<many-to-one name="reimbursementJournal" ref="com.axelor.apps.account.db.Journal" title="Reimbursement Journal"/>
    	<many-to-one name="irrecoverableJournal" ref="com.axelor.apps.account.db.Journal" title="Irrecoverable Journal"/>
    	<many-to-one name="miscOperationJournal" ref="com.axelor.apps.account.db.Journal" title="Misc. Operation Journal"/>
-    <many-to-one name="expenseJournal" ref="com.axelor.apps.account.db.Journal" title="Expense Journal"/>
     
     <many-to-one name="saleJournalType" ref="com.axelor.apps.account.db.JournalType" title="Sales journal type"/>
     <many-to-one name="purchaseJournalType" ref="com.axelor.apps.account.db.JournalType" title="Purchase journal type"/>
@@ -34,8 +33,6 @@
     <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="true"/>    
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
-    <many-to-one name="expenseEmployeeAccount" ref="com.axelor.apps.account.db.Account" title="Expense employee account"/>
-    <many-to-one name="expenseTaxAccount" ref="com.axelor.apps.account.db.Account" title="Expense tax account"/>
     
     <decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
     

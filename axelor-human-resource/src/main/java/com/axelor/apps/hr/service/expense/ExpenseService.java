@@ -20,14 +20,13 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -38,9 +37,6 @@ import com.google.inject.persist.Transactional;
 public class ExpenseService extends ExpenseRepository{
 	
 	@Inject
-	private PeriodService periodService;
-	
-	@Inject
 	private MoveService moveService;
 	
 	@Inject
@@ -48,6 +44,8 @@ public class ExpenseService extends ExpenseRepository{
 	
 	@Inject
 	private AccountManagementServiceAccountImpl accountManagementService;
+	
+	@Inject private AccountConfigHRService accountConfigService;
 	
 	public Expense compute (Expense expense){
 		
@@ -75,21 +73,18 @@ public class ExpenseService extends ExpenseRepository{
 		}
 		
 		Account account = null;
-		AccountConfig accountConfig= Beans.get(AccountConfigService.class).getAccountConfig(expense.getCompany());
-		if(accountConfig.getExpenseJournal() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_JOURNAL),  
-					 expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
+		AccountConfig accountConfig= accountConfigService.getAccountConfig(expense.getCompany());
+
 		if(accountConfig.getExpenseEmployeeAccount()==null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_ACCOUNT),  
 					 expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		Move move = null;
 		if(expense.getUser().getPartner() != null){
-			move = moveService.createMove(accountConfig.getExpenseJournal(), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode());
+			move = moveService.createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode());
 		}
 		else{
-			move = moveService.createMove(accountConfig.getExpenseJournal(), accountConfig.getCompany(), null, null, moveDate, null);
+			move = moveService.createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, null, moveDate, null);
 		}
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 		
@@ -99,7 +94,7 @@ public class ExpenseService extends ExpenseRepository{
 		
 		int moveLineId = 1;
 		int expenseLineId = 1;
-		moveLines.add( moveLineService.createMoveLine(move, expense.getUser().getPartner(), accountConfig.getExpenseEmployeeAccount(), expense.getInTaxTotal(), false, false, moveDate, moveDate, moveLineId++, ""));
+		moveLines.add( moveLineService.createMoveLine(move, expense.getUser().getPartner(), accountConfigService.getExpenseEmployeeAccount(accountConfig), expense.getInTaxTotal(), false, false, moveDate, moveDate, moveLineId++, ""));
 		
 		for(ExpenseLine expenseLine : expense.getExpenseLineList()){
 			analyticAccounts.clear();
@@ -159,11 +154,18 @@ public class ExpenseService extends ExpenseRepository{
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel (Expense expense) throws AxelorException{
 		Move move = expense.getMove();
-		if(move == null)   {  return;  }
-		expense.setMove(null);
-		expense.setVentilated(false);
-		try{
+		if(move == null)   
+		{  
+			expense.setStatusSelect(5);
+			save(expense);
+			return;  
+		}
+		Beans.get(PeriodService.class).testOpenPeriod(move.getPeriod());
+		try{	
 			Beans.get(MoveRepository.class).remove(move);
+			expense.setMove(null);
+			expense.setVentilated(false);
+			expense.setStatusSelect(5);
 		}
 		catch(Exception e){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_CANCEL_MOVE)), IException.CONFIGURATION_ERROR);
