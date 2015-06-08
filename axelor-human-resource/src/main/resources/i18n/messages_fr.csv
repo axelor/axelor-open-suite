@@ -126,10 +126,10 @@ resources/views/Menu.xml:62"
 resources/domains/TimeActivity.xml:11
 resources/domains/WeeklyPlanning.xml:10
 resources/views/Product.xml:26"
-"No expense to be validated by your subordinates",,,"java/com/axelor/apps/hr/web/expense/ExpenseController.java:151"
-"No leave to be validated by your subordinates",,,"java/com/axelor/apps/hr/web/leave/LeaveController.java:140"
+"No expense to be validated by your subordinates","Aucune NdeF à valider par mes subordonnés",,"java/com/axelor/apps/hr/web/expense/ExpenseController.java:151"
+"No leave to be validated by your subordinates","Aucun congé à valider par mes subordonnés",,"java/com/axelor/apps/hr/web/leave/LeaveController.java:140"
 "No log time found or all log times already added","Aucun temps passé à ajouter",,"resources/views/Timesheet.xml:88"
-"No timesheet to be validated by your subordinates",,,"java/com/axelor/apps/hr/web/timesheet/TimesheetController.java:164"
+"No timesheet to be validated by your subordinates","Aucune f. de temps à valider par mes subordonnés",,"java/com/axelor/apps/hr/web/timesheet/TimesheetController.java:164"
 "Overview","Entête",,"resources/views/TimesheetLine.xml:28
 resources/views/TimesheetLine.xml:43"
 "Period","Période",,"resources/domains/Expense.xml:11"
@@ -166,9 +166,9 @@ resources/views/Product.xml:21"
 "Send Leave",,,"resources/views/Leave.xml:34"
 "Sent Date","Date d'envoi",,"resources/domains/Expense.xml:10
 resources/domains/Timesheet.xml:11"
-"Show expenses to be validated by my subordinates",,,"resources/views/Expense.xml:15"
-"Show leaves to be validated by my subordinates",,,"resources/views/Leave.xml:18"
-"Show timesheets to be validated by my subordinates",,,"resources/views/Timesheet.xml:14"
+"Show expenses to be validated by my subordinates","Voir les NdeF à valider par mes subordonnés",,"resources/views/Expense.xml:15"
+"Show leaves to be validated by my subordinates","Voir les congés à valider par mes subordonnés",,"resources/views/Leave.xml:18"
+"Show timesheets to be validated by my subordinates","Voir les f. de temps à valider par mes subordonnés",,"resources/views/Timesheet.xml:14"
 "Start On","Commence",,"resources/domains/Leave.xml:14"
 "Status","Statut",,"resources/domains/Expense.xml:12
 resources/domains/Leave.xml:11
