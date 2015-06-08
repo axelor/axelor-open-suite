@@ -34,7 +34,6 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.stock.db.ILocation;
-import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
@@ -150,7 +149,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 	//Check if existing at least one stockMove not canceled for the purchaseOrder
 	public boolean existActiveStockMoveForPurchaseOrder(Long purchaseOrderId){
-		long nbStockMove = Beans.get(StockMoveRepository.class).all().filter("self.purchaseOrder.id = ? AND self.statusSelect <> ?", purchaseOrderId, IStockMove.STATUS_CANCELED).count();
+		long nbStockMove = Beans.get(StockMoveRepository.class).all().filter("self.purchaseOrder.id = ? AND self.statusSelect <> ?", purchaseOrderId, StockMoveRepository.STATUS_CANCELED).count();
 		return nbStockMove > 0;
 	}
 

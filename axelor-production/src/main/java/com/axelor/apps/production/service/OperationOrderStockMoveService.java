@@ -23,11 +23,11 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.db.ILocation;
-import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
@@ -123,7 +123,7 @@ public class OperationOrderStockMoveService extends OperationOrderRepository {
 
 		StockMove stockMove = operationOrder.getInStockMove();
 
-		if(stockMove != null && stockMove.getStatusSelect() == IStockMove.STATUS_PLANNED && stockMove.getStockMoveLineList() != null)  {
+		if(stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED && stockMove.getStockMoveLineList() != null)  {
 
 			stockMoveService.realize(stockMove);
 

@@ -38,5 +38,21 @@
     
     <string name="description" title="Description" large="true"/>
     
+    <extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_PLANNED = 2;
+		public static final int STATUS_REALIZED = 3;
+		public static final int STATUS_CANCELED = 4;
+
+		// TYPE SELECT
+		public static final int TYPE_INTERNAL = 1;
+		public static final int TYPE_OUTGOING = 2;
+		public static final int TYPE_INCOMING = 3;
+
+	
+	]]></extra-code>
+    
   </entity>
 </domain-models>

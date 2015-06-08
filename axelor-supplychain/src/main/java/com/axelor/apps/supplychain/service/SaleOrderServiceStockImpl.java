@@ -28,12 +28,12 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.ILocation;
-import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -198,7 +198,7 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
 	//Check if existing at least one stockMove not canceled for the saleOrder
 	public boolean existActiveStockMoveForSaleOrder(Long saleOrderId){
-		long nbStockMove = stockMoveService.all().filter("self.saleOrder.id = ? AND self.statusSelect <> ?", saleOrderId, IStockMove.STATUS_CANCELED).count();
+		long nbStockMove = stockMoveService.all().filter("self.saleOrder.id = ? AND self.statusSelect <> ?", saleOrderId, StockMoveRepository.STATUS_CANCELED).count();
 		return nbStockMove > 0;
 	}
 }
