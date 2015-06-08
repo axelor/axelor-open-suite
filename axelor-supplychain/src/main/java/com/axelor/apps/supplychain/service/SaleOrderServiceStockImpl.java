@@ -27,7 +27,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
-import com.axelor.apps.stock.db.ILocation;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
@@ -60,7 +59,7 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 	public Location getLocation(Company company)  {
 
 		return locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3",
-				company, true, ILocation.INTERNAL).fetchOne();
+				company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
 	}
 
 
@@ -97,7 +96,7 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
 	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException  {
 
-		Location toLocation = locationRepo.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.EXTERNAL).fetchOne();
+		Location toLocation = locationRepo.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, LocationRepository.TYPE_EXTERNAL).fetchOne();
 
 		if(toLocation == null)  {
 

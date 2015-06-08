@@ -27,7 +27,6 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.stock.db.ILocation;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -91,7 +90,7 @@ public class ManufOrderStockMoveService extends ManufOrderRepository {
 		}
 		else  {
 			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3",
-					company, true, ILocation.INTERNAL).fetchOne();
+					company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
 		}
 
 		StockMove stockMove = stockMoveService.createStockMove(
