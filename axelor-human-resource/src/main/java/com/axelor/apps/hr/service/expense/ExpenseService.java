@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.IExpense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.exception.AxelorException;
@@ -75,10 +76,6 @@ public class ExpenseService extends ExpenseRepository{
 		Account account = null;
 		AccountConfig accountConfig= accountConfigService.getAccountConfig(expense.getCompany());
 
-		if(accountConfig.getExpenseEmployeeAccount()==null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_ACCOUNT),  
-					 expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
 		Move move = null;
 		if(expense.getUser().getPartner() != null){
 			move = moveService.createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode());
@@ -125,16 +122,11 @@ public class ExpenseService extends ExpenseRepository{
 		}
 		
 		moveLineService.consolidateMoveLines(moveLines);
-		
+		account = accountConfigService.getExpenseTaxAccount(accountConfig);
 		BigDecimal taxTotal = BigDecimal.ZERO;
 		for(ExpenseLine expenseLine : expense.getExpenseLineList()){
-			account = accountConfig.getExpenseTaxAccount();
 			exTaxTotal = expenseLine.getTotalTax();
 			taxTotal = taxTotal.add(exTaxTotal);
-			if (account == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_ACCOUNT_TAX), 
-						expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
-			}
 		}
 		
 		MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, taxTotal, true, false, moveDate, moveDate, moveLineId++, "");
@@ -156,7 +148,7 @@ public class ExpenseService extends ExpenseRepository{
 		Move move = expense.getMove();
 		if(move == null)   
 		{  
-			expense.setStatusSelect(5);
+			expense.setStatusSelect(IExpense.STATUS_CANCELED);
 			save(expense);
 			return;  
 		}
@@ -165,7 +157,7 @@ public class ExpenseService extends ExpenseRepository{
 			Beans.get(MoveRepository.class).remove(move);
 			expense.setMove(null);
 			expense.setVentilated(false);
-			expense.setStatusSelect(5);
+			expense.setStatusSelect(IExpense.STATUS_CANCELED);
 		}
 		catch(Exception e){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_CANCEL_MOVE)), IException.CONFIGURATION_ERROR);
