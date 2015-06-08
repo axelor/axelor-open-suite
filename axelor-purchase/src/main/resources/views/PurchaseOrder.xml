@@ -67,7 +67,7 @@
 		</panel>
 		
 		<panel title="Supplier information">
-			<field name="supplierPartner" onChange="action-purchase-order-record-partner,action-purchase-order-attrs-hide-contact-partner,action-purchase-order-validate-information" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" form-view="partner-form"/>
+			<field name="supplierPartner" onChange="action-purchase-order-record-partner,action-purchase-order-attrs-hide-contact-partner,action-purchase-order-validate-information" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form"/>
 			<field name="contactPartner" 
 				domain="self.isContact = true AND self.mainPartner = :supplierPartner"
 				form-view="partner-contact-form" grid-view="partner-contact-grid" />

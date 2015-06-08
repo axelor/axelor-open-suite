@@ -76,13 +76,14 @@
   		<panel-tabs>
   			<panel name="information" title="Informations">
 				<panel hideIf="isContact" colSpan="12">
-					<field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)" onChange="action-partner-attrs-hide-customer-credit-lines"/>
-					<field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
+					<field name="isCustomer" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)" onChange="action-partner-attrs-hide-customer-credit-lines"/>
+					<field name="hasOrdered" showIf="isCustomer"/>
+					<field name="isSupplier" hideIf="partnerTypeSelect == 2 || isContact"/>
 				</panel>
 				<panel title="Postal addresses" colSpan="12">
 					<field name="deliveryAddress" canNew="true" onChange="action-partner-record-main-invoicing-address"/>
 					<field name="mainInvoicingAddress" canNew="true"/>
-					<field name="deliveryDelay" showIf="supplierTypeSelect == 2 || supplierTypeSelect == 3"/>
+					<field name="deliveryDelay" showIf="isSupplier"/>
 				</panel>
 				<panel title="Contact details" colSpan="12">
 					<field name="fixedPhone" colSpan="3"/>
@@ -298,7 +299,6 @@
 		<action name="action-partner-record-partner-type-select"/>
 		<action name="action-partner-attrs-hide-customer-credit-lines" />
 		<action name="action-partner-record-set-default"/>
-		<action name="action-partner-record-customer-supplier-type"/>
 	</action-group>
 	
 	<action-group name="action-group-base-partner-contact-name-onchange">
@@ -336,7 +336,7 @@
     </action-attrs>
     
     <action-attrs name="action-partner-attrs-hide-customer-credit-lines">
-        <attribute name="hidden" for="customerCredit" expr="eval: isContact || (customerTypeSelect != 2 &amp;&amp; customerTypeSelect != 3) || !com.axelor.apps.base.service.administration.GeneralService.getGeneral()?.manageCustomerCredit" />
+        <attribute name="hidden" for="customerCredit" expr="eval: isContact || !isCustomer || !com.axelor.apps.base.service.administration.GeneralService.getGeneral()?.manageCustomerCredit" />
     </action-attrs>
     
     
@@ -351,10 +351,6 @@
     	<field name="fullName" expr="eval: id" if="firstName == null &amp;&amp; name == null"/>
     </action-record>
     
-    <action-record name="action-partner-record-customer-supplier-type" model="com.axelor.apps.base.db.Partner">
-    	<field name="customerTypeSelect" expr="eval: 1" />
-    	<field name="supplierTypeSelect" expr="eval:1"/>
-    </action-record>
     
     <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
     	<field name="currency" expr="eval:__user__.activeCompany?.currency" if="!isContact"/>
@@ -411,16 +407,13 @@
 			<domain>self.partnerTypeSelect = 2 AND self.isContact = false</domain>
 		</filter>
 		<filter title="All Prospects">
-			<domain>self.customerTypeSelect = 2 AND self.isContact = false</domain>
+			<domain>self.hasOrdered = false AND self.isCustomer = true AND self.isContact = false</domain>
 		</filter>
 		<filter title="All Clients">
-			<domain>self.customerTypeSelect = 3 AND self.isContact = false</domain>
+			<domain>self.isCustomer = true AND self.hasOrdered = true AND self.isContact = false</domain>
 		</filter>
 		<filter title="All Suppliers">
-			<domain>self.supplierTypeSelect = 2 AND self.isContact = false</domain>
-		</filter>
-		<filter title="All qualified supplier">
-			<domain>self.supplierTypeSelect = 3 AND self.isContact = false</domain>
+			<domain>self.isSupplier = true AND self.isContact = false</domain>
 		</filter>
 	</search-filters>
 	

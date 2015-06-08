@@ -66,8 +66,8 @@
 						<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
 						
 						<label title="Informations" colSpan="12"/>
-		      			<field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
-		      			<field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
+		      			<field name="isCustomer" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
+		      			<field name="isSupplier" hideIf="partnerTypeSelect == 2 || isContact"/>
 		      			
 		    			<label title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12"/>
 				        <field name="partnerCategory" widget="SuggestBox" hideIf="partnerTypeSelect == 2"/>
@@ -319,8 +319,8 @@
 		<panel-tabs>
 		  <panel  title="Informations">
 		    <panel hideIf="isContact" colSpan="12" >
-		      <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
-		      <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
+		      <field name="isCustomer" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
+		      <field name="isSupplier" hideIf="partnerTypeSelect == 2 || isContact"/>
 		    </panel>
 		    <panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12">
 		        <field name="partnerCategory" widget="SuggestBox"/>
@@ -397,7 +397,7 @@
     	<field name="department" expr="eval: _lead.department"/>
 <!--     	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfoi_lead.userInfo"/> //TODO -->
     	<field name="team" expr="eval: _lead.team"/>
-    	<field name="customerTypeSelect" expr="eval: 2"/>
+    	<field name="isCustomer" expr="true"/>
     	<field name="partnerTypeSelect" expr="eval: 1"/>
     </action-record>
     

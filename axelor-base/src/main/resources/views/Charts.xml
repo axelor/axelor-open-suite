@@ -114,7 +114,7 @@
 		LEFT JOIN 
 			self.partnerCategory _partnerCategory 
 		WHERE 
-			self.customerTypeSelect = 2 AND self.isContact = false
+			self.isCustomer = true AND self.isContact = false
 		group by
 			_partnerCategory.name
 		</dataset>

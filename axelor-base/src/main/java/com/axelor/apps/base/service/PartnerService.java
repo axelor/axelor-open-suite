@@ -44,7 +44,7 @@ public class PartnerService extends PartnerRepository{
 		partner.setFirstName(firstName);
 		partner.setFullName(this.computeFullName(partner));
 		partner.setPartnerTypeSelect(IPartner.PARTNER_TYPE_SELECT_ENTERPRISE);
-		partner.setCustomerTypeSelect(IPartner.CUSTOMER_TYPE_SELECT_PROSPECT);
+		partner.setIsCustomer(true);
 		partner.setFixedPhone(fixedPhone);
 		partner.setMobilePhone(mobilePhone);
 		partner.setEmailAddress(emailAddress);

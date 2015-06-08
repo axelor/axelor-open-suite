@@ -73,9 +73,9 @@ public class MapRest {
 				objectNode.put("address", addressString);				
 			}
 			
-			objectNode.put("pinColor", partner.getCustomerTypeSelect() == 2 ? "red" : "orange");
-			String pinChar = partner.getCustomerTypeSelect() == 2 ? "P" : "C";
-			if (partner.getSupplierTypeSelect() == 2 || partner.getSupplierTypeSelect() == 3) {
+			objectNode.put("pinColor", partner.getIsCustomer() &&  !partner.getHasOrdered() ? "red" : "orange");
+			String pinChar = partner.getIsCustomer() &&  !partner.getHasOrdered() ? "P" : "C";
+			if (partner.getIsSupplier()) {
 				pinChar = pinChar + "/S";
 			}									
 			objectNode.put("pinChar", pinChar);			

@@ -42,7 +42,7 @@
 			</panel>
 		   	<panel title="Settings">
 		      	<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain"/>        
-		       	<field name="supplierPartner" showIf="saleSupplySelect == 2" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
+		       	<field name="supplierPartner" showIf="saleSupplySelect == 2" domain="self.isContact = false AND self.isSupplier = true"/>
 		       	<field name="task"/>
 		       	<field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production"/>
 		       	<button name="customizeBOM" title="Customize BOM" onClick="action-production-method-customize-bill-of-material" if-module="axelor-production"/>

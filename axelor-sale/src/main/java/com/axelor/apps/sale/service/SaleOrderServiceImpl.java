@@ -184,7 +184,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	public Partner validateCustomer(SaleOrder saleOrder)  {
 
 		Partner clientPartner = partnerService.find(saleOrder.getClientPartner().getId());
-		clientPartner.setCustomerTypeSelect(IPartner.CUSTOMER_TYPE_SELECT_YES);
+		clientPartner.setIsCustomer(true);
 
 		return partnerService.save(clientPartner);
 	}

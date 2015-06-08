@@ -20,8 +20,9 @@
     <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" />
     
     
-    <integer name="customerTypeSelect" title="Customer Type" selection="partner.customer.type.select" help="true"/>
-    <integer name="supplierTypeSelect" title="Supplier Type" selection="partner.supplier.type.select" help="true"/>
+    <boolean name="isCustomer" title="Customer?"/>
+    <boolean name="hasOrdered" title="Has Ordered"/>
+    <boolean name="isSupplier" title="Supplier?"/>
     <boolean name="isContact" title="Contact ?" default="false" />
     
     

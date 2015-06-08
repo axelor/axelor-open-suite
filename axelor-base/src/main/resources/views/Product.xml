@@ -78,7 +78,7 @@
 				    <field name="purchasable" colSpan="12"/>
 					<field name="purchasePrice" colSpan="12"/>
 					<field name="purchaseCurrency" colSpan="12"/>
-					<field name="defaultSupplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" colSpan="12"/>
+					<field name="defaultSupplierPartner" domain="self.isContact = false AND self.isSupplier = true" colSpan="12"/>
 				</panel>
 				<panel title="Costs" colSpan="6">
 					<field name="costPrice" onChange="action-product-record-compute-sale-price" colSpan="12"/>
