@@ -30,5 +30,15 @@ public class AccountConfigHRService extends AccountConfigService{
 		
 		return accountConfig.getExpenseEmployeeAccount();
 	}
+	
+	public Account getExpenseTaxAccount(AccountConfig accountConfig) throws AxelorException  {
+		
+		if(accountConfig.getExpenseTaxAccount() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_ACCOUNT_TAX),  
+					accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		return accountConfig.getExpenseTaxAccount();
+	}
 
 }

@@ -26,7 +26,6 @@ public class HumanResourceModule extends AxelorModule {
 		bind(WeeklyPlanningService.class).to(WeeklyPlanningServiceImp.class);
 		bind(MailBatchService.class).to(MailBatchServiceHR.class);
 		bind(AccountConfigService.class).to(AccountConfigHRService.class);
-		bind(MoveRepository.class).to(MoveManagementRepository.class);
 	}
 
 }
