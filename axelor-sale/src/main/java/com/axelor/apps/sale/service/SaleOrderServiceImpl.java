@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import javax.persistence.Query;
+
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +34,6 @@ import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.DurationService;
@@ -185,6 +186,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 		Partner clientPartner = partnerService.find(saleOrder.getClientPartner().getId());
 		clientPartner.setIsCustomer(true);
+		clientPartner.setHasOrdered(true);
 
 		return partnerService.save(clientPartner);
 	}
@@ -237,6 +239,12 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	@Override
 	@Transactional
 	public void cancelSaleOrder(SaleOrder saleOrder){
+		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.partner = ?2 ");
+		q.setParameter(1, ISaleOrder.STATUS_ORDER_CONFIRMED);
+		q.setParameter(2, saleOrder.getClientPartner());
+		if((long) q.getSingleResult() == 1)  {
+			saleOrder.getClientPartner().setHasOrdered(false);
+		}
 		saleOrder.setStatusSelect(4);
 		this.save(saleOrder);
 	}
