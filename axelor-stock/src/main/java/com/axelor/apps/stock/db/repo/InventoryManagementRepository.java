@@ -7,9 +7,12 @@ import com.axelor.apps.stock.db.Inventory;
 public class InventoryManagementRepository extends InventoryRepository {
 	@Override
 	public Inventory copy(Inventory entity, boolean deep) {
-		entity.setStatusSelect(1);
-		entity.setInventorySeq(null);
-		entity.setDateT(DateTime.now());
-		return super.copy(entity, deep);
+		
+		Inventory copy = super.copy(entity, deep);
+		
+		copy.setStatusSelect(STATUS_DRAFT);
+		copy.setInventorySeq(null);
+		copy.setDateT(DateTime.now());
+		return copy;
 	}
 }

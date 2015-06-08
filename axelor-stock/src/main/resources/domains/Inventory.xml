@@ -22,5 +22,19 @@
   	<boolean name="excludeOutOfStock" title="Excl. out of stock products ?"/>
   	<boolean name="includeObsolete" title="Incl. obsolete products ?"/>
   	
+  	 <extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_PLANNED = 2;
+		public static final int STATUS_REALIZED = 3;
+		public static final int STATUS_CANCELED = 4;
+
+		// FORMAT SELECT
+		public static final int FORMAT_PDF = 1;
+		public static final int FORMAT_XLS = 2;
+	
+	]]></extra-code>
+  	
   </entity>
 </domain-models>

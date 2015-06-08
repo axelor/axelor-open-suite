@@ -35,7 +35,6 @@ import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TrackingNumberRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.stock.db.IInventory;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.Location;
@@ -98,7 +97,7 @@ public class InventoryService extends InventoryRepository{
 
 		inventory.setDescription(description);
 
-		inventory.setFormatSelect(IInventory.FORMAT_PDF);
+		inventory.setFormatSelect(FORMAT_PDF);
 
 		inventory.setLocation(location);
 
@@ -110,7 +109,7 @@ public class InventoryService extends InventoryRepository{
 
 		inventory.setProductFamily(productFamily);
 
-		inventory.setStatusSelect(IInventory.STATUS_DRAFT);
+		inventory.setStatusSelect(STATUS_DRAFT);
 
 		return inventory;
 	}
