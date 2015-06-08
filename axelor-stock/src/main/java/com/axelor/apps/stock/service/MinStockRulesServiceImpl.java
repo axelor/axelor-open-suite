@@ -23,7 +23,6 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.stock.db.IMinStockRules;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.MinStockRules;
@@ -66,7 +65,7 @@ public class MinStockRulesServiceImpl extends MinStockRulesRepository implements
 		
 		if(this.useMinStockRules(locationLine, minStockRules, qty, type))  {
 			
-			if(minStockRules.getOrderAlertSelect() == IMinStockRules.ORDER_ALERT_ALERT)  {
+			if(minStockRules.getOrderAlertSelect() == ORDER_ALERT_ALERT)  {
 				
 				//TODO
 			}
@@ -84,14 +83,14 @@ public class MinStockRulesServiceImpl extends MinStockRulesRepository implements
 		
 		BigDecimal minQty = minStockRules.getMinQty();
 		
-		if(type == IMinStockRules.TYPE_CURRENT)  {
+		if(type == TYPE_CURRENT)  {
 			
 			if(currentQty.compareTo(minQty) >= 0 && (currentQty.subtract(qty)).compareTo(minQty) == -1)  {
 				return true;
 			}
 			
 		}
-		else  if(type == IMinStockRules.TYPE_FUTURE){
+		else  if(type == TYPE_FUTURE){
 			
 			if(futureQty.compareTo(minQty) >= 0 && (futureQty.subtract(qty)).compareTo(minQty) == -1)  {
 				return true;

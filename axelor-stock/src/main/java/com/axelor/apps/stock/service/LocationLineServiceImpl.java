@@ -27,10 +27,10 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.stock.db.ILocation;
-import com.axelor.apps.stock.db.IMinStockRules;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -85,10 +85,10 @@ public class LocationLineServiceImpl extends LocationLineRepository implements L
 	public void minStockRules(Product product, BigDecimal qty, LocationLine locationLine, boolean current, boolean future) throws AxelorException  {
 		
 		if(current)  {
-			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, IMinStockRules.TYPE_CURRENT);			
+			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_CURRENT);			
 		}
 		if(future)  {
-			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, IMinStockRules.TYPE_FUTURE);
+			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_FUTURE);
 		}
 		
 	}
