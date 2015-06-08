@@ -136,7 +136,7 @@
 	  </panel>
 	  
 	  <panel sidebar="true" title="Info.">
-	    <field name="creationDate" readonlyIf="statusSelect != 1" colSpan="6" showIf="id" onChange="action-sale-order-record-compute-end-of-validity-date"/>
+	    <field name="creationDate" readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="confirmedByUser" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="confirmationDate" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
@@ -144,7 +144,7 @@
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain"/>
 	    <field name="duration" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
 	    <field name="endOfValidityDate" colSpan="6" readonly="true">
-	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &lt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
+	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    </field>
 	  </panel>
 	  
@@ -266,7 +266,7 @@
 	  </panel>        
 	  
 	  <panel sidebar="true" title="Info.">
-	    <field name="creationDate"  readonlyIf="statusSelect != 1" colSpan="6" showIf="id" onChange="action-sale-order-record-compute-end-of-validity-date"/>
+	    <field name="creationDate"  readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="confirmedByUser" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="confirmationDate" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
@@ -274,7 +274,7 @@
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain"/>
 	    <field name="duration" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
 	    <field name="endOfValidityDate" colSpan="6" readonly="true">
-	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &lt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
+	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    </field>
 	  </panel>
 	  
@@ -336,7 +336,7 @@
 	        <field name="shipmentDate" readonly="true" if-module="axelor-supplychain"/>  
 	        <field name="duration" readonly="true"/>
 	        <field name="endOfValidityDate" readonly="true">
-	    		<hilite if="$moment().diff(endOfValidityDate, 'days') &lt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
+	    		<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    	</field>
 	        <field name="salemanUser" colSpan="10"/>
 	        <field name="statusSelect" widget="NavSelect" colSpan="12"/>
