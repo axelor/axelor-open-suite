@@ -65,6 +65,7 @@ public interface IExceptionMessage {
 	 */
 	
 	static final public String PERIOD_1 = /*$$(*/ "Aucune période trouvée ou celle-ci clôturée pour la société: %s" /*)*/ ;
+	static final public String PERIOD_2 = /*$$(*/ "Période clôturée" /*)*/ ;
 	
 	/**
 	 * Abstract batch
