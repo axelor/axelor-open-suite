@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineType;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -42,10 +41,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected StockMove stockMove;
 
 	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
-			Unit unit, InvoiceLineType invoiceLineType, int sequence, boolean isTaxInvoice,
+			Unit unit, int sequence, boolean isTaxInvoice,
 			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMove stockMove) {
 
-		super(invoice, product, productName, description, qty, unit, invoiceLineType, sequence, isTaxInvoice);
+		super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
 
 		if (saleOrderLine != null){
 			this.saleOrderLine = saleOrderLine;
@@ -54,7 +53,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.priceDiscounted = saleOrderLine.getPriceDiscounted();
 			this.taxLine = saleOrderLine.getTaxLine();
 			this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
-		}else if (purchaseOrderLine != null){
+			this.groupingLine = saleOrderLine.getGroupingLine();
+		} else if (purchaseOrderLine != null){
 			this.purchaseOrderLine = purchaseOrderLine;
 			this.discountAmount = purchaseOrderLine.getDiscountAmount();
 			this.price = purchaseOrderLine.getPrice();

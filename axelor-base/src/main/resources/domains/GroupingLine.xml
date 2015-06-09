@@ -7,7 +7,7 @@
 
 	<entity name="GroupingLine" lang="java">
 
-		<integer name="name" title="Name"/>
+		<string name="name" title="Name"/>
 		<string name="sequence" title="Sequence"/>
 
 	</entity>

@@ -606,7 +606,7 @@ resources/views/MailAccount.xml:20"
 resources/views/Partner.xml:195
 resources/views/Partner.xml:214
 resources/views/Partner.xml:274
-resources/views/Selects.xml:430"
+resources/views/Selects.xml:430
 resources/views/User.xml:28"
 "Contact ?",,,"resources/domains/Partner.xml:25"
 "Contact details",,,"resources/views/Partner.xml:238
@@ -1800,7 +1800,7 @@ resources/domains/RoutingRule.xml:14"
 "Variation",,,"resources/domains/CurrencyConversionLine.xml:17
 resources/views/CurrencyConversionLine.xml:47"
 "Version",,,"resources/domains/Product.xml:57"
-"Versions",,,"resources/domains/Sequence.xml:23
+"Versions",,,"resources/domains/Sequence.xml:23"
 "Veuillez configurer les conversions d'unités de '%s' à '%s'.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:47"
 "Veuillez configurer les conversions d'unités.",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:48"
 "Veuillez configurer une version de taxe pour la taxe %s",,,"java/com/axelor/apps/base/exceptions/IExceptionMessage.java:137"

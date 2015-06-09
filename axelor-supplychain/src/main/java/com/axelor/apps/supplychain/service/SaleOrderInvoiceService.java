@@ -23,8 +23,6 @@ import java.util.List;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -80,9 +78,6 @@ public interface SaleOrderInvoiceService {
 
 	// TODO ajouter tri sur les séquences
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList) throws AxelorException;
-
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, String description, BigDecimal qty,
-			Unit unit, int sequence, SaleOrderLine saleOrderLine) throws AxelorException;
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException;
 

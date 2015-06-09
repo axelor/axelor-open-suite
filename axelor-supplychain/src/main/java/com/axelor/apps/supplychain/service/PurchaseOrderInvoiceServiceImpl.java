@@ -26,19 +26,17 @@ import javax.persistence.Query;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -112,11 +110,13 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 	}
 
 	@Override
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
+		
+		Product product = purchaseOrderLine.getProduct();
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, taxLine, product.getInvoiceLineType(),
-				InvoiceLineGenerator.DEFAULT_SEQUENCE, discountAmount, discountTypeSelect, exTaxTotal, false)  {
+		InvoiceLineGeneratorSupplyChain invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, purchaseOrderLine.getProductName(), 
+				purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(),
+				InvoiceLineGenerator.DEFAULT_SEQUENCE, false, null, purchaseOrderLine, null)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 
@@ -131,16 +131,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
 		return invoiceLineGenerator.creates();
 	}
-
-	@Override
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
-
-		return this.createInvoiceLine(invoice, purchaseOrderLine.getProduct(), purchaseOrderLine.getProductName(),
-				purchaseOrderLine.getPrice(), purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), purchaseOrderLine.getTaxLine(),
-				purchaseOrderLine.getProductVariant(), purchaseOrderLine.getDiscountAmount(), purchaseOrderLine.getDiscountTypeSelect(), purchaseOrderLine.getExTaxTotal());
-
-	}
-
 
 	@Override
 	public BigDecimal getAmountInvoiced(PurchaseOrder purchaseOrder){

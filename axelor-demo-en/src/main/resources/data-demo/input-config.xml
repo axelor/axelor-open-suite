@@ -145,8 +145,6 @@
 	
 	<input file="base_productCategory.csv" separator=";" type="com.axelor.apps.base.db.ProductCategory" search="self.code = :code" />
 	
-	<input file="account_invoiceLineType.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLineType" search="self.importId = :importId" />
-	
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId">
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>

@@ -514,7 +514,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
-			if (stockMoveLine.getRealQty().compareTo(new BigDecimal(0)) == 1){
+			if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 1){
 				invoiceLineList.addAll(this.createInvoiceLine(invoice, stockMoveLine));
 			}
 		}
@@ -532,7 +532,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, product.getName(),
-				stockMoveLine.getDescription(), stockMoveLine.getRealQty(), stockMoveLine.getUnit(), product.getInvoiceLineType(),
+				stockMoveLine.getDescription(), stockMoveLine.getRealQty(), stockMoveLine.getUnit(),
 				InvoiceLineGenerator.DEFAULT_SEQUENCE, false, stockMoveLine.getSaleOrderLine(), stockMoveLine.getPurchaseOrderLine(), stockMoveLine.getStockMove())  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
