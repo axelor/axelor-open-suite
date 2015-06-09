@@ -120,7 +120,7 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 	}
 
 
-	public void createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, Company company) throws AxelorException  {
+	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, Company company) throws AxelorException  {
 
 		Product product = saleOrderLine.getProduct();
 
@@ -138,9 +138,11 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 
 			if(stockMoveLine != null) {
-				stockMove.getStockMoveLineList().add(stockMoveLine);
+				stockMove.addStockMoveLineListItem(stockMoveLine);
 			}
+			return stockMoveLine;
 		}
+		return null;
 	}
 
 
