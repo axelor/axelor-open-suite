@@ -72,4 +72,10 @@ public class PeriodService extends PeriodRepository  {
 		return period;
 	}
 	
+	public void testOpenPeriod(Period period) throws AxelorException {
+		if(period.getStatusSelect()==PeriodRepository.STATUS_CLOSED){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_2)), IException.CONFIGURATION_ERROR);
+		}
+	}
+	
 }

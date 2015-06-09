@@ -1,10 +1,14 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class MoveManagementRepository extends MoveRepository {
@@ -34,4 +38,16 @@ public class MoveManagementRepository extends MoveRepository {
 		
 		return copy;
 	}
+	
+	@Override
+	public void remove(Move entity){
+
+		//try{
+			//Beans.get(PeriodService.class).testOpenPeriod(entity.getPeriod());	
+			super.remove(entity);
+		//} catch (AxelorException e) {
+		//	e.printStackTrace();
+		//}
+		
+	} 
 }

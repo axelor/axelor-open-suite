@@ -40,7 +40,7 @@
 					<field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 					<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
 					<field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
-					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company"/>
+					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource"/>
 				</panel>
 				<panel title="Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company"/>
@@ -71,8 +71,8 @@
 				    <field name="payingBackTax"/>
 				</panel>
 				<panel	title="Expense" colSpan="12">
-					<field name="expenseEmployeeAccount" domain="self.company = :company"/>
-					<field name="expenseTaxAccount" domain="self.company = :company"/>
+					<field name="expenseEmployeeAccount" domain="self.company = :company" if-module="axelor-human-resource"/>
+					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource"/>
 				</panel>
 			</panel>
 			<panel title="CFONB">

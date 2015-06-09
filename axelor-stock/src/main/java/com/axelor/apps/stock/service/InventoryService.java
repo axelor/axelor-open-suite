@@ -35,8 +35,6 @@ import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TrackingNumberRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.stock.db.IInventory;
-import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.Location;
@@ -45,6 +43,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.file.CsvTool;
@@ -98,7 +97,7 @@ public class InventoryService extends InventoryRepository{
 
 		inventory.setDescription(description);
 
-		inventory.setFormatSelect(IInventory.FORMAT_PDF);
+		inventory.setFormatSelect(FORMAT_PDF);
 
 		inventory.setLocation(location);
 
@@ -110,7 +109,7 @@ public class InventoryService extends InventoryRepository{
 
 		inventory.setProductFamily(productFamily);
 
-		inventory.setStatusSelect(IInventory.STATUS_DRAFT);
+		inventory.setStatusSelect(STATUS_DRAFT);
 
 		return inventory;
 	}
@@ -277,7 +276,7 @@ public class InventoryService extends InventoryRepository{
 		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company, null,
 				stockConfigService.getInventoryVirtualLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate, null);
 
-		stockMove.setTypeSelect(IStockMove.TYPE_INTERNAL);
+		stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
 		stockMove.setName(name);
 
 		return stockMove;

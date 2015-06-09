@@ -151,7 +151,7 @@ public class PayerQualityService {
 	
 	
 	public List<Partner> getPartnerList()  {
-		return  (List<Partner>) partnerService.all().filter("self.customerTypeSelect = 3").fetch();
+		return  (List<Partner>) partnerService.all().filter("self.isCustomer = true and self.hasOrdered = true").fetch();
 	}
 	
 	

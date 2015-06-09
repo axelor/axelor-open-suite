@@ -219,7 +219,8 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 	public Partner validateSupplier(PurchaseOrder purchaseOrder)  {
 
 		Partner supplierPartner = partnerService.find(purchaseOrder.getSupplierPartner().getId());
-		supplierPartner.setSupplierTypeSelect(IPartner.SUPPLIER_TYPE_SELECT_APPROVED);
+		supplierPartner.setIsSupplier(true);
+		supplierPartner.setHasOrdered(true);
 
 		return partnerService.save(supplierPartner);
 	}

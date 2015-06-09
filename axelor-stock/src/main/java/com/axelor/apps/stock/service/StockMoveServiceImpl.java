@@ -32,11 +32,10 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.stock.db.ILocation;
-import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -84,7 +83,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 		String ref = "";
 
 		switch(stockMoveType)  {
-			case IStockMove.TYPE_INTERNAL:
+			case TYPE_INTERNAL:
 				ref = sequenceService.getSequenceNumber(IAdministration.INTERNAL, company);
 				if (ref == null)  {
 					throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_1),
@@ -92,7 +91,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 				}
 				break;
 
-			case IStockMove.TYPE_INCOMING:
+			case TYPE_INCOMING:
 				ref = sequenceService.getSequenceNumber(IAdministration.INCOMING, company);
 				if (ref == null)  {
 					throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_2),
@@ -100,7 +99,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 				}
 				break;
 
-			case IStockMove.TYPE_OUTGOING:
+			case TYPE_OUTGOING:
 				ref = sequenceService.getSequenceNumber(IAdministration.OUTGOING, company);
 				if (ref == null)  {
 					throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_3),
@@ -149,7 +148,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 		stockMove.setFromAddress(fromAddress);
 		stockMove.setToAddress(toAddress);
 		stockMove.setCompany(company);
-		stockMove.setStatusSelect(IStockMove.STATUS_DRAFT);
+		stockMove.setStatusSelect(STATUS_DRAFT);
 		stockMove.setRealDate(realDate);
 		stockMove.setEstimatedDate(estimatedDate);
 		stockMove.setPartner(clientPartner);
@@ -164,14 +163,14 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	@Override
 	public int getStockMoveType(Location fromLocation, Location toLocation)  {
 
-		if(fromLocation.getTypeSelect() == ILocation.INTERNAL && toLocation.getTypeSelect() == ILocation.INTERNAL) {
-			return IStockMove.TYPE_INTERNAL;
+		if(fromLocation.getTypeSelect() == LocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() == LocationRepository.TYPE_INTERNAL) {
+			return TYPE_INTERNAL;
 		}
-		else if(fromLocation.getTypeSelect() != ILocation.INTERNAL && toLocation.getTypeSelect() == ILocation.INTERNAL) {
-			return IStockMove.TYPE_INCOMING;
+		else if(fromLocation.getTypeSelect() != LocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() == LocationRepository.TYPE_INTERNAL) {
+			return TYPE_INCOMING;
 		}
-		else if(fromLocation.getTypeSelect() == ILocation.INTERNAL && toLocation.getTypeSelect() != ILocation.INTERNAL) {
-			return IStockMove.TYPE_OUTGOING;
+		else if(fromLocation.getTypeSelect() == LocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() != LocationRepository.TYPE_INTERNAL) {
+			return TYPE_OUTGOING;
 		}
 		return 0;
 	}
@@ -210,7 +209,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 		}
 
 
-		if(stockMove.getTypeSelect() == IStockMove.TYPE_OUTGOING)  {
+		if(stockMove.getTypeSelect() == TYPE_OUTGOING)  {
 
 		}
 
@@ -228,7 +227,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 				fromLocation,
 				toLocation,
 				stockMove.getStatusSelect(),
-				IStockMove.STATUS_PLANNED,
+				STATUS_PLANNED,
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate(),
 				false);
@@ -237,7 +236,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 			stockMove.setEstimatedDate(this.today);
 		}
 
-		stockMove.setStatusSelect(IStockMove.STATUS_PLANNED);
+		stockMove.setStatusSelect(STATUS_PLANNED);
 
 		save(stockMove);
 
@@ -253,12 +252,12 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 				stockMove.getFromLocation(),
 				stockMove.getToLocation(),
 				stockMove.getStatusSelect(),
-				IStockMove.STATUS_REALIZED,
+				STATUS_REALIZED,
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate(),
 				true);
 
-		stockMove.setStatusSelect(IStockMove.STATUS_REALIZED);
+		stockMove.setStatusSelect(STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
 		save(stockMove);
 		if(!stockMove.getIsWithBackorder() && !stockMove.getIsWithReturnSurplus())
@@ -313,7 +312,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 			}
 		}
 
-		newStockMove.setStatusSelect(IStockMove.STATUS_PLANNED);
+		newStockMove.setStatusSelect(STATUS_PLANNED);
 		newStockMove.setRealDate(null);
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
 		newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_7) + " " + stockMove.getStockMoveSeq() + " )" );
@@ -360,7 +359,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 			}
 		}
 
-		newStockMove.setStatusSelect(IStockMove.STATUS_PLANNED);
+		newStockMove.setStatusSelect(STATUS_PLANNED);
 		newStockMove.setRealDate(null);
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
 		newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " " + stockMove.getStockMoveSeq() + " )" );
@@ -380,12 +379,12 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 				stockMove.getFromLocation(),
 				stockMove.getToLocation(),
 				stockMove.getStatusSelect(),
-				IStockMove.STATUS_CANCELED,
+				STATUS_CANCELED,
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate(),
 				false);
 
-		stockMove.setStatusSelect(IStockMove.STATUS_CANCELED);
+		stockMove.setStatusSelect(STATUS_CANCELED);
 		stockMove.setRealDate(this.today);
 		save(stockMove);
 	}

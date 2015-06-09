@@ -26,10 +26,10 @@
 	    onSave="action-expense-method-validate-date">
 	    <panel sidebar="true" title="Actions" stacked="true">
 	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-record-status-confirmed, save,action-expense-attrs-buttons, action-expense-view-new-expense" readonlyIf="statusSelect &gt; 1"/>
-			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-validate-period,action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
+			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
 	    	<button name="validButton" onClick="action-expense-record-valid,save,action-expense-attrs-buttons" title="Valid"/>
 	    	<button name="refuseButton" onClick="action-expense-record-refuse,save,action-expense-attrs-buttons" title="Refuse"/>
-	    	<button name="cancelButton" onClick="action-expense-record-cancel,save,com.axelor.apps.hr.web.expense.ExpenseController:cancelExpense,action-expense-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
+	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancelExpense,action-expense-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
 		<panel>
@@ -88,7 +88,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-expense-attrs-domain-period">
-		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= {__date__} AND self.statusSelect = 1 &quot;"/>
+		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 &quot;"/>
 	</action-attrs>
 	
 	<action-method name="action-expense-method-compute">

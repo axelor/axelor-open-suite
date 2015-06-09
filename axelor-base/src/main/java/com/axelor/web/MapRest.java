@@ -52,7 +52,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getPartners() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.customerTypeSelect IN (?, ?) OR self.supplierTypeSelect IN (?, ?) AND self.isContact=?", 2,3,2,3, false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true OR self.isSupplier = true AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -73,9 +73,9 @@ public class MapRest {
 				objectNode.put("address", addressString);				
 			}
 			
-			objectNode.put("pinColor", partner.getCustomerTypeSelect() == 2 ? "red" : "orange");
-			String pinChar = partner.getCustomerTypeSelect() == 2 ? "P" : "C";
-			if (partner.getSupplierTypeSelect() == 2 || partner.getSupplierTypeSelect() == 3) {
+			objectNode.put("pinColor", partner.getIsCustomer() &&  !partner.getHasOrdered() ? "red" : "orange");
+			String pinChar = partner.getIsCustomer() &&  !partner.getHasOrdered() ? "P" : "C";
+			if (partner.getIsSupplier()) {
 				pinChar = pinChar + "/S";
 			}									
 			objectNode.put("pinChar", pinChar);			
@@ -92,7 +92,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getCustomers() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.customerTypeSelect=? AND self.isContact=?", 3, false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true AND self.hasOrdered = true AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -129,7 +129,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getProspects() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.customerTypeSelect=? AND self.isContact=?", 2, false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true AND self.hasOrdered = false AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -166,7 +166,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getSuppliers() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.supplierTypeSelect=? AND self.isContact=?", 2, 3 , false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isSupplier = true AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();

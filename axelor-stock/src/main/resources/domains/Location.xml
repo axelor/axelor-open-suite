@@ -21,5 +21,15 @@
     <finder-method name="findByCompany" using="company"/>
     <finder-method name="findByPartner" using="partner"/>
     
+     <extra-code><![CDATA[
+	
+	   	// TYPE SELECT
+		public static final int TYPE_INTERNAL = 1;
+		public static final int TYPE_EXTERNAL = 2;
+		public static final int TYPE_VIRTUAL = 3;
+
+	
+	]]></extra-code>
+	
   </entity>
 </domain-models>

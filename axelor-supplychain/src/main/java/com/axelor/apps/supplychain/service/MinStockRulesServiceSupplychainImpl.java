@@ -25,16 +25,15 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.auth.db.User;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.stock.db.IMinStockRules;
-import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.MinStockRules;
+import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -77,16 +76,16 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 		
 		if(this.useMinStockRules(locationLine, minStockRules, qty, type))  {
 			
-			if(minStockRules.getOrderAlertSelect() == IMinStockRules.ORDER_ALERT_ALERT)  {
+			if(minStockRules.getOrderAlertSelect() == ORDER_ALERT_ALERT)  {
 				
 				//TODO
 				
 			}
-			else if(minStockRules.getOrderAlertSelect() == IMinStockRules.ORDER_ALERT_PRODUCTION_ORDER)  {
+			else if(minStockRules.getOrderAlertSelect() == ORDER_ALERT_PRODUCTION_ORDER)  {
 				
 				
 			}
-			else if(minStockRules.getOrderAlertSelect() == IMinStockRules.ORDER_ALERT_PURCHASE_ORDER)  {
+			else if(minStockRules.getOrderAlertSelect() == ORDER_ALERT_PURCHASE_ORDER)  {
 				
 				Partner supplierPartner = product.getDefaultSupplierPartner();
 				

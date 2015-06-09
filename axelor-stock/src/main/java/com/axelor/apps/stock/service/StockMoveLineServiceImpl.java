@@ -19,7 +19,6 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import org.joda.time.LocalDate;
 
@@ -29,19 +28,18 @@ import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
-import com.axelor.db.Query;
-import com.axelor.db.mapper.Property;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class StockMoveLineServiceImpl implements StockMoveLineService  {
+public class StockMoveLineServiceImpl extends StockMoveLineRepository implements StockMoveLineService  {
 
 	@Inject
 	private TrackingNumberService trackingNumberService;
@@ -252,12 +250,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		LocationLineService locationLineService = Beans.get(LocationLineService.class);
 
 		switch(fromStatus)  {
-			case IStockMove.STATUS_PLANNED:
+			case StockMoveRepository.STATUS_PLANNED:
 				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber);
 				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber);
 				break;
 
-			case IStockMove.STATUS_REALIZED:
+			case StockMoveRepository.STATUS_REALIZED:
 				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber);
 				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber);
 				break;
@@ -267,12 +265,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		}
 
 		switch(toStatus)  {
-			case IStockMove.STATUS_PLANNED:
+			case StockMoveRepository.STATUS_PLANNED:
 				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber);
 				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber);
 				break;
 
-			case IStockMove.STATUS_REALIZED:
+			case StockMoveRepository.STATUS_REALIZED:
 				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber);
 				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber);
 				break;
@@ -282,73 +280,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		}
 
 	}
-
-
-	@Override
-	public Query<StockMoveLine> all() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public StockMoveLine copy(StockMoveLine arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public StockMoveLine create(Map<String, Object> arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public List<Property> fields() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public StockMoveLine find(Long arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void flush() {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public void refresh(StockMoveLine arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public void remove(StockMoveLine arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public StockMoveLine save(StockMoveLine arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
-
 
 
 }

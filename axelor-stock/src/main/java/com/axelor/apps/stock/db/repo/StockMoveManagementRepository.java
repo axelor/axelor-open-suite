@@ -8,7 +8,7 @@ public class StockMoveManagementRepository extends StockMoveRepository {
 
 		StockMove copy = super.copy(entity, deep);
 
-		copy.setStatusSelect(1);
+		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setStockMoveSeq(null);
 		copy.setName(null);
 		copy.setRealDate(null);

@@ -38,7 +38,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -133,7 +132,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		//Check if field constraints are respected
 		for (StockMove stockMove : stockMoveList) {
 			if (stockMove.getInvoice() != null){
-				if (stockMove.getInvoice().getStatusSelect() != IStockMove.STATUS_CANCELED){
+				if (stockMove.getInvoice().getStatusSelect() != StockMoveRepository.STATUS_CANCELED){
 					message = String.format(I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 					if (mapResult.get("information") != null){
 						message = mapResult.get("information") + "<br/>" + message;
@@ -354,7 +353,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		String message = "";
 		for (StockMove stockMove : stockMoveList) {
 			if (stockMove.getInvoice() != null){
-				if (stockMove.getInvoice().getStatusSelect() != IStockMove.STATUS_CANCELED){
+				if (stockMove.getInvoice().getStatusSelect() != StockMoveRepository.STATUS_CANCELED){
 					message = String.format(I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 					if (mapResult.get("information") != null){
 						message = mapResult.get("information") + "<br/>" + message;

@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import javax.persistence.Query;
+
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +34,6 @@ import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.DurationService;
@@ -184,7 +185,8 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	public Partner validateCustomer(SaleOrder saleOrder)  {
 
 		Partner clientPartner = partnerService.find(saleOrder.getClientPartner().getId());
-		clientPartner.setCustomerTypeSelect(IPartner.CUSTOMER_TYPE_SELECT_YES);
+		clientPartner.setIsCustomer(true);
+		clientPartner.setHasOrdered(true);
 
 		return partnerService.save(clientPartner);
 	}
@@ -235,15 +237,21 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancelSaleOrder(SaleOrder saleOrder){
-		saleOrder.setStatusSelect(4);
+		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.partner = ?2 ");
+		q.setParameter(1, ISaleOrder.STATUS_ORDER_CONFIRMED);
+		q.setParameter(2, saleOrder.getClientPartner());
+		if((long) q.getSingleResult() == 1)  {
+			saleOrder.getClientPartner().setHasOrdered(false);
+		}
+		saleOrder.setStatusSelect(ISaleOrder.STATUS_CANCELED);
 		this.save(saleOrder);
 	}
 
 	@Override
-	@Transactional(rollbackOn = {Exception.class})
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception{
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
 		if (saleOrder.getVersionNumber() == 1){
 			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
@@ -255,7 +263,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws IOException{
 		String
 	    		filePath = AppSettings.get().get("file.upload.dir"),

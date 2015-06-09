@@ -163,18 +163,6 @@
 		<option value="3">Dr</option>
 		<option value="4">Prof.</option>
 	</selection>
-
-	<selection name="partner.customer.type.select">
-		<option value="1">No</option>
-		<option value="2">Prospect</option>
-		<option value="3">Yes</option>
-	</selection>
-	
-	<selection name="partner.supplier.type.select">
-		<option value="1">No</option>
-		<option value="2">Yes</option>
-		<option value="3">Yes (Approved)</option>
-	</selection>
 	
 	<selection name="partner.partner.type.select">
 		<option value="1">Company</option>

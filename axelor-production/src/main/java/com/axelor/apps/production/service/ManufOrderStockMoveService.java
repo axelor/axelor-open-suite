@@ -27,12 +27,11 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.stock.db.ILocation;
-import com.axelor.apps.stock.db.IStockMove;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
@@ -91,7 +90,7 @@ public class ManufOrderStockMoveService extends ManufOrderRepository {
 		}
 		else  {
 			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3",
-					company, true, ILocation.INTERNAL).fetchOne();
+					company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
 		}
 
 		StockMove stockMove = stockMoveService.createStockMove(
@@ -178,7 +177,7 @@ public class ManufOrderStockMoveService extends ManufOrderRepository {
 
 	public void finishStockMove(StockMove stockMove) throws AxelorException  {
 
-		if(stockMove != null && stockMove.getStatusSelect() == IStockMove.STATUS_PLANNED)  {
+		if(stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)  {
 
 			stockMoveService.copyQtyToRealQty(stockMove);
 			stockMoveService.realize(stockMove);

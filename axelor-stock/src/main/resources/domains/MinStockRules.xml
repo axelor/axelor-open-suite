@@ -20,5 +20,18 @@
   	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
+  	 <extra-code><![CDATA[
+	
+	   	// TYPE SELECT
+		public static final int TYPE_CURRENT = 1;
+		public static final int TYPE_FUTURE = 2;
+
+		// ORDER ALERT SELECT
+		public static final int ORDER_ALERT_ALERT = 1;
+		public static final int ORDER_ALERT_PURCHASE_ORDER = 2;
+		public static final int ORDER_ALERT_PRODUCTION_ORDER = 3;
+	
+	]]></extra-code>
+	
   </entity>
 </domain-models>

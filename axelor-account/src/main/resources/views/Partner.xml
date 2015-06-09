@@ -19,15 +19,13 @@
 	    </panel>
 	    <panel-related field="bankDetailsList" showTitle="false"  form-view="bank-details-form" grid-view="bank-details-grid" colSpan="12"/>
 	    
-	    <panel title="Sale Price List" colSpan="12" hideIf="customerTypeSelect == 1 || customerTypeSelect == null">
+	    <panel title="Sale Price List" colSpan="12" hideIf="!isCustomer">
 	    	<field name="salePriceList" canNew="true" domain="self.typeSelect = 1" form-view="sale-price-list-form"/>
 	    </panel>
-	    <panel-related colSpan="12" field="salePriceList.priceListLineList" hideIf="salePriceList == null || customerTypeSelect == 1"/>
 	    
-	    <panel title="Purchase Price List" colSpan="12" hideIf="supplierTypeSelect == 1 || supplierTypeSelect == null">
+	    <panel title="Purchase Price List" colSpan="12" hideIf="!isSupplier">
 	    	<field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" form-view="purchase-price-list-form"/>
 	    </panel>
-	    <panel-related colSpan="12" field="purchasePriceList.priceListLineList" hideIf="purchasePriceList == null || supplierTypeSelect == 1"/>
 	    
 	</form>
 	

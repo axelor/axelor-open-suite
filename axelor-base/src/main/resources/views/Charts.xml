@@ -26,7 +26,7 @@
 			JOIN
 				base_country AS _country ON _country.id = _address.addressL7country
 			WHERE
-				_partner.customer_type_select = 3				
+				_partner.is_customer = true AND _partner.has_ordered = true				
 			GROUP BY
 				_country.name
 		    ]]>
@@ -49,7 +49,7 @@
 	    	meta_select_item as selection_item ON selection_item.select_id = selection.id
 		WHERE
 			cast(selection_item.value as decimal) = self.industry_sector_select	
-			and self.is_contact != true and self.customer_type_select = 3		
+			and self.is_contact != true and self.is_customer = true AND self.has_ordered = true		
 	    GROUP BY
 		   _industry_sector
 		ORDER BY
@@ -73,7 +73,7 @@
 	    JOIN
 	      base_country AS _country ON _country.id = _address.addressL7country
 	    WHERE
-	      _partner.supplier_type_select = 3        
+	      _partner.is_supplier = true        
 	    GROUP BY
 	      _country.name
 	    
@@ -94,7 +94,7 @@
 	  LEFT JOIN  
 	    base_country AS addressCountry ON addressCountry.id=baseAddress.addressl7country
 	  WHERE
-	    self.customer_type_select=2 AND is_contact=false
+	    self.is_customer = true AND self.has_ordered = false AND is_contact=false
 	  GROUP BY
 	   _address_country	
 	  ORDER BY
@@ -114,7 +114,7 @@
 		LEFT JOIN 
 			self.partnerCategory _partnerCategory 
 		WHERE 
-			self.customerTypeSelect = 2 AND self.isContact = false
+			self.isCustomer = true AND self.isContact = false
 		group by
 			_partnerCategory.name
 		</dataset>
