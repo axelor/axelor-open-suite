@@ -31,13 +31,11 @@ import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
-import com.axelor.apps.account.service.ProductServiceAccountImpl;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
-import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
@@ -50,8 +48,6 @@ public class AccountModule extends AxelorModule {
     @Override
     protected void configure() {
         bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
-
-        bind(ProductServiceImpl.class).to(ProductServiceAccountImpl.class);
 
         bind(GeneralService.class).to(GeneralServiceAccount.class);
 

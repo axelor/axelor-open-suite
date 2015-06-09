@@ -36,7 +36,6 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Scheduler;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.scheduler.SchedulerService;
 import com.axelor.apps.sale.db.ISaleOrder;
@@ -322,11 +321,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 	@Override
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, String description, BigDecimal qty,
-			Unit unit, int sequence, SaleOrderLine saleOrderLine) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException  {
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, productName,description, qty, unit, product.getInvoiceLineType(),
-				sequence, false, saleOrderLine, null, null)  {
+		Product product = saleOrderLine.getProduct();
+		
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(),
+				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
+				saleOrderLine.getSequence(), false, saleOrderLine, null, null)  {
+			
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 
@@ -340,17 +342,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		};
 
 		return invoiceLineGenerator.creates();
-	}
-
-
-
-	@Override
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException  {
-
-		return this.createInvoiceLine(invoice, saleOrderLine.getProduct(), saleOrderLine.getProductName(),
-				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),saleOrderLine.getSequence(), saleOrderLine);
-
-
 	}
 
 

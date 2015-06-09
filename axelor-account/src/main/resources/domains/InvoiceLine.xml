@@ -9,7 +9,6 @@
 
   	<integer name="sequence" title="Seq."/>
 
-    <many-to-one name="invoiceLineType" ref="InvoiceLineType" title="Invoice line type"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <string name="productName"  title="Product Name"/>
     <decimal name="price" title="Unit price" precision="20" scale="5"/>
@@ -26,6 +25,8 @@
     
     <string name="description" title="Description" large="true"/>
     <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
+    
+  	<many-to-one name="groupingLine" ref="com.axelor.apps.base.db.GroupingLine" title="Grouping line"/>
     
     <!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in Acc. currency" hidden="true"/>

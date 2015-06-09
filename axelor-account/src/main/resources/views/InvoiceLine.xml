@@ -3,9 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
    
-    <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="sequence,invoiceLineType.name,qty" >
+    <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="sequence,qty" >
     	<field name="sequence"/>
-        <field name="invoiceLineType"/>
         <field name="productName"/>
         <field name="qty"/>
         <field name="price"/>
@@ -23,7 +22,6 @@
     			<field name="saleOrderLine" if-module="axelor-supplychain" showIf="invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4"/>
     			<field name="purchaseOrderLine" if-module="axelor-supplychain" showIf="invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2"/>
 		        <field name="product" required="true" onChange="action-group-account-invoice-line-product-onchange"/>
-		        <field name="invoiceLineType"/>
 		        <field name="productName"/>
 		        <field name="qty" required="true" onChange="action-invoice-line-method-get-discount,action-invoice-line-method-convert-tax,action-invoice-line-method-compute"/>
 		        <field name="price" required="true"  onChange="action-invoice-line-method-compute"/>
