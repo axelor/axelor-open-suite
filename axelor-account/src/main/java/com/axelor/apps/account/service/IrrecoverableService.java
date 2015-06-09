@@ -35,7 +35,6 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.db.InvoiceLineType;
 import com.axelor.apps.account.db.Irrecoverable;
 import com.axelor.apps.account.db.IrrecoverableCustomerLine;
 import com.axelor.apps.account.db.IrrecoverableInvoiceLine;
@@ -612,8 +611,13 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		int seq = 1;
 		List<IrrecoverableReportLine> irlList = new ArrayList<IrrecoverableReportLine>();
 
-		for(InvoiceLine invoiceLine : consolidateInvoiceLine(invoice.getInvoiceLineList()))  {
-			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLine.getInvoiceLineType().getName(), invoiceLine.getExTaxTotal().multiply(prorataRate).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN), seq));
+		for(InvoiceLine invoiceLine : invoice.getInvoiceLineList())  {
+			
+			String groupingLineName = null;
+			if(invoiceLine.getGroupingLine() != null)   {
+				groupingLineName = invoiceLine.getGroupingLine().getName();
+			}
+			irlList.add(this.createIrrecoverableReportLine(iil, groupingLineName, invoiceLine.getExTaxTotal().multiply(prorataRate).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN), seq));
 			seq++;
 		}
 		for(InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList())  {
@@ -730,30 +734,6 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		LOG.debug("Taux d'impayé pour la facture {} : {}", invoice.getInvoiceId(), prorataRate);
 		
 		return prorataRate;
-	}
-	
-	
-	/**
-	 * Foncion permettant de consolider les lignes de factures
-	 * @param invoiceLineList
-	 * 			Une liste de lignes d'une facture
-	 * @return
-	 */
-	public List<InvoiceLine> consolidateInvoiceLine(List<InvoiceLine> invoiceLineList)  {
-		List<InvoiceLine> consolidateInvoiceLineList = new ArrayList<InvoiceLine>();
-		List<InvoiceLineType> consolidateInvoiceLineTypeList = new ArrayList<InvoiceLineType>();
-
-		for(InvoiceLine invoiceLine : invoiceLineList)  {
-			if(consolidateInvoiceLineTypeList.contains(invoiceLine.getInvoiceLineType()))  {
-				InvoiceLine il = consolidateInvoiceLineList.get(consolidateInvoiceLineTypeList.indexOf(invoiceLine.getInvoiceLineType()));
-				il.setExTaxTotal(il.getExTaxTotal().add(invoiceLine.getExTaxTotal()));
-			}
-			else  {
-				consolidateInvoiceLineList.add(invoiceLine);
-				consolidateInvoiceLineTypeList.add(invoiceLine.getInvoiceLineType());
-			}
-		}
-		return consolidateInvoiceLineList;
 	}
 	
 	

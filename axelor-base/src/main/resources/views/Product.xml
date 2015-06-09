@@ -44,7 +44,6 @@
 					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" colSpan="12"/>
 					<field name="periodicitySelect" if-module="axelor-supplychain" showIf="productTypeSelect == 'subscriptable'"/>
 					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" colSpan="12"/>
-					<field name="invoiceLineType" colSpan="12" if-module="axelor-account"/>
 					<field name="inAti"/>
 				</panel>
 				<panel title="Categorization" colSpan="6" colWidths="30%,70%">
