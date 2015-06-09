@@ -220,6 +220,7 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 
 		Partner supplierPartner = partnerService.find(purchaseOrder.getSupplierPartner().getId());
 		supplierPartner.setIsSupplier(true);
+		supplierPartner.setHasOrdered(true);
 
 		return partnerService.save(supplierPartner);
 	}
