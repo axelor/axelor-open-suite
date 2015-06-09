@@ -209,10 +209,12 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService  {
 		
 		SupplierCatalog supplierCatalog = this.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
 		
-		if(supplierCatalog == null)  {
-			
-			supplierCatalog = this.getSupplierCatalog(product, product.getDefaultSupplierPartner());
-		}
+//		If there is no catalog for supplier, then we don't take the default catalog.
+		
+//		if(supplierCatalog == null)  {
+//			
+//			supplierCatalog = this.getSupplierCatalog(product, product.getDefaultSupplierPartner());
+//		}
 		
 		return supplierCatalog;
 		
