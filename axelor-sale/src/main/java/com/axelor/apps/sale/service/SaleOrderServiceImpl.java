@@ -237,7 +237,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancelSaleOrder(SaleOrder saleOrder){
 		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.partner = ?2 ");
 		q.setParameter(1, ISaleOrder.STATUS_ORDER_CONFIRMED);
@@ -245,13 +245,13 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		if((long) q.getSingleResult() == 1)  {
 			saleOrder.getClientPartner().setHasOrdered(false);
 		}
-		saleOrder.setStatusSelect(4);
+		saleOrder.setStatusSelect(ISaleOrder.STATUS_CANCELED);
 		this.save(saleOrder);
 	}
 
 	@Override
-	@Transactional(rollbackOn = {Exception.class})
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception{
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
 		if (saleOrder.getVersionNumber() == 1){
 			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
@@ -263,7 +263,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws IOException{
 		String
 	    		filePath = AppSettings.get().get("file.upload.dir"),
