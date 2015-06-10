@@ -62,7 +62,7 @@ public class PurchaseOrderLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = BigDecimal.ZERO;
-		int discountTypeSelect = 0;
+		
 		
 		if(purchaseOrderLine.getTaxLine()==null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_TAX_LINE)), IException.CONFIGURATION_ERROR);
@@ -85,9 +85,7 @@ public class PurchaseOrderLineController {
 					}
 
 					if(purchaseOrder != null) {
-						if(priceDiscounted != purchaseOrderLine.getPrice()){
-							discountTypeSelect = purchaseOrderLineService.getDiscountTypeSelect(purchaseOrderLine,purchaseOrder);
-						}
+						
 						companyExTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
 						companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
 						response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
@@ -101,19 +99,7 @@ public class PurchaseOrderLineController {
 				response.setValue("companyExTaxTotal", companyExTaxTotal);
 				response.setValue("companyInTaxTotal", companyInTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
-				
-				if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT){
-					response.setValue("price",priceDiscounted);
-					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
-					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
-					response.setValue("discountAmount",BigDecimal.ZERO);
-				}
-				else if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE){
-					response.setValue("price",priceDiscounted);
-					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
-					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
-					response.setValue("discountAmount",BigDecimal.ZERO);		
-				}
+	
 			}
 			else{
 				if (purchaseOrderLine.getPrice() != null && purchaseOrderLine.getQty() != null){
@@ -132,9 +118,7 @@ public class PurchaseOrderLineController {
 					}
 
 					if(purchaseOrder != null) {
-						if(priceDiscounted != purchaseOrderLine.getPrice()){
-							discountTypeSelect = purchaseOrderLineService.getDiscountTypeSelect(purchaseOrderLine,purchaseOrder);
-						}
+
 						companyInTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
 						companyExTaxTotal = companyInTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 						response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
@@ -148,19 +132,7 @@ public class PurchaseOrderLineController {
 				response.setValue("companyInTaxTotal", companyInTaxTotal);
 				response.setValue("companyExTaxTotal", companyExTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
-				
-				if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT){
-					response.setValue("price",priceDiscounted);
-					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
-					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
-					response.setValue("discountAmount",BigDecimal.ZERO);
-				}
-				else if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE){
-					response.setValue("price",priceDiscounted);
-					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
-					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
-					response.setValue("discountAmount",BigDecimal.ZERO);		
-				}
+
 			}
 		}
 		catch(Exception e)  {
@@ -182,6 +154,8 @@ public class PurchaseOrderLineController {
 
 			try  {
 				BigDecimal price = purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine);
+				int discountTypeSelect = 0;
+				
 				response.setValue("taxLine", purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine));
 				response.setValue("productName", purchaseOrderLine.getProduct().getName());
 				response.setValue("unit", purchaseOrderLine.getProduct().getUnit());
@@ -192,13 +166,23 @@ public class PurchaseOrderLineController {
 				PriceList priceList = purchaseOrder.getPriceList();
 				if(priceList != null)  {
 					PriceListLine priceListLine = purchaseOrderLineService.getPriceListLine(purchaseOrderLine, priceList);
+					if(priceListLine!=null){
+						discountTypeSelect = priceListLine.getTypeSelect();
+					}
+					if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+					{
+						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+						
+					}
+					else{
+						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 
-					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-
-					response.setValue("discountAmount", discounts.get("discountAmount"));
-					response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-					if(discounts.get("price") != null)  {
-						price = (BigDecimal) discounts.get("price");
+						response.setValue("discountAmount", discounts.get("discountAmount"));
+						response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+						if(discounts.get("price") != null)  {
+							price = (BigDecimal) discounts.get("price");
+						}
 					}
 				}
 
@@ -258,16 +242,30 @@ public class PurchaseOrderLineController {
 				BigDecimal price = purchaseOrderLine.getProduct().getPurchasePrice();
 
 				PriceList priceList = purchaseOrder.getPriceList();
+				int discountTypeSelect = 0;
+				
 				if(priceList != null)  {
 					PriceListLine priceListLine = purchaseOrderLineService.getPriceListLine(purchaseOrderLine, priceList);
-
-					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-
-					response.setValue("discountAmount", discounts.get("discountAmount"));
-					response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-					if(discounts.get("price") != null)  {
-						price = (BigDecimal) discounts.get("price");
+					if(priceListLine!=null){
+						discountTypeSelect = priceListLine.getTypeSelect();
 					}
+					
+					if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+					{
+						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+						
+					}
+					else{
+						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+
+						response.setValue("discountAmount", discounts.get("discountAmount"));
+						response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+						if(discounts.get("price") != null)  {
+							price = (BigDecimal) discounts.get("price");
+						}
+					}
+					
 				}
 
 				else{
