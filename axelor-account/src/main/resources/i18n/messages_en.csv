@@ -1,1272 +1,1273 @@
 "key","message","comment","context"
-"%s - Aucun mode de paiement configuré pour la facture %s",,,""
-"%s : Modèle de courrier absent pour la matrice de relance %s (Tiers %s, Niveau %s).",,,""
-"%s :\n Annomlie détectée (l'enregistrement ne fait pas %s caractères : %s) pour l'enregistrement %s, société %s",,,""
-"%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour l'émetteur",,,""
-"%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le destinataire",,,""
-"%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le total",,,""
-"%s :\n Attention - Vous ne pouvez pas régler un montant supérieur aux factures selectionnées.",,,""
-"%s :\n Attention, saisie paiement n° %s, le total des montants imputés par ligne est supérieur au montant payé par le client",,,""
-"%s :\n Aucun mode de paiement trouvé pour le code %s et la société %s",,,""
-"%s :\n Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement : %s",,,""
-"%s :\n Aucune ligne à payer.",,,""
-"%s :\n Bank statement line %s amount can't be null",,,""
-"%s :\n Computed balance and Ending Balance must be equal",,,""
-"%s :\n Erreur : Veuillez configurer un journal pour la société %s et le mode de paiement %s",,,""
-"%s :\n Erreur : Veuillez configurer un tableau des poids dans l'administration générale",,,""
-"%s :\n Erreur : Veuillez configurer un type d'export pour le configurateur de batch %s",,,""
-"%s :\n Erreur : Veuillez configurer une date de fin pour le configurateur de batch %s",,,""
-"%s :\n Erreur : Veuillez configurer une date de prélèvement pour la configuration de batch %s",,,""
-"%s :\n Erreur : Veuillez configurer une société pour le configurateur de batch %s",,,""
-"%s :\n Erreur : Veuillez configurer une séquence Export comptable pour la société %s",,,""
-"%s :\n Erreur : Veuillez configurer une séquence Interface Achat pour la société %s",,,""
-"%s :\n Erreur : Veuillez configurer une séquence Interface Avoir pour la société %s",,,""
-"%s :\n Erreur : Veuillez configurer une séquence Interface Trésorerie pour la société %s",,,""
-"%s :\n Erreur : Veuillez configurer une séquence Interface Vente pour la société %s",,,""
-"%s :\n Erreur : Veuillez configurer une séquence Reporting comptable pour la société %s",,,""
-"%s :\n Erreur : Veuillez configurer une séquence pour la société %s et le mode de paiement %s",,,""
-"%s :\n Erreur : Veuillez d'abord créer les lignes d'échéancier pour l'échéancier %s",,,""
-"%s :\n Erreur detectée pendant l'ecriture du fichier CFONB : %s",,,""
-"%s :\n Erreur généré lors de la création de l'écriture de passage en irrécouvrable %s",,,""
-"%s :\n Il manque un enregistrement en-tête dans le fichier %s",,,""
-"%s :\n Il manque un enregistrement fin dans le fichier %s",,,""
-"%s :\n Il manque un ou plusieurs enregistrements détail dans le fichier %s",,,""
-"%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",,,""
-"%s :\n La facture n°%s n'a pas été trouvée pour la société %s",,,""
-"%s :\n Le mode de paiement dont le code est 'TIC' n'a pas été trouvé",,,""
-"%s :\n Le mode de paiement dont le code est 'TIP' n'a pas été trouvé",,,""
-"%s :\n Le montant de la saisie paiement (%s) est différent du montant encaissé par Paybox (%s)",,,""
-"%s :\n Le montant réglé pour la saisie paiement par CB ne doit pas être supérieur au solde du payeur.",,,""
-"%s :\n Le montant total de l'enregistrement suivant n'est pas correct (fichier %s) :\n %s",,,""
-"%s :\n Merci de renseigner le montant payé svp.",,,""
-"%s :\n MoveLine amount is not equals with bank statement line %s",,,""
-"%s :\n Please define an email template for cash register (company: %s)",,,""
-"%s :\n Une fermeture de caisse existe déjà pour la même date et la même caisse",,,""
-"%s :\n Veuillez configurer CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer Paybox pour la société %s",,,""
-"%s :\n Veuillez configurer des informations comptables pour la société %s",,,""
-"%s :\n Veuillez configurer le tableau de relance pour la société %s",,,""
-"%s :\n Veuillez configurer les comptes d'apurements pour la société %s",,,""
-"%s :\n Veuillez configurer les informations comptables pour la société %s",,,""
-"%s :\n Veuillez configurer les modèles de courrier Imports de rejet pour la société %s",,,""
-"%s :\n Veuillez configurer un Chemin Fichier Exporté (si -> AGRESSO) pour la société %s",,,""
-"%s :\n Veuillez configurer un Code Banque pour le RIB %s du tiers payeur %s",,,""
-"%s :\n Veuillez configurer un Code Guichet pour le RIB %s du tiers payeur %s",,,""
-"%s :\n Veuillez configurer un Code enregistrement destinataire CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code enregistrement detail CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code enregistrement en-tête CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code enregistrement fin CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code enregistrement total CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code enregistrement émetteur CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code opération Prélèvement CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code opération Prélèvement impayé CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code opération TIP + chèque CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code opération TIP CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code opération TIP impayé CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code opération Virement CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Code opération Virement rejeté CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Dossier d'export des prélèvements au format CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Dossier d'export des remboursements au format CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Motif de passage (créance de plus de six mois) pour la société %s",,,""
-"%s :\n Veuillez configurer un Motif de passage (créance de plus de trois mois) pour la société %s",,,""
-"%s :\n Veuillez configurer un Nom/Raison sociale émetteur CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Numéro d'émetteur CFONB pour la société %s",,,""
-"%s :\n Veuillez configurer un Numéro de compte pour le RIB %s du tiers payeur %s",,,""
-"%s :\n Veuillez configurer un RIB pour l'échéancier de paiement %s",,,""
-"%s :\n Veuillez configurer un RIB pour le configurateur de batch %s",,,""
-"%s :\n Veuillez configurer un RIB pour le tiers %s",,,""
-"%s :\n Veuillez configurer un chemin d'import des paiements par TIP et TIP + chèque pour la société %s",,,""
-"%s :\n Veuillez configurer un chemin d'import temporaire des paiements par TIP et TIP + chèque pour la société %s",,,""
-"%s :\n Veuillez configurer un chemin pour le fichier d'imports des rejets de paiement par TIP et TIP chèque pour la société %s",,,""
-"%s :\n Veuillez configurer un chemin pour le fichier d'imports des rejets des remboursements pour la société %s",,,""
-"%s :\n Veuillez configurer un chemin pour le fichier de rejet pour la société %s",,,""
-"%s :\n Veuillez configurer un chemin pour le fichier de rejet temporaire pour la société %s",,,""
-"%s :\n Veuillez configurer un chemin pour le fichier des rejets de paiement par TIP et TIP chèque temporaire pour la société %s",,,""
-"%s :\n Veuillez configurer un chemin pour le fichier temporaire d'imports des rejets des remboursements pour la société %s",,,""
-"%s :\n Veuillez configurer un compte client douteux pour la société %s",,,""
-"%s :\n Veuillez configurer un compte client pour la société %s",,,""
-"%s :\n Veuillez configurer un compte de créance irrécouvrable pour la société %s",,,""
-"%s :\n Veuillez configurer un compte de profit pour la société %s",,,""
-"%s :\n Veuillez configurer un compte de remboursement pour la société %s",,,""
-"%s :\n Veuillez configurer un compte différence de caisse pour la société %s",,,""
-"%s :\n Veuillez configurer un compte fournisseur pour la société %s",,,""
-"%s :\n Veuillez configurer un journal d'apurements des trop-perçus pour la société %s",,,""
-"%s :\n Veuillez configurer un journal de rejet pour la société %s",,,""
-"%s :\n Veuillez configurer un journal de remboursement pour la société %s",,,""
-"%s :\n Veuillez configurer un journal des O.D pour la société %s",,,""
-"%s :\n Veuillez configurer un journal des achats Fourn. pour la société %s",,,""
-"%s :\n Veuillez configurer un journal des avoirs clients pour la société %s",,,""
-"%s :\n Veuillez configurer un journal des avoirs fournisseurs pour la société %s",,,""
-"%s :\n Veuillez configurer un journal des ventes clients pour la société %s",,,""
-"%s :\n Veuillez configurer un journal irrécouvrable pour la société %s",,,""
-"%s :\n Veuillez configurer un mode de paiement après rejet pour la société %s",,,""
-"%s :\n Veuillez configurer un mode de paiement par prélèvement pour la société %s",,,""
-"%s :\n Veuillez configurer un motif de passage en irrécouvrable pour la société %s",,,""
-"%s :\n Veuillez configurer un type de journal achats pour la société %s",,,""
-"%s :\n Veuillez configurer un type de journal avoirs pour la société %s",,,""
-"%s :\n Veuillez configurer un type de journal trésorerie pour la société %s",,,""
-"%s :\n Veuillez configurer un type de journal ventes pour la société %s",,,""
-"%s :\n Veuillez configurer une Adresse de Banque pour le RIB %s du tiers payeur %s",,,""
-"%s :\n Veuillez configurer une Liste des codes motifs de rejet/retour relatifs aux Virements, Prélèvements et TIP dans l'administration générale",,,""
-"%s :\n Veuillez configurer une adresse email Caisses pour la société %s",,,""
-"%s :\n Veuillez configurer une société active pour l'utilisateur %s",,,""
-"%s :\n Veuillez configurer une séquence Apurement des trop-perçus pour la société %s",,,""
-"%s :\n Veuillez configurer une séquence Numéro de reçu (Saisie paiement) pour la société %s",,,""
-"%s :\n Veuillez configurer une séquence Rejet de chèque pour la société %s",,,""
-"%s :\n Veuillez configurer une séquence Remboursement pour la société %s",,,""
-"%s :\n Veuillez configurer une séquence de Passage en irrécouvrable pour la société %s",,,""
-"%s :\n Veuillez configurer une séquence de rejet des prélèvements\n pour la société %s pour le journal %s",,,""
-"%s :\n Veuillez configurer une taxe taux normal pour la société %s",,,""
-"%s :\n Veuillez paramétrer un Chemin de la clé publique Paybox pour la configuration Paybox %s",,,""
-"%s :\n Veuillez paramétrer un Email de back-office Axelor pour Paybox pour la configuration Paybox %s",,,""
-"%s :\n Veuillez paramétrer un Email pour le tiers %s.",,,""
-"%s :\n Veuillez paramétrer un Identifiant interne pour la configuration Paybox %s",,,""
-"%s :\n Veuillez paramétrer un Montant réglé pour la saisie paiement %s.",,,""
-"%s :\n Veuillez paramétrer un Numéro de rang pour la configuration Paybox %s",,,""
-"%s :\n Veuillez paramétrer un Numéro de site pour la configuration Paybox %s",,,""
-"%s :\n Veuillez paramétrer une Devise des transactions pour la configuration Paybox %s",,,""
-"%s :\n Veuillez paramétrer une Liste des variables à retourner par Paybox pour la configuration Paybox %s",,,""
-"%s :\n Veuillez paramétrer une Signature calculée avec la clé secrète pour la configuration Paybox %s",,,""
-"%s :\n Veuillez paramétrer une Url de l'environnement pour la configuration Paybox %s",,,""
-"%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement annulé pour la configuration Paybox %s",,,""
-"%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement effectué pour la configuration Paybox %s",,,""
-"%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement refusé pour la configuration Paybox %s",,,""
-"%s :\n Veuillez renseigner un journal et un compte de trésorerie dans le mode de règlement.",,,""
-"%s :\n Veuillez renseigner une société pour l'année fiscale %s",,,""
-"%s :\n Veuillez selectionner un Type d'algorithme de hachage utilisé lors du calcul de l'empreinte pour la configuration Paybox %s",,,""
-"%s :\nAdresse de facturation absente",,,""
-"%s :\nAucun tiers selectionné",,,""
-"%s :\nCompte comptable Client manquant pour la société %s",,,""
-"%s :\nCompte comptable Fournisseur manquant pour la société %s",,,""
-"%s :\nCondition de paiement absent",,,""
-"%s :\nDevise absente",,,""
-"%s :\nLe type de facture n'est pas rempli %s",,,""
-"%s :\nMode de paiement absent",,,""
-"%s :\nReconciliation %s: Le montant réconcilié doit être différent de zéro. \n (Débit %s compte %s - Crédit %s compte %s)",,,""
-"%s :\nReconciliation %s: Le montant réconcilié doit être inférieur ou égale au montant restant à réconcilier des lignes d'écritures.",,,""
-"%s :\nReconciliation : Les lignes d'écritures sélectionnées doivent concerner le même compte comptable.",,,""
-"%s :\nReconciliation : Merci de renseigner les lignes d'écritures concernées.",,,""
-"%s \nAucune facture trouvée pour le numéro de facture %s et la société %s",,,""
-"%s paiement(s) traité(s)",,,""
-"80",,,""
-"<font color=#953B39> OR </font>",,,""
-"A chart or chart structure of accounts already exists, please delete the hierarchy between accounts in order to import a new chart.",,,""
-"Acc. Clearance",,,""
-"Account",,,""
-"Account Category",,,""
-"Account Category Line",,,""
-"Account Category Lines",,,""
-"Account Chart",,,""
-"Account Dashboard",,,""
-"Account Db",,,""
-"Account Invoice Summary",,,""
-"Account Management",,,""
-"Account Managements",,,""
-"Account Type",,,""
-"Account calculation configuration",,,""
-"Account category",,,""
-"Account chart",,,""
-"Account clearance",,,""
-"Account clearance date",,,""
-"Account clearance journal",,,""
-"Account clearance operations",,,""
-"Account configuration",,,""
-"Account configurations",,,""
-"Account equivalence",,,""
-"Account equivalences",,,""
-"Account management Line",,,""
-"Account move",,,""
-"Account moves",,,""
-"Account to replace",,,""
-"Account to set",,,""
-"Account type",,,""
-"Account types",,,""
-"Accounting",,,""
-"Accounting Batch",,,""
-"Accounting Dashboard",,,""
-"Accounting Db",,,""
-"Accounting Export",,,""
-"Accounting Export N°",,,""
-"Accounting Exports/Reports",,,""
-"Accounting batch",,,""
-"Accounting batches",,,""
-"Accounting configuration",,,""
-"Accounting configuration is missing for Product: %s (company: %s)",,,""
-"Accounting details",,,""
-"Accounting export",,,""
-"Accounting exports",,,""
-"Accounting report",,,""
-"Accounting reports",,,""
-"Accounting settings",,,""
-"Accounting situation",,,""
-"Accounting situations",,,""
-"Accounts",,,""
-"Action",,,""
-"Actions",,,""
-"Active",,,""
-"Active UMR",,,""
-"Active bank details",,,""
-"Add Move line N° in the description",,,""
-"Add an email for payment through Paybox",,,""
-"Address",,,""
-"Address unknown",,,""
-"Advance move line",,,""
-"Advance/Payment move",,,""
-"Aged Balance",,,""
-"Alarm",,,""
-"Algorithm hashing type to calculate footprint",,,""
-"Allocated amount",,,""
-"Allow cancelation of ventilated invoice",,,""
-"Allow payments greater than due amount ?",,,""
-"Allow removal of validated move",,,""
-"Allowed payment range",,,""
-"Already printed ?",,,""
-"Amount",,,""
-"Amount A.T.I.",,,""
-"Amount A.T.I. in Acc. currency",,,""
-"Amount Remaining to allocate",,,""
-"Amount Tax in Acc. currency",,,""
-"Amount already paid",,,""
-"Amount charged",,,""
-"Amount exported for direct debit",,,""
-"Amount in Acc. currency",,,""
-"Amount paid",,,""
-"Amount paid A.T.I.",,,""
-"Amount paid in currency",,,""
-"Amount paid/reconciled",,,""
-"Amount reconciled",,,""
-"Amount rejected",,,""
-"Amount remaining before cashing",,,""
-"Amount remaining to allocate",,,""
-"Amount to reimburse",,,""
-"Amounts to register",,,""
-"An accounting moveline must have higher a credit value or a debit value.",,,""
-"Analytic",,,""
-"Analytic Acc.",,,""
-"Analytic Acc. Mngmt",,,""
-"Analytic Acc. Mngmt List",,,""
-"Analytic Account",,,""
-"Analytic Accounts",,,""
-"Analytic Axis",,,""
-"Analytic Journal",,,""
-"Analytic Journal Type",,,""
-"Analytic account",,,""
-"Analytic accounts",,,""
-"Analytic axis",,,""
-"Analytic journals",,,""
-"Analytical account",,,""
-"Analytics",,,""
-"Anomalies",,,""
-"Archived",,,""
-"Archived ?",,,""
-"Article code",,,""
-"Asset",,,""
-"Associated MoveLine",,,""
-"Aucun remboursement trouvé pour la ref %s et la société %s.",,,""
-"Authorize auto reconcile",,,""
-"Authorize auto reconcile on invoice",,,""
-"Authorize auto reconcile on payment",,,""
-"Auto. input.",,,""
-"Avoir créé",,,""
-"Axelor Backoffice email",,,""
-"Axis",,,""
-"B2B",,,""
-"B2C",,,""
-"BBAN/IBAN to use",,,""
-"Balance",,,""
-"Balance due remindable",,,""
-"Bank Details",,,""
-"Bank Statement",,,""
-"Bank Statement Line",,,""
-"Bank Statement Lines",,,""
-"Bank Statements",,,""
-"Bank card",,,""
-"Bank details",,,""
-"Base W.T.",,,""
-"Base W.T. in Acc. currency.",,,""
-"Batch",,,""
-"Batch d'export des prélèvements %s",,,""
-"Batch d'import des paiements par TIP et TIP chèque %s",,,""
-"Batch d'import des rejets de paiement par TIP et TIP chèque %s",,,""
-"Batch d'import des remboursements %s",,,""
-"Batch to re-export",,,""
-"Batches",,,""
-"Batchs",,,""
-"Belong to a payment schedule ?",,,""
-"Blocking done by",,,""
-"Blocking reason",,,""
-"Blocking reason/reject codes list",,,""
-"Blocking reason/reject codes lists",,,""
-"Blocking until",,,""
-"Blockings",,,""
-"Bug(Anomalie) généré(e)e dans l'export SEPA - Batch %s",,,""
-"Burden (weight)",,,""
-"CC Transaction N°",,,""
-"CFONB",,,""
-"CFONB Export",,,""
-"CFONB Import",,,""
-"Cancel",,,""
-"Canceled",,,""
-"Canceled Moves",,,""
-"Canceled payment schedule",,,""
-"Cash",,,""
-"Cash Register",,,""
-"Cash Register Amount",,,""
-"Cash account",,,""
-"Cash journal type",,,""
-"Cash payments summary",,,""
-"Cash register",,,""
-"Cash register N°",,,""
-"Cash register closing",,,""
-"Cash register closure",,,""
-"Cash register date",,,""
-"Cash registers",,,""
-"Cashier Agent",,,""
-"Cashier Regulation account",,,""
-"Cashier email address",,,""
-"Cashier email template",,,""
-"Cashiers",,,""
-"Categories",,,""
-"Category",,,""
-"Cfonb configuration",,,""
-"Cfonb configurations",,,""
-"Chart imported?",,,""
-"Chart of Accounts",,,""
-"Check validity",,,""
-"Cheque",,,""
-"Cheque Rejection",,,""
-"Cheque Rejections",,,""
-"Cheque deposit slip",,,""
-"Cheque rejection filters",,,""
-"Classic reminder",,,""
-"Clear remaining amount",,,""
-"Clearance Accounts",,,""
-"Clearance maximum amount",,,""
-"Clearance settings",,,""
-"Close cashier",,,""
-"Close fiscal year",,,""
-"Closed",,,""
-"Code",,,""
-"Code list for rejects/return of Cheques",,,""
-"Code list for rejects/return of Direct debit, Wire Transfers and IPO",,,""
-"Commitment",,,""
-"Company",,,""
-"Company set",,,""
-"Compatible Account Types",,,""
-"Compatible Accounts",,,""
-"Compte comptable absent de la configuration pour la ligne : %s (société : %s)",,,""
-"Compte comptable absent de la ligne de taxe : %s (société : %s)",,,""
-"Compte comptable associé non configuré",,,""
-"Compte rendu d'export de remboursement :\n",,,""
-"Compte rendu d'export des prélèvements de mensualité :\n",,,""
-"Compte rendu d'export des prélèvements factures :\n",,,""
-"Compte rendu de création de remboursement :\n",,,""
-"Compte rendu de l'import des paiements par TIP et TIP chèque :",,,""
-"Compte rendu de l'import des rejets de paiement par TIP et TIP chèque",,,""
-"Compte rendu de l'import des rejets de prélèvement :\n",,,""
-"Compte rendu de l'import des rejets de remboursement :\n",,,""
-"Compte rendu de la détermination des créances douteuses",,,""
-"Compte rendu de la détermination des soldes des comptes clients :\n",,,""
-"Compte rendu de la validation de facture :\n",,,""
-"Compte rendu de la ventilation de facture :\n",,,""
-"Compte rendu de relance :\n",,,""
-"Compte rendu du batch d'export des écritures :\n",,,""
-"Compte tiers absent de la facture %s",,,""
-"Comptes Comptables",,,""
-"Compute",,,""
-"Computed Balance",,,""
-"Conditions",,,""
-"Configuration",,,""
-"Configurations",,,""
-"Confirm payment",,,""
-"Confirmed",,,""
-"Confirmed Customer payments",,,""
-"Confirmed Supplier payments",,,""
-"Consolidate invoice movelines ?",,,""
-"Contact",,,""
-"Country",,,""
-"Country code",,,""
-"Create Cust. Payment",,,""
-"Create Cust. Refund",,,""
-"Create Invoice",,,""
-"Create Payment",,,""
-"Create Suppl. Payment",,,""
-"Create Suppl. Refund",,,""
-"Create schedule lines",,,""
-"Created by",,,""
-"Created on",,,""
-"Creation Date",,,""
-"Creation date",,,""
-"Credit",,,""
-"Credit Reconcile List",,,""
-"Credit line",,,""
-"Credit note journal type",,,""
-"Credit remaining",,,""
-"Création de l'écriture de rejet de l'échéance %s",,,""
-"Création de l'écriture de rejet de la facture %s",,,""
-"Currency",,,""
-"Currency Rate",,,""
-"Current Asset",,,""
-"Current Period Entries",,,""
-"Cust. Invoices",,,""
-"Cust. Payments",,,""
-"Cust. Refunds",,,""
-"Customer",,,""
-"Customer Credit note Journal",,,""
-"Customer Invoices remaining To Collect",,,""
-"Customer Paybox payments",,,""
-"Customer Payment mode by amount",,,""
-"Customer Payment mode distribution by amount",,,""
-"Customer Payment mode distribution by transactions",,,""
-"Customer Turnover history by month (on invoices)",,,""
-"Customer account",,,""
-"Customer balance",,,""
-"Customer invoices filters",,,""
-"Customer payments",,,""
-"Customer payments with remaining",,,""
-"Customer refund",,,""
-"Customer refunds",,,""
-"Customer refunds filters",,,""
-"Customer sale",,,""
-"Customer(s)",,,""
-"Customers",,,""
-"Datatype",,,""
-"Date",,,""
-"Date can't be ahead of today",,,""
-"Date de reference non determinée.",,,""
-"Dates",,,""
-"Debit",,,""
-"Debit Nbr.",,,""
-"Debit Reconcile list",,,""
-"Debit and credit value cannot be negative.",,,""
-"Debit blocking",,,""
-"Debit line",,,""
-"Debit remaining",,,""
-"Debit/Credit",,,""
-"Debited Invoices List",,,""
-"Debited amount",,,""
-"Debited invoices",,,""
-"Debited schedule lines List",,,""
-"Debt",,,""
-"Debt recovery",,,""
-"Debtor Name",,,""
-"Debtor address",,,""
-"Default email address",,,""
-"Deposited Amount",,,""
-"Description",,,""
-"Detailed",,,""
-"Details record code",,,""
-"Direct Debit Batch",,,""
-"Direct Debit N°",,,""
-"Direct Debit batch type",,,""
-"Direct debit",,,""
-"Direct debit Nbr",,,""
-"Direct debit SEPA",,,""
-"Direct debit blocking",,,""
-"Direct debit configuration",,,""
-"Direct debit list",,,""
-"Direct debit management",,,""
-"Direct debit operation code",,,""
-"Direct debit rejects",,,""
-"Direct debit/IPO/Electronic Payment Order (EPO) CFONB",,,""
-"Direct debits",,,""
-"Direct debits management",,,""
-"Discount",,,""
-"Discount Type",,,""
-"Discount amount",,,""
-"Do not export ?",,,""
-"Do not shift to irrecoverable",,,""
-"Do not shit into irrecoverable",,,""
-"Document Type",,,""
-"Domain of use",,,""
-"Doubtful Customer",,,""
-"Doubtful Customer Batch",,,""
-"Doubtful Customers",,,""
-"Doubtful customers account",,,""
-"Doubtful receivables",,,""
-"Draft",,,""
-"Draft Customer payments",,,""
-"Draft Moves",,,""
-"Draft Supplier payments",,,""
-"Due Date",,,""
-"Due Sale Entries",,,""
-"Due balance",,,""
-"Due balance Reminder",,,""
-"Due balance remindable",,,""
-"Ecriture déjà utilisée, merci de délettrer d'abord",,,""
-"Ecritures exportées",,,""
-"Edit receipt ?",,,""
-"Effect Date",,,""
-"Email sent ?",,,""
-"Email template for invoice and payment schedule rejections",,,""
-"Email to use",,,""
-"Email used by Paybox",,,""
-"End Date",,,""
-"End date",,,""
-"End of cycle",,,""
-"End of month + n days",,,""
-"Ending Balance",,,""
-"Ending record code",,,""
-"Environment Url",,,""
-"Equity",,,""
-"Error in account chart import please check the log",,,""
-"Error in move generation",,,""
-"Error in move validation, please check the log",,,""
-"Expense",,,""
-"Expiration date (only for reference)",,,""
-"Export",,,""
-"Export Date",,,""
-"Export code",,,""
-"Export direct debits",,,""
-"Export file type",,,""
-"Export purchase -> Acc. Soft.",,,""
-"Export refunds -> Acc. Soft.",,,""
-"Export reimbursements",,,""
-"Export sale -> Acc. Soft.",,,""
-"Export tresury -> Acc. Soft.",,,""
-"Export type",,,""
-"Exported ?",,,""
-"Exported Direct Debit",,,""
-"Exported moves",,,""
-"Exports",,,""
-"External Ref.",,,""
-"Facture",,,""
-"Facture annulée",,,""
-"Filepath for direct debit exports (CFONB)",,,""
-"Filepath for exported files (Accounting)",,,""
-"Filepath for rejected reimbursements",,,""
-"Filepath for temporary rejected reimbursements import",,,""
-"Filepath to import IPO, and IPO & Cheque payments",,,""
-"Filepath to import IPO, and IPO & Cheque payments rejects",,,""
-"Filepath to import rejected records",,,""
-"Filter",,,""
-"Financial",,,""
-"Financial Accounts",,,""
-"Financial Accounts Management",,,""
-"Fiscal position",,,""
-"Fiscal positions",,,""
-"Fiscal year",,,""
-"Fiscal years",,,""
-"Follow-up",,,""
-"From",,,""
-"From Date",,,""
-"From Partner",,,""
-"From reject schedule line",,,""
-"Full name",,,""
-"General",,,""
-"General Accounts",,,""
-"General ledger",,,""
-"Generate Moves",,,""
-"Generate irrecoverable report",,,""
-"Generate move from template",,,""
-"Generate periods",,,""
-"Generate refund",,,""
-"Generate reimbursements",,,""
-"Generated move",,,""
-"Generated moves",,,""
-"Get information from 1st Move line",,,""
-"Get invoices and schedule lines to set as irrecoverable",,,""
-"Get overdue payments",,,""
-"Global",,,""
-"Grouping line",,,""
-"Header record code",,,""
-"Historical Period",,,""
-"History",,,""
-"IPO",,,""
-"IPO + Cheque",,,""
-"IPO Payments and IPO Cheque",,,""
-"IPO and Cheque operation code",,,""
-"IPO operation code",,,""
-"Ignore in accounting",,,""
-"Ignore in remind process",,,""
-"Il manque une ligne de taxe",,,""
-"Immobilisation",,,""
-"Import",,,""
-"Import a chart",,,""
-"Import direct debit rejects",,,""
-"Import payment rejects by IPO and IPO cheque",,,""
-"Import payments by IPO and IPO cheque",,,""
-"In",,,""
-"In ATI",,,""
-"In progress",,,""
-"Inactive",,,""
-"Incident type",,,""
-"Income",,,""
-"Info",,,""
-"Information",,,""
-"Informations",,,""
-"Input Date",,,""
-"Interbank Payment Order Batch",,,""
-"Interbank Payment Orders batch type",,,""
-"Internal Ref.",,,""
-"Internal identifier",,,""
-"Invoice",,,""
-"Invoice & Rejects",,,""
-"Invoice Amount",,,""
-"Invoice Dashboard",,,""
-"Invoice Date",,,""
-"Invoice Db",,,""
-"Invoice In ATI",,,""
-"Invoice Lines",,,""
-"Invoice N°",,,""
-"Invoice Purchase Payment Condition distribution",,,""
-"Invoice Purchase by currency (tax excl.)",,,""
-"Invoice Purchase by month (tax excl.)",,,""
-"Invoice Purchase situation (tax incl.)",,,""
-"Invoice Sale Payment Condition distribution",,,""
-"Invoice Sale by currency (tax excl.)",,,""
-"Invoice Sale by month (tax excl.)",,,""
-"Invoice Sale situation (tax incl.)",,,""
-"Invoice and Refunds Sale situation (tax incl.)",,,""
-"Invoice batch",,,""
-"Invoice batches",,,""
-"Invoice concerned by the reminder",,,""
-"Invoice content",,,""
-"Invoice final status",,,""
-"Invoice initial status",,,""
-"Invoice is passed in doubfult debit, and can't be canceled",,,""
-"Invoice is ventilated on a closed period, and can't be canceled",,,""
-"Invoice label",,,""
-"Invoice line",,,""
-"Invoice lines",,,""
-"Invoice of origin",,,""
-"Invoice rejected",,,""
-"Invoice sending media",,,""
-"Invoice.bankDetails","Bank details",,""
-"Invoice.bankingInfo","Banking info",,""
-"Invoice.base","Base",,""
-"Invoice.cheque","Cheque",,""
-"Invoice.clientRef","Customer Ref.",,""
-"Invoice.date","Date",,""
-"Invoice.description","Description",,""
-"Invoice.documentRef","Reference document",,""
-"Invoice.dueDate","Due Date",,""
-"Invoice.invoiceNo","INVOICE N°",,""
-"Invoice.law",,,""
-"Invoice.note","Note",,""
-"Invoice.paymentTerms","Payment terms",,""
-"Invoice.priceExclTax","Price excl. Tax",,""
-"Invoice.purchaseInvoiceNo","PURCHASE INVOICE N°",,""
-"Invoice.purchaseRefundNo","PURCHASE REFUND N°",,""
-"Invoice.qtyUnit","Qty / Unit",,""
-"Invoice.refundNo","REFUND N°",,""
-"Invoice.supplier","Supplier",,""
-"Invoice.supplyRef","Supplier Ref.",,""
-"Invoice.tax","TAX",,""
-"Invoice.taxAmount","Tax Amount",,""
-"Invoice.totalExclTax","Total excl. Tax",,""
-"Invoice.totalInclTax","Total incl. V.A.T.",,""
-"Invoice.totalTax","Total Tax",,""
-"Invoice.unitPrice","Unit price",,""
-"Invoice/Refund",,,""
-"Invoiced Turnover This year vs Last year",,,""
-"Invoices",,,""
-"Invoices selection",,,""
-"Invoices to pay",,,""
-"Invoices(DD)",,,""
-"Invoices/Refunds",,,""
-"Invoicing",,,""
-"Invoicing informations",,,""
-"Irrecouvrable status",,,""
-"Irrecoverable",,,""
-"Irrecoverable Journal",,,""
-"Irrecoverable Shift Reason",,,""
-"Irrecoverable account",,,""
-"Irrecoverable shift reason",,,""
-"Irrecoverable shifting reason",,,""
-"Irrecoverable status",,,""
-"Irrecoverables",,,""
-"Is posted ?",,,""
-"Is updating",,,""
-"Journal",,,""
-"Journal Type",,,""
-"Journal types",,,""
-"Journals",,,""
-"L'écriture comptable %s comporte un total débit différent du total crédit : %s <> %s",,,""
-"LCR/BOR",,,""
-"La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée",,,""
-"La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée sur l'année",,,""
-"La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée sur le mois",,,""
-"La société %s n'a pas de séquence de facture ou d'avoir",,,""
-"Label",,,""
-"Label for automatic moveline generation",,,""
-"Last number iban bic",,,""
-"Last print date",,,""
-"Last reminder date",,,""
-"Le compte analytique %s associé au compte comptable de vente pour le produit %s n'est pas configuré: (société : %s)",,,""
-"Le dossier d'export des remboursement (format SEPA) n'est pas configuré pour la société %s.",,,""
-"Le journal %s n'a pas de séquence d'écriture comptable configurée",,,""
-"Le sens de l'écriture comptable %s ne peut être déterminé",,,""
-"Les soldes de %s situations comptables n'ont pas été mis à jour, merci de lancer le batch de mise à jour des comptes clients",,,""
-"Les soldes de l'ensemble des situations compables (%s) ont été mis à jour.",,,""
-"Level",,,""
-"Ligne d'échéancier %s",,,""
-"Ligne de method de relance absente.",,,""
-"Ligne de relance absente.",,,""
-"Lignes d'écriture générées",,,""
-"Lignes d'écritures (Ecritures) exportées",,,""
-"Lignes d'écritures récupérées",,,""
-"Line Nbr.",,,""
-"List of invoices to pay",,,""
-"List of invoices/schedule lines with remaining amount to pay",,,""
-"Load invoice and display other invoices to pay",,,""
-"Load selected lines",,,""
-"Long term debt duration (month)",,,""
-"Lower reimbursement limit",,,""
-"Mail transit time",,,""
-"Manage customerCredit",,,""
-"Management",,,""
-"Managements",,,""
-"Mandate signature city",,,""
-"Mandate signature date",,,""
-"Manual validation",,,""
-"Max Amount to reconcile",,,""
-"Max Nbr. for payment schedule rejection",,,""
-"Max Nbr. of invoices rejection",,,""
-"Message",,,""
-"Message model",,,""
-"Method name",,,""
-"Min. amount (€)",,,""
-"Misc. Moves",,,""
-"Misc. Operation Journal",,,""
-"Montant imputé en devise",,,""
-"Montant total",,,""
-"Month",,,""
-"Move",,,""
-"Move From Template",,,""
-"Move Line",,,""
-"Move Line generated",,,""
-"Move Lines",,,""
-"Move Lines Export Config",,,""
-"Move Lines data input",,,""
-"Move Template Types",,,""
-"Move Templates",,,""
-"Move Templates Lines",,,""
-"Move export",,,""
-"Move filters",,,""
-"Move line",,,""
-"Move line filters",,,""
-"Move lines",,,""
-"Move lines generated",,,""
-"Move lines security settings",,,""
-"Move should be unreconcile before to cancel the invoice",,,""
-"Move template",,,""
-"Move template line",,,""
-"Move template type",,,""
-"MoveLine",,,""
-"MoveLine Amount",,,""
-"MoveLine content data input",,,""
-"MoveLines content data input",,,""
-"Moves",,,""
-"Moves from invoices/refunds",,,""
-"Moves from payment",,,""
-"Moves generated",,,""
-"Moves to export",,,""
-"Moves validated successfully",,,""
-"Must be solded out",,,""
-"Méthode de relance absente pour la configuration.",,,""
-"Méthode de relance absente.",,,""
-"N days + end of month",,,""
-"N days + end of month at",,,""
-"Name",,,""
-"Nbr. of terms",,,""
-"Net",,,""
-"New Invoice",,,""
-"New cust. invoice",,,""
-"New sup. invoice",,,""
-"Niveau de relance en attente de validation.",,,""
-"No of Units",,,""
-"Not implemented for OSM",,,""
-"Notes",,,""
-"Number Of Supplier Invoices Per Month",,,""
-"Number Of Units On Supplier Invoices On Last 12 Month",,,""
-"Obsolete ?",,,""
-"Old Schedules",,,""
-"Ongoing Schedules",,,""
-"Open cashier",,,""
-"Options",,,""
-"Other",,,""
-"Others",,,""
-"Out",,,""
-"Overdue moveline",,,""
-"Overdue payment",,,""
-"Overpayment before",,,""
-"Overpayments clearances",,,""
-"Overpayments collected",,,""
-"Owner deceased",,,""
-"Paid through paybox",,,""
-"Paiement annulé",,,""
-"Paiement de la facture %s",,,""
-"Paiement par Paybox",,,""
-"Paiement réalisé",,,""
-"Paiement échoué",,,""
-"Parent Account",,,""
-"Parent Analytic Acc.",,,""
-"Partner",,,""
-"Partner Balance due",,,""
-"Partner account",,,""
-"Partner category",,,""
-"Partner information",,,""
-"Partner input select",,,""
-"Partner situation must be updated",,,""
-"Partner to Credit",,,""
-"Partner to Debit",,,""
-"Partner to credit",,,""
-"Partner to debit",,,""
-"Pas de situation comptable.",,,""
-"Passage en irrécouvrable",,,""
-"Path for reimbursement files (CFONB)",,,""
-"Path for reimbursement files (SEPA)",,,""
-"Path to Paybox public key",,,""
-"Payable",,,""
-"Paybox",,,""
-"Paybox configuration",,,""
-"Paybox configurations",,,""
-"Paybox transaction Amount",,,""
-"Payer",,,""
-"Payer partner",,,""
-"Payer quality",,,""
-"Payer quality configuration line",,,""
-"Payer quality configuration lines",,,""
-"Payment",,,""
-"Payment Condition",,,""
-"Payment Mode",,,""
-"Payment Move",,,""
-"Payment Rejected",,,""
-"Payment Schedule",,,""
-"Payment Schedule Entries",,,""
-"Payment Schedule Line",,,""
-"Payment Schedule line",,,""
-"Payment Schedules",,,""
-"Payment Schedules Lines",,,""
-"Payment Smoothings Lines",,,""
-"Payment account",,,""
-"Payment collection journal",,,""
-"Payment condition",,,""
-"Payment conditions",,,""
-"Payment date",,,""
-"Payment differences",,,""
-"Payment mode",,,""
-"Payment mode after rejection",,,""
-"Payment mode for direct debit",,,""
-"Payment modes",,,""
-"Payment move lines",,,""
-"Payment schedue line",,,""
-"Payment schedule",,,""
-"Payment schedule filters",,,""
-"Payment schedule line",,,""
-"Payment schedule line filters",,,""
-"Payment schedule lines",,,""
-"Payment schedule(s) rejected",,,""
-"Payment smoothing(DD)",,,""
-"Payment type",,,""
-"Payment voucher",,,""
-"Payment voucher filters",,,""
-"Payment voucher invoices to pay",,,""
-"Payment vouchers",,,""
-"Payment(s) schedule(s) rejected",,,""
-"Payments",,,""
-"Payments by IPO and IPO Cheque",,,""
-"Payments by IPO and IPO Cheque configuration",,,""
-"Payments by IPO et IPO cheque",,,""
-"Payments rejects by IPO and IPO Cheque",,,""
-"Percentage",,,""
-"Period",,,""
-"Periodical processing",,,""
-"Periods",,,""
-"Periods generation assistant",,,""
-"Please clear all existing periods before generating new ones",,,""
-"Please close this notebook to go back to the payment voucher. Please refresh the payment voucher to see the changes.",,,""
-"Please fill input lines",,,""
-"Please input values between 1 to 100",,,""
-"Please select 'Draft' or 'Simulated' moves",,,""
-"Please select the invoice(s) to print.",,,""
-"Previous Move",,,""
-"Price list",,,""
-"Print",,,""
-"Print invoices",,,""
-"Print receipt",,,""
-"Printing informations",,,""
-"Printing output",,,""
-"Product",,,""
-"Product Category",,,""
-"Product Name",,,""
-"Produit absent de la ligne de facture, facture : %s (société : %s)",,,""
-"Profit accounts",,,""
-"Provision",,,""
-"Prélèvement de l'échéance %s",,,""
-"Purchase Entries",,,""
-"Purchase Invoice",,,""
-"Purchase Invoice Db",,,""
-"Purchase Price List",,,""
-"Purchase account",,,""
-"Purchase journal type",,,""
-"Purchases",,,""
-"Qty",,,""
-"Qty Unit",,,""
-"RUM N°",,,""
-"Rank Nbr",,,""
-"Re-export the bank file",,,""
-"Reached reminder method line",,,""
-"Reason",,,""
-"Receipt N°",,,""
-"Receivable",,,""
-"Receivables recovery",,,""
-"Recent rejects",,,""
-"Recipient record code",,,""
-"Reconcilable ?",,,""
-"Reconcilations",,,""
-"Reconcile",,,""
-"Reconcile filters",,,""
-"Ref.",,,""
-"Reference",,,""
-"Reference Date",,,""
-"Reference Due Date",,,""
-"Reference date",,,""
-"Reference documents",,,""
-"Refund",,,""
-"Refunds",,,""
-"Refunds from invoice %s",,,""
-"Reimbursed",,,""
-"Reimbursed amount",,,""
-"Reimbursement",,,""
-"Reimbursement Batch",,,""
-"Reimbursement Export",,,""
-"Reimbursement Journal",,,""
-"Reimbursement account",,,""
-"Reimbursement batch type",,,""
-"Reimbursement configuration",,,""
-"Reimbursement details",,,""
-"Reimbursement email template",,,""
-"Reimbursement filters",,,""
-"Reimbursement ongoing",,,""
-"Reimbursement rejects",,,""
-"Reimbursement status",,,""
-"Reimbursements",,,""
-"Reimbursements to validate",,,""
-"Reject",,,""
-"Reject Date",,,""
-"Reject Information",,,""
-"Reject Move line",,,""
-"Reject counter",,,""
-"Reject move line",,,""
-"Reject reason",,,""
-"Reject to pay",,,""
-"Reject type",,,""
-"Reject/Return reason codes",,,""
-"Rejected",,,""
-"Rejected Reimbursements Import",,,""
-"Rejected Schedule line",,,""
-"Rejected Schedule lines",,,""
-"Rejected amount",,,""
-"Rejected reimbursement",,,""
-"Rejected reimbursements",,,""
-"Rejected wire transfer operation code",,,""
-"Rejection MoveLine",,,""
-"Rejection reason",,,""
-"Rejects journal",,,""
-"Rejects of cheques",,,""
-"Rejects over past 30 days",,,""
-"Rejects/Return Reason Code List",,,""
-"Rejects/Return reason code list",,,""
-"Rejet %s",,,""
-"Rejet de paiement de la facture %s",,,""
-"Rejet de remboursement %s",,,""
-"Related to",,,""
-"Remaining to pay",,,""
-"Remaining to pay after cashing",,,""
-"Reminder",,,""
-"Reminder Batch",,,""
-"Reminder Method",,,""
-"Reminder batch type",,,""
-"Reminder blocking",,,""
-"Reminder configuration",,,""
-"Reminder configuration table",,,""
-"Reminder content",,,""
-"Reminder history",,,""
-"Reminder level",,,""
-"Reminder levels",,,""
-"Reminder message",,,""
-"Reminder method",,,""
-"Reminder method configuration line",,,""
-"Reminder method configuration lines",,,""
-"Reminder method line",,,""
-"Reminder method line reached by active contract",,,""
-"Reminder method lines",,,""
-"Reminder methods",,,""
-"Reminder process",,,""
-"Reminder settings",,,""
-"Reminders history",,,""
-"Reminders history list",,,""
-"Report execution",,,""
-"Reported Balance",,,""
-"Reported balance",,,""
-"Reported balance Date",,,""
-"Reported balance line",,,""
-"Reported balance lines",,,""
-"Reported balance list",,,""
-"Reporting",,,""
-"Reporting comptable",,,""
-"Reportings",,,""
-"Reportings/Exports",,,""
-"Retour d'information de Paybox erroné",,,""
-"Revenue",,,""
-"Revenue Generated by Geographical Region",,,""
-"Revenues vs Expenses",,,""
-"Reverse",,,""
-"Reçu saisie paiement",,,""
-"Run",,,""
-"Run export again",,,""
-"SEPA ?",,,""
-"SEPA Direct Debit",,,""
-"Sale Entries",,,""
-"Sale Price List",,,""
-"Sale account",,,""
-"Sales",,,""
-"Sales Invoice",,,""
-"Sales Invoice Db 1",,,""
-"Sales Invoice Db 2",,,""
-"Sales Journal",,,""
-"Sales journal type",,,""
-"Sales map",,,""
-"Save email sent to contact ?",,,""
-"Schedule Date",,,""
-"Schedule line",,,""
-"Schedule line N°",,,""
-"Schedule line concerned by the reminder",,,""
-"Schedule lines",,,""
-"Schedule lines created from reject",,,""
-"Schedule start Date",,,""
-"Search",,,""
-"Secret key",,,""
-"Select invoices manually ?",,,""
-"Select invoices to include in the payment schedule",,,""
-"Send email",,,""
-"Sender Name",,,""
-"Sender Nbr.",,,""
-"Sender record code",,,""
-"Seq.",,,""
-"Sequence",,,""
-"Settings",,,""
-"Shift Reason (long term debt)",,,""
-"Shift Reason (short term debt)",,,""
-"Shift to irrecoverable",,,""
-"Shift to irrecoverablePassage en irrécouvrable",,,""
-"Shifted as irrecoverable",,,""
-"Short term debt duration (month)",,,""
-"Show invoices",,,""
-"Show move lines",,,""
-"Sign Associated",,,""
-"Signe",,,""
-"Simulated",,,""
-"Simulated Moves",,,""
-"Site Nbr",,,""
-"Situation",,,""
-"Situation comptable %s",,,""
-"So many accounting operations are used on this invoice, so invoice can't be canceled",,,""
-"Société",,,""
-"Special",,,""
-"Standard Invoice",,,""
-"Standard delay (days)",,,""
-"Standard label (24 caracters)",,,""
-"Start",,,""
-"Start Date",,,""
-"Start date",,,""
-"Starting Balance",,,""
-"Status",,,""
-"Statut %s inconnu pour le traitement %s",,,""
-"Subscription ?",,,""
-"Subtotal by cash register",,,""
-"Subtotal by date",,,""
-"Subtotal by partner",,,""
-"Subtype",,,""
-"Summary code",,,""
-"Suppl. Invoices",,,""
-"Suppl. Refunds",,,""
-"Supplier",,,""
-"Supplier Credit Note Journal",,,""
-"Supplier Payments",,,""
-"Supplier Purchase Journal",,,""
-"Supplier account",,,""
-"Supplier invoice number",,,""
-"Supplier invoices filters",,,""
-"Supplier payments",,,""
-"Supplier purchase",,,""
-"Supplier refund",,,""
-"Supplier refunds",,,""
-"Supplier refunds filters",,,""
-"Supplier's Invoices Due",,,""
-"Tax",,,""
-"Tax 0%",,,""
-"Tax Line",,,""
-"Tax Lines",,,""
-"Tax account configuration",,,""
-"Tax accounting configuration",,,""
-"Tax accounting configurations",,,""
-"Tax amount",,,""
-"Tax for management fee",,,""
-"Tax payment",,,""
-"Tax standard rate for clearance",,,""
-"Tax standard rate for irrecoverables",,,""
-"Technical Rejection",,,""
-"Template",,,""
-"Template Move Lines",,,""
-"Template move is not balanced",,,""
-"Temporary filepath to import IPO, and IPO & Cheque payments",,,""
-"Temporary filepath to import IPO, and IPO & Cheque payments rejects",,,""
-"Temporary filepath to import rejected records",,,""
-"The Move Balance must be positive",,,""
-"The account is associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,""
-"The chart of account has been loaded successfully",,,""
-"The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company.",,,""
-"The payer doesn't have email attached. Please input/provide the email to use.",,,""
-"The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,""
-"The sale account or the purchase account or the cash account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,""
-"Tiers",,,""
-"Tiers absent de la facture %s",,,""
-"To",,,""
-"To Date",,,""
-"To Partner",,,""
-"To generate periods, please fill in the Period duration.",,,""
-"To generate periods, please fill in the limits of the fiscal year.",,,""
-"To pay",,,""
-"To pay / To use",,,""
-"To shift as irrecoverable",,,""
-"To validate",,,""
-"Total A.T.I.",,,""
-"Total A.T.I. in company currency",,,""
-"Total Credit",,,""
-"Total Debit",,,""
-"Total Product Qty sold history by month by category",,,""
-"Total Revenue Distribution by Product",,,""
-"Total Revenue Generated By Geo Region",,,""
-"Total Tax",,,""
-"Total W.T.",,,""
-"Total W.T. in Acc. currency",,,""
-"Total amount",,,""
-"Total balance",,,""
-"Total record code",,,""
-"Totals",,,""
-"Traitement terminé",,,""
-"Transaction currency",,,""
-"Transfer",,,""
-"Transfer(ed) to Usher",,,""
-"Transfer(ed) to usher",,,""
-"Treatment/Operation type",,,""
-"TurnOver",,,""
-"Turnover On Supplier Invoices On Last 12 Month",,,""
-"Type",,,""
-"Type de donnée inconnu pour le traitement %s",,,""
-"Type de facture absent de la facture %s",,,""
-"Type de la saisie paiement absent de la saisie paiement %s",,,""
-"UMR List",,,""
-"Unique Mandate References",,,""
-"Unit",,,""
-"Unit price",,,""
-"Unit price discounted",,,""
-"Units",,,""
-"Unpaid",,,""
-"Unpaid Due",,,""
-"Unpaid IPO operation code",,,""
-"Unpaid Supplier's Invoices",,,""
-"Unpaid direct debit operation code",,,""
-"Unpaid invoices",,,""
-"Unreconcile",,,""
-"Update customer account",,,""
-"Upper reimbursement limit",,,""
-"Url returned by Paybox once payment cancelled",,,""
-"Url returned by Paybox once payment done",,,""
-"Url returned by Paybox once payment refused",,,""
-"Usage rule",,,""
-"User",,,""
-"V.A.T.",,,""
-"VAT Statement",,,""
-"Valid ?",,,""
-"Validate",,,""
-"Validate account clearances",,,""
-"Validate reject",,,""
-"Validated",,,""
-"Validated Moves",,,""
-"Validated by",,,""
-"Validation date",,,""
-"Validation of moves is irrevocable",,,""
-"Value",,,""
-"Variables list returned by Paybox",,,""
-"Variants",,,""
-"Ventilate",,,""
-"Ventilated",,,""
-"Veuillez configurer un RIB pour le remboursement",,,""
-"Veuillez configurer un compte pour les notes de frais (société : %s)",,,""
-"Veuillez configurer un compte pour les taxes des notes de frais (société : %s)",,,""
-"Veuillez configurer un journal pour les notes de frais (société : %s)",,,""
-"Veuillez configurer une séquence Echéancier pour la société",,,""
-"Veuillez selectionner un journal pour l'écriture",,,""
-"Veuillez selectionner un type d'export",,,""
-"Veuillez selectionner un type d'impression",,,""
-"Veuillez selectionner une devise pour la société %s",,,""
-"Veuillez selectionner une devise pour le tiers %s (%s)",,,""
-"Veuillez selectionner une période pour l'écriture",,,""
-"Veuillez selectionner une société pour l'écriture",,,""
-"View",,,""
-"View Cust. Invoices",,,""
-"View Cust. Payments",,,""
-"View Cust. Refunds",,,""
-"View Invoices/Refunds",,,""
-"View Payments",,,""
-"View Suppl. Invoices",,,""
-"View Suppl. Refunds",,,""
-"View Supplier Payments",,,""
-"View all unpaid invoices",,,""
-"Vous devez configurer un RIB.",,,""
-"Web",,,""
-"Weight table (Payer quality)",,,""
-"Wire Transfer",,,""
-"Wire transfer operation code",,,""
-"With Payment Rejected",,,""
-"Year",,,""
-"\n (Débit %s compte %s - Crédit %s compte %s)",,,""
-"\t* %s Facture(s) traitée(s)\n",,,""
-"\t* %s Situation(s) compable(s) traitée(s)\n",,,""
-"actions",,,""
-"anomalies générées",,,""
-"facture(s) validée(s)",,,""
-"facture(s) ventilée(s)",,,""
-"help:Account.accountType","The account type is an attribute attached to the account that will impact the way accounting documents will be printed or filtered. Account Types are as follow : asset, cash, commitment, current asset (stock), debt, equity, expense, immobilisation, income, payable, provision, receivable, special, tax, view",,""
-"help:Account.code","The account code is usually a number (e.g. : 101000). The account code help to locate the account in the chart of account. This code must be unique per company account chart.",,""
-"help:Account.company","Each account is linked to a chart of account, and thus to a company.",,""
-"help:Account.parent","The parent account helps to define the company chart of accounts. Depending on the company field, you will be only entitled to select parent accounts associated to the same company.",,""
-"help:Account.reconcileOk","The checkbox reconcilable helps to filter, within the reconcile interface the entrylines to reconcile. The accounts of type receivable and payable will usually be ticked as reconcilable.",,""
-"help:AccountConfig.doubtfulCustomerAccount","Utiliser pour le passage en client douteux",,""
-"help:AccountConfig.interbankPaymentOrderImportPathCFONB","example : /home/axelor/reject.dat",,""
-"help:AccountConfig.interbankPaymentOrderRejectImportPathCFONB","example : /home/axelor/reject.dat",,""
-"help:AccountConfig.paymentScheduleExportFolderPathCFONB","example : /home/axelor/",,""
-"help:AccountConfig.reimbursementExportFolderPath","example : /home/axelor/reject.dat",,""
-"help:AccountConfig.reimbursementExportFolderPathCFONB","example : /home/axelor/reject.dat",,""
-"help:AccountConfig.reimbursementImportFolderPathCFONB","example : /home/axelor/reject.dat",,""
-"help:AccountConfig.rejectImportPathAndFileName","example : /home/axelor/reject.dat",,""
-"help:AccountConfig.tempImportPathAndFileName","example : /home/axelor/reject.dat",,""
-"help:AccountConfig.tempInterbankPaymentOrderImportPathCFONB","example : /home/axelor/reject.dat",,""
-"help:AccountConfig.tempInterbankPaymentOrderRejectImportPathCFONB","example : /home/axelor/reject.dat",,""
-"help:AccountConfig.tempReimbImportFolderPathCFONB","example : /home/axelor/reject.dat",,""
-"help:Invoice.alreadyPrintedOk","Field allowing to distinguish the original invoice from a copy/duplicata.",,""
-"help:Invoice.currency","This currency defined the currency of the invoice. If the company accounting currency or journal currency is different from the invoice currency, the system will automatically convert the amounts into the accounting or journal currency.",,""
-"help:Invoice.exTaxTotal","Total without Tax",,""
-"help:Invoice.externalReference","Refers to an external document like a Customer or Supplier Order, Supplier invoice, Bill of lading...",,""
-"help:Invoice.inTaxTotal","Total all taxes included.",,""
-"help:Invoice.internalReference","Refers to an internal document like a SO, PO, Stock Picking reference...",,""
-"help:Invoice.taxTotal","Total Tax amount is a result of the sum of the Tax lines Amount.",,""
-"help:Journal.validAccountSet","Accounts allowed for entries on this journal",,""
-"help:Journal.validAccountTypeSet","Account types allowed for entries posted on this journal",,""
-"help:MoveLine.counter","This sequence is unique per Move, automatically reset to 1 for a new moveline",,""
-"help:MoveTemplateLine.account",,,""
-"help:MoveTemplateLine.percentage",,,""
-"help:MoveTemplateLine.product",,,""
-"help:PaymentMode.invoiceLabel","Label to be displayed on invoice PDF",,""
-"help:PaymentVoucher.hasAutoInput","Indicates if the voucher has been manually or automatically input. This has an impact on overdue management.",,""
-"prélèvement(s) rejeté(s)",,,""
-"prélèvements(s) facture(s) traité(s)",,,""
-"prélèvements(s) mensualité(s) traité(s)",,,""
-"remboursement(s) créé(s)",,,""
-"remboursement(s) rejeté(s)",,,""
-"remboursement(s) traité(s)",,,""
-"tiers(s) traité(s)",,,""
+"%s - Aucun mode de paiement configuré pour la facture %s",,,
+"%s : Modèle de courrier absent pour la matrice de relance %s (Tiers %s, Niveau %s).",,,
+"%s :\n Annomlie détectée (l'enregistrement ne fait pas %s caractères : %s) pour l'enregistrement %s, société %s",,,
+"%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour l'émetteur",,,
+"%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le destinataire",,,
+"%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le total",,,
+"%s :\n Attention - Vous ne pouvez pas régler un montant supérieur aux factures selectionnées.",,,
+"%s :\n Attention, saisie paiement n° %s, le total des montants imputés par ligne est supérieur au montant payé par le client",,,
+"%s :\n Aucun mode de paiement trouvé pour le code %s et la société %s",,,
+"%s :\n Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement : %s",,,
+"%s :\n Aucune ligne à payer.",,,
+"%s :\n Bank statement line %s amount can't be null",,,
+"%s :\n Computed balance and Ending Balance must be equal",,,
+"%s :\n Erreur : Veuillez configurer un journal pour la société %s et le mode de paiement %s",,,
+"%s :\n Erreur : Veuillez configurer un tableau des poids dans l'administration générale",,,
+"%s :\n Erreur : Veuillez configurer un type d'export pour le configurateur de batch %s",,,
+"%s :\n Erreur : Veuillez configurer une date de fin pour le configurateur de batch %s",,,
+"%s :\n Erreur : Veuillez configurer une date de prélèvement pour la configuration de batch %s",,,
+"%s :\n Erreur : Veuillez configurer une société pour le configurateur de batch %s",,,
+"%s :\n Erreur : Veuillez configurer une séquence Export comptable pour la société %s",,,
+"%s :\n Erreur : Veuillez configurer une séquence Interface Achat pour la société %s",,,
+"%s :\n Erreur : Veuillez configurer une séquence Interface Avoir pour la société %s",,,
+"%s :\n Erreur : Veuillez configurer une séquence Interface Trésorerie pour la société %s",,,
+"%s :\n Erreur : Veuillez configurer une séquence Interface Vente pour la société %s",,,
+"%s :\n Erreur : Veuillez configurer une séquence Reporting comptable pour la société %s",,,
+"%s :\n Erreur : Veuillez configurer une séquence pour la société %s et le mode de paiement %s",,,
+"%s :\n Erreur : Veuillez d'abord créer les lignes d'échéancier pour l'échéancier %s",,,
+"%s :\n Erreur detectée pendant l'ecriture du fichier CFONB : %s",,,
+"%s :\n Erreur généré lors de la création de l'écriture de passage en irrécouvrable %s",,,
+"%s :\n Il manque un enregistrement en-tête dans le fichier %s",,,
+"%s :\n Il manque un enregistrement fin dans le fichier %s",,,
+"%s :\n Il manque un ou plusieurs enregistrements détail dans le fichier %s",,,
+"%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",,,
+"%s :\n La facture n°%s n'a pas été trouvée pour la société %s",,,
+"%s :\n Le mode de paiement dont le code est 'TIC' n'a pas été trouvé",,,
+"%s :\n Le mode de paiement dont le code est 'TIP' n'a pas été trouvé",,,
+"%s :\n Le montant de la saisie paiement (%s) est différent du montant encaissé par Paybox (%s)",,,
+"%s :\n Le montant réglé pour la saisie paiement par CB ne doit pas être supérieur au solde du payeur.",,,
+"%s :\n Le montant total de l'enregistrement suivant n'est pas correct (fichier %s) :\n %s",,,
+"%s :\n Merci de renseigner le montant payé svp.",,,
+"%s :\n MoveLine amount is not equals with bank statement line %s",,,
+"%s :\n Please define an email template for cash register (company: %s)",,,
+"%s :\n Une fermeture de caisse existe déjà pour la même date et la même caisse",,,
+"%s :\n Veuillez configurer CFONB pour la société %s",,,
+"%s :\n Veuillez configurer Paybox pour la société %s",,,
+"%s :\n Veuillez configurer des informations comptables pour la société %s",,,
+"%s :\n Veuillez configurer le tableau de relance pour la société %s",,,
+"%s :\n Veuillez configurer les comptes d'apurements pour la société %s",,,
+"%s :\n Veuillez configurer les informations comptables pour la société %s",,,
+"%s :\n Veuillez configurer les modèles de courrier Imports de rejet pour la société %s",,,
+"%s :\n Veuillez configurer un Chemin Fichier Exporté (si -> AGRESSO) pour la société %s",,,
+"%s :\n Veuillez configurer un Code Banque pour le RIB %s du tiers payeur %s",,,
+"%s :\n Veuillez configurer un Code Guichet pour le RIB %s du tiers payeur %s",,,
+"%s :\n Veuillez configurer un Code enregistrement destinataire CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code enregistrement detail CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code enregistrement en-tête CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code enregistrement fin CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code enregistrement total CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code enregistrement émetteur CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code opération Prélèvement CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code opération Prélèvement impayé CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code opération TIP + chèque CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code opération TIP CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code opération TIP impayé CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code opération Virement CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Code opération Virement rejeté CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Dossier d'export des prélèvements au format CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Dossier d'export des remboursements au format CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Motif de passage (créance de plus de six mois) pour la société %s",,,
+"%s :\n Veuillez configurer un Motif de passage (créance de plus de trois mois) pour la société %s",,,
+"%s :\n Veuillez configurer un Nom/Raison sociale émetteur CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Numéro d'émetteur CFONB pour la société %s",,,
+"%s :\n Veuillez configurer un Numéro de compte pour le RIB %s du tiers payeur %s",,,
+"%s :\n Veuillez configurer un RIB pour l'échéancier de paiement %s",,,
+"%s :\n Veuillez configurer un RIB pour le configurateur de batch %s",,,
+"%s :\n Veuillez configurer un RIB pour le tiers %s",,,
+"%s :\n Veuillez configurer un chemin d'import des paiements par TIP et TIP + chèque pour la société %s",,,
+"%s :\n Veuillez configurer un chemin d'import temporaire des paiements par TIP et TIP + chèque pour la société %s",,,
+"%s :\n Veuillez configurer un chemin pour le fichier d'imports des rejets de paiement par TIP et TIP chèque pour la société %s",,,
+"%s :\n Veuillez configurer un chemin pour le fichier d'imports des rejets des remboursements pour la société %s",,,
+"%s :\n Veuillez configurer un chemin pour le fichier de rejet pour la société %s",,,
+"%s :\n Veuillez configurer un chemin pour le fichier de rejet temporaire pour la société %s",,,
+"%s :\n Veuillez configurer un chemin pour le fichier des rejets de paiement par TIP et TIP chèque temporaire pour la société %s",,,
+"%s :\n Veuillez configurer un chemin pour le fichier temporaire d'imports des rejets des remboursements pour la société %s",,,
+"%s :\n Veuillez configurer un compte client douteux pour la société %s",,,
+"%s :\n Veuillez configurer un compte client pour la société %s",,,
+"%s :\n Veuillez configurer un compte de créance irrécouvrable pour la société %s",,,
+"%s :\n Veuillez configurer un compte de profit pour la société %s",,,
+"%s :\n Veuillez configurer un compte de remboursement pour la société %s",,,
+"%s :\n Veuillez configurer un compte différence de caisse pour la société %s",,,
+"%s :\n Veuillez configurer un compte fournisseur pour la société %s",,,
+"%s :\n Veuillez configurer un journal d'apurements des trop-perçus pour la société %s",,,
+"%s :\n Veuillez configurer un journal de rejet pour la société %s",,,
+"%s :\n Veuillez configurer un journal de remboursement pour la société %s",,,
+"%s :\n Veuillez configurer un journal des O.D pour la société %s",,,
+"%s :\n Veuillez configurer un journal des achats Fourn. pour la société %s",,,
+"%s :\n Veuillez configurer un journal des avoirs clients pour la société %s",,,
+"%s :\n Veuillez configurer un journal des avoirs fournisseurs pour la société %s",,,
+"%s :\n Veuillez configurer un journal des ventes clients pour la société %s",,,
+"%s :\n Veuillez configurer un journal irrécouvrable pour la société %s",,,
+"%s :\n Veuillez configurer un mode de paiement après rejet pour la société %s",,,
+"%s :\n Veuillez configurer un mode de paiement par prélèvement pour la société %s",,,
+"%s :\n Veuillez configurer un motif de passage en irrécouvrable pour la société %s",,,
+"%s :\n Veuillez configurer un type de journal achats pour la société %s",,,
+"%s :\n Veuillez configurer un type de journal avoirs pour la société %s",,,
+"%s :\n Veuillez configurer un type de journal trésorerie pour la société %s",,,
+"%s :\n Veuillez configurer un type de journal ventes pour la société %s",,,
+"%s :\n Veuillez configurer une Adresse de Banque pour le RIB %s du tiers payeur %s",,,
+"%s :\n Veuillez configurer une Liste des codes motifs de rejet/retour relatifs aux Virements, Prélèvements et TIP dans l'administration générale",,,
+"%s :\n Veuillez configurer une adresse email Caisses pour la société %s",,,
+"%s :\n Veuillez configurer une société active pour l'utilisateur %s",,,
+"%s :\n Veuillez configurer une séquence Apurement des trop-perçus pour la société %s",,,
+"%s :\n Veuillez configurer une séquence Numéro de reçu (Saisie paiement) pour la société %s",,,
+"%s :\n Veuillez configurer une séquence Rejet de chèque pour la société %s",,,
+"%s :\n Veuillez configurer une séquence Remboursement pour la société %s",,,
+"%s :\n Veuillez configurer une séquence de Passage en irrécouvrable pour la société %s",,,
+"%s :\n Veuillez configurer une séquence de rejet des prélèvements\n pour la société %s pour le journal %s",,,
+"%s :\n Veuillez configurer une taxe taux normal pour la société %s",,,
+"%s :\n Veuillez paramétrer un Chemin de la clé publique Paybox pour la configuration Paybox %s",,,
+"%s :\n Veuillez paramétrer un Email de back-office Axelor pour Paybox pour la configuration Paybox %s",,,
+"%s :\n Veuillez paramétrer un Email pour le tiers %s.",,,
+"%s :\n Veuillez paramétrer un Identifiant interne pour la configuration Paybox %s",,,
+"%s :\n Veuillez paramétrer un Montant réglé pour la saisie paiement %s.",,,
+"%s :\n Veuillez paramétrer un Numéro de rang pour la configuration Paybox %s",,,
+"%s :\n Veuillez paramétrer un Numéro de site pour la configuration Paybox %s",,,
+"%s :\n Veuillez paramétrer une Devise des transactions pour la configuration Paybox %s",,,
+"%s :\n Veuillez paramétrer une Liste des variables à retourner par Paybox pour la configuration Paybox %s",,,
+"%s :\n Veuillez paramétrer une Signature calculée avec la clé secrète pour la configuration Paybox %s",,,
+"%s :\n Veuillez paramétrer une Url de l'environnement pour la configuration Paybox %s",,,
+"%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement annulé pour la configuration Paybox %s",,,
+"%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement effectué pour la configuration Paybox %s",,,
+"%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement refusé pour la configuration Paybox %s",,,
+"%s :\n Veuillez renseigner un journal et un compte de trésorerie dans le mode de règlement.",,,
+"%s :\n Veuillez renseigner une société pour l'année fiscale %s",,,
+"%s :\n Veuillez selectionner un Type d'algorithme de hachage utilisé lors du calcul de l'empreinte pour la configuration Paybox %s",,,
+"%s :\nAdresse de facturation absente",,,
+"%s :\nAucun tiers selectionné",,,
+"%s :\nCompte comptable Client manquant pour la société %s",,,
+"%s :\nCompte comptable Fournisseur manquant pour la société %s",,,
+"%s :\nCondition de paiement absent",,,
+"%s :\nDevise absente",,,
+"%s :\nLe type de facture n'est pas rempli %s",,,
+"%s :\nMode de paiement absent",,,
+"%s :\nReconciliation %s: Le montant réconcilié doit être différent de zéro. \n (Débit %s compte %s - Crédit %s compte %s)",,,
+"%s :\nReconciliation %s: Le montant réconcilié doit être inférieur ou égale au montant restant à réconcilier des lignes d'écritures.",,,
+"%s :\nReconciliation : Les lignes d'écritures sélectionnées doivent concerner le même compte comptable.",,,
+"%s :\nReconciliation : Merci de renseigner les lignes d'écritures concernées.",,,
+"%s \nAucune facture trouvée pour le numéro de facture %s et la société %s",,,
+"%s paiement(s) traité(s)",,,
+"80",,,
+"<font color=#953B39> OR </font>",,,
+"A chart or chart structure of accounts already exists, please delete the hierarchy between accounts in order to import a new chart.",,,
+"Acc. Clearance",,,
+"Account",,,
+"Account Category",,,
+"Account Category Line",,,
+"Account Category Lines",,,
+"Account Chart",,,
+"Account Dashboard",,,
+"Account Db",,,
+"Account Invoice Summary",,,
+"Account Management",,,
+"Account Managements",,,
+"Account Type",,,
+"Account calculation configuration",,,
+"Account category",,,
+"Account chart",,,
+"Account clearance",,,
+"Account clearance date",,,
+"Account clearance journal",,,
+"Account clearance operations",,,
+"Account configuration",,,
+"Account configurations",,,
+"Account equivalence",,,
+"Account equivalences",,,
+"Account management Line",,,
+"Account move",,,
+"Account moves",,,
+"Account to replace",,,
+"Account to set",,,
+"Account type",,,
+"Account types",,,
+"Accounting",,,
+"Accounting Batch",,,
+"Accounting Dashboard",,,
+"Accounting Db",,,
+"Accounting Export",,,
+"Accounting Export N°",,,
+"Accounting Exports/Reports",,,
+"Accounting batch",,,
+"Accounting batches",,,
+"Accounting configuration",,,
+"Accounting configuration is missing for Product: %s (company: %s)",,,
+"Accounting details",,,
+"Accounting export",,,
+"Accounting exports",,,
+"Accounting report",,,
+"Accounting reports",,,
+"Accounting settings",,,
+"Accounting situation",,,
+"Accounting situations",,,
+"Accounts",,,
+"Action",,,
+"Actions",,,
+"Active",,,
+"Active UMR",,,
+"Active bank details",,,
+"Add Move line N° in the description",,,
+"Add an email for payment through Paybox",,,
+"Address",,,
+"Address unknown",,,
+"Advance move line",,,
+"Advance/Payment move",,,
+"Aged Balance",,,
+"Alarm",,,
+"Algorithm hashing type to calculate footprint",,,
+"Allocated amount",,,
+"Allow cancelation of ventilated invoice",,,
+"Allow payments greater than due amount ?",,,
+"Allow removal of validated move",,,
+"Allowed payment range",,,
+"Already printed ?",,,
+"Amount",,,
+"Amount A.T.I.",,,
+"Amount A.T.I. in Acc. currency",,,
+"Amount Remaining to allocate",,,
+"Amount Tax in Acc. currency",,,
+"Amount already paid",,,
+"Amount charged",,,
+"Amount exported for direct debit",,,
+"Amount in Acc. currency",,,
+"Amount paid",,,
+"Amount paid A.T.I.",,,
+"Amount paid in currency",,,
+"Amount paid/reconciled",,,
+"Amount reconciled",,,
+"Amount rejected",,,
+"Amount remaining before cashing",,,
+"Amount remaining to allocate",,,
+"Amount to reimburse",,,
+"Amounts to register",,,
+"An accounting moveline must have higher a credit value or a debit value.",,,
+"Analytic",,,
+"Analytic Acc.",,,
+"Analytic Acc. Mngmt",,,
+"Analytic Acc. Mngmt List",,,
+"Analytic Account",,,
+"Analytic Accounts",,,
+"Analytic Axis",,,
+"Analytic Journal",,,
+"Analytic Journal Type",,,
+"Analytic account",,,
+"Analytic accounts",,,
+"Analytic axis",,,
+"Analytic journals",,,
+"Analytical account",,,
+"Analytics",,,
+"Anomalies",,,
+"Archived",,,
+"Archived ?",,,
+"Article code",,,
+"Asset",,,
+"Associated MoveLine",,,
+"Aucun remboursement trouvé pour la ref %s et la société %s.",,,
+"Authorize auto reconcile",,,
+"Authorize auto reconcile on invoice",,,
+"Authorize auto reconcile on payment",,,
+"Auto. input.",,,
+"Avoir créé",,,
+"Axelor Backoffice email",,,
+"Axis",,,
+"B2B",,,
+"B2C",,,
+"BBAN/IBAN to use",,,
+"Balance",,,
+"Balance due remindable",,,
+"Bank Details",,,
+"Bank Statement",,,
+"Bank Statement Line",,,
+"Bank Statement Lines",,,
+"Bank Statements",,,
+"Bank card",,,
+"Bank details",,,
+"Base W.T.",,,
+"Base W.T. in Acc. currency.",,,
+"Batch",,,
+"Batch d'export des prélèvements %s",,,
+"Batch d'import des paiements par TIP et TIP chèque %s",,,
+"Batch d'import des rejets de paiement par TIP et TIP chèque %s",,,
+"Batch d'import des remboursements %s",,,
+"Batch to re-export",,,
+"Batches",,,
+"Batchs",,,
+"Belong to a payment schedule ?",,,
+"Blocking done by",,,
+"Blocking reason",,,
+"Blocking reason/reject codes list",,,
+"Blocking reason/reject codes lists",,,
+"Blocking until",,,
+"Blockings",,,
+"Bug(Anomalie) généré(e)e dans l'export SEPA - Batch %s",,,
+"Burden (weight)",,,
+"CC Transaction N°",,,
+"CFONB",,,
+"CFONB Export",,,
+"CFONB Import",,,
+"Cancel",,,
+"Canceled",,,
+"Canceled Moves",,,
+"Canceled payment schedule",,,
+"Cash",,,
+"Cash Register",,,
+"Cash Register Amount",,,
+"Cash account",,,
+"Cash journal type",,,
+"Cash payments summary",,,
+"Cash register",,,
+"Cash register N°",,,
+"Cash register closing",,,
+"Cash register closure",,,
+"Cash register date",,,
+"Cash registers",,,
+"Cashier Agent",,,
+"Cashier Regulation account",,,
+"Cashier email address",,,
+"Cashier email template",,,
+"Cashiers",,,
+"Categories",,,
+"Category",,,
+"Cfonb configuration",,,
+"Cfonb configurations",,,
+"Chart imported?",,,
+"Chart of Accounts",,,
+"Check validity",,,
+"Cheque",,,
+"Cheque Rejection",,,
+"Cheque Rejections",,,
+"Cheque deposit slip",,,
+"Cheque rejection filters",,,
+"Classic reminder",,,
+"Clear remaining amount",,,
+"Clearance Accounts",,,
+"Clearance maximum amount",,,
+"Clearance settings",,,
+"Close cashier",,,
+"Close fiscal year",,,
+"Closed",,,
+"Code",,,
+"Code list for rejects/return of Cheques",,,
+"Code list for rejects/return of Direct debit, Wire Transfers and IPO",,,
+"Commitment",,,
+"Company",,,
+"Company set",,,
+"Compatible Account Types",,,
+"Compatible Accounts",,,
+"Compte comptable absent de la configuration pour la ligne : %s (société : %s)",,,
+"Compte comptable absent de la ligne de taxe : %s (société : %s)",,,
+"Compte comptable associé non configuré",,,
+"Compte rendu d'export de remboursement :\n",,,
+"Compte rendu d'export des prélèvements de mensualité :\n",,,
+"Compte rendu d'export des prélèvements factures :\n",,,
+"Compte rendu de création de remboursement :\n",,,
+"Compte rendu de l'import des paiements par TIP et TIP chèque :",,,
+"Compte rendu de l'import des rejets de paiement par TIP et TIP chèque",,,
+"Compte rendu de l'import des rejets de prélèvement :\n",,,
+"Compte rendu de l'import des rejets de remboursement :\n",,,
+"Compte rendu de la détermination des créances douteuses",,,
+"Compte rendu de la détermination des soldes des comptes clients :\n",,,
+"Compte rendu de la validation de facture :\n",,,
+"Compte rendu de la ventilation de facture :\n",,,
+"Compte rendu de relance :\n",,,
+"Compte rendu du batch d'export des écritures :\n",,,
+"Compte tiers absent de la facture %s",,,
+"Comptes Comptables",,,
+"Compute",,,
+"Computed Balance",,,
+"Conditions",,,
+"Configuration",,,
+"Configurations",,,
+"Confirm payment",,,
+"Confirmed",,,
+"Confirmed Customer payments",,,
+"Confirmed Supplier payments",,,
+"Consolidate invoice movelines ?",,,
+"Contact",,,
+"Country",,,
+"Country code",,,
+"Create Cust. Payment",,,
+"Create Cust. Refund",,,
+"Create Invoice",,,
+"Create Payment",,,
+"Create Suppl. Payment",,,
+"Create Suppl. Refund",,,
+"Create schedule lines",,,
+"Created by",,,
+"Created on",,,
+"Creation Date",,,
+"Creation date",,,
+"Credit",,,
+"Credit Reconcile List",,,
+"Credit line",,,
+"Credit note journal type",,,
+"Credit remaining",,,
+"Création de l'écriture de rejet de l'échéance %s",,,
+"Création de l'écriture de rejet de la facture %s",,,
+"Currency",,,
+"Currency Rate",,,
+"Current Asset",,,
+"Current Period Entries",,,
+"Cust. Invoices",,,
+"Cust. Payments",,,
+"Cust. Refunds",,,
+"Customer",,,
+"Customer Credit note Journal",,,
+"Customer Invoices remaining To Collect",,,
+"Customer Paybox payments",,,
+"Customer Payment mode by amount",,,
+"Customer Payment mode distribution by amount",,,
+"Customer Payment mode distribution by transactions",,,
+"Customer Turnover history by month (on invoices)",,,
+"Customer account",,,
+"Customer balance",,,
+"Customer invoices filters",,,
+"Customer payments",,,
+"Customer payments with remaining",,,
+"Customer refund",,,
+"Customer refunds",,,
+"Customer refunds filters",,,
+"Customer sale",,,
+"Customer(s)",,,
+"Customers",,,
+"Datatype",,,
+"Date",,,
+"Date can't be ahead of today",,,
+"Date de reference non determinée.",,,
+"Dates",,,
+"Debit",,,
+"Debit Nbr.",,,
+"Debit Reconcile list",,,
+"Debit and credit value cannot be negative.",,,
+"Debit blocking",,,
+"Debit line",,,
+"Debit remaining",,,
+"Debit/Credit",,,
+"Debited Invoices List",,,
+"Debited amount",,,
+"Debited invoices",,,
+"Debited schedule lines List",,,
+"Debt",,,
+"Debt recovery",,,
+"Debtor Name",,,
+"Debtor address",,,
+"Default email address",,,
+"Deposited Amount",,,
+"Description",,,
+"Detailed",,,
+"Details record code",,,
+"Direct Debit Batch",,,
+"Direct Debit N°",,,
+"Direct Debit batch type",,,
+"Direct debit",,,
+"Direct debit Nbr",,,
+"Direct debit SEPA",,,
+"Direct debit blocking",,,
+"Direct debit configuration",,,
+"Direct debit list",,,
+"Direct debit management",,,
+"Direct debit operation code",,,
+"Direct debit rejects",,,
+"Direct debit/IPO/Electronic Payment Order (EPO) CFONB",,,
+"Direct debits",,,
+"Direct debits management",,,
+"Discount",,,
+"Discount Type",,,
+"Discount amount",,,
+"Do not export ?",,,
+"Do not shift to irrecoverable",,,
+"Do not shit into irrecoverable",,,
+"Document Type",,,
+"Domain of use",,,
+"Doubtful Customer",,,
+"Doubtful Customer Batch",,,
+"Doubtful Customers",,,
+"Doubtful customers account",,,
+"Doubtful receivables",,,
+"Draft",,,
+"Draft Customer payments",,,
+"Draft Moves",,,
+"Draft Supplier payments",,,
+"Due Date",,,
+"Due Sale Entries",,,
+"Due balance",,,
+"Due balance Reminder",,,
+"Due balance remindable",,,
+"Ecriture déjà utilisée, merci de délettrer d'abord",,,
+"Ecritures exportées",,,
+"Edit receipt ?",,,
+"Effect Date",,,
+"Email sent ?",,,
+"Email template for invoice and payment schedule rejections",,,
+"Email to use",,,
+"Email used by Paybox",,,
+"End Date",,,
+"End date",,,
+"End of cycle",,,
+"End of month + n days",,,
+"Ending Balance",,,
+"Ending record code",,,
+"Environment Url",,,
+"Equity",,,
+"Error in account chart import please check the log",,,
+"Error in move generation",,,
+"Error in move validation, please check the log",,,
+"Expense",,,
+"Expiration date (only for reference)",,,
+"Export",,,
+"Export Date",,,
+"Export code",,,
+"Export direct debits",,,
+"Export file type",,,
+"Export purchase -> Acc. Soft.",,,
+"Export refunds -> Acc. Soft.",,,
+"Export reimbursements",,,
+"Export sale -> Acc. Soft.",,,
+"Export tresury -> Acc. Soft.",,,
+"Export type",,,
+"Exported ?",,,
+"Exported Direct Debit",,,
+"Exported moves",,,
+"Exports",,,
+"External Ref.",,,
+"Facture",,,
+"Facture annulée",,,
+"Filepath for direct debit exports (CFONB)",,,
+"Filepath for exported files (Accounting)",,,
+"Filepath for rejected reimbursements",,,
+"Filepath for temporary rejected reimbursements import",,,
+"Filepath to import IPO, and IPO & Cheque payments",,,
+"Filepath to import IPO, and IPO & Cheque payments rejects",,,
+"Filepath to import rejected records",,,
+"Filter",,,
+"Financial",,,
+"Financial Accounts",,,
+"Financial Accounts Management",,,
+"Fiscal position",,,
+"Fiscal positions",,,
+"Fiscal year",,,
+"Fiscal years",,,
+"Follow-up",,,
+"From",,,
+"From Date",,,
+"From Partner",,,
+"From reject schedule line",,,
+"Full name",,,
+"General",,,
+"General Accounts",,,
+"General ledger",,,
+"Generate Moves",,,
+"Generate irrecoverable report",,,
+"Generate move from template",,,
+"Generate periods",,,
+"Generate refund",,,
+"Generate reimbursements",,,
+"Generated move",,,
+"Generated moves",,,
+"Get information from 1st Move line",,,
+"Get invoices and schedule lines to set as irrecoverable",,,
+"Get overdue payments",,,
+"Global",,,
+"Grouping line",,,
+"Header record code",,,
+"Historical Period",,,
+"History",,,
+"IPO",,,
+"IPO + Cheque",,,
+"IPO Payments and IPO Cheque",,,
+"IPO and Cheque operation code",,,
+"IPO operation code",,,
+"Ignore in accounting",,,
+"Ignore in remind process",,,
+"Il manque une ligne de taxe",,,
+"Immobilisation",,,
+"Import",,,
+"Import a chart",,,
+"Import direct debit rejects",,,
+"Import payment rejects by IPO and IPO cheque",,,
+"Import payments by IPO and IPO cheque",,,
+"In",,,
+"In ATI",,,
+"In progress",,,
+"Inactive",,,
+"Incident type",,,
+"Income",,,
+"Info",,,
+"Information",,,
+"Informations",,,
+"Input Date",,,
+"Interbank Payment Order Batch",,,
+"Interbank Payment Orders batch type",,,
+"Internal Ref.",,,
+"Internal identifier",,,
+"Invoice",,,
+"Invoice & Rejects",,,
+"Invoice Amount",,,
+"Invoice Dashboard",,,
+"Invoice Date",,,
+"Invoice Db",,,
+"Invoice In ATI",,,
+"Invoice Lines",,,
+"Invoice N°",,,
+"Invoice Purchase Payment Condition distribution",,,
+"Invoice Purchase by currency (tax excl.)",,,
+"Invoice Purchase by month (tax excl.)",,,
+"Invoice Purchase situation (tax incl.)",,,
+"Invoice Sale Payment Condition distribution",,,
+"Invoice Sale by currency (tax excl.)",,,
+"Invoice Sale by month (tax excl.)",,,
+"Invoice Sale situation (tax incl.)",,,
+"Invoice and Refunds Sale situation (tax incl.)",,,
+"Invoice batch",,,
+"Invoice batches",,,
+"Invoice concerned by the reminder",,,
+"Invoice content",,,
+"Invoice final status",,,
+"Invoice initial status",,,
+"Invoice is passed in doubfult debit, and can't be canceled",,,
+"Invoice is ventilated on a closed period, and can't be canceled",,,
+"Invoice label",,,
+"Invoice line",,,
+"Invoice lines",,,
+"Invoice of origin",,,
+"Invoice rejected",,,
+"Invoice sending media",,,
+"Invoice.bankDetails","Bank details",,
+"Invoice.bankingInfo","Banking info",,
+"Invoice.base","Base",,
+"Invoice.cheque","Cheque",,
+"Invoice.clientRef","Customer Ref.",,
+"Invoice.date","Date",,
+"Invoice.description","Description",,
+"Invoice.documentRef","Reference document",,
+"Invoice.dueDate","Due Date",,
+"Invoice.invoiceNo","INVOICE N°",,
+"Invoice.law",,,
+"Invoice.note","Note",,
+"Invoice.paymentTerms","Payment terms",,
+"Invoice.priceExclTax","Price excl. Tax",,
+"Invoice.purchaseInvoiceNo","PURCHASE INVOICE N°",,
+"Invoice.purchaseRefundNo","PURCHASE REFUND N°",,
+"Invoice.qtyUnit","Qty / Unit",,
+"Invoice.refundNo","REFUND N°",,
+"Invoice.supplier","Supplier",,
+"Invoice.supplyRef","Supplier Ref.",,
+"Invoice.tax","TAX",,
+"Invoice.taxAmount","Tax Amount",,
+"Invoice.totalExclTax","Total excl. Tax",,
+"Invoice.totalInclTax","Total incl. V.A.T.",,
+"Invoice.totalTax","Total Tax",,
+"Invoice.unitPrice","Unit price",,
+"Invoice/Refund",,,
+"Invoiced Turnover This year vs Last year",,,
+"Invoices",,,
+"Invoices selection",,,
+"Invoices to pay",,,
+"Invoices(DD)",,,
+"Invoices/Refunds",,,
+"Invoicing",,,
+"Invoicing informations",,,
+"Irrecouvrable status",,,
+"Irrecoverable",,,
+"Irrecoverable Journal",,,
+"Irrecoverable Shift Reason",,,
+"Irrecoverable account",,,
+"Irrecoverable shift reason",,,
+"Irrecoverable shifting reason",,,
+"Irrecoverable status",,,
+"Irrecoverables",,,
+"Is posted ?",,,
+"Is updating",,,
+"Journal",,,
+"Journal Type",,,
+"Journal types",,,
+"Journals",,,
+"L'écriture comptable %s comporte un total débit différent du total crédit : %s <> %s",,,
+"LCR/BOR",,,
+"La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée",,,
+"La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée sur l'année",,,
+"La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée sur le mois",,,
+"La société %s n'a pas de séquence de facture ou d'avoir",,,
+"Label",,,
+"Label for automatic moveline generation",,,
+"Last number iban bic",,,
+"Last print date",,,
+"Last reminder date",,,
+"Le compte analytique %s associé au compte comptable de vente pour le produit %s n'est pas configuré: (société : %s)",,,
+"Le dossier d'export des remboursement (format SEPA) n'est pas configuré pour la société %s.",,,
+"Le journal %s n'a pas de séquence d'écriture comptable configurée",,,
+"Le sens de l'écriture comptable %s ne peut être déterminé",,,
+"Les soldes de %s situations comptables n'ont pas été mis à jour, merci de lancer le batch de mise à jour des comptes clients",,,
+"Les soldes de l'ensemble des situations compables (%s) ont été mis à jour.",,,
+"Level",,,
+"Ligne d'échéancier %s",,,
+"Ligne de method de relance absente.",,,
+"Ligne de relance absente.",,,
+"Lignes d'écriture générées",,,
+"Lignes d'écritures (Ecritures) exportées",,,
+"Lignes d'écritures récupérées",,,
+"Line Nbr.",,,
+"List of invoices to pay",,,
+"List of invoices/schedule lines with remaining amount to pay",,,
+"Load invoice and display other invoices to pay",,,
+"Load selected lines",,,
+"Long term debt duration (month)",,,
+"Lower reimbursement limit",,,
+"Mail transit time",,,
+"Manage customerCredit",,,
+"Management",,,
+"Managements",,,
+"Mandate signature city",,,
+"Mandate signature date",,,
+"Manual validation",,,
+"Max Amount to reconcile",,,
+"Max Nbr. for payment schedule rejection",,,
+"Max Nbr. of invoices rejection",,,
+"Message",,,
+"Message model",,,
+"Method name",,,
+"Min. amount (€)",,,
+"Misc. Moves",,,
+"Misc. Operation Journal",,,
+"Montant imputé en devise",,,
+"Montant total",,,
+"Month",,,
+"Move",,,
+"Move From Template",,,
+"Move Line",,,
+"Move Line generated",,,
+"Move Lines",,,
+"Move Lines Export Config",,,
+"Move Lines data input",,,
+"Move Template Types",,,
+"Move Templates",,,
+"Move Templates Lines",,,
+"Move export",,,
+"Move filters",,,
+"Move line",,,
+"Move line filters",,,
+"Move lines",,,
+"Move lines generated",,,
+"Move lines security settings",,,
+"Move should be unreconcile before to cancel the invoice",,,
+"Move template",,,
+"Move template line",,,
+"Move template type",,,
+"MoveLine",,,
+"MoveLine Amount",,,
+"MoveLine content data input",,,
+"MoveLines content data input",,,
+"Moves",,,
+"Moves from invoices/refunds",,,
+"Moves from payment",,,
+"Moves generated",,,
+"Moves to export",,,
+"Moves validated successfully",,,
+"Must be solded out",,,
+"Méthode de relance absente pour la configuration.",,,
+"Méthode de relance absente.",,,
+"N days + end of month",,,
+"N days + end of month at",,,
+"Name",,,
+"Nbr. of terms",,,
+"Net",,,
+"New Invoice",,,
+"New cust. invoice",,,
+"New sup. invoice",,,
+"Niveau de relance en attente de validation.",,,
+"No of Units",,,
+"Not implemented for OSM",,,
+"Notes",,,
+"Number Of Supplier Invoices Per Month",,,
+"Number Of Units On Supplier Invoices On Last 12 Month",,,
+"Obsolete ?",,,
+"Old Schedules",,,
+"Ongoing Schedules",,,
+"Open cashier",,,
+"Options",,,
+"Other",,,
+"Others",,,
+"Out",,,
+"Overdue moveline",,,
+"Overdue payment",,,
+"Overpayment before",,,
+"Overpayments clearances",,,
+"Overpayments collected",,,
+"Owner deceased",,,
+"Paid through paybox",,,
+"Paiement annulé",,,
+"Paiement de la facture %s",,,
+"Paiement par Paybox",,,
+"Paiement réalisé",,,
+"Paiement échoué",,,
+"Parent Account",,,
+"Parent Analytic Acc.",,,
+"Partner",,,
+"Partner Balance due",,,
+"Partner account",,,
+"Partner category",,,
+"Partner information",,,
+"Partner input select",,,
+"Partner situation must be updated",,,
+"Partner to Credit",,,
+"Partner to Debit",,,
+"Partner to credit",,,
+"Partner to debit",,,
+"Pas de situation comptable.",,,
+"Passage en irrécouvrable",,,
+"Path for reimbursement files (CFONB)",,,
+"Path for reimbursement files (SEPA)",,,
+"Path to Paybox public key",,,
+"Payable",,,
+"Paybox",,,
+"Paybox configuration",,,
+"Paybox configurations",,,
+"Paybox transaction Amount",,,
+"Payer",,,
+"Payer partner",,,
+"Payer quality",,,
+"Payer quality configuration line",,,
+"Payer quality configuration lines",,,
+"Payment",,,
+"Payment Condition",,,
+"Payment Mode",,,
+"Payment Move",,,
+"Payment Rejected",,,
+"Payment Schedule",,,
+"Payment Schedule Entries",,,
+"Payment Schedule Line",,,
+"Payment Schedule line",,,
+"Payment Schedules",,,
+"Payment Schedules Lines",,,
+"Payment Smoothings Lines",,,
+"Payment account",,,
+"Payment collection journal",,,
+"Payment condition",,,
+"Payment conditions",,,
+"Payment date",,,
+"Payment differences",,,
+"Payment mode",,,
+"Payment mode after rejection",,,
+"Payment mode for direct debit",,,
+"Payment modes",,,
+"Payment move lines",,,
+"Payment schedue line",,,
+"Payment schedule",,,
+"Payment schedule filters",,,
+"Payment schedule line",,,
+"Payment schedule line filters",,,
+"Payment schedule lines",,,
+"Payment schedule(s) rejected",,,
+"Payment smoothing(DD)",,,
+"Payment type",,,
+"Payment voucher",,,
+"Payment voucher filters",,,
+"Payment voucher invoices to pay",,,
+"Payment vouchers",,,
+"Payment(s) schedule(s) rejected",,,
+"Payments",,,
+"Payments by IPO and IPO Cheque",,,
+"Payments by IPO and IPO Cheque configuration",,,
+"Payments by IPO et IPO cheque",,,
+"Payments rejects by IPO and IPO Cheque",,,
+"Percentage",,,
+"Period",,,
+"Periodical processing",,,
+"Periods",,,
+"Periods generation assistant",,,
+"Please clear all existing periods before generating new ones",,,
+"Please close this notebook to go back to the payment voucher. Please refresh the payment voucher to see the changes.",,,
+"Please fill input lines",,,
+"Please input values between 1 to 100",,,
+"Please select 'Draft' or 'Simulated' moves",,,
+"Please select the invoice(s) to print.",,,
+"Previous Move",,,
+"Price list",,,
+"Print",,,
+"Print invoices",,,
+"Print receipt",,,
+"Printing informations",,,
+"Printing output",,,
+"Product",,,
+"Product Category",,,
+"Product Name",,,
+"Produit absent de la ligne de facture, facture : %s (société : %s)",,,
+"Profit accounts",,,
+"Provision",,,
+"Prélèvement de l'échéance %s",,,
+"Purchase Entries",,,
+"Purchase Invoice",,,
+"Purchase Invoice Db",,,
+"Purchase Price List",,,
+"Purchase account",,,
+"Purchase journal type",,,
+"Purchases",,,
+"Qty",,,
+"Qty Unit",,,
+"RUM N°",,,
+"Rank Nbr",,,
+"Re-export the bank file",,,
+"Reached reminder method line",,,
+"Reason",,,
+"Receipt N°",,,
+"Receivable",,,
+"Receivables recovery",,,
+"Recent rejects",,,
+"Recipient record code",,,
+"Reconcilable ?",,,
+"Reconcilations",,,
+"Reconcile",,,
+"Reconcile filters",,,
+"Ref.",,,
+"Reference",,,
+"Reference Date",,,
+"Reference Due Date",,,
+"Reference date",,,
+"Reference documents",,,
+"Refund",,,
+"Refunds",,,
+"Refunds from invoice %s",,,
+"Reimbursed",,,
+"Reimbursed amount",,,
+"Reimbursement",,,
+"Reimbursement Batch",,,
+"Reimbursement Export",,,
+"Reimbursement Journal",,,
+"Reimbursement account",,,
+"Reimbursement batch type",,,
+"Reimbursement configuration",,,
+"Reimbursement details",,,
+"Reimbursement email template",,,
+"Reimbursement filters",,,
+"Reimbursement ongoing",,,
+"Reimbursement rejects",,,
+"Reimbursement status",,,
+"Reimbursements",,,
+"Reimbursements to validate",,,
+"Reject",,,
+"Reject Date",,,
+"Reject Information",,,
+"Reject Move line",,,
+"Reject counter",,,
+"Reject move line",,,
+"Reject reason",,,
+"Reject to pay",,,
+"Reject type",,,
+"Reject/Return reason codes",,,
+"Rejected",,,
+"Rejected Reimbursements Import",,,
+"Rejected Schedule line",,,
+"Rejected Schedule lines",,,
+"Rejected amount",,,
+"Rejected reimbursement",,,
+"Rejected reimbursements",,,
+"Rejected wire transfer operation code",,,
+"Rejection MoveLine",,,
+"Rejection reason",,,
+"Rejects journal",,,
+"Rejects of cheques",,,
+"Rejects over past 30 days",,,
+"Rejects/Return Reason Code List",,,
+"Rejects/Return reason code list",,,
+"Rejet %s",,,
+"Rejet de paiement de la facture %s",,,
+"Rejet de remboursement %s",,,
+"Related to",,,
+"Remaining to pay",,,
+"Remaining to pay after cashing",,,
+"Reminder",,,
+"Reminder Batch",,,
+"Reminder Method",,,
+"Reminder batch type",,,
+"Reminder blocking",,,
+"Reminder configuration",,,
+"Reminder configuration table",,,
+"Reminder content",,,
+"Reminder history",,,
+"Reminder level",,,
+"Reminder levels",,,
+"Reminder message",,,
+"Reminder method",,,
+"Reminder method configuration line",,,
+"Reminder method configuration lines",,,
+"Reminder method line",,,
+"Reminder method line reached by active contract",,,
+"Reminder method lines",,,
+"Reminder methods",,,
+"Reminder process",,,
+"Reminder settings",,,
+"Reminders history",,,
+"Reminders history list",,,
+"Report execution",,,
+"Reported Balance",,,
+"Reported balance",,,
+"Reported balance Date",,,
+"Reported balance line",,,
+"Reported balance lines",,,
+"Reported balance list",,,
+"Reporting",,,
+"Reporting comptable",,,
+"Reportings",,,
+"Reportings/Exports",,,
+"Retour d'information de Paybox erroné",,,
+"Revenue",,,
+"Revenue Generated by Geographical Region",,,
+"Revenues vs Expenses",,,
+"Reverse",,,
+"Reçu saisie paiement",,,
+"Run",,,
+"Run export again",,,
+"SEPA ?",,,
+"SEPA Direct Debit",,,
+"Sale Entries",,,
+"Sale Price List",,,
+"Sale account",,,
+"Sales",,,
+"Sales Invoice",,,
+"Sales Invoice Db 1",,,
+"Sales Invoice Db 2",,,
+"Sales Journal",,,
+"Sales journal type",,,
+"Sales map",,,
+"Save email sent to contact ?",,,
+"Schedule Date",,,
+"Schedule line",,,
+"Schedule line N°",,,
+"Schedule line concerned by the reminder",,,
+"Schedule lines",,,
+"Schedule lines created from reject",,,
+"Schedule start Date",,,
+"Search",,,
+"Secret key",,,
+"Select invoices manually ?",,,
+"Select invoices to include in the payment schedule",,,
+"Send email",,,
+"Sender Name",,,
+"Sender Nbr.",,,
+"Sender record code",,,
+"Seq.",,,
+"Sequence",,,
+"Settings",,,
+"Shift Reason (long term debt)",,,
+"Shift Reason (short term debt)",,,
+"Shift to irrecoverable",,,
+"Shift to irrecoverablePassage en irrécouvrable",,,
+"Shifted as irrecoverable",,,
+"Short term debt duration (month)",,,
+"Show invoices",,,
+"Show move lines",,,
+"Sign Associated",,,
+"Signe",,,
+"Simulated",,,
+"Simulated Moves",,,
+"Site Nbr",,,
+"Situation",,,
+"Situation comptable %s",,,
+"So many accounting operations are used on this invoice, so invoice can't be canceled",,,
+"Société",,,
+"Special",,,
+"Standard Invoice",,,
+"Standard delay (days)",,,
+"Standard label (24 caracters)",,,
+"Start",,,
+"Start Date",,,
+"Start date",,,
+"Starting Balance",,,
+"Status",,,
+"Statut %s inconnu pour le traitement %s",,,
+"Subscription ?",,,
+"Subtotal by cash register",,,
+"Subtotal by date",,,
+"Subtotal by partner",,,
+"Subtype",,,
+"Summary code",,,
+"Suppl. Invoices",,,
+"Suppl. Refunds",,,
+"Supplier",,,
+"Supplier Credit Note Journal",,,
+"Supplier Payments",,,
+"Supplier Purchase Journal",,,
+"Supplier account",,,
+"Supplier invoice number",,,
+"Supplier invoices filters",,,
+"Supplier payments",,,
+"Supplier purchase",,,
+"Supplier refund",,,
+"Supplier refunds",,,
+"Supplier refunds filters",,,
+"Supplier's Invoices Due",,,
+"Tax",,,
+"Tax 0%",,,
+"Tax Line",,,
+"Tax Lines",,,
+"Tax account configuration",,,
+"Tax accounting configuration",,,
+"Tax accounting configurations",,,
+"Tax amount",,,
+"Tax for management fee",,,
+"Tax payment",,,
+"Tax standard rate for clearance",,,
+"Tax standard rate for irrecoverables",,,
+"Technical Rejection",,,
+"Template",,,
+"Template Move Lines",,,
+"Template move is not balanced",,,
+"Temporary filepath to import IPO, and IPO & Cheque payments",,,
+"Temporary filepath to import IPO, and IPO & Cheque payments rejects",,,
+"Temporary filepath to import rejected records",,,
+"The Move Balance must be positive",,,
+"The account is associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,
+"The chart of account has been loaded successfully",,,
+"The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company.",,,
+"The payer doesn't have email attached. Please input/provide the email to use.",,,
+"The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,
+"The sale account or the purchase account or the cash account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,
+"Tiers",,,
+"Tiers absent de la facture %s",,,
+"To",,,
+"To Date",,,
+"To Partner",,,
+"To generate periods, please fill in the Period duration.",,,
+"To generate periods, please fill in the limits of the fiscal year.",,,
+"To pay",,,
+"To pay / To use",,,
+"To shift as irrecoverable",,,
+"To validate",,,
+"Total A.T.I.",,,
+"Total A.T.I. in company currency",,,
+"Total Credit",,,
+"Total Debit",,,
+"Total Product Qty sold history by month by category",,,
+"Total Revenue Distribution by Product",,,
+"Total Revenue Generated By Geo Region",,,
+"Total Tax",,,
+"Total W.T.",,,
+"Total W.T. in Acc. currency",,,
+"Total amount",,,
+"Total balance",,,
+"Total record code",,,
+"Totals",,,
+"Traitement terminé",,,
+"Transaction currency",,,
+"Transfer",,,
+"Transfer(ed) to Usher",,,
+"Transfer(ed) to usher",,,
+"Treatment/Operation type",,,
+"TurnOver",,,
+"Turnover On Supplier Invoices On Last 12 Month",,,
+"Type",,,
+"Type de donnée inconnu pour le traitement %s",,,
+"Type de facture absent de la facture %s",,,
+"Type de la saisie paiement absent de la saisie paiement %s",,,
+"UMR List",,,
+"Unique Mandate References",,,
+"Unit",,,
+"Unit price",,,
+"Unit price discounted",,,
+"Units",,,
+"Unpaid",,,
+"Unpaid Due",,,
+"Unpaid IPO operation code",,,
+"Unpaid Supplier's Invoices",,,
+"Unpaid direct debit operation code",,,
+"Unpaid invoices",,,
+"Unreconcile",,,
+"Update customer account",,,
+"Upper reimbursement limit",,,
+"Url returned by Paybox once payment cancelled",,,
+"Url returned by Paybox once payment done",,,
+"Url returned by Paybox once payment refused",,,
+"Usage rule",,,
+"User",,,
+"V.A.T.",,,
+"VAT Statement",,,
+"Valid ?",,,
+"Validate",,,
+"Validate account clearances",,,
+"Validate reject",,,
+"Validated",,,
+"Validated Moves",,,
+"Validated by",,,
+"Validation date",,,
+"Validation of moves is irrevocable",,,
+"Value",,,
+"Variables list returned by Paybox",,,
+"Variants",,,
+"Ventilate",,,
+"Ventilated",,,
+"Veuillez configurer un RIB pour le remboursement",,,
+"Veuillez configurer un compte pour les notes de frais (société : %s)",,,
+"Veuillez configurer un compte pour les taxes des notes de frais (société : %s)",,,
+"Veuillez configurer un journal pour les notes de frais (société : %s)",,,
+"Veuillez configurer une séquence Echéancier pour la société",,,
+"Veuillez créer un contact pour l'utilisateur %s",,,
+"Veuillez selectionner un journal pour l'écriture",,,
+"Veuillez selectionner un type d'export",,,
+"Veuillez selectionner un type d'impression",,,
+"Veuillez selectionner une devise pour la société %s",,,
+"Veuillez selectionner une devise pour le tiers %s (%s)",,,
+"Veuillez selectionner une période pour l'écriture",,,
+"Veuillez selectionner une société pour l'écriture",,,
+"View",,,
+"View Cust. Invoices",,,
+"View Cust. Payments",,,
+"View Cust. Refunds",,,
+"View Invoices/Refunds",,,
+"View Payments",,,
+"View Suppl. Invoices",,,
+"View Suppl. Refunds",,,
+"View Supplier Payments",,,
+"View all unpaid invoices",,,
+"Vous devez configurer un RIB.",,,
+"Web",,,
+"Weight table (Payer quality)",,,
+"Wire Transfer",,,
+"Wire transfer operation code",,,
+"With Payment Rejected",,,
+"Year",,,
+"\n (Débit %s compte %s - Crédit %s compte %s)",,,
+"\t* %s Facture(s) traitée(s)\n",,,
+"\t* %s Situation(s) compable(s) traitée(s)\n",,,
+"actions",,,
+"anomalies générées",,,
+"facture(s) validée(s)",,,
+"facture(s) ventilée(s)",,,
+"help:Account.accountType","The account type is an attribute attached to the account that will impact the way accounting documents will be printed or filtered. Account Types are as follow : asset, cash, commitment, current asset (stock), debt, equity, expense, immobilisation, income, payable, provision, receivable, special, tax, view",,
+"help:Account.code","The account code is usually a number (e.g. : 101000). The account code help to locate the account in the chart of account. This code must be unique per company account chart.",,
+"help:Account.company","Each account is linked to a chart of account, and thus to a company.",,
+"help:Account.parent","The parent account helps to define the company chart of accounts. Depending on the company field, you will be only entitled to select parent accounts associated to the same company.",,
+"help:Account.reconcileOk","The checkbox reconcilable helps to filter, within the reconcile interface the entrylines to reconcile. The accounts of type receivable and payable will usually be ticked as reconcilable.",,
+"help:AccountConfig.doubtfulCustomerAccount","Utiliser pour le passage en client douteux",,
+"help:AccountConfig.interbankPaymentOrderImportPathCFONB","example : /home/axelor/reject.dat",,
+"help:AccountConfig.interbankPaymentOrderRejectImportPathCFONB","example : /home/axelor/reject.dat",,
+"help:AccountConfig.paymentScheduleExportFolderPathCFONB","example : /home/axelor/",,
+"help:AccountConfig.reimbursementExportFolderPath","example : /home/axelor/reject.dat",,
+"help:AccountConfig.reimbursementExportFolderPathCFONB","example : /home/axelor/reject.dat",,
+"help:AccountConfig.reimbursementImportFolderPathCFONB","example : /home/axelor/reject.dat",,
+"help:AccountConfig.rejectImportPathAndFileName","example : /home/axelor/reject.dat",,
+"help:AccountConfig.tempImportPathAndFileName","example : /home/axelor/reject.dat",,
+"help:AccountConfig.tempInterbankPaymentOrderImportPathCFONB","example : /home/axelor/reject.dat",,
+"help:AccountConfig.tempInterbankPaymentOrderRejectImportPathCFONB","example : /home/axelor/reject.dat",,
+"help:AccountConfig.tempReimbImportFolderPathCFONB","example : /home/axelor/reject.dat",,
+"help:Invoice.alreadyPrintedOk","Field allowing to distinguish the original invoice from a copy/duplicata.",,
+"help:Invoice.currency","This currency defined the currency of the invoice. If the company accounting currency or journal currency is different from the invoice currency, the system will automatically convert the amounts into the accounting or journal currency.",,
+"help:Invoice.exTaxTotal","Total without Tax",,
+"help:Invoice.externalReference","Refers to an external document like a Customer or Supplier Order, Supplier invoice, Bill of lading...",,
+"help:Invoice.inTaxTotal","Total all taxes included.",,
+"help:Invoice.internalReference","Refers to an internal document like a SO, PO, Stock Picking reference...",,
+"help:Invoice.taxTotal","Total Tax amount is a result of the sum of the Tax lines Amount.",,
+"help:Journal.validAccountSet","Accounts allowed for entries on this journal",,
+"help:Journal.validAccountTypeSet","Account types allowed for entries posted on this journal",,
+"help:MoveLine.counter","This sequence is unique per Move, automatically reset to 1 for a new moveline",,
+"help:MoveTemplateLine.account",,,
+"help:MoveTemplateLine.percentage",,,
+"help:MoveTemplateLine.product",,,
+"help:PaymentMode.invoiceLabel","Label to be displayed on invoice PDF",,
+"help:PaymentVoucher.hasAutoInput","Indicates if the voucher has been manually or automatically input. This has an impact on overdue management.",,
+"prélèvement(s) rejeté(s)",,,
+"prélèvements(s) facture(s) traité(s)",,,
+"prélèvements(s) mensualité(s) traité(s)",,,
+"remboursement(s) créé(s)",,,
+"remboursement(s) rejeté(s)",,,
+"remboursement(s) traité(s)",,,
+"tiers(s) traité(s)",,,

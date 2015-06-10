@@ -1,152 +1,152 @@
 "key","message","comment","context"
-"Accounting",,,""
-"Actions",,,""
-"Activities","Activités",,""
-"Activity","Activité",,""
-"Afternoon","L'après-midi",,""
-"Afternoon From","L'après-midi de",,""
-"All my Expenses","Toutes mes notes de frais",,""
-"All my Leaves","Toutes mes absences",,""
-"All my Timesheets","Toutes mes feuilles de temps",,""
-"Cancel","Annuler",,""
-"Canceled","Annulé",,""
-"Catalog","Catalogue",,""
-"Categorization","Catégorisation",,""
-"Code","Code",,""
-"Comments","Commentaire",,""
-"Company","Société",,""
-"Complete my expense","Compléter ma note de frais",,""
-"Complete my leave","Compléter mon absence",,""
-"Complete my time sheet","Compléter ma feuille de temps",,""
-"Configuration","Configuration",,""
-"Confirm","Confirmer",,""
-"Confirmed","Confirmé",,""
-"Contact","Contact",,""
-"Daily work hours","Nombre d'heures de travail journalier",,""
-"Date","Date",,""
-"Date can't be in the future","La date ne peux pas être dans le future",,""
-"Date from","De",,""
-"Date to (Included)","Date à (inclus)",,""
-"Day","Jour",,""
-"Days","Jours",,""
-"Department","Service",,""
-"Departments","Services",,""
-"Description","Description",,""
-"Draft","Brouillon",,""
-"Duration","Durée",,""
-"Duration(by day)","Durée (par jour)",,""
-"Edit Expense Selected","Editer ma note de frais sélectionnée",,""
-"Edit Timesheet Selected","Editer la feuille de temps sélectionnée",,""
-"Employee","Employé",,""
-"End On","Se termine",,""
-"Expense","Note de frais",,""
-"Expense Journal","Journal des NdeF",,""
-"Expense Type","Type de frais",,""
-"Expense Ventilated","Note de frais ventilée",,""
-"Expense date","Date de dépense",,""
-"Expense employee account","Compte du personnel",,""
-"Expense line","Ligne de NdeF",,""
-"Expense lines","Lignes de NdeF",,""
-"Expense tax account","Compte de taxe",,""
-"Expenses","Note de frais",,""
-"Expenses to Validate","NdeF à valider",,""
-"External","Externe",,""
-"Friday","Vendredi",,""
-"From date","De",,""
-"Full name","Nom complet",,""
-"Generate Lines automatically","Générer les lignes automatiquement",,""
-"Generate lines","Générer les lignes",,""
-"Get time from Tasks","Récupérer les temps passés sur les tâches",,""
-"Historic colleague Expenses","Historique des NdeF des collab.",,""
-"Historic colleague Leaves","Historique des absences des collab.",,""
-"Historic colleague Timesheets","Historique des f. de temps des collab.",,""
-"Hourly price","Prix horaire",,""
-"Hourly rate","Taux horaire",,""
-"Hours","Heures",,""
-"Human resources","RH",,""
-"Import","Import",,""
-"Internal description","Description interne",,""
-"Invalide dates","dates invalides",,""
-"Leave","Absence",,""
-"Leave reason","Motif absence",,""
-"Leaves","Absences",,""
-"Leaves to Validate","Absences à valider",,""
-"Log Time","Temps passé",,""
-"Log Times","Temps passés",,""
-"Logged Time","Temps passé",,""
-"Manager","Responsable Hiérarchique",,""
-"Minutes","Minutes",,""
-"Monday","Lundi",,""
-"Morning","Le matin",,""
-"Morning From","Le matin de",,""
-"Move","Ecriture",,""
-"Move Date","Date de l'écriture",,""
-"Name","Nom",,""
-"No expense to be validated by your subordinates","Aucune NdeF à valider par mes subordonnés",,""
-"No leave to be validated by your subordinates","Aucun congé à valider par mes subordonnés",,""
-"No log time found or all log times already added","Aucun temps passé à ajouter",,""
-"No timesheet to be validated by your subordinates","Aucune f. de temps à valider par mes subordonnés",,""
-"Overview","Entête",,""
-"Period","Période",,""
-"Period is closed",,,""
-"Planning",,,""
-"Problème de date pour la (les) ligne(s) :",,,""
-"Product","Produit",,""
-"Product sheet",,,""
-"Product specific attributes",,,""
-"Product typology",,,""
-"Products","Produits",,""
-"Project","Projet",,""
-"Reason","Motif",,""
-"Refuse","Refuser",,""
-"Refused","Refusé",,""
-"Request date","Date de la demande",,""
-"Return to draft status","Retourner à l'état brouillon",,""
-"Sale","Vente",,""
-"Sales","Ventes",,""
-"Saturday","Samedi",,""
-"Select Expense","Sélectionner Note de Frais",,""
-"Select Timesheet","Sélectionner Feuille de temps",,""
-"Select the expense you want to edit","Sélectionner la NdeF à éditer",,""
-"Select the timesheet you want to edit","Sélectionnez la feuille de temps à éditer",,""
-"Send Email","Envoyer email",,""
-"Send Expenses","Envoyer note de frais",,""
-"Send Leave","Envoyer congé",,""
-"Sent Date","Date d'envoi",,""
-"Show expenses to be validated by my subordinates","Voir les NdeF à valider par mes subordonnés",,""
-"Show leaves to be validated by my subordinates","Voir les congés à valider par mes subordonnés",,""
-"Show timesheets to be validated by my subordinates","Voir les f. de temps à valider par mes subordonnés",,""
-"Start On","Commence",,""
-"Status","Statut",,""
-"Sunday","Dimanche",,""
-"Task","Tâche",,""
-"Tasks","Tâches",,""
-"Thursday","Jeudi",,""
-"Time Activity","Activité temps",,""
-"Time Sheet","Feuille de temps",,""
-"Time logging preference","Unité saisie feuille de temps",,""
-"Timesheet","Feuille de temps",,""
-"Timesheet Line","Ligne de feuille de temps",,""
-"Timesheet Lines","Lignes de feuille de temps",,""
-"Timesheet reminder","Soumis à la saisie des temps",,""
-"Timesheets","Feuille de temps",,""
-"Timesheets to Validate","Feuilles de temps à valider",,""
-"To","à",,""
-"To date","à",,""
-"Total A.T.I.","Total TTC",,""
-"Total W.T.","Total HT",,""
-"Total amount with tax","Montant TTC",,""
-"Total tax","Montant TVA",,""
-"Tracking number","Numéro de suivi",,""
-"Tuesday","Mardi",,""
-"Untaxed amount","Montant HT",,""
-"User","Utilisateur",,""
-"Valid","Valider",,""
-"Validated","Validé",,""
-"Ventilate","Ventiler",,""
-"Waiting validation","Attente validation",,""
-"Wednesday","Mercredi",,""
-"Week days","Jours de la semaine",,""
-"Weekly Planning","Planning hebdomadaire",,""
-"Weekly plann","Planning hebdomadaire",,""
-"Weekly work hours","Nombre d'heures de travail hebdomadaire",,""
+"Accounting",,,
+"Actions",,,
+"Activities","Activités",,
+"Activity","Activité",,
+"Afternoon","L'après-midi",,
+"Afternoon From","L'après-midi de",,
+"All my Expenses","Toutes mes notes de frais",,
+"All my Leaves","Toutes mes absences",,
+"All my Timesheets","Toutes mes feuilles de temps",,
+"Cancel","Annuler",,
+"Canceled","Annulé",,
+"Catalog","Catalogue",,
+"Categorization","Catégorisation",,
+"Code","Code",,
+"Comments","Commentaire",,
+"Company","Société",,
+"Complete my expense","Compléter ma note de frais",,
+"Complete my leave","Compléter mon absence",,
+"Complete my time sheet","Compléter ma feuille de temps",,
+"Configuration","Configuration",,
+"Confirm","Confirmer",,
+"Confirmed","Confirmé",,
+"Contact","Contact",,
+"Daily work hours","Nombre d'heures de travail journalier",,
+"Date","Date",,
+"Date can't be in the future","La date ne peux pas être dans le future",,
+"Date from","De",,
+"Date to (Included)","Date à (inclus)",,
+"Day","Jour",,
+"Days","Jours",,
+"Department","Service",,
+"Departments","Services",,
+"Description","Description",,
+"Draft","Brouillon",,
+"Duration","Durée",,
+"Duration(by day)","Durée (par jour)",,
+"Edit Expense Selected","Editer ma note de frais sélectionnée",,
+"Edit Timesheet Selected","Editer la feuille de temps sélectionnée",,
+"Employee","Employé",,
+"End On","Se termine",,
+"Expense","Note de frais",,
+"Expense Journal","Journal des NdeF",,
+"Expense Type","Type de frais",,
+"Expense Ventilated","Note de frais ventilée",,
+"Expense date","Date de dépense",,
+"Expense employee account","Compte du personnel",,
+"Expense line","Ligne de NdeF",,
+"Expense lines","Lignes de NdeF",,
+"Expense tax account","Compte de taxe",,
+"Expenses","Note de frais",,
+"Expenses to Validate","NdeF à valider",,
+"External","Externe",,
+"Friday","Vendredi",,
+"From date","De",,
+"Full name","Nom complet",,
+"Generate Lines automatically","Générer les lignes automatiquement",,
+"Generate lines","Générer les lignes",,
+"Get time from Tasks","Récupérer les temps passés sur les tâches",,
+"Historic colleague Expenses","Historique des NdeF des collab.",,
+"Historic colleague Leaves","Historique des absences des collab.",,
+"Historic colleague Timesheets","Historique des f. de temps des collab.",,
+"Hourly price","Prix horaire",,
+"Hourly rate","Taux horaire",,
+"Hours","Heures",,
+"Human resources","RH",,
+"Import","Import",,
+"Internal description","Description interne",,
+"Invalide dates","dates invalides",,
+"Leave","Absence",,
+"Leave reason","Motif absence",,
+"Leaves","Absences",,
+"Leaves to Validate","Absences à valider",,
+"Log Time","Temps passé",,
+"Log Times","Temps passés",,
+"Logged Time","Temps passé",,
+"Manager","Responsable Hiérarchique",,
+"Minutes","Minutes",,
+"Monday","Lundi",,
+"Morning","Le matin",,
+"Morning From","Le matin de",,
+"Move","Ecriture",,
+"Move Date","Date de l'écriture",,
+"Name","Nom",,
+"No expense to be validated by your subordinates","Aucune NdeF à valider par mes subordonnés",,
+"No leave to be validated by your subordinates","Aucun congé à valider par mes subordonnés",,
+"No log time found or all log times already added","Aucun temps passé à ajouter",,
+"No timesheet to be validated by your subordinates","Aucune f. de temps à valider par mes subordonnés",,
+"Overview","Entête",,
+"Period","Période",,
+"Period is closed",,,
+"Planning",,,
+"Problème de date pour la (les) ligne(s) :",,,
+"Product","Produit",,
+"Product sheet",,,
+"Product specific attributes",,,
+"Product typology",,,
+"Products","Produits",,
+"Project","Projet",,
+"Reason","Motif",,
+"Refuse","Refuser",,
+"Refused","Refusé",,
+"Request date","Date de la demande",,
+"Return to draft status","Retourner à l'état brouillon",,
+"Sale","Vente",,
+"Sales","Ventes",,
+"Saturday","Samedi",,
+"Select Expense","Sélectionner Note de Frais",,
+"Select Timesheet","Sélectionner Feuille de temps",,
+"Select the expense you want to edit","Sélectionner la NdeF à éditer",,
+"Select the timesheet you want to edit","Sélectionnez la feuille de temps à éditer",,
+"Send Email","Envoyer email",,
+"Send Expenses","Envoyer note de frais",,
+"Send Leave","Envoyer congé",,
+"Sent Date","Date d'envoi",,
+"Show expenses to be validated by my subordinates","Voir les NdeF à valider par mes subordonnés",,
+"Show leaves to be validated by my subordinates","Voir les congés à valider par mes subordonnés",,
+"Show timesheets to be validated by my subordinates","Voir les f. de temps à valider par mes subordonnés",,
+"Start On","Commence",,
+"Status","Statut",,
+"Sunday","Dimanche",,
+"Task","Tâche",,
+"Tasks","Tâches",,
+"Thursday","Jeudi",,
+"Time Activity","Activité temps",,
+"Time Sheet","Feuille de temps",,
+"Time logging preference","Unité saisie feuille de temps",,
+"Timesheet","Feuille de temps",,
+"Timesheet Line","Ligne de feuille de temps",,
+"Timesheet Lines","Lignes de feuille de temps",,
+"Timesheet reminder","Soumis à la saisie des temps",,
+"Timesheets","Feuille de temps",,
+"Timesheets to Validate","Feuilles de temps à valider",,
+"To","à",,
+"To date","à",,
+"Total A.T.I.","Total TTC",,
+"Total W.T.","Total HT",,
+"Total amount with tax","Montant TTC",,
+"Total tax","Montant TVA",,
+"Tracking number","Numéro de suivi",,
+"Tuesday","Mardi",,
+"Untaxed amount","Montant HT",,
+"User","Utilisateur",,
+"Valid","Valider",,
+"Validated","Validé",,
+"Ventilate","Ventiler",,
+"Waiting validation","Attente validation",,
+"Wednesday","Mercredi",,
+"Week days","Jours de la semaine",,
+"Weekly Planning","Planning hebdomadaire",,
+"Weekly plann","Planning hebdomadaire",,
+"Weekly work hours","Nombre d'heures de travail hebdomadaire",,

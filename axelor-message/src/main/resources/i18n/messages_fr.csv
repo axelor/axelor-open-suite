@@ -1,125 +1,125 @@
 "key","message","comment","context"
-"Address","Adresse email",,""
-"Address Block","Bloc d'adresse",,""
-"Bcc","Cci",,""
-"Cc","Cc",,""
-"Chat","Messagerie interne",,""
-"Check Duplicate","Vérifier doublons",,""
-"Code","Code",,""
-"Configuration","Configuration",,""
-"Configurations","Configurations",,""
-"Connection successful",,,""
-"Content","Contenu",,""
-"Create message",,,""
-"Default ?","Par défaut ?",,""
-"Default account ?","Compte par défaut ?",,""
-"Delete","Supprimer",,""
-"Deleted","Supprimée",,""
-"Draft","Brouillon",,""
-"Draft emails","Emails Brouillon",,""
-"Drafts","Brouillons",,""
-"Echec envoie email",,,""
-"Email","Email",,""
-"Email Accounts","Comptes SMTP",,""
-"Email address","Adresse Email",,""
-"Email addresses","Adresses email",,""
-"Email envoyé",,,""
-"Emails","Emails",,""
-"Event","Evènement",,""
-"Forecasted Sent Date","Date prévue d'envoi",,""
-"From","De",,""
-"Generate message","Générer message",,""
-"Host","Hôte",,""
-"Import","Importer",,""
-"Inbox","Boîte de réception",,""
-"Incorrect login or password",,,""
-"Informations","Informations",,""
-"Lead","Piste",,""
-"Login","Identifiant",,""
-"Mail","Courrier",,""
-"Mail account","Compte email",,""
-"Mail accounts","Comptes email",,""
-"Media Type","Type de média",,""
-"Message Box","Boîte de réception",,""
-"Message destinated to","Message destiné à",,""
-"Message envoyé",,,""
-"Messages","Messages",,""
-"Messaging","Messenger",,""
-"Model","Objet métier",,""
-"Model empty. Please configure a model.",,,""
-"NONE","Non",,""
-"Name","Intitulé",,""
-"New Email",,,""
-"New Mail",,,""
-"New Message","Créer message",,""
-"New email","Nouvel email",,""
-"Opportunity","Opportunité",,""
-"Partner/Contact","Tiers/Contact",,""
-"Password","Mot de passe",,""
-"Please input a valid email address","Veuillez saisir une adresse valide",,""
-"Port","Port",,""
-"Print","Imprimer",,""
-"Product","Produit",,""
-"Project/Business","Projet/Affaire",,""
-"Provided settings are wrong, please modify them and try again",,,""
-"Quote/Order","Devis/Commande",,""
-"Received","Reçu",,""
-"Recipient","Destinataire",,""
-"Recipient address","Adresse destinataire",,""
-"Recipients","Destinataires",,""
-"Related to","Associé à ",,""
-"Related to1 select","Lié à (1) sélection",,""
-"Related to2 select","Lié à (2) sélection",,""
-"Reply to","Répondre à",,""
-"Routings","Gamme",,""
-"SMTP","SMTP",,""
-"SSL","SSL",,""
-"SSL/TLS","SSL/TLS",,""
-"Select template",,,""
-"Send","Envoyer",,""
-"Sender (User)","Expéditeur (Utilisateur)",,""
-"Sent","Envoyé",,""
-"Sent by email","Envoyé par email",,""
-"Sent date","Date d'envoi",,""
-"Sentbox","Emails Envoyés",,""
-"Server Type","Type serveur",,""
-"Signature","Signature",,""
-"Status","Statut",,""
-"Subject","Sujet/Objet",,""
-"Suject","Sujet",,""
-"System ?","Système ?",,""
-"TLS","TLS",,""
-"Target receptor","Destinataire cible",,""
-"Task (Project)","Tâche (Projet)",,""
-"Template","Modèle",,""
-"Templates","Modèles",,""
-"Test connection","Tester connexion",,""
-"There is already a default mail account","Il existe déjà une compte email par défaut.",,""
-"To","A",,""
-"Trash","Corbeille",,""
-"Type","Type",,""
-"Unable to reach server. Please check Host,Port and SSL/TLS",,,""
-"Valid ?","Valide ?",,""
-"Validate","Valider",,""
-"Veuillez configurer un template",,,""
-"Waiting model: %s",,,""
-"Your target receptor is not valid. Please check it.",,,""
-"help:EmailAddress.address",,,""
-"help:MailAccount.host",,,""
-"help:MailAccount.isDefault",,,""
-"help:MailAccount.isValid",,,""
-"help:MailAccount.login",,,""
-"help:MailAccount.securitySelect",,,""
-"help:MailAccount.serverTypeSelect",,,""
-"help:Message.addressBlock",,,""
-"help:Message.bccEmailAddressSet","Destinataire(s) à mettre en copie",,""
-"help:Message.ccEmailAddressSet","Destinataire(s) à mettre en copie cachée (non apparent sur l'email envoyé)",,""
-"help:Message.mediaTypeSelect",,,""
-"help:Message.sentDateT",,,""
-"help:Message.typeSelect",,,""
-"help:Template.addressBlock",,,""
-"help:Template.isDefault",,,""
-"help:Template.isSystem",,,""
-"help:Template.mediaTypeSelect",,,""
-"help:Template.metaModel",,,""
-"user@mydomain.com",,,""
+"Address","Adresse email",,
+"Address Block","Bloc d'adresse",,
+"Bcc","Cci",,
+"Cc","Cc",,
+"Chat","Messagerie interne",,
+"Check Duplicate","Vérifier doublons",,
+"Code","Code",,
+"Configuration","Configuration",,
+"Configurations","Configurations",,
+"Connection successful",,,
+"Content","Contenu",,
+"Create message",,,
+"Default ?","Par défaut ?",,
+"Default account ?","Compte par défaut ?",,
+"Delete","Supprimer",,
+"Deleted","Supprimée",,
+"Draft","Brouillon",,
+"Draft emails","Emails Brouillon",,
+"Drafts","Brouillons",,
+"Echec envoie email",,,
+"Email","Email",,
+"Email Accounts","Comptes SMTP",,
+"Email address","Adresse Email",,
+"Email addresses","Adresses email",,
+"Email envoyé",,,
+"Emails","Emails",,
+"Event","Evènement",,
+"Forecasted Sent Date","Date prévue d'envoi",,
+"From","De",,
+"Generate message","Générer message",,
+"Host","Hôte",,
+"Import","Importer",,
+"Inbox","Boîte de réception",,
+"Incorrect login or password",,,
+"Informations","Informations",,
+"Lead","Piste",,
+"Login","Identifiant",,
+"Mail","Courrier",,
+"Mail account","Compte email",,
+"Mail accounts","Comptes email",,
+"Media Type","Type de média",,
+"Message Box","Boîte de réception",,
+"Message destinated to","Message destiné à",,
+"Message envoyé",,,
+"Messages","Messages",,
+"Messaging","Messenger",,
+"Model","Objet métier",,
+"Model empty. Please configure a model.",,,
+"NONE","Non",,
+"Name","Intitulé",,
+"New Email",,,
+"New Mail",,,
+"New Message","Créer message",,
+"New email","Nouvel email",,
+"Opportunity","Opportunité",,
+"Partner/Contact","Tiers/Contact",,
+"Password","Mot de passe",,
+"Please input a valid email address","Veuillez saisir une adresse valide",,
+"Port","Port",,
+"Print","Imprimer",,
+"Product","Produit",,
+"Project/Business","Projet/Affaire",,
+"Provided settings are wrong, please modify them and try again",,,
+"Quote/Order","Devis/Commande",,
+"Received","Reçu",,
+"Recipient","Destinataire",,
+"Recipient address","Adresse destinataire",,
+"Recipients","Destinataires",,
+"Related to","Associé à ",,
+"Related to1 select","Lié à (1) sélection",,
+"Related to2 select","Lié à (2) sélection",,
+"Reply to","Répondre à",,
+"Routings","Gamme",,
+"SMTP","SMTP",,
+"SSL","SSL",,
+"SSL/TLS","SSL/TLS",,
+"Select template",,,
+"Send","Envoyer",,
+"Sender (User)","Expéditeur (Utilisateur)",,
+"Sent","Envoyé",,
+"Sent by email","Envoyé par email",,
+"Sent date","Date d'envoi",,
+"Sentbox","Emails Envoyés",,
+"Server Type","Type serveur",,
+"Signature","Signature",,
+"Status","Statut",,
+"Subject","Sujet/Objet",,
+"Suject","Sujet",,
+"System ?","Système ?",,
+"TLS","TLS",,
+"Target receptor","Destinataire cible",,
+"Task (Project)","Tâche (Projet)",,
+"Template","Modèle",,
+"Templates","Modèles",,
+"Test connection","Tester connexion",,
+"There is already a default mail account","Il existe déjà une compte email par défaut.",,
+"To","A",,
+"Trash","Corbeille",,
+"Type","Type",,
+"Unable to reach server. Please check Host,Port and SSL/TLS",,,
+"Valid ?","Valide ?",,
+"Validate","Valider",,
+"Veuillez configurer un template",,,
+"Waiting model: %s",,,
+"Your target receptor is not valid. Please check it.",,,
+"help:EmailAddress.address",,,
+"help:MailAccount.host",,,
+"help:MailAccount.isDefault",,,
+"help:MailAccount.isValid",,,
+"help:MailAccount.login",,,
+"help:MailAccount.securitySelect",,,
+"help:MailAccount.serverTypeSelect",,,
+"help:Message.addressBlock",,,
+"help:Message.bccEmailAddressSet","Destinataire(s) à mettre en copie",,
+"help:Message.ccEmailAddressSet","Destinataire(s) à mettre en copie cachée (non apparent sur l'email envoyé)",,
+"help:Message.mediaTypeSelect",,,
+"help:Message.sentDateT",,,
+"help:Message.typeSelect",,,
+"help:Template.addressBlock",,,
+"help:Template.isDefault",,,
+"help:Template.isSystem",,,
+"help:Template.mediaTypeSelect",,,
+"help:Template.metaModel",,,
+"user@mydomain.com",,,

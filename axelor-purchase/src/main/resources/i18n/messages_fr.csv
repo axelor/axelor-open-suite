@@ -1,208 +1,208 @@
 "key","message","comment","context"
-"${supplierPartner.purchaseOrderInformation}",,,""
-"%s :\n Veuillez configurer le module Achat pour la société %s",,,""
-"50 Latest Supplier Orders","50 dernières commandes clients",,""
-"A contact partner must be selected","Un contact doit être sélectionné",,""
-"A price list must be selected","Une liste de prix doit être sélectionnée",,""
-"Account","Tiers",,""
-"Actions",,,""
-"Amount","Montant",,""
-"Amount A.T.I.","Montant T.T.C.",,""
-"Base W.T.","Base H.T.",,""
-"Buyer","Acheteur",,""
-"By delivery","Par Livraison",,""
-"Cancel","Annuler",,""
-"Canceled","Annulé(e)",,""
-"Clear purchase order","Nettoyer la commande",,""
-"Closed Purchase orders","Commandes fournisseurs fermées",,""
-"Company","Société",,""
-"Completed","Complété(e)",,""
-"Confirmation",,,""
-"Confirmer",,,""
-"Contact","Contact",,""
-"Contact partner","Contact",,""
-"Content","Contenu",,""
-"Create RFQ","Créer Demande de devis",,""
-"Currency","Devise",,""
-"Current Purchase Orders","Commandes fournisseurs en cours",,""
-"Dashboard","Tableau de bord",,""
-"Delivery","Livraison",,""
-"Delivery Date","Date de livraison",,""
-"Description","Description",,""
-"Desired delivery date","Date souhaitée de livraison",,""
-"Details","Détails",,""
-"Devis",,,""
-"Discount","Remise",,""
-"Discount Type",,,""
-"Discount amount","Montant remise",,""
-"Draft","Brouillon",,""
-"Estim. delivery date","Date de livraison estimée",,""
-"Financial terms","Termes financiers",,""
-"Finished","Terminé",,""
-"Free","Libre",,""
-"From Date","Date de",,""
-"Full name","Réf.",,""
-"Generate control invoice","Générer facture de contrôle",,""
-"Generate purchase orders automatically","Générer les commandes fournisseurs auto.",,""
-"Generate supplier arrivals","Générer les BR",,""
-"Generate suppliers requests","Générer demandes de devis fourn.",,""
-"Historical Period","Période d'historique",,""
-"Il manque une ligne de taxe",,,""
-"Import","Importer",,""
-"In ATI",,,""
-"Info.","Info.",,""
-"Internal Ref.","Réf. Interne",,""
-"Invoicing","Facturation",,""
-"Invoicing Information","Information de facturation",,""
-"La société %s n'a pas de séquence de configurée pour les commandes fournisseur",,,""
-"Label","Libellé",,""
-"Links","Liens",,""
-"Manage purchase order versions","Gérer les versions des commandes fournisseurs",,""
-"Merge into single purchase order","Fusionner dans une seule commande fournisseur",,""
-"Merge purchase orders","Fusionner commandes fournisseurs",,""
-"Min sale price","Prix de vente min.",,""
-"Month","Mois",,""
-"My Closed Purchase Orders","Mes commandes fournisseurs clôturées",,""
-"My Ongoing Purchase Orders","Mes commandes fournisseurs en cours",,""
-"My Orders to process","Mes commandes fournisseurs à traiter",,""
-"My Purchase Orders","Mes commandes fournisseurs à traiter",,""
-"My RFQs","Mes demandes de devis ",,""
-"My RFQs and POs To Validate (Requested & Received)","Mes demandes de devis ",,""
-"My Sales","Mes ventes",,""
-"My Validated POs","Mes commandes fournisseurs validées",,""
-"My purchased amount by product family","Mon volume d'achats (montant) par famille de produit",,""
-"My purchased qty by product family","Mon volume d'achats (qté) par famille de produit",,""
-"Nbr of PO by month","Nbr de commandes par mois",,""
-"New Purchase order","Nouv. Commande fournisseur",,""
-"New version","Nouvelles version",,""
-"Not received","Non reçue",,""
-"Notes",,,""
-"Ongoing Purchase orders","Commandes fournisseurs en cours",,""
-"Order Date","Date de commande",,""
-"Ordered ?","Commandé ? ",,""
-"Orders","Commandes",,""
-"Other information","Autres informations",,""
-"PO Lines","Lignes de Cmde",,""
-"PO Management","Gestion commandes fournisseurs",,""
-"PO Tax line","Ligne de taxes achat",,""
-"PO Tax lines","Lignes de taxes achats",,""
-"PO line","Ligne de Cmde",,""
-"PO lines","Lignes de Cmde",,""
-"POs Volume by buyer by family","Vol. d'achat par acheteur par famille",,""
-"Partially received","Partiellement reçue",,""
-"Per order","Par commande",,""
-"Percent","Pourcentage",,""
-"Price List","Liste de prix",,""
-"Price list","Liste de prix",,""
-"Print","Imprimer",,""
-"Product","Produit",,""
-"Product Family","Famille de produit",,""
-"Product variant","Variante de produit",,""
-"Products list","Liste de produits",,""
-"Purchase Buyer Dashboard","Tableau de bord Acheteur",,""
-"Purchase Buyer Db","Tb Acheteur",,""
-"Purchase Manager Dashboard","Tableau de bord Manager Achat",,""
-"Purchase Manager Db","Td Manager Achat",,""
-"Purchase Order Dashboard","Tableau de bord Achats",,""
-"Purchase Order Db","Tb Achats",,""
-"Purchase Orders In ATI",,,""
-"Purchase batches","Batchs liés aux Achats",,""
-"Purchase config","Config. Achats",,""
-"Purchase configuration","Configuration Achat",,""
-"Purchase configurations","Configurations Achat",,""
-"Purchase order","Commande Fournisseur",,""
-"Purchase order information","Information à la commande",,""
-"Purchase orders","Commandes",,""
-"Purchase orders to merge","Commandes fournisseurs à fusionner",,""
-"PurchaseOrder.bankDetails",,,""
-"PurchaseOrder.bankingInfo",,,""
-"PurchaseOrder.base",,,""
-"PurchaseOrder.cheque",,,""
-"PurchaseOrder.customer",,,""
-"PurchaseOrder.customerRef",,,""
-"PurchaseOrder.deliveryDate",,,""
-"PurchaseOrder.description",,,""
-"PurchaseOrder.note",,,""
-"PurchaseOrder.paymentCondition",,,""
-"PurchaseOrder.paymentMode",,,""
-"PurchaseOrder.priceExclTax",,,""
-"PurchaseOrder.purchaseInfo",,,""
-"PurchaseOrder.qtyUnit",,,""
-"PurchaseOrder.state",,,""
-"PurchaseOrder.supplier",,,""
-"PurchaseOrder.supplyRef",,,""
-"PurchaseOrder.tax",,,""
-"PurchaseOrder.taxAmount",,,""
-"PurchaseOrder.totalExclTax",,,""
-"PurchaseOrder.totalInclTax",,,""
-"PurchaseOrder.totalTax",,,""
-"PurchaseOrder.unitPrice",,,""
-"Purchased amount by family","Montants achats par famille",,""
-"Purchased amount by product family","Montants achats par famille de produit",,""
-"Purchased amount distribution by family","Répartition des achats par famille",,""
-"Purchases","Achats",,""
-"Purchases Dashboard 1","Tb Achat 1",,""
-"Purchases Dashboard 2","Tb Achat 2",,""
-"Purchases Dashboard 3","Tb Achat 3",,""
-"Purchases Db 1","Tb Achat 1",,""
-"Purchases Db 2","Tb Achat 2",,""
-"Purchases Db 3","Tb Achat 3",,""
-"Purchases Order filters","Filtres Achats",,""
-"Purchases order invoicing type","Type facturation achats",,""
-"Qty","Qté",,""
-"Quantity","Quantité",,""
-"RFQ","Devis",,""
-"RFQ And PO To Validate","Devis et Cmde à valider",,""
-"RFQs & Orders","Devis & Cmdes",,""
-"Receipt State","Etat de réception",,""
-"Received","Reçu(e)",,""
-"Ref.","Réf.",,""
-"Remaining","Reste à payer",,""
-"Requested","Demandé",,""
-"Sale price","Prix de vente",,""
-"Send Email","Envoyer Email",,""
-"Send email","Envoyer Email",,""
-"Seq.","Séq.",,""
-"Show invoice","Voir facture",,""
-"Status","Statut",,""
-"Subtotal W.T.","Sous-total H.T.",,""
-"Supplier","Fournisseur",,""
-"Supplier RFQ/PO","Fournisseur Devis/Cmde",,""
-"Supplier RFQs/POs","Fournisseur Devis/Cmdes",,""
-"Supplier information","Info. Fournisseur",,""
-"Supplier invoices","Factures fournisseur",,""
-"Supplier ref.","Réf. Fournisseur",,""
-"Suppliers requests","Demandes de cotation",,""
-"Tax","Taxe",,""
-"Tax Lines","Lignes de taxe",,""
-"Tax amount","Montant",,""
-"The company is required and must be the same for all purchase orders","La société est requise et doit être la même pour toutes les commandes d'achat",,""
-"The currency is required and must be the same for all purchase orders","La devise est requise et doit être la même pour toutes les commandes d'achat",,""
-"The field 'Location' must be filled.","Le champ 'Location' doit être rempli.",,""
-"The supplier Partner is required and must be the same for all purchase orders","Le fournisseur est requis et doit être le même pour toutes les commandes d'achat",,""
-"To Date","A",,""
-"Total","Total",,""
-"Total A.T.I.","Total T.T.C.",,""
-"Total A.T.I. in company currency",,,""
-"Total Purchased Amount by month","Montant total Achats par mois",,""
-"Total Purchased Qty by month","Qté totale Achats par mois",,""
-"Total Tax","Total Taxe",,""
-"Total W.T.","Total H.T.",,""
-"Total W.T. in company currency","Total H.T. Devise Sté",,""
-"Turn Over","Chiffre d'affaire Achat",,""
-"Unit","Unité",,""
-"Unit price","Prix unitaire",,""
-"Unit price discounted",,,""
-"Units","Unités",,""
-"V.A.T.","T.V.A.",,""
-"Validate","Valider",,""
-"Validated","Validé(e)",,""
-"Validated by","Validé par",,""
-"Validation date","Date de validation",,""
-"Version Number","Numéro de la version",,""
-"View Orders","Voir Commandes",,""
-"View RFQ","Voir Demandes de devis",,""
-"You have to choose at least one purchase order","Vous devez choisir au moins une commande fournisseur",,""
-"help:PurchaseOrder.internalReference","Se réfère à un document interne comme un devis, autre commande fournisseur, réception…",,""
-"help:PurchaseOrderLine.estimatedDelivDate","Estimée par le fournisseur",,""
-"purchase order management",,,""
+"${supplierPartner.purchaseOrderInformation}",,,
+"%s :\n Veuillez configurer le module Achat pour la société %s",,,
+"50 Latest Supplier Orders","50 dernières commandes clients",,
+"A contact partner must be selected","Un contact doit être sélectionné",,
+"A price list must be selected","Une liste de prix doit être sélectionnée",,
+"Account","Tiers",,
+"Actions",,,
+"Amount","Montant",,
+"Amount A.T.I.","Montant T.T.C.",,
+"Base W.T.","Base H.T.",,
+"Buyer","Acheteur",,
+"By delivery","Par Livraison",,
+"Cancel","Annuler",,
+"Canceled","Annulé(e)",,
+"Clear purchase order","Nettoyer la commande",,
+"Closed Purchase orders","Commandes fournisseurs fermées",,
+"Company","Société",,
+"Completed","Complété(e)",,
+"Confirmation",,,
+"Confirmer",,,
+"Contact","Contact",,
+"Contact partner","Contact",,
+"Content","Contenu",,
+"Create RFQ","Créer Demande de devis",,
+"Currency","Devise",,
+"Current Purchase Orders","Commandes fournisseurs en cours",,
+"Dashboard","Tableau de bord",,
+"Delivery","Livraison",,
+"Delivery Date","Date de livraison",,
+"Description","Description",,
+"Desired delivery date","Date souhaitée de livraison",,
+"Details","Détails",,
+"Devis",,,
+"Discount","Remise",,
+"Discount Type",,,
+"Discount amount","Montant remise",,
+"Draft","Brouillon",,
+"Estim. delivery date","Date de livraison estimée",,
+"Financial terms","Termes financiers",,
+"Finished","Terminé",,
+"Free","Libre",,
+"From Date","Date de",,
+"Full name","Réf.",,
+"Generate control invoice","Générer facture de contrôle",,
+"Generate purchase orders automatically","Générer les commandes fournisseurs auto.",,
+"Generate supplier arrivals","Générer les BR",,
+"Generate suppliers requests","Générer demandes de devis fourn.",,
+"Historical Period","Période d'historique",,
+"Il manque une ligne de taxe",,,
+"Import","Importer",,
+"In ATI",,,
+"Info.","Info.",,
+"Internal Ref.","Réf. Interne",,
+"Invoicing","Facturation",,
+"Invoicing Information","Information de facturation",,
+"La société %s n'a pas de séquence de configurée pour les commandes fournisseur",,,
+"Label","Libellé",,
+"Links","Liens",,
+"Manage purchase order versions","Gérer les versions des commandes fournisseurs",,
+"Merge into single purchase order","Fusionner dans une seule commande fournisseur",,
+"Merge purchase orders","Fusionner commandes fournisseurs",,
+"Min sale price","Prix de vente min.",,
+"Month","Mois",,
+"My Closed Purchase Orders","Mes commandes fournisseurs clôturées",,
+"My Ongoing Purchase Orders","Mes commandes fournisseurs en cours",,
+"My Orders to process","Mes commandes fournisseurs à traiter",,
+"My Purchase Orders","Mes commandes fournisseurs à traiter",,
+"My RFQs","Mes demandes de devis ",,
+"My RFQs and POs To Validate (Requested & Received)","Mes demandes de devis ",,
+"My Sales","Mes ventes",,
+"My Validated POs","Mes commandes fournisseurs validées",,
+"My purchased amount by product family","Mon volume d'achats (montant) par famille de produit",,
+"My purchased qty by product family","Mon volume d'achats (qté) par famille de produit",,
+"Nbr of PO by month","Nbr de commandes par mois",,
+"New Purchase order","Nouv. Commande fournisseur",,
+"New version","Nouvelles version",,
+"Not received","Non reçue",,
+"Notes",,,
+"Ongoing Purchase orders","Commandes fournisseurs en cours",,
+"Order Date","Date de commande",,
+"Ordered ?","Commandé ? ",,
+"Orders","Commandes",,
+"Other information","Autres informations",,
+"PO Lines","Lignes de Cmde",,
+"PO Management","Gestion commandes fournisseurs",,
+"PO Tax line","Ligne de taxes achat",,
+"PO Tax lines","Lignes de taxes achats",,
+"PO line","Ligne de Cmde",,
+"PO lines","Lignes de Cmde",,
+"POs Volume by buyer by family","Vol. d'achat par acheteur par famille",,
+"Partially received","Partiellement reçue",,
+"Per order","Par commande",,
+"Percent","Pourcentage",,
+"Price List","Liste de prix",,
+"Price list","Liste de prix",,
+"Print","Imprimer",,
+"Product","Produit",,
+"Product Family","Famille de produit",,
+"Product variant","Variante de produit",,
+"Products list","Liste de produits",,
+"Purchase Buyer Dashboard","Tableau de bord Acheteur",,
+"Purchase Buyer Db","Tb Acheteur",,
+"Purchase Manager Dashboard","Tableau de bord Manager Achat",,
+"Purchase Manager Db","Td Manager Achat",,
+"Purchase Order Dashboard","Tableau de bord Achats",,
+"Purchase Order Db","Tb Achats",,
+"Purchase Orders In ATI",,,
+"Purchase batches","Batchs liés aux Achats",,
+"Purchase config","Config. Achats",,
+"Purchase configuration","Configuration Achat",,
+"Purchase configurations","Configurations Achat",,
+"Purchase order","Commande Fournisseur",,
+"Purchase order information","Information à la commande",,
+"Purchase orders","Commandes",,
+"Purchase orders to merge","Commandes fournisseurs à fusionner",,
+"PurchaseOrder.bankDetails",,,
+"PurchaseOrder.bankingInfo",,,
+"PurchaseOrder.base",,,
+"PurchaseOrder.cheque",,,
+"PurchaseOrder.customer",,,
+"PurchaseOrder.customerRef",,,
+"PurchaseOrder.deliveryDate",,,
+"PurchaseOrder.description",,,
+"PurchaseOrder.note",,,
+"PurchaseOrder.paymentCondition",,,
+"PurchaseOrder.paymentMode",,,
+"PurchaseOrder.priceExclTax",,,
+"PurchaseOrder.purchaseInfo",,,
+"PurchaseOrder.qtyUnit",,,
+"PurchaseOrder.state",,,
+"PurchaseOrder.supplier",,,
+"PurchaseOrder.supplyRef",,,
+"PurchaseOrder.tax",,,
+"PurchaseOrder.taxAmount",,,
+"PurchaseOrder.totalExclTax",,,
+"PurchaseOrder.totalInclTax",,,
+"PurchaseOrder.totalTax",,,
+"PurchaseOrder.unitPrice",,,
+"Purchased amount by family","Montants achats par famille",,
+"Purchased amount by product family","Montants achats par famille de produit",,
+"Purchased amount distribution by family","Répartition des achats par famille",,
+"Purchases","Achats",,
+"Purchases Dashboard 1","Tb Achat 1",,
+"Purchases Dashboard 2","Tb Achat 2",,
+"Purchases Dashboard 3","Tb Achat 3",,
+"Purchases Db 1","Tb Achat 1",,
+"Purchases Db 2","Tb Achat 2",,
+"Purchases Db 3","Tb Achat 3",,
+"Purchases Order filters","Filtres Achats",,
+"Purchases order invoicing type","Type facturation achats",,
+"Qty","Qté",,
+"Quantity","Quantité",,
+"RFQ","Devis",,
+"RFQ And PO To Validate","Devis et Cmde à valider",,
+"RFQs & Orders","Devis & Cmdes",,
+"Receipt State","Etat de réception",,
+"Received","Reçu(e)",,
+"Ref.","Réf.",,
+"Remaining","Reste à payer",,
+"Requested","Demandé",,
+"Sale price","Prix de vente",,
+"Send Email","Envoyer Email",,
+"Send email","Envoyer Email",,
+"Seq.","Séq.",,
+"Show invoice","Voir facture",,
+"Status","Statut",,
+"Subtotal W.T.","Sous-total H.T.",,
+"Supplier","Fournisseur",,
+"Supplier RFQ/PO","Fournisseur Devis/Cmde",,
+"Supplier RFQs/POs","Fournisseur Devis/Cmdes",,
+"Supplier information","Info. Fournisseur",,
+"Supplier invoices","Factures fournisseur",,
+"Supplier ref.","Réf. Fournisseur",,
+"Suppliers requests","Demandes de cotation",,
+"Tax","Taxe",,
+"Tax Lines","Lignes de taxe",,
+"Tax amount","Montant",,
+"The company is required and must be the same for all purchase orders","La société est requise et doit être la même pour toutes les commandes d'achat",,
+"The currency is required and must be the same for all purchase orders","La devise est requise et doit être la même pour toutes les commandes d'achat",,
+"The field 'Location' must be filled.","Le champ 'Location' doit être rempli.",,
+"The supplier Partner is required and must be the same for all purchase orders","Le fournisseur est requis et doit être le même pour toutes les commandes d'achat",,
+"To Date","A",,
+"Total","Total",,
+"Total A.T.I.","Total T.T.C.",,
+"Total A.T.I. in company currency",,,
+"Total Purchased Amount by month","Montant total Achats par mois",,
+"Total Purchased Qty by month","Qté totale Achats par mois",,
+"Total Tax","Total Taxe",,
+"Total W.T.","Total H.T.",,
+"Total W.T. in company currency","Total H.T. Devise Sté",,
+"Turn Over","Chiffre d'affaire Achat",,
+"Unit","Unité",,
+"Unit price","Prix unitaire",,
+"Unit price discounted",,,
+"Units","Unités",,
+"V.A.T.","T.V.A.",,
+"Validate","Valider",,
+"Validated","Validé(e)",,
+"Validated by","Validé par",,
+"Validation date","Date de validation",,
+"Version Number","Numéro de la version",,
+"View Orders","Voir Commandes",,
+"View RFQ","Voir Demandes de devis",,
+"You have to choose at least one purchase order","Vous devez choisir au moins une commande fournisseur",,
+"help:PurchaseOrder.internalReference","Se réfère à un document interne comme un devis, autre commande fournisseur, réception…",,
+"help:PurchaseOrderLine.estimatedDelivDate","Estimée par le fournisseur",,
+"purchase order management",,,

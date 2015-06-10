@@ -1,265 +1,265 @@
 "key","message","comment","context"
-"${clientPartner.saleOrderInformation}",,,""
-"${company.orderBloquedMessage}",,,""
-"%s :\n Veuillez configurer le module vente pour la société %s",,,""
-"A cancel reason must be selected",,,""
-"Accepted Credit",,,""
-"Action",,,""
-"Actions",,,""
-"Addition",,,""
-"All Templates",,,""
-"Amount",,,""
-"Amount A.T.I.",,,""
-"Amount Tax",,,""
-"Annulation",,,""
-"Base W.T.",,,""
-"Batchs",,,""
-"Bi-monthly",,,""
-"Bloqued",,,""
-"Business project",,,""
-"Call",,,""
-"Cancel",,,""
-"Cancel reason",,,""
-"Canceled",,,""
-"Category",,,""
-"Category sale turnover (Excl. Tax) per month",,,""
-"Client box in sale order",,,""
-"Code",,,""
-"Company",,,""
-"Confirm cancellation",,,""
-"Confirmation annulation",,,""
-"Confirmation date",,,""
-"Confirmed by",,,""
-"Content",,,""
-"Country",,,""
-"Create Order from this Template",,,""
-"Create Quote",,,""
-"Create SO",,,""
-"Create a template",,,""
-"Creation date",,,""
-"Currency",,,""
-"Customer",,,""
-"Customer Credit",,,""
-"Customer contact",,,""
-"Customer information",,,""
-"Customer reference",,,""
-"Customize BOM",,,""
-"Dashboard",,,""
-"Default value for sublines",,,""
-"Define as template",,,""
-"Delivered",,,""
-"Delivery",,,""
-"Delivery State",,,""
-"Delivery address",,,""
-"Delivery date",,,""
-"Description",,,""
-"Devis",,,""
-"Discount",,,""
-"Discount Type",,,""
-"Discount amount",,,""
-"Display delivery condition on pringing ?",,,""
-"Display saleman on printing ?",,,""
-"Draft",,,""
-"End of validity",,,""
-"Estimated delivery date",,,""
-"Excel Export",,,""
-"Family sale turnover (Excl. Tax) per month",,,""
-"Finalize",,,""
-"Financial terms",,,""
-"From Date",,,""
-"Full name",,,""
-"Generate customer deliveries",,,""
-"Generate invoice",,,""
-"Generate invoice from sale order",,,""
-"Generate production order",,,""
-"Generate purchase order",,,""
-"Grouping line",,,""
-"Half-yearly",,,""
-"Hide Discount ?",,,""
-"Il manque une ligne de taxe",,,""
-"Import",,,""
-"In ATI",,,""
-"Industry Sector",,,""
-"Info.",,,""
-"Invoiced first date",,,""
-"Invoices dates",,,""
-"Invoicing",,,""
-"Invoicing address",,,""
-"Invoicing follow-up",,,""
-"Invoicing informations",,,""
-"La facturation par expédition impose que l'ensemble des lignes de devis comporte des produits de service ou stockable avec un approvisionnement depuis le stock",,,""
-"La société %s n'a pas de séquence de configurée pour les devis clients",,,""
-"Last Year To Date",,,""
-"Manage sale order versions",,,""
-"Manual Unblock",,,""
-"Marketing",,,""
-"Month",,,""
-"Monthly",,,""
-"My Current Leads",,,""
-"My Opportunities",,,""
-"My Proposals",,,""
-"My Sales",,,""
-"My Sales Orders",,,""
-"My Team Proposals",,,""
-"My Team Sales",,,""
-"My Templates",,,""
-"My Today Activities",,,""
-"My Turnover per month",,,""
-"Name",,,""
-"Nbr of Units sold (Orders) by category",,,""
-"New Sale order",,,""
-"New Template",,,""
-"New version",,,""
-"Next invoiced period start date",,,""
-"No Of Units",,,""
-"Not delivered",,,""
-"Notes",,,""
-"Order Date",,,""
-"Order Number",,,""
-"Order bloqued message",,,""
-"Order confirmed",,,""
-"Orders",,,""
-"Other informations",,,""
-"Partially delivered",,,""
-"Partner Type",,,""
-"Plan",,,""
-"Plan a call",,,""
-"Plan a meeting",,,""
-"Plan a task",,,""
-"Price list",,,""
-"Print",,,""
-"Print subtotal / line",,,""
-"Print subtotal per line",,,""
-"Printing settings",,,""
-"Product",,,""
-"Product Category",,,""
-"Product Family",,,""
-"Product Family Sales Turnover this year vs last year",,,""
-"Product name",,,""
-"Product sale turnover (Excl. Tax) last 12 month",,,""
-"Product sale turnover (Excl. Tax) per month",,,""
-"Product variant",,,""
-"Qty",,,""
-"Quarterly",,,""
-"Quotes",,,""
-"Quotes & Orders",,,""
-"Reference",,,""
-"SO Tax line",,,""
-"SO Tax lines",,,""
-"SO line",,,""
-"SO lines",,,""
-"Sale Orders In ATI",,,""
-"Sale batch",,,""
-"Sale batches",,,""
-"Sale config",,,""
-"Sale configuration",,,""
-"Sale configurations",,,""
-"Sale order",,,""
-"Sale order information",,,""
-"Sale order lines",,,""
-"Sale orders",,,""
-"SaleOrder.bankDetails",,,""
-"SaleOrder.bankingInfo",,,""
-"SaleOrder.base",,,""
-"SaleOrder.cheque",,,""
-"SaleOrder.customer",,,""
-"SaleOrder.customerRef",,,""
-"SaleOrder.date",,,""
-"SaleOrder.deliveryAddress",,,""
-"SaleOrder.description",,,""
-"SaleOrder.invoicingAddrs",,,""
-"SaleOrder.law",,,""
-"SaleOrder.no",,,""
-"SaleOrder.note",,,""
-"SaleOrder.paymentCondition",,,""
-"SaleOrder.paymentMode",,,""
-"SaleOrder.priceExclTax",,,""
-"SaleOrder.qtyUnit",,,""
-"SaleOrder.supplier",,,""
-"SaleOrder.supplyRef",,,""
-"SaleOrder.tax",,,""
-"SaleOrder.taxAmount",,,""
-"SaleOrder.totalExclTax",,,""
-"SaleOrder.totalInclTax",,,""
-"SaleOrder.totalTax",,,""
-"SaleOrder.unitPrice",,,""
-"Sales",,,""
-"Sales Dashboard 1",,,""
-"Sales Dashboard 2",,,""
-"Sales Db 1",,,""
-"Sales Db 2",,,""
-"Sales Manager Dashboard",,,""
-"Sales Manager Db",,,""
-"Sales Order filters",,,""
-"Sales TurnOver by Product this year vs last year",,,""
-"Sales Turnover (Orders) by month by category",,,""
-"Sales Turnover This year vs Last year",,,""
-"Sales Turnover YTD vs Last year by Product Family",,,""
-"Sales distribution per product category",,,""
-"Sales distribution per product family",,,""
-"Sales follow-up",,,""
-"Sales order",,,""
-"Sales order invoicing type",,,""
-"Sales per country",,,""
-"Sales turnover comparison per month this year vs past years",,,""
-"Sales turnover comparison per month this year vs past years by family",,,""
-"Sales turnover this year vs last year",,,""
-"Sales turnover this year vs past years",,,""
-"SalesMan",,,""
-"Salesman",,,""
-"Salesman Dashboard",,,""
-"Salesman Db",,,""
-"Scheduler instance",,,""
-"Schedules",,,""
-"See SalesOrder templates",,,""
-"Send email",,,""
-"Seq.",,,""
-"Settings",,,""
-"Source",,,""
-"Specific settings",,,""
-"Status",,,""
-"Stock Moves",,,""
-"Stock location",,,""
-"Subscription",,,""
-"Subscription dates",,,""
-"Subscription end date",,,""
-"Subscription start date",,,""
-"Supplier",,,""
-"Tax",,,""
-"Tax Lines",,,""
-"Team",,,""
-"Template",,,""
-"Template created by",,,""
-"Templates",,,""
-"This Year To Date",,,""
-"To Date",,,""
-"Tools",,,""
-"Total A.T.I.",,,""
-"Total A.T.I. in company currency",,,""
-"Total W.T.",,,""
-"Total W.T. in company currency",,,""
-"Total tax",,,""
-"TurnOver",,,""
-"Turnover",,,""
-"Turnover (excl. Tax) per saleman",,,""
-"Turnover (excl. Tax) per team",,,""
-"Turnover per customer category",,,""
-"Turnover per customer sector",,,""
-"Turnover per customer type",,,""
-"Turnover per month per saleman (4 month)",,,""
-"Turnover per month per saleman (6 month)",,,""
-"Unit",,,""
-"Unit cost price in company currency",,,""
-"Unit price",,,""
-"Unit price discounted",,,""
-"Validity duration",,,""
-"Validity duration per default",,,""
-"Version Number",,,""
-"View Orders",,,""
-"View Quotes",,,""
-"Word Export",,,""
-"Year",,,""
-"Year 1 To Date",,,""
-"Year 2 To Date",,,""
-"Yearly",,,""
-"help:SaleOrderLine.hideDiscount",,,""
+"${clientPartner.saleOrderInformation}",,,
+"${company.orderBloquedMessage}",,,
+"%s :\n Veuillez configurer le module vente pour la société %s",,,
+"A cancel reason must be selected",,,
+"Accepted Credit",,,
+"Action",,,
+"Actions",,,
+"Addition",,,
+"All Templates",,,
+"Amount",,,
+"Amount A.T.I.",,,
+"Amount Tax",,,
+"Annulation",,,
+"Base W.T.",,,
+"Batchs",,,
+"Bi-monthly",,,
+"Bloqued",,,
+"Business project",,,
+"Call",,,
+"Cancel",,,
+"Cancel reason",,,
+"Canceled",,,
+"Category",,,
+"Category sale turnover (Excl. Tax) per month",,,
+"Client box in sale order",,,
+"Code",,,
+"Company",,,
+"Confirm cancellation",,,
+"Confirmation annulation",,,
+"Confirmation date",,,
+"Confirmed by",,,
+"Content",,,
+"Country",,,
+"Create Order from this Template",,,
+"Create Quote",,,
+"Create SO",,,
+"Create a template",,,
+"Creation date",,,
+"Currency",,,
+"Customer",,,
+"Customer Credit",,,
+"Customer contact",,,
+"Customer information",,,
+"Customer reference",,,
+"Customize BOM",,,
+"Dashboard",,,
+"Default value for sublines",,,
+"Define as template",,,
+"Delivered",,,
+"Delivery",,,
+"Delivery State",,,
+"Delivery address",,,
+"Delivery date",,,
+"Description",,,
+"Devis",,,
+"Discount",,,
+"Discount Type",,,
+"Discount amount",,,
+"Display delivery condition on pringing ?",,,
+"Display saleman on printing ?",,,
+"Draft",,,
+"End of validity",,,
+"Estimated delivery date",,,
+"Excel Export",,,
+"Family sale turnover (Excl. Tax) per month",,,
+"Finalize",,,
+"Financial terms",,,
+"From Date",,,
+"Full name",,,
+"Generate customer deliveries",,,
+"Generate invoice",,,
+"Generate invoice from sale order",,,
+"Generate production order",,,
+"Generate purchase order",,,
+"Grouping line",,,
+"Half-yearly",,,
+"Hide Discount ?",,,
+"Il manque une ligne de taxe",,,
+"Import",,,
+"In ATI",,,
+"Industry Sector",,,
+"Info.",,,
+"Invoiced first date",,,
+"Invoices dates",,,
+"Invoicing",,,
+"Invoicing address",,,
+"Invoicing follow-up",,,
+"Invoicing informations",,,
+"La facturation par expédition impose que l'ensemble des lignes de devis comporte des produits de service ou stockable avec un approvisionnement depuis le stock",,,
+"La société %s n'a pas de séquence de configurée pour les devis clients",,,
+"Last Year To Date",,,
+"Manage sale order versions",,,
+"Manual Unblock",,,
+"Marketing",,,
+"Month",,,
+"Monthly",,,
+"My Current Leads",,,
+"My Opportunities",,,
+"My Proposals",,,
+"My Sales",,,
+"My Sales Orders",,,
+"My Team Proposals",,,
+"My Team Sales",,,
+"My Templates",,,
+"My Today Activities",,,
+"My Turnover per month",,,
+"Name",,,
+"Nbr of Units sold (Orders) by category",,,
+"New Sale order",,,
+"New Template",,,
+"New version",,,
+"Next invoiced period start date",,,
+"No Of Units",,,
+"Not delivered",,,
+"Notes",,,
+"Order Date",,,
+"Order Number",,,
+"Order bloqued message",,,
+"Order confirmed",,,
+"Orders",,,
+"Other informations",,,
+"Partially delivered",,,
+"Partner Type",,,
+"Plan",,,
+"Plan a call",,,
+"Plan a meeting",,,
+"Plan a task",,,
+"Price list",,,
+"Print",,,
+"Print subtotal / line",,,
+"Print subtotal per line",,,
+"Printing settings",,,
+"Product",,,
+"Product Category",,,
+"Product Family",,,
+"Product Family Sales Turnover this year vs last year",,,
+"Product name",,,
+"Product sale turnover (Excl. Tax) last 12 month",,,
+"Product sale turnover (Excl. Tax) per month",,,
+"Product variant",,,
+"Qty",,,
+"Quarterly",,,
+"Quotes",,,
+"Quotes & Orders",,,
+"Reference",,,
+"SO Tax line",,,
+"SO Tax lines",,,
+"SO line",,,
+"SO lines",,,
+"Sale Orders In ATI",,,
+"Sale batch",,,
+"Sale batches",,,
+"Sale config",,,
+"Sale configuration",,,
+"Sale configurations",,,
+"Sale order",,,
+"Sale order information",,,
+"Sale order lines",,,
+"Sale orders",,,
+"SaleOrder.bankDetails",,,
+"SaleOrder.bankingInfo",,,
+"SaleOrder.base",,,
+"SaleOrder.cheque",,,
+"SaleOrder.customer",,,
+"SaleOrder.customerRef",,,
+"SaleOrder.date",,,
+"SaleOrder.deliveryAddress",,,
+"SaleOrder.description",,,
+"SaleOrder.invoicingAddrs",,,
+"SaleOrder.law",,,
+"SaleOrder.no",,,
+"SaleOrder.note",,,
+"SaleOrder.paymentCondition",,,
+"SaleOrder.paymentMode",,,
+"SaleOrder.priceExclTax",,,
+"SaleOrder.qtyUnit",,,
+"SaleOrder.supplier",,,
+"SaleOrder.supplyRef",,,
+"SaleOrder.tax",,,
+"SaleOrder.taxAmount",,,
+"SaleOrder.totalExclTax",,,
+"SaleOrder.totalInclTax",,,
+"SaleOrder.totalTax",,,
+"SaleOrder.unitPrice",,,
+"Sales",,,
+"Sales Dashboard 1",,,
+"Sales Dashboard 2",,,
+"Sales Db 1",,,
+"Sales Db 2",,,
+"Sales Manager Dashboard",,,
+"Sales Manager Db",,,
+"Sales Order filters",,,
+"Sales TurnOver by Product this year vs last year",,,
+"Sales Turnover (Orders) by month by category",,,
+"Sales Turnover This year vs Last year",,,
+"Sales Turnover YTD vs Last year by Product Family",,,
+"Sales distribution per product category",,,
+"Sales distribution per product family",,,
+"Sales follow-up",,,
+"Sales order",,,
+"Sales order invoicing type",,,
+"Sales per country",,,
+"Sales turnover comparison per month this year vs past years",,,
+"Sales turnover comparison per month this year vs past years by family",,,
+"Sales turnover this year vs last year",,,
+"Sales turnover this year vs past years",,,
+"SalesMan",,,
+"Salesman",,,
+"Salesman Dashboard",,,
+"Salesman Db",,,
+"Scheduler instance",,,
+"Schedules",,,
+"See SalesOrder templates",,,
+"Send email",,,
+"Seq.",,,
+"Settings",,,
+"Source",,,
+"Specific settings",,,
+"Status",,,
+"Stock Moves",,,
+"Stock location",,,
+"Subscription",,,
+"Subscription dates",,,
+"Subscription end date",,,
+"Subscription start date",,,
+"Supplier",,,
+"Tax",,,
+"Tax Lines",,,
+"Team",,,
+"Template",,,
+"Template created by",,,
+"Templates",,,
+"This Year To Date",,,
+"To Date",,,
+"Tools",,,
+"Total A.T.I.",,,
+"Total A.T.I. in company currency",,,
+"Total W.T.",,,
+"Total W.T. in company currency",,,
+"Total tax",,,
+"TurnOver",,,
+"Turnover",,,
+"Turnover (excl. Tax) per saleman",,,
+"Turnover (excl. Tax) per team",,,
+"Turnover per customer category",,,
+"Turnover per customer sector",,,
+"Turnover per customer type",,,
+"Turnover per month per saleman (4 month)",,,
+"Turnover per month per saleman (6 month)",,,
+"Unit",,,
+"Unit cost price in company currency",,,
+"Unit price",,,
+"Unit price discounted",,,
+"Validity duration",,,
+"Validity duration per default",,,
+"Version Number",,,
+"View Orders",,,
+"View Quotes",,,
+"Word Export",,,
+"Year",,,
+"Year 1 To Date",,,
+"Year 2 To Date",,,
+"Yearly",,,
+"help:SaleOrderLine.hideDiscount",,,
