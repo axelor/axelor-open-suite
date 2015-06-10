@@ -1,24 +1,24 @@
-"key";"message";"comment";"context"
-"Business Folder";"Dossier ";;
-"Business Folders";"Dossier ";;
-"Business Project";"Projet";;
-"Business project";"Projet";;
-"Close";"Fermer";;
-"Closed";"Fermé";;
-"Code";;;
-"Create Sale Order From Template";"Créer Devis depuis Modèle";;
-"Create Sales Order";"Créer Devis";;
-"Customer";"Client";;
-"Date Opened";"Ouvert le";;
-"Date closed";"Fermé le ";;
-"Folder name";"Nom dossier";;
-"Open";"Ouvert";;
-"Overview";;;
-"Project";;;
-"Sale Orders";;;
-"Sale order";;;
-"Status";"Statut";;
-"Template";"Modèle";;
-"User Opened";"Ouvert par";;
-"User Responisble";"Référent Commercial";;
-"User closed";"Fermé par";;
+"key","message","comment","context"
+"Business Folder","Dossier ",,
+"Business Folders","Dossier ",,
+"Business Project","Projet",,
+"Business project","Projet",,
+"Close","Fermer",,
+"Closed","Fermé",,
+"Code",,,
+"Create Sale Order From Template","Créer Devis depuis Modèle",,
+"Create Sales Order","Créer Devis",,
+"Customer","Client",,
+"Date Opened","Ouvert le",,
+"Date closed","Fermé le ",,
+"Folder name","Nom dossier",,
+"Open","Ouvert",,
+"Overview",,,
+"Project",,,
+"Sale Orders",,,
+"Sale order",,,
+"Status","Statut",,
+"Template","Modèle",,
+"User Opened","Ouvert par",,
+"User Responisble","Référent Commercial",,
+"User closed","Fermé par",,
