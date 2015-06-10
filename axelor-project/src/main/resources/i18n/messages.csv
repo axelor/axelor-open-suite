@@ -1,21 +1,14 @@
 "key","message","comment","context"
-"Assigned to",,,"resources/domains/Task.xml:13"
-"Business Project",,,"resources/domains/Project.xml:13"
-"Customer/Partner",,,"resources/domains/Project.xml:12"
-"Import",,,"resources/domains/Project.xml:10
-resources/domains/Task.xml:10"
-"Membres",,,"resources/domains/Project.xml:15"
-"Name",,,"resources/domains/Project.xml:18"
-"Overview",,,"resources/views/Project.xml:12"
-"Project",,,"resources/domains/Task.xml:11
-resources/views/Menu.xml:5
-resources/views/Project.xml:11"
-"Project Name",,,"resources/domains/Project.xml:11"
-"Project code",,,"resources/domains/Project.xml:14"
-"Projects",,,"resources/views/Menu.xml:11
-resources/views/Menu.xml:9
-resources/views/Project.xml:5"
-"Task",,,"resources/domains/Project.xml:16
-resources/views/Task.xml:10"
-"Task name",,,"resources/domains/Task.xml:12"
-"Tasks",,,"resources/views/Task.xml:5"
+"Assigned to",,,""
+"Business Project",,,""
+"Code",,,""
+"Customer/Partner",,,""
+"Import",,,""
+"Membres",,,""
+"Name",,,""
+"Overview",,,""
+"Project",,,""
+"Projects",,,""
+"Task",,,""
+"Tasks",,,""
+"Type",,,""

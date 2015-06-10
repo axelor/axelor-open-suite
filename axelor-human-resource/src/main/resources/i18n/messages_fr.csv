@@ -1,224 +1,152 @@
 "key","message","comment","context"
-"Accounting",,,"resources/views/Product.xml:53"
-"Actions",,,"resources/views/Expense.xml:27
-resources/views/Leave.xml:33
-resources/views/Timesheet.xml:26"
-"Activities","Activités",,"resources/views/Menu.xml:118
-resources/views/Menu.xml:120"
-"Activity","Activité",,"resources/domains/Timesheet.xml:20
-resources/domains/TimesheetLine.xml:13"
-"Afternoon","L'après-midi",,"resources/views/Selects.xml:40"
-"Afternoon From","L'après-midi de",,"resources/domains/WeeklyPlanning.xml:20"
-"All my Expenses","Toutes mes notes de frais",,"resources/views/Menu.xml:43"
-"All my Leaves","Toutes mes absences",,"resources/views/Menu.xml:70"
-"All my Timesheets","Toutes mes feuilles de temps",,"resources/views/Menu.xml:16"
-"Cancel","Annuler",,"resources/views/Expense.xml:32
-resources/views/Leave.xml:37
-resources/views/Timesheet.xml:30"
-"Canceled","Annulé",,"resources/views/Selects.xml:11
-resources/views/Selects.xml:19"
-"Catalog",,,"resources/views/Product.xml:8"
-"Categorization",,,"resources/views/Product.xml:33"
-"Code",,,"resources/views/Product.xml:27"
-"Comments","Commentaire",,"resources/domains/ExpenseLine.xml:17
-resources/domains/Leave.xml:19
-resources/domains/TimesheetLine.xml:19"
-"Company",,,"resources/domains/Expense.xml:18
-resources/domains/Leave.xml:20
-resources/domains/Timesheet.xml:21"
-"Complete my expense","Compléter ma note de frais",,"resources/views/Menu.xml:37"
-"Complete my leave","Compléter mon absence",,"resources/views/Menu.xml:64"
-"Complete my time sheet","Compléter ma feuille de temps",,"resources/views/Menu.xml:10"
-"Configuration",,,"resources/views/Menu.xml:116"
-"Confirm","Confirmer",,"resources/views/Timesheet.xml:27"
-"Confirmed","Confirmé",,"resources/views/Selects.xml:16"
-"Contact",,,"resources/domains/Employee.xml:11
-resources/views/Employee.xml:15"
-"Daily work hours","Nombre d'heures de travail journalier",,"resources/domains/Employee.xml:15
-resources/domains/General.xml:9"
-"Date","Date",,"resources/domains/TimesheetLine.xml:15"
-"Date can't be in the future",,,"resources/views/ExpenseLine.xml:41"
-"Date from","De",,"resources/domains/Leave.xml:13"
-"Date to (Included)","Date à (inclus)",,"resources/domains/Leave.xml:15"
-"Day","Jour",,"resources/domains/WeeklyPlanning.xml:17
-resources/views/WeeklyPlanning.xml:18
-resources/views/WeeklyPlanning.xml:26"
-"Days","Jours",,"resources/views/Selects.xml:23"
-"Department","Service",,"resources/domains/Employee.xml:17"
-"Departments","Services",,"resources/views/Menu.xml:108
-resources/views/Menu.xml:110"
-"Description",,,"resources/views/Product.xml:46"
-"Draft","Brouillon",,"resources/views/Selects.xml:15
-resources/views/Selects.xml:7"
-"Duration","Durée",,"resources/domains/Leave.xml:17
-resources/domains/TimesheetLine.xml:17
-resources/domains/TimesheetLine.xml:18"
-"Duration(by day)","Durée (par jour)",,"resources/domains/Timesheet.xml:19"
-"Edit Expense Selected","Editer ma note de frais sélectionnée",,"resources/views/Expense.xml:66"
-"Edit Timesheet Selected","Editer la feuille de temps sélectionnée",,"resources/views/Timesheet.xml:54"
-"Employee","Employé",,"resources/domains/User.xml:10
-resources/views/Employee.xml:14
-resources/views/Employee.xml:47
-resources/views/Employee.xml:5
-resources/views/Menu.xml:90
-resources/views/Menu.xml:92"
-"End On","Se termine",,"resources/domains/Leave.xml:16"
-"Expense","Note de frais",,"resources/domains/Product.xml:8
-resources/views/Expense.xml:26
-resources/views/Expense.xml:81"
-"Expense Type","Type de frais",,"resources/domains/ExpenseLine.xml:12
-resources/views/Menu.xml:125
-resources/views/Menu.xml:127"
-"Expense Ventilated","Note de frais ventilée",,"resources/views/Expense.xml:37"
-"Expense date","Date de dépense",,"resources/domains/ExpenseLine.xml:13"
-"Expense line","Ligne de NdeF",,"resources/views/ExpenseLine.xml:19"
-"Expense lines","Lignes de NdeF",,"resources/domains/Expense.xml:14
-resources/views/ExpenseLine.xml:6"
-"Expenses","Note de frais",,"resources/views/Expense.xml:13
-resources/views/Expense.xml:5
-resources/views/Menu.xml:35"
-"Expenses to Validate",,,"resources/views/Menu.xml:49"
-"External","Externe",,"resources/domains/Employee.xml:19"
-"Friday","Vendredi",,"resources/views/Selects.xml:33"
-"From date","De",,"resources/domains/Timesheet.xml:15"
-"Full name",,,"resources/domains/Timesheet.xml:23"
-"Generate Lines automatically","Générer les lignes automatiquement",,"resources/views/Timesheet.xml:40"
-"Generate lines","Générer les lignes",,"resources/views/Timesheet.xml:47"
-"Get time from Tasks","Récupérer les temps passés sur les tâches",,"resources/views/Timesheet.xml:38"
-"Historic colleague Expenses","Historique des NdeF des collab.",,"resources/views/Menu.xml:55"
-"Historic colleague Leaves","Historique des absences des collab.",,"resources/views/Menu.xml:82"
-"Historic colleague Timesheets","Historique des f. de temps des collab.",,"resources/views/Menu.xml:28"
-"Hourly price","Prix horaire",,"resources/domains/TimeActivity.xml:12"
-"Hourly rate","Taux horaire",,"resources/domains/Employee.xml:12"
-"Hours","Heures",,"resources/views/Selects.xml:24
-resources/views/TimesheetLine.xml:33
-resources/views/TimesheetLine.xml:49"
-"Human resources","RH",,"resources/views/Menu.xml:5"
-"Import",,,"resources/domains/Employee.xml:10
-resources/domains/TimeActivity.xml:10
-resources/domains/Timesheet.xml:10
-resources/domains/TimesheetLine.xml:10
-resources/domains/WeeklyPlanning.xml:15
-resources/domains/WeeklyPlanning.xml:9"
-"Internal description",,,"resources/views/Product.xml:49"
-"Invalide dates",,,"resources/views/Leave.xml:92"
-"Leave","Absence",,"resources/views/Leave.xml:31"
-"Leave reason","Motif absence",,"resources/domains/LeaveReason.xml:10
-resources/views/LeaveReason.xml:5
-resources/views/LeaveReason.xml:9
-resources/views/Menu.xml:101
-resources/views/Menu.xml:99"
-"Leaves","Absences",,"resources/views/Leave.xml:16
-resources/views/Leave.xml:5
-resources/views/Menu.xml:62"
-"Leaves to Validate","Absences à valider",,"resources/views/Menu.xml:76"
-"Log Time","Temps passé",,"resources/views/TimesheetLine.xml:27"
-"Log Times","Temps passés",,"resources/views/TimesheetLine.xml:5"
-"Logged Time","Temps passé",,"resources/domains/ProjectTask.xml:10"
-"Manager","Responsable Hiérarchique",,"resources/domains/Employee.xml:16"
-"Minutes","Minutes",,"resources/views/Selects.xml:25"
-"Monday","Lundi",,"resources/views/Selects.xml:29"
-"Morning","Le matin",,"resources/views/Selects.xml:39"
-"Morning From","Le matin de",,"resources/domains/WeeklyPlanning.xml:18"
-"Move",,,"resources/domains/Expense.xml:20"
-"Move Date",,,"resources/domains/Expense.xml:19"
-"Name","Nom",,"resources/domains/Employee.xml:22
-resources/domains/TimeActivity.xml:11
-resources/domains/WeeklyPlanning.xml:10
-resources/views/Product.xml:26"
-"No expense to be validated by your subordinates","Aucune NdeF à valider par mes subordonnés",,"java/com/axelor/apps/hr/web/expense/ExpenseController.java:151"
-"No leave to be validated by your subordinates","Aucun congé à valider par mes subordonnés",,"java/com/axelor/apps/hr/web/leave/LeaveController.java:140"
-"No log time found or all log times already added","Aucun temps passé à ajouter",,"resources/views/Timesheet.xml:88"
-"No timesheet to be validated by your subordinates","Aucune f. de temps à valider par mes subordonnés",,"java/com/axelor/apps/hr/web/timesheet/TimesheetController.java:164"
-"Overview","Entête",,"resources/views/TimesheetLine.xml:28
-resources/views/TimesheetLine.xml:43"
-"Period","Période",,"resources/domains/Expense.xml:11"
-"Period is closed",,,"resources/views/Expense.xml:129"
-"Planning",,,"resources/domains/Employee.xml:20"
-"Problème de date pour la (les) ligne(s) :",,,"java/com/axelor/apps/hr/web/expense/ExpenseController.java:208"
-"Product",,,"resources/views/Product.xml:19"
-"Product sheet",,,"resources/views/Product.xml:22"
-"Product specific attributes",,,"resources/views/Product.xml:38"
-"Product typology",,,"resources/views/Product.xml:28"
-"Products",,,"resources/views/Product.xml:6"
-"Project","Projet",,"resources/domains/Timesheet.xml:17
-resources/domains/TimesheetLine.xml:11"
-"Reason","Motif",,"resources/domains/Leave.xml:18"
-"Refuse","Refuser",,"resources/views/Expense.xml:31
-resources/views/Leave.xml:36
-resources/views/Timesheet.xml:29"
-"Refused","Refusé",,"resources/views/Selects.xml:10
-resources/views/Selects.xml:18"
-"Request date","Date de la demande",,"resources/domains/Leave.xml:12"
-"Return to draft status","Retourner à l'état brouillon",,"resources/views/Expense.xml:33
-resources/views/Leave.xml:38
-resources/views/Timesheet.xml:31"
-"Sale",,,"resources/views/Product.xml:39"
-"Sales",,,"resources/views/Product.xml:40"
-"Saturday","Samedi",,"resources/views/Selects.xml:34"
-"Select Expense","Sélectionner Note de Frais",,"resources/views/Expense.xml:65"
-"Select Timesheet","Sélectionner Feuille de temps",,"resources/views/Timesheet.xml:53"
-"Select the expense you want to edit","Sélectionner la NdeF à éditer",,"resources/views/Expense.xml:64"
-"Select the timesheet you want to edit","Sélectionnez la feuille de temps à éditer",,"resources/views/Timesheet.xml:52"
-"Send Email",,,"resources/views/Product.xml:16
-resources/views/Product.xml:21"
-"Send Expenses","Envoyer note de frais",,"resources/views/Expense.xml:28"
-"Send Leave",,,"resources/views/Leave.xml:34"
-"Sent Date","Date d'envoi",,"resources/domains/Expense.xml:10
-resources/domains/Timesheet.xml:11"
-"Show expenses to be validated by my subordinates","Voir les NdeF à valider par mes subordonnés",,"resources/views/Expense.xml:15"
-"Show leaves to be validated by my subordinates","Voir les congés à valider par mes subordonnés",,"resources/views/Leave.xml:18"
-"Show timesheets to be validated by my subordinates","Voir les f. de temps à valider par mes subordonnés",,"resources/views/Timesheet.xml:14"
-"Start On","Commence",,"resources/domains/Leave.xml:14"
-"Status","Statut",,"resources/domains/Expense.xml:12
-resources/domains/Leave.xml:11
-resources/domains/Timesheet.xml:12"
-"Sunday","Dimanche",,"resources/views/Selects.xml:35"
-"Task","Tâche",,"resources/domains/ExpenseLine.xml:11
-resources/domains/Timesheet.xml:18
-resources/domains/TimesheetLine.xml:12
-resources/views/ProjectTask.xml:10"
-"Tasks","Tâches",,"resources/views/ProjectTask.xml:5"
-"Thursday","Jeudi",,"resources/views/Selects.xml:32"
-"Time Activity","Activité temps",,"resources/views/TimeActivity.xml:10
-resources/views/TimeActivity.xml:5"
-"Time Sheet","Feuille de temps",,"resources/domains/TimesheetLine.xml:16"
-"Time logging preference","Unité saisie feuille de temps",,"resources/domains/Employee.xml:13"
-"Timesheet","Feuille de temps",,"resources/views/Timesheet.xml:12
-resources/views/Timesheet.xml:24
-resources/views/Timesheet.xml:5"
-"Timesheet Line","Ligne de feuille de temps",,"resources/views/TimesheetLine.xml:42"
-"Timesheet Lines","Lignes de feuille de temps",,"resources/domains/Timesheet.xml:14
-resources/views/TimesheetLine.xml:15"
-"Timesheet reminder","Soumis à la saisie des temps",,"resources/domains/Employee.xml:18"
-"Timesheets","Feuille de temps",,"resources/views/Menu.xml:8"
-"Timesheets to Validate","Feuilles de temps à valider",,"resources/views/Menu.xml:22"
-"To","à",,"resources/domains/WeeklyPlanning.xml:19
-resources/domains/WeeklyPlanning.xml:21"
-"To date","à",,"resources/domains/Timesheet.xml:16"
-"Total A.T.I.",,,"resources/domains/Expense.xml:17"
-"Total W.T.",,,"resources/domains/Expense.xml:15"
-"Total amount with tax","Montant TTC",,"resources/domains/ExpenseLine.xml:16"
-"Total tax","Montant TVA",,"resources/domains/Expense.xml:16
-resources/domains/ExpenseLine.xml:15"
-"Tracking number",,,"resources/views/Product.xml:54"
-"Tuesday","Mardi",,"resources/views/Selects.xml:30"
-"Untaxed amount","Montant HT",,"resources/domains/ExpenseLine.xml:14"
-"User","Utilisateur",,"resources/domains/Expense.xml:13
-resources/domains/ExpenseLine.xml:10
-resources/domains/Leave.xml:10
-resources/domains/Timesheet.xml:13
-resources/domains/TimesheetLine.xml:14"
-"Valid","Valider",,"resources/views/Expense.xml:30
-resources/views/Leave.xml:35
-resources/views/Timesheet.xml:28"
-"Validated","Validé",,"resources/views/Selects.xml:17
-resources/views/Selects.xml:9"
-"Ventilate",,,"resources/views/Expense.xml:29"
-"Waiting validation","Attente validation",,"resources/views/Selects.xml:8"
-"Wednesday","Mercredi",,"resources/views/Selects.xml:31"
-"Week days","Jours de la semaine",,"resources/domains/WeeklyPlanning.xml:11"
-"Weekly Planning","Planning hebdomadaire",,"resources/views/WeeklyPlanning.xml:11
-resources/views/WeeklyPlanning.xml:5"
-"Weekly plann","Planning hebdomadaire",,"resources/domains/WeeklyPlanning.xml:16"
-"Weekly work hours","Nombre d'heures de travail hebdomadaire",,"resources/domains/Employee.xml:14"
+"Accounting",,,""
+"Actions",,,""
+"Activities","Activités",,""
+"Activity","Activité",,""
+"Afternoon","L'après-midi",,""
+"Afternoon From","L'après-midi de",,""
+"All my Expenses","Toutes mes notes de frais",,""
+"All my Leaves","Toutes mes absences",,""
+"All my Timesheets","Toutes mes feuilles de temps",,""
+"Cancel","Annuler",,""
+"Canceled","Annulé",,""
+"Catalog",,,""
+"Categorization",,,""
+"Code",,,""
+"Comments","Commentaire",,""
+"Company",,,""
+"Complete my expense","Compléter ma note de frais",,""
+"Complete my leave","Compléter mon absence",,""
+"Complete my time sheet","Compléter ma feuille de temps",,""
+"Configuration",,,""
+"Confirm","Confirmer",,""
+"Confirmed","Confirmé",,""
+"Contact",,,""
+"Daily work hours","Nombre d'heures de travail journalier",,""
+"Date","Date",,""
+"Date can't be in the future",,,""
+"Date from","De",,""
+"Date to (Included)","Date à (inclus)",,""
+"Day","Jour",,""
+"Days","Jours",,""
+"Department","Service",,""
+"Departments","Services",,""
+"Description",,,""
+"Draft","Brouillon",,""
+"Duration","Durée",,""
+"Duration(by day)","Durée (par jour)",,""
+"Edit Expense Selected","Editer ma note de frais sélectionnée",,""
+"Edit Timesheet Selected","Editer la feuille de temps sélectionnée",,""
+"Employee","Employé",,""
+"End On","Se termine",,""
+"Expense","Note de frais",,""
+"Expense Journal",,,""
+"Expense Type","Type de frais",,""
+"Expense Ventilated","Note de frais ventilée",,""
+"Expense date","Date de dépense",,""
+"Expense employee account",,,""
+"Expense line","Ligne de NdeF",,""
+"Expense lines","Lignes de NdeF",,""
+"Expense tax account",,,""
+"Expenses","Note de frais",,""
+"Expenses to Validate",,,""
+"External","Externe",,""
+"Friday","Vendredi",,""
+"From date","De",,""
+"Full name",,,""
+"Generate Lines automatically","Générer les lignes automatiquement",,""
+"Generate lines","Générer les lignes",,""
+"Get time from Tasks","Récupérer les temps passés sur les tâches",,""
+"Historic colleague Expenses","Historique des NdeF des collab.",,""
+"Historic colleague Leaves","Historique des absences des collab.",,""
+"Historic colleague Timesheets","Historique des f. de temps des collab.",,""
+"Hourly price","Prix horaire",,""
+"Hourly rate","Taux horaire",,""
+"Hours","Heures",,""
+"Human resources","RH",,""
+"Import",,,""
+"Internal description",,,""
+"Invalide dates",,,""
+"Leave","Absence",,""
+"Leave reason","Motif absence",,""
+"Leaves","Absences",,""
+"Leaves to Validate","Absences à valider",,""
+"Log Time","Temps passé",,""
+"Log Times","Temps passés",,""
+"Logged Time","Temps passé",,""
+"Manager","Responsable Hiérarchique",,""
+"Minutes","Minutes",,""
+"Monday","Lundi",,""
+"Morning","Le matin",,""
+"Morning From","Le matin de",,""
+"Move",,,""
+"Move Date",,,""
+"Name","Nom",,""
+"No expense to be validated by your subordinates","Aucune NdeF à valider par mes subordonnés",,""
+"No leave to be validated by your subordinates","Aucun congé à valider par mes subordonnés",,""
+"No log time found or all log times already added","Aucun temps passé à ajouter",,""
+"No timesheet to be validated by your subordinates","Aucune f. de temps à valider par mes subordonnés",,""
+"Overview","Entête",,""
+"Period","Période",,""
+"Period is closed",,,""
+"Planning",,,""
+"Problème de date pour la (les) ligne(s) :",,,""
+"Product",,,""
+"Product sheet",,,""
+"Product specific attributes",,,""
+"Product typology",,,""
+"Products",,,""
+"Project","Projet",,""
+"Reason","Motif",,""
+"Refuse","Refuser",,""
+"Refused","Refusé",,""
+"Request date","Date de la demande",,""
+"Return to draft status","Retourner à l'état brouillon",,""
+"Sale",,,""
+"Sales",,,""
+"Saturday","Samedi",,""
+"Select Expense","Sélectionner Note de Frais",,""
+"Select Timesheet","Sélectionner Feuille de temps",,""
+"Select the expense you want to edit","Sélectionner la NdeF à éditer",,""
+"Select the timesheet you want to edit","Sélectionnez la feuille de temps à éditer",,""
+"Send Email",,,""
+"Send Expenses","Envoyer note de frais",,""
+"Send Leave",,,""
+"Sent Date","Date d'envoi",,""
+"Show expenses to be validated by my subordinates","Voir les NdeF à valider par mes subordonnés",,""
+"Show leaves to be validated by my subordinates","Voir les congés à valider par mes subordonnés",,""
+"Show timesheets to be validated by my subordinates","Voir les f. de temps à valider par mes subordonnés",,""
+"Start On","Commence",,""
+"Status","Statut",,""
+"Sunday","Dimanche",,""
+"Task","Tâche",,""
+"Tasks","Tâches",,""
+"Thursday","Jeudi",,""
+"Time Activity","Activité temps",,""
+"Time Sheet","Feuille de temps",,""
+"Time logging preference","Unité saisie feuille de temps",,""
+"Timesheet","Feuille de temps",,""
+"Timesheet Line","Ligne de feuille de temps",,""
+"Timesheet Lines","Lignes de feuille de temps",,""
+"Timesheet reminder","Soumis à la saisie des temps",,""
+"Timesheets","Feuille de temps",,""
+"Timesheets to Validate","Feuilles de temps à valider",,""
+"To","à",,""
+"To date","à",,""
+"Total A.T.I.",,,""
+"Total W.T.",,,""
+"Total amount with tax","Montant TTC",,""
+"Total tax","Montant TVA",,""
+"Tracking number",,,""
+"Tuesday","Mardi",,""
+"Untaxed amount","Montant HT",,""
+"User","Utilisateur",,""
+"Valid","Valider",,""
+"Validated","Validé",,""
+"Ventilate",,,""
+"Waiting validation","Attente validation",,""
+"Wednesday","Mercredi",,""
+"Week days","Jours de la semaine",,""
+"Weekly Planning","Planning hebdomadaire",,""
+"Weekly plann","Planning hebdomadaire",,""
+"Weekly work hours","Nombre d'heures de travail hebdomadaire",,""
