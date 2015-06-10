@@ -1,252 +1,252 @@
 "key","message","comment","context"
-"Actions",,,""
-"Add Manuf. Order","Ordre de fabrication",,""
-"All Current Manufacturing Orders","Tous les ordres de fabrication en cours",,""
-"All Manufacturing Order Plannings","Tous les ordres de fabrication planifiés",,""
-"All Upcoming Manufacturing Orders","Tous les ordres de fabrication à venir",,""
-"Aucune nomenclature définie pour le produit %s (%s)",,,""
-"Aucune séquence configurée pour les Ordres de fabrication",,,""
-"Aucune séquence configurée pour les Ordres de production",,,""
-"BOM","Nomenclature",,""
-"BOM tree","Nomenclature arborescente",,""
-"BOMs","Lignes de nomenclature",,""
-"Bill of material","Nomenclatures",,""
-"Bills of material","Nomenclatures",,""
-"Bills of materials","Nomenclatures",,""
-"BoM","Nomenclature",,""
-"Brand","Fabricant",,""
-"Cancel","Annuler",,""
-"Canceled","Annulé",,""
-"Cancelled MOs","OFs annulés",,""
-"Cancelled Operations","Opérations annulées",,""
-"Capacity / cycle","Capacité / cycle",,""
-"Capacity settings","Paramétrages capacité",,""
-"Charge by machine","Charge par machine",,""
-"Charge previsionnelle par machine","Charge previsionnelle par machine",,""
-"Charge réelle par machine","Charge réelle par machine",,""
-"Code","Code",,""
-"Comments","Commentaires",,""
-"Company","Société",,""
-"Compliance","Conformité",,""
-"Components","Composants",,""
-"Compute cost price","Calculer coût de revient",,""
-"Configurations","Configurations",,""
-"Conforme","Conforme",,""
-"Conformité","Conformité",,""
-"Consumed products","Produits consommés",,""
-"Cost","Coût",,""
-"Cost (W.T.)","Coût (H.T.)",,""
-"Cost price","Prix de revient",,""
-"Cost type","Type coût",,""
-"Costing settings","Paramétrages coûts",,""
-"Create Manuf. Order","Créer Ordre de Fabr.",,""
-"Dashboard","Tableau de bord",,""
-"Dates","Dates",,""
-"Default BOM","Nomenclature par défaut",,""
-"Default Machine","Machine par défaut",,""
-"Default Machine settings","Paramétrages machine par défaut",,""
-"Default resource product","Produit ressource par défaut",,""
-"Description","Description",,""
-"Diff consume manuf order","Diff. Consommation Ordre de fabr.",,""
-"Diff consume operation order","Diff. Consommation Opération",,""
-"Difference","Différences",,""
-"Differences","Différence",,""
-"Draft","Brouillon",,""
-"Draft MOs","OFs brouillons",,""
-"Draft Operations","Opérations brouillons",,""
-"Duration","Durée",,""
-"Duration / cycle (hh:mm)","Durée / Cycle (hh:mm)",,""
-"Duration between two cycles (hh:mm)","Temps entre 2 cycles (hh:mm)",,""
-"Ending duration (hh:mm)","Temps clôture (hh:mm)",,""
-"Erreur lors de la création de l'ordre de production",,,""
-"Finish","Terminer",,""
-"Finished","Terminé",,""
-"Finished MOs","OFs terminés",,""
-"Finished Operations","Opérations terminées",,""
-"Finished products","Produits finis",,""
-"Generate production orders automatically",,,""
-"Generate waste stock move","Générer Mvt de sortie rebus",,""
-"Human","Homme",,""
-"Human and Machine","Homme et Machine",,""
-"Human resources","Ressources humaines",,""
-"Import","Importer",,""
-"In progress","En cours",,""
-"Is closed","Est terminé",,""
-"Is with difference","Avec différence ?",,""
-"Label","Libellé",,""
-"Last production price","Dernier prix de production",,""
-"Late Planned MOs","OFs en retard",,""
-"Late Planned Operations","Opérations plannifiées en retard",,""
-"Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord.","Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord.",,""
-"Location","Emplacement",,""
-"MO","N° OF",,""
-"MOs Finished late","OFs terminés en retard",,""
-"MOs In Progress","OFs en cours",,""
-"MOs In Standby","OFs en pause",,""
-"MOs to invoice","OFs à facturer",,""
-"Machine","Machine",,""
-"Machines","Machines",,""
-"Manage consumed products on operations?","Gérer la consommation par opération",,""
-"ManufOrder.billOfMaterial","Nomenclature",,""
-"ManufOrder.effective","Réel",,""
-"ManufOrder.endDate","Date de fin",,""
-"ManufOrder.forecast","Prévu",,""
-"ManufOrder.machine","Machine",,""
-"ManufOrder.num","N°",,""
-"ManufOrder.operation","Opération",,""
-"ManufOrder.operations","Opérations",,""
-"ManufOrder.origin","Origine",,""
-"ManufOrder.plannedStartDate","Date début plannifiée",,""
-"ManufOrder.product","Produit",,""
-"ManufOrder.productCode","Code produit",,""
-"ManufOrder.productName","Nom",,""
-"ManufOrder.productionProcess","Gamme",,""
-"ManufOrder.productsToPrepare","Produits à préparer (Consommer)",,""
-"ManufOrder.quantity","Quantité",,""
-"ManufOrder.startDate","Date de début",,""
-"ManufOrder.status","Etat",,""
-"ManufOrder.title","Ordre de fabrication",,""
-"ManufOrder.trackingNumber","Numéro de lot",,""
-"ManufOrderSheetLine",,,""
-"Manufacturing","Production",,""
-"Manufacturing Dashboard","Tableau de bord OF",,""
-"Manufacturing Db","Db production",,""
-"Manufacturing order","Ordre de fabrication",,""
-"Manufacturing order filters","Filtre sur les OFs",,""
-"Manufacturing orders","Ordres de fabrication",,""
-"Manufacturing processes","Gammes",,""
-"Max. capacity / cycle","Capacité Max. / Cycle",,""
-"Moves In/Out","Entrées/Sorties",,""
-"Name","Nom",,""
-"New Manufacturing Order","Créer Ordre de Fabr.",,""
-"No production order has been generated",,,""
-"Nomenclature personnalisé créée",,,""
-"Non conforme","Non conforme",,""
-"None","Aucun",,""
-"Not manage stock","Ne pas gérer le stock",,""
-"Observations (état des filetages, aspect général, état des surfaces d'appuis...) :","Observations (état des filetages, aspect général, état des surfaces d'appuis...) :",,""
-"Operation","Opération",,""
-"Operation name","Intitulé Opération",,""
-"Operation order","Ordre de fabrication",,""
-"Operation order filters","Filtre des opérations",,""
-"Operation orders","Opérations de fabrication",,""
-"OperationOrder.associatedBOM","Opération ",,""
-"OperationOrder.cycleDuration","Nomenclature associée",,""
-"OperationOrder.dates","Dates",,""
-"OperationOrder.delayBtwCycle","Délai entre deux cycle",,""
-"OperationOrder.machine","Machine",,""
-"OperationOrder.num","N°",,""
-"OperationOrder.operationDetails","Détails de l'opération",,""
-"OperationOrder.operationName","Nom de l'opération",,""
-"OperationOrder.operationRequirement","Pré-requis opérationnel",,""
-"OperationOrder.plannedEndDate","Date de début réelle",,""
-"OperationOrder.plannedStartDate","Date de début plannifié",,""
-"OperationOrder.productName","Nom du produit",,""
-"OperationOrder.productToPrepare","Produit à préparer (Consommer)",,""
-"OperationOrder.qty","Quantité",,""
-"OperationOrder.realEndDate","Date de fin réelle",,""
-"OperationOrder.realStartDate","Date de début réelle",,""
-"OperationOrder.relatedToProduct","Produit concerné",,""
-"OperationOrder.startTime","Temps de démarrage",,""
-"OperationOrder.stopTime","Temps d'arrêt",,""
-"OperationOrder.title","Opération de fabrication",,""
-"OperationOrder.trackingNumber","Numéro de lot",,""
-"Operations","Opérations",,""
-"Operations Finished late","Opérations terminées en retard",,""
-"Operations In Progress","Opérations en cours",,""
-"Operations In Standby","Opérations en pause",,""
-"Operations orders","Operations de production",,""
-"Operations to invoice","Opérations à facturer",,""
-"Operations with difference","Opérations avec différences de consommation",,""
-"Ordre de production créé",,,""
-"Parent BOM","Nomenclature parente",,""
-"Part","Composant",,""
-"Pause","Pause",,""
-"Per Cycle","Par cycle",,""
-"Per hour","Par heure",,""
-"Personalized","Personnalisée",,""
-"Plan","Planifier",,""
-"Planned","Planifié",,""
-"Planned MOs","OFs plannifiés",,""
-"Planned Operations","Opérations plannifiées",,""
-"Planned dates","Dates prévues",,""
-"Planned duration","Durée planifiée",,""
-"Planned end date","Date de fin",,""
-"Planned operations","Opérations planifiées",,""
-"Planned start date","Date de début prévisionnelle",,""
-"Please select the Manufacturing order(s) to print.",,,""
-"Please select the Operation order(s) to print.",,,""
-"Pre-fill operations","Pré-remplir les opérations",,""
-"Print","Imprimer",,""
-"Priority","Priorité",,""
-"Prod. Human resource","Ressources humaines",,""
-"Prod. Human resources","Ressources humaines",,""
-"Produced products","Produits fabriqués",,""
-"Product","Produit",,""
-"Production and cost settings","Paramétrages production et coûts",,""
-"Production config","Config. Production",,""
-"Production configuration","Configuration de la production",,""
-"Production configurations","Configs. Production",,""
-"Production location","Emplacement de production",,""
-"Production order","Ordre de production",,""
-"Production order filters","Filtres des ordres de productions",,""
-"Production order wizard","Assistant Ordre Production",,""
-"Production orders","Ordres de production",,""
-"Production orders closed","Ordres de productions terminés",,""
-"Production orders to invoice","Ordres de productions à facturer",,""
-"Production process","Gamme",,""
-"Production remains","Restes",,""
-"Production virtual location","Emplacement virtuel de production",,""
-"Production waste","Rebus de production",,""
-"Productions orders","Ordres de Production",,""
-"Products","Produits",,""
-"Products to consume","Produits à consommer",,""
-"Products to produce","Produits à produire",,""
-"Profile","Profil",,""
-"Qty","Qté",,""
-"Quantity","Quantité",,""
-"Raw material","Matière première",,""
-"Real dates","Dates réelles",,""
-"Real duration","Durée réelle",,""
-"Real end date","Date réelle de fin",,""
-"Real operations","Opérations réelles",,""
-"Real start date","Date réelle de début",,""
-"Remains","Restes",,""
-"Replacement machines","Machine de remplacement",,""
-"Resource","Ressource",,""
-"Resource type","Type de ressource",,""
-"Resources","Les Ressources",,""
-"Resume","Reprendre",,""
-"Serial Nbr","N° Série",,""
-"Setup duration (min)","Tps mise en place (min)",,""
-"Standby","En pause",,""
-"Start","Démarrer",,""
-"Starting duration (hh:mm)","Tps démarrage (hh:mm)",,""
-"Starting duration (min)","Tps démarrage (min)",,""
-"Status","Statut",,""
-"Stock move in","Mouvement entrée",,""
-"Stock move out","Mouvement sortie rebus",,""
-"Stock moves","Mouvements de stock",,""
-"Sub-process configuration","Configuration des sous-process",,""
-"To consume manuf order",,,""
-"To consume operation order",,,""
-"To consume prod process line",,,""
-"To consume products","Produits à consommer",,""
-"To produce manuf order",,,""
-"Unit","Unité",,""
-"Update product cost price","Mettre à jour coût de revient",,""
-"Validate","Valider",,""
-"Version","Version",,""
-"Veuillez configurer la production pour la société %s",,,""
-"Veuillez configurer un Emplacement Virtuel Production pour la société %s",,,""
-"Veuillez entrer une quantité positive",,,""
-"Veuillez sélectionner une nomenclature",,,""
-"View Bill Of Materials","Voir les nomenclatures",,""
-"View Manuf. Orders","Voir les OF",,""
-"View Operation Orders","Voir les Opérations de fabr.",,""
-"Waste","Rebus",,""
-"Waste manuf order","Rebus",,""
-"Yes (Fixed)","Oui (Fixe)",,""
-"Yes (Real)","Oui (Réel)",,""
-"production order management",,,""
-"Ø1",,,""
+"Actions",,,
+"Add Manuf. Order","Ordre de fabrication",,
+"All Current Manufacturing Orders","Tous les ordres de fabrication en cours",,
+"All Manufacturing Order Plannings","Tous les ordres de fabrication planifiés",,
+"All Upcoming Manufacturing Orders","Tous les ordres de fabrication à venir",,
+"Aucune nomenclature définie pour le produit %s (%s)",,,
+"Aucune séquence configurée pour les Ordres de fabrication",,,
+"Aucune séquence configurée pour les Ordres de production",,,
+"BOM","Nomenclature",,
+"BOM tree","Nomenclature arborescente",,
+"BOMs","Lignes de nomenclature",,
+"Bill of material","Nomenclatures",,
+"Bills of material","Nomenclatures",,
+"Bills of materials","Nomenclatures",,
+"BoM","Nomenclature",,
+"Brand","Fabricant",,
+"Cancel","Annuler",,
+"Canceled","Annulé",,
+"Cancelled MOs","OFs annulés",,
+"Cancelled Operations","Opérations annulées",,
+"Capacity / cycle","Capacité / cycle",,
+"Capacity settings","Paramétrages capacité",,
+"Charge by machine","Charge par machine",,
+"Charge previsionnelle par machine","Charge previsionnelle par machine",,
+"Charge réelle par machine","Charge réelle par machine",,
+"Code","Code",,
+"Comments","Commentaires",,
+"Company","Société",,
+"Compliance","Conformité",,
+"Components","Composants",,
+"Compute cost price","Calculer coût de revient",,
+"Configurations","Configurations",,
+"Conforme","Conforme",,
+"Conformité","Conformité",,
+"Consumed products","Produits consommés",,
+"Cost","Coût",,
+"Cost (W.T.)","Coût (H.T.)",,
+"Cost price","Prix de revient",,
+"Cost type","Type coût",,
+"Costing settings","Paramétrages coûts",,
+"Create Manuf. Order","Créer Ordre de Fabr.",,
+"Dashboard","Tableau de bord",,
+"Dates","Dates",,
+"Default BOM","Nomenclature par défaut",,
+"Default Machine","Machine par défaut",,
+"Default Machine settings","Paramétrages machine par défaut",,
+"Default resource product","Produit ressource par défaut",,
+"Description","Description",,
+"Diff consume manuf order","Diff. Consommation Ordre de fabr.",,
+"Diff consume operation order","Diff. Consommation Opération",,
+"Difference","Différences",,
+"Differences","Différence",,
+"Draft","Brouillon",,
+"Draft MOs","OFs brouillons",,
+"Draft Operations","Opérations brouillons",,
+"Duration","Durée",,
+"Duration / cycle (hh:mm)","Durée / Cycle (hh:mm)",,
+"Duration between two cycles (hh:mm)","Temps entre 2 cycles (hh:mm)",,
+"Ending duration (hh:mm)","Temps clôture (hh:mm)",,
+"Erreur lors de la création de l'ordre de production",,,
+"Finish","Terminer",,
+"Finished","Terminé",,
+"Finished MOs","OFs terminés",,
+"Finished Operations","Opérations terminées",,
+"Finished products","Produits finis",,
+"Generate production orders automatically",,,
+"Generate waste stock move","Générer Mvt de sortie rebus",,
+"Human","Homme",,
+"Human and Machine","Homme et Machine",,
+"Human resources","Ressources humaines",,
+"Import","Importer",,
+"In progress","En cours",,
+"Is closed","Est terminé",,
+"Is with difference","Avec différence ?",,
+"Label","Libellé",,
+"Last production price","Dernier prix de production",,
+"Late Planned MOs","OFs en retard",,
+"Late Planned Operations","Opérations plannifiées en retard",,
+"Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord.","Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord.",,
+"Location","Emplacement",,
+"MO","N° OF",,
+"MOs Finished late","OFs terminés en retard",,
+"MOs In Progress","OFs en cours",,
+"MOs In Standby","OFs en pause",,
+"MOs to invoice","OFs à facturer",,
+"Machine","Machine",,
+"Machines","Machines",,
+"Manage consumed products on operations?","Gérer la consommation par opération",,
+"ManufOrder.billOfMaterial","Nomenclature",,
+"ManufOrder.effective","Réel",,
+"ManufOrder.endDate","Date de fin",,
+"ManufOrder.forecast","Prévu",,
+"ManufOrder.machine","Machine",,
+"ManufOrder.num","N°",,
+"ManufOrder.operation","Opération",,
+"ManufOrder.operations","Opérations",,
+"ManufOrder.origin","Origine",,
+"ManufOrder.plannedStartDate","Date début plannifiée",,
+"ManufOrder.product","Produit",,
+"ManufOrder.productCode","Code produit",,
+"ManufOrder.productName","Nom",,
+"ManufOrder.productionProcess","Gamme",,
+"ManufOrder.productsToPrepare","Produits à préparer (Consommer)",,
+"ManufOrder.quantity","Quantité",,
+"ManufOrder.startDate","Date de début",,
+"ManufOrder.status","Etat",,
+"ManufOrder.title","Ordre de fabrication",,
+"ManufOrder.trackingNumber","Numéro de lot",,
+"ManufOrderSheetLine",,,
+"Manufacturing","Production",,
+"Manufacturing Dashboard","Tableau de bord OF",,
+"Manufacturing Db","Db production",,
+"Manufacturing order","Ordre de fabrication",,
+"Manufacturing order filters","Filtre sur les OFs",,
+"Manufacturing orders","Ordres de fabrication",,
+"Manufacturing processes","Gammes",,
+"Max. capacity / cycle","Capacité Max. / Cycle",,
+"Moves In/Out","Entrées/Sorties",,
+"Name","Nom",,
+"New Manufacturing Order","Créer Ordre de Fabr.",,
+"No production order has been generated",,,
+"Nomenclature personnalisé créée",,,
+"Non conforme","Non conforme",,
+"None","Aucun",,
+"Not manage stock","Ne pas gérer le stock",,
+"Observations (état des filetages, aspect général, état des surfaces d'appuis...) :","Observations (état des filetages, aspect général, état des surfaces d'appuis...) :",,
+"Operation","Opération",,
+"Operation name","Intitulé Opération",,
+"Operation order","Ordre de fabrication",,
+"Operation order filters","Filtre des opérations",,
+"Operation orders","Opérations de fabrication",,
+"OperationOrder.associatedBOM","Opération ",,
+"OperationOrder.cycleDuration","Nomenclature associée",,
+"OperationOrder.dates","Dates",,
+"OperationOrder.delayBtwCycle","Délai entre deux cycle",,
+"OperationOrder.machine","Machine",,
+"OperationOrder.num","N°",,
+"OperationOrder.operationDetails","Détails de l'opération",,
+"OperationOrder.operationName","Nom de l'opération",,
+"OperationOrder.operationRequirement","Pré-requis opérationnel",,
+"OperationOrder.plannedEndDate","Date de début réelle",,
+"OperationOrder.plannedStartDate","Date de début plannifié",,
+"OperationOrder.productName","Nom du produit",,
+"OperationOrder.productToPrepare","Produit à préparer (Consommer)",,
+"OperationOrder.qty","Quantité",,
+"OperationOrder.realEndDate","Date de fin réelle",,
+"OperationOrder.realStartDate","Date de début réelle",,
+"OperationOrder.relatedToProduct","Produit concerné",,
+"OperationOrder.startTime","Temps de démarrage",,
+"OperationOrder.stopTime","Temps d'arrêt",,
+"OperationOrder.title","Opération de fabrication",,
+"OperationOrder.trackingNumber","Numéro de lot",,
+"Operations","Opérations",,
+"Operations Finished late","Opérations terminées en retard",,
+"Operations In Progress","Opérations en cours",,
+"Operations In Standby","Opérations en pause",,
+"Operations orders","Operations de production",,
+"Operations to invoice","Opérations à facturer",,
+"Operations with difference","Opérations avec différences de consommation",,
+"Ordre de production créé",,,
+"Parent BOM","Nomenclature parente",,
+"Part","Composant",,
+"Pause","Pause",,
+"Per Cycle","Par cycle",,
+"Per hour","Par heure",,
+"Personalized","Personnalisée",,
+"Plan","Planifier",,
+"Planned","Planifié",,
+"Planned MOs","OFs plannifiés",,
+"Planned Operations","Opérations plannifiées",,
+"Planned dates","Dates prévues",,
+"Planned duration","Durée planifiée",,
+"Planned end date","Date de fin",,
+"Planned operations","Opérations planifiées",,
+"Planned start date","Date de début prévisionnelle",,
+"Please select the Manufacturing order(s) to print.",,,
+"Please select the Operation order(s) to print.",,,
+"Pre-fill operations","Pré-remplir les opérations",,
+"Print","Imprimer",,
+"Priority","Priorité",,
+"Prod. Human resource","Ressources humaines",,
+"Prod. Human resources","Ressources humaines",,
+"Produced products","Produits fabriqués",,
+"Product","Produit",,
+"Production and cost settings","Paramétrages production et coûts",,
+"Production config","Config. Production",,
+"Production configuration","Configuration de la production",,
+"Production configurations","Configs. Production",,
+"Production location","Emplacement de production",,
+"Production order","Ordre de production",,
+"Production order filters","Filtres des ordres de productions",,
+"Production order wizard","Assistant Ordre Production",,
+"Production orders","Ordres de production",,
+"Production orders closed","Ordres de productions terminés",,
+"Production orders to invoice","Ordres de productions à facturer",,
+"Production process","Gamme",,
+"Production remains","Restes",,
+"Production virtual location","Emplacement virtuel de production",,
+"Production waste","Rebus de production",,
+"Productions orders","Ordres de Production",,
+"Products","Produits",,
+"Products to consume","Produits à consommer",,
+"Products to produce","Produits à produire",,
+"Profile","Profil",,
+"Qty","Qté",,
+"Quantity","Quantité",,
+"Raw material","Matière première",,
+"Real dates","Dates réelles",,
+"Real duration","Durée réelle",,
+"Real end date","Date réelle de fin",,
+"Real operations","Opérations réelles",,
+"Real start date","Date réelle de début",,
+"Remains","Restes",,
+"Replacement machines","Machine de remplacement",,
+"Resource","Ressource",,
+"Resource type","Type de ressource",,
+"Resources","Les Ressources",,
+"Resume","Reprendre",,
+"Serial Nbr","N° Série",,
+"Setup duration (min)","Tps mise en place (min)",,
+"Standby","En pause",,
+"Start","Démarrer",,
+"Starting duration (hh:mm)","Tps démarrage (hh:mm)",,
+"Starting duration (min)","Tps démarrage (min)",,
+"Status","Statut",,
+"Stock move in","Mouvement entrée",,
+"Stock move out","Mouvement sortie rebus",,
+"Stock moves","Mouvements de stock",,
+"Sub-process configuration","Configuration des sous-process",,
+"To consume manuf order",,,
+"To consume operation order",,,
+"To consume prod process line",,,
+"To consume products","Produits à consommer",,
+"To produce manuf order",,,
+"Unit","Unité",,
+"Update product cost price","Mettre à jour coût de revient",,
+"Validate","Valider",,
+"Version","Version",,
+"Veuillez configurer la production pour la société %s",,,
+"Veuillez configurer un Emplacement Virtuel Production pour la société %s",,,
+"Veuillez entrer une quantité positive",,,
+"Veuillez sélectionner une nomenclature",,,
+"View Bill Of Materials","Voir les nomenclatures",,
+"View Manuf. Orders","Voir les OF",,
+"View Operation Orders","Voir les Opérations de fabr.",,
+"Waste","Rebus",,
+"Waste manuf order","Rebus",,
+"Yes (Fixed)","Oui (Fixe)",,
+"Yes (Real)","Oui (Réel)",,
+"production order management",,,
+"Ø1",,,

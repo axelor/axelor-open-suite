@@ -1,52 +1,52 @@
 "key","message","comment","context"
-"Accept",,,""
-"Accepted",,,""
-"Actions",,,""
-"Available qty",,,""
-"Cancel",,,""
-"Canceled",,,""
-"Comment",,,""
-"Demande de consultations fournisseurs créées",,,""
-"Estim. delivery date",,,""
-"Generate all suppliers requests",,,""
-"Generate suppliers purchase orders",,,""
-"Génération des devis fournisseurs terminée",,,""
-"Initial purchase order",,,""
-"Merge into single purchase order",,,""
-"Merge purchase order",,,""
-"My R.F.Q.",,,""
-"My R.F.Q. to complete",,,""
-"My deliveries",,,""
-"My purchase orders",,,""
-"My space",,,""
-"Not accept",,,""
-"Not accepted",,,""
-"Purchase order",,,""
-"Purchase order to merge",,,""
-"Purchase order?",,,""
-"Receipt date",,,""
-"Request",,,""
-"Requested",,,""
-"Show suppliers purchase orders",,,""
-"State",,,""
-"Stock move",,,""
-"Stock move informations",,,""
-"Stock move line",,,""
-"Stock move lines",,,""
-"Stock move reference",,,""
-"Stock moves",,,""
-"Submit",,,""
-"Submitted",,,""
-"Supplier",,,""
-"Supplier RFQ/PO",,,""
-"Supplier request",,,""
-"Supplier requests",,,""
-"Supplier requests completed",,,""
-"Supplier requests historical",,,""
-"Suppliers purchase",,,""
-"Suppliers requests",,,""
-"Unit price",,,""
-"WARNING : To Date must be after or equals to From Date",,,""
-"Write to the supplier",,,""
-"help:PurchaseOrderSupplierLine.estimatedDelivDate",,,""
-"suppliers requests",,,""
+"Accept",,,
+"Accepted",,,
+"Actions",,,
+"Available qty",,,
+"Cancel",,,
+"Canceled",,,
+"Comment",,,
+"Demande de consultations fournisseurs créées",,,
+"Estim. delivery date",,,
+"Generate all suppliers requests",,,
+"Generate suppliers purchase orders",,,
+"Génération des devis fournisseurs terminée",,,
+"Initial purchase order",,,
+"Merge into single purchase order",,,
+"Merge purchase order",,,
+"My R.F.Q.",,,
+"My R.F.Q. to complete",,,
+"My deliveries",,,
+"My purchase orders",,,
+"My space",,,
+"Not accept",,,
+"Not accepted",,,
+"Purchase order",,,
+"Purchase order to merge",,,
+"Purchase order?",,,
+"Receipt date",,,
+"Request",,,
+"Requested",,,
+"Show suppliers purchase orders",,,
+"State",,,
+"Stock move",,,
+"Stock move informations",,,
+"Stock move line",,,
+"Stock move lines",,,
+"Stock move reference",,,
+"Stock moves",,,
+"Submit",,,
+"Submitted",,,
+"Supplier",,,
+"Supplier RFQ/PO",,,
+"Supplier request",,,
+"Supplier requests",,,
+"Supplier requests completed",,,
+"Supplier requests historical",,,
+"Suppliers purchase",,,
+"Suppliers requests",,,
+"Unit price",,,
+"WARNING : To Date must be after or equals to From Date",,,
+"Write to the supplier",,,
+"help:PurchaseOrderSupplierLine.estimatedDelivDate",,,
+"suppliers requests",,,

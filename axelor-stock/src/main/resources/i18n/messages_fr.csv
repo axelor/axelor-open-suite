@@ -1,303 +1,303 @@
 "key","message","comment","context"
-"<B>%s or %s</B> not found",,,""
-"A partial stock move has been generated (%s)",,,""
-"Accordance","Accord",,""
-"Actions","Actions",,""
-"Address","Adresse",,""
-"Alert","Alerte",,""
-"An error occurred while importing the file data, product not found with code :",,,""
-"An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.",,,""
-"Arrivals History","Historique réceptions",,""
-"Aucun emplacement destination selectionné pour le mouvement de stock %s",,,""
-"Aucun emplacement source selectionné pour le mouvement de stock %s",,,""
-"Aucune lignes d'inventaire n'a été créée.",,,""
-"Aucune séquence configurée pour les Numéros de suivi pour le produit %s:%s",,,""
-"Aucune séquence configurée pour les inventaires pour la société",,,""
-"Aucune séquence configurée pour les livraisons de stock pour la société %s",,,""
-"Aucune séquence configurée pour les mouvements internes de stock pour la société %s",,,""
-"Aucune séquence configurée pour les receptions de stock pour la société %s",,,""
-"Basic","Basique",,""
-"Both source location address and delivery (to) address are required to define the delivery itinerary","Les champs Emplacement source et A l'adresse sont requis pour définir l'itinéraire de livraison.",,""
-"Cancel","Annuler",,""
-"Canceled","Annulé",,""
-"Cancelled Arrivals","Réceptions annulées",,""
-"Check Duplicate","Vérifier doublons",,""
-"Company","Société",,""
-"Company address is empty.",,,""
-"Compliant","Conforme",,""
-"Configuration","Configuration",,""
-"Country","Pays",,""
-"Create Stock Move","Créer Mvt. Stock",,""
-"Create inventory","Créer inventaire",,""
-"Current","Actuel",,""
-"Current Qty","Quantité actuelle",,""
-"Customer Deliveries","Livraisons Client",,""
-"Customer average delivery delay","Délai moyen de livraison client",,""
-"Customer deliveries","Livraisons clients",,""
-"Customer deliveries by country","Livraison client par pays",,""
-"Customer deliveries filters","Livraisons Clients",,""
-"Customer deliveries statistics","Statistiques de livraison client",,""
-"Customer returns","Retours clients",,""
-"Customer virtual location","Emplacement virtuel client",,""
-"Dashboard","Tableau de bord",,""
-"Date","Date",,""
-"Default location","Emplacement par défault",,""
-"Delay","Délai",,""
-"Deliveries Cancelled","Livraisons annulées",,""
-"Deliveries History","Historique des Livraisons",,""
-"Deliveries to prepare","Livraisons à préparer",,""
-"Description","Description",,""
-"Details Location lines","Produits présents dans l'emplacement (vue non-consolidée)",,""
-"Draft","Brouillon",,""
-"Estimated Date","Date estimée",,""
-"Estimated date","Date estimée",,""
-"Excl. out of stock products ?","Excl. Produits sans stock ?",,""
-"Exclude out of stock products ?","Exclure produits sans stock ?",,""
-"Expected Qty","Qté prévue",,""
-"Export","Export",,""
-"External","Externe",,""
-"Feature currently not available with Open Street Maps.",,,""
-"File %s successfully imported.",,,""
-"File Format","Format fichier",,""
-"File Path","Chemin vers fichier",,""
-"Fill inventory","Compléter l'inventaire",,""
-"Fill inventory with","Remplir l'inventaire avec",,""
-"Forecasted Stock","Stock prévisionnel",,""
-"Forecasts","Prévision de stock",,""
-"From","De",,""
-"From address","Adresse d'origine",,""
-"From location","Emplacement source",,""
-"Future","Futur",,""
-"Future Qty","Qté future",,""
-"Generate inc. moves for non storable products ?","Générer Mvt. Réception pour les produits non stockables ? ",,""
-"Generate inc. moves for storable products ?","Générer Mvt. Réception pour les produits stockables ? ",,""
-"Generate invoice","Générer facture",,""
-"Generate out. moves for non storable products ?","Générer Mvt. Livraison pour les produits non stockables ? ",,""
-"Generate out. moves for storable products ?","Générer Mvt. Livraison pour les produits stockables ? ",,""
-"Generate reversion","Réexpédier",,""
-"Gross Weight","Poids brut",,""
-"Historical Period","Historique",,""
-"Il existe déjà un entrepot par défaut, veuillez d'abord désactiver l'entrepot",,,""
-"Il n'y a aucun produit contenu dans l'emplacement de stock.",,,""
-"Import","Import",,""
-"Incl. obsolete products ?","Inclure produits obsolètes",,""
-"Include obsolete products ?","Inclure les produits obsolètes ?",,""
-"Incoming move","Mvt Stock Réception",,""
-"Internal","Interne",,""
-"Internal Stock Move filters","Filtres Mvt Stock internes",,""
-"Internal Stock Moves","Mouvements Internes",,""
-"Internal move","Mouvement Interne",,""
-"Internal moves","Mouvements internes",,""
-"Inventories","Inventaires",,""
-"Inventories History","Historique d'inventaire",,""
-"Inventories filters","Filtres inventaires",,""
-"Inventory","Inventaires",,""
-"Inventory N°","N° inventaire",,""
-"Inventory date","Date inventaire",,""
-"Inventory generated","Inventaire généré",,""
-"Inventory line","Ligne d'inventaire",,""
-"Inventory lines","Lignes d'inventaire",,""
-"Inventory virtual location","Emplacement virtuel",,""
-"Inventory.code","Code",,""
-"Inventory.date","Date",,""
-"Inventory.description","Description",,""
-"Inventory.location","Emplacement",,""
-"Inventory.name","Nom",,""
-"Inventory.realQty","Qté",,""
-"Inventory.title","INVENTAIRE",,""
-"Inventory.unit","Unité",,""
-"La liste des lignes d'inventaire a été rempli.",,,""
-"Last Future Stock Move","Date dernier Mvt Future",,""
-"Late Deliveries","Livraisons en retard",,""
-"Late customer deliveries","Livraisons clients en retard",,""
-"Late supplier arrivals","Livraisons fournisseurs en retard",,""
-"Les stocks du produit %s (%s) sont insuffisants pour réaliser la livraison",,,""
-"Les stocks du produit %s (%s), numéro de suivi {}  sont insuffisants pour réaliser la livraison",,,""
-"Location","Emplacement",,""
-"Location Content","Contenu de l'emplacement",,""
-"Location Details","Produits présents dans l'emplacement (vue non-consolidée)",,""
-"Location Lines","Ligne d'emplacement",,""
-"Location content","Contenu de l'emplacement",,""
-"Location lines","Produits présents dans l'emplacement (vue consolidée)",,""
-"Location value","Valeur emplacement",,""
-"Manage BackOrder","Gérer les reliquats",,""
-"Map",,,""
-"Min. Qty","Qté Min.",,""
-"Minimum stock rule","Les Règles de stock minimum",,""
-"Minimum stock rules","Règles de stock min.",,""
-"Month","Mois",,""
-"Move date","Date du mouvement",,""
-"Move details","Détails de mouvement",,""
-"Moves Cancelled","Mouvements annulés",,""
-"Moves History","Historique des Mouvements",,""
-"Moves To Prepare","Mouvement à préparer",,""
-"Name","Intitulé",,""
-"No move lines to split",,,""
-"No new stock move was generated",,,""
-"Non compliant","Non-conforme",,""
-"Number Of Packages","Nombre de colis",,""
-"Number Of Palettes","Nombre de palettes",,""
-"Outgoing move","Mvt Stock Livraison",,""
-"PDF","PDF",,""
-"Parent","Emplacement Parent",,""
-"Partial stock move (From",,,""
-"Partner","Tiers",,""
-"Periodical processing","Traitements Périodiques",,""
-"Plan","Plannifier",,""
-"Planned","Planifié",,""
-"Planned Inventories","Inventaires Planifiés",,""
-"Please entry proper split qty",,,""
-"Please fill in the delivery (to) address to get the delivery itinerary.","Veuillez remplir le champ A l'adresse pour obtenir l'itinéraire de livraison.",,""
-"Please fill in the source (from) location address to get the delivery itinerary.","Veuillez remplir l'adresse associé au champ Emplacement source pour obtenir l'itinéraire de livraison.",,""
-"Please select lines to split",,,""
-"Please select the Stock Location(s) to print.",,,""
-"Please select the StockMove(s) to print.",,,""
-"Print","Imprimer",,""
-"Print StockMove(s)","Imprimer",,""
-"Product","Produit",,""
-"Product category","Catégorie produit",,""
-"Product deliveries in qty by country","Livraisons produits en qté par pays",,""
-"Product deliveries in qty by country by family","Livraisons produits en qté par pays par famille",,""
-"Product family","Famille produit",,""
-"Product model","Modèle de produit",,""
-"Product soon out of stock by location","Produits prochainement sans stock par emplacement",,""
-"Production Stock Move in Planned","Mvt. D'entrée en production planifié",,""
-"Production Stock Move out Planned","Mvt. De sortie de production planifié",,""
-"Production forecasts","Mvt. Prévisionnels de production",,""
-"Production needs","Mvt. Des besoins en production",,""
-"Production order","Ordre de production",,""
-"Production stock move in realized","Mvt. d'entrée en production réalisé",,""
-"Production stock move out realized","Mvt. De sortie de production réalisé",,""
-"Produit incorrect dans la ligne de l'inventaire",,,""
-"Purchase order","Devis fournisseurs",,""
-"Quantity","Quantité",,""
-"Real Qty","Qté réelle",,""
-"Realize","Réalisé",,""
-"Realized","Réalisé",,""
-"Ref.","Réf.",,""
-"Refill Qty","Qté à recommander",,""
-"Refill type","Mode de réappro",,""
-"Reordering managed by","Mode de gestion des réapprovisionnements",,""
-"Return surplus","Générer reliquat",,""
-"Reverse stock move (From",,,""
-"Ship/Receive all products","Envois/Réception de produits",,""
-"Shipped date","Date d'expédition",,""
-"Shipped qty","Qté expédiée",,""
-"Société manquante pour l'entrepot %s",,,""
-"Special split","Scission spécifique",,""
-"Split","Scinder",,""
-"Split by unit","Scinder par unité",,""
-"Split in Qty of","Scinder par qté de",,""
-"Split into 2",,,""
-"Split/Ship/Receive","Scinder/Expédier/Recevoir",,""
-"Status","Statut",,""
-"Stock","Stock",,""
-"Stock Dashboard","Tb Stock",,""
-"Stock Dashboard 1","Tb Stock 1",,""
-"Stock Dashboard 2","Tb Stock 2",,""
-"Stock Db","Tb Stock",,""
-"Stock Db 1","Tb Stock 1",,""
-"Stock Db 2","Tb Stock 2",,""
-"Stock Details","Détail des stocks",,""
-"Stock History","Historique des stocks",,""
-"Stock Location","Emplacement",,""
-"Stock Location content","Contenu emplacement",,""
-"Stock Locations","Emplacements de stock",,""
-"Stock Locations content","Contenus emplacement",,""
-"Stock Move","Mouvement stock",,""
-"Stock Moves","Mouvements stocks",,""
-"Stock Moves Lines","Lignes Mvt Stock",,""
-"Stock Moves consumption historical","Historique des Mvt. De consommation",,""
-"Stock Moves consumption planned","Historique des Mvt. Planifiés",,""
-"Stock Moves historical","Historique Mvts de stock",,""
-"Stock Moves planned","Mvts de stock prévisionnels",,""
-"Stock batches","Traitements de masse Stock",,""
-"Stock config","Config. Stock",,""
-"Stock configuration","Configuration Stock",,""
-"Stock configurations","Configurations Stock",,""
-"Stock management","Stocks",,""
-"Stock move","Mouvement de stock",,""
-"Stock move content","Contenu du mouvement",,""
-"Stock move informations","Informations sur Stocks Internes",,""
-"Stock move line","Ligne mvt. de stock",,""
-"Stock move lines","Lignes mvt. de stock",,""
-"Stock move reference","Références mouvement de stock",,""
-"Stock moves","Mouvements de stock",,""
-"StockLocation.accountingValue","Valeur comptable",,""
-"StockLocation.code","Code",,""
-"StockLocation.date","Date",,""
-"StockLocation.detailsByLocation","Détail par emplacement",,""
-"StockLocation.location","Emplacement",,""
-"StockLocation.locationTotalContent","Contenu de l'emplacement",,""
-"StockLocation.locations","Emplacements",,""
-"StockLocation.productName","Nom produit",,""
-"StockLocation.qtyUnit","Unité qté",,""
-"StockLocation.saleValue","Valeur vente",,""
-"StockLocation.title","Intitulé",,""
-"StockLocation.total","Total",,""
-"StockLocation.totalAccountingValue","Valeur comptable totale",,""
-"StockLocation.totalSaleValue","Valeur à la vente",,""
-"StockLocation.unitValue","Valeur unitaire",,""
-"StockMove",,,""
-"StockMove(s)",,,""
-"StockMove.customer","Client",,""
-"StockMove.date","Date",,""
-"StockMove.deliveryAddress","Adresse de livraison",,""
-"StockMove.deliveryDetails","Détail de la livraison",,""
-"StockMove.deliveryOrder","Bon Livraison",,""
-"StockMove.internalMove","Mvt Interne",,""
-"StockMove.lotNoRef","Lot N°/Réf",,""
-"StockMove.movePreparedBy","Mvt préparé par",,""
-"StockMove.product","Produit",,""
-"StockMove.purchaseOrder","Commande",,""
-"StockMove.qtyUnit","Qté / Unité",,""
-"StockMove.receivedBy","Cmde reçue par",,""
-"StockMove.receptionOrder","Bon Réception",,""
-"StockMove.reference","Référence",,""
-"StockMove.stockPreparedBy","Cmde préparée par",,""
-"StockMove.variant","Variant",,""
-"StockMove.weight","Weight",,""
-"Stocks",,,""
-"Supplier Arrivals","Receptions Fournisseur",,""
-"Supplier arrivals filters","Filtres Arrivages fournisseurs",,""
-"Supplier deliveries","Réceptions fournisseurs",,""
-"Supplier returns","Retours fournisseurs",,""
-"Supplier virtual location","Emplacement virtuel fournisseur",,""
-"Team","Equipe",,""
-"The move doesn't contain any product, do you wish to continue ?","Le mouvement de stock ne contient aucun produit, souhaitez-vous continuer ? ",,""
-"There is currently no such file in the specified folder or the folder may not exists.",,,""
-"Title","Libellé",,""
-"To","A",,""
-"To address","A l'adresse",,""
-"To location","Vers l'emplacement",,""
-"Today","Aujourd'hui",,""
-"Today Arrivals","Réceptions du jour",,""
-"Tracking Nbr","N° Suivi/lot",,""
-"Tracking Nbr.","N° Suivi/lot",,""
-"Tracking Number","Numéro de tracking",,""
-"Tracking Numbers","N° de suivis/lots",,""
-"TrackingNumber",,,""
-"Type","Type",,""
-"Type Status","Type Statut",,""
-"Type de mouvement de stock non déterminé",,,""
-"Unit","Unité",,""
-"Upcoming arrivals","Réceptions à venir",,""
-"Upcoming deliveries","Livraisons à venir",,""
-"Upcoming supplier arrivals","Réceptions à venir",,""
-"User","Utilisateur",,""
-"Validate","Valider",,""
-"Value","Valeur",,""
-"Veuillez configurer le module stock pour la société %s",,,""
-"Veuillez configurer un Emplacement Virtuel Client pour la société %s",,,""
-"Veuillez configurer un Emplacement Virtuel Fournisseur pour la société %s",,,""
-"Veuillez configurer un Emplacement Virtuel Inventaire pour la société %s",,,""
-"Veuillez selectionner un entrepot",,,""
-"View Customer deliveries","Voir Livraisons Clients",,""
-"View Direction","Voir itinéraire",,""
-"View Internal moves","Voir Mvts. Internes",,""
-"View Stock moves","Voir Mvts de stock",,""
-"View Supplier deliveries","Voir Réceptions fournisseur",,""
-"View location content","Voir contenu de l'emplacement",,""
-"Virtual","Virtuel",,""
-"Virtual locations informations","Informations Stocks Virtuels",,""
-"XLS","Excel",,""
+"<B>%s or %s</B> not found",,,
+"A partial stock move has been generated (%s)",,,
+"Accordance","Accord",,
+"Actions","Actions",,
+"Address","Adresse",,
+"Alert","Alerte",,
+"An error occurred while importing the file data, product not found with code :",,,
+"An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.",,,
+"Arrivals History","Historique réceptions",,
+"Aucun emplacement destination selectionné pour le mouvement de stock %s",,,
+"Aucun emplacement source selectionné pour le mouvement de stock %s",,,
+"Aucune lignes d'inventaire n'a été créée.",,,
+"Aucune séquence configurée pour les Numéros de suivi pour le produit %s:%s",,,
+"Aucune séquence configurée pour les inventaires pour la société",,,
+"Aucune séquence configurée pour les livraisons de stock pour la société %s",,,
+"Aucune séquence configurée pour les mouvements internes de stock pour la société %s",,,
+"Aucune séquence configurée pour les receptions de stock pour la société %s",,,
+"Basic","Basique",,
+"Both source location address and delivery (to) address are required to define the delivery itinerary","Les champs Emplacement source et A l'adresse sont requis pour définir l'itinéraire de livraison.",,
+"Cancel","Annuler",,
+"Canceled","Annulé",,
+"Cancelled Arrivals","Réceptions annulées",,
+"Check Duplicate","Vérifier doublons",,
+"Company","Société",,
+"Company address is empty.",,,
+"Compliant","Conforme",,
+"Configuration","Configuration",,
+"Country","Pays",,
+"Create Stock Move","Créer Mvt. Stock",,
+"Create inventory","Créer inventaire",,
+"Current","Actuel",,
+"Current Qty","Quantité actuelle",,
+"Customer Deliveries","Livraisons Client",,
+"Customer average delivery delay","Délai moyen de livraison client",,
+"Customer deliveries","Livraisons clients",,
+"Customer deliveries by country","Livraison client par pays",,
+"Customer deliveries filters","Livraisons Clients",,
+"Customer deliveries statistics","Statistiques de livraison client",,
+"Customer returns","Retours clients",,
+"Customer virtual location","Emplacement virtuel client",,
+"Dashboard","Tableau de bord",,
+"Date","Date",,
+"Default location","Emplacement par défault",,
+"Delay","Délai",,
+"Deliveries Cancelled","Livraisons annulées",,
+"Deliveries History","Historique des Livraisons",,
+"Deliveries to prepare","Livraisons à préparer",,
+"Description","Description",,
+"Details Location lines","Produits présents dans l'emplacement (vue non-consolidée)",,
+"Draft","Brouillon",,
+"Estimated Date","Date estimée",,
+"Estimated date","Date estimée",,
+"Excl. out of stock products ?","Excl. Produits sans stock ?",,
+"Exclude out of stock products ?","Exclure produits sans stock ?",,
+"Expected Qty","Qté prévue",,
+"Export","Export",,
+"External","Externe",,
+"Feature currently not available with Open Street Maps.",,,
+"File %s successfully imported.",,,
+"File Format","Format fichier",,
+"File Path","Chemin vers fichier",,
+"Fill inventory","Compléter l'inventaire",,
+"Fill inventory with","Remplir l'inventaire avec",,
+"Forecasted Stock","Stock prévisionnel",,
+"Forecasts","Prévision de stock",,
+"From","De",,
+"From address","Adresse d'origine",,
+"From location","Emplacement source",,
+"Future","Futur",,
+"Future Qty","Qté future",,
+"Generate inc. moves for non storable products ?","Générer Mvt. Réception pour les produits non stockables ? ",,
+"Generate inc. moves for storable products ?","Générer Mvt. Réception pour les produits stockables ? ",,
+"Generate invoice","Générer facture",,
+"Generate out. moves for non storable products ?","Générer Mvt. Livraison pour les produits non stockables ? ",,
+"Generate out. moves for storable products ?","Générer Mvt. Livraison pour les produits stockables ? ",,
+"Generate reversion","Réexpédier",,
+"Gross Weight","Poids brut",,
+"Historical Period","Historique",,
+"Il existe déjà un entrepot par défaut, veuillez d'abord désactiver l'entrepot",,,
+"Il n'y a aucun produit contenu dans l'emplacement de stock.",,,
+"Import","Import",,
+"Incl. obsolete products ?","Inclure produits obsolètes",,
+"Include obsolete products ?","Inclure les produits obsolètes ?",,
+"Incoming move","Mvt Stock Réception",,
+"Internal","Interne",,
+"Internal Stock Move filters","Filtres Mvt Stock internes",,
+"Internal Stock Moves","Mouvements Internes",,
+"Internal move","Mouvement Interne",,
+"Internal moves","Mouvements internes",,
+"Inventories","Inventaires",,
+"Inventories History","Historique d'inventaire",,
+"Inventories filters","Filtres inventaires",,
+"Inventory","Inventaires",,
+"Inventory N°","N° inventaire",,
+"Inventory date","Date inventaire",,
+"Inventory generated","Inventaire généré",,
+"Inventory line","Ligne d'inventaire",,
+"Inventory lines","Lignes d'inventaire",,
+"Inventory virtual location","Emplacement virtuel",,
+"Inventory.code","Code",,
+"Inventory.date","Date",,
+"Inventory.description","Description",,
+"Inventory.location","Emplacement",,
+"Inventory.name","Nom",,
+"Inventory.realQty","Qté",,
+"Inventory.title","INVENTAIRE",,
+"Inventory.unit","Unité",,
+"La liste des lignes d'inventaire a été rempli.",,,
+"Last Future Stock Move","Date dernier Mvt Future",,
+"Late Deliveries","Livraisons en retard",,
+"Late customer deliveries","Livraisons clients en retard",,
+"Late supplier arrivals","Livraisons fournisseurs en retard",,
+"Les stocks du produit %s (%s) sont insuffisants pour réaliser la livraison",,,
+"Les stocks du produit %s (%s), numéro de suivi {}  sont insuffisants pour réaliser la livraison",,,
+"Location","Emplacement",,
+"Location Content","Contenu de l'emplacement",,
+"Location Details","Produits présents dans l'emplacement (vue non-consolidée)",,
+"Location Lines","Ligne d'emplacement",,
+"Location content","Contenu de l'emplacement",,
+"Location lines","Produits présents dans l'emplacement (vue consolidée)",,
+"Location value","Valeur emplacement",,
+"Manage BackOrder","Gérer les reliquats",,
+"Map",,,
+"Min. Qty","Qté Min.",,
+"Minimum stock rule","Les Règles de stock minimum",,
+"Minimum stock rules","Règles de stock min.",,
+"Month","Mois",,
+"Move date","Date du mouvement",,
+"Move details","Détails de mouvement",,
+"Moves Cancelled","Mouvements annulés",,
+"Moves History","Historique des Mouvements",,
+"Moves To Prepare","Mouvement à préparer",,
+"Name","Intitulé",,
+"No move lines to split",,,
+"No new stock move was generated",,,
+"Non compliant","Non-conforme",,
+"Number Of Packages","Nombre de colis",,
+"Number Of Palettes","Nombre de palettes",,
+"Outgoing move","Mvt Stock Livraison",,
+"PDF","PDF",,
+"Parent","Emplacement Parent",,
+"Partial stock move (From",,,
+"Partner","Tiers",,
+"Periodical processing","Traitements Périodiques",,
+"Plan","Plannifier",,
+"Planned","Planifié",,
+"Planned Inventories","Inventaires Planifiés",,
+"Please entry proper split qty",,,
+"Please fill in the delivery (to) address to get the delivery itinerary.","Veuillez remplir le champ A l'adresse pour obtenir l'itinéraire de livraison.",,
+"Please fill in the source (from) location address to get the delivery itinerary.","Veuillez remplir l'adresse associé au champ Emplacement source pour obtenir l'itinéraire de livraison.",,
+"Please select lines to split",,,
+"Please select the Stock Location(s) to print.",,,
+"Please select the StockMove(s) to print.",,,
+"Print","Imprimer",,
+"Print StockMove(s)","Imprimer",,
+"Product","Produit",,
+"Product category","Catégorie produit",,
+"Product deliveries in qty by country","Livraisons produits en qté par pays",,
+"Product deliveries in qty by country by family","Livraisons produits en qté par pays par famille",,
+"Product family","Famille produit",,
+"Product model","Modèle de produit",,
+"Product soon out of stock by location","Produits prochainement sans stock par emplacement",,
+"Production Stock Move in Planned","Mvt. D'entrée en production planifié",,
+"Production Stock Move out Planned","Mvt. De sortie de production planifié",,
+"Production forecasts","Mvt. Prévisionnels de production",,
+"Production needs","Mvt. Des besoins en production",,
+"Production order","Ordre de production",,
+"Production stock move in realized","Mvt. d'entrée en production réalisé",,
+"Production stock move out realized","Mvt. De sortie de production réalisé",,
+"Produit incorrect dans la ligne de l'inventaire",,,
+"Purchase order","Devis fournisseurs",,
+"Quantity","Quantité",,
+"Real Qty","Qté réelle",,
+"Realize","Réalisé",,
+"Realized","Réalisé",,
+"Ref.","Réf.",,
+"Refill Qty","Qté à recommander",,
+"Refill type","Mode de réappro",,
+"Reordering managed by","Mode de gestion des réapprovisionnements",,
+"Return surplus","Générer reliquat",,
+"Reverse stock move (From",,,
+"Ship/Receive all products","Envois/Réception de produits",,
+"Shipped date","Date d'expédition",,
+"Shipped qty","Qté expédiée",,
+"Société manquante pour l'entrepot %s",,,
+"Special split","Scission spécifique",,
+"Split","Scinder",,
+"Split by unit","Scinder par unité",,
+"Split in Qty of","Scinder par qté de",,
+"Split into 2",,,
+"Split/Ship/Receive","Scinder/Expédier/Recevoir",,
+"Status","Statut",,
+"Stock","Stock",,
+"Stock Dashboard","Tb Stock",,
+"Stock Dashboard 1","Tb Stock 1",,
+"Stock Dashboard 2","Tb Stock 2",,
+"Stock Db","Tb Stock",,
+"Stock Db 1","Tb Stock 1",,
+"Stock Db 2","Tb Stock 2",,
+"Stock Details","Détail des stocks",,
+"Stock History","Historique des stocks",,
+"Stock Location","Emplacement",,
+"Stock Location content","Contenu emplacement",,
+"Stock Locations","Emplacements de stock",,
+"Stock Locations content","Contenus emplacement",,
+"Stock Move","Mouvement stock",,
+"Stock Moves","Mouvements stocks",,
+"Stock Moves Lines","Lignes Mvt Stock",,
+"Stock Moves consumption historical","Historique des Mvt. De consommation",,
+"Stock Moves consumption planned","Historique des Mvt. Planifiés",,
+"Stock Moves historical","Historique Mvts de stock",,
+"Stock Moves planned","Mvts de stock prévisionnels",,
+"Stock batches","Traitements de masse Stock",,
+"Stock config","Config. Stock",,
+"Stock configuration","Configuration Stock",,
+"Stock configurations","Configurations Stock",,
+"Stock management","Stocks",,
+"Stock move","Mouvement de stock",,
+"Stock move content","Contenu du mouvement",,
+"Stock move informations","Informations sur Stocks Internes",,
+"Stock move line","Ligne mvt. de stock",,
+"Stock move lines","Lignes mvt. de stock",,
+"Stock move reference","Références mouvement de stock",,
+"Stock moves","Mouvements de stock",,
+"StockLocation.accountingValue","Valeur comptable",,
+"StockLocation.code","Code",,
+"StockLocation.date","Date",,
+"StockLocation.detailsByLocation","Détail par emplacement",,
+"StockLocation.location","Emplacement",,
+"StockLocation.locationTotalContent","Contenu de l'emplacement",,
+"StockLocation.locations","Emplacements",,
+"StockLocation.productName","Nom produit",,
+"StockLocation.qtyUnit","Unité qté",,
+"StockLocation.saleValue","Valeur vente",,
+"StockLocation.title","Intitulé",,
+"StockLocation.total","Total",,
+"StockLocation.totalAccountingValue","Valeur comptable totale",,
+"StockLocation.totalSaleValue","Valeur à la vente",,
+"StockLocation.unitValue","Valeur unitaire",,
+"StockMove",,,
+"StockMove(s)",,,
+"StockMove.customer","Client",,
+"StockMove.date","Date",,
+"StockMove.deliveryAddress","Adresse de livraison",,
+"StockMove.deliveryDetails","Détail de la livraison",,
+"StockMove.deliveryOrder","Bon Livraison",,
+"StockMove.internalMove","Mvt Interne",,
+"StockMove.lotNoRef","Lot N°/Réf",,
+"StockMove.movePreparedBy","Mvt préparé par",,
+"StockMove.product","Produit",,
+"StockMove.purchaseOrder","Commande",,
+"StockMove.qtyUnit","Qté / Unité",,
+"StockMove.receivedBy","Cmde reçue par",,
+"StockMove.receptionOrder","Bon Réception",,
+"StockMove.reference","Référence",,
+"StockMove.stockPreparedBy","Cmde préparée par",,
+"StockMove.variant","Variant",,
+"StockMove.weight","Weight",,
+"Stocks",,,
+"Supplier Arrivals","Receptions Fournisseur",,
+"Supplier arrivals filters","Filtres Arrivages fournisseurs",,
+"Supplier deliveries","Réceptions fournisseurs",,
+"Supplier returns","Retours fournisseurs",,
+"Supplier virtual location","Emplacement virtuel fournisseur",,
+"Team","Equipe",,
+"The move doesn't contain any product, do you wish to continue ?","Le mouvement de stock ne contient aucun produit, souhaitez-vous continuer ? ",,
+"There is currently no such file in the specified folder or the folder may not exists.",,,
+"Title","Libellé",,
+"To","A",,
+"To address","A l'adresse",,
+"To location","Vers l'emplacement",,
+"Today","Aujourd'hui",,
+"Today Arrivals","Réceptions du jour",,
+"Tracking Nbr","N° Suivi/lot",,
+"Tracking Nbr.","N° Suivi/lot",,
+"Tracking Number","Numéro de tracking",,
+"Tracking Numbers","N° de suivis/lots",,
+"TrackingNumber",,,
+"Type","Type",,
+"Type Status","Type Statut",,
+"Type de mouvement de stock non déterminé",,,
+"Unit","Unité",,
+"Upcoming arrivals","Réceptions à venir",,
+"Upcoming deliveries","Livraisons à venir",,
+"Upcoming supplier arrivals","Réceptions à venir",,
+"User","Utilisateur",,
+"Validate","Valider",,
+"Value","Valeur",,
+"Veuillez configurer le module stock pour la société %s",,,
+"Veuillez configurer un Emplacement Virtuel Client pour la société %s",,,
+"Veuillez configurer un Emplacement Virtuel Fournisseur pour la société %s",,,
+"Veuillez configurer un Emplacement Virtuel Inventaire pour la société %s",,,
+"Veuillez selectionner un entrepot",,,
+"View Customer deliveries","Voir Livraisons Clients",,
+"View Direction","Voir itinéraire",,
+"View Internal moves","Voir Mvts. Internes",,
+"View Stock moves","Voir Mvts de stock",,
+"View Supplier deliveries","Voir Réceptions fournisseur",,
+"View location content","Voir contenu de l'emplacement",,
+"Virtual","Virtuel",,
+"Virtual locations informations","Informations Stocks Virtuels",,
+"XLS","Excel",,

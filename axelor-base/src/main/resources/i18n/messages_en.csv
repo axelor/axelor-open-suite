@@ -1,1342 +1,1342 @@
 "key","message","comment","context"
-"%D  : Day",,,""
-"%M  : Month",,,""
-"%WY : Week number",,,""
-"%Y  : Year",,,""
-"%s : Le chemin vers le template Birt est incorrect",,,""
-"%s :\n Erreur : Fichier de mapping inacessible.",,,""
-"&",,,""
-"(AUX)",,,""
-"(L')",,,""
-"(LA)",,,""
-"(LE)",,,""
-"(LES)",,,""
-"(LOS)",,,""
-"- Réussi :",,,""
-"0",,,""
-"0 --> infinite",,,""
-"00",,,""
-"01",,,""
-"02",,,""
-"03",,,""
-"04",,,""
-"05",,,""
-"06",,,""
-"07",,,""
-"08",,,""
-"09",,,""
-"1",,,""
-"1 Month",,,""
-"1 Year",,,""
-"10",,,""
-"100",,,""
-"11",,,""
-"12",,,""
-"13",,,""
-"14",,,""
-"15",,,""
-"16",,,""
-"17",,,""
-"18",,,""
-"19",,,""
-"2",,,""
-"2 Months",,,""
-"20",,,""
-"21",,,""
-"22",,,""
-"23",,,""
-"24",,,""
-"25",,,""
-"26",,,""
-"27",,,""
-"28",,,""
-"29",,,""
-"3",,,""
-"3 Months",,,""
-"30",,,""
-"31",,,""
-"32",,,""
-"33",,,""
-"34",,,""
-"35",,,""
-"36",,,""
-"37",,,""
-"38",,,""
-"39",,,""
-"4",,,""
-"40",,,""
-"41",,,""
-"42",,,""
-"43",,,""
-"44",,,""
-"45",,,""
-"46",,,""
-"47",,,""
-"48",,,""
-"49",,,""
-"5",,,""
-"50",,,""
-"51",,,""
-"52",,,""
-"53",,,""
-"54",,,""
-"55",,,""
-"56",,,""
-"57",,,""
-"58",,,""
-"59",,,""
-"6",,,""
-"6 Months",,,""
-"60",,,""
-"61",,,""
-"62",,,""
-"63",,,""
-"64",,,""
-"65",,,""
-"66",,,""
-"67",,,""
-"68",,,""
-"69",,,""
-"7",,,""
-"70",,,""
-"71",,,""
-"72",,,""
-"73",,,""
-"74",,,""
-"75",,,""
-"76",,,""
-"77",,,""
-"78",,,""
-"79",,,""
-"8",,,""
-"80",,,""
-"81",,,""
-"82",,,""
-"83",,,""
-"84",,,""
-"85",,,""
-"86",,,""
-"87",,,""
-"88",,,""
-"89",,,""
-"9",,,""
-"90",,,""
-"91",,,""
-"92",,,""
-"93",,,""
-"94",,,""
-"95",,,""
-"96",,,""
-"97",,,""
-"98",,,""
-"99",,,""
-"<B>%s</B> not found",,,""
-"<a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' />",,,""
-"<a class='fa fa-google-plus' href='http://www.google.com' target='_blank' />",,,""
-"<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />",,,""
-"<a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' />",,,""
-"<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />",,,""
-"=",,,""
-"A product of type service can't be procured from stock.",,,""
-"ARTMIN",,,""
-"ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.",,,""
-"Account Number",,,""
-"Account config",,,""
-"Account management",,,""
-"Account management list",,,""
-"Account managements",,,""
-"Accounting",,,""
-"Accounting Export",,,""
-"Accounting balance",,,""
-"Accounting configuration",,,""
-"Accounting export",,,""
-"Accounting reports",,,""
-"Accounting situations",,,""
-"Accounts",,,""
-"Accounts Configurations",,,""
-"Accounts configuration",,,""
-"Accounts/Contacts",,,""
-"Accounts/Partners",,,""
-"Action",,,""
-"Action %s inconnu pour le traitement %s",,,""
-"Actions",,,""
-"Activate Logs ?",,,""
-"Active ?",,,""
-"Active Team",,,""
-"Active company",,,""
-"Active?",,,""
-"Activities",,,""
-"Additionnal",,,""
-"Address",,,""
-"Address certified by QAS engine",,,""
-"Address details",,,""
-"Address list",,,""
-"Address precisions",,,""
-"Addresses",,,""
-"Addresses validation",,,""
-"Administration",,,""
-"Agriculture",,,""
-"Alarm",,,""
-"Alarm Engine",,,""
-"Alarm Message",,,""
-"Alarm Messages",,,""
-"Alarm batches",,,""
-"Alarm engine",,,""
-"Alarm engine batch",,,""
-"Alarm engine batches",,,""
-"Alarm engines",,,""
-"Alarmes",,,""
-"Alarms",,,""
-"All Alarms",,,""
-"All Clients",,,""
-"All Enterprises",,,""
-"All Individuals",,,""
-"All Messages",,,""
-"All Partners",,,""
-"All Prospects",,,""
-"All Suppliers",,,""
-"Amount",,,""
-"Amount/%",,,""
-"Anniversary date",,,""
-"Annually",,,""
-"Anomalies",,,""
-"Anomaly",,,""
-"Apparel",,,""
-"Applicable dates",,,""
-"Application",,,""
-"Application start Date",,,""
-"Application type",,,""
-"Apply on",,,""
-"April",,,""
-"Archived ?",,,""
-"Are you sure you want to start the import?",,,""
-"Area name",,,""
-"Artmin",,,""
-"Assigned to",,,""
-"Attached files",,,""
-"Attachment directory OR Application source does not exist",,,""
-"Attributes",,,""
-"Aucune addresse correspondante dans la base QAS",,,""
-"Aucune conversion trouvée de la devise '%s' à la devise '%s' à la date du %s",,,""
-"Aucune période trouvée ou celle-ci clôturée pour la société: %s",,,""
-"Aucune séquence configurée pour les tiers",,,""
-"Aucune taxe trouvée pour le produit %s",,,""
-"August",,,""
-"Authority Partner",,,""
-"Auto sale tracking Nbr. order",,,""
-"Auto select sale tracking Nbr. ?",,,""
-"BBAN",,,""
-"BBan Key",,,""
-"BIC (Bank Identifier)",,,""
-"BOM",,,""
-"Back",,,""
-"Bank",,,""
-"Bank Code",,,""
-"Bank Details",,,""
-"Bank Details list",,,""
-"Bank Identifier Code",,,""
-"Bank Identifier Codes",,,""
-"Bank accounts",,,""
-"Bank details",,,""
-"Banking",,,""
-"Base Batch",,,""
-"Base batch",,,""
-"Base batches",,,""
-"Based on",,,""
-"Batch",,,""
-"Batch %s inconnu",,,""
-"Batch d'alarme",,,""
-"Batches",,,""
-"Batchs",,,""
-"Be aware that the address is already in use on other documents, do you still want to modify it ?",,,""
-"Bean is not an instance of",,,""
-"Beverage",,,""
-"Bill of materials",,,""
-"Binding file",,,""
-"Biotechnologies",,,""
-"Birt Template",,,""
-"Birt Template parameter",,,""
-"Birt Template parameters",,,""
-"Birt Templates",,,""
-"Birt template",,,""
-"Block Direct Debit ?",,,""
-"Block Invoicing ?",,,""
-"Block Reimbursement ?",,,""
-"Block Reminders ?",,,""
-"Block until",,,""
-"Block while invoicing",,,""
-"Blocking",,,""
-"Blocking ?",,,""
-"Blocking done by",,,""
-"Blocking follow-up List",,,""
-"Blocking reason",,,""
-"Blocking reasons",,,""
-"Blockings",,,""
-"Both currencies must be saved before currency rate apply",,,""
-"Branch Name",,,""
-"Business Folder",,,""
-"Buy",,,""
-"COG",,,""
-"CSV File",,,""
-"Calculated price/Qty",,,""
-"Calculation method",,,""
-"Calendars",,,""
-"Calling code",,,""
-"Campaign",,,""
-"Cancel Reason",,,""
-"Cancel Reasons",,,""
-"Canceled",,,""
-"Canton",,,""
-"Canton Code",,,""
-"Cantons",,,""
-"Catalog",,,""
-"Categorization",,,""
-"Category",,,""
-"Chart",,,""
-"Check / Update rate",,,""
-"Check Duplicate",,,""
-"Check currency exhange rate",,,""
-"Check currency exhange rates",,,""
-"Check duplicate",,,""
-"Check query",,,""
-"Check rate",,,""
-"Chemistry",,,""
-"Cheque reject",,,""
-"Choose",,,""
-"Cities-Communes",,,""
-"Cities/Communes",,,""
-"City-Commune",,,""
-"City/Commune",,,""
-"Civil Year",,,""
-"Civil year already exist for ${fromDate.toString('dd/MM/yyyy')} and ${toDate.toString('dd/MM/yyyy')}.",,,""
-"Civility",,,""
-"Client Situation",,,""
-"Client invoice",,,""
-"ClientSituation.12MonthTurnover","12 Mth Turnover",,""
-"ClientSituation.address","Address",,""
-"ClientSituation.avgOrderAmt","Aver. Order Amt",,""
-"ClientSituation.commercialData","Commercial data",,""
-"ClientSituation.contact","Contact",,""
-"ClientSituation.contacts","Contacts",,""
-"ClientSituation.custRef","Cust. Ref.",,""
-"ClientSituation.date","Date",,""
-"ClientSituation.dueBalance","Due Balance",,""
-"ClientSituation.dueDate","Due Date",,""
-"ClientSituation.email","Email",,""
-"ClientSituation.fax","Fax",,""
-"ClientSituation.financialData","Financial Data",,""
-"ClientSituation.fixedPhone","Fixed phone",,""
-"ClientSituation.followedBy","Followed by",,""
-"ClientSituation.function","Function",,""
-"ClientSituation.invoices","Invoices",,""
-"ClientSituation.lastCall","Last call",,""
-"ClientSituation.lastMeetingDate","Last meeting date",,""
-"ClientSituation.lastOrder","Last order",,""
-"ClientSituation.mobile","Mobile",,""
-"ClientSituation.name","Name",,""
-"ClientSituation.nextMeetingDate","Next meeting date",,""
-"ClientSituation.nextOutgoingCall","Next outgoing call",,""
-"ClientSituation.num","N°",,""
-"ClientSituation.orderFreq","Order Freq.",,""
-"ClientSituation.orders","Quotes/Orders",,""
-"ClientSituation.phone","Phone",,""
-"ClientSituation.refDoc","Ref. Doc",,""
-"ClientSituation.reference","Reference",,""
-"ClientSituation.remindableBalance","Remindable Bal.",,""
-"ClientSituation.status","Status",,""
-"ClientSituation.team","Team",,""
-"ClientSituation.title","CLIENT SITUATION",,""
-"ClientSituation.toInvoice","To invoice",,""
-"ClientSituation.toPay","To Pay",,""
-"ClientSituation.totalATI","Total A.T.I.",,""
-"ClientSituation.totalBalance","Total balance",,""
-"ClientSituation.totalHT","Total H.T.",,""
-"ClientSituation.totalTax","Total Tax",,""
-"ClientSituation.website","Website",,""
-"ClientSituation.with","With",,""
-"Close period",,,""
-"Closed",,,""
-"Cluster?",,,""
-"Code",,,""
-"Code Guichet",,,""
-"Coeff.",,,""
-"Collectivité",,,""
-"Comment",,,""
-"Comments",,,""
-"Commercial level",,,""
-"Commune",,,""
-"Commune name",,,""
-"Communication",,,""
-"Companies",,,""
-"Companies associated to",,,""
-"Company",,,""
-"Company Footer",,,""
-"Company Header",,,""
-"Company phoneBook",,,""
-"Complement",,,""
-"Compte rendu de la relève des alarmes :\n",,,""
-"Compute Discount Separately",,,""
-"Compute Method for Discounts",,,""
-"Compute payers quality",,,""
-"Configuration",,,""
-"Configuration file",,,""
-"Configurations",,,""
-"Contact",,,""
-"Contact ?",,,""
-"Contact details",,,""
-"Contacts",,,""
-"Contacts Db",,,""
-"Contains",,,""
-"Content",,,""
-"Contract Manager",,,""
-"Copy",,,""
-"Cost price",,,""
-"Costs",,,""
-"Counter",,,""
-"Countries",,,""
-"Country",,,""
-"Country Code",,,""
-"Country code",,,""
-"Country name",,,""
-"Create",,,""
-"Create Account",,,""
-"Create Contact",,,""
-"Create Expense",,,""
-"Create Leave request",,,""
-"Create Timesheet",,,""
-"Create currency conversion lines with new rate",,,""
-"Create employee",,,""
-"Create production order",,,""
-"Created by",,,""
-"Created on",,,""
-"Creation",,,""
-"Creations",,,""
-"Currencies",,,""
-"Currency",,,""
-"Currency Ws URL",,,""
-"Currency conversion",,,""
-"Currency conversion line",,,""
-"Currency conversion lines",,,""
-"Currency conversion table",,,""
-"Currency conversion webservice not working",,,""
-"Current Products",,,""
-"Current user's partner delivery address not set",,,""
-"Customer Refund",,,""
-"Customer invoice",,,""
-"Customer?",,,""
-"Customers",,,""
-"Customers by Industry Sector",,,""
-"Customers by country",,,""
-"Customers by saleman",,,""
-"DEPT",,,""
-"Daily",,,""
-"Dashboard",,,""
-"Dashboards",,,""
-"Data file",,,""
-"Data files ( csv, xml, or zip )",,,""
-"Data(s)",,,""
-"Date",,,""
-"Day",,,""
-"Day (end of month)",,,""
-"Day of month",,,""
-"December",,,""
-"Default Bank Account",,,""
-"Default Bank Details",,,""
-"Default Partner language",,,""
-"Default Project unit",,,""
-"Default supplier",,,""
-"Default zoom",,,""
-"Delete",,,""
-"Delivery Address",,,""
-"Delivery delay (days)",,,""
-"Delivery stock move",,,""
-"Demography",,,""
-"Departement",,,""
-"Department",,,""
-"Department Cantons List",,,""
-"Department Communes List",,,""
-"Department Name",,,""
-"Departments",,,""
-"Dept./Div.",,,""
-"Description",,,""
-"Destination Currency",,,""
-"Details",,,""
-"Diploma",,,""
-"Direct debit",,,""
-"Direct debit blocking",,,""
-"Direct debit reject",,,""
-"Direction",,,""
-"Discount",,,""
-"Discount/Additionnal/Replace",,,""
-"Distribution precisions (POB, Village...)",,,""
-"Document concerned",,,""
-"Dr",,,""
-"Draft",,,""
-"Duplicate records",,,""
-"Duration",,,""
-"Durations",,,""
-"EAN13 Code",,,""
-"ERP Administration",,,""
-"Edit",,,""
-"Education",,,""
-"Electronics",,,""
-"Email",,,""
-"Email Page",,,""
-"Email and paper",,,""
-"Employees (Nbr)",,,""
-"Encours Client",,,""
-"End Date",,,""
-"End date",,,""
-"Energy",,,""
-"Enter proper 'From' and 'To' date.",,,""
-"Enterprise Partner",,,""
-"Entertainment",,,""
-"Equal",,,""
-"Erreur : Aucun requête de paramêtrée pour le générateur d'indicateur %s",,,""
-"Erreur : Requête incorrect pour le générateur d'indicateur %s",,,""
-"Erreur lors de l'écriture du fichier",,,""
-"Erreur lors de l'édition du fichier : \n %s",,,""
-"Error : Incorrect query for the querie %s",,,""
-"Error : There is no query set for the querie %s",,,""
-"Error in print. Please check report configuration and print setting.",,,""
-"Every",,,""
-"Exchange rate",,,""
-"Execute",,,""
-"Execution",,,""
-"Execution date",,,""
-"Executions history",,,""
-"Expense",,,""
-"Expenses",,,""
-"Export",,,""
-"Export Address",,,""
-"Export Date",,,""
-"Export Object",,,""
-"Export addresses",,,""
-"Export indicators",,,""
-"External ?",,,""
-"FIFO",,,""
-"Family",,,""
-"Family Code",,,""
-"Family Name",,,""
-"Fax",,,""
-"Feature currently not available with Open Street Maps.",,,""
-"February",,,""
-"Field",,,""
-"Fields",,,""
-"File format can be a csv, xml, or zip depending on the binding file settings.",,,""
-"Filters",,,""
-"Finalize",,,""
-"Finance",,,""
-"First Name",,,""
-"First execution date",,,""
-"First name",,,""
-"Fiscal Year",,,""
-"Fiscal position",,,""
-"Fiscal year",,,""
-"Fixed",,,""
-"Fixed Amount/%",,,""
-"Fixed phone",,,""
-"Food",,,""
-"Format",,,""
-"Free",,,""
-"Free / Business",,,""
-"Free ?",,,""
-"Frequency",,,""
-"Friday",,,""
-"From",,,""
-"From Date",,,""
-"From Unit",,,""
-"FromStock",,,""
-"Function",,,""
-"General",,,""
-"General Settings",,,""
-"General admin",,,""
-"General discount (%)",,,""
-"Generate",,,""
-"Generate new production auto tracking Nbr. ?",,,""
-"Generate new purchase auto tracking Nbr. ?",,,""
-"Generate new sale auto tracking Nbr. ?",,,""
-"Generate product variant wizard",,,""
-"Generate product variants",,,""
-"Geographical area",,,""
-"Get direction",,,""
-"Get new rate at present from internet",,,""
-"Get rate",,,""
-"Google",,,""
-"Government",,,""
-"Grouping line",,,""
-"Has Ordered",,,""
-"Healthcare",,,""
-"Hide Discount ?",,,""
-"Hist price list",,,""
-"Historical",,,""
-"Historize Price List",,,""
-"Historized Price Lists",,,""
-"Historized Price list",,,""
-"Historized Price lists",,,""
-"Human Resource configuration",,,""
-"IBAN",,,""
-"IBAN + BIC",,,""
-"INSEE Code",,,""
-"Import",,,""
-"Import configuration",,,""
-"Import identifier",,,""
-"Import type",,,""
-"Importer",,,""
-"Imports",,,""
-"In %",,,""
-"In / Out ?",,,""
-"In ATI",,,""
-"Include Discount in unit price",,,""
-"Include Discount in unit price only for replace type",,,""
-"Incorrect BBAN Key",,,""
-"Increment",,,""
-"Indicator generator",,,""
-"Indicator generator list",,,""
-"Indicator generators",,,""
-"Indicators generators",,,""
-"Indicators groups",,,""
-"Individual",,,""
-"Industry",,,""
-"Industry Sector",,,""
-"Information",,,""
-"Informations",,,""
-"Insurance",,,""
-"Interfaces",,,""
-"Internal companies",,,""
-"Internal description",,,""
-"Internal stock move",,,""
-"Inventory",,,""
-"Invoice",,,""
-"Invoice configuration",,,""
-"Invoice immediately",,,""
-"Invoice/Refund",,,""
-"Invoices",,,""
-"Invoicing Address",,,""
-"Invoicing Management",,,""
-"Invoicing blocking",,,""
-"Invoicing/Payment",,,""
-"Is model?",,,""
-"JPQL",,,""
-"January",,,""
-"Jobtitle Keyword",,,""
-"Jobtitle Keywords",,,""
-"July",,,""
-"June",,,""
-"Key",,,""
-"Key fields to check duplicate records",,,""
-"Keyword",,,""
-"Keywords",,,""
-"L'IBAN saisi est invalide. <br> Soit l'IBAN ne respecte pas la norme, soit le format de saisie n'est pas correct. L'IBAN doit être saisi sans espaces tel que présenté ci-dessous: <br> FR0000000000000000000000000",,,""
-"LIFO",,,""
-"La date de fin doit impérativement être égale ou supérieur à la date de début.",,,""
-"La ligne ne peut être importée (import : %s)",,,""
-"Label",,,""
-"Language",,,""
-"Languages",,,""
-"Last execution date",,,""
-"Last theoretical execution date",,,""
-"Last update",,,""
-"Latitude",,,""
-"Le",,,""
-"Le taux de conversion de la devise '%s' à la devise '%s' à la date du %s doit être différent de zéro",,,""
-"Leave request",,,""
-"Leave request calendar",,,""
-"Legal form",,,""
-"Links",,,""
-"Localization",,,""
-"Locate",,,""
-"Log",,,""
-"Log Call",,,""
-"Login",,,""
-"Logistics",,,""
-"Logo",,,""
-"Longitude",,,""
-"M.",,,""
-"MDC2",,,""
-"Machinery",,,""
-"Mail Batch",,,""
-"Mail account",,,""
-"Mail accounts",,,""
-"Mail batch",,,""
-"Mail batches",,,""
-"Main company",,,""
-"Manage mail account by user ?",,,""
-"Manage production tracking Nbr. ?",,,""
-"Manage purchase tracking Nbr. ?",,,""
-"Manage sale tracking Nbr. ?",,,""
-"Management coef.",,,""
-"Manager Type",,,""
-"Manufacturing",,,""
-"Manufacturing order",,,""
-"Mapping",,,""
-"Mapping service provider",,,""
-"Maps",,,""
-"March",,,""
-"May",,,""
-"Media",,,""
-"Meetings",,,""
-"Message",,,""
-"Message destinated to",,,""
-"Mobile phone",,,""
-"Model",,,""
-"Modules configurations",,,""
-"Monday",,,""
-"Month",,,""
-"Month/days ?",,,""
-"Monthly",,,""
-"Monthly reset",,,""
-"Moteur d'alarme %s",,,""
-"Mother company",,,""
-"Move",,,""
-"Move exports",,,""
-"Ms.",,,""
-"My  Timesheets",,,""
-"My Customers",,,""
-"My DashBord",,,""
-"My Expenses",,,""
-"My Leave request",,,""
-"My Leave request calendar",,,""
-"My Leave requests",,,""
-"My Prospects",,,""
-"My Recent Customers",,,""
-"My Tasks",,,""
-"My Tickets",,,""
-"My Timesheets",,,""
-"My Timesheets to complete",,,""
-"My expenses",,,""
-"My expenses to complete",,,""
-"My invoices",,,""
-"My leave requests",,,""
-"My sale orders",,,""
-"My space",,,""
-"My tickets",,,""
-"NA",,,""
-"Name",,,""
-"Name/Company Name",,,""
-"National Code",,,""
-"Nb of Inhabitants",,,""
-"Nb of digits for unit prices",,,""
-"Nb. of Inhabitants",,,""
-"New",,,""
-"New exchange rate",,,""
-"Next N°",,,""
-"Next theoretical execution date",,,""
-"No",,,""
-"No Discount",,,""
-"No duplicate records found",,,""
-"Non-profit",,,""
-"None",,,""
-"Not contains",,,""
-"Not implemented yet!",,,""
-"Notes",,,""
-"Notification",,,""
-"November",,,""
-"N° and Street label",,,""
-"OK",,,""
-"OSM",,,""
-"Object",,,""
-"Obsolete Products",,,""
-"October",,,""
-"On",,,""
-"On :",,,""
-"Only label",,,""
-"Opened",,,""
-"Opportunities",,,""
-"Or",,,""
-"Order Bloqued Message",,,""
-"Order confirmed",,,""
-"Organisation config",,,""
-"Organization",,,""
-"Other",,,""
-"Other variants",,,""
-"Overpayment clearance",,,""
-"Owner",,,""
-"Owner name",,,""
-"PDF",,,""
-"PDF Templates",,,""
-"Padding",,,""
-"Paper",,,""
-"Parameters",,,""
-"Parent category",,,""
-"Parent company",,,""
-"Parent product",,,""
-"Partial address",,,""
-"Partner",,,""
-"Partner (Cust/Suppl)",,,""
-"Partner Dashboard",,,""
-"Partner Db",,,""
-"Partner Details",,,""
-"Partner Type",,,""
-"Partner categories",,,""
-"Partner category",,,""
-"Partner details",,,""
-"Partner filters",,,""
-"Partner list",,,""
-"Partner lists",,,""
-"Partner name",,,""
-"Partners",,,""
-"Partners by Industry Sector",,,""
-"Partners/Contacts",,,""
-"Past time",,,""
-"Path to export file",,,""
-"Path to export folder",,,""
-"Payer",,,""
-"Payer quality",,,""
-"Payment",,,""
-"Payment Mode",,,""
-"Payment Schedule",,,""
-"Payment by IPO and IPO Cheque",,,""
-"Payment mode",,,""
-"Payment period (N days)",,,""
-"Payment schedule",,,""
-"Payment voucher",,,""
-"Payment vouchers",,,""
-"Per order",,,""
-"Per shipment",,,""
-"Per task",,,""
-"Period",,,""
-"Period duration",,,""
-"Periods list",,,""
-"Perishable ?",,,""
-"Perishable expiration date",,,""
-"PhoneBook",,,""
-"Phonebook.phonebook","PHONE BOOK",,""
-"Photo",,,""
-"Pick list",,,""
-"Picklist QAS",,,""
-"Picture",,,""
-"Please enter a day for rhythm.",,,""
-"Please enter a day of month for rhythm.",,,""
-"Please enter a day of week for rhythm.",,,""
-"Please enter a frequency.",,,""
-"Please enter a month for rhythm.",,,""
-"Please enter a year for rhythm.",,,""
-"Please input first character as capital and other as lower case",,,""
-"Please select active company",,,""
-"Please select key fields to check duplicate",,,""
-"Please select the Message(s) to print.",,,""
-"Please, enter date of next execution.",,,""
-"Postal addresses",,,""
-"Prefix",,,""
-"Prefix or suffix must contain %Y if yearly reset is true and %M %Y if monthly reset is true",,,""
-"Price Extra",,,""
-"Price list",,,""
-"Price list content",,,""
-"Price list line",,,""
-"Price list lines",,,""
-"Price lists",,,""
-"Prices updated",,,""
-"Print",,,""
-"Print Informations",,,""
-"Printing Setting",,,""
-"Printing Settings",,,""
-"Priority",,,""
-"Procurement method",,,""
-"Procurement settings",,,""
-"Produce",,,""
-"Product",,,""
-"Product Catalog",,,""
-"Product Family",,,""
-"Product categories",,,""
-"Product category",,,""
-"Product code on catalog",,,""
-"Product dates",,,""
-"Product families",,,""
-"Product family",,,""
-"Product launch Date",,,""
-"Product name on catalog",,,""
-"Product pulled off market Date",,,""
-"Product sheet",,,""
-"Product specific attributes",,,""
-"Product tracking number",,,""
-"Product typology",,,""
-"Product variant",,,""
-"Product variant attr",,,""
-"Product variant attr1",,,""
-"Product variant attr2",,,""
-"Product variant attr3",,,""
-"Product variant attr4",,,""
-"Product variant attribute",,,""
-"Product variant attributes",,,""
-"Product variant config",,,""
-"Product variant configuration",,,""
-"Product variant configurations",,,""
-"Product variant value",,,""
-"Product variant value list",,,""
-"Product variant value1",,,""
-"Product variant value1 set",,,""
-"Product variant value2",,,""
-"Product variant value2 set",,,""
-"Product variant value3",,,""
-"Product variant value3 set",,,""
-"Product variant value4",,,""
-"Product variant value4 set",,,""
-"Product variant values",,,""
-"Product variants",,,""
-"ProductCatalog.description","Description",,""
-"ProductCatalog.price","Price",,""
-"ProductCatalog.reference","Reference",,""
-"ProductCatalog.summary","Summary",,""
-"ProductSheet.description","Description",,""
-"ProductSheet.price","Price",,""
-"ProductSheet.title","PRODUCT DATA SHEET",,""
-"ProductSheet.warranty","Price",,""
-"Production Qty by tracking",,,""
-"Production config",,,""
-"Production informations",,,""
-"Production order",,,""
-"Production order configuration",,,""
-"Production tracking management",,,""
-"Products",,,""
-"Products In ATI",,,""
-"Products With Variant",,,""
-"Products families",,,""
-"Products filters",,,""
-"Products models",,,""
-"Products variants",,,""
-"Products/Goods",,,""
-"Prof.",,,""
-"Professional training",,,""
-"Profile",,,""
-"Profiles",,,""
-"Projects",,,""
-"Prospects",,,""
-"Prospects by Industry Sector",,,""
-"Prospects by country",,,""
-"Purchasable",,,""
-"Purchase",,,""
-"Purchase / Cost currency",,,""
-"Purchase Order",,,""
-"Purchase Price List",,,""
-"Purchase Qty by tracking",,,""
-"Purchase Tax",,,""
-"Purchase config",,,""
-"Purchase interface",,,""
-"Purchase order",,,""
-"Purchase order configuration",,,""
-"Purchase price W.T.",,,""
-"Purchase tracking management",,,""
-"Purchase/Costs",,,""
-"Purchases",,,""
-"Période clôturée",,,""
-"QAS Moniker",,,""
-"QAS Proposal lists",,,""
-"QAS certification",,,""
-"QAS score",,,""
-"Qty",,,""
-"Qty min (by product)",,,""
-"Quantity",,,""
-"Quantity min",,,""
-"Querie",,,""
-"Queries",,,""
-"Query",,,""
-"Query language",,,""
-"Query result",,,""
-"RIPEMD160",,,""
-"Rate",,,""
-"Rate Date",,,""
-"Rate updation",,,""
-"Raw Materials",,,""
-"Raw material",,,""
-"Real Estate",,,""
-"Receipt N°(Payment voucher)",,,""
-"Receipt stock move",,,""
-"Recently created partners",,,""
-"Recipient address",,,""
-"Recipient details",,,""
-"Recipients",,,""
-"Reference",,,""
-"Refresh",,,""
-"Refund interface",,,""
-"Region",,,""
-"Region code",,,""
-"Region name",,,""
-"Regions",,,""
-"Registration code",,,""
-"Reimbursed",,,""
-"Reimbursement",,,""
-"Reimbursement blocking",,,""
-"Reimbursements",,,""
-"Reject",,,""
-"Rejects reasons and codes list",,,""
-"Related to",,,""
-"Relations",,,""
-"Remind Timesheet Validation Batch",,,""
-"Remind time sheets validation",,,""
-"Reminder blocking",,,""
-"Reopen period",,,""
-"Replace",,,""
-"Replacement Tax",,,""
-"Reply to",,,""
-"Reports to",,,""
-"Requête exécutée",,,""
-"Result",,,""
-"Resultat exporté",,,""
-"Retaile",,,""
-"Rhythm",,,""
-"Routing",,,""
-"Routing action",,,""
-"Routing action create",,,""
-"Routing actions",,,""
-"Routing rule",,,""
-"Routing rules",,,""
-"Rule",,,""
-"Run",,,""
-"Run off Date",,,""
-"SHA224",,,""
-"SHA256",,,""
-"SHA384",,,""
-"SHA512",,,""
-"SIRET",,,""
-"SQL",,,""
-"SWIFT address",,,""
-"SWIFT codes",,,""
-"Sale",,,""
-"Sale Order",,,""
-"Sale Price List",,,""
-"Sale Qty by tracking",,,""
-"Sale Tax",,,""
-"Sale config",,,""
-"Sale currency",,,""
-"Sale interface",,,""
-"Sale order configuration",,,""
-"Sale price",,,""
-"Sale price W.T.",,,""
-"Sale supply default method",,,""
-"Sale tracking management",,,""
-"Sales",,,""
-"Sales Manager",,,""
-"Sales Turnover",,,""
-"Sales attributes",,,""
-"Sales map",,,""
-"Sales maps",,,""
-"Sales order",,,""
-"Samples",,,""
-"Saturday",,,""
-"Save new rate",,,""
-"Schedule Meeting",,,""
-"Schedule line",,,""
-"Schedule lines",,,""
-"Scheduler",,,""
-"Scheduler history",,,""
-"Schedulers",,,""
-"Search",,,""
-"Sector",,,""
-"Sector Keyword",,,""
-"Sector Keywords",,,""
-"Sellable",,,""
-"Send",,,""
-"Send Email",,,""
-"Send email",,,""
-"September",,,""
-"Sequence",,,""
-"Sequence Definition",,,""
-"Sequences",,,""
-"Service",,,""
-"Service Products",,,""
-"Service indisponible, veuillez contacter votre adminstrateur",,,""
-"Services",,,""
-"Settings",,,""
-"Shift to doubtful receivables",,,""
-"Shift to irrecoverable",,,""
-"Show",,,""
-"Show all stock move",,,""
-"Site",,,""
-"Sites",,,""
-"Sort Code",,,""
-"Source",,,""
-"Source Currency",,,""
-"Sources",,,""
-"Spatial information",,,""
-"Specific information",,,""
-"Start Date",,,""
-"Start date",,,""
-"Status",,,""
-"Stock",,,""
-"Stock Move configuration",,,""
-"Stock config",,,""
-"Storable Products",,,""
-"Subject",,,""
-"Subscription",,,""
-"Succeeded",,,""
-"Suffix",,,""
-"Sunday",,,""
-"Supplier",,,""
-"Supplier Catalog",,,""
-"Supplier Catalog Lines",,,""
-"Supplier Refund",,,""
-"Supplier invoice",,,""
-"Supplier?",,,""
-"Suppliers",,,""
-"Suppliers by country",,,""
-"Suppliers catalog",,,""
-"Suspend Alarm ?",,,""
-"Symbol",,,""
-"Syndicat",,,""
-"System active rate",,,""
-"Target",,,""
-"Target batch",,,""
-"Target page",,,""
-"Tasks",,,""
-"Tax",,,""
-"Tax N°",,,""
-"Tax Rate",,,""
-"Tax Rates",,,""
-"Tax active version",,,""
-"Tax configuration is missing for Product: %s (company: %s)",,,""
-"Tax equivalence",,,""
-"Tax equivalences",,,""
-"Tax is missing",,,""
-"Tax is missing for Product: %s (company: %s)",,,""
-"Tax rate list",,,""
-"Tax to replace",,,""
-"Tax versions history",,,""
-"Taxes equivalences",,,""
-"Team",,,""
-"Teams",,,""
-"Technical maintenance",,,""
-"Technical manager",,,""
-"Technical topic",,,""
-"Telecom",,,""
-"Template",,,""
-"Template Context",,,""
-"Template Context Line",,,""
-"Template Context Lines",,,""
-"Template Rules",,,""
-"Template context",,,""
-"Template file name",,,""
-"Template rule",,,""
-"Template rule line",,,""
-"Template rule line list",,,""
-"Template rule lines",,,""
-"Template rules",,,""
-"Templates",,,""
-"Territories",,,""
-"Territory",,,""
-"Test connection",,,""
-"Test connection to QAS webservice",,,""
-"Test mapping service connection",,,""
-"Testing",,,""
-"The product pulled-off date must be greater than the launch date.",,,""
-"The quantity by lot must be greater than 0",,,""
-"The tags below can be used as a prefix or a suffix :",,,""
-"This batch is not runnable !",,,""
-"Thursday",,,""
-"Ticket",,,""
-"Time before expiry (in months)",,,""
-"Timesheets",,,""
-"Timesheets Reminder",,,""
-"Tips",,,""
-"Title",,,""
-"To",,,""
-"To Date",,,""
-"To Unit",,,""
-"To include in next invoice batch",,,""
-"To reimburse",,,""
-"Today date",,,""
-"Tool Keyword",,,""
-"Tool Keywords",,,""
-"Tools",,,""
-"Tracebacks",,,""
-"Tracking Nbr.",,,""
-"Tracking Nbr. Config.",,,""
-"Tracking Number",,,""
-"Tracking Number Configuration",,,""
-"Tracking number",,,""
-"Tracking number configuration",,,""
-"Transport",,,""
-"Treasury interface",,,""
-"Tuesday",,,""
-"Turnover",,,""
-"Type",,,""
-"URL to QAS WSDL",,,""
-"Unit",,,""
-"Unit conversion",,,""
-"Unit conversions",,,""
-"Unit price",,,""
-"Units",,,""
-"Update & Historize conversion rate",,,""
-"Update current product prices and variants",,,""
-"Update products prices",,,""
-"Use QAS Validation ?",,,""
-"Use for stock only",,,""
-"User",,,""
-"Users",,,""
-"Users list",,,""
-"Users/Companies",,,""
-"Users/Employees",,,""
-"Utilities",,,""
-"Valid query.",,,""
-"Validate",,,""
-"Validated",,,""
-"Value",,,""
-"Variants",,,""
-"Variants generated",,,""
-"Variation",,,""
-"Version",,,""
-"Versions",,,""
-"Veuillez configurer les conversions d'unités de '%s' à '%s'.",,,""
-"Veuillez configurer les conversions d'unités.",,,""
-"Veuillez configurer une version de taxe pour la taxe %s",,,""
-"Veuillez saisir une périodicité pour le planificateur %s",,,""
-"View Accounts",,,""
-"View Contacts",,,""
-"View Products",,,""
-"View map",,,""
-"WARNING : Please close the current conversion period before creating new one",,,""
-"WARNING : To Date must be after or equals to From Date",,,""
-"Warranty ?",,,""
-"Warranty expiration date",,,""
-"Warranty length (in months)",,,""
-"Webservices",,,""
-"Website",,,""
-"Wednesday",,,""
-"Weekly",,,""
-"With payment schedule",,,""
-"Work",,,""
-"X",,,""
-"XLS",,,""
-"XML",,,""
-"XML File",,,""
-"Year",,,""
-"Yearly reset",,,""
-"Years",,,""
-"Yes",,,""
-"You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?",,,""
-"Zip",,,""
-"Zip On Right ?",,,""
-"Zip code",,,""
-"Zip/City",,,""
-"\nAnomalies générées :",,,""
-"\nErreur : Aucun chemin d'export de paramétré",,,""
-"\nErreur : Aucun code de paramétré",,,""
-"\nTotal :",,,""
-"\t* %s anomalie(s)",,,""
-"\t* %s objet(s) en alarme(s)\n",,,""
-"cost price",,,""
-"day(s)",,,""
-"e.g. Building A, Entry 2, 2nd Floor, Door 2E",,,""
-"e.g. Financial department, CEO",,,""
-"e.g. POB 254",,,""
-"help:BankDetails.bankAddress","Address of the bank",,""
-"help:BankDetails.bankCode","Refers to the bank code where the account owner has his account.",,""
-"help:BankDetails.bbanKey",,,""
-"help:BankDetails.bic",,,""
-"help:BankDetails.countryCode","Refers to the country code expressed within the first 2 caracters of the IBAN.",,""
-"help:BankDetails.iban","For more information regarding IBAN, please refer to the norm ISO13616 (a sum up is introduced here http://fr.wikipedia.org/wiki/ISO_13616)",,""
-"help:BankDetails.ownerName","Name of the bank account owner",,""
-"help:BankDetails.sortCode","Refers to the branch code where the account is registered.",,""
-"help:Bic.bankCode",,,""
-"help:Bic.bankName",,,""
-"help:Bic.countryCode","This code is expressed with 2 caracters (e.g. : EN, FR …)",,""
-"help:Bic.sortCode",,,""
-"help:BirtTemplate.format","Pdf",,""
-"help:BirtTemplate.templateLink",,,""
-"help:Company.administration",,,""
-"help:Company.currency",,,""
-"help:Company.defaultBankDetails",,,""
-"help:Company.logo",,,""
-"help:Company.parent",,,""
-"help:Company.printingSettings",,,""
-"help:Country.code",,,""
-"help:Currency.code",,,""
-"help:CurrencyConversionLine.variations",,,""
-"help:Department.code",,,""
-"help:General.currencyConversionLineList",,,""
-"help:General.currencyWsURL",,,""
-"help:General.defaultPartnerLanguage",,,""
-"help:General.defaultProjectUnit",,,""
-"help:General.hasQasValidation","If ticked, the ERP will use QAS webservice for validation of adresses.",,""
-"help:General.logOk",,,""
-"help:General.qasWsdlUrl","http://{serveur}:{port}/proweb.wsdl",,""
-"help:General.today","If empty, the today date will be the server date.",,""
-"help:IndicatorGeneratorGrouping.path","Path to the export folder where the indicator report values will be exported.",,""
-"help:Keyword.typeSelect",,,""
-"help:Message.company",,,""
-"help:Partner.bankDetails",,,""
-"help:Partner.companySet",,,""
-"help:Partner.currency",,,""
-"help:Partner.deliveryAddress",,,""
-"help:Partner.fiscalPosition",,,""
-"help:Partner.languageSelect",,,""
-"help:Partner.mainInvoicingAddress",,,""
-"help:Partner.mainPartner",,,""
-"help:Partner.registrationCode",,,""
-"help:Partner.reportsTo",,,""
-"help:Partner.team",,,""
-"help:Partner.user",,,""
-"help:PaymentCondition.daySelect",,,""
-"help:PaymentCondition.isFree",,,""
-"help:PaymentCondition.paymentTime",,,""
-"help:PaymentCondition.typeSelect",,,""
-"help:PaymentMode.inOutSelect",,,""
-"help:PaymentMode.typeSelect",,,""
-"help:Period.statusSelect",,,""
-"help:Period.year",,,""
-"help:PriceList.basedOnSelect",,,""
-"help:PriceList.generalDiscount",,,""
-"help:PriceList.hideDiscount",,,""
-"help:PriceList.isActive",,,""
-"help:PriceList.typeSelect",,,""
-"help:PriceListLine.amount",,,""
-"help:PriceListLine.amountTypeSelect",,,""
-"help:PriceListLine.minQty",,,""
-"help:PriceListLine.product",,,""
-"help:PriceListLine.productCategory",,,""
-"help:PriceListLine.typeSelect",,,""
-"help:PrintingSettings.defaultMailBirtTemplate","Default Mail Birt Template",,""
-"help:PrintingSettings.pdfFooter",,,""
-"help:PrintingSettings.pdfHeader",,,""
-"help:Product.accountManagementList","If this table is empty, the default account configuration will be retrieved from the product family 'Accounts configurations' table. However, this table will has the highest priority if filled.",,""
-"help:Product.applicationTypeSelect",,,""
-"help:Product.costPrice",,,""
-"help:Product.defaultSupplierPartner",,,""
-"help:Product.endDate",,,""
-"help:Product.isRawMaterial",,,""
-"help:Product.managPriceCoef",,,""
-"help:Product.parentProduct","Used for variants",,""
-"help:Product.procurementMethodSelect",,,""
-"help:Product.productCategory",,,""
-"help:Product.productFamily",,,""
-"help:Product.productTypeSelect",,,""
-"help:Product.saleSupplySelect",,,""
-"help:Product.startDate",,,""
-"help:Product.supplierCatalogList",,,""
-"help:Product.trackingNumberConfiguration",,,""
-"help:Product.unit",,,""
-"help:ProductCategory.parentProductCategory",,,""
-"help:ProductCategory.productFamily",,,""
-"help:ProductFamily.accountManagementList",,,""
-"help:ProductVariant.productVariantAttr1",,,""
-"help:ProductVariant.productVariantValue1",,,""
-"help:ProductVariant.usedForStock",,,""
-"help:ProductVariantAttr.productVariantValueList",,,""
-"help:ProductVariantValue.applicationPriceSelect",,,""
-"help:Sequence.monthlyResetOk",,,""
-"help:Sequence.padding",,,""
-"help:Sequence.prefixe",,,""
-"help:Sequence.suffixe",,,""
-"help:Sequence.toBeAdded",,,""
-"help:Sequence.yearlyResetOk",,,""
-"help:SupplierCatalog.minQty",,,""
-"help:SupplierCatalog.price",,,""
-"help:TaxEquiv.toTax",,,""
-"help:TaxLine.value",,,""
-"help:Template.birtTemplate",,,""
-"help:UnitConversion.coef",,,""
-"help:User.activeCompany",,,""
-"help:User.activeTeam",,,""
-"help:User.partner",,,""
-"help:User.today",,,""
-"help:Year.periodList",,,""
-"help:Year.statusSelect",,,""
-"help:Year.typeSelect",,,""
-"month",,,""
-"v1",,,""
-"v2",,,""
-"v3",,,""
-"v4",,,""
-"v5",,,""
-"week(s)",,,""
-"year(s)",,,""
+"%D  : Day",,,
+"%M  : Month",,,
+"%WY : Week number",,,
+"%Y  : Year",,,
+"%s : Le chemin vers le template Birt est incorrect",,,
+"%s :\n Erreur : Fichier de mapping inacessible.",,,
+"&",,,
+"(AUX)",,,
+"(L')",,,
+"(LA)",,,
+"(LE)",,,
+"(LES)",,,
+"(LOS)",,,
+"- Réussi :",,,
+"0",,,
+"0 --> infinite",,,
+"00",,,
+"01",,,
+"02",,,
+"03",,,
+"04",,,
+"05",,,
+"06",,,
+"07",,,
+"08",,,
+"09",,,
+"1",,,
+"1 Month",,,
+"1 Year",,,
+"10",,,
+"100",,,
+"11",,,
+"12",,,
+"13",,,
+"14",,,
+"15",,,
+"16",,,
+"17",,,
+"18",,,
+"19",,,
+"2",,,
+"2 Months",,,
+"20",,,
+"21",,,
+"22",,,
+"23",,,
+"24",,,
+"25",,,
+"26",,,
+"27",,,
+"28",,,
+"29",,,
+"3",,,
+"3 Months",,,
+"30",,,
+"31",,,
+"32",,,
+"33",,,
+"34",,,
+"35",,,
+"36",,,
+"37",,,
+"38",,,
+"39",,,
+"4",,,
+"40",,,
+"41",,,
+"42",,,
+"43",,,
+"44",,,
+"45",,,
+"46",,,
+"47",,,
+"48",,,
+"49",,,
+"5",,,
+"50",,,
+"51",,,
+"52",,,
+"53",,,
+"54",,,
+"55",,,
+"56",,,
+"57",,,
+"58",,,
+"59",,,
+"6",,,
+"6 Months",,,
+"60",,,
+"61",,,
+"62",,,
+"63",,,
+"64",,,
+"65",,,
+"66",,,
+"67",,,
+"68",,,
+"69",,,
+"7",,,
+"70",,,
+"71",,,
+"72",,,
+"73",,,
+"74",,,
+"75",,,
+"76",,,
+"77",,,
+"78",,,
+"79",,,
+"8",,,
+"80",,,
+"81",,,
+"82",,,
+"83",,,
+"84",,,
+"85",,,
+"86",,,
+"87",,,
+"88",,,
+"89",,,
+"9",,,
+"90",,,
+"91",,,
+"92",,,
+"93",,,
+"94",,,
+"95",,,
+"96",,,
+"97",,,
+"98",,,
+"99",,,
+"<B>%s</B> not found",,,
+"<a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' />",,,
+"<a class='fa fa-google-plus' href='http://www.google.com' target='_blank' />",,,
+"<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />",,,
+"<a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' />",,,
+"<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />",,,
+"=",,,
+"A product of type service can't be procured from stock.",,,
+"ARTMIN",,,
+"ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.",,,
+"Account Number",,,
+"Account config",,,
+"Account management",,,
+"Account management list",,,
+"Account managements",,,
+"Accounting",,,
+"Accounting Export",,,
+"Accounting balance",,,
+"Accounting configuration",,,
+"Accounting export",,,
+"Accounting reports",,,
+"Accounting situations",,,
+"Accounts",,,
+"Accounts Configurations",,,
+"Accounts configuration",,,
+"Accounts/Contacts",,,
+"Accounts/Partners",,,
+"Action",,,
+"Action %s inconnu pour le traitement %s",,,
+"Actions",,,
+"Activate Logs ?",,,
+"Active ?",,,
+"Active Team",,,
+"Active company",,,
+"Active?",,,
+"Activities",,,
+"Additionnal",,,
+"Address",,,
+"Address certified by QAS engine",,,
+"Address details",,,
+"Address list",,,
+"Address precisions",,,
+"Addresses",,,
+"Addresses validation",,,
+"Administration",,,
+"Agriculture",,,
+"Alarm",,,
+"Alarm Engine",,,
+"Alarm Message",,,
+"Alarm Messages",,,
+"Alarm batches",,,
+"Alarm engine",,,
+"Alarm engine batch",,,
+"Alarm engine batches",,,
+"Alarm engines",,,
+"Alarmes",,,
+"Alarms",,,
+"All Alarms",,,
+"All Clients",,,
+"All Enterprises",,,
+"All Individuals",,,
+"All Messages",,,
+"All Partners",,,
+"All Prospects",,,
+"All Suppliers",,,
+"Amount",,,
+"Amount/%",,,
+"Anniversary date",,,
+"Annually",,,
+"Anomalies",,,
+"Anomaly",,,
+"Apparel",,,
+"Applicable dates",,,
+"Application",,,
+"Application start Date",,,
+"Application type",,,
+"Apply on",,,
+"April",,,
+"Archived ?",,,
+"Are you sure you want to start the import?",,,
+"Area name",,,
+"Artmin",,,
+"Assigned to",,,
+"Attached files",,,
+"Attachment directory OR Application source does not exist",,,
+"Attributes",,,
+"Aucune addresse correspondante dans la base QAS",,,
+"Aucune conversion trouvée de la devise '%s' à la devise '%s' à la date du %s",,,
+"Aucune période trouvée ou celle-ci clôturée pour la société: %s",,,
+"Aucune séquence configurée pour les tiers",,,
+"Aucune taxe trouvée pour le produit %s",,,
+"August",,,
+"Authority Partner",,,
+"Auto sale tracking Nbr. order",,,
+"Auto select sale tracking Nbr. ?",,,
+"BBAN",,,
+"BBan Key",,,
+"BIC (Bank Identifier)",,,
+"BOM",,,
+"Back",,,
+"Bank",,,
+"Bank Code",,,
+"Bank Details",,,
+"Bank Details list",,,
+"Bank Identifier Code",,,
+"Bank Identifier Codes",,,
+"Bank accounts",,,
+"Bank details",,,
+"Banking",,,
+"Base Batch",,,
+"Base batch",,,
+"Base batches",,,
+"Based on",,,
+"Batch",,,
+"Batch %s inconnu",,,
+"Batch d'alarme",,,
+"Batches",,,
+"Batchs",,,
+"Be aware that the address is already in use on other documents, do you still want to modify it ?",,,
+"Bean is not an instance of",,,
+"Beverage",,,
+"Bill of materials",,,
+"Binding file",,,
+"Biotechnologies",,,
+"Birt Template",,,
+"Birt Template parameter",,,
+"Birt Template parameters",,,
+"Birt Templates",,,
+"Birt template",,,
+"Block Direct Debit ?",,,
+"Block Invoicing ?",,,
+"Block Reimbursement ?",,,
+"Block Reminders ?",,,
+"Block until",,,
+"Block while invoicing",,,
+"Blocking",,,
+"Blocking ?",,,
+"Blocking done by",,,
+"Blocking follow-up List",,,
+"Blocking reason",,,
+"Blocking reasons",,,
+"Blockings",,,
+"Both currencies must be saved before currency rate apply",,,
+"Branch Name",,,
+"Business Folder",,,
+"Buy",,,
+"COG",,,
+"CSV File",,,
+"Calculated price/Qty",,,
+"Calculation method",,,
+"Calendars",,,
+"Calling code",,,
+"Campaign",,,
+"Cancel Reason",,,
+"Cancel Reasons",,,
+"Canceled",,,
+"Canton",,,
+"Canton Code",,,
+"Cantons",,,
+"Catalog",,,
+"Categorization",,,
+"Category",,,
+"Chart",,,
+"Check / Update rate",,,
+"Check Duplicate",,,
+"Check currency exhange rate",,,
+"Check currency exhange rates",,,
+"Check duplicate",,,
+"Check query",,,
+"Check rate",,,
+"Chemistry",,,
+"Cheque reject",,,
+"Choose",,,
+"Cities-Communes",,,
+"Cities/Communes",,,
+"City-Commune",,,
+"City/Commune",,,
+"Civil Year",,,
+"Civil year already exist for ${fromDate.toString('dd/MM/yyyy')} and ${toDate.toString('dd/MM/yyyy')}.",,,
+"Civility",,,
+"Client Situation",,,
+"Client invoice",,,
+"ClientSituation.12MonthTurnover","12 Mth Turnover",,
+"ClientSituation.address","Address",,
+"ClientSituation.avgOrderAmt","Aver. Order Amt",,
+"ClientSituation.commercialData","Commercial data",,
+"ClientSituation.contact","Contact",,
+"ClientSituation.contacts","Contacts",,
+"ClientSituation.custRef","Cust. Ref.",,
+"ClientSituation.date","Date",,
+"ClientSituation.dueBalance","Due Balance",,
+"ClientSituation.dueDate","Due Date",,
+"ClientSituation.email","Email",,
+"ClientSituation.fax","Fax",,
+"ClientSituation.financialData","Financial Data",,
+"ClientSituation.fixedPhone","Fixed phone",,
+"ClientSituation.followedBy","Followed by",,
+"ClientSituation.function","Function",,
+"ClientSituation.invoices","Invoices",,
+"ClientSituation.lastCall","Last call",,
+"ClientSituation.lastMeetingDate","Last meeting date",,
+"ClientSituation.lastOrder","Last order",,
+"ClientSituation.mobile","Mobile",,
+"ClientSituation.name","Name",,
+"ClientSituation.nextMeetingDate","Next meeting date",,
+"ClientSituation.nextOutgoingCall","Next outgoing call",,
+"ClientSituation.num","N°",,
+"ClientSituation.orderFreq","Order Freq.",,
+"ClientSituation.orders","Quotes/Orders",,
+"ClientSituation.phone","Phone",,
+"ClientSituation.refDoc","Ref. Doc",,
+"ClientSituation.reference","Reference",,
+"ClientSituation.remindableBalance","Remindable Bal.",,
+"ClientSituation.status","Status",,
+"ClientSituation.team","Team",,
+"ClientSituation.title","CLIENT SITUATION",,
+"ClientSituation.toInvoice","To invoice",,
+"ClientSituation.toPay","To Pay",,
+"ClientSituation.totalATI","Total A.T.I.",,
+"ClientSituation.totalBalance","Total balance",,
+"ClientSituation.totalHT","Total H.T.",,
+"ClientSituation.totalTax","Total Tax",,
+"ClientSituation.website","Website",,
+"ClientSituation.with","With",,
+"Close period",,,
+"Closed",,,
+"Cluster?",,,
+"Code",,,
+"Code Guichet",,,
+"Coeff.",,,
+"Collectivité",,,
+"Comment",,,
+"Comments",,,
+"Commercial level",,,
+"Commune",,,
+"Commune name",,,
+"Communication",,,
+"Companies",,,
+"Companies associated to",,,
+"Company",,,
+"Company Footer",,,
+"Company Header",,,
+"Company phoneBook",,,
+"Complement",,,
+"Compte rendu de la relève des alarmes :\n",,,
+"Compute Discount Separately",,,
+"Compute Method for Discounts",,,
+"Compute payers quality",,,
+"Configuration",,,
+"Configuration file",,,
+"Configurations",,,
+"Contact",,,
+"Contact ?",,,
+"Contact details",,,
+"Contacts",,,
+"Contacts Db",,,
+"Contains",,,
+"Content",,,
+"Contract Manager",,,
+"Copy",,,
+"Cost price",,,
+"Costs",,,
+"Counter",,,
+"Countries",,,
+"Country",,,
+"Country Code",,,
+"Country code",,,
+"Country name",,,
+"Create",,,
+"Create Account",,,
+"Create Contact",,,
+"Create Expense",,,
+"Create Leave request",,,
+"Create Timesheet",,,
+"Create currency conversion lines with new rate",,,
+"Create employee",,,
+"Create production order",,,
+"Created by",,,
+"Created on",,,
+"Creation",,,
+"Creations",,,
+"Currencies",,,
+"Currency",,,
+"Currency Ws URL",,,
+"Currency conversion",,,
+"Currency conversion line",,,
+"Currency conversion lines",,,
+"Currency conversion table",,,
+"Currency conversion webservice not working",,,
+"Current Products",,,
+"Current user's partner delivery address not set",,,
+"Customer Refund",,,
+"Customer invoice",,,
+"Customer?",,,
+"Customers",,,
+"Customers by Industry Sector",,,
+"Customers by country",,,
+"Customers by saleman",,,
+"DEPT",,,
+"Daily",,,
+"Dashboard",,,
+"Dashboards",,,
+"Data file",,,
+"Data files ( csv, xml, or zip )",,,
+"Data(s)",,,
+"Date",,,
+"Day",,,
+"Day (end of month)",,,
+"Day of month",,,
+"December",,,
+"Default Bank Account",,,
+"Default Bank Details",,,
+"Default Partner language",,,
+"Default Project unit",,,
+"Default supplier",,,
+"Default zoom",,,
+"Delete",,,
+"Delivery Address",,,
+"Delivery delay (days)",,,
+"Delivery stock move",,,
+"Demography",,,
+"Departement",,,
+"Department",,,
+"Department Cantons List",,,
+"Department Communes List",,,
+"Department Name",,,
+"Departments",,,
+"Dept./Div.",,,
+"Description",,,
+"Destination Currency",,,
+"Details",,,
+"Diploma",,,
+"Direct debit",,,
+"Direct debit blocking",,,
+"Direct debit reject",,,
+"Direction",,,
+"Discount",,,
+"Discount/Additionnal/Replace",,,
+"Distribution precisions (POB, Village...)",,,
+"Document concerned",,,
+"Dr",,,
+"Draft",,,
+"Duplicate records",,,
+"Duration",,,
+"Durations",,,
+"EAN13 Code",,,
+"ERP Administration",,,
+"Edit",,,
+"Education",,,
+"Electronics",,,
+"Email",,,
+"Email Page",,,
+"Email and paper",,,
+"Employees (Nbr)",,,
+"Encours Client",,,
+"End Date",,,
+"End date",,,
+"Energy",,,
+"Enter proper 'From' and 'To' date.",,,
+"Enterprise Partner",,,
+"Entertainment",,,
+"Equal",,,
+"Erreur : Aucun requête de paramêtrée pour le générateur d'indicateur %s",,,
+"Erreur : Requête incorrect pour le générateur d'indicateur %s",,,
+"Erreur lors de l'écriture du fichier",,,
+"Erreur lors de l'édition du fichier : \n %s",,,
+"Error : Incorrect query for the querie %s",,,
+"Error : There is no query set for the querie %s",,,
+"Error in print. Please check report configuration and print setting.",,,
+"Every",,,
+"Exchange rate",,,
+"Execute",,,
+"Execution",,,
+"Execution date",,,
+"Executions history",,,
+"Expense",,,
+"Expenses",,,
+"Export",,,
+"Export Address",,,
+"Export Date",,,
+"Export Object",,,
+"Export addresses",,,
+"Export indicators",,,
+"External ?",,,
+"FIFO",,,
+"Family",,,
+"Family Code",,,
+"Family Name",,,
+"Fax",,,
+"Feature currently not available with Open Street Maps.",,,
+"February",,,
+"Field",,,
+"Fields",,,
+"File format can be a csv, xml, or zip depending on the binding file settings.",,,
+"Filters",,,
+"Finalize",,,
+"Finance",,,
+"First Name",,,
+"First execution date",,,
+"First name",,,
+"Fiscal Year",,,
+"Fiscal position",,,
+"Fiscal year",,,
+"Fixed",,,
+"Fixed Amount/%",,,
+"Fixed phone",,,
+"Food",,,
+"Format",,,
+"Free",,,
+"Free / Business",,,
+"Free ?",,,
+"Frequency",,,
+"Friday",,,
+"From",,,
+"From Date",,,
+"From Unit",,,
+"FromStock",,,
+"Function",,,
+"General",,,
+"General Settings",,,
+"General admin",,,
+"General discount (%)",,,
+"Generate",,,
+"Generate new production auto tracking Nbr. ?",,,
+"Generate new purchase auto tracking Nbr. ?",,,
+"Generate new sale auto tracking Nbr. ?",,,
+"Generate product variant wizard",,,
+"Generate product variants",,,
+"Geographical area",,,
+"Get direction",,,
+"Get new rate at present from internet",,,
+"Get rate",,,
+"Google",,,
+"Government",,,
+"Grouping line",,,
+"Has Ordered",,,
+"Healthcare",,,
+"Hide Discount ?",,,
+"Hist price list",,,
+"Historical",,,
+"Historize Price List",,,
+"Historized Price Lists",,,
+"Historized Price list",,,
+"Historized Price lists",,,
+"Human Resource configuration",,,
+"IBAN",,,
+"IBAN + BIC",,,
+"INSEE Code",,,
+"Import",,,
+"Import configuration",,,
+"Import identifier",,,
+"Import type",,,
+"Importer",,,
+"Imports",,,
+"In %",,,
+"In / Out ?",,,
+"In ATI",,,
+"Include Discount in unit price",,,
+"Include Discount in unit price only for replace type",,,
+"Incorrect BBAN Key",,,
+"Increment",,,
+"Indicator generator",,,
+"Indicator generator list",,,
+"Indicator generators",,,
+"Indicators generators",,,
+"Indicators groups",,,
+"Individual",,,
+"Industry",,,
+"Industry Sector",,,
+"Information",,,
+"Informations",,,
+"Insurance",,,
+"Interfaces",,,
+"Internal companies",,,
+"Internal description",,,
+"Internal stock move",,,
+"Inventory",,,
+"Invoice",,,
+"Invoice configuration",,,
+"Invoice immediately",,,
+"Invoice/Refund",,,
+"Invoices",,,
+"Invoicing Address",,,
+"Invoicing Management",,,
+"Invoicing blocking",,,
+"Invoicing/Payment",,,
+"Is model?",,,
+"JPQL",,,
+"January",,,
+"Jobtitle Keyword",,,
+"Jobtitle Keywords",,,
+"July",,,
+"June",,,
+"Key",,,
+"Key fields to check duplicate records",,,
+"Keyword",,,
+"Keywords",,,
+"L'IBAN saisi est invalide. <br> Soit l'IBAN ne respecte pas la norme, soit le format de saisie n'est pas correct. L'IBAN doit être saisi sans espaces tel que présenté ci-dessous: <br> FR0000000000000000000000000",,,
+"LIFO",,,
+"La date de fin doit impérativement être égale ou supérieur à la date de début.",,,
+"La ligne ne peut être importée (import : %s)",,,
+"Label",,,
+"Language",,,
+"Languages",,,
+"Last execution date",,,
+"Last theoretical execution date",,,
+"Last update",,,
+"Latitude",,,
+"Le",,,
+"Le taux de conversion de la devise '%s' à la devise '%s' à la date du %s doit être différent de zéro",,,
+"Leave request",,,
+"Leave request calendar",,,
+"Legal form",,,
+"Links",,,
+"Localization",,,
+"Locate",,,
+"Log",,,
+"Log Call",,,
+"Login",,,
+"Logistics",,,
+"Logo",,,
+"Longitude",,,
+"M.",,,
+"MDC2",,,
+"Machinery",,,
+"Mail Batch",,,
+"Mail account",,,
+"Mail accounts",,,
+"Mail batch",,,
+"Mail batches",,,
+"Main company",,,
+"Manage mail account by user ?",,,
+"Manage production tracking Nbr. ?",,,
+"Manage purchase tracking Nbr. ?",,,
+"Manage sale tracking Nbr. ?",,,
+"Management coef.",,,
+"Manager Type",,,
+"Manufacturing",,,
+"Manufacturing order",,,
+"Mapping",,,
+"Mapping service provider",,,
+"Maps",,,
+"March",,,
+"May",,,
+"Media",,,
+"Meetings",,,
+"Message",,,
+"Message destinated to",,,
+"Mobile phone",,,
+"Model",,,
+"Modules configurations",,,
+"Monday",,,
+"Month",,,
+"Month/days ?",,,
+"Monthly",,,
+"Monthly reset",,,
+"Moteur d'alarme %s",,,
+"Mother company",,,
+"Move",,,
+"Move exports",,,
+"Ms.",,,
+"My  Timesheets",,,
+"My Customers",,,
+"My DashBord",,,
+"My Expenses",,,
+"My Leave request",,,
+"My Leave request calendar",,,
+"My Leave requests",,,
+"My Prospects",,,
+"My Recent Customers",,,
+"My Tasks",,,
+"My Tickets",,,
+"My Timesheets",,,
+"My Timesheets to complete",,,
+"My expenses",,,
+"My expenses to complete",,,
+"My invoices",,,
+"My leave requests",,,
+"My sale orders",,,
+"My space",,,
+"My tickets",,,
+"NA",,,
+"Name",,,
+"Name/Company Name",,,
+"National Code",,,
+"Nb of Inhabitants",,,
+"Nb of digits for unit prices",,,
+"Nb. of Inhabitants",,,
+"New",,,
+"New exchange rate",,,
+"Next N°",,,
+"Next theoretical execution date",,,
+"No",,,
+"No Discount",,,
+"No duplicate records found",,,
+"Non-profit",,,
+"None",,,
+"Not contains",,,
+"Not implemented yet!",,,
+"Notes",,,
+"Notification",,,
+"November",,,
+"N° and Street label",,,
+"OK",,,
+"OSM",,,
+"Object",,,
+"Obsolete Products",,,
+"October",,,
+"On",,,
+"On :",,,
+"Only label",,,
+"Opened",,,
+"Opportunities",,,
+"Or",,,
+"Order Bloqued Message",,,
+"Order confirmed",,,
+"Organisation config",,,
+"Organization",,,
+"Other",,,
+"Other variants",,,
+"Overpayment clearance",,,
+"Owner",,,
+"Owner name",,,
+"PDF",,,
+"PDF Templates",,,
+"Padding",,,
+"Paper",,,
+"Parameters",,,
+"Parent category",,,
+"Parent company",,,
+"Parent product",,,
+"Partial address",,,
+"Partner",,,
+"Partner (Cust/Suppl)",,,
+"Partner Dashboard",,,
+"Partner Db",,,
+"Partner Details",,,
+"Partner Type",,,
+"Partner categories",,,
+"Partner category",,,
+"Partner details",,,
+"Partner filters",,,
+"Partner list",,,
+"Partner lists",,,
+"Partner name",,,
+"Partners",,,
+"Partners by Industry Sector",,,
+"Partners/Contacts",,,
+"Past time",,,
+"Path to export file",,,
+"Path to export folder",,,
+"Payer",,,
+"Payer quality",,,
+"Payment",,,
+"Payment Mode",,,
+"Payment Schedule",,,
+"Payment by IPO and IPO Cheque",,,
+"Payment mode",,,
+"Payment period (N days)",,,
+"Payment schedule",,,
+"Payment voucher",,,
+"Payment vouchers",,,
+"Per order",,,
+"Per shipment",,,
+"Per task",,,
+"Period",,,
+"Period duration",,,
+"Periods list",,,
+"Perishable ?",,,
+"Perishable expiration date",,,
+"PhoneBook",,,
+"Phonebook.phonebook","PHONE BOOK",,
+"Photo",,,
+"Pick list",,,
+"Picklist QAS",,,
+"Picture",,,
+"Please enter a day for rhythm.",,,
+"Please enter a day of month for rhythm.",,,
+"Please enter a day of week for rhythm.",,,
+"Please enter a frequency.",,,
+"Please enter a month for rhythm.",,,
+"Please enter a year for rhythm.",,,
+"Please input first character as capital and other as lower case",,,
+"Please select active company",,,
+"Please select key fields to check duplicate",,,
+"Please select the Message(s) to print.",,,
+"Please, enter date of next execution.",,,
+"Postal addresses",,,
+"Prefix",,,
+"Prefix or suffix must contain %Y if yearly reset is true and %M %Y if monthly reset is true",,,
+"Price Extra",,,
+"Price list",,,
+"Price list content",,,
+"Price list line",,,
+"Price list lines",,,
+"Price lists",,,
+"Prices updated",,,
+"Print",,,
+"Print Informations",,,
+"Printing Setting",,,
+"Printing Settings",,,
+"Priority",,,
+"Procurement method",,,
+"Procurement settings",,,
+"Produce",,,
+"Product",,,
+"Product Catalog",,,
+"Product Family",,,
+"Product categories",,,
+"Product category",,,
+"Product code on catalog",,,
+"Product dates",,,
+"Product families",,,
+"Product family",,,
+"Product launch Date",,,
+"Product name on catalog",,,
+"Product pulled off market Date",,,
+"Product sheet",,,
+"Product specific attributes",,,
+"Product tracking number",,,
+"Product typology",,,
+"Product variant",,,
+"Product variant attr",,,
+"Product variant attr1",,,
+"Product variant attr2",,,
+"Product variant attr3",,,
+"Product variant attr4",,,
+"Product variant attribute",,,
+"Product variant attributes",,,
+"Product variant config",,,
+"Product variant configuration",,,
+"Product variant configurations",,,
+"Product variant value",,,
+"Product variant value list",,,
+"Product variant value1",,,
+"Product variant value1 set",,,
+"Product variant value2",,,
+"Product variant value2 set",,,
+"Product variant value3",,,
+"Product variant value3 set",,,
+"Product variant value4",,,
+"Product variant value4 set",,,
+"Product variant values",,,
+"Product variants",,,
+"ProductCatalog.description","Description",,
+"ProductCatalog.price","Price",,
+"ProductCatalog.reference","Reference",,
+"ProductCatalog.summary","Summary",,
+"ProductSheet.description","Description",,
+"ProductSheet.price","Price",,
+"ProductSheet.title","PRODUCT DATA SHEET",,
+"ProductSheet.warranty","Price",,
+"Production Qty by tracking",,,
+"Production config",,,
+"Production informations",,,
+"Production order",,,
+"Production order configuration",,,
+"Production tracking management",,,
+"Products",,,
+"Products In ATI",,,
+"Products With Variant",,,
+"Products families",,,
+"Products filters",,,
+"Products models",,,
+"Products variants",,,
+"Products/Goods",,,
+"Prof.",,,
+"Professional training",,,
+"Profile",,,
+"Profiles",,,
+"Projects",,,
+"Prospects",,,
+"Prospects by Industry Sector",,,
+"Prospects by country",,,
+"Purchasable",,,
+"Purchase",,,
+"Purchase / Cost currency",,,
+"Purchase Order",,,
+"Purchase Price List",,,
+"Purchase Qty by tracking",,,
+"Purchase Tax",,,
+"Purchase config",,,
+"Purchase interface",,,
+"Purchase order",,,
+"Purchase order configuration",,,
+"Purchase price W.T.",,,
+"Purchase tracking management",,,
+"Purchase/Costs",,,
+"Purchases",,,
+"Période clôturée",,,
+"QAS Moniker",,,
+"QAS Proposal lists",,,
+"QAS certification",,,
+"QAS score",,,
+"Qty",,,
+"Qty min (by product)",,,
+"Quantity",,,
+"Quantity min",,,
+"Querie",,,
+"Queries",,,
+"Query",,,
+"Query language",,,
+"Query result",,,
+"RIPEMD160",,,
+"Rate",,,
+"Rate Date",,,
+"Rate updation",,,
+"Raw Materials",,,
+"Raw material",,,
+"Real Estate",,,
+"Receipt N°(Payment voucher)",,,
+"Receipt stock move",,,
+"Recently created partners",,,
+"Recipient address",,,
+"Recipient details",,,
+"Recipients",,,
+"Reference",,,
+"Refresh",,,
+"Refund interface",,,
+"Region",,,
+"Region code",,,
+"Region name",,,
+"Regions",,,
+"Registration code",,,
+"Reimbursed",,,
+"Reimbursement",,,
+"Reimbursement blocking",,,
+"Reimbursements",,,
+"Reject",,,
+"Rejects reasons and codes list",,,
+"Related to",,,
+"Relations",,,
+"Remind Timesheet Validation Batch",,,
+"Remind time sheets validation",,,
+"Reminder blocking",,,
+"Reopen period",,,
+"Replace",,,
+"Replacement Tax",,,
+"Reply to",,,
+"Reports to",,,
+"Requête exécutée",,,
+"Result",,,
+"Resultat exporté",,,
+"Retaile",,,
+"Rhythm",,,
+"Routing",,,
+"Routing action",,,
+"Routing action create",,,
+"Routing actions",,,
+"Routing rule",,,
+"Routing rules",,,
+"Rule",,,
+"Run",,,
+"Run off Date",,,
+"SHA224",,,
+"SHA256",,,
+"SHA384",,,
+"SHA512",,,
+"SIRET",,,
+"SQL",,,
+"SWIFT address",,,
+"SWIFT codes",,,
+"Sale",,,
+"Sale Order",,,
+"Sale Price List",,,
+"Sale Qty by tracking",,,
+"Sale Tax",,,
+"Sale config",,,
+"Sale currency",,,
+"Sale interface",,,
+"Sale order configuration",,,
+"Sale price",,,
+"Sale price W.T.",,,
+"Sale supply default method",,,
+"Sale tracking management",,,
+"Sales",,,
+"Sales Manager",,,
+"Sales Turnover",,,
+"Sales attributes",,,
+"Sales map",,,
+"Sales maps",,,
+"Sales order",,,
+"Samples",,,
+"Saturday",,,
+"Save new rate",,,
+"Schedule Meeting",,,
+"Schedule line",,,
+"Schedule lines",,,
+"Scheduler",,,
+"Scheduler history",,,
+"Schedulers",,,
+"Search",,,
+"Sector",,,
+"Sector Keyword",,,
+"Sector Keywords",,,
+"Sellable",,,
+"Send",,,
+"Send Email",,,
+"Send email",,,
+"September",,,
+"Sequence",,,
+"Sequence Definition",,,
+"Sequences",,,
+"Service",,,
+"Service Products",,,
+"Service indisponible, veuillez contacter votre adminstrateur",,,
+"Services",,,
+"Settings",,,
+"Shift to doubtful receivables",,,
+"Shift to irrecoverable",,,
+"Show",,,
+"Show all stock move",,,
+"Site",,,
+"Sites",,,
+"Sort Code",,,
+"Source",,,
+"Source Currency",,,
+"Sources",,,
+"Spatial information",,,
+"Specific information",,,
+"Start Date",,,
+"Start date",,,
+"Status",,,
+"Stock",,,
+"Stock Move configuration",,,
+"Stock config",,,
+"Storable Products",,,
+"Subject",,,
+"Subscription",,,
+"Succeeded",,,
+"Suffix",,,
+"Sunday",,,
+"Supplier",,,
+"Supplier Catalog",,,
+"Supplier Catalog Lines",,,
+"Supplier Refund",,,
+"Supplier invoice",,,
+"Supplier?",,,
+"Suppliers",,,
+"Suppliers by country",,,
+"Suppliers catalog",,,
+"Suspend Alarm ?",,,
+"Symbol",,,
+"Syndicat",,,
+"System active rate",,,
+"Target",,,
+"Target batch",,,
+"Target page",,,
+"Tasks",,,
+"Tax",,,
+"Tax N°",,,
+"Tax Rate",,,
+"Tax Rates",,,
+"Tax active version",,,
+"Tax configuration is missing for Product: %s (company: %s)",,,
+"Tax equivalence",,,
+"Tax equivalences",,,
+"Tax is missing",,,
+"Tax is missing for Product: %s (company: %s)",,,
+"Tax rate list",,,
+"Tax to replace",,,
+"Tax versions history",,,
+"Taxes equivalences",,,
+"Team",,,
+"Teams",,,
+"Technical maintenance",,,
+"Technical manager",,,
+"Technical topic",,,
+"Telecom",,,
+"Template",,,
+"Template Context",,,
+"Template Context Line",,,
+"Template Context Lines",,,
+"Template Rules",,,
+"Template context",,,
+"Template file name",,,
+"Template rule",,,
+"Template rule line",,,
+"Template rule line list",,,
+"Template rule lines",,,
+"Template rules",,,
+"Templates",,,
+"Territories",,,
+"Territory",,,
+"Test connection",,,
+"Test connection to QAS webservice",,,
+"Test mapping service connection",,,
+"Testing",,,
+"The product pulled-off date must be greater than the launch date.",,,
+"The quantity by lot must be greater than 0",,,
+"The tags below can be used as a prefix or a suffix :",,,
+"This batch is not runnable !",,,
+"Thursday",,,
+"Ticket",,,
+"Time before expiry (in months)",,,
+"Timesheets",,,
+"Timesheets Reminder",,,
+"Tips",,,
+"Title",,,
+"To",,,
+"To Date",,,
+"To Unit",,,
+"To include in next invoice batch",,,
+"To reimburse",,,
+"Today date",,,
+"Tool Keyword",,,
+"Tool Keywords",,,
+"Tools",,,
+"Tracebacks",,,
+"Tracking Nbr.",,,
+"Tracking Nbr. Config.",,,
+"Tracking Number",,,
+"Tracking Number Configuration",,,
+"Tracking number",,,
+"Tracking number configuration",,,
+"Transport",,,
+"Treasury interface",,,
+"Tuesday",,,
+"Turnover",,,
+"Type",,,
+"URL to QAS WSDL",,,
+"Unit",,,
+"Unit conversion",,,
+"Unit conversions",,,
+"Unit price",,,
+"Units",,,
+"Update & Historize conversion rate",,,
+"Update current product prices and variants",,,
+"Update products prices",,,
+"Use QAS Validation ?",,,
+"Use for stock only",,,
+"User",,,
+"Users",,,
+"Users list",,,
+"Users/Companies",,,
+"Users/Employees",,,
+"Utilities",,,
+"Valid query.",,,
+"Validate",,,
+"Validated",,,
+"Value",,,
+"Variants",,,
+"Variants generated",,,
+"Variation",,,
+"Version",,,
+"Versions",,,
+"Veuillez configurer les conversions d'unités de '%s' à '%s'.",,,
+"Veuillez configurer les conversions d'unités.",,,
+"Veuillez configurer une version de taxe pour la taxe %s",,,
+"Veuillez saisir une périodicité pour le planificateur %s",,,
+"View Accounts",,,
+"View Contacts",,,
+"View Products",,,
+"View map",,,
+"WARNING : Please close the current conversion period before creating new one",,,
+"WARNING : To Date must be after or equals to From Date",,,
+"Warranty ?",,,
+"Warranty expiration date",,,
+"Warranty length (in months)",,,
+"Webservices",,,
+"Website",,,
+"Wednesday",,,
+"Weekly",,,
+"With payment schedule",,,
+"Work",,,
+"X",,,
+"XLS",,,
+"XML",,,
+"XML File",,,
+"Year",,,
+"Yearly reset",,,
+"Years",,,
+"Yes",,,
+"You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?",,,
+"Zip",,,
+"Zip On Right ?",,,
+"Zip code",,,
+"Zip/City",,,
+"\nAnomalies générées :",,,
+"\nErreur : Aucun chemin d'export de paramétré",,,
+"\nErreur : Aucun code de paramétré",,,
+"\nTotal :",,,
+"\t* %s anomalie(s)",,,
+"\t* %s objet(s) en alarme(s)\n",,,
+"cost price",,,
+"day(s)",,,
+"e.g. Building A, Entry 2, 2nd Floor, Door 2E",,,
+"e.g. Financial department, CEO",,,
+"e.g. POB 254",,,
+"help:BankDetails.bankAddress","Address of the bank",,
+"help:BankDetails.bankCode","Refers to the bank code where the account owner has his account.",,
+"help:BankDetails.bbanKey",,,
+"help:BankDetails.bic",,,
+"help:BankDetails.countryCode","Refers to the country code expressed within the first 2 caracters of the IBAN.",,
+"help:BankDetails.iban","For more information regarding IBAN, please refer to the norm ISO13616 (a sum up is introduced here http://fr.wikipedia.org/wiki/ISO_13616)",,
+"help:BankDetails.ownerName","Name of the bank account owner",,
+"help:BankDetails.sortCode","Refers to the branch code where the account is registered.",,
+"help:Bic.bankCode",,,
+"help:Bic.bankName",,,
+"help:Bic.countryCode","This code is expressed with 2 caracters (e.g. : EN, FR …)",,
+"help:Bic.sortCode",,,
+"help:BirtTemplate.format","Pdf",,
+"help:BirtTemplate.templateLink",,,
+"help:Company.administration",,,
+"help:Company.currency",,,
+"help:Company.defaultBankDetails",,,
+"help:Company.logo",,,
+"help:Company.parent",,,
+"help:Company.printingSettings",,,
+"help:Country.code",,,
+"help:Currency.code",,,
+"help:CurrencyConversionLine.variations",,,
+"help:Department.code",,,
+"help:General.currencyConversionLineList",,,
+"help:General.currencyWsURL",,,
+"help:General.defaultPartnerLanguage",,,
+"help:General.defaultProjectUnit",,,
+"help:General.hasQasValidation","If ticked, the ERP will use QAS webservice for validation of adresses.",,
+"help:General.logOk",,,
+"help:General.qasWsdlUrl","http://{serveur}:{port}/proweb.wsdl",,
+"help:General.today","If empty, the today date will be the server date.",,
+"help:IndicatorGeneratorGrouping.path","Path to the export folder where the indicator report values will be exported.",,
+"help:Keyword.typeSelect",,,
+"help:Message.company",,,
+"help:Partner.bankDetails",,,
+"help:Partner.companySet",,,
+"help:Partner.currency",,,
+"help:Partner.deliveryAddress",,,
+"help:Partner.fiscalPosition",,,
+"help:Partner.languageSelect",,,
+"help:Partner.mainInvoicingAddress",,,
+"help:Partner.mainPartner",,,
+"help:Partner.registrationCode",,,
+"help:Partner.reportsTo",,,
+"help:Partner.team",,,
+"help:Partner.user",,,
+"help:PaymentCondition.daySelect",,,
+"help:PaymentCondition.isFree",,,
+"help:PaymentCondition.paymentTime",,,
+"help:PaymentCondition.typeSelect",,,
+"help:PaymentMode.inOutSelect",,,
+"help:PaymentMode.typeSelect",,,
+"help:Period.statusSelect",,,
+"help:Period.year",,,
+"help:PriceList.basedOnSelect",,,
+"help:PriceList.generalDiscount",,,
+"help:PriceList.hideDiscount",,,
+"help:PriceList.isActive",,,
+"help:PriceList.typeSelect",,,
+"help:PriceListLine.amount",,,
+"help:PriceListLine.amountTypeSelect",,,
+"help:PriceListLine.minQty",,,
+"help:PriceListLine.product",,,
+"help:PriceListLine.productCategory",,,
+"help:PriceListLine.typeSelect",,,
+"help:PrintingSettings.defaultMailBirtTemplate","Default Mail Birt Template",,
+"help:PrintingSettings.pdfFooter",,,
+"help:PrintingSettings.pdfHeader",,,
+"help:Product.accountManagementList","If this table is empty, the default account configuration will be retrieved from the product family 'Accounts configurations' table. However, this table will has the highest priority if filled.",,
+"help:Product.applicationTypeSelect",,,
+"help:Product.costPrice",,,
+"help:Product.defaultSupplierPartner",,,
+"help:Product.endDate",,,
+"help:Product.isRawMaterial",,,
+"help:Product.managPriceCoef",,,
+"help:Product.parentProduct","Used for variants",,
+"help:Product.procurementMethodSelect",,,
+"help:Product.productCategory",,,
+"help:Product.productFamily",,,
+"help:Product.productTypeSelect",,,
+"help:Product.saleSupplySelect",,,
+"help:Product.startDate",,,
+"help:Product.supplierCatalogList",,,
+"help:Product.trackingNumberConfiguration",,,
+"help:Product.unit",,,
+"help:ProductCategory.parentProductCategory",,,
+"help:ProductCategory.productFamily",,,
+"help:ProductFamily.accountManagementList",,,
+"help:ProductVariant.productVariantAttr1",,,
+"help:ProductVariant.productVariantValue1",,,
+"help:ProductVariant.usedForStock",,,
+"help:ProductVariantAttr.productVariantValueList",,,
+"help:ProductVariantValue.applicationPriceSelect",,,
+"help:Sequence.monthlyResetOk",,,
+"help:Sequence.padding",,,
+"help:Sequence.prefixe",,,
+"help:Sequence.suffixe",,,
+"help:Sequence.toBeAdded",,,
+"help:Sequence.yearlyResetOk",,,
+"help:SupplierCatalog.minQty",,,
+"help:SupplierCatalog.price",,,
+"help:TaxEquiv.toTax",,,
+"help:TaxLine.value",,,
+"help:Template.birtTemplate",,,
+"help:UnitConversion.coef",,,
+"help:User.activeCompany",,,
+"help:User.activeTeam",,,
+"help:User.partner",,,
+"help:User.today",,,
+"help:Year.periodList",,,
+"help:Year.statusSelect",,,
+"help:Year.typeSelect",,,
+"month",,,
+"v1",,,
+"v2",,,
+"v3",,,
+"v4",,,
+"v5",,,
+"week(s)",,,
+"year(s)",,,

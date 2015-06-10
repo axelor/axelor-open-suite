@@ -1,52 +1,52 @@
 "key","message","comment","context"
-"Accept","Accepter",,""
-"Accepted","Acceptée",,""
-"Actions","Actions",,""
-"Available qty","Qté disponible",,""
-"Cancel","Annuler",,""
-"Canceled","Annulé",,""
-"Comment","Commentaire",,""
-"Demande de consultations fournisseurs créées",,,""
-"Estim. delivery date","Date de livr. Estimée",,""
-"Generate all suppliers requests","Générer toutes les demandes aux fournisseurs",,""
-"Generate suppliers purchase orders","Générer commandes fournisseurs",,""
-"Génération des devis fournisseurs terminée",,,""
-"Initial purchase order","Cmde initiale",,""
-"Merge into single purchase order",,,""
-"Merge purchase order",,,""
-"My R.F.Q.","Mes demandes de cotations",,""
-"My R.F.Q. to complete","Mes demandes de cotations à compléter",,""
-"My deliveries","Mes livraisons",,""
-"My purchase orders","Mes commandes",,""
-"My space","Mon espace",,""
-"Not accept","Ne pas retenir",,""
-"Not accepted","Non retenu",,""
-"Purchase order","Commande d'Achat",,""
-"Purchase order to merge",,,""
-"Purchase order?","Commande d'Achat ?",,""
-"Receipt date","Date de reception",,""
-"Request","Demander",,""
-"Requested","Demandé",,""
-"Show suppliers purchase orders","Les commandes fournisseurs associées",,""
-"State","Statut",,""
-"Stock move","Mouvement de stock",,""
-"Stock move informations","Informations sur Stocks Internes",,""
-"Stock move line","Ligne mvt. de stock",,""
-"Stock move lines","Lignes mvt. de stock",,""
-"Stock move reference","Références mouvement de stock",,""
-"Stock moves","Mouvements de stock",,""
-"Submit","Envoyer",,""
-"Submitted","Soumis(e)",,""
-"Supplier","Fournisseur",,""
-"Supplier RFQ/PO","Dv/Cmde Fourn.",,""
-"Supplier request","Demande d'achat",,""
-"Supplier requests","Demandes d'achat",,""
-"Supplier requests completed","Demandes d'achat complétés",,""
-"Supplier requests historical","Historique demandes d'achat",,""
-"Suppliers purchase","Achats fournisseurs",,""
-"Suppliers requests","Demandes d'achat",,""
-"Unit price","Prix unitaire",,""
-"WARNING : To Date must be after or equals to From Date",,,""
-"Write to the supplier","Ecrire au fournisseur",,""
-"help:PurchaseOrderSupplierLine.estimatedDelivDate","Estimated by supplier",,""
-"suppliers requests","Demandes de devis fournisseurs",,""
+"Accept","Accepter",,
+"Accepted","Acceptée",,
+"Actions","Actions",,
+"Available qty","Qté disponible",,
+"Cancel","Annuler",,
+"Canceled","Annulé",,
+"Comment","Commentaire",,
+"Demande de consultations fournisseurs créées",,,
+"Estim. delivery date","Date de livr. Estimée",,
+"Generate all suppliers requests","Générer toutes les demandes aux fournisseurs",,
+"Generate suppliers purchase orders","Générer commandes fournisseurs",,
+"Génération des devis fournisseurs terminée",,,
+"Initial purchase order","Cmde initiale",,
+"Merge into single purchase order",,,
+"Merge purchase order",,,
+"My R.F.Q.","Mes demandes de cotations",,
+"My R.F.Q. to complete","Mes demandes de cotations à compléter",,
+"My deliveries","Mes livraisons",,
+"My purchase orders","Mes commandes",,
+"My space","Mon espace",,
+"Not accept","Ne pas retenir",,
+"Not accepted","Non retenu",,
+"Purchase order","Commande d'Achat",,
+"Purchase order to merge",,,
+"Purchase order?","Commande d'Achat ?",,
+"Receipt date","Date de reception",,
+"Request","Demander",,
+"Requested","Demandé",,
+"Show suppliers purchase orders","Les commandes fournisseurs associées",,
+"State","Statut",,
+"Stock move","Mouvement de stock",,
+"Stock move informations","Informations sur Stocks Internes",,
+"Stock move line","Ligne mvt. de stock",,
+"Stock move lines","Lignes mvt. de stock",,
+"Stock move reference","Références mouvement de stock",,
+"Stock moves","Mouvements de stock",,
+"Submit","Envoyer",,
+"Submitted","Soumis(e)",,
+"Supplier","Fournisseur",,
+"Supplier RFQ/PO","Dv/Cmde Fourn.",,
+"Supplier request","Demande d'achat",,
+"Supplier requests","Demandes d'achat",,
+"Supplier requests completed","Demandes d'achat complétés",,
+"Supplier requests historical","Historique demandes d'achat",,
+"Suppliers purchase","Achats fournisseurs",,
+"Suppliers requests","Demandes d'achat",,
+"Unit price","Prix unitaire",,
+"WARNING : To Date must be after or equals to From Date",,,
+"Write to the supplier","Ecrire au fournisseur",,
+"help:PurchaseOrderSupplierLine.estimatedDelivDate","Estimated by supplier",,
+"suppliers requests","Demandes de devis fournisseurs",,

@@ -1,513 +1,513 @@
 "key","message","comment","context"
-"0 %",,,""
-"00",,,""
-"10 %",,,""
-"100 %",,,""
-"15",,,""
-"20 %",,,""
-"30",,,""
-"30 %",,,""
-"40 %",,,""
-"45",,,""
-"50 %",,,""
-"60 %",,,""
-"70 %",,,""
-"80 %",,,""
-"90 %",,,""
-"<a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' />",,,""
-"<a class='fa fa-google-plus' href='http://www.google.com' target='_blank' />",,,""
-"<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />",,,""
-"<a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' />",,,""
-"<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />",,,""
-"Action",,,""
-"Actions",,,""
-"Activities",,,""
-"Activity",,,""
-"Add",,,""
-"Address",,,""
-"All Upcoming Holidays",,,""
-"Allow calls ?",,,""
-"Allow emails ?",,,""
-"Amount",,,""
-"Amount Won",,,""
-"Amount won",,,""
-"Analysis",,,""
-"Assign to",,,""
-"Assign to me",,,""
-"Assigned",,,""
-"Assigned to",,,""
-"Assignment",,,""
-"Attendee",,,""
-"Attendees",,,""
-"Attributes",,,""
-"Aucune séquence configurée pour les tickets",,,""
-"Authorized users to follow me",,,""
-"Batchs",,,""
-"Best Open Deals",,,""
-"Best case",,,""
-"CALENDAR_SERVER",,,""
-"CGP",,,""
-"CHANDLER",,,""
-"CRM",,,""
-"CRM Activities",,,""
-"CRM Batch",,,""
-"CRM batches",,,""
-"Calendar",,,""
-"Calendar Configurations",,,""
-"Calendar configuration",,,""
-"Calendar configurations",,,""
-"Calendars",,,""
-"Call",,,""
-"Call emitted Nbr",,,""
-"Call emitted Nbr.",,,""
-"Call emitted historical",,,""
-"Call filters",,,""
-"Call type",,,""
-"Calls",,,""
-"Calls Dashboard",,,""
-"Calls Db",,,""
-"Calls by team by user",,,""
-"Calls by user(of a team)",,,""
-"Calls emitted historical",,,""
-"Calls emitted target completed (%)",,,""
-"Calls held by team by type",,,""
-"Calls held by type by user",,,""
-"Calls type by team",,,""
-"Calls type by user",,,""
-"Can not open map, Please Check your Internet connection.",,,""
-"Can not open map, Please Configure Application Home First.",,,""
-"Cancel",,,""
-"Canceled",,,""
-"Cases",,,""
-"Category",,,""
-"Chart",,,""
-"Check duplicate",,,""
-"City",,,""
-"Civility",,,""
-"Closed",,,""
-"Closed Opportunities",,,""
-"Closed Tickets",,,""
-"Closed lost",,,""
-"Closed won",,,""
-"Code",,,""
-"Company",,,""
-"Company name",,,""
-"Compte rendu de la génération de rappel des évènements :\n",,,""
-"Compte rendu de la génération des objectifs :\n",,,""
-"Concerns",,,""
-"Configuration",,,""
-"Configuration des objectifs(s) traité(s)",,,""
-"Confirm",,,""
-"Confirmed",,,""
-"Connection settings",,,""
-"Contact",,,""
-"Contact date",,,""
-"Contact details",,,""
-"Contact name",,,""
-"Contacts",,,""
-"Context",,,""
-"Convert into Contact",,,""
-"Convert into Contact ?",,,""
-"Convert into Partner",,,""
-"Convert into Partner ?",,,""
-"Convert lead",,,""
-"Converted",,,""
-"Copy primary address",,,""
-"Country",,,""
-"Create",,,""
-"Create Call",,,""
-"Create Lead",,,""
-"Create Meeting",,,""
-"Create Opportunity",,,""
-"Create Task",,,""
-"Create a task",,,""
-"Create a task ?",,,""
-"Create call",,,""
-"Create into Opportunity",,,""
-"Create into Opportunity ?",,,""
-"Create meeting",,,""
-"Create menu entrie",,,""
-"Create opportunity",,,""
-"Create task",,,""
-"Created Nbr",,,""
-"Created Nbr.",,,""
-"Created Won",,,""
-"Created by",,,""
-"Created leads per month",,,""
-"Created on",,,""
-"Credentials",,,""
-"Crm batch",,,""
-"Currency",,,""
-"Customer",,,""
-"Daily",,,""
-"Daily team call summary by user",,,""
-"Dashboard",,,""
-"Date from",,,""
-"Date to",,,""
-"Dates",,,""
-"Days",,,""
-"Dead",,,""
-"Delete menu entrie",,,""
-"Delivery address",,,""
-"Dep./Div.",,,""
-"Description",,,""
-"Due Open Tickets",,,""
-"Duration",,,""
-"Duration type",,,""
-"Email",,,""
-"End Date",,,""
-"Enterprise",,,""
-"Enterprise name",,,""
-"Event",,,""
-"Event Categories",,,""
-"Event Dashboard 1",,,""
-"Event Db",,,""
-"Event categories",,,""
-"Event category",,,""
-"Event configuration categories",,,""
-"Event reminder",,,""
-"Event reminder %s",,,""
-"Event reminder batch",,,""
-"Event reminder page",,,""
-"Event reminders",,,""
-"Events",,,""
-"Existing business",,,""
-"Expected close date",,,""
-"Export calendar",,,""
-"Fax",,,""
-"Feedback",,,""
-"Financial terms",,,""
-"Finish",,,""
-"Finished",,,""
-"First name",,,""
-"Fixed Phone",,,""
-"Follow-up",,,""
-"Followers users",,,""
-"Followers/Comments",,,""
-"For all",,,""
-"For me",,,""
-"From Date",,,""
-"From date must be less than the to date",,,""
-"Function",,,""
-"GCAL",,,""
-"Group",,,""
-"High",,,""
-"Historical Period",,,""
-"Historical events completed",,,""
-"Holiday",,,""
-"Holidays",,,""
-"Holidays Db",,,""
-"Hours",,,""
-"ICAL_SERVER",,,""
-"Identify deciders",,,""
-"Immediate",,,""
-"Import",,,""
-"Import calendar",,,""
-"Import lead",,,""
-"Import leads",,,""
-"In process",,,""
-"In progress",,,""
-"Incoming",,,""
-"Information",,,""
-"Informations",,,""
-"Input location please",,,""
-"Invoicing address",,,""
-"Invoicing/Payment",,,""
-"Job Title",,,""
-"KMS",,,""
-"Key accounts",,,""
-"L'objectif %s est en contradiction avec la configuration d'objectif %s",,,""
-"Last name",,,""
-"Late Tickets",,,""
-"Lead",,,""
-"Lead Dashboard 1",,,""
-"Lead Db",,,""
-"Lead Db 1",,,""
-"Lead filters",,,""
-"Lead.address_information",,,""
-"Lead.company",,,""
-"Lead.email",,,""
-"Lead.fax",,,""
-"Lead.header",,,""
-"Lead.industry",,,""
-"Lead.lead_owner",,,""
-"Lead.name",,,""
-"Lead.other_address",,,""
-"Lead.phone",,,""
-"Lead.primary_address",,,""
-"Lead.source",,,""
-"Lead.status",,,""
-"Lead.title",,,""
-"Leads",,,""
-"Leads Source",,,""
-"Leads by Country",,,""
-"Leads by Salesman by Status",,,""
-"Leads by Source",,,""
-"Leads by Team by Status",,,""
-"Limit Date",,,""
-"Linked to",,,""
-"Location",,,""
-"Log Call",,,""
-"Log a call",,,""
-"Log a call ?",,,""
-"Login",,,""
-"Low",,,""
-"Marketing",,,""
-"Medium",,,""
-"Meeting",,,""
-"Meeting Nbr",,,""
-"Meeting Nbr.",,,""
-"Meeting Participants",,,""
-"Meeting Types",,,""
-"Meeting filters",,,""
-"Meeting number historical",,,""
-"Meeting type",,,""
-"Meeting types",,,""
-"Meetings",,,""
-"Meetings Db",,,""
-"Meetings number historical",,,""
-"Meetings number target completed (%)",,,""
-"Minutes",,,""
-"Mobile N°",,,""
-"Month",,,""
-"Monthly",,,""
-"My Active Tickets",,,""
-"My Best Open Deals",,,""
-"My Calendar",,,""
-"My Calls",,,""
-"My Closed Opportunities",,,""
-"My Key accounts",,,""
-"My Late Tickets",,,""
-"My Leads",,,""
-"My Meetings",,,""
-"My New Tickets",,,""
-"My New Urgent Tickets",,,""
-"My Open Opportunities",,,""
-"My Opportunities",,,""
-"My Tasks",,,""
-"My Team Best Open Deals",,,""
-"My Team Calendar",,,""
-"My Team Calls",,,""
-"My Team Closed Opportunities",,,""
-"My Team Key accounts",,,""
-"My Team Leads",,,""
-"My Team Meetings",,,""
-"My Team Open Opportunities",,,""
-"My Team Opportunities",,,""
-"My Team Tasks",,,""
-"My Team Tickets",,,""
-"My Tickets",,,""
-"My Today Calls",,,""
-"My Today Support Activities",,,""
-"My Today Tasks",,,""
-"My Upcoming Meetings",,,""
-"My Upcoming Tasks",,,""
-"My Urgent Tickets",,,""
-"Name",,,""
-"Needs analysis",,,""
-"Negociation",,,""
-"New",,,""
-"New Cases by Customer",,,""
-"New Tickets",,,""
-"New Urgent Tickets",,,""
-"New business",,,""
-"New start date",,,""
-"Next Stage",,,""
-"Next step",,,""
-"No lead import configuration found",,,""
-"No of Tickets",,,""
-"Non-participant",,,""
-"None",,,""
-"Normal",,,""
-"Not started",,,""
-"Notes",,,""
-"Office name",,,""
-"On going",,,""
-"Ongoing Tickets",,,""
-"Open Cases by Agents",,,""
-"Open Opportunities",,,""
-"Open tickets by priority",,,""
-"Open tickets by status",,,""
-"Open tickets distribution by Priority",,,""
-"Opportunities",,,""
-"Opportunities By Origin By Stage",,,""
-"Opportunities By Sale Stage",,,""
-"Opportunities By Source",,,""
-"Opportunities By Type",,,""
-"Opportunities Db 1",,,""
-"Opportunities Db 2",,,""
-"Opportunities Db 3",,,""
-"Opportunities Won By Lead Source",,,""
-"Opportunities Won By Partner",,,""
-"Opportunities Won By Salesman",,,""
-"Opportunities amount won historical",,,""
-"Opportunities amount won target competed (%)",,,""
-"Opportunities amount won target completed (%)",,,""
-"Opportunities created number historical",,,""
-"Opportunities created number target completed (%)",,,""
-"Opportunities created won historical",,,""
-"Opportunities created won target completed (%)",,,""
-"Opportunities filters",,,""
-"Opportunity",,,""
-"Opportunity Type",,,""
-"Opportunity amount",,,""
-"Opportunity type",,,""
-"Opportunity types",,,""
-"Optional participant",,,""
-"Or Select Contact",,,""
-"Or Select Partner",,,""
-"Other address",,,""
-"Outgoing",,,""
-"Partner",,,""
-"Partner Details",,,""
-"Partner/Contact",,,""
-"Password",,,""
-"Pause",,,""
-"Pending",,,""
-"Period",,,""
-"Period type",,,""
-"Personal",,,""
-"Picture",,,""
-"Pipeline",,,""
-"Pipeline by Stage and Type",,,""
-"Pipeline next 90 days",,,""
-"Planned",,,""
-"Please select the Lead(s) to print.",,,""
-"Port",,,""
-"Postal addresses",,,""
-"Postal code",,,""
-"Present ?",,,""
-"Previous Stage",,,""
-"Primary address",,,""
-"Print",,,""
-"Priority",,,""
-"Probability (%)",,,""
-"Product",,,""
-"Progress",,,""
-"Project/Business/Task (Project)",,,""
-"Proposal/Quote",,,""
-"Proposition",,,""
-"Prospect converti",,,""
-"Prospection",,,""
-"Qualification",,,""
-"Quote/Order",,,""
-"Rappel(s) traité(s)",,,""
-"Real",,,""
-"Realized",,,""
-"Recent lost deals",,,""
-"Recently created opportunities",,,""
-"Recycled",,,""
-"Referred by",,,""
-"Related to",,,""
-"Related to select",,,""
-"RemindedOk",,,""
-"Reminders",,,""
-"Reported",,,""
-"Required participant",,,""
-"Reschedule",,,""
-"Resolved",,,""
-"SSL ?",,,""
-"Sales Stage",,,""
-"Sales orders amount won historical",,,""
-"Sales orders amount won target completed (%)",,,""
-"Sales orders created number historical",,,""
-"Sales orders created number target completed (%)",,,""
-"Sales orders created won historical",,,""
-"Sales orders created won target completed",,,""
-"Sales orders created won target completed (%)",,,""
-"Sales stage",,,""
-"Salesman",,,""
-"Schedule Meeting",,,""
-"Schedule a meeting",,,""
-"Schedule a meeting ?",,,""
-"Schedule meeting",,,""
-"Send Email",,,""
-"Send email",,,""
-"Settings",,,""
-"Source",,,""
-"Source description",,,""
-"Start",,,""
-"Start Date",,,""
-"State",,,""
-"Status",,,""
-"Status description",,,""
-"Subject",,,""
-"Synchronize calendar",,,""
-"Synchronize calendars",,,""
-"Target",,,""
-"Target Team Db",,,""
-"Target User Dashboard",,,""
-"Target User Db",,,""
-"Target batch",,,""
-"Target configuration",,,""
-"Target configurations",,,""
-"Target page",,,""
-"Target team Dashboard",,,""
-"Target user Dashboard",,,""
-"Targets",,,""
-"Targets Configurations",,,""
-"Targets configurations",,,""
-"Task",,,""
-"Tasks",,,""
-"Tasks Db",,,""
-"Tasks filters",,,""
-"Team",,,""
-"Team Calendar",,,""
-"Tentative",,,""
-"Ticket",,,""
-"Ticket N°",,,""
-"Ticket filters",,,""
-"Tickets",,,""
-"Tickets Dashboard",,,""
-"Tickets Db 1",,,""
-"Tickets Db 2",,,""
-"Title",,,""
-"To Date",,,""
-"Total created tickets by month by priority",,,""
-"Total created tickets by month by status",,,""
-"Total open tickets by month by user",,,""
-"Type",,,""
-"UID (Calendar)",,,""
-"Unassigned Leads",,,""
-"Unassigned Opportunities",,,""
-"Unassigned Tickets",,,""
-"Upcoming events",,,""
-"Urgent",,,""
-"Urgent Tickets",,,""
-"Url",,,""
-"User",,,""
-"User in charge of the issue",,,""
-"Validate",,,""
-"View Calls",,,""
-"View Leads",,,""
-"View Meetings",,,""
-"View Opportunities",,,""
-"View Tasks",,,""
-"Vs",,,""
-"Watchers",,,""
-"Website",,,""
-"Weekly",,,""
-"Weeks",,,""
-"Worst case",,,""
-"ZIMBRA",,,""
-"amount",,,""
-"help:Event.limitDateT",,,""
-"help:Event.location",,,""
-"help:Event.progressSelect",,,""
-"help:Event.ticketNumberSeq",,,""
-"help:Event.typeSelect",,,""
-"help:EventCategory.typeSelect",,,""
-"help:Lead.emailAddress",,,""
-"help:Lead.enterpriseName",,,""
-"help:Lead.isCopyAddress",,,""
-"help:Lead.isDoNotCall",,,""
-"help:Lead.isDoNotSendEmail",,,""
-"help:Lead.referredBy",,,""
-"help:Lead.source",,,""
-"help:Lead.statusSelect",,,""
-"help:Opportunity.nextStep",,,""
-"help:Opportunity.probability",,,""
-"help:Opportunity.source",,,""
-"help:User.authorizeCalUserSet",,,""
-"help:User.followersCalUserSet",,,""
-"portal.daily.team.calls.summary.by.user",,,""
+"0 %",,,
+"00",,,
+"10 %",,,
+"100 %",,,
+"15",,,
+"20 %",,,
+"30",,,
+"30 %",,,
+"40 %",,,
+"45",,,
+"50 %",,,
+"60 %",,,
+"70 %",,,
+"80 %",,,
+"90 %",,,
+"<a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' />",,,
+"<a class='fa fa-google-plus' href='http://www.google.com' target='_blank' />",,,
+"<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />",,,
+"<a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' />",,,
+"<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />",,,
+"Action",,,
+"Actions",,,
+"Activities",,,
+"Activity",,,
+"Add",,,
+"Address",,,
+"All Upcoming Holidays",,,
+"Allow calls ?",,,
+"Allow emails ?",,,
+"Amount",,,
+"Amount Won",,,
+"Amount won",,,
+"Analysis",,,
+"Assign to",,,
+"Assign to me",,,
+"Assigned",,,
+"Assigned to",,,
+"Assignment",,,
+"Attendee",,,
+"Attendees",,,
+"Attributes",,,
+"Aucune séquence configurée pour les tickets",,,
+"Authorized users to follow me",,,
+"Batchs",,,
+"Best Open Deals",,,
+"Best case",,,
+"CALENDAR_SERVER",,,
+"CGP",,,
+"CHANDLER",,,
+"CRM",,,
+"CRM Activities",,,
+"CRM Batch",,,
+"CRM batches",,,
+"Calendar",,,
+"Calendar Configurations",,,
+"Calendar configuration",,,
+"Calendar configurations",,,
+"Calendars",,,
+"Call",,,
+"Call emitted Nbr",,,
+"Call emitted Nbr.",,,
+"Call emitted historical",,,
+"Call filters",,,
+"Call type",,,
+"Calls",,,
+"Calls Dashboard",,,
+"Calls Db",,,
+"Calls by team by user",,,
+"Calls by user(of a team)",,,
+"Calls emitted historical",,,
+"Calls emitted target completed (%)",,,
+"Calls held by team by type",,,
+"Calls held by type by user",,,
+"Calls type by team",,,
+"Calls type by user",,,
+"Can not open map, Please Check your Internet connection.",,,
+"Can not open map, Please Configure Application Home First.",,,
+"Cancel",,,
+"Canceled",,,
+"Cases",,,
+"Category",,,
+"Chart",,,
+"Check duplicate",,,
+"City",,,
+"Civility",,,
+"Closed",,,
+"Closed Opportunities",,,
+"Closed Tickets",,,
+"Closed lost",,,
+"Closed won",,,
+"Code",,,
+"Company",,,
+"Company name",,,
+"Compte rendu de la génération de rappel des évènements :\n",,,
+"Compte rendu de la génération des objectifs :\n",,,
+"Concerns",,,
+"Configuration",,,
+"Configuration des objectifs(s) traité(s)",,,
+"Confirm",,,
+"Confirmed",,,
+"Connection settings",,,
+"Contact",,,
+"Contact date",,,
+"Contact details",,,
+"Contact name",,,
+"Contacts",,,
+"Context",,,
+"Convert into Contact",,,
+"Convert into Contact ?",,,
+"Convert into Partner",,,
+"Convert into Partner ?",,,
+"Convert lead",,,
+"Converted",,,
+"Copy primary address",,,
+"Country",,,
+"Create",,,
+"Create Call",,,
+"Create Lead",,,
+"Create Meeting",,,
+"Create Opportunity",,,
+"Create Task",,,
+"Create a task",,,
+"Create a task ?",,,
+"Create call",,,
+"Create into Opportunity",,,
+"Create into Opportunity ?",,,
+"Create meeting",,,
+"Create menu entrie",,,
+"Create opportunity",,,
+"Create task",,,
+"Created Nbr",,,
+"Created Nbr.",,,
+"Created Won",,,
+"Created by",,,
+"Created leads per month",,,
+"Created on",,,
+"Credentials",,,
+"Crm batch",,,
+"Currency",,,
+"Customer",,,
+"Daily",,,
+"Daily team call summary by user",,,
+"Dashboard",,,
+"Date from",,,
+"Date to",,,
+"Dates",,,
+"Days",,,
+"Dead",,,
+"Delete menu entrie",,,
+"Delivery address",,,
+"Dep./Div.",,,
+"Description",,,
+"Due Open Tickets",,,
+"Duration",,,
+"Duration type",,,
+"Email",,,
+"End Date",,,
+"Enterprise",,,
+"Enterprise name",,,
+"Event",,,
+"Event Categories",,,
+"Event Dashboard 1",,,
+"Event Db",,,
+"Event categories",,,
+"Event category",,,
+"Event configuration categories",,,
+"Event reminder",,,
+"Event reminder %s",,,
+"Event reminder batch",,,
+"Event reminder page",,,
+"Event reminders",,,
+"Events",,,
+"Existing business",,,
+"Expected close date",,,
+"Export calendar",,,
+"Fax",,,
+"Feedback",,,
+"Financial terms",,,
+"Finish",,,
+"Finished",,,
+"First name",,,
+"Fixed Phone",,,
+"Follow-up",,,
+"Followers users",,,
+"Followers/Comments",,,
+"For all",,,
+"For me",,,
+"From Date",,,
+"From date must be less than the to date",,,
+"Function",,,
+"GCAL",,,
+"Group",,,
+"High",,,
+"Historical Period",,,
+"Historical events completed",,,
+"Holiday",,,
+"Holidays",,,
+"Holidays Db",,,
+"Hours",,,
+"ICAL_SERVER",,,
+"Identify deciders",,,
+"Immediate",,,
+"Import",,,
+"Import calendar",,,
+"Import lead",,,
+"Import leads",,,
+"In process",,,
+"In progress",,,
+"Incoming",,,
+"Information",,,
+"Informations",,,
+"Input location please",,,
+"Invoicing address",,,
+"Invoicing/Payment",,,
+"Job Title",,,
+"KMS",,,
+"Key accounts",,,
+"L'objectif %s est en contradiction avec la configuration d'objectif %s",,,
+"Last name",,,
+"Late Tickets",,,
+"Lead",,,
+"Lead Dashboard 1",,,
+"Lead Db",,,
+"Lead Db 1",,,
+"Lead filters",,,
+"Lead.address_information",,,
+"Lead.company",,,
+"Lead.email",,,
+"Lead.fax",,,
+"Lead.header",,,
+"Lead.industry",,,
+"Lead.lead_owner",,,
+"Lead.name",,,
+"Lead.other_address",,,
+"Lead.phone",,,
+"Lead.primary_address",,,
+"Lead.source",,,
+"Lead.status",,,
+"Lead.title",,,
+"Leads",,,
+"Leads Source",,,
+"Leads by Country",,,
+"Leads by Salesman by Status",,,
+"Leads by Source",,,
+"Leads by Team by Status",,,
+"Limit Date",,,
+"Linked to",,,
+"Location",,,
+"Log Call",,,
+"Log a call",,,
+"Log a call ?",,,
+"Login",,,
+"Low",,,
+"Marketing",,,
+"Medium",,,
+"Meeting",,,
+"Meeting Nbr",,,
+"Meeting Nbr.",,,
+"Meeting Participants",,,
+"Meeting Types",,,
+"Meeting filters",,,
+"Meeting number historical",,,
+"Meeting type",,,
+"Meeting types",,,
+"Meetings",,,
+"Meetings Db",,,
+"Meetings number historical",,,
+"Meetings number target completed (%)",,,
+"Minutes",,,
+"Mobile N°",,,
+"Month",,,
+"Monthly",,,
+"My Active Tickets",,,
+"My Best Open Deals",,,
+"My Calendar",,,
+"My Calls",,,
+"My Closed Opportunities",,,
+"My Key accounts",,,
+"My Late Tickets",,,
+"My Leads",,,
+"My Meetings",,,
+"My New Tickets",,,
+"My New Urgent Tickets",,,
+"My Open Opportunities",,,
+"My Opportunities",,,
+"My Tasks",,,
+"My Team Best Open Deals",,,
+"My Team Calendar",,,
+"My Team Calls",,,
+"My Team Closed Opportunities",,,
+"My Team Key accounts",,,
+"My Team Leads",,,
+"My Team Meetings",,,
+"My Team Open Opportunities",,,
+"My Team Opportunities",,,
+"My Team Tasks",,,
+"My Team Tickets",,,
+"My Tickets",,,
+"My Today Calls",,,
+"My Today Support Activities",,,
+"My Today Tasks",,,
+"My Upcoming Meetings",,,
+"My Upcoming Tasks",,,
+"My Urgent Tickets",,,
+"Name",,,
+"Needs analysis",,,
+"Negociation",,,
+"New",,,
+"New Cases by Customer",,,
+"New Tickets",,,
+"New Urgent Tickets",,,
+"New business",,,
+"New start date",,,
+"Next Stage",,,
+"Next step",,,
+"No lead import configuration found",,,
+"No of Tickets",,,
+"Non-participant",,,
+"None",,,
+"Normal",,,
+"Not started",,,
+"Notes",,,
+"Office name",,,
+"On going",,,
+"Ongoing Tickets",,,
+"Open Cases by Agents",,,
+"Open Opportunities",,,
+"Open tickets by priority",,,
+"Open tickets by status",,,
+"Open tickets distribution by Priority",,,
+"Opportunities",,,
+"Opportunities By Origin By Stage",,,
+"Opportunities By Sale Stage",,,
+"Opportunities By Source",,,
+"Opportunities By Type",,,
+"Opportunities Db 1",,,
+"Opportunities Db 2",,,
+"Opportunities Db 3",,,
+"Opportunities Won By Lead Source",,,
+"Opportunities Won By Partner",,,
+"Opportunities Won By Salesman",,,
+"Opportunities amount won historical",,,
+"Opportunities amount won target competed (%)",,,
+"Opportunities amount won target completed (%)",,,
+"Opportunities created number historical",,,
+"Opportunities created number target completed (%)",,,
+"Opportunities created won historical",,,
+"Opportunities created won target completed (%)",,,
+"Opportunities filters",,,
+"Opportunity",,,
+"Opportunity Type",,,
+"Opportunity amount",,,
+"Opportunity type",,,
+"Opportunity types",,,
+"Optional participant",,,
+"Or Select Contact",,,
+"Or Select Partner",,,
+"Other address",,,
+"Outgoing",,,
+"Partner",,,
+"Partner Details",,,
+"Partner/Contact",,,
+"Password",,,
+"Pause",,,
+"Pending",,,
+"Period",,,
+"Period type",,,
+"Personal",,,
+"Picture",,,
+"Pipeline",,,
+"Pipeline by Stage and Type",,,
+"Pipeline next 90 days",,,
+"Planned",,,
+"Please select the Lead(s) to print.",,,
+"Port",,,
+"Postal addresses",,,
+"Postal code",,,
+"Present ?",,,
+"Previous Stage",,,
+"Primary address",,,
+"Print",,,
+"Priority",,,
+"Probability (%)",,,
+"Product",,,
+"Progress",,,
+"Project/Business/Task (Project)",,,
+"Proposal/Quote",,,
+"Proposition",,,
+"Prospect converti",,,
+"Prospection",,,
+"Qualification",,,
+"Quote/Order",,,
+"Rappel(s) traité(s)",,,
+"Real",,,
+"Realized",,,
+"Recent lost deals",,,
+"Recently created opportunities",,,
+"Recycled",,,
+"Referred by",,,
+"Related to",,,
+"Related to select",,,
+"RemindedOk",,,
+"Reminders",,,
+"Reported",,,
+"Required participant",,,
+"Reschedule",,,
+"Resolved",,,
+"SSL ?",,,
+"Sales Stage",,,
+"Sales orders amount won historical",,,
+"Sales orders amount won target completed (%)",,,
+"Sales orders created number historical",,,
+"Sales orders created number target completed (%)",,,
+"Sales orders created won historical",,,
+"Sales orders created won target completed",,,
+"Sales orders created won target completed (%)",,,
+"Sales stage",,,
+"Salesman",,,
+"Schedule Meeting",,,
+"Schedule a meeting",,,
+"Schedule a meeting ?",,,
+"Schedule meeting",,,
+"Send Email",,,
+"Send email",,,
+"Settings",,,
+"Source",,,
+"Source description",,,
+"Start",,,
+"Start Date",,,
+"State",,,
+"Status",,,
+"Status description",,,
+"Subject",,,
+"Synchronize calendar",,,
+"Synchronize calendars",,,
+"Target",,,
+"Target Team Db",,,
+"Target User Dashboard",,,
+"Target User Db",,,
+"Target batch",,,
+"Target configuration",,,
+"Target configurations",,,
+"Target page",,,
+"Target team Dashboard",,,
+"Target user Dashboard",,,
+"Targets",,,
+"Targets Configurations",,,
+"Targets configurations",,,
+"Task",,,
+"Tasks",,,
+"Tasks Db",,,
+"Tasks filters",,,
+"Team",,,
+"Team Calendar",,,
+"Tentative",,,
+"Ticket",,,
+"Ticket N°",,,
+"Ticket filters",,,
+"Tickets",,,
+"Tickets Dashboard",,,
+"Tickets Db 1",,,
+"Tickets Db 2",,,
+"Title",,,
+"To Date",,,
+"Total created tickets by month by priority",,,
+"Total created tickets by month by status",,,
+"Total open tickets by month by user",,,
+"Type",,,
+"UID (Calendar)",,,
+"Unassigned Leads",,,
+"Unassigned Opportunities",,,
+"Unassigned Tickets",,,
+"Upcoming events",,,
+"Urgent",,,
+"Urgent Tickets",,,
+"Url",,,
+"User",,,
+"User in charge of the issue",,,
+"Validate",,,
+"View Calls",,,
+"View Leads",,,
+"View Meetings",,,
+"View Opportunities",,,
+"View Tasks",,,
+"Vs",,,
+"Watchers",,,
+"Website",,,
+"Weekly",,,
+"Weeks",,,
+"Worst case",,,
+"ZIMBRA",,,
+"amount",,,
+"help:Event.limitDateT",,,
+"help:Event.location",,,
+"help:Event.progressSelect",,,
+"help:Event.ticketNumberSeq",,,
+"help:Event.typeSelect",,,
+"help:EventCategory.typeSelect",,,
+"help:Lead.emailAddress",,,
+"help:Lead.enterpriseName",,,
+"help:Lead.isCopyAddress",,,
+"help:Lead.isDoNotCall",,,
+"help:Lead.isDoNotSendEmail",,,
+"help:Lead.referredBy",,,
+"help:Lead.source",,,
+"help:Lead.statusSelect",,,
+"help:Opportunity.nextStep",,,
+"help:Opportunity.probability",,,
+"help:Opportunity.source",,,
+"help:User.authorizeCalUserSet",,,
+"help:User.followersCalUserSet",,,
+"portal.daily.team.calls.summary.by.user",,,

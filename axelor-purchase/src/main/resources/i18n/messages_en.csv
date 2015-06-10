@@ -1,208 +1,208 @@
 "key","message","comment","context"
-"${supplierPartner.purchaseOrderInformation}",,,""
-"%s :\n Veuillez configurer le module Achat pour la société %s",,,""
-"50 Latest Supplier Orders",,,""
-"A contact partner must be selected",,,""
-"A price list must be selected",,,""
-"Account",,,""
-"Actions",,,""
-"Amount",,,""
-"Amount A.T.I.",,,""
-"Base W.T.",,,""
-"Buyer",,,""
-"By delivery",,,""
-"Cancel",,,""
-"Canceled",,,""
-"Clear purchase order",,,""
-"Closed Purchase orders",,,""
-"Company",,,""
-"Completed",,,""
-"Confirmation",,,""
-"Confirmer",,,""
-"Contact",,,""
-"Contact partner",,,""
-"Content",,,""
-"Create RFQ",,,""
-"Currency",,,""
-"Current Purchase Orders",,,""
-"Dashboard",,,""
-"Delivery",,,""
-"Delivery Date",,,""
-"Description",,,""
-"Desired delivery date",,,""
-"Details",,,""
-"Devis",,,""
-"Discount",,,""
-"Discount Type",,,""
-"Discount amount",,,""
-"Draft",,,""
-"Estim. delivery date",,,""
-"Financial terms",,,""
-"Finished",,,""
-"Free",,,""
-"From Date",,,""
-"Full name",,,""
-"Generate control invoice",,,""
-"Generate purchase orders automatically",,,""
-"Generate supplier arrivals",,,""
-"Generate suppliers requests",,,""
-"Historical Period",,,""
-"Il manque une ligne de taxe",,,""
-"Import",,,""
-"In ATI",,,""
-"Info.",,,""
-"Internal Ref.",,,""
-"Invoicing",,,""
-"Invoicing Information",,,""
-"La société %s n'a pas de séquence de configurée pour les commandes fournisseur",,,""
-"Label",,,""
-"Links",,,""
-"Manage purchase order versions",,,""
-"Merge into single purchase order",,,""
-"Merge purchase orders",,,""
-"Min sale price",,,""
-"Month",,,""
-"My Closed Purchase Orders",,,""
-"My Ongoing Purchase Orders",,,""
-"My Orders to process",,,""
-"My Purchase Orders",,,""
-"My RFQs",,,""
-"My RFQs and POs To Validate (Requested & Received)",,,""
-"My Sales",,,""
-"My Validated POs",,,""
-"My purchased amount by product family",,,""
-"My purchased qty by product family",,,""
-"Nbr of PO by month",,,""
-"New Purchase order",,,""
-"New version",,,""
-"Not received",,,""
-"Notes",,,""
-"Ongoing Purchase orders",,,""
-"Order Date",,,""
-"Ordered ?",,,""
-"Orders",,,""
-"Other information",,,""
-"PO Lines",,,""
-"PO Management",,,""
-"PO Tax line",,,""
-"PO Tax lines",,,""
-"PO line",,,""
-"PO lines",,,""
-"POs Volume by buyer by family",,,""
-"Partially received",,,""
-"Per order",,,""
-"Percent",,,""
-"Price List",,,""
-"Price list",,,""
-"Print",,,""
-"Product",,,""
-"Product Family",,,""
-"Product variant",,,""
-"Products list",,,""
-"Purchase Buyer Dashboard",,,""
-"Purchase Buyer Db",,,""
-"Purchase Manager Dashboard",,,""
-"Purchase Manager Db",,,""
-"Purchase Order Dashboard",,,""
-"Purchase Order Db",,,""
-"Purchase Orders In ATI",,,""
-"Purchase batches",,,""
-"Purchase config",,,""
-"Purchase configuration",,,""
-"Purchase configurations",,,""
-"Purchase order",,,""
-"Purchase order information",,,""
-"Purchase orders",,,""
-"Purchase orders to merge",,,""
-"PurchaseOrder.bankDetails",,,""
-"PurchaseOrder.bankingInfo",,,""
-"PurchaseOrder.base",,,""
-"PurchaseOrder.cheque",,,""
-"PurchaseOrder.customer",,,""
-"PurchaseOrder.customerRef",,,""
-"PurchaseOrder.deliveryDate",,,""
-"PurchaseOrder.description",,,""
-"PurchaseOrder.note",,,""
-"PurchaseOrder.paymentCondition",,,""
-"PurchaseOrder.paymentMode",,,""
-"PurchaseOrder.priceExclTax",,,""
-"PurchaseOrder.purchaseInfo",,,""
-"PurchaseOrder.qtyUnit",,,""
-"PurchaseOrder.state",,,""
-"PurchaseOrder.supplier",,,""
-"PurchaseOrder.supplyRef",,,""
-"PurchaseOrder.tax",,,""
-"PurchaseOrder.taxAmount",,,""
-"PurchaseOrder.totalExclTax",,,""
-"PurchaseOrder.totalInclTax",,,""
-"PurchaseOrder.totalTax",,,""
-"PurchaseOrder.unitPrice",,,""
-"Purchased amount by family",,,""
-"Purchased amount by product family",,,""
-"Purchased amount distribution by family",,,""
-"Purchases",,,""
-"Purchases Dashboard 1",,,""
-"Purchases Dashboard 2",,,""
-"Purchases Dashboard 3",,,""
-"Purchases Db 1",,,""
-"Purchases Db 2",,,""
-"Purchases Db 3",,,""
-"Purchases Order filters",,,""
-"Purchases order invoicing type",,,""
-"Qty",,,""
-"Quantity",,,""
-"RFQ",,,""
-"RFQ And PO To Validate",,,""
-"RFQs & Orders",,,""
-"Receipt State",,,""
-"Received",,,""
-"Ref.",,,""
-"Remaining",,,""
-"Requested",,,""
-"Sale price",,,""
-"Send Email",,,""
-"Send email",,,""
-"Seq.",,,""
-"Show invoice",,,""
-"Status",,,""
-"Subtotal W.T.",,,""
-"Supplier",,,""
-"Supplier RFQ/PO",,,""
-"Supplier RFQs/POs",,,""
-"Supplier information",,,""
-"Supplier invoices",,,""
-"Supplier ref.",,,""
-"Suppliers requests",,,""
-"Tax",,,""
-"Tax Lines",,,""
-"Tax amount",,,""
-"The company is required and must be the same for all purchase orders",,,""
-"The currency is required and must be the same for all purchase orders",,,""
-"The field 'Location' must be filled.",,,""
-"The supplier Partner is required and must be the same for all purchase orders",,,""
-"To Date",,,""
-"Total",,,""
-"Total A.T.I.",,,""
-"Total A.T.I. in company currency",,,""
-"Total Purchased Amount by month",,,""
-"Total Purchased Qty by month",,,""
-"Total Tax",,,""
-"Total W.T.",,,""
-"Total W.T. in company currency",,,""
-"Turn Over",,,""
-"Unit",,,""
-"Unit price",,,""
-"Unit price discounted",,,""
-"Units",,,""
-"V.A.T.",,,""
-"Validate",,,""
-"Validated",,,""
-"Validated by",,,""
-"Validation date",,,""
-"Version Number",,,""
-"View Orders",,,""
-"View RFQ",,,""
-"You have to choose at least one purchase order",,,""
-"help:PurchaseOrder.internalReference","Refers to an internal document like a SO, PO, Stock Picking reference...",,""
-"help:PurchaseOrderLine.estimatedDelivDate","Estimated by supplier",,""
-"purchase order management",,,""
+"${supplierPartner.purchaseOrderInformation}",,,
+"%s :\n Veuillez configurer le module Achat pour la société %s",,,
+"50 Latest Supplier Orders",,,
+"A contact partner must be selected",,,
+"A price list must be selected",,,
+"Account",,,
+"Actions",,,
+"Amount",,,
+"Amount A.T.I.",,,
+"Base W.T.",,,
+"Buyer",,,
+"By delivery",,,
+"Cancel",,,
+"Canceled",,,
+"Clear purchase order",,,
+"Closed Purchase orders",,,
+"Company",,,
+"Completed",,,
+"Confirmation",,,
+"Confirmer",,,
+"Contact",,,
+"Contact partner",,,
+"Content",,,
+"Create RFQ",,,
+"Currency",,,
+"Current Purchase Orders",,,
+"Dashboard",,,
+"Delivery",,,
+"Delivery Date",,,
+"Description",,,
+"Desired delivery date",,,
+"Details",,,
+"Devis",,,
+"Discount",,,
+"Discount Type",,,
+"Discount amount",,,
+"Draft",,,
+"Estim. delivery date",,,
+"Financial terms",,,
+"Finished",,,
+"Free",,,
+"From Date",,,
+"Full name",,,
+"Generate control invoice",,,
+"Generate purchase orders automatically",,,
+"Generate supplier arrivals",,,
+"Generate suppliers requests",,,
+"Historical Period",,,
+"Il manque une ligne de taxe",,,
+"Import",,,
+"In ATI",,,
+"Info.",,,
+"Internal Ref.",,,
+"Invoicing",,,
+"Invoicing Information",,,
+"La société %s n'a pas de séquence de configurée pour les commandes fournisseur",,,
+"Label",,,
+"Links",,,
+"Manage purchase order versions",,,
+"Merge into single purchase order",,,
+"Merge purchase orders",,,
+"Min sale price",,,
+"Month",,,
+"My Closed Purchase Orders",,,
+"My Ongoing Purchase Orders",,,
+"My Orders to process",,,
+"My Purchase Orders",,,
+"My RFQs",,,
+"My RFQs and POs To Validate (Requested & Received)",,,
+"My Sales",,,
+"My Validated POs",,,
+"My purchased amount by product family",,,
+"My purchased qty by product family",,,
+"Nbr of PO by month",,,
+"New Purchase order",,,
+"New version",,,
+"Not received",,,
+"Notes",,,
+"Ongoing Purchase orders",,,
+"Order Date",,,
+"Ordered ?",,,
+"Orders",,,
+"Other information",,,
+"PO Lines",,,
+"PO Management",,,
+"PO Tax line",,,
+"PO Tax lines",,,
+"PO line",,,
+"PO lines",,,
+"POs Volume by buyer by family",,,
+"Partially received",,,
+"Per order",,,
+"Percent",,,
+"Price List",,,
+"Price list",,,
+"Print",,,
+"Product",,,
+"Product Family",,,
+"Product variant",,,
+"Products list",,,
+"Purchase Buyer Dashboard",,,
+"Purchase Buyer Db",,,
+"Purchase Manager Dashboard",,,
+"Purchase Manager Db",,,
+"Purchase Order Dashboard",,,
+"Purchase Order Db",,,
+"Purchase Orders In ATI",,,
+"Purchase batches",,,
+"Purchase config",,,
+"Purchase configuration",,,
+"Purchase configurations",,,
+"Purchase order",,,
+"Purchase order information",,,
+"Purchase orders",,,
+"Purchase orders to merge",,,
+"PurchaseOrder.bankDetails",,,
+"PurchaseOrder.bankingInfo",,,
+"PurchaseOrder.base",,,
+"PurchaseOrder.cheque",,,
+"PurchaseOrder.customer",,,
+"PurchaseOrder.customerRef",,,
+"PurchaseOrder.deliveryDate",,,
+"PurchaseOrder.description",,,
+"PurchaseOrder.note",,,
+"PurchaseOrder.paymentCondition",,,
+"PurchaseOrder.paymentMode",,,
+"PurchaseOrder.priceExclTax",,,
+"PurchaseOrder.purchaseInfo",,,
+"PurchaseOrder.qtyUnit",,,
+"PurchaseOrder.state",,,
+"PurchaseOrder.supplier",,,
+"PurchaseOrder.supplyRef",,,
+"PurchaseOrder.tax",,,
+"PurchaseOrder.taxAmount",,,
+"PurchaseOrder.totalExclTax",,,
+"PurchaseOrder.totalInclTax",,,
+"PurchaseOrder.totalTax",,,
+"PurchaseOrder.unitPrice",,,
+"Purchased amount by family",,,
+"Purchased amount by product family",,,
+"Purchased amount distribution by family",,,
+"Purchases",,,
+"Purchases Dashboard 1",,,
+"Purchases Dashboard 2",,,
+"Purchases Dashboard 3",,,
+"Purchases Db 1",,,
+"Purchases Db 2",,,
+"Purchases Db 3",,,
+"Purchases Order filters",,,
+"Purchases order invoicing type",,,
+"Qty",,,
+"Quantity",,,
+"RFQ",,,
+"RFQ And PO To Validate",,,
+"RFQs & Orders",,,
+"Receipt State",,,
+"Received",,,
+"Ref.",,,
+"Remaining",,,
+"Requested",,,
+"Sale price",,,
+"Send Email",,,
+"Send email",,,
+"Seq.",,,
+"Show invoice",,,
+"Status",,,
+"Subtotal W.T.",,,
+"Supplier",,,
+"Supplier RFQ/PO",,,
+"Supplier RFQs/POs",,,
+"Supplier information",,,
+"Supplier invoices",,,
+"Supplier ref.",,,
+"Suppliers requests",,,
+"Tax",,,
+"Tax Lines",,,
+"Tax amount",,,
+"The company is required and must be the same for all purchase orders",,,
+"The currency is required and must be the same for all purchase orders",,,
+"The field 'Location' must be filled.",,,
+"The supplier Partner is required and must be the same for all purchase orders",,,
+"To Date",,,
+"Total",,,
+"Total A.T.I.",,,
+"Total A.T.I. in company currency",,,
+"Total Purchased Amount by month",,,
+"Total Purchased Qty by month",,,
+"Total Tax",,,
+"Total W.T.",,,
+"Total W.T. in company currency",,,
+"Turn Over",,,
+"Unit",,,
+"Unit price",,,
+"Unit price discounted",,,
+"Units",,,
+"V.A.T.",,,
+"Validate",,,
+"Validated",,,
+"Validated by",,,
+"Validation date",,,
+"Version Number",,,
+"View Orders",,,
+"View RFQ",,,
+"You have to choose at least one purchase order",,,
+"help:PurchaseOrder.internalReference","Refers to an internal document like a SO, PO, Stock Picking reference...",,
+"help:PurchaseOrderLine.estimatedDelivDate","Estimated by supplier",,
+"purchase order management",,,
