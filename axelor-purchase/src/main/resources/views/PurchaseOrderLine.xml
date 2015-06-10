@@ -49,7 +49,7 @@
 	    <field name="unit"/>
 	    <field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 	    <field name="price" onChange="action-purchase-order-line-method-compute">
-	      <hilite color="danger" if="salePrice &lt; saleMinPrice"/>
+	      <hilite color="danger" if="price &lt; saleMinPrice"/>
 	    </field>
 	    <field name="priceDiscounted" colSpan="4" hideIf="price == priceDiscounted"/>
 	    <field name="exTaxTotal" readonly="true"/>

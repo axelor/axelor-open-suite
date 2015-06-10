@@ -24,8 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -150,5 +150,15 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 			discountAmount = discountAmount.add(discountAmount.multiply(saleOrderLine.getTaxLine().getValue()));
 		}
 		return discountAmount;
+	}
+	
+	public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine){
+		PriceList priceList = saleOrder.getPriceList();
+		if(priceList != null)  {
+			PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
+
+			return (int) priceListLine.getTypeSelect();
+		}
+		return 0;
 	}
 }

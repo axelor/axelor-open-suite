@@ -301,5 +301,15 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 		}
 		return discountAmount;
 	}
+	
+	public int getDiscountTypeSelect(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder){
+		PriceList priceList = purchaseOrder.getPriceList();
+		if(priceList != null)  {
+			PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList);
+
+			return (int) priceListLine.getTypeSelect();
+		}
+		return 0;
+	}
 
 }

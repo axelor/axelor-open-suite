@@ -27,12 +27,15 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -61,6 +64,8 @@ public class InvoiceLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = BigDecimal.ZERO;
+		int discountTypeSelect = 0;
+		
 		if(invoiceLine.getTaxLine()==null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_LINE_TAX_LINE)), IException.CONFIGURATION_ERROR);
 		}
@@ -79,6 +84,9 @@ public class InvoiceLineController {
 			if(exTaxTotal != null) {
 
 				if(invoice != null) {
+					if(priceDiscounted != invoiceLine.getPrice()){
+						discountTypeSelect = invoiceLineService.getDiscountTypeSelect(invoice, invoiceLine);
+					}
 					accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(exTaxTotal, invoice);
 					companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
 				}
@@ -88,6 +96,19 @@ public class InvoiceLineController {
 			response.setValue("accountingExTaxTotal", accountingExTaxTotal);
 			response.setValue("companyExTaxTotal", companyExTaxTotal);
 			response.setValue("priceDiscounted", priceDiscounted);
+			
+			if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT){
+				response.setValue("price",priceDiscounted);
+				response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+				response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+				response.setValue("discountAmount",BigDecimal.ZERO);
+			}
+			else if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE){
+				response.setValue("price",priceDiscounted);
+				response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+				response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+				response.setValue("discountAmount",BigDecimal.ZERO);		
+			}
 		}
 		else{
 			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
@@ -100,6 +121,9 @@ public class InvoiceLineController {
 			if(inTaxTotal != null) {
 
 				if(invoice != null) {
+					if(priceDiscounted != invoiceLine.getPrice()){
+						discountTypeSelect = invoiceLineService.getDiscountTypeSelect(invoice, invoiceLine);
+					}
 					accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(inTaxTotal, invoice);
 					companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
 				}
@@ -110,6 +134,19 @@ public class InvoiceLineController {
 			response.setValue("accountingExTaxTotal", accountingExTaxTotal);
 			response.setValue("companyInTaxTotal", companyInTaxTotal);
 			response.setValue("priceDiscounted", priceDiscounted);
+			
+			if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT){
+				response.setValue("price",priceDiscounted);
+				response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+				response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+				response.setValue("discountAmount",BigDecimal.ZERO);
+			}
+			else if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE){
+				response.setValue("price",priceDiscounted);
+				response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+				response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+				response.setValue("discountAmount",BigDecimal.ZERO);		
+			}
 		}
 
 	}

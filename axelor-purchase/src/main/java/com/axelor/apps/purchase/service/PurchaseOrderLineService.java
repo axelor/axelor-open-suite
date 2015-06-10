@@ -68,6 +68,7 @@ public interface PurchaseOrderLineService extends Repository<PurchaseOrderLine>{
 	public BigDecimal convertUnitPrice(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
 
 	public BigDecimal convertDiscountAmount(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
-
+	
+	public int getDiscountTypeSelect(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
 
 }

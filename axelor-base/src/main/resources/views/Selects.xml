@@ -589,4 +589,10 @@
 		<option value="2">Day</option>
 	</selection>
 	
+	<selection name="base.compute.method.discount.select">
+		<option value="1">Compute Discount Separately</option>
+		<option value="2">Include Discount in unit price only for replace type</option>
+		<option value="3">Include Discount in unit price</option>
+	</selection>
+	
 </object-views>

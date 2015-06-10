@@ -35,6 +35,7 @@
 		    	<field name="mailAccountByUser" />
 		    	<field name="productInAti"/>
 		    	<field name="nbDecimalDigitForUnitPrice"/>
+		    	<field name="computeMethodDiscountSelect"/>
 		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>

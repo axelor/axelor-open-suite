@@ -20,9 +20,12 @@ package com.axelor.apps.sale.web;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
+import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.IExceptionMessage;
@@ -52,6 +55,7 @@ public class SaleOrderLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = BigDecimal.ZERO;
+		int discountTypeSelect = 0;
 		try{
 			if(saleOrderLine.getTaxLine()==null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_ORDER_LINE_TAX_LINE)), IException.CONFIGURATION_ERROR);
@@ -72,6 +76,9 @@ public class SaleOrderLineController {
 					}
 
 					if(saleOrder != null) {
+						if(priceDiscounted != saleOrderLine.getPrice()){
+							discountTypeSelect = saleOrderLineService.getDiscountTypeSelect(saleOrder, saleOrderLine);
+						}
 						companyExTaxTotal = saleOrderLineService.getAmountInCompanyCurrency(exTaxTotal, saleOrder);
 						companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(saleOrderLine.getTaxLine().getValue()));
 					}
@@ -82,6 +89,19 @@ public class SaleOrderLineController {
 				response.setValue("companyExTaxTotal", companyExTaxTotal);
 				response.setValue("companyInTaxTotal", companyInTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
+				
+				if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT){
+					response.setValue("price",priceDiscounted);
+					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+					response.setValue("discountAmount",BigDecimal.ZERO);
+				}
+				else if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE){
+					response.setValue("price",priceDiscounted);
+					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+					response.setValue("discountAmount",BigDecimal.ZERO);		
+				}
 			}
 			else{
 				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
@@ -99,6 +119,9 @@ public class SaleOrderLineController {
 					}
 
 					if(saleOrder != null) {
+						if(priceDiscounted != saleOrderLine.getPrice()){
+							discountTypeSelect = saleOrderLineService.getDiscountTypeSelect(saleOrder, saleOrderLine);
+						}
 						companyInTaxTotal = saleOrderLineService.getAmountInCompanyCurrency(inTaxTotal, saleOrder);
 						companyExTaxTotal = companyInTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 					}
@@ -109,6 +132,19 @@ public class SaleOrderLineController {
 				response.setValue("companyInTaxTotal", companyInTaxTotal);
 				response.setValue("companyExTaxTotal", companyExTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
+				
+				if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT){
+					response.setValue("price",priceDiscounted);
+					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+					response.setValue("discountAmount",BigDecimal.ZERO);
+				}
+				else if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE){
+					response.setValue("price",priceDiscounted);
+					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+					response.setValue("discountAmount",BigDecimal.ZERO);		
+				}
 			}
 		}
 		catch(Exception e) {

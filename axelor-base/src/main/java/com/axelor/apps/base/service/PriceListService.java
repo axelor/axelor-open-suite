@@ -51,9 +51,9 @@ public class PriceListService extends PriceListRepository {
 		PriceListLine priceListLine = null;
 
 		if(product != null && priceList != null)  {
-			priceListLine = Beans.get(PriceListLineRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC",product,qty).fetchOne();
+			priceListLine = Beans.get(PriceListLineRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.priceList.id = ?3 ORDER BY self.minQty DESC",product,qty,priceList.getId()).fetchOne();
 			if(priceListLine == null && product.getProductCategory() != null)  {
-				priceListLine = priceListLineRepo.all().filter("self.productCategory = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product.getProductCategory(), qty).fetchOne();
+				priceListLine = priceListLineRepo.all().filter("self.productCategory = ?1 AND self.minQty AND self.priceList.id = ?3 <= ?2 ORDER BY self.minQty DESC", product.getProductCategory(), qty,priceList.getId()).fetchOne();
 			}
 		}
 

@@ -30,6 +30,7 @@ public interface IPriceListLine {
 	// AMOUNT TYPE SELECT
 	static final int AMOUNT_TYPE_PERCENT = 1;
 	static final int AMOUNT_TYPE_FIXED = 2;
+	static final int AMOUNT_TYPE_NONE = 3;
 	
 	// AMOUNT TYPE SELECT
 	static final int TYPE_DISCOUNT = 1;

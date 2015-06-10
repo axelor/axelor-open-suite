@@ -28,7 +28,18 @@
 		
 		<boolean name="productInAti" title="Products In ATI"/>
 		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" max="5" default="2"/>
+		
+		<integer name="computeMethodDiscountSelect" title="Compute Method for Discounts" selection="base.compute.method.discount.select" default="1"/>
 
-	</entity>
+	
+	
+		<extra-code>
+	   		<![CDATA[
+	   			public static final Integer DISCOUNT_SEPARATE = 1;
+	   			public static final Integer INCLUDE_DISCOUNT_REPLACE_ONLY = 2;
+	   			public static final Integer INCLUDE_DISCOUNT = 3;
+	   		]]>
+	   	</extra-code>
+   	</entity>
 
 </domain-models>
