@@ -196,6 +196,7 @@
 	
   	<action-attrs name="action-sale-order-line-attrs-scale-and-precision">
 		<attribute name="scale" for="price" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="priceDiscounted" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="discountAmount" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice() &amp;&amp; discountTypeSelect == 2"/>
 	</action-attrs>
 	

@@ -21,12 +21,15 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
@@ -59,6 +62,8 @@ public class PurchaseOrderLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = BigDecimal.ZERO;
+		int discountTypeSelect = 0;
+		
 		if(purchaseOrderLine.getTaxLine()==null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_TAX_LINE)), IException.CONFIGURATION_ERROR);
 		}
@@ -80,6 +85,9 @@ public class PurchaseOrderLineController {
 					}
 
 					if(purchaseOrder != null) {
+						if(priceDiscounted != purchaseOrderLine.getPrice()){
+							discountTypeSelect = purchaseOrderLineService.getDiscountTypeSelect(purchaseOrderLine,purchaseOrder);
+						}
 						companyExTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
 						companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
 						response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
@@ -93,6 +101,19 @@ public class PurchaseOrderLineController {
 				response.setValue("companyExTaxTotal", companyExTaxTotal);
 				response.setValue("companyInTaxTotal", companyInTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
+				
+				if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT){
+					response.setValue("price",priceDiscounted);
+					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+					response.setValue("discountAmount",BigDecimal.ZERO);
+				}
+				else if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE){
+					response.setValue("price",priceDiscounted);
+					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+					response.setValue("discountAmount",BigDecimal.ZERO);		
+				}
 			}
 			else{
 				if (purchaseOrderLine.getPrice() != null && purchaseOrderLine.getQty() != null){
@@ -111,6 +132,9 @@ public class PurchaseOrderLineController {
 					}
 
 					if(purchaseOrder != null) {
+						if(priceDiscounted != purchaseOrderLine.getPrice()){
+							discountTypeSelect = purchaseOrderLineService.getDiscountTypeSelect(purchaseOrderLine,purchaseOrder);
+						}
 						companyInTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
 						companyExTaxTotal = companyInTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 						response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
@@ -124,6 +148,19 @@ public class PurchaseOrderLineController {
 				response.setValue("companyInTaxTotal", companyInTaxTotal);
 				response.setValue("companyExTaxTotal", companyExTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
+				
+				if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT){
+					response.setValue("price",priceDiscounted);
+					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+					response.setValue("discountAmount",BigDecimal.ZERO);
+				}
+				else if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE){
+					response.setValue("price",priceDiscounted);
+					response.setValue("exTaxTotalWithoutDiscount", exTaxTotal);
+					response.setValue("discountTypeSelect",IPriceListLine.AMOUNT_TYPE_NONE);
+					response.setValue("discountAmount",BigDecimal.ZERO);		
+				}
 			}
 		}
 		catch(Exception e)  {

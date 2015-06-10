@@ -165,4 +165,14 @@ public class InvoiceLineService {
 		}
 		return discountAmount;
 	}
+	
+	public int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine){
+		PriceList priceList = invoice.getPriceList();
+		if(priceList != null)  {
+			PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
+
+			return (int) priceListLine.getTypeSelect();
+		}
+		return 0;
+	}
 }
