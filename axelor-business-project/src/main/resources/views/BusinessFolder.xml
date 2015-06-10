@@ -21,6 +21,8 @@
 			<button name="close" title="Close" colSpan="3" onClick="action-business-project-set-status-close,save" showIf="statusSelect == 1" readonlyIf="id == null"/>
 			<button name="open" title="Open" colSpan="3" onClick="action-business-project-set-status-open,save" showIf="statusSelect == 2" readonlyIf="id == null"/>
 			<button name="createSalesOrder" title="Create Sales Order" colSpan="4"  readonlyIf="id == null"/>
+			<field name="template" domain="self.template = true" canNew="false" colSpan="6"/>
+			<button name="createSalesOrderFromTemplate" title="Create Sale Order From Template" colSpan="6" readonlyIf="id == null"/>
 		</panel>
 		<panel>
 			<field name="createdBy" title="User Opened"/>
@@ -28,6 +30,7 @@
 			<field name="createdOn" title="Date Opened"/>
 			<field name="dateClosed" readonly="true"/>
 		</panel>
+		<panel-dashlet action="action-view-show-sale-orders-from-folder" title="Sale Orders"/>
 	</form>
 	
 	<action-record name="action-business-folder-set-seq" model="com.axelor.apps.businessproject.db.BusinessFolder">
@@ -43,5 +46,12 @@
 	<action-record name="action-business-project-set-status-open" model="com.axelor.apps.businessproject.db.BusinessFolder">
 	    <field name="statusSelect" expr="eval:1" />
 	</action-record>
+	
+	<action-view name="action-view-show-sale-orders-from-folder" title="Sale Orders" model="com.axelor.apps.sale.db.SaleOrder">	
+		<view type="grid" name="sale-order-grid" />
+		<view type="form" name="sale-order-form" />
+		<domain>self.businessFolder.id = :folderId</domain>
+		<context name="folderId" expr="eval: id" />
+	</action-view>
 	    
 </object-views>

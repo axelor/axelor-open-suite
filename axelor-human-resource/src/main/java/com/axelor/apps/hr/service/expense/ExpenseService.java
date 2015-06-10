@@ -36,20 +36,20 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ExpenseService extends ExpenseRepository{
-	
+
 	@Inject
 	private MoveService moveService;
-	
+
 	@Inject
 	private MoveLineService moveLineService;
-	
+
 	@Inject
 	private AccountManagementServiceAccountImpl accountManagementService;
-	
+
 	@Inject private AccountConfigHRService accountConfigService;
-	
+
 	public Expense compute (Expense expense){
-		
+
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		BigDecimal taxTotal = BigDecimal.ZERO;
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
@@ -64,50 +64,49 @@ public class ExpenseService extends ExpenseRepository{
 		expense.setInTaxTotal(inTaxTotal);
 		return expense;
 	}
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move ventilate(Expense expense) throws AxelorException{
-		
+
 		LocalDate moveDate = GeneralService.getTodayDate();
 		if(expense.getMoveDate()!=null){
 			moveDate = expense.getMoveDate();
 		}
-		
+
 		Account account = null;
 		AccountConfig accountConfig= accountConfigService.getAccountConfig(expense.getCompany());
 
-		Move move = null;
-		if(expense.getUser().getPartner() != null){
-			move = moveService.createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode());
+		if(expense.getUser().getPartner() == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.USER_PARTNER),expense.getUser().getName()), IException.CONFIGURATION_ERROR);
 		}
-		else{
-			move = moveService.createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, null, moveDate, null);
-		}
+
+		Move move = moveService.createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode());
+
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
-		
+
 		AccountManagement accountManagement = null;
 		Set<AnalyticAccount> analyticAccounts = new HashSet<AnalyticAccount>();
 		BigDecimal exTaxTotal = null;
-		
+
 		int moveLineId = 1;
 		int expenseLineId = 1;
 		moveLines.add( moveLineService.createMoveLine(move, expense.getUser().getPartner(), accountConfigService.getExpenseEmployeeAccount(accountConfig), expense.getInTaxTotal(), false, false, moveDate, moveDate, moveLineId++, ""));
-		
+
 		for(ExpenseLine expenseLine : expense.getExpenseLineList()){
 			analyticAccounts.clear();
 			Product product = expenseLine.getExpenseType();
 			accountManagement = accountManagementService.getAccountManagement(product, expense.getCompany());
-			
+
 			account = accountManagementService.getProductAccount(accountManagement, true);
-			
+
 			if(account == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_4),  
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_4),
 						 expenseLineId,expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
-			
+
 			for (AnalyticAccountManagement analyticAccountManagement : accountManagement.getAnalyticAccountManagementList()){
 				if(analyticAccountManagement.getAnalyticAccount() == null){
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_5), 
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_5),
 							analyticAccountManagement.getAnalyticAxis().getName(),expenseLine.getExpenseType().getName(), expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
 				}
 				analyticAccounts.add(analyticAccountManagement.getAnalyticAccount());
@@ -115,12 +114,12 @@ public class ExpenseService extends ExpenseRepository{
 			exTaxTotal = expenseLine.getUntaxedAmount();
 			MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, exTaxTotal, true, false, moveDate, moveDate, moveLineId++, "");
 			moveLine.setAnalyticAccountSet(analyticAccounts);
-			
+
 			moveLines.add(moveLine);
 			expenseLineId++;
-			
+
 		}
-		
+
 		moveLineService.consolidateMoveLines(moveLines);
 		account = accountConfigService.getExpenseTaxAccount(accountConfig);
 		BigDecimal taxTotal = BigDecimal.ZERO;
@@ -128,32 +127,32 @@ public class ExpenseService extends ExpenseRepository{
 			exTaxTotal = expenseLine.getTotalTax();
 			taxTotal = taxTotal.add(exTaxTotal);
 		}
-		
+
 		MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, taxTotal, true, false, moveDate, moveDate, moveLineId++, "");
 		moveLines.add(moveLine);
-		
+
 		move.getMoveLineList().addAll(moveLines);
-		
+
 		moveService.validateMove(move);
-		
+
 		expense.setMove(move);
 		expense.setVentilated(true);
 		save(expense);
-		
+
 		return move;
 	}
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel (Expense expense) throws AxelorException{
 		Move move = expense.getMove();
-		if(move == null)   
-		{  
+		if(move == null)
+		{
 			expense.setStatusSelect(IExpense.STATUS_CANCELED);
 			save(expense);
-			return;  
+			return;
 		}
 		Beans.get(PeriodService.class).testOpenPeriod(move.getPeriod());
-		try{	
+		try{
 			Beans.get(MoveRepository.class).remove(move);
 			expense.setMove(null);
 			expense.setVentilated(false);
@@ -165,4 +164,4 @@ public class ExpenseService extends ExpenseRepository{
 
 		save(expense);
 	}
-}	
+}

@@ -14,6 +14,8 @@
     <string name="name" title="Folder name" required="true"/>
     <integer name="statusSelect" title="Status" selection="business.project.business.folder.status.select"  default="1"/>
     <many-to-one name="userResponible" ref="com.axelor.auth.db.User" title="User Responisble" />
+    <many-to-one name="template" ref="com.axelor.apps.sale.db.SaleOrder" title="Template"/>
+    
     
   </entity>
   
