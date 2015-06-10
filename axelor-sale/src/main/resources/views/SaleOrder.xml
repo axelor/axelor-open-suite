@@ -158,7 +158,7 @@
 	              &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
 	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
 	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
-	              &lt;dt x-translate&gt;Amount invoiced&lt;/dt&gt;
+	              &lt;dt x-translate&gt;Amount invoiced W.T.&lt;/dt&gt;
 	              &lt;dd&gt;{{record.amountInvoiced}}&lt;/dd&gt;
 	            &lt;/dl&gt;
 	          </viewer>
