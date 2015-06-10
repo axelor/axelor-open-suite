@@ -1,160 +1,161 @@
 "key","message","comment","context"
-"%","%",,""
-"%s Veuillez configurer un entrepot virtuel fournisseur pour la société %s",,,""
-"A contact partner must be selected","Un contact doit être sélectionné",,""
-"A payment condition must be selected","Une condition de paiement doit être sélectionnée",,""
-"A payment mode must be selected","Un mode de paiement doit être sélectionné",,""
-"Accepted Credit","Montant crédit accepté",,""
-"Action",,,""
-"Actions",,,""
-"Amount invoiced","Montant facturé",,""
-"Amount to invoice","Montant à facturer",,""
-"An active stockMove already exists for this purchaseOrder","Un BR actif existe déjà pour cette commande fournisseur",,""
-"An active stockMove already exists for this saleOrder","Un BL actif existe déjà pour cette commande client",,""
-"An invoice not canceled already exists for the incoming stock move %s","Une facture non annulée existe déjà pour le BR %s",,""
-"An invoice not canceled already exists for the outgoing stock move %s","Une facture non annulée existe déjà pour le BL %s",,""
-"Annulation",,,""
-"Archived ?","Archivé ?",,""
-"Associated invoice lines","Lignes de facture associées",,""
-"At least one sale order line must be selected","Au moins une commande client doit être sélectionnée",,""
-"Batchs",,,""
-"Bill Late Subscriptions",,,""
-"Bill Late Subscriptions Batch",,,""
-"Category","Catégorie",,""
-"Category Dashboard","Tb Catégories",,""
-"Category Db","Tb Catégories",,""
-"Code",,,""
-"Company","Société",,""
-"Compte rendu de génération de facture d'abonnement :\n",,,""
-"Confirm Purchase order generation","Confirmer la génération de commande fournisseur",,""
-"Confirmation",,,""
-"Confirmer",,,""
-"Contact partner","Contact",,""
-"Convert into order","Convertir en commande",,""
-"Created by","Créé par",,""
-"Created on","Créé le",,""
-"Cumulated invoiced %","% Cumulé de facturation",,""
-"Customer Credits","Crédits client",,""
-"Customer Stock Move to invoice",,,""
-"Customer deliveries management","Gestion des BL",,""
-"Customer delivery",,,""
-"Date From",,,""
-"Date To",,,""
-"Date of shipment","Date d'expédition",,""
-"Description","Description",,""
-"Devis",,,""
-"Devis(s) traité(s)",,,""
-"Draft invoice N days after order validation","Facture brouillons N jrs après validation Cmde",,""
-"Encours utilisé",,,""
-"Facture créée",,,""
-"Family","Famille",,""
-"Family Dashboard","Tb Famille",,""
-"Family Db","Tb Famille",,""
-"Family sale turnover (Excl. Tax) per month","CA HT par famille par mois",,""
-"Fied Date To is empty because fields periodicity, date from or number of periods are empty",,,""
-"From Date","Date de",,""
-"Generate Subscriptions",,,""
-"Generate Subscriptions for each Subscriptable product of this order with these parameters",,,""
-"Generate customer deliveries automatically","Générer les BL automatiquement",,""
-"Generate one invoice per incoming stockMove","Générer une facture par BR",,""
-"Generate one invoice per outgoing stockMove","Générer une facture par BL",,""
-"Generate single invoice","Générer une unique facture",,""
-"Generate supplier arrivals automatically","Générer les BR automatiquement",,""
-"Il est nécessaire de définir un planificateur.",,,""
-"Il est nécessaire de définir une date de début d'abonnement.",,,""
-"Il est nécessaire de définir une date de première facturation.",,,""
-"Information",,,""
-"Invoice","Facturer",,""
-"Invoice controlled","Facture contrôlée",,""
-"Invoiced ?","Facturé(e) ? ",,""
-"Invoices",,,""
-"Invoicing Date","Date de facture",,""
-"Invoicing Type",,,""
-"Invoicing batch","Batch Facturation",,""
-"Invoicing trigger",,,""
-"Invoicing type",,,""
-"Le devis %s sera facturé le %s.",,,""
-"Le devis est déjà complêtement facturé",,,""
-"Linked invoices","Factures associées",,""
-"Location","Emplacement",,""
-"Mail batches",,,""
-"Manage the invoiced amount by line",,,""
-"Mass Cust. Stock Move Invoicing","Facturation en masse de BL",,""
-"Mass Suppl. Stock Move Invoicing","Facturation en masse de BR",,""
-"Month","Mois",,""
-"Nbr of days","Nbr de jours",,""
-"No client selected, a new one will be created from the lead, do you agree?",,,""
-"No invoice was generated","Aucune facture n'a été générée",,""
-"Number of Periods","Nbr de périodes",,""
-"Number of Product per Category","Nbr de produits par catégorie",,""
-"Number of Product per Family","Nbr de produits par famille",,""
-"Opportunity","Opportunité",,""
-"PO line","Ligne de comm. Fourn.",,""
-"Partner","Tiers",,""
-"Payment condition","Condition de paiement",,""
-"Payment mode","mode de paiement",,""
-"Period Beginning",,,""
-"Period Ending",,,""
-"Periodicity","Périodicité",,""
-"Product Category","Catégorie de produit",,""
-"Product Db","Tb produits",,""
-"Product Family","Famille produit",,""
-"Product Type","Type produit",,""
-"Product family","Famille produit",,""
-"Product launches/withdrawal each month","Lancement/Retrait produits par mois",,""
-"Product type distribution","Distribution par type de produit",,""
-"Products","Produits",,""
-"Products DB 1","Tb Produits 1",,""
-"Produit incorrect dans le mouvement de stock %s",,,""
-"Purchase Order","Commande fournisseur",,""
-"Purchase order","Devis fournisseurs",,""
-"Purchase order line","Lignes de devis fournisseur",,""
-"Quantity","Quantité",,""
-"SO line","Ligne de comm. Client",,""
-"SO schedule line",,,""
-"SO schedule lines",,,""
-"Sale Batch","Batch Ventes",,""
-"Sale Order","Devis",,""
-"Sale batches","Batchs Ventes",,""
-"Sale order","Devis",,""
-"Sale order line","Ligne de cmde client",,""
-"Sales","Ventes",,""
-"Sales Turnover","CA",,""
-"Sales order line","Lignes de cmde client",,""
-"Sales orders","Devis/Cmdes",,""
-"Schedule line list","Liste des échéanciers",,""
-"Select supplier partner","Sélectionner un fournisseur",,""
-"Seq.","Séq.",,""
-"Some order lines contain some subscriptions, subscriptions not invoiced will be deleted, do you want to continue?","Certaines lignes de commande contiennent des abonnements, les abonnements non facturés seront supprimé, voulez-vous continuer ?",,""
-"Stock Move",,,""
-"Stock move",,,""
-"Subscription",,,""
-"Subscription List",,,""
-"Subscriptions",,,""
-"Supplier Stock Move to invoice","BR à facturer",,""
-"Supplier arrival","BR",,""
-"Supplier arrivals management","Gestion des BR",,""
-"Supply method","Mode d'appro.",,""
-"Supplychain Batch",,,""
-"Supplychain batch",,,""
-"Supplychain batches",,,""
-"Task","Tâche",,""
-"Template",,,""
-"The client Partner is required and must be the same for all sale orders","Le contact client est obligatoire et doit être le même pour toutes les commandes client",,""
-"The company is required and must be the same for all sale orders","La société est obligatoire et doit être la même pour toutes les commandes client",,""
-"The currency is required and must be the same for all sale orders","La devise est obligatoire et doit être la même pour toutes les commandes client",,""
-"The invoice for the stock move %s can't be generated because of this following error : %s","La facture pour le BL%s ne peut pas être générée à cause de l'erreur suivante :%s",,""
-"The location must be filled.","L'emplacement de stock doit être renseigné",,""
-"The supplier Partner is required and must be the same for all sale orders","Le fournisseur est obligatoire et doit être identique pour toutes les cmdes client",,""
-"To Date","à Date",,""
-"Unit price",,,""
-"Ventilated",,,""
-"Veuillez choisir un fournisseur pour la ligne %s",,,""
-"Veuillez selectionner une devise pour la commande %s",,,""
-"Veuillez selectionner une devise pour le devis %s",,,""
-"Veuillez selectionner une piste",,,""
-"When a task is over","Lorsqu'une tâche est terminée",,""
-"You have to choose at least one incoming stock move",,,""
-"You have to choose at least one outgoing stock move",,,""
-"help:SaleOrderScheduleLine.nbOfDay","Si facturation en fonction de nb de jours",,""
-"help:SaleOrderScheduleLine.saleOrderLine","Si facturation à la tâche",,""
+"%","%",,
+"%s Veuillez configurer un entrepot virtuel fournisseur pour la société %s",,,
+"A contact partner must be selected","Un contact doit être sélectionné",,
+"A payment condition must be selected","Une condition de paiement doit être sélectionnée",,
+"A payment mode must be selected","Un mode de paiement doit être sélectionné",,
+"Accepted Credit","Montant crédit accepté",,
+"Action",,,
+"Actions",,,
+"Amount invoiced","Montant facturé",,
+"Amount invoiced W.T.","Montant facturé HT",,
+"Amount to invoice","Montant à facturer",,
+"An active stockMove already exists for this purchaseOrder","Un BR actif existe déjà pour cette commande fournisseur",,
+"An active stockMove already exists for this saleOrder","Un BL actif existe déjà pour cette commande client",,
+"An invoice not canceled already exists for the incoming stock move %s","Une facture non annulée existe déjà pour le BR %s",,
+"An invoice not canceled already exists for the outgoing stock move %s","Une facture non annulée existe déjà pour le BL %s",,
+"Annulation",,,
+"Archived ?","Archivé ?",,
+"Associated invoice lines","Lignes de facture associées",,
+"At least one sale order line must be selected","Au moins une commande client doit être sélectionnée",,
+"Batchs",,,
+"Bill Late Subscriptions",,,
+"Bill Late Subscriptions Batch",,,
+"Category","Catégorie",,
+"Category Dashboard","Tb Catégories",,
+"Category Db","Tb Catégories",,
+"Code",,,
+"Company","Société",,
+"Compte rendu de génération de facture d'abonnement :\n",,,
+"Confirm Purchase order generation","Confirmer la génération de commande fournisseur",,
+"Confirmation",,,
+"Confirmer",,,
+"Contact partner","Contact",,
+"Convert into order","Convertir en commande",,
+"Created by","Créé par",,
+"Created on","Créé le",,
+"Cumulated invoiced %","% Cumulé de facturation",,
+"Customer Credits","Crédits client",,
+"Customer Stock Move to invoice",,,
+"Customer deliveries management","Gestion des BL",,
+"Customer delivery",,,
+"Date From",,,
+"Date To",,,
+"Date of shipment","Date d'expédition",,
+"Description","Description",,
+"Devis",,,
+"Devis(s) traité(s)",,,
+"Draft invoice N days after order validation","Facture brouillons N jrs après validation Cmde",,
+"Encours utilisé",,,
+"Facture créée",,,
+"Family","Famille",,
+"Family Dashboard","Tb Famille",,
+"Family Db","Tb Famille",,
+"Family sale turnover (Excl. Tax) per month","CA HT par famille par mois",,
+"Fied Date To is empty because fields periodicity, date from or number of periods are empty",,,
+"From Date","Date de",,
+"Generate Subscriptions",,,
+"Generate Subscriptions for each Subscriptable product of this order with these parameters",,,
+"Generate customer deliveries automatically","Générer les BL automatiquement",,
+"Generate one invoice per incoming stockMove","Générer une facture par BR",,
+"Generate one invoice per outgoing stockMove","Générer une facture par BL",,
+"Generate single invoice","Générer une unique facture",,
+"Generate supplier arrivals automatically","Générer les BR automatiquement",,
+"Il est nécessaire de définir un planificateur.",,,
+"Il est nécessaire de définir une date de début d'abonnement.",,,
+"Il est nécessaire de définir une date de première facturation.",,,
+"Information",,,
+"Invoice","Facturer",,
+"Invoice controlled","Facture contrôlée",,
+"Invoiced ?","Facturé(e) ? ",,
+"Invoices",,,
+"Invoicing Date","Date de facture",,
+"Invoicing Type",,,
+"Invoicing batch","Batch Facturation",,
+"Invoicing trigger",,,
+"Invoicing type",,,
+"Le devis %s sera facturé le %s.",,,
+"Le devis est déjà complêtement facturé",,,
+"Linked invoices","Factures associées",,
+"Location","Emplacement",,
+"Mail batches",,,
+"Manage the invoiced amount by line",,,
+"Mass Cust. Stock Move Invoicing","Facturation en masse de BL",,
+"Mass Suppl. Stock Move Invoicing","Facturation en masse de BR",,
+"Month","Mois",,
+"Nbr of days","Nbr de jours",,
+"No client selected, a new one will be created from the lead, do you agree?",,,
+"No invoice was generated","Aucune facture n'a été générée",,
+"Number of Periods","Nbr de périodes",,
+"Number of Product per Category","Nbr de produits par catégorie",,
+"Number of Product per Family","Nbr de produits par famille",,
+"Opportunity","Opportunité",,
+"PO line","Ligne de comm. Fourn.",,
+"Partner","Tiers",,
+"Payment condition","Condition de paiement",,
+"Payment mode","mode de paiement",,
+"Period Beginning",,,
+"Period Ending",,,
+"Periodicity","Périodicité",,
+"Product Category","Catégorie de produit",,
+"Product Db","Tb produits",,
+"Product Family","Famille produit",,
+"Product Type","Type produit",,
+"Product family","Famille produit",,
+"Product launches/withdrawal each month","Lancement/Retrait produits par mois",,
+"Product type distribution","Distribution par type de produit",,
+"Products","Produits",,
+"Products DB 1","Tb Produits 1",,
+"Produit incorrect dans le mouvement de stock %s",,,
+"Purchase Order","Commande fournisseur",,
+"Purchase order","Devis fournisseurs",,
+"Purchase order line","Lignes de devis fournisseur",,
+"Quantity","Quantité",,
+"SO line","Ligne de comm. Client",,
+"SO schedule line",,,
+"SO schedule lines",,,
+"Sale Batch","Batch Ventes",,
+"Sale Order","Devis",,
+"Sale batches","Batchs Ventes",,
+"Sale order","Devis",,
+"Sale order line","Ligne de cmde client",,
+"Sales","Ventes",,
+"Sales Turnover","CA",,
+"Sales order line","Lignes de cmde client",,
+"Sales orders","Devis/Cmdes",,
+"Schedule line list","Liste des échéanciers",,
+"Select supplier partner","Sélectionner un fournisseur",,
+"Seq.","Séq.",,
+"Some order lines contain some subscriptions, subscriptions not invoiced will be deleted, do you want to continue?","Certaines lignes de commande contiennent des abonnements, les abonnements non facturés seront supprimé, voulez-vous continuer ?",,
+"Stock Move",,,
+"Stock move",,,
+"Subscription",,,
+"Subscription List",,,
+"Subscriptions",,,
+"Supplier Stock Move to invoice","BR à facturer",,
+"Supplier arrival","BR",,
+"Supplier arrivals management","Gestion des BR",,
+"Supply method","Mode d'appro.",,
+"Supplychain Batch",,,
+"Supplychain batch",,,
+"Supplychain batches",,,
+"Task","Tâche",,
+"Template",,,
+"The client Partner is required and must be the same for all sale orders","Le contact client est obligatoire et doit être le même pour toutes les commandes client",,
+"The company is required and must be the same for all sale orders","La société est obligatoire et doit être la même pour toutes les commandes client",,
+"The currency is required and must be the same for all sale orders","La devise est obligatoire et doit être la même pour toutes les commandes client",,
+"The invoice for the stock move %s can't be generated because of this following error : %s","La facture pour le BL%s ne peut pas être générée à cause de l'erreur suivante :%s",,
+"The location must be filled.","L'emplacement de stock doit être renseigné",,
+"The supplier Partner is required and must be the same for all sale orders","Le fournisseur est obligatoire et doit être identique pour toutes les cmdes client",,
+"To Date","à Date",,
+"Unit price",,,
+"Ventilated",,,
+"Veuillez choisir un fournisseur pour la ligne %s",,,
+"Veuillez selectionner une devise pour la commande %s",,,
+"Veuillez selectionner une devise pour le devis %s",,,
+"Veuillez selectionner une piste",,,
+"When a task is over","Lorsqu'une tâche est terminée",,
+"You have to choose at least one incoming stock move",,,
+"You have to choose at least one outgoing stock move",,,
+"help:SaleOrderScheduleLine.nbOfDay","Si facturation en fonction de nb de jours",,
+"help:SaleOrderScheduleLine.saleOrderLine","Si facturation à la tâche",,

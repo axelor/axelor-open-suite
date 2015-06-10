@@ -1,160 +1,161 @@
 "key","message","comment","context"
-"%",,,""
-"%s Veuillez configurer un entrepot virtuel fournisseur pour la société %s",,,""
-"A contact partner must be selected",,,""
-"A payment condition must be selected",,,""
-"A payment mode must be selected",,,""
-"Accepted Credit",,,""
-"Action",,,""
-"Actions",,,""
-"Amount invoiced",,,""
-"Amount to invoice",,,""
-"An active stockMove already exists for this purchaseOrder",,,""
-"An active stockMove already exists for this saleOrder",,,""
-"An invoice not canceled already exists for the incoming stock move %s",,,""
-"An invoice not canceled already exists for the outgoing stock move %s",,,""
-"Annulation",,,""
-"Archived ?",,,""
-"Associated invoice lines",,,""
-"At least one sale order line must be selected",,,""
-"Batchs",,,""
-"Bill Late Subscriptions",,,""
-"Bill Late Subscriptions Batch",,,""
-"Category",,,""
-"Category Dashboard",,,""
-"Category Db",,,""
-"Code",,,""
-"Company",,,""
-"Compte rendu de génération de facture d'abonnement :\n",,,""
-"Confirm Purchase order generation",,,""
-"Confirmation",,,""
-"Confirmer",,,""
-"Contact partner",,,""
-"Convert into order",,,""
-"Created by",,,""
-"Created on",,,""
-"Cumulated invoiced %",,,""
-"Customer Credits",,,""
-"Customer Stock Move to invoice",,,""
-"Customer deliveries management",,,""
-"Customer delivery",,,""
-"Date From",,,""
-"Date To",,,""
-"Date of shipment",,,""
-"Description",,,""
-"Devis",,,""
-"Devis(s) traité(s)",,,""
-"Draft invoice N days after order validation",,,""
-"Encours utilisé",,,""
-"Facture créée",,,""
-"Family",,,""
-"Family Dashboard",,,""
-"Family Db",,,""
-"Family sale turnover (Excl. Tax) per month",,,""
-"Fied Date To is empty because fields periodicity, date from or number of periods are empty",,,""
-"From Date",,,""
-"Generate Subscriptions",,,""
-"Generate Subscriptions for each Subscriptable product of this order with these parameters",,,""
-"Generate customer deliveries automatically",,,""
-"Generate one invoice per incoming stockMove",,,""
-"Generate one invoice per outgoing stockMove",,,""
-"Generate single invoice",,,""
-"Generate supplier arrivals automatically",,,""
-"Il est nécessaire de définir un planificateur.",,,""
-"Il est nécessaire de définir une date de début d'abonnement.",,,""
-"Il est nécessaire de définir une date de première facturation.",,,""
-"Information",,,""
-"Invoice",,,""
-"Invoice controlled",,,""
-"Invoiced ?",,,""
-"Invoices",,,""
-"Invoicing Date",,,""
-"Invoicing Type",,,""
-"Invoicing batch",,,""
-"Invoicing trigger",,,""
-"Invoicing type",,,""
-"Le devis %s sera facturé le %s.",,,""
-"Le devis est déjà complêtement facturé",,,""
-"Linked invoices",,,""
-"Location",,,""
-"Mail batches",,,""
-"Manage the invoiced amount by line",,,""
-"Mass Cust. Stock Move Invoicing",,,""
-"Mass Suppl. Stock Move Invoicing",,,""
-"Month",,,""
-"Nbr of days",,,""
-"No client selected, a new one will be created from the lead, do you agree?",,,""
-"No invoice was generated",,,""
-"Number of Periods",,,""
-"Number of Product per Category",,,""
-"Number of Product per Family",,,""
-"Opportunity",,,""
-"PO line",,,""
-"Partner",,,""
-"Payment condition",,,""
-"Payment mode",,,""
-"Period Beginning",,,""
-"Period Ending",,,""
-"Periodicity",,,""
-"Product Category",,,""
-"Product Db",,,""
-"Product Family",,,""
-"Product Type",,,""
-"Product family",,,""
-"Product launches/withdrawal each month",,,""
-"Product type distribution",,,""
-"Products",,,""
-"Products DB 1",,,""
-"Produit incorrect dans le mouvement de stock %s",,,""
-"Purchase Order",,,""
-"Purchase order",,,""
-"Purchase order line",,,""
-"Quantity",,,""
-"SO line",,,""
-"SO schedule line",,,""
-"SO schedule lines",,,""
-"Sale Batch",,,""
-"Sale Order",,,""
-"Sale batches",,,""
-"Sale order",,,""
-"Sale order line",,,""
-"Sales",,,""
-"Sales Turnover",,,""
-"Sales order line",,,""
-"Sales orders",,,""
-"Schedule line list",,,""
-"Select supplier partner",,,""
-"Seq.",,,""
-"Some order lines contain some subscriptions, subscriptions not invoiced will be deleted, do you want to continue?",,,""
-"Stock Move",,,""
-"Stock move",,,""
-"Subscription",,,""
-"Subscription List",,,""
-"Subscriptions",,,""
-"Supplier Stock Move to invoice",,,""
-"Supplier arrival",,,""
-"Supplier arrivals management",,,""
-"Supply method",,,""
-"Supplychain Batch",,,""
-"Supplychain batch",,,""
-"Supplychain batches",,,""
-"Task",,,""
-"Template",,,""
-"The client Partner is required and must be the same for all sale orders",,,""
-"The company is required and must be the same for all sale orders",,,""
-"The currency is required and must be the same for all sale orders",,,""
-"The invoice for the stock move %s can't be generated because of this following error : %s",,,""
-"The location must be filled.",,,""
-"The supplier Partner is required and must be the same for all sale orders",,,""
-"To Date",,,""
-"Unit price",,,""
-"Ventilated",,,""
-"Veuillez choisir un fournisseur pour la ligne %s",,,""
-"Veuillez selectionner une devise pour la commande %s",,,""
-"Veuillez selectionner une devise pour le devis %s",,,""
-"Veuillez selectionner une piste",,,""
-"When a task is over",,,""
-"You have to choose at least one incoming stock move",,,""
-"You have to choose at least one outgoing stock move",,,""
-"help:SaleOrderScheduleLine.nbOfDay",,,""
-"help:SaleOrderScheduleLine.saleOrderLine",,,""
+"%",,,
+"%s Veuillez configurer un entrepot virtuel fournisseur pour la société %s",,,
+"A contact partner must be selected",,,
+"A payment condition must be selected",,,
+"A payment mode must be selected",,,
+"Accepted Credit",,,
+"Action",,,
+"Actions",,,
+"Amount invoiced",,,
+"Amount invoiced W.T.",,,
+"Amount to invoice",,,
+"An active stockMove already exists for this purchaseOrder",,,
+"An active stockMove already exists for this saleOrder",,,
+"An invoice not canceled already exists for the incoming stock move %s",,,
+"An invoice not canceled already exists for the outgoing stock move %s",,,
+"Annulation",,,
+"Archived ?",,,
+"Associated invoice lines",,,
+"At least one sale order line must be selected",,,
+"Batchs",,,
+"Bill Late Subscriptions",,,
+"Bill Late Subscriptions Batch",,,
+"Category",,,
+"Category Dashboard",,,
+"Category Db",,,
+"Code",,,
+"Company",,,
+"Compte rendu de génération de facture d'abonnement :\n",,,
+"Confirm Purchase order generation",,,
+"Confirmation",,,
+"Confirmer",,,
+"Contact partner",,,
+"Convert into order",,,
+"Created by",,,
+"Created on",,,
+"Cumulated invoiced %",,,
+"Customer Credits",,,
+"Customer Stock Move to invoice",,,
+"Customer deliveries management",,,
+"Customer delivery",,,
+"Date From",,,
+"Date To",,,
+"Date of shipment",,,
+"Description",,,
+"Devis",,,
+"Devis(s) traité(s)",,,
+"Draft invoice N days after order validation",,,
+"Encours utilisé",,,
+"Facture créée",,,
+"Family",,,
+"Family Dashboard",,,
+"Family Db",,,
+"Family sale turnover (Excl. Tax) per month",,,
+"Fied Date To is empty because fields periodicity, date from or number of periods are empty",,,
+"From Date",,,
+"Generate Subscriptions",,,
+"Generate Subscriptions for each Subscriptable product of this order with these parameters",,,
+"Generate customer deliveries automatically",,,
+"Generate one invoice per incoming stockMove",,,
+"Generate one invoice per outgoing stockMove",,,
+"Generate single invoice",,,
+"Generate supplier arrivals automatically",,,
+"Il est nécessaire de définir un planificateur.",,,
+"Il est nécessaire de définir une date de début d'abonnement.",,,
+"Il est nécessaire de définir une date de première facturation.",,,
+"Information",,,
+"Invoice",,,
+"Invoice controlled",,,
+"Invoiced ?",,,
+"Invoices",,,
+"Invoicing Date",,,
+"Invoicing Type",,,
+"Invoicing batch",,,
+"Invoicing trigger",,,
+"Invoicing type",,,
+"Le devis %s sera facturé le %s.",,,
+"Le devis est déjà complêtement facturé",,,
+"Linked invoices",,,
+"Location",,,
+"Mail batches",,,
+"Manage the invoiced amount by line",,,
+"Mass Cust. Stock Move Invoicing",,,
+"Mass Suppl. Stock Move Invoicing",,,
+"Month",,,
+"Nbr of days",,,
+"No client selected, a new one will be created from the lead, do you agree?",,,
+"No invoice was generated",,,
+"Number of Periods",,,
+"Number of Product per Category",,,
+"Number of Product per Family",,,
+"Opportunity",,,
+"PO line",,,
+"Partner",,,
+"Payment condition",,,
+"Payment mode",,,
+"Period Beginning",,,
+"Period Ending",,,
+"Periodicity",,,
+"Product Category",,,
+"Product Db",,,
+"Product Family",,,
+"Product Type",,,
+"Product family",,,
+"Product launches/withdrawal each month",,,
+"Product type distribution",,,
+"Products",,,
+"Products DB 1",,,
+"Produit incorrect dans le mouvement de stock %s",,,
+"Purchase Order",,,
+"Purchase order",,,
+"Purchase order line",,,
+"Quantity",,,
+"SO line",,,
+"SO schedule line",,,
+"SO schedule lines",,,
+"Sale Batch",,,
+"Sale Order",,,
+"Sale batches",,,
+"Sale order",,,
+"Sale order line",,,
+"Sales",,,
+"Sales Turnover",,,
+"Sales order line",,,
+"Sales orders",,,
+"Schedule line list",,,
+"Select supplier partner",,,
+"Seq.",,,
+"Some order lines contain some subscriptions, subscriptions not invoiced will be deleted, do you want to continue?",,,
+"Stock Move",,,
+"Stock move",,,
+"Subscription",,,
+"Subscription List",,,
+"Subscriptions",,,
+"Supplier Stock Move to invoice",,,
+"Supplier arrival",,,
+"Supplier arrivals management",,,
+"Supply method",,,
+"Supplychain Batch",,,
+"Supplychain batch",,,
+"Supplychain batches",,,
+"Task",,,
+"Template",,,
+"The client Partner is required and must be the same for all sale orders",,,
+"The company is required and must be the same for all sale orders",,,
+"The currency is required and must be the same for all sale orders",,,
+"The invoice for the stock move %s can't be generated because of this following error : %s",,,
+"The location must be filled.",,,
+"The supplier Partner is required and must be the same for all sale orders",,,
+"To Date",,,
+"Unit price",,,
+"Ventilated",,,
+"Veuillez choisir un fournisseur pour la ligne %s",,,
+"Veuillez selectionner une devise pour la commande %s",,,
+"Veuillez selectionner une devise pour le devis %s",,,
+"Veuillez selectionner une piste",,,
+"When a task is over",,,
+"You have to choose at least one incoming stock move",,,
+"You have to choose at least one outgoing stock move",,,
+"help:SaleOrderScheduleLine.nbOfDay",,,
+"help:SaleOrderScheduleLine.saleOrderLine",,,
