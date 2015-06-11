@@ -155,6 +155,7 @@ public class PurchaseOrderLineController {
 			try  {
 				BigDecimal price = purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine);
 				int discountTypeSelect = 0;
+				BigDecimal discountAmount = BigDecimal.ZERO;
 				
 				response.setValue("taxLine", purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine));
 				response.setValue("productName", purchaseOrderLine.getProduct().getName());
@@ -172,13 +173,14 @@ public class PurchaseOrderLineController {
 					if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 					{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+						discountAmount = (BigDecimal) discounts.get("discountAmount");
+						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount);
 						
 					}
 					else{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-
-						response.setValue("discountAmount", discounts.get("discountAmount"));
+						discountAmount = (BigDecimal) discounts.get("discountAmount");
+						response.setValue("discountAmount", discountAmount);
 						response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 						if(discounts.get("price") != null)  {
 							price = (BigDecimal) discounts.get("price");
@@ -186,14 +188,20 @@ public class PurchaseOrderLineController {
 					}
 				}
 
-				else{
+				if(discountAmount.equals(BigDecimal.ZERO)){
 					List<SupplierCatalog> supplierCatalogList = purchaseOrderLine.getProduct().getSupplierCatalogList();
 					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
 						SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",purchaseOrderLine.getProduct(),purchaseOrderLine.getQty(),purchaseOrder.getSupplierPartner()).fetchOne();
 						if(supplierCatalog!=null){
-							Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
-							response.setValue("discountAmount", discounts.get("discountAmount"));
-							response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+							if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.DISCOUNT_SEPARATE){
+								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
+								response.setValue("discountAmount", discounts.get("discountAmount"));
+								response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+							}
+							else{
+								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
+								price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+							}
 						}
 					}
 				}
@@ -243,6 +251,7 @@ public class PurchaseOrderLineController {
 
 				PriceList priceList = purchaseOrder.getPriceList();
 				int discountTypeSelect = 0;
+				BigDecimal discountAmount = BigDecimal.ZERO;
 				
 				if(priceList != null)  {
 					PriceListLine priceListLine = purchaseOrderLineService.getPriceListLine(purchaseOrderLine, priceList);
@@ -253,13 +262,14 @@ public class PurchaseOrderLineController {
 					if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 					{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+						discountAmount = (BigDecimal) discounts.get("discountAmount");
+						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount);
 						
 					}
 					else{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-
-						response.setValue("discountAmount", discounts.get("discountAmount"));
+						discountAmount = (BigDecimal) discounts.get("discountAmount");
+						response.setValue("discountAmount", discountAmount);
 						response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 						if(discounts.get("price") != null)  {
 							price = (BigDecimal) discounts.get("price");
@@ -268,17 +278,21 @@ public class PurchaseOrderLineController {
 					
 				}
 
-				else{
+				if(discountAmount.equals(BigDecimal.ZERO)){
 					List<SupplierCatalog> supplierCatalogList = purchaseOrderLine.getProduct().getSupplierCatalogList();
 					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
-						for (SupplierCatalog supplierCatalog : supplierCatalogList) {
-							if(supplierCatalog.getProduct().equals(purchaseOrderLine.getProduct()) && supplierCatalog.getMinQty().compareTo(purchaseOrderLine.getQty())<=0 && supplierCatalog.getSupplierPartner().equals(purchaseOrder.getSupplierPartner())){
+						SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",purchaseOrderLine.getProduct(),purchaseOrderLine.getQty(),purchaseOrder.getSupplierPartner()).fetchOne();
+						if(supplierCatalog!=null){
+							if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.DISCOUNT_SEPARATE){
 								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
 								response.setValue("discountAmount", discounts.get("discountAmount"));
 								response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 							}
+							else{
+								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
+								price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+							}
 						}
-
 					}
 				}
 
