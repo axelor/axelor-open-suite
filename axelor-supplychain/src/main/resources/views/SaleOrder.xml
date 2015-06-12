@@ -13,8 +13,8 @@
 
 	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onNew="action-record-load-dummy-supplier-partner">
 		<panel>
-			<field name="supplierPartnerSelect" title="Select supplier partner" colSpan="12" width="200px" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact = false AND self.isSupplier = true" />
-			<button name="generatePOConfirm" title="Confirm Purchase order generation" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" colSpan="12" width="200px"/>
+			<field name="supplierPartnerSelect" title="Select supplier partner" colSpan="12" width="300px" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact = false AND self.isSupplier = true" />
+			<button name="generatePOConfirm" title="Confirm Purchase order generation" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" colSpan="12" width="300px"/>
 		</panel>
     </form>
 
