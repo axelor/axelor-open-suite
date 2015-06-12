@@ -57,25 +57,25 @@
     </grid>
     
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
-		 onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+		 onNew="action-group-stock-stockmove-onnew">
 	  <panel>
-		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations"/>
+		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations" readonlyIf="statusSelect != 1"/>
 		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
 	  </panel>
 	  <panel>
 	    <panel title="Stock move reference">
 	      <field name="stockMoveSeq" colSpan="12"/>
 	      <field name="name" colSpan="12"/>
-	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12"/>
-	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12"/>
+	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1"/>
+	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1"/>
 	    </panel>
 	    <panel title="Stock move informations">
-	      <field name="fromLocation" domain="self.company = :company" onChange="action-stock-move-set-from-address" colSpan="12"/>
-	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-set-to-address" colSpan="12"/>
-	      <field name="estimatedDate" colSpan="6"/>
+	      <field name="fromLocation" domain="self.company = :company" onChange="action-stock-move-set-from-address" colSpan="12" readonlyIf="statusSelect != 1"/>
+	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-set-to-address" colSpan="12" readonlyIf="statusSelect != 1"/>
+	      <field name="estimatedDate" colSpan="6" readonlyIf="statusSelect != 1"/>
 	      <field name="realDate" colSpan="6"/>
 	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12"/>
-	      <field name="toAddress" showIf="typeSelect == 2" colSpan="12"/>
+	      <field name="toAddress" showIf="typeSelect == 2" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
 	      <field name="isWithReturnSurplus" showIf="typeSelect &gt;= 2" colSpan="6"/>
 	      <field name="isWithBackorder" colSpan="6"/>
 	    </panel>
@@ -90,9 +90,9 @@
 	   
 	    <panel-related field="stockMoveLineList" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
 	    <panel title="Configuration">
-	      <field name="saleOrder" if-module="axelor-supplychain"/>
-	      <field name="purchaseOrder" if-module="axelor-supplychain"/>
-	      <field name="invoice" if-module="axelor-supplychain"/>
+	      <field name="saleOrder" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
+	      <field name="purchaseOrder" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
+	      <field name="invoice" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
 	    </panel>
 	  </panel-tabs>
 	  
@@ -101,7 +101,8 @@
 			<button name="realize" title="Realize" icon="fa-check" showIf="statusSelect == 2" onClick="action-group-stock-stockmove-realize-click"/>
 			<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" onClick="action-group-stock-stockmove-cancel-click"/>
 			<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
-			<button name="generateInvoice" title="Generate invoice" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
+			<button name="generateInvoice" title="Generate invoice" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"
+							readonlyIf="(saleOrder == null &amp;&amp; purchaseOrder == null) || (saleOrder != null &amp;&amp; saleOrder.invoicingTypeSelect != 4 &amp;&amp; saleOrder.invoicingTypeSelect != 5) || (purchaseOrder != null &amp;&amp; purchaseOrder.invoicingTypeSelect != 2) || invoice != null || statusSelect != 3"/>
 			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect &gt;= 2"/>
 			<button name="printStockMove" title=" Print" icon="fa-print" onClick="save,action-print-stock-move" showIf="statusSelect != 1"/>
 			<button name="viewDirection" title="View Direction" help="View Direction" showIf="typeSelect == 2"   icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -154,26 +155,13 @@
     	<attribute name="title" for="realize" expr="eval: (fromLocation) ? ((fromLocation?.typeSelect != 1 &amp;&amp; toLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
     </action-attrs> -->
     
-    <action-group name="action-stock-move-group-read-only">
-    	<action name="action-stock-move-attrs-planned-read-only" if="statusSelect == 2 || statusSelect == 3"/>
-    	<action name="action-stock-move-attrs-validated-read-only" if="statusSelect == 3"/>
-    </action-group>
-    
     <action-group name="action-group-stock-stockmove-onnew">
     	<action name="action-stock-move-record-new"/>
-    	<action name="action-stock-move-attrs-hide-button-generate-invoice"/>
     </action-group>
     
-    <action-group name="action-group-stock-stockmove-onload">
-    	<action name="action-stock-move-attrs-hide-button-generate-invoice"/>
-    	<action name="action-stock-move-attrs-canceled-read-only"/>
-    	<action name="action-stock-move-group-read-only"/>
-    </action-group>
-
 	<action-group name="action-group-stock-stockmove-plan-click">
 	 	<action name="save"/>
 	  	<action name="action-stock-move-method-plan"/>
-	  	<action name="action-stock-move-group-read-only"/>
 	  	<action name="save"/>
 	</action-group>
     
@@ -181,15 +169,12 @@
 	  	<action name="save"/>
     	<action name="action-stock-move-check-stock-move-line-real-qty"/>
     	<action name="action-stock-move-method-realize"/>
-    	<action name="action-stock-move-group-read-only"/>
-    	<action name="action-stock-move-attrs-hide-button-generate-invoice"/>    	    	    	
     	<action name="save"/>
 	</action-group>
 	
 	<action-group name="action-group-stock-stockmove-cancel-click">
 	  	<action name="save"/>
     	<action name="action-stock-move-method-cancel"/>
-    	<action name="action-stock-move-attrs-canceled-read-only"/>
     	<action name="save"/>
     </action-group>
 
@@ -199,35 +184,6 @@
     	<action name="save"/>
   	</action-group>
 
-    <action-attrs name="action-stock-move-attrs-planned-read-only">
-    	<attribute name="readonly" for="typeSelect" expr="true"/>
-    	<attribute name="readonly" for="company" expr="true"/>
-    	<attribute name="readonly" for="partner" expr="true"/>
-    	<attribute name="readonly" for="fromLocation" expr="true"/>
-    	<attribute name="readonly" for="toLocation" expr="true"/>
-    	<attribute name="readonly" for="estimatedDate" expr="true"/>
-    </action-attrs>
-    
-    <action-attrs name="action-stock-move-attrs-validated-read-only">
-    	<attribute name="readonly" for="toAddress" expr="true"/>
-    	<attribute name="readonly" for="saleOrder" expr="true"/>
-    	<attribute name="readonly" for="purchaseOrder" expr="true"/>
-    	<attribute name="readonly" for="invoice" expr="true"/>
-    </action-attrs>
-    
-    <action-attrs name="action-stock-move-attrs-canceled-read-only">
-    	<attribute name="readonly" for="typeSelect" expr="false"/>
-    	<attribute name="readonly" for="company" expr="false"/>
-    	<attribute name="readonly" for="partner" expr="false"/>
-    	<attribute name="readonly" for="fromLocation" expr="false"/>
-    	<attribute name="readonly" for="toLocation" expr="false"/>
-    	<attribute name="readonly" for="estimatedDate" expr="false"/>
-    	<attribute name="readonly" for="toAddress" expr="false"/>
-    	<attribute name="readonly" for="saleOrder" expr="false"/>
-    	<attribute name="readonly" for="purchaseOrder" expr="false"/>
-    	<attribute name="readonly" for="invoice" expr="false"/>
-    </action-attrs>
-    
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
     </action-record>
@@ -299,10 +255,6 @@
 	<action-method name="action-stock-move-method-view-direction">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="viewDirection"/>
 	</action-method>
-	
-	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">
-		<attribute name="hidden" for="generateInvoice" expr="eval: (saleOrder == null &amp;&amp; purchaseOrder == null) || (saleOrder != null &amp;&amp; saleOrder?.invoicingTypeSelect != 4 &amp;&amp; saleOrder?.invoicingTypeSelect != 5) || (purchaseOrder != null &amp;&amp; purchaseOrder.invoicingTypeSelect != 2) || invoice != null || statusSelect != 3"/>
-	</action-attrs>
 	
 	<action-validate name="action-stock-move-check-stock-move-line-real-qty">
 		<alert message="The move doesn't contain any product, do you wish to continue ?" if="stockMoveLineList != null &amp;&amp; stockMoveLineList.sum{it->it.realQty} == 0"/>
