@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -63,17 +64,22 @@ public class StockMoveController {
 
 	public void realize(ActionRequest request, ActionResponse response)  {
 
-		StockMove stockMove = request.getContext().asType(StockMove.class);
+		StockMove stockMoveFromRequest = request.getContext().asType(StockMove.class);
 
 		try {
-			String newSeq = stockMoveService.realize(stockMoveService.find(stockMove.getId()));
+			StockMove stockMove = stockMoveService.find(stockMoveFromRequest.getId());
+			String newSeq = stockMoveService.realize(stockMove);
 
 			response.setReload(true);
 
 			if(newSeq != null)  {
-
-				response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_9), newSeq));
-
+				if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING){
+					response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INCOMING_PARTIAL_GENERATED), newSeq));
+				}else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING){
+					response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_OUTGOING_PARTIAL_GENERATED), newSeq));
+				}else{
+					response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_9), newSeq));
+				}
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

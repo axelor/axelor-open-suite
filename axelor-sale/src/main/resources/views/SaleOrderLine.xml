@@ -120,7 +120,6 @@
     	<field name="isOrdered" expr="true"/>
     	<field name="isToPrintLineSubTotal" expr="eval: _parent?.isToPrintLineSubTotal"/>
     	<field name="hideDiscount" expr="eval: _parent?.priceList?.hideDiscount"/>
-    	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
     </action-record>
     
 	<action-record name="action-sale-order-line-record-sequence" model="com.axelor.apps.sale.db.SaleOrderLine">

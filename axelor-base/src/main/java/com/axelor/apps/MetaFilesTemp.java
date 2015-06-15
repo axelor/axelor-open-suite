@@ -81,28 +81,21 @@ public class MetaFilesTemp {
 		}
 
 		try {
-			final Path source = file.toPath();
-			final Path target = getNextPath(targetName);
-
 			// make sure the upload path exists
 			Files.createDirectories(Paths.get(UPLOAD_PATH));
-
-			// copy the file to upload directory
-			Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
 
 			final String mime = Files.probeContentType(file.toPath());
 
 			metaFile.setFileName(file.getName());
 			metaFile.setMime(mime);
 			metaFile.setSize(Files.size(file.toPath()));
-			metaFile.setFilePath(target.toFile().getName());
+			metaFile.setFilePath(file.getPath());
 
 			final MetaFileRepository repo = Beans.get(MetaFileRepository.class);
 			try {
 				return repo.save(metaFile);
 			} catch (Exception e) {
 				// delete the uploaded file
-				Files.deleteIfExists(target);
 				throw new PersistenceException(e);
 			}
 		} finally {

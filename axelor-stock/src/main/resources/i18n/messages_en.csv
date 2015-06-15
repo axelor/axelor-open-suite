@@ -7,6 +7,8 @@
 "Alert",,,
 "An error occurred while importing the file data, product not found with code :",,,
 "An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.",,,
+"An incoming partial stock move has been generated (%s)",,,
+"An outgoing partial stock move has been generated (%s)",,,
 "Arrivals History",,,
 "Aucun emplacement destination selectionné pour le mouvement de stock %s",,,
 "Aucun emplacement source selectionné pour le mouvement de stock %s",,,

@@ -274,7 +274,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 		if (file != null){
 			MetaFilesTemp metaFilesTemp = Beans.get(MetaFilesTemp.class);
-			MetaFile metaFile = metaFilesTemp.upload(file, new MetaFile());
+			MetaFile metaFile = metaFilesTemp.upload(file);
 			MetaAttachment metaAttachment = metaFilesTemp.attach(metaFile, saleOrder);
 			JPA.save(metaAttachment);
 		}
