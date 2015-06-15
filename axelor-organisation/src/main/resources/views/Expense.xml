@@ -123,11 +123,11 @@
     </action-record>
     
     <action-record name="action-expense-record-submit" model="com.axelor.apps.organisation.db.Expense">
-    	<field name="statusSelect" expr="eval: 2" if="validationStatusSelect .equals('1')"/>
+    	<field name="statusSelect" expr="eval: 2"/>
     </action-record>
     
     <action-record name="action-expense-record-validate-manager" model="com.axelor.apps.organisation.db.Expense">
-    	<field name="statusSelect" expr="eval: 3" if="validationStatusSelect .equals('1')"/>
+    	<field name="statusSelect" expr="eval: 3" if="validationStatusSelect == 1"/>
     </action-record>
     
     <action-record name="action-expense-record-validate-commercial" model="com.axelor.apps.organisation.db.Expense">
@@ -143,8 +143,8 @@
     </action-validate>
     
     <action-record name="action-expense-record-validation-info" model="com.axelor.apps.organisation.db.Expense">
-    	<field name="validatedByUser" expr="eval:__user__" if="validationStatusSelect .equals('1')"/>
-    	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="validationStatusSelect .equals('1')"/>
+    	<field name="validatedByUser" expr="eval:__user__" if="validationStatusSelect == 1"/>
+    	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="validationStatusSelect == 1"/>
     </action-record>
     
     <action-record name="action-expense-record-confirm" model="com.axelor.apps.organisation.db.Expense">
