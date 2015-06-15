@@ -1,0 +1,2 @@
+name;object;canRead;canWrite;canCreate;canRemove;canExport;readCondition;readParams;writeCondition;writeParams;createCondition;createParams;removeCondition;removeParams
+perm.supplychain.all;com.axelor.apps.supplychain.db.*;true;true;true;true;true;;;;;;;;
