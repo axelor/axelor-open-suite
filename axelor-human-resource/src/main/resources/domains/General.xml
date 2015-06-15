@@ -7,6 +7,7 @@
 	<entity name="General" lang="java" cachable="true">
 		
 		<decimal name="dailyWorkHours" title="Daily work hours"/>
+		<boolean name="allowNegativeLeaveEmployees" title="Allow negative values for employee leaves"></boolean>
 
 	</entity>
 

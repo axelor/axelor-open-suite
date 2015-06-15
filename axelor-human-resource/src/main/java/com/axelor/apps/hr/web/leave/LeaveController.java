@@ -7,17 +7,24 @@ import java.util.Map;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.hr.db.Leave;
 import com.axelor.apps.hr.db.repo.LeaveRepository;
+import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
+import com.google.inject.Inject;
 
 public class LeaveController {
+	
+	@Inject
+	protected LeaveService leaveService;
+	
 	public void editLeave(ActionRequest request, ActionResponse response){
 		List<Leave> leaveList = Beans.get(LeaveRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(leaveList.isEmpty()){
@@ -152,6 +159,43 @@ public class LeaveController {
 				   .domain("self.id in ("+leaveListIdStr+")")
 				   .map());
 		}
+	}
+	
+	public void testDuration(ActionRequest request, ActionResponse response){
+		Leave leave = request.getContext().asType(Leave.class);
+		Double duration = leave.getDuration().doubleValue();
+		if(duration % 0.5 != 0){
+			response.setError(I18n.get("Invalide duration (must be a 0.5's multiple)"));
+		}
+	}
+	
+	public void computeDuration(ActionRequest request, ActionResponse response){
+		Leave leave = request.getContext().asType(Leave.class);
+		response.setValue("duration", leaveService.computeDuration(leave));
+	}
+	
+	public void manageSentLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
+		Leave leave = request.getContext().asType(Leave.class);
+		leave = Beans.get(LeaveRepository.class).find(leave.getId());
+		leaveService.manageSentLeaves(leave);
+	}
+	
+	public void manageValidLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
+		Leave leave = request.getContext().asType(Leave.class);
+		leave = Beans.get(LeaveRepository.class).find(leave.getId());
+		leaveService.manageValidLeaves(leave);
+	}
+	
+	public void manageRefuseLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
+		Leave leave = request.getContext().asType(Leave.class);
+		leave = Beans.get(LeaveRepository.class).find(leave.getId());
+		leaveService.manageRefuseLeaves(leave);
+	}
+	
+	public void manageCancelLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
+		Leave leave = request.getContext().asType(Leave.class);
+		leave = Beans.get(LeaveRepository.class).find(leave.getId());
+		leaveService.manageCancelLeaves(leave);
 	}
 	
 }

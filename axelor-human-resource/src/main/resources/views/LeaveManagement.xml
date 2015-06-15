@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="leave-management-grid" title="Leave Management" model="com.axelor.apps.hr.db.LeaveManagement" editable="true"
+		onNew="action-leave-management-record-default">
+		<field name="value" onChange="action-leave-management-record-counted"/>
+	    <field name="date"/>
+	    <field name="user"/>
+	    <field name="dateFrom"/>
+	    <field name="dateTo"/>
+	    <field name="comments"/>
+	    <field name="oldValue" hidden="true"/>
+	    <field name="counted" hidden="true"/>
+	</grid>
+
+	<form name="leave-management-form" title="Leave Management" model="com.axelor.apps.hr.db.LeaveManagement"
+		onNew="action-leave-management-record-default">
+		<panel>
+			<field name="value" onChange="action-leave-management-record-counted"/>
+		    <field name="date"/>
+		    <field name="user"/>
+		    <field name="dateFrom"/>
+		    <field name="dateTo"/>
+		    <field name="comments"/>
+		</panel>
+	</form>
+	
+	<action-record name="action-leave-management-record-default" model="com.axelor.apps.hr.db.LeaveManagement">
+		<field name="date" expr="eval: __date__"/>
+		<field name="user" expr="eval: __user__"/>
+	</action-record>
+	
+	<action-record name="action-leave-management-record-counted" model="com.axelor.apps.hr.db.LeaveManagement">
+		<field name="counted" expr="false"/>
+	</action-record>
+
+</object-views>
