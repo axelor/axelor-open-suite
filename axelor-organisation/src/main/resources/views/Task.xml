@@ -107,18 +107,18 @@
 				<panel title="Update financial information" colSpan="12" canCollapse="true" collapseIf="financialInformationUpdateList == null || financialInformationUpdateList.isEmpty()">
 					<panel-related field="financialInformationUpdateList" showTitle="false" colSpan="12"/>
 				</panel>
-		      <panel title="Initial estimated" hideIf="realEstimatedMethodSelect == 1">
+		      <panel title="Initial estimated" colSpan="12" hideIf="realEstimatedMethodSelect == 1">
 		        <panel-dashlet colSpan="12" action="action-task-view-validated-sale-order-line"/>
 		        <panel-dashlet colSpan="12" action="action-task-view-validated-purchase-order-line"/>
 		        <panel-dashlet colSpan="12" action="action-task-view-initial-estimated-financial-information-update"/>
 		      </panel>
-		      <panel title="Real estimated">
+		      <panel title="Real estimated" colSpan="12">
 		        <panel-dashlet colSpan="12" action="action-task-view-validated-purchase-order-line"/>
 		        <panel-dashlet colSpan="12" action="action-task-view-timesheet-line"/>
 		        <panel-dashlet colSpan="12" action="action-task-view-expense-line"/>
 		        <panel-dashlet colSpan="12" action="action-task-view-real-estimated-financial-information-update"/>
 		      </panel>
-		      <panel title="Real invoiced">
+		      <panel title="Real invoiced" colSpan="12">
 		        <panel-dashlet colSpan="12" action="action-task-view-customer-invoice-line"/>
 		        <panel-dashlet colSpan="12" action="action-task-view-supplier-invoice-line"/>
 		        <panel-dashlet colSpan="12" action="action-task-view-timesheet-line"/>
