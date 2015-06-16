@@ -18,7 +18,8 @@
       <boolean name="timesheetReminder" title="Timesheet reminder" />
       <boolean name="external" title="External" />
       <many-to-one name="planning" ref="com.axelor.apps.hr.db.WeeklyPlanning"/>
-      
+      <one-to-many name="leaveLineList" title="Leave List" ref="com.axelor.apps.hr.db.LeaveLine" mappedBy="employee"/>
+      <boolean name="negativeValueLeave" title="Allow Negative Value for Leaves"/>
       <string name="name" title="Name" search="contactPartner">
           
            <![CDATA[

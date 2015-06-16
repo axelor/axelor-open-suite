@@ -40,4 +40,8 @@
 		<option value="2">Afternoon</option>
 	</selection>
 	
+	<selection name="hrs.leave.reason.inject.consume.select">
+		<option value="1">Consume</option>
+		<option value="2">Inject</option>
+	</selection>
 </object-views>

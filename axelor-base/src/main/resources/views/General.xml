@@ -85,6 +85,7 @@
 				
 				<panel title="Human Resource configuration">
 					<field name="dailyWorkHours" if-module="axelor-human-resource"/>
+					<field name="allowNegativeLeaveEmployees" if-module="axelor-human-resource"/>
 				</panel>
 				
 		    </panel>

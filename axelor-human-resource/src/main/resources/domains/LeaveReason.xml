@@ -8,7 +8,9 @@
   <entity name="LeaveReason" cachable="true">
       
       <string name="leaveReason" namecolumn="true" title="Leave reason" required="true"/>
-      
+      <boolean name="manageAccumulation" title="Manage Accumulation"/>
+      <boolean name="allowNegativeValue" title="Allow Negative Value for leaves"/>
+      <boolean name="allowInjection" title="Allow Injection"/>
   </entity>
   
 </domain-models>

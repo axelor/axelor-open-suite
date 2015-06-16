@@ -15,20 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.hr.exception;
 
-import java.math.BigDecimal;
+/**
+ * Interface of Exceptions. Enum all exception of axelor-account.
+ *
+ * @author dubaux
+ *
+ */
+public interface IExceptionMessage {
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
-import com.axelor.apps.base.db.Duration;
-import com.axelor.db.Repository;
-
-
-public interface DurationService extends Repository<Duration>{
+	static final String LEAVE_USER_EMPLOYEE = /*$$(*/ "Merci de créer un employé pour l'utilisateur %s"/*)*/ ;
+	static final String LEAVE_LINE = /*$$(*/ "il n'y a pas de ligne de créée sur l'employé %s pour la raison %s"/*)*/ ;
+	static final String LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE = /*$$(*/ "L'employé %s n'est pas autorisé à prendre des congés en avance"/*)*/ ;
+	static final String LEAVE_ALLOW_NEGATIVE_VALUE_REASON = /*$$(*/ "Il n'est pas possible de prendre des congés en avance pour le motif %s"/*)*/ ;
 	
-	
-	public LocalDate computeDuration(Duration duration, LocalDate date);
-	public BigDecimal computeDurationInDays(DateTime startDate, DateTime endDate);
 }

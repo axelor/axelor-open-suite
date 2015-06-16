@@ -4,11 +4,17 @@
 
 	<grid name="leave-reason-grid" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
 		 <field name="leaveReason" />
+		 <field name="manageAccumulation" />
+		 <field name="allowNegativeValue" />
+		 <field name="allowInjection" />
 	</grid>
 	
 	<form name="leave-reason-form" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
 		<panel>
 			<field name="leaveReason" />
+			<field name="manageAccumulation" />
+			<field name="allowNegativeValue" showIf="manageAccumulation"/>
+			<field name="allowInjection" showIf="manageAccumulation"/>
 		</panel>
 	</form>
 	

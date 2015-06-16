@@ -20,21 +20,22 @@
 		 <field name="company"/>
 		 <field name="user" />
 		 <field name="requestDate" />
-		 <field name="dateFrom" />
-		 <field name="startOnSelect" onChange="action-leave-validate-dates"/>
+		 <field name="dateFrom" onChange="action-leave-validate-dates"/>
+		 <field name="startOnSelect" />
 		 <field name="dateTo" onChange="action-leave-validate-dates"/>
 		 <field name="endOnSelect" />
 		 <field name="statusSelect" />
 	</grid>
 	
 	<form name="leave-form" title="Leave" model="com.axelor.apps.hr.db.Leave"
-	    onNew="action-leave-record-default,action-leave-attrs-buttons" onLoad="action-leave-attrs-buttons">
+	    onNew="action-leave-record-default,action-leave-attrs-buttons" onLoad="action-leave-attrs-buttons"
+	    onSave="action-leave-validate-dates-on-save">
 
 	    <panel sidebar="true" title="Actions" stacked="true">
-	    	<button name="sendLeave" colSpan="4" title="Send Leave" onClick="action-leave-record-status-confirmed, save,action-leave-attrs-buttons" readonlyIf="statusSelect &gt; 1"/>
-	    	<button name="validButton" onClick="action-leave-record-valid,save,action-leave-attrs-buttons" title="Valid"/>
-	    	<button name="refuseButton" onClick="action-leave-record-refuse,save,action-leave-attrs-buttons" title="Refuse"/>
-	    	<button name="cancelButton" onClick="action-leave-record-cancel,save,action-leave-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
+	    	<button name="sendLeave" colSpan="4" title="Send Leave" onClick="save, action-leave-method-manage-sent-leaves,action-leave-record-status-confirmed, save,action-leave-attrs-buttons" readonlyIf="statusSelect &gt; 1"/>
+	    	<button name="validButton" onClick="save,action-leave-method-manage-valid-leaves,action-leave-record-valid,save,action-leave-attrs-buttons" title="Valid"/>
+	    	<button name="refuseButton" onClick="save,action-leave-method-manage-refuse-leaves,action-leave-record-refuse,save,action-leave-attrs-buttons" title="Refuse"/>
+	    	<button name="cancelButton" onClick="save,action-leave-method-manage-cancel-leaves,action-leave-record-cancel,save,action-leave-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-leave-record-draft,save,action-leave-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
 		<panel>
@@ -42,12 +43,13 @@
 			<field name="company"/>
 			<field name="user" />
 			<field name="requestDate" />
-			<field name="dateFrom" />
-			<field name="startOnSelect" />
-			<field name="dateTo" />
-			<field name="endOnSelect" />
-			<field name="duration" />
-			<field name="reason" canNew="true" />
+			<field name="dateFrom" onChange="action-leave-validate-dates,action-leave-methode-compute-duration"/>
+			<field name="startOnSelect" onChange="action-leave-validate-dates,action-leave-methode-compute-duration"/>
+			<field name="dateTo" onChange="action-leave-validate-dates,action-leave-methode-compute-duration"/>
+			<field name="endOnSelect" onChange="action-leave-validate-dates,action-leave-methode-compute-duration"/>
+			<field name="duration" onChange="action-leave-methode-duration"/>
+			<field name="reason" canNew="true" required="true" onChange="action-leave-attrs-select"/>
+			<field name="injectConsumeSelect" hidden="true"/>
 			<field name="comments" colSpan="12" />
 		</panel>
 	</form>
@@ -88,8 +90,45 @@
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager))"/>
 	</action-attrs>
 	
+	<action-attrs name="action-leave-attrs-select">
+		<attribute name="hidden" for="injectConsumeSelect" expr="!reason.manageAccumulation"/>
+		<attribute name="readonly" for="injectConsumeSelect" expr="!reason.allowInjection"/>
+	</action-attrs>
+	
 	<action-validate name="action-leave-validate-dates">
-		<error message="Invalide dates" if="(!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager) &amp;&amp; dateFrom &lt; __date__) || (dateTo &lt; dateFrom)"/>
+		<error message="Invalide dates" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager) &amp;&amp; dateFrom &lt; __date__) || (dateTo &lt; dateFrom) || (dateTo == dateFrom &amp;&amp; startOnSelect &gt; endOnSelect)) &amp;&amp; dateFrom != null || dateTo != null)"/>
 	</action-validate>
+	
+	<action-validate name="action-leave-validate-dates-on-save">
+		<error message="Invalide dates" if="(!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager) &amp;&amp; dateFrom &lt; __date__) || (dateTo &lt; dateFrom) || (dateTo == dateFrom &amp;&amp; startOnSelect &gt; endOnSelect))"/>
+	</action-validate>
+	
+	<action-validate name="action-leave-validate-duration">
+		<error message="Invalide duration (must be a 0.5's multiple)" if="call:com.axelor.apps.hr.web.leave.LeaveController:testDuration()"/>
+	</action-validate>
+	
+	<action-method name="action-leave-methode-duration">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="testDuration"/>
+	</action-method>
+	
+	<action-method name="action-leave-methode-compute-duration">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="computeDuration"/>
+	</action-method>
+	
+	<action-method name="action-leave-method-manage-sent-leaves">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageSentLeaves" if="reason.manageAccumulation"/>
+	</action-method>
+	
+	<action-method name="action-leave-method-manage-valid-leaves">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageValidLeaves" if="reason.manageAccumulation"/>
+	</action-method>
+	
+	<action-method name="action-leave-method-manage-refuse-leaves">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageRefuseLeaves" if="reason.manageAccumulation"/>
+	</action-method>
+	
+	<action-method name="action-leave-method-manage-cancel-leaves">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageCancelLeaves" if="reason.manageAccumulation"/>
+	</action-method>
 	
 </object-views>

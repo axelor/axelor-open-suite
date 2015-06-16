@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="leave-line-grid" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine">
+		<field name="reason" />
+	    <field name="quantity"/>
+	    <field name="daysToValidate"/>
+	</grid>
+
+	<form name="leave-line-form" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine">
+		<panel>
+			<field name="reason" />
+		    <field name="quantity" readonly="true"/>
+		    <field name="daysToValidate" readonly="true"/>
+	    </panel>
+	    <panel-related field="leaveManagementList" editable="true" grid-view="leave-management-grid" form-view="leave-management-form" onChange="action-leave-line-method-compute-quantity-available"/>
+	</form>
+	
+	<action-method name="action-leave-line-method-compute-quantity-available">
+		<call class="com.axelor.apps.hr.web.leave.management.LeaveManagementController" method="computeQuantityAvailable"/>
+	</action-method>
+
+</object-views>

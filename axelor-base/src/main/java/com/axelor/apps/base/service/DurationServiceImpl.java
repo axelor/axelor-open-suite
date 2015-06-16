@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.base.service;
 
+import java.math.BigDecimal;
+
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Duration;
@@ -46,6 +50,10 @@ public class DurationServiceImpl extends DurationRepository implements DurationS
 		}
 		
 		
+	}
+	
+	public BigDecimal computeDurationInDays(DateTime startDate, DateTime endDate){
+		return new BigDecimal(new Interval(startDate,endDate).toDuration().toStandardDays().getDays());
 	}
 	
 }

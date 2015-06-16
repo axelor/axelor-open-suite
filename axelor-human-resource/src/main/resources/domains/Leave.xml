@@ -18,7 +18,20 @@
       <many-to-one name="reason" ref="com.axelor.apps.hr.db.LeaveReason" title="Reason" />
       <string name="comments" title="Comments" large="true"/>
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
-	 	      
+	  <integer name="injectConsumeSelect" title="Inject/Consume" selection="hrs.leave.reason.inject.consume.select" default="1"/>
+	  
+	  <extra-code>
+   		<![CDATA[
+   			public static final Integer SELECT_CONSUME = 1;
+   			public static final Integer SELECT_INJECT = 2;
+   			public static final Integer STATUS_SELECT_DRAFT = 1;
+   			public static final Integer STATUS_SELECT_AWAITING_VALIDATION = 2;
+   			public static final Integer STATUS_SELECT_VALIDATED = 3;
+   			public static final Integer STATUS_SELECT_REFUSED = 4;
+   			public static final Integer STATUS_SELECT_CANCELED = 5;
+
+   		]]>
+   	</extra-code>
   </entity>
   
 </domain-models>
