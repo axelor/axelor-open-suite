@@ -207,7 +207,21 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	public String getDraftSequence(Long saleOrderId){
 		return "*"+saleOrderId.toString();
 	}
-
+	
+	public SaleOrder createSaleOrder(Company company) throws AxelorException{
+		SaleOrder saleOrder = new SaleOrder();
+		saleOrder.setCreationDate(GeneralService.getTodayDate());
+		if(company != null){
+			saleOrder.setCompany(company);
+			saleOrder.setSaleOrderSeq(this.getSequence(company));
+			saleOrder.setCurrency(company.getCurrency());
+		}
+		saleOrder.setSalemanUser(AuthUtils.getUser());
+		saleOrder.setTeam(saleOrder.getSalemanUser().getActiveTeam());
+		saleOrder.setStatusSelect(ISaleOrder.STATUS_DRAFT);
+		this.computeEndOfValidityDate(saleOrder);
+		return saleOrder;
+	}
 
 	@Override
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
@@ -325,7 +339,6 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		return saleOrder;
 		
 	}
-	
 
 }
 

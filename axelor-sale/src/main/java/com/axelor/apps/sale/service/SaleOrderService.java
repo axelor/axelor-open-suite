@@ -87,7 +87,9 @@ public interface SaleOrderService extends Repository<SaleOrder>{
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner) throws AxelorException;
-
+	
+	public SaleOrder createSaleOrder(Company company) throws AxelorException;
+	
 	public void cancelSaleOrder(SaleOrder saleOrder);
 
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;

@@ -30,4 +30,16 @@
 	    <field name="businessProject" expr="eval:true"/>
 	</action-record>
 	
+	<form name="sale-order-form-business-wizard" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
+		onNew="action-group-sale-saleorder-onnew,action-business-folder-method-create-order-from-folder"
+		onLoad="action-group-sale-saleorder-onload"
+		onSave="save,action-method-set-sale-order-draft-sequence,save">
+		
+		<panel-include view="sale-order-form"/>
+	</form>
+	
+	<action-method name="action-business-folder-method-create-order-from-folder">
+		<call class="com.axelor.apps.business.project.web.BusinessFolderController" method="createSaleOrder"/>
+	</action-method>
+	
 </object-views>	

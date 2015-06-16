@@ -49,7 +49,18 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceStockImpl {
 
 		return saleOrder;
 	}
-
+	
+	public SaleOrder getClientInformations(SaleOrder saleOrder){
+		Partner client = saleOrder.getClientPartner();
+		if(client != null){
+			saleOrder.setPaymentCondition(client.getPaymentCondition());
+			saleOrder.setPaymentMode(client.getPaymentMode());
+			saleOrder.setMainInvoicingAddress(client.getMainInvoicingAddress());
+			saleOrder.setDeliveryAddress(client.getDeliveryAddress());
+			saleOrder.setPriceList(client.getSalePriceList());
+		}
+		return saleOrder;
+	}
 }
 
 
