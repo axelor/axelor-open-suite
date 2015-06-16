@@ -52,8 +52,7 @@
 	      <button name="submit" title="Submit" showIf="statusSelect == 1" colSpan="12" onClick="action-group-organisation-expense-submit-click"/>
 	      <button name="validateManager" title="Validate" showIf="statusSelect == 2" colSpan="12" onClick="action-group-organisation-expense-validatemanager-click"/>
 	      <button name="refuse" title="Refuse" showIf="statusSelect == 2" colSpan="12" onClick="save,action-expense-record-refuse"/>
-	      <button name="validateCommercial" title="Validate" showIf="statusSelect == 3" colSpan="12" onClick="action-group-organisation-expense-validatecommercial-click"/>
-	      <button name="confirm" title="Confirm" showIf="statusSelect == 4" colSpan="12" onClick="action-group-organisation-expense-confirm-click"/>
+	      <button name="confirm" title="Confirm" showIf="statusSelect == 3" colSpan="12" onClick="action-group-organisation-expense-confirm-click"/>
 	      <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="12" onClick="action-group-organisation-expense-draft-click"/>
 	    </panel>
 	    <panel readonly="true" colSpan="12">
@@ -128,10 +127,6 @@
     
     <action-record name="action-expense-record-validate-manager" model="com.axelor.apps.organisation.db.Expense">
     	<field name="statusSelect" expr="eval: 3" if="validationStatusSelect == 1"/>
-    </action-record>
-    
-    <action-record name="action-expense-record-validate-commercial" model="com.axelor.apps.organisation.db.Expense">
-    	<field name="statusSelect" expr="eval: 4"/>
     </action-record>
     
     <action-record name="action-expense-on-change-date" model="com.axelor.apps.organisation.db.Expense">
