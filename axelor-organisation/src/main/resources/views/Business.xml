@@ -113,6 +113,7 @@
 			<button name="transformToProject" title="Transform to project" showIf="isProject == false" colSpan="12" onClick="action-business-project-record-transform-in-project,save"/>
 			<button name="updateTaskProgression" title="Update task progress" colSpan="12" onClick="action-project-method-update-task-progress"/>
 			<button name="createProductionOrder" title="Create production order" colSpan="12" onClick="save,action-product-view-create-production-order"/>
+			<button name="generateDraftInvoice" title="Generate draft invoice" colSpan="12" onClick="action-group-organisation-generate-draftinvoice-click"/>
 		</panel>  
 	</form>
 	
