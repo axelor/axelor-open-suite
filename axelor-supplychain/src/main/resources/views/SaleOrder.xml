@@ -108,7 +108,7 @@
 		<view type="form" name="invoice-form" />
 		<domain>self.saleOrder.id = :saleOrderId OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineIdList)))</domain>
 		<context name="saleOrderId" expr="eval: id" />
-		<context name="saleOrderLineIdList" expr="eval: (saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
+		<context name="saleOrderLineIdList" expr="eval: (id != null &amp;&amp; saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
     </action-view>
 	
 </object-views>
