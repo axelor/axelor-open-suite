@@ -91,13 +91,6 @@
     	<action name="save"/>
     </action-group>
     
-    <action-group name="action-group-organisation-expense-validatecommercial-click">
-    	<action name="save"/>
-    	<action name="action-expense-record-validate-commercial"/>
-    	<action name="action-expense-record-validation-info"/>
-    	<action name="save"/>
-    </action-group>
-    
     <action-group name="action-group-organisation-expense-confirm-click">
     	<action name="save"/>
     	<action name="action-expense-record-confirm"/>
