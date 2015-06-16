@@ -171,7 +171,7 @@ public class TargetService extends TargetRepository{
 			q.setParameter(2, fromDateTime);
 			q.setParameter(3, toDateTime);
 					
-			BigDecimal opportunityAmountWon = (BigDecimal) q.getResultList();
+			BigDecimal opportunityAmountWon = (BigDecimal) q.getSingleResult();
 			
 			Long callEmittedNumber = eventService.all().filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
 					1, user, fromDateTime, toDateTime).count();
