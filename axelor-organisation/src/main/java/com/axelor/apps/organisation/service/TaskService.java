@@ -458,7 +458,7 @@ public class TaskService extends TaskRepository{
 		if(task.getPlanningLineList() == null)
 			return planningLinesAmount;
 		for(PlanningLine planningLine : task.getPlanningLineList())  {
-			if(startDate == null || planningLine.getFromDateTime().isAfter(startDate))  {
+			if(startDate == null || planningLine.getFromDateTime().toLocalDate().isAfter(startDate))  {
 				Employee employee = planningLine.getEmployee();
 				Product profil = planningLine.getProduct();
 				if(employee != null)  {
