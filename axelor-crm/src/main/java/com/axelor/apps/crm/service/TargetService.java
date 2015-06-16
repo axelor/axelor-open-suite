@@ -134,7 +134,7 @@ public class TargetService extends TargetRepository{
 		LocalDateTime toDateTime = new LocalDateTime(toDate.getYear(), toDate.getMonthOfYear(), toDate.getDayOfMonth(), 23, 59);
 		
 		if(user != null)  {
-			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.user = ?1 AND op.saleStageSelect = 9 AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
+			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.user = ?1 AND op.salesStageSelect = 9 AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
 			q.setParameter(1, user);
 			q.setParameter(2, fromDateTime);
 			q.setParameter(3, toDateTime);
@@ -159,14 +159,14 @@ public class TargetService extends TargetRepository{
 			
 			target.setOpportunityCreatedNumber(opportunityCreatedNumber.intValue());
 			
-			Long opportunityCreatedWon = opportunityService.all().filter("self.user = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.saleStageSelect = 9",
+			Long opportunityCreatedWon = opportunityService.all().filter("self.user = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
 					user, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());
 		}
 		else if(team != null)  {
 			
-			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.team = ?1 AND op.saleStageSelect = 9  AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
+			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.team = ?1 AND op.salesStageSelect = 9  AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
 			q.setParameter(1, team);
 			q.setParameter(2, fromDateTime);
 			q.setParameter(3, toDateTime);
@@ -191,7 +191,7 @@ public class TargetService extends TargetRepository{
 			
 			target.setOpportunityCreatedNumber(opportunityCreatedNumber.intValue());
 			
-			Long opportunityCreatedWon = opportunityService.all().filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.saleStageSelect = 9",
+			Long opportunityCreatedWon = opportunityService.all().filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
 					user, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());

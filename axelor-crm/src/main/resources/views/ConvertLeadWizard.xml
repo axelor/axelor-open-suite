@@ -126,7 +126,7 @@
 					    <spacer/>
 					    <label title="Follow-up" css="label-bold"/>
 					  	<spacer/>
-					    <field name="saleStageSelect" colSpan="4"/>
+					    <field name="salesStageSelect" colSpan="4"/>
 				        <field name="source" colSpan="4"/>
 				        <field name="expectedCloseDate" colSpan="4"/>
 				        <field name="nextStep" colSpan="4"/>
@@ -483,7 +483,7 @@
 	      <field name="opportunityType" widget="SuggestBox"/>
 	    </panel>
 	    <panel title="Follow-up" colSpan="12">
-	      <field name="saleStageSelect"/>
+	      <field name="salesStageSelect"/>
 	      <field name="source"/>
 	      <field name="expectedCloseDate"/>
 	      <field name="nextStep"/>
