@@ -7,6 +7,14 @@
 
   <entity name="SaleOrderLine" lang="java">
   
+  	<string name="fullName" namecolumn="true">
+	  	<![CDATA[
+	  		if(saleOrder == null){
+	  			return " ";
+	  		}
+	  		return saleOrder.getSaleOrderSeq() + "-" + productName;
+	  	]]>
+  	</string>
   	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order"/>
   	<integer name="sequence" title="Seq."/>
   	<integer name="importId" />
