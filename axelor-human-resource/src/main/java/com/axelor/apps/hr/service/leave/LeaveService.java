@@ -9,8 +9,13 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.MessageServiceImpl;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -21,6 +26,12 @@ public class LeaveService extends LeaveRepository{
 	
 	@Inject
 	protected LeaveLineRepository leaveLineRepo;
+	
+	@Inject 
+	protected MessageServiceImpl messageServiceImpl;
+	
+	@Inject 
+	protected TemplateMessageService templateMessageService;
 	
 	public BigDecimal computeDuration(Leave leave){
 		if(leave.getDateFrom()!=null && leave.getDateTo()!=null){
@@ -131,5 +142,39 @@ public class LeaveService extends LeaveRepository{
 		}
 		leaveLineRepo.save(leaveLine);
 		
+	}
+	
+	public void sendEmailToManager(Leave leave){
+		Template template = leave.getUser().getActiveCompany().getHRConfig().getSentLeaveTemplate();
+		if(template!=null){
+			sendEmailTemplate(leave,template);
+		}
+	}
+	
+	public void sendEmailValidationToApplicant(Leave leave){
+		Template template = leave.getUser().getActiveCompany().getHRConfig().getValidatedLeaveTemplate();
+		if(template!=null){
+			sendEmailTemplate(leave,template);
+		}
+	}
+	
+	public void sendEmailRefusalToApplicant(Leave leave){
+		Template template = leave.getUser().getActiveCompany().getHRConfig().getRefusedLeaveTemplate();
+		if(template!=null){
+			sendEmailTemplate(leave,template);
+		}
+	}
+	
+	public void sendEmailTemplate(Leave leave, Template template){
+		String model = template.getMetaModel().getFullName();
+		String tag = template.getMetaModel().getName();
+		Message message = new Message();
+		try{
+			message = templateMessageService.generateMessage(leave.getId(), model, tag, template);
+			message = messageServiceImpl.sendByEmail(message);
+		}
+		catch(Exception e){
+			TraceBackService.trace(new Exception(e));
+		}
 	}
 }

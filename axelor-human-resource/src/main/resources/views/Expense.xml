@@ -43,6 +43,12 @@
 			<field name="move" showIf="ventilated"/>
 		</panel>
 		<panel-related field="expenseLineList" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true"/>
+		<panel>
+			<field name="validatedBy"/>
+			<field name="refusedBy"/>
+			<field name="validationDate"/>
+			<field name="refusalDate"/>
+		</panel>
 		<panel sidebar="true" readonly="true"  colSpan="4">  
 	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
 	          <viewer>
@@ -105,10 +111,14 @@
 	
 	<action-record name="action-expense-record-valid" model="com.axelor.apps.hr.db.Expense">
 	    <field name="statusSelect" expr="3"/>
+	    <field name="validatedBy" expr="eval: __user__"/>
+	    <field name="validationDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-record name="action-expense-record-refuse" model="com.axelor.apps.hr.db.Expense">
 	    <field name="statusSelect" expr="4"/>
+	    <field name="refusedBy" expr="eval: __user__"/>
+	    <field name="refusalDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-record name="action-expense-record-cancel" model="com.axelor.apps.hr.db.Expense">

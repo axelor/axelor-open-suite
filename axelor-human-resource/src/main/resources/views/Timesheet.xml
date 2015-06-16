@@ -47,6 +47,12 @@
 			<button name="generateLines" title="Generate lines" onClick="save,com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines"/>
 		</panel>
 		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form"/>
+		<panel>
+			<field name="validatedBy"/>
+			<field name="refusedBy"/>
+			<field name="validationDate"/>
+			<field name="refusalDate"/>
+		</panel>
 	</form>
 	
 	<form name="popup-timesheet-form" title="Select the timesheet you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
@@ -70,10 +76,14 @@
 	
 	<action-record name="action-timesheet-record-valid" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="statusSelect" expr="3"/>
+	    <field name="validatedBy" expr="eval: __user__"/>
+	    <field name="validationDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-record-refuse" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="statusSelect" expr="4"/>
+	    <field name="refusedBy" expr="eval: __user__"/>
+	    <field name="refusalDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-record-cancel" model="com.axelor.apps.hr.db.Timesheet">

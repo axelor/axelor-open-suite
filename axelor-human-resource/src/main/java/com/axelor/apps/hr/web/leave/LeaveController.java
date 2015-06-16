@@ -198,4 +198,33 @@ public class LeaveController {
 		leaveService.manageCancelLeaves(leave);
 	}
 	
+	public void sendEmailToManager(ActionRequest request, ActionResponse response){
+		Leave leave = request.getContext().asType(Leave.class);
+		User manager = leave.getUser().getEmployee().getManager();
+		if(manager!=null){
+			leaveService.sendEmailToManager(leave);
+			String message = "Email sent to";
+			response.setFlash(I18n.get(message)+" "+manager.getFullName());
+		}
+	}
+	
+	public void sendEmailValidationToApplicant(ActionRequest request, ActionResponse response){
+		Leave leave = request.getContext().asType(Leave.class);
+		User manager = leave.getUser().getEmployee().getManager();
+		if(manager!=null){
+			leaveService.sendEmailValidationToApplicant(leave);
+			String message = "Email sent to";
+			response.setFlash(I18n.get(message)+" "+leave.getUser().getFullName());
+		}
+	}
+	
+	public void sendEmailRefusalToApplicant(ActionRequest request, ActionResponse response){
+		Leave leave = request.getContext().asType(Leave.class);
+		User manager = leave.getUser().getEmployee().getManager();
+		if(manager!=null){
+			leaveService.sendEmailRefusalToApplicant(leave);
+			String message = "Email sent to";
+			response.setFlash(I18n.get(message)+" "+leave.getUser().getFullName());
+		}
+	}
 }

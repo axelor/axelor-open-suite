@@ -32,9 +32,9 @@
 	    onSave="action-leave-validate-dates-on-save">
 
 	    <panel sidebar="true" title="Actions" stacked="true">
-	    	<button name="sendLeave" colSpan="4" title="Send Leave" onClick="save, action-leave-method-manage-sent-leaves,action-leave-record-status-confirmed, save,action-leave-attrs-buttons" readonlyIf="statusSelect &gt; 1"/>
-	    	<button name="validButton" onClick="save,action-leave-method-manage-valid-leaves,action-leave-record-valid,save,action-leave-attrs-buttons" title="Valid"/>
-	    	<button name="refuseButton" onClick="save,action-leave-method-manage-refuse-leaves,action-leave-record-refuse,save,action-leave-attrs-buttons" title="Refuse"/>
+	    	<button name="sendLeave" colSpan="4" title="Send Leave" onClick="save, action-leave-method-manage-sent-leaves,action-leave-record-status-confirmed, save,action-leave-attrs-buttons,action-leave-method-send-mail-leave-sent" readonlyIf="statusSelect &gt; 1"/>
+	    	<button name="validButton" onClick="save,action-leave-method-manage-valid-leaves,action-leave-record-valid,save,action-leave-attrs-buttons,action-leave-method-send-mail-leave-validated" title="Valid"/>
+	    	<button name="refuseButton" onClick="save,action-leave-method-manage-refuse-leaves,action-leave-record-refuse,save,action-leave-attrs-buttons,action-leave-method-send-mail-leave-refused" title="Refuse"/>
 	    	<button name="cancelButton" onClick="save,action-leave-method-manage-cancel-leaves,action-leave-record-cancel,save,action-leave-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-leave-record-draft,save,action-leave-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
@@ -51,6 +51,12 @@
 			<field name="reason" canNew="true" required="true" onChange="action-leave-attrs-select"/>
 			<field name="injectConsumeSelect" hidden="true"/>
 			<field name="comments" colSpan="12" />
+		</panel>
+		<panel>
+			<field name="validatedBy"/>
+			<field name="refusedBy"/>
+			<field name="validationDate"/>
+			<field name="refusalDate"/>
 		</panel>
 	</form>
 	
@@ -71,10 +77,14 @@
 	
 	<action-record name="action-leave-record-valid" model="com.axelor.apps.hr.db.Leave">
 	    <field name="statusSelect" expr="3"/>
+	    <field name="validatedBy" expr="eval: __user__"/>
+	    <field name="validationDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-record name="action-leave-record-refuse" model="com.axelor.apps.hr.db.Leave">
 	    <field name="statusSelect" expr="4"/>
+	    <field name="refusedBy" expr="eval: __user__"/>
+	    <field name="refusalDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-record name="action-leave-record-cancel" model="com.axelor.apps.hr.db.Leave">
@@ -129,6 +139,18 @@
 	
 	<action-method name="action-leave-method-manage-cancel-leaves">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageCancelLeaves" if="reason.manageAccumulation"/>
+	</action-method>
+	
+	<action-method name="action-leave-method-send-mail-leave-sent">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="sendEmailToManager"/>
+	</action-method>
+	
+	<action-method name="action-leave-method-send-mail-leave-validated">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="sendEmailValidationToApplicant"/>
+	</action-method>
+	
+	<action-method name="action-leave-method-send-mail-leave-refused">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="sendEmailRefusalToApplicant"/>
 	</action-method>
 	
 </object-views>

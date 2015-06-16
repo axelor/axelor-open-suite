@@ -133,5 +133,14 @@
 		<context name="_isModel" expr="false"/>
 	</action-view>
 	
+	<menuitem name="admin-root-conf-hr-config" parent="admin-root-conf"
+		title="Human Resources configurations" action="admin.root.conf.hr.config" icon="img/Other/parameter_59px.png"/>
+		
+	<action-view name="admin.root.conf.hr.config" title="Human Resources configurations"
+		model="com.axelor.apps.hr.db.HRConfig" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
 	
 </object-views>

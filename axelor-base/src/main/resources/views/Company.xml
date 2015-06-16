@@ -30,6 +30,7 @@
 	    	<button name="purchaseConfigButton" title="Purchase config" width="100%" colSpan="6" onClick="action-company-view-purchase-config" if-module="axelor-purchase"/>
 	    	<button name="productionConfigButton" title="Production config" width="100%" colSpan="6" onClick="action-company-view-production-config" if-module="axelor-production"/>
 	    	<button name="organisationConfigButton" title="Organisation config" width="100%" colSpan="6" onClick="action-company-view-organisation-config" if-module="axelor-organisation"/>
+    		<button name="hrConfigButton" title="Human Resources config" width="100%" colSpan="6" onClick="action-company-view-hr-config" if-module="axelor-human-resource"/>
     	</panel>
 	  
 	  	<panel title="Notes" showIf="$popup()" readonly="true">
@@ -89,6 +90,12 @@
     <action-view name="action-company-view-organisation-config" title="Organisation config" model="com.axelor.apps.organisation.db.OrganisationConfig">
     	<view type="form" name="organisation-config-form"/>
     	<context name="_showRecord" expr="eval: organisationConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
+    
+    <action-view name="action-company-view-hr-config" title="Human Resource config" model="com.axelor.apps.hr.db.HRConfig">
+    	<view type="form" name="hr-config-form"/>
+    	<context name="_showRecord" expr="eval: hRConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     

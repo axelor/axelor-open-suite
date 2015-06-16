@@ -19,6 +19,10 @@
       <decimal name="logTime" title="Duration(by day)"/>
       <many-to-one name="activity" ref="com.axelor.apps.hr.db.TimeActivity" title="Activity"/>
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
+      <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated" readonly="true"/>
+      <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
+      <date name="validationDate" title="Validation Date" readonly="true"  />
+      <date name="refusalDate" title="Refusal Date" readonly="true"  />
       
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

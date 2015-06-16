@@ -19,6 +19,10 @@
       <string name="comments" title="Comments" large="true"/>
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
 	  <integer name="injectConsumeSelect" title="Inject/Consume" selection="hrs.leave.reason.inject.consume.select" default="1"/>
+	  <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated" readonly="true"/>
+      <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
+      <date name="validationDate" title="Validation Date" readonly="true"  />
+      <date name="refusalDate" title="Refusal Date" readonly="true"  />
 	  
 	  <extra-code>
    		<![CDATA[
