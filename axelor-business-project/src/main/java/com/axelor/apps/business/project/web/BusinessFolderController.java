@@ -18,7 +18,7 @@ public class BusinessFolderController extends BusinessFolderRepository{
 	public void createSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException{
 		BusinessFolder businessFolder = this.find(Long.parseLong(request.getContext().get("_idFolder").toString()));
 		SaleOrder saleOrder = null;
-		if(businessFolder.getTemplate() == null){
+		if(businessFolder.getTemplateSaleOrder() == null){
 			saleOrder = businessFolderService.createSaleOrder(businessFolder);
 		}
 		else{
