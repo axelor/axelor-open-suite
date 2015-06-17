@@ -10,6 +10,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -26,7 +27,6 @@ import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
-import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -36,34 +36,34 @@ import com.google.inject.persist.Transactional;
 public class ValidateSupplyChain {
 	@Inject
 	InventoryService inventoryService;
-	
+
 	@Inject
 	PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
-	
+
 	@Inject
 	InvoiceService invoiceService;
-	
+
 	@Inject
 	SaleOrderServiceStockImpl saleOrderServiceStockImpl;
-	
+
 	@Inject
 	SaleOrderLineService saleOrderLineService;
-	
+
 	@Inject
 	private StockMoveRepository stockMoveRepo;
-	
+
 	@Inject
 	private InventoryRepository inventoryRepo;
-	
+
 	@Inject
 	private PurchaseOrderRepository purchaseOrderRepo;
-	
+
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
-	
+
 //	@Inject
 //	ProductionOrderSaleOrderService productionOrderSaleOrderService;
-	
+
 	public Object validateSupplyChain(Object bean, Map values) {
 		String objectQuery = "(SELECT 'inv' as type,id,datet as date from stock_inventory) " +
 		"UNION ALL(SELECT 'so' as type,id,confirmation_date as date from sale_sale_order) " +
@@ -81,7 +81,7 @@ public class ValidateSupplyChain {
 		}
 		return bean;
 	}
-	
+
 	@Transactional
 	void validateInventory(Long inventoryId){
 		try{
@@ -95,7 +95,7 @@ public class ValidateSupplyChain {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Transactional
 	void validatePurchaseOrder(Long poId){
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
@@ -129,59 +129,46 @@ public class ValidateSupplyChain {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Transactional
 	void validateSaleOrder(Long soId){
 		SaleOrderService saleOrderService = Beans.get(SaleOrderService.class);
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-		
+
 		try{
 			SaleOrder saleOrder = saleOrderRepo.find(soId);
 			for(SaleOrderLine line : saleOrder.getSaleOrderLineList())
 				line.setTaxLine(saleOrderLineService.getTaxLine(saleOrder, line));
 			saleOrderService.computeSaleOrder(saleOrder);
-			if(saleOrder.getStatusSelect() == 3){
+			if(saleOrder.getStatusSelect() == ISaleOrder.STATUS_ORDER_CONFIRMED){
 				//taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation of tasks in project module
 				saleOrderServiceStockImpl.createStocksMovesFromSaleOrder(saleOrder);
 				Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrder);
 //				productionOrderSaleOrderService.generateProductionOrder(saleOrder);
 				saleOrder.setClientPartner(saleOrderService.validateCustomer(saleOrder));
-				if(saleOrder.getInvoicingTypeSelect() == 1 || saleOrder.getInvoicingTypeSelect() == 5){
-					Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generatePerOrderInvoice(saleOrder);
-					if(saleOrder.getConfirmationDate()!=null){
-						invoice.setInvoiceDate(saleOrder.getConfirmationDate());
-					}
-					else{
-						invoice.setInvoiceDate(new LocalDate());
-					}
-					invoiceService.compute(invoice);
-					invoiceService.validate(invoice);
-					invoiceService.ventilate(invoice);
+				//Generate invoice from sale order
+				Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateInvoice(saleOrder);
+				if(saleOrder.getConfirmationDate()!=null){
+					invoice.setInvoiceDate(saleOrder.getConfirmationDate());
 				}
+				else{
+					invoice.setInvoiceDate(new LocalDate());
+				}
+				invoiceService.compute(invoice);
+				invoiceService.validate(invoice);
+				invoiceService.ventilate(invoice);
 				StockMove stockMove = stockMoveRepo.all().filter("saleOrder = ?1",saleOrder).fetchOne();
 				if(stockMove != null && stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 					stockMoveService.copyQtyToRealQty(stockMove);
 					stockMoveService.validate(stockMove);
 					stockMove.setRealDate(saleOrder.getConfirmationDate());
-					if(saleOrder.getInvoicingTypeSelect() == 4){
-						Invoice invoice = Beans.get(StockMoveInvoiceService.class).createInvoiceFromSaleOrder(stockMove, saleOrder);
-						if(saleOrder.getConfirmationDate()!=null){
-							invoice.setInvoiceDate(saleOrder.getConfirmationDate());
-						}
-						else{
-							invoice.setInvoiceDate(new LocalDate());
-						}
-						invoiceService.compute(invoice);
-						invoiceService.validate(invoice);
-						invoiceService.ventilate(invoice);
-					}
 				}
 			}
 			saleOrderRepo.save(saleOrder);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }

@@ -20,9 +20,9 @@ package com.axelor.apps.supplychain.service;
 import java.util.ArrayList;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.sale.db.ISaleOrder;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.IExceptionMessage;
@@ -124,7 +124,8 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
 		Product product = saleOrderLine.getProduct();
 
-		if(this.isStockMoveProduct(saleOrderLine)) {
+		if(this.isStockMoveProduct(saleOrderLine)
+				&& !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
 
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
 					product,
@@ -148,7 +149,8 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
 	public void checkStockMoveProduct(SaleOrder saleOrder) throws AxelorException  {
 
-		if(saleOrder.getSaleOrderLineList() != null && this.isSaleOrderInvoicingMethod(saleOrder))  {
+		if(saleOrder.getSaleOrderLineList() != null
+				&& GeneralService.getGeneral().getCustomerStockMoveManagement())  {
 			for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList())  {
 
 				this.checkStockMoveProduct(saleOrderLine);
@@ -159,18 +161,9 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
 
 	public void checkStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException  {
-
 		if(!this.isStockMoveProduct(saleOrderLine))  {
 			throw new AxelorException(I18n.get(IExceptionMessage.SALES_ORDER_STOCK_MOVE_1), IException.CONFIGURATION_ERROR);
 		}
-
-	}
-
-
-	public boolean isSaleOrderInvoicingMethod(SaleOrder saleOrder)  {
-
-		return saleOrder.getInvoicingTypeSelect() == ISaleOrder.INVOICING_TYPE_PER_SHIPMENT;
-
 	}
 
 
@@ -182,14 +175,9 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
 		Product product = saleOrderLine.getProduct();
 
-//		if(product != null
-//				&& ((product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_SERVICE) && supplychainConfig.getHasOutSmForNonStorableProduct())
-//						|| (product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE) && supplychainConfig.getHasOutSmForStorableProduct()))
-//				&& saleOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_FROM_STOCK)  {
-
 		if(product != null
-				&& ((product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_SERVICE) && stockConfig.getHasOutSmForNonStorableProduct())
-						|| (product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE) && stockConfig.getHasOutSmForStorableProduct())) )  {
+				&& ((ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && stockConfig.getHasOutSmForNonStorableProduct())
+						|| (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()) && stockConfig.getHasOutSmForStorableProduct())) )  {
 
 			return true;
 		}

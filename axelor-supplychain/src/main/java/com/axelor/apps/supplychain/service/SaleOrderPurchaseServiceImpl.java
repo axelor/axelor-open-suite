@@ -26,8 +26,8 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -88,7 +88,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
-			if(saleOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_PURCHASE)  {
+			if(saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE)  {
 
 				Partner supplierPartner = saleOrderLine.getSupplierPartner();
 

@@ -22,10 +22,10 @@ import java.math.BigDecimal;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TrackingNumberRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.exception.IExceptionMessage;
@@ -36,73 +36,73 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class TrackingNumberService extends TrackingNumberRepository{
-	
+
 	@Inject
-	private SequenceService sequenceService;	
-	
-	
+	private SequenceService sequenceService;
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public TrackingNumber getTrackingNumber(Product product, BigDecimal sizeOfLot, Company company, LocalDate date) throws AxelorException  {
-		
+
 		TrackingNumber trackingNumber = all().filter("self.product = ?1 AND self.counter < ?2", product, sizeOfLot).fetchOne();
-	
+
 		if(trackingNumber == null)  {
 			trackingNumber = save(this.createTrackingNumber(product, company, date));
 		}
-		
+
 		trackingNumber.setCounter(trackingNumber.getCounter().add(sizeOfLot));
-		
+
 		return trackingNumber;
-		
+
 	}
-	
-	
-	
+
+
+
 	public String getOrderMethod(TrackingNumberConfiguration trackingNumberConfiguration)  {
 		switch (trackingNumberConfiguration.getSaleAutoTrackingNbrOrderSelect()) {
-			case IProduct.SALE_TRACKING_ORDER_FIFO:
+			case ProductRepository.SALE_TRACKING_ORDER_FIFO:
 				return " ORDER BY self.trackingNumber ASC";
-				
-			case IProduct.SALE_TRACKING_ORDER_LIFO:
+
+			case ProductRepository.SALE_TRACKING_ORDER_LIFO:
 				return " ORDER BY self.trackingNumber DESC";
-	
+
 			default:
 				return "";
 		}
 	}
-	
-	
+
+
 
 	public TrackingNumber createTrackingNumber(Product product, Company company, LocalDate date) throws AxelorException  {
-		
+
 		TrackingNumber trackingNumber = new TrackingNumber();
-		
+
 		if(product.getIsPerishable())  {
 			trackingNumber.setPerishableExpirationDate(date.plusMonths(product.getPerishableNbrOfMonths()));
 		}
 		if(product.getHasWarranty())  {
 			trackingNumber.setWarrantyExpirationDate(date.plusMonths(product.getWarrantyNbrOfMonths()));
 		}
-		
+
 		trackingNumber.setProduct(product);
 		trackingNumber.setCounter(BigDecimal.ZERO);
-		
+
 		TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
-		
+
 		if (trackingNumberConfiguration.getSequence() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TRACKING_NUMBER_1),
 					company.getName(), product.getCode()), IException.CONFIGURATION_ERROR);
 		}
-		
+
 		String seq = sequenceService.getSequenceNumber(trackingNumberConfiguration.getSequence());
-		
+
 		trackingNumber.setTrackingNumberSeq(seq);
-		
+
 		return trackingNumber;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 }

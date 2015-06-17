@@ -22,11 +22,11 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
@@ -60,7 +60,7 @@ public class StockMoveLineServiceImpl extends StockMoveLineRepository implements
 	@Override
 	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, StockMove stockMove, int type ) throws AxelorException {
 
-		if(product != null && product.getApplicationTypeSelect() == IProduct.APPLICATION_TYPE_PRODUCT) {
+		if(product != null && product.getApplicationTypeSelect() == ProductRepository.APPLICATION_TYPE_PRODUCT) {
 
 			StockMoveLine stockMoveLine = this.createStockMoveLine(product, productName, description, quantity, unit, stockMove, null);
 

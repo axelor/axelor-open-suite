@@ -25,20 +25,18 @@ import com.axelor.inject.Beans;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
-	protected BatchInvoicing batchInvoicing;
-	
 	protected SaleOrderInvoiceService saleOrderInvoiceService;
-	
+
 	protected BatchStrategy(SaleOrderInvoiceService saleOrderInvoiceService)  {
 		super();
 		this.saleOrderInvoiceService = saleOrderInvoiceService;
 	}
-	
-	
+
+
 	protected void updateSaleOrder( SaleOrder saleOrder ){
-		
+
 		saleOrder.addBatchSetItem( Beans.get(BatchRepository.class).find( batch.getId() ) );
-			
+
 		incrementDone();
 	}
 }

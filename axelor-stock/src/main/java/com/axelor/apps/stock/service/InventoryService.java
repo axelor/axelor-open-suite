@@ -27,7 +27,6 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
@@ -166,7 +165,7 @@ public class InventoryService extends InventoryRepository{
 
 				InventoryLine inventoryLine = new InventoryLine();
 				Product product = productRepo.findByCode(code);
-				if (product == null || product.getApplicationTypeSelect() != IProduct.APPLICATION_TYPE_PRODUCT || !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE))
+				if (product == null || product.getApplicationTypeSelect() != ProductRepository.APPLICATION_TYPE_PRODUCT || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE))
 					throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_4)+" "+code, IException.CONFIGURATION_ERROR);
 				inventoryLine.setProduct(product);
 				inventoryLine.setInventory(inventory);

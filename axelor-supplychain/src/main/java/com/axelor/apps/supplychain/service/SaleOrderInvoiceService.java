@@ -25,42 +25,15 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface SaleOrderInvoiceService {
 
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException;
-
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generatePerOrderInvoice(SaleOrder saleOrder) throws AxelorException;
-
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateSubscriptionInvoice(SaleOrder saleOrder) throws AxelorException;
-
-
-	public void checkSubscriptionSaleOrder(SaleOrder saleOrder) throws AxelorException;
-
-
-
-
-	/**
-	 * Cree une facture mémoire à partir d'un devis.
-	 *
-	 * Le planificateur doit être prêt.
-	 *
-	 * @param saleOrder
-	 * 		Le devis
-	 *
-	 * @return Invoice
-	 * 		La facture d'abonnement
-	 *
-	 * @throws AxelorException
-	 * @throws Exception
-	 */
-	public Invoice runSubscriptionInvoicing(SaleOrder saleOrder) throws AxelorException;
 
 	public boolean checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder);
 
@@ -86,6 +59,9 @@ public interface SaleOrderInvoiceService {
 	public BigDecimal getAmountInvoiced(SaleOrder saleOrder);
 
 	public BigDecimal getAmountInvoiced(SaleOrder saleOrder, Long exceptInvoiceId, boolean includeInvoice);
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice generateSubscriptionInvoice(Subscription subscription,SaleOrderLine saleOrderLine,SaleOrder saleOrder) throws AxelorException;
 
 }
 

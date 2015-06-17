@@ -26,10 +26,10 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
@@ -105,8 +105,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 				Product product = purchaseOrderLine.getProduct();
 				// Check if the company field 'hasInSmForStorableProduct' = true and productTypeSelect = 'storable' or 'hasInSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
-				if(product != null && ((stockConfig.getHasInSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE))
-						|| (stockConfig.getHasInSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)))) {
+				if(product != null && ((stockConfig.getHasInSmForStorableProduct() && ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()))
+						|| (stockConfig.getHasInSmForNonStorableProduct() && !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())))) {
 
 					StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(product, purchaseOrderLine.getProductName(), purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), stockMove, 2);
 					if(stockMoveLine != null) {

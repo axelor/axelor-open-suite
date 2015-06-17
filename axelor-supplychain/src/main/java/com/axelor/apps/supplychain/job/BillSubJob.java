@@ -5,7 +5,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
-import com.axelor.apps.supplychain.service.SupplychainBatchService;
+import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 

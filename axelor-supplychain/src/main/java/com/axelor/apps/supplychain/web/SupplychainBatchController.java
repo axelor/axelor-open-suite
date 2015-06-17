@@ -2,7 +2,7 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
-import com.axelor.apps.supplychain.service.SupplychainBatchService;
+import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;

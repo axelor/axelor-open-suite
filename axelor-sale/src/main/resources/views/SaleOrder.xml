@@ -100,7 +100,6 @@
 	        <field name="source"/>
 	      </panel>
 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
-	      	<field name="invoicingTypeSelect"/>
 	        <field name="invoicingMomentSelect" showIf="invoicingTypeSelect == 2"/>
 	      </panel>
 	      <panel title="Stock location" if-module="axelor-supplychain">

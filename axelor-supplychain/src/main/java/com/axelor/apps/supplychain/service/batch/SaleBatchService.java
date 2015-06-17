@@ -19,36 +19,31 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.sale.db.ISaleBatch;
 import com.axelor.apps.sale.db.SaleBatch;
 import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 
 public class SaleBatchService extends SaleBatchRepository {
 
-// Appel 	
-	
+// Appel
+
 	/**
 	 * Lancer un batch à partir de son code.
-	 * 
+	 *
 	 * @param batchCode
 	 * 		Le code du batch souhaité.
-	 * 
+	 *
 	 * @throws AxelorException
 	 */
 	public Batch run(String batchCode) throws AxelorException {
-				
+
 		SaleBatch saleBatch = findByCode(batchCode);
-		
+
 		if (saleBatch != null){
 			switch (saleBatch.getActionSelect()) {
-			
-			case ISaleBatch.BATCH_INVOICING:
-				return invoicing(saleBatch);
-			
+
 			default:
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), saleBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
 			}
@@ -56,14 +51,7 @@ public class SaleBatchService extends SaleBatchRepository {
 		else {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), batchCode), IException.INCONSISTENCY);
 		}
-		
+
 	}
-	
-	
-	public Batch invoicing(SaleBatch saleBatch) {
-		
-		return Beans.get(BatchInvoicing.class).run(saleBatch);
-		
-	}
-	
+
 }

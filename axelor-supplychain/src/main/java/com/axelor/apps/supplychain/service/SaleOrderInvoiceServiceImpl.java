@@ -32,16 +32,15 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Scheduler;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.scheduler.SchedulerService;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -57,10 +56,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderInvoiceServiceImpl.class);
 
-	@Inject
-	private SchedulerService schedulerService;
-
-
 	private LocalDate today;
 
 	@Inject
@@ -72,39 +67,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 
 	@Override
-	public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException  {
-
-		switch (saleOrder.getInvoicingTypeSelect()) {
-			case ISaleOrder.INVOICING_TYPE_PER_ORDER:
-
-				return this.generatePerOrderInvoice(saleOrder);
-
-//			case ISaleOrder.INVOICING_TYPE_WITH_PAYMENT_SCHEDULE:
-//						TODO
-//				return null;
-			case ISaleOrder.INVOICING_TYPE_PER_TASK:
-
-				return null;
-			case ISaleOrder.INVOICING_TYPE_PER_SHIPMENT:
-
-				return null;
-			case ISaleOrder.INVOICING_TYPE_FREE:
-
-				return this.generatePerOrderInvoice(saleOrder);
-
-			case ISaleOrder.INVOICING_TYPE_SUBSCRIPTION:
-
-				return this.generateSubscriptionInvoice(saleOrder);
-
-			default:
-				return null;
-		}
-	}
-
-
-	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generatePerOrderInvoice(SaleOrder saleOrder) throws AxelorException  {
+	public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException  {
 
 		Invoice invoice = this.createInvoice(saleOrder);
 
@@ -113,92 +77,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		Beans.get(SaleOrderRepository.class).save(fillSaleOrder(saleOrder, invoice));
 
 		return invoice;
-	}
-
-
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateSubscriptionInvoice(SaleOrder saleOrder) throws AxelorException  {
-
-		Invoice invoice = this.createInvoice(saleOrder);
-
-		this.assignInvoice(saleOrder, invoice);
-
-		invoice.setIsSubscription(true);
-
-		Scheduler scheduler = saleOrder.getSchedulerInstance().getScheduler();
-
-		invoice.setSubscriptionFromDate(saleOrder.getNextInvPeriodStartDate());
-
-		LocalDate nextInvPeriodStartDate = schedulerService.getComputeDate(scheduler, invoice.getSubscriptionFromDate());
-
-		invoice.setSubscriptionToDate(nextInvPeriodStartDate.minusDays(1));
-
-		saleOrder.setNextInvPeriodStartDate(nextInvPeriodStartDate);
-
-		return invoice;
-	}
-
-
-	@Override
-	public void checkSubscriptionSaleOrder(SaleOrder saleOrder) throws AxelorException  {
-
-		if(saleOrder.getSchedulerInstance() == null || saleOrder.getSchedulerInstance().getScheduler() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_1)), IException.CONFIGURATION_ERROR);
-		}
-
-		if(saleOrder.getSubscriptionStartDate() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_2)), IException.CONFIGURATION_ERROR);
-		}
-		if(saleOrder.getInvoicedFirstDate() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_3)), IException.CONFIGURATION_ERROR);
-		}
-	}
-
-
-
-
-	/**
-	 * Cree une facture mémoire à partir d'un devis.
-	 *
-	 * Le planificateur doit être prêt.
-	 *
-	 * @param saleOrder
-	 * 		Le devis
-	 *
-	 * @return Invoice
-	 * 		La facture d'abonnement
-	 *
-	 * @throws AxelorException
-	 * @throws Exception
-	 */
-	@Override
-	public Invoice runSubscriptionInvoicing(SaleOrder saleOrder) throws AxelorException  {
-
-		Invoice invoice = null;
-
-		LOG.debug("Création de la facture mémoire pour le devis : {}", saleOrder.getSaleOrderSeq());
-
-		if(schedulerService.isSchedulerInstanceIsReady(saleOrder.getSchedulerInstance()))  {
-
-			LOG.debug("Le mémoire est prêt à etre lancé.");
-			invoice = this.generateSubscriptionInvoice(saleOrder);
-
-			if(invoice != null)  {
-				LOG.debug("Mis à jour de l'historique du planificateur");
-				schedulerService.addInHistory(saleOrder.getSchedulerInstance(), today, false);
-			}
-		}
-		else{
-
-			LocalDate nextDate = schedulerService.getTheoricalExecutionDate(saleOrder.getSchedulerInstance());
-
-			LOG.debug(String.format("La facturation n'est pas prête à etre lancée : %s < %s", today, nextDate));
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_4), saleOrder.getSaleOrderSeq(), nextDate), IException.CONFIGURATION_ERROR);
-		}
-
-		return invoice;
-
 	}
 
 
@@ -406,6 +284,38 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		return invoicedAmount;
 
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice generateSubscriptionInvoice(Subscription subscription,SaleOrderLine saleOrderLine ,SaleOrder saleOrder) throws AxelorException{
+
+		List<SaleOrderLine> saleOrderLineList = new ArrayList<SaleOrderLine>();
+
+		saleOrderLineList.add(saleOrderLine);
+
+		Invoice invoice = this.createInvoice(saleOrder, saleOrderLineList);
+
+		this.assignInvoice(saleOrder, invoice);
+
+		invoice.setIsSubscription(true);
+
+		invoice.setSubscriptionFromDate(subscription.getFromPeriodDate());
+
+		invoice.setSubscriptionToDate(subscription.getToPeriodDate());
+
+		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+			invoiceLine.setProductName(invoiceLine.getProduct().getName()+"("+saleOrderLine.getPeriodicity()+" "+"month(s)"+")");
+		}
+
+		Beans.get(InvoiceServiceImpl.class).save(invoice);
+
+		subscription.setInvoiced(true);
+
+		JPA.save(subscription);
+
+
+		return invoice;
 	}
 
 }

@@ -35,7 +35,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceStockImpl {
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceSupplychainImpl.class);
 
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate,
+			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner) throws AxelorException  {
 
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
@@ -45,7 +45,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceStockImpl {
 				externalReference, orderDate, priceList, clientPartner);
 
 		saleOrder.setLocation(location);
-		saleOrder.setInvoicingTypeSelect(invoicingTypeSelect);
 
 		return saleOrder;
 	}

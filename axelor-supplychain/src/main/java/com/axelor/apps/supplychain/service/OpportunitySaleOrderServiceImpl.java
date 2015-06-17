@@ -9,7 +9,6 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -24,10 +23,11 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class OpportunitySaleOrderServiceImpl extends OpportunityRepository implements OpportunitySaleOrderService{
-	
+
 	@Inject
 	private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychain;
-	
+
+	@Override
 	@Transactional
 	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException{
 		User buyerUser = AuthUtils.getUser();
@@ -36,11 +36,11 @@ public class OpportunitySaleOrderServiceImpl extends OpportunityRepository imple
 			company = buyerUser.getActiveCompany();
 		}
 		Location location = saleOrderServiceSupplychain.getLocation(company);
-		SaleOrder saleOrder = saleOrderServiceSupplychain.createSaleOrder(buyerUser, company, null, opportunity.getCurrency(), null, null, null, ISaleOrder.INVOICING_TYPE_PER_ORDER, location, GeneralService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner());
+		SaleOrder saleOrder = saleOrderServiceSupplychain.createSaleOrder(buyerUser, company, null, opportunity.getCurrency(), null, null, null, location, GeneralService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner());
 
 		saleOrder.setMainInvoicingAddress(saleOrder.getClientPartner().getMainInvoicingAddress());
 		saleOrder.setDeliveryAddress(saleOrder.getClientPartner().getDeliveryAddress());
-		
+
 		saleOrder.setSalemanUser(opportunity.getUser());
 		saleOrder.setTeam(opportunity.getTeam());
 		saleOrder.setPaymentMode(saleOrder.getClientPartner().getPaymentMode());
@@ -51,7 +51,8 @@ public class OpportunitySaleOrderServiceImpl extends OpportunityRepository imple
 
 		return saleOrder;
 	}
-	
+
+	@Override
 	@Transactional
 	public Partner createClientFromLead(Opportunity opportunity) throws AxelorException{
 		Lead lead = opportunity.getLead();
@@ -63,14 +64,14 @@ public class OpportunitySaleOrderServiceImpl extends OpportunityRepository imple
 		if(Strings.isNullOrEmpty(name)){
 			name = lead.getFullName();
 		}
-		
+
 		Address address = Beans.get(AddressService.class).createAddress(null, null, lead.getPrimaryAddress(), null, lead.getPrimaryPostalCode()+" "+lead.getPrimaryCity(), lead.getPrimaryCountry());
-		
+
 		Partner partner = Beans.get(PartnerService.class).createPartner(name, null, lead.getFixedPhone(), lead.getMobilePhone(), lead.getEmailAddress(), opportunity.getCurrency(), address, address);
-		
+
 		opportunity.setPartner(partner);
 		save(opportunity);
-		
+
 		return partner;
 	}
 }

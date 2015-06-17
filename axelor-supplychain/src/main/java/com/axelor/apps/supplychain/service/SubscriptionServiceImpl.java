@@ -1,14 +1,7 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
-import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.supplychain.db.Subscription;
@@ -54,11 +47,6 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 			saleOrderLine.addSubscriptionListItem(subscription);
 			iterator++;
 		}
-
-		if(saleOrderLine.getId()>0){
-			Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
-		}
-
 		return saleOrderLine;
 	}
 
@@ -103,39 +91,4 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 
 		return saleOrderLine;
 	}
-
-	@Override
-	@Transactional(rollbackOn={Exception.class})
-	public Invoice generateInvoice(Subscription subscription,SaleOrderLine saleOrderLine ,SaleOrder saleOrder) throws AxelorException{
-
-		InvoiceGenerator invoiceGenerator = saleOrderInvoiceServiceImpl.createInvoiceGenerator(saleOrder);
-
-		List<SaleOrderLine> saleOrderLineList = new ArrayList<SaleOrderLine>();
-
-		saleOrderLineList.add(saleOrderLine);
-
-		Invoice invoice = saleOrderInvoiceServiceImpl.createInvoice(saleOrder, saleOrderLineList);
-
-		saleOrderInvoiceServiceImpl.assignInvoice(saleOrder, invoice);
-
-		invoice.setIsSubscription(true);
-
-		invoice.setSubscriptionFromDate(subscription.getFromPeriodDate());
-
-		invoice.setSubscriptionToDate(subscription.getToPeriodDate());
-
-		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-			invoiceLine.setProductName(invoiceLine.getProduct().getName()+"("+saleOrderLine.getPeriodicity()+" "+"month(s)"+")");
-		}
-
-		Beans.get(InvoiceServiceImpl.class).save(invoice);
-
-		subscription.setInvoiced(true);
-
-		save(subscription);
-
-
-		return invoice;
-	}
-
 }
