@@ -25,25 +25,25 @@ import com.google.inject.Inject;
 public class TimesheetController {
 	@Inject
 	private TimesheetService timesheetService;
-	
+
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheetService.getTimeFromTask(timesheet);
 		response.setReload(true);
 	}
-	
+
 	public void cancelTimesheet(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheetService.cancelTimesheet(timesheet);
 		response.setReload(true);
 	}
-	
+
 	public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException{
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		timesheetService.generateLines(timesheet);
-		response.setReload(true);
+		timesheet = timesheetService.generateLines(timesheet);
+		response.setValues(timesheet);
 	}
-	
+
 	public void editTimesheet(ActionRequest request, ActionResponse response){
 		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(timesheetList.isEmpty()){
@@ -74,19 +74,19 @@ public class TimesheetController {
 					.map());
 		}
 	}
-	
+
 	public void allTimesheet(ActionRequest request, ActionResponse response){
 		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
 		}
-		
+
 		String timesheetListIdStr = "-2";
 		if(!timesheetListId.isEmpty()){
 			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
 		}
-		
+
 		response.setView(ActionView.define("My Timesheets")
 				   .model(Timesheet.class.getName())
 				   .add("grid","timesheet-grid")
@@ -94,7 +94,7 @@ public class TimesheetController {
 				   .domain("self.id in ("+timesheetListIdStr+")")
 				   .map());
 	}
-	
+
 	public void validateTimesheet(ActionRequest request, ActionResponse response){
 		List<Timesheet> timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
@@ -111,7 +111,7 @@ public class TimesheetController {
 		if(!timesheetListId.isEmpty()){
 			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
 		}
-		
+
 		response.setView(ActionView.define("Timesheets to Validate")
 			   .model(Timesheet.class.getName())
 			   .add("grid","timesheet-validate-grid")
@@ -119,7 +119,7 @@ public class TimesheetController {
 			   .domain("self.id in ("+timesheetListIdStr+")")
 			   .map());
 	}
-	
+
 	public void editTimesheetSelected(ActionRequest request, ActionResponse response){
 		Map timesheetMap = (Map)request.getContext().get("timesheetSelect");
 		Timesheet timesheet = Beans.get(TimesheetRepository.class).find(new Long((Integer)timesheetMap.get("id")));
@@ -131,19 +131,19 @@ public class TimesheetController {
 				.domain("self.id = "+timesheetMap.get("id"))
 				.context("_showRecord", String.valueOf(timesheet.getId())).map());
 	}
-	
+
 	public void historicTimesheet(ActionRequest request, ActionResponse response){
 		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
 		}
-		
+
 		String timesheetListIdStr = "-2";
 		if(!timesheetListId.isEmpty()){
 			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
 		}
-		
+
 		response.setView(ActionView.define("Colleague Timesheets")
 				   .model(Timesheet.class.getName())
 				   .add("grid","timesheet-grid")
@@ -151,7 +151,7 @@ public class TimesheetController {
 				   .domain("self.id in ("+timesheetListIdStr+")")
 				   .map());
 	}
-	
+
 	public void showSubordinateTimesheets(ActionRequest request, ActionResponse response){
 		List<User> userList = Query.of(User.class).filter("self.employee.manager = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
@@ -169,7 +169,7 @@ public class TimesheetController {
 			if(!timesheetListId.isEmpty()){
 				timesheetListIdStr = Joiner.on(",").join(timesheetListId);
 			}
-			
+
 			response.setView(ActionView.define("Timesheets to be Validated by your subordinates")
 				   .model(Expense.class.getName())
 				   .add("grid","timesheet-grid")
@@ -178,7 +178,7 @@ public class TimesheetController {
 				   .map());
 		}
 	}
-	
+
 	public void validToDate(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
@@ -194,6 +194,6 @@ public class TimesheetController {
 			if(!listId.isEmpty()){
 				response.setError(I18n.get("There is a conflict between the end date entered and the dates in the lines :")+Joiner.on(",").join(listId));
 			}
-		}	
+		}
 	}
 }
