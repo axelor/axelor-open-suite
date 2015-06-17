@@ -13,10 +13,13 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.LeaveRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -27,6 +30,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 	@Inject
 	private EmployeeService employeeService;
 
+	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
 
@@ -38,6 +42,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		JPA.save(timesheet);
 	}
 
+	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public void cancelTimesheet(Timesheet timesheet){
 		timesheet.setStatusSelect(5);
@@ -50,16 +55,28 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		}
 	}
 
-	@Transactional(rollbackOn={Exception.class})
-	public void generateLines(Timesheet timesheet) throws AxelorException{
+	@Override
+	public Timesheet generateLines(Timesheet timesheet) throws AxelorException{
 
-		if(timesheet.getFromDate() == null) throw new AxelorException("Please enter from date", 1);
-		if(timesheet.getToDate() == null) throw new AxelorException("Please enter to date", 1);
-		if(timesheet.getActivity() == null) throw new AxelorException("Please enter an activity", 1);
-		if(timesheet.getUser().getEmployee().getTimeLoggingPreferenceSelect() == null) throw new AxelorException("Please configure your Time logging preference in your employee form", 1);
+		if(timesheet.getFromGenerationDate() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE)), IException.CONFIGURATION_ERROR);
+		}
+		if(timesheet.getToGenerationDate() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_TO_DATE)), IException.CONFIGURATION_ERROR);
+		}
+		if(timesheet.getActivity() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_ACTIVITY)), IException.CONFIGURATION_ERROR);
+		}
+		if(timesheet.getUser().getEmployee() == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheet.getUser().getName()), IException.CONFIGURATION_ERROR);
+		}
+		List<DayPlanning> dayPlanningList = timesheet.getUser().getEmployee().getPlanning().getWeekDays();
+		if(dayPlanningList == null || dayPlanningList.isEmpty()){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),timesheet.getUser().getName()), IException.CONFIGURATION_ERROR);
+		}
 
-		LocalDate fromDate = timesheet.getFromDate();
-		LocalDate toDate = timesheet.getToDate();
+		LocalDate fromDate = timesheet.getFromGenerationDate();
+		LocalDate toDate = timesheet.getToGenerationDate();
 		Map<Integer,String> correspMap = new HashMap<Integer,String>();
 		correspMap.put(1, "monday");
 		correspMap.put(2, "tuesday");
@@ -68,7 +85,6 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		correspMap.put(5, "friday");
 		correspMap.put(6, "saturday");
 		correspMap.put(7, "sunday");
-		List<DayPlanning> dayPlanningList = timesheet.getUser().getEmployee().getPlanning().getWeekDays();
 		List<Leave> leaveList = LeaveRepository.of(Leave.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
@@ -105,9 +121,10 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 			}
 			fromDate=fromDate.plusDays(1);
 		}
-		save(timesheet);
+		return timesheet;
 	}
-	
+
+	@Override
 	@Transactional
 	public LocalDate getFromPeriodDate(){
 		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 ORDER BY self.toDate DESC", AuthUtils.getUser()).fetchOne();

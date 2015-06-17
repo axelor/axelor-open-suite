@@ -14,6 +14,8 @@
       <one-to-many name="timesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Lines" mappedBy="affectedToTimeSheet"/>
       <date name="fromDate"/>
       <date name="toDate"/>
+      <date name="fromGenerationDate"/>
+      <date name="toGenerationDate"/>
       <many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project"/>
       <many-to-one name="task" ref="com.axelor.apps.project.db.ProjectTask" title="Task"/>
       <decimal name="logTime" title="Duration(by day)"/>
