@@ -243,7 +243,6 @@
 	    </panel>
 	    
 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain"/>          
-	    <panel-related field="invoiceSet" title="Invoicing" showIf="statusSelect == 3" showTitle="false" if-module="axelor-supplychain"/>      
 	    
 	    <panel title="Subscription" showIf="invoicingTypeSelect == 6" showTitle="false" if-module="axelor-supplychain">
 	      <panel title="Subscription dates" colSpan="12">
@@ -253,7 +252,7 @@
 	      <panel title="Invoices dates" colSpan="12">
 	        <field name="invoicedFirstDate" onChange="action-scheduler-instance-record-first-execution-date"/>
 	        <field name="nextInvPeriodStartDate"/>
-<!-- 	        	<field name="scheduler"/> -->	        
+<!-- 	        	<field name="scheduler"/> -->
 	        <field name="schedulerInstance"/>
 	        <field name="schedulerInstance.lastTheoreticalExecutionDate"/>
 	      </panel>
@@ -359,7 +358,7 @@
 	    </panel>    
 	    <panel-related field="saleOrderLineList" showTitle="false"/>
 	    <panel-related field="saleOrderLineTaxList" showTitle="false"/>
-	    <panel-related field="invoiceSet" showTitle="false" title="Invoicing" form-view="invoice-client-form" grid-view="invoice-client-grid" showIf="statusSelect == 3" if-module="axelor-supplychain"/>      
+	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing"/>      
 	  </panel-tabs>
 	</form>
 	<action-method name="action-method-set-sale-order-draft-sequence">

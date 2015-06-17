@@ -35,12 +35,7 @@ public interface SaleOrderInvoiceService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException;
 
-	public boolean checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder);
-
 	public SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice);
-
-
-	public SaleOrder assignInvoice(SaleOrder saleOrder, Invoice invoice);
 
 	public Invoice createInvoice(SaleOrder saleOrder) throws AxelorException;
 

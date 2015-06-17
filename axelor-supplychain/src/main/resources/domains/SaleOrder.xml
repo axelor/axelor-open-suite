@@ -12,9 +12,6 @@
 	<integer name="invoicingMomentSelect" title="Invoicing trigger" selection="supplychain.invoicing.moment.select"/>
 	<decimal name="amountInvoiced" title="Amount invoiced" readonly="true"/>
 	
-	<!--    Onglet historique -->
-	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Linked invoices"/>
-	 
 	<!-- 	Onglet échéancier -->
 	<one-to-many name="saleOrderScheduleLineList" ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder" title="Schedule line list"/>
 	

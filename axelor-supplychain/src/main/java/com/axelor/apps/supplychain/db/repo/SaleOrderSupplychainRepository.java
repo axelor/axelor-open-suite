@@ -11,7 +11,6 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
 		SaleOrder copy = super.copy(entity, deep);
 
 		copy.setShipmentDate(null);
-		copy.clearInvoiceSet();
 		copy.setDeliveryState(STATE_NOT_DELIVERED);
 
 		return copy;

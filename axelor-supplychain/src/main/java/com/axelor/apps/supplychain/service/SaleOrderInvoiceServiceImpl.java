@@ -72,27 +72,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		Invoice invoice = this.createInvoice(saleOrder);
 
-		this.assignInvoice(saleOrder, invoice);
-
 		Beans.get(SaleOrderRepository.class).save(fillSaleOrder(saleOrder, invoice));
 
 		return invoice;
-	}
-
-
-	@Override
-	public boolean checkIfSaleOrderIsCompletelyInvoiced(SaleOrder saleOrder)  {
-
-		BigDecimal total = BigDecimal.ZERO;
-
-		saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-
-		for(Invoice invoice : saleOrder.getInvoiceSet())  {
-			total = total.add(this.computeInTaxTotalInvoiced(invoice));
-		}
-
-		return total.compareTo(saleOrder.getInTaxTotal()) == 0;
-
 	}
 
 	public BigDecimal computeInTaxTotalInvoiced(Invoice invoice)  {
@@ -129,15 +111,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		return saleOrder;
 
-	}
-
-
-	@Override
-	public SaleOrder assignInvoice(SaleOrder saleOrder, Invoice invoice)  {
-
-		saleOrder.addInvoiceSetItem(invoice);
-
-		return saleOrder;
 	}
 
 
@@ -295,8 +268,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		saleOrderLineList.add(saleOrderLine);
 
 		Invoice invoice = this.createInvoice(saleOrder, saleOrderLineList);
-
-		this.assignInvoice(saleOrder, invoice);
 
 		invoice.setIsSubscription(true);
 
