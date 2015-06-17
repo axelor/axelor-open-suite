@@ -7,6 +7,7 @@ import java.util.Map;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.auth.AuthUtils;
@@ -176,5 +177,23 @@ public class TimesheetController {
 				   .domain("self.id in ("+timesheetListIdStr+")")
 				   .map());
 		}
+	}
+	
+	public void validToDate(ActionRequest request, ActionResponse response){
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+		List<Integer> listId = new ArrayList<Integer>();
+		int count = 0;
+		if(timesheetLineList != null && !timesheetLineList.isEmpty()){
+			for (TimesheetLine timesheetLine : timesheetLineList) {
+				count++;
+				if(timesheetLine.getDate().isAfter(timesheet.getToDate())){
+					listId.add(count);
+				}
+			}
+			if(!listId.isEmpty()){
+				response.setError(I18n.get("There is a conflict between the end date entered and the dates in the lines :")+Joiner.on(",").join(listId));
+			}
+		}	
 	}
 }

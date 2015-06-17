@@ -221,7 +221,7 @@ public class PaymentScheduleExportService{
 	public PaymentScheduleLine getPaymentScheduleLineRejectOrigin(PaymentScheduleLine paymentScheduleLine)  {
 		
 		return paymentScheduleLineService.all()
-				.filter("self.paymentSchedule = ?1 AND self.scheduleLineSeq = ?2 AND self.statusSelect = ?3 ORDER BY self.rejectDate DSC"
+				.filter("self.paymentSchedule = ?1 AND self.scheduleLineSeq = ?2 AND self.statusSelect = ?3 ORDER BY self.rejectDate DESC"
 						, paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleLineSeq(), PaymentScheduleLineService.STATUS_CLOSED).fetchOne();
 		
 	}

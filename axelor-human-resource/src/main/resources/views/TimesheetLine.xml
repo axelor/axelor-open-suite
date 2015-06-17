@@ -15,7 +15,7 @@
 	onNew="action-hr-default-timesheet-line-timesheet">
 		<field name="project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 		<field name="task" domain="self.taskTypeSelect = 'task'" form-view="task-form" grid-view="task-grid"/>
-		<field name="date" />
+		<field name="date" onChange="action-timesheet-validate-date"/>
 		<field name="activity"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true" />
@@ -71,5 +71,9 @@
 	<action-record name="action-timesheet-line-record-set-stored-duration" model="com.axelor.apps.hr.db.TimesheetLine">
 	    <field name="durationStored" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours(visibleDuration)"/>
 	</action-record>
+	
+	<action-validate name="action-timesheet-line-validate-date">
+		<error message="This date is invalide, it must be included in the timesheet's period and can't be in the future" if="date != null &amp;&amp; (date &lt; _parent.fromDate || date &gt; __date__)"/>
+	</action-validate>
 	
 </object-views>

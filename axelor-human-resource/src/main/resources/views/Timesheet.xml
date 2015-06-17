@@ -20,8 +20,9 @@
 	</grid>
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
-	    onNew="action-timesheet-record-default,action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title"
-	    onLoad="action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title" canNew="false">
+	    onNew="action-timesheet-record-default,action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-record-from-period-date"
+	    onLoad="action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title" canNew="false"
+	    onSave="action-timesheet-method-valid-to-date">
 
 	    <panel sidebar="true" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-timesheet-record-confirm,save,action-timesheet-attrs-buttons" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
@@ -35,6 +36,8 @@
 			<field name="sentDate" colSpan="4"/>
 			<field name="company" colSpan="3"/>
 			<field name="user" colSpan="4"/>
+			<field name="fromDate" readonly="true"/>
+			<field name="toDate" onChange="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date"/>
 			<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4" onClick="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
 		</panel>
 		<panel name="generateLinesPanel" title="Generate Lines automatically">
@@ -71,6 +74,7 @@
 	
 	<action-record name="action-timesheet-record-confirm" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="statusSelect" expr="2"/>
+	    <field name="toDate" expr="eval: __date__"/>
 	    <field name="sentDate" expr="eval:__date__"/>
 	</action-record>
 	
@@ -109,5 +113,17 @@
 	<action-attrs name="action-timesheet-line-attrs-set-visible-duration-title">
 	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
 	</action-attrs>
+	
+	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">
+		<field name="fromDate" expr="call: com.axelor.apps.hr.service.timesheet.TimesheetService:getFromPeriodDate()"/>
+	</action-record>
+	
+	<action-validate name="action-timesheet-validate-toDate">
+		<error message="Invalid date" if="toDate &lt; fromDate"/>
+	</action-validate>
+	
+	<action-method name="action-timesheet-method-valid-to-date">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validToDate"/>
+	</action-method>
 
 </object-views>
