@@ -24,8 +24,8 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 //import com.axelor.apps.organisation.db.Project;
@@ -90,7 +90,7 @@ public class ProductionOrderSaleOrderServiceImpl extends ProductionOrderReposito
 
 		Product product = saleOrderLine.getProduct();
 
-		if(saleOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_PRODUCE && product != null && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE) )  {
+		if(saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE && product != null && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE) )  {
 
 			BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
 
