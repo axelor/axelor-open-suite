@@ -32,7 +32,7 @@ public class BusinessFolderService {
 	}
 	
 	public SaleOrder createSaleOrderFromTemplate(BusinessFolder businessFolder) throws AxelorException{
-		SaleOrder saleOrder = saleOrderService.createSaleOrder(businessFolder.getTemplate());
+		SaleOrder saleOrder = saleOrderService.createSaleOrder(businessFolder.getTemplateSaleOrder());
 		if(businessFolder.getCustomer() != null){
 			saleOrder.setClientPartner(businessFolder.getCustomer());
 			saleOrder = saleOrderService.getClientInformations(saleOrder);

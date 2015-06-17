@@ -14,8 +14,10 @@ import com.axelor.apps.hr.db.repo.LeaveRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -104,6 +106,18 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 			fromDate=fromDate.plusDays(1);
 		}
 		save(timesheet);
+	}
+	
+	@Transactional
+	public LocalDate getFromPeriodDate(){
+		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 ORDER BY self.toDate DESC", AuthUtils.getUser()).fetchOne();
+		if(timesheet != null){
+			save(timesheet);
+			return timesheet.getToDate();
+		}
+		else{
+			return new LocalDate();
+		}
 	}
 
 }
