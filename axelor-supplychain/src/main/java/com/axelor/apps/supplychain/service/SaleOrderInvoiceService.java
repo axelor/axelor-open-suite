@@ -71,6 +71,8 @@ public interface SaleOrderInvoiceService {
 
 	public Invoice createInvoice(SaleOrder saleOrder) throws AxelorException;
 
+	public Invoice createInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) throws AxelorException;
+
 
 	public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException;
 

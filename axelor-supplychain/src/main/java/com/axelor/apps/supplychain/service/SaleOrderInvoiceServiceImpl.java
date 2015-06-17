@@ -266,6 +266,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	@Override
 	public Invoice createInvoice(SaleOrder saleOrder) throws AxelorException  {
 
+		return createInvoice(saleOrder, saleOrder.getSaleOrderLineList());
+
+	}
+
+	@Override
+	public Invoice createInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) throws AxelorException  {
+
 		InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
 
 		Invoice invoice = invoiceGenerator.generate();
@@ -273,7 +280,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		invoice.setInAti(Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getInvoiceInAti());
 
 
-		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrder.getSaleOrderLineList()));
+		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList));
 		return invoice;
 
 	}
@@ -313,7 +320,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
-			
+
 		}
 
 		return invoiceLineList;
@@ -324,11 +331,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException  {
 
 		Product product = saleOrderLine.getProduct();
-		
+
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(),
 				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
 				saleOrderLine.getSequence(), false, saleOrderLine, null, null)  {
-			
+
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 

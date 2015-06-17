@@ -11,10 +11,11 @@
     </grid>
     
    <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
-   onNew="action-price-list-record-default,action-price-list-attrs-readonly-type-select">
+	   onNew="action-price-list-record-default,action-price-list-attrs-readonly-type-select"
+	   onLoad="action-price-list-attrs-hide-estimated-price">
    		<panel>
 		    <field name="title"/>
-			<field name="typeSelect" colSpan="4"/>
+			<field name="typeSelect" colSpan="4" onChange="action-price-list-attrs-hide-estimated-price"/>
 			<field name="isActive" colSpan="2"/>
 			<field name="hideDiscount"/>
     	</panel>
@@ -33,14 +34,28 @@
    </form>
    
    <form name="sale-price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
-   onNew="action-price-list-record-default,action-price-list-record-sale-type,action-price-list-attrs-readonly-type-select-true">
+	   onNew="action-group-base-sale-pricelist-onnew"
+	   onLoad="action-price-list-attrs-readonly-type-select-true">
    		<panel-include view="price-list-form"/>
    </form>
    
    <form name="purchase-price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
-   onNew="action-price-list-record-default,action-price-list-record-purchase-type,action-price-list-attrs-readonly-type-select-true">
+	   onNew="action-group-base-purchase-pricelist-onnew"
+	   onLoad="action-price-list-attrs-readonly-type-select-true">
    		<panel-include view="price-list-form"/>
    </form>
+   
+   <action-group name="action-group-base-sale-pricelist-onnew">
+		<action name="action-price-list-record-default"/>
+		<action name="action-price-list-record-sale-type"/>
+		<action name="action-price-list-attrs-readonly-type-select-true"/>
+	</action-group>
+	
+	<action-group name="action-group-base-purchase-pricelist-onnew">
+		<action name="action-price-list-record-default"/>
+		<action name="action-price-list-record-purchase-type"/>
+		<action name="action-price-list-attrs-readonly-type-select-true"/>
+	</action-group>
    
    <action-record name="action-price-list-record-default" model="com.axelor.apps.base.db.PriceList">
    		<field name="typeSelect" expr="1" if="_parent._model == 'com.axelor.apps.sale.db.SaleOrder'"/>

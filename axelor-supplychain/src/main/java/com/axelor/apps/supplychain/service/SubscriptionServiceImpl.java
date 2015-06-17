@@ -1,6 +1,8 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -18,18 +20,19 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class SubscriptionServiceImpl extends SubscriptionRepository implements SubscriptionService{
-	
+
 	@Inject
 	protected SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
-	
+
+	@Override
 	@Transactional
 	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLine) throws AxelorException{
 		int iterator = 0;
-		
+
 		if(saleOrderLine.getToSubDate() == null){
 			throw new AxelorException(I18n.get("Fied Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
 		}
-		
+
 		while(iterator != saleOrderLine.getPeriodNumber()){
 			Subscription subscription = new Subscription();
 			if(saleOrderLine.getInvoicingTypeSelect() == 1){
@@ -51,28 +54,29 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 			saleOrderLine.addSubscriptionListItem(subscription);
 			iterator++;
 		}
-		
+
 		if(saleOrderLine.getId()>0){
 			Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
 		}
-		
+
 		return saleOrderLine;
 	}
-	
+
+	@Override
 	@Transactional
 	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLineIt,SaleOrderLine saleOrderLine) throws AxelorException{
 		int iterator = 0;
-		
+
 		if(saleOrderLine.getToSubDate() == null){
 			throw new AxelorException(I18n.get("Fied Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
 		}
-		
+
 		for (Subscription subscription : saleOrderLineIt.getSubscriptionList()) {
 			if(!subscription.getInvoiced()){
 				subscription.setSaleOrderLine(null);
 			}
 		}
-		
+
 		while(iterator != saleOrderLine.getPeriodNumber()){
 			Subscription subscription = new Subscription();
 			if(saleOrderLine.getInvoicingTypeSelect() == 1){
@@ -94,41 +98,44 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 			saleOrderLineIt.addSubscriptionListItem(subscription);
 			iterator++;
 		}
-		
+
 		Beans.get(SaleOrderLineRepository.class).save(saleOrderLineIt);
-		
+
 		return saleOrderLine;
 	}
-	
+
+	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public Invoice generateInvoice(Subscription subscription,SaleOrderLine saleOrderLine ,SaleOrder saleOrder) throws AxelorException{
-		
+
 		InvoiceGenerator invoiceGenerator = saleOrderInvoiceServiceImpl.createInvoiceGenerator(saleOrder);
-		
-		Invoice invoice = invoiceGenerator.generate();
-		
-		invoice.setInvoiceLineList(saleOrderInvoiceServiceImpl.createInvoiceLine(invoice,saleOrderLine));
-		
+
+		List<SaleOrderLine> saleOrderLineList = new ArrayList<SaleOrderLine>();
+
+		saleOrderLineList.add(saleOrderLine);
+
+		Invoice invoice = saleOrderInvoiceServiceImpl.createInvoice(saleOrder, saleOrderLineList);
+
 		saleOrderInvoiceServiceImpl.assignInvoice(saleOrder, invoice);
-		
+
 		invoice.setIsSubscription(true);
-		
+
 		invoice.setSubscriptionFromDate(subscription.getFromPeriodDate());
-		
+
 		invoice.setSubscriptionToDate(subscription.getToPeriodDate());
-		
+
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 			invoiceLine.setProductName(invoiceLine.getProduct().getName()+"("+saleOrderLine.getPeriodicity()+" "+"month(s)"+")");
 		}
-		
+
 		Beans.get(InvoiceServiceImpl.class).save(invoice);
-		
+
 		subscription.setInvoiced(true);
-		
+
 		save(subscription);
-		
-		
+
+
 		return invoice;
 	}
-	
+
 }
