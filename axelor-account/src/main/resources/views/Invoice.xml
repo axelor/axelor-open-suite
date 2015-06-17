@@ -8,6 +8,8 @@
     <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<toolbar>
 			<button name="printInvoices" title="Print invoices" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
+			<button name="massInvoiceValidation" title="Validate selected invoices" prompt="Are you sure you want to validate all selected invoices ?" onClick="action-invoice-method-mass-validation"/>
+			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
     	</toolbar>   
     	<hilite color="info" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; inTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
@@ -308,6 +310,14 @@
 	</action-attrs>
 
 	<!-- ACTION METHOD -->
+	
+	<action-method name="action-invoice-method-mass-validation">
+    	<call class="com.axelor.apps.account.web.InvoiceController" method="massValidation"/>
+    </action-method>
+    
+    <action-method name="action-invoice-method-mass-ventilation">
+    	<call class="com.axelor.apps.account.web.InvoiceController" method="massVentilation"/>
+    </action-method>
 	
 	<action-method name="action-invoice-method-show-invoice">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
