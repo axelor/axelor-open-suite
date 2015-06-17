@@ -10,6 +10,7 @@ import com.axelor.apps.hr.db.DayPlanning;
 import com.axelor.apps.hr.db.Leave;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.repo.LeaveRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -70,10 +71,11 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		if(timesheet.getUser().getEmployee() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheet.getUser().getName()), IException.CONFIGURATION_ERROR);
 		}
-		List<DayPlanning> dayPlanningList = timesheet.getUser().getEmployee().getPlanning().getWeekDays();
-		if(dayPlanningList == null || dayPlanningList.isEmpty()){
+		WeeklyPlanning planning = timesheet.getUser().getEmployee().getPlanning();
+		if(planning == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),timesheet.getUser().getName()), IException.CONFIGURATION_ERROR);
 		}
+		List<DayPlanning> dayPlanningList = planning.getWeekDays();
 
 		LocalDate fromDate = timesheet.getFromGenerationDate();
 		LocalDate toDate = timesheet.getToGenerationDate();
