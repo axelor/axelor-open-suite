@@ -21,7 +21,7 @@
 			<button name="close" title="Close" colSpan="3" onClick="action-business-project-set-status-close,save" showIf="statusSelect == 1" readonlyIf="id == null"/>
 			<button name="open" title="Open" colSpan="3" onClick="action-business-project-set-status-open,save" showIf="statusSelect == 2" readonlyIf="id == null"/>
 			<button name="createSalesOrder" title="Create Sales Order" colSpan="3"  readonlyIf="id == null" onClick="save,action-business-folder-method-create-sale-order"/>
-			<field name="$template" type="many-to-one" target="com.axelor.apps.sale.db.SaleOrder" domain="self.template = true" canNew="false" colSpan="6" form-view="sale-order-template-form"/>
+			<field name="$template" title="Template" type="many-to-one" target="com.axelor.apps.sale.db.SaleOrder" domain="self.template = true" canNew="false" colSpan="6" form-view="sale-order-template-form"/>
 			<button name="createSalesOrderFromTemplate" title="Create Sale Order From Template" colSpan="6" readonlyIf="id == null" onClick="save,action-business-folder-method-create-sale-order-from-template"/>
 		</panel>
 		<panel>
