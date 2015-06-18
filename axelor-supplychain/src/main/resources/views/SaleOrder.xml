@@ -72,7 +72,7 @@
 	</action-method>
 	
 	<action-method name="action-supplychain-sale-order-create-stock-move" >
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMoves"/>
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
 	</action-method>
 	
 	<action-method name="action-supplychain-sale-order-create-purchase-order" >

@@ -111,7 +111,7 @@
 			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice"/>
 			<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 3"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
 			<button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect &gt;= 3"   onClick="save,action-purchase-order-method-clear-purchase-order"/>
-			<button name="generateSupplierStockMove" title="Generate supplier arrivals" showIf="eval: GeneralService.getGeneral().getSupplierStockMoveManagement() &amp;&amp; !GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
+			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="eval: GeneralService.getGeneral().getSupplierStockMoveManagement() &amp;&amp; !GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
 			<spacer/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 		</panel>

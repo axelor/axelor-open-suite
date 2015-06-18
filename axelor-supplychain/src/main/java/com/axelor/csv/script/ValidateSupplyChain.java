@@ -103,7 +103,7 @@ public class ValidateSupplyChain {
 			PurchaseOrder purchaseOrder = purchaseOrderRepo.find(poId);
 			purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 			if(purchaseOrder.getStatusSelect() == 4 || purchaseOrder.getStatusSelect() == 5 && purchaseOrder.getLocation() == null){
-				purchaseOrderServiceSupplychainImpl.createStocksMoves(purchaseOrder);
+				purchaseOrderServiceSupplychainImpl.createStocksMove(purchaseOrder);
 				StockMove stockMove = stockMoveRepo.all().filter("purchaseOrder.id = ?1",purchaseOrder.getId()).fetchOne();
 				if(stockMove != null){
 					stockMoveService.copyQtyToRealQty(stockMove);

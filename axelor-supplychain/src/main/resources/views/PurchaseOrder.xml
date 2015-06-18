@@ -8,7 +8,7 @@
 	</action-method>
 	
 	<action-method name="action-purchase-order-create-stock-move">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="createStockMoves"/>
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="createStockMove"/>
 	</action-method>
 	
 	<action-method name="action-purchase-order-method-get-location">

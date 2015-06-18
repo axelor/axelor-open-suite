@@ -35,7 +35,7 @@ public class PurchaseOrderController {
 	@Inject
 	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain;
 
-	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
@@ -45,7 +45,7 @@ public class PurchaseOrderController {
 					response.setFlash(I18n.get("An active stockMove already exists for this purchaseOrder"));
 				}
 			}else{
-				Long stockMoveId = purchaseOrderServiceSupplychain.createStocksMoves(Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
+				Long stockMoveId = purchaseOrderServiceSupplychain.createStocksMove(Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
 				if (!GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()){
 					response.setView(ActionView
 							.define(I18n.get("Stock move"))

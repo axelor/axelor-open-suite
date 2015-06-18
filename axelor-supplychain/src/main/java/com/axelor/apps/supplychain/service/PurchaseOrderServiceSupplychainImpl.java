@@ -76,7 +76,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	 * @param purchaseOrder une commande
 	 * @throws AxelorException Aucune séquence de StockMove n'a été configurée
 	 */
-	public Long createStocksMoves(PurchaseOrder purchaseOrder) throws AxelorException {
+	public Long createStocksMove(PurchaseOrder purchaseOrder) throws AxelorException {
 
 		Long stockMoveId = null;
 		if(purchaseOrder.getPurchaseOrderLineList() != null && purchaseOrder.getCompany() != null) {
