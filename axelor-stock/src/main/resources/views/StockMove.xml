@@ -57,19 +57,19 @@
     </grid>
     
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
-		 onNew="action-group-stock-stockmove-onnew">
+		 onLoad="action-stock-move-attrs-typeselect-change" onNew="action-group-stock-stockmove-onnew">
 	  <panel>
-		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations" readonlyIf="statusSelect != 1"/>
+		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
 		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
 	  </panel>
 	  <panel>
-	    <panel title="Stock move reference">
+	    <panel title="Stock move reference" name="stockMoveRef">
 	      <field name="stockMoveSeq" colSpan="12"/>
 	      <field name="name" colSpan="12"/>
 	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1"/>
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1"/>
 	    </panel>
-	    <panel title="Stock move informations">
+	    <panel title="Stock move informations" name="stockMoveInformation">
 	      <field name="fromLocation" domain="self.company = :company" onChange="action-stock-move-set-from-address" colSpan="12" readonlyIf="statusSelect != 1"/>
 	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-set-to-address" colSpan="12" readonlyIf="statusSelect != 1"/>
 	      <field name="estimatedDate" colSpan="6" readonlyIf="statusSelect != 1"/>
@@ -88,7 +88,7 @@
 	  </panel>  
 	  <panel-tabs>
 	   
-	    <panel-related field="stockMoveLineList" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
+	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
 	    <panel title="Configuration">
 	      <field name="saleOrder" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
 	      <field name="purchaseOrder" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
@@ -157,6 +157,7 @@
     
     <action-group name="action-group-stock-stockmove-onnew">
     	<action name="action-stock-move-record-new"/>
+    	<action name="action-stock-move-attrs-typeselect-change"/>
     </action-group>
     
 	<action-group name="action-group-stock-stockmove-plan-click">
@@ -184,6 +185,21 @@
     	<action name="save"/>
   	</action-group>
 
+     <action-attrs name="action-stock-move-attrs-typeselect-change">     
+    	<attribute name="title" for="stockMoveRef" expr="eval: com.axelor.i18n.I18n.get('Internal move reference')" if="typeSelect == 1"/>
+    	<attribute name="title" for="stockMoveRef" expr="eval: com.axelor.i18n.I18n.get('Outgoing move reference')" if="typeSelect == 2"/>
+    	<attribute name="title" for="stockMoveRef" expr="eval: com.axelor.i18n.I18n.get('Incoming move reference')" if="typeSelect == 3"/>
+    	<attribute name="title" for="stockMoveInformation" expr="eval: com.axelor.i18n.I18n.get('Internal move information')" if="typeSelect == 1"/>
+    	<attribute name="title" for="stockMoveInformation" expr="eval: com.axelor.i18n.I18n.get('Outgoing move information')" if="typeSelect == 2"/>
+    	<attribute name="title" for="stockMoveInformation" expr="eval: com.axelor.i18n.I18n.get('Incoming move information')" if="typeSelect == 3"/>
+    	<attribute name="title" for="stockMoveLineListPanel" expr="eval: com.axelor.i18n.I18n.get('Internal move line')" if="typeSelect == 1"/>
+    	<attribute name="title" for="stockMoveLineListPanel" expr="eval: com.axelor.i18n.I18n.get('Outgoing move line')" if="typeSelect == 2"/>
+    	<attribute name="title" for="stockMoveLineListPanel" expr="eval: com.axelor.i18n.I18n.get('Incoming move line')" if="typeSelect == 3"/>
+    	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Internal move line')" if="typeSelect == 1"/>
+    	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move line')" if="typeSelect == 2"/>
+    	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move line')" if="typeSelect == 3"/>
+    </action-attrs>
+    
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
     </action-record>
