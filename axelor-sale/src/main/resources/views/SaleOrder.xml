@@ -515,6 +515,7 @@
  		<field name="mainInvoicingAddress" expr="eval: clientPartner?.mainInvoicingAddress"/>
 		<field name="deliveryAddress" expr="eval: clientPartner?.deliveryAddress"/>
 		<field name="priceList" expr="eval: clientPartner?.salePriceList"/>
+		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
     </action-record>
     
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">
