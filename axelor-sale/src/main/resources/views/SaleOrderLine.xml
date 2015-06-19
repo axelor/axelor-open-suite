@@ -181,8 +181,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-product">
-		<attribute name="domain" for="product" expr="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and self.productTypeSelect!='subscriptable'" if="__parent__.invoicingTypeSelect != 6"/>
-		<attribute name="domain" for="product" expr="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true" if="__parent__.invoicingTypeSelect == 6"/>
+		<attribute name="domain" for="product" expr="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true"/>
 	</action-attrs>
 	
 	<action-attrs name="action-supplychain-attrs-readonly-invoice-subscription" if-module="axelor-supplychain">

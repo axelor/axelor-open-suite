@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
-import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.MinStockRules;
@@ -40,97 +40,97 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImpl  {
-	
+
 	@Inject
 	protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
-	
+
 	@Inject
 	protected PurchaseOrderLineService purchaseOrderLineService;
-	
+
 	@Inject
-	protected SaleConfigService saleConfigService;
-	
+	protected PurchaseConfigService purchaseConfigService;
+
 	protected LocalDate today;
-	
+
 	protected User user;
-	
+
 	@Inject
 	private PurchaseOrderRepository purchaseOrderRepo;
-	
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
-		
+
 		Location location = locationLine.getLocation();
-		
+
 		//TODO à supprimer après suppression des variantes
 		if(location == null)  {
 			return;
 		}
-		
+
 		MinStockRules minStockRules = this.getMinStockRules(product, location, type);
-		
+
 		if(minStockRules == null)  {
 			return;
 		}
-		
+
 		if(this.useMinStockRules(locationLine, minStockRules, qty, type))  {
-			
+
 			if(minStockRules.getOrderAlertSelect() == ORDER_ALERT_ALERT)  {
-				
+
 				//TODO
-				
+
 			}
 			else if(minStockRules.getOrderAlertSelect() == ORDER_ALERT_PRODUCTION_ORDER)  {
-				
-				
+
+
 			}
 			else if(minStockRules.getOrderAlertSelect() == ORDER_ALERT_PURCHASE_ORDER)  {
-				
+
 				Partner supplierPartner = product.getDefaultSupplierPartner();
-				
+
 				if(supplierPartner != null)  {
-					
+
 					Company company = location.getCompany();
-					
+
 					PurchaseOrder purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-							this.user, 
-							company, 
-							null, 
-							supplierPartner.getCurrency(), 
-							this.today.plusDays(supplierPartner.getDeliveryDelay()), 
+							this.user,
+							company,
+							null,
+							supplierPartner.getCurrency(),
+							this.today.plusDays(supplierPartner.getDeliveryDelay()),
 							minStockRules.getName(),
-							null, 
-							saleConfigService.getSaleConfig(company).getSaleOrderInvoicingTypeSelect(), 
-							location, 
-							this.today, 
-							Beans.get(PriceListRepository.class).all().filter("self.partner = ?1", supplierPartner).fetchOne(), 
+							null,
+							purchaseConfigService.getPurchaseConfig(company).getPurchaseOrderInvoicingTypeSelect(),
+							location,
+							this.today,
+							Beans.get(PriceListRepository.class).all().filter("self.partner = ?1", supplierPartner).fetchOne(),
 							supplierPartner));
-					
+
 					purchaseOrder.addPurchaseOrderLineListItem(
 							purchaseOrderLineService.createPurchaseOrderLine(
-									purchaseOrder, 
-									product, 
-									"", 
-									null, 
-									minStockRules.getReOrderQty(), 
+									purchaseOrder,
+									product,
+									"",
+									null,
+									minStockRules.getReOrderQty(),
 									product.getUnit()));
-						
+
 					purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
-					
+
 					purchaseOrderRepo.save(purchaseOrder);
-					
+
 				}
-				
-				
+
+
 			}
-			
-			
-			
-			
+
+
+
+
 		}
-		
+
 	}
-	
-	
+
+
 }
