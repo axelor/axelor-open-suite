@@ -505,7 +505,6 @@
     </action-record>
     
     <action-record name="action-sale-order-record-company-configuration" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="invoicingTypeSelect" expr="eval: company?.saleConfig?.saleOrderInvoicingTypeSelect" if="eval: company?.saleConfig?.saleOrderInvoicingTypeSelect != 0"/>
     	<field name="duration" expr="eval: company?.saleConfig?.defaultValidityDuration"/>
     </action-record>
     

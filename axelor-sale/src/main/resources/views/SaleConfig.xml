@@ -13,9 +13,6 @@
 	    	<field name="saleOrderInAti"/>
 	    	<field name="defaultValidityDuration"/>
 	  	</panel>
-	  	<panel title="Invoicing informations">
-	    	<field name="saleOrderInvoicingTypeSelect"/>
-	  	</panel>
 	  	<panel title="Customer Credit" if-module="axelor-supplychain">
 	  		<field name="acceptedCredit"/>
 	  	</panel>
