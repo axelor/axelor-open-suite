@@ -6,7 +6,7 @@
 		<field name="code"/>
 		<field name="name"/>
 		<field name="customer"/>
-		<field name="userResponible" />
+		<field name="userResponsible" />
 		<field name="createdOn" />
 		<field name="statusSelect" />
 	</grid>
@@ -16,7 +16,7 @@
 		    <field name="name"/>
 			<field name="code" readonly="true"/>
 			<field name="customer" domain="self.isCustomer = true"/>
-			<field name="userResponible" />
+			<field name="userResponsible" />
 			<field name="statusSelect" readonly="true" colSpan="3"/>
 			<button name="close" title="Close" colSpan="3" onClick="action-business-project-set-status-close,save" showIf="statusSelect == 1" readonlyIf="id == null"/>
 			<button name="open" title="Open" colSpan="3" onClick="action-business-project-set-status-open,save" showIf="statusSelect == 2" readonlyIf="id == null"/>

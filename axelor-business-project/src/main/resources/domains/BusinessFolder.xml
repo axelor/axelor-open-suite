@@ -13,7 +13,7 @@
     <date name="dateClosed" title="Date closed"/>
     <string name="name" title="Folder name" required="true"/>
     <integer name="statusSelect" title="Status" selection="business.project.business.folder.status.select"  default="1"/>
-    <many-to-one name="userResponible" ref="com.axelor.auth.db.User" title="User Responisble" />
+    <many-to-one name="userResponsible" ref="com.axelor.auth.db.User" title="User Responsible" />
     
     
   </entity>
