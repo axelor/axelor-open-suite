@@ -75,15 +75,15 @@
 			<panel title="Purchase/Costs" showTitle="false">
 				<panel title="Purchases" colSpan="6">
 				    <field name="purchasable" colSpan="12"/>
-					<field name="purchasePrice" colSpan="12"/>
-					<field name="purchaseCurrency" colSpan="12"/>
-					<field name="defaultSupplierPartner" domain="self.isContact = false AND self.isSupplier = true" colSpan="12"/>
+					<field name="purchasePrice" colSpan="12" showIf="purchasable"/>
+					<field name="purchaseCurrency" colSpan="12" showIf="purchasable"/>
+					<field name="defaultSupplierPartner" domain="self.isContact = false AND self.isSupplier = true" colSpan="12" showIf="purchasable"/>
 				</panel>
 				<panel title="Costs" colSpan="6">
 					<field name="costPrice" onChange="action-product-record-compute-sale-price" colSpan="12"/>
 					<field name="managPriceCoef" onChange="action-product-record-compute-sale-price" colSpan="12"/>
 				</panel>
-				<panel-related title="Suppliers catalog" field="supplierCatalogList" colSpan="12"/>        
+				<panel-related title="Suppliers catalog" field="supplierCatalogList" colSpan="12" showIf="purchasable"/>        
 			</panel>
 	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
 	        <panel title="Stock" showIf="productTypeSelect == 'storable'" showTitle="false" if-module="axelor-stock">

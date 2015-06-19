@@ -6,7 +6,7 @@
 		<field name="code"/>
 		<field name="name"/>
 		<field name="customer"/>
-		<field name="userResponible" />
+		<field name="userResponsible" />
 		<field name="createdOn" />
 		<field name="statusSelect" />
 	</grid>
@@ -16,13 +16,13 @@
 		    <field name="name"/>
 			<field name="code" readonly="true"/>
 			<field name="customer" domain="self.isCustomer = true"/>
-			<field name="userResponible" />
+			<field name="userResponsible" />
 			<field name="statusSelect" readonly="true" colSpan="3"/>
 			<button name="close" title="Close" colSpan="3" onClick="action-business-project-set-status-close,save" showIf="statusSelect == 1" readonlyIf="id == null"/>
 			<button name="open" title="Open" colSpan="3" onClick="action-business-project-set-status-open,save" showIf="statusSelect == 2" readonlyIf="id == null"/>
 			<button name="createSalesOrder" title="Create Sales Order" colSpan="3"  readonlyIf="id == null" onClick="save,action-business-folder-method-create-sale-order"/>
-			<field name="templateSaleOrder" domain="self.template = true" canNew="false" colSpan="6" form-view="sale-order-template-form"/>
-			<button name="createSalesOrderFromTemplate" title="Create Sale Order From Template" colSpan="6" readonlyIf="id == null" onClick="save,action-business-folder-method-create-sale-order"/>
+			<field name="$template" title="Template" type="many-to-one" target="com.axelor.apps.sale.db.SaleOrder" domain="self.template = true" canNew="false" colSpan="6" form-view="sale-order-template-form"/>
+			<button name="createSalesOrderFromTemplate" title="Create Sale Order From Template" colSpan="6" readonlyIf="id == null" onClick="save,action-business-folder-method-create-sale-order-from-template"/>
 		</panel>
 		<panel>
 			<field name="createdBy" title="User Opened"/>
@@ -56,6 +56,10 @@
 	
 	<action-method name="action-business-folder-method-create-sale-order">
 		<call class="com.axelor.apps.business.project.web.BusinessFolderController" method="generateViewSaleOrder"/>
+	</action-method>
+	
+	<action-method name="action-business-folder-method-create-sale-order-from-template">
+		<call class="com.axelor.apps.business.project.web.BusinessFolderController" method="generateViewSaleOrderFromTemplate"/>
 	</action-method>
 	    
 </object-views>
