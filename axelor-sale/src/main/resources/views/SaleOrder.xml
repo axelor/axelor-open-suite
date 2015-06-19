@@ -79,7 +79,8 @@
    	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field name="mainInvoicingAddress" canNew="true"/>
 	      <field name="deliveryAddress" canNew="true"/>
-	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true"/>
+	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount"/>
+	      <field name="hideDiscount"/>
       	  <field name="externalReference"/>
       </panel>
 	  <panel-tabs>
@@ -203,7 +204,8 @@
    	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field name="mainInvoicingAddress" canNew="true"/>
 	      <field name="deliveryAddress" canNew="true"/>
-	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true"/>
+	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount"/>
+	      <field name="hideDiscount"/>
       	  <field name="externalReference"/>
       </panel>
 	  <panel-tabs>
@@ -513,7 +515,12 @@
  		<field name="mainInvoicingAddress" expr="eval: clientPartner?.mainInvoicingAddress"/>
 		<field name="deliveryAddress" expr="eval: clientPartner?.deliveryAddress"/>
 		<field name="priceList" expr="eval: clientPartner?.salePriceList"/>
+		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
     </action-record>
+    
+    <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
+	</action-record>
     
     <action-method name="action-sale-order-record-compute-end-of-validity-date">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="computeEndOfValidityDate"/>
