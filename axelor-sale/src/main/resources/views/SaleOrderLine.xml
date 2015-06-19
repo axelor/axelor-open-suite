@@ -19,7 +19,6 @@
 		<panel>
 			<field name="sequence"/>
 		   	<field name="isToPrintLineSubTotal"/>
-		  	<field name="hideDiscount"/>
 		</panel>
 		<panel>
 		   	<field name="product" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product"/>
@@ -119,7 +118,6 @@
     	<field name="qty" expr="eval: 1"/>
     	<field name="isOrdered" expr="true"/>
     	<field name="isToPrintLineSubTotal" expr="eval: _parent?.isToPrintLineSubTotal"/>
-    	<field name="hideDiscount" expr="eval: _parent?.priceList?.hideDiscount"/>
     </action-record>
     
 	<action-record name="action-sale-order-line-record-sequence" model="com.axelor.apps.sale.db.SaleOrderLine">
