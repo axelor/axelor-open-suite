@@ -18,6 +18,7 @@
 package com.axelor.apps.purchase.web;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +74,7 @@ public class PurchaseOrderLineController {
 
 					exTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLineService.computeDiscount(purchaseOrderLine));
 					inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
-					priceDiscounted = purchaseOrderLineService.computeDiscount(purchaseOrderLine);
+					priceDiscounted = purchaseOrderLineService.computeDiscount(purchaseOrderLine).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 				}
 
 				if(exTaxTotal != null) {
