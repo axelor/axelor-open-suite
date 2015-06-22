@@ -26,7 +26,7 @@ public class SubscriptionController {
 	public void generateSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
-		if(saleOrderLine.getId()!=null){
+		if(saleOrderLine.getId()!=null && saleOrderLine.getId()>0){
 			saleOrderLine=Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
 		}
 
