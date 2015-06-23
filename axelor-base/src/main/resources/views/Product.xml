@@ -120,7 +120,7 @@
 	        <panel title="Variants" showTitle="false">
 	        	<panel name="parentVariant" showIf="!parentProduct" colSpan="12">
 	        		<field name="productVariantConfig" canSelect="false" canNew="true" colSpan="12">
-	        			<editor>
+	        			<editor x-show-titles="false">
 				        	<field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain"/>
 				        	<field name="productVariantValue1Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr1" colSpan="6"/>
 					        <field name="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr1"/>
@@ -136,7 +136,7 @@
 	        	</panel>
 	            <panel name="childVariant" showIf="parentProduct" colSpan="12">
 	            <field name="productVariant" showTitle="false" canSelect="false" >
-            		<editor>
+            		<editor x-show-titles="false">
 	            		<field name="productVariantAttr1" showTitle="false" readonly="true"/>
 			        	<field name="productVariantValue1" showTitle="false" widget="SuggestBox" showIf="productVariantAttr1"/>
 				        <field name="productVariantAttr2" showTitle="false" readonly="true" showIf="productVariantAttr1"/>
