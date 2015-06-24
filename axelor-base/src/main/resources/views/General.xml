@@ -90,6 +90,19 @@
 					<field name="allowNegativeLeaveEmployees" if-module="axelor-human-resource"/>
 				</panel>
 				
+				<panel title="Project/Task configuration" if-module="axelor-project">
+					<field name="generateProjectOrder" />
+					<field name="automaticProject" />
+					<field name="projectTaskSaleOrderLines" />
+					<field name="projectTaskPurchaseOrderLines" />
+					<field name="projectTaskInvoiceLines" />
+					<field name="projectTaskLabel"/>
+				</panel>
+				
+				<panel title="Business Folder configuration" if-module="axelor-business-project">
+					<field name="folderServiceCompany"/>
+				</panel>
+				
 		    </panel>
 		    <panel title="Interfaces">
 				<panel name="map" title="Mapping"  colSpan="12">
