@@ -5,7 +5,7 @@
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
-	onLoad="action-group-supplychain-saleorder-onload" 
+	onLoad="action-group-businness-project-saleorder-onload" 
 	onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-check-create-project,save">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
@@ -13,7 +13,7 @@
 	
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-template-form"
 		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
-		onLoad="action-group-sale-saleorder-onload"
+		onLoad="action-group-businness-project-saleorder-onload"
 		onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-check-create-project,save">
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
@@ -41,5 +41,10 @@
 	<action-method name="action-business-folder-method-create-order-from-folder">
 		<call class="com.axelor.apps.business.project.web.BusinessFolderController" method="createSaleOrder"/>
 	</action-method>
+	
+	<action-group name="action-group-businness-project-saleorder-onload">
+		<action name="action-group-supplychain-saleorder-onload"/>
+		<action name="action-sale-order-attrs-show-project-panel"/>
+	</action-group>
 	
 </object-views>	
