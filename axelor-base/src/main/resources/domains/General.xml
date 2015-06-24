@@ -31,8 +31,8 @@
 		
 		<integer name="computeMethodDiscountSelect" title="Compute Method for Discounts" selection="base.compute.method.discount.select" default="1"/>
 
-	
-	
+		<string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" default="1"/>
+		<decimal name="dailyWorkHours" title="Daily Work Hours"/>
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer DISCOUNT_SEPARATE = 1;

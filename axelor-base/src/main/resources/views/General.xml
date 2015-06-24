@@ -36,6 +36,8 @@
 		    	<field name="productInAti"/>
 		    	<field name="nbDecimalDigitForUnitPrice"/>
 		    	<field name="computeMethodDiscountSelect"/>
+		    	<field name="timeLoggingPreferenceSelect"/>
+		    	<field name="dailyWorkHours"/>
 		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>

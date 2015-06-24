@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -142,21 +143,21 @@ public class GeneralService extends GeneralRepository {
 
 		return null;
 	}
-	
+
 
 	public static int getNbDecimalDigitForUnitPrice(){
-		
+
 		if (getGeneral() != null){
 			return getGeneral().getNbDecimalDigitForUnitPrice();
 		}
-		
+
 		return IAdministration.DEFAULT_NB_DECIMAL_DIGITS;
 	}
-	
-	
-// Message exception	
-	
-	
+
+
+// Message exception
+
+
 	/**
 	 * Obtenir le message d'erreur pour les achats/ventes.
 	 *
@@ -189,6 +190,48 @@ public class GeneralService extends GeneralRepository {
 		}
 		else { return model.getClass(); }
 
+	}
+
+	public BigDecimal getDurationHours(BigDecimal duration){
+
+		if(duration == null) { return null; }
+
+		General general = GeneralService.getGeneral();
+
+		if(general != null){
+			String timePref = general.getTimeLoggingPreferenceSelect();
+
+			if(timePref.equals("days")){
+				duration = duration.multiply(general.getDailyWorkHours());
+			}
+			else if (timePref.equals("minutes")) {
+				duration = duration.divide(new BigDecimal(60));
+			}
+		}
+
+		return duration;
+	}
+
+	public BigDecimal getGeneralDuration(BigDecimal duration){
+
+		if(duration == null) { return null; }
+
+		General general = GeneralService.getGeneral();
+
+		if(general != null){
+			String timePref = general.getTimeLoggingPreferenceSelect();
+
+			BigDecimal dailyWorkHrs = general.getDailyWorkHours();
+
+			if(timePref.equals("days") && dailyWorkHrs != null && dailyWorkHrs.compareTo(BigDecimal.ZERO) != 0){
+				duration = duration.divide(dailyWorkHrs);
+			}
+			else if (timePref.equals("minutes")) {
+				duration = duration.multiply(new BigDecimal(60));
+			}
+		}
+
+		return duration;
 	}
 
 }

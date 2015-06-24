@@ -2,10 +2,12 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<grid name="timesheet-line-project-grid" title="Log Times" model="com.axelor.apps.hr.db.TimesheetLine">
+	<grid name="timesheet-line-project-grid" title="Log Times" model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
+	onNew="action-hr-default-timesheet-line-project">
 		<field name="user"/>
 		<field name="date" />
-		<field name="visibleDuration" />
+		<field name="activity" canNew="true"/>
+		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true"/>
 		<field name="affectedToTimeSheet"/>
 		<field name="comments" />
@@ -58,6 +60,7 @@
 	
 	<action-record name="action-hr-default-timesheet-line-project" model="com.axelor.apps.hr.db.TimesheetLine">
 	    <field name="user" expr="eval:__user__" />
+	    <field name="activity" expr="eval:__user__.employee?.activity" />
 	</action-record>
 	
 	<action-record name="action-hr-default-timesheet-line-timesheet" model="com.axelor.apps.hr.db.TimesheetLine">

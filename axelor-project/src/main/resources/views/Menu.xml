@@ -13,5 +13,15 @@
 	    <view type="form" name="project-form"/>
 	    <domain>self.taskTypeSelect = 'project'</domain>
 	</action-view>
+	
+	<menuitem name="task-all" parent="menu-project-root"
+    	title="Tasks"
+    	action="task.all"/>
+
+	<action-view name="task.all" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
+    	<view type="grid" name="task-grid"/>
+	    <view type="form" name="task-form"/>
+	    <domain>self.taskTypeSelect = 'task'</domain>
+	</action-view>
 
 </object-views>

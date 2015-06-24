@@ -25,6 +25,7 @@
        	    <field name="timeLoggingPreferenceSelect" />
        	    <field name="weeklyWorkHours" />
        	    <field name="dailyWorkHours" />
+       	    <field name="activity"/>
        	    <field name="manager" />
        	    <field name="department" />
        	    <field name="timesheetReminder" />

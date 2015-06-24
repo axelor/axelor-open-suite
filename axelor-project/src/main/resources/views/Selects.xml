@@ -8,4 +8,14 @@
 		<option value="task">Task</option>
 	</selection>
 	
+	<selection name="project.task.status.select">
+		<option value="1">Draft</option>
+	</selection>
+	
+	<selection name="project.task.invoice.status.select">
+		<option value="1">Do not Invoice</option>
+		<option value="2">To Invoice</option>
+		<option value="3">Invoiced</option>
+	</selection>
+	
 </object-views>
