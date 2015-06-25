@@ -23,7 +23,7 @@
 			<field name="name"/>
 			<field name="folder" if-module="axelor-business-project" hideIf="project != null" onChange="action-project-task-group-folder-on-change"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain"/>
-			<field name="saleOrder"/>
+			<field name="saleOrder" if-module="axelor-business-project"/>
 			<field name="customer"/>
 			<field name="fromDate" />
 			<field name="toDate" />

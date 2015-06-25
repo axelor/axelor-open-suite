@@ -19,7 +19,6 @@
     <many-to-one name="generalAccount" ref="com.axelor.apps.account.db.Account" title="General Account"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Move Line"/>
-    <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task"/>
     <boolean name="invoiceable"/>
     <boolean name="invoiced" readonly="true"/>
   </entity>

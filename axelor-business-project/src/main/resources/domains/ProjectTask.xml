@@ -8,7 +8,7 @@
   <entity name="ProjectTask" cachable="true">
       
       <many-to-one name="folder" ref="com.axelor.apps.businessproject.db.BusinessFolder" title="Folder"/>
-	          
+	  <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order"/>
   </entity>
   
 </domain-models>
