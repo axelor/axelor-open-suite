@@ -36,6 +36,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -198,6 +199,15 @@ public abstract class InvoiceGenerator  {
 
 		invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
 
+		if(priceList == null)  {
+			if(InvoiceToolService.isPurchase(invoice))  {
+				priceList = partner.getPurchasePriceList();
+			}
+			else  {
+				priceList = partner.getSalePriceList();
+			}
+		}
+		
 		invoice.setPriceList(priceList);
 
 		invoice.setInternalReference(internalReference);

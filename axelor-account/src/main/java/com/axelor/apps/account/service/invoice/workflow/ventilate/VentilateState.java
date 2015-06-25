@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Sequence;
@@ -50,7 +50,7 @@ public class VentilateState extends WorkflowInvoice {
 
 	@Inject
 	private MoveService moveService;
-
+	
 	@Override
 	public void init(Invoice invoice){
 		this.invoice = invoice;
@@ -66,7 +66,7 @@ public class VentilateState extends WorkflowInvoice {
 		
 		Sequence sequence = this.getSequence();
 		
-		if(!moveService.isPurchase(invoice))  {  
+		if(!InvoiceToolService.isPurchase(invoice))  {  
 			this.checkInvoiceDate(sequence);
 		}
 		
@@ -140,7 +140,7 @@ public class VentilateState extends WorkflowInvoice {
 
 	protected LocalDate getDueDate()  {
 
-		return InvoiceServiceImpl.getDueDate(invoice.getPaymentCondition(),invoice.getInvoiceDate());
+		return InvoiceToolService.getDueDate(invoice.getPaymentCondition(),invoice.getInvoiceDate());
 		
 	}
 

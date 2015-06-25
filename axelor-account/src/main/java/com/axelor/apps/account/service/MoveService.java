@@ -40,6 +40,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -208,7 +209,7 @@ public class MoveService extends MoveRepository {
 			
 			if (move != null)  {
 				
-				boolean isPurchase = this.isPurchase(invoice);
+				boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 				
 				boolean isDebitCustomer = this.isDebitCustomer(invoice);
 				
@@ -313,44 +314,6 @@ public class MoveService extends MoveRepository {
 		}
 		
 		return isDebitCustomer;
-	}
-	
-	
-	/**
-	 * 
-	 * @param invoice
-	 * 
-	 * OperationTypeSelect
-	 *  1 : Achat fournisseur
-	 *	2 : Avoir fournisseur
-	 *	3 : Vente client
-	 *	4 : Avoir client
-	 * @return
-	 * @throws AxelorException
-	 */
-	public boolean isPurchase(Invoice invoice) throws AxelorException  {
-		
-		boolean isPurchase;
-		
-		switch(invoice.getOperationTypeSelect())  {
-		case 1:
-			isPurchase = true;
-			break;
-		case 2:
-			isPurchase = true;
-			break;
-		case 3:
-			isPurchase = false;
-			break;
-		case 4:
-			isPurchase = false;
-			break;
-		
-		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_1), invoice.getInvoiceId()), IException.MISSING_FIELD);
-		}	
-		
-		return isPurchase;
 	}
 	
 	
@@ -576,7 +539,7 @@ public class MoveService extends MoveRepository {
 		Company company = invoice.getCompany();
 		
 		// Récupération des trop-perçus
-		List<MoveLine> creditMoveLineList = (List<MoveLine>) paymentService.getExcessPayment(invoice, this.getCustomerAccount(invoice.getPartner(), company, this.isPurchase(invoice)));
+		List<MoveLine> creditMoveLineList = (List<MoveLine>) paymentService.getExcessPayment(invoice, this.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice)));
 		
 		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 			

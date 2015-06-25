@@ -269,7 +269,7 @@
     
     
     <action-record name="action-invoice-record-due-date" model="com.axelor.apps.account.db.Invoice">
-    	<field name="dueDate" expr="call: com.axelor.apps.account.service.invoice.InvoiceServiceImpl:getDueDate(paymentCondition,invoiceDate)" if="paymentCondition != null &amp;&amp; invoiceDate!=null"/>
+    	<field name="dueDate" expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,invoiceDate)" if="paymentCondition != null &amp;&amp; invoiceDate!=null"/>
     </action-record>
     
     <action-record name="action-invoice-record-draft" model="com.axelor.apps.account.db.Invoice">

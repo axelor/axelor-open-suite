@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -41,6 +42,8 @@ import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -245,31 +248,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		save(invoice);
 		
 		return refund;
-		
-	}
-	
-	public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate)  {
-		
-		switch (paymentCondition.getTypeSelect()) {
-		case PaymentConditionRepository.TYPE_NET:
-			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime());
-			
-		case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
-					
-			return invoiceDate.dayOfMonth().withMaximumValue().plusDays(paymentCondition.getPaymentTime());
-					
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
-			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue();
-			
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
-			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue().plusDays(paymentCondition.getDaySelect());
-
-		default:
-			return invoiceDate;
-		}
 		
 	}
 	
