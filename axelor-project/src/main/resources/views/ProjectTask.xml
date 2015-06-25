@@ -23,6 +23,7 @@
 			<field name="name"/>
 			<field name="folder" if-module="axelor-business-project" hideIf="project != null" onChange="action-project-task-group-folder-on-change"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain"/>
+			<field name="saleOrder"/>
 			<field name="customer"/>
 			<field name="fromDate" />
 			<field name="toDate" />
@@ -32,6 +33,8 @@
 			<field name="progress" widget="SelectProgress"/>
 			<field name="$visibleLeadDelay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<field name="invoiceStatusSelect"/>
+			<field name="invoiceable"/>
+			<field name="invoiced"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Related Projects">
@@ -84,6 +87,8 @@
 			<field name="progress" widget="SelectProgress"/>
 			<field name="$visibleLeadDelay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<field name="invoiceStatusSelect"/>
+			<field name="invoiceable"/>
+			<field name="invoiced"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Log Times">
@@ -99,12 +104,72 @@
 		</panel-tabs>
 	</form>
 	
+	
+	<grid name="project-task-grid" title="Projects/Tasks" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="fullName"/>
+		<field name="customer" />
+		<field name="folder" />
+		<field name="fromDate" />
+		<field name="toDate" />
+		<field name="dueDate" />
+		<field name="statusSelect"/>
+		<field name="progress" widget="SelectProgress"/>
+		<field name="taskTypeSelect"/>
+	</grid>
+
+	<form name="project-task-form" title="Project/Task" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-project-default,action-project-task-attrs-duration-title"
+	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title">
+		<panel title="Overview">
+			<field name="statusSelect" widget="NavSelect"/>
+			<field name="project" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid" onChange="action-project-task-record-folder"/>
+			<field name="code"/>
+			<field name="name"/>
+			<field name="folder" if-module="axelor-business-project" hideIf="project != null || taskTypeSelect == 'task'" onChange="action-project-task-group-folder-on-change"/>
+			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain,action-task-attrs-assigned-to-domain"/>
+			<field name="customer"/>
+			<field name="fromDate" />
+			<field name="toDate" />
+			<field name="$visibleDuration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
+			<field name="$visibleTimeSpent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="dueDate" />
+			<field name="progress" widget="SelectProgress"/>
+			<field name="$visibleLeadDelay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
+			<field name="invoiceStatusSelect"/>
+			<field name="invoiceable"/>
+			<field name="invoiced"/>
+		</panel>
+		<panel-tabs>
+			<panel title="Related Projects">
+				<panel-dashlet action="action-project-task-view-show-project" colSpan="12"/>
+			</panel>
+			<panel title="Tasks" hideIf="taskTypeSelect == 'task'">
+				<panel-dashlet action="action-project-task-view-show-task" colSpan="12"/>
+			</panel>
+			<panel title="Log Times">
+				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
+			</panel>
+			<panel title="Project Tree" hideIf="taskTypeSelect == 'task'">
+				<panel-dashlet action="action-view-show-project-tree" colSpan="12" title="Project Tree"/>
+			</panel>
+			<panel title="Description">
+				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+				<field name="taskTypeSelect" hidden="true" />
+				<field name="duration" hidden="true"/>
+				<field name="timeSpent" hidden="true"/>
+				<field name="leadDelay" hidden="true"/>
+			</panel>
+		</panel-tabs>
+		<panel title="Settings" sidebar="true">
+			<field name="membersSet" widget="TagSelect" hideIf="taskTypeSelect == 'task'"/>
+		</panel>
+	</form>
+	
 	<action-attrs name="action-task-attrs-assigned-to-domain">
-	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(_parent?.membersSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;"/>
+	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(_parent?.membersSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;" if="taskTypeSelect == 'task'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-assigned-to-domain">
-	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(membersSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;"/>
+	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(membersSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;" if="taskTypeSelect == 'project'"/>
 	</action-attrs>
 	
 	<action-record name="action-project-project-default" model="com.axelor.apps.project.db.ProjectTask">

@@ -12,7 +12,9 @@
 <!--   Onglet Historique -->
   	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated invoice lines"/>
   	
-  	
+	<boolean name="invoiceable"/>
+	<boolean name="invoiced" readonly="true"/>
+	  	
   </entity>
 
 </domain-models>

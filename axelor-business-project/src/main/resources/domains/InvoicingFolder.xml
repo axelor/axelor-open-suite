@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+
+  <module name="business-project" package="com.axelor.apps.businessproject.db"/>
+
+  <entity name="InvoicingFolder" cachable="true">
+      
+    <many-to-one name="folder" ref="com.axelor.apps.businessproject.db.BusinessFolder" title="Folder"/>
+    <many-to-many name="logTimesSet" ref="com.axelor.apps.hr.db.TimesheetLine" title="Log Times Selection"/>
+    <many-to-many name="saleOrderLineSet" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale Order Lines Selection"/>
+    <many-to-many name="purchaseOrderLineSet" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase Order Lines Selection"/>
+    <many-to-many name="expenseLineSet" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense Lines Selection"/>
+    <many-to-many name="analyticMoveLineSet" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic Move Lines Selection"/>
+    <many-to-many name="projectTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task Selection"/>
+    <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice generated"/>
+    
+  </entity>
+  
+</domain-models>

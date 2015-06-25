@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.business.project.exception;
+package com.axelor.apps.project.exception;
 
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
@@ -25,9 +25,7 @@ package com.axelor.apps.business.project.exception;
  */
 public interface IExceptionMessage {
 
-	static final String FOLDER_TEMPLATE = /*$$(*/ "Merci de rentrer un modèle de devis"/*)*/ ;
-	static final String INVOICING_FOLDER_EMPTY = /*$$(*/ "Vous n'avez sélectionné aucun élément à facturer"/*)*/ ;
-	static final String INVOICING_FOLDER_CUSTOMER = /*$$(*/ "L'affaire sélectionnée ne contient pas de client"/*)*/ ;
-	static final String INVOICING_FOLDER_USER = /*$$(*/ "L'affaire sélectionnée ne contient pas de responsable"/*)*/ ;
-	static final String INVOICING_FOLDER_FOLDER = /*$$(*/ "Veuillez sélectionner une affaire"/*)*/ ;
+	static final String PROJECT_PLANNING_NO_TASK = /*$$(*/ "Vous n'êtes sur aucun projet ou aucune tâche, votre planning ne sera pas généré."/*)*/ ;
+	static final String PROJECT_PLANNING_NO_TASK_TEAM = /*$$(*/ "Votre équipe n'est sur aucun projet ou aucune tâche, votre planning ne sera pas généré."/*)*/ ;
+
 }

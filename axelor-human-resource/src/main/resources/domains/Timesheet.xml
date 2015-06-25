@@ -19,7 +19,7 @@
       <many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project"/>
       <many-to-one name="task" ref="com.axelor.apps.project.db.ProjectTask" title="Task"/>
       <decimal name="logTime" title="Duration(by day)"/>
-      <many-to-one name="activity" ref="com.axelor.apps.hr.db.TimeActivity" title="Activity"/>
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
       <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated" readonly="true"/>
       <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>

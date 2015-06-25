@@ -41,6 +41,8 @@
 <!--   	Highlight -->
   	<decimal name="salePrice" precision="20" scale="5"/> 
   	
+  	<boolean name="invoiceable"/>
+  	
   	
   </entity>
 

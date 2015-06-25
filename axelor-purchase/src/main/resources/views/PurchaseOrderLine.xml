@@ -56,6 +56,8 @@
 	    <field name="inTaxTotal" readonly="true"/>
 	    <field name="saleMinPrice" readonly="true"/>
 	    <field name="salePrice" hidden="true"/>
+	    <field name="invoiceable"/>
+		<field name="invoiced" showIf="invoiceable"/>
 	  </panel>  
 	  
 	  <panel name="discount" title="Discount" canCollapse="true">
@@ -74,8 +76,8 @@
 	      <dashlet   action="action-purchase-order-line-view-stock-move-line"/>
 	      -->
 	    </panel>
-	    <panel title="Links">
-	      <field name="task" if-module="axelor-account-organisation"/>
+	    <panel title="Project/Task" if-module="axelor-business-project">
+	      <field name="projectTask"/>
 	    </panel>
 	    <panel title="Suppliers requests" if-module="axelor-supplier-management">
 	      <button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>

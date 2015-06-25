@@ -15,6 +15,27 @@
     <integer name="statusSelect" title="Status" selection="business.project.business.folder.status.select"  default="1"/>
     <many-to-one name="userResponsible" ref="com.axelor.auth.db.User" title="User Responsible" />
     
+    <decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
+    <decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
+    <decimal name="totalSaleOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
+    
+    <decimal name="totalPurchaseOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
+    <decimal name="totalPurchaseOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
+    <decimal name="totalPurchaseOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
+    
+    <decimal name="totalTimesPlanned" title="Planned Times Total" readonly="true"/>
+    <decimal name="totalTimesRealised" title="Realised Times Total" readonly="true"/>
+    
+    <decimal name="totalExpenses" title="ExpensesTotal" readonly="true"/>
+    
+    <decimal name="totalEstimatedCosts" title="Estimated Costs Total" readonly="true"/>
+    <decimal name="totalRealCosts" title="Real Costs Total" readonly="true"/>
+    
+    <decimal name="totalProducedTurnOver" title="Produced Turnover" readonly="true"/>
+    <decimal name="estimatedMargin" title="Estimated Margin" readonly="true"/>
+    <decimal name="realTimesMargin" title="Real Margin (Time)" readonly="true"/>
+    <decimal name="realInvoicingMargin" title="Real Margin (Invoicing)" readonly="true"/>
+    
     
   </entity>
   

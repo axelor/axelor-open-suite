@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+
+	<grid name="project-planning-line-grid" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="true" groupBy="user">
+		<field name="user" />
+		<field name="projectTask" />
+		<field name="monday" />
+		<field name="tuesday" />
+		<field name="wednesday" />
+		<field name="thursday" />
+		<field name="friday" />
+		<field name="saturday" />
+		<field name="sunday" />
+	</grid>
+
+</object-views>

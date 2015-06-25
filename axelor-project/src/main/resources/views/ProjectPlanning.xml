@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+
+	<form name="project-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning"
+		onLoad="action-project-planning-record-dates" canNew="false" canCopy="false">
+		<toolbar>
+			<button name="previousWeek" title="Previous Week" onClick="save,action-project-planning-method-previous-week"/>
+			<button name="currentWeek" title="Current Week" onClick="save,action-project-planning-method-current-week"/>
+			<button name="nextWeek" title="Next Week" onClick="save,action-project-planning-method-next-week"/>
+		</toolbar>
+		<panel>
+			<field name="year"/>
+			<field name="week"/>
+	      	<field name="monthSelect"/>
+		</panel>
+	    <panel-related field="projectPlanningLineList" showTitle="false" canNew="false" canRemove="false" canSelect="false"/>
+	    <panel>
+	    	<button name="seeMonth" title="See Month"/>
+	    	<field name="fromDate" />
+	      	<field name="toDate"/>
+	      	<field name="user" />
+	      	<field name="team" />
+	    </panel>
+	</form>
+
+	<action-record name="action-project-planning-record-dates" model="com.axelor.apps.project.db.ProjectPlanning">
+		<field name="fromDate" expr=""/>
+		<field name="toDate" expr=""/>
+	</action-record>
+	
+	<action-method name="action-project-planning-method-previous-week">
+		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="planningPreviousWeek"/>
+	</action-method>
+	
+	<action-method name="action-project-planning-method-current-week">
+		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="planningCurrentWeek"/>
+	</action-method>
+	
+	<action-method name="action-project-planning-method-next-week">
+		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="planningNextWeek"/>
+	</action-method>
+</object-views>

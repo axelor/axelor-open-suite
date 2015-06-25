@@ -115,11 +115,12 @@
 	<menuitem name="hr-conf" parent="hr-root" title="Configuration"
 		icon="img/Other/parameter_59px.png" />
 		
-	<menuitem name="hr-conf-time-activity" parent="hr-conf" title="Activities" action="conf.time.activity"/>
+	<menuitem name="hr-conf-product-activity" parent="hr-conf" title="Product Activities" action="conf.product.activity"/>
 	
-	<action-view name="conf.time.activity" title="Activities" model="com.axelor.apps.hr.db.TimeActivity">
-    	<view type="grid" name="time-activity-grid"/>
-	    <view type="form" name="time-activity-form"/>
+	<action-view name="conf.product.activity" title="Product Activities" model="com.axelor.apps.base.db.Product">
+    	<view type="grid" name="product-grid"/>
+	    <view type="form" name="product-form"/>
+	    <domain>self.isActivity = true</domain>
 	</action-view>
 	
 	<menuitem name="hr-conf-expense-type" parent="hr-conf" title="Expense Type" action="conf.expense.type"/>

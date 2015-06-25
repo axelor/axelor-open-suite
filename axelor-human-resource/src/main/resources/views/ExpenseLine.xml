@@ -24,6 +24,8 @@
 			<field name="untaxedAmount" onChange="action-expense-on-change-tax-untaxt-amount"/>
 			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount"/>
 			<field name="totalAmount"/>
+			<field name="invoiceable"/>
+			<field name="invoiced" showIf="invoiceable"/>
 			<field name="comments" colSpan="12"/>
 			<field name="user" hidden="true" />
 		</panel>

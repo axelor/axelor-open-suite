@@ -490,6 +490,15 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
+	<menuitem name="account-conf-analytic-move-line" parent="account-conf-analytic"
+		title="Analytic Move Lines" action="account.conf.analytic.move.line" />
+
+	<action-view name="account.conf.analytic.move.line" title="Analytic Move Lines"
+		model="com.axelor.apps.account.db.AnalyticMoveLine" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
 
 	<menuitem name="account-conf-payment" parent="account-conf"
 		title="Payment" />

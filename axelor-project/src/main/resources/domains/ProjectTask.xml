@@ -33,6 +33,10 @@
 	  
 	  <integer name="progress" title="Progress (%)" selection="grade.0.up.to.100.select"/>
 	  
+	  <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order"/>
+	  <boolean name="invoiceable"/>
+	  <boolean name="invoiced" readonly="true"/>
+	  
 	  <string name="fullName" namecolumn="true" search="name,code" title="Name">
 	       <![CDATA[
 	       		if(code != null && !code.isEmpty()) { return code + " " + name; }

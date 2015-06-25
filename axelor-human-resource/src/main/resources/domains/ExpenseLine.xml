@@ -15,7 +15,8 @@
       <decimal name="totalTax" title="Total tax" />
       <decimal name="totalAmount" title="Total amount with tax" readonly="true"/>
       <string name="comments" title="Comments" large="true"/>
-      
+      <boolean name="invoiceable"/>
+	  <boolean name="invoiced" readonly="true"/>
   </entity>
   
 </domain-models>

@@ -40,6 +40,9 @@
     		<panel title="Description">
     			<field name="description" colSpan="12" widget="html"/>
     		</panel>
+    		<panel name="projectTaskPanel" title="Project/Task" if-module="axelor-business-project">
+				<field name="project" form-view="project-task-form" grid-view="project-task-grid"/>
+			</panel>
     	</panel-tabs>
         
     </form>
@@ -61,6 +64,7 @@
 	    <action name="action-invoice-line-method-product-management"/>
 	    <action name="action-invoice-line-attrs-hide-product-variant"/>
 	    <action name="action-invoice-attrs-hide-ati"/>
+	    <action name="action-invoice-line-attrs-show-project"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-line-product-onchange">
@@ -125,6 +129,10 @@
 	<action-attrs name="action-invoice-line-attrs-scale-and-precision">
 		<attribute name="scale" for="price" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="discountAmount" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice() &amp;&amp; discountTypeSelect == 2"/>
+	</action-attrs>
+	
+	<action-attrs name="action-invoice-line-attrs-show-project" if-module="axelor-business-project">
+		<attribute name="hidden" for="projectTaskPanel" expr="!com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskSaleOrderLines()"/>
 	</action-attrs>
 
 </object-views>

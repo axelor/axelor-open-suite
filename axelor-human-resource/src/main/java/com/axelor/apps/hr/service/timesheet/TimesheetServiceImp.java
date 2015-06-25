@@ -1,11 +1,17 @@
 package com.axelor.apps.hr.service.timesheet;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.joda.time.LocalDate;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.DayPlanning;
 import com.axelor.apps.hr.db.Leave;
 import com.axelor.apps.hr.db.Timesheet;
@@ -65,8 +71,8 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		if(timesheet.getToGenerationDate() == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_TO_DATE)), IException.CONFIGURATION_ERROR);
 		}
-		if(timesheet.getActivity() == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_ACTIVITY)), IException.CONFIGURATION_ERROR);
+		if(timesheet.getProduct() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.CONFIGURATION_ERROR);
 		}
 		if(timesheet.getUser().getEmployee() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheet.getUser().getName()), IException.CONFIGURATION_ERROR);
@@ -117,7 +123,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 					if(timesheet.getTask()!=null)timesheetLine.setTask(timesheet.getTask());
 					timesheetLine.setVisibleDuration(timesheet.getLogTime());
 					timesheetLine.setDurationStored(employeeService.getDurationHours(timesheet.getLogTime()));
-					timesheetLine.setActivity(timesheet.getActivity());
+					timesheetLine.setProduct(timesheet.getProduct());
 					timesheet.addTimesheetLineListItem(timesheetLine);
 				}
 			}
@@ -139,4 +145,39 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		}
 	}
 
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList) throws AxelorException  {
+
+		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+
+		for(TimesheetLine timesheetLine : timesheetLineList)  {
+
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, timesheetLine));
+
+		}
+
+		return invoiceLineList;
+
+	}
+
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, TimesheetLine timesheetLine) throws AxelorException  {
+
+		Product product = timesheetLine.getProduct();
+
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(),
+				timesheetLine.getComments(),BigDecimal.ONE, product.getUnit(),10,false)  {
+
+			@Override
+			public List<InvoiceLine> creates() throws AxelorException {
+
+				InvoiceLine invoiceLine = this.createInvoiceLine();
+
+				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+				invoiceLines.add(invoiceLine);
+
+				return invoiceLines;
+			}
+		};
+
+		return invoiceLineGenerator.creates();
+	}
 }

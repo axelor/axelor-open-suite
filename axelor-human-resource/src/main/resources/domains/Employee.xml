@@ -20,7 +20,7 @@
       <many-to-one name="planning" ref="com.axelor.apps.hr.db.WeeklyPlanning"/>
       <one-to-many name="leaveLineList" title="Leave List" ref="com.axelor.apps.hr.db.LeaveLine" mappedBy="employee"/>
       <boolean name="negativeValueLeave" title="Allow Negative Value for Leaves"/>
-      <many-to-one name="activity" ref="com.axelor.apps.hr.db.TimeActivity" title=" Default Activity"/>
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Default Activity Product" required="true"/>
       <string name="name" title="Name" search="contactPartner">
           
            <![CDATA[

@@ -42,9 +42,11 @@
 				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
 				<panel title="Product typology" colSpan="6" colWidths="30%,70%">
 					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" colSpan="12"/>
+					<field name="isActivity" showIf="productTypeSelect == 'service'"/>
 					<field name="periodicitySelect" if-module="axelor-supplychain" showIf="productTypeSelect == 'subscriptable'"/>
 					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" colSpan="12"/>
 					<field name="inAti"/>
+					<field name="isAnalyticCapture" if-module="axelor-account"/>
 				</panel>
 				<panel title="Categorization" colSpan="6" colWidths="30%,70%">
 					<field name="applicationTypeSelect" onChange="action-set-product-type-select" colSpan="12"/>

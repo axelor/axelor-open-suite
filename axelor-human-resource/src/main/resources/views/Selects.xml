@@ -44,4 +44,9 @@
 		<option value="1">Consume</option>
 		<option value="2">Inject</option>
 	</selection>
+	
+	<selection name="hrs.timesheet.line.invoicing.type.select">
+		<option value="1">Use line's Activity</option>
+		<option value="2">Use employee's Activity</option>
+	</selection>
 </object-views>

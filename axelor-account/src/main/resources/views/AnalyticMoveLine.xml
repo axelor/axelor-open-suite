@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	
+    <grid name="analytic-move-line-grid" title="Analytic Move Lines" model="com.axelor.apps.account.db.AnalyticMoveLine">
+        <field name="analyticJournal"/>
+        <field name="analyticAccount"/>
+        <field name="date"/>
+        <field name="product"/>
+        <field name="amount"/>
+        <field name="partner"/>
+        <field name="invoiceable"/>
+        <field name="invoiced"/>
+    </grid>
+    <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency">
+       <panel >
+       		<field name="analyticJournal"/>
+	        <field name="analyticAccount"/>
+	        <field name="date"/>
+	        <field name="product" domain="self.isAnalyticCapture = true"/>
+	        <field name="unitPrice"/>
+	        <field name="qte"/>
+	        <field name="unit"/>
+	        <field name="amount"/>
+	        <field name="currency"/>
+	        <field name="partner"/>
+	        <field name="projectTask"/>
+	        <field name="generalAccount"/>
+	        <field name="moveLine"/>
+	        <field name="invoiceable"/>
+			<field name="invoiced" showIf="invoiceable"/>
+       </panel>
+        
+    </form>
+    
+    <action-record name="action-analytic-move-line-record-currency" model="com.axelor.apps.account.db.AnalyticMoveLine">
+    	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
+    </action-record>
+</object-views>

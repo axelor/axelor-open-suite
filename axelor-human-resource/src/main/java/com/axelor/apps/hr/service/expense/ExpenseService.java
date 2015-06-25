@@ -13,6 +13,8 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAccountManagement;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -20,6 +22,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
+import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -163,5 +166,41 @@ public class ExpenseService extends ExpenseRepository{
 		}
 
 		save(expense);
+	}
+
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList) throws AxelorException  {
+
+		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+
+		for(ExpenseLine expenseLine : expenseLineList)  {
+
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine));
+
+		}
+
+		return invoiceLineList;
+
+	}
+
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine) throws AxelorException  {
+
+		Product product = expenseLine.getExpenseType();
+
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(),
+				expenseLine.getComments(),BigDecimal.ONE, product.getUnit(),10,false)  {
+
+			@Override
+			public List<InvoiceLine> creates() throws AxelorException {
+
+				InvoiceLine invoiceLine = this.createInvoiceLine();
+
+				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+				invoiceLines.add(invoiceLine);
+
+				return invoiceLines;
+			}
+		};
+
+		return invoiceLineGenerator.creates();
 	}
 }

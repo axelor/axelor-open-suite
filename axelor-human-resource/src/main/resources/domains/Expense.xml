@@ -23,7 +23,6 @@
       <date name="validationDate" title="Validation Date" readonly="true"  />
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
       <boolean name="ventilated"/>
-      
   </entity>
   
 </domain-models>

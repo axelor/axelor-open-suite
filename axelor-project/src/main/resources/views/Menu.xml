@@ -23,5 +23,23 @@
 	    <view type="form" name="task-form"/>
 	    <domain>self.taskTypeSelect = 'task'</domain>
 	</action-view>
+	
+	<menuitem name="menu-project-planning" parent="menu-project-root" title="Project Planning" icon="img/tree-folder.png"/> 
+	
+	<menuitem name="my-planning" parent="menu-project-planning"
+    	title="My Planning"
+    	action="my.planning"/>
+
+	<action-method name="my.planning">
+		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="myPlanning"/>
+	</action-method>
+	
+	<menuitem name="my-team-planning" parent="menu-project-planning"
+    	title="My Team Planning"
+    	action="my.team.planning"/>
+
+	<action-method name="my.team.planning">
+		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="myTeamPlanning"/>
+	</action-method>
 
 </object-views>

@@ -6,7 +6,7 @@
 	onNew="action-hr-default-timesheet-line-project">
 		<field name="user"/>
 		<field name="date" />
-		<field name="activity" canNew="true"/>
+		<field name="product" canNew="true"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true"/>
 		<field name="affectedToTimeSheet"/>
@@ -18,7 +18,7 @@
 		<field name="project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 		<field name="task" domain="self.taskTypeSelect = 'task'" form-view="task-form" grid-view="task-grid"/>
 		<field name="date" onChange="action-timesheet-validate-date"/>
-		<field name="activity"/>
+		<field name="product"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true" />
 		<field name="comments" />
@@ -30,11 +30,13 @@
 		<panel title="Overview">
 			<field name="user"/>
 			<field name="date" />
-			<field name="activity" canNew="true"/>
+			<field name="product" domain="self.isActivity = true" canNew="true"/>
 			<field name="visibleDuration" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
 			<field name="affectedToTimeSheet"/>
+			<field name="invoiceable"/>
+			<field name="invoiced" showIf="invoiceable"/>
 			<field name="comments" />
 		</panel>
 	</form>
@@ -46,10 +48,12 @@
 			<field name="project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="task" domain="self.taskTypeSelect = 'task'" form-view="task-form" grid-view="task-grid"/>
 			<field name="date" />
-			<field name="activity"/>
+			<field name="product" domain="self.isActivity = true" canNew="true"/>
 			<field name="visibleDuration" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
+			<field name="invoiceable"/>
+			<field name="invoiced" showIf="invoiceable"/>
 			<field name="comments" />
 		</panel>
 	</form>

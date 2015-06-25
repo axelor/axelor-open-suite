@@ -27,7 +27,7 @@ public interface IExceptionMessage {
 
 	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Merci de rentrer une date de début pour la génération"/*)*/ ;
 	static final String TIMESHEET_TO_DATE = /*$$(*/ "Merci de rentrer une date de fin pour la génération"/*)*/ ;
-	static final String TIMESHEET_ACTIVITY = /*$$(*/ "Merci de rentrer une activité"/*)*/ ;
+	static final String TIMESHEET_PRODUCT = /*$$(*/ "Merci de rentrer un produit"/*)*/ ;
 	static final String TIMESHEET_EMPLOYEE_DAY_PLANNING = /*$$(*/ "Merci de rentrer un planning pour l'employé rattaché à l'utilisateur %s"/*)*/ ;
 
 	static final String LEAVE_USER_EMPLOYEE = /*$$(*/ "Merci de créer un employé pour l'utilisateur %s"/*)*/ ;

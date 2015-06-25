@@ -24,13 +24,51 @@
 			<field name="$template" title="Template" type="many-to-one" target="com.axelor.apps.sale.db.SaleOrder" domain="self.template = true" canNew="false" colSpan="6" form-view="sale-order-template-form"/>
 			<button name="createSalesOrderFromTemplate" title="Create Sale Order From Template" colSpan="6" readonlyIf="id == null" onClick="save,action-business-folder-method-create-sale-order-from-template"/>
 		</panel>
+		<panel-tabs>
+			<panel title="Financial Information">
+				<panel title="Sales">
+					<field name="totalSaleOrdersFinalized"/>
+					<field name="totalSaleOrdersConfirmed"/>
+					<field name="totalSaleOrdersInvoiced"/>
+				</panel>
+				<panel title="Purchases">
+					<field name="totalPurchaseOrdersFinalized"/>
+					<field name="totalPurchaseOrdersConfirmed"/>
+					<field name="totalPurchaseOrdersInvoiced"/>
+				</panel>
+				<panel title="Internal">
+					<panel title="Log Times">
+						<field name="totalTimesPlanned"/>
+						<field name="totalTimesRealised"/>
+					</panel>
+					<panel title="Expenses">
+						<field name="totalExpenses"/>
+					</panel>
+					<panel title="Production">
+						<field name="totalEstimatedCosts"/>
+						<field name="totalRealCosts"/>
+					</panel>
+					<button name="dashBoardButton" title="See DashBoard"/>
+					<button name="computeDetailsButton" title="See Compute Details"/>
+				</panel>
+				<panel title="Margins">
+					<field name="totalProducedTO"/>
+					<field name="estimatedMargin"/>
+					<field name="realTimesMargin"/>
+					<field name="realInvoicingMargin"/>
+					<button name="monthlyDetails" title="See Monthly Details"/>
+				</panel>
+			</panel>
+			<panel title="Project Tree">
+				<panel-dashlet action="action-business-folder-view-show-project-tree" colSpan="12" title="Project Tree"/>
+			</panel>
+		</panel-tabs>
 		<panel>
 			<field name="createdBy" title="User Opened"/>
 			<field name="userClosed" readonly="true"/>
 			<field name="createdOn" title="Date Opened"/>
 			<field name="dateClosed" readonly="true"/>
 		</panel>
-		<panel-dashlet action="action-view-show-sale-orders-from-folder" title="Sale Orders"/>
 	</form>
 	
 	<action-record name="action-business-folder-set-seq" model="com.axelor.apps.businessproject.db.BusinessFolder">
@@ -47,11 +85,11 @@
 	    <field name="statusSelect" expr="eval:1" />
 	</action-record>
 	
-	<action-view name="action-view-show-sale-orders-from-folder" title="Sale Orders" model="com.axelor.apps.sale.db.SaleOrder">	
-		<view type="grid" name="sale-order-grid" />
-		<view type="form" name="sale-order-form" />
-		<domain>self.template = false AND self.businessFolder.id = :folderId</domain>
-		<context name="folderId" expr="eval: id" />
+	<action-view name="action-business-folder-view-show-project-tree" title="Project Tree" model="com.axelor.apps.project.db.ProjectTask">	
+		<view type="tree" name="project-tree"/>
+    	<view type="form" name="project-form"/>
+    	<domain>self.folder.id = :id</domain>
+     	<context name="id" expr="eval: id"/>
 	</action-view>
 	
 	<action-method name="action-business-folder-method-create-sale-order">

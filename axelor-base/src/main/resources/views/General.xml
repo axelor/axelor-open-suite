@@ -85,9 +85,10 @@
 					<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" if-module="axelor-production"/>
 				</panel>
 				
-				<panel title="Human Resource configuration">
-					<field name="dailyWorkHours" if-module="axelor-human-resource"/>
-					<field name="allowNegativeLeaveEmployees" if-module="axelor-human-resource"/>
+				<panel title="Human Resource configuration" if-module="axelor-human-resource">
+					<field name="dailyWorkHours"/>
+					<field name="allowNegativeLeaveEmployees" />
+					<field name="invoicingTypeLogTimesSelect"/>
 				</panel>
 				
 				<panel title="Project/Task configuration" if-module="axelor-project">

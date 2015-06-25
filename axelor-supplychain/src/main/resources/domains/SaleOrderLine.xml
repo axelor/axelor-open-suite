@@ -27,6 +27,8 @@
   	<integer name="invoicingTypeSelect" title="Invoicing Type" selection="supplychain.invoicing.type.select"/>
   	<one-to-many name="subscriptionList" ref="com.axelor.apps.supplychain.db.Subscription" mappedBy="saleOrderLine" title="Subscription List"/>
   	
+  	<boolean name="invoiceable"/>
+	<boolean name="invoiced" readonly="true"/>
   	
   </entity>
 
