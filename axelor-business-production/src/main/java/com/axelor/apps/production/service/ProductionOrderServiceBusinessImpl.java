@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.organisation.db.Project;
+import com.axelor.apps.businessproject.db.BusinessFolder;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
@@ -60,10 +60,10 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
 		
 	}
 
-	public ProductionOrder createProductionOrder(Project businessProject, boolean isToInvoice) throws AxelorException  {
+	public ProductionOrder createProductionOrder(BusinessFolder businessFolder, boolean isToInvoice) throws AxelorException  {
 		
 		ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
-		productionOrder.setBusinessProject(businessProject);
+		productionOrder.setBusinessFolder(businessFolder);
 		productionOrder.setIsToInvoice(isToInvoice);
 		
 		return productionOrder;
@@ -72,9 +72,9 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, Project businessProject) throws AxelorException  {
+	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, BusinessFolder businessFolder) throws AxelorException  {
 		
-		ProductionOrder productionOrder = this.createProductionOrder(businessProject, false);
+		ProductionOrder productionOrder = this.createProductionOrder(businessFolder, false);
 		
 		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested);
 		

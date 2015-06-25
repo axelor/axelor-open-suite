@@ -17,15 +17,17 @@
  */
 package com.axelor.apps.production.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.organisation.db.Project;
-//import com.axelor.apps.organisation.db.Project;
+import com.axelor.apps.businessproject.db.BusinessFolder;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
@@ -55,18 +57,26 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 		super(userInfoService);
 	}
 	
-	public void generateProductionOrder(SaleOrder saleOrder) throws AxelorException  {
-		
+	@Override
+	public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException  {
+
+		List<Long> productionOrderIdList = new ArrayList<Long>();
 		if(saleOrder.getSaleOrderLineList() != null)  {
-			
+
+			ProductionOrder productionOrder = null;
 			for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList())  {
-				
-				this.generateProductionOrder(saleOrderLine);
-				
+
+				productionOrder = this.generateProductionOrder(saleOrderLine);
+				if (productionOrder != null){
+					productionOrderIdList.add(productionOrder.getId());
+				}
+
 			}
-			
+
 		}
-		
+
+		return productionOrderIdList;
+
 	}
 	
 	
@@ -76,7 +86,7 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 		
 		Product product = saleOrderLine.getProduct();
 		
-		if(saleOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_PRODUCE && product != null && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE) )  {
+		if(saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE && product != null && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE) )  {
 			
 			BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
 			
@@ -100,7 +110,7 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 				
 			}
 			
-			return save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject()));
+			return save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject().getFolder()));
 		
 		}
 		
@@ -115,9 +125,9 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 		logger.debug("Création d'un devis client pour l'ordre de production : {}",
 				new Object[] { productionOrder.getProductionOrderSeq() });
 		
-		Project businessProject = productionOrder.getBusinessProject();
+		BusinessFolder businessFolder = productionOrder.getBusinessFolder();
 		
-		Partner partner = businessProject.getClientPartner();
+		Partner partner = businessFolder.getCustomer();
 		
 //		if(businessProject.getCompany() != null)  {
 //		

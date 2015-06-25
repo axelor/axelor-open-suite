@@ -8,5 +8,6 @@ module {
 	removable true
 
 	module "modules:axelor-production"
+	module "modules:axelor-business-project"
 }
 

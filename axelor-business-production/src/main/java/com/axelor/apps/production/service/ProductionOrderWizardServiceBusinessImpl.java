@@ -24,8 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.organisation.db.Project;
-import com.axelor.apps.organisation.db.repo.ProjectRepository;
+import com.axelor.apps.businessproject.db.BusinessFolder;
+import com.axelor.apps.businessproject.db.repo.BusinessFolderRepository;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
@@ -61,12 +61,12 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 			product = billOfMaterial.getProduct();
 		}
 		
-		Project businessProject = null;
+		BusinessFolder businessFolder = null;
 		if(context.get("business_id") != null)  {
-			businessProject = Beans.get(ProjectRepository.class).find(((Integer) context.get("business_id")).longValue());
+			businessFolder = Beans.get(BusinessFolderRepository.class).find(((Integer) context.get("business_id")).longValue());
 		}
 		
-		ProductionOrder productionOrder = productionOrderServiceBusinessImpl.generateProductionOrder(product, billOfMaterial, qty, businessProject);
+		ProductionOrder productionOrder = productionOrderServiceBusinessImpl.generateProductionOrder(product, billOfMaterial, qty, businessFolder);
 		
 		if(productionOrder != null)  {
 			return I18n.get(IExceptionMessage.PRODUCTION_ORDER_1)+" ("+productionOrder.getProductionOrderSeq()+")";

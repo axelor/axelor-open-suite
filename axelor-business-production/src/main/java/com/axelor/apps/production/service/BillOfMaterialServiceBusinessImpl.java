@@ -84,9 +84,9 @@ public class BillOfMaterialServiceBusinessImpl extends BillOfMaterialServiceImpl
 				
 				if(prodHumanResource.getEmployee() != null)  {
 					
-					BigDecimal costPerMin = unitConversionService.convert(unitRepository.findByCode(UNIT_MIN_CODE), unitRepository.findByCode(UNIT_DAY_CODE), prodHumanResource.getEmployee().getDailySalaryCost());
+//					BigDecimal costPerMin = unitConversionService.convert(unitRepository.findByCode(UNIT_MIN_CODE), unitRepository.findByCode(UNIT_DAY_CODE), prodHumanResource.getEmployee().getDailySalaryCost());
 					
-					costPrice = costPrice.add((costPerMin).multiply(new BigDecimal(prodHumanResource.getDuration()/60)));
+//					costPrice = costPrice.add((costPerMin).multiply(new BigDecimal(prodHumanResource.getDuration()/60)));
 					
 				}
 				else if(prodHumanResource.getProduct() != null)  {

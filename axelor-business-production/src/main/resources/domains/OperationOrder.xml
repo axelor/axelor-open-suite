@@ -9,7 +9,7 @@
   	
   	<boolean name="isToInvoice" title="To invoice ?"/>
   	
-    <one-to-many name="timesheetLineList" ref="com.axelor.apps.organisation.db.TimesheetLine" mappedBy="operationOrder" title="Timesheet lines"/>
+    <one-to-many name="timesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine" mappedBy="operationOrder" title="Timesheet lines"/>
     
     
   </entity>
