@@ -8,7 +8,6 @@ package com.axelor.apps.supplychain.exception;
  *
  */
 public interface IExceptionMessage {
-	static final String LEAD_PARTNER = /*$$(*/ "Veuillez selectionner une piste" /*)*/;
 	/**
 	 * Purchase Order Invoice Service and controller
 	 */

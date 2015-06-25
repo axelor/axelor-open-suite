@@ -53,7 +53,7 @@ public class LeadService extends LeadRepository {
 	private PartnerService partnerService;
 	
 	@Inject
-	private OpportunityService opportunityService;
+	private OpportunityServiceImpl opportunityService;
 	
 	@Inject
 	private EventService  eventService;

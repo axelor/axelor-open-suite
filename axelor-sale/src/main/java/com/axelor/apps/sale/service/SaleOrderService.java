@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Team;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.db.Repository;
@@ -86,7 +87,7 @@ public interface SaleOrderService extends Repository<SaleOrder>{
 
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
-			PriceList priceList, Partner clientPartner) throws AxelorException;
+			PriceList priceList, Partner clientPartner, Team team) throws AxelorException;
 	
 	public SaleOrder createSaleOrder(Company company) throws AxelorException;
 	

@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -224,26 +225,49 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	}
 
 	@Override
-	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
+	public SaleOrder createSaleOrder(User salemanUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
-			PriceList priceList, Partner clientPartner) throws AxelorException  {
+			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
 
-		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
-				new Object[] { company.getName(), externalReference, clientPartner.getFullName() });
+		LOG.debug("Création d'un devis client : Société = {},  Reference externe = {}, Client = {}",
+				new Object[] { company, externalReference, clientPartner.getFullName() });
 
 		SaleOrder saleOrder = new SaleOrder();
+		saleOrder.setClientPartner(clientPartner);
 		saleOrder.setCreationDate(GeneralService.getTodayDate());
-		saleOrder.setCompany(company);
 		saleOrder.setContactPartner(contactPartner);
 		saleOrder.setCurrency(currency);
 		saleOrder.setExternalReference(externalReference);
 		saleOrder.setOrderDate(orderDate);
+
+		if(salemanUser == null)  {
+			salemanUser = AuthUtils.getUser();
+		}
+		saleOrder.setSalemanUser(salemanUser);
+		
+		if(team == null)  {
+			team = salemanUser.getActiveTeam();
+		}
+
+		if(company == null)  {
+			company = salemanUser.getActiveCompany();
+		}
+		
+		saleOrder.setCompany(company);
+		
+		saleOrder.setMainInvoicingAddress(clientPartner.getMainInvoicingAddress());
+		saleOrder.setDeliveryAddress(clientPartner.getDeliveryAddress());
+		
+		if(priceList == null)  {
+			priceList = clientPartner.getSalePriceList();
+		}
+		
 		saleOrder.setPriceList(priceList);
+		
 		saleOrder.setSaleOrderLineList(new ArrayList<SaleOrderLine>());
 
 		saleOrder.setSaleOrderSeq(this.getSequence(company));
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_DRAFT);
-		saleOrder.setClientPartner(clientPartner);
 		
 		this.computeEndOfValidityDate(saleOrder);
 

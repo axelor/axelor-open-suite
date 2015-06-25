@@ -7,7 +7,7 @@
 
   <entity name="InvoicingFolder" cachable="true">
       
-    <many-to-one name="folder" ref="com.axelor.apps.businessproject.db.BusinessFolder" title="Folder"/>
+    <many-to-one name="businessFolder" ref="com.axelor.apps.businessproject.db.BusinessFolder" title="Folder"/>
     <many-to-many name="logTimesSet" ref="com.axelor.apps.hr.db.TimesheetLine" title="Log Times Selection"/>
     <many-to-many name="saleOrderLineSet" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale Order Lines Selection"/>
     <many-to-many name="purchaseOrderLineSet" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase Order Lines Selection"/>

@@ -25,14 +25,14 @@ public class InvoicingFolderController extends InvoicingFolderRepository{
 				&& folder.getLogTimesSet().isEmpty() && folder.getExpenseLineSet().isEmpty() && folder.getAnalyticMoveLineSet().isEmpty()){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_EMPTY)), IException.CONFIGURATION_ERROR);
 		}
-		if(folder.getFolder() == null){
+		if(folder.getBusinessFolder() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_FOLDER)), IException.CONFIGURATION_ERROR);
 		}
-		if(folder.getFolder().getCustomer() == null){
+		if(folder.getBusinessFolder().getCustomer() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_CUSTOMER)), IException.CONFIGURATION_ERROR);
 		}
 
-		if(folder.getFolder().getUserResponsible() == null){
+		if(folder.getBusinessFolder().getUserResponsible() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_USER)), IException.CONFIGURATION_ERROR);
 		}
 		Invoice invoice = invoicingFolderService.generateInvoice(folder);

@@ -48,7 +48,7 @@ public class BusinessFolderService {
 					return;
 				}
 				countRecursion++;
-				projectTask.setFolder(project.getFolder());
+				projectTask.setBusinessFolder(project.getBusinessFolder());
 				Beans.get(ProjectTaskRepository.class).save(projectTask);
 				changeFolders(projectTask);
 			}

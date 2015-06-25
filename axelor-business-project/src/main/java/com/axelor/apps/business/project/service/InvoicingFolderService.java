@@ -51,7 +51,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 	@Transactional
 	public Invoice generateInvoice(InvoicingFolder folder) throws AxelorException{
-		BusinessFolder businessFolder = folder.getFolder();
+		BusinessFolder businessFolder = folder.getBusinessFolder();
 		Partner customer = businessFolder.getCustomer();
 		User user = businessFolder.getUserResponsible();
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, user.getActiveCompany(),customer.getPaymentCondition(),

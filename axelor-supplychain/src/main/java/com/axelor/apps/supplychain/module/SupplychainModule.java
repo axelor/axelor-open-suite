@@ -25,6 +25,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
+import com.axelor.apps.sale.service.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.stock.service.LocationLineServiceImpl;
@@ -38,8 +39,7 @@ import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.CustomerCreditLineService;
 import com.axelor.apps.supplychain.service.CustomerCreditLineServiceImpl;
 import com.axelor.apps.supplychain.service.MinStockRulesServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.OpportunitySaleOrderService;
-import com.axelor.apps.supplychain.service.OpportunitySaleOrderServiceImpl;
+import com.axelor.apps.supplychain.service.OpportunitySaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
@@ -78,7 +78,7 @@ public class SupplychainModule extends AxelorModule {
         bind(VentilateState.class).to(VentilateStateSupplyChain.class);
         bind(CancelState.class).to(CancelStateSupplyChain.class);
         bind(SubscriptionService.class).to(SubscriptionServiceImpl.class);
-        bind(OpportunitySaleOrderService.class).to(OpportunitySaleOrderServiceImpl.class);
+        bind(OpportunitySaleOrderServiceImpl.class).to(OpportunitySaleOrderServiceSupplychainImpl.class);
         bind(CustomerCreditLineService.class).to(CustomerCreditLineServiceImpl.class);
     }
 }

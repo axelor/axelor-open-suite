@@ -7,6 +7,6 @@ module {
 	
 	removable true
 
-	module "modules:axelor-base"
+	module "modules:axelor-crm"
 }
 

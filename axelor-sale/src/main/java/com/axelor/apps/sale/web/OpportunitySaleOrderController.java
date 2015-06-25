@@ -1,9 +1,9 @@
-package com.axelor.apps.supplychain.web;
+package com.axelor.apps.sale.web;
 
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.supplychain.service.OpportunitySaleOrderService;
+import com.axelor.apps.sale.service.OpportunitySaleOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -15,13 +15,6 @@ public class OpportunitySaleOrderController{
 	
 	@Inject 
 	private OpportunitySaleOrderService opportunitySaleOrderService;
-	
-	public void createClient(ActionRequest request, ActionResponse response) throws AxelorException{
-		Opportunity opportunity = request.getContext().asType(Opportunity.class);
-		opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
-		opportunitySaleOrderService.createClientFromLead(opportunity);
-		response.setReload(true);
-	}
 	
 	public void generateSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException{
 		Opportunity opportunity = request.getContext().asType(Opportunity.class);

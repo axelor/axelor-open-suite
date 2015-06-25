@@ -44,7 +44,7 @@ public class TargetService extends TargetRepository{
 	private EventService eventService;
 	
 	@Inject
-	private OpportunityService opportunityService;
+	private OpportunityServiceImpl opportunityService;
 	
 	public void createsTargets(TargetConfiguration targetConfiguration) throws AxelorException  {
 		

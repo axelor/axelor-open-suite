@@ -52,4 +52,10 @@ public interface IExceptionMessage {
 	static final String LEAD_3 = /*$$(*/ "Can not open map, Please Check your Internet connection." /*)*/;
 	static final String LEAD_4 = /*$$(*/ "No lead import configuration found" /*)*/;
 	static final String LEAD_5 = /*$$(*/ "Import lead" /*)*/;
+	
+	/**
+	 * Opportunity
+	 */
+	static final String LEAD_PARTNER = /*$$(*/ "Veuillez selectionner une piste" /*)*/;
+
 }

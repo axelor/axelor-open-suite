@@ -21,6 +21,8 @@ import com.axelor.app.AxelorModule;
 import com.axelor.app.AxelorModuleInfo;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.OpportunitySaleOrderService;
+import com.axelor.apps.sale.service.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 
@@ -31,5 +33,7 @@ public class SaleModule extends AxelorModule {
     protected void configure() {
         bind(SaleOrderService.class).to(SaleOrderServiceImpl.class);
         bind(SaleOrderRepository.class).to(SaleOrderManagementRepository.class);
+        bind(OpportunitySaleOrderService.class).to(OpportunitySaleOrderServiceImpl.class);
+
     }
 }

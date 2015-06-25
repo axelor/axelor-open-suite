@@ -110,7 +110,7 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 				
 			}
 			
-			return save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject().getFolder()));
+			return save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject().getBusinessFolder()));
 		
 		}
 		
@@ -129,18 +129,17 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 		
 		Partner partner = businessFolder.getCustomer();
 		
-//		if(businessProject.getCompany() != null)  {
+//		if(businessFolder.getCompany() != null)  {
 //		
 //			SaleOrder saleOrder = saleOrderServiceStockImpl.createSaleOrder(
-//					businessProject, 
+//					businessFolder, 
 //					user, 
-//					businessProject.getCompany(), 
+//					businessFolder.getCompany(), 
 //					null, 
 //					partner.getCurrency(), 
 //					null, 
 //					null,
 //					null, 
-//					IPurchaseOrder.INVOICING_FREE, 
 //					saleOrderServiceStockImpl.getLocation(businessProject.getCompany()), 
 //					today, 
 //					Beans.get(PriceListRepository.class).all().filter("self.partner = ?1 AND self.typeSelect = 1", partner).fetchOne(), 
@@ -149,9 +148,9 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 //			Beans.get(SaleOrderRepository.class).save(saleOrder);
 //			
 //		}
-		
-		//TODO 
-		
+//		
+//		//TODO 
+//		
 //		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 //			
 //			purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLineService.createPurchaseOrderLine(purchaseOrder, saleOrderLine));

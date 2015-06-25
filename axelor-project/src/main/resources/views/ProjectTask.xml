@@ -6,7 +6,7 @@
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
 		<field name="customer" />
-		<field name="folder" />
+		<field name="businessFolder" />
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
@@ -18,10 +18,10 @@
 	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title">
 		<panel title="Overview">
 			<field name="statusSelect" widget="NavSelect"/>
-			<field name="project" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid" onChange="action-project-task-record-folder"/>
+			<field name="project" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid" onChange="action-project-task-record-business-folder"/>
 			<field name="code"/>
 			<field name="name"/>
-			<field name="folder" if-module="axelor-business-project" hideIf="project != null" onChange="action-project-task-group-folder-on-change"/>
+			<field name="businessFolder" if-module="axelor-business-project" hideIf="project != null" onChange="action-project-task-group-business-folder-on-change"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain"/>
 			<field name="saleOrder" if-module="axelor-business-project"/>
 			<field name="customer"/>
@@ -108,7 +108,7 @@
 	<grid name="project-task-grid" title="Projects/Tasks" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
 		<field name="customer" />
-		<field name="folder" />
+		<field name="businessFolder" />
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
@@ -121,10 +121,10 @@
 	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title">
 		<panel title="Overview">
 			<field name="statusSelect" widget="NavSelect"/>
-			<field name="project" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid" onChange="action-project-task-record-folder"/>
+			<field name="project" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid" onChange="action-project-task-record-business-folder"/>
 			<field name="code"/>
 			<field name="name"/>
-			<field name="folder" if-module="axelor-business-project" hideIf="project != null || taskTypeSelect == 'task'" onChange="action-project-task-group-folder-on-change"/>
+			<field name="businessFolder" if-module="axelor-business-project" hideIf="project != null || taskTypeSelect == 'task'" onChange="action-project-task-group-business-folder-on-change"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain,action-task-attrs-assigned-to-domain"/>
 			<field name="customer"/>
 			<field name="fromDate" />
@@ -230,22 +230,22 @@
 	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
 	</action-attrs>
 	
-	<action-validate name="action-project-task-validate-change-folder">
+	<action-validate name="action-project-task-validate-change-business-folder">
 		<alert message="If you change this folder, all the folders in the children projects will be changed too, are you ok?" if="project == null &amp;&amp; !(__repo__.of(ProjectTask).all().filter('self.taskTypeSelect = \'project\' AND self.project.id = ?1',id).fetch().isEmpty())"/>
 	</action-validate>
 	
-	<action-record name="action-project-task-record-folder" model="com.axelor.apps.project.db.ProjectTask">
-		<field name="folder" expr="eval:project?.folder"/>
+	<action-record name="action-project-task-record-business-folder" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="businessFolder" expr="eval:project?.businessFolder"/>
 	</action-record>
 	
-	<action-method name="action-project-task-method-change-folder">
+	<action-method name="action-project-task-method-change-business-folder">
 		<call class="com.axelor.apps.business.project.web.BusinessFolderController" method="changeFolders"/>
 	</action-method>
 	
-	<action-group name="action-project-task-group-folder-on-change">
-		<action name="action-project-task-validate-change-folder"/>
+	<action-group name="action-project-task-group-business-folder-on-change">
+		<action name="action-project-task-validate-change-business-folder"/>
 		<action name="save"/>
-		<action name="action-project-task-method-change-folder" if="project == null &amp;&amp; !(__repo__.of(ProjectTask).all().filter('self.taskTypeSelect = \'project\' AND self.project.id = ?1',id).fetch().isEmpty())"/>
+		<action name="action-project-task-method-change-business-folder" if="project == null &amp;&amp; !(__repo__.of(ProjectTask).all().filter('self.taskTypeSelect = \'project\' AND self.project.id = ?1',id).fetch().isEmpty())"/>
 	</action-group>
 	
 	<action-view name="action-project-task-view-show-project" title="Related Projects" model="com.axelor.apps.project.db.ProjectTask">
