@@ -23,11 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.businessproject.db.BusinessFolder;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -35,53 +35,53 @@ import com.google.inject.persist.Transactional;
 public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceImpl  {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	@Inject
 	private ManufOrderServiceBusinessImpl manufOrderService;
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void propagateIsToInvoice(ProductionOrder productionOrder) {
 
 		logger.debug("{} is to invoice ? {}", productionOrder.getProductionOrderSeq(), productionOrder.getIsToInvoice());
-		
+
 		boolean isToInvoice = productionOrder.getIsToInvoice();
-		
+
 		if(productionOrder.getManufOrderList() != null)  {
 			for(ManufOrder manufOrder : productionOrder.getManufOrderList())  {
-				
+
 				manufOrder.setIsToInvoice(isToInvoice);
-				
+
 				manufOrderService.propagateIsToInvoice(manufOrder);
 			}
 		}
-		
+
 		save(productionOrder);
-		
+
 	}
 
-	public ProductionOrder createProductionOrder(BusinessFolder businessFolder, boolean isToInvoice) throws AxelorException  {
-		
+	public ProductionOrder createProductionOrder(ProjectTask projectTask, boolean isToInvoice) throws AxelorException  {
+
 		ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
-		productionOrder.setBusinessFolder(businessFolder);
+		productionOrder.setProjectTask(projectTask);
 		productionOrder.setIsToInvoice(isToInvoice);
-		
+
 		return productionOrder;
-		
+
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, BusinessFolder businessFolder) throws AxelorException  {
-		
-		ProductionOrder productionOrder = this.createProductionOrder(businessFolder, false);
-		
+	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, ProjectTask projectTask) throws AxelorException  {
+
+		ProductionOrder productionOrder = this.createProductionOrder(projectTask, false);
+
 		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested);
-		
+
 		return save(productionOrder);
-		
+
 	}
-	
-	
-	
+
+
+
 }

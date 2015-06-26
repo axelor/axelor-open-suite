@@ -12,7 +12,10 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.DayPlanning;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Leave;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -159,7 +162,18 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, TimesheetLine timesheetLine) throws AxelorException  {
 
-		Product product = timesheetLine.getProduct();
+		Product product = null;
+		if(GeneralService.getGeneral().getInvoicingTypeLogTimesSelect() == GeneralRepository.INVOICING_LOG_TIMES_EMPLOYEE_ACTIVITY){
+			Employee employee = timesheetLine.getUser().getEmployee();
+			if(employee == null){
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheetLine.getUser().getName()), IException.CONFIGURATION_ERROR);
+			}
+			product = employee.getProduct();
+		}
+		else{
+			product = timesheetLine.getProduct();
+		}
+
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(),
 				timesheetLine.getComments(),BigDecimal.ONE, product.getUnit(),10,false)  {

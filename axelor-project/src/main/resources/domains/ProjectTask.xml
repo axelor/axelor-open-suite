@@ -33,7 +33,7 @@
 	  
 	  <integer name="progress" title="Progress (%)" selection="grade.0.up.to.100.select"/>
 	  
-	  
+	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
 	  <boolean name="invoiceable"/>
 	  <boolean name="invoiced" readonly="true"/>
 	  

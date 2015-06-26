@@ -7,26 +7,36 @@ import java.util.List;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.businessproject.db.BusinessFolder;
+import com.axelor.apps.business.project.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.db.InvoicingFolder;
 import com.axelor.apps.businessproject.db.repo.InvoicingFolderRepository;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImp;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -51,10 +61,14 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 	@Transactional
 	public Invoice generateInvoice(InvoicingFolder folder) throws AxelorException{
-		BusinessFolder businessFolder = folder.getBusinessFolder();
-		Partner customer = businessFolder.getCustomer();
-		User user = businessFolder.getUserResponsible();
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, user.getActiveCompany(),customer.getPaymentCondition(),
+		ProjectTask projectTask = folder.getProjectTask();
+		Partner customer = projectTask.getCustomer();
+		Company company = this.getRootCompany(projectTask);
+		if(company == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_PROJECT_TASK_COMPANY)), IException.CONFIGURATION_ERROR);
+		}
+		User user = projectTask.getAssignedTo();
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, company, customer.getPaymentCondition(),
 				customer.getPaymentMode(), customer.getMainInvoicingAddress(), customer, null,
 				customer.getCurrency(), customer.getSalePriceList(), null, null){
 
@@ -109,7 +123,11 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ProjectTask projectTask) throws AxelorException  {
 
-		Product product = null;//projectTask.getProduct();
+		Product product = projectTask.getProduct();
+
+		if(product == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_PROJECT_TASK_PRODUCT),projectTask.getFullName()), IException.CONFIGURATION_ERROR);
+		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(),
 				null,BigDecimal.ONE, product.getUnit(),10,false)  {
@@ -152,7 +170,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 
 	public List<InvoiceLine> customerChargeBackPurchases(List<InvoiceLine> invoiceLineList,InvoicingFolder folder){
-		Partner customer = folder.getBusinessFolder().getCustomer();
+		Partner customer = folder.getProjectTask().getCustomer();
 		if(!customer.getFlatFeeExpense()){
 			for (InvoiceLine invoiceLine : invoiceLineList) {
 				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackPurchase().divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)));
@@ -163,7 +181,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 	}
 
 	public List<InvoiceLine> customerChargeBackExpenses(List<InvoiceLine> invoiceLineList,InvoicingFolder folder){
-		Partner customer = folder.getBusinessFolder().getCustomer();
+		Partner customer = folder.getProjectTask().getCustomer();
 		if(!customer.getFlatFeePurchase()){
 			for (InvoiceLine invoiceLine : invoiceLineList) {
 				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackExpense().divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)));
@@ -174,7 +192,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 	}
 
 	public List<InvoiceLine> customerChargeBackAnalytics(List<InvoiceLine> invoiceLineList,InvoicingFolder folder){
-		Partner customer = folder.getBusinessFolder().getCustomer();
+		Partner customer = folder.getProjectTask().getCustomer();
 		if(!customer.getFlatFeeAnalytic()){
 			for (InvoiceLine invoiceLine : invoiceLineList) {
 				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackAnanlytic().divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)));
@@ -182,5 +200,31 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 			}
 		}
 		return invoiceLineList;
+	}
+
+	public void getLines(ProjectTask projectTask, List<SaleOrderLine> saleOrderLineList, List<PurchaseOrderLine> purchaseOrderLineList,
+							List<TimesheetLine> timesheetLineList,  List<ExpenseLine> expenseLineList, List<AnalyticMoveLine> analyticMoveLineList, List<ProjectTask> projectTaskList){
+
+		saleOrderLineList.addAll(Beans.get(SaleOrderLineRepository.class).all().filter("self.project != null AND self.project = ?1 AND self.invoiceable = true AND self.invoiced = false AND self.project.imputable = true", projectTask).fetch());
+		purchaseOrderLineList.addAll(Beans.get(PurchaseOrderLineRepository.class).all().filter("self.projectTask != null AND self.projectTask = ?1 AND self.projectTask.saleOrder != null  AND self.invoiceable = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
+		timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class).all().filter("self.affectedToTimeSheet != null AND self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.projectTask.saleOrder != null AND self.invoiceable = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
+		expenseLineList.addAll(Beans.get(ExpenseLineRepository.class).all().filter("self.task != null AND self.task = ?1 AND self.task.saleOrder != null AND self.invoiceable = true AND self.invoiced = false AND self.task.imputable = true", projectTask).fetch());
+		analyticMoveLineList.addAll(Beans.get(AnalyticMoveLineRepository.class).all().filter("self.projectTask != null AND self.projectTask = ?1 AND self.projectTask.saleOrder != null AND self.invoiceable = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
+		projectTaskList.addAll(Beans.get(ProjectTaskRepository.class).all().filter("self.id = ?1 AND self.saleOrder != null AND self.invoiceable = true AND self.invoiced = false AND self.imputable = true", projectTask.getId()).fetch());
+		List<ProjectTask> projectTaskChildrenList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1 AND self.imputable = true", projectTask).fetch();
+		for (ProjectTask projectTaskChild : projectTaskChildrenList) {
+			this.getLines(projectTaskChild, saleOrderLineList, purchaseOrderLineList,
+					timesheetLineList, expenseLineList, analyticMoveLineList, projectTaskList);
+		}
+		return;
+	}
+
+	public Company getRootCompany(ProjectTask projectTask){
+		if(projectTask.getProject() == null){
+			return projectTask.getCompany();
+		}
+		else{
+			return getRootCompany(projectTask.getProject());
+		}
 	}
 }

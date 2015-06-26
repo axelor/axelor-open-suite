@@ -5,11 +5,36 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="ProjectTask" cachable="true">
-      
-      <many-to-one name="businessFolder" ref="com.axelor.apps.businessproject.db.BusinessFolder" title="Folder"/>
-	  <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order"/>
-	  <boolean name="imputable"/>
-  </entity>
+	<entity name="ProjectTask" cachable="true">
+        
+        <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+  		<decimal name="qty" title="Qty" default="1"/>
+  		<decimal name="price" title="Unit price" precision="20" scale="5"/>
+  		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+  		<decimal name="exTaxTotal" title="Total W.T."/>
+		<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order"/>
+		<boolean name="imputable"/>
+		<many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer" />
+		<decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
+		<decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
+		<decimal name="totalSaleOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
+		
+		<decimal name="totalPurchaseOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
+		<decimal name="totalPurchaseOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
+		<decimal name="totalPurchaseOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
+		
+		<decimal name="totalTimesPlanned" title="Planned Times Total" readonly="true"/>
+		<decimal name="totalTimesRealised" title="Realised Times Total" readonly="true"/>
+		
+		<decimal name="totalExpenses" title="ExpensesTotal" readonly="true"/>
+		
+		<decimal name="totalEstimatedCosts" title="Estimated Costs Total" readonly="true"/>
+		<decimal name="totalRealCosts" title="Real Costs Total" readonly="true"/>
+		
+		<decimal name="totalProducedTurnOver" title="Produced Turnover" readonly="true"/>
+		<decimal name="estimatedMargin" title="Estimated Margin" readonly="true"/>
+		<decimal name="realTimesMargin" title="Real Margin (Time)" readonly="true"/>
+		<decimal name="realInvoicingMargin" title="Real Margin (Invoicing)" readonly="true"/>
+	</entity>
   
 </domain-models>

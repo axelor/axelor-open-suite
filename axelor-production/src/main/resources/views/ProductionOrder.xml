@@ -13,7 +13,7 @@
 	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder">
 	  <panel>
 	    <field name="productionOrderSeq"/>
-	    <field name="businessProject" if-module="axelor-business-production"/>
+	    <field name="projectTask" if-module="axelor-business-production"/>
 	    <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice" if-module="axelor-business-production"/>
 	    <button name="showManufOrderWizard" title="Add Manuf. Order"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  

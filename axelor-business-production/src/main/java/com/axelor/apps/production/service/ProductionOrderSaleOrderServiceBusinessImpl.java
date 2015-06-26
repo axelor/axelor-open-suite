@@ -23,14 +23,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.businessproject.db.BusinessFolder;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
@@ -44,19 +43,19 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	@Inject
 	protected SaleOrderServiceStockImpl saleOrderServiceStockImpl;
-	
+
 	@Inject
 	protected ProductionOrderServiceBusinessImpl productionOrderService;
-	
+
 	@Inject
 	public ProductionOrderSaleOrderServiceBusinessImpl(
 			UserService userInfoService) {
 		super(userInfoService);
 	}
-	
+
 	@Override
 	public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException  {
 
@@ -78,89 +77,89 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 		return productionOrderIdList;
 
 	}
-	
-	
+
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ProductionOrder generateProductionOrder(SaleOrderLine saleOrderLine) throws AxelorException  {
-		
+
 		Product product = saleOrderLine.getProduct();
-		
+
 		if(saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE && product != null && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE) )  {
-			
+
 			BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-			
+
 			if(billOfMaterial == null)  {
-				
+
 				billOfMaterial = product.getDefaultBillOfMaterial();
-				
+
 			}
-			
+
 			if(billOfMaterial == null && product.getParentProduct() != null)  {
-				
+
 				billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
-				
+
 			}
-			
+
 			if(billOfMaterial == null)  {
-				
+
 				throw new AxelorException(
-						String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()), 
+						String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()),
 						IException.CONFIGURATION_ERROR);
-				
+
 			}
-			
-			return save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject().getBusinessFolder()));
-		
+
+			return save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject()));
+
 		}
-		
+
 		return null;
-		
+
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createSaleOrder(ProductionOrder productionOrder) throws AxelorException  {
-		
+
 		logger.debug("Création d'un devis client pour l'ordre de production : {}",
 				new Object[] { productionOrder.getProductionOrderSeq() });
-		
-		BusinessFolder businessFolder = productionOrder.getBusinessFolder();
-		
-		Partner partner = businessFolder.getCustomer();
-		
+
+		ProjectTask projectTask = productionOrder.getProjectTask();
+
+		projectTask.getCustomer();
+
 //		if(businessFolder.getCompany() != null)  {
-//		
+//
 //			SaleOrder saleOrder = saleOrderServiceStockImpl.createSaleOrder(
-//					businessFolder, 
-//					user, 
-//					businessFolder.getCompany(), 
-//					null, 
-//					partner.getCurrency(), 
-//					null, 
+//					businessFolder,
+//					user,
+//					businessFolder.getCompany(),
 //					null,
-//					null, 
-//					saleOrderServiceStockImpl.getLocation(businessProject.getCompany()), 
-//					today, 
-//					Beans.get(PriceListRepository.class).all().filter("self.partner = ?1 AND self.typeSelect = 1", partner).fetchOne(), 
+//					partner.getCurrency(),
+//					null,
+//					null,
+//					null,
+//					saleOrderServiceStockImpl.getLocation(businessProject.getCompany()),
+//					today,
+//					Beans.get(PriceListRepository.class).all().filter("self.partner = ?1 AND self.typeSelect = 1", partner).fetchOne(),
 //					partner);
-//			
+//
 //			Beans.get(SaleOrderRepository.class).save(saleOrder);
-//			
+//
 //		}
-//		
-//		//TODO 
-//		
+//
+//		//TODO
+//
 //		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
-//			
+//
 //			purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLineService.createPurchaseOrderLine(purchaseOrder, saleOrderLine));
-//			
+//
 //		}
-//		
+//
 //		purchaseOrderService.computePurchaseOrder(purchaseOrder);
-//		
+//
 //		purchaseOrder.save();
 	}
-	
-	
+
+
 }

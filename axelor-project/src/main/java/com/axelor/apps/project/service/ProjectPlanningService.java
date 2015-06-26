@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.LocalDate;
+
 import com.axelor.apps.base.db.Team;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.apps.project.db.ProjectPlanningLine;
 import com.axelor.apps.project.db.ProjectTask;
@@ -74,6 +77,24 @@ public class ProjectPlanningService extends ProjectPlanningRepository{
 
 		save(planning);
 		return planning;
+	}
+
+	public static String getNameForColumns(int year, int week, int day){
+		LocalDate date = new LocalDate().withYear(year).withWeekOfWeekyear(week).withDayOfWeek(1);
+		LocalDate newDate = date.plusDays(day - 1);
+		return " " + Integer.toString(newDate.getDayOfMonth())+"/"+Integer.toString(newDate.getMonthOfYear());
+	}
+
+	public static LocalDate getFromDate(){
+		LocalDate today = GeneralService.getTodayDate();
+		LocalDate newDate = new LocalDate().withYear(today.getYear()).withWeekOfWeekyear(today.getWeekOfWeekyear()).withDayOfMonth(1);
+		return newDate;
+	}
+
+	public static LocalDate getToDate(){
+		LocalDate today = GeneralService.getTodayDate();
+		LocalDate newDate = new LocalDate().withYear(today.getYear()).withWeekOfWeekyear(today.getWeekOfWeekyear()).withDayOfMonth(today.dayOfMonth().withMaximumValue().getDayOfMonth());
+		return newDate;
 	}
 
 }

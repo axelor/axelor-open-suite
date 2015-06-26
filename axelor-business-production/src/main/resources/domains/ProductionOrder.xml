@@ -8,7 +8,7 @@
   <entity name="ProductionOrder" lang="java">
   
   	<boolean name="isToInvoice" title="To invoice ?"/>
-    <many-to-one name="businessFolder" ref="com.axelor.apps.businessproject.db.BusinessFolder" title="Business"/>
+     <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task"/>
     
     
   </entity>

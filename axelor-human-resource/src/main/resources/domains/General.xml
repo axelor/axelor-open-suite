@@ -9,6 +9,13 @@
 		<decimal name="dailyWorkHours" title="Daily work hours"/>
 		<boolean name="allowNegativeLeaveEmployees" title="Allow negative values for employee leaves"/>
 		<integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times" selection="hrs.timesheet.line.invoicing.type.select" default="1"/>
+		
+		<extra-code>
+   		<![CDATA[
+   			public static final Integer INVOICING_LOG_TIMES_LINE_ACTIVITY = 1;
+   			public static final Integer INVOICING_LOG_TIMES_EMPLOYEE_ACTIVITY = 2;
+   		]]>
+   	</extra-code>
 	</entity>
 
 </domain-models>

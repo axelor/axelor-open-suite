@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
     
-    <form name="business-project-production-form" title="Business" model="com.axelor.apps.organisation.db.Project">
+    <form name="business-project-production-form" title="Business" model="com.axelor.apps.project.db.ProjectTask">
        	<panel>
        		<field name="prodInvTypeSelect"/>
        	</panel>
@@ -13,7 +13,7 @@
 	<action-view name="action-business-project-view-production-manuf-order" title="Operation orders" model="com.axelor.apps.production.db.ManufOrder">
   		<view type="grid" name="manuf-order-business-grid"/>
 		<view type="form" name="manuf-order-form"/>
-  		<domain>self.productionOrder.businessProject.id = :id</domain>
+  		<domain>self.productionOrder.projectTask.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
 		

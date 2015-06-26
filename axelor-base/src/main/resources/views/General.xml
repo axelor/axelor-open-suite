@@ -98,6 +98,7 @@
 					<field name="projectTaskPurchaseOrderLines" />
 					<field name="projectTaskInvoiceLines" />
 					<field name="projectTaskLabel"/>
+					<field name="productInvoicingProjectTask" canNew="true"/>
 				</panel>
 				
 				<panel title="Business Folder configuration" if-module="axelor-business-project">

@@ -27,7 +27,9 @@ public interface IExceptionMessage {
 
 	static final String FOLDER_TEMPLATE = /*$$(*/ "Merci de rentrer un modèle de devis"/*)*/ ;
 	static final String INVOICING_FOLDER_EMPTY = /*$$(*/ "Vous n'avez sélectionné aucun élément à facturer"/*)*/ ;
-	static final String INVOICING_FOLDER_CUSTOMER = /*$$(*/ "L'affaire sélectionnée ne contient pas de client"/*)*/ ;
-	static final String INVOICING_FOLDER_USER = /*$$(*/ "L'affaire sélectionnée ne contient pas de responsable"/*)*/ ;
-	static final String INVOICING_FOLDER_FOLDER = /*$$(*/ "Veuillez sélectionner une affaire"/*)*/ ;
+	static final String INVOICING_FOLDER_CUSTOMER = /*$$(*/ "Le projet/tâche sélectionné(e) ne contient pas de client"/*)*/ ;
+	static final String INVOICING_FOLDER_USER = /*$$(*/ "Le projet/tâche sélectionné(e) ne contient pas de responsable"/*)*/ ;
+	static final String INVOICING_FOLDER_PROJECT_TASK = /*$$(*/ "Veuillez sélectionner un(e) projet/tâche"/*)*/ ;
+	static final String INVOICING_FOLDER_PROJECT_TASK_PRODUCT = /*$$(*/ "Vous n'avez pas sélectionné de produit de facturation pour la tâche %s"/*)*/ ;
+	static final String INVOICING_FOLDER_PROJECT_TASK_COMPANY = /*$$(*/ "Vous n'avez pas sélectionné de compagnie sur le projet racine"/*)*/ ;
 }

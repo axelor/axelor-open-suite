@@ -6,7 +6,6 @@ import com.axelor.apps.business.project.exception.IExceptionMessage;
 import com.axelor.apps.business.project.service.BusinessFolderService;
 import com.axelor.apps.businessproject.db.BusinessFolder;
 import com.axelor.apps.businessproject.db.repo.BusinessFolderRepository;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
@@ -70,9 +69,4 @@ public class BusinessFolderController extends BusinessFolderRepository{
 	            .map());
 	}
 
-	public void changeFolders (ActionRequest request, ActionResponse response){
-		ProjectTask project = request.getContext().asType(ProjectTask.class);
-		businessFolderService.changeFolders(project);
-		response.setReload(true);
-	}
 }

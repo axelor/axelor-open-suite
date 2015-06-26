@@ -35,4 +35,5 @@ public interface IExceptionMessage {
 	static final String LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE = /*$$(*/ "L'employé %s n'est pas autorisé à prendre des congés en avance"/*)*/ ;
 	static final String LEAVE_ALLOW_NEGATIVE_VALUE_REASON = /*$$(*/ "Il n'est pas possible de prendre des congés en avance pour le motif %s"/*)*/ ;
 
+
 }
