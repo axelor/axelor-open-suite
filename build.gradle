@@ -4,9 +4,15 @@ def modules = new File('modules/abs').listFiles().findAll { dir ->
 	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('organisation')
 }
 
-def installedModules = new File('modules/abs').listFiles().findAll { dir ->
+def enModules = new File('modules/abs').listFiles().findAll { dir ->
 	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('-demo-fr') && !dir.name.endsWith('-l10n-fr')
 }
+
+def frModules = new File('modules/abs').listFiles().findAll { dir ->
+	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('-demo-en') && !dir.name.endsWith('-l10n-en')
+}
+
+def installedModules = project.hasProperty('lang') && project.getProperty('lang') == 'fr' ? frModules : enModules
 
 application {
 
