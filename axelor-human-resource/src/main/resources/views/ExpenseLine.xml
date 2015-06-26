@@ -18,7 +18,7 @@
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate">
 		<panel>
-			<field name="task" domain="self.taskTypeSelect = 'task'" form-view="task-form" grid-view="task-grid"/>
+			<field name="task" domain="self.taskTypeSelect = 'task' AND self.imputable = true" form-view="task-form" grid-view="task-grid"/>
 			<field name="expenseType" domain="self.expense = true" widget="SuggestBox"/>
 			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 			<field name="untaxedAmount" onChange="action-expense-on-change-tax-untaxt-amount"/>

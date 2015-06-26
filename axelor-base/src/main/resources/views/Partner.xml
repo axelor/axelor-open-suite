@@ -131,6 +131,21 @@
 			<panel name="customerCredit" title="Encours Client" if-module="axelor-supplychain" colSpan="12">
 				<panel-include if-module="axelor-supplychain" view="incl-customer-credit-partner-form" from="axelor-supplychain" />
 			</panel>
+			<panel title="Business Folder" if-module="axelor-business-project" colSpan="12">
+				<button name="generateBusinessFolder" title="Generate Business Folder"/>
+				<button name="generateProject" title="Generate Project"/>
+				<field name="chargeBackPurchase" colSpan="4"/>
+				<label title="OR" colSpan="4"/>
+				<field name="flatFeePurchase" colSpan="4"/>
+				
+				<field name="chargeBackExpense" colSpan="4"/>
+				<label title="OR" colSpan="4"/>
+				<field name="flatFeeExpense" colSpan="4"/>
+				
+				<field name="chargeBackAnanlytic" colSpan="4"/>
+				<label title="OR" colSpan="4"/>
+				<field name="flatFeeAnalytic" colSpan="4"/>
+			</panel>
 			<panel title="Sale Order" if-module="axelor-sale">
 				<field name="saleOrderInformation" colSpan="12"/>
 			</panel>

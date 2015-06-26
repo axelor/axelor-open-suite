@@ -25,7 +25,7 @@
 	        <field name="amount"/>
 	        <field name="currency"/>
 	        <field name="partner"/>
-	        <field name="projectTask" if-module="axelor-business-project"/>
+	        <field name="projectTask" domain="self.imputable = true" if-module="axelor-business-project"/>
 	        <field name="generalAccount"/>
 	        <field name="moveLine"/>
 	        <field name="invoiceable"/>

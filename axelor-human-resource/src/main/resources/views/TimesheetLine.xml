@@ -10,17 +10,20 @@
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true"/>
 		<field name="affectedToTimeSheet"/>
+		<field name="invoiceable"/>
+		<field name="invoiced" showIf="invoiceable"/>
 		<field name="comments" />
 	</grid>
 	
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet">
-		<field name="project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
-		<field name="task" domain="self.taskTypeSelect = 'task'" form-view="task-form" grid-view="task-grid"/>
+		<field name="projectTask" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
 		<field name="date" onChange="action-timesheet-validate-date"/>
 		<field name="product"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true" />
+		<field name="invoiceable"/>
+		<field name="invoiced" showIf="invoiceable"/>
 		<field name="comments" />
 	</grid>
 
@@ -45,8 +48,7 @@
 	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration">
 		<panel title="Overview">
-			<field name="project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
-			<field name="task" domain="self.taskTypeSelect = 'task'" form-view="task-form" grid-view="task-grid"/>
+			<field name="projectTask" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="date" />
 			<field name="product" domain="self.isActivity = true" canNew="true"/>
 			<field name="visibleDuration" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>

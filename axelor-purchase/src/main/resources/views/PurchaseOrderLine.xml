@@ -77,7 +77,7 @@
 	      -->
 	    </panel>
 	    <panel title="Project/Task" if-module="axelor-business-project">
-	      <field name="projectTask"/>
+	      <field name="projectTask" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
 	    </panel>
 	    <panel title="Suppliers requests" if-module="axelor-supplier-management">
 	      <button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
@@ -140,8 +140,8 @@
 	</action-group>
 	
 	<action-attrs name="action-purchase-order-attrs-hide-ati">
-		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti"/>
-		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent.inAti"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent.inAti" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
 	</action-attrs>
 	
 	<!-- ACTION RECORD -->
@@ -179,7 +179,7 @@
 	<!-- ACTION ATTRS -->
 	
 	<action-attrs name="action-purchase-order-line-attrs-task-readonly">
-		<attribute name="readonly" for="task" expr="eval: (_parent.statusSelect == 2 || _parent.statusSelect == 3 || _parent.statusSelect == 4) &amp;&amp; task != null"/>
+		<attribute name="readonly" for="task" expr="eval: (_parent.statusSelect == 2 || _parent.statusSelect == 3 || _parent.statusSelect == 4) &amp;&amp; task != null" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-line-attrs-hide-product-variant">

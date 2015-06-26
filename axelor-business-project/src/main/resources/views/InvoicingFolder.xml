@@ -6,26 +6,38 @@
 		<field name="folder"/>
 	</grid>
 
-	<form name="invoicing-folder-form" title="Invoicing Folder" model="com.axelor.apps.businessproject.db.InvoicingFolder">
+	<form name="invoicing-folder-form" title="Invoicing Folder" model="com.axelor.apps.businessproject.db.InvoicingFolder" readonlyIf="invoice != null">
 		<panel>
 			<field name="folder"/>
+			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-folder-method-fill-in"/>
 			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-folder-method-generate-invoice"/>
 			<field name="invoice" readonly="true"/>
 		</panel>
-		<panel-related field="saleOrderLineSet" canEdit="false" canNew="false"/>
-		<panel-related field="purchaseOrderLineSet" canEdit="false" canNew="false"/>
+		<panel-related field="saleOrderLineSet" canEdit="false" canNew="false" onSelect="action-invoicing-folder-attrs-domain-log-time-set" form-view="sale-order-line-form"/>
+		<panel-related field="purchaseOrderLineSet" canEdit="false" canNew="false" onSelect="action-invoicing-folder-attrs-domain-log-time-set"/>
 		<panel-related field="logTimesSet" onSelect="action-invoicing-folder-attrs-domain-log-time-set" canEdit="false" canNew="false"/>
-		<panel-related field="expenseLineSet" canEdit="false" canNew="false"/>
-		<panel-related field="analyticMoveLineSet" canEdit="false" canNew="false"/>
-		<panel-related field="projectTaskSet" canEdit="false" canNew="false"/>
+		<panel-related field="expenseLineSet" canEdit="false" canNew="false" onSelect="action-invoicing-folder-attrs-domain-log-time-set"/>
+		<panel-related field="analyticMoveLineSet" canEdit="false" canNew="false" onSelect="action-invoicing-folder-attrs-domain-log-time-set"/>
+		<panel-related field="projectTaskSet" canEdit="false" canNew="false" onSelect="action-invoicing-folder-attrs-domain-log-time-set"/>
+		<panel-related field="manufOrderSet" canEdit="false" canNew="false" if-module="axelor-business-production"/>
+		
 	</form>
 	
 	<action-attrs name="action-invoicing-folder-attrs-domain-log-time-set">
-		<attribute name="domain" for="logTimesSet" expr="eval: &quot; self.affectedToTimeSheet != null AND self.affectedToTimeSheet.statusSelect = 3 AND (self.project != null OR self.task != null) AND self.invoiced = false &quot;"/>
+		<attribute name="domain" for="logTimesSet" expr="eval: &quot; self.affectedToTimeSheet != null AND self.affectedToTimeSheet.statusSelect = 3 AND (self.projectTask.businessFolder.id = ${folder.id} OR self.projectTask.project.businessFolder.id = ${folder.id}) AND (self.projectTask.saleOrder != null OR self.projectTask.project.saleOrder != null) AND self.invoiceable = true AND self.invoiced = false AND (self.projectTask.imputable = true OR self.projectTask.project.imputable = true) &quot;"/>
+		<attribute name="domain" for="saleOrderLineSet" expr="eval: &quot; self.project != null AND (self.project.businessFolder.id = ${folder.id} OR self.project.project.businessFolder.id = ${folder.id}) AND self.invoiceable = true AND self.invoiced = false AND (self.project.imputable = true OR self.project.project.imputable = true) &quot;"/>
+		<attribute name="domain" for="purchaseOrderLineSet" expr="eval: &quot; self.projectTask != null AND (self.projectTask.businessFolder.id = ${folder.id} OR self.projectTask.project.businessFolder.id = ${folder.id}) AND (self.projectTask.saleOrder != null OR self.projectTask.project.saleOrder != null) AND self.invoiceable = true AND self.invoiced = false AND (self.projectTask.imputable = true OR self.projectTask.project.imputable = true) &quot;"/>
+		<attribute name="domain" for="expenseLineSet" expr="eval: &quot; self.task != null AND (self.task.businessFolder.id = ${folder.id} OR self.task.project.businessFolder.id = ${folder.id}) AND (self.task.saleOrder != null OR self.task.project.saleOrder != null) AND self.invoiceable = true AND self.invoiced = false AND (self.task.imputable = true OR self.task.project.imputable = true) &quot;"/>
+		<attribute name="domain" for="analyticMoveLineSet" expr="eval: &quot; self.projectTask != null AND (self.projectTask.businessFolder.id = ${folder.id} OR self.projectTask.project.businessFolder.id = ${folder.id}) AND (self.projectTask.saleOrder != null OR self.projectTask.project.saleOrder != null) AND self.invoiceable = true AND self.invoiced = false AND (self.projectTask.imputable = true OR self.projectTask.project.imputable = true) &quot;"/>
+		<attribute name="domain" for="projectTaskSet" expr="eval: &quot; (self.businessFolder.id = ${folder.id} OR self.project.businessFolder.id = ${folder.id}) AND (self.saleOrder != null OR self.project.saleOrder != null) AND self.invoiceable = true AND self.invoiced = false AND self.imputable = true &quot;"/>
 	</action-attrs>
 	
 	<action-method name="action-invoicing-folder-method-generate-invoice">
 		<call class="com.axelor.apps.business.project.web.InvoicingFolderController" method="generateInvoice"/>
+	</action-method>
+	
+	<action-method name="action-invoicing-folder-method-fill-in">
+		<call class="com.axelor.apps.business.project.web.InvoicingFolderController" method="fillIn"/>
 	</action-method>
 	    
 </object-views>

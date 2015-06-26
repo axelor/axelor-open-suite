@@ -3,12 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
 
-  <module name="project" package="com.axelor.apps.project.db"/>
+  <module name="business-project" package="com.axelor.apps.businessproject.db"/>
 
-  <entity name="ProjectTask">
+  <entity name="InvoicingFolder" cachable="true">
+      
+   
+    <many-to-many name="manufOrderSet" ref="com.axelor.apps.production.db.ManufOrder" title="Manuf. Orders Selection"/>
 
-	  <one-to-many name="timesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="projectTask"/>
-	          
+    
   </entity>
   
 </domain-models>

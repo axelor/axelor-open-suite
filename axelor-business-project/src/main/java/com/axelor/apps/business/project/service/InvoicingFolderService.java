@@ -66,13 +66,14 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		};
 		Invoice invoice = invoiceGenerator.generate();
 		invoice.setInAti(user.getActiveCompany().getAccountConfig().getInvoiceInAti());
-		this.populate(invoice,folder);
+		invoiceGenerator.populate(invoice,this.populate(invoice,folder));
+		this.setInvoiced(folder);
 		folder.setInvoice(invoice);
 		save(folder);
 		return invoice;
 	}
 
-	public void populate(Invoice invoice,InvoicingFolder folder) throws AxelorException{
+	public List<InvoiceLine> populate(Invoice invoice,InvoicingFolder folder) throws AxelorException{
 		List<SaleOrderLine> saleOrderLineList = new ArrayList<SaleOrderLine>(folder.getSaleOrderLineSet());
 		List<PurchaseOrderLine> purchaseOrderLineList = new ArrayList<PurchaseOrderLine>(folder.getPurchaseOrderLineSet());
 		List<TimesheetLine> timesheetLineList = new ArrayList<TimesheetLine>(folder.getLogTimesSet());
@@ -82,12 +83,13 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		invoiceLineList.addAll( saleOrderInvoiceServiceImpl.createInvoiceLines(invoice, saleOrderLineList));
-		invoiceLineList.addAll(purchaseOrderInvoiceServiceImpl.createInvoiceLines(invoice, purchaseOrderLineList));
+		invoiceLineList.addAll(this.customerChargeBackPurchases(purchaseOrderInvoiceServiceImpl.createInvoiceLines(invoice, purchaseOrderLineList),folder));
 		invoiceLineList.addAll(timesheetServiceImp.createInvoiceLines(invoice, timesheetLineList));
-		invoiceLineList.addAll(expenseService.createInvoiceLines(invoice, expenseLineList));
-		invoiceLineList.addAll(analyticMoveLineService.createInvoiceLines(invoice, analyticMoveLineList));
+		invoiceLineList.addAll(this.customerChargeBackExpenses(expenseService.createInvoiceLines(invoice, expenseLineList),folder));
+		invoiceLineList.addAll(this.customerChargeBackAnalytics(analyticMoveLineService.createInvoiceLines(invoice, analyticMoveLineList),folder));
 		invoiceLineList.addAll(this.createInvoiceLines(invoice, projectTaskList));
-		invoice.setInvoiceLineList(invoiceLineList);
+
+		return invoiceLineList;
 	}
 
 
@@ -125,5 +127,60 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		};
 
 		return invoiceLineGenerator.creates();
+	}
+
+	public void setInvoiced(InvoicingFolder folder){
+		for (SaleOrderLine saleOrderLine : folder.getSaleOrderLineSet()) {
+			saleOrderLine.setInvoiced(true);
+		}
+		for (PurchaseOrderLine purchaseOrderLine : folder.getPurchaseOrderLineSet()) {
+			purchaseOrderLine.setInvoiced(true);
+		}
+		for (TimesheetLine timesheetLine : folder.getLogTimesSet()) {
+			timesheetLine.setInvoiced(true);
+		}
+		for (ExpenseLine expenseLine : folder.getExpenseLineSet()) {
+			expenseLine.setInvoiced(true);
+		}
+		for (AnalyticMoveLine analyticMoveLine : folder.getAnalyticMoveLineSet()) {
+			analyticMoveLine.setInvoiced(true);
+		}
+		for (ProjectTask projectTask : folder.getProjectTaskSet()) {
+			projectTask.setInvoiced(true);
+		}
+	}
+
+
+	public List<InvoiceLine> customerChargeBackPurchases(List<InvoiceLine> invoiceLineList,InvoicingFolder folder){
+		Partner customer = folder.getBusinessFolder().getCustomer();
+		if(!customer.getFlatFeeExpense()){
+			for (InvoiceLine invoiceLine : invoiceLineList) {
+				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackPurchase().divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)));
+				invoiceLine.setExTaxTotal(invoiceLine.getPrice().multiply(invoiceLine.getQty()).setScale(2, BigDecimal.ROUND_HALF_UP));
+			}
+		}
+		return invoiceLineList;
+	}
+
+	public List<InvoiceLine> customerChargeBackExpenses(List<InvoiceLine> invoiceLineList,InvoicingFolder folder){
+		Partner customer = folder.getBusinessFolder().getCustomer();
+		if(!customer.getFlatFeePurchase()){
+			for (InvoiceLine invoiceLine : invoiceLineList) {
+				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackExpense().divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)));
+				invoiceLine.setExTaxTotal(invoiceLine.getPrice().multiply(invoiceLine.getQty()).setScale(2, BigDecimal.ROUND_HALF_UP));
+			}
+		}
+		return invoiceLineList;
+	}
+
+	public List<InvoiceLine> customerChargeBackAnalytics(List<InvoiceLine> invoiceLineList,InvoicingFolder folder){
+		Partner customer = folder.getBusinessFolder().getCustomer();
+		if(!customer.getFlatFeeAnalytic()){
+			for (InvoiceLine invoiceLine : invoiceLineList) {
+				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackAnanlytic().divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)));
+				invoiceLine.setExTaxTotal(invoiceLine.getPrice().multiply(invoiceLine.getQty()).setScale(2, BigDecimal.ROUND_HALF_UP));
+			}
+		}
+		return invoiceLineList;
 	}
 }

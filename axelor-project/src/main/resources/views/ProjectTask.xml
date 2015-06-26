@@ -32,9 +32,10 @@
 			<field name="dueDate" />
 			<field name="progress" widget="SelectProgress"/>
 			<field name="$visibleLeadDelay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
+			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="invoiceStatusSelect"/>
 			<field name="invoiceable"/>
-			<field name="invoiced"/>
+			<field name="invoiced" showIf="invoiceable"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Related Projects">
@@ -86,9 +87,10 @@
 			<field name="dueDate" />
 			<field name="progress" widget="SelectProgress"/>
 			<field name="$visibleLeadDelay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
+			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="invoiceStatusSelect"/>
 			<field name="invoiceable"/>
-			<field name="invoiced"/>
+			<field name="invoiced" showIf="invoiceable"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Log Times">
@@ -134,9 +136,10 @@
 			<field name="dueDate" />
 			<field name="progress" widget="SelectProgress"/>
 			<field name="$visibleLeadDelay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
+			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="invoiceStatusSelect"/>
 			<field name="invoiceable"/>
-			<field name="invoiced"/>
+			<field name="invoiced" showIf="invoiceable"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Related Projects">

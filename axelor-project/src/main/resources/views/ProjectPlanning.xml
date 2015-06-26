@@ -13,7 +13,6 @@
 		<panel>
 			<field name="year"/>
 			<field name="week"/>
-	      	<field name="monthSelect"/>
 		</panel>
 	    <panel-related field="projectPlanningLineList" showTitle="false" canNew="false" canRemove="false" canSelect="false"/>
 	    <panel>

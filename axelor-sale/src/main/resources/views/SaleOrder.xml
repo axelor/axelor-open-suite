@@ -70,7 +70,7 @@
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form"/>
 	    <field name="currency"/>
 	    <field name="versionNumber"/>
-	    <field name="project" if-module="axelor-business-project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+	    <field name="project" if-module="axelor-business-project" domain="self.taskTypeSelect = 'project' AND self.imputable = true" form-view="project-form" grid-view="project-grid"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
 	  </panel>
 	  

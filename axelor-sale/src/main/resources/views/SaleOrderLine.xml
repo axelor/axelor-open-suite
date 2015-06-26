@@ -61,7 +61,7 @@
 		   	</panel>
 			<panel-related field="invoiceSet"/>
 			<panel name="projectTaskPanel" title="Project/Task" if-module="axelor-business-project">
-				<field name="project" onChange="action-sale-order-line-record-progress" form-view="project-task-form" grid-view="project-task-grid"/>
+				<field name="project" domain="self.imputable = true" onChange="action-sale-order-line-record-progress" form-view="project-task-form" grid-view="project-task-grid"/>
 				<field name="progress" readonly="true" widget="SelectProgress"/>
 			</panel>
 		</panel-tabs>
@@ -116,8 +116,8 @@
     </action-group>
     
     <action-attrs name="action-sale-order-attrs-hide-ati">
-		<attribute name="hidden" for="exTaxTotal" expr="eval: _parent.inAti"/>
-		<attribute name="hidden" for="inTaxTotal" expr="eval: !_parent.inAti"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval: _parent.inAti" if="_parent._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval: !_parent.inAti" if="_parent._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-show-project" if-module="axelor-business-project">
@@ -173,7 +173,7 @@
     </action-attrs>
     
     <action-attrs name="action-sale-order-line-attrs-task-readonly">
-		<attribute name="readonly" for="task" expr="eval: (_parent.statusSelect == 2 || _parent.statusSelect == 3 || _parent.statusSelect == 4) &amp;&amp; task != null"/>
+		<attribute name="readonly" for="task" expr="eval: (_parent.statusSelect == 2 || _parent.statusSelect == 3 || _parent.statusSelect == 4) &amp;&amp; task != null" if="_parent._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-bill-of-material-domain">
@@ -199,7 +199,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-supplychain-attrs-readonly-invoice-subscription" if-module="axelor-supplychain">
-		<attribute name="hidden" for="subscriptionList.invoiceSubscription" expr="eval: __parent__.statusSelect &lt; 3" />
+		<attribute name="hidden" for="subscriptionList.invoiceSubscription" expr="eval: __parent__.statusSelect &lt; 3" if="_parent._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
 	
 	<action-record name="action-supplychain-record-periodicity" model="com.axelor.apps.sale.db.SaleOrderLine" if-module="axelor-supplychain">

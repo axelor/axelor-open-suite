@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  
+  <module name="base" package="com.axelor.apps.base.db"/>
+  
+  <entity name="Partner" lang="java">
+  
+  	<decimal name="chargeBackPurchase" title="% Charging Back Purhcases" default="100"/>
+  	<decimal name="chargeBackExpense" title="% Charging Back Expenses" default="100"/>
+  	<decimal name="chargeBackAnanlytic" title="% Charging Back Ananlytic Move Lines" default="100"/>
+  	
+  	<boolean name="flatFeePurchase" title="Customer Flat Fee Purchases"/>
+  	<boolean name="flatFeeExpense" title="Customer Flat Fee Expenses"/>
+  	<boolean name="flatFeeAnalytic" title="Customer Flat Fee Ananlytic Move Lines"/>
+	
+  </entity>
+  
+</domain-models>

@@ -6,13 +6,13 @@
 	<grid name="project-planning-line-grid" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="true" groupBy="user">
 		<field name="user" />
 		<field name="projectTask" />
-		<field name="monday" />
-		<field name="tuesday" />
-		<field name="wednesday" />
-		<field name="thursday" />
-		<field name="friday" />
-		<field name="saturday" />
-		<field name="sunday" />
+		<field name="monday" aggregate="sum"/>
+		<field name="tuesday" aggregate="sum"/>
+		<field name="wednesday" aggregate="sum"/>
+		<field name="thursday" aggregate="sum"/>
+		<field name="friday" aggregate="sum"/>
+		<field name="saturday" aggregate="sum"/>
+		<field name="sunday" aggregate="sum"/>
 	</grid>
 
 </object-views>

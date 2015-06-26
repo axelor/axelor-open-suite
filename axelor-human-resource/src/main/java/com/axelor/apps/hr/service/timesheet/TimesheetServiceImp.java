@@ -41,9 +41,8 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
 
-		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.affectedToTimeSheet = null AND self.task != null", timesheet.getUser()).fetch();
+		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.affectedToTimeSheet = null AND self.projectTask != null", timesheet.getUser()).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
-			timesheetLine.setProject(timesheetLine.getTask().getProject());
 			timesheet.addTimesheetLineListItem(timesheetLine);
 		}
 		JPA.save(timesheet);
@@ -55,7 +54,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		timesheet.setStatusSelect(5);
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
-			if(timesheetLine.getTask() != null){
+			if(timesheetLine.getProjectTask() != null){
 				timesheetLine.setAffectedToTimeSheet(null);
 				JPA.save(timesheetLine);
 			}
@@ -119,8 +118,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 					TimesheetLine timesheetLine = new TimesheetLine();
 					timesheetLine.setDate(fromDate);
 					timesheetLine.setUser(timesheet.getUser());
-					if(timesheet.getProject()!=null)timesheetLine.setProject(timesheet.getProject());
-					if(timesheet.getTask()!=null)timesheetLine.setTask(timesheet.getTask());
+					timesheetLine.setProjectTask(timesheet.getProjectTask());
 					timesheetLine.setVisibleDuration(timesheet.getLogTime());
 					timesheetLine.setDurationStored(employeeService.getDurationHours(timesheet.getLogTime()));
 					timesheetLine.setProduct(timesheet.getProduct());

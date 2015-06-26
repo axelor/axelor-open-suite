@@ -14,6 +14,7 @@
     <many-to-many name="expenseLineSet" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense Lines Selection"/>
     <many-to-many name="analyticMoveLineSet" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic Move Lines Selection"/>
     <many-to-many name="projectTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task Selection"/>
+
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice generated"/>
     
   </entity>
