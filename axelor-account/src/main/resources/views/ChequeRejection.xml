@@ -39,7 +39,7 @@
 				onChange="action-group-account-cheque-rejection-paymentvoucher-onchange"
 				onSelect="action-cheque-rejection-attrs-domain-payment-voucher"
 				domain="self.company=:company">
-				<editor x-layout="table" orderBy="-paymentDateTime" title="Payment voucher">
+				<editor x-show-titles="false" x-layout="table" orderBy="-paymentDateTime" title="Payment voucher">
 					<field name="ref" />
 					<field name="user" />
 					<field name="paymentMode" />

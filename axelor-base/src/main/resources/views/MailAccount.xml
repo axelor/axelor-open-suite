@@ -3,13 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 	
-    <grid name="mail-account-grid" title="Mail accounts" model="com.axelor.apps.message.db.MailAccount">
-        <field name="name"/>
-        <field name="login"/>
-        <field name="host"/>
-        <field name="isDefault"/>
-    </grid>
-    
     <form name="mail-account-form" id="base-mail-account-form" title="Mail account" model="com.axelor.apps.message.db.MailAccount" 
     	onNew="action-mail-account-default-attrs,action-mail-account-default-record" onLoad="action-mail-account-default-attrs">
     	<panel title="Informations" >

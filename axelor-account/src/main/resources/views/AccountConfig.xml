@@ -82,7 +82,7 @@
 				<field name="mailTransitTime" colSpan="12"/>
 				<field name="reminderConfigLineList" showTitle="false" colSpan="12">
 				<!-- TODO:Check weather editor works or not -->
-				<editor x-layout="table">
+				<editor x-show-titles="false" x-layout="table">
 					<field name="partnerCategory"/>
 				    <field name="reminderMethod"/>
 				</editor>
@@ -131,7 +131,7 @@
 				<field name="standardRateTax"/>
 				<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" colSpan="12">
 					<!-- TODO:Check weather this Editor works or not -->
-					<editor x-layout="table">
+					<editor x-show-titles="false" x-layout="table">
 						<field name="code" colSpan="12"/>
 						<field name="name" colSpan="6"/>
 						<field name="accountType" colSpan="6"/>
