@@ -55,14 +55,14 @@
 			
 			<panel x-span="9" >
 				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-					<editor>
+					<editor x-show-titles="false">
 						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4" onChange="action-lead-method-set-social-network-url"/>
 						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="4" onChange="action-lead-method-set-social-network-url"/>            
 						<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
 					</editor>
 				</field>
 				<field name="companyName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-					<editor>
+					<editor x-show-titles="false">
 						<field name="enterpriseName" colSpan="4" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
 						<field name="jobTitle" colSpan="4" placeholder="Function"/>
 						<field name="partner" colSpan="4" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
@@ -83,7 +83,7 @@
 				<field name="mobilePhone" colSpan="4"/>
 				<field name="isDoNotCall" colSpan="2"/>
 				<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false" colSpan="4">
-					<editor>
+					<editor x-show-titles="false">
 						<field name="address" colSpan="12"/>
 					</editor>
 				</field>

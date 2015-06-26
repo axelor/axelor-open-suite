@@ -54,7 +54,7 @@
 	      	<panel colSpan="9">
 	      	<field name="fullName" colSpan="12" showTitle="false">
 	      		<hilite strong="true" if="true" color="primary"/>        
-		        <editor>
+		        <editor x-show-titles="false">
 		            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url" colSpan="4"/>
 		            <spacer colSpan="8"/>
 		            <field name="name" showTitle="false" css="highlight" placeholder="Name" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
@@ -90,7 +90,7 @@
 					<field name="fax" colSpan="3"/>
 					<field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1"/>
 					<field name="emailAddress" canSelect="false" colSpan="6" form-view="email-address-simple-form" x-show-icons="false">
-						<editor>
+						<editor x-show-titles="false">
 							<field name="address" colSpan="12"/>
 						</editor>
 					</field>
@@ -210,7 +210,7 @@
 	            </panel>
 	            <panel title="Contact" colSpan="12">
 	                <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
-						<editor>
+						<editor x-show-titles="false">
 							<field name="address"/>
 						</editor>
 					</field>
@@ -261,7 +261,7 @@
             <field name="fixedPhone"/>
             <field name="mobilePhone"/>
             <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
-				<editor>
+				<editor x-show-titles="false">
 					<field name="address"/>
 				</editor>
 			</field>

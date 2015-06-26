@@ -241,18 +241,19 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 		Product product = purchaseOrderLine.getProduct();
 
 		SupplierCatalog supplierCatalog = this.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
-
-		if(supplierCatalog == null)  {
-
-			supplierCatalog = this.getSupplierCatalog(product, product.getDefaultSupplierPartner());
-		}
-
+		
+//		If there is no catalog for supplier, then we don't take the default catalog.
+		
+//		if(supplierCatalog == null)  {
+//			
+//			supplierCatalog = this.getSupplierCatalog(product, product.getDefaultSupplierPartner());
+//		}
+		
 		return supplierCatalog;
-
+		
 	}
-
-
-	@Override
+	
+	
 	public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner)  {
 
 		if(product.getSupplierCatalogList() != null)  {
