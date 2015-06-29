@@ -107,8 +107,8 @@ public class TargetService extends TargetRepository{
 		target.setCallEmittedNumberTarget(targetConfiguration.getCallEmittedNumber());
 		target.setMeetingNumberTarget(targetConfiguration.getMeetingNumber());
 		target.setOpportunityAmountWonTarget(targetConfiguration.getOpportunityAmountWon());
-		target.setOpportunityCreatedNumberTarget(target.getOpportunityCreatedNumberTarget());
-		target.setOpportunityCreatedWonTarget(target.getOpportunityCreatedWonTarget());
+		target.setOpportunityCreatedNumberTarget(targetConfiguration.getOpportunityCreatedNumber());
+		target.setOpportunityCreatedWonTarget(targetConfiguration.getOpportunityCreatedWon());
 //		target.setSaleOrderAmountWonTarget(targetConfiguration.getSaleOrderAmountWon());
 //		target.setSaleOrderCreatedNumberTarget(targetConfiguration.getSaleOrderCreatedNumber());
 //		target.setSaleOrderCreatedWonTarget(targetConfiguration.getSaleOrderCreatedWon());

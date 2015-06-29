@@ -31,6 +31,9 @@
     <date name="fromDate" title="Date from" required="true"/>
     <date name="toDate" title="Date to" required="true"/>
     
+ 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+    
+    
     
   </entity>
 </domain-models>
