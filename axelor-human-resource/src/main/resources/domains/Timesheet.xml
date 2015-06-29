@@ -18,7 +18,7 @@
       <date name="toGenerationDate"/>
       <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task"/>
       <decimal name="logTime" title="Duration(by day)"/>
-      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
       <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated" readonly="true"/>
       <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>

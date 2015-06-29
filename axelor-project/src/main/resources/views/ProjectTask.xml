@@ -27,11 +27,11 @@
 			<field name="saleOrder" if-module="axelor-business-project"/>
 			<field name="fromDate" />
 			<field name="toDate" />
-			<field name="$visibleDuration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
-			<field name="$visibleTimeSpent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
+			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" widget="SelectProgress"/>
-			<field name="$visibleLeadDelay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
+			<field name="$visibleLeadDelay" title="" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="invoiceStatusSelect"/>
 			<field name="invoiceable"/>
@@ -123,11 +123,11 @@
 			<field name="assignedTo" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain"/>
 			<field name="fromDate" />
 			<field name="toDate" />
-			<field name="$visibleDuration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
-			<field name="$visibleTimeSpent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
+			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" widget="SelectProgress"/>
-			<field name="$visibleLeadDelay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
+			<field name="$visibleLeadDelay" title="" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="invoiceStatusSelect"/>
 			<field name="invoiceable"/>
@@ -179,11 +179,11 @@
 			<field name="saleOrder" if-module="axelor-business-project" hideIf="taskTypeSelect == 'task'"/>
 			<field name="fromDate" />
 			<field name="toDate" />
-			<field name="$visibleDuration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
-			<field name="$visibleTimeSpent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
+			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" widget="SelectProgress"/>
-			<field name="$visibleLeadDelay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
+			<field name="$visibleLeadDelay" title="" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="invoiceStatusSelect"/>
 			<field name="invoiceable"/>
