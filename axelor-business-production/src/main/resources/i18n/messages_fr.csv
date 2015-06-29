@@ -1,13 +1,15 @@
 "key","message","comment","context"
-"Business",,,"resources/domains/ProductionOrder.xml:11
-resources/views/Business.xml:6"
-"Employee",,,"resources/domains/ProdHumanResource.xml:10"
-"None",,,"resources/views/Selects.xml:11"
-"Operation order",,,"resources/domains/TimesheetLine.xml:10"
-"Operation orders",,,"resources/views/Business.xml:13"
-"Timesheet lines",,,"resources/domains/OperationOrder.xml:12"
-"To invoice ?",,,"resources/domains/ManufOrder.xml:10
-resources/domains/OperationOrder.xml:10
-resources/domains/ProductionOrder.xml:10"
-"Yes (Fixed)",,,"resources/views/Selects.xml:12"
-"Yes (Real)",,,"resources/views/Selects.xml:13"
+"Business",,,
+"Employee",,,
+"Invoiceable",,,
+"Invoiced",,,
+"Manuf. Orders Selection","Sélection ordres de fabrication",,
+"None",,,
+"Operation order",,,
+"Operation orders",,,
+"Project/Task",,,
+"Timesheet lines",,,
+"To Invoice?",,,
+"To invoice ?",,,
+"Yes (Fixed)",,,
+"Yes (Real)",,,
