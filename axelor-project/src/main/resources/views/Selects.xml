@@ -9,7 +9,9 @@
 	</selection>
 	
 	<selection name="project.task.status.select">
-		<option value="1">Draft</option>
+		<option value="1">Planned</option>
+		<option value="2">In Progress</option>
+		<option value="3">Finished</option>
 	</selection>
 	
 	<selection name="project.task.invoice.status.select">
