@@ -6,7 +6,8 @@
 		<field name="projectTask"/>
 	</grid>
 
-	<form name="invoicing-folder-form" title="Invoicing Folder" model="com.axelor.apps.businessproject.db.InvoicingFolder" readonlyIf="invoice != null">
+	<form name="invoicing-folder-form" title="Invoicing Folder" model="com.axelor.apps.businessproject.db.InvoicingFolder" readonlyIf="invoice != null"
+		onNew="action-invoicing-folder-attrs-title-project-task" onLoad="action-invoicing-folder-attrs-title-project-task">
 		<panel>
 			<field name="projectTask" domain="self.imputable = true"/>
 			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-folder-method-fill-in"/>
@@ -30,5 +31,10 @@
 	<action-method name="action-invoicing-folder-method-fill-in">
 		<call class="com.axelor.apps.business.project.web.InvoicingFolderController" method="fillIn"/>
 	</action-method>
+	
+	<action-attrs name="action-invoicing-folder-attrs-title-project-task">
+		<attribute name="title" for="projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
+		<attribute name="title" for="projectTaskSet" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
+	</action-attrs>
 	    
 </object-views>

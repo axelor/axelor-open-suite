@@ -45,8 +45,8 @@
 	</form>
 	
 	<form name="timesheet-line-timesheet-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" 
-	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label"
-	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration">
+	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project-task"
+	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-title-project-task">
 		<panel title="Overview">
 			<field name="projectTask" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="date" />
@@ -59,6 +59,10 @@
 			<field name="comments" />
 		</panel>
 	</form>
+	
+	<action-attrs name="action-timesheet-line-attrs-title-project-task">
+		<attribute name="title" for="projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
+	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-attrs-set-duration-label">
 	    <attribute name="title" for="durationLabel" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>

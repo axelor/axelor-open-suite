@@ -13,7 +13,8 @@
         <field name="invoiceable"/>
         <field name="invoiced"/>
     </grid>
-    <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency">
+    <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project-task"
+    	onLoad="action-analytic-move-line-attrs-title-project-task">
        <panel >
        		<field name="analyticJournal"/>
 	        <field name="analyticAccount"/>
@@ -37,4 +38,8 @@
     <action-record name="action-analytic-move-line-record-currency" model="com.axelor.apps.account.db.AnalyticMoveLine">
     	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
     </action-record>
+    
+    <action-attrs name="action-analytic-move-line-attrs-title-project-task">
+		<attribute name="title" for="projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
+	</action-attrs>
 </object-views>

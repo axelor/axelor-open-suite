@@ -10,7 +10,8 @@
          -->
     </grid>
     
-	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder">
+	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" onNew="action-production-order-attrs-title-project-task"
+		onLoad="action-production-order-attrs-title-project-task">
 	  <panel>
 	    <field name="productionOrderSeq"/>
 	    <field name="projectTask" if-module="axelor-business-production"/>
@@ -35,6 +36,10 @@
 	  </panel-related>
 	  <panel-dashlet   action="action-production-order-view-operation-order"/>
 	</form>
+    
+    <action-attrs name="action-production-order-attrs-title-project-task">
+		<attribute name="title" for="projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
+	</action-attrs>
     
    	<action-method name="action-production-order-method-add-manuf-order">
     	<call class="com.axelor.apps.production.web.ProductionOrderController" method="addManufOrder"/>

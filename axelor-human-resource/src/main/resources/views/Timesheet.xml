@@ -20,8 +20,8 @@
 	</grid>
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
-	    onNew="action-timesheet-record-default,action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-record-from-period-date"
-	    onLoad="action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title" canNew="false"
+	    onNew="action-timesheet-record-default,action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-record-from-period-date,action-timesheet-attrs-title-project-task"
+	    onLoad="action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-attrs-title-project-task" canNew="false"
 	    onSave="action-timesheet-method-valid-to-date">
 
 	    <panel sidebar="true" title="Actions" stacked="true">
@@ -62,6 +62,13 @@
 		<field name="$timesheetSelect" title="Select Timesheet" type="many-to-one" target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox" />
 		<button name="editTimesheetSelected" title="Edit Timesheet Selected" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:editTimesheetSelected"/>
 	</form>
+	
+	
+	<action-attrs name="action-timesheet-attrs-title-project-task">
+		<attribute name="title" for="projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
+		<attribute name="title" for="timesheetLineList.projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
+	
+	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-domain-timesheet-select">
 		<attribute name="domain" for="$timesheetSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>

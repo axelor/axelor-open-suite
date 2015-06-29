@@ -2,7 +2,12 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 	
+	<grid name="project-planning-grid" title="Project Plannings" model="com.axelor.apps.project.db.ProjectPlanning">
+		<field name="year"/>
+		<field name="week"/>
+	</grid>
 
+	
 	<form name="project-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning"
 		onLoad="action-project-planning-record-dates,action-project-planning-attrs-title-columns" canNew="false" canCopy="false">
 		<panel>
@@ -20,8 +25,6 @@
 	    	<button name="seeMonth" title="See Month" colSpan="4"/>
 	    	<field name="fromDate" colSpan="4"/>
 	      	<field name="toDate" colSpan="4"/>
-	      	<field name="user" />
-	      	<field name="team" />
 	    </panel>
 	</form>
 
@@ -50,5 +53,7 @@
 		<attribute name="title" for="projectPlanningLineList.friday" expr="eval: com.axelor.i18n.I18n.get('Fr') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,5)"/>
 		<attribute name="title" for="projectPlanningLineList.saturday" expr="eval: com.axelor.i18n.I18n.get('Sa') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,6)"/>
 		<attribute name="title" for="projectPlanningLineList.sunday" expr="eval: com.axelor.i18n.I18n.get('Su') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,7)"/>
+		<attribute name="title" for="projectPlanningLineList.projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
+	
 	</action-attrs>
 </object-views>
