@@ -165,7 +165,7 @@ public class InventoryService extends InventoryRepository{
 
 				InventoryLine inventoryLine = new InventoryLine();
 				Product product = productRepo.findByCode(code);
-				if (product == null || product.getApplicationTypeSelect() != ProductRepository.APPLICATION_TYPE_PRODUCT || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE))
+				if (product == null || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE))
 					throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_4)+" "+code, IException.CONFIGURATION_ERROR);
 				inventoryLine.setProduct(product);
 				inventoryLine.setInventory(inventory);

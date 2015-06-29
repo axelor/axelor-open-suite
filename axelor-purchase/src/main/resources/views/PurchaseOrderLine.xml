@@ -43,7 +43,7 @@
 	  <panel>
 		<field name="product"
 			onChange="action-group-purchase-purchase-orderline-product-onchange"
-			domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true" />
+			domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true" />
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
 	    <field name="unit"/>

@@ -28,7 +28,7 @@
 				<panel title="Product typology" colSpan="6" colWidths="30%,70%">
 					<field name="productTypeSelect" readonly="true" colSpan="12"/>
 					<field name="saleSupplySelect" readonly="true" colSpan="12"/>
-					<field name="expense" hidden="true" colSpan="12"/>
+					<field name="expense" hidden="true"/>
 				</panel>
 				<panel title="Categorization" colSpan="6" colWidths="30%,70%">
 					<field name="productFamily" colSpan="12"/>
@@ -72,7 +72,6 @@
     </action-group>
     
     <action-record name="action-product-record-default-new-expense" model="com.axelor.apps.base.db.Product">
-    	<field name="applicationTypeSelect" expr="1"/>
     	<field name="productTypeSelect" expr="storable"/>
     	<field name="procurementMethodSelect" expr="buy"/>
     	<field name="startDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>

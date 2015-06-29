@@ -47,9 +47,9 @@
 					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" colSpan="12"/>
 					<field name="inAti"/>
 					<field name="isAnalyticCapture" if-module="axelor-account"/>
+					<field name="expense" hidden="true"/>
 				</panel>
 				<panel title="Categorization" colSpan="6" colWidths="30%,70%">
-					<field name="applicationTypeSelect" onChange="action-set-product-type-select" colSpan="12"/>
 					<field name="productFamily" colSpan="12"/>
 					<field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12"/>
 				</panel>
@@ -202,7 +202,7 @@
 	</action-attrs>
     
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
-    	<field name="applicationTypeSelect" expr="1"/>
+    	<field name="expense" expr="false"/>
     	<field name="productTypeSelect" expr="storable"/>
     	<field name="procurementMethodSelect" expr="buy"/>
     	<field name="startDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
@@ -219,17 +219,12 @@
     	<field name="saleSupplySelect" expr="3" if="productTypeSelect == 'service'"/>
     </action-record>
     
-    <action-record name="action-set-product-type-select" model="com.axelor.apps.base.db.Product">
-    	<field name="productTypeSelect" expr="eval:(applicationTypeSelect == 2 || applicationTypeSelect == 3)?'service':null" />
-    </action-record>
-    
     <action-record name="action-product-record-compute-sale-price" model="com.axelor.apps.base.db.Product">
     	<field name="salePrice" expr="eval: managPriceCoef*costPrice" if="costPrice != null &amp;&amp; managPriceCoef != null"/>
     
     </action-record>
     
     <action-attrs name="action-hide-product-field">
-    	<attribute name="hidden" for="productTypeSelect" expr="eval:applicationTypeSelect == 2 || applicationTypeSelect == 3"  />
     	<attribute name="hidden" for="isRawMaterial" expr="eval:productTypeSelect == 'service'"  />
     	<attribute name="hidden" for="tab-stock" expr="eval:productTypeSelect == 'service'"  />
     	<attribute name="hidden" for="tab-tracking-number" expr="eval:productTypeSelect == 'service'"  />
@@ -302,12 +297,6 @@
 		</filter>
 		<filter title="Raw Materials">
 			<domain>self.isRawMaterial = true</domain>
-		</filter>
-		<filter title="Profiles">
-			<domain>self.applicationTypeSelect = 2</domain>
-		</filter>
-		<filter title="Expenses">
-			<domain>self.applicationTypeSelect = 3</domain>
 		</filter>
 		<filter title="Obsolete Products">
 			<domain>CURRENT_DATE &gt; self.endDate</domain>

@@ -28,7 +28,7 @@
     	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number">
         <panel>
             <field name="productName" />
-	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
+	        <field name="product" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
 	        <field name="productModel"/>
 	        <field name="qty" onChange="action-stock-move-line-record-qty" colSpan="3"/>
 	        <field name="realQty" colSpan="3"/>
@@ -65,7 +65,7 @@
         </panel>
         <panel title="Move details">
             <field name="productName" required="true"/>
-	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
+	        <field name="product" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain"/>
 	        <field name="productModel"/>
 			<field name="qty" colSpan="3" onChange="action-stock-move-line-record-qty"/>
 	        <field name="realQty" colSpan="3"/>
@@ -89,7 +89,7 @@
     	onNew="action-group-stock-stockmoveline-production-onnew" onLoad="action-stock-move-line-attrs-scale-and-precision">
 		<panel>
 		    <field name="productName" required="true" />
-	        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-product-domain"/>
+	        <field name="product" domain="self.expense = false" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-product-domain"/>
 	        <field name="productModel"/>
 	        <field name="qty" onChange="action-stock-move-line-record-qty"/>
 	        <field name="unit"/>

@@ -15,7 +15,7 @@
     	onLoad="action-inventory-line-attrs-tracking-number">
     	<panel>
 	        <field name="product" onChange="action-inventory-line-attrs-tracking-number,action-inventory-line-on-change-product"
-	        	domain="self.applicationTypeSelect = 1 and self.productTypeSelect = 'storable'" />
+	        	domain="self.expense = false and self.productTypeSelect = 'storable'" />
 	        <field name="currentQty" readonly="true"/>
 	        <field name="realQty"/>
 	        <field name="description"/>

@@ -82,7 +82,7 @@
 	<action-record name="action-timesheet-record-confirm" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="statusSelect" expr="2"/>
 	    <field name="toDate" expr="eval: __date__"/>
-	    <field name="sentDate" expr="eval:__date__"/>
+	    <field name="sentDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-record-valid" model="com.axelor.apps.hr.db.Timesheet">

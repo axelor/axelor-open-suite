@@ -81,7 +81,7 @@
 
 	<action-record name="action-expense-record-status-confirmed" model="com.axelor.apps.hr.db.Expense">
 	    <field name="statusSelect" expr="2"/>
-	    <field name="sentDate" expr="__date__"/>
+	    <field name="sentDate" expr="eval : __date__"/>
 	</action-record>
 	
 	<action-view name="action-expense-view-new-expense" title="Expense" model="com.axelor.apps.hr.db.Expense">

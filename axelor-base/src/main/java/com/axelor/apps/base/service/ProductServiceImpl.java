@@ -90,9 +90,9 @@ public class ProductServiceImpl extends ProductRepository implements ProductServ
 		}
 
 		if(product.getCostPrice() != null && managePriceCoef != null)  {
-			
+
 			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
-			
+
 			if(product.getProductVariant() != null)  {
 
 				product.setSalePrice(product.getSalePrice().add(this.getProductExtraPrice(product.getProductVariant(), IProductVariant.APPLICATION_SALE_PRICE)));
@@ -156,7 +156,6 @@ public class ProductServiceImpl extends ProductRepository implements ProductServ
 				productModel.getProductCategory(),
 				productModel.getProductFamily(),
 				productModel.getUnit(),
-				productModel.getApplicationTypeSelect(),
 				productModel.getSaleSupplySelect(),
 				productModel.getProductTypeSelect(),
 				productModel.getProcurementMethodSelect(),

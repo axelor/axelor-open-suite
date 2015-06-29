@@ -68,7 +68,7 @@
 	
 	<action-record name="action-leave-record-status-confirmed" model="com.axelor.apps.hr.db.Leave">
 	    <field name="statusSelect" expr="2"/>
-	    <field name="sentDate" expr="__date__"/>
+	    <field name="sentDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-attrs name="action-leave-attrs-domain-leave-select">

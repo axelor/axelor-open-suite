@@ -18,7 +18,6 @@
     <many-to-one name="productFamily" ref="ProductFamily" title="Family" initParam="true" help="true"/>
     <many-to-one name="unit" ref="Unit" title="Unit" initParam="true" massUpdate="true" help="true"/>
 
-    <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select" initParam="true" help="true"/>
     <integer name="saleSupplySelect" title="Sale supply default method" selection="product.sale.supply.select" initParam="true" help="true"/>
      
     <string name="productTypeSelect" title="Type" required="true" selection="product.product.type.select" initParam="true" help="true"/>
