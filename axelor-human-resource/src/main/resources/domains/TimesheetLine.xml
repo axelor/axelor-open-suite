@@ -9,7 +9,7 @@
       
       <integer name="importId"/>
       <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task"/>
-      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity" required="true"/>
       <many-to-one name="user" title="User" ref="com.axelor.auth.db.User" readonly="true" column="user_id"/>
       <date name="date" default="now"/>
       <many-to-one name="affectedToTimeSheet" ref="com.axelor.apps.hr.db.Timesheet" title="Time Sheet" readonly="true"/>

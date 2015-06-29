@@ -25,7 +25,7 @@
 	    onSave="action-timesheet-method-valid-to-date">
 
 	    <panel sidebar="true" title="Actions" stacked="true">
-	    	<button name="confirmButton" onClick="action-timesheet-method-valid-to-date,action-timesheet-record-confirm,save,action-timesheet-attrs-buttons" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+	    	<button name="confirmButton" onClick="action-timesheet-record-to-date,action-timesheet-method-valid-to-date,action-timesheet-record-confirm,save,action-timesheet-attrs-buttons" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validButton" onClick="action-timesheet-record-valid,save,action-timesheet-attrs-buttons" title="Valid"/>
 	    	<button name="refuseButton" onClick="action-timesheet-record-refuse,save,action-timesheet-attrs-buttons" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-timesheet-record-cancel,save,com.axelor.apps.hr.web.timesheet.TimesheetController:cancelTimesheet,action-timesheet-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
@@ -81,7 +81,6 @@
 	
 	<action-record name="action-timesheet-record-confirm" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="statusSelect" expr="2"/>
-	    <field name="toDate" expr="eval: __date__"/>
 	    <field name="sentDate" expr="eval: __date__"/>
 	</action-record>
 	
@@ -89,6 +88,10 @@
 	    <field name="statusSelect" expr="3"/>
 	    <field name="validatedBy" expr="eval: __user__"/>
 	    <field name="validationDate" expr="eval: __date__"/>
+	</action-record>
+	
+	<action-record name="action-timesheet-record-to-date" model="com.axelor.apps.hr.db.Timesheet">
+		<field name="toDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-record-refuse" model="com.axelor.apps.hr.db.Timesheet">
