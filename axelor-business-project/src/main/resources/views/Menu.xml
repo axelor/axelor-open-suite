@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
-
-	<menuitem name="business-project-root" priority="100" title="Business Project" icon="img/tree-folder.png" groups="admins,ERP"/> 	
-
-	<menuitem name="business-folder-all" parent="business-project-root"
-    	title="Business Folders"
-    	action="business.folder.all"/>
-
-	<action-view name="business.folder.all" title="Business Folders" model="com.axelor.apps.businessproject.db.BusinessFolder">
-    	<view type="grid" name="business-folder-grid"/>
-	    <view type="form" name="business-folder-form"/>
-	</action-view>
 	
-	<menuitem name="invoicing-folder-all" parent="business-project-root"
+	<menuitem name="invoicing-folder-all" parent="menu-project-root"
     	title="Invoicing Folders"
     	action="invoicing.folder.all"/>
 
