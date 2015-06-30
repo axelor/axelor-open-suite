@@ -52,6 +52,9 @@
 			<panel title="Tasks">
 				<panel-dashlet action="action-project-task-view-show-task" colSpan="12"/>
 			</panel>
+			<panel title="Other elements to invoice" if-module="axelor-business-project">
+				<panel-related field="elementsToInvoiceList" colSpan="12"/>
+			</panel>
 			<panel title="Log Times">
 				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
 			</panel>
@@ -207,6 +210,9 @@
 			</panel>
 			<panel title="Log Times">
 				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
+			</panel>
+			<panel title="Other elements to invoice" if-module="axelor-business-project" hideIf="taskTypeSelect == 'task'">
+				<panel-related field="elementsToInvoiceList" colSpan="12"/>
 			</panel>
 			<panel title="Project Tree" hideIf="taskTypeSelect == 'task'">
 				<panel-dashlet action="action-view-show-project-tree" colSpan="12" title="Project Tree"/>

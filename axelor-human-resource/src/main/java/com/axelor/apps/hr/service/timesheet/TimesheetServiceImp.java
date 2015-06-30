@@ -174,6 +174,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 			product = timesheetLine.getProduct();
 		}
 
+		this.convertQty(timesheetLine, product);
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(),
 				timesheetLine.getComments(),BigDecimal.ONE, product.getUnit(),10,false)  {
@@ -191,5 +192,24 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		};
 
 		return invoiceLineGenerator.creates();
+	}
+
+	public BigDecimal convertQty(TimesheetLine timesheetLine, Product product) throws AxelorException{
+		BigDecimal qty = timesheetLine.getDurationStored();
+		Employee employee = timesheetLine.getUser().getEmployee();
+		if(employee == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheetLine.getUser().getName()), IException.CONFIGURATION_ERROR);
+		}
+		BigDecimal dailyWorkHours = employee.getDailyWorkHours();
+		if(dailyWorkHours == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAILY_WORK_HOURS),employee.getName()), IException.CONFIGURATION_ERROR);
+		}
+		if(product.getUnit().getCode().contentEquals("DAY")){
+			qty = qty.divide(dailyWorkHours, 2, BigDecimal.ROUND_HALF_UP);
+		}
+		if(product.getUnit().getCode().contentEquals("MIN")){
+			qty = qty.divide(dailyWorkHours, 2, BigDecimal.ROUND_HALF_UP);
+		}
+		return qty;
 	}
 }

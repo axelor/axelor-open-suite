@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -185,9 +186,19 @@ public class ExpenseService extends ExpenseRepository{
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine) throws AxelorException  {
 
 		Product product = expenseLine.getExpenseType();
-
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(),
-				expenseLine.getComments(),BigDecimal.ONE, product.getUnit(),10,false)  {
+		BigDecimal taxRate = BigDecimal.ZERO;
+		List<AccountManagement> accountManagementList = product.getProductFamily().getAccountManagementList();
+		for (AccountManagement accountManagement : accountManagementList) {
+			if(accountManagement.getCompany() == invoice.getCompany()){
+				taxRate = accountManagement.getSaleTax().getActiveTaxLine().getValue();
+			}
+		}
+		if(taxRate.equals(BigDecimal.ZERO)){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_TAX_PRODUCT),product.getName()), IException.CONFIGURATION_ERROR);
+		}
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getUntaxedAmount(),
+				null,BigDecimal.ONE,product.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+				expenseLine.getUntaxedAmount().multiply(taxRate),null,false)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {

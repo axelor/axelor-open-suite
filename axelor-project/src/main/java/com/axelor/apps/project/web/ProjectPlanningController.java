@@ -1,10 +1,13 @@
 package com.axelor.apps.project.web;
 
+import java.util.List;
+
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.project.db.ProjectPlanning;
+import com.axelor.apps.project.db.ProjectPlanningLine;
+import com.axelor.apps.project.db.repo.ProjectPlanningLineRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
 import com.axelor.apps.project.service.ProjectPlanningService;
 import com.axelor.auth.AuthUtils;
@@ -14,57 +17,44 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class ProjectPlanningController extends ProjectPlanningRepository{
 
 	@Inject
 	protected ProjectPlanningService projectPlanningService;
 
+	@Inject
+	protected ProjectPlanningLineRepository projectPlanningLineRepository;
+
 	public void myPlanning(ActionRequest request, ActionResponse response) throws AxelorException{
-		User user = AuthUtils.getUser();
 		LocalDate todayDate = GeneralService.getTodayDate();
-		ProjectPlanning planning = this.all().filter("self.user = ?1 AND self.year = ?2 AND self.week = ?3", user,todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
+		ProjectPlanning planning = this.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
 		if(planning == null){
-			planning = projectPlanningService.createMyPlanning(user,todayDate.getYear(),todayDate.getWeekOfWeekyear());
-			response.setView(ActionView
-					.define("Week"+planning.getWeek())
-					.model(ProjectPlanning.class.getName())
-					.add("form", "project-planning-form")
-					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(planning.getId())).map());
+			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.getWeekOfWeekyear());
 		}
-		else{
-			response.setView(ActionView
-					.define("Week"+planning.getWeek())
-					.model(ProjectPlanning.class.getName())
-					.add("form", "project-planning-form")
-					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(planning.getId())).map());
-		}
+		response.setView(ActionView
+				.define("Week"+planning.getWeek())
+				.model(ProjectPlanning.class.getName())
+				.add("form", "project-planning-form")
+				.param("forceEdit", "true")
+				.context("_showRecord", String.valueOf(planning.getId()))
+				.context("_type", "user").map());
 	}
 
 	public void myTeamPlanning(ActionRequest request, ActionResponse response) throws AxelorException{
-		User user = AuthUtils.getUser();
 		LocalDate todayDate = GeneralService.getTodayDate();
-		Team team = user.getActiveTeam();
-		ProjectPlanning planning = this.all().filter("self.team = ?1 AND self.year = ?2 AND self.week = ?3", team,todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
+		ProjectPlanning planning = this.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
 		if(planning == null){
-			planning = projectPlanningService.createMyTeamPlanning(team,todayDate.getYear(),todayDate.getWeekOfWeekyear());
-			response.setView(ActionView
-					.define("Week"+planning.getWeek())
-					.model(ProjectPlanning.class.getName())
-					.add("form", "project-planning-form")
-					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(planning.getId())).map());
+			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.getWeekOfWeekyear());
 		}
-		else{
-			response.setView(ActionView
-					.define("Week"+planning.getWeek())
-					.model(ProjectPlanning.class.getName())
-					.add("form", "project-planning-form")
-					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(planning.getId())).map());
-		}
+		response.setView(ActionView
+				.define("Week"+planning.getWeek())
+				.model(ProjectPlanning.class.getName())
+				.add("form", "project-planning-form")
+				.param("forceEdit", "true")
+				.context("_showRecord", String.valueOf(planning.getId()))
+				.context("_type", "team").map());
 	}
 
 	public void planningPreviousWeek(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -75,30 +65,25 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 			previousWeek = 52;
 			year--;
 		}
-		User user = planning.getUser();
-		Team team = planning.getTeam();
+
 		ProjectPlanning planningPreviousWeek = null;
-		if(user == null){
-			planningPreviousWeek = this.all().filter("self.team = ?1 AND self.year = ?2 AND self.week = ?3", team,year,previousWeek).fetchOne();
 
-		}
-		else{
-			planningPreviousWeek = this.all().filter("self.user = ?1 AND self.year = ?2 AND self.week = ?3", user,year,previousWeek).fetchOne();
-		}
+		planningPreviousWeek = this.all().filter("self.year = ?1 AND self.week = ?2",year,previousWeek).fetchOne();
+
 		if(planningPreviousWeek == null){
-			if(user == null){
-				planningPreviousWeek = projectPlanningService.createMyTeamPlanning(team,year,previousWeek);
-			}
-			else{
-				planningPreviousWeek = projectPlanningService.createMyPlanning(user,year,previousWeek);
-			}
 
+			planningPreviousWeek = projectPlanningService.createPlanning(year,previousWeek);
+		}
+
+		String type = request.getContext().get("_type").toString();
+		if(type.contentEquals("user")){
 			response.setView(ActionView
 					.define("Week"+planningPreviousWeek.getWeek())
 					.model(ProjectPlanning.class.getName())
 					.add("form", "project-planning-form")
 					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(planningPreviousWeek.getId())).map());
+					.context("_showRecord", String.valueOf(planningPreviousWeek.getId()))
+					.context("_type", "user").map());
 		}
 		else{
 			response.setView(ActionView
@@ -106,8 +91,10 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 					.model(ProjectPlanning.class.getName())
 					.add("form", "project-planning-form")
 					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(planningPreviousWeek.getId())).map());
+					.context("_showRecord", String.valueOf(planningPreviousWeek.getId()))
+					.context("_type", "team").map());
 		}
+
 	}
 
 	public void planningNextWeek(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -118,30 +105,23 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 			nextWeek = 1;
 			year++;
 		}
-		User user = planning.getUser();
-		Team team = planning.getTeam();
 		ProjectPlanning planningNextWeek = null;
-		if(user == null){
-			planningNextWeek = this.all().filter("self.team = ?1 AND self.year = ?2 AND self.week = ?3", team,year,nextWeek).fetchOne();
 
-		}
-		else{
-			planningNextWeek = this.all().filter("self.user = ?1 AND self.year = ?2 AND self.week = ?3", user,year,nextWeek).fetchOne();
-		}
+		planningNextWeek = this.all().filter("self.year = ?1 AND self.week = ?2",year,nextWeek).fetchOne();
+
 		if(planningNextWeek == null){
-			if(user == null){
-				planningNextWeek = projectPlanningService.createMyTeamPlanning(team,year,nextWeek);
-			}
-			else{
-				planningNextWeek = projectPlanningService.createMyPlanning(user,year,nextWeek);
-			}
 
+			planningNextWeek = projectPlanningService.createPlanning(year,nextWeek);
+		}
+		String type = request.getContext().get("_type").toString();
+		if(type.contentEquals("user")){
 			response.setView(ActionView
 					.define("Week"+planningNextWeek.getWeek())
 					.model(ProjectPlanning.class.getName())
 					.add("form", "project-planning-form")
 					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(planningNextWeek.getId())).map());
+					.context("_showRecord", String.valueOf(planningNextWeek.getId()))
+					.context("_type", "user").map());
 		}
 		else{
 			response.setView(ActionView
@@ -149,39 +129,34 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 					.model(ProjectPlanning.class.getName())
 					.add("form", "project-planning-form")
 					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(planningNextWeek.getId())).map());
+					.context("_showRecord", String.valueOf(planningNextWeek.getId()))
+					.context("_type", "team").map());
 		}
 	}
 
 	public void planningCurrentWeek(ActionRequest request, ActionResponse response) throws AxelorException{
-		ProjectPlanning planning = request.getContext().asType(ProjectPlanning.class);
+		request.getContext().asType(ProjectPlanning.class);
 		LocalDate currentDate = GeneralService.getTodayDate();
 		int year = currentDate.getYear();
 		int week = currentDate.getWeekOfWeekyear();
-		User user = planning.getUser();
-		Team team = planning.getTeam();
 		ProjectPlanning planningCurrentWeek = null;
-		if(user == null){
-			planningCurrentWeek = this.all().filter("self.team = ?1 AND self.year = ?2 AND self.week = ?3", team,year,week).fetchOne();
 
-		}
-		else{
-			planningCurrentWeek = this.all().filter("self.user = ?1 AND self.year = ?2 AND self.week = ?3", user,year,week).fetchOne();
-		}
+		planningCurrentWeek = this.all().filter("self.year = ?1 AND self.week = ?2",year,week).fetchOne();
+
 		if(planningCurrentWeek == null){
-			if(user == null){
-				planningCurrentWeek = projectPlanningService.createMyTeamPlanning(team,year,week);
-			}
-			else{
-				planningCurrentWeek = projectPlanningService.createMyPlanning(user,year,week);
-			}
 
+			planningCurrentWeek = projectPlanningService.createPlanning(year,week);
+		}
+
+		String type = request.getContext().get("_type").toString();
+		if(type.contentEquals("user")){
 			response.setView(ActionView
 					.define("Week"+planningCurrentWeek.getWeek())
 					.model(ProjectPlanning.class.getName())
 					.add("form", "project-planning-form")
 					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(planningCurrentWeek.getId())).map());
+					.context("_showRecord", String.valueOf(planningCurrentWeek.getId()))
+					.context("_type", "user").map());
 		}
 		else{
 			response.setView(ActionView
@@ -189,7 +164,38 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 					.model(ProjectPlanning.class.getName())
 					.add("form", "project-planning-form")
 					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(planningCurrentWeek.getId())).map());
+					.context("_showRecord", String.valueOf(planningCurrentWeek.getId()))
+					.context("_type", "team").map());
 		}
+	}
+
+	public void populate(ActionRequest request, ActionResponse response) throws AxelorException{
+		User user = AuthUtils.getUser();
+		GeneralService.getTodayDate();
+		ProjectPlanning planning = request.getContext().asType(ProjectPlanning.class);
+		String type = request.getContext().get("_type").toString();
+		List<ProjectPlanningLine> projectPlanningLineList = null;
+		if(type.contentEquals("user")){
+			projectPlanningLineList = projectPlanningService.populateMyPlanning(planning, user);
+		}
+		else{
+			projectPlanningLineList = projectPlanningService.populateMyTeamPlanning(planning, user.getActiveTeam());
+		}
+		response.setValue("$projectPlanningLineList", projectPlanningLineList);
+	}
+
+	@Transactional
+	public void saveLines(ActionRequest request, ActionResponse response) throws AxelorException{
+
+		List<ProjectPlanningLine> planningLineList =(List<ProjectPlanningLine>) request.getContext().get("$projectPlanningLineList");
+		if(planningLineList != null){
+			for (ProjectPlanningLine projectPlanningLine : planningLineList) {
+				if(projectPlanningLine.getToSave()){
+					projectPlanningLineRepository.save(projectPlanningLine);
+				}
+			}
+		}
+
+
 	}
 }

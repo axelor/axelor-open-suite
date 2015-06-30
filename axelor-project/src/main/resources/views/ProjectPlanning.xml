@@ -9,7 +9,7 @@
 
 	
 	<form name="project-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning"
-		onLoad="action-project-planning-record-dates,action-project-planning-attrs-title-columns" canNew="false" canCopy="false">
+		onLoad="action-project-planning-record-default,action-project-planning-attrs-title-columns,action-project-planning-method-populate" canNew="false" canCopy="false">
 		<panel>
 			<field name="year"/>
 			<field name="week"/>
@@ -20,7 +20,9 @@
 			</button-group>
 			
 		</panel>
-	    <panel-related field="projectPlanningLineList" showTitle="false" canNew="false" canRemove="false" canSelect="false"/>
+		<panel>
+			<field name="$projectPlanningLineList" type="many-to-many" target="com.axelor.apps.project.db.ProjectPlanningLine" showTitle="false" canNew="false" canRemove="false" canSelect="false" onChange="action-project-planning-method-save" colSpan="12"/>
+		</panel>
 	    <panel>
 	    	<button name="seeMonth" title="See Month" colSpan="4"/>
 	    	<field name="fromDate" colSpan="4"/>
@@ -28,7 +30,7 @@
 	    </panel>
 	</form>
 
-	<action-record name="action-project-planning-record-dates" model="com.axelor.apps.project.db.ProjectPlanning">
+	<action-record name="action-project-planning-record-default" model="com.axelor.apps.project.db.ProjectPlanning">
 		<field name="fromDate" expr="eval: com.axelor.apps.project.service.ProjectPlanningService.getFromDate()"/>
 		<field name="toDate" expr="eval: com.axelor.apps.project.service.ProjectPlanningService.getToDate()"/>
 	</action-record>
@@ -56,4 +58,12 @@
 		<attribute name="title" for="projectPlanningLineList.projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
 	
 	</action-attrs>
+	
+	<action-method name="action-project-planning-method-populate">
+		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="populate"/>
+	</action-method>
+	
+	<action-method name="action-project-planning-method-save">
+		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="saveLines"/>
+	</action-method>
 </object-views>

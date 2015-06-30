@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.business.project.exception.IExceptionMessage;
 import com.axelor.apps.business.project.service.InvoicingFolderService;
+import com.axelor.apps.businessproject.db.ElementsToInvoice;
 import com.axelor.apps.businessproject.db.InvoicingFolder;
 import com.axelor.apps.businessproject.db.repo.InvoicingFolderRepository;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -32,7 +32,7 @@ public class InvoicingFolderController extends InvoicingFolderRepository{
 		InvoicingFolder folder = request.getContext().asType(InvoicingFolder.class);
 		folder = this.find(folder.getId());
 		if(folder.getSaleOrderLineSet().isEmpty() && folder.getPurchaseOrderLineSet().isEmpty()
-				&& folder.getLogTimesSet().isEmpty() && folder.getExpenseLineSet().isEmpty() && folder.getAnalyticMoveLineSet().isEmpty()
+				&& folder.getLogTimesSet().isEmpty() && folder.getExpenseLineSet().isEmpty() && folder.getElementsToInvoiceSet().isEmpty()
 				&& folder.getProjectTaskSet().isEmpty()){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_EMPTY)), IException.CONFIGURATION_ERROR);
 		}
@@ -67,18 +67,18 @@ public class InvoicingFolderController extends InvoicingFolderRepository{
 		List<PurchaseOrderLine> purchaseOrderLineList = new ArrayList<PurchaseOrderLine>();
 		List<TimesheetLine> timesheetLineList = new ArrayList<TimesheetLine>();
 		List<ExpenseLine> expenseLineList = new ArrayList<ExpenseLine>();
-		List<AnalyticMoveLine> analyticMoveLineList = new ArrayList<AnalyticMoveLine>();
+		List<ElementsToInvoice> elementsToInvoiceList = new ArrayList<ElementsToInvoice>();
 		List<ProjectTask> projectTaskList = new ArrayList<ProjectTask>();
 
 		invoicingFolderService.getLines(projectTask, saleOrderLineList, purchaseOrderLineList,
-				timesheetLineList, expenseLineList, analyticMoveLineList, projectTaskList);
+				timesheetLineList, expenseLineList, elementsToInvoiceList, projectTaskList);
 
 
 		invoicingFolder.setSaleOrderLineSet(new HashSet(saleOrderLineList));
 		invoicingFolder.setPurchaseOrderLineSet(new HashSet(purchaseOrderLineList));
 		invoicingFolder.setLogTimesSet(new HashSet(timesheetLineList));
 		invoicingFolder.setExpenseLineSet(new HashSet(expenseLineList));
-		invoicingFolder.setAnalyticMoveLineSet(new HashSet(analyticMoveLineList));
+		invoicingFolder.setElementsToInvoiceSet(new HashSet(elementsToInvoiceList));
 		invoicingFolder.setProjectTaskSet(new HashSet(projectTaskList));
 
 

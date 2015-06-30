@@ -6,13 +6,18 @@
 	<grid name="project-planning-line-grid" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="true" groupBy="user">
 		<field name="user" />
 		<field name="projectTask" />
-		<field name="monday" aggregate="sum"/>
+		<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 		<field name="tuesday" aggregate="sum"/>
 		<field name="wednesday" aggregate="sum"/>
 		<field name="thursday" aggregate="sum"/>
 		<field name="friday" aggregate="sum"/>
 		<field name="saturday" aggregate="sum"/>
 		<field name="sunday" aggregate="sum"/>
+		<field name="toSave" hidden="true"/>
 	</grid>
-
+	
+	<action-record name="action-project-planning-line-record-to-save" model="com.axelor.apps.project.db.ProjectPlanningLine">
+		<field name="toSave" expr="true"/>
+	</action-record>
+	
 </object-views>

@@ -18,8 +18,8 @@
 		<panel-related field="purchaseOrderLineSet"  canNew="false" canEdit="false" canSelect="false"/>
 		<panel-related field="logTimesSet" canNew="false" canEdit="false" canSelect="false"/>
 		<panel-related field="expenseLineSet" canNew="false" canEdit="false" canSelect="false"/>
-		<panel-related field="analyticMoveLineSet" canNew="false" canEdit="false" canSelect="false" />
 		<panel-related field="projectTaskSet" canNew="false" canEdit="false" canSelect="false" form-view="project-task-form"/>
+		<panel-related field="elementsToInvoiceSet" canNew="false" canEdit="false" canSelect="false" />
 		<panel-related field="manufOrderSet" canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production"/>
 		
 	</form>

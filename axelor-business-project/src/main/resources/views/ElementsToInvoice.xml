@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+
+	<grid name="elements-to-invoice-grid" title="Elements To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice">
+		<field name="user"/>
+		<field name="date"/>
+       	<field name="product"/>
+  		<field name="qty"/>
+  		<field name="unit"/>
+  		<field name="costPrice"/>
+  		<field name="salePrice"/>
+	</grid>
+
+	<form name="elements-to-invoice-form" title="Element To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice" >
+		<panel>
+			<field name="user"/>
+			<field name="date"/>
+	       	<field name="product" onChange="action-elements-to-invoice-method-get-product-information"/>
+	  		<field name="qty"/>
+	  		<field name="unit"/>
+	  		<field name="costPrice"/>
+	  		<field name="salePrice"/>
+	  		<field name="toInvoice"/>
+	  		<field name="invoiced" showIf="toInvoice"/>
+		</panel>
+	</form>
+	
+	<action-method name="action-elements-to-invoice-method-get-product-information">
+		<call class="com.axelor.apps.business.project.web.ElementsToInvoiceController" method="getProductInformation"/>
+	</action-method>
+</object-views>

@@ -36,6 +36,8 @@
 		<decimal name="estimatedMargin" title="Estimated Margin" readonly="true"/>
 		<decimal name="realTimesMargin" title="Real Margin (Time)" readonly="true"/>
 		<decimal name="realInvoicingMargin" title="Real Margin (Invoicing)" readonly="true"/>
+		
+		<one-to-many name="elementsToInvoiceList" ref="com.axelor.apps.businessproject.db.ElementsToInvoice" title="Other Elements To Invoice" mappedBy="project"/>
 	</entity>
   
 </domain-models>

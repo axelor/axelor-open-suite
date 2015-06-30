@@ -10,6 +10,8 @@
      	
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" readonly="true" column="user_id"/>
       <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task" readonly="true"/>
+      <integer name="year" title="Year"/>
+      <integer name="week" title="Week"/>
       <decimal name="monday" precision="4" scale="1"/>
       <decimal name="tuesday" precision="4" scale="1"/>
       <decimal name="wednesday" precision="4" scale="1"/>
@@ -17,6 +19,7 @@
       <decimal name="friday" precision="4" scale="1"/>
       <decimal name="saturday" precision="4" scale="1"/>
       <decimal name="sunday" precision="4" scale="1"/>
+      <boolean name="toSave"/>
 	          
   </entity>
   

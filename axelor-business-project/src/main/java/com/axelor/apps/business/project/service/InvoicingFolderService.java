@@ -4,12 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
@@ -17,7 +14,9 @@ import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.business.project.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.db.ElementsToInvoice;
 import com.axelor.apps.businessproject.db.InvoicingFolder;
+import com.axelor.apps.businessproject.db.repo.ElementsToInvoiceRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingFolderRepository;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -57,7 +56,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 	protected ExpenseService expenseService;
 
 	@Inject
-	protected AnalyticMoveLineService analyticMoveLineService;
+	protected ElementsToInvoiceService elementsToInvoiceService;
 
 
 	@Transactional
@@ -93,7 +92,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		List<PurchaseOrderLine> purchaseOrderLineList = new ArrayList<PurchaseOrderLine>(folder.getPurchaseOrderLineSet());
 		List<TimesheetLine> timesheetLineList = new ArrayList<TimesheetLine>(folder.getLogTimesSet());
 		List<ExpenseLine> expenseLineList = new ArrayList<ExpenseLine>(folder.getExpenseLineSet());
-		List<AnalyticMoveLine> analyticMoveLineList = new ArrayList<AnalyticMoveLine>(folder.getAnalyticMoveLineSet());
+		List<ElementsToInvoice> elementsToInvoiceList = new ArrayList<ElementsToInvoice>(folder.getElementsToInvoiceSet());
 		List<ProjectTask> projectTaskList = new ArrayList<ProjectTask>(folder.getProjectTaskSet());
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
@@ -101,7 +100,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		invoiceLineList.addAll(this.customerChargeBackPurchases(purchaseOrderInvoiceServiceImpl.createInvoiceLines(invoice, purchaseOrderLineList),folder));
 		invoiceLineList.addAll(timesheetServiceImp.createInvoiceLines(invoice, timesheetLineList));
 		invoiceLineList.addAll(this.customerChargeBackExpenses(expenseService.createInvoiceLines(invoice, expenseLineList),folder));
-		invoiceLineList.addAll(this.customerChargeBackAnalytics(analyticMoveLineService.createInvoiceLines(invoice, analyticMoveLineList),folder));
+		invoiceLineList.addAll(elementsToInvoiceService.createInvoiceLines(invoice, elementsToInvoiceList));
 		invoiceLineList.addAll(this.createInvoiceLines(invoice, projectTaskList));
 
 		return invoiceLineList;
@@ -162,8 +161,8 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		for (ExpenseLine expenseLine : folder.getExpenseLineSet()) {
 			expenseLine.setInvoiced(true);
 		}
-		for (AnalyticMoveLine analyticMoveLine : folder.getAnalyticMoveLineSet()) {
-			analyticMoveLine.setInvoiced(true);
+		for (ElementsToInvoice elementsToInvoice : folder.getElementsToInvoiceSet()) {
+			elementsToInvoice.setInvoiced(true);
 		}
 		for (ProjectTask projectTask : folder.getProjectTaskSet()) {
 			projectTask.setInvoiced(true);
@@ -193,30 +192,20 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		return invoiceLineList;
 	}
 
-	public List<InvoiceLine> customerChargeBackAnalytics(List<InvoiceLine> invoiceLineList,InvoicingFolder folder){
-		Partner customer = folder.getProjectTask().getCustomer();
-		if(!customer.getFlatFeeAnalytic()){
-			for (InvoiceLine invoiceLine : invoiceLineList) {
-				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackAnanlytic().divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)));
-				invoiceLine.setExTaxTotal(invoiceLine.getPrice().multiply(invoiceLine.getQty()).setScale(2, BigDecimal.ROUND_HALF_UP));
-			}
-		}
-		return invoiceLineList;
-	}
 
 	public void getLines(ProjectTask projectTask, List<SaleOrderLine> saleOrderLineList, List<PurchaseOrderLine> purchaseOrderLineList,
-							List<TimesheetLine> timesheetLineList,  List<ExpenseLine> expenseLineList, List<AnalyticMoveLine> analyticMoveLineList, List<ProjectTask> projectTaskList){
+							List<TimesheetLine> timesheetLineList,  List<ExpenseLine> expenseLineList, List<ElementsToInvoice> elementsToInvoiceList, List<ProjectTask> projectTaskList){
 
 		saleOrderLineList.addAll(Beans.get(SaleOrderLineRepository.class).all().filter("self.project != null AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.project.imputable = true", projectTask).fetch());
 		purchaseOrderLineList.addAll(Beans.get(PurchaseOrderLineRepository.class).all().filter("self.projectTask != null AND self.projectTask = ?1 AND self.projectTask.saleOrder != null  AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
 		timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class).all().filter("self.affectedToTimeSheet != null AND self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.projectTask.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
 		expenseLineList.addAll(Beans.get(ExpenseLineRepository.class).all().filter("self.task != null AND self.task = ?1 AND self.task.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.task.imputable = true", projectTask).fetch());
-		analyticMoveLineList.addAll(Beans.get(AnalyticMoveLineRepository.class).all().filter("self.projectTask != null AND self.projectTask = ?1 AND self.projectTask.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
+		elementsToInvoiceList.addAll(Beans.get(ElementsToInvoiceRepository.class).all().filter("self.project != null AND self.project = ?1 AND self.project.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.project.imputable = true", projectTask).fetch());
 		projectTaskList.addAll(Beans.get(ProjectTaskRepository.class).all().filter("self.id = ?1 AND self.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.imputable = true", projectTask.getId()).fetch());
 		List<ProjectTask> projectTaskChildrenList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1 AND self.imputable = true", projectTask).fetch();
 		for (ProjectTask projectTaskChild : projectTaskChildrenList) {
 			this.getLines(projectTaskChild, saleOrderLineList, purchaseOrderLineList,
-					timesheetLineList, expenseLineList, analyticMoveLineList, projectTaskList);
+					timesheetLineList, expenseLineList, elementsToInvoiceList, projectTaskList);
 		}
 		return;
 	}

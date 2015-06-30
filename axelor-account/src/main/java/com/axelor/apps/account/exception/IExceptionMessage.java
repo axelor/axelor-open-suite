@@ -532,5 +532,7 @@ public interface IExceptionMessage {
 	static final String EXPENSE_ACCOUNT_TAX = /*$$(*/ "Veuillez configurer un compte pour les taxes des notes de frais (société : %s)" /*)*/;
 	static final String EXPENSE_CANCEL_MOVE = /*$$(*/ "Ecriture déjà utilisée, merci de délettrer d'abord" /*)*/;
 
+	static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
+
 	static final String USER_PARTNER = /*$$(*/ "Veuillez créer un contact pour l'utilisateur %s" /*)*/;
 }
