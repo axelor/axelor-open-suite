@@ -10,8 +10,7 @@
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true"/>
 		<field name="affectedToTimeSheet"/>
-		<field name="toInvoice"/>
-		<field name="invoiced" showIf="toInvoice"/>
+		<field name="toInvoice" if-module="axelor-business-project"/>
 		<field name="comments" />
 	</grid>
 	
@@ -22,8 +21,7 @@
 		<field name="product"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true" />
-		<field name="toInvoice"/>
-		<field name="invoiced" showIf="toInvoice"/>
+		<field name="toInvoice" if-module="axelor-business-project"/>
 		<field name="comments" />
 	</grid>
 
@@ -38,8 +36,7 @@
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
 			<field name="affectedToTimeSheet"/>
-			<field name="toInvoice"/>
-			<field name="invoiced" showIf="toInvoice"/>
+			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
 		</panel>
 	</form>
@@ -54,8 +51,7 @@
 			<field name="visibleDuration" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
-			<field name="toInvoice"/>
-			<field name="invoiced" showIf="toInvoice"/>
+			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
 		</panel>
 	</form>
