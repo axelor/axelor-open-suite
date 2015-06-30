@@ -186,32 +186,42 @@ public class ExpenseService extends ExpenseRepository{
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine) throws AxelorException  {
 
 		Product product = expenseLine.getExpenseType();
-		BigDecimal taxRate = BigDecimal.ZERO;
-		List<AccountManagement> accountManagementList = product.getProductFamily().getAccountManagementList();
-		for (AccountManagement accountManagement : accountManagementList) {
-			if(accountManagement.getCompany() == invoice.getCompany()){
-				taxRate = accountManagement.getSaleTax().getActiveTaxLine().getValue();
-			}
+		InvoiceLineGenerator invoiceLineGenerator = null;
+		if(!invoice.getCompany().getAccountConfig().getInvoiceInAti()){
+			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getUntaxedAmount(),
+					null,BigDecimal.ONE,product.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+					null, null, false)  {
+
+				@Override
+				public List<InvoiceLine> creates() throws AxelorException {
+
+					InvoiceLine invoiceLine = this.createInvoiceLine();
+
+					List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+					invoiceLines.add(invoiceLine);
+
+					return invoiceLines;
+				}
+			};
 		}
-		if(taxRate.equals(BigDecimal.ZERO)){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_TAX_PRODUCT),product.getName()), IException.CONFIGURATION_ERROR);
+
+		else{
+			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getTotalAmount(),
+					null,BigDecimal.ONE,product.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+					null, null, false)  {
+
+				@Override
+				public List<InvoiceLine> creates() throws AxelorException {
+
+					InvoiceLine invoiceLine = this.createInvoiceLine();
+
+					List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+					invoiceLines.add(invoiceLine);
+
+					return invoiceLines;
+				}
+			};
 		}
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getUntaxedAmount(),
-				null,BigDecimal.ONE,product.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
-				expenseLine.getUntaxedAmount().multiply(taxRate),null,false)  {
-
-			@Override
-			public List<InvoiceLine> creates() throws AxelorException {
-
-				InvoiceLine invoiceLine = this.createInvoiceLine();
-
-				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-				invoiceLines.add(invoiceLine);
-
-				return invoiceLines;
-			}
-		};
-
 		return invoiceLineGenerator.creates();
 	}
 }
