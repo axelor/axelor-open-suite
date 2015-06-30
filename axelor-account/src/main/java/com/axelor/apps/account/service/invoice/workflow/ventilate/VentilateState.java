@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -30,7 +31,6 @@ import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -50,6 +50,9 @@ public class VentilateState extends WorkflowInvoice {
 
 	@Inject
 	private MoveService moveService;
+	
+	@Inject
+	private AccountConfigService accountConfigService;
 	
 	@Override
 	public void init(Invoice invoice){
@@ -192,26 +195,28 @@ public class VentilateState extends WorkflowInvoice {
 	
 	protected Sequence getSequence( ) throws AxelorException{
 		
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
+		
 		switch (invoice.getOperationTypeSelect()) {
 
 		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
 			
-			return sequenceService.getSequence(IAdministration.SUPPLIER_INVOICE, invoice.getCompany());
+			return accountConfigService.getSuppInvSequence(accountConfig);
 			
 		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
 			
-			return sequenceService.getSequence(IAdministration.SUPPLIER_REFUND, invoice.getCompany());
+			return accountConfigService.getSuppRefSequence(accountConfig);
 
 		case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
 			
-			return sequenceService.getSequence(IAdministration.CUSTOMER_INVOICE, invoice.getCompany());
+			return accountConfigService.getCustInvSequence(accountConfig);
 			
 		case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
 				
-			return sequenceService.getSequence(IAdministration.CUSTOMER_REFUND, invoice.getCompany());
+			return accountConfigService.getCustRefSequence(accountConfig);
 			
 		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.JOURNAL_1),invoice.getInvoiceId()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.JOURNAL_1), invoice.getInvoiceId()), IException.MISSING_FIELD);
 		}
 		
 	}

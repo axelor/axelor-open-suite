@@ -62,12 +62,7 @@ public interface IAdministration {
 	static final String PARTNER = "partner";
 	static final String MOVE = "move";
 	static final String TERM_INVOICE = "termInvoice";
-	static final String VIRTUAL_INVOICE = "virtualInvoice";
-	static final String STANDARD_INVOICE = "standardInvoice";
-	static final String CUSTOMER_INVOICE = "customerInvoice";
-	static final String CUSTOMER_REFUND = "customerRefund";
-	static final String SUPPLIER_INVOICE = "supplierInvoice";
-	static final String SUPPLIER_REFUND = "supplierRefund";
+	static final String INVOICE = "invoice";
 	static final String PAYMENT_SCHEDULE = "paymentSchedule";
 	static final String PAYMENT_VOUCHER = "paymentVoucher";
 	static final String PAYMENT_VOUCHER_RECEIPT_NUMBER = "paymentVoucherReceiptNo";

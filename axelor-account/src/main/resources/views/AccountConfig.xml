@@ -74,6 +74,12 @@
 					<field name="expenseEmployeeAccount" domain="self.company = :company" if-module="axelor-human-resource"/>
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource"/>
 				</panel>
+				<panel title="Invoices sequences">
+				    <field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company"/>
+   				    <field name="custRefSequence" domain="self.code = 'invoice' and self.company = :company"/>
+   				    <field name="suppInvSequence" domain="self.code = 'invoice' and self.company = :company"/>
+   				    <field name="suppRefSequence" domain="self.code = 'invoice' and self.company = :company"/>
+				</panel>
 			</panel>
 			<panel title="CFONB">
 			  <field name="cfonbConfig" showTitle="false" colSpan="4" />
