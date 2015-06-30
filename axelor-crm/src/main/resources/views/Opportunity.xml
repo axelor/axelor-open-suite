@@ -102,11 +102,11 @@
 			<field name="description" colSpan="12" showTitle="false" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" />
 		</panel>
 		
-		<panel title="Linked to"  readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" sidebar="true">
-			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="lead"/>
-			<panel-include view="convert-opportunity-form" from="axelor-supplychain" if-module="axelor-supplychain"/>
-			</panel>
+		<panel title="Linked to" sidebar="true">
+			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
+			<field name="lead" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
+			<panel-include view="convert-opportunity-form" from="axelor-sale" if-module="axelor-sale"/>
+		</panel>
 		
 		<panel title="Assigned to" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" sidebar="true">
 		  <field name="user"/>

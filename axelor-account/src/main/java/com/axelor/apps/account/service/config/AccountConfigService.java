@@ -17,16 +17,20 @@
  */
 package com.axelor.apps.account.service.config;
 
+import java.util.List;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.ReminderConfigLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -449,12 +453,60 @@ public class AccountConfigService extends AccountConfigRepository{
 		
 	}
 	
-	public void getReminderConfigLineList(AccountConfig accountConfig) throws AxelorException  {
+	public List<ReminderConfigLine> getReminderConfigLineList(AccountConfig accountConfig) throws AxelorException  {
 		
 		if(accountConfig.getReminderConfigLineList() == null || accountConfig.getReminderConfigLineList().isEmpty())   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_37),
 					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
+		
+		return accountConfig.getReminderConfigLineList();
+		
+	}
+	
+	/******************************** Sequence ********************************************/
+
+	public Sequence getCustInvSequence(AccountConfig accountConfig) throws AxelorException  {
+		
+		if(accountConfig.getCustInvSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_1),
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		return accountConfig.getCustInvSequence();
+		
+	}
+	
+	public Sequence getCustRefSequence(AccountConfig accountConfig) throws AxelorException  {
+		
+		if(accountConfig.getCustRefSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_2),
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		return accountConfig.getCustRefSequence();
+		
+	}
+
+	public Sequence getSuppInvSequence(AccountConfig accountConfig) throws AxelorException  {
+	
+		if(accountConfig.getSuppInvSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_3),
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		return accountConfig.getSuppInvSequence();
+		
+	}
+	
+	public Sequence getSuppRefSequence(AccountConfig accountConfig) throws AxelorException  {
+		
+		if(accountConfig.getSuppRefSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_4),
+					GeneralServiceAccount.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		return accountConfig.getSuppRefSequence();
 		
 	}
 	

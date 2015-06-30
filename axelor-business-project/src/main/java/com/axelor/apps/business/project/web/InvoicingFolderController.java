@@ -74,12 +74,12 @@ public class InvoicingFolderController extends InvoicingFolderRepository{
 				timesheetLineList, expenseLineList, elementsToInvoiceList, projectTaskList);
 
 
-		invoicingFolder.setSaleOrderLineSet(new HashSet(saleOrderLineList));
-		invoicingFolder.setPurchaseOrderLineSet(new HashSet(purchaseOrderLineList));
-		invoicingFolder.setLogTimesSet(new HashSet(timesheetLineList));
-		invoicingFolder.setExpenseLineSet(new HashSet(expenseLineList));
-		invoicingFolder.setElementsToInvoiceSet(new HashSet(elementsToInvoiceList));
-		invoicingFolder.setProjectTaskSet(new HashSet(projectTaskList));
+		invoicingFolder.setSaleOrderLineSet(new HashSet<SaleOrderLine>(saleOrderLineList));
+		invoicingFolder.setPurchaseOrderLineSet(new HashSet<PurchaseOrderLine>(purchaseOrderLineList));
+		invoicingFolder.setLogTimesSet(new HashSet<TimesheetLine>(timesheetLineList));
+		invoicingFolder.setExpenseLineSet(new HashSet<ExpenseLine>(expenseLineList));
+		invoicingFolder.setElementsToInvoiceSet(new HashSet<ElementsToInvoice>(elementsToInvoiceList));
+		invoicingFolder.setProjectTaskSet(new HashSet<ProjectTask>(projectTaskList));
 
 
 		response.setValues(invoicingFolder);

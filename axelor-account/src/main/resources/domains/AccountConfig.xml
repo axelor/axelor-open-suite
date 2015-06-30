@@ -106,6 +106,13 @@
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
 	<boolean name="hasChartImported"  title="Chart imported?" />
 	<boolean name="invoiceInAti" title="Invoice In ATI"/>
+	
+<!-- 	Sequence  -->
+	<many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer invoice sequence"/>
+	<many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer refund sequence"/>
+	<many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier invoice sequence"/>
+	<many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier refund sequence"/>
+	
 	   
   </entity>
   

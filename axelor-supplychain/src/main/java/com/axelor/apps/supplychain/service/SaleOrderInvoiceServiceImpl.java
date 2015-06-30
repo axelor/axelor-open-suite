@@ -41,6 +41,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Subscription;
+import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -52,7 +53,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
+public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements SaleOrderInvoiceService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderInvoiceServiceImpl.class);
 
@@ -71,8 +72,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException  {
 
 		Invoice invoice = this.createInvoice(saleOrder);
+		
+		Beans.get(InvoiceRepository.class).save(invoice);
 
-		Beans.get(SaleOrderRepository.class).save(fillSaleOrder(saleOrder, invoice));
+		save(fillSaleOrder(saleOrder, invoice));
 
 		return invoice;
 	}
@@ -283,8 +286,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		subscription.setInvoiced(true);
 
-		JPA.save(subscription);
-
+		Beans.get(SubscriptionRepository.class).save(subscription);
 
 		return invoice;
 	}

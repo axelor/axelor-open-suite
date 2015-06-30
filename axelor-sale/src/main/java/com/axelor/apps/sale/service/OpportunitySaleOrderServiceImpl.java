@@ -2,13 +2,13 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class OpportunitySaleOrderServiceImpl extends OpportunityRepository implements OpportunitySaleOrderService  {
+public class OpportunitySaleOrderServiceImpl extends SaleOrderRepository implements OpportunitySaleOrderService  {
 
 	@Inject
 	private SaleOrderServiceImpl saleOrderService;
@@ -20,7 +20,7 @@ public class OpportunitySaleOrderServiceImpl extends OpportunityRepository imple
 		SaleOrder saleOrder = saleOrderService.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, opportunity.getCurrency(), null, opportunity.getName(), null, 
 				GeneralService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
 
-		save(opportunity);
+		save(saleOrder);
 
 		return saleOrder;
 	}

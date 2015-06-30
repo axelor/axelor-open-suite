@@ -334,6 +334,12 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CONFIG_35 = /*$$(*/ "%s :\n Veuillez configurer un Motif de passage (créance de plus de six mois) pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_36 = /*$$(*/ "%s :\n Veuillez configurer un Motif de passage (créance de plus de trois mois) pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_37 = /*$$(*/ "%s :\n Veuillez configurer le tableau de relance pour la société %s" /*)*/;
+	
+	static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/ "%s :\n Please, configure a sequence for the customer invoice and the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_SEQUENCE_2 = /*$$(*/ "%s :\n Please, configure a sequence for the customer refund and the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_SEQUENCE_3 = /*$$(*/ "%s :\n Please, configure a sequence for the supplier invoice and the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_SEQUENCE_4 = /*$$(*/ "%s :\n Please, configure a sequence for the supplier refund and the company %s" /*)*/;
+
 
 	/**
 	 * Cfonb config service
@@ -535,4 +541,5 @@ public interface IExceptionMessage {
 	static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
 
 	static final String USER_PARTNER = /*$$(*/ "Veuillez créer un contact pour l'utilisateur %s" /*)*/;
+	
 }

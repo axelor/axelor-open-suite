@@ -331,10 +331,7 @@
 	<selection name="sequence.generic.code.select">
 		<option value="partner">Partner (Cust/Suppl)</option>
 		<option value="move">Move</option>
-		<option value="customerInvoice">Customer invoice</option>
-		<option value="supplierInvoice">Supplier invoice</option>
-		<option value="customerRefund">Customer Refund</option>
-		<option value="supplierRefund">Supplier Refund</option>
+		<option value="invoice">Invoice</option>
 		<option value="paymentSchedule">Payment schedule</option>
 		<option value="paymentVoucher">Payment voucher</option>
 		<option value="debit">Direct debit</option>

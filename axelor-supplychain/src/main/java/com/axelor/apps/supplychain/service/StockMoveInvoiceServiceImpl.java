@@ -47,11 +47,10 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
+public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements StockMoveInvoiceService {
 
 	@Inject
 	private SaleOrderInvoiceService saleOrderInvoiceService;
@@ -60,7 +59,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 	private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
 
 	@Inject
-	private StockMoveRepository stockMoveRepo;
+	private InvoiceRepository invoiceRepository;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -77,11 +76,13 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
 
 		if (invoice != null) {
-
+			
 			this.extendInternalReference(stockMove, invoice);
 
+			invoiceRepository.save(invoice);
+			
 			stockMove.setInvoice(invoice);
-			stockMoveRepo.save(stockMove);
+			save(stockMove);
 		}
 		return invoice;
 
@@ -104,9 +105,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		if (invoice != null) {
 
 			this.extendInternalReference(stockMove, invoice);
+			
+			invoiceRepository.save(invoice);
 
 			stockMove.setInvoice(invoice);
-			stockMoveRepo.save(stockMove);
+			save(stockMove);
 		}
 		return invoice;
 	}
@@ -324,7 +327,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		invoiceGenerator.populate(invoice, invoiceLineList);
 
 		if (invoice != null) {
-			Beans.get(InvoiceRepository.class).save(invoice);
+			
+			invoiceRepository.save(invoice);
 			//Save the link to the invoice for all stockMove
 			JPA.all(StockMove.class).filter("self.id IN (:idStockMoveList)").bind("idStockMoveList", stockMoveIdList).update("invoice", invoice);
 
@@ -486,7 +490,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService  {
 		invoiceGenerator.populate(invoice, invoiceLineList);
 
 		if (invoice != null) {
-			Beans.get(InvoiceRepository.class).save(invoice);
+			
+			invoiceRepository.save(invoice);
 			//Save the link to the invoice for all stockMove
 			JPA.all(StockMove.class).filter("self.id IN (:idStockMoveList)").bind("idStockMoveList", stockMoveIdList).update("invoice", invoice);
 

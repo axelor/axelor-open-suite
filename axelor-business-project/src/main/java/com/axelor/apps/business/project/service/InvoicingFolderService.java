@@ -81,6 +81,8 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		Invoice invoice = invoiceGenerator.generate();
 		invoice.setInAti(user.getActiveCompany().getAccountConfig().getInvoiceInAti());
 		invoiceGenerator.populate(invoice,this.populate(invoice,folder));
+		Beans.get(InvoiceRepository.class).save(invoice);
+		
 		this.setInvoiced(folder);
 		folder.setInvoice(invoice);
 		save(folder);

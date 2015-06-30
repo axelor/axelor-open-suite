@@ -6,7 +6,7 @@ import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface OpportunitySaleOrderService extends Repository<Opportunity>{
+public interface OpportunitySaleOrderService extends Repository<SaleOrder>{
 	
 	@Transactional
 	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException;
