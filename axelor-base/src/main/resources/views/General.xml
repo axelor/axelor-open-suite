@@ -38,6 +38,9 @@
 		    	<field name="computeMethodDiscountSelect"/>
 		    	<field name="timeLoggingPreferenceSelect"/>
 		    	<field name="dailyWorkHours"/>
+		    	<field name="unitDays"/>
+		    	<field name="unitHours"/>
+		    	<field name="unitMinutes"/>
 		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax"/>

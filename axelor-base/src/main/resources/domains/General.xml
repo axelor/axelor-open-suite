@@ -33,6 +33,11 @@
 
 		<string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" default="1"/>
 		<decimal name="dailyWorkHours" title="Daily Work Hours"/>
+		
+		<many-to-one name="unitDays" ref="com.axelor.apps.base.db.Unit" title="Days Unit"/>
+		<many-to-one name="unitHours" ref="com.axelor.apps.base.db.Unit" title="Hours Unit"/>
+		<many-to-one name="unitMinutes" ref="com.axelor.apps.base.db.Unit" title="Minutes Unit"/>
+		
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer DISCOUNT_SEPARATE = 1;

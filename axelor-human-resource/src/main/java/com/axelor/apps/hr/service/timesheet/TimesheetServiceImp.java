@@ -204,12 +204,6 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		if(dailyWorkHours == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAILY_WORK_HOURS),employee.getName()), IException.CONFIGURATION_ERROR);
 		}
-		if(product.getUnit().getCode().contentEquals("DAY")){
-			qty = qty.divide(dailyWorkHours, 2, BigDecimal.ROUND_HALF_UP);
-		}
-		if(product.getUnit().getCode().contentEquals("MIN")){
-			qty = qty.divide(dailyWorkHours, 2, BigDecimal.ROUND_HALF_UP);
-		}
 		return qty;
 	}
 }

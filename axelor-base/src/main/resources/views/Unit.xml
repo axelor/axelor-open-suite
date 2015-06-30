@@ -9,7 +9,7 @@
     <form name="unit-form" title="Unit" model="com.axelor.apps.base.db.Unit">
     	<panel>
         	<field name="name"/>
-        	<field name="code" x-bind="{{code|uppercase}}"/>
+        	<field name="labelToPrinting"/>
         </panel>
     </form>
 </object-views>
