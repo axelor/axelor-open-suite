@@ -11,8 +11,10 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.DayPlanning;
 import com.axelor.apps.hr.db.Employee;
@@ -20,6 +22,7 @@ import com.axelor.apps.hr.db.Leave;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.WeeklyPlanning;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -163,8 +166,9 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, TimesheetLine timesheetLine) throws AxelorException  {
 
 		Product product = null;
+		Employee employee = timesheetLine.getUser().getEmployee();
 		if(GeneralService.getGeneral().getInvoicingTypeLogTimesSelect() == GeneralRepository.INVOICING_LOG_TIMES_EMPLOYEE_ACTIVITY){
-			Employee employee = timesheetLine.getUser().getEmployee();
+
 			if(employee == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheetLine.getUser().getName()), IException.CONFIGURATION_ERROR);
 			}
@@ -174,10 +178,33 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 			product = timesheetLine.getProduct();
 		}
 
-		this.convertQty(timesheetLine, product);
+		if(product == null){
+			if(employee == null){
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheetLine.getUser().getName()), IException.CONFIGURATION_ERROR);
+			}
+			product = employee.getProduct();
+			if(product == null){
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.GENERAL_EMPLOYEE_ACTIVITY),employee.getName()), IException.CONFIGURATION_ERROR);
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(),
-				timesheetLine.getComments(),BigDecimal.ONE, product.getUnit(),10,false)  {
+			}
+		}
+
+		BigDecimal qtyConverted = timesheetLine.getDurationStored();
+
+		if(employee != null){
+			if(employee.getTimeLoggingPreferenceSelect() == EmployeeRepository.TIME_PREFERENCE_DAYS){
+				qtyConverted = Beans.get(UnitConversionService.class).convert(product.getUnit(), GeneralService.getGeneral().getUnitDays(), timesheetLine.getDurationStored());
+			}
+			else if(employee.getTimeLoggingPreferenceSelect() == EmployeeRepository.TIME_PREFERENCE_MINUTES){
+				qtyConverted = Beans.get(UnitConversionService.class).convert(product.getUnit(), GeneralService.getGeneral().getUnitMinutes(), timesheetLine.getDurationStored());
+			}
+
+		}
+
+
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), product.getSalePrice(),
+				null,qtyConverted,product.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+				product.getSalePrice().multiply(qtyConverted),null,false)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
@@ -192,18 +219,5 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		};
 
 		return invoiceLineGenerator.creates();
-	}
-
-	public BigDecimal convertQty(TimesheetLine timesheetLine, Product product) throws AxelorException{
-		BigDecimal qty = timesheetLine.getDurationStored();
-		Employee employee = timesheetLine.getUser().getEmployee();
-		if(employee == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheetLine.getUser().getName()), IException.CONFIGURATION_ERROR);
-		}
-		BigDecimal dailyWorkHours = employee.getDailyWorkHours();
-		if(dailyWorkHours == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAILY_WORK_HOURS),employee.getName()), IException.CONFIGURATION_ERROR);
-		}
-		return qty;
 	}
 }
