@@ -87,10 +87,6 @@
 		<call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController" method="createProductionOrders"/>
 	</action-method>
 
-    <action-method name="action-supplychain-sale-order-alert-generate-invoice">
-        <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="alertGenerateInvoice"/>
-    </action-method>
-	
 	<action-method name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generatePurchaseOrdersFromSelectedSOLines"/>
 	</action-method>

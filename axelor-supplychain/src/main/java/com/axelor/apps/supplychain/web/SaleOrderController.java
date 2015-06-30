@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -30,10 +31,12 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -46,7 +49,7 @@ public class SaleOrderController {
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
-
+	
 	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -161,5 +164,23 @@ public class SaleOrderController {
 			}
 
 		}
+	}
+	
+	
+	public void generateInvoice(ActionRequest request, ActionResponse response)  {
+		
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		
+		try {
+			
+			saleOrder = saleOrderRepo.find(saleOrder.getId());
+			Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateInvoice(saleOrder);
+			
+			if(invoice != null)  {
+				response.setReload(true);
+				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
+			}
+		}
+		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 }
