@@ -3,6 +3,9 @@ package com.axelor.apps.account.db.repo;
 import java.math.BigDecimal;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
 
 public class InvoiceManagementRepository extends InvoiceRepository {
 	@Override
@@ -39,4 +42,20 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		
 		return copy;
 	}
+	
+	
+	@Override
+	public Invoice save(Invoice invoice) {
+		try {
+			invoice = super.save(invoice);
+			Beans.get(InvoiceService.class).setDraftSequence(invoice);
+
+			return invoice;
+		} catch (Exception e) {
+			JPA.em().getTransaction().rollback();
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }

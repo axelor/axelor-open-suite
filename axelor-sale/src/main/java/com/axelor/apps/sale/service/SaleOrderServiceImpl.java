@@ -205,8 +205,8 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	}
 
 	@Override
-	public String getDraftSequence(Long saleOrderId){
-		return "*"+saleOrderId.toString();
+	public String getDraftSequence(SaleOrder saleOrder)  {
+		return "*" + saleOrder.getId();
 	}
 	
 	public SaleOrder createSaleOrder(Company company) throws AxelorException{

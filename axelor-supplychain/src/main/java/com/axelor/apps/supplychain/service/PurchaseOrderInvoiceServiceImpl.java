@@ -44,13 +44,10 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceService {
+public class PurchaseOrderInvoiceServiceImpl extends PurchaseOrderRepository implements PurchaseOrderInvoiceService {
 
 	@Inject
 	private InvoiceService invoiceService;
-
-	@Inject
-	private PurchaseOrderRepository purchaseOrderRepo;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -58,10 +55,11 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
 		Invoice invoice = this.createInvoice(purchaseOrder);
 		invoiceService.save(invoice);
+		invoiceService.setDraftSequence(invoice);
 
 		if(invoice != null) {
 			purchaseOrder.setInvoice(invoice);
-			purchaseOrderRepo.save(purchaseOrder);
+			save(purchaseOrder);
 		}
 		return invoice;
 	}

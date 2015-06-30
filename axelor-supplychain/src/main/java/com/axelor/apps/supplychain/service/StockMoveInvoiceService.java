@@ -29,10 +29,11 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface StockMoveInvoiceService {
+public interface StockMoveInvoiceService extends Repository<StockMove>{
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder) throws AxelorException;
