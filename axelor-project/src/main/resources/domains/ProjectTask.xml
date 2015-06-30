@@ -37,12 +37,8 @@
 	  <boolean name="toInvoice"/>
 	  <boolean name="invoiced" readonly="true"/>
 	  
-	  <string name="fullName" namecolumn="true" search="name,code" title="Name">
-	       <![CDATA[
-	       		if(code != null && !code.isEmpty()) { return code + " " + name; }
-	       		return name;
-	       ]]>
-	  </string>
+	  <string name="fullName" namecolumn="true" search="name,code" title="Name"/>
+
 	          
   </entity>
   
