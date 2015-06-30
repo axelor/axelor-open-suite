@@ -13,6 +13,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.business.project.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.db.ElementsToInvoice;
 import com.axelor.apps.businessproject.db.InvoicingFolder;
@@ -57,6 +58,8 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 	@Inject
 	protected ElementsToInvoiceService elementsToInvoiceService;
+	
+	protected int MAX_LEVEL_OF_PROJECT = 10;
 
 
 	@Transactional
@@ -180,7 +183,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		Partner customer = folder.getProjectTask().getCustomer();
 		if(!customer.getFlatFeeExpense()){
 			for (InvoiceLine invoiceLine : invoiceLineList) {
-				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackPurchase().divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)));
+				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackPurchase().divide(new BigDecimal(100), GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)));
 				invoiceLine.setExTaxTotal(invoiceLine.getPrice().multiply(invoiceLine.getQty()).setScale(2, BigDecimal.ROUND_HALF_UP));
 			}
 		}
@@ -191,7 +194,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		Partner customer = folder.getProjectTask().getCustomer();
 		if(!customer.getFlatFeePurchase()){
 			for (InvoiceLine invoiceLine : invoiceLineList) {
-				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackExpense().divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)));
+				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackExpense().divide(new BigDecimal(100), GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)));
 				invoiceLine.setExTaxTotal(invoiceLine.getPrice().multiply(invoiceLine.getQty()).setScale(2, BigDecimal.ROUND_HALF_UP));
 			}
 		}
@@ -200,18 +203,21 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 
 	public void getLines(ProjectTask projectTask, List<SaleOrderLine> saleOrderLineList, List<PurchaseOrderLine> purchaseOrderLineList,
-							List<TimesheetLine> timesheetLineList,  List<ExpenseLine> expenseLineList, List<ElementsToInvoice> elementsToInvoiceList, List<ProjectTask> projectTaskList){
+							List<TimesheetLine> timesheetLineList,  List<ExpenseLine> expenseLineList, List<ElementsToInvoice> elementsToInvoiceList, List<ProjectTask> projectTaskList, int counter){
 
-		saleOrderLineList.addAll(Beans.get(SaleOrderLineRepository.class).all().filter("self.project != null AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.project.imputable = true", projectTask).fetch());
-		purchaseOrderLineList.addAll(Beans.get(PurchaseOrderLineRepository.class).all().filter("self.projectTask != null AND self.projectTask = ?1 AND self.projectTask.saleOrder != null  AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
-		timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class).all().filter("self.affectedToTimeSheet != null AND self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.projectTask.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
-		expenseLineList.addAll(Beans.get(ExpenseLineRepository.class).all().filter("self.task != null AND self.task = ?1 AND self.task.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.task.imputable = true", projectTask).fetch());
-		elementsToInvoiceList.addAll(Beans.get(ElementsToInvoiceRepository.class).all().filter("self.project != null AND self.project = ?1 AND self.project.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.project.imputable = true", projectTask).fetch());
-		projectTaskList.addAll(Beans.get(ProjectTaskRepository.class).all().filter("self.id = ?1 AND self.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.imputable = true", projectTask.getId()).fetch());
-		List<ProjectTask> projectTaskChildrenList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1 AND self.imputable = true", projectTask).fetch();
+		if(counter > MAX_LEVEL_OF_PROJECT)  {  return;  }
+		counter++;
+		
+		saleOrderLineList.addAll(Beans.get(SaleOrderLineRepository.class).all().filter("self.project != null AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.project.invoicingTypeSelect = ?2", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
+		purchaseOrderLineList.addAll(Beans.get(PurchaseOrderLineRepository.class).all().filter("self.projectTask != null AND self.projectTask = ?1 AND self.projectTask.saleOrder != null  AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.invoicingTypeSelect = ?2", projectTask,  ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
+		timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class).all().filter("self.affectedToTimeSheet != null AND self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.projectTask.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.invoicingTypeSelect = ?2", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
+		expenseLineList.addAll(Beans.get(ExpenseLineRepository.class).all().filter("self.task != null AND self.task = ?1 AND self.task.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.task.invoicingTypeSelect = ?2", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
+		elementsToInvoiceList.addAll(Beans.get(ElementsToInvoiceRepository.class).all().filter("self.project != null AND self.project = ?1 AND self.project.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.project.invoicingTypeSelect = ?2", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
+		projectTaskList.addAll(Beans.get(ProjectTaskRepository.class).all().filter("self.id = ?1 AND self.saleOrder != null AND self.invoicingTypeSelect = ?2 AND self.invoiced = false", projectTask.getId(), ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE).fetch());
+		List<ProjectTask> projectTaskChildrenList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1 AND (self.invoicingTypeSelect = ?2 OR self.invoicingTypeSelect = ?3) ", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED, ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE).fetch();
 		for (ProjectTask projectTaskChild : projectTaskChildrenList) {
 			this.getLines(projectTaskChild, saleOrderLineList, purchaseOrderLineList,
-					timesheetLineList, expenseLineList, elementsToInvoiceList, projectTaskList);
+					timesheetLineList, expenseLineList, elementsToInvoiceList, projectTaskList, counter);
 		}
 		return;
 	}

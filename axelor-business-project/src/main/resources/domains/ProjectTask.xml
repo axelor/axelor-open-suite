@@ -38,6 +38,20 @@
 		<decimal name="realInvoicingMargin" title="Real Margin (Invoicing)" readonly="true"/>
 		
 		<one-to-many name="elementsToInvoiceList" ref="com.axelor.apps.businessproject.db.ElementsToInvoice" title="Other Elements To Invoice" mappedBy="project"/>
+		
+	  	<boolean name="invoiced" readonly="true"/>
+	  	
+	
+	 	<extra-code><![CDATA[
+		
+		   	// TYPE SELECT
+			public static final int INVOICING_TYPE_NONE = 1;
+			public static final int INVOICING_TYPE_TIME_BASED = 2;
+			public static final int INVOICING_TYPE_FLAT_RATE = 3;
+		
+		]]></extra-code>
+		
+		
 	</entity>
   
 </domain-models>

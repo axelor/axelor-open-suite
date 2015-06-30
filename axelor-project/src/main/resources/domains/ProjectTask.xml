@@ -13,7 +13,6 @@
 	  <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 	  <string name="taskTypeSelect" selection="project.task.type.select" title="Type" />
 	  <integer name="statusSelect" selection="project.task.status.select" title="Status" default="1"/>
-	  <integer name="invoiceStatusSelect" selection="project.task.invoice.status.select" title="Invoicing Status" default="1"/>
 	  
 	  <string name="code" title="Code" />
 	  <boolean name="businessProject" title="Business Project"/>
@@ -34,8 +33,6 @@
 	  <integer name="progress" title="Progress (%)" selection="grade.0.up.to.100.select"/>
 	  
 	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
-	  <boolean name="toInvoice"/>
-	  <boolean name="invoiced" readonly="true"/>
 	  
 	  <string name="fullName" namecolumn="true" title="Name"/>
 

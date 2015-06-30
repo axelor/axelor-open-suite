@@ -71,8 +71,7 @@ public class InvoicingFolderController extends InvoicingFolderRepository{
 		List<ProjectTask> projectTaskList = new ArrayList<ProjectTask>();
 
 		invoicingFolderService.getLines(projectTask, saleOrderLineList, purchaseOrderLineList,
-				timesheetLineList, expenseLineList, elementsToInvoiceList, projectTaskList);
-
+				timesheetLineList, expenseLineList, elementsToInvoiceList, projectTaskList, 0);
 
 		invoicingFolder.setSaleOrderLineSet(new HashSet<SaleOrderLine>(saleOrderLineList));
 		invoicingFolder.setPurchaseOrderLineSet(new HashSet<PurchaseOrderLine>(purchaseOrderLineList));

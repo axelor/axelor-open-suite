@@ -14,10 +14,5 @@
 		<option value="3">Finished</option>
 	</selection>
 	
-	<selection name="project.task.invoice.status.select">
-		<option value="1">Do not Invoice</option>
-		<option value="2">To Invoice</option>
-		<option value="3">Invoiced</option>
-	</selection>
 	
 </object-views>
