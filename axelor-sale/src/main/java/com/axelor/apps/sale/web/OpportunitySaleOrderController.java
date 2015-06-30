@@ -22,7 +22,7 @@ public class OpportunitySaleOrderController{
 		SaleOrder saleOrder = opportunitySaleOrderService.createSaleOrderFromOpportunity(opportunity);
 		response.setReload(true);
 		response.setView(ActionView
-				.define("SaleOrder")
+				.define("Sale Order")
 				.model(SaleOrder.class.getName())
 				.add("form", "sale-order-form")
 				.context("_showRecord", String.valueOf(saleOrder.getId())).map());
