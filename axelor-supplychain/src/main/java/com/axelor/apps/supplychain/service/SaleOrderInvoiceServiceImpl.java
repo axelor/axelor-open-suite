@@ -72,7 +72,7 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 	public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException  {
 
 		Invoice invoice = this.createInvoice(saleOrder);
-		
+
 		Beans.get(InvoiceRepository.class).save(invoice);
 
 		save(fillSaleOrder(saleOrder, invoice));
@@ -135,6 +135,9 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 
 
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList));
+
+		this.fillInLines(invoice);
+
 		return invoice;
 
 	}
@@ -289,6 +292,14 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		Beans.get(SubscriptionRepository.class).save(subscription);
 
 		return invoice;
+	}
+
+	@Override
+	public void fillInLines(Invoice invoice){
+		List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+		for (InvoiceLine invoiceLine : invoiceLineList) {
+			invoiceLine.setSaleOrder(invoice.getSaleOrder());
+		}
 	}
 
 }

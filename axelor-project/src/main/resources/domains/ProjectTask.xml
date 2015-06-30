@@ -37,7 +37,7 @@
 	  <boolean name="toInvoice"/>
 	  <boolean name="invoiced" readonly="true"/>
 	  
-	  <string name="fullName" namecolumn="true" search="name,code" title="Name"/>
+	  <string name="fullName" namecolumn="true" title="Name"/>
 
 	          
   </entity>

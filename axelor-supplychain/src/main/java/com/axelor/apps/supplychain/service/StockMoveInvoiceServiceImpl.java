@@ -76,11 +76,11 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
 
 		if (invoice != null) {
-			
+			saleOrderInvoiceService.fillInLines(invoice);
 			this.extendInternalReference(stockMove, invoice);
 
 			invoiceRepository.save(invoice);
-			
+
 			stockMove.setInvoice(invoice);
 			save(stockMove);
 		}
@@ -105,7 +105,7 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 		if (invoice != null) {
 
 			this.extendInternalReference(stockMove, invoice);
-			
+
 			invoiceRepository.save(invoice);
 
 			stockMove.setInvoice(invoice);
@@ -327,7 +327,7 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 		invoiceGenerator.populate(invoice, invoiceLineList);
 
 		if (invoice != null) {
-			
+
 			invoiceRepository.save(invoice);
 			//Save the link to the invoice for all stockMove
 			JPA.all(StockMove.class).filter("self.id IN (:idStockMoveList)").bind("idStockMoveList", stockMoveIdList).update("invoice", invoice);
@@ -490,7 +490,7 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 		invoiceGenerator.populate(invoice, invoiceLineList);
 
 		if (invoice != null) {
-			
+
 			invoiceRepository.save(invoice);
 			//Save the link to the invoice for all stockMove
 			JPA.all(StockMove.class).filter("self.id IN (:idStockMoveList)").bind("idStockMoveList", stockMoveIdList).update("invoice", invoice);

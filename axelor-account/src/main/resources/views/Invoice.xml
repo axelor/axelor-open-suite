@@ -53,7 +53,7 @@
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date"/>
 			<field name="bankDetails" hideIf="operationTypeSelect &gt;= 3" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" domain="self.partner = :partner"/>
 			<field name="priceList" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList"/>
-			<field name="saleOrder" if-module="axelor-supplychain" />
+			<field name="saleOrder" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines"/>
 			<field name="message" />
 			<field name="discount" />
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
@@ -310,6 +310,10 @@
 	</action-attrs>
 
 	<!-- ACTION METHOD -->
+	
+	<action-method name="action-invoice-method-fill-in-lines">
+		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="fillInLines"/>
+	</action-method>
 	
 	<action-method name="action-invoice-method-mass-validation">
     	<call class="com.axelor.apps.account.web.InvoiceController" method="massValidation"/>

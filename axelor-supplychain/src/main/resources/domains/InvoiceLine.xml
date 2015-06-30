@@ -9,7 +9,7 @@
   	<many-to-one name="purchaseOrderLine" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO line" />
   	<many-to-one name="outgoingStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Customer delivery"/>
 	<many-to-one name="incomingStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Supplier arrival"/>
-  	
+  	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order" />
   </entity>
   
 </domain-models>

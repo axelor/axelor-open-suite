@@ -82,7 +82,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		invoice.setInAti(user.getActiveCompany().getAccountConfig().getInvoiceInAti());
 		invoiceGenerator.populate(invoice,this.populate(invoice,folder));
 		Beans.get(InvoiceRepository.class).save(invoice);
-		
+
 		this.setInvoiced(folder);
 		folder.setInvoice(invoice);
 		save(folder);
@@ -104,6 +104,10 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		invoiceLineList.addAll(this.customerChargeBackExpenses(expenseService.createInvoiceLines(invoice, expenseLineList),folder));
 		invoiceLineList.addAll(elementsToInvoiceService.createInvoiceLines(invoice, elementsToInvoiceList));
 		invoiceLineList.addAll(this.createInvoiceLines(invoice, projectTaskList));
+
+		for (InvoiceLine invoiceLine : invoiceLineList) {
+			invoiceLine.setSaleOrder(invoiceLine.getInvoice().getSaleOrder());
+		}
 
 		return invoiceLineList;
 	}

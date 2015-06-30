@@ -59,6 +59,7 @@ public interface SaleOrderInvoiceService  extends Repository<SaleOrder>  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateSubscriptionInvoice(Subscription subscription,SaleOrderLine saleOrderLine,SaleOrder saleOrder) throws AxelorException;
 
+	public void fillInLines(Invoice invoice);
 }
 
 
