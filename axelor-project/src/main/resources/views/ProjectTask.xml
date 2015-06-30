@@ -14,8 +14,8 @@
 		<field name="progress" widget="SelectProgress"/>
 	</grid>
 
-	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-project-default,action-project-task-attrs-duration-title"
-	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title">
+	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
+	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 		<panel title="Overview">
 			<field name="statusSelect" widget="NavSelect"/>
 			<field name="project" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
@@ -118,8 +118,9 @@
 		<field name="progress" widget="SelectProgress"/>
 	</grid>
 
-	<form name="task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-attrs-hide-invoicing-panel,action-project-task-default,action-project-task-attrs-duration-title"
-	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title">
+	<form name="task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask" 
+	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-task-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
+	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 	    <panel>
 	    	<field name="statusSelect" widget="NavSelect"/>
 	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel" required="true" title="Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
@@ -170,8 +171,9 @@
 		<field name="taskTypeSelect"/>
 	</grid>
 
-	<form name="project-task-form" title="Project/Task" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-attrs-hide-invoicing-panel,action-project-project-default,action-project-task-attrs-duration-title"
-	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title">
+	<form name="project-task-form" title="Project/Task" model="com.axelor.apps.project.db.ProjectTask" 
+	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
+	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 		<panel title="Overview">
 			<field name="statusSelect" widget="NavSelect"/>
 			<field name="project" requiredIf="taskTypeSelect == 'task'" onChange="action-project-task-attrs-hide-invoicing-panel" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
@@ -337,5 +339,10 @@
 	<action-record name="action-project-task-record-compute-exTaxTotal" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="exTaxTotal" expr="eval: price*qty"/>
 	</action-record>
+	
+		
+  	<action-attrs name="action-project-attrs-scale-and-precision">
+		<attribute name="scale" for="price" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+	</action-attrs>
 
 </object-views>
