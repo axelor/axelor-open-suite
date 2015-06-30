@@ -108,10 +108,10 @@
 	<boolean name="invoiceInAti" title="Invoice In ATI"/>
 	
 <!-- 	Sequence  -->
-	<many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer invoice sequence"/>
-	<many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer refund sequence"/>
-	<many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier invoice sequence"/>
-	<many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier refund sequence"/>
+	<many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer invoices sequence"/>
+	<many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer refunds sequence"/>
+	<many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier invoices sequence"/>
+	<many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier refunds sequence"/>
 	
 	   
   </entity>

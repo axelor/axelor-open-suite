@@ -1,7 +1,6 @@
 "key","message","comment","context"
 "Business",,,
 "Employee",,,
-"Invoiceable",,,
 "Invoiced",,,
 "Manuf. Orders Selection","Sélection ordres de fabrication",,
 "None",,,
@@ -10,6 +9,7 @@
 "Project/Task",,,
 "Timesheet lines",,,
 "To Invoice?",,,
+"To invoice",,,
 "To invoice ?",,,
 "Yes (Fixed)",,,
 "Yes (Real)",,,
