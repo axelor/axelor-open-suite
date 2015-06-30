@@ -24,7 +24,7 @@
 			<field name="company"/>
 			<field name="customer" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain"/>
-			<field name="saleOrder" domain="self.clientPartner = :customer" requiredIf="invoiceable" if-module="axelor-business-project"/>
+			<field name="saleOrder" domain="self.clientPartner = :customer" requiredIf="toInvoice" if-module="axelor-business-project"/>
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
@@ -35,8 +35,8 @@
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="invoicingTypeSelect" if-module="axelor-business-project"/>
 			<field name="invoiceStatusSelect"/>
-			<field name="invoiceable"/>
-			<field name="invoiced" showIf="invoiceable"/>
+			<field name="toInvoice"/>
+			<field name="invoiced" showIf="toInvoice"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Invoicing" if-module="axelor-business-project" showIf="invoicingTypeSelect == 3">
@@ -131,8 +131,8 @@
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="invoiceStatusSelect"/>
-			<field name="invoiceable"/>
-			<field name="invoiced" showIf="invoiceable"/>
+			<field name="toInvoice"/>
+			<field name="invoiced" showIf="toInvoice"/>
 		</panel>
 		<panel-tabs>
 			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-business-project" hidden="true">
@@ -177,7 +177,7 @@
 			<field name="company" hideIf="taskTypeSelect == 'task'"/>
 			<field name="customer" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true" hideIf="taskTypeSelect == 'task'"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain,action-task-attrs-assigned-to-domain"/>
-			<field name="saleOrder" domain="self.clientPartner.id = :customer.id" requiredIf="invoiceable" if-module="axelor-business-project" hideIf="taskTypeSelect == 'task'"/>
+			<field name="saleOrder" domain="self.clientPartner.id = :customer.id" requiredIf="toInvoice" if-module="axelor-business-project" hideIf="taskTypeSelect == 'task'"/>
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
@@ -188,8 +188,8 @@
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="invoicingTypeSelect" if-module="axelor-business-project" hideIf="taskTypeSelect == 'task'"/>
 			<field name="invoiceStatusSelect"/>
-			<field name="invoiceable"/>
-			<field name="invoiced" showIf="invoiceable"/>
+			<field name="toInvoice"/>
+			<field name="invoiced" showIf="toInvoice"/>
 		</panel>
 		<panel-tabs>
 			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-business-project" hidden="true">

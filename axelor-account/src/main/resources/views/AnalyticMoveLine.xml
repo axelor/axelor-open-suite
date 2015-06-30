@@ -10,7 +10,7 @@
         <field name="product"/>
         <field name="amount"/>
         <field name="partner"/>
-        <field name="invoiceable"/>
+        <field name="toInvoice"/>
         <field name="invoiced"/>
     </grid>
     <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project-task"
@@ -29,8 +29,8 @@
 	        <field name="projectTask" domain="self.imputable = true" if-module="axelor-business-project"/>
 	        <field name="generalAccount"/>
 	        <field name="moveLine"/>
-	        <field name="invoiceable"/>
-			<field name="invoiced" showIf="invoiceable"/>
+	        <field name="toInvoice"/>
+			<field name="invoiced" showIf="toInvoice"/>
        </panel>
         
     </form>

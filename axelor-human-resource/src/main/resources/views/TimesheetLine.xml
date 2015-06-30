@@ -10,20 +10,20 @@
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true"/>
 		<field name="affectedToTimeSheet"/>
-		<field name="invoiceable"/>
-		<field name="invoiced" showIf="invoiceable"/>
+		<field name="toInvoice"/>
+		<field name="invoiced" showIf="toInvoice"/>
 		<field name="comments" />
 	</grid>
 	
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet">
-		<field name="projectTask" requiredIf="invoiceable" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
+		<field name="projectTask" requiredIf="toInvoice" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
 		<field name="date" onChange="action-timesheet-validate-date"/>
 		<field name="product"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true" />
-		<field name="invoiceable"/>
-		<field name="invoiced" showIf="invoiceable"/>
+		<field name="toInvoice"/>
+		<field name="invoiced" showIf="toInvoice"/>
 		<field name="comments" />
 	</grid>
 
@@ -38,8 +38,8 @@
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
 			<field name="affectedToTimeSheet"/>
-			<field name="invoiceable"/>
-			<field name="invoiced" showIf="invoiceable"/>
+			<field name="toInvoice"/>
+			<field name="invoiced" showIf="toInvoice"/>
 			<field name="comments" />
 		</panel>
 	</form>
@@ -54,8 +54,8 @@
 			<field name="visibleDuration" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
-			<field name="invoiceable"/>
-			<field name="invoiced" showIf="invoiceable"/>
+			<field name="toInvoice"/>
+			<field name="invoiced" showIf="toInvoice"/>
 			<field name="comments" />
 		</panel>
 	</form>

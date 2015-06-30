@@ -16,7 +16,7 @@
       <decimal name="visibleDuration" title="Duration" required="true" />
 	  <decimal name="durationStored" title="Duration" />
       <string name="comments" large="true"/>
-      <boolean name="invoiceable"/>
+      <boolean name="toInvoice"/>
       <boolean name="invoiced" title="Invoiced" readonly="true"/>
 	          
   </entity>
