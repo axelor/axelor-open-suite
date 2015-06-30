@@ -183,7 +183,7 @@ public class VentilateState extends WorkflowInvoice {
 	 */
 	protected void setInvoiceId( Sequence sequence ) throws AxelorException {
 		
-		if ( !Strings.isNullOrEmpty( invoice.getInvoiceId() ) ) { return; }
+		if ( !Strings.isNullOrEmpty(invoice.getInvoiceId()) && !invoice.getInvoiceId().contains("*") ) { return; }
 		
 		invoice.setInvoiceId( sequenceService.setRefDate( invoice.getInvoiceDate() ).getSequenceNumber(sequence) );
 		
