@@ -30,6 +30,14 @@
 	       
       </string>
       
+      <extra-code>
+   		<![CDATA[
+   			public static final String TIME_PREFERENCE_DAYS = "days";
+   			public static final String TIME_PREFERENCE_HOURS = "hours";
+   			public static final String TIME_PREFERENCE_MINUTES = "minutes";
+   		]]>
+   	</extra-code>
+      
   </entity>
   
 </domain-models>
