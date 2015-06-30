@@ -12,7 +12,8 @@
   		<field name="salePrice"/>
 	</grid>
 
-	<form name="elements-to-invoice-form" title="Element To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice" >
+	<form name="elements-to-invoice-form" title="Element To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice" 
+	onNew="action-element-to-invoice-record-default">
 		<panel>
 			<field name="user"/>
 			<field name="date"/>
@@ -29,4 +30,10 @@
 	<action-method name="action-elements-to-invoice-method-get-product-information">
 		<call class="com.axelor.apps.business.project.web.ElementsToInvoiceController" method="getProductInformation"/>
 	</action-method>
+	
+ 	<action-record name="action-element-to-invoice-record-default" model="com.axelor.apps.businessproject.db.ElementsToInvoice">
+    	<field name="date" expr="eval: __date__"/>
+    	<field name="user" expr="eval: __user__"/>
+    </action-record>	
+	
 </object-views>
