@@ -67,8 +67,8 @@
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
 			<field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production"/>
-			<field name="invoiceable" if-module="axelor-business-production"/>
-			<field name="invoiced" showIf="invoiceable" if-module="axelor-business-production"/>
+			<field name="toInvoice" if-module="axelor-business-production"/>
+			<field name="invoiced" showIf="toInvoice" if-module="axelor-business-production"/>
 			<button name="preFillOperations" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1" onClick="save,action-manuf-order-method-pre-fill-operations" />
 		</panel>  
 		<panel-tabs colSpan="4">

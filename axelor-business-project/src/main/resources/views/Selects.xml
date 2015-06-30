@@ -8,4 +8,10 @@
 		<option value="2">Closed</option>
 	</selection>
 	
+	<selection name="project.task.invoicing.type.select">
+		<option value="1">None</option>
+		<option value="2">Time-based</option>
+		<option value="3">Flat Rate</option>
+	</selection>
+	
 </object-views>

@@ -32,7 +32,8 @@ public class InvoicingFolderController extends InvoicingFolderRepository{
 		InvoicingFolder folder = request.getContext().asType(InvoicingFolder.class);
 		folder = this.find(folder.getId());
 		if(folder.getSaleOrderLineSet().isEmpty() && folder.getPurchaseOrderLineSet().isEmpty()
-				&& folder.getLogTimesSet().isEmpty() && folder.getExpenseLineSet().isEmpty() && folder.getAnalyticMoveLineSet().isEmpty()){
+				&& folder.getLogTimesSet().isEmpty() && folder.getExpenseLineSet().isEmpty() && folder.getAnalyticMoveLineSet().isEmpty()
+				&& folder.getProjectTaskSet().isEmpty()){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_EMPTY)), IException.CONFIGURATION_ERROR);
 		}
 		if(folder.getProjectTask() == null){

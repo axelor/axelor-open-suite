@@ -18,14 +18,14 @@
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate">
 		<panel>
-			<field name="task" requiredIf="invoiceable" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
+			<field name="task" requiredIf="toInvoice" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="expenseType" domain="self.expense = true" widget="SuggestBox"/>
 			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 			<field name="untaxedAmount" onChange="action-expense-on-change-tax-untaxt-amount"/>
 			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount"/>
 			<field name="totalAmount"/>
-			<field name="invoiceable"/>
-			<field name="invoiced" showIf="invoiceable"/>
+			<field name="toInvoice"/>
+			<field name="invoiced" showIf="toInvoice"/>
 			<field name="comments" colSpan="12"/>
 			<field name="user" hidden="true" />
 		</panel>

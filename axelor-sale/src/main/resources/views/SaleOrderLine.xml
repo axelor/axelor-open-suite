@@ -30,8 +30,8 @@
 		   	<field name="priceDiscounted" colSpan="4" hideIf="price == priceDiscounted"/>
 		   	<field name="exTaxTotal" readonly="true"/>
 		   	<field name="inTaxTotal" readonly="true"/>
-		   	<field name="invoiceable"/>
-			<field name="invoiced" showIf="invoiceable"/>
+		   	<field name="toInvoice"/>
+			<field name="invoiced" showIf="toInvoice"/>
 		</panel>
 		<panel name="discount" title="Discount">
 		   	<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title"/>

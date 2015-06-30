@@ -13,6 +13,7 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.business.project.exception.IExceptionMessage;
@@ -131,8 +132,9 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_PROJECT_TASK_PRODUCT),projectTask.getFullName()), IException.CONFIGURATION_ERROR);
 		}
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(),
-				null,BigDecimal.ONE, product.getUnit(),10,false)  {
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), projectTask.getPrice(),
+				null,projectTask.getQty(),projectTask.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+				projectTask.getPrice().multiply(projectTask.getQty()),null,false)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
@@ -207,12 +209,12 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 	public void getLines(ProjectTask projectTask, List<SaleOrderLine> saleOrderLineList, List<PurchaseOrderLine> purchaseOrderLineList,
 							List<TimesheetLine> timesheetLineList,  List<ExpenseLine> expenseLineList, List<AnalyticMoveLine> analyticMoveLineList, List<ProjectTask> projectTaskList){
 
-		saleOrderLineList.addAll(Beans.get(SaleOrderLineRepository.class).all().filter("self.project != null AND self.project = ?1 AND self.invoiceable = true AND self.invoiced = false AND self.project.imputable = true", projectTask).fetch());
-		purchaseOrderLineList.addAll(Beans.get(PurchaseOrderLineRepository.class).all().filter("self.projectTask != null AND self.projectTask = ?1 AND self.projectTask.saleOrder != null  AND self.invoiceable = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
-		timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class).all().filter("self.affectedToTimeSheet != null AND self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.projectTask.saleOrder != null AND self.invoiceable = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
-		expenseLineList.addAll(Beans.get(ExpenseLineRepository.class).all().filter("self.task != null AND self.task = ?1 AND self.task.saleOrder != null AND self.invoiceable = true AND self.invoiced = false AND self.task.imputable = true", projectTask).fetch());
-		analyticMoveLineList.addAll(Beans.get(AnalyticMoveLineRepository.class).all().filter("self.projectTask != null AND self.projectTask = ?1 AND self.projectTask.saleOrder != null AND self.invoiceable = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
-		projectTaskList.addAll(Beans.get(ProjectTaskRepository.class).all().filter("self.id = ?1 AND self.saleOrder != null AND self.invoiceable = true AND self.invoiced = false AND self.imputable = true", projectTask.getId()).fetch());
+		saleOrderLineList.addAll(Beans.get(SaleOrderLineRepository.class).all().filter("self.project != null AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.project.imputable = true", projectTask).fetch());
+		purchaseOrderLineList.addAll(Beans.get(PurchaseOrderLineRepository.class).all().filter("self.projectTask != null AND self.projectTask = ?1 AND self.projectTask.saleOrder != null  AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
+		timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class).all().filter("self.affectedToTimeSheet != null AND self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.projectTask.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
+		expenseLineList.addAll(Beans.get(ExpenseLineRepository.class).all().filter("self.task != null AND self.task = ?1 AND self.task.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.task.imputable = true", projectTask).fetch());
+		analyticMoveLineList.addAll(Beans.get(AnalyticMoveLineRepository.class).all().filter("self.projectTask != null AND self.projectTask = ?1 AND self.projectTask.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.imputable = true", projectTask).fetch());
+		projectTaskList.addAll(Beans.get(ProjectTaskRepository.class).all().filter("self.id = ?1 AND self.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.imputable = true", projectTask.getId()).fetch());
 		List<ProjectTask> projectTaskChildrenList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1 AND self.imputable = true", projectTask).fetch();
 		for (ProjectTask projectTaskChild : projectTaskChildrenList) {
 			this.getLines(projectTaskChild, saleOrderLineList, purchaseOrderLineList,
