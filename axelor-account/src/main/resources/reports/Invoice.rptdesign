@@ -771,8 +771,8 @@ Country.name as "invoicecountry", Invoice.invoice_date, Partner.partner_type_sel
 Partner.name as "partnerName", Partner.first_name as "partnerFirstName",Partner.title_select, 
 ContactPartner.name as "contactName", ContactPartner.first_name as "contactFirstName",
 Address.addressl2, Address.addressl3, Address.addressl4, Address.addressl5, Address.addressl6, Country.name as "countryName", 
-PaymentCondition.name as "paymentConditionName", Invoice.due_date, Currency.code as "currencyCode", Invoice.invoice_in_tax_total, 
-Invoice.invoice_ex_tax_total, Invoice.invoice_tax_total, Company.name as "companyName", BankDetail.iban, BankDetail.bic, 
+PaymentCondition.name as "paymentConditionName", Invoice.due_date, Currency.code as "currencyCode", Invoice.in_tax_total as "invoice_in_tax_total", 
+Invoice.ex_tax_total as "invoice_ex_tax_total", Invoice.tax_total as "invoice_tax_total", Company.name as "companyName", BankDetail.iban, BankDetail.bic, 
 BankDetail.bank_address, Invoice.note, Invoice.internal_reference, Invoice.external_reference, PrintingSettings.pdf_header as "header", 
 PrintingSettings.pdf_footer as "footer" 
 from public.account_invoice as Invoice 
