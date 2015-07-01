@@ -38,7 +38,7 @@
 			<field name="sentDate" colSpan="4"/>
 			<field name="company" colSpan="3"/>
 			<field name="user" colSpan="4"/>
-			<field name="fromDate" readonly="true"/>
+			<field name="fromDate" readonlyIf="fromDate!=null"/>
 			<field name="toDate" onChange="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date"/>
 		</panel>
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">

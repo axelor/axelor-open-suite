@@ -6,13 +6,14 @@
 		<field name="projectTask"/>
 	</grid>
 
-	<form name="invoicing-folder-form" title="Invoicing Folder" model="com.axelor.apps.businessproject.db.InvoicingFolder" readonlyIf="invoice != null"
+	<form name="invoicing-folder-form" title="Invoicing Folder" model="com.axelor.apps.businessproject.db.InvoicingFolder" 
 		onNew="action-invoicing-folder-attrs-title-project-task" onLoad="action-invoicing-folder-attrs-title-project-task">
 		<panel>
-			<field name="projectTask" onChange="action-invoicing-folder-method-fill-in"/>
-			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-folder-method-fill-in"/>
-			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-folder-method-generate-invoice"/>
+			<field name="projectTask" onChange="action-invoicing-folder-method-fill-in" colSpan="12" readonlyIf="invoice != null"/>
+			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-folder-method-fill-in" readonlyIf="invoice != null"/>
+			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-folder-method-generate-invoice" readonlyIf="invoice != null"/>
 			<field name="invoice" readonly="true"/>
+			<button name="seeInvoice" title="See Invoice Generated" onClick="action-invoicing-folder-view-see-invoice" showIf="invoice != null"/>
 		</panel>
 		<panel-related field="saleOrderLineSet" canNew="false" canEdit="false" canSelect="false" form-view="sale-order-line-form"/>
 		<panel-related field="purchaseOrderLineSet"  canNew="false" canEdit="false" canSelect="false"/>
@@ -36,5 +37,11 @@
 		<attribute name="title" for="projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
 		<attribute name="title" for="projectTaskSet" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
 	</action-attrs>
+	
+	<action-view name="action-invoicing-folder-view-see-invoice" title="Invoice" model="com.axelor.apps.account.db.Invoice">
+		<view type="form"/>
+		<view type="grid"/>
+		<context name="_showRecord" expr="eval: invoice?.id"/>
+	</action-view>
 	    
 </object-views>

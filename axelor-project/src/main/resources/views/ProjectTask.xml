@@ -35,6 +35,7 @@
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="invoicingTypeSelect" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="invoicingTypeSelect == 2 || invoicingTypeSelect == 3" if-module="axelor-business-project"/>
+			<button name="seeReportingFolder" title="See Reporting Folder" onClick="action-show-reporting-folder"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Invoicing" if-module="axelor-business-project" showIf="invoicingTypeSelect == 3">
@@ -363,5 +364,9 @@
   	<action-attrs name="action-project-attrs-scale-and-precision">
 		<attribute name="scale" for="price" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
+	
+	<action-view name="action-show-reporting-folder" title="Folder">  		
+ 		<view type="html" name="http://localhost:8080/Exemple_report_Affaire.pdf" /> 
+	</action-view>
 
 </object-views>
