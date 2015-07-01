@@ -41,7 +41,9 @@ public class SaleOrderProjectController extends SaleOrderRepository{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_ORDER_NO_PROJECT)), IException.CONFIGURATION_ERROR);
 		}
 		List<Long> listId = saleOrderProjectService.generateTasks(saleOrder);
-
+		if(listId == null || listId.isEmpty()){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_ORDER_NO_LINES)), IException.CONFIGURATION_ERROR);
+		}
 		response.setReload(true);
 		response.setView(ActionView
 				.define("Tasks generated")

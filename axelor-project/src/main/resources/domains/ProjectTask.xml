@@ -38,6 +38,9 @@
 
 	   <extra-code>
    		<![CDATA[
+   			public static final String TYPE_PROJECT = "project";
+   			public static final String TYPE_TASK = "task";
+   			
    			public static final Integer STATE_PLANNED = 1;
    			public static final Integer STATE_IN_PROGRESS = 2;
    			public static final Integer STATE_FINISHED = 3;
