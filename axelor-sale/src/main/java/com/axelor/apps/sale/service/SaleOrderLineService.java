@@ -79,7 +79,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 		return currencyService.getAmountCurrencyConverted(
 			product.getSaleCurrency(), saleOrder.getCurrency(), product.getSalePrice(), saleOrder.getCreationDate())
 			.setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-		
+
 	}
 
 
@@ -95,7 +95,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 
 		return currencyService.getAmountCurrencyConverted(
 				saleOrder.getCurrency(), saleOrder.getCompany().getCurrency(), exTaxTotal, saleOrder.getCreationDate())
-				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
+				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}
 
 
@@ -105,7 +105,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 
 		return currencyService.getAmountCurrencyConverted(
 				product.getPurchaseCurrency(), saleOrder.getCompany().getCurrency(), product.getCostPrice(), saleOrder.getCreationDate())
-				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
+				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}
 
 
@@ -123,7 +123,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 	}
 
 	public BigDecimal convertUnitPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder){
-		BigDecimal price = saleOrderLine.getProduct().getSalePrice();
+		BigDecimal price = saleOrderLine.getPrice();
 
 		if(saleOrderLine.getProduct().getInAti() && !saleOrder.getInAti()){
 			price = price.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
@@ -151,13 +151,13 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 		}
 		return discountAmount;
 	}
-	
+
 	public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine){
 		PriceList priceList = saleOrder.getPriceList();
 		if(priceList != null)  {
 			PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
 
-			return (int) priceListLine.getTypeSelect();
+			return priceListLine.getTypeSelect();
 		}
 		return 0;
 	}

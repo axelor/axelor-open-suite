@@ -68,11 +68,11 @@ public class InvoiceLineService {
 
 		if(isPurchase)  {
 			return currencyService.getAmountCurrencyConverted(
-				product.getPurchaseCurrency(), invoice.getCurrency(), product.getPurchasePrice(), invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
+				product.getPurchaseCurrency(), invoice.getCurrency(), product.getPurchasePrice(), invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		}
 		else  {
 			return currencyService.getAmountCurrencyConverted(
-				product.getSaleCurrency(), invoice.getCurrency(), product.getSalePrice(), invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
+				product.getSaleCurrency(), invoice.getCurrency(), product.getSalePrice(), invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		}
 	}
 
@@ -87,14 +87,14 @@ public class InvoiceLineService {
 	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
 
 		return currencyService.getAmountCurrencyConverted(
-				invoice.getCurrency(), invoice.getPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
+				invoice.getCurrency(), invoice.getPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}
 
 
 	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
 
 		return currencyService.getAmountCurrencyConverted(
-				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
+				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 
 
@@ -106,11 +106,11 @@ public class InvoiceLineService {
 
 	public BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice)  {
 		BigDecimal unitPrice = BigDecimal.ZERO;
-		
+
 		if(invoice.getOperationTypeSelect()<InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
 			unitPrice = invoiceLine.getProduct().getCostPrice();
 		}
-		
+
 		if(invoice.getOperationTypeSelect()>=InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
 			unitPrice = invoiceLine.getProduct().getSalePrice();
 		}
@@ -129,9 +129,6 @@ public class InvoiceLineService {
 
 	public BigDecimal convertUnitPrice(InvoiceLine invoiceLine, Invoice invoice){
 		BigDecimal price = invoiceLine.getProduct().getSalePrice();
-		if(invoice.getOperationTypeSelect()<2){
-			price = invoiceLine.getProduct().getPurchasePrice();
-		}
 
 		if(invoiceLine.getProduct().getInAti() && !invoice.getInAti()){
 			price = price.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
@@ -165,13 +162,13 @@ public class InvoiceLineService {
 		}
 		return discountAmount;
 	}
-	
+
 	public int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine){
 		PriceList priceList = invoice.getPriceList();
 		if(priceList != null)  {
 			PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
 
-			return (int) priceListLine.getTypeSelect();
+			return priceListLine.getTypeSelect();
 		}
 		return 0;
 	}
