@@ -33,7 +33,7 @@ public class ElementsToInvoiceService {
 		Product product = elementsToInvoice.getProduct();
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), elementsToInvoice.getSalePrice(),
-				null,elementsToInvoice.getQty(),elementsToInvoice.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+				null,elementsToInvoice.getQty(),elementsToInvoice.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 				elementsToInvoice.getSalePrice().multiply(elementsToInvoice.getQty()),null,false)  {
 
 			@Override

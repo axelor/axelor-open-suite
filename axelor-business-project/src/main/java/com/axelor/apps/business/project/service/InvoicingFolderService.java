@@ -61,6 +61,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 	protected int MAX_LEVEL_OF_PROJECT = 10;
 
+	protected int sequence = 0;
 
 	@Transactional
 	public Invoice generateInvoice(InvoicingFolder folder) throws AxelorException{
@@ -109,6 +110,8 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		invoiceLineList.addAll(this.createInvoiceLines(invoice, projectTaskList));
 
 		for (InvoiceLine invoiceLine : invoiceLineList) {
+			sequence += 10;
+			invoiceLine.setSequence(sequence);
 			invoiceLine.setSaleOrder(invoiceLine.getInvoice().getSaleOrder());
 		}
 
@@ -139,7 +142,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), projectTask.getPrice(),
-				null,projectTask.getQty(),projectTask.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+				null,projectTask.getQty(),projectTask.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 				projectTask.getPrice().multiply(projectTask.getQty()),null,false)  {
 
 			@Override

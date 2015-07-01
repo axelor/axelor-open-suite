@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -109,12 +108,12 @@ public class PurchaseOrderInvoiceServiceImpl extends PurchaseOrderRepository imp
 
 	@Override
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
-		
+
 		Product product = purchaseOrderLine.getProduct();
 
-		InvoiceLineGeneratorSupplyChain invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, purchaseOrderLine.getProductName(), 
+		InvoiceLineGeneratorSupplyChain invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, purchaseOrderLine.getProductName(),
 				purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(),
-				InvoiceLineGenerator.DEFAULT_SEQUENCE, false, null, purchaseOrderLine, null)  {
+				purchaseOrderLine.getSequence(), false, null, purchaseOrderLine, null)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 

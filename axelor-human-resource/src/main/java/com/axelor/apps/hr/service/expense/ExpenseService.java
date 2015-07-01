@@ -189,7 +189,7 @@ public class ExpenseService extends ExpenseRepository{
 		InvoiceLineGenerator invoiceLineGenerator = null;
 		if(!invoice.getCompany().getAccountConfig().getInvoiceInAti()){
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getUntaxedAmount(),
-					null,BigDecimal.ONE,product.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+					null,BigDecimal.ONE,product.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 					null, null, false)  {
 
 				@Override

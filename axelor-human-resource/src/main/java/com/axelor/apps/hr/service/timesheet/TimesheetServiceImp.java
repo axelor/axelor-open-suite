@@ -203,7 +203,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), product.getSalePrice(),
-				null,qtyConverted,product.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+				null,qtyConverted,product.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 				product.getSalePrice().multiply(qtyConverted),null,false)  {
 
 			@Override
