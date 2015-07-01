@@ -13,7 +13,8 @@
 	</grid>
 
 	<form name="elements-to-invoice-form" title="Element To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice" 
-	onNew="action-element-to-invoice-record-default">
+	onNew="action-element-to-invoice-record-default,action-elements-to-invoice-attrs-scale-and-precision"
+	onLoad="action-elements-to-invoice-attrs-scale-and-precision">
 		<panel>
 			<field name="user"/>
 			<field name="date"/>
@@ -35,5 +36,10 @@
     	<field name="date" expr="eval: __date__"/>
     	<field name="user" expr="eval: __user__"/>
     </action-record>	
+    
+    <action-attrs name="action-elements-to-invoice-attrs-scale-and-precision">
+		<attribute name="scale" for="costPrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="salePrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+	</action-attrs>
 	
 </object-views>
