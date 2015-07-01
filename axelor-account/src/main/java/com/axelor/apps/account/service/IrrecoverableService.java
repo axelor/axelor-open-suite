@@ -728,7 +728,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 			prorataRate = (invoice.getRejectMoveLine().getAmountRemaining()).divide(invoice.getInTaxTotal(), 6, RoundingMode.HALF_EVEN);
 		}
 		else  {	
-			prorataRate = invoice.getInTaxTotalRemaining().divide(invoice.getInTaxTotal(), 6, RoundingMode.HALF_EVEN);
+			prorataRate = invoice.getCompanyInTaxTotalRemaining().divide(invoice.getInTaxTotal(), 6, RoundingMode.HALF_EVEN);
 		}
 		
 		LOG.debug("Taux d'impayé pour la facture {} : {}", invoice.getInvoiceId(), prorataRate);
@@ -768,7 +768,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 			debitAmount = creditAmount;
 		}
 		else  {
-			creditAmount = invoice.getInTaxTotalRemaining();
+			creditAmount = invoice.getCompanyInTaxTotalRemaining();
 			debitAmount = creditAmount;
 		}
 		
@@ -776,14 +776,14 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		for(InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList())  {
 			amount = (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_EVEN);
 			debitMoveLine = moveLineService.createMoveLine(
-					move, payerPartner, taxAccountService.getAccount(invoiceLineTax.getTaxLine().getTax(), company), amount, true, false, date, seq, null);
+					move, payerPartner, taxAccountService.getAccount(invoiceLineTax.getTaxLine().getTax(), company), amount, true, date, seq, null);
 			move.getMoveLineList().add(debitMoveLine);
 			seq++;
 			debitAmount = debitAmount.subtract(amount);
 		}
 		
 		// Debit MoveLine 654 (irrecoverable account)
-		debitMoveLine = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), debitAmount, true, false, date, seq, null);
+		debitMoveLine = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), debitAmount, true, date, seq, null);
 		move.getMoveLineList().add(debitMoveLine);
 	
 		seq++;
@@ -797,7 +797,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		customerMoveLine.setIrrecoverableStatusSelect(MoveLineService.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 		
 		// Credit MoveLine Customer account (411, 416, ...)
-		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, customerMoveLine.getAccount(), creditAmount, false, false, date, seq, null);
+		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, customerMoveLine.getAccount(), creditAmount, false, date, seq, null);
 		move.getMoveLineList().add(creditMoveLine);
 		
 		Reconcile reconcile = reconcileService.createReconcile(customerMoveLine, creditMoveLine, creditAmount);
@@ -828,7 +828,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		int seq = 1;
 		
 		// Credit MoveLine Customer account (411, 416, ...)
-		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, moveLine.getAccount(), amount, false, false, date, seq, null);
+		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, moveLine.getAccount(), amount, false, date, seq, null);
 		move.getMoveLineList().add(creditMoveLine);
 		
 		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount);
@@ -841,13 +841,13 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		// Debit MoveLine 654. (irrecoverable account)
 		BigDecimal divid = taxRate.add(BigDecimal.ONE);
 		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), irrecoverableAmount, true, false, date, 2, null);
+		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), irrecoverableAmount, true, date, 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 
 		// Debit MoveLine 445 (Tax account)
 		Account taxAccount = taxAccountService.getAccount(tax, company);
 		BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
-		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, payerPartner, taxAccount, taxAmount, true, false, date, 3, null);
+		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, payerPartner, taxAccount, taxAmount, true, date, 3, null);
 		move.getMoveLineList().add(creditMoveLine2);
 		
 		return move;
@@ -1079,7 +1079,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		}
 		
 		for(Invoice invoice : paymentSchedule.getInvoiceSet())  {
-			if(invoice.getInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0)  {
+			if(invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 				this.passInIrrecoverable(invoice, managementObject);
 			}
 		}

@@ -304,21 +304,21 @@ public abstract class InvoiceGenerator  {
 		invoice.setInTaxTotal( BigDecimal.ZERO );
 
 		// Dans la devise de la facture
-		invoice.setInvoiceExTaxTotal(BigDecimal.ZERO);
-		invoice.setInvoiceTaxTotal(BigDecimal.ZERO);
-		invoice.setInvoiceInTaxTotal(BigDecimal.ZERO);
+		invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
+		invoice.setCompanyTaxTotal(BigDecimal.ZERO);
+		invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
 
 		for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 
 			// Dans la devise de la comptabilité du tiers
-			invoice.setExTaxTotal(invoice.getExTaxTotal().add( invoiceLineTax.getAccountingExTaxBase() ));
-			invoice.setTaxTotal(invoice.getTaxTotal().add( invoiceLineTax.getAccountingTaxTotal() ));
-			invoice.setInTaxTotal(invoice.getInTaxTotal().add( invoiceLineTax.getAccountingInTaxTotal() ));
+			invoice.setExTaxTotal(invoice.getExTaxTotal().add( invoiceLineTax.getExTaxBase() ));
+			invoice.setTaxTotal(invoice.getTaxTotal().add( invoiceLineTax.getTaxTotal() ));
+			invoice.setInTaxTotal(invoice.getInTaxTotal().add( invoiceLineTax.getInTaxTotal() ));
 
 			// Dans la devise de la facture
-			invoice.setInvoiceExTaxTotal(invoice.getInvoiceExTaxTotal().add( invoiceLineTax.getExTaxBase() ));
-			invoice.setInvoiceTaxTotal(invoice.getInvoiceTaxTotal().add( invoiceLineTax.getTaxTotal() ));
-			invoice.setInvoiceInTaxTotal(invoice.getInvoiceInTaxTotal().add( invoiceLineTax.getInTaxTotal() ));
+			invoice.setCompanyExTaxTotal(invoice.getCompanyExTaxTotal().add( invoiceLineTax.getCompanyExTaxBase() ));
+			invoice.setCompanyTaxTotal(invoice.getCompanyTaxTotal().add( invoiceLineTax.getCompanyTaxTotal() ));
+			invoice.setCompanyInTaxTotal(invoice.getCompanyInTaxTotal().add( invoiceLineTax.getCompanyInTaxTotal() ));
 
 		}
 

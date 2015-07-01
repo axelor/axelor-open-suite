@@ -113,12 +113,12 @@ public class InterbankPaymentOrderRejectImportService {
 			Move move = moveService.createMove(accountConfig.getRejectJournal(), company, null, partner, null);
 			
 			// Création d'une ligne au crédit
-			MoveLine debitMoveLine = moveLineService.createMoveLine(move , partner, accountConfig.getCustomerAccount(), amountReject, true, false, rejectImportService.createRejectDate(dateReject), 1, refReject);
+			MoveLine debitMoveLine = moveLineService.createMoveLine(move , partner, accountConfig.getCustomerAccount(), amountReject, true, rejectImportService.createRejectDate(dateReject), 1, refReject);
 			move.getMoveLineList().add(debitMoveLine);	
 			debitMoveLine.setInterbankCodeLine(causeReject);
 			
 			// Création d'une ligne au crédit
-			MoveLine creditMoveLine = moveLineService.createMoveLine(move , partner, bankAccount, amountReject, false, false, rejectImportService.createRejectDate(dateReject), 2, null);
+			MoveLine creditMoveLine = moveLineService.createMoveLine(move , partner, bankAccount, amountReject, false, rejectImportService.createRejectDate(dateReject), 2, null);
 			move.getMoveLineList().add(creditMoveLine);		
 			moveService.validateMove(move);
 			moveService.save(move);

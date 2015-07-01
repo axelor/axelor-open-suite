@@ -103,36 +103,29 @@ public class MoveLineService extends MoveLineRepository{
 	 * 
 	 * @return
 	 */
-	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, boolean isMinus, LocalDate date,
+	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date,
 			LocalDate dueDate, int counter, String descriptionOption){
 		
-		LOG.debug("Création d'une ligne d'écriture comptable (compte comptable : {}, montant : {}, debit ? : {}, moins ? : {}," +
-			" date d'échéance : {}, référence : {}",  new Object[]{account.getName(), amount, isDebit, isMinus, dueDate, counter});
+		LOG.debug("Création d'une ligne d'écriture comptable (compte comptable : {}, montant : {}, debit ? : {}, " +
+			" date d'échéance : {}, référence : {}",  new Object[]{account.getName(), amount, isDebit, dueDate, counter});
 		
 		if(partner != null)  {
 			account = fiscalPositionService.getAccount(partner.getFiscalPosition(), account);
 		}
-		
+	
 		BigDecimal debit = BigDecimal.ZERO;
 		BigDecimal credit = BigDecimal.ZERO;
 		
-		if (isMinus){
-			
-			if (isDebit)  {
-				debit = amount.negate();
-			}
-			else  {
-				credit = amount.negate();
-			}
+		if(amount.compareTo(BigDecimal.ZERO) == -1)  {
+			isDebit = !isDebit;
+			amount = amount.negate();
 		}
-		else {
-			
-			if (isDebit)  {
-				debit = amount;
-			}
-			else  {
-				credit = amount;
-			}
+		
+		if(isDebit)  {
+			debit = amount;
+		}
+		else  {
+			credit = amount;
 		}
 		
 		return new MoveLine(move, partner, account, date, dueDate, counter, debit, credit, this.determineDescriptionMoveLine(move.getJournal(), descriptionOption));
@@ -163,10 +156,9 @@ public class MoveLineService extends MoveLineRepository{
 	 * 
 	 * @return
 	 */
-	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, boolean isMinus,
-			LocalDate dueDate, int ref, String descriptionOption){
+	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate dueDate, int ref, String descriptionOption){
 				
-		return this.createMoveLine(move, partner, account, amount, isDebit, isMinus, toDay, dueDate, ref, descriptionOption);
+		return this.createMoveLine(move, partner, account, amount, isDebit, toDay, dueDate, ref, descriptionOption);
 	}
 
 	
@@ -178,7 +170,7 @@ public class MoveLineService extends MoveLineRepository{
 	 * @param consolidate
 	 * @return
 	 */
-	public List<MoveLine> createMoveLines(Invoice invoice, Move move, Company company, Partner partner, Account account, boolean consolidate, boolean isPurchase, boolean isDebitCustomer, boolean isMinus) throws AxelorException{
+	public List<MoveLine> createMoveLines(Invoice invoice, Move move, Company company, Partner partner, Account account, boolean consolidate, boolean isPurchase, boolean isDebitCustomer) throws AxelorException{
 
 		LOG.debug("Création des lignes d'écriture comptable de la facture/l'avoir {}", invoice.getInvoiceId());
 		
@@ -199,7 +191,7 @@ public class MoveLineService extends MoveLineRepository{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_2), invoice.getInvoiceId()), IException.MISSING_FIELD);
 		}
 		
-		moveLines.add( this.createMoveLine(move, partner, account2, invoice.getInTaxTotal(), isDebitCustomer, isMinus, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId()));
+		moveLines.add( this.createMoveLine(move, partner, account2, invoice.getCompanyInTaxTotal(), isDebitCustomer, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId()));
 		
 		// Traitement des lignes de facture
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()){
@@ -230,12 +222,12 @@ public class MoveLineService extends MoveLineRepository{
 				analyticAccounts.add(analyticAccountManagement.getAnalyticAccount());
 			}
 			
-			exTaxTotal = invoiceLine.getAccountingExTaxTotal();
+			exTaxTotal = invoiceLine.getCompanyExTaxTotal();
 			
 			LOG.debug("Traitement de la ligne de facture : compte comptable = {}, montant = {}", new Object[]{account2.getName(), exTaxTotal});
 			
 			if(exTaxTotal.compareTo(BigDecimal.ZERO) != 0)  {
-				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, isMinus, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
+				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
 				moveLine.setAnalyticAccountSet(analyticAccounts);
 				moveLine.setTaxLine(invoiceLine.getTaxLine());
 				moveLines.add(moveLine);
@@ -250,7 +242,7 @@ public class MoveLineService extends MoveLineRepository{
 			
 			account2 = taxAccountService.getAccount(tax, company);
 			
-			exTaxTotal = invoiceLineTax.getAccountingTaxTotal();
+			exTaxTotal = invoiceLineTax.getCompanyTaxTotal();
 			
 			if (account2 == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_6), 
@@ -259,7 +251,7 @@ public class MoveLineService extends MoveLineRepository{
 			
 			if(exTaxTotal.compareTo(BigDecimal.ZERO) != 0)  {
 			
-				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, isMinus, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
+				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
 				moveLine.setTaxLine(invoiceLineTax.getTaxLine()); 
 			
 				moveLines.add(moveLine);

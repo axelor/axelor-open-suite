@@ -180,14 +180,14 @@ public class PaymentVoucherConfirmService extends PaymentVoucherRepository {
 			// in the else case we create a classical balance on the bank account of the payment mode
 			if (paymentVoucher.getMoveLine() != null){
 				moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(),paymentVoucher.getMoveLine().getAccount(), 
-						paymentVoucher.getPaidAmount(), isDebitToPay, false, paymentDate, moveLineNo, null);
+						paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo, null);
 				
 				Reconcile reconcile = reconcileService.createReconcile(moveLine,paymentVoucher.getMoveLine(),moveLine.getDebit(), !isDebitToPay);
 				reconcileService.confirmReconcile(reconcile, updateCustomerAccount);
 			}
 			else{
 				
-				moveLine = moveLineService.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, false, paymentDate, moveLineNo, null);
+				moveLine = moveLineService.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo, null);
 			}
 			move.getMoveLineList().add(moveLine);
 			// Check if the paid amount is > paid lines total
@@ -206,7 +206,7 @@ public class PaymentVoucherConfirmService extends PaymentVoucherRepository {
 				
 				Account partnerAccount = Beans.get(AccountCustomerService.class).getPartnerAccount(payerPartner, company, paymentVoucherToolService.isPurchase(paymentVoucher));
 				
-				moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(), partnerAccount, remainingPaidAmount,!isDebitToPay, false, paymentDate, moveLineNo++, null);
+				moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(), partnerAccount, remainingPaidAmount,!isDebitToPay, paymentDate, moveLineNo++, null);
 				move.getMoveLineList().add(moveLine);
 				
 				if(isDebitToPay)  {
@@ -289,7 +289,6 @@ public class PaymentVoucherConfirmService extends PaymentVoucherRepository {
 				moveLineToPay.getAccount(),
 				amountToPay,
 				!isDebitToPay,
-				false,
 				paymentDate,
 				moveLineSeq,
 				invoiceName);

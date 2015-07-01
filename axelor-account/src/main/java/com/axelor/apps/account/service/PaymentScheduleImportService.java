@@ -436,7 +436,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		
 		// Création d'une seule contrepartie
 		LOG.debug("Création d'une seule contrepartie");
-		MoveLine moveLine = mls.createMoveLine(move, null, paymentModeAccount, this.getTotalDebit(move), false, false, rejectDate, ref, null);
+		MoveLine moveLine = mls.createMoveLine(move, null, paymentModeAccount, this.getTotalDebit(move), false, rejectDate, ref, null);
 		move.getMoveLineList().add(moveLine);		
 		
 		mls.save(moveLine);
@@ -485,7 +485,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 			// Création d'une ligne d'écriture par rejet
 			LOG.debug("Création d'une ligne d'écriture par rejet");
 			MoveLine moveLine = mls.createMoveLine(move, paymentSchedule.getPartner(), customerAccount, paymentScheduleLine.getAmountRejected(),  
-					true, false, paymentScheduleLine.getRejectDate(), paymentScheduleLine.getRejectDate(), ref, paymentScheduleLine.getName());
+					true, paymentScheduleLine.getRejectDate(), paymentScheduleLine.getRejectDate(), ref, paymentScheduleLine.getName());
 			moveLine.setPaymentScheduleLine(paymentScheduleLine);
 			move.getMoveLineList().add(moveLine);
 			mls.save(moveLine);
@@ -571,7 +571,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 */
 	public MoveLine createRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move moveGenerated, int ref)  {
 		
-		MoveLine rejectMoveLine = mls.createMoveLine(moveGenerated, invoice.getPartner(), customerAccount, invoice.getAmountRejected(), true, false, 
+		MoveLine rejectMoveLine = mls.createMoveLine(moveGenerated, invoice.getPartner(), customerAccount, invoice.getAmountRejected(), true, 
 				invoice.getRejectDate(), invoice.getRejectDate(), ref, invoice.getInvoiceId());
 		
 		moveGenerated.getMoveLineList().add(rejectMoveLine);

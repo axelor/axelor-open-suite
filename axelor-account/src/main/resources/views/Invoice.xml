@@ -12,17 +12,18 @@
 			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
     	</toolbar>   
     	<hilite color="info" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; inTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; inTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; inTaxTotalRemaining == 0"/>
+	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	    <hilite color="success" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining == 0"/>
         <field name="invoiceId"/>
         <field name="operationTypeSelect" />
         <field name="partner"/>
         <field name="paymentMode"/>
         <field name="invoiceDate"/>
         <field name="dueDate"/>
+        <field name="exTaxTotal"/>
         <field name="inTaxTotal"/>
-        <field name="inTaxTotalRemaining"/>
+        <field name="amountPaid"/>
         <field name="statusSelect"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -153,8 +154,8 @@
 		           &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
 		           &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
 		           &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
-		           &lt;dt x-translate&gt;Remaining to pay&lt;/dt&gt;
-		           &lt;dd&gt;{{record.inTaxTotalRemaining}}&lt;/dd&gt;
+		           &lt;dt x-translate&gt;Amount paid&lt;/dt&gt;
+		           &lt;dd&gt;{{record.amountPaid}}&lt;/dd&gt;
 		         &lt;/dl&gt;
 		       </viewer>
 		     </field>

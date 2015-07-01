@@ -284,7 +284,7 @@ public class PaymentScheduleService extends PaymentScheduleRepository {
 		LOG.debug("In getPaymentSchedulerMoveLineToPay ....");
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 		for (Invoice invoice : paymentSchedule.getInvoiceSet())  {
-			if (invoice.getInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0 && invoice.getMove() != null && invoice.getMove().getMoveLineList() != null)  {
+			if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0 && invoice.getMove() != null && invoice.getMove().getMoveLineList() != null)  {
 				for (MoveLine moveLine : invoice.getMove().getMoveLineList()){
 					if (moveLine.getAccount().getReconcileOk() && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0 && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0){
 						moveLines.add(moveLine);

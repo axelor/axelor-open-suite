@@ -168,8 +168,8 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 		if(move.getInvoice() != null && !move.getInvoice().getCurrency().equals(move.getCurrency()))  {
 			LOG.debug("La facture a une devise différente du tiers (de l'écriture)");
 			paymentInvoiceToPay.setCurrency(move.getInvoice().getCurrency());
-			paymentInvoiceToPay.setTotalAmount(move.getInvoice().getInvoiceInTaxTotal());
-			paymentInvoiceToPay.setRemainingAmount(move.getInvoice().getInvoiceInTaxTotal().subtract(move.getInvoice().getInvoiceAmountPaid()));
+			paymentInvoiceToPay.setTotalAmount(move.getInvoice().getInTaxTotal());
+			paymentInvoiceToPay.setRemainingAmount(move.getInvoice().getInTaxTotal().subtract(move.getInvoice().getAmountPaid()));
 			
 			// on convertit le montant imputé de la devise de la saisie paiement vers la devise de la facture
 			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getInvoice().getCurrency(), paymentInvoiceToPay.getRemainingAmount(), paymentVoucher.getPaymentDateTime().toLocalDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
@@ -487,7 +487,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 		// Si la devise de paiement est la même que le devise de la facture, 
 		// Et que le montant déjà payé en devise sur la facture, plus le montant réglé par la nouvelle saisie paiement en devise, est égale au montant total en devise de la facture
 		// Alors on solde la facture
-		if(paymentVoucherCurrency.equals(invoiceCurrency) && invoice.getInvoiceAmountPaid().add(amountToPay).compareTo(invoice.getInvoiceInTaxTotal()) == 0)  {
+		if(paymentVoucherCurrency.equals(invoiceCurrency) && invoice.getAmountPaid().add(amountToPay).compareTo(invoice.getInTaxTotal()) == 0)  {
 			//SOLDER
 			return true;
 		}

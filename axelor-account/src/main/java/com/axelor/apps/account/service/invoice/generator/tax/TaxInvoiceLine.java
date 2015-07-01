@@ -76,8 +76,8 @@ public class TaxInvoiceLine extends TaxGenerator {
 					// Dans la devise de la facture
 					invoiceLineTax.setExTaxBase(invoiceLineTax.getExTaxBase().add(invoiceLine.getExTaxTotal()));
 
-					// Dans la devise de la comptabilité du tiers
-					invoiceLineTax.setAccountingExTaxBase(invoiceLineTax.getAccountingExTaxBase().add(invoiceLine.getAccountingExTaxTotal()));
+					// Dans la devise de la société
+					invoiceLineTax.setCompanyExTaxBase(invoiceLineTax.getCompanyExTaxBase().add(invoiceLine.getCompanyExTaxTotal()));
 
 				}
 				else {
@@ -89,7 +89,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 					invoiceLineTax.setExTaxBase(invoiceLine.getExTaxTotal());
 
 					// Dans la devise de la comptabilité du tiers
-					invoiceLineTax.setAccountingExTaxBase(invoiceLine.getAccountingExTaxTotal());
+					invoiceLineTax.setCompanyExTaxBase(invoiceLine.getCompanyExTaxTotal());
 
 					invoiceLineTax.setTaxLine(taxLine);
 					map.put(taxLine, invoiceLineTax);
@@ -106,11 +106,11 @@ public class TaxInvoiceLine extends TaxGenerator {
 			invoiceLineTax.setTaxTotal(taxTotal);
 			invoiceLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
 
-			// Dans la devise de la comptabilité du tiers
-			BigDecimal accountingExTaxBase = invoiceLineTax.getAccountingExTaxBase();
-			BigDecimal accountingTaxTotal = computeAmount(accountingExTaxBase, invoiceLineTax.getTaxLine().getValue());
-			invoiceLineTax.setAccountingTaxTotal(accountingTaxTotal);
-			invoiceLineTax.setAccountingInTaxTotal(accountingExTaxBase.add(accountingTaxTotal));
+			// Dans la devise de la société
+			BigDecimal companyExTaxBase = invoiceLineTax.getCompanyExTaxBase();
+			BigDecimal companyTaxTotal = computeAmount(companyExTaxBase, invoiceLineTax.getTaxLine().getValue());
+			invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
+			invoiceLineTax.setCompanyInTaxTotal(companyExTaxBase.add(companyTaxTotal));
 
 			invoiceLineTaxList.add(invoiceLineTax);
 

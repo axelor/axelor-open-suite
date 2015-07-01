@@ -263,18 +263,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setExTaxTotal(exTaxTotal);
 		invoiceLine.setInTaxTotal(inTaxTotal);
 
-
-		Currency partnerCurrency = partner.getCurrency();
-
-		if(partnerCurrency == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_1),
-					partner.getFullName(), partner.getPartnerSeq()), IException.CONFIGURATION_ERROR);
-		}
-
-		invoiceLine.setAccountingExTaxTotal(
-				currencyService.getAmountCurrencyConverted(
-						invoice.getCurrency(), partnerCurrency, exTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));  
-
 		Company company = invoice.getCompany();
 
 		Currency companyCurrency = company.getCurrency();

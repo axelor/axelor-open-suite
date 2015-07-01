@@ -20,7 +20,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		copy.setValidatedByUser(null);
 		copy.setMove(null);
 		copy.setOriginalInvoice(null);
-		copy.setInTaxTotalRemaining(BigDecimal.ZERO);
+		copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
 		copy.setIrrecoverableStatusSelect(IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 		copy.setAmountRejected(BigDecimal.ZERO);
 		copy.clearBatchSet();

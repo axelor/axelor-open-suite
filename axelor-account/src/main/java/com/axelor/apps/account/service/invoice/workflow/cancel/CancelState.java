@@ -62,7 +62,7 @@ public class CancelState extends WorkflowInvoice {
 
 		if(move == null)   {  return;  }
 
-		if(invoice.getInTaxTotalRemaining().compareTo(invoice.getInTaxTotal()) != 0)  {
+		if(invoice.getCompanyInTaxTotalRemaining().compareTo(invoice.getCompanyInTaxTotal()) != 0)  {
 
 			throw new AxelorException(I18n.get(IExceptionMessage.CANCEL_STATE_1), IException.CONFIGURATION_ERROR);
 		}
@@ -80,7 +80,7 @@ public class CancelState extends WorkflowInvoice {
 		try{
 
 			invoice.setMove(null);
-			invoice.setInTaxTotalRemaining(BigDecimal.ZERO);
+			invoice.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
 
 			if(invoice.getCompany().getAccountConfig().getAllowRemovalValidatedMove())  {
 				Beans.get(MoveRepository.class).remove(move);

@@ -131,7 +131,7 @@ public class PaymentScheduleExportService{
 	public Move createOppositeExportMensuMoveLine(Move move, Account bankAccount, int ref) throws AxelorException  {
 		LOG.debug("Montant de la contrepartie : {}", totalAmount(move));
 		
-		MoveLine moveLine = moveLineServices.createMoveLine(move, null, bankAccount, this.totalAmount(move), true, false, today, ref, null);
+		MoveLine moveLine = moveLineServices.createMoveLine(move, null, bankAccount, this.totalAmount(move), true, today, ref, null);
 		
 		move.getMoveLineList().add(moveLine);
 		moveLineServices.save(moveLine);
@@ -264,7 +264,7 @@ public class PaymentScheduleExportService{
 		
 		this.setDebitNumber(paymentScheduleLineList, paymentScheduleLine, company);
 		
-		MoveLine moveLine = moveLineServices.save(moveLineServices.createMoveLine(move , partner, account, amount, false, false, today, 1, paymentScheduleLine.getName()));
+		MoveLine moveLine = moveLineServices.save(moveLineServices.createMoveLine(move , partner, account, amount, false, today, 1, paymentScheduleLine.getName()));
 		
 		move.addMoveLineListItem(moveLine);
 		
@@ -282,7 +282,7 @@ public class PaymentScheduleExportService{
 		}
 		
 		move.addMoveLineListItem(
-				moveLineServices.createMoveLine(move, partner,	paymentModeService.getCompanyAccount(paymentMode, company), amount, true, false, today, 2, null));
+				moveLineServices.createMoveLine(move, partner,	paymentModeService.getCompanyAccount(paymentMode, company), amount, true, today, 2, null));
 		
 		this.validateMove(move);
 		
@@ -720,7 +720,7 @@ public class PaymentScheduleExportService{
 			invoiceName = moveLine.getMove().getInvoice().getInvoiceId();
 		}
 		MoveLine moveLineGenerated2 = moveLineServices.createMoveLine(paymentMove, null, paymentModeAccount, amountExported,
-				true, false, today, 2, invoiceName);
+				true, today, 2, invoiceName);
 		
 		paymentMove.getMoveLineList().add(moveLineGenerated2);
 		moveLineServices.save(moveLineGenerated2);
@@ -746,7 +746,7 @@ public class PaymentScheduleExportService{
 			invoiceName = moveLine.getMove().getInvoice().getInvoiceId();
 		}
 		MoveLine moveLineGenerated = moveLineServices.createMoveLine(paymentMove, moveLine.getPartner(), moveLine.getAccount(),
-				amountExported, false, false, today, ref, invoiceName);
+				amountExported, false, today, ref, invoiceName);
 	
 		paymentMove.getMoveLineList().add(moveLineGenerated);
 

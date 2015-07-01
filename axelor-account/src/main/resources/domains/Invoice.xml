@@ -85,17 +85,17 @@
     <!-- Totals & Status -->
     
 	<!--     Total based on the partner currency in the company accounts -->
-	<!--     TODO : To be renamed with the prefix 'accounting' -->
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="true"/>
-    <decimal name="inTaxTotalRemaining" title="Remaining to pay" readonly="true" />
+    <decimal name="amountPaid" title="Amount paid" readonly="true" />
     
-	<!--     Totals based on the invoice currency -->
-    <decimal name="invoiceExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
-    <decimal name="invoiceTaxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
-    <decimal name="invoiceInTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
-    <decimal name="invoiceAmountPaid" title="Amount paid" readonly="true" />
+    
+	<!--     Totals based on the company currency -->
+    <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
+    <decimal name="companyTaxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
+    <decimal name="companyInTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+    <decimal name="companyInTaxTotalRemaining" title="Remaining to pay" readonly="true" />
     
     <integer name="statusSelect" title="Status" selection="iaccount.invoice.status.select" readonly="true" default="1"/>
     

@@ -94,7 +94,7 @@ public class ExpenseService extends ExpenseRepository{
 
 		int moveLineId = 1;
 		int expenseLineId = 1;
-		moveLines.add( moveLineService.createMoveLine(move, expense.getUser().getPartner(), accountConfigService.getExpenseEmployeeAccount(accountConfig), expense.getInTaxTotal(), false, false, moveDate, moveDate, moveLineId++, ""));
+		moveLines.add( moveLineService.createMoveLine(move, expense.getUser().getPartner(), accountConfigService.getExpenseEmployeeAccount(accountConfig), expense.getInTaxTotal(), false, moveDate, moveDate, moveLineId++, ""));
 
 		for(ExpenseLine expenseLine : expense.getExpenseLineList()){
 			analyticAccounts.clear();
@@ -116,7 +116,7 @@ public class ExpenseService extends ExpenseRepository{
 				analyticAccounts.add(analyticAccountManagement.getAnalyticAccount());
 			}
 			exTaxTotal = expenseLine.getUntaxedAmount();
-			MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, exTaxTotal, true, false, moveDate, moveDate, moveLineId++, "");
+			MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, exTaxTotal, true, moveDate, moveDate, moveLineId++, "");
 			moveLine.setAnalyticAccountSet(analyticAccounts);
 
 			moveLines.add(moveLine);
@@ -132,7 +132,7 @@ public class ExpenseService extends ExpenseRepository{
 			taxTotal = taxTotal.add(exTaxTotal);
 		}
 
-		MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, taxTotal, true, false, moveDate, moveDate, moveLineId++, "");
+		MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, taxTotal, true, moveDate, moveDate, moveLineId++, "");
 		moveLines.add(moveLine);
 
 		move.getMoveLineList().addAll(moveLines);

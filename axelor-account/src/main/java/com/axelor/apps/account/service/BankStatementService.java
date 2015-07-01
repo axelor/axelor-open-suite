@@ -118,12 +118,12 @@ public class BankStatementService extends BankStatementRepository {
 		boolean isNegate = amount.compareTo(BigDecimal.ZERO) < 0;
 		
 		MoveLine partnerMoveLine = moveLineService.createMoveLine(move, partner, bankStatementLine.getAccount(), amount, 
-				isNegate, isNegate, effectDate, effectDate, 1, name);
+				isNegate, effectDate, effectDate, 1, name);
 		move.addMoveLineListItem(partnerMoveLine);
 		
 		move.addMoveLineListItem(
 				moveLineService.createMoveLine(move, partner, bankStatement.getCashAccount(), amount, 
-						!isNegate, isNegate, effectDate, effectDate, 1, name));
+						!isNegate, effectDate, effectDate, 1, name));
 
 		moveService.save(move);
 		

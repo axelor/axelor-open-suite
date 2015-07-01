@@ -141,7 +141,7 @@ public class DoubtfulCustomerService {
 					
 					BigDecimal amountRemaining = moveLine.getAmountRemaining();
 					// Ecriture au crédit sur le 411
-					MoveLine creditMoveLine = mls.createMoveLine(newMove , moveLine.getPartner(), moveLine.getAccount(), amountRemaining, false, false, today, ref, null);
+					MoveLine creditMoveLine = mls.createMoveLine(newMove , moveLine.getPartner(), moveLine.getAccount(), amountRemaining, false, today, ref, null);
 					newMove.getMoveLineList().add(creditMoveLine);
 					
 					Reconcile reconcile = rs.createReconcile(moveLine, creditMoveLine, amountRemaining);
@@ -154,7 +154,7 @@ public class DoubtfulCustomerService {
 		}
 		
 		// Ecriture au débit sur le 416 (client douteux)
-		MoveLine debitMoveLine = mls.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, totalAmountRemaining, true, false, today, ref, null);
+		MoveLine debitMoveLine = mls.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, totalAmountRemaining, true, today, ref, null);
 		newMove.getMoveLineList().add(debitMoveLine);
 		
 		debitMoveLine.setPassageReason(debtPassReason);
@@ -206,7 +206,7 @@ public class DoubtfulCustomerService {
 		BigDecimal amountRemaining = moveLine.getAmountRemaining();
 		
 		// Ecriture au crédit sur le 411
-		MoveLine creditMoveLine = mls.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, false, false, today, 1, null);
+		MoveLine creditMoveLine = mls.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, false, today, 1, null);
 		newMove.getMoveLineList().add(creditMoveLine);
 		
 		Reconcile reconcile = rs.createReconcile(moveLine, creditMoveLine, amountRemaining);
@@ -214,7 +214,7 @@ public class DoubtfulCustomerService {
 		rs.confirmReconcile(reconcile, false);
 		
 		// Ecriture au débit sur le 416 (client douteux)
-		MoveLine debitMoveLine = mls.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, false, today, 2, null);
+		MoveLine debitMoveLine = mls.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, today, 2, null);
 		newMove.getMoveLineList().add(debitMoveLine);
 		
 		debitMoveLine.setInvoiceReject(moveLine.getInvoiceReject());
@@ -277,7 +277,7 @@ public class DoubtfulCustomerService {
 			invoice.setPartnerAccount(doubtfulCustomerAccount);
 			invoice.setDoubtfulCustomerOk(true);
 			// Recalcule du restant à payer de la facture
-			invoice.setInTaxTotalRemaining(ms.getInTaxTotalRemaining(invoice));
+			invoice.setCompanyInTaxTotalRemaining(ms.getInTaxTotalRemaining(invoice));
 		}
 		return invoice;
 	}

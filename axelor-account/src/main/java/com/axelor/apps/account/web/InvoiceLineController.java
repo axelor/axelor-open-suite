@@ -59,7 +59,6 @@ public class InvoiceLineController {
 
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
-		BigDecimal accountingExTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyExTaxTotal = BigDecimal.ZERO;
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
@@ -85,13 +84,11 @@ public class InvoiceLineController {
 
 				if(invoice != null) {
 
-					accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(exTaxTotal, invoice);
 					companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
 				}
 			}
 			response.setValue("exTaxTotal", exTaxTotal);
 			response.setValue("inTaxTotal", inTaxTotal);
-			response.setValue("accountingExTaxTotal", accountingExTaxTotal);
 			response.setValue("companyExTaxTotal", companyExTaxTotal);
 			response.setValue("priceDiscounted", priceDiscounted);
 			
@@ -100,7 +97,7 @@ public class InvoiceLineController {
 			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
 
 				inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
-				exTaxTotal = inTaxTotal.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
+				exTaxTotal = inTaxTotal.divide(invoiceLine.getTaxLine().getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine,invoice);
 			}
 
@@ -108,14 +105,12 @@ public class InvoiceLineController {
 
 				if(invoice != null) {
 					
-					accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(inTaxTotal, invoice);
 					companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
 				}
 			}
 
 			response.setValue("exTaxTotal", exTaxTotal);
 			response.setValue("inTaxTotal", inTaxTotal);
-			response.setValue("accountingExTaxTotal", accountingExTaxTotal);
 			response.setValue("companyInTaxTotal", companyInTaxTotal);
 			response.setValue("priceDiscounted", priceDiscounted);
 			

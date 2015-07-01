@@ -148,18 +148,18 @@ public class AccountClearanceService extends AccountClearanceRepository {
 
 		// Debit MoveLine 411
 		BigDecimal amount = moveLine.getAmountRemaining();
-		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), amount, true, false, todayTime.toLocalDate(), 1, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), amount, true, todayTime.toLocalDate(), 1, null);
 		move.getMoveLineList().add(debitMoveLine);
 		
 		// Credit MoveLine 77. (profit account)
 		BigDecimal divid = taxRate.add(BigDecimal.ONE);
 		BigDecimal profitAmount = amount.divide(divid, IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, partner, profitAccount, profitAmount, false, false, todayTime.toLocalDate(), 2, null);
+		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, partner, profitAccount, profitAmount, false, todayTime.toLocalDate(), 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 
 		// Credit MoveLine 445 (Tax account)
 		BigDecimal taxAmount = amount.subtract(profitAmount);
-		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, partner, taxAccount, taxAmount, false, false, todayTime.toLocalDate(), 3, null);
+		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, partner, taxAccount, taxAmount, false, todayTime.toLocalDate(), 3, null);
 		move.getMoveLineList().add(creditMoveLine2);
 		
 		Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount);

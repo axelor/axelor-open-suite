@@ -285,10 +285,10 @@ public class ReconcileService extends ReconcileRepository {
 		
 		// Update amount remaining on invoice or refund
 		if(debitInvoice != null)  {
-			debitInvoice.setInTaxTotalRemaining(  moveService.getInTaxTotalRemaining(debitInvoice)  );
+			debitInvoice.setCompanyInTaxTotalRemaining(  moveService.getInTaxTotalRemaining(debitInvoice)  );
 		}
 		if(creditInvoice != null)  {
-			creditInvoice.setInTaxTotalRemaining(  moveService.getInTaxTotalRemaining(creditInvoice)  );
+			creditInvoice.setCompanyInTaxTotalRemaining(  moveService.getInTaxTotalRemaining(creditInvoice)  );
 		}
 		
 	}
@@ -373,11 +373,11 @@ public class ReconcileService extends ReconcileRepository {
 				Move newMove = moveService.createMove(miscOperationJournal, company, null, partner, null);
 				
 				// Création de la ligne au crédit
-				MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, account, debitAmountRemaining, false, false, today, 1, null);
+				MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, account, debitAmountRemaining, false, today, 1, null);
 				
 				// Création de la ligne au debit
 				MoveLine newDebitMoveLine = moveLineService.createMoveLine(
-						newMove, partner, accountConfigService.getCashPositionVariationAccount(accountConfig), debitAmountRemaining, true, false, today, 2, null);
+						newMove, partner, accountConfigService.getCashPositionVariationAccount(accountConfig), debitAmountRemaining, true, today, 2, null);
 				
 				newMove.getMoveLineList().add(newCreditMoveLine);
 				newMove.getMoveLineList().add(newDebitMoveLine);
@@ -424,10 +424,10 @@ public class ReconcileService extends ReconcileRepository {
 					
 					// Création de la ligne au crédit
 					MoveLine newCreditMoveLine = moveLineService.createMoveLine(
-							newMove, partner, accountConfigService.getCashPositionVariationAccount(accountConfig), creditAmountRemaining, false, false, today, 2, null);
+							newMove, partner, accountConfigService.getCashPositionVariationAccount(accountConfig), creditAmountRemaining, false, today, 2, null);
 					
 					// Création de la ligne au débit
-					MoveLine newDebitMoveLine = moveLineService.createMoveLine(newMove, partner, account, creditAmountRemaining, true, false, today, 1, null);
+					MoveLine newDebitMoveLine = moveLineService.createMoveLine(newMove, partner, account, creditAmountRemaining, true, today, 1, null);
 					
 					newMove.getMoveLineList().add(newCreditMoveLine);
 					newMove.getMoveLineList().add(newDebitMoveLine);

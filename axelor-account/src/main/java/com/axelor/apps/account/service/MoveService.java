@@ -214,16 +214,14 @@ public class MoveService extends MoveRepository {
 				boolean isDebitCustomer = this.isDebitCustomer(invoice);
 				
 				boolean consolidate = this.toDoConsolidate();
-				
-				boolean isMinus = this.isMinus(invoice);
-				
-				move.getMoveLineList().addAll(moveLineService.createMoveLines(invoice, move, company, partner, account, consolidate, isPurchase, isDebitCustomer, isMinus));
+								
+				move.getMoveLineList().addAll(moveLineService.createMoveLines(invoice, move, company, partner, account, consolidate, isPurchase, isDebitCustomer));
 				
 				save(move);
 
 				invoice.setMove(move);
 				
-				invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice));
+				invoice.setCompanyInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice));
 				this.validateMove(move);
 				
 			}
@@ -499,7 +497,7 @@ public class MoveService extends MoveRepository {
 				this.createExcessMove(invoice, company, partner, account, remainingPaidAmount, invoiceCustomerMoveLine);
 			}
 			
-			invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice));
+			invoice.setCompanyInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice));
 		}
 	
 		return move;
@@ -567,7 +565,7 @@ public class MoveService extends MoveRepository {
 					BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit()); 
 					
 					// Création de la ligne au crédit
-					MoveLine creditMoveLine =  moveLineService.createMoveLine(move , partner, account , amount, false, false, toDay, 1, null);
+					MoveLine creditMoveLine =  moveLineService.createMoveLine(move , partner, account , amount, false, toDay, 1, null);
 					move.getMoveLineList().add(creditMoveLine);
 					
 					// Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de l'eau
@@ -582,7 +580,7 @@ public class MoveService extends MoveRepository {
 				}
 			}
 
-			invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice));
+			invoice.setCompanyInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice));
 		}
 		return move;
 	}
@@ -656,7 +654,7 @@ public class MoveService extends MoveRepository {
 			BigDecimal amount = totalDebitAmount.min(invoiceCustomerMoveLine.getCredit()); 
 			
 			// Création de la ligne au débit
-			MoveLine debitMoveLine =  moveLineService.createMoveLine(oDmove , partner, account , amount, true, false, toDay, 1, null);
+			MoveLine debitMoveLine =  moveLineService.createMoveLine(oDmove , partner, account , amount, true, toDay, 1, null);
 			oDmove.getMoveLineList().add(debitMoveLine);
 			
 			// Emploie des dûs sur les lignes de credit qui seront créées au fil de l'eau
@@ -697,7 +695,6 @@ public class MoveService extends MoveRepository {
 				account,
 				amount,
 				true,
-				false,
 				this.toDay,
 				1,
 				null);
@@ -707,7 +704,6 @@ public class MoveService extends MoveRepository {
 				partner,
 				account,
 				amount,
-				false,
 				false,
 				this.toDay,
 				2,
@@ -965,7 +961,6 @@ public class MoveService extends MoveRepository {
 																line.getAccount(), 
 																amount, 
 																isDebit, 
-																false, 
 																null, 
 																0, 
 																null); 
