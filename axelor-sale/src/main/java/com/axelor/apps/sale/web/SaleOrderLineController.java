@@ -116,8 +116,9 @@ public class SaleOrderLineController {
 				response.setValue("companyInTaxTotal", companyInTaxTotal);
 				response.setValue("companyExTaxTotal", companyExTaxTotal);
 				response.setValue("priceDiscounted", priceDiscounted);
-				
+
 			}
+			response.setAttr("priceDiscounted", "hidden", priceDiscounted.equals(saleOrderLine.getPrice()));
 		}
 		catch(Exception e) {
 			response.setFlash(e.getMessage());
@@ -155,11 +156,11 @@ public class SaleOrderLineController {
 					{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
-						
+
 					}
 					else{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-	
+
 						response.setValue("discountAmount", discounts.get("discountAmount"));
 						response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 						if(discounts.get("price") != null)  {
@@ -217,17 +218,17 @@ public class SaleOrderLineController {
 					if(priceListLine!=null){
 						discountTypeSelect = priceListLine.getTypeSelect();
 					}
-					
+
 					if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 					{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
-						
+
 					}
 					else{
-	
+
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-	
+
 						response.setValue("discountAmount", discounts.get("discountAmount"));
 						response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 						if(discounts.get("price") != null)  {

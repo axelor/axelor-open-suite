@@ -64,8 +64,8 @@ public class InvoiceLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = BigDecimal.ZERO;
-		
-		
+
+
 		if(invoiceLine.getTaxLine()==null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_LINE_TAX_LINE)), IException.CONFIGURATION_ERROR);
 		}
@@ -94,7 +94,7 @@ public class InvoiceLineController {
 			response.setValue("accountingExTaxTotal", accountingExTaxTotal);
 			response.setValue("companyExTaxTotal", companyExTaxTotal);
 			response.setValue("priceDiscounted", priceDiscounted);
-			
+
 		}
 		else{
 			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
@@ -107,7 +107,7 @@ public class InvoiceLineController {
 			if(inTaxTotal != null) {
 
 				if(invoice != null) {
-					
+
 					accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(inTaxTotal, invoice);
 					companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
 				}
@@ -118,9 +118,9 @@ public class InvoiceLineController {
 			response.setValue("accountingExTaxTotal", accountingExTaxTotal);
 			response.setValue("companyInTaxTotal", companyInTaxTotal);
 			response.setValue("priceDiscounted", priceDiscounted);
-			
-		}
 
+		}
+		response.setAttr("priceDiscounted", "hidden", priceDiscounted.equals(invoiceLine.getPrice()));
 	}
 
 	public void getProductInformation(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -158,7 +158,7 @@ public class InvoiceLineController {
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 						discountAmount = (BigDecimal) discounts.get("discountAmount");
 						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount);
-						
+
 					}
 					else{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
@@ -169,7 +169,7 @@ public class InvoiceLineController {
 							price = (BigDecimal) discounts.get("price");
 						}
 					}
-					
+
 				}
 
 				if (invoice.getOperationTypeSelect()<InvoiceRepository.OPERATION_TYPE_CLIENT_SALE && discountAmount.equals(BigDecimal.ZERO)){
@@ -237,19 +237,19 @@ public class InvoiceLineController {
 				PriceList priceList = invoice.getPriceList();
 				int discountTypeSelect = 0;
 				BigDecimal discountAmount = BigDecimal.ZERO;
-				
+
 				if(priceList != null)  {
 					PriceListLine priceListLine = invoiceLineService.getPriceListLine(invoiceLine, priceList);
 					if(priceListLine!=null){
 						discountTypeSelect = priceListLine.getTypeSelect();
 					}
-					
+
 					if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 					{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 						discountAmount = (BigDecimal) discounts.get("discountAmount");
 						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount);
-						
+
 					}
 					else{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
@@ -260,9 +260,9 @@ public class InvoiceLineController {
 							price = (BigDecimal) discounts.get("price");
 						}
 					}
-					
+
 				}
-				
+
 				if (invoice.getOperationTypeSelect()<InvoiceRepository.OPERATION_TYPE_CLIENT_SALE && discountAmount.equals(BigDecimal.ZERO)){
 					List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
 					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){

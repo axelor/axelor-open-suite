@@ -26,7 +26,7 @@
 		        <field name="productName"/>
 		        <field name="qty" required="true" onChange="action-invoice-line-method-get-discount,action-invoice-line-method-convert-tax,action-invoice-line-method-compute"/>
 		        <field name="price" required="true"  onChange="action-invoice-line-method-compute"/>
-		        <field name="priceDiscounted" hideIf="price == priceDiscounted"/>
+		        <field name="priceDiscounted" hidden="true"/>
 		        <field name="unit"/>
 		        <field name="task"/>
 		        <field name="analyticAccount" />
@@ -65,9 +65,7 @@
     	<action name="action-invoice-line-attrs-show-project"/>
     	<action name="action-invoice-line-method-convert-tax"/>
     	<action name="action-invoice-line-method-compute"/>
-    	<action name="save"/>
     	<action name="action-invoice-line-attrs-scale-and-precision"/>
-	    <action name="action-invoice-line-method-product-management"/>
 	    <action name="action-invoice-line-attrs-hide-product-variant"/>
 	    <action name="action-invoice-attrs-hide-ati"/>
     </action-group>
