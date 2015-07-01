@@ -176,6 +176,7 @@ public class ExpenseService extends ExpenseRepository{
 		for(ExpenseLine expenseLine : expenseLineList)  {
 
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine));
+			expenseLine.setInvoiced(true);
 
 		}
 

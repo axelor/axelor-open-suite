@@ -27,7 +27,7 @@
 		   	<field name="unit"/>
 		   	<field name="taxLine" colSpan="4" onChange="action-sale-order-line-method-convert-tax,action-sale-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		   	<field name="price" onChange="action-sale-order-line-method-compute" colSpan="4"/>
-		   	<field name="priceDiscounted" colSpan="4" hideIf="price == priceDiscounted"/>
+		   	<field name="priceDiscounted" colSpan="4" hidden="true"/>
 		   	<field name="exTaxTotal" readonly="true"/>
 		   	<field name="inTaxTotal" readonly="true"/>
 		   	<field name="toInvoice"/>

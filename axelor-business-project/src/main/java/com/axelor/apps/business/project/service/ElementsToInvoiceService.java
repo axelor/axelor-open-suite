@@ -21,7 +21,8 @@ public class ElementsToInvoiceService {
 		for(ElementsToInvoice elementsToInvoice : elementsToInvoiceList)  {
 
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, elementsToInvoice));
-
+			elementsToInvoice.setInvoiced(true);
+			invoiceLineList.get(invoiceLineList.size()-1).setProject(elementsToInvoice.getProject());
 		}
 
 		return invoiceLineList;

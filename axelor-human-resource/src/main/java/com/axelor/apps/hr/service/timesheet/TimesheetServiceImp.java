@@ -156,7 +156,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		for(TimesheetLine timesheetLine : timesheetLineList)  {
 
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, timesheetLine));
-
+			timesheetLine.setInvoiced(true);
 		}
 
 		return invoiceLineList;
