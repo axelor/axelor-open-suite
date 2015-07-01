@@ -15,7 +15,6 @@
 		<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order"/>
 		<boolean name="imputable"/>
 		<integer name="invoicingTypeSelect" selection="project.task.invoicing.type.select" title="Invoicing Type" default="1"/>
-		<many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer" />
 		<decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>

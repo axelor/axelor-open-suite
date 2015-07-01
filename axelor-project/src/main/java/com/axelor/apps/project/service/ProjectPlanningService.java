@@ -59,7 +59,7 @@ public class ProjectPlanningService extends ProjectPlanningRepository{
 	@Transactional
 	public List<ProjectPlanningLine> populateMyPlanning(ProjectPlanning planning, User user) throws AxelorException{
 		List<ProjectPlanningLine> planningLineList = new ArrayList<ProjectPlanningLine>();
-		String query = "self.assignedTo = ?1 OR ?1 MEMBER OF self.membersSet";
+		String query = "self.assignedTo = ?1 OR ?1 MEMBER OF self.membersUserSet";
 		List<ProjectTask> projectTaskList = Beans.get(ProjectTaskRepository.class).all().filter(query, user).fetch();
 		if(projectTaskList == null || projectTaskList.isEmpty()){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROJECT_PLANNING_NO_TASK)), IException.CONFIGURATION_ERROR);
@@ -87,7 +87,7 @@ public class ProjectPlanningService extends ProjectPlanningRepository{
 		Set<User> userList = team.getUserSet();
 
 		for (User user : userList) {
-			String query = "self.assignedTo = ?1 OR ?1 MEMBER OF self.membersSet";
+			String query = "self.assignedTo = ?1 OR ?1 MEMBER OF self.membersUserSet";
 			projectTaskList = Beans.get(ProjectTaskRepository.class).all().filter(query, user).fetch();
 			if(projectTaskList != null && !projectTaskList.isEmpty()){
 				for (ProjectTask projectTask : projectTaskList) {

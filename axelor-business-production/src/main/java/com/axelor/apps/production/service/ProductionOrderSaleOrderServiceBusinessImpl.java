@@ -126,7 +126,7 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 
 		ProjectTask projectTask = productionOrder.getProjectTask();
 
-		projectTask.getCustomer();
+		projectTask.getClientPartner();
 
 //		if(businessFolder.getCompany() != null)  {
 //

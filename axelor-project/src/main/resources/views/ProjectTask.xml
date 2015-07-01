@@ -6,7 +6,7 @@
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
 		<field name="company"/>
-		<field name="customer" />
+		<field name="clientPartner" />
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
@@ -22,9 +22,9 @@
 			<field name="name"/>
 			<field name="code"/>
 			<field name="company"/>
-			<field name="customer" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true"/>
+			<field name="clientPartner" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain"/>
-			<field name="saleOrder" domain="self.clientPartner = :customer" if-module="axelor-business-project"/>
+			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project"/>
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
@@ -102,7 +102,7 @@
 			</panel>
 		</panel-tabs>
 		<panel title="Settings" sidebar="true">
-			<field name="membersSet" widget="TagSelect"/>
+			<field name="membersUserSet" widget="TagSelect"/>
 		</panel>
 	</form>
 	
@@ -158,7 +158,7 @@
 	
 	<grid name="project-task-grid" title="Projects/Tasks" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
-		<field name="customer" />
+		<field name="clientPartner" />
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
@@ -176,9 +176,9 @@
 			<field name="name"/>
 			<field name="code"/>
 			<field name="company" hideIf="taskTypeSelect == 'task'"/>
-			<field name="customer" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true" hideIf="taskTypeSelect == 'task'"/>
+			<field name="clientPartner" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true" hideIf="taskTypeSelect == 'task'"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain,action-task-attrs-assigned-to-domain"/>
-			<field name="saleOrder" domain="self.clientPartner.id = :customer.id" if-module="axelor-business-project" hideIf="taskTypeSelect == 'task'"/>
+			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" hideIf="taskTypeSelect == 'task'"/>
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
@@ -222,7 +222,7 @@
 			</panel>
 		</panel-tabs>
 		<panel title="Settings" sidebar="true">
-			<field name="membersSet" widget="TagSelect" hideIf="taskTypeSelect == 'task'"/>
+			<field name="membersUserSet" widget="TagSelect" hideIf="taskTypeSelect == 'task'"/>
 		</panel>
 	</form>
 	
@@ -231,11 +231,11 @@
 	</action-attrs>
 	
 	<action-attrs name="action-task-attrs-assigned-to-domain">
-	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(_parent?.membersSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;" if="taskTypeSelect == 'task'"/>
+	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(_parent?.membersUserSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;" if="taskTypeSelect == 'task'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-assigned-to-domain">
-	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(membersSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;" if="taskTypeSelect == 'project'"/>
+	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(membersUserSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;" if="taskTypeSelect == 'project'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-project-default" model="com.axelor.apps.project.db.ProjectTask">
@@ -244,7 +244,7 @@
 		<attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
 		<attribute name="value" for="product" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInvoicingProjectTask()"/>
 		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
-		<attribute name="value:add" for="membersSet" expr="eval: __user__"/>
+		<attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
 	</action-attrs>
 	
 	<action-record name="action-project-task-default" model="com.axelor.apps.project.db.ProjectTask">
