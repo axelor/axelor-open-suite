@@ -137,14 +137,6 @@
 				<field name="chargeBackPurchase" colSpan="4"/>
 				<label title="OR" colSpan="4"/>
 				<field name="flatFeePurchase" colSpan="4"/>
-				
-				<field name="chargeBackExpense" colSpan="4"/>
-				<label title="OR" colSpan="4"/>
-				<field name="flatFeeExpense" colSpan="4"/>
-				
-				<field name="chargeBackAnanlytic" colSpan="4"/>
-				<label title="OR" colSpan="4"/>
-				<field name="flatFeeAnalytic" colSpan="4"/>
 			</panel>
 			<panel title="Sale Order" if-module="axelor-sale">
 				<field name="saleOrderInformation" colSpan="12"/>

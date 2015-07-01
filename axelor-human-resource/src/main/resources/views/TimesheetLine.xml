@@ -71,6 +71,7 @@
 	
 	<action-record name="action-hr-default-timesheet-line-timesheet" model="com.axelor.apps.hr.db.TimesheetLine">
 	    <field name="user" expr="eval:__parent__.user" />
+	    <field name="activity" expr="eval:__user__.employee?.activity" />
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-visible-duration" model="com.axelor.apps.hr.db.TimesheetLine">

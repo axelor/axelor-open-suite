@@ -38,10 +38,10 @@
 		</panel>
 		<panel-tabs>
 			<panel title="Invoicing" if-module="axelor-business-project" showIf="invoicingTypeSelect == 3">
-				<field name="product" onChange="action-project-task-record-unit"/>
-  				<field name="price" onChange="action-project-task-record-compute-exTaxTotal"/>
-  				<field name="qty" onChange="action-project-task-record-compute-exTaxTotal"/>
-  				<field name="unit" requiredIf="product != null"/>
+				<field name="product" onChange="action-project-task-record-unit" requiredIf="invoicingTypeSelect == 3"/>
+  				<field name="price" onChange="action-project-task-record-compute-exTaxTotal" requiredIf="invoicingTypeSelect == 3"/>
+  				<field name="qty" onChange="action-project-task-record-compute-exTaxTotal" requiredIf="invoicingTypeSelect == 3"/>
+  				<field name="unit" requiredIf="invoicingTypeSelect == 3"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
 			<panel title="Related Projects">
