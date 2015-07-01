@@ -11,9 +11,7 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.DayPlanning;
@@ -167,26 +165,10 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 		Product product = null;
 		Employee employee = timesheetLine.getUser().getEmployee();
-		if(GeneralService.getGeneral().getInvoicingTypeLogTimesSelect() == GeneralRepository.INVOICING_LOG_TIMES_EMPLOYEE_ACTIVITY){
 
-			if(employee == null){
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheetLine.getUser().getName()), IException.CONFIGURATION_ERROR);
-			}
-			product = employee.getProduct();
-		}
-		else{
-			product = timesheetLine.getProduct();
-		}
-
+		product = timesheetLine.getProduct();
 		if(product == null){
-			if(employee == null){
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheetLine.getUser().getName()), IException.CONFIGURATION_ERROR);
-			}
-			product = employee.getProduct();
-			if(product == null){
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.GENERAL_EMPLOYEE_ACTIVITY),employee.getName()), IException.CONFIGURATION_ERROR);
-
-			}
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.CONFIGURATION_ERROR);
 		}
 
 		BigDecimal qtyConverted = timesheetLine.getDurationStored();
@@ -202,9 +184,8 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		}
 
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), product.getSalePrice(),
-				null,qtyConverted,product.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
-				product.getSalePrice().multiply(qtyConverted),null,false)  {
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(),
+				null,qtyConverted,product.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,false)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {

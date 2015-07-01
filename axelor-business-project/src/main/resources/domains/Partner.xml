@@ -6,12 +6,10 @@
   <entity name="Partner" lang="java">
   
   	<decimal name="chargeBackPurchase" title="% Charging Back Purhcases" default="100"/>
-  	<decimal name="chargeBackExpense" title="% Charging Back Expenses" default="100"/>
-  	<decimal name="chargeBackAnanlytic" title="% Charging Back Ananlytic Move Lines" default="100"/>
+  	
   	
   	<boolean name="flatFeePurchase" title="Customer Flat Fee Purchases"/>
-  	<boolean name="flatFeeExpense" title="Customer Flat Fee Expenses"/>
-  	<boolean name="flatFeeAnalytic" title="Customer Flat Fee Ananlytic Move Lines"/>
+  	
 	
   </entity>
   
