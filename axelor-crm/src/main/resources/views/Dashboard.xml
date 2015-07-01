@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<action-view name="dashlet.closed.opportunities" title="Closed Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
@@ -152,6 +152,7 @@
 		<dashlet action="dashlet.team.open.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.by.source" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.by.saletage" height="350" canSearch="true"/>
+		<dashlet action="dashlet.opportunities.by.saletage.funnel" height="350" canSearch="true"/>
 	</dashboard>
 	
 	<dashboard title="Dashboard" name="crm.opportunities.dashboard.2">
@@ -165,6 +166,7 @@
 		<dashlet action="dashlet.opportunities.top.deals" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.key.account" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.lost.deals" height="350" canSearch="true"/>
+		
 	</dashboard>
 	
 	<dashboard title="Dashboard" name="crm.opportunities.dashboard.3"  >
@@ -182,6 +184,11 @@
 	<action-view name="dashlet.opportunities.by.saletage"
 		title="Opportunities By Sale Stage">
 		<view type="chart" name="chart.dashboard.opportunities.sale.stage.amount.bar" />
+	</action-view>
+	
+	<action-view name="dashlet.opportunities.by.saletage.funnel"
+		title="Opportunities By Sale Stage">
+		<view type="chart" name="chart.dashboard.opportunities.sale.stage.amount.funnel" />
 	</action-view>
 
 

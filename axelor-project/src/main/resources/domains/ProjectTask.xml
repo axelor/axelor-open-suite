@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -19,7 +19,6 @@
 	  <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
 	  <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
 	  <one-to-many name="projectTaskList" ref="com.axelor.apps.project.db.ProjectTask" title="Tasks" mappedBy="project"/>
-	  
 	  <string name="description" title="Description" large="true"/>
 	  
 	  <date name="fromDate" title="From Date"/>
@@ -31,6 +30,14 @@
 	  <decimal name="leadDelay" title="Lead/Delay"/>
 	  
 	  <integer name="progress" title="Progress (%)" selection="grade.0.up.to.100.select"/>
+	  <datetime name="startDate" title="Start date" />
+	  <decimal name="ganttProgress" title="Progress"/>
+	  <decimal name="sequence" title="Sequence" />
+	  
+	  <many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Finish tasks to start"/>
+	  <many-to-many name="startToStartTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Start tasks to start"/>
+	  <many-to-many name="finishToFinishTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Finish tasks to finish"/>
+	  <many-to-many name="startToFinishTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Start tasks to finish"/>
 	  
 	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
 	  

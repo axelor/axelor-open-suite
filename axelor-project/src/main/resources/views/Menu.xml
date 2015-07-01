@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<menuitem name="menu-project-root" priority="103" title="Project" icon="img/tree-folder.png" groups="admins,ERP"/> 	
+	<menuitem name="menu-project-root" order="-103" title="Project" icon="fa-tasks" groups="admins,ERP"/> 	
 
 	<menuitem name="project-all" parent="menu-project-root"
     	title="Projects"
@@ -12,6 +12,15 @@
     	<view type="grid" name="project-grid"/>
 	    <view type="form" name="project-form"/>
 	    <domain>self.taskTypeSelect = 'project'</domain>
+	</action-view>
+	
+	<menuitem name="project-gantt" parent="menu-project-root"
+    	title="Project gantt"
+    	action="project.gantt"/>
+    	
+   	<action-view name="project.gantt" title="Project gantt" model="com.axelor.apps.project.db.ProjectTask">
+   		<view type="gantt"/>
+   		<view type="form" name="task-form"/>
 	</action-view>
 	
 	<menuitem name="task-all" parent="menu-project-root"
@@ -24,7 +33,7 @@
 	    <domain>self.taskTypeSelect = 'task'</domain>
 	</action-view>
 	
-	<menuitem name="menu-project-planning" parent="menu-project-root" title="Project Planning" icon="img/tree-folder.png"/> 
+	<menuitem name="menu-project-planning" parent="menu-project-root" title="Project Planning" /> 
 	
 	<menuitem name="my-planning" parent="menu-project-planning"
     	title="My Planning"

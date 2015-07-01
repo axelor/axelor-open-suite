@@ -18,7 +18,7 @@
 package com.axelor.apps.base.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.app.AxelorModuleInfo;
+
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
@@ -44,7 +44,7 @@ import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.message.service.TemplateService;
 
-@AxelorModuleInfo(name = "axelor-base")
+
 public class BaseModule extends AxelorModule {
 
     @Override

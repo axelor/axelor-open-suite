@@ -18,7 +18,7 @@
 package com.axelor.apps.message.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.app.AxelorModuleInfo;
+
 import com.axelor.apps.message.db.repo.MessageManagementRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MailAccountService;
@@ -28,7 +28,7 @@ import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 
-@AxelorModuleInfo(name = "axelor-message")
+
 public class MessageModule extends AxelorModule {
 
     @Override

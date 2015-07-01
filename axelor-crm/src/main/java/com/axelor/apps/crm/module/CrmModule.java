@@ -18,7 +18,7 @@
 package com.axelor.apps.crm.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.app.AxelorModuleInfo;
+
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.crm.db.repo.EventManagementRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
@@ -28,7 +28,7 @@ import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
 
-@AxelorModuleInfo(name = "axelor-crm")
+
 public class CrmModule extends AxelorModule {
 
     @Override

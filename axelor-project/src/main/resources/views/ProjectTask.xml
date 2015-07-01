@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
@@ -61,8 +61,6 @@
 			</panel>
 			<panel title="Description">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
-				<field name="taskTypeSelect" hidden="true" />
-				<field name="duration" hidden="true"/>
 				<field name="timeSpent" hidden="true"/>
 				<field name="leadDelay" hidden="true"/>
 			</panel>
@@ -103,6 +101,11 @@
 		</panel-tabs>
 		<panel title="Settings" sidebar="true">
 			<field name="membersUserSet" widget="TagSelect"/>
+			<field name="businessProject" colSpan="4"/>
+			<field name="startDate" />
+			<field name="duration" />
+			<field name="sequence" />
+			<field name="taskTypeSelect"/>
 		</panel>
 	</form>
 	
@@ -113,15 +116,22 @@
 		<field name="toDate" />
 		<field name="dueDate" />
 		<field name="statusSelect"/>
-		<field name="progress" widget="SelectProgress"/>
+		<field name="progress" />
 	</grid>
+	
+	<gantt name="project-gantt" title="Project gantt" model="com.axelor.apps.project.db.ProjectTask" startDate="startDate" duration="duration" parent="project" 
+		   progress="progress" order="sequence" finishToStart="finishToStartTaskSet" startToStart="startToStartTaskSet"
+		   finishToFinish="finishToFinishTaskSet" startToFinish="startToFinishTaskSet">
+		   <field name="name" />		   
+		   <field name="assignedTo" />
+    </gantt>   
 
 	<form name="task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask" 
 	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-task-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
 	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 	    <panel>
 	    	<field name="statusSelect" widget="NavSelect"/>
-	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel" required="true" title="Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 		    <field name="name" colSpan="12" />
 			<field name="assignedTo" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain"/>
 			<field name="fromDate" />
@@ -129,10 +139,14 @@
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
 			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<field name="dueDate" />
-			<field name="progress" widget="SelectProgress"/>
+			<field name="progress"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="invoiced" if-module="axelor-business-project"/>
+			<field name="startDate" />
+			<field name="duration" />
+			<field name="sequence" />
+			<field name="taskTypeSelect"/>
 		</panel>
 		<panel-tabs>
 			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-business-project" hidden="true">
@@ -151,6 +165,7 @@
 				<field name="duration" hidden="true"/>
 				<field name="timeSpent" hidden="true"/>
 				<field name="leadDelay" hidden="true"/>
+				<field name="company" hidden="true" />
 			</panel>
 		</panel-tabs>
 	</form>

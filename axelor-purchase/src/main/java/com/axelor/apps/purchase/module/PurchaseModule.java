@@ -18,13 +18,13 @@
 package com.axelor.apps.purchase.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.app.AxelorModuleInfo;
+
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 
-@AxelorModuleInfo(name = "axelor-purchase")
+
 public class PurchaseModule extends AxelorModule {
 
     @Override

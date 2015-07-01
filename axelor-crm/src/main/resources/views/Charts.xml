@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	  
 	  
 		
@@ -27,6 +27,30 @@
 	    </dataset>
 	    <category key="_sale_stage" type="text" title="Sales Stage"/>
     	<series key="amount" type="bar" title="Amount"/>
+	 </chart>
+	 
+	 <chart name="chart.dashboard.opportunities.sale.stage.amount.funnel" title="Opportunities By Sale Stage">
+	    <dataset type="sql">
+	    <![CDATA[
+			SELECT
+	          SUM(self.amount) AS amount,
+		      selection_item.title as _sale_stage
+		    FROM
+		        crm_opportunity self
+		    LEFT JOIN
+		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+		    LEFT JOIN 
+		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.sales_stage_select AND self.sales_stage_select != 10		
+		    GROUP BY
+			   selection_item.id
+			ORDER BY
+			   selection_item.id
+	    ]]>
+	    </dataset>
+	    <category key="_sale_stage" type="text" title="Sales Stage"/>
+    	<series key="amount" type="funnel" title="Amount"/>
 	 </chart>
 	 
 	  <chart name="chart.dashboard.opportunities.by.stage.type.bar" title="Pipeline by Stage and Type">

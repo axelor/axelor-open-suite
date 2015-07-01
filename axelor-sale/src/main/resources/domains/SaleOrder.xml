@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -94,6 +94,20 @@
    			public static final Integer STATE_DELIVERED = 3;
    		]]>
    	</extra-code>
+   	
+   	 <track>
+      <field name="saleOrderSeq" />
+      <field name="clientPartner" />
+      <field name="statusSelect"/>
+      <field name="creationDate" on="CREATE" />
+      <field name="confirmationDate" on="UPDATE"/>
+      <field name="inTaxTotal" />
+      <message if="true" on="CREATE">Sale Order created</message>
+      <message if="statusSelect == 1" tag="important">Draft</message>
+      <message if="statusSelect == 2" tag="info">Finalize</message>
+      <message if="statusSelect == 3" tag="success">Order confirmed</message>
+      <message if="statusSelect == 4" tag="warning">Canceled</message>
+    </track>
     
   </entity>
 
