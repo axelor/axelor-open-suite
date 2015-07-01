@@ -105,7 +105,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		invoiceLineList.addAll( saleOrderInvoiceServiceImpl.createInvoiceLines(invoice, saleOrderLineList));
 		invoiceLineList.addAll(this.customerChargeBackPurchases(purchaseOrderInvoiceServiceImpl.createInvoiceLines(invoice, purchaseOrderLineList),folder));
 		invoiceLineList.addAll(timesheetServiceImp.createInvoiceLines(invoice, timesheetLineList));
-		invoiceLineList.addAll(this.customerChargeBackExpenses(expenseService.createInvoiceLines(invoice, expenseLineList),folder));
+		invoiceLineList.addAll(expenseService.createInvoiceLines(invoice, expenseLineList));
 		invoiceLineList.addAll(elementsToInvoiceService.createInvoiceLines(invoice, elementsToInvoiceList));
 		invoiceLineList.addAll(this.createInvoiceLines(invoice, projectTaskList));
 
@@ -185,20 +185,9 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 	public List<InvoiceLine> customerChargeBackPurchases(List<InvoiceLine> invoiceLineList,InvoicingFolder folder){
 		Partner customer = folder.getProjectTask().getClientPartner();
-		if(!customer.getFlatFeeExpense()){
-			for (InvoiceLine invoiceLine : invoiceLineList) {
-				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackPurchase().divide(new BigDecimal(100), GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)));
-				invoiceLine.setExTaxTotal(invoiceLine.getPrice().multiply(invoiceLine.getQty()).setScale(2, BigDecimal.ROUND_HALF_UP));
-			}
-		}
-		return invoiceLineList;
-	}
-
-	public List<InvoiceLine> customerChargeBackExpenses(List<InvoiceLine> invoiceLineList,InvoicingFolder folder){
-		Partner customer = folder.getProjectTask().getClientPartner();
 		if(!customer.getFlatFeePurchase()){
 			for (InvoiceLine invoiceLine : invoiceLineList) {
-				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackExpense().divide(new BigDecimal(100), GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)));
+				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackPurchase().divide(new BigDecimal(100), GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)));
 				invoiceLine.setExTaxTotal(invoiceLine.getPrice().multiply(invoiceLine.getQty()).setScale(2, BigDecimal.ROUND_HALF_UP));
 			}
 		}
