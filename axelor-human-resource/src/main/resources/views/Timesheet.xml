@@ -22,7 +22,7 @@
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
 	    onNew="action-timesheet-record-default,action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-record-from-period-date,action-timesheet-attrs-title-project-task"
 	    onLoad="action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-attrs-title-project-task" canNew="false"
-	    onSave="action-timesheet-method-valid-to-date">
+	    onSave="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date">
 
 	    <panel sidebar="true" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-timesheet-record-to-date,action-timesheet-method-valid-to-date,action-timesheet-record-confirm,save,action-timesheet-attrs-buttons" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
@@ -129,7 +129,7 @@
 	</action-record>
 	
 	<action-validate name="action-timesheet-validate-toDate">
-		<error message="Invalid date" if="toDate &lt; fromDate"/>
+		<error message="Invalid date" if="toDate == null || toDate &lt; fromDate"/>
 	</action-validate>
 	
 	<action-method name="action-timesheet-method-valid-to-date">
