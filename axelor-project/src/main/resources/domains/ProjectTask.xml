@@ -16,9 +16,9 @@
 	  
 	  <string name="code" title="Code" />
 	  <boolean name="businessProject" title="Business Project"/>
-	  <many-to-many name="membersSet" ref="com.axelor.auth.db.User" title="Membres"/>
-	  <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
-	  <one-to-many name="taskList" ref="com.axelor.apps.project.db.ProjectTask" title="Tasks" mappedBy="project"/>
+	  <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
+	  <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+	  <one-to-many name="projectTaskList" ref="com.axelor.apps.project.db.ProjectTask" title="Tasks" mappedBy="project"/>
 	  
 	  <string name="description" title="Description" large="true"/>
 	  

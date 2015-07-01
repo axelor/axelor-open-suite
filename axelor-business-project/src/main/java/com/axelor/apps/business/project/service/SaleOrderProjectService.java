@@ -22,13 +22,13 @@ public class SaleOrderProjectService extends SaleOrderRepository{
 		project.setStatusSelect(ProjectTaskRepository.STATE_PLANNED);
 		project.setName(saleOrder.getFullName());
 		project.setCompany(saleOrder.getCompany());
-		project.setCustomer(saleOrder.getClientPartner());
+		project.setClientPartner(saleOrder.getClientPartner());
 		project.setAssignedTo(saleOrder.getSalemanUser());
 		project.setSaleOrder(saleOrder);
 		project.setProgress(0);
 		project.setImputable(true);
 		project.setInvoicingTypeSelect(ProjectTaskRepository.INVOICING_TYPE_NONE);
-		project.addMembersSetItem(saleOrder.getSalemanUser());
+		project.addMembersUserSetItem(saleOrder.getSalemanUser());
 		project.setProduct(GeneralService.getGeneral().getProductInvoicingProjectTask());
 		saleOrder.setProject(project);
 		save(saleOrder);

@@ -30,8 +30,8 @@ public class ElementsToInvoiceController {
 			elementToInvoice.setCostPrice(product.getCostPrice());
 			elementToInvoice.setUnit(product.getUnit());
 			BigDecimal price = product.getSalePrice();
-			if(project.getCustomer()!= null){
-				PriceList priceList = project.getCustomer().getSalePriceList();
+			if(project.getClientPartner()!= null){
+				PriceList priceList = project.getClientPartner().getSalePriceList();
 				if(priceList != null)  {
 					PriceListLine priceListLine = priceListService.getPriceListLine(product, elementToInvoice.getQty(), priceList);
 
