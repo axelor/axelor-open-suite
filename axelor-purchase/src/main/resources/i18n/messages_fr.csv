@@ -206,4 +206,8 @@
 "You have to choose at least one purchase order","Vous devez choisir au moins une commande fournisseur",,
 "help:PurchaseOrder.internalReference","Se réfère à un document interne comme un devis, autre commande fournisseur, réception…",,
 "help:PurchaseOrderLine.estimatedDelivDate","Estimée par le fournisseur",,
+"important",,,
+"info",,,
 "purchase order management",,,
+"success",,,
+"warning",,,

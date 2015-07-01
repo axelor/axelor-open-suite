@@ -206,4 +206,8 @@
 "You have to choose at least one purchase order",,,
 "help:PurchaseOrder.internalReference","Refers to an internal document like a SO, PO, Stock Picking reference...",,
 "help:PurchaseOrderLine.estimatedDelivDate","Estimated by supplier",,
+"important",,,
+"info",,,
 "purchase order management",,,
+"success",,,
+"warning",,,

@@ -206,4 +206,8 @@
 "You have to choose at least one purchase order",,,
 "help:PurchaseOrder.internalReference",,,
 "help:PurchaseOrderLine.estimatedDelivDate",,,
+"important",,,
+"info",,,
 "purchase order management",,,
+"success",,,
+"warning",,,
