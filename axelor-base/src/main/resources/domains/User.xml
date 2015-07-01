@@ -20,7 +20,7 @@
     	<![CDATA[
     	if(partner != null) {
     		if(partner.getFirstName() != null){
-    			return partner.getFirstName()+partner.getName();
+    			return partner.getFirstName()+" "+partner.getName();
     		}
     		return partner.getName();
     	}
