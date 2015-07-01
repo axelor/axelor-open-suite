@@ -139,7 +139,7 @@
 				<field name="product"/>
   				<field name="price" onChange="action-project-task-record-compute-exTaxTotal"/>
   				<field name="qty" onChange="action-project-task-record-compute-exTaxTotal"/>
-  				<field name="unit" />
+  				<field name="unit" requiredIf="product != null"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
 			<panel title="Log Times">
@@ -238,16 +238,21 @@
 	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(membersSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;" if="taskTypeSelect == 'project'"/>
 	</action-attrs>
 	
-	<action-record name="action-project-project-default" model="com.axelor.apps.project.db.ProjectTask">
-		<field name="taskTypeSelect" expr="eval:'project'" />
-		<field name="company" expr="eval:__user__.activeCompany"/>
-		<field name="product" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInvoicingProjectTask()"/>
-	</action-record>
+	<action-attrs name="action-project-project-default" model="com.axelor.apps.project.db.ProjectTask">
+		<attribute name="value" for="taskTypeSelect" expr="eval:'project'" />
+		<attribute name="value" for="fromDate" expr="eval: __date__"/>
+		<attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
+		<attribute name="value" for="product" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInvoicingProjectTask()"/>
+		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
+		<attribute name="value:add" for="membersSet" expr="eval: __user__"/>
+	</action-attrs>
 	
 	<action-record name="action-project-task-default" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="taskTypeSelect" expr="eval:'task'" />
 		<field name="company" expr="eval:__user__.activeCompany"/>
 		<field name="product" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInvoicingProjectTask()"/>
+		<field name="fromDate" expr="eval: __date__"/>
+		<field name="assignedTo" expr="eval: __user__"/>
 	</action-record>
 	
 	<action-view name="action-view-show-project-tree" title="Project Tree" model="com.axelor.apps.project.db.ProjectTask">	
