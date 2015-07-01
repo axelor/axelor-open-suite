@@ -86,7 +86,7 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 
 		return currencyService.getAmountCurrencyConverted(
 			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), product.getPurchasePrice(), purchaseOrder.getOrderDate())
-			.setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
+			.setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 
 		return currencyService.getAmountCurrencyConverted(
 			product.getSaleCurrency(), purchaseOrder.getCurrency(), product.getSalePrice(), purchaseOrder.getOrderDate())
-			.setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);  
+			.setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 
 		return currencyService.getAmountCurrencyConverted(
 				purchaseOrder.getCurrency(), purchaseOrder.getCompany().getCurrency(), exTaxTotal, purchaseOrder.getOrderDate())
-				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
+				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}
 
 
@@ -241,19 +241,20 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 		Product product = purchaseOrderLine.getProduct();
 
 		SupplierCatalog supplierCatalog = this.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
-		
+
 //		If there is no catalog for supplier, then we don't take the default catalog.
-		
+
 //		if(supplierCatalog == null)  {
-//			
+//
 //			supplierCatalog = this.getSupplierCatalog(product, product.getDefaultSupplierPartner());
 //		}
-		
+
 		return supplierCatalog;
-		
+
 	}
-	
-	
+
+
+	@Override
 	public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner)  {
 
 		if(product.getSupplierCatalogList() != null)  {
@@ -273,7 +274,7 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 
 	@Override
 	public BigDecimal convertUnitPrice(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder){
-		BigDecimal price = purchaseOrderLine.getProduct().getPurchasePrice();
+		BigDecimal price = purchaseOrderLine.getPrice();
 
 		if(purchaseOrderLine.getProduct().getInAti() && !purchaseOrder.getInAti()){
 			price = price.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
@@ -302,13 +303,14 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 		}
 		return discountAmount;
 	}
-	
+
+	@Override
 	public int getDiscountTypeSelect(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder){
 		PriceList priceList = purchaseOrder.getPriceList();
 		if(priceList != null)  {
 			PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList);
 
-			return (int) priceListLine.getTypeSelect();
+			return priceListLine.getTypeSelect();
 		}
 		return 0;
 	}

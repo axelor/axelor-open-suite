@@ -215,6 +215,7 @@
     <action-group name="action-account-invoice-onload-group">
 	    <action name="action-invoice-attrs-hide-cancel-button"/>
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
+	    <action name="action-invoice-attrs-in-ati"/>
     </action-group>   
     
     <action-group name="action-group-account-invoice-operationtype-onchange">

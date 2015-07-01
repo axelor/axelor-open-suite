@@ -110,7 +110,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted,String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, 
+			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
 			BigDecimal inTaxTotal, GroupingLine groupingLine, boolean isTaxInvoice) {
 
         this.invoice = invoice;
@@ -135,7 +135,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, 
+			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
 			GroupingLine groupingLine, boolean isTaxInvoice) {
 
         this.invoice = invoice;
@@ -158,11 +158,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, 
+			Unit unit, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
 			GroupingLine groupingLine, boolean isTaxInvoice) {
 
-		
-		
+
+
         this.invoice = invoice;
         this.product = product;
         this.productName = productName;
@@ -438,7 +438,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	}
 
 	public BigDecimal convertUnitPrice(InvoiceLine invoiceLine, Invoice invoice){
-		BigDecimal price = invoiceLine.getProduct().getSalePrice();
+		BigDecimal price = invoiceLine.getPrice();
 		if(invoice.getOperationTypeSelect()<2){
 			price = invoiceLine.getProduct().getPurchasePrice();
 		}
