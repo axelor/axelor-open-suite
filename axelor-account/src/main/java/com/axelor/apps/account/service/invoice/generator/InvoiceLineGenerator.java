@@ -248,7 +248,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setUnit(unit);
 
 		if(exTaxTotal == null || inTaxTotal == null)  {
-			price = this.convertUnitPrice(invoiceLine, invoice).setScale(GeneralService.getNbDecimalDigitForUnitPrice(),BigDecimal.ROUND_HALF_UP);
+//			price = this.convertUnitPrice(invoiceLine, invoice).setScale(GeneralService.getNbDecimalDigitForUnitPrice(),BigDecimal.ROUND_HALF_UP); TODO RM3611
 			invoiceLine.setPrice(price);
 			if(!invoice.getInAti()){
 				exTaxTotal = computeAmount(qty, price);
