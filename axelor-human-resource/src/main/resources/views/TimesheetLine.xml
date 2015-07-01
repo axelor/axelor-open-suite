@@ -6,7 +6,7 @@
 	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-to-invoice-parent">
 		<field name="user"/>
 		<field name="date" />
-		<field name="product" canNew="true"/>
+		<field name="product" domain="self.isActivity = true" canNew="true"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true"/>
 		<field name="affectedToTimeSheet"/>
@@ -18,7 +18,7 @@
 	onNew="action-hr-default-timesheet-line-timesheet">
 		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
 		<field name="date" onChange="action-timesheet-validate-date"/>
-		<field name="product"/>
+		<field name="product" domain="self.isActivity = true" canNew="true"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" if-module="axelor-business-project"/>
@@ -66,12 +66,12 @@
 	
 	<action-record name="action-hr-default-timesheet-line-project" model="com.axelor.apps.hr.db.TimesheetLine">
 	    <field name="user" expr="eval:__user__" />
-	    <field name="activity" expr="eval:__user__.employee?.activity" />
+	    <field name="product" expr="eval:__user__.employee?.product" />
 	</action-record>
 	
 	<action-record name="action-hr-default-timesheet-line-timesheet" model="com.axelor.apps.hr.db.TimesheetLine">
 	    <field name="user" expr="eval:__parent__.user" />
-	    <field name="activity" expr="eval:__user__.employee?.activity" />
+	    <field name="product" expr="eval:__user__.employee?.product" />
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-visible-duration" model="com.axelor.apps.hr.db.TimesheetLine">
