@@ -18,7 +18,7 @@
 package com.axelor.apps.account.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.app.AxelorModuleInfo;
+
 import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
@@ -42,7 +42,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 
-@AxelorModuleInfo(name = "axelor-account")
+
 public class AccountModule extends AxelorModule {
 
     @Override

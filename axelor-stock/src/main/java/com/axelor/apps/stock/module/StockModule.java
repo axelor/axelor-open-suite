@@ -18,7 +18,7 @@
 package com.axelor.apps.stock.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.app.AxelorModuleInfo;
+
 import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
@@ -29,7 +29,7 @@ import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 
-@AxelorModuleInfo(name = "axelor-stock")
+
 public class StockModule extends AxelorModule {
 
     @Override

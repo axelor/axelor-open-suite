@@ -18,7 +18,7 @@
 package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.app.AxelorModuleInfo;
+
 import com.axelor.apps.account.service.invoice.workflow.cancel.CancelState;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -56,7 +56,7 @@ import com.axelor.apps.supplychain.service.SubscriptionServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.CancelStateSupplyChain;
 import com.axelor.apps.supplychain.service.workflow.VentilateStateSupplyChain;
 
-@AxelorModuleInfo(name = "axelor-supplychain")
+
 public class SupplychainModule extends AxelorModule {
 
     @Override

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -131,7 +131,16 @@
 		public static final int STATUS_CANCELED = 4;
 	
 	]]></extra-code>
-
+	
+	<track>
+      <field name="invoiceId" />
+      <field name="partner" />
+      <field name="statusSelect" on="UPDATE"/>
+      <message if="true" on="CREATE">Invoice created</message>
+      <message if="statusSelect == 2" tag="important">Validated</message>
+      <message if="statusSelect == 3" tag="success">Ventilated</message>
+      <message if="statuSelect == 3 &amp;&amp; dueDate.isAfter(__date__)">Important</message>
+    </track>
 
   </entity>
   
