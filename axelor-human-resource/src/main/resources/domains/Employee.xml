@@ -24,7 +24,7 @@
       <string name="name" title="Name" search="contactPartner">
           
            <![CDATA[
-	       		if(contactPartner != null) { return contactPartner.getName(); }
+	       		if(contactPartner != null) { return contactPartner.getFullName(); }
 	       		return null;
 	       ]]>
 	       
