@@ -102,6 +102,7 @@ public class PurchaseOrderInvoiceServiceImpl extends PurchaseOrderRepository imp
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
+			purchaseOrderLine.setInvoiced(true);
 		}
 		return invoiceLineList;
 	}

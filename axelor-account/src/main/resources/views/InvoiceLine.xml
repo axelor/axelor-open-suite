@@ -57,6 +57,7 @@
 	    <action name="action-invoice-line-record-sequence"/>
 	    <action name="action-invoice-line-attrs-hide-product-variant"/>
 	    <action name="action-invoice-attrs-hide-ati"/>
+	    <action name="action-invoice-line-record-project"/>
     </action-group>
     
     <action-group name="action-account-invoice-line-onload-group">
@@ -143,5 +144,9 @@
 	<action-attrs name="action-invoice-line-attrs-show-project" if-module="axelor-business-project">
 		<attribute name="hidden" for="projectTaskPanel" expr="!com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskInvoiceLines()"/>
 	</action-attrs>
+	
+	<action-record name="action-invoice-line-record-project" model="com.axelor.apps.account.db.InvoiceLine" if-module="axelor-business-project">
+		<field name="task" expr="eval: _parent?.project"/>
+	</action-record>
 
 </object-views>

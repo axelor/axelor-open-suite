@@ -126,7 +126,8 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		for(ProjectTask projectTask : projectTaskList)  {
 
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, projectTask));
-
+			projectTask.setInvoiced(true);
+			invoiceLineList.get(invoiceLineList.size()-1).setProject(projectTask);
 		}
 
 		return invoiceLineList;
