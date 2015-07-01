@@ -65,7 +65,7 @@
 	    <field name="bloqued" colSpan="4" readonly="true" showIf="bloqued"/>
 		<field name="manualUnblock" colSpan="4" showIf="bloqued == true"/>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
-	    <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="6"/>
+	    <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form"/>
 	    <field name="currency"/>

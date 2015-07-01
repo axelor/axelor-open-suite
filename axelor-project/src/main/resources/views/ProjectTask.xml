@@ -17,7 +17,7 @@
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
 	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 		<panel title="Overview">
-			<field name="statusSelect" widget="NavSelect"/>
+			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
 			<field name="project" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="name"/>
 			<field name="code"/>
@@ -131,7 +131,7 @@
 	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-task-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
 	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 	    <panel>
-	    	<field name="statusSelect" widget="NavSelect"/>
+	    	<field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 		    <field name="name" colSpan="12" />
 			<field name="assignedTo" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain"/>
@@ -187,7 +187,7 @@
 	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
 	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 		<panel title="Overview">
-			<field name="statusSelect" widget="NavSelect"/>
+			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
 			<field name="project" requiredIf="taskTypeSelect == 'task'" onChange="action-project-task-attrs-hide-invoicing-panel" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="name"/>
 			<field name="code"/>
@@ -366,7 +366,7 @@
 	</action-attrs>
 	
 	<action-view name="action-show-reporting-folder" title="Folder">  		
- 		<view type="html" name="http://localhost:8080/Exemple_report_Affaire.pdf" /> 
+ 		<view type="html" name="http://localhost:8080/abs-webapp/Exemple_report_Affaire.pdf" /> 
 	</action-view>
 
 </object-views>
