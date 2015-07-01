@@ -6,7 +6,7 @@
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
 	onLoad="action-group-businness-project-saleorder-onload" 
-	onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-check-create-project,save">
+	onSave="save,action-method-set-sale-order-draft-sequence,save">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
@@ -14,21 +14,10 @@
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-template-form"
 		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
 		onLoad="action-group-businness-project-saleorder-onload"
-		onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-check-create-project,save">
+		onSave="save,action-method-set-sale-order-draft-sequence,save">
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
 	
-	<action-record name="action-sale-order-check-create-project" model="com.axelor.apps.sale.db.SaleOrder">
-	    <field name="project" expr="action:action-business-project-create-sale-order-project" if="project == null"/>
-	</action-record>
-	
-	<action-record name="action-business-project-create-sale-order-project" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="partner" expr="eval:clientPartner"/>
-	    <field name="taskTypeSelect" expr="eval:'project'"/>
-	    <field name="code" expr="eval:saleOrderSeq"/>
-	    <field name="name" expr="eval:clientPartner?.name"/>
-	    <field name="businessProject" expr="eval:true"/>
-	</action-record>
 	
 	<form name="sale-order-form-business-wizard" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
 		onNew="action-group-sale-saleorder-onnew,action-business-folder-method-create-order-from-folder"
