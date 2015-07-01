@@ -9,7 +9,6 @@
   
   	<many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project" />
   	<integer name="progress" title="Progress"/>
-  	
   </entity>
 
 </domain-models>

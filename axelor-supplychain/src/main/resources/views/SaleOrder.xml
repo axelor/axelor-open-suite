@@ -41,6 +41,7 @@
 	</action-view>
 	
 	<action-group name="action-group-supplychain-saleorder-onnew">
+		<action name="action-sale-order-attrs-show-project-panel"/>
 		<action name="action-sale-order-record-default"/>
 		<action name="action-sale-order-record-company-configuration"/>
 		<action name="action-supplychain-sale-order-method-get-location"/>
@@ -51,6 +52,7 @@
 	</action-group>
 	
 	<action-group name="action-group-supplychain-saleorder-onload">
+		<action name="action-sale-order-attrs-show-project-panel"/>
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
 		<action name="action-sale-order-attrs-validated-read-only"/>
 		<action name="action-partner-attrs-hide-contact-partner" />

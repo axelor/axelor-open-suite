@@ -521,6 +521,7 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
 			if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 1){
 				invoiceLineList.addAll(this.createInvoiceLine(invoice, stockMoveLine));
+				stockMoveLine.getSaleOrderLine().setInvoiced(true);
 			}
 		}
 

@@ -36,7 +36,13 @@
 	  
 	  <string name="fullName" namecolumn="true" title="Name"/>
 
-	          
+	   <extra-code>
+   		<![CDATA[
+   			public static final Integer STATE_PLANNED = 1;
+   			public static final Integer STATE_IN_PROGRESS = 2;
+   			public static final Integer STATE_FINISHED = 3;
+   		]]>
+   	</extra-code>
   </entity>
   
 </domain-models>

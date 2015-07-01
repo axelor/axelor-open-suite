@@ -58,7 +58,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 	@Inject
 	protected ElementsToInvoiceService elementsToInvoiceService;
-	
+
 	protected int MAX_LEVEL_OF_PROJECT = 10;
 
 
@@ -207,7 +207,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 		if(counter > MAX_LEVEL_OF_PROJECT)  {  return;  }
 		counter++;
-		
+
 		saleOrderLineList.addAll(Beans.get(SaleOrderLineRepository.class).all().filter("self.project != null AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.project.invoicingTypeSelect = ?2", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
 		purchaseOrderLineList.addAll(Beans.get(PurchaseOrderLineRepository.class).all().filter("self.projectTask != null AND self.projectTask = ?1 AND self.projectTask.saleOrder != null  AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.invoicingTypeSelect = ?2", projectTask,  ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
 		timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class).all().filter("self.affectedToTimeSheet != null AND self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.projectTask.saleOrder != null AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.invoicingTypeSelect = ?2", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());

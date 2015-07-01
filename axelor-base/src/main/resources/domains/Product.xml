@@ -79,6 +79,9 @@
 				public static final int SALE_SUPPLY_FROM_STOCK = 1;
 				public static final int SALE_SUPPLY_PURCHASE = 2;
 				public static final int SALE_SUPPLY_PRODUCE = 3;
+				
+				public static final String PROCUREMENT_METHOD_BUY = "buy";
+				public static final String PROCUREMENT_METHOD_PRODUCE = "produce";
 	   		]]>
 	   	</extra-code>
   	

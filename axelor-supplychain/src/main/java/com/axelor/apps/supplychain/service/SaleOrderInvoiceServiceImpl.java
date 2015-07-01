@@ -135,7 +135,8 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 
 
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList));
-
+		
+		
 		this.fillInLines(invoice);
 
 		return invoice;
@@ -175,9 +176,9 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
-
+			
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
-
+			saleOrderLine.setInvoiced(true);
 		}
 
 		return invoiceLineList;
