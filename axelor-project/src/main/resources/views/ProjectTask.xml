@@ -19,8 +19,8 @@
 		<panel title="Overview">
 			<field name="statusSelect" widget="NavSelect"/>
 			<field name="project" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
-			<field name="code"/>
 			<field name="name"/>
+			<field name="code"/>
 			<field name="company"/>
 			<field name="customer" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain"/>
@@ -38,10 +38,10 @@
 		</panel>
 		<panel-tabs>
 			<panel title="Invoicing" if-module="axelor-business-project" showIf="invoicingTypeSelect == 3">
-				<field name="product"/>
+				<field name="product" onChange="action-project-task-record-unit"/>
   				<field name="price" onChange="action-project-task-record-compute-exTaxTotal"/>
   				<field name="qty" onChange="action-project-task-record-compute-exTaxTotal"/>
-  				<field name="unit" />
+  				<field name="unit" requiredIf="product != null"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
 			<panel title="Related Projects">
@@ -136,10 +136,10 @@
 		</panel>
 		<panel-tabs>
 			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-business-project" hidden="true">
-				<field name="product"/>
+				<field name="product" onChange="action-project-task-record-unit"/>
   				<field name="price" onChange="action-project-task-record-compute-exTaxTotal"/>
   				<field name="qty" onChange="action-project-task-record-compute-exTaxTotal"/>
-  				<field name="unit" />
+  				<field name="unit" requiredIf="product != null"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
 			<panel title="Log Times">
@@ -173,8 +173,8 @@
 		<panel title="Overview">
 			<field name="statusSelect" widget="NavSelect"/>
 			<field name="project" requiredIf="taskTypeSelect == 'task'" onChange="action-project-task-attrs-hide-invoicing-panel" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
-			<field name="code"/>
 			<field name="name"/>
+			<field name="code"/>
 			<field name="company" hideIf="taskTypeSelect == 'task'"/>
 			<field name="customer" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true" hideIf="taskTypeSelect == 'task'"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain,action-task-attrs-assigned-to-domain"/>
@@ -192,10 +192,10 @@
 		</panel>
 		<panel-tabs>
 			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-business-project" hidden="true">
-				<field name="product"/>
+				<field name="product" onChange="action-project-task-record-unit"/>
   				<field name="price" onChange="action-project-task-record-compute-exTaxTotal"/>
   				<field name="qty" onChange="action-project-task-record-compute-exTaxTotal"/>
-  				<field name="unit" />
+  				<field name="unit" requiredIf="product != null"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
 			<panel title="Related Projects">
@@ -238,16 +238,21 @@
 	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(membersSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;" if="taskTypeSelect == 'project'"/>
 	</action-attrs>
 	
-	<action-record name="action-project-project-default" model="com.axelor.apps.project.db.ProjectTask">
-		<field name="taskTypeSelect" expr="eval:'project'" />
-		<field name="company" expr="eval:__user__.activeCompany"/>
-		<field name="product" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInvoicingProjectTask()"/>
-	</action-record>
+	<action-attrs name="action-project-project-default" model="com.axelor.apps.project.db.ProjectTask">
+		<attribute name="value" for="taskTypeSelect" expr="eval:'project'" />
+		<attribute name="value" for="fromDate" expr="eval: __date__"/>
+		<attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
+		<attribute name="value" for="product" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInvoicingProjectTask()"/>
+		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
+		<attribute name="value:add" for="membersSet" expr="eval: __user__"/>
+	</action-attrs>
 	
 	<action-record name="action-project-task-default" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="taskTypeSelect" expr="eval:'task'" />
 		<field name="company" expr="eval:__user__.activeCompany"/>
 		<field name="product" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInvoicingProjectTask()"/>
+		<field name="fromDate" expr="eval: __date__"/>
+		<field name="assignedTo" expr="eval: __user__"/>
 	</action-record>
 	
 	<action-view name="action-view-show-project-tree" title="Project Tree" model="com.axelor.apps.project.db.ProjectTask">	
@@ -334,6 +339,9 @@
 		<field name="exTaxTotal" expr="eval: price*qty"/>
 	</action-record>
 	
+	<action-record name="action-project-task-record-unit" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="unit" expr="eval: product?.unit"/>
+	</action-record>
 		
   	<action-attrs name="action-project-attrs-scale-and-precision">
 		<attribute name="scale" for="price" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
