@@ -50,6 +50,7 @@
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     
     <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
+  	<decimal name="companyCostTotal" title="Total cost in company currency" hidden="true"/>
     
     <integer name="statusSelect" title="Status" selection="sale.order.status.select" readonly="true"/>
   	
