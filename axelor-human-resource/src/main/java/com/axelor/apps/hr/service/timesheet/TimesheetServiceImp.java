@@ -11,7 +11,12 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.IPriceListLine;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.DayPlanning;
@@ -40,6 +45,9 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 	@Inject
 	private EmployeeService employeeService;
+
+	@Inject
+	private PriceListService priceListService;
 
 	@Override
 	@Transactional(rollbackOn={Exception.class})
@@ -166,10 +174,14 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		Product product = null;
 		Employee employee = timesheetLine.getUser().getEmployee();
 
+		int discountTypeSelect = 1;
 		product = timesheetLine.getProduct();
 		if(product == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.CONFIGURATION_ERROR);
 		}
+		BigDecimal price = product.getSalePrice();
+		BigDecimal discountAmount = product.getCostPrice();
+
 
 		BigDecimal qtyConverted = timesheetLine.getDurationStored();
 
@@ -183,9 +195,32 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 		}
 
+		PriceList priceList = invoice.getPartner().getSalePriceList();
+		if(priceList != null)  {
+			PriceListLine priceListLine = priceListService.getPriceListLine(product, qtyConverted, priceList);
+			if(priceListLine!=null){
+				discountTypeSelect = priceListLine.getTypeSelect();
+			}
+			if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+			{
+				Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+				discountAmount = (BigDecimal) discounts.get("discountAmount");
+				price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount);
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(),
-				null,qtyConverted,product.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,false)  {
+			}
+			else{
+				Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+				discountAmount = (BigDecimal) discounts.get("discountAmount");
+				if(discounts.get("price") != null)  {
+					price = (BigDecimal) discounts.get("price");
+				}
+			}
+
+		}
+
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator (invoice, product, product.getName(), price,
+				null,qtyConverted,product.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
+				price.multiply(qtyConverted),null,false){
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
