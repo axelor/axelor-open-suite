@@ -122,7 +122,7 @@
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" title="Actions" stacked="true">
-	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="action-sale-order-group-finalize"/>
+	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-group-finalize"/>
 	    <button name="newVersion" title="New version" showIf="eval: !GeneralService.getGeneral().getManageSaleOrderVersion() &amp;&amp; statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
 	    <button name="generateCustomerStockMove" showIf="eval: GeneralService.getGeneral().getCustomerStockMoveManagement() &amp;&amp; !GeneralService.getGeneral().getCustomerStockMoveGenerationAuto() &amp;&amp; statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed,save"/>
@@ -441,7 +441,6 @@
     <action-group name="action-sale-order-group-finalize">
     	<action name="action-sale-method-update-customer-credit-line"/>
     	<action name="action-sale-order-validate-bloqued"/>
-    	<action name="save"/>
     	<action name="action-sale-order-method-finalize"/>
     </action-group>
     

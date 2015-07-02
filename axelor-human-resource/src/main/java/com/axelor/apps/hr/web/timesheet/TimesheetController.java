@@ -184,15 +184,17 @@ public class TimesheetController {
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		List<Integer> listId = new ArrayList<Integer>();
 		int count = 0;
-		if(timesheetLineList != null && !timesheetLineList.isEmpty()){
-			for (TimesheetLine timesheetLine : timesheetLineList) {
-				count++;
-				if(timesheetLine.getDate().isAfter(timesheet.getToDate())){
-					listId.add(count);
+		if(timesheet.getStatusSelect() > TimesheetRepository.STATUS_DRAFT){
+			if(timesheetLineList != null && !timesheetLineList.isEmpty()){
+				for (TimesheetLine timesheetLine : timesheetLineList) {
+					count++;
+					if(timesheetLine.getDate().isAfter(timesheet.getToDate())){
+						listId.add(count);
+					}
 				}
-			}
-			if(!listId.isEmpty()){
-				response.setError(I18n.get("There is a conflict between the end date entered and the dates in the lines :")+Joiner.on(",").join(listId));
+				if(!listId.isEmpty()){
+					response.setError(I18n.get("There is a conflict between the end date entered and the dates in the lines :")+Joiner.on(",").join(listId));
+				}
 			}
 		}
 	}
