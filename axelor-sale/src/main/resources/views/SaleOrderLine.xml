@@ -61,11 +61,15 @@
 		   	</panel>
 			<panel-related field="invoiceSet"/>
 			<panel name="projectTaskPanel" title="Project/Task" if-module="axelor-business-project">
-				<field name="project" domain="self.imputable = true" onChange="action-sale-order-line-record-progress" form-view="project-task-form" grid-view="project-task-grid"/>
+				<field name="project" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-task-form" grid-view="project-task-grid"/>
 				<field name="progress" readonly="true" widget="SelectProgress"/>
 			</panel>
 		</panel-tabs>
 	</form>
+	
+	<action-attrs name="action-sale-order-line-attrs-domain-project">
+		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner = ${_parent?.clientPartner} &quot;"/>
+	</action-attrs>
     
     <action-group name="action-group-sale-saleorderline-onnew">
     	<action name="action-sale-order-line-attrs-title-project-task"/>

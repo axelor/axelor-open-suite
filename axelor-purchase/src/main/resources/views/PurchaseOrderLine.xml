@@ -77,7 +77,7 @@
 	      -->
 	    </panel>
 	    <panel name="projectTaskPanel" title="Project/Task" if-module="axelor-business-project">
-	      <field name="projectTask" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
+	      <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
 	    </panel>
 	    <panel title="Suppliers requests" if-module="axelor-supplier-management">
 	      <button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>

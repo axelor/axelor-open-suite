@@ -42,7 +42,7 @@ public class SaleOrderProjectService extends SaleOrderRepository{
 		List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
 		for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 			Product product = saleOrderLine.getProduct();
-			if(product.getProductTypeSelect() == ProductRepository.PRODUCT_TYPE_SERVICE && product.getProcurementMethodSelect() == ProductRepository.PROCUREMENT_METHOD_PRODUCE){
+			if(product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_SERVICE) && product.getProcurementMethodSelect().equals(ProductRepository.PROCUREMENT_METHOD_PRODUCE)){
 				ProjectTask task = new ProjectTask();
 				task.setTaskTypeSelect(ProjectTaskRepository.TYPE_TASK);
 				task.setStatusSelect(ProjectTaskRepository.STATE_PLANNED);
