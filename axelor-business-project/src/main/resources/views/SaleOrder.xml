@@ -5,24 +5,21 @@
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
-	onLoad="action-group-businness-project-saleorder-onload" 
-	onSave="save,action-method-set-sale-order-draft-sequence,save">
+	onLoad="action-group-businness-project-saleorder-onload">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
 	
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-template-form"
 		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
-		onLoad="action-group-businness-project-saleorder-onload"
-		onSave="save,action-method-set-sale-order-draft-sequence,save">
+		onLoad="action-group-businness-project-saleorder-onload">
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
 	
 	
 	<form name="sale-order-form-business-wizard" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
 		onNew="action-group-sale-saleorder-onnew,action-business-folder-method-create-order-from-folder"
-		onLoad="action-group-sale-saleorder-onload"
-		onSave="save,action-method-set-sale-order-draft-sequence,save">
+		onLoad="action-group-sale-saleorder-onload">
 		
 		<panel-include view="sale-order-form"/>
 	</form>

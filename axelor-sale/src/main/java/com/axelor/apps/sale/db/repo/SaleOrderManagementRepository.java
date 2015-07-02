@@ -3,6 +3,9 @@ package com.axelor.apps.sale.db.repo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
 
@@ -23,5 +26,19 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 		copy.setVersionNumber(1);
 
 		return copy;
+	}
+	
+	@Override
+	public SaleOrder save(SaleOrder saleOrder) {
+		try {
+			saleOrder = super.save(saleOrder);
+			Beans.get(SaleOrderService.class).setDraftSequence(saleOrder);
+
+			return saleOrder;
+		} catch (Exception e) {
+			JPA.em().getTransaction().rollback();
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

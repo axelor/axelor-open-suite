@@ -32,16 +32,14 @@
     
     <form name="sale-order-form-wizard" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
 		onNew="action-group-sale-saleorder-onnew,action-sale-order-method-create-order"
-		onLoad="action-group-sale-saleorder-onload"
-		onSave="save,action-method-set-sale-order-draft-sequence,save">
+		onLoad="action-group-sale-saleorder-onload">
 		
 		<panel-include view="sale-order-form"/>
 	</form>
 
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
 		onNew="action-group-sale-saleorder-onnew"
-		onLoad="action-group-sale-saleorder-onload"
-		onSave="save,action-method-set-sale-order-draft-sequence,save">
+		onLoad="action-group-sale-saleorder-onload">
 		
 	  <toolbar>
 	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
@@ -183,16 +181,14 @@
     
     <form name="sale-order-template-form-wizard" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
 		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
-		onLoad="action-group-sale-saleorder-onload"
-		onSave="save,action-method-set-sale-order-draft-sequence,save">
+		onLoad="action-group-sale-saleorder-onload">
 		
 		<panel-include view="sale-order-template-form"/>
 	</form>
 	
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
 		onNew="action-group-sale-saleorder-onnew"
-		onLoad="action-group-sale-saleorder-onload"
-		onSave="save,action-method-set-sale-order-draft-sequence,save">
+		onLoad="action-group-sale-saleorder-onload">
 	  
 	  <panel>
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
@@ -315,7 +311,7 @@
 
 	<form name="sale-order-form-client" title="Sale order"
 		model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form-client"
-		onLoad="action-group-sale-saleorder-onload" onSave="save,action-method-set-sale-order-draft-sequence,action-sale-order-method-compute,save"
+		onLoad="action-group-sale-saleorder-onload" onSave="save,action-sale-order-method-compute,save"
 		onNew="action-group-sale-saleorder-onnew">
 	  <toolbar>
 	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
@@ -371,9 +367,6 @@
 		<call class="com.axelor.apps.business.project.web.SaleOrderProjectController" method="generateProject"/>
 	</action-method>
 	
-	<action-method name="action-method-set-sale-order-draft-sequence">
-		<call class="com.axelor.apps.sale.web.SaleOrderController" method="setDraftSequence"></call>
-	</action-method>
 	<action-record name="action-sale-order-record-first-execution-date" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="schedulerInstance" expr="action: action-scheduler-instance-record-first-execution-date" if="schedulerInstance != null"/>
 	</action-record>
@@ -424,6 +417,7 @@
     	<action name="action-sale-order-record-confirmed"/>
     	<action name="action-sale-order-attrs-confirmed-read-only"/>
     	<action name="action-sale-order-set-sequence"/>
+    	<action name="action-sale-order-method-generate-project" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getAutomaticProject()"/>
     </action-group>
     
     <action-group name="action-group-sale-saleorder-onnew">
@@ -449,7 +443,6 @@
     	<action name="action-sale-order-validate-bloqued"/>
     	<action name="save"/>
     	<action name="action-sale-order-method-finalize"/>
-    	<action name="action-sale-order-method-generate-project" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getAutomaticProject()"/>
     </action-group>
     
     <action-attrs name="action-sale-order-attrs-in-ati">
