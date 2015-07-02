@@ -45,12 +45,25 @@ public class SaleOrderProjectController extends SaleOrderRepository{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_ORDER_NO_LINES)), IException.CONFIGURATION_ERROR);
 		}
 		response.setReload(true);
-		response.setView(ActionView
-				.define("Tasks generated")
-				.model(ProjectTask.class.getName())
-				.add("grid","task-grid")
-				.add("form", "task-form")
-				.param("forceEdit", "true")
-				.domain("self.id in ("+listId+")").map());
+		if(listId.size() == 1){
+			response.setReload(true);
+			response.setView(ActionView
+					.define("Tasks generated")
+					.model(ProjectTask.class.getName())
+					.add("grid","task-grid")
+					.add("form", "task-form")
+					.param("forceEdit", "true")
+					.context("_showRecord", String.valueOf(listId.get(0))).map());
+		}
+		else{
+			response.setView(ActionView
+					.define("Tasks generated")
+					.model(ProjectTask.class.getName())
+					.add("grid","task-grid")
+					.add("form", "task-form")
+					.param("forceEdit", "true")
+					.domain("self.id in ("+listId+")").map());
+		}
+
 	}
 }
