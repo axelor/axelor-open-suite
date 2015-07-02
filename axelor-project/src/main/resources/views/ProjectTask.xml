@@ -16,6 +16,9 @@
 
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
 	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
+		<toolbar>
+			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
+		</toolbar>
 		<panel title="Overview">
 			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
 			<field name="project" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
@@ -45,11 +48,8 @@
   				<field name="unit" requiredIf="invoicingTypeSelect == 3"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
-			<panel title="Related Projects">
-				<panel-dashlet action="action-project-task-view-show-project" colSpan="12"/>
-			</panel>
-			<panel title="Tasks">
-				<panel-dashlet action="action-project-task-view-show-task" colSpan="12"/>
+			<panel title="Related Projects/Tasks">
+				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
 			</panel>
 			<panel title="Other elements to invoice" if-module="axelor-business-project">
 				<panel-related field="elementsToInvoiceList" colSpan="12"/>
@@ -130,6 +130,9 @@
 	<form name="task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask" 
 	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-task-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
 	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
+		<toolbar>
+			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
+		</toolbar>
 	    <panel>
 	    	<field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
@@ -187,6 +190,7 @@
 	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
 	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 		<panel title="Overview">
+			<field name="taskTypeSelect"/>
 			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
 			<field name="project" requiredIf="taskTypeSelect == 'task'" onChange="action-project-task-attrs-hide-invoicing-panel" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="name"/>
@@ -214,11 +218,8 @@
   				<field name="unit" requiredIf="product != null"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
-			<panel title="Related Projects">
-				<panel-dashlet action="action-project-task-view-show-project" colSpan="12"/>
-			</panel>
-			<panel title="Tasks" hideIf="taskTypeSelect == 'task'">
-				<panel-dashlet action="action-project-task-view-show-task" colSpan="12"/>
+			<panel title="Related Projects/Tasks" hideIf="taskTypeSelect == 'task'">
+				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
 			</panel>
 			<panel title="Log Times">
 				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
@@ -231,7 +232,6 @@
 			</panel>
 			<panel title="Description">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
-				<field name="taskTypeSelect" hidden="true" />
 				<field name="duration" hidden="true"/>
 				<field name="timeSpent" hidden="true"/>
 				<field name="leadDelay" hidden="true"/>
