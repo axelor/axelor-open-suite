@@ -116,8 +116,8 @@
 	
 	<!-- ACTION ATTRS -->
 	<action-attrs name="action-invoice-attrs-title-project-task">
-		<attribute name="title" for="projectTaskPanel" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
-		<attribute name="title" for="project" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
+		<attribute name="title" for="projectTaskPanel" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="!com.google.common.base.Strings.isEmptyOrNull(com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel())"/>
+		<attribute name="title" for="project" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="!com.google.common.base.Strings.isEmptyOrNull(com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel())"/>
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-line-attrs-hide-product-variant">
