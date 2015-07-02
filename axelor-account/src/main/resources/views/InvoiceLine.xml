@@ -28,7 +28,6 @@
 		        <field name="price" required="true"  onChange="action-invoice-line-method-compute"/>
 		        <field name="priceDiscounted" hidden="true"/>
 		        <field name="unit"/>
-		        <field name="task"/>
 		        <field name="analyticAccount" />
 		    	<field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		    	<field name="exTaxTotal" readonly="true"/>
@@ -92,7 +91,6 @@
     
     <action-record name="action-invoice-line-record-new" model="com.axelor.apps.account.db.InvoiceLine">
     	<field name="qty" expr="eval: 1"/>
-    	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
     </action-record>
     
 	<!-- ACTION METHOD -->
@@ -144,7 +142,7 @@
 	</action-attrs>
 	
 	<action-record name="action-invoice-line-record-project" model="com.axelor.apps.account.db.InvoiceLine" if-module="axelor-business-project">
-		<field name="task" expr="eval: _parent?.project"/>
+		<field name="project" expr="eval: _parent?.project"/>
 	</action-record>
 
 </object-views>
