@@ -30,6 +30,15 @@
   	<boolean name="toInvoice"/>
 	<boolean name="invoiced" readonly="true"/>
   	
+  	<extra-code>
+  		<![CDATA[
+	  		public static final Integer SALE_SUPPLY_SELECT_NONE = 1;
+	  		public static final Integer SALE_SUPPLY_SELECT_STOCK = 2;
+	  		public static final Integer SALE_SUPPLY_SELECT_PURCHASE = 3;
+	  		public static final Integer SALE_SUPPLY_SELECT_PRODUCE = 4;
+	  	]]>
+  	</extra-code>
+  	
   </entity>
 
 </domain-models>
