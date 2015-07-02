@@ -46,7 +46,7 @@ public class SaleOrderProjectService extends SaleOrderRepository{
 		List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
 		for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 			Product product = saleOrderLine.getProduct();
-			if(ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_SELECT_PRODUCE){
+			if(ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE){
 				ProjectTask task = new ProjectTask();
 				task.setTaskTypeSelect(ProjectTaskRepository.TYPE_TASK);
 				task.setStatusSelect(ProjectTaskRepository.STATE_PLANNED);
@@ -57,6 +57,7 @@ public class SaleOrderProjectService extends SaleOrderRepository{
 				task.setImputable(true);
 				task.setProduct(GeneralService.getGeneral().getProductInvoicingProjectTask());
 				saleOrderLine.setProject(task);
+				Beans.get(ProjectTaskManagementRepository.class).save(task);
 				JPA.save(saleOrderLine);
 				listId.add(task.getId());
 			}
