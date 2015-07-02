@@ -58,6 +58,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -204,9 +205,16 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		return seq;
 	}
 
-	@Override
-	public String getDraftSequence(SaleOrder saleOrder)  {
+	protected String getDraftSequence(SaleOrder saleOrder)  {
 		return "*" + saleOrder.getId();
+	}
+	
+	public void setDraftSequence(SaleOrder saleOrder)  {
+		
+		if (saleOrder.getId() != null && Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()))  {
+			saleOrder.setSaleOrderSeq(this.getDraftSequence(saleOrder));
+		}
+		
 	}
 	
 	public SaleOrder createSaleOrder(Company company) throws AxelorException{

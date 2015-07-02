@@ -202,16 +202,6 @@ public class SaleOrderController {
 
 	}
 
-	public void setDraftSequence(ActionRequest request,ActionResponse response){
-	
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		
-		if(saleOrder.getSaleOrderSeq() != null || saleOrder.getId() == null)  {
-			return;
-		}
-		response.setValue("saleOrderSeq", saleOrderService.getDraftSequence(saleOrder));
-	}
-
 	public void cancelSaleOrder(ActionRequest request, ActionResponse response) {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
