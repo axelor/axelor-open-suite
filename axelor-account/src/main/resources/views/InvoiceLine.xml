@@ -48,7 +48,7 @@
     </form>
     
     <action-attrs name="action-invoice-line-attrs-domain-project">
-    	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner = ${_parent?.partner} &quot;"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${_parent?.partner.id} &quot;"/>
     </action-attrs>
     
     

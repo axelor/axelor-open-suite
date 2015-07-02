@@ -12,13 +12,14 @@ import com.axelor.exception.AxelorException;
 public class TimesheetProjectServiceImp extends TimesheetServiceImp{
 
 	@Override
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-
+		int count = 0;
 		for(TimesheetLine timesheetLine : timesheetLineList)  {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, timesheetLine));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, timesheetLine,priority*100+count));
+			count++;
 			timesheetLine.setInvoiced(true);
 			invoiceLineList.get(invoiceLineList.size()-1).setProject(timesheetLine.getProjectTask());
 		}

@@ -169,13 +169,14 @@ public class ExpenseService extends ExpenseRepository{
 		save(expense);
 	}
 
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-
+		int count = 0;
 		for(ExpenseLine expenseLine : expenseLineList)  {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine, priority*100+count));
+			count++;
 			expenseLine.setInvoiced(true);
 
 		}
@@ -184,13 +185,13 @@ public class ExpenseService extends ExpenseRepository{
 
 	}
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine, int priority) throws AxelorException  {
 
 		Product product = expenseLine.getExpenseType();
 		InvoiceLineGenerator invoiceLineGenerator = null;
 		if(!invoice.getCompany().getAccountConfig().getInvoiceInAti()){
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getUntaxedAmount(),
-					null,BigDecimal.ONE,product.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+					null,BigDecimal.ONE,product.getUnit(),priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 					null, null, false)  {
 
 				@Override
@@ -208,7 +209,7 @@ public class ExpenseService extends ExpenseRepository{
 
 		else{
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getTotalAmount(),
-					null,BigDecimal.ONE,product.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+					null,BigDecimal.ONE,product.getUnit(),priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 					null, null, false)  {
 
 				@Override

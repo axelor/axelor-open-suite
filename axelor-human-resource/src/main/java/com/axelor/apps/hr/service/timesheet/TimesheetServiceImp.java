@@ -155,13 +155,14 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		}
 	}
 
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-
+		int count = 0;
 		for(TimesheetLine timesheetLine : timesheetLineList)  {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, timesheetLine));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, timesheetLine, priority*100+count));
+			count++;
 			timesheetLine.setInvoiced(true);
 		}
 
@@ -169,7 +170,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 	}
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, TimesheetLine timesheetLine) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, TimesheetLine timesheetLine, int priority) throws AxelorException  {
 
 		Product product = null;
 		Employee employee = timesheetLine.getUser().getEmployee();
@@ -219,7 +220,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator (invoice, product, product.getName(), price,
-				null,qtyConverted,product.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
+				null,qtyConverted,product.getUnit(),priority,discountAmount,discountTypeSelect,
 				price.multiply(qtyConverted),null,false){
 
 			@Override

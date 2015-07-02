@@ -33,6 +33,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -102,16 +103,14 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		List<ProjectTask> projectTaskList = new ArrayList<ProjectTask>(folder.getProjectTaskSet());
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-		invoiceLineList.addAll( saleOrderInvoiceServiceImpl.createInvoiceLines(invoice, saleOrderLineList));
-		invoiceLineList.addAll(this.customerChargeBackPurchases(purchaseOrderInvoiceServiceImpl.createInvoiceLines(invoice, purchaseOrderLineList),folder));
-		invoiceLineList.addAll(timesheetServiceImp.createInvoiceLines(invoice, timesheetLineList));
-		invoiceLineList.addAll(expenseService.createInvoiceLines(invoice, expenseLineList));
-		invoiceLineList.addAll(elementsToInvoiceService.createInvoiceLines(invoice, elementsToInvoiceList));
-		invoiceLineList.addAll(this.createInvoiceLines(invoice, projectTaskList));
+		invoiceLineList.addAll( this.createSaleOrderInvoiceLines(invoice, saleOrderLineList,folder.getSaleOrderLineSetPrioritySelect()));
+		invoiceLineList.addAll(this.customerChargeBackPurchases(this.createPurchaseOrderInvoiceLines(invoice, purchaseOrderLineList,folder.getPurchaseOrderLineSetPrioritySelect()),folder));
+		invoiceLineList.addAll(timesheetServiceImp.createInvoiceLines(invoice, timesheetLineList,folder.getLogTimesSetPrioritySelect()));
+		invoiceLineList.addAll(expenseService.createInvoiceLines(invoice, expenseLineList,folder.getExpenseLineSetPrioritySelect()));
+		invoiceLineList.addAll(elementsToInvoiceService.createInvoiceLines(invoice, elementsToInvoiceList, folder.getElementsToInvoiceSetPrioritySelect()));
+		invoiceLineList.addAll(this.createInvoiceLines(invoice, projectTaskList,folder.getProjectTaskSetPrioritySelect()));
 
 		for (InvoiceLine invoiceLine : invoiceLineList) {
-			sequence += 10;
-			invoiceLine.setSequence(sequence);
 			invoiceLine.setSaleOrder(invoiceLine.getInvoice().getSaleOrder());
 		}
 
@@ -119,13 +118,89 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 	}
 
 
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ProjectTask> projectTaskList) throws AxelorException  {
+	public List<InvoiceLine> createSaleOrderInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList, int priority) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+		int count = 0;
+		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine,priority*100+count));
+			count++;
+			saleOrderLine.setInvoiced(true);
+		}
+
+		return invoiceLineList;
+
+	}
+
+
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine, int priority) throws AxelorException  {
+
+		Product product = saleOrderLine.getProduct();
+
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(),
+				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
+				priority, false, saleOrderLine, null, null)  {
+
+			@Override
+			public List<InvoiceLine> creates() throws AxelorException {
+
+				InvoiceLine invoiceLine = this.createInvoiceLine();
+
+				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+				invoiceLines.add(invoiceLine);
+
+				return invoiceLines;
+			}
+		};
+
+		return invoiceLineGenerator.creates();
+	}
+
+	public List<InvoiceLine> createPurchaseOrderInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList, int priority) throws AxelorException  {
+
+		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+		int count = 0;
+		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine, priority*100+count));
+			count++;
+			purchaseOrderLine.setInvoiced(true);
+		}
+		return invoiceLineList;
+	}
+
+
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine, int priority) throws AxelorException  {
+
+		Product product = purchaseOrderLine.getProduct();
+
+		InvoiceLineGeneratorSupplyChain invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, purchaseOrderLine.getProductName(),
+				purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(),
+				priority, false, null, purchaseOrderLine, null)  {
+			@Override
+			public List<InvoiceLine> creates() throws AxelorException {
+
+				InvoiceLine invoiceLine = this.createInvoiceLine();
+
+				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+				invoiceLines.add(invoiceLine);
+
+				return invoiceLines;
+			}
+		};
+
+		return invoiceLineGenerator.creates();
+	}
+
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ProjectTask> projectTaskList, int priority) throws AxelorException  {
+
+		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+		int count = 0;
 		for(ProjectTask projectTask : projectTaskList)  {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, projectTask));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, projectTask, priority*100+count));
+			count++;
 			projectTask.setInvoiced(true);
 			invoiceLineList.get(invoiceLineList.size()-1).setProject(projectTask);
 		}
@@ -134,7 +209,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 	}
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ProjectTask projectTask) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ProjectTask projectTask, int priority) throws AxelorException  {
 
 		Product product = projectTask.getProduct();
 
@@ -143,7 +218,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, projectTask.getName(), projectTask.getPrice(),
-				null,projectTask.getQty(),projectTask.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+				null,projectTask.getQty(),projectTask.getUnit(),priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 				projectTask.getPrice().multiply(projectTask.getQty()),null,false)  {
 
 			@Override

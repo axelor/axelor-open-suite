@@ -14,13 +14,14 @@ import com.axelor.exception.AxelorException;
 
 public class ElementsToInvoiceService {
 
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ElementsToInvoice> elementsToInvoiceList) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ElementsToInvoice> elementsToInvoiceList, int priority) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-
+		int count = 0;
 		for(ElementsToInvoice elementsToInvoice : elementsToInvoiceList)  {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, elementsToInvoice));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, elementsToInvoice, priority*100+count));
+			count++;
 			elementsToInvoice.setInvoiced(true);
 			invoiceLineList.get(invoiceLineList.size()-1).setProject(elementsToInvoice.getProject());
 		}
@@ -29,12 +30,12 @@ public class ElementsToInvoiceService {
 
 	}
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ElementsToInvoice elementsToInvoice) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ElementsToInvoice elementsToInvoice, int priority) throws AxelorException  {
 
 		Product product = elementsToInvoice.getProduct();
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), elementsToInvoice.getSalePrice(),
-				null,elementsToInvoice.getQty(),elementsToInvoice.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+				null,elementsToInvoice.getQty(),elementsToInvoice.getUnit(),priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 				elementsToInvoice.getSalePrice().multiply(elementsToInvoice.getQty()),null,false)  {
 
 			@Override
