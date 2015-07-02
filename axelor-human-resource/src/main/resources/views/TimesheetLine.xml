@@ -17,7 +17,7 @@
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet">
 		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
-		<field name="date" onChange="action-timesheet-validate-date"/>
+		<field name="date" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" domain="self.isActivity = true" canNew="true"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true" />
@@ -55,6 +55,10 @@
 			<field name="comments" />
 		</panel>
 	</form>
+	
+	<action-validate name="action-timesheet-validate-date">
+		<error message="Invalid Date" if="_parent.fromDate &gt; date || (_parent.toDate &lt; date &amp;&amp; _parent.toDate != null)"/>
+	</action-validate>
 	
 	<action-attrs name="action-timesheet-line-attrs-title-project-task">
 		<attribute name="title" for="projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel() != null"/>
