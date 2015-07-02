@@ -62,7 +62,7 @@
 			<field name="currency"/>
 			<field name="buyerUser"/>
 			<field name="versionNumber"/>
-			<field name="project" domain="self.taskTypeSelect = 'project'" if-module="axelor-account-organisation" form-view="project-form"/>
+			<field name="project" domain="self.taskTypeSelect = 'project'" if-module="axelor-business-project" form-view="project-form"/>
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
 		</panel>
 		
