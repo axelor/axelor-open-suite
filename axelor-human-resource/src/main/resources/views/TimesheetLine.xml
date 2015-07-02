@@ -61,7 +61,7 @@
 	</action-validate>
 	
 	<action-attrs name="action-timesheet-line-attrs-title-project-task">
-		<attribute name="title" for="projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="!com.google.common.base.Strings.isEmptyOrNull(com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel())"/>
+		<attribute name="title" for="projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel())"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-attrs-set-duration-label">
