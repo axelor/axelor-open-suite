@@ -115,8 +115,8 @@
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing"/>
 	    <panel name="projectPanel" title="Business project" colSpan="12" if-module="axelor-business-project" onTabSelect="action-sale-order-attrs-show-elements">
       		  <field name="project" domain="self.taskTypeSelect = 'project' AND self.clientPartner = clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
-	          <button name="generateProject" title="Generate Project" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
-	          <button name="generateTasks" title="Generate Tasks" onClick="save,action-sale-order-method-generate-tasks"/>
+	          <button name="generateProject" title="Generate Project" hidden="true" onClick="save,action-sale-order-method-generate-project,action-sale-order-attrs-show-elements"/>
+	          <button name="generateTasks" title="Generate Tasks" onClick="save,action-sale-order-method-generate-tasks,action-sale-order-attrs-hide-generate-tasks"/>
        	</panel>
 
 	  </panel-tabs>
@@ -388,7 +388,12 @@
     </action-attrs>
     
     <action-attrs name="action-sale-order-attrs-show-elements">
-    	<attribute name="hidden" for="generateProject" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getAutomaticProject()"/>
+    	<attribute name="hidden" for="generateProject" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getAutomaticProject() || project != null"/>
+    	<attribute name="hidden" for="generateTasks" expr=""/>
+    </action-attrs>
+    
+    <action-attrs name="action-sale-order-attrs-hide-generate-tasks">
+    	<attribute name="hidden" for="generateTasks" expr="true"/>
     </action-attrs>
 
     <action-attrs name="action-sale-order-attrs-confirmed-read-only">
