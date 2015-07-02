@@ -7,11 +7,13 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
 public class SaleOrderProjectService extends SaleOrderRepository{
@@ -32,6 +34,7 @@ public class SaleOrderProjectService extends SaleOrderRepository{
 		project.addMembersUserSetItem(saleOrder.getSalemanUser());
 		project.setProduct(GeneralService.getGeneral().getProductInvoicingProjectTask());
 		saleOrder.setProject(project);
+		Beans.get(ProjectTaskManagementRepository.class).save(project);
 		save(saleOrder);
 		return project;
 	}
