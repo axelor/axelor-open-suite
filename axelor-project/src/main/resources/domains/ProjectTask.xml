@@ -9,6 +9,7 @@
       
       <integer name="importId"/>
       <many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project"/>
+      <one-to-many name="childProjectTaskList" ref="com.axelor.apps.project.db.ProjectTask" title="Child Projects/Tasks" mappedBy="project"/>
 	  <string name="name" title="Name" required="true"/>
 	  <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 	  <string name="taskTypeSelect" selection="project.task.type.select" title="Type" />
@@ -18,7 +19,6 @@
 	  <boolean name="businessProject" title="Business Project"/>
 	  <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
 	  <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
-	  <one-to-many name="projectTaskList" ref="com.axelor.apps.project.db.ProjectTask" title="Tasks" mappedBy="project"/>
 	  <string name="description" title="Description" large="true"/>
 	  
 	  <date name="fromDate" title="From Date"/>
