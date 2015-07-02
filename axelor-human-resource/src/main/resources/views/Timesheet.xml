@@ -129,7 +129,7 @@
 	</action-record>
 	
 	<action-validate name="action-timesheet-validate-toDate">
-		<error message="Invalid date" if="toDate == null || toDate &lt; fromDate"/>
+		<error message="Invalid date" if="toDate != null &amp;&amp; toDate &lt; fromDate"/>
 	</action-validate>
 	
 	<action-method name="action-timesheet-method-valid-to-date">
