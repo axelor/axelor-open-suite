@@ -27,7 +27,7 @@
 			<field name="company"/>
 			<field name="clientPartner" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain"/>
-			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project"/>
+			<field name="saleOrder" requiredIf="project == null" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project"/>
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
@@ -198,7 +198,7 @@
 			<field name="company" hideIf="taskTypeSelect == 'task'"/>
 			<field name="clientPartner" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true" hideIf="taskTypeSelect == 'task'"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain,action-task-attrs-assigned-to-domain"/>
-			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" hideIf="taskTypeSelect == 'task'"/>
+			<field name="saleOrder" requiredIf="project == null" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" hideIf="taskTypeSelect == 'task'"/>
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
