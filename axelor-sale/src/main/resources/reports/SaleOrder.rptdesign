@@ -2239,42 +2239,6 @@ row["ClientPartFirstName"]
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">subId</property>
-                    <text-property name="displayName">subId</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["subId"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">subProductName</property>
-                    <text-property name="displayName">subProductName</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["subProductName"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">subQty</property>
-                    <text-property name="displayName">subQty</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["subQty"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">subUnitCode</property>
-                    <text-property name="displayName">subUnitCode</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["subUnitCode"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">subPrice</property>
-                    <text-property name="displayName">subPrice</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["subPrice"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">subExTaxTotal</property>
-                    <text-property name="displayName">subExTaxTotal</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["subExTaxTotal"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
                     <property name="name">description</property>
                     <text-property name="displayName">description</text-property>
                     <expression name="expression" type="javascript">dataSetRow["description"]</expression>
@@ -2317,27 +2281,6 @@ row["ClientPartFirstName"]
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">SubLineCount</property>
-                    <property name="dataType">integer</property>
-                    <simple-property-list name="aggregateOn">
-                        <value>SaleOrderLine</value>
-                    </simple-property-list>
-                    <property name="aggregateFunction">COUNT</property>
-                    <list-property name="arguments">
-                        <structure>
-                            <property name="name">Expression</property>
-                            <expression name="value" type="javascript">dataSetRow["subId"]</expression>
-                        </structure>
-                    </list-property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">subQty_1</property>
-                    <text-property name="displayName">subQty</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["subQty"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
                     <property name="name">quantity_1</property>
                     <text-property name="displayName">quantity</text-property>
                     <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
@@ -2347,12 +2290,6 @@ row["ClientPartFirstName"]
                     <property name="name">tax_line</property>
                     <text-property name="displayName">tax_line</text-property>
                     <expression name="expression" type="javascript">dataSetRow["tax_line"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">sub_tax_line</property>
-                    <text-property name="displayName">sub_tax_line</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["sub_tax_line"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
@@ -2804,12 +2741,6 @@ row["ClientPartFirstName"]
                     <text-property name="displayName">logo_path</text-property>
                     <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">creation_date</property>
-                    <text-property name="displayName">creation_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["creation_date"]</expression>
-                    <property name="dataType">date</property>
                 </structure>
                 <structure>
                     <property name="name">partner_type_select</property>
