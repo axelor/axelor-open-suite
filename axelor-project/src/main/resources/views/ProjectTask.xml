@@ -24,7 +24,7 @@
 			<field name="project" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="name"/>
 			<field name="code"/>
-			<field name="company" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" hideIf="project"/>
+			<field name="company" requiredIf="project == null" hideIf="project"/>
 			<field name="clientPartner" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain"/>
 			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project"/>
@@ -195,7 +195,7 @@
 			<field name="project" requiredIf="taskTypeSelect == 'task'" onChange="action-project-task-attrs-hide-invoicing-panel" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="name"/>
 			<field name="code"/>
-			<field name="company" hideIf="taskTypeSelect == 'task' || project"/>
+			<field name="company" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" hideIf="taskTypeSelect == 'task' || project"/>
 			<field name="clientPartner" requiredIf="project == null &amp;&amp; taskTypeSelect == 'project'" domain="self.isCustomer = true" hideIf="taskTypeSelect == 'task'"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain,action-task-attrs-assigned-to-domain"/>
 			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" hideIf="taskTypeSelect == 'task'"/>

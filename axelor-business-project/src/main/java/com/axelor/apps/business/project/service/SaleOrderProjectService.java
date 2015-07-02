@@ -11,6 +11,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -45,7 +46,7 @@ public class SaleOrderProjectService extends SaleOrderRepository{
 		List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
 		for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 			Product product = saleOrderLine.getProduct();
-			if(product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_SERVICE) && product.getProcurementMethodSelect().equals(ProductRepository.PROCUREMENT_METHOD_PRODUCE)){
+			if(ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_SELECT_PRODUCE){
 				ProjectTask task = new ProjectTask();
 				task.setTaskTypeSelect(ProjectTaskRepository.TYPE_TASK);
 				task.setStatusSelect(ProjectTaskRepository.STATE_PLANNED);
