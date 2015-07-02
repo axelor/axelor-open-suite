@@ -16,6 +16,9 @@
 
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
 	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
+		<toolbar>
+			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
+		</toolbar>
 		<panel title="Overview">
 			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
 			<field name="project" title="Parent Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
@@ -130,6 +133,9 @@
 	<form name="task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask" 
 	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-task-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
 	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
+		<toolbar>
+			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
+		</toolbar>
 	    <panel>
 	    	<field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>

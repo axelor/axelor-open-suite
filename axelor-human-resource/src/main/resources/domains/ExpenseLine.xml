@@ -17,6 +17,7 @@
       <string name="comments" title="Comments" large="true"/>
       <boolean name="toInvoice"/>
 	  <boolean name="invoiced" readonly="true"/>
+	  <many-to-one name="expense" ref="com.axelor.apps.hr.db.Expense" title="Expense" />
   </entity>
   
 </domain-models>
