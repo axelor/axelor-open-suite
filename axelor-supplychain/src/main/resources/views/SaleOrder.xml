@@ -57,7 +57,7 @@
 		<action name="action-sale-order-attrs-in-ati"/>
 	</action-group>
 	
-	<action-group name="action-group-supplychain-sale-order-confirmed">
+	<action-group name="action-group-supplychain-sale-order-confirmed" if-module="axelor-supplychain">
 		<action name="action-supplychain-sale-order-create-purchase-order" if="eval: GeneralService.getGeneral().getPurchaseOrderGenerationAuto()"/>
     	<action name="action-supplychain-sale-order-create-stock-move" if="eval: GeneralService.getGeneral().getCustomerStockMoveGenerationAuto()"/>
     	<action name="action-supplychain-sale-order-create-production-order" if="eval: GeneralService.getGeneral().getProductionOrderGenerationAuto()"/>
