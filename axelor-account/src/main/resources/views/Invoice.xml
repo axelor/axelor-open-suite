@@ -42,7 +42,7 @@
 			<field name="operationTypeSelect" onChange="action-group-account-invoice-operationtype-onchange" readonlyIf="statusSelect != 1"/>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-form" readonlyIf="statusSelect != 1"/>
 			<field name="currency" onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"/>
-			<field name="project" if-module="axelor-business-project" domain="self.taskTypeSelect = 'project' AND self.clientPartner = partner" form-view="project-form" grid-view="project-grid"/>
+			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 		</panel>
 	  
@@ -240,6 +240,10 @@
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="invoiceLineList.inTaxTotal" expr="!inAti"/>
+    </action-attrs>
+    
+    <action-attrs name="action-invoice-attrs-domain-project">
+    	<attribute name="domain" for="project" expr="eval: &quot; self.taskTypeSelect = 'project' AND self.clientPartner.id = ${partner?.id} &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
     </action-attrs>
 	
 	<!-- ACTION RECORD -->
