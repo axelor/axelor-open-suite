@@ -10,7 +10,6 @@
 		<field name="purchaseOrderSeq"/>
         <field name="supplierPartner"/>
         <field name="externalReference"/>
-        <field name="project" if-module="axelor-account-organisation"/>
         <field name="orderDate"/>
         <field name="buyerUser"/>
         <field name="inTaxTotal"/>
@@ -23,7 +22,6 @@
 		  <field name="purchaseOrderSeq"/>
 		  <field name="supplierPartner"/>
 		  <field name="externalReference"/>
-		  <field name="project" if-module="axelor-account-organisation"/>
 		  <field name="orderDate"/>
 		  <field name="inTaxTotal"/>
 		  <field name="statusSelect"/>
@@ -62,7 +60,6 @@
 			<field name="currency"/>
 			<field name="buyerUser"/>
 			<field name="versionNumber"/>
-			<field name="project" domain="self.taskTypeSelect = 'project'" if-module="axelor-account-organisation" form-view="project-form"/>
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
 		</panel>
 		

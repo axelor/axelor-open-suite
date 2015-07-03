@@ -39,7 +39,7 @@
 	  <many-to-many name="finishToFinishTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Finish tasks to finish"/>
 	  <many-to-many name="startToFinishTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Start tasks to finish"/>
 	  
-	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
+	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	  
 	  <string name="fullName" namecolumn="true" title="Name"/>
 
