@@ -209,7 +209,10 @@ public class SaleOrderLineController {
 		if(saleOrder != null && saleOrderLine.getProduct() != null) {
 
 			try  {
-				BigDecimal price = saleOrderLine.getProduct().getSalePrice();
+				BigDecimal price = saleOrderLine.getPrice();
+				if(price.compareTo(BigDecimal.ZERO) == 0){
+					price = saleOrderLine.getProduct().getSalePrice();
+				}
 
 				PriceList priceList = saleOrder.getPriceList();
 				int discountTypeSelect = 0;
