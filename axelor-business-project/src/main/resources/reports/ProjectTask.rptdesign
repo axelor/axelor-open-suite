@@ -380,6 +380,17 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">ProjectTaskId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -458,7 +469,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
  SO.company_cost_total as so_costs,
  (SO.company_ex_tax_total-SO.company_cost_total) as so_margin
 from sale_sale_order so
-where so.status_select = 3 and so.project = ?]]></xml-property>
+left join project_project_task project on (project.id = so.project)
+where so.status_select = 3 and (project.id = ? or project.project = ?)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -470,6 +482,21 @@ where so.status_select = 3 and so.project = ?]]></xml-property>
           <design:identifier>
             <design:name></design:name>
             <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
           </design:identifier>
           <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
@@ -627,11 +654,13 @@ where so.status_select = 3 and so.project = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
+                    <property name="paramName">ProjectTaskId</property>
                     <property name="nativeName"></property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                     <property name="position">2</property>
                     <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
                 </structure>
                 <structure>
                     <property name="name">param_3</property>
@@ -639,6 +668,14 @@ where so.status_select = 3 and so.project = ?]]></xml-property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                     <property name="position">3</property>
+                    <property name="isInput">true</property>
+                </structure>
+                <structure>
+                    <property name="name">param_4</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                    <property name="position">4</property>
                     <property name="isInput">true</property>
                 </structure>
             </list-property>
@@ -690,7 +727,8 @@ where so.status_select = 3 and so.project = ?]]></xml-property>
        sum(invl.company_ex_tax_total) as inv_total
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
-where invl.project =  ? 
+left join project_project_task project on (project.id = invl.project)
+where (project.id = ? or project.project = ?)
 and invoice.status_select = 3 
 and invoice.operation_type_select in (?,?)
 group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
@@ -721,7 +759,7 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
             <design:name></design:name>
             <design:position>2</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -735,6 +773,21 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
           <design:identifier>
             <design:name></design:name>
             <design:position>3</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>4</design:position>
           </design:identifier>
           <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
@@ -1153,6 +1206,16 @@ group by emp.id,emp.name,emp.hourly_rate]]></xml-property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">ProjectTaskId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
             </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -1202,7 +1265,8 @@ group by emp.id,emp.name,emp.hourly_rate]]></xml-property>
        sum(aml.amount) as amount
 from account_analytic_move_line aml
 left join base_product product on (product.id = aml.product)
-where aml.project_task = ?
+left join project_project_task project on (project.id = aml.project_task)
+where project.id = ? or project.project = ? 
 group by product.id,product.name]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1215,6 +1279,21 @@ group by product.id,product.name]]></xml-property>
           <design:identifier>
             <design:name></design:name>
             <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
           </design:identifier>
           <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
@@ -1262,6 +1341,16 @@ group by product.id,product.name]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">ProjectTaskId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1319,8 +1408,8 @@ group by product.id,product.name]]></xml-property>
  sum(SO.company_ex_tax_total) as so_sales,
  sum(SO.company_cost_total) as so_costs
 from sale_sale_order so
-where so.status_select = 3 
-      and so.project = ?
+left join project_project_task project on (project.id = so.project)
+where so.status_select = 3 and (project.id = ? or project.project = ?)
 group by so_date;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1333,6 +1422,21 @@ group by so_date;]]></xml-property>
           <design:identifier>
             <design:name></design:name>
             <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
           </design:identifier>
           <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
@@ -1450,6 +1554,7 @@ group by so_date;]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1460,6 +1565,7 @@ group by so_date;]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">2</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1470,6 +1576,7 @@ group by so_date;]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">3</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1480,6 +1587,7 @@ group by so_date;]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">4</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1490,6 +1598,7 @@ group by so_date;]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">5</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1500,6 +1609,7 @@ group by so_date;]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">6</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1510,6 +1620,37 @@ group by so_date;]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">7</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_8</property>
+                    <property name="paramName">ProjectTaskId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">8</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_9</property>
+                    <property name="paramName">ProjectTaskId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">9</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_10</property>
+                    <property name="paramName">ProjectTaskId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">10</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1565,7 +1706,8 @@ group by so_date;]]></xml-property>
             <xml-property name="queryText"><![CDATA[select month,sum(costs) as costs,sum(turnover) as turnover from (select to_char(invoice.invoice_date,'YYYY-MM') as month,0 as costs, sum(invl.company_ex_tax_total) as turnover
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
-where invl.project =  ?
+left join project_project_task project on (project.id = invl.project)
+where (project.id =  ? or project.project = ?)
 and invoice.status_select = 3 
 and invoice.operation_type_select in (3,4)
 group by month
@@ -1574,7 +1716,8 @@ union
 from (select to_char(invoice.invoice_date,'YYYY-MM') as month,sum(invl.company_ex_tax_total) as cost
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
-where invl.project =  ? 
+left join project_project_task project on (project.id = invl.project)
+where (project.id =  ? or project.project = ?)
 and invoice.status_select = 3 
 and invoice.operation_type_select in (1,2)
 group by month
@@ -1598,7 +1741,8 @@ group by month
 union
 select to_char(date,'YYYY-MM') as month,-1*sum(aml.amount) as cost
 from account_analytic_move_line aml
-where aml.project_task = ?
+left join project_project_task project on (project.id = aml.project_task)
+where project.id =  ? or project.project = ?
 group by month) CostData group by month)) ChartData group by month order by month]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1701,6 +1845,51 @@ group by month) CostData group by month)) ChartData group by month order by mont
           <design:identifier>
             <design:name></design:name>
             <design:position>7</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>8</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>9</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>10</design:position>
           </design:identifier>
           <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
@@ -4735,13 +4924,13 @@ group by month) CostData group by month)) ChartData group by month order by mont
                         <property name="dataSet">Invoice</property>
                         <list-property name="paramBindings">
                             <structure>
-                                <property name="paramName">param_2</property>
+                                <property name="paramName">param_3</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">3</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
-                                <property name="paramName">param_3</property>
+                                <property name="paramName">param_4</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">4</value>
                                 </simple-property-list>
@@ -5364,13 +5553,13 @@ group by month) CostData group by month)) ChartData group by month order by mont
                         <property name="dataSet">Invoice</property>
                         <list-property name="paramBindings">
                             <structure>
-                                <property name="paramName">param_2</property>
+                                <property name="paramName">param_3</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">1</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
-                                <property name="paramName">param_3</property>
+                                <property name="paramName">param_4</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">2</value>
                                 </simple-property-list>
