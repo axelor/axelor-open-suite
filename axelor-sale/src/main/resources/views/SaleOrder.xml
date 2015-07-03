@@ -389,7 +389,7 @@
     
     <action-attrs name="action-sale-order-attrs-show-elements">
     	<attribute name="hidden" for="generateProject" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getAutomaticProject() || project != null"/>
-    	<attribute name="hidden" for="generateTasks" expr="eval: project == null"/>
+    	<attribute name="hidden" for="generateTasks" expr="eval: project == null || !com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskSaleOrderLines()"/>
     </action-attrs>
     
     <action-attrs name="action-sale-order-attrs-hide-generate-tasks">
