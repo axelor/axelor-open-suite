@@ -224,16 +224,6 @@ public class InvoiceLineController {
 			try  {
 
 				BigDecimal price = invoiceLine.getPrice();
-				if(price.compareTo(BigDecimal.ZERO) == 0){
-					price = invoiceLine.getProduct().getSalePrice();
-				}
-
-				if(invoice.getOperationTypeSelect()<2){
-					price = invoiceLine.getPrice();
-					if(price.compareTo(BigDecimal.ZERO) == 0){
-						price = invoiceLine.getProduct().getPurchasePrice();
-					}
-				}
 
 				PriceList priceList = invoice.getPriceList();
 				int discountTypeSelect = 0;

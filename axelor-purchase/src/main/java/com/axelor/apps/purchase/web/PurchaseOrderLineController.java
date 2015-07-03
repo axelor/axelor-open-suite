@@ -250,9 +250,6 @@ public class PurchaseOrderLineController {
 
 			try  {
 				BigDecimal price = purchaseOrderLine.getPrice();
-				if(price.compareTo(BigDecimal.ZERO) == 0){
-					price = purchaseOrderLine.getProduct().getPurchasePrice();
-				}
 
 				PriceList priceList = purchaseOrder.getPriceList();
 				int discountTypeSelect = 0;
