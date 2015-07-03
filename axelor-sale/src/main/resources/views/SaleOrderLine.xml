@@ -88,7 +88,6 @@
     	<action name="action-sale-order-line-attrs-show-project"/>
     	<action name="action-sale-order-line-method-convert-tax"/>
     	<action name="action-sale-order-line-method-compute"/>
-    	<action name="save"/>
     	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-attrs-hide-product-variant"/>
@@ -181,7 +180,6 @@
   	<!-- ACTION ATTRS -->
     
     <action-attrs name="action-sale-order-line-attrs-hide-product-variant">
-    	<attribute name="hidden" for="productVariant" expr="eval: product?.productVariantConfiguration == null"/>
     	<attribute name="hidden" for="billOfMaterial" expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "/>
     	<attribute name="hidden" for="customizeBOM" expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "/>
     </action-attrs>
