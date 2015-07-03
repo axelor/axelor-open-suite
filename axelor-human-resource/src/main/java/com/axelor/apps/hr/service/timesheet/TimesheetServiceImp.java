@@ -15,6 +15,7 @@ import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -184,14 +185,17 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		BigDecimal discountAmount = product.getCostPrice();
 
 
-		BigDecimal qtyConverted = timesheetLine.getDurationStored();
-
+		BigDecimal qtyConverted = timesheetLine.getVisibleDuration();
+		qtyConverted = Beans.get(UnitConversionService.class).convert(product.getUnit(), GeneralService.getGeneral().getUnitHours(), timesheetLine.getVisibleDuration());
+		Unit unit = GeneralService.getGeneral().getUnitHours();
 		if(employee != null){
 			if(employee.getTimeLoggingPreferenceSelect() == EmployeeRepository.TIME_PREFERENCE_DAYS){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(product.getUnit(), GeneralService.getGeneral().getUnitDays(), timesheetLine.getDurationStored());
+				qtyConverted = Beans.get(UnitConversionService.class).convert(product.getUnit(), GeneralService.getGeneral().getUnitDays(), timesheetLine.getVisibleDuration());
+				unit = GeneralService.getGeneral().getUnitDays();
 			}
 			else if(employee.getTimeLoggingPreferenceSelect() == EmployeeRepository.TIME_PREFERENCE_MINUTES){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(product.getUnit(), GeneralService.getGeneral().getUnitMinutes(), timesheetLine.getDurationStored());
+				qtyConverted = Beans.get(UnitConversionService.class).convert(product.getUnit(), GeneralService.getGeneral().getUnitMinutes(), timesheetLine.getVisibleDuration());
+				unit = GeneralService.getGeneral().getUnitMinutes();
 			}
 
 		}
@@ -220,7 +224,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator (invoice, product, product.getName(), price,
-				null,qtyConverted,product.getUnit(),priority,discountAmount,discountTypeSelect,
+				null,qtyConverted,unit,priority,discountAmount,discountTypeSelect,
 				price.multiply(qtyConverted),null,false){
 
 			@Override
