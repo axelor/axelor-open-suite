@@ -86,8 +86,6 @@
     <action-group name="action-group-sale-saleorderline-onload">
     	<action name="action-sale-order-line-attrs-title-project-task"/>
     	<action name="action-sale-order-line-attrs-show-project"/>
-    	<action name="action-sale-order-line-method-convert-tax"/>
-    	<action name="action-sale-order-line-method-compute"/>
     	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-attrs-hide-product-variant"/>

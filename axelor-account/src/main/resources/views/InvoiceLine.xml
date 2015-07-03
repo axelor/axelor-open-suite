@@ -67,8 +67,6 @@
     <action-group name="action-account-invoice-line-onload-group">
     	<action name="action-invoice-attrs-title-project-task"/>
     	<action name="action-invoice-line-attrs-show-project"/>
-    	<action name="action-invoice-line-method-convert-tax"/>
-    	<action name="action-invoice-line-method-compute"/>
     	<action name="action-invoice-line-attrs-scale-and-precision"/>
 	    <action name="action-invoice-line-attrs-hide-product-variant"/>
 	    <action name="action-invoice-attrs-hide-ati"/>
