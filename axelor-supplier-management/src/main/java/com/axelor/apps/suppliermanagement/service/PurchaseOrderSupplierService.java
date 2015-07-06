@@ -153,7 +153,6 @@ public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 				new Object[] { parentPurchaseOrder.getPurchaseOrderSeq(), supplierPartner.getFullName() });
 
 		PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-//				parentPurchaseOrder.getProject(),
 				user,
 				parentPurchaseOrder.getCompany(),
 				null,
@@ -194,10 +193,8 @@ public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 				purchaseOrder,
 				purchaseOrderLine.getProduct(),
 				purchaseOrderLine.getDescription(),
-				null,
 				purchaseOrderLine.getQty(),
 				purchaseOrderLine.getUnit());
-//				purchaseOrderLine.getTask());
 
 	}
 }
