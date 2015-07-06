@@ -92,10 +92,10 @@
 		<context name="_template" expr="eval:true" />
 	</action-view>
 	
-	<menuitem name="sc.root.sale.conf" parent="sc-root-sale"
+	<menuitem name="sc-root-sale-conf" parent="sc-root-sale"
 		title="Configuration"  />
 
-	<menuitem name="sale-conf-cancelreason" parent="sc.root.sale.conf"
+	<menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf"
 		title="Cancel Reasons" action="sale.conf.cancelreason" />
 
 	<action-view name="sale.conf.cancelreason"
