@@ -59,7 +59,6 @@
     	<action name="action-invoice-line-attrs-scale-and-precision"/>
 	    <action name="action-invoice-line-record-new"/>
 	    <action name="action-invoice-line-record-sequence"/>
-	    <action name="action-invoice-line-attrs-hide-product-variant"/>
 	    <action name="action-invoice-attrs-hide-ati"/>
 	    <action name="action-invoice-line-record-project"/>
     </action-group>
@@ -68,12 +67,10 @@
     	<action name="action-invoice-attrs-title-project-task"/>
     	<action name="action-invoice-line-attrs-show-project"/>
     	<action name="action-invoice-line-attrs-scale-and-precision"/>
-	    <action name="action-invoice-line-attrs-hide-product-variant"/>
 	    <action name="action-invoice-attrs-hide-ati"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-line-product-onchange">
-    	<action name="action-invoice-line-attrs-hide-product-variant"/>
     	<action name="action-invoice-line-method-get-product-information"/>
     	<action name="action-invoice-line-method-convert-tax"/>
     	<action name="action-invoice-line-method-compute"/>
@@ -121,10 +118,6 @@
 		<attribute name="title" for="project" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel())"/>
 	</action-attrs>
 	
-	<action-attrs name="action-invoice-line-attrs-hide-product-variant">
-    	<attribute name="hidden" for="productVariant" expr="product?.productVariantConfiguration == null"/>
-    </action-attrs>
-    
     <action-attrs name="action-invoice-line-attrs-discountamount-title">
 		<attribute name="title" for="discountAmount" expr="Discount Rate" if="discountTypeSelect == 1"/>
 		<attribute name="title" for="discountAmount" expr="Discount Amount" if="discountTypeSelect == 2"/>

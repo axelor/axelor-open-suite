@@ -23,7 +23,6 @@
   	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
     
     <string name="description" title="Description" large="true"/>
-    <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
     
   	<many-to-one name="groupingLine" ref="com.axelor.apps.base.db.GroupingLine" title="Grouping line"/>
     
