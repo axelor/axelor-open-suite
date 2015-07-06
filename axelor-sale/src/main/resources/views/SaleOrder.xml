@@ -23,9 +23,9 @@
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
-    <form name="sale-order-subscription-cancel-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirmation annulation" >
+    <form name="sale-order-subscription-cancel-form" model="com.axelor.apps.sale.db.SaleOrder" title="Cancellation confirmation" >
 		<panel>
-			<field name="cancelReason" colSpan="12" width="200px" widget="SuggestBox"/>
+			<field name="cancelReason" colSpan="12" width="200px" widget="SuggestBox" canNew="true"/>
 			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check, action-sale-order-method-confirm-cancel" colSpan="12" width="200px"/>
 		</panel>
     </form>
