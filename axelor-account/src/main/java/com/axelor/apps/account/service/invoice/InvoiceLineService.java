@@ -128,7 +128,7 @@ public class InvoiceLineService {
 	}
 
 	public BigDecimal convertUnitPrice(InvoiceLine invoiceLine, Invoice invoice){
-		BigDecimal price = invoiceLine.getProduct().getSalePrice();
+		BigDecimal price = invoiceLine.getPrice();
 
 		if(invoiceLine.getProduct().getInAti() && !invoice.getInAti()){
 			price = price.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
