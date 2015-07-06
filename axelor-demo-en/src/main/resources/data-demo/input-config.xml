@@ -299,11 +299,11 @@
  	    <bind column="memberUserSet_id" to="memberUserSet" search="self.importId in :memberUserSet_id" eval="memberUserSet_id.split('\\|') as List"/>
  	</input>    -->
  		
- 	<input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";" search="self.importId = :importId"/>
- 	
- 	<input file="project_task.csv" type="com.axelor.apps.project.db.Task" separator=";" search="self.importId = :importId"/>
+ 	<input file="project_project_task.csv" type="com.axelor.apps.project.db.ProjectTask" separator=";" search="self.importId = :importId"/>
  	
  	<input file="hr_timeActivity.csv" type="com.axelor.apps.hr.db.TimeActivity" separator=";" search="self.importId = :importId"/>
+ 	
+ 	<input file="hr_timesheet.csv" type="com.axelor.apps.hr.db.Timesheet" separator=";" search="self.importId = :importId"/>
  	
  	<input file="hr_timesheetLine.csv" type="com.axelor.apps.hr.db.TimesheetLine" separator=";" search="self.importId = :importId">
 		<bind to="durationStored" eval="call:com.axelor.csv.script.ImportDurationStored:getDurationHoursImport(visibleDuration)"/>
