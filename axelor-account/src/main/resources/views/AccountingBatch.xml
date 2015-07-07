@@ -6,33 +6,33 @@
     <grid name="accounting-batch-grid" title="Accounting batches" model="com.axelor.apps.account.db.AccountingBatch">
     	<field name="actionSelect" />
     	<field name="code" />
-		<field name="company" />
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="createdOn"/>
-		<field name="createdBy"/>
+		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
     </grid>
  
 <form  onNew="action-accounting-batch-record-on-new" name="accounting-batch-form" title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch">
 	<panel >
 		<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
 		<field name="code"/>
-		<field name="company" widget="SuggestBox"/>
-		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
+		<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		<field name="archived" title="Archived ?"/>
 	</panel>
 	<panel-tabs>
 		<panel name="reimbursementPage" title="Reimbursement configuration" hideIf="actionSelect != 11">
 			<field name="reimbursementTypeSelect"/>
 			<field name="reimbursementExportTypeSelect" hideIf="reimbursementTypeSelect != 1"/>
-			<field name="currency" readonly="true"/>
+			<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
 		</panel>
 		<panel name="directDebitPage" title="Direct debit configuration" hideIf="actionSelect != 12">
 			<field name="directDebitTypeSelect"/>
-			<field name="currency" readonly="true"/>
+			<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
 			<panel name="directDebitExportGroup" hideIf="directDebitTypeSelect != 1"  >
 				<field name="directDebitExportTypeSelect"/>
 				<field name="debitDate"/>
 				<field name="hasToReExportCfbonb" showIf="directDebitExportTypeSelect != 2"/>
-				<field name="batchToReExport" showIf="hasToReExportCfbonb" domain="self.accountingBatch.id = :id"/>
+				<field name="batchToReExport" showIf="hasToReExportCfbonb" domain="self.accountingBatch.id = :id" form-view="batch-form" grid-view="batch-grid"/>
 				<field name="isSepaDirectDebit"/>
 			</panel>
 		</panel>
@@ -41,7 +41,7 @@
 		</panel>
 		<panel name="interbankPaymentOrderPage" title="Payments by IPO and IPO Cheque configuration" hideIf="actionSelect != 15">
 			<field name="interbankPaymentOrderTypeSelect"/>
-			<field name="currency" readonly="true"/>
+			<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
 		</panel>
 		<!--<page name="doubtfulCustormerPage" title="Doubtful customers configuration" hideIf="actionSelect != 16"  />-->
 		<panel name="accountCustomerPage" title="Account calculation configuration" hideIf="actionSelect != 17">
@@ -58,7 +58,7 @@
 		</panel>
 		<panel title="Information"  >
 			<field name="createdOn" title="Created on"/>
-			<field name="createdBy" title="Created by"/>
+			<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
 			<field name="description" showTitle="false"  />
 	      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
 		</panel>

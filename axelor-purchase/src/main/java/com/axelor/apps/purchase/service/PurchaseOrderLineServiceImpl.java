@@ -149,7 +149,7 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 
 
 	@Override
-	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description, ProductVariant productVariant, BigDecimal qty, Unit unit) throws AxelorException  {
+	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description, BigDecimal qty, Unit unit) throws AxelorException  {
 
 		PurchaseOrderLine purchaseOrderLine = new PurchaseOrderLine();
 		purchaseOrderLine.setPurchaseOrder(purchaseOrder);
@@ -161,7 +161,6 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 
 		purchaseOrderLine.setProduct(product);
 		purchaseOrderLine.setProductName(product.getName());
-		purchaseOrderLine.setProductVariant(productVariant);
 
 		purchaseOrderLine.setQty(qty);
 		purchaseOrderLine.setSequence(sequence);

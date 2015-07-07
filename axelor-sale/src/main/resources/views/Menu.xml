@@ -90,7 +90,19 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:true" />
-	</action-view>	
+	</action-view>
+	
+	<menuitem name="sc-root-sale-conf" parent="sc-root-sale"
+		title="Configuration"  />
+
+	<menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf"
+		title="Cancel Reasons" action="sale.conf.cancelreason" />
+
+	<action-view name="sale.conf.cancelreason"
+		title="Cancel Reason" model="com.axelor.apps.sale.db.CancelReason" >
+		<view type="grid" name="cancel-reason-grid" />
+		<view type="form" name="cancel-reason-form" />
+	</action-view>
 	
 
 <!-- ADMINISTRATION -->

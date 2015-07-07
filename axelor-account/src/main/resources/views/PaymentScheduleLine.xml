@@ -5,14 +5,14 @@
 
 	<grid name="payment-schedule-line-grid" title="Schedule lines"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate">
-		<field name="paymentSchedule" />
+		<field name="paymentSchedule" form-view="payment-schedule-form" grid-view="payment-schedule-grid" />
 		<field name="scheduleLineSeq" />
 		<field name="inTaxAmount" />
 		<field name="inTaxAmountPaid" />
 		<field name="scheduleDate" />
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
-		<field name="interbankCodeLine" />
+		<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 		<field name="statusSelect" />
 		<field name="debitNumber" />
 		<field name="fromReject" />
@@ -21,20 +21,20 @@
 	<form name="payment-schedule-line-form" title="Schedule line"
 		model="com.axelor.apps.account.db.PaymentScheduleLine"  >
 		<panel >
-		<field name="paymentSchedule" />
+		<field name="paymentSchedule" form-view="payment-schedule-form" grid-view="payment-schedule-grid" />
 		<field name="scheduleLineSeq" />
 		<field name="inTaxAmount" readonlyIf="fromReject"/>
 		<field name="inTaxAmountPaid" />
 		<field name="scheduleDate" />
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
-		<field name="interbankCodeLine" />
+		<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 		<field name="statusSelect" />
 		<field name="debitNumber" />
-		<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line"/>
-		<field name="rejectMoveLine" />
-		<field name="advanceOrPaymentMove" />
-		<field name="advanceMoveLine" />
+		<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
+		<field name="rejectMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+		<field name="advanceOrPaymentMove" form-view="move-form" grid-view="move-grid"/>
+		<field name="advanceMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
 		<field name="fromReject" />
 		</panel>
 	</form>
@@ -46,7 +46,7 @@
 		<field name="scheduleDate" />
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
-		<field name="interbankCodeLine" />
+		<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 		<field name="fromReject" />
 		<field name="statusSelect" />
 	</grid>
@@ -61,12 +61,12 @@
 		<field name="scheduleDate" />
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
-		<field name="interbankCodeLine" />
+		<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 		<field name="debitNumber" />
-		<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line"/>
-		<field name="rejectMoveLine" />
-		<field name="advanceOrPaymentMove" />
-		<field name="advanceMoveLine" />
+		<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
+		<field name="rejectMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+		<field name="advanceOrPaymentMove" form-view="move-form" grid-view="move-grid"/>
+		<field name="advanceMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
 		<field name="fromReject" />
 		<field name="statusSelect" readonly="true" />
 		</panel>

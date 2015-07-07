@@ -4,9 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="accounting-situation-partner-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
-    	<field name="company" />
-    	<field name="customerAccount"/>
-       	<field name="supplierAccount"/>
+    	<field name="company" form-view="company-form" grid-view="company-grid"/>
+    	<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
+       	<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
         <field name="balanceCustAccount"/>
         <field name="balanceDueCustAccount"/>
         <field name="balanceDueReminderCustAccount"/>
@@ -16,9 +16,9 @@
 	     onLoad="action-account-accounting-situation-method-update-customer-account" 
 	     onNew="action-account-accounting-situation-default-set" >
 		<panel  itemSpan="4">
-			<field name="company" widget="SuggestBox" form-view="company-form"/>
-			<field name="customerAccount"/>
-			 <field name="supplierAccount"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
+       		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
 		</panel>
 	    	
 		<panel title="Customer balance" itemSpan="4">
@@ -27,17 +27,17 @@
 			<field name="balanceDueReminderCustAccount"/>
 		</panel>
 	    <panel title="Reminder process">
-	    	<field name="reminder"/>
+	    	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
 	    </panel>
 	    <panel-dashlet action="action-accounting-situation-view-move-lines"/>
 	</form>
     
     
     <grid name="accounting-situation-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
-    	<field name="company" />
-    	<field name="partner"/>
-    	<field name="customerAccount"/>
-       	<field name="supplierAccount"/>
+    	<field name="company" form-view="company-form" grid-view="company-grid"/>
+    	<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    	<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
+       	<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
         <field name="balanceCustAccount"/>
         <field name="balanceDueCustAccount"/>
         <field name="balanceDueReminderCustAccount"/>
@@ -47,10 +47,10 @@
 	     onLoad="action-account-accounting-situation-method-update-customer-account"  
 	     onNew="action-account-accounting-situation-default-set" >
 		<panel >
-			<field name="company" widget="SuggestBox"/>
-			<field name="partner"/>
-			<field name="customerAccount"/>
-			<field name="supplierAccount"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
+       		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
 		</panel>
 	    	
 		<panel title="Customer balance"  itemSpan="4" >
@@ -59,7 +59,7 @@
 			<field name="balanceDueReminderCustAccount"/>
 		</panel>
 	    <panel title="Reminder process"  >
-	    	<field name="reminder"/>
+	    	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
 	    </panel>
 	     <panel-dashlet action="action-accounting-situation-view-move-lines"/>
 	</form>

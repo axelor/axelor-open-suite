@@ -2,17 +2,17 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
-    <grid name="reminderMethod-grid" title="Reminder methods" model="com.axelor.apps.account.db.ReminderMethod">
+    <grid name="reminder-method-grid" title="Reminder methods" model="com.axelor.apps.account.db.ReminderMethod">
     	<field name="name"/>
     	<field name="code"/>
     </grid>
-    <form name="reminderMethod-form" title="Reminder method" model="com.axelor.apps.account.db.ReminderMethod"  >
+    <form name="reminder-method-form" title="Reminder method" model="com.axelor.apps.account.db.ReminderMethod"  >
     	
     	<panel >
     		<field name="name"/>
     		<field name="code"/>
        	</panel>
-       	<panel-related field="reminderMethodLineList" colSpan="12"/>
+       	<panel-related field="reminderMethodLineList" colSpan="12" form-view="reminder-method-line-form" grid-view="reminder-method-line-grid"/>
     </form>
 
 </object-views>

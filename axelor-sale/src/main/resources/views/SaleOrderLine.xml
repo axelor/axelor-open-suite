@@ -76,7 +76,7 @@
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-record-new"/>
     	<action name="action-sale-order-line-record-sequence"/>
-    	<action name="action-sale-order-line-attrs-hide-product-variant"/>
+    	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
     	<action name="action-sale-order-attrs-hide-ati"/>
@@ -88,7 +88,7 @@
     	<action name="action-sale-order-line-attrs-show-project"/>
     	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
-    	<action name="action-sale-order-line-attrs-hide-product-variant"/>
+    	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
     	<action name="action-sale-order-attrs-hide-ati"/>
@@ -100,7 +100,7 @@
     	<action name="action-sale-order-line-method-get-product-information"/>
     	<action name="action-sale-order-line-method-convert-tax"/>
     	<action name="action-sale-order-line-method-compute"/>
-    	<action name="action-sale-order-line-attrs-hide-product-variant"/>
+    	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-get-production-information" if="axelor-production"/>
     	<action name="action-sale-order-line-attrs-title-price"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
@@ -113,9 +113,9 @@
     	<action name="action-sale-order-line-method-compute"/>
     </action-group>
 
-    <action-group name="action-group-sale-saleorderline-salesupplyselect-onchange">
-    	<action name="action-sale-order-line-get-production-information" if="axelor-production"/>
-    	<action name="action-sale-order-line-attrs-hide-product-variant"/>
+    <action-group name="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-production">
+    	<action name="action-sale-order-line-get-production-information"/>
+    	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     </action-group>
     
     <action-attrs name="action-sale-order-attrs-hide-ati">
@@ -146,6 +146,7 @@
     	<field name="sequence" expr="eval: (_parent?.saleOrderLineList.size()+1)*10" if="eval: _parent?.saleOrderLineList != null"/>
     </action-record>
     
+<!--     TODO : should be splited per module -->
     <action-record name="action-sale-order-line-get-production-information" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="billOfMaterial" expr="eval: product?.defaultBillOfMaterial" if="saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial != null"/>
     	<field name="billOfMaterial" expr="eval: product?.parentProduct?.defaultBillOfMaterial" if="saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial == null"/>
@@ -177,7 +178,7 @@
 	
   	<!-- ACTION ATTRS -->
     
-    <action-attrs name="action-sale-order-line-attrs-hide-product-variant">
+    <action-attrs name="action-sale-order-line-attrs-hide-bill-of-material" if-module="axelor-production">
     	<attribute name="hidden" for="billOfMaterial" expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "/>
     	<attribute name="hidden" for="customizeBOM" expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "/>
     </action-attrs>

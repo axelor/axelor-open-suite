@@ -208,15 +208,17 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	protected String getDraftSequence(SaleOrder saleOrder)  {
 		return "*" + saleOrder.getId();
 	}
-	
+
+	@Override
 	public void setDraftSequence(SaleOrder saleOrder)  {
-		
+
 		if (saleOrder.getId() != null && Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()))  {
 			saleOrder.setSaleOrderSeq(this.getDraftSequence(saleOrder));
 		}
-		
+
 	}
-	
+
+	@Override
 	public SaleOrder createSaleOrder(Company company) throws AxelorException{
 		SaleOrder saleOrder = new SaleOrder();
 		saleOrder.setCreationDate(GeneralService.getTodayDate());
@@ -252,7 +254,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 			salemanUser = AuthUtils.getUser();
 		}
 		saleOrder.setSalemanUser(salemanUser);
-		
+
 		if(team == null)  {
 			team = salemanUser.getActiveTeam();
 		}
@@ -260,23 +262,23 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		if(company == null)  {
 			company = salemanUser.getActiveCompany();
 		}
-		
+
 		saleOrder.setCompany(company);
-		
+
 		saleOrder.setMainInvoicingAddress(clientPartner.getMainInvoicingAddress());
 		saleOrder.setDeliveryAddress(clientPartner.getDeliveryAddress());
-		
+
 		if(priceList == null)  {
 			priceList = clientPartner.getSalePriceList();
 		}
-		
+
 		saleOrder.setPriceList(priceList);
-		
+
 		saleOrder.setSaleOrderLineList(new ArrayList<SaleOrderLine>());
 
 		saleOrder.setSaleOrderSeq(this.getSequence(company));
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_DRAFT);
-		
+
 		this.computeEndOfValidityDate(saleOrder);
 
 		return saleOrder;
@@ -285,7 +287,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancelSaleOrder(SaleOrder saleOrder){
-		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.partner = ?2 ");
+		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
 		q.setParameter(1, ISaleOrder.STATUS_ORDER_CONFIRMED);
 		q.setParameter(2, saleOrder.getClientPartner());
 		if((long) q.getSingleResult() == 1)  {
@@ -361,15 +363,16 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		copy.setTemplateUser(AuthUtils.getUser());
 		return copy;
 	}
-	
-	
+
+
+	@Override
 	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder)  {
-		
+
 		saleOrder.setEndOfValidityDate(
 				Beans.get(DurationService.class).computeDuration(saleOrder.getDuration(), saleOrder.getCreationDate()));
-		
+
 		return saleOrder;
-		
+
 	}
 
 }

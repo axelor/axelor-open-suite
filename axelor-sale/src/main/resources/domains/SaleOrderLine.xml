@@ -42,8 +42,6 @@
 <!--   	Devis-commande fournisseur -->
 	<date name="deliveryDate" title="Delivery date"/>
 
-  	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
-  	
 <!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
   	<decimal name="companyCostPrice" title="Unit cost price in company currency" hidden="true"/>

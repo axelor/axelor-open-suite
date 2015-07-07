@@ -4,19 +4,19 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     <grid name="payment-invoice-grid" title="Invoices to pay" model="com.axelor.apps.account.db.PaymentInvoice" orderBy="moveLine.dueDate">
         <field name="moveLine.dueDate"/>
-        <field name="moveLine"/>
+        <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="moveLine.move.invoice"/>
-        <field name="currency"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="invoiceAmount"/>
         <field name="paidAmount"/>
         <field name="moveLine.amountRemaining"/>
     </grid>
     <form name="payment-invoice-form" title="Invoices to pay" model="com.axelor.apps.account.db.PaymentInvoice"  >
         <panel >
-        	 <field name="moveLine"/>
+        	<field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
 	        <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
 	        <field name="moveLine.dueDate"/>
-	        <field name="currency"/>
+	        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="invoiceAmount"/>
 	        <field name="paidAmount"/>
 	        <field name="moveLine.amountRemaining"/>

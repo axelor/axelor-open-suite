@@ -359,7 +359,6 @@
 		<option value="proTraining">Professional training</option>
 		<option value="productionOrder">Production order</option>
 		<option value="manufOrder">Manufacturing order</option>
-		<option value="businessFolder">Business Folder</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">

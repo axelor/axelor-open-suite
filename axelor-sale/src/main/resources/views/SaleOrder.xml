@@ -23,9 +23,9 @@
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
-    <form name="sale-order-subscription-cancel-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirmation annulation" >
+    <form name="sale-order-subscription-cancel-form" model="com.axelor.apps.sale.db.SaleOrder" title="Cancellation confirmation" >
 		<panel>
-			<field name="cancelReason" colSpan="12" width="200px" widget="SuggestBox"/>
+			<field name="cancelReason" colSpan="12" width="200px" widget="SuggestBox" canNew="true"/>
 			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check, action-sale-order-method-confirm-cancel" colSpan="12" width="200px"/>
 		</panel>
     </form>
@@ -114,7 +114,7 @@
 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain"/> 
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing"/>
 	    <panel name="projectPanel" title="Business project" colSpan="12" if-module="axelor-business-project" onTabSelect="action-sale-order-attrs-show-elements">
-      		  <field name="project" domain="self.taskTypeSelect = 'project' AND self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12" onChange="action-sale-order-attrs-show-elements"/>
+      		  <field name="project" domain="self.typeSelect = 'project' AND self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12" onChange="action-sale-order-attrs-show-elements"/>
 	          <button name="generateProject" title="Generate Project" hidden="true" onClick="save,action-sale-order-method-generate-project,action-sale-order-attrs-show-elements"/>
 	          <button name="generateTasks" title="Generate Tasks" onClick="save,action-sale-order-method-generate-tasks,action-sale-order-attrs-hide-generate-tasks"/>
        	</panel>
@@ -256,7 +256,7 @@
 	      </panel>
 	    </panel>
 	    <panel name="projectPanel" title="Business project" colSpan="12" if-module="axelor-business-project" onTabSelect="action-sale-order-attrs-show-elements">
-      		  <field name="project" domain="self.taskTypeSelect = 'project'" form-view="project-form" grid-view="project-grid" colSpan="12"/>
+      		  <field name="project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" colSpan="12"/>
        	</panel>
 	  </panel-tabs>
 	  

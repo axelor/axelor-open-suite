@@ -102,8 +102,8 @@
 
     <action-view name="account.root.payment.schedule.payment.schedule"
         title="Payment Schedules" model="com.axelor.apps.account.db.PaymentSchedule">
-        <view type="grid" />
-        <view type="form" />
+        <view type="grid" name="payment-schedule-grid"/>
+        <view type="form" name="payment-schedule-form"/>
         <view-param name="search-filters" value="payment-schedule-filters"/>
     </action-view>
 
@@ -113,8 +113,8 @@
 
     <action-view name="account.root.payment.schedule.payment.schedule.line"
         title="Payment schedule line" model="com.axelor.apps.account.db.PaymentScheduleLine">
-        <view type="grid" />
-        <view type="form" />
+        <view type="grid" name="payment-schedule-line-grid"/>
+        <view type="form" name="payment-schedule-line-form"/>
         <view-param name="search-filters" value="payment-schedule-line-filters"/>
     </action-view>
 
@@ -131,8 +131,8 @@
 
 	<action-view name="account.root.move.move" title="Moves"
 		model="com.axelor.apps.account.db.Move" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="move-grid" />
+		<view type="form" name="move-form"/>
 		<view-param name="search-filters" value="move-filters"/>
 	</action-view>
 
@@ -156,8 +156,8 @@
 
 	<action-view name="account.root.payments.payment.voucher"
 		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="payment-voucher-grid"/>
+		<view type="form" name="payment-voucher-form"/>
 		<view-param name="search-filters" value="payment-voucher-filters"/>
 	</action-view>
 	
@@ -167,8 +167,8 @@
 
 	<action-view name="account.root.payments.new.cust.payment"
 		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="form" />
-		<view type="grid" />
+		<view type="form" name="payment-voucher-form"/>
+		<view type="grid" name="payment-voucher-grid"/>
 		<view-param name="search-filters" value="payment-voucher-filters"/>
 		<context name="_operationTypeSelect" expr="eval:3"/>
 	</action-view>
@@ -179,8 +179,8 @@
 
 	<action-view name="account.root.payments.new.cust.refund"
 		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="form" />
-		<view type="grid" />
+		<view type="form" name="payment-voucher-form"/>
+		<view type="grid" name="payment-voucher-grid"/>
 		<view-param name="search-filters" value="payment-voucher-filters"/>
 		<context name="_operationTypeSelect" expr="eval:4"/>
 	</action-view>
@@ -191,8 +191,8 @@
 
 	<action-view name="account.root.payments.new.suppl.payment"
 		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="form" />
-		<view type="grid" />
+		<view type="form" name="payment-voucher-form"/>
+		<view type="grid" name="payment-voucher-grid"/>
 		<view-param name="search-filters" value="payment-voucher-filters"/>
 		<context name="_operationTypeSelect" expr="eval:1"/>
 	</action-view>
@@ -203,8 +203,8 @@
 
 	<action-view name="account.root.payments.new.suppl.refund"
 		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="form" />
-		<view type="grid" />
+		<view type="form" name="payment-voucher-form"/>
+		<view type="grid" name="payment-voucher-grid"/>
 		<view-param name="search-filters" value="payment-voucher-filters" />
 		<context name="_operationTypeSelect" expr="eval:2"/>
 	</action-view>
@@ -218,8 +218,8 @@
 
 	<action-view name="account.root.periodic.processing.reconcile"
 		title="Reconcilations" model="com.axelor.apps.account.db.Reconcile" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="reconcile-grid"/>
+		<view type="form" name="reconcile-form"/>
 		<view-param name="search-filters" value="reconcile-filters"/>
 	</action-view>
 
@@ -229,8 +229,8 @@
 
 	<action-view name="account.root.periodic.processing.cash.register.closure"
 		title="Cash register closure" model="com.axelor.apps.account.db.CashRegisterLine" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="cash-register-line-grid"/>
+		<view type="form" name="cash-register-line-form"/>
 	</action-view>
 
 	<menuitem name="account-root-periodic-processing-overpayment-clearances"
@@ -239,8 +239,8 @@
 
 	<action-view name="account.root.periodic.processing.overpayment.clearances"
 		title="Overpayments clearances" model="com.axelor.apps.account.db.AccountClearance" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="account-clearance-grid" />
+		<view type="form" name="account-clearance-form"/>
 	</action-view>
 
 	<menuitem name="account-root-periodic-processing-shift-irrecoverable"
@@ -249,8 +249,8 @@
 
 	<action-view name="account.root.periodic.processing.shift.irrecoverable"
 		title="Shift to irrecoverable" model="com.axelor.apps.account.db.Irrecoverable" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="irrecoverable-grid" />
+		<view type="form" name="irrecoverable-form"/>
 	</action-view>
 
 	<menuitem name="account-root-periodic-processing-cheque-reject"
@@ -259,8 +259,8 @@
 
 	<action-view name="account.root.periodic.processing.cheque.reject"
 		title="Rejects of cheques" model="com.axelor.apps.account.db.ChequeRejection" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="cheque-rejection-grid"/>
+		<view type="form" name="cheque-rejection-form"/>
 		<view-param name="search-filters" value="cheque-rejection-filters"/>
 		<context name="_newDate1" expr="eval: __date__.minusDays(5)"/>
 		<context name="_newDate2" expr="eval: __date__.minusDays(30)"/>
@@ -314,8 +314,8 @@
 
 	<action-view name="debt.recovery.root.conf.reminder.method"
 		title="Reminder methods" model="com.axelor.apps.account.db.ReminderMethod" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="reminder-method-grid"/>
+		<view type="form" name="reminder-method-form"/>
 	</action-view>
 
 	<menuitem name="debt-recovery-root-conf-reminder-level"
@@ -324,8 +324,8 @@
 
 	<action-view name="debt.recovery.root.conf.reminder.level"
 		title="Reminder levels" model="com.axelor.apps.account.db.ReminderLevel" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="reminder-level-grid"/>
+		<view type="form" name="reminder-level-form"/>
 	</action-view>
 
 	
@@ -337,8 +337,8 @@
 
 	<action-view name="account.root.accounting.reimbursement"
 		title="Reimbursements" model="com.axelor.apps.account.db.Reimbursement" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="reimbursement-grid" />
+		<view type="form" name="reimbursement-form"/>
 		<view-param name="search-filters" value="reimbursement-filters"/>
 	</action-view>
 
@@ -369,8 +369,8 @@
 		
 	<action-view name="account.conf.cash.register" title="Cash registers"
 		model="com.axelor.apps.account.db.CashRegister" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="cash-register-grid"/>
+		<view type="form" name="cash-register-form"/>
 	</action-view>
 	
 	<menuitem name="account-conf-financial" parent="account-conf"
@@ -401,8 +401,8 @@
 
 	<action-view name="account.conf.financial.journal" title="Journals"
 		model="com.axelor.apps.account.db.Journal" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="journal-grid"/>
+		<view type="form" name="journal-form"/>
 	</action-view>
 
 	<menuitem name="account-conf-financial-journal-type" parent="account-conf-financial"
@@ -410,8 +410,8 @@
 
 	<action-view name="account.conf.financial.journal.type"
 		title="Journal types" model="com.axelor.apps.account.db.JournalType" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="journal-type-grid"/>
+		<view type="form" name="journal-type-form"/>
 	</action-view>
 
 	<menuitem name="account-conf-financial-account" parent="account-conf-financial"
@@ -419,8 +419,8 @@
 
 	<action-view name="account.conf.financial.account" title="Financial Accounts"
 		model="com.axelor.apps.account.db.Account" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="account-grid" />
+		<view type="form" name="account-form" />
 	</action-view>
 
 	<menuitem name="account-conf-financial-accounting-plan"
@@ -447,8 +447,8 @@
 
 	<action-view name="account.conf.financial.account.type"
 		title="Account types" model="com.axelor.apps.account.db.AccountType" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="account-type-grid"/>
+		<view type="form" name="account-type-form"/>
 	</action-view>
 	
 	<menuitem name="account-conf-financial-tax" parent="account-conf-financial"
@@ -456,8 +456,8 @@
 
 	<action-view name="account.conf.financial.tax" title="V.A.T."
 		model="com.axelor.apps.account.db.Tax" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="tax-grid"/>
+		<view type="form" name="tax-form"/>
 	</action-view>
 	
 	<menuitem name="account-conf-analytic" parent="account-conf"
@@ -468,8 +468,8 @@
 
 	<action-view name="account.conf.analytic.journal" title="Analytic journals"
 		model="com.axelor.apps.account.db.AnalyticJournal" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="analytic-journal-grid"/>
+		<view type="form" name="analytic-journal-form"/>
 	</action-view>
 
 	<menuitem name="account-conf-analytic-account" parent="account-conf-analytic"
@@ -477,8 +477,8 @@
 
 	<action-view name="account.conf.analytic.account" title="Analytic accounts"
 		model="com.axelor.apps.account.db.AnalyticAccount" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="analytic-account-grid"/>
+		<view type="form" name="analytic-account-form"/>
 	</action-view>
 
 	<menuitem name="account-conf-analytic-axis" parent="account-conf-analytic"
@@ -486,8 +486,8 @@
 
 	<action-view name="account.conf.analytic.axis" title="Analytic axis"
 		model="com.axelor.apps.account.db.AnalyticAxis" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="analytic-axis-grid"/>
+		<view type="form" name="analytic-axis-form"/>
 	</action-view>
 	
 	<menuitem name="account-conf-analytic-move-line" parent="account-conf-analytic"
@@ -495,8 +495,8 @@
 
 	<action-view name="account.conf.analytic.move.line" title="Analytic Move Lines"
 		model="com.axelor.apps.account.db.AnalyticMoveLine" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="analytic-move-line-grid"/>
+		<view type="form" name="analytic-move-line-form"/>
 	</action-view>
 
 	<menuitem name="account-conf-payment" parent="account-conf"
@@ -507,8 +507,8 @@
 
 	<action-view name="account.conf.payment.payment.mode"
 		title="Payment modes" model="com.axelor.apps.account.db.PaymentMode" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="payment-mode-grid"/>
+		<view type="form" name="payment-mode-form"/>
 	</action-view>
 	
 	<menuitem name="account-conf-payment-paybox" parent="account-conf-payment" 
@@ -516,8 +516,8 @@
 
 	<action-view name="account.conf.payment.paybox"
 		title="Paybox" model="com.axelor.apps.account.db.Paybox" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="paybox-grid"/>
+		<view type="form" name="paybox-form"/>
 	</action-view>
 	
 	<menuitem name="account-conf-payment-payment-condition" parent="account-conf-payment" 
@@ -525,8 +525,8 @@
 
 	<action-view name="account.conf.payment.payment.condition"
 		title="Payment conditions" model="com.axelor.apps.account.db.PaymentCondition">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="payment-condition-grid" />
+		<view type="form" name="payment-condition-form"/>
 	</action-view>
 	
 	<menuitem name="account-conf-reporting" parent="account-conf"
@@ -537,8 +537,8 @@
 
 	<action-view name="account.conf.reporting.interbank.code"
 		title="Reject/Return reason codes" model="com.axelor.apps.account.db.InterbankCode" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="interbank-code-grid"/>
+		<view type="form" name="interbank-code-form"/>
 	</action-view>
 	
 	<menuitem name="admin-root-batch-accounting" parent="admin-root-batch"
@@ -546,8 +546,8 @@
 
 	<action-view name="admin.root.batch.accounting" title="Accounting batches"
 		model="com.axelor.apps.account.db.AccountingBatch" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="accounting-batch-grid"/>
+		<view type="form" name="accounting-batch-form"/>
 	</action-view>
 	
 	<menuitem name="admin-root-conf-account-config" parent="admin-root-conf"
@@ -555,8 +555,8 @@
 		
 	<action-view name="admin.root.conf.account.config" title="Account configurations"
 		model="com.axelor.apps.account.db.AccountConfig" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="account-config-grid"/>
+		<view type="form" name="account-config-form"/>
 	</action-view>
 	
 	
@@ -689,7 +689,7 @@
 	
 	<menuitem name="top-payments-create-payment" title="Create Payment" parent="top-payments" order="-100" action="top.payments.new"/>
 	<action-view name="top.payments.new" title="Create Payment" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="form"/>
+		<view type="form" name="payment-voucher-form"/>
 	</action-view>
 	<menuitem name="top-payments-all" order="-90" title="View Payments" groups="admins,ERP"  parent="top-payments" action="account.root.payments.payment.voucher" top="true" left="false"/>
 			
@@ -697,8 +697,8 @@
 	
 	<action-view name="top.payments.customers"
 		title="Cust. Payments" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="payment-voucher-grid"/>
+		<view type="form" name="payment-voucher-form"/>
 		<view-param name="search-filters" value="payment-voucher-filters"/>
 		<domain>self.operationTypeSelect in (3,4)</domain>
 	</action-view>
@@ -707,8 +707,8 @@
 	
 	<action-view name="top.payments.suppliers"
 		title="Supplier Payments" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="payment-voucher-grid"/>
+		<view type="form" name="payment-voucher-form"/>
 		<view-param name="search-filters" value="payment-voucher-filters"/>
 		<domain>self.operationTypeSelect in (1,2)</domain>
 	</action-view>

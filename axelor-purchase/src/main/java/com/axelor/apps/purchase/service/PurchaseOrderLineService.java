@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -54,7 +53,7 @@ public interface PurchaseOrderLineService extends Repository<PurchaseOrderLine>{
 	public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine);
 
 
-	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description, ProductVariant productVariant,
+	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description,
 			BigDecimal qty, Unit unit) throws AxelorException;
 
 

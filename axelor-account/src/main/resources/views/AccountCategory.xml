@@ -14,8 +14,8 @@
 	        <field name="name"/>
 	        <field name="type"/>
 	        <field name="signType"/>
-	        <field name="accounts"/>
-	        <field name="accountCategoryLines"/>
+	        <field name="accounts" form-view="account-form" grid-view="account-grid"/>
+	        <field name="accountCategoryLines" form-view="account-category-line-form" grid-view="account-category-line-form"/>
        </panel>
     </form>
     

@@ -4,9 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     <grid name="payment-invoice-to-pay-grid" title="Payment voucher invoices to pay" model="com.axelor.apps.account.db.PaymentInvoiceToPay">
         <field name="sequence"/>
-        <field name="moveLine.move.invoice"/>
-        <field name="moveLine"/>
-        <field name="currency"/>
+        <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
+        <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="totalAmount"/>
         <field name="remainingAmount"/>
         <field name="remainingAmountAfterPayment"/>
@@ -16,13 +16,13 @@
         <panel >
         	<field name="sequence"/>
 	        <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
-	        <field name="moveLine"/>
-	        <field name="currency"/>
+	        <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+	        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="totalAmount"/>
 	        <field name="remainingAmount"/>
 	        <field name="remainingAmountAfterPayment"/>
 	        <field name="amountToPay"/>
-	        <field name="moveLineGenerated"/>
+	        <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"/>
         </panel>
         
     </form>

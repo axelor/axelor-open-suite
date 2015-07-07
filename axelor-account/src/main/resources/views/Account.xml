@@ -8,8 +8,8 @@
         <field name="name"/>
         <field name="accountType"/>
         <field name="reconcileOk"/>
-        <field name="parent"/>
-        <field name="company"/>
+        <field name="parent" form-view="account-form" grid-view="account-grid"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
 	
 	<grid name="account-simple-grid" title="Accounts" model="com.axelor.apps.account.db.Account">
@@ -36,8 +36,8 @@
 			<field name="name" colSpan="9" css="bold"/>
 			<panel title="Settings" colSpan="12">
 				<field name="accountType"/>
-				<field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form"/>
-				<field name="parent" onChange="action-group-account-account-onchange-common" domain="self.company = :company"/>
+				<field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
+				<field name="parent" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
 				<field name="reconcileOk"/>
 			</panel>
 	   </panel>
