@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
@@ -105,15 +104,7 @@ public class InvoiceLineService {
 	}
 
 	public BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice)  {
-		BigDecimal unitPrice = BigDecimal.ZERO;
-
-		if(invoice.getOperationTypeSelect()<InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
-			unitPrice = invoiceLine.getProduct().getCostPrice();
-		}
-
-		if(invoice.getOperationTypeSelect()>=InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
-			unitPrice = invoiceLine.getProduct().getSalePrice();
-		}
+		BigDecimal unitPrice = invoiceLine.getPrice();
 
 		if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
 			return  unitPrice.add(invoiceLine.getDiscountAmount());
