@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="cash-register-line-grid" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine">
-        <field name="user"/>
-        <field name="cashRegister"/>
+        <field name="user" form-view="user-form" grid-view="user-grid"/>
+        <field name="cashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
         <field name="createDateTime"/>
         <field name="cashRegisterDate"/>
         <field name="cashRegisterAmount"/>
@@ -18,9 +18,9 @@
 	 
 		<panel  readonlyIf="emailSentOk">
 			<field name="statusSelect"/>
-			<field name="user"/>
+			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="createDateTime"/>
-			<field name="cashRegister"/>
+			<field name="cashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
 			<field name="cashRegisterDate"/>
 		</panel> 
 		

@@ -8,7 +8,7 @@
         <field name="productName"/>
         <field name="qty"/>
         <field name="price"/>
-        <field name="unit"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="exTaxTotal"/>
 	    <field name="inTaxTotal"/>
     </grid>
@@ -19,16 +19,16 @@
     	<panel-tabs>
     		<panel title="Informations">
     			<field name="sequence"/>
-    			<field name="saleOrder" if-module="axelor-supplychain"/>
-    			<field name="saleOrderLine" if-module="axelor-supplychain" showIf="invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4"/>
-    			<field name="purchaseOrderLine" if-module="axelor-supplychain" showIf="invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2"/>
-		        <field name="product" required="true" onChange="action-group-account-invoice-line-product-onchange"/>
+    			<field name="saleOrder" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid"/>
+    			<field name="saleOrderLine" if-module="axelor-supplychain" showIf="invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
+    			<field name="purchaseOrderLine" if-module="axelor-supplychain" showIf="invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+		        <field name="product" required="true" onChange="action-group-account-invoice-line-product-onchange" form-view="product-form" grid-view="product-grid"/>
 		        <field name="productName"/>
 		        <field name="qty" required="true" onChange="action-invoice-line-method-get-discount,action-invoice-line-method-convert-tax,action-invoice-line-method-compute"/>
 		        <field name="price" required="true"  onChange="action-invoice-line-method-compute"/>
 		        <field name="priceDiscounted" hidden="true"/>
-		        <field name="unit"/>
-		        <field name="analyticAccount" />
+		        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+		        <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid" />
 		    	<field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		    	<field name="exTaxTotal" readonly="true"/>
 	    		<field name="inTaxTotal" readonly="true"/>

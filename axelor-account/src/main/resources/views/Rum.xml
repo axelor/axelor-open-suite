@@ -6,10 +6,10 @@
     <grid name="rum-grid" title="Unique Mandate References" model="com.axelor.apps.account.db.Rum">
         <field name="rumNumber"/>
         <field name="debtorName"/>
-        <field name="debtorAddress"/>
+        <field name="debtorAddress" form-view="address-form" grid-view="address-grid"/>
         <field name="creationDate"/>
         <field name="mandateSignatureDate"/>
-        <field name="mandateSignatureCommune"/>
+        <field name="mandateSignatureCommune" form-view="commune-form" grid-view="commune-grid"/>
     </grid>
     
     <form name="rum-form" title="Unique Mandate References" model="com.axelor.apps.account.db.Rum"  
@@ -17,10 +17,10 @@
        <panel >
        	<field name="rumNumber"/>
         <field name="debtorName"/>
-        <field name="debtorAddress"/>
+        <field name="debtorAddress" form-view="address-form" grid-view="address-grid"/>
         <field name="creationDate"/>
         <field name="mandateSignatureDate"/>
-        <field name="mandateSignatureCommune"/>
+        <field name="mandateSignatureCommune" form-view="commune-form" grid-view="commune-grid"/>
        </panel>
     </form>
     

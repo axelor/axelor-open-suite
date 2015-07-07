@@ -4,14 +4,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
    
     <grid name="reminder-config-line-grid" title="Reminder method configuration lines" model="com.axelor.apps.account.db.ReminderConfigLine">
-        <field name="partnerCategory"/>
-        <field name="reminderMethod"/>
+        <field name="partnerCategory" form-view="partner-category-form" grid-view="partner-category-grid"/>
+        <field name="reminderMethod" form-view="reminder-method-form" grid-view="reminder-method-grid"/>
     </grid>
     
     <form name="reminder-config-line-form" title="Reminder method configuration line" model="com.axelor.apps.account.db.ReminderConfigLine"  >
         <panel >
-        	<field name="partnerCategory"/>
-        	<field name="reminderMethod"/>
+        	<field name="partnerCategory" form-view="partner-category-form" grid-view="partner-category-grid"/>
+        	<field name="reminderMethod" form-view="reminder-method-form" grid-view="reminder-method-grid"/>
         </panel>
         
     </form>

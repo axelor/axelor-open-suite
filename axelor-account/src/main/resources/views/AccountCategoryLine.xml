@@ -4,16 +4,16 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
     <grid name="account-category-line-grid" title="Account Category Lines" model="com.axelor.apps.account.db.AccountCategoryLine">
-        <field name="accountCategory"/>
+        <field name="accountCategory" form-view="account-category-form" grid-view="account-category-grid"/>
         <field name="sign"/>
-        <field name="category"/>
+        <field name="category" form-view="account-category-form" grid-view="account-category-grid"/>
     </grid>
     
     <form name="account-category-line-form" title="Account Category Line" model="com.axelor.apps.account.db.AccountCategoryLine"  >
         <panel title="General">
-	        <field name="accountCategory"/>
+	        <field name="accountCategory" form-view="account-category-form" grid-view="account-category-grid"/>
 	        <field name="sign"/>
-	        <field name="category"/>
+	        <field name="category" form-view="account-category-form" grid-view="account-category-grid"/>
         </panel>
     </form>
     

@@ -6,12 +6,12 @@
 	<form name="incl-invoice-payment-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner">
 	    <panel colSpan="12">
 	    	<field name="invoiceSendingFormatSelect"/>
-	        <field name="paymentMode"/>
-	        <field name="paymentCondition"/>
-	        <field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2"/>
-	        <field name="fiscalPosition"/>
+	        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
+	        <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form"/>
+	        <field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
+	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
 	        <field name="payerQuality"/>
-	        <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
+	        <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id" grid-view="bank-details-grid" form-view="bank-details-form"/>
 	        <panel colSpan="6">
 	    		<button name="showAllInvoices" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
         		<button name="showUnpaidInvoice" title="View all unpaid invoices"  onClick="save,action-partner-view-show-unpaid-invoice"/>
@@ -20,11 +20,11 @@
 	    <panel-related field="bankDetailsList" showTitle="false"  form-view="bank-details-form" grid-view="bank-details-grid" colSpan="12"/>
 	    
 	    <panel title="Sale Price List" colSpan="12" hideIf="!isCustomer">
-	    	<field name="salePriceList" canNew="true" domain="self.typeSelect = 1" form-view="sale-price-list-form"/>
+	    	<field name="salePriceList" canNew="true" domain="self.typeSelect = 1" form-view="sale-price-list-form" grid-view="price-list-grid"/>
 	    </panel>
 	    
 	    <panel title="Purchase Price List" colSpan="12" hideIf="!isSupplier">
-	    	<field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" form-view="purchase-price-list-form"/>
+	    	<field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" form-view="purchase-price-list-form" grid-view="price-list-grid"/>
 	    </panel>
 	    
 	</form>
@@ -34,11 +34,11 @@
 	</form>
 	
 	<form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	     <panel-related  field="blockingList" colSpan="12" widget="MasterDetail" title="Blockings" hideIf="isContact"/>
+	     <panel-related  field="blockingList" colSpan="12" widget="MasterDetail" title="Blockings" hideIf="isContact" grid-view="blocking-grid" form-view="blocking-form"/>
 	</form>
 	
 	<form name="incl-reported-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-         <panel-related field="reportedBalanceList" colSpan="12" hideIf="isContact || id == null"  title="Reported balance" />
+         <panel-related field="reportedBalanceList" colSpan="12" hideIf="isContact || id == null"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form"/>
 	</form>
 	
 	

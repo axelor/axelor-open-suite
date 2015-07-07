@@ -4,9 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
-        <field name="debitMoveLine"/>
+        <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
-        <field name="creditMoveLine"/>
+        <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
         <field name="amount"/>
         <field name="statusSelect"/>
@@ -16,8 +16,8 @@
     <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile"  >
 		
 		<panel>
-			<field name="debitMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onChange="action-reconcile-attrs-domain-credit" domain="self.debit &gt; 0.0"/>
-			 <field name="creditMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onChange="action-reconcile-attrs-domain-debit" domain="self.credit &gt; 0.0"/>
+			<field name="debitMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onChange="action-reconcile-attrs-domain-credit" domain="self.debit &gt; 0.0" form-view="move-line-form" grid-view="move-line-grid"/>
+			 <field name="creditMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onChange="action-reconcile-attrs-domain-debit" domain="self.credit &gt; 0.0" form-view="move-line-form" grid-view="move-line-grid"/>
 			 <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
 			 <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
 		</panel>

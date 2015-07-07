@@ -7,9 +7,9 @@
         <field name="effectDate"/>
         <field name="name"/>
         <field name="reference"/>
-        <field name="partner"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="typeSelect"/>
-        <field name="account"/>
+        <field name="account" form-view="account-form" grid-view="account-grid"/>
         <field name="amount"/>
     </grid>
   
@@ -18,14 +18,14 @@
 	    <field name="name"/>
 	    <field name="reference"/>
 	    <field name="effectDate"/>
-	    <field name="partner" onChange="action-bank-statement-line-set-account"/>
+	    <field name="partner" onChange="action-bank-statement-line-set-account" form-view="partner-form" grid-view="partner-grid"/>
 	    <field name="typeSelect" onChange="action-bank-statement-line-set-account"/>
-	    <field name="account"/>
+	    <field name="account" form-view="account-form" grid-view="account-grid"/>
 	    <field name="amount"/>
 	  </panel>
   
 	  <panel title="Associated MoveLine">
-	    <field name="moveLine" onSelect="action-bank-statement-line-move-line-domain"/>
+	    <field name="moveLine" onSelect="action-bank-statement-line-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
 	    <field name="isPosted"/>
 	  </panel>
 </form>

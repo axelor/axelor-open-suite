@@ -3,14 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     <grid name="reported-balance-grid" title="Reported balance list" model="com.axelor.apps.account.db.ReportedBalance">
- 		<field name="company"/>
-  		<field name="partner"/>		
+ 		<field name="company" form-view="company-form" grid-view="company-grid"/>
+  		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>		
     </grid>
  <form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance"  onNew="action-reported-balance-set-default">
 
 	<panel >
-		<field name="company" widget="SuggestBox" form-view="company-form"/>
-		<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
+		<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+		<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" />
 	</panel>
 
 	<panel-related field="reportedBalanceLineList" colSpan="12" form-view="reported-balance-line-custom-from" grid-view="reported-balance-line-custom-grid"/>

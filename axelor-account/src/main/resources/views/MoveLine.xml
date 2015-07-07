@@ -8,9 +8,9 @@
       	<field name="move.statusSelect" hidden="true"/>
         <field name="name"/>
         <field name="date"/>
-        <field name="partner"/>
-        <field name="account"/>
-        <field name="move.company"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="account" form-view="account-form" grid-view="account-grid"/>
+        <field name="move.company" form-view="company-form" grid-view="company-grid"/>
         <field name="debit"/>
         <field name="credit"/>
         <field name="amountRemaining"/>
@@ -19,8 +19,8 @@
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines">
 		<field name="name"/>
 		<field name="date"/>
-		<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-		<field name="account" />
+		<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false"/>
+		<field name="account" form-view="account-form" grid-view="account-grid"/>
 		<field name="debit"/>
 		<field name="credit"/>
 		<field name="amountRemaining"/>
@@ -32,9 +32,9 @@
       	<field name="move.statusSelect" hidden="true"/>
         <field name="name"/>
         <field name="date"/>
-        <field name="partner"/>
-        <field name="account"/>
-        <field name="move.company"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="account" form-view="account-form" grid-view="account-grid"/>
+        <field name="move.company" form-view="company-form" grid-view="company-grid"/>
         <field name="debit" aggregate="sum"/>
         <field name="credit" aggregate="sum"/>
         <field name="amountRemaining" aggregate="sum"/>
@@ -46,7 +46,7 @@
         <field name="name"/>
         <field name="date"/>
         <field name="description"/>
-        <field name="account"/>
+        <field name="account" form-view="account-form" grid-view="account-grid"/>
         <field name="debit"/>
         <field name="credit"/>
         <field name="amountRemaining"/>
@@ -58,11 +58,11 @@
     	
     	<panel title="Informations" readonly="true" >
    			<field name="name"/>
-	        <field name="move"/>
+	        <field name="move" form-view="move-form" grid-view="move-grid"/>
 	        <field name="date"/>
 	        <field name="dueDate"/>
-	        <field name="partner" onSelect="action-move-line-set-companyid-from-movecompany" domain="self.isContact = false AND :company_id MEMBER OF self.companySet" grid-view="partner-grid" form-view="partner-form"/>
-	        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+	        <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-set-companyid-from-movecompany" domain="self.isContact = false AND :company_id MEMBER OF self.companySet"/>
+	        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
 	        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 	        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 	        <field name="amountPaid"/>
@@ -70,20 +70,20 @@
 	        <field name="description" showIf="$number(credit) &gt; 0.00"/>
 	        <field name="passageReason" showIf="$number(debit) &gt; 0.00"/>
 	        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
-	        <field name="interbankCodeLine" showIf="interbankCodeLine"/>
+	        <field name="interbankCodeLine" showIf="interbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
 	        <!-- dummy field added for setting domain on partner -->
 	        <field name="company_id" hidden="true"/>
    		</panel>
     	
     	<panel-tabs>
-	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
-	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
+	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
+	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 	        
-	    	<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" />
+	    	<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 	    	
 	    	<panel name="irrecoverable" title="Irrecoverable">
 	        	<field name="irrecoverablestatusSelect" /> 
-        		<field name="managementObject"/>
+        		<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
         		<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
         		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>
@@ -103,24 +103,24 @@
 			<field name="date" colSpan="3"/>
 			<field name="dueDate" colSpan="3"/>
 			<panel title="Informations" colSpan="12">
-				<field name="account" onSelect="action-move-line-attrs-domain-account"/>
+				<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
 				<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0" css="label-bold bold" colSpan="3"/>
 				<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0" css="label-bold bold" colSpan="3"/>
-				<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false"/>
 				<field name="amountRemaining" colSpan="3"/>
 				<field name="amountPaid" colSpan="3"/>
 				<field name="description" colSpan="12" />
 			</panel>
 			<panel title="Reject reason" colSpan="12" showIf="interbankCodeLine">
-				<field name="interbankCodeLine" showTitle="false"/>
+				<field name="interbankCodeLine" showTitle="false" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
 			</panel>
 		</panel>
 			
 		<panel-tabs>	
-			<panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
-	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
+			<panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
+	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 			
-			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" />
+			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 			
 			<panel title="Others" >
 				<field name="exportedDirectDebitOk" colSpan="12"/>
@@ -134,13 +134,13 @@
     	
     	<panel name="informations" title="Informations" readonly="true">
 	        <field name="name"/>
-	        <field name="move"/>
+	        <field name="move" form-view="move-form" grid-view="move-grid"/>
 
 	        <field name="date"/>
 	        <field name="dueDate"/>
 	        <field name="customer"/>
 
-	        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+	        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
    	     
 	        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 	        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
@@ -155,14 +155,14 @@
         
     	<panel-tabs>
 	        
-	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
-	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
+	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
+	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 			
-			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" />
+			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 			
 			<panel name="irrecoverable" title="Irrecoverable" >
 	        	<field name="irrecoverablestatusSelect"/>
-        		<field name="managementObject"/>
+        		<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
         		<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
         		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>

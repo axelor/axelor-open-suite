@@ -4,14 +4,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     <grid name="analytic-journal-grid" title="Analytic Journal" model="com.axelor.apps.account.db.AnalyticJournal">
         <field name="name"/>
-        <field name="type"/>
-        <field name="company"/>
+        <field name="type" form-view="analytic-journal-type-form" grid-view="analytic-journal-type-grid"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
     <form name="analytic-journal-form" title="Analytic Journal" model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default" >
         <panel >
         	<field name="name"/>
-        	<field name="type"/>
-        	<field name="company" widget="SuggestBox"/>
+        	<field name="type" form-view="analytic-journal-type-form" grid-view="analytic-journal-type-grid"/>
+        	<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         </panel>
     </form>
     

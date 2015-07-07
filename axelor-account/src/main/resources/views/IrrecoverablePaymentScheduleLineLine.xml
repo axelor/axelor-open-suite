@@ -5,16 +5,16 @@
    
     <grid name="irrecoverable-payment-schedule-line-line-grid" title="Payment schedule lines" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine">
         <field name="name"/>
-        <field name="paymentScheduleLine"/>
+        <field name="paymentScheduleLine" form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid"/>
     </grid>
    
     <form name="irrecoverable-payment-schedule-line-line-form" title="Payment schedue line" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine"  >
         <panel >
 	       	<field name="name"/>
-	        <field name="paymentScheduleLine"/>
+	        <field name="paymentScheduleLine" form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid"/>
         </panel>
         <panel-tabs>
-        	<panel-related field="irrecoverableReportLineList" colSpan="12"/>
+        	<panel-related field="irrecoverableReportLineList" colSpan="12" grid-view="irrecoverable-report-grid" form-view="irrecoverable-report-form"/>
         </panel-tabs>
     </form>
     
