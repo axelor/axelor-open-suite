@@ -32,8 +32,6 @@
 	<date name="estimatedDelivDate" title="Estim. delivery date" help="true"/>
 	<date name="desiredDelivDate" title="Desired delivery date"/>
 
-	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
-  	
   	
   	<!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>

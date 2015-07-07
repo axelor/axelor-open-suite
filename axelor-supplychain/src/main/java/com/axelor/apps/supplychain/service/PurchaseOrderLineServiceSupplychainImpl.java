@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -44,17 +43,15 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 				purchaseOrder, 
 				saleOrderLine.getProduct(), 
 				saleOrderLine.getDescription(), 
-//				productVariantService.copyProductVariant(saleOrderLine.getProductVariant(), false), TODO doit disparaître
-				null,
 				saleOrderLine.getQty(), 
 				saleOrderLine.getUnit());
 		
 	}
 	
 	@Override
-	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description, ProductVariant productVariant, BigDecimal qty, Unit unit) throws AxelorException  {
+	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description, BigDecimal qty, Unit unit) throws AxelorException  {
 		
-		PurchaseOrderLine purchaseOrderLine = super.createPurchaseOrderLine(purchaseOrder, product, description, productVariant, qty, unit);
+		PurchaseOrderLine purchaseOrderLine = super.createPurchaseOrderLine(purchaseOrder, product, description, qty, unit);
 		
 //		purchaseOrderLine.setAmountInvoiced(BigDecimal.ZERO);
 //		

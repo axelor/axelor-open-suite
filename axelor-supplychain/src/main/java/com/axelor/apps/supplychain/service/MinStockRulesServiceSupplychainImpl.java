@@ -112,7 +112,6 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 									purchaseOrder,
 									product,
 									"",
-									null,
 									minStockRules.getReOrderQty(),
 									product.getUnit()));
 
