@@ -22,7 +22,7 @@ public class SaleOrderProjectService extends SaleOrderRepository{
 	@Transactional
 	public ProjectTask generateProject(SaleOrder saleOrder){
 		ProjectTask project = new ProjectTask();
-		project.setTaskTypeSelect(ProjectTaskRepository.TYPE_PROJECT);
+		project.setTypeSelect(ProjectTaskRepository.TYPE_PROJECT);
 		project.setStatusSelect(ProjectTaskRepository.STATE_PLANNED);
 		project.setName(saleOrder.getFullName());
 		project.setCompany(saleOrder.getCompany());
@@ -48,7 +48,7 @@ public class SaleOrderProjectService extends SaleOrderRepository{
 			Product product = saleOrderLine.getProduct();
 			if(ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE){
 				ProjectTask task = new ProjectTask();
-				task.setTaskTypeSelect(ProjectTaskRepository.TYPE_TASK);
+				task.setTypeSelect(ProjectTaskRepository.TYPE_TASK);
 				task.setStatusSelect(ProjectTaskRepository.STATE_PLANNED);
 				task.setProject(saleOrder.getProject());
 				task.setName(saleOrderLine.getFullName());

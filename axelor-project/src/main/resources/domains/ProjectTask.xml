@@ -12,7 +12,7 @@
       <one-to-many name="childProjectTaskList" ref="com.axelor.apps.project.db.ProjectTask" title="Child Projects/Tasks" mappedBy="project"/>
 	  <string name="name" title="Name" required="true"/>
 	  <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
-	  <string name="taskTypeSelect" selection="project.task.type.select" title="Type" />
+	  <string name="typeSelect" selection="project.task.type.select" title="Type" />
 	  <integer name="statusSelect" selection="project.task.status.select" title="Status" default="1"/>
 	  
 	  <string name="code" title="Code" />
