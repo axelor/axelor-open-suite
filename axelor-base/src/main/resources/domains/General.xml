@@ -31,7 +31,7 @@
 		
 		<integer name="computeMethodDiscountSelect" title="Compute Method for Discounts" selection="base.compute.method.discount.select" default="1"/>
 
-		<string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" default="1"/>
+		<string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" default="days"/>
 		<decimal name="dailyWorkHours" title="Daily Work Hours"/>
 		
 		<many-to-one name="unitDays" ref="com.axelor.apps.base.db.Unit" title="Days Unit"/>

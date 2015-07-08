@@ -89,7 +89,6 @@
 				</panel>
 				
 				<panel title="Human Resource configuration" if-module="axelor-human-resource">
-					<field name="dailyWorkHours"/>
 					<field name="allowNegativeLeaveEmployees" />
 					<field name="invoicingTypeLogTimesSelect"/>
 				</panel>
