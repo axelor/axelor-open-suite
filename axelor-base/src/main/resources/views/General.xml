@@ -103,10 +103,6 @@
 					<field name="productInvoicingProjectTask" canNew="true"/>
 				</panel>
 				
-				<panel title="Business Folder configuration" if-module="axelor-business-project">
-					<field name="folderServiceCompany"/>
-				</panel>
-				
 		    </panel>
 		    <panel title="Interfaces">
 				<panel name="map" title="Mapping"  colSpan="12">
