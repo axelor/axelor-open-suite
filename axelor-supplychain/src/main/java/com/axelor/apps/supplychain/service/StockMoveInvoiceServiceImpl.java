@@ -224,7 +224,7 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 			if (fieldErrors.length() > 0){
 				fieldErrors.append("<br/>");
 			}
-			fieldErrors.append(I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_COMPANY));
+			fieldErrors.append(I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_COMPANY_SO));
 		}
 
 		if (fieldErrors.length() > 0){
@@ -333,8 +333,6 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 			JPA.all(StockMove.class).filter("self.id IN (:idStockMoveList)").bind("idStockMoveList", stockMoveIdList).update("invoice", invoice);
 
 			mapResult.put("invoiceId", invoice.getId());
-
-			return mapResult;
 		}
 
 		return mapResult;
@@ -415,7 +413,7 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 			if (fieldErrors.length() > 0){
 				fieldErrors.append("<br/>");
 			}
-			fieldErrors.append(I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_COMPANY));
+			fieldErrors.append(I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_COMPANY_PO));
 		}
 
 		if (fieldErrors.length() > 0){
@@ -496,8 +494,6 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 			JPA.all(StockMove.class).filter("self.id IN (:idStockMoveList)").bind("idStockMoveList", stockMoveIdList).update("invoice", invoice);
 
 			mapResult.put("invoiceId", invoice.getId());
-
-			return mapResult;
 		}
 
 		return mapResult;
@@ -521,7 +517,12 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
 			if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 1){
 				invoiceLineList.addAll(this.createInvoiceLine(invoice, stockMoveLine));
-				stockMoveLine.getSaleOrderLine().setInvoiced(true);
+				//Depending on stockMove type
+				if (stockMoveLine.getSaleOrderLine() != null){
+					stockMoveLine.getSaleOrderLine().setInvoiced(true);
+				}else{
+					stockMoveLine.getPurchaseOrderLine().setInvoiced(true);
+				}
 			}
 		}
 

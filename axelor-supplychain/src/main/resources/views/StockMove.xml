@@ -6,7 +6,7 @@
 	<form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Cust. Stock Move Invoicing" >
 		<panel-related field="$customerStockMoveToInvoice" title="Customer Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 2" canNew="false" canEdit="false"/>
 		<panel sidebar="true" title="Actions">
-			<button name="generateInvoiceConcatStockMove" title="Generate single invoice" onClick="action-validate-supplychain-customer-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
+			<button name="generateInvoiceConcatStockMove" title="Generate single invoice" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
 			<button name="generateMultiInvoice" title="Generate one invoice per outgoing stockMove" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-invoice"/>
 	  	</panel>
     </form>
@@ -14,7 +14,7 @@
     <form name="stock-move-multi-purchase-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Suppl. Stock Move Invoicing" >
 		<panel-related field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 3" canNew="false" canEdit="false"/>
 		<panel sidebar="true" title="Actions">
-			<button name="generateInvoiceConcatStockMove" title="Generate single invoice" onClick="action-validate-supplychain-supplier-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
+			<button name="generateInvoiceConcatStockMove" title="Generate single invoice" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
 			<button name="generateMultiInvoice" title="Generate one invoice per incoming stockMove" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-invoice"/>
 	  	</panel>
     </form>
