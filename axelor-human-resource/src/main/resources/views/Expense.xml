@@ -33,7 +33,7 @@
 	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
 		<panel>
-		    <field name="statusSelect" colSpan="8" widget="NavSelect"/>
+		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
 		    <field name="ventilated" title="Expense Ventilated" colSpan="4" readonly="true"/>
 			<field name="sentDate" colSpan="3"/>
 			<field name="moveDate" colSpan="3"/>
