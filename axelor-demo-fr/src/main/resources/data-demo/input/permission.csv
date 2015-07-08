@@ -222,7 +222,6 @@
 "SchedulerInstanceHistory MANAGE","com.axelor.apps.base.db.SchedulerInstanceHistory","true","true","true","true","true","SALE|PURCH|ACCO|"
 "Sequence READ","com.axelor.apps.base.db.Sequence","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
 "Source READ","com.axelor.apps.base.db.Source","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
-"SpentTime R W C","com.axelor.apps.base.db.SpentTime","true","true",,"true",,"SALE|PURCH|ACCO|HRSC|OPTS"
 "Status READ","com.axelor.apps.base.db.Status","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
 "StopReason READ","com.axelor.apps.base.db.StopReason","true",,,,,"SALE|PURCH|ACCO|HRSC|OPTS"
 "SupplierCatalog READ","com.axelor.apps.base.db.SupplierCatalog","true",,,,,"SALE|ACCO|HRSC|OPTS"

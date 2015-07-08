@@ -448,10 +448,6 @@
 <!-- 		<bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/> -->
 <!-- 	</input> -->
 	
- 	<input file="base_spentTime.csv" separator=";" type="com.axelor.apps.base.db.SpentTime">
- 	    <bind to="date" column="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)"/>
- 	</input>
- 	
  	<input file="account_invoice.csv" separator=";" type="com.axelor.apps.account.db.Invoice">
  		<bind to="invoiceDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(invoiceDate)" column="invoiceDate"/>
  		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
