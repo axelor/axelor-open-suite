@@ -132,6 +132,11 @@
 		<error message="Invalid date" if="toDate != null &amp;&amp; toDate &lt; fromDate"/>
 	</action-validate>
 	
+	<action-validate name="action-timesheet-validate-dates">
+		<error message="Invalid date" if="startDate == null"/>
+		<error message="Invalid date" if="toDate != null &amp;&amp; toDate &lt; fromDate"/>
+	</action-validate>
+	
 	<action-method name="action-timesheet-method-valid-to-date">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validToDate"/>
 	</action-method>

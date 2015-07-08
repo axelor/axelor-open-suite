@@ -70,6 +70,7 @@
 	
 	<input file="base_scheduler.csv" separator=";" type="com.axelor.apps.base.db.Scheduler" search="self.importId = :importId"  />
 	
+	<input file="base_duration.csv" separator=";" type="com.axelor.apps.base.db.Duration" />
 	
 <!-- 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.AccountingSituation" call="com.axelor.csv.script.ImportPartner:importAccountingSituation"> -->
 <!-- 		<bind column="partner" to="accountingSituationList"/> -->
@@ -384,6 +385,9 @@
 	<input file="stock_minStockRules.csv" separator=";" type="com.axelor.apps.stock.db.MinStockRules"/>
 	
 <!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' -->
+	
+	<input file="sale_cancelReason.csv" separator=";" type="com.axelor.apps.sale.db.CancelReason" />
+	
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"/> 	
 	
 	<input file="sale_saleBatch.csv" separator=";" type="com.axelor.apps.sale.db.SaleBatch" />

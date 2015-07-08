@@ -3,7 +3,20 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 	
 
-	<grid name="project-planning-line-grid" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="true" groupBy="user">
+	<grid name="project-my-planning-line-grid" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="true">
+		<field name="user" />
+		<field name="projectTask" />
+		<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+		<field name="tuesday" aggregate="sum"/>
+		<field name="wednesday" aggregate="sum"/>
+		<field name="thursday" aggregate="sum"/>
+		<field name="friday" aggregate="sum"/>
+		<field name="saturday" aggregate="sum"/>
+		<field name="sunday" aggregate="sum"/>
+		<field name="toSave" hidden="true"/>
+	</grid>
+	
+	<grid name="project-my-team-planning-line-grid" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="true" groupBy="user">
 		<field name="user" />
 		<field name="projectTask" />
 		<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>

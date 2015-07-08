@@ -36,7 +36,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 		response.setView(ActionView
 				.define("Week"+planning.getWeek())
 				.model(ProjectPlanning.class.getName())
-				.add("form", "project-planning-form")
+				.add("form", "project-my-planning-form")
 				.param("forceEdit", "true")
 				.context("_showRecord", String.valueOf(planning.getId()))
 				.context("_type", "user").map());
@@ -51,7 +51,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 		response.setView(ActionView
 				.define("Week"+planning.getWeek())
 				.model(ProjectPlanning.class.getName())
-				.add("form", "project-planning-form")
+				.add("form", "project-my-team-planning-form")
 				.param("forceEdit", "true")
 				.context("_showRecord", String.valueOf(planning.getId()))
 				.context("_type", "team").map());
@@ -80,7 +80,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 			response.setView(ActionView
 					.define("Week"+planningPreviousWeek.getWeek())
 					.model(ProjectPlanning.class.getName())
-					.add("form", "project-planning-form")
+					.add("form", "project-my-planning-form")
 					.param("forceEdit", "true")
 					.context("_showRecord", String.valueOf(planningPreviousWeek.getId()))
 					.context("_type", "user").map());
@@ -89,7 +89,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 			response.setView(ActionView
 					.define("Week"+planningPreviousWeek.getWeek())
 					.model(ProjectPlanning.class.getName())
-					.add("form", "project-planning-form")
+					.add("form", "project-my-team-planning-form")
 					.param("forceEdit", "true")
 					.context("_showRecord", String.valueOf(planningPreviousWeek.getId()))
 					.context("_type", "team").map());
@@ -118,7 +118,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 			response.setView(ActionView
 					.define("Week"+planningNextWeek.getWeek())
 					.model(ProjectPlanning.class.getName())
-					.add("form", "project-planning-form")
+					.add("form", "project-my-planning-form")
 					.param("forceEdit", "true")
 					.context("_showRecord", String.valueOf(planningNextWeek.getId()))
 					.context("_type", "user").map());
@@ -127,7 +127,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 			response.setView(ActionView
 					.define("Week"+planningNextWeek.getWeek())
 					.model(ProjectPlanning.class.getName())
-					.add("form", "project-planning-form")
+					.add("form", "project-my-team-planning-form")
 					.param("forceEdit", "true")
 					.context("_showRecord", String.valueOf(planningNextWeek.getId()))
 					.context("_type", "team").map());
@@ -153,7 +153,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 			response.setView(ActionView
 					.define("Week"+planningCurrentWeek.getWeek())
 					.model(ProjectPlanning.class.getName())
-					.add("form", "project-planning-form")
+					.add("form", "project-my-planning-form")
 					.param("forceEdit", "true")
 					.context("_showRecord", String.valueOf(planningCurrentWeek.getId()))
 					.context("_type", "user").map());
@@ -162,7 +162,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 			response.setView(ActionView
 					.define("Week"+planningCurrentWeek.getWeek())
 					.model(ProjectPlanning.class.getName())
-					.add("form", "project-planning-form")
+					.add("form", "project-my-team-planning-form")
 					.param("forceEdit", "true")
 					.context("_showRecord", String.valueOf(planningCurrentWeek.getId()))
 					.context("_type", "team").map());

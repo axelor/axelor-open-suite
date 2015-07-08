@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +99,7 @@ public class InvoiceLineController {
 
 				inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 				exTaxTotal = inTaxTotal.divide(invoiceLine.getTaxLine().getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine,invoice);
+				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine,invoice).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 			}
 
 			if(inTaxTotal != null) {
