@@ -56,7 +56,7 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 		int iterator = 0;
 
 		if(saleOrderLine.getToSubDate() == null){
-			throw new AxelorException(I18n.get("Fied Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
+			throw new AxelorException(I18n.get("Field Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
 		}
 
 		for (Subscription subscription : saleOrderLineIt.getSubscriptionList()) {

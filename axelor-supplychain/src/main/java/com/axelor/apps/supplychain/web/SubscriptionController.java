@@ -1,6 +1,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -46,7 +47,9 @@ public class SubscriptionController {
 		saleOrder  = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
 		for (SaleOrderLine saleOrderLineIt : saleOrder.getSaleOrderLineList()) {
-			subscriptionService.generateSubscriptions(saleOrderLineIt,saleOrderLine);
+			if(saleOrderLineIt.getProduct().getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE)){
+				subscriptionService.generateSubscriptions(saleOrderLineIt,saleOrderLine);
+			}
 		}
 
 		response.setReload(true);
