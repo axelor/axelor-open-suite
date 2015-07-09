@@ -15,25 +15,42 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-html, body {
+
+body {
 	height: 100%;
+	display: block;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+	display: block;
+	background-color: #2f4050;
+	padding-top: 60px;
 }
 
-* {
-	box-sizing: border-box;
+@media (max-width: 979px) {
+	body {
+  		padding-top: 20px;
+	}
 }
 
-body, label, button, .btn {
-	font-size: 14px;
+header .navbar .brand-logo {
+	float: left;
+}
+
+header .navbar .brand-logo img {
+	height: 32px;
+	margin-top: 4px;
 }
 
 .panel {
+	border: 1px solid #d4d4d4;
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+	background-color: #fff;
 }
 
 .panel .panel-header {
+	background-color: #dadada;
 	padding: 10px;
+	text-align: center;
 }
 
 .panel .panel-title {
@@ -50,60 +67,76 @@ body, label, button, .btn {
 	margin-bottom: 18px;
 }
 
+.login-panel {
+	float: inherit !important;
+	margin: auto !important;
+	width: 420px;
+	border: 0;
+	box-shadow: none;
+	background-color: transparent;
+}
+
+@media (min-width: 1200px) {
+	.login-panel {
+		width: 420px;
+	}
+}
+
+@media (max-width: 767px) {
+	.login-panel {
+		width: 100%;
+	}
+}
+
+.login-panel .panel-header {
+	padding: 22px;
+}
+
+.login-panel .panel-body {
+	padding: 0;
+}
+
+.login-panel .form-fields,
+.login-panel .form-footer {
+	padding: 22px;
+}
+
+.login-panel .form-fields {
+	margin-top: 8px;
+	background-color: #eaeaea;
+}
+
+.login-panel .form-footer {
+	background-color: #fff;
+}
+
+.login-panel .form-footer button {
+	width: 100%;
+	padding: 8px 16px;
+	font-weight: 600;
+}
+
 #login-form {
 	margin: 0;
 }
 
 #login-form input[type="text"],
-#login-form input[type="password"] {
-	border-radius: 0;
-	height: 33px;
+#login-form input[type="password"],
+#login-form .add-on {
+	border-radius: 0 !important;
 	padding: 6px 10px;
 	font-size: 14px;
-	line-height: 1.36;
+	line-height: 20px;
+	height: 20px;
 }
 
-#login-form input[type="checkbox"] {
-	margin-top: 3px;
+#login-form .input-prepend {
+	width: 100%;
+	margin-bottom: 16px;
 }
 
-button.btn {
-	border-radius: 0;
-	padding: 6px 14px;
-	background-image: none;
-	box-shadow: none;
-}
-
-button.btn-primary {
-	color: #fff;
-	background-color: #428bca;
-	border-color: #357ebd;
-}
-
-button.btn-primary:focus,
-button.btn-primary:active,
-button.btn-primary:hover {
-	color: #fff;
-	background-color: #3071a9;
-	border-color: #285e8e;
-}
-
-button.btn-default {
-	color: #333;
-	background-color: #fff;
-	border-color: #ccc;
-}
-
-button.btn-default:focus,
-button.btn-default:active,
-button.btn-default:hover {
-	color: #333;
-	background-color: #e6e6e6;
-	border-color: #adadad;
-}
-
-#login-form label.checkbox {
-	margin-bottom: 10px;
+#login-form .input-prepend input {
+	width: calc(100% - 60px);
 }
 
 body > footer {
@@ -123,5 +156,5 @@ body > footer > p a,
 body > footer > p a:hover,
 body > footer > p a:active,
 body > footer > p a:visited {
-	color: #555;
+	color: #f2f2f2;
 }

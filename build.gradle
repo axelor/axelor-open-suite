@@ -22,7 +22,7 @@ application {
 	version "3.0.1"
 	
 	// ADK version required
-	adkVersion "~3.0.7"
+	adkVersion "~4.0.0"
 
 	// depends on all modules
 	modules.each { dir ->
