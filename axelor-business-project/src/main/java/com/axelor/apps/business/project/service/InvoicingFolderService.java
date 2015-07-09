@@ -2,6 +2,7 @@ package com.axelor.apps.business.project.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;
@@ -9,6 +10,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.account.util.InvoiceLineComparator;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
@@ -62,7 +64,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 	protected int MAX_LEVEL_OF_PROJECT = 10;
 
-	protected int sequence = 0;
+	protected int sequence = 10;
 
 	@Transactional
 	public Invoice generateInvoice(InvoicingFolder folder) throws AxelorException{
@@ -110,7 +112,11 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		invoiceLineList.addAll(elementsToInvoiceService.createInvoiceLines(invoice, elementsToInvoiceList, folder.getElementsToInvoiceSetPrioritySelect()));
 		invoiceLineList.addAll(this.createInvoiceLines(invoice, projectTaskList,folder.getProjectTaskSetPrioritySelect()));
 
+		Collections.sort(invoiceLineList, new InvoiceLineComparator());
+
 		for (InvoiceLine invoiceLine : invoiceLineList) {
+			invoiceLine.setSequence(sequence);
+			sequence+=10;
 			invoiceLine.setSaleOrder(invoiceLine.getInvoice().getSaleOrder());
 		}
 
