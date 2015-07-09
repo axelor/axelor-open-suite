@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -163,7 +162,7 @@ public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 				parentPurchaseOrder.getInvoicingTypeSelect(),
 				purchaseOrderServiceSupplychainImpl.getLocation(parentPurchaseOrder.getCompany()),
 				today,
-				Beans.get(PriceListRepository.class).all().filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(),
+				supplierPartner.getPurchasePriceList(),
 				supplierPartner);
 
 		purchaseOrder.setParentPurchaseOrder(parentPurchaseOrder);
