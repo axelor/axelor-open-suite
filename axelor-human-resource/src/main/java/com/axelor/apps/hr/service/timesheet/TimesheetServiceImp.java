@@ -188,11 +188,11 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		qtyConverted = Beans.get(UnitConversionService.class).convert(GeneralService.getGeneral().getUnitHours(), product.getUnit(), timesheetLine.getVisibleDuration());
 
 		if(employee != null){
-			if(employee.getTimeLoggingPreferenceSelect() == EmployeeRepository.TIME_PREFERENCE_DAYS){
+			if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_DAYS)){
 				qtyConverted = Beans.get(UnitConversionService.class).convert(GeneralService.getGeneral().getUnitDays(), product.getUnit(), timesheetLine.getVisibleDuration());
 
 			}
-			else if(employee.getTimeLoggingPreferenceSelect() == EmployeeRepository.TIME_PREFERENCE_MINUTES){
+			else if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_MINUTES)){
 				qtyConverted = Beans.get(UnitConversionService.class).convert(GeneralService.getGeneral().getUnitMinutes(), product.getUnit(), timesheetLine.getVisibleDuration());
 
 			}

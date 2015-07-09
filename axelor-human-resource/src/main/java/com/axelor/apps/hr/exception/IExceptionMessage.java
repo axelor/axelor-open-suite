@@ -25,6 +25,8 @@ package com.axelor.apps.hr.exception;
  */
 public interface IExceptionMessage {
 
+	static final String HR_CONFIG_1 = /*$$(*/ "Please configure informations for human resources for company %s" /*)*/;
+
 	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Merci de rentrer une date de début pour la génération"/*)*/ ;
 	static final String TIMESHEET_TO_DATE = /*$$(*/ "Merci de rentrer une date de fin pour la génération"/*)*/ ;
 	static final String TIMESHEET_PRODUCT = /*$$(*/ "Merci de rentrer un produit"/*)*/ ;

@@ -178,6 +178,7 @@
     <action-attrs name="action-purchase-order-attrs-in-ati">
     	<attribute name="hidden" for="purchaseOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
+    	<attribute name="hidden" for="versionNumber" expr="eval: !com.axelor.apps.base.service.administration.GeneralService.getGeneral().getManagePurchaseOrderVersion()"/>
     </action-attrs>
     
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">

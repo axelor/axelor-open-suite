@@ -9,6 +9,7 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageServiceImpl;
@@ -23,16 +24,19 @@ import com.google.inject.persist.Transactional;
 public class LeaveService extends LeaveRepository{
 	@Inject
 	protected DurationServiceImpl durationService;
-	
+
 	@Inject
 	protected LeaveLineRepository leaveLineRepo;
-	
-	@Inject 
+
+	@Inject
 	protected MessageServiceImpl messageServiceImpl;
-	
-	@Inject 
+
+	@Inject
 	protected TemplateMessageService templateMessageService;
-	
+
+	@Inject
+	protected HRConfigService hRConfigService;
+
 	public BigDecimal computeDuration(Leave leave){
 		if(leave.getDateFrom()!=null && leave.getDateTo()!=null){
 			BigDecimal duration = durationService.computeDurationInDays(leave.getDateFrom().toDateTimeAtCurrentTime().toDateTime(),leave.getDateTo().toDateTimeAtCurrentTime().toDateTime());
@@ -45,7 +49,7 @@ public class LeaveService extends LeaveRepository{
 			return BigDecimal.ZERO;
 		}
 	}
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void manageSentLeaves(Leave leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
@@ -63,9 +67,9 @@ public class LeaveService extends LeaveRepository{
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
 		}
 		leaveLineRepo.save(leaveLine);
-		
+
 	}
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void manageValidLeaves(Leave leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
@@ -91,9 +95,9 @@ public class LeaveService extends LeaveRepository{
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
 		}
 		leaveLineRepo.save(leaveLine);
-		
+
 	}
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void manageRefuseLeaves(Leave leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
@@ -111,9 +115,9 @@ public class LeaveService extends LeaveRepository{
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
 		}
 		leaveLineRepo.save(leaveLine);
-		
+
 	}
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void manageCancelLeaves(Leave leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
@@ -141,30 +145,30 @@ public class LeaveService extends LeaveRepository{
 			}
 		}
 		leaveLineRepo.save(leaveLine);
-		
+
 	}
-	
-	public void sendEmailToManager(Leave leave){
-		Template template = leave.getUser().getActiveCompany().getHRConfig().getSentLeaveTemplate();
+
+	public void sendEmailToManager(Leave leave) throws AxelorException{
+		Template template = hRConfigService.getHRConfig(leave.getUser().getActiveCompany()).getSentLeaveTemplate();
 		if(template!=null){
 			sendEmailTemplate(leave,template);
 		}
 	}
-	
-	public void sendEmailValidationToApplicant(Leave leave){
-		Template template = leave.getUser().getActiveCompany().getHRConfig().getValidatedLeaveTemplate();
+
+	public void sendEmailValidationToApplicant(Leave leave) throws AxelorException{
+		Template template =  hRConfigService.getHRConfig(leave.getUser().getActiveCompany()).getValidatedLeaveTemplate();
 		if(template!=null){
 			sendEmailTemplate(leave,template);
 		}
 	}
-	
-	public void sendEmailRefusalToApplicant(Leave leave){
-		Template template = leave.getUser().getActiveCompany().getHRConfig().getRefusedLeaveTemplate();
+
+	public void sendEmailRefusalToApplicant(Leave leave) throws AxelorException{
+		Template template =  hRConfigService.getHRConfig(leave.getUser().getActiveCompany()).getRefusedLeaveTemplate();
 		if(template!=null){
 			sendEmailTemplate(leave,template);
 		}
 	}
-	
+
 	public void sendEmailTemplate(Leave leave, Template template){
 		String model = template.getMetaModel().getFullName();
 		String tag = template.getMetaModel().getName();

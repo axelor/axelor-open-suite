@@ -21,10 +21,10 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class LeaveController {
-	
+
 	@Inject
 	protected LeaveService leaveService;
-	
+
 	public void editLeave(ActionRequest request, ActionResponse response){
 		List<Leave> leaveList = Beans.get(LeaveRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(leaveList.isEmpty()){
@@ -55,7 +55,7 @@ public class LeaveController {
 					.map());
 		}
 	}
-	
+
 	public void editLeaveSelected(ActionRequest request, ActionResponse response){
 		Map leaveMap = (Map)request.getContext().get("leaveSelect");
 		Leave leave = Beans.get(LeaveRepository.class).find(new Long((Integer)leaveMap.get("id")));
@@ -67,19 +67,19 @@ public class LeaveController {
 				.domain("self.id = "+leaveMap.get("id"))
 				.context("_showRecord", String.valueOf(leave.getId())).map());
 	}
-	
+
 	public void allLeave(ActionRequest request, ActionResponse response){
 		List<Leave> leaveList = Beans.get(LeaveRepository.class).all().filter("self.user = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> leaveListId = new ArrayList<Long>();
 		for (Leave leave : leaveList) {
 			leaveListId.add(leave.getId());
 		}
-		
+
 		String leaveListIdStr = "-2";
 		if(!leaveListId.isEmpty()){
 			leaveListIdStr = Joiner.on(",").join(leaveListId);
 		}
-		
+
 		response.setView(ActionView.define("My Leaves")
 				   .model(Leave.class.getName())
 				   .add("grid","leave-grid")
@@ -87,7 +87,7 @@ public class LeaveController {
 				   .domain("self.id in ("+leaveListIdStr+")")
 				   .map());
 	}
-	
+
 	public void validateLeave(ActionRequest request, ActionResponse response){
 		List<Leave> leaveList = Query.of(Leave.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> leaveListId = new ArrayList<Long>();
@@ -104,7 +104,7 @@ public class LeaveController {
 		if(!leaveListId.isEmpty()){
 			leaveListIdStr = Joiner.on(",").join(leaveListId);
 		}
-		
+
 		response.setView(ActionView.define("Leaves to Validate")
 			   .model(Leave.class.getName())
 			   .add("grid","leave-validate-grid")
@@ -112,19 +112,19 @@ public class LeaveController {
 			   .domain("self.id in ("+leaveListIdStr+")")
 			   .map());
 	}
-	
+
 	public void historicLeave(ActionRequest request, ActionResponse response){
 		List<Leave> leaveList = Beans.get(LeaveRepository.class).all().filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> leaveListId = new ArrayList<Long>();
 		for (Leave leave : leaveList) {
 			leaveListId.add(leave.getId());
 		}
-		
+
 		String leaveListIdStr = "-2";
 		if(!leaveListId.isEmpty()){
 			leaveListIdStr = Joiner.on(",").join(leaveListId);
 		}
-		
+
 		response.setView(ActionView.define("Colleague Leaves")
 				.model(Leave.class.getName())
 				   .add("grid","leave-grid")
@@ -132,8 +132,8 @@ public class LeaveController {
 				   .domain("self.id in ("+leaveListIdStr+")")
 				   .map());
 	}
-	
-	
+
+
 	public void showSubordinateLeaves(ActionRequest request, ActionResponse response){
 		List<User> userList = Query.of(User.class).filter("self.employee.manager = ?1",AuthUtils.getUser()).fetch();
 		List<Long> leaveListId = new ArrayList<Long>();
@@ -151,7 +151,7 @@ public class LeaveController {
 			if(!leaveListId.isEmpty()){
 				leaveListIdStr = Joiner.on(",").join(leaveListId);
 			}
-			
+
 			response.setView(ActionView.define("Leaves to be Validated by your subordinates")
 				   .model(Leave.class.getName())
 				   .add("grid","leave-grid")
@@ -160,7 +160,7 @@ public class LeaveController {
 				   .map());
 		}
 	}
-	
+
 	public void testDuration(ActionRequest request, ActionResponse response){
 		Leave leave = request.getContext().asType(Leave.class);
 		Double duration = leave.getDuration().doubleValue();
@@ -168,37 +168,37 @@ public class LeaveController {
 			response.setError(I18n.get("Invalide duration (must be a 0.5's multiple)"));
 		}
 	}
-	
+
 	public void computeDuration(ActionRequest request, ActionResponse response){
 		Leave leave = request.getContext().asType(Leave.class);
 		response.setValue("duration", leaveService.computeDuration(leave));
 	}
-	
+
 	public void manageSentLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
 		Leave leave = request.getContext().asType(Leave.class);
 		leave = Beans.get(LeaveRepository.class).find(leave.getId());
 		leaveService.manageSentLeaves(leave);
 	}
-	
+
 	public void manageValidLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
 		Leave leave = request.getContext().asType(Leave.class);
 		leave = Beans.get(LeaveRepository.class).find(leave.getId());
 		leaveService.manageValidLeaves(leave);
 	}
-	
+
 	public void manageRefuseLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
 		Leave leave = request.getContext().asType(Leave.class);
 		leave = Beans.get(LeaveRepository.class).find(leave.getId());
 		leaveService.manageRefuseLeaves(leave);
 	}
-	
+
 	public void manageCancelLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
 		Leave leave = request.getContext().asType(Leave.class);
 		leave = Beans.get(LeaveRepository.class).find(leave.getId());
 		leaveService.manageCancelLeaves(leave);
 	}
-	
-	public void sendEmailToManager(ActionRequest request, ActionResponse response){
+
+	public void sendEmailToManager(ActionRequest request, ActionResponse response) throws AxelorException{
 		Leave leave = request.getContext().asType(Leave.class);
 		User manager = leave.getUser().getEmployee().getManager();
 		if(manager!=null){
@@ -207,8 +207,8 @@ public class LeaveController {
 			response.setFlash(I18n.get(message)+" "+manager.getFullName());
 		}
 	}
-	
-	public void sendEmailValidationToApplicant(ActionRequest request, ActionResponse response){
+
+	public void sendEmailValidationToApplicant(ActionRequest request, ActionResponse response) throws AxelorException{
 		Leave leave = request.getContext().asType(Leave.class);
 		User manager = leave.getUser().getEmployee().getManager();
 		if(manager!=null){
@@ -217,8 +217,8 @@ public class LeaveController {
 			response.setFlash(I18n.get(message)+" "+leave.getUser().getFullName());
 		}
 	}
-	
-	public void sendEmailRefusalToApplicant(ActionRequest request, ActionResponse response){
+
+	public void sendEmailRefusalToApplicant(ActionRequest request, ActionResponse response) throws AxelorException{
 		Leave leave = request.getContext().asType(Leave.class);
 		User manager = leave.getUser().getEmployee().getManager();
 		if(manager!=null){
