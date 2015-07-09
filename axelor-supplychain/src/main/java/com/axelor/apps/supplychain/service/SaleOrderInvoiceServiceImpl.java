@@ -284,6 +284,7 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		invoice.setSubscriptionToDate(subscription.getToPeriodDate());
 
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+			invoiceLine.setSaleOrderLine(saleOrderLine);
 			invoiceLine.setProductName(invoiceLine.getProduct().getName()+"("+saleOrderLine.getPeriodicity()+" "+"month(s)"+")");
 		}
 

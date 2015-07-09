@@ -68,7 +68,7 @@
     </action-method>
     
     <action-method name="action-supplychain-sale-order-method-generate-invoice">
- 		<call class="com.axelor.apps.supplychain.web.SaleOrderInvoiceController" method="generateInvoice"/>
+ 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateInvoice"/>
 	</action-method>
 	
 	<action-method name="action-supplychain-sale-order-create-stock-move" >
