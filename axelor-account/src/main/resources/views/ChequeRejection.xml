@@ -27,7 +27,7 @@
 		</panel>
 		<panel title="Reject Information">
 			<field name="rejectionDate" />
-			<field name="interbankCodeLine" domain="self.chequeOk = 't'"  form-view="interbank-code-line-form" grid-view="interbank-code-line-form"/>
+			<field name="interbankCodeLine" domain="self.chequeOk = 't'"  form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 			<field name="description" />
 			<field name="amountRejected" />
 		</panel>
