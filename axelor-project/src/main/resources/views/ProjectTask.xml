@@ -5,8 +5,8 @@
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
-		<field name="company"/>
-		<field name="clientPartner" />
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
@@ -24,10 +24,10 @@
 			<field name="project" colSpan="12" title="Parent Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="name"/>
 			<field name="code"/>
-			<field name="company" requiredIf="project == null" hideIf="project != null"/>
-			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true"/>
-			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain"/>
-			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project"/>
+			<field name="company" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
+			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" />
+			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain" form-view="user-form" grid-view="user-grid"/>
+			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" colSpan="5" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
@@ -104,7 +104,7 @@
 			</panel>
 		</panel-tabs>
 		<panel title="Settings" sidebar="true">
-			<field name="membersUserSet" widget="TagSelect"/>
+			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
 			<field name="businessProject" colSpan="4"/>
 			<field name="startDate" />
 			<field name="duration" />
@@ -115,7 +115,7 @@
 	
 	<grid name="task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="name"/>
-		<field name="assignedTo"/>
+		<field name="assignedTo" form-view="user-form" grid-view="user-grid"/>
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
@@ -140,7 +140,7 @@
 	    	<field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 		    <field name="name" colSpan="12" />
-			<field name="assignedTo" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain"/>
+			<field name="assignedTo" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain" form-view="user-form" grid-view="user-grid"/>
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
@@ -184,7 +184,7 @@
 	
 	<grid name="project-task-grid" title="Projects/Tasks" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
-		<field name="clientPartner" />
+		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
@@ -204,8 +204,8 @@
 			<field name="code"/>
 			<field name="company" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
 			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true" hideIf="typeSelect == 'task'"/>
-			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain,action-task-attrs-assigned-to-domain"/>
-			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" hideIf="typeSelect == 'task'"/>
+			<field name="assignedTo" title="Person In Charge" onSelect="action-project-attrs-assigned-to-domain,action-task-attrs-assigned-to-domain" form-view="user-form" grid-view="user-grid"/>
+			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" hideIf="typeSelect == 'task'" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
@@ -248,7 +248,7 @@
 			</panel>
 		</panel-tabs>
 		<panel title="Settings" sidebar="true">
-			<field name="membersUserSet" widget="TagSelect" hideIf="typeSelect == 'task'"/>
+			<field name="membersUserSet" widget="TagSelect" hideIf="typeSelect == 'task'" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 	</form>
 	
