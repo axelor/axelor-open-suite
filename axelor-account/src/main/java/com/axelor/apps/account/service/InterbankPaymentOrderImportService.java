@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCreateService;
@@ -41,6 +40,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -48,78 +48,81 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class InterbankPaymentOrderImportService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(InterbankPaymentOrderImportService.class); 
-	
+
+	private static final Logger LOG = LoggerFactory.getLogger(InterbankPaymentOrderImportService.class);
+
 	@Inject
 	private PaymentVoucherCreateService paymentVoucherCreateService;
-	
+
 	@Inject
 	private CfonbImportService cfonbImportService;
-	
+
 	@Inject
 	private RejectImportService ris;
-	
+
 	@Inject
 	private BankDetailsService bds;
-	
+
 	@Inject
 	private AccountConfigService accountConfigService;
-	
+
 	@Inject
 	private PartnerRepository partnerRepo;
-	
+
 	@Inject
 	private InvoiceRepository invoiceRepo;
-	
+
+	@Inject
+	protected GeneralService generalService;
+
 	private DateTime dateTime;
 
 	@Inject
 	public InterbankPaymentOrderImportService() {
 
-		this.dateTime = GeneralService.getTodayDateTime();
-		
+		this.dateTime = generalService.getTodayDateTime();
+
 	}
-	
+
 	public void runInterbankPaymentOrderImport(Company company) throws AxelorException, IOException  {
-		
+
 		this.testCompanyField(company);
-		
+
 		AccountConfig accountConfig = company.getAccountConfig();
-		
+
 		String dest = ris.getDestCFONBFile(accountConfig.getInterbankPaymentOrderImportPathCFONB(), accountConfig.getTempInterbankPaymentOrderImportPathCFONB());
-		
+
 		// Récupération des enregistrements
-		List<String[]> file = cfonbImportService.importCFONB(dest, company, 3, 4);	
+		List<String[]> file = cfonbImportService.importCFONB(dest, company, 3, 4);
 		for(String[] payment : file)  {
-			
+
 			this.runInterbankPaymentOrder(payment, company);
 		}
 	}
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public PaymentVoucher runInterbankPaymentOrder(String[] payment, Company company) throws AxelorException  {
 		Invoice invoice = this.getInvoice(payment[1], company);
-		
+
 		PaymentMode paymentMode = cfonbImportService.getPaymentMode(invoice.getCompany(), payment[0]);
 		LOG.debug("Mode de paiement récupéré depuis l'enregistrement CFONB : {}", new Object[]{paymentMode.getName()});
-		
+
 		BigDecimal amount = new BigDecimal(payment[5]);
-		
+
 		if(this.bankDetailsMustBeUpdate(payment[4]))  {
 			this.updateBankDetails(payment, invoice, paymentMode);
 		}
-		
+
 		return paymentVoucherCreateService.createPaymentVoucherIPO(invoice, this.dateTime, amount, paymentMode);
 	}
-	
-	
+
+
 	public void updateBankDetails(String[] payment, Invoice invoice, PaymentMode paymentMode)  {
-		LOG.debug("Mise à jour des coordonnées bancaire du payeur : Payeur = {} , Facture = {}, Mode de paiement = {}", 
+		LOG.debug("Mise à jour des coordonnées bancaire du payeur : Payeur = {} , Facture = {}, Mode de paiement = {}",
 				new Object[]{invoice.getPartner().getName(),invoice.getInvoiceId(),paymentMode.getName()});
-		
+
 		Partner partner = invoice.getPartner();
-		
+
 		BankDetails bankDetails = bds.createBankDetails( //TODO
 				this.getAccountNbr(payment[2]),
 				"",
@@ -130,25 +133,25 @@ public class InterbankPaymentOrderImportService {
 				"",
 				partner,
 				this.getSortCode(payment[2]));
-		
+
 		partner.getBankDetailsList().add(bankDetails);
-		
+
 		partner.setPaymentMode(paymentMode);
 		partnerRepo.save(partner);
-		
+
 	}
-	
-	
+
+
 	public Invoice getInvoice(String ref, Company company) throws AxelorException  {
 		Invoice invoice = invoiceRepo.all().filter("UPPER(self.invoiceId) = ?1", ref).fetchOne();
 		if(invoice == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_IMPORT_1),
-					GeneralServiceAccount.getExceptionAccountingMsg(), ref, company.getName()), IException.INCONSISTENCY);
+					GeneralServiceImpl.EXCEPTION, ref, company.getName()), IException.INCONSISTENCY);
 		}
 		return invoice;
 	}
-	
-	
+
+
 	/**
 	 * Fonction vérifiant si les coordonnées bancaire du payeur doivent être mise à jour
 	 * @param val
@@ -160,8 +163,8 @@ public class InterbankPaymentOrderImportService {
 
 		return  !val.equals("1");
 	}
-	
-	
+
+
 	/**
 	 * Procédure permettant de vérifier les configurations comptables
 	 * @param company
@@ -169,15 +172,15 @@ public class InterbankPaymentOrderImportService {
 	 * @throws AxelorException
 	 */
 	public void testCompanyField(Company company) throws AxelorException  {
-		
+
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-		
+
 		accountConfigService.getInterbankPaymentOrderImportPathCFONB(accountConfig);
 		accountConfigService.getTempInterbankPaymentOrderImportPathCFONB(accountConfig);
-		
+
 	}
-	
-	
+
+
 
 	/**
 	 * Méthode permettant de récupérer le code établissement
@@ -192,8 +195,8 @@ public class InterbankPaymentOrderImportService {
 			return "";
 		}
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant de récupérer le code guichet
 	 * @param bankDetails
@@ -207,10 +210,10 @@ public class InterbankPaymentOrderImportService {
 			return "";
 		}
 	}
-	
-	
+
+
 	/**
-	 * Methode permettant de récupérer le numéro de compte 
+	 * Methode permettant de récupérer le numéro de compte
 	 * @param bankDetails
 	 * @return
 	 */

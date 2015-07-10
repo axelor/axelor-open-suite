@@ -49,7 +49,10 @@ public class SaleOrderController {
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
-	
+
+	@Inject
+	protected GeneralService generalService;
+
 	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -58,12 +61,12 @@ public class SaleOrderController {
 
 			SaleOrderServiceStockImpl saleOrderServiceStock = Beans.get(SaleOrderServiceStockImpl.class);
 			if (saleOrderServiceStock.existActiveStockMoveForSaleOrder(saleOrder.getId())){
-				if (!GeneralService.getGeneral().getCustomerStockMoveGenerationAuto()){
+				if (!generalService.getGeneral().getCustomerStockMoveGenerationAuto()){
 					response.setFlash(I18n.get("An active stockMove already exists for this saleOrder"));
 				}
 			}else{
 				Long stockMoveId = saleOrderServiceStock.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
-				if (!GeneralService.getGeneral().getCustomerStockMoveGenerationAuto()){
+				if (!generalService.getGeneral().getCustomerStockMoveGenerationAuto()){
 					response.setView(ActionView
 							.define(I18n.get("Stock Move"))
 							.model(StockMove.class.getName())
@@ -165,17 +168,17 @@ public class SaleOrderController {
 
 		}
 	}
-	
-	
+
+
 	public void generateInvoice(ActionRequest request, ActionResponse response)  {
-		
+
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		
+
 		try {
-			
+
 			saleOrder = saleOrderRepo.find(saleOrder.getId());
 			Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateInvoice(saleOrder);
-			
+
 			if(invoice != null)  {
 				response.setReload(true);
 				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));

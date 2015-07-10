@@ -49,6 +49,9 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 	@Inject
 	private PriceListService priceListService;
 
+	@Inject
+	protected GeneralService generalService;
+
 	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
@@ -185,15 +188,15 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 
 		BigDecimal qtyConverted = timesheetLine.getVisibleDuration();
-		qtyConverted = Beans.get(UnitConversionService.class).convert(GeneralService.getGeneral().getUnitHours(), product.getUnit(), timesheetLine.getVisibleDuration());
+		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), timesheetLine.getVisibleDuration());
 
 		if(employee != null){
 			if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_DAYS)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(GeneralService.getGeneral().getUnitDays(), product.getUnit(), timesheetLine.getVisibleDuration());
+				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitDays(), product.getUnit(), timesheetLine.getVisibleDuration());
 
 			}
 			else if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_MINUTES)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(GeneralService.getGeneral().getUnitMinutes(), product.getUnit(), timesheetLine.getVisibleDuration());
+				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitMinutes(), product.getUnit(), timesheetLine.getVisibleDuration());
 
 			}
 
@@ -205,7 +208,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 			if(priceListLine!=null){
 				discountTypeSelect = priceListLine.getTypeSelect();
 			}
-			if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+			if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 			{
 				Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 				discountAmount = (BigDecimal) discounts.get("discountAmount");

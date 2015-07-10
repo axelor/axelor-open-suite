@@ -119,7 +119,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
 		ProdProcess prodProcess = manufOrder.getProdProcess();
 		
 		if(manufOrder.getPlannedStartDateT() == null){
-			manufOrder.setPlannedStartDateT(GeneralService.getTodayDateTime().toLocalDateTime());
+			manufOrder.setPlannedStartDateT(generalService.getTodayDateTime().toLocalDateTime());
 		}
 		
 		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {

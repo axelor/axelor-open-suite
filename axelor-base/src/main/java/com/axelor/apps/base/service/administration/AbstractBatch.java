@@ -38,6 +38,9 @@ import com.google.inject.persist.Transactional;
 
 public abstract class AbstractBatch {
 
+	@Inject
+	protected GeneralService generalService;
+
 	static final Logger LOG = LoggerFactory.getLogger(AbstractBatch.class);
 
 	protected Batch batch;
@@ -174,7 +177,7 @@ public abstract class AbstractBatch {
 	@Transactional
 	protected void unarchived() {
 
-		model = JPA.find(GeneralService.getPersistentClass(model), model.getId());
+		model = JPA.find(generalService.getPersistentClass(model), model.getId());
 		model.setArchived( false );
 
 	}
@@ -210,7 +213,7 @@ public abstract class AbstractBatch {
 
 	private boolean isAssociable(Field field){
 
-		return field.getType().equals( GeneralService.getPersistentClass(model) );
+		return field.getType().equals( generalService.getPersistentClass(model) );
 
 	}
 

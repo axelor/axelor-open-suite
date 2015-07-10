@@ -62,7 +62,7 @@
     </action-group>
     
     <action-method name="action-currency-conversion-line-method-getTodayDate">
-    	<call class="com.axelor.apps.base.service.administration.GeneralService" method="getTodayDate()"/>
+    	<call class="__config__.generalService" method="getTodayDate()"/>
    	</action-method>
     
     <action-method name="action-currency-conversion-line-method-check-date">

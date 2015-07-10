@@ -61,9 +61,12 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 	private LocalDate today;
 
 	@Inject
+	protected GeneralService generalService;
+
+	@Inject
 	public SaleOrderInvoiceServiceImpl() {
 
-		this.today = GeneralService.getTodayDate();
+		this.today = generalService.getTodayDate();
 
 	}
 

@@ -50,6 +50,9 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 	@Inject
 	private PriceListService priceListService;
 
+	@Inject
+	protected GeneralService generalService;
+
 
 	/**
 	 * Calculer le montant HT d'une ligne de devis.
@@ -78,7 +81,7 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 
 		return currencyService.getAmountCurrencyConverted(
 			product.getSaleCurrency(), saleOrder.getCurrency(), product.getSalePrice(), saleOrder.getCreationDate())
-			.setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
 	}
 

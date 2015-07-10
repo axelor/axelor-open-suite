@@ -68,7 +68,7 @@
 		<context name="_typeSelect" expr="3"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
 		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
 	</action-view>
 	
@@ -100,7 +100,7 @@
 		<context name="_typeSelect" expr="1"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
 	</action-view>
 	
 	<menuitem name="crm-root-ticket" parent="crm-root"
@@ -128,7 +128,7 @@
 		<view-param name="search-filters" value="lead-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
@@ -143,7 +143,7 @@
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	</action-view>
 		
 	<menuitem name="crm-root-meeting-my-calendar" parent="crm-root"
@@ -322,7 +322,7 @@
 	<action-view name="top.new.lead.view" title="Create Lead"  model="com.axelor.apps.crm.db.Lead" >
 		<view type="form" name="lead-form" />
 		<view type="grid" name="lead-grid" />
-		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
@@ -332,7 +332,7 @@
 	<action-view name="top.propsection.leads" title="Leads" model="com.axelor.apps.crm.db.Lead" >
 		<view type="grid" name="lead-grid" />
 		<view type="form" name="lead-form" />
-		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	<menuitem name="top-prospection-create-opportunity" order="-80" parent="top-prospection" title="Create Opportunity"  action="top.new.opportunity.view"  />
@@ -340,7 +340,7 @@
 	<action-view name="top.prospection.opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" >
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
@@ -385,7 +385,7 @@
 	<action-view name="crm.target.team.dashboard.view" title="Target team Dashboard">
 		<view type="dashboard" name="crm.target.team.dashboard" />
 		<context name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
-		<context name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		<context name="date" expr="eval:__config__.generalService.getTodayDate()"/>
 	</action-view>
 	
 	

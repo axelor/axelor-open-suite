@@ -6,8 +6,12 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
+
+	@Inject
+	protected GeneralService generalService;
 
 	@Override
 	public SaleOrder copy(SaleOrder entity, boolean deep) {
@@ -18,7 +22,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 		copy.setSaleOrderSeq(null);
 		copy.clearBatchSet();
 		copy.setImportId(null);
-		copy.setCreationDate(GeneralService.getTodayDate());
+		copy.setCreationDate(generalService.getTodayDate());
 		copy.setConfirmationDate(null);
 		copy.setConfirmedByUser(null);
 		copy.setOrderDate(null);
@@ -27,7 +31,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 		return copy;
 	}
-	
+
 	@Override
 	public SaleOrder save(SaleOrder saleOrder) {
 		try {

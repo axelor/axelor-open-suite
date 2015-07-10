@@ -268,7 +268,7 @@
 		<attribute name="value" for="typeSelect" expr="eval:'project'" />
 		<attribute name="value" for="fromDate" expr="eval: __date__"/>
 		<attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
-		<attribute name="value" for="product" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInvoicingProjectTask()"/>
+		<attribute name="value" for="product" expr="eval: __config__.general.getProductInvoicingProjectTask()"/>
 		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
 		<attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
 	</action-attrs>
@@ -276,7 +276,7 @@
 	<action-record name="action-project-task-default" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="typeSelect" expr="eval:'task'" />
 		<field name="company" expr="eval:__user__.activeCompany"/>
-		<field name="product" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInvoicingProjectTask()" if="invoicingTypeSelect != 3 &amp;&amp; project?.invoicingTypeSelect != 3"/>
+		<field name="product" expr="eval: __config__.general.getProductInvoicingProjectTask()" if="invoicingTypeSelect != 3 &amp;&amp; project?.invoicingTypeSelect != 3"/>
 		<field name="fromDate" expr="eval: __date__"/>
 		<field name="assignedTo" expr="eval: __user__"/>
 	</action-record>
@@ -347,21 +347,21 @@
 	</action-view>
 	
 	<action-record name="action-project-task-record-set-stored-duration" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="duration" expr="call:com.axelor.apps.base.service.administration.GeneralService:getDurationHours($visibleDuration)"/>
+	    <field name="duration" expr="eval:__config__.generalService.getDurationHours($visibleDuration)"/>
 	</action-record>
 	
 	<action-record name="action-project-task-record-set-stored-time-spent" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="timeSpent" expr="call:com.axelor.apps.base.service.administration.GeneralService:getDurationHours($visibleTimeSpent)"/>
+	    <field name="timeSpent" expr="eval:__config__.generalService.getDurationHours($visibleTimeSpent)"/>
 	</action-record>
 	
 	<action-record name="action-project-task-record-set-stored-lead-delay" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="leadDelay" expr="call:com.axelor.apps.base.service.administration.GeneralService:getDurationHours($visibleLeadDelay)"/>
+	    <field name="leadDelay" expr="eval:__config__.generalService.getDurationHours($visibleLeadDelay)"/>
 	</action-record>
 	
 	<action-record name="action-project-task-record-set-visible-duration" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="$visibleDuration" expr="call:com.axelor.apps.base.service.administration.GeneralService:getGeneralDuration(duration)"/>
-	    <field name="$visibleTimeSpent" expr="call:com.axelor.apps.base.service.administration.GeneralService:getGeneralDuration(timeSpent)"/>
-	    <field name="$visibleLeadDelay" expr="call:com.axelor.apps.base.service.administration.GeneralService:getGeneralDuration(leadDelay)"/>
+	    <field name="$visibleDuration" expr="eval: __config__.generalService.getGeneralDuration(duration)"/>
+	    <field name="$visibleTimeSpent" expr="eval: __config__.generalService.getGeneralDuration(timeSpent)"/>
+	    <field name="$visibleLeadDelay" expr="eval: __config__.generalService.getGeneralDuration(leadDelay)"/>
 	</action-record>
 	
 	<action-record name="action-project-task-record-compute-exTaxTotal" model="com.axelor.apps.project.db.ProjectTask">
@@ -375,7 +375,7 @@
 	</action-record>
 		
   	<action-attrs name="action-project-attrs-scale-and-precision">
-		<attribute name="scale" for="price" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="price" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
 	<action-view name="action-show-reporting-folder" title="Folder">  		

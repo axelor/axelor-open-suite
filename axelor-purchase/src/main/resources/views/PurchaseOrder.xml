@@ -108,7 +108,7 @@
 			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice"/>
 			<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 3"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
 			<button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect &gt;= 3"   onClick="save,action-purchase-order-method-clear-purchase-order"/>
-			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="eval: GeneralService.getGeneral().getSupplierStockMoveManagement() &amp;&amp; !GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
+			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="eval: __config__.general.getSupplierStockMoveManagement() &amp;&amp; !__config__.general.getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
 			<spacer/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 		</panel>
@@ -167,7 +167,7 @@
     	<action name="save"/>
     	<action name="action-purchase-order-method-compute"/>
     	<action name="save"/>
-    	<action name="action-purchase-order-create-stock-move" if="eval: GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()"/>
+    	<action name="action-purchase-order-create-stock-move" if="eval: __config__.general.getSupplierStockMoveGenerationAuto()"/>
     	<action name="action-purchase-order-record-validate"/>
     	<action name="action-sale-order-method-validate-supplier"/>
     	<action name="save"/>
@@ -178,7 +178,7 @@
     <action-attrs name="action-purchase-order-attrs-in-ati">
     	<attribute name="hidden" for="purchaseOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
-    	<attribute name="hidden" for="versionNumber" expr="eval: !com.axelor.apps.base.service.administration.GeneralService.getGeneral().getManagePurchaseOrderVersion()"/>
+    	<attribute name="hidden" for="versionNumber" expr="eval: !__config__.general.getManagePurchaseOrderVersion()"/>
     </action-attrs>
     
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">

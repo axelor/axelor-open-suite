@@ -209,7 +209,7 @@
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 	    <field name="statusSelect" expr="eval: 1"/>
 	    <field name="isWithBackorder" expr="eval:true" />
-	    <field name="estimatedDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	    <field name="estimatedDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	    <field name="typeSelect" expr="eval: _typeSelect"/>
 	    <field if="_typeSelect == '3'" name="toLocation" expr="eval:__repo__.of(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',__user__.activeCompany?.id).fetchOne()"/>
 		<field if="_typeSelect == '3'" name="fromLocation" expr="eval:__repo__.of(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualLocation"/>

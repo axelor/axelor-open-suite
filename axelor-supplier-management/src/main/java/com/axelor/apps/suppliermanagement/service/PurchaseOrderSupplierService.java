@@ -60,6 +60,9 @@ public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 	@Inject
 	private PurchaseOrderLineService purchaseOrderLineService;
 
+	@Inject
+	protected GeneralService generalService;
+
 	private LocalDate today;
 
 	protected User user;
@@ -67,7 +70,7 @@ public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 	@Inject
 	public PurchaseOrderSupplierService() {
 
-		this.today = GeneralService.getTodayDate();
+		this.today = generalService.getTodayDate();
 		this.user =  AuthUtils.getUser();
 	}
 

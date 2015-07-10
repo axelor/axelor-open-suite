@@ -19,9 +19,13 @@ import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MetaFilesTemp {
+
+	@Inject
+	protected GeneralService generalService;
 
 	private static final String DEFAULT_UPLOAD_PATH = "{java.io.tmpdir}/axelor/attachments";
 	private static final String UPLOAD_PATH = AppSettings.get().getPath("file.upload.dir", DEFAULT_UPLOAD_PATH);
@@ -145,7 +149,7 @@ public class MetaFilesTemp {
 		MetaAttachment attachment = new MetaAttachment();
 		attachment.setMetaFile(file);
 		attachment.setObjectId(entity.getId());
-		attachment.setObjectName(GeneralService.getPersistentClass(entity).getCanonicalName());
+		attachment.setObjectName(generalService.getPersistentClass(entity).getCanonicalName());
 
 		return attachment;
 	}

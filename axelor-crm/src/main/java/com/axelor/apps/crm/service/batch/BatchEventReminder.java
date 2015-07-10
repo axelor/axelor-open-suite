@@ -51,7 +51,7 @@ public class BatchEventReminder extends BatchStrategy {
 	public BatchEventReminder(EventReminderService eventReminderService) {
 		
 		super(eventReminderService);
-		this.today = GeneralService.getTodayDateTime().toLocalDateTime();
+		this.today = generalService.getTodayDateTime().toLocalDateTime();
 	}
 	
 	

@@ -192,20 +192,20 @@
     </action-group>
     
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
-    	<field name="inAti" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInAti()"/>
+    	<field name="inAti" expr="eval:__config__.general.getProductInAti()"/>
     </action-record>
 
     <action-attrs name="action-product-attrs-scale-and-precision">
-		<attribute name="scale" for="salePrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
-		<attribute name="scale" for="purchasePrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
-		<attribute name="scale" for="costPrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="salePrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="purchasePrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="costPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
     
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="expense" expr="false"/>
     	<field name="productTypeSelect" expr="storable"/>
     	<field name="procurementMethodSelect" expr="buy"/>
-    	<field name="startDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
+    	<field name="startDate" expr="eval:__config__.generalService.getTodayDate()" if="startDate == null"/>
     	<field name="salePrice" expr="1"/>
     	<field name="purchasePrice" expr="1"/>
     	<field name="saleCurrency" expr="eval: _activeCompany.currency"/>
@@ -255,7 +255,7 @@
     </action-validate>
     
     <action-record name="action-product-method-reset-end-date" model="com.axelor.apps.base.db.Product">
-    	<field name="endDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="endDate &lt; startDate"/>
+    	<field name="endDate" expr="eval:__config__.generalService.getTodayDate()" if="endDate &lt; startDate"/>
     </action-record>
     
     <action-view name="action-product-view-product-variant" title="Products variants"

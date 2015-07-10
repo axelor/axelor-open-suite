@@ -35,7 +35,7 @@
     </action-record>
     
 	<action-attrs name="action-mail-account-default-attrs" model="com.axelor.apps.message.db.MailAccount">
-    	<attribute name="value" for="_mailAccountByUser" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getMailAccountByUser()"/>
+    	<attribute name="value" for="_mailAccountByUser" expr="eval: __config__.general.getMailAccountByUser()"/>
     </action-attrs>
     
 </object-views>

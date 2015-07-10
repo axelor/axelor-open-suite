@@ -28,9 +28,9 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CashRegisterLine;
 import com.axelor.apps.account.db.repo.CashRegisterLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -44,95 +44,98 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class CashRegisterLineService extends CashRegisterLineRepository{
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(CashRegisterLineService.class);
-	
+
 	@Inject
 	private TemplateMessageService templateMessageService;
-	
+
+	@Inject
+	protected GeneralService generalService;
+
 	private DateTime todayTime;
 	private User user;
 
 	@Inject
 	public CashRegisterLineService(UserService userService) {
-		
-		this.todayTime = GeneralService.getTodayDateTime();
+
+		this.todayTime = generalService.getTodayDateTime();
 		this.user = userService.getUser();
-		
+
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message closeCashRegister(CashRegisterLine cashRegisterLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 		Company company = this.user.getActiveCompany();
 		if(company == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CASH_REGISTER_1),
-					GeneralServiceAccount.getExceptionAccountingMsg(), this.user.getFullName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION, this.user.getFullName()), IException.CONFIGURATION_ERROR);
 		}
-		
+
 		LOG.debug("In closeCashRegister");
 
 		CashRegisterLine cashRegisterLineFound = all()
-				.filter("self.cashRegister = ?1 and self.cashRegisterDate = ?2 and self.statusSelect = '1'", 
+				.filter("self.cashRegister = ?1 and self.cashRegisterDate = ?2 and self.statusSelect = '1'",
 						cashRegisterLine.getCashRegister(), cashRegisterLine.getCashRegisterDate()).fetchOne();
-		
+
 		if(cashRegisterLineFound != null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CASH_REGISTER_2),
-					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
 		else  {
 			AccountConfig accountConfig = company.getAccountConfig();
-			
+
 			if(accountConfig.getCashRegisterAddressEmail() == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CASH_REGISTER_3),
-						GeneralServiceAccount.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
+						GeneralServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
 			}
-			
+
 			cashRegisterLine.setCreateDateTime(this.todayTime);
 			cashRegisterLine.setUser(this.user);
 			cashRegisterLine.setStatusSelect(CashRegisterLineRepository.CLOSED_CASHREGISTERLINE);
 			save(cashRegisterLine);
-			
+
 			return Beans.get(MessageRepository.class).save(this.createCashRegisterLineMail(accountConfig.getCashRegisterAddressEmail(), company, cashRegisterLine));
-			
+
 		}
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void openCashRegister(CashRegisterLine cashRegisterLine)  {
-		
+
 		Beans.get(MessageRepository.class).all().filter("self.cashRegisterLine = ?1", cashRegisterLine).remove();
-		
+
 		cashRegisterLine.setStatusSelect(CashRegisterLineRepository.DRAFT_CASHREGISTERLINE);
-		
+
 		save(cashRegisterLine);
 	}
-	
-	
+
+
 	/**
 	 * Procédure permettant de créer un email spécifique aux caisses
 	 * @param contact
 	 * 			Un contact
 	 * @param company
 	 * 			Une société
-	 * @throws AxelorException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
+	 * @throws AxelorException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
 	 */
 	public Message createCashRegisterLineMail(String address, Company company, CashRegisterLine cashRegisterLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
-		
+
 		AccountConfig accountConfig = company.getAccountConfig();
-		
+
 		if(accountConfig == null || accountConfig.getCashRegisterTemplate() == null)  {
-			throw new AxelorException(String.format(IExceptionMessage.MAIL_1, 
-					GeneralServiceAccount.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(IExceptionMessage.MAIL_1,
+					GeneralServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
 		}
-		
+
 		return templateMessageService.generateMessage(cashRegisterLine, accountConfig.getCashRegisterTemplate());
 
 	}
-	
+
 }

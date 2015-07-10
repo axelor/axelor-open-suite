@@ -36,8 +36,8 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -70,6 +70,9 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 
 	@Inject
 	private PartnerService partnerService;
+
+	@Inject
+	protected GeneralService generalService;
 
 	@Override
 	public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder) throws AxelorException  {
@@ -279,7 +282,7 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
 		}
 		this.save(purchaseOrder);
-		if (GeneralService.getGeneral().getManagePurchaseOrderVersion()){
+		if (generalService.getGeneral().getManagePurchaseOrderVersion()){
 			this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
 		}
 	}

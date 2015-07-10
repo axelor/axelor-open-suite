@@ -62,6 +62,9 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 	@Inject
 	protected ElementsToInvoiceService elementsToInvoiceService;
 
+	@Inject
+	protected GeneralService generalService;
+
 	protected int MAX_LEVEL_OF_PROJECT = 10;
 
 	protected int sequence = 10;
@@ -268,7 +271,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		Partner customer = folder.getProjectTask().getClientPartner();
 		if(!customer.getFlatFeePurchase()){
 			for (InvoiceLine invoiceLine : invoiceLineList) {
-				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackPurchase().divide(new BigDecimal(100), GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
+				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackPurchase().divide(new BigDecimal(100), generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
 				invoiceLine.setExTaxTotal(invoiceLine.getPrice().multiply(invoiceLine.getQty()).setScale(2, BigDecimal.ROUND_HALF_UP));
 			}
 		}

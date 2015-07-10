@@ -54,7 +54,7 @@
 	</action-record>
 	
 	<action-record name="action-address-get-general-qas" model="com.axelor.apps.base.db.Address">
-		<field name="hasQasValidation" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getHasQasValidation()" />
+		<field name="hasQasValidation" expr="eval:__config__.general.getHasQasValidation()" />
 	</action-record>
 
 	<action-record name="default-address-country-record"

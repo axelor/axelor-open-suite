@@ -20,62 +20,18 @@ package com.axelor.apps.base.service.administration;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.hibernate.proxy.HibernateProxy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.GeneralRepository;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.db.Model;
-import com.axelor.inject.Beans;
+import com.axelor.db.Repository;
 
-@Singleton
-public class GeneralService extends GeneralRepository {
+public interface GeneralService extends Repository<General> {
 
-	protected static final String EXCEPTION = "Warning !";
-
-	private static GeneralService INSTANCE;
-
-	private Long administrationId;
-
-	@Inject
-	protected GeneralService() {
-
-		General general = all().fetchOne();
-		if(general != null)  {
-			administrationId = all().fetchOne().getId();
-		}
-		else  {
-			throw new RuntimeException("Veuillez configurer l'administration générale.");
-		}
-
-	}
-
-	private static GeneralService get() {
-
-		if (INSTANCE == null) { INSTANCE = new GeneralService(); }
-
-		return INSTANCE;
-	}
-
-// Accesseur
-
-	/**
-	 * Récupérer l'administration générale
-	 *
-	 * @return
-	 */
-	public static General getGeneral() {
-		return Beans.get(GeneralRepository.class).find(get().administrationId);
-	}
+	public General getGeneral();
 
 // Date du jour
 
@@ -87,21 +43,7 @@ public class GeneralService extends GeneralRepository {
 	 * private
 	 * @return
 	 */
-	public static DateTime getTodayDateTime(){
-
-		DateTime todayDateTime = new DateTime();
-
-		User user = AuthUtils.getUser();
-
-		if (user != null && user.getToday() != null){
-			todayDateTime = user.getToday();
-		}
-		else if (getGeneral() != null && getGeneral().getToday() != null){
-			todayDateTime = getGeneral().getToday();
-		}
-
-		return todayDateTime;
-	}
+	public DateTime getTodayDateTime();
 
 	/**
 	 * Récupérer la date du jour.
@@ -111,63 +53,19 @@ public class GeneralService extends GeneralRepository {
 	 *
 	 * @return
 	 */
-	public static LocalDate getTodayDate(){
-
-		return getTodayDateTime().toLocalDate();
-
-	}
-
-
-
-// Log
+	public LocalDate getTodayDate();
 
 	/**
 	 * Savoir si le logger est activé
 	 *
 	 * @return
 	 */
-	public static boolean isLogEnabled(){
+	public boolean isLogEnabled();
 
-		if (getGeneral() != null){
-			return getGeneral().getLogOk();
-		}
-
-		return false;
-	}
-
-	public static Unit getUnit(){
-
-		if (getGeneral() != null){
-			return getGeneral().getDefaultProjectUnit();
-		}
-
-		return null;
-	}
+	public Unit getUnit();
 
 
-	public static int getNbDecimalDigitForUnitPrice(){
-
-		if (getGeneral() != null){
-			return getGeneral().getNbDecimalDigitForUnitPrice();
-		}
-
-		return IAdministration.DEFAULT_NB_DECIMAL_DIGITS;
-	}
-
-
-// Message exception
-
-
-	/**
-	 * Obtenir le message d'erreur pour les achats/ventes.
-	 *
-	 * @return
-	 */
-	public static String getExceptionSupplychainMsg(){
-
-			return EXCEPTION;
-
-	}
+	public int getNbDecimalDigitForUnitPrice();
 
 
 // Conversion de devise
@@ -177,61 +75,12 @@ public class GeneralService extends GeneralRepository {
 	 *
 	 * @return
 	 */
-	public static List<CurrencyConversionLine> getCurrencyConfigurationLineList(){
-		if (getGeneral() != null) { return getGeneral().getCurrencyConversionLineList(); }
-		else { return null; }
-	}
+	public List<CurrencyConversionLine> getCurrencyConfigurationLineList();
 
-	@SuppressWarnings("unchecked")
-	public static Class<? extends Model> getPersistentClass(Model model){
+	public Class<? extends Model> getPersistentClass(Model model);
 
-		if (model instanceof HibernateProxy) {
-		      return ((HibernateProxy) model).getHibernateLazyInitializer().getPersistentClass();
-		}
-		else { return model.getClass(); }
+	public BigDecimal getDurationHours(BigDecimal duration);
 
-	}
-
-	public BigDecimal getDurationHours(BigDecimal duration){
-
-		if(duration == null) { return null; }
-
-		General general = GeneralService.getGeneral();
-
-		if(general != null){
-			String timePref = general.getTimeLoggingPreferenceSelect();
-
-			if(timePref.equals("days")){
-				duration = duration.multiply(general.getDailyWorkHours());
-			}
-			else if (timePref.equals("minutes")) {
-				duration = duration.divide(new BigDecimal(60));
-			}
-		}
-
-		return duration;
-	}
-
-	public BigDecimal getGeneralDuration(BigDecimal duration){
-
-		if(duration == null) { return null; }
-
-		General general = GeneralService.getGeneral();
-
-		if(general != null){
-			String timePref = general.getTimeLoggingPreferenceSelect();
-
-			BigDecimal dailyWorkHrs = general.getDailyWorkHours();
-
-			if(timePref.equals("days") && dailyWorkHrs != null && dailyWorkHrs.compareTo(BigDecimal.ZERO) != 0){
-				duration = duration.divide(dailyWorkHrs);
-			}
-			else if (timePref.equals("minutes")) {
-				duration = duration.multiply(new BigDecimal(60));
-			}
-		}
-
-		return duration;
-	}
+	public BigDecimal getGeneralDuration(BigDecimal duration);
 
 }

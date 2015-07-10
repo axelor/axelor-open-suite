@@ -52,6 +52,9 @@ public class StockMoveController {
 	@Inject
 	private StockMoveService stockMoveService;
 
+	@Inject
+	protected GeneralService generalService;
+
 	public void plan(ActionRequest request, ActionResponse response) {
 
 		StockMove stockMove = request.getContext().asType(StockMove.class);
@@ -185,7 +188,7 @@ public class StockMoveController {
 			toAddress =  stockMove.getCompany().getAddress();
 		if(fromAddress == null || toAddress == null)
 			msg = I18n.get(IExceptionMessage.STOCK_MOVE_11);
-		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_OSM)
+		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_OSM)
 			msg = I18n.get(IExceptionMessage.STOCK_MOVE_12);
 		if(msg.isEmpty()){
 			String dString = fromAddress.getAddressL4()+" ,"+fromAddress.getAddressL6();

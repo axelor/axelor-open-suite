@@ -58,9 +58,9 @@
 	</action-group>
 	
 	<action-group name="action-group-supplychain-sale-order-confirmed" if-module="axelor-supplychain">
-		<action name="action-supplychain-sale-order-create-purchase-order" if="eval: GeneralService.getGeneral().getPurchaseOrderGenerationAuto()"/>
-    	<action name="action-supplychain-sale-order-create-stock-move" if="eval: GeneralService.getGeneral().getCustomerStockMoveGenerationAuto()"/>
-    	<action name="action-supplychain-sale-order-create-production-order" if="eval: GeneralService.getGeneral().getProductionOrderGenerationAuto()"/>
+		<action name="action-supplychain-sale-order-create-purchase-order" if="eval: __config__.general.getPurchaseOrderGenerationAuto()"/>
+    	<action name="action-supplychain-sale-order-create-stock-move" if="eval: __config__.general.getCustomerStockMoveGenerationAuto()"/>
+    	<action name="action-supplychain-sale-order-create-production-order" if="eval: __config__.general.getProductionOrderGenerationAuto()"/>
 	</action-group>
 	
 	<action-method name="action-supplychain-sale-order-method-get-location">

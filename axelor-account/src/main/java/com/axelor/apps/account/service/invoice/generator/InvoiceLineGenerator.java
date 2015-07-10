@@ -87,6 +87,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	@Inject
 	protected UnitConversionService unitConversionService;
 
+	@Inject
+	protected GeneralService generalService;
+
 
 	protected InvoiceLineGenerator() { }
 
@@ -129,7 +132,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.inTaxTotal = inTaxTotal;
         this.groupingLine = groupingLine;
         this.isTaxInvoice = isTaxInvoice;
-        this.today = GeneralService.getTodayDate();
+        this.today = generalService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
     }
@@ -152,7 +155,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.exTaxTotal = exTaxTotal;
         this.groupingLine = groupingLine;
         this.isTaxInvoice = isTaxInvoice;
-        this.today = GeneralService.getTodayDate();
+        this.today = generalService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
     }
@@ -176,7 +179,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.exTaxTotal = exTaxTotal;
         this.groupingLine = groupingLine;
         this.isTaxInvoice = isTaxInvoice;
-        this.today = GeneralService.getTodayDate();
+        this.today = generalService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
     }
@@ -191,7 +194,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.unit = unit;
         this.sequence = sequence;
         this.isTaxInvoice = isTaxInvoice;
-        this.today = GeneralService.getTodayDate();
+        this.today = generalService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
 	}

@@ -33,6 +33,9 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 	@Inject
 	private PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl;
 
+	@Inject
+	protected GeneralService generalService;
+
 
 	@Override
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException  {
@@ -65,7 +68,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 				if(priceListLine!=null){
 					discountTypeSelect = priceListLine.getTypeSelect();
 				}
-				if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+				if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 				{
 					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 					discountAmount = (BigDecimal) discounts.get("discountAmount");

@@ -39,7 +39,6 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.DirectDebitManagementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
@@ -48,100 +47,104 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class PaymentScheduleImportService {
 
-private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportService.class); 
-	
+private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportService.class);
+
 	@Inject
 	private MoveLineService mls;
 
 	@Inject
 	private MoveService ms;
-	
+
 	@Inject
 	private PaymentScheduleService pss;
-	
+
 	@Inject
 	private PaymentScheduleLineService paymentScheduleLineService;
-	
+
 	@Inject
 	private PaymentModeService pms;
 
 	@Inject
 	private CfonbImportService cfonbImportService;
-	
+
 	@Inject
 	private ReminderService rs;
-	
+
 	@Inject
 	private AccountConfigService accountConfigService;
-	
-	
+
+
 	@Inject
 	private DirectDebitManagementRepository directDebitManagementRepo;
-	
+
 	@Inject
 	private InvoiceService invoiceService;
-	
+
+	@Inject
+	protected GeneralService generalService;
+
 	private LocalDate today;
-	
+
 	private List<PaymentScheduleLine> pslListGC = new ArrayList<PaymentScheduleLine>();   				// liste des échéances de lissage de paiement rejetées
 	private List<Invoice> invoiceList = new ArrayList<Invoice>();										// liste des factures rejetées
 
 	@Inject
 	public PaymentScheduleImportService() {
-		
-		this.today = GeneralService.getTodayDate();
+
+		this.today = generalService.getTodayDate();
 
 	}
-	
+
 	public List<PaymentScheduleLine> getPaymentScheduleLineMajorAccountList()  {
 		return this.pslListGC;
 	}
-	
+
 	public List<Invoice> getInvoiceList()  {
 		return this.invoiceList;
 	}
-	
-	
+
+
 	public void initialiseCollection()  {
-		
+
 		pslListGC = new ArrayList<PaymentScheduleLine>();   				// liste des échéances de lissage de paiement rejetées
-		invoiceList = new ArrayList<Invoice>();	
-		
+		invoiceList = new ArrayList<Invoice>();
+
 	}
-	
-	
+
+
 	public void checkCompanyFields(Company company) throws AxelorException  {
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-		
+
 		// Test si les champs d'import sont configurés pour la société
 		accountConfigService.getRejectImportPathAndFileName(accountConfig);
 		accountConfigService.getTempImportPathAndFileName(accountConfig);
 		accountConfigService.getRejectPaymentScheduleTemplate(accountConfig);
 		accountConfigService.getCustomerAccount(accountConfig);
 		accountConfigService.getRejectionPaymentMode(accountConfig);
-		
+
 		Journal rejectJournal = accountConfigService.getRejectJournal(accountConfig);
-		
+
 		if(rejectJournal.getSequence() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_4), 
-					GeneralServiceAccount.getExceptionAccountingMsg(), company.getName(), rejectJournal.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_4),
+					GeneralServiceImpl.EXCEPTION, company.getName(), rejectJournal.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
-	
+
+
 	public String getReferenceRejected(PaymentScheduleLine paymentScheduleLine)  {
 		if(paymentScheduleLine.getDirectDebitManagement() != null)  {
 			return paymentScheduleLine.getDirectDebitManagement().getDebitNumber();
@@ -150,22 +153,22 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 			return paymentScheduleLine.getDebitNumber();
 		}
 	}
-	
-	
+
+
 	public List<PaymentScheduleLine> getPaymentScheduleLinesToReject(String refDebitReject, Company company)  {
-		
+
 		// Identification de la ligne d'échéance correspondant au rejet
 		PaymentScheduleLine pslRequested = paymentScheduleLineService.all().filter("UPPER(self.debitNumber) = ?1 AND self.paymentSchedule.company = ?2", refDebitReject, company).fetchOne();
-		
+
 		// Identification de l'objet de gestion de prélèvement (cas des export bancaire dont plusieurs échéances ont été consolidées)
 		DirectDebitManagement directDebitManagementRequested = directDebitManagementRepo.all().filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
-		
+
 		List<PaymentScheduleLine> paymentScheduleLinesToRejectList = new ArrayList<PaymentScheduleLine>();
 
 		if(pslRequested != null)  {
 			paymentScheduleLinesToRejectList.add(pslRequested);
 		}
-		
+
 		if(directDebitManagementRequested != null)  {
 			if(directDebitManagementRequested.getPaymentScheduleLineList() != null && directDebitManagementRequested.getPaymentScheduleLineList().size() != 0)  {
 				paymentScheduleLinesToRejectList.addAll(this.sortForAssignAmountRejectedForPaymentScheduleLine(directDebitManagementRequested));
@@ -173,27 +176,27 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		}
 		return paymentScheduleLinesToRejectList;
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public List<PaymentScheduleLine> importRejectPaymentScheduleLine(LocalDate dateReject, String refDebitReject, BigDecimal amountReject, InterbankCodeLine causeReject, Company company) throws AxelorException  {
-		
+
 		List<PaymentScheduleLine> paymentScheduleLineRejectedList = new ArrayList<PaymentScheduleLine>();
-		
+
 		List<PaymentScheduleLine> paymentScheduleLinesToRejectList = this.getPaymentScheduleLinesToReject(refDebitReject, company);
-		
-		
+
+
 		/*** Récupération et traitements des échéances rejetées  ***/
 		for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLinesToRejectList)  {
 			if(!paymentScheduleLine.getRejectedOk())  {
-				
+
 				LOG.debug("un échéancier trouvé");
 
 				//Lissage de paiement
-				
+
 				// Afin de pouvoir associer le montant rejeté à l'échéance
 				amountReject = this.setAmountRejected(paymentScheduleLine, amountReject, paymentScheduleLine.getInTaxAmount());
-				
+
 				if(paymentScheduleLine.getAmountRejected().compareTo(BigDecimal.ZERO) == 1)  {
 					// Si dérnière échéance, créer juste l'écriture de rejet (extourne)
 					if(pss.isLastSchedule(paymentScheduleLine))  {
@@ -204,31 +207,31 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 						this.paymentScheduleRejectProcessing(paymentScheduleLine);
 						this.setRejectOnPaymentScheduleLine(paymentScheduleLine, dateReject, causeReject);
 					}
-				
+
 					pslListGC.add(paymentScheduleLine);
 					paymentScheduleLineRejectedList.add(paymentScheduleLine);
 				}
-					
+
 			}
 		}
 		return paymentScheduleLineRejectedList;
 	}
-	
-	
+
+
 	public List<Invoice> getInvoicesToReject(String refDebitReject, Company company)  {
-		
+
 		// Identification de la facture correspondant au rejet
 		Invoice invoiceRequested = invoiceService.all().filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
-				
+
 		// Identification de l'objet de gestion de prélèvement (cas des export bancaire dont plusieurs échéances où plusieurs factures ont été consolidés)
 		DirectDebitManagement directDebitManagementRequested = directDebitManagementRepo.all().filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
-				
+
 		List<Invoice> invoicesToRejectList = new ArrayList<Invoice>();
-		
+
 		if(invoiceRequested != null)  {
 			invoicesToRejectList.add(invoiceRequested);
 		}
-		
+
 		if(directDebitManagementRequested != null)  {
 			if(directDebitManagementRequested.getInvoiceSet() != null && directDebitManagementRequested.getInvoiceSet().size() != 0)  {
 				invoicesToRejectList.addAll(this.sortForAssignAmountRejectedForInvoice(directDebitManagementRequested));
@@ -236,35 +239,35 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		}
 		return invoicesToRejectList;
 	}
-	
-	
+
+
 	public List<Invoice> importRejectInvoice(LocalDate dateReject, String refDebitReject, BigDecimal amountReject, InterbankCodeLine causeReject, Company company)  {
 		List<Invoice> invoiceRejectedList = new ArrayList<Invoice>();
-		
+
 		List<Invoice> invoicesToRejectList = this.getInvoicesToReject(refDebitReject, company);
-		
+
 		/*** Récupération des factures rejetées  ***/
 		for(Invoice invoice : invoicesToRejectList)  {
 			LOG.debug("une facture trouvée");
-			
+
 			// Afin de pouvoir associer le montant rejeté à la facture
 			amountReject = this.setAmountRejected(invoice, amountReject, cfonbImportService.getAmountRemainingFromPaymentMove(invoice));
-			
+
 			if(invoice.getAmountRejected().compareTo(BigDecimal.ZERO) == 1)  {
 				invoice.setRejectDate(dateReject);
 				invoice.setInterbankCodeLine(causeReject);
-				
+
 				invoiceService.save(invoice);
-			
+
 				invoiceList.add(invoice);
 				invoiceRejectedList.add(invoice);
 			}
-		}	
-		
+		}
+
 		return invoiceRejectedList;
 	}
-	
-	
+
+
 	public BigDecimal setAmountRejected(PaymentScheduleLine paymentScheduleLine, BigDecimal amountReject, BigDecimal amountPaid)  {
 		BigDecimal amountReject2 = amountReject;
 		if(paymentScheduleLine.getDirectDebitManagement() != null)  {
@@ -281,8 +284,8 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		}
 		return amountReject2;
 	}
-	
-	
+
+
 	public BigDecimal setAmountRejected(Invoice invoice, BigDecimal amountReject, BigDecimal amountPaid)  {
 		BigDecimal amountReject2 = amountReject;
 		if(invoice.getDirectDebitManagement() != null)  {
@@ -299,8 +302,8 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		}
 		return amountReject2;
 	}
-	
-	
+
+
 	public List<PaymentScheduleLine> sortForAssignAmountRejectedForPaymentScheduleLine(DirectDebitManagement directDebitManagement)  {
 		List<PaymentScheduleLine> pslList = new ArrayList<PaymentScheduleLine>();
 		List<PaymentScheduleLine> rejectedPslList = new ArrayList<PaymentScheduleLine>();
@@ -316,12 +319,12 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 
 		sortedPslList.addAll(sortPaymentScheduleLineList(rejectedPslList));
 		sortedPslList.addAll(sortPaymentScheduleLineList(pslList));
-		
+
 		return sortedPslList;
 
 	}
-	
-	
+
+
 	public List<Invoice> sortForAssignAmountRejectedForInvoice(DirectDebitManagement directDebitManagement)  {
 		List<Invoice> invoiceList = new ArrayList<Invoice>();
 		List<Invoice> rejectedInvoiceList = new ArrayList<Invoice>();
@@ -337,17 +340,17 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 
 		sortedInvoiceList.addAll(sortInvoiceList(rejectedInvoiceList));
 		sortedInvoiceList.addAll(sortInvoiceList(invoiceList));
-		
+
 		return sortedInvoiceList;
 
 	}
-	
-	
+
+
 	public List<PaymentScheduleLine> sortPaymentScheduleLineList(List<PaymentScheduleLine> paymentScheduleLineList)  {
 		List<PaymentScheduleLine> paymentScheduleLineList2 = paymentScheduleLineList;
 		int size = paymentScheduleLineList2.size();
 		int min = 0;
-		
+
 		for(int i = 0; i < size-1 ;i++)  {
 			min = i;
 			for(int j = i + 1; j < size; j++)  {
@@ -360,16 +363,16 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 			}
 		}
 		return paymentScheduleLineList2;
-		
+
 	}
-	
-	
-	
+
+
+
 	public List<Invoice> sortInvoiceList(List<Invoice> invoiceList)  {
 		List<Invoice> invoiceList2 = invoiceList;
 		int size = invoiceList2.size();
 		int min = 0;
-		
+
 		for(int i = 0; i < size-1 ;i++)  {
 			min = i;
 			for(int j = i + 1; j < size; j++)  {
@@ -382,83 +385,83 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 			}
 		}
 		return invoiceList2;
-		
+
 	}
-	
-	
+
+
 	public List<PaymentScheduleLine> permuteElement(List<PaymentScheduleLine> pslList, PaymentScheduleLine psl1, PaymentScheduleLine psl2)  {
 		int position = pslList.indexOf(psl1);
 		pslList.set(pslList.indexOf(psl2), psl1);
 		pslList.set(position, psl2);
 		return pslList;
 	}
-	
-	
+
+
 	public List<Invoice> permuteElement(List<Invoice> pslList, Invoice invoice1, Invoice invoice2)  {
 		int position = pslList.indexOf(invoice1);
 		pslList.set(pslList.indexOf(invoice2), invoice1);
 		pslList.set(position, invoice2);
 		return pslList;
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createRejectMove(Company company, LocalDate date) throws AxelorException  {
 		Journal rejectJournal = company.getAccountConfig().getRejectJournal();
-		
+
 		Move move = ms.createMove(rejectJournal, company, null, null, date, null);
 		move.setRejectOk(true);
 		ms.save(move);
 		return move;
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move validateMove(Move move) throws AxelorException  {
 		ms.validateMove(move);
 		ms.save(move);
 		return move;
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void deleteMove(Move move) throws AxelorException  {
 		ms.remove(move);
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public MoveLine createRejectOppositeMoveLine(Company company, Move move, int ref, LocalDate rejectDate) throws AxelorException  {
-		
+
 		//On récupère l'objet mode de paiement pour pouvoir retrouver le numéro de compte associé
-		PaymentMode paymentMode = company.getAccountConfig().getRejectionPaymentMode();  
+		PaymentMode paymentMode = company.getAccountConfig().getRejectionPaymentMode();
 		Account paymentModeAccount = pms.getCompanyAccount(paymentMode, company);
-		
+
 		// Création d'une seule contrepartie
 		LOG.debug("Création d'une seule contrepartie");
 		MoveLine moveLine = mls.createMoveLine(move, null, paymentModeAccount, this.getTotalDebit(move), false, rejectDate, ref, null);
-		move.getMoveLineList().add(moveLine);		
-		
+		move.getMoveLineList().add(moveLine);
+
 		mls.save(moveLine);
-		
+
 		return moveLine;
 	}
-	
-	
+
+
 	public BigDecimal getTotalDebit(Move move)  {
 		LOG.debug("move.getMoveLineList() {}", move.getMoveLineList());
 
-		BigDecimal totalDebit = BigDecimal.ZERO; 
+		BigDecimal totalDebit = BigDecimal.ZERO;
 		for(MoveLine moveLine : move.getMoveLineList())  {
 			totalDebit = totalDebit.add(moveLine.getDebit());
 		}
 		return totalDebit;
 	}
-	
-	
-	
+
+
+
 	/**
-	 * 
+	 *
 	 * @param pslListGC
 	 * 				Une liste de ligne d'échéancier de Mensu grand compte
 	 * @param company
@@ -472,85 +475,85 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * @return
 	 * 				Le numéro de ligne d'écriture incrémenté
 	 * @throws AxelorException
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
 	 */
 	public MoveLine createMajorAccountRejectMoveLine(PaymentScheduleLine paymentScheduleLine, Company company, Account customerAccount, Move move, int ref) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
-			
+
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		if(paymentSchedule.getCompany().equals(company))  {
-				
+
 			// Création d'une ligne d'écriture par rejet
 			LOG.debug("Création d'une ligne d'écriture par rejet");
-			MoveLine moveLine = mls.createMoveLine(move, paymentSchedule.getPartner(), customerAccount, paymentScheduleLine.getAmountRejected(),  
+			MoveLine moveLine = mls.createMoveLine(move, paymentSchedule.getPartner(), customerAccount, paymentScheduleLine.getAmountRejected(),
 					true, paymentScheduleLine.getRejectDate(), paymentScheduleLine.getRejectDate(), ref, paymentScheduleLine.getName());
 			moveLine.setPaymentScheduleLine(paymentScheduleLine);
 			move.getMoveLineList().add(moveLine);
 			mls.save(moveLine);
-			
+
 			InterbankCodeLine interbankCodeLine = paymentScheduleLine.getInterbankCodeLine();
-			
+
 			// Mise à jour du motif du rejet dans la ligne d'écriture
-			moveLine.setInterbankCodeLine(interbankCodeLine);			
-					
+			moveLine.setInterbankCodeLine(interbankCodeLine);
+
 			// Mise à jour du nombre de rejet sur le tiers si ce n'est pas un rejet technique
 			if(!interbankCodeLine.getTechnicalRejectOk()) {
 				paymentSchedule.getPartner().setRejectCounter(paymentSchedule.getPartner().getRejectCounter()+1);
 			}
-			
+
 			// Mise à jour de la ligne de rejet dans la ligne d'échéance
 			paymentScheduleLine.setRejectMoveLine(moveLine);
 
 			ref++;
-			
+
 			// Si le nombre de rejet limite est atteint :
-			this.rejectLimitExceeded(paymentScheduleLine);	
-			
+			this.rejectLimitExceeded(paymentScheduleLine);
+
 			return moveLine;
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * @param invoiceList
 	 * @param company
 	 * @param move
 	 * @param ref
 	 * @return
 	 * @throws AxelorException
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
 	 */
 	public MoveLine createInvoiceRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move move, int ref) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 		if(invoice.getCompany().equals(company))  {
-			
+
 			MoveLine moveLine = this.createRejectMoveLine(invoice, invoice.getCompany(), customerAccount, move, ref);
 
 			InterbankCodeLine interbankCodeLine = invoice.getInterbankCodeLine();
-			
+
 			// Mise à jour du motif du rejet dans la ligne d'écriture
-			moveLine.setInterbankCodeLine(interbankCodeLine);			
-					
+			moveLine.setInterbankCodeLine(interbankCodeLine);
+
 			// Mise à jour du nombre de rejet sur le tiers si ce n'est pas un rejet technique
 			if(!interbankCodeLine.getTechnicalRejectOk()) {
 				invoice.getPartner().setRejectCounter(invoice.getPartner().getRejectCounter()+1);
 			}
-			
+
 			// Si le nombre de rejet limite est atteint :
 			this.rejectLimitExceeded(invoice);
-			
+
 			return moveLine;
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Méthode générant une ligne d'écriture de rejet pour une facture
 	 * @param invoice
@@ -570,44 +573,44 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * 			Le montant courant de l'ensemble des rejets d'une facture
 	 */
 	public MoveLine createRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move moveGenerated, int ref)  {
-		
-		MoveLine rejectMoveLine = mls.createMoveLine(moveGenerated, invoice.getPartner(), customerAccount, invoice.getAmountRejected(), true, 
+
+		MoveLine rejectMoveLine = mls.createMoveLine(moveGenerated, invoice.getPartner(), customerAccount, invoice.getAmountRejected(), true,
 				invoice.getRejectDate(), invoice.getRejectDate(), ref, invoice.getInvoiceId());
-		
+
 		moveGenerated.getMoveLineList().add(rejectMoveLine);
-		
+
 		LOG.debug("PaymentScheduleRejectProcessing - ajout de la ligne de rejet à l'écriture de rejet");
-	
+
 		rejectMoveLine.setInvoiceReject(invoice);
-		
+
 		mls.save(rejectMoveLine);
-		
+
 		invoice.setRejectMoveLine(rejectMoveLine);
-		
+
 		return rejectMoveLine;
 	}
-	
-	
+
+
 	/**
 	 * Procédure permettant de déclencher des actions si le nombre limite de rejet autorisé est dépassé
 	 * @param psl
 	 * 			Une ligne d'échéancier
-	 * @throws AxelorException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
+	 * @throws AxelorException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
 	 */
 	public void rejectLimitExceeded(PaymentScheduleLine paymentScheduleLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
-		
+
 		LOG.debug("Action suite à un rejet sur une échéancier");
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		Company company = paymentSchedule.getCompany();
 		Partner partner = paymentSchedule.getPartner();
 		AccountConfig accountConfig = company.getAccountConfig();
-		
+
 		if(partner.getRejectCounter() >= accountConfig.getPaymentScheduleRejectNumLimit())  {
-			
+
 			// Génération du message
 			this.createImportRejectMessage(partner, company, accountConfig.getRejectPaymentScheduleTemplate(), paymentScheduleLine.getRejectMoveLine());
 			// Changement du mode de paiement de l'échéancier, du tiers
@@ -615,31 +618,31 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 			// Alarme générée dans l'historique du client ?
 			LOG.debug("Alarme générée dans l'historique du client");
 		}
-			
+
 		// Mise à jour de la date de la dernière relance sur le tiers
 		rs.getReminder(partner, company).setReminderDate(today);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Procédure permettant de déclencher des actions si le nombre limite de rejet autorisé est dépassé
 	 * @param psl
 	 * 			Une facture
-	 * @throws AxelorException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
+	 * @throws AxelorException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
 	 */
 	public void rejectLimitExceeded(Invoice invoice) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 		LOG.debug("Action suite à un rejet sur une facture");
 		Partner partner = invoice.getPartner();
 		Company company = invoice.getCompany();
 		AccountConfig accountConfig = company.getAccountConfig();
-		
+
 		if(partner.getRejectCounter() >= accountConfig.getInvoiceRejectNumLimit())  {
-			
+
 			// Génération du message
 			this.createImportRejectMessage(invoice.getPartner(), company, accountConfig.getRejectPaymentScheduleTemplate(), invoice.getRejectMoveLine());
 			// Mise à jour de la date de la dernière relance sur le tiers
@@ -648,10 +651,10 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 			this.setPaymentMode(invoice);
 			// Alarme générée dans l'historique du client ?
 			LOG.debug("Alarme générée dans l'historique du client");
-			invoiceService.save(invoice); 
-		}	
+			invoiceService.save(invoice);
+		}
 	}
-	
+
 
 	/**
 	 * Procédure permettant de créer un courrier spécifique aux imports des rejets
@@ -659,29 +662,29 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * 			Un contact
 	 * @param company
 	 * 			Une société
-	 * @throws AxelorException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
+	 * @throws AxelorException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
 	 */
 	public Message createImportRejectMessage(Partner partner, Company company, Template template, MoveLine rejectMoveLine) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
-		
+
 		TemplateMessageService templateMessageService = Beans.get(TemplateMessageService.class);
-		
+
 		Message message = templateMessageService.generateMessage(rejectMoveLine, template);
-		
+
 		Beans.get(MessageRepository.class).save(message);
-		
+
 		return message;
-		
+
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	/**
 	 * Méthode permettant de changer le mode de paiement de la facture et du tiers
 	 * @param invoice
@@ -693,8 +696,8 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		invoice.setPaymentMode(paymentMode);
 		partner.setPaymentMode(paymentMode);
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant de changer le mode de paiement de l'échéancier de paiement et du tiers
 	 * @param invoice
@@ -706,8 +709,8 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		paymentSchedule.setPaymentMode(paymentMode);
 		partner.setPaymentMode(paymentMode);
 	}
-	
-	
+
+
 	/**
 	 * Procédure pemrettant de mettre à jour et de créer les lignes d'échéances correspondant à un rejet
 	 * @param psl
@@ -719,9 +722,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public PaymentScheduleLine paymentScheduleRejectProcessing(PaymentScheduleLine paymentScheduleLine)  {
-		
+
 		LOG.debug("PaymentScheduleRejectProcessing - Création d'une nouvelle ligne identique à l'originale");
-		
+
 		// Création d'une nouvelle ligne identique à l'originale
 		PaymentScheduleLine paymentScheduleLineCopy = new PaymentScheduleLine();
 		paymentScheduleLineCopy.setDebitBlockingOk(paymentScheduleLine.getDebitBlockingOk());
@@ -733,13 +736,13 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		paymentScheduleLineCopy.setScheduleDate(paymentScheduleLine.getScheduleDate());
 		paymentScheduleLineCopy.setScheduleLineSeq(paymentScheduleLine.getScheduleLineSeq());
 		paymentScheduleLineCopy.setFromReject(true);
-		
+
 		paymentScheduleLineCopy.setStatusSelect(PaymentScheduleLineService.STATUS_IN_PROGRESS);
-		
+
 		return paymentScheduleLineService.save(paymentScheduleLineCopy);
 	}
-	
-	
+
+
 	/**
 	 * Procédure permettant de passer une ligne d'échéancier validé en ligne d'échéancier rejetée
 	 * @param paymentScheduleLine
@@ -757,7 +760,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		paymentScheduleLine.setInterbankCodeLine(causeReject);
 		paymentScheduleLine.setStatusSelect(PaymentScheduleLineService.STATUS_CLOSED);
 	}
-	
-	
+
+
 
 }

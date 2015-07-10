@@ -55,6 +55,9 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 	@Inject
 	protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
 
+	@Inject
+	protected GeneralService generalService;
+
 	protected LocalDate today;
 
 	protected User user;
@@ -62,7 +65,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 	@Inject
 	public SaleOrderPurchaseServiceImpl() {
 
-		this.today = GeneralService.getTodayDate();
+		this.today = generalService.getTodayDate();
 		this.user = AuthUtils.getUser();
 	}
 

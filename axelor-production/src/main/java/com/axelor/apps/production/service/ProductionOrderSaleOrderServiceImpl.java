@@ -54,9 +54,12 @@ public class ProductionOrderSaleOrderServiceImpl extends ProductionOrderReposito
 	protected ProductionOrderService productionOrderService;
 
 	@Inject
+	protected GeneralService generalService;
+
+	@Inject
 	public ProductionOrderSaleOrderServiceImpl(UserService userInfoService) {
 
-		this.today = GeneralService.getTodayDate();
+		this.today = generalService.getTodayDate();
 		this.user = userInfoService.getUser();
 	}
 

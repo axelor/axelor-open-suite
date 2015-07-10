@@ -30,8 +30,8 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -64,9 +64,12 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	private  StockMoveLineRepository stockMoveLineRepo;
 
 	@Inject
+	protected GeneralService generalService;
+
+	@Inject
 	public StockMoveServiceImpl() {
 
-		this.today = GeneralService.getTodayDate();
+		this.today = generalService.getTodayDate();
 
 	}
 

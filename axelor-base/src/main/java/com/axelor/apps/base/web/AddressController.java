@@ -33,7 +33,6 @@ import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PickListEntry;
-import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
@@ -54,7 +53,10 @@ public class AddressController {
 
 	@Inject
 	private AddressService addressService;
-	
+
+	@Inject
+	protected GeneralService generalService;
+
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
 
@@ -65,7 +67,7 @@ public class AddressController {
 		LOG.debug("validate g.qasWsdlUrl = {}", g.getQasWsdlUrl());
 
 		String msg = Beans.get(AddressService.class).check(g.getQasWsdlUrl())? g.getQasWsdlUrl()+" "+I18n.get(IExceptionMessage.ADDRESS_1):I18n.get(IExceptionMessage.ADDRESS_2);
-		response.setFlash(msg);		
+		response.setFlash(msg);
 	}
 
 	public void validate(ActionRequest request, ActionResponse response) {
@@ -73,7 +75,7 @@ public class AddressController {
 		Address a = request.getContext().asType(Address.class);
 		LOG.debug("validate a = {}", a);
 		String search = a.getAddressL4()+" "+a.getAddressL6();
-		Map<String,Object> retDict = (Map<String, Object>) Beans.get(AddressService.class).validate(GeneralService.getGeneral().getQasWsdlUrl(), search);
+		Map<String,Object> retDict = Beans.get(AddressService.class).validate(generalService.getGeneral().getQasWsdlUrl(), search);
 		LOG.debug("validate retDict = {}", retDict);
 
 		VerifyLevelType verifyLevel = (VerifyLevelType) retDict.get("verifyLevel");
@@ -112,7 +114,7 @@ public class AddressController {
 					pickList.add(e);
 				}
 			} else if (retDict.get("qaAddress") != null) {
-				QAAddressType address = (QAAddressType) retDict.get("qaAddress");				
+				QAAddressType address = (QAAddressType) retDict.get("qaAddress");
 				PickListEntry e = new PickListEntry();
 				List<AddressLineType> addressLineType = address.getAddressLine();
 				e.setAddress(a);
@@ -131,7 +133,7 @@ public class AddressController {
 		} else if (verifyLevel != null && verifyLevel.value().equals("None")) {
 			LOG.debug("address None");
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_3));
-		} 
+		}
 	}
 
 	public void select(ActionRequest request, ActionResponse response) {
@@ -147,7 +149,7 @@ public class AddressController {
 			LOG.debug("select pickedEntry = {}", pickedEntry);
 			String moniker = pickedEntry.getMoniker();
 			if (moniker != null) {
-				com.qas.web_2005_02.Address address = Beans.get(AddressService.class).select(GeneralService.getGeneral().getQasWsdlUrl(), moniker);
+				com.qas.web_2005_02.Address address = Beans.get(AddressService.class).select(generalService.getGeneral().getQasWsdlUrl(), moniker);
 				LOG.debug("select address = {}", address);
 				//addressL4: title="N° et Libellé de la voie"
 				//addressL6: title="Code Postal - Commune"/>
@@ -159,7 +161,7 @@ public class AddressController {
 				response.setValue("inseeCode", address.getQAAddress().getAddressLine().get(6));
 				response.setValue("certifiedOk", true);
 				response.setValue("pickList", new ArrayList<QAPicklistType>());
-			} 
+			}
 			else  {
 				LOG.debug("missing fields for pickedEntry: {}", pickedEntry);
 				response.setValue("addressL2", pickedEntry.getL2());
@@ -172,8 +174,8 @@ public class AddressController {
 				response.setValue("certifiedOk", true);
 			}
 
-		} 
-		else 
+		}
+		else
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_4));
 	}
 
@@ -181,7 +183,7 @@ public class AddressController {
 
 		AddressExport addressExport = request.getContext().asType(AddressExport.class);
 
-		int size = (Integer) Beans.get(AddressService.class).export(addressExport.getPath());
+		int size = Beans.get(AddressService.class).export(addressExport.getPath());
 
 		response.setValue("log", size+" adresses exportées");
 	}
@@ -201,7 +203,7 @@ public class AddressController {
 		}
 		else
 			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),address.getFullName()));
-		
+
 		response.setReload(true);
 	}
 
@@ -211,11 +213,11 @@ public class AddressController {
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
 			return;
 		}
-		if (GeneralService.getGeneral().getMapApiSelect() != IAdministration.MAP_API_GOOGLE) {
+		if (generalService.getGeneral().getMapApiSelect() != IAdministration.MAP_API_GOOGLE) {
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
 			return;
 		}
-		
+
 		Address departureAddress = currPartner.getDeliveryAddress();
 		if (departureAddress == null) {
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
@@ -229,7 +231,7 @@ public class AddressController {
 			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),departureAddress.getFullName()));
 			return;
 		}
-		
+
 		Address arrivalAddress = request.getContext().asType(Address.class);
 		arrivalAddress = addressService.checkLatLang(arrivalAddress,false);
 		BigDecimal aLat = arrivalAddress.getLatit();
@@ -238,20 +240,20 @@ public class AddressController {
 			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),arrivalAddress.getFullName()));
 			return;
 		}
-		
+
 		Map<String,Object> mapView = new HashMap<String,Object>();
 		mapView.put("title", "Map");
 		mapView.put("resource", Beans.get(MapService.class).getDirectionUrl(dLat, dLon, aLat, aLon));
 		mapView.put("viewType", "html");
 		response.setView(mapView);
 		response.setReload(true);
-			
+
 	}
 
 	public void checkMapApi(ActionRequest request, ActionResponse response)  {
 		response.setFlash(I18n.get(IExceptionMessage.NOT_IMPLEMENTED_METHOD));
 	}
-	
+
 	public void checkLatLang(ActionRequest request, ActionResponse response) {
 		Address address = request.getContext().asType(Address.class);
 		addressService.checkLatLang(address, true);

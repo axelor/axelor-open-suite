@@ -16,9 +16,13 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class SaleOrderProjectService extends SaleOrderRepository{
+
+	@Inject
+	protected GeneralService generalService;
 
 	@Transactional
 	public ProjectTask generateProject(SaleOrder saleOrder){
@@ -34,7 +38,7 @@ public class SaleOrderProjectService extends SaleOrderRepository{
 		project.setImputable(true);
 		project.setInvoicingTypeSelect(ProjectTaskRepository.INVOICING_TYPE_NONE);
 		project.addMembersUserSetItem(saleOrder.getSalemanUser());
-		Product product = GeneralService.getGeneral().getProductInvoicingProjectTask();
+		Product product = generalService.getGeneral().getProductInvoicingProjectTask();
 		project.setProduct(product);
 		project.setQty(BigDecimal.ONE);
 		project.setPrice(saleOrder.getCompanyExTaxTotal());

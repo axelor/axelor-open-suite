@@ -123,12 +123,12 @@
 	  
 	  <panel sidebar="true" title="Actions" stacked="true">
 	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-group-finalize"/>
-	    <button name="newVersion" title="New version" showIf="eval: !GeneralService.getGeneral().getManageSaleOrderVersion() &amp;&amp; statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
-	    <button name="generateCustomerStockMove" showIf="eval: GeneralService.getGeneral().getCustomerStockMoveManagement() &amp;&amp; !GeneralService.getGeneral().getCustomerStockMoveGenerationAuto() &amp;&amp; statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
+	    <button name="newVersion" title="New version" showIf="eval: !__config__.general.getManageSaleOrderVersion() &amp;&amp; statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
+	    <button name="generateCustomerStockMove" showIf="eval: __config__.general.getCustomerStockMoveManagement() &amp;&amp; !__config__.general.getCustomerStockMoveGenerationAuto() &amp;&amp; statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed,save"/>
-	    <button name="generateInvoice" title="Generate invoice" showIf="eval: GeneralService.getGeneral().getGenerateInvoiceFromSaleOrder() &amp;&amp; statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
-	    <button name="generatePO" title="Generate purchase order"  colSpan="12" showIf="eval: GeneralService.getGeneral().getPurchaseOrderManagement() &amp;&amp; !GeneralService.getGeneral().getPurchaseOrderGenerationAuto() &amp;&amp; (statusSelect == 2 || statusSelect == 3)" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" hidden="true"/>
-	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" showIf="eval: GeneralService.getGeneral().getProductionOrderManagement() &amp;&amp; !GeneralService.getGeneral().getProductionOrderGenerationAuto() &amp;&amp; statusSelect == 3" onClick="action-supplychain-sale-order-create-production-order" hidden="true"/>
+	    <button name="generateInvoice" title="Generate invoice" showIf="eval: __config__.general.getGenerateInvoiceFromSaleOrder() &amp;&amp; statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="generatePO" title="Generate purchase order"  colSpan="12" showIf="eval: __config__.general.getPurchaseOrderManagement() &amp;&amp; !__config__.general.getPurchaseOrderGenerationAuto() &amp;&amp; (statusSelect == 2 || statusSelect == 3)" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" hidden="true"/>
+	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" showIf="eval: __config__.general.getProductionOrderManagement() &amp;&amp; !__config__.general.getProductionOrderGenerationAuto() &amp;&amp; statusSelect == 3" onClick="action-supplychain-sale-order-create-production-order" hidden="true"/>
 	    <spacer/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
 	  </panel>
@@ -384,13 +384,13 @@
     </action-attrs>
     
     <action-attrs name="action-sale-order-attrs-show-project-panel" if-module="axelor-business-project">
-    	<attribute name="hidden" for="projectPanel" expr="eval: !com.axelor.apps.base.service.administration.GeneralService.getGeneral().getGenerateProjectOrder()"/>
-    	<attribute name="hidden" for="versionNumber" expr="eval: !com.axelor.apps.base.service.administration.GeneralService.getGeneral().getManageSaleOrderVersion()"/>
+    	<attribute name="hidden" for="projectPanel" expr="eval: !__config__.general.getGenerateProjectOrder()"/>
+    	<attribute name="hidden" for="versionNumber" expr="eval: !__config__.general.getManageSaleOrderVersion()"/>
     </action-attrs>
     
     <action-attrs name="action-sale-order-attrs-show-elements">
-    	<attribute name="hidden" for="generateProject" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getAutomaticProject() || project != null"/>
-    	<attribute name="hidden" for="generateTasks" expr="eval: project == null || !com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskSaleOrderLines()"/>
+    	<attribute name="hidden" for="generateProject" expr="eval: __config__.general.getAutomaticProject() || project != null"/>
+    	<attribute name="hidden" for="generateTasks" expr="eval: project == null || !__config__.general.getProjectTaskSaleOrderLines()"/>
     </action-attrs>
     
     <action-attrs name="action-sale-order-attrs-hide-generate-tasks">
@@ -423,7 +423,7 @@
     	<action name="action-sale-order-record-confirmed"/>
     	<action name="action-sale-order-attrs-confirmed-read-only"/>
     	<action name="action-sale-order-set-sequence"/>
-    	<action name="action-sale-order-method-generate-project" if="com.axelor.apps.base.service.administration.GeneralService.getGeneral().getAutomaticProject()"/>
+    	<action name="action-sale-order-method-generate-project" if="__config__.general.getAutomaticProject()"/>
     </action-group>
     
     <action-group name="action-group-sale-saleorder-onnew">
@@ -567,7 +567,7 @@
 	</action-method>	
 	
 	<action-method name="action-sale-method-update-customer-credit-line" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="call: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getManageCustomerCredit()"/>
+		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="eval: __config__.general.getManageCustomerCredit()"/>
 	</action-method>
 	
 	<action-attrs name="action-sale-order-attrs-collapse-specific-settings-group">

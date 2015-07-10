@@ -222,7 +222,7 @@
 	
 	<action-record name="action-move-line-record-get-move-informations" model="com.axelor.apps.account.db.MoveLine">
 		<field name="partner" expr="eval: _parent?.partner"/>
-		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
+		<field name="date" expr="eval:__config__.generalService.getTodayDate()" if="date == null"/>
 		<field name="dueDate" expr="eval: _parent?.date"/>
 	</action-record>
 	

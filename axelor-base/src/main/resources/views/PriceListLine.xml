@@ -49,7 +49,7 @@
     </action-record>
     
     <action-attrs name="action-price-list-line-attrs-scale-and-precision">
-		<attribute name="scale" for="amount" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="amount" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
 </object-views>

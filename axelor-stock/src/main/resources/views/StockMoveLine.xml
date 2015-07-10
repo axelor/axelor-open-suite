@@ -141,7 +141,7 @@
 	
 	
 	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">
-		<attribute name="scale" for="price" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="price" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
 </object-views>

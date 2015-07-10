@@ -38,8 +38,8 @@
     </action-record>	
     
     <action-attrs name="action-elements-to-invoice-attrs-scale-and-precision">
-		<attribute name="scale" for="costPrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
-		<attribute name="scale" for="salePrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="costPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="salePrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
 </object-views>

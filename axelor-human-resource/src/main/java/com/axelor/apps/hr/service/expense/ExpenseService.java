@@ -50,6 +50,9 @@ public class ExpenseService extends ExpenseRepository{
 	@Inject
 	private AccountManagementServiceAccountImpl accountManagementService;
 
+	@Inject
+	protected GeneralService generalService;
+
 	@Inject private AccountConfigHRService accountConfigService;
 
 	public Expense compute (Expense expense){
@@ -72,7 +75,7 @@ public class ExpenseService extends ExpenseRepository{
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move ventilate(Expense expense) throws AxelorException{
 
-		LocalDate moveDate = GeneralService.getTodayDate();
+		LocalDate moveDate = generalService.getTodayDate();
 		if(expense.getMoveDate()!=null){
 			moveDate = expense.getMoveDate();
 		}
