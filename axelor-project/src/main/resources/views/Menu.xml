@@ -19,7 +19,7 @@
     	action="project.gantt"/>
     	
    	<action-view name="project.gantt" title="Project gantt" model="com.axelor.apps.project.db.ProjectTask">
-   		<view type="gantt"/>
+   		<view type="gantt" name="project-gantt"/>
    		<view type="form" name="task-form"/>
 	</action-view>
 	

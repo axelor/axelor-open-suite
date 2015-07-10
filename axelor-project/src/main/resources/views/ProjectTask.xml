@@ -123,9 +123,9 @@
 		<field name="progress" />
 	</grid>
 	
-	<gantt name="project-gantt" title="Project gantt" model="com.axelor.apps.project.db.ProjectTask" startDate="startDate" duration="duration" parent="project" 
-		   progress="progress" order="sequence" finishToStart="finishToStartTaskSet" startToStart="startToStartTaskSet"
-		   finishToFinish="finishToFinishTaskSet" startToFinish="startToFinishTaskSet">
+	<gantt name="project-gantt" title="Project gantt" model="com.axelor.apps.project.db.ProjectTask" taskStart="startDate" taskDuration="duration" taskParent="project" 
+		   taskProgress="progress" taskSequence="sequence" x-finish-to-start="finishToStartTaskSet" x-start-to-start="startToStartTaskSet"
+		   x-finish-to-finish="finishToFinishTaskSet" x-start-to-finish="startToFinishTaskSet">
 		   <field name="name" />		   
 		   <field name="assignedTo" />
     </gantt>   
