@@ -6,10 +6,10 @@
     <grid name="period-grid" title="Period" model="com.axelor.apps.base.db.Period" orderBy="-fromDate">
         <field name="name"/>
         <field name="code" />
-        <field name="year" title="Fiscal year"/>
+        <field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>
         <field name="fromDate"/>
         <field name="toDate"/>
-        <field name="company"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="statusSelect"/>
     </grid>
     
@@ -17,10 +17,10 @@
 	    <panel readonlyIf="statusSelect == 2">
 	        <field name="name"/>
 	    	<field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>
-			<field name="company" widget="SuggestBox" colSpan="3"/>
+			<field name="company" widget="SuggestBox" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 	    	<field name="fromDate" colSpan="3"/>
 	    	<field name="toDate" colSpan="3"/>
-	    	<field name="year" title="Fiscal year"/>   
+	    	<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>   
     	</panel>
     	<panel>
         	<panel colSpan="6">

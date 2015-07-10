@@ -21,7 +21,7 @@
         	<field name="password" widget="password"/>
         </panel>
 		<panel title="User" sidebar="true" showIf="_mailAccountByUser">
-        	<field name="user" requiredIf="_mailAccountByUser" showTitle="false" colSpan="12"/>
+        	<field name="user" requiredIf="_mailAccountByUser" showTitle="false" colSpan="12" form-view="user-form" grid-view="user-grid"/>
         	<field name="$_mailAccountByUser" widget="BOOLEAN" hidden="true" readonly="true" />
 		</panel>
 		<panel sidebar="true" >

@@ -15,7 +15,7 @@
 			<field name="name" colSpan="12"/>
 		</panel>
 		
-		<panel-related field="indicatorGeneratorSet" colSpan="12"/>
+		<panel-related field="indicatorGeneratorSet" colSpan="12" form-view="indicator-generator-form" grid-view="indicator-generator-grid"/>
 		
 		<panel>
 			<field name="result" colSpan="12"/>

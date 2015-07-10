@@ -4,27 +4,27 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
    
     <grid name="product-variant-grid" title="Product variants" model="com.axelor.apps.base.db.ProductVariant">
-        <field name="productVariantAttr1"/>
-        <field name="productVariantAttr2"/>
-        <field name="productVariantAttr3"/>
-        <field name="productVariantAttr4"/>
-        <field name="productVariantValue1"/>
-        <field name="productVariantValue2"/>
-        <field name="productVariantValue3"/>
-        <field name="productVariantValue4"/>
+        <field name="productVariantAttr1" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+        <field name="productVariantAttr2" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+        <field name="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+        <field name="productVariantAttr4" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+        <field name="productVariantValue1" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+        <field name="productVariantValue2" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+        <field name="productVariantValue3" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+        <field name="productVariantValue4" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
     </grid>
     
     <form name="product-variant-form" title="Product variant" model="com.axelor.apps.base.db.ProductVariant"
     	onLoad="action-product-variant-attrs-domain" onNew="action-product-variant-record-on-new">
     	<panel>
-        	<field name="productVariantAttr1" showTitle="false" readonly="true"/>
-        	<field name="productVariantValue1" showTitle="false" widget="SuggestBox" showIf="productVariantAttr1"/>
-	        <field name="productVariantAttr2" showTitle="false" readonly="true" showIf="productVariantAttr1"/>
-        	<field name="productVariantValue2" showTitle="false" widget="SuggestBox" showIf="productVariantAttr2"/>
-	        <field name="productVariantAttr3" showTitle="false" readonly="true" showIf="productVariantAttr2"/>
-    	    <field name="productVariantValue3" showTitle="false" widget="SuggestBox" showIf="productVariantAttr3"/>
-	        <field name="productVariantAttr4" showTitle="false" readonly="true" showIf="productVariantAttr3"/>
-    	    <field name="productVariantValue4" showTitle="false" widget="SuggestBox" showIf="productVariantAttr4"/>
+        	<field name="productVariantAttr1" showTitle="false" readonly="true" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+        	<field name="productVariantValue1" showTitle="false" widget="SuggestBox" showIf="productVariantAttr1" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+	        <field name="productVariantAttr2" showTitle="false" readonly="true" showIf="productVariantAttr1" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+        	<field name="productVariantValue2" showTitle="false" widget="SuggestBox" showIf="productVariantAttr2" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+	        <field name="productVariantAttr3" showTitle="false" readonly="true" showIf="productVariantAttr2" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+    	    <field name="productVariantValue3" showTitle="false" widget="SuggestBox" showIf="productVariantAttr3" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+	        <field name="productVariantAttr4" showTitle="false" readonly="true" showIf="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+    	    <field name="productVariantValue4" showTitle="false" widget="SuggestBox" showIf="productVariantAttr4" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
         </panel>
     </form>
     

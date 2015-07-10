@@ -5,14 +5,14 @@
 	
     <grid name="territory-grid" title="Territories" model="com.axelor.apps.base.db.Territory">
         <field name="name"/>
-        <field name="commune"/>
+        <field name="commune" form-view="commune-form" grid-view="commune-grid"/>
     </grid>
     
     <form name="territory-form" title="Territory" model="com.axelor.apps.base.db.Territory">
     	<panel>
 	        <field name="name"/>
-	        <field name="country"/>
-	        <field name="commune"/>
+	        <field name="country" form-view="country-form" grid-view="country-grid"/>
+	        <field name="commune" form-view="commune-form" grid-view="commune-grid"/>
 	        <field name="authorityPartner" grid-view="partner-grid" form-view="partner-form" domain="self.authorityOk = True"/>
         </panel>
     </form>
