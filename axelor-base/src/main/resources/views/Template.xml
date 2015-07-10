@@ -6,7 +6,7 @@
     <grid name="template-grid" id="template-grid-base" title="Templates" model="com.axelor.apps.message.db.Template">
         <field name="name"/>
         <field name="subject"/>
-        <field name="metaModel"/>
+        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 		<field name="mediaTypeSelect"/>
     </grid>
     
@@ -18,12 +18,12 @@
 			<field name="mediaTypeSelect" colSpan="4" />
 			<field name="isDefault" colSpan="2"/>
 			<field name="isSystem" colSpan="2"/>
-			<field name="metaModel"/>
+			<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 			<field name="target"/>
-			<field name="templateContext" colSpan="12"/>
+			<field name="templateContext" colSpan="12" grid-view="template-context-grid" form-view="template-context-form"/>
 		</panel>
 		<panel sidebar="true" name="attachedFiles" title="Attached files" colSpan="12">
-			    <field name="birtTemplate" colSpan="12"/>
+			    <field name="birtTemplate" colSpan="12" form-view="birt-template-form" grid-view="birt-template-grid"/>
   		</panel>
 		<panel title="Recipient address" showIf="mediaTypeSelect == 1">
 			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false"/>

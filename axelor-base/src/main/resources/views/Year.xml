@@ -8,7 +8,7 @@
         <field name="code"/>
         <field name="fromDate"/>
         <field name="toDate"/>
-        <field name="company"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
     
     <form name="year-form" title="Year" model="com.axelor.apps.base.db.Year"
@@ -18,7 +18,7 @@
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="fromDate"/>
 	        <field name="toDate"/>
-	        <field name="company" widget="SuggestBox"/>
+	        <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	        <field name="typeSelect" readonly="true" />
 	    </panel>
     </form>

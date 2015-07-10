@@ -6,9 +6,9 @@
 	<grid name="import-configuration-grid" title="Imports" model="com.axelor.apps.base.db.ImportConfiguration">
 		<field name="name"/>
 		<field name="typeSelect"/>
-        <field name="bindMetaFile"/>
-        <field name="dataMetaFile"/>
-        <field name="user" />
+        <field name="bindMetaFile" form-view="meta-file-form" grid-view="meta-file-grid"/>
+        <field name="dataMetaFile" form-view="meta-file-form" grid-view="meta-file-grid"/>
+        <field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="createdOn" />
 	</grid>
 	
@@ -20,8 +20,8 @@
         <panel>
         	<field name="name"/>
 	        <field name="typeSelect"/>
-	        <field name="bindMetaFile" domain="self.mime='text/xml'" canNew="true"/>
-			<field name="dataMetaFile" onSelect="action-attar-set-data-meta-file-domain" canNew="true"/>
+	        <field name="bindMetaFile" domain="self.mime='text/xml'" canNew="true" form-view="meta-file-form" grid-view="meta-file-grid"/>
+			<field name="dataMetaFile" onSelect="action-attar-set-data-meta-file-domain" canNew="true" form-view="meta-file-form" grid-view="meta-file-grid"/>
         </panel>
         
         <panel-tabs>

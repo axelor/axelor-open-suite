@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
     <grid name="supplier-catalog-grid" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog">
-        <field name="supplierPartner"/>
+        <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="productSupplierName"/>
         <field name="productSupplierCode"/>
         <field name="updateDate"/>
@@ -15,7 +15,7 @@
     <form name="supplier-catalog-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog" 
     onNew="action-supplier-catalog-attrs-scale-and-precision" onLoad="action-supplier-catalog-attrs-scale-and-precision">
     	<panel colSpan="12">
-			<field name="supplierPartner" domain="self.isContact = false AND self.isSupplier = true"/>
+			<field name="supplierPartner" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="updateDate"/>
         	<field name="productSupplierName"/>
         	<field name="productSupplierCode"/>

@@ -94,8 +94,8 @@
 
 	<action-view name="contact.conf.category" title="Partner categories"
 		model="com.axelor.apps.base.db.PartnerCategory" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="partner-category-grid"/>
+		<view type="form" name="partner-category-form"/>
 	</action-view>
 
 	<menuitem name="contact-conf-address" parent="contact-conf"
@@ -103,8 +103,8 @@
 
 	<action-view name="contact.conf.address" title="Addresses"
 		model="com.axelor.apps.base.db.Address" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="address-grid" />
+		<view type="form" name="address-form" />
 		<context name="fromMain" expr="eval:true"/>
 		<context name="searchFields" expr=" addressL4;addressL6"/>
 	</action-view>
@@ -114,8 +114,8 @@
 
 	<action-view name="contact.conf.invoice.rib"
 		title="Bank details" model="com.axelor.apps.base.db.BankDetails" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="bank-details-grid"/>
+		<view type="form" name="bank-details-form"/>
 	</action-view>
 
 	<menuitem name="contact-conf-invoice-bic" parent="contact-conf"
@@ -123,8 +123,8 @@
 
 	<action-view name="contact.conf.invoice.bic"
 		title="SWIFT codes" model="com.axelor.apps.base.db.Bic" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="bic-grid"/>
+		<view type="form" name="bic-form"/>
 	</action-view>
 
 	<menuitem name="contact-conf-invoice-sources" parent="contact-conf"
@@ -132,8 +132,8 @@
 
 	<action-view name="contact.conf.invoice.sources"
 		title="Sources" model="com.axelor.apps.base.db.Source" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="source-grid" />
+		<view type="form" name="source-form"/>
 	</action-view>
 	
 	<menuitem name="contact-conf-invoice-site" parent="contact-conf"
@@ -141,8 +141,8 @@
 
 	<action-view name="contact.conf.invoice.sites"
 		title="Sites" model="com.axelor.apps.consulting.db.Site" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="site-grid"/>
+		<view type="form" name="site-form"/>
 	</action-view>
 	
 	<menuitem name="contact-conf-price-list" parent="contact-conf"
@@ -210,8 +210,8 @@
 
 	<action-view name="product.conf.product.category" title="Product categories"
 		model="com.axelor.apps.base.db.ProductCategory" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="product-category-grid"/>
+		<view type="form" name="product-category-form"/>
 	</action-view>
 
 	<menuitem name="product-conf-product-family" parent="product-conf"
@@ -219,8 +219,8 @@
 
 	<action-view name="product.conf.product.family" title="Product families"
 		model="com.axelor.apps.base.db.ProductFamily" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="product-family-grid"/>
+		<view type="form" name="product-family-form"/>
 		<context name="fromMenu" expr="eval:true"/>		
 	</action-view>
 
@@ -229,8 +229,8 @@
 
 	<action-view name="product.conf.tracking.number.config" title="Tracking number configuration"
 		model="com.axelor.apps.base.db.TrackingNumberConfiguration" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="tracking-number-configuration-grid"/>
+		<view type="form" name="tracking-number-configuration-form"/>
 	</action-view>
 
 	<menuitem name="admin-root" title="ERP Administration" order="-60"
@@ -244,8 +244,8 @@
 
 	<action-view name="admin.root.organisation.territory"
 		title="Territories" model="com.axelor.apps.base.db.Territory"  >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="territory-grid"/>
+		<view type="form" name="territory-form"/>
 	</action-view>
 
 	<menuitem name="admin-root-organisation-territory-commune"
@@ -254,8 +254,8 @@
 
 	<action-view name="admin.root.organisation.territory.commune"
 		title="Cities/Communes" model="com.axelor.apps.base.db.Commune" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="commune-grid"/>
+		<view type="form" name="commune-form"/>
 		<context name="searchFields" expr="name"/>
 	</action-view>
 
@@ -265,8 +265,8 @@
 
 	<action-view name="admin.root.organisation.territory.department"
 		title="Departments" model="com.axelor.apps.base.db.Department" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="department-grid" />
+		<view type="form" name="department-form" />
 	</action-view>
 
 	<menuitem name="admin-root-organisation-region"
@@ -275,8 +275,8 @@
 
 	<action-view name="admin.root.organisation.region"
 		title="Regions" model="com.axelor.apps.base.db.Region" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="region-grid" />
+		<view type="form" name="region-form" />
 	</action-view>
 
 	<menuitem name="admin-root-organisation-country"
@@ -285,8 +285,8 @@
 
 	<action-view name="admin.root.organisation.country"
 		title="Countries" model="com.axelor.apps.base.db.Country" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="country-grid"/>
+		<view type="form" name="country-form"/>
 	</action-view>
 
 	<menuitem name="admin-root-organisation-territory-canton"
@@ -295,8 +295,8 @@
 
 	<action-view name="admin.root.organisation.territory.canton"
 		title="Cantons" model="com.axelor.apps.base.db.Canton" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="canton-grid"/>
+		<view type="form" name="canton-form"/>
 	</action-view>
 
 	<menuitem name="admin-root-user" parent="admin-root"
@@ -305,11 +305,10 @@
 	<menuitem name="admin-root-user-user" parent="admin-root-user"
 		title="Users" action="admin.root.base.user" />
 
-	<!-- TODO: rename this actions base.user.info (UserInfo to User) -->
 	<action-view name="admin.root.base.user" title="Users"
 		model="com.axelor.auth.db.User" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="user-grid"/>
+		<view type="form" name="user-form"/>
 	</action-view>
 	
 	<menuitem name="admin-root-user-team" parent="admin-root-user"
@@ -317,8 +316,8 @@
 
 	<action-view name="admin.root.base.team" title="Teams"
 		model="com.axelor.apps.base.db.Team" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="team-grid" />
+		<view type="form" name="team-form"/>
 	</action-view>
 	
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
@@ -336,8 +335,8 @@
 		
 	<action-view name="admin.root.templating.template"
 		title="Template" model="com.axelor.apps.message.db.Template">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="template-grid"/>
+		<view type="form" name="template-form"/>
 	</action-view>
 		
 	<menuitem name="mail-conf-template-rules"
@@ -346,8 +345,8 @@
 		
 	<action-view name="admin.root.templating.template.rules"
 		title="Template Rules" model="com.axelor.apps.base.db.TemplateRule">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="template-rule-grid" />
+		<view type="form" name="template-rule-form" />
 	</action-view>
 	
 	<menuitem name="mail-conf-pdf-templates"
@@ -356,8 +355,8 @@
 		
 	<action-view name="admin.root.templating.pdf.templates"
 		title="PDF Templates" model="com.axelor.apps.base.db.BirtTemplate">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="birt-template-grid"/>
+		<view type="form" name="birt-template-form"/>
 	</action-view>
 	
 
@@ -369,8 +368,8 @@
 
 	<action-view name="admin.root.general.general" title="General admin"
 		model="com.axelor.apps.base.db.General" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="general-grid"/>
+		<view type="form" name="general-form"/>
 		<context name="_showSingle" expr="true" />
 	</action-view>
 
@@ -382,8 +381,8 @@
 
 	<action-view name="admin.conf.general.unit" title="Units"
 		model="com.axelor.apps.base.db.Unit" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="unit-grid" />
+		<view type="form" name="unit-form"/>
 	</action-view>
 
 	<menuitem name="admin-conf-general-currency" parent="admin-conf-general"
@@ -391,8 +390,8 @@
 
 	<action-view name="admin.conf.general.currency"
 		title="Currencies" model="com.axelor.apps.base.db.Currency" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="currency-grid"/>
+		<view type="form" name="currency-form"/>
 	</action-view>
 
 
@@ -402,8 +401,8 @@
 
 	<action-view name="admin.conf.general.unit.conversion"
 		title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="unit-conversion-grid"/>
+		<view type="form" name="unit-conversion-form"/>
 		<context name="searchFields" expr="fromUnit;toUnit"/>
 	</action-view>
 	
@@ -423,8 +422,8 @@
 
 	<action-view name="admin.conf.general.sequence.generic"
 		title="Sequences" model="com.axelor.apps.base.db.Sequence" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="sequence-grid"/>
+		<view type="form" name="sequence-form"/>
 	</action-view>
 	
 	<menuitem name="admin-conf-general-keyword"
@@ -455,8 +454,8 @@
 
 	<action-view name="admin.root.maintenance.trace.back"
 		title="Tracebacks" model="com.axelor.exception.db.TraceBack" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="trace-back-grid"/>
+		<view type="form" name="trace-back-form"/>
 	</action-view>
 
 	<menuitem name="admin-root-import" parent="admin-root-maintenance"
@@ -473,8 +472,8 @@
 
 	<action-view name="admin.root.indicator.generator.grouping"
 		title="Indicators groups" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="indicator-generator-grouping-grid" />
+		<view type="form" name="indicator-generator-grouping-form"/>
 	</action-view>
 	
 	<menuitem name="admin-root-indicator-generator" parent="admin-root-maintenance"
@@ -482,8 +481,8 @@
 
 	<action-view name="admin.root.indicator.generator"
 		title="Indicators generators" model="com.axelor.apps.base.db.IndicatorGenerator" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="indicator-generator-grid" />
+		<view type="form" name="indicator-generator-form"/>
 	</action-view>
 
 	<menuitem name="admin-root-batch" parent="admin-root"
@@ -494,8 +493,8 @@
 
 	<action-view name="admin.root.batch.base" title="Base batches"
 		model="com.axelor.apps.base.db.BaseBatch" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="base-batch-grid"/>
+		<view type="form" name="base-batch-form"/>
 	</action-view>
 	
 	<menuitem name="admin-root-batch-mail" parent="admin-root-batch"
@@ -510,8 +509,7 @@
 	<menuitem name="admin-root-conf" parent="admin-root"
 		title="Modules configurations" />
 	
-	
-		<menuitem name="alarm-root" title="Alarmes" order="-80"
+	<menuitem name="alarm-root" title="Alarmes" order="-80"
 		 groups="admins,ERP" parent="admin-root"/>
 
 	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
@@ -523,16 +521,15 @@
 		<view type="form" name="alarm-form" />
 	</action-view>
 
-	<menuitem name="alarm-conf" parent="alarm-root" title="Configuration"
-		 />
+	<menuitem name="alarm-conf" parent="alarm-root" title="Configuration"/>
 	
 	<menuitem name="alarm-conf-alarm-engine" parent="alarm-conf"
 		title="Alarm engines" action="alarm.conf.alarm.engine" />
 
 	<action-view name="alarm.conf.alarm.engine" title="Alarm engines"
 		model="com.axelor.apps.base.db.AlarmEngine" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="alarm-engine-grid" />
+		<view type="form" name="alarm-engine-form" />
 	</action-view>
 
 	<menuitem name="alarm-conf-message" parent="alarm-conf" title="All Messages"
@@ -540,8 +537,8 @@
 
 	<action-view name="alarm.conf.message" title="All Messages"
 		model="com.axelor.apps.base.db.AlarmMessage" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="alarm-message-grid"/>
+		<view type="form" name="alarm-message-form"/>
 	</action-view>
 	
 	<menuitem name="alarm-conf-alarm-engine-batch" parent="alarm-conf"
@@ -549,8 +546,8 @@
 
 	<action-view name="alarm.conf.alarm.engine.batch" title="Alarm batches"
 		model="com.axelor.apps.base.db.AlarmEngineBatch" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="alarm-engine-batch-grid"/>
+		<view type="form" name="alarm-engine-batch-form"/>
 	</action-view>
 	
 	

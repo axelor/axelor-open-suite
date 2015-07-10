@@ -5,21 +5,21 @@
 	
 	<grid name="site-grid" title="Site" model="com.axelor.apps.consulting.db.Site" >
 		<field name="name"/>
-	    <field name="partner"/>
+	    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 	    <field name="siretNumber"/>
-	    <field name="geographicalArea"/>
+	    <field name="geographicalArea" form-view="geographical-area-form" grid-view="geographical-area-grid"/>
 	</grid>
 	
     <form name="site-form" title="Site" model="com.axelor.apps.consulting.db.Site">
     	<panel>
 		    <field name="name"/>
 		    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-		    <field name="address"/>
+		    <field name="address" form-view="address-form" grid-view="address-grid"/>
 		    <field name="siretNumber"/>
 	    </panel>
 	    <panel title="Sales attributes">
 	    	<field name="commercialLevelSelect"/>
-	    	<field name="geographicalArea"/>
+	    	<field name="geographicalArea" form-view="geographical-area-form" grid-view="geographical-area-grid"/>
 	    	<panel title="Keywords" colSpan="12">
 	        	<panel-related field="toolKeyWordSet"  colSpan="6" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid" widget="TagSelect" x-create="name"/>
 	        	<panel-related field="sectorKeyWordSet" colSpan="6" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid" widget="TagSelect" x-create="name"/>

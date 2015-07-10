@@ -5,16 +5,16 @@
     
     <grid name="alarm-dashlet-grid" title="Alarm" model="com.axelor.apps.base.db.Alarm">
         <field name="date"/>
-        <field name="partner"/>
-        <field name="invoice" />
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
         <field name="alarmEngine.alarmMessage" />
         <field name="acquitOk"/>
     </grid>
 	
 	<grid name="alarm-grid" title="Alarms" model="com.axelor.apps.base.db.Alarm">
 	    <field name="date"/>
-	    <field name="partner"/>
-        <field name="invoice" />
+	    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
 	    <field name="alarmEngine.alarmMessage"/>
 	    <field name="alarmEngine.alarmMessage.typeSelect"/>
 	    <field name="acquitOk"/>
@@ -23,7 +23,7 @@
     <form name="alarm-form" title="Alarm" model="com.axelor.apps.base.db.Alarm">
 	  <panel>
 	    <field name="date" colSpan="5"/>
-	    <field name="alarmEngine" colSpan="5" edit-window="self" form-view="alarm-message-form" summary-view="alarm-message-form"/>
+	    <field name="alarmEngine" colSpan="5" edit-window="self" form-view="alarm-message-form" summary-view="alarm-message-form" grid-view="alarm-engine-grid"/>
 	    <field name="acquitOk" colSpan="2"/>
 	    <field name="content" showTitle="false" colSpan="12" widget="html"/>
 	  </panel>

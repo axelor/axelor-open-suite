@@ -21,7 +21,7 @@
 		    	<field name="lastTheoreticalExecutionDate" readonly="true" colSpan="4"/>
 		    	<field name="lastExecutionDate" readonly="true" colSpan="4"/>
 		    </panel>
-		    <panel-related field="schedulerInstanceHistoryList" colSpan="12"/>
+		    <panel-related field="schedulerInstanceHistoryList" colSpan="12" grid-view="scheduler-instance-history-grid" form-view="scheduler-instance-history-form"/>
 		</panel>
 	</form>
 	

@@ -6,7 +6,7 @@
     <grid name="product-variant-attr-grid" title="Product variant attributes" model="com.axelor.apps.base.db.ProductVariantAttr">
         <field name="name"/>
         <field name="code"/>
-        <field name="productVariantValueList"/>
+        <field name="productVariantValueList" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
     </grid>
     
     <form name="product-variant-attr-form" title="Product variant attribute" model="com.axelor.apps.base.db.ProductVariantAttr">
@@ -14,7 +14,7 @@
         	<field name="name" />
         	<field name="code" x-bind="{{code|uppercase}}" />
         </panel>
-        <panel-related  field="productVariantValueList" colSpan="12"/>
+        <panel-related  field="productVariantValueList" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
     </form>   
 
 </object-views>

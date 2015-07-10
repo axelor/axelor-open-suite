@@ -6,7 +6,7 @@
     <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
         <field name="name"/>
         <field name="code"/>
-        <field name="address"/>
+        <field name="address" form-view="address-form" grid-view="address-grid"/>
     </grid>
 
 	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" >
@@ -17,10 +17,10 @@
 			<panel colSpan="8">
 		    	<field name="name"/>
 			    <field name="code" x-bind="{{code|uppercase}}"/>
-			    <field name="parent"/>
+			    <field name="parent" form-view="company-form" grid-view="company-grid"/>
 			    <field name="partner" canNew="true" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 		    </panel>
-		    <field name="address" canNew="true" colSpan="12"/>
+		    <field name="address" canNew="true" colSpan="12" form-view="address-form" grid-view="address-grid"/>
 	  	</panel>
 	  
 	  	<panel sidebar="true" title="Modules configurations" hideIf="$popup()">
@@ -42,9 +42,9 @@
 	      		<field name="notes" showTitle="false" colSpan="12"/>
 	    	</panel>
 	    	<panel title="Configurations">
-	    	    <field name="administration"/>
-	  			<field name="currency"/>
-	  			<field name="printingSettings" canNew="true"/>
+	    	    <field name="administration" form-view="general-form"  grid-view="general-grid"/>
+	  			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+	  			<field name="printingSettings" canNew="true" form-view="printing-setting-form" grid-view="printing-setting-grid"/>
 	  			<field name="defaultPartnerTypeSelect"/>
 	  		</panel>
 	    	<panel title="Bank details">

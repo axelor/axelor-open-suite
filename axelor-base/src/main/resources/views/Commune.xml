@@ -20,8 +20,8 @@
 			<field name="hasZipOnRight"/>
 		</panel>
 		<panel title="Localization">
-			<field name="department"/>
-			<field name="canton"/>
+			<field name="department" form-view="department-form" grid-view="department-grid"/>
+			<field name="canton" form-view="canton-form" grid-view="canton-grid"/>
 		</panel>  
 		<panel title="Demography">
 			<field name="nbInhCommune"/>

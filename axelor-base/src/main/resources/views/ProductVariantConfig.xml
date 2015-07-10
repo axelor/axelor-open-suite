@@ -4,27 +4,27 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
    
     <grid name="product-variant-config-grid" title="Product variant configurations" model="com.axelor.apps.base.db.ProductVariantConfig">
-        <field name="productVariantAttr1"/>
-        <field name="productVariantAttr2"/>
-        <field name="productVariantAttr3"/>
-        <field name="productVariantAttr4"/>
-        <field name="productVariantValue1Set"/>
-        <field name="productVariantValue2Set"/>
-        <field name="productVariantValue3Set"/>
-        <field name="productVariantValue4Set"/>
+        <field name="productVariantAttr1" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/> 
+        <field name="productVariantAttr2" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+        <field name="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+        <field name="productVariantAttr4" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+        <field name="productVariantValue1Set" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+        <field name="productVariantValue2Set" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+        <field name="productVariantValue3Set" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+        <field name="productVariantValue4Set" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
     </grid>
     
     <form name="product-variant-config-form" title="Product variant configuration" model="com.axelor.apps.base.db.ProductVariantConfig"  
     	onLoad="action-product-variant-config-attrs-domain" onNew="action-product-variant-config-attrs-domain">
     	<panel>
-        	<field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain"/>
-        	<field name="productVariantValue1Set" widget="TagSelect" canNew="false" showIf="productVariantAttr1" colSpan="12"/>
-	        <field name="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr1"/>
-    	    <field name="productVariantValue2Set" widget="TagSelect" canNew="false" showIf="productVariantAttr2" colSpan="12"/>
-	        <field name="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr2"/>
-    	    <field name="productVariantValue3Set" widget="TagSelect" canNew="false" showIf="productVariantAttr3" colSpan="12"/>
-	        <field name="productVariantAttr4" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr3"/>
-    	    <field name="productVariantValue4Set" widget="TagSelect" canNew="false" showIf="productVariantAttr4" colSpan="12"/>
+        	<field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+        	<field name="productVariantValue1Set" widget="TagSelect" canNew="false" showIf="productVariantAttr1" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+	        <field name="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr1" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+    	    <field name="productVariantValue2Set" widget="TagSelect" canNew="false" showIf="productVariantAttr2" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+	        <field name="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr2" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+    	    <field name="productVariantValue3Set" widget="TagSelect" canNew="false" showIf="productVariantAttr3" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+	        <field name="productVariantAttr4" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+    	    <field name="productVariantValue4Set" widget="TagSelect" canNew="false" showIf="productVariantAttr4" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
         </panel>
     </form>
     

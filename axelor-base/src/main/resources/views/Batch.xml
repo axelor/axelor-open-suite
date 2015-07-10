@@ -6,7 +6,7 @@
     <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch" orderBy="-id"
     canEdit="false" canDelete="false" canNew="false" canSave="false">
     	<field name="id" />
-		<field name="createdBy"/>
+		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 		<field name="duration" />
 		<field name="startDate" />
 		<field name="endDate" />
@@ -17,7 +17,7 @@
     <form name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch" onNew="action-batch-attrs" onLoad="action-batch-attrs" 
     canEdit="false" canDelete="false" canNew="false" canCopy="false" canSave="false">
 		<panel>
-		    <field name="createdBy"/>
+		    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 		    <field name="duration"/>
 		    <field name="startDate"/>
 		    <field name="endDate"/>

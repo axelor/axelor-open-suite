@@ -28,7 +28,7 @@
 			<field name="comments" colSpan="12" height="3"/>    					
 		</panel>
 		<panel title="" colSpan="12">
-			<panel-related field="historizedPriceLists" colSpan="12" readonly="true"/>
+			<panel-related field="historizedPriceLists" colSpan="12" readonly="true" form-view="historized-price-list-form" grid-view="historized-price-list-grid"/>
 			<button name="historizePriceList" title="Historize Price List" onClick="save,com.axelor.apps.base.web.PriceListController:historizePriceList"/>
 		</panel>
    </form>
