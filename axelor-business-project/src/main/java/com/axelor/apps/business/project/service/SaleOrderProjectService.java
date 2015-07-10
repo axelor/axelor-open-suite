@@ -1,5 +1,6 @@
 package com.axelor.apps.business.project.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,12 @@ public class SaleOrderProjectService extends SaleOrderRepository{
 		project.setImputable(true);
 		project.setInvoicingTypeSelect(ProjectTaskRepository.INVOICING_TYPE_NONE);
 		project.addMembersUserSetItem(saleOrder.getSalemanUser());
-		project.setProduct(GeneralService.getGeneral().getProductInvoicingProjectTask());
+		Product product = GeneralService.getGeneral().getProductInvoicingProjectTask();
+		project.setProduct(product);
+		project.setQty(BigDecimal.ONE);
+		project.setPrice(saleOrder.getCompanyExTaxTotal());
+		project.setUnit(product.getUnit());
+		project.setExTaxTotal(saleOrder.getCompanyExTaxTotal());
 		saleOrder.setProject(project);
 		Beans.get(ProjectTaskManagementRepository.class).save(project);
 		save(saleOrder);
@@ -55,7 +61,11 @@ public class SaleOrderProjectService extends SaleOrderRepository{
 				task.setAssignedTo(saleOrder.getSalemanUser());
 				task.setProgress(0);
 				task.setImputable(true);
-				task.setProduct(GeneralService.getGeneral().getProductInvoicingProjectTask());
+				task.setProduct(product);
+				task.setQty(saleOrderLine.getQty());
+				task.setPrice(saleOrderLine.getPrice());
+				task.setUnit(saleOrderLine.getUnit());
+				task.setExTaxTotal(saleOrderLine.getCompanyExTaxTotal());
 				saleOrderLine.setProject(task);
 				Beans.get(ProjectTaskManagementRepository.class).save(task);
 				JPA.save(saleOrderLine);

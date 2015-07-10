@@ -281,18 +281,37 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 
 		if(counter > MAX_LEVEL_OF_PROJECT)  {  return;  }
 		counter++;
+		
+		if(projectTask.getInvoicingTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE || projectTask.getInvoicingTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED)  {
 
-		saleOrderLineList.addAll(Beans.get(SaleOrderLineRepository.class).all().filter("self.saleOrder.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.saleOrder.project.invoicingTypeSelect = ?2", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
-		purchaseOrderLineList.addAll(Beans.get(PurchaseOrderLineRepository.class).all().filter("self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.invoicingTypeSelect = ?2", projectTask,  ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
-		timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class).all().filter("self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.projectTask.invoicingTypeSelect = ?2", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
-		expenseLineList.addAll(Beans.get(ExpenseLineRepository.class).all().filter("self.task = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.task.invoicingTypeSelect = ?2", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
-		elementsToInvoiceList.addAll(Beans.get(ElementsToInvoiceRepository.class).all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.project.invoicingTypeSelect = ?2", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED).fetch());
-		projectTaskList.addAll(Beans.get(ProjectTaskRepository.class).all().filter("self.id = ?1 AND self.invoicingTypeSelect = ?2 AND self.invoiced = false", projectTask.getId(), ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE).fetch());
-		List<ProjectTask> projectTaskChildrenList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1 AND (self.invoicingTypeSelect = ?2 OR self.invoicingTypeSelect = ?3) ", projectTask, ProjectTaskRepository.INVOICING_TYPE_TIME_BASED, ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE).fetch();
+			saleOrderLineList.addAll(Beans.get(SaleOrderLineRepository.class)
+					.all().filter("self.saleOrder.project = ?1 AND self.toInvoice = true AND self.invoiced = false", projectTask).fetch());
+			
+			purchaseOrderLineList.addAll(Beans.get(PurchaseOrderLineRepository.class)
+					.all().filter("self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false", projectTask).fetch());
+			
+			timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class)
+					.all().filter("self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false", projectTask).fetch());
+			
+			expenseLineList.addAll(Beans.get(ExpenseLineRepository.class)
+					.all().filter("self.task = ?1 AND self.toInvoice = true AND self.invoiced = false", projectTask).fetch());
+			
+			elementsToInvoiceList.addAll(Beans.get(ElementsToInvoiceRepository.class)
+					.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", projectTask).fetch());
+			
+			if(projectTask.getInvoicingTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE)  {
+				projectTaskList.addAll(Beans.get(ProjectTaskRepository.class)
+						.all().filter("self.id = ?1 AND self.invoicingTypeSelect = ?2 AND self.invoiced = false", projectTask.getId()).fetch());
+			}
+		}
+		
+		List<ProjectTask> projectTaskChildrenList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1", projectTask).fetch();
+			
 		for (ProjectTask projectTaskChild : projectTaskChildrenList) {
 			this.getLines(projectTaskChild, saleOrderLineList, purchaseOrderLineList,
 					timesheetLineList, expenseLineList, elementsToInvoiceList, projectTaskList, counter);
 		}
+		
 		return;
 	}
 

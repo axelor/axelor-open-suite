@@ -13,6 +13,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class SaleOrderProjectController extends SaleOrderRepository{
@@ -62,7 +63,7 @@ public class SaleOrderProjectController extends SaleOrderRepository{
 					.add("grid","task-grid")
 					.add("form", "task-form")
 					.param("forceEdit", "true")
-					.domain("self.id in ("+listId+")").map());
+					.domain("self.id in ("+Joiner.on(",").join(listId)+")").map());
 		}
 
 	}
