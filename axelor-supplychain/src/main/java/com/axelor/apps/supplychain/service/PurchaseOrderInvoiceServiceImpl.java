@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -101,8 +102,11 @@ public class PurchaseOrderInvoiceServiceImpl extends PurchaseOrderRepository imp
 
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
-			purchaseOrderLine.setInvoiced(true);
+			//Lines of subscription type are invoiced directly from purchase order line or from the subscription batch
+			if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(purchaseOrderLine.getProduct().getProductTypeSelect())){
+				invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
+				purchaseOrderLine.setInvoiced(true);
+			}
 		}
 		return invoiceLineList;
 	}

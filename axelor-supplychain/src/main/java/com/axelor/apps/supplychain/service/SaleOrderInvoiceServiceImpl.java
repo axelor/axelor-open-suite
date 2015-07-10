@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -177,9 +178,12 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
+			//Lines of subscription type are invoiced directly from sale order line or from the subscription batch
+			if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())){
+				invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
 
-			saleOrderLine.setInvoiced(true);
+				saleOrderLine.setInvoiced(true);
+			}
 		}
 
 		return invoiceLineList;
