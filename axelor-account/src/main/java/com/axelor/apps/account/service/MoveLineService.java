@@ -73,7 +73,7 @@ public class MoveLineService extends MoveLineRepository{
 	public MoveLineService(AccountManagementServiceAccountImpl accountManagementService, TaxAccountService taxAccountService,
 			FiscalPositionServiceAccountImpl fiscalPositionService) {
 
-		toDay = generalService.getTodayDate();
+		toDay = Beans.get(GeneralService.class).getTodayDate();
 		this.accountManagementService = accountManagementService;
 		this.taxAccountService = taxAccountService;
 		this.fiscalPositionService = fiscalPositionService;

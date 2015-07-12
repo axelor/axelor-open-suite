@@ -88,7 +88,7 @@ public class MoveService extends MoveRepository {
 	@Inject
 	public MoveService() {
 
-		toDay = generalService.getTodayDate();
+		toDay = Beans.get(GeneralService.class).getTodayDate();
 
 	}
 

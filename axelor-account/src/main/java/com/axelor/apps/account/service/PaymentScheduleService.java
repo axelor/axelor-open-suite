@@ -44,6 +44,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -57,15 +58,12 @@ public class PaymentScheduleService extends PaymentScheduleRepository {
 	@Inject
 	private SequenceService sequenceService;
 
-	@Inject
-	protected GeneralService generalService;
-
 	private LocalDate date;
 
 	@Inject
 	public PaymentScheduleService() {
 
-		date = generalService.getTodayDate();
+		date = Beans.get(GeneralService.class).getTodayDate();
 
 	}
 

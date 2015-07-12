@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 
@@ -32,12 +33,9 @@ public class BlockingService extends BlockingRepository{
 	private LocalDate today;
 
 	@Inject
-	protected GeneralService generalService;
-
-	@Inject
 	public BlockingService() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 	}
 
 

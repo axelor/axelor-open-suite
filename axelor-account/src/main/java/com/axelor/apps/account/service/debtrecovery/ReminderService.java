@@ -50,6 +50,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -76,15 +77,12 @@ public class ReminderService extends ReminderRepository{
 	@Inject
 	private AccountingSituationService accountingSituationService;
 
-	@Inject
-	protected GeneralService generalService;
-
 	private LocalDate today;
 
 	@Inject
 	public ReminderService() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 
 	}
 

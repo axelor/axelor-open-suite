@@ -48,12 +48,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
 public abstract class InvoiceGenerator  {
-
-	@Inject
-	protected GeneralService generalService;
 
 	// Logger
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceGenerator.class);
@@ -90,7 +86,7 @@ public abstract class InvoiceGenerator  {
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
 		this.inAti = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAti();
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.journalService = new JournalService();
 
 	}
@@ -115,14 +111,14 @@ public abstract class InvoiceGenerator  {
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
 		this.inAti = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAti();
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.journalService = new JournalService();
 
 	}
 
 
 	protected InvoiceGenerator() {
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.journalService = new JournalService();
 
 	}

@@ -30,6 +30,7 @@ import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -40,12 +41,9 @@ public class MinStockRulesServiceImpl extends MinStockRulesRepository implements
 	protected User user;
 
 	@Inject
-	protected GeneralService generalService;
-
-	@Inject
 	public MinStockRulesServiceImpl() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.user = AuthUtils.getUser();
 	}
 

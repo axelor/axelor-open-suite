@@ -43,6 +43,7 @@ import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -62,15 +63,12 @@ public class ReconcileService extends ReconcileRepository {
 	@Inject
 	private AccountConfigService accountConfigService;
 
-	@Inject
-	protected GeneralService generalService;
-
 	private LocalDate today;
 
 	@Inject
 	public ReconcileService() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 
 	}
 

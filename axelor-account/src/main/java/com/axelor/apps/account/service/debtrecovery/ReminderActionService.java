@@ -75,7 +75,7 @@ public class ReminderActionService {
 	@Inject
 	public ReminderActionService() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 
 	}
 

@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -65,15 +66,12 @@ public class PaymentService {
 	@Inject
 	private MoveService ms;
 
-	@Inject
-	protected GeneralService generalService;
-
 	private LocalDate date;
 
 	@Inject
 	public PaymentService(){
 
-		date = generalService.getTodayDate();
+		date = Beans.get(GeneralService.class).getTodayDate();
 
 	}
 

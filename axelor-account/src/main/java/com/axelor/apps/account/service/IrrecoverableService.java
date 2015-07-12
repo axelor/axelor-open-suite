@@ -67,6 +67,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -110,15 +111,12 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	@Inject
 	private ManagementObjectRepository managementObjectRepo;
 
-	@Inject
-	protected GeneralService generalService;
-
 	private LocalDate date;
 
 	@Inject
 	public IrrecoverableService() {
 
-		this.date = generalService.getTodayDate();
+		this.date = Beans.get(GeneralService.class).getTodayDate();
 
 	}
 

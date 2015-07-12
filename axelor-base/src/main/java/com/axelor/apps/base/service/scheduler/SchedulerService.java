@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -49,9 +50,6 @@ import com.google.inject.persist.Transactional;
  */
 public class SchedulerService extends SchedulerRepository{
 
-	@Inject
-	protected GeneralService generalService;
-
 	private static final Logger LOG = LoggerFactory.getLogger(SchedulerService.class);
 
 	private LocalDate today;
@@ -61,7 +59,7 @@ public class SchedulerService extends SchedulerRepository{
 
 	@Inject
 	public SchedulerService(){
-		today = generalService.getTodayDate();
+		today = Beans.get(GeneralService.class).getTodayDate();
 	}
 
 	/**

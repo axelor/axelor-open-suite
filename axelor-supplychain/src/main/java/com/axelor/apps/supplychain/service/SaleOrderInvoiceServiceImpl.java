@@ -66,7 +66,7 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 	@Inject
 	public SaleOrderInvoiceServiceImpl() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 
 	}
 

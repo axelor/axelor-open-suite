@@ -70,7 +70,7 @@ public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 	@Inject
 	public PurchaseOrderSupplierService() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.user =  AuthUtils.getUser();
 	}
 

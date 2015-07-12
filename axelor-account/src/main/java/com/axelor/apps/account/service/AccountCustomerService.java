@@ -63,7 +63,7 @@ public class AccountCustomerService {
 	@Inject
 	public AccountCustomerService(AccountingSituationService  accountingSituationService) {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.accountingSituationService = accountingSituationService;
 	}
 

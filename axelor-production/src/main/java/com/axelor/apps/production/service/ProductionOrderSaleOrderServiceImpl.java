@@ -39,6 +39,7 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -54,12 +55,9 @@ public class ProductionOrderSaleOrderServiceImpl extends ProductionOrderReposito
 	protected ProductionOrderService productionOrderService;
 
 	@Inject
-	protected GeneralService generalService;
-
-	@Inject
 	public ProductionOrderSaleOrderServiceImpl(UserService userInfoService) {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.user = userInfoService.getUser();
 	}
 
