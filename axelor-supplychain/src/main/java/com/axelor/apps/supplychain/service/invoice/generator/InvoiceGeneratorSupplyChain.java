@@ -30,12 +30,16 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 
 public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
 	protected SaleOrder saleOrder;
 
 	protected PurchaseOrder purchaseOrder;
+
+	@Inject
+	protected GeneralService generalService;
 
 	protected InvoiceGeneratorSupplyChain(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
 			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference, SaleOrder saleOrder) throws AxelorException {
