@@ -105,7 +105,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	@Inject
 	public PaymentScheduleImportService() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 
 	}
 

@@ -110,15 +110,16 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	@Inject
 	private ManagementObjectRepository managementObjectRepo;
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	private LocalDate date;
 
 	@Inject
-	public IrrecoverableService() {
+	public IrrecoverableService(GeneralService generalService) {
 
-		this.date = generalService.getTodayDate();
+		this.generalService = generalService;
+		this.date = this.generalService.getTodayDate();
 
 	}
 

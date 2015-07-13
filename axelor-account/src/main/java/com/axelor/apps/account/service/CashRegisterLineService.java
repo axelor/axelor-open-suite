@@ -50,16 +50,17 @@ public class CashRegisterLineService extends CashRegisterLineRepository{
 	@Inject
 	private TemplateMessageService templateMessageService;
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	private DateTime todayTime;
 	private User user;
 
 	@Inject
-	public CashRegisterLineService(UserService userService) {
+	public CashRegisterLineService(UserService userService,GeneralService generalService) {
 
-		this.todayTime = generalService.getTodayDateTime();
+		this.generalService = generalService;
+		this.todayTime = this.generalService.getTodayDateTime();
 		this.user = userService.getUser();
 
 	}

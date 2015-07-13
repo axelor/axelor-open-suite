@@ -79,12 +79,13 @@ public class MoveLineExportService {
 	@Inject
 	private AccountRepository accountRepo;
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	@Inject
-	public MoveLineExportService() {
-		todayTime = generalService.getTodayDateTime();
+	public MoveLineExportService(GeneralService generalService) {
+		this.generalService = generalService;
+		todayTime = this.generalService.getTodayDateTime();
 	}
 
 

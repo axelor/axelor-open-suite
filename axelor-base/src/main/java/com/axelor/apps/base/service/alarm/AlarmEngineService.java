@@ -44,7 +44,7 @@ import com.google.inject.Inject;
  */
 public class AlarmEngineService <T extends Model> extends AlarmEngineRepository {
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AlarmEngineService.class);
@@ -54,9 +54,9 @@ public class AlarmEngineService <T extends Model> extends AlarmEngineRepository 
 	private Templates templates;
 
 	@Inject
-	public AlarmEngineService() {
-
-		dateTime = generalService.getTodayDateTime();
+	public AlarmEngineService(GeneralService generalService) {
+		this.generalService = generalService;
+		dateTime = this.generalService.getTodayDateTime();
 
 	}
 

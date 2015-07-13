@@ -60,13 +60,13 @@ public class MoveLineReportService extends MoveLineReportRepository {
 	@Inject
 	private AccountRepository accountRepo;
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	@Inject
-	public MoveLineReportService() {
-
-		dateTime = generalService.getTodayDateTime();
+	public MoveLineReportService(GeneralService generalService) {
+		this.generalService = generalService;
+		dateTime = this.generalService.getTodayDateTime();
 
 	}
 

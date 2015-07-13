@@ -23,6 +23,22 @@
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
+    <grid name="sale-order-subscription-grid" title="Subscription Sale orders" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+	    <toolbar>
+	    	<button name="invoiceSelectedSaleOrders" title="Invoice selected sale orders" onClick="action-sale-order-method-invoice-subscriptions"/>
+	    </toolbar>
+        <field name="saleOrderSeq"/>
+        <field name="company"/>
+        <field name="currency"/>
+        <field name="clientPartner"/>
+        <field name="externalReference"/>
+        <field name="creationDate"/>
+        <field name="inTaxTotal"/>
+        <field name="statusSelect"/>
+        <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
+        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    </grid>
+    
     <form name="sale-order-subscription-cancel-form" model="com.axelor.apps.sale.db.SaleOrder" title="Cancellation confirmation" >
 		<panel>
 			<field name="cancelReason" colSpan="12" width="200px" widget="SuggestBox" canNew="true"/>
@@ -69,6 +85,7 @@
 	    <field name="currency"/>
 	    <field name="versionNumber"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
+	    <field name="subscription" hidden="true" if-module="axelor-supplychain"/>
 	  </panel>
 	  
 	  <panel title="Customer information">
@@ -129,6 +146,7 @@
 	    <button name="generateInvoice" title="Generate invoice" showIf="eval: __config__.general.getGenerateInvoiceFromSaleOrder() &amp;&amp; statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="generatePO" title="Generate purchase order"  colSpan="12" showIf="eval: __config__.general.getPurchaseOrderManagement() &amp;&amp; !__config__.general.getPurchaseOrderGenerationAuto() &amp;&amp; (statusSelect == 2 || statusSelect == 3)" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" hidden="true"/>
 	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" showIf="eval: __config__.general.getProductionOrderManagement() &amp;&amp; !__config__.general.getProductionOrderGenerationAuto() &amp;&amp; statusSelect == 3" onClick="action-supplychain-sale-order-create-production-order" hidden="true"/>
+	    <button name="generateInvoiceSubscriptions" title="Generate invoice for subscriptions" colSpan="12" hideIf="subcription" onClick="save,action-sale-order-method-invoice-subscriptions-sale-order" if-module="axelor-supplychain"/>
 	    <spacer/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
 	  </panel>
@@ -453,6 +471,7 @@
     <action-attrs name="action-sale-order-attrs-in-ati">
     	<attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="saleOrderLineList.inTaxTotal" expr="!inAti"/>
+    	<attribute name="hidden" for="subscription" expr="eval: !__config__.general.getAllowSusbcriptionSaleOrder()"/>
     </action-attrs>
     
     <action-record name="action-sale-order-record-in-ati" model="com.axelor.apps.sale.db.SaleOrder">
@@ -568,6 +587,14 @@
 	
 	<action-method name="action-sale-method-update-customer-credit-line" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="eval: __config__.general.getManageCustomerCredit()"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-invoice-subscriptions">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="invoiceSubscriptions"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-invoice-subscriptions-sale-order">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="invoiceSubscriptionsSaleOrder"/>
 	</action-method>
 	
 	<action-attrs name="action-sale-order-attrs-collapse-specific-settings-group">

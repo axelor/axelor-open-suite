@@ -80,15 +80,16 @@ public class MoveService extends MoveRepository {
 	@Inject
 	private AccountConfigService accountConfigService;
 
-	@Inject
-	protected GeneralService generalService;
+	private GeneralService generalService;
 
 	private LocalDate toDay;
 
 	@Inject
-	public MoveService() {
+	public MoveService(GeneralService generalService) {
 
-		toDay = generalService.getTodayDate();
+		this.generalService = generalService;
+
+		toDay = this.generalService.getTodayDate();
 
 	}
 

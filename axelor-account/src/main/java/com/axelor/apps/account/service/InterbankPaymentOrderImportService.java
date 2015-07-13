@@ -72,15 +72,16 @@ public class InterbankPaymentOrderImportService {
 	@Inject
 	private InvoiceRepository invoiceRepo;
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	private DateTime dateTime;
 
 	@Inject
-	public InterbankPaymentOrderImportService() {
+	public InterbankPaymentOrderImportService(GeneralService generalService) {
 
-		this.dateTime = generalService.getTodayDateTime();
+		this.generalService = generalService;
+		this.dateTime = this.generalService.getTodayDateTime();
 
 	}
 

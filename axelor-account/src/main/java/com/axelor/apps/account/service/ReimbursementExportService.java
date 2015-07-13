@@ -75,6 +75,7 @@ import com.axelor.apps.xsd.sepa.ServiceLevel2Choice;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -114,7 +115,7 @@ public class ReimbursementExportService {
 	@Inject
 	public ReimbursementExportService() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 	}
 
 	/**

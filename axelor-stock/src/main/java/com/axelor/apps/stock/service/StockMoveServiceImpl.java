@@ -69,7 +69,7 @@ public class StockMoveServiceImpl extends StockMoveRepository implements StockMo
 	@Inject
 	public StockMoveServiceImpl() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 
 	}
 

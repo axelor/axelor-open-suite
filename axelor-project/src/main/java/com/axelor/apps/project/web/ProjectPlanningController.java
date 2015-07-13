@@ -174,7 +174,6 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 
 	public void populate(ActionRequest request, ActionResponse response) throws AxelorException{
 		User user = AuthUtils.getUser();
-		generalService.getTodayDate();
 		ProjectPlanning planning = request.getContext().asType(ProjectPlanning.class);
 		String type = request.getContext().get("_type").toString();
 		List<ProjectPlanningLine> projectPlanningLineList = null;

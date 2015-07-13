@@ -49,6 +49,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 /**
@@ -132,7 +133,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.inTaxTotal = inTaxTotal;
         this.groupingLine = groupingLine;
         this.isTaxInvoice = isTaxInvoice;
-        this.today = generalService.getTodayDate();
+        this.today = Beans.get(GeneralService.class).getTodayDate();
         this.currencyService = new CurrencyService(this.today);
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
     }
@@ -155,7 +156,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.exTaxTotal = exTaxTotal;
         this.groupingLine = groupingLine;
         this.isTaxInvoice = isTaxInvoice;
-        this.today = generalService.getTodayDate();
+        this.today = Beans.get(GeneralService.class).getTodayDate();
         this.currencyService = new CurrencyService(this.today);
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
     }
@@ -179,7 +180,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.exTaxTotal = exTaxTotal;
         this.groupingLine = groupingLine;
         this.isTaxInvoice = isTaxInvoice;
-        this.today = generalService.getTodayDate();
+        this.today = Beans.get(GeneralService.class).getTodayDate();
         this.currencyService = new CurrencyService(this.today);
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
     }
@@ -194,7 +195,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.unit = unit;
         this.sequence = sequence;
         this.isTaxInvoice = isTaxInvoice;
-        this.today = generalService.getTodayDate();
+        this.today = Beans.get(GeneralService.class).getTodayDate();
         this.currencyService = new CurrencyService(this.today);
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
 	}

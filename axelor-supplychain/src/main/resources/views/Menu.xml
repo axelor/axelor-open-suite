@@ -58,4 +58,10 @@
 		<view type="form" name="supplychain-batch-form"/>
 	</action-view>
 	
+	<menuitem name="sc-root-sale-orders-subscription" parent="sc-root-sale" order="-2"
+		groups="admins,ERP" title="Subscription Sale orders To Invoice" action="sc.root.sale.orders.subscription" />
+	
+	<action-method name="sc.root.sale.orders.subscription">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getSubscriptionSaleOrdersToInvoice"/>
+	</action-method>
 </object-views>

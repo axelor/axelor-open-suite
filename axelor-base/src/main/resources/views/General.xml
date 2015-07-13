@@ -67,6 +67,7 @@
 				<panel title="Sale order configuration">
 					<field name="manageSaleOrderVersion" if-module="axelor-sale"/>
 					<field name="generateInvoiceFromSaleOrder" if-module="axelor-sale"/>
+					<field name="allowSusbcriptionSaleOrder" if-module="axelor-supplychain"/>
 				</panel>
 				
 				<panel title="Purchase order configuration">

@@ -35,10 +35,10 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	@Override
 	public SaleOrder save(SaleOrder saleOrder) {
 		try {
-			saleOrder = super.save(saleOrder);
+//			saleOrder = super.save(saleOrder);
 			Beans.get(SaleOrderService.class).setDraftSequence(saleOrder);
 
-			return saleOrder;
+			return JPA.save(saleOrder);
 		} catch (Exception e) {
 			JPA.em().getTransaction().rollback();
 			e.printStackTrace();

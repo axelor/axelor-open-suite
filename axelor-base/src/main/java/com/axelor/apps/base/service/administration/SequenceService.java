@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -46,15 +47,13 @@ public class SequenceService extends SequenceRepository {
 
 	private LocalDate today, refDate;
 
-	@Inject
-	protected GeneralService generalService;
 
 	@Inject
 	public SequenceService( SequenceVersionRepository sequenceVersionRepository ) {
 
 		this.sequenceVersionRepository = sequenceVersionRepository;
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.refDate = this.today;
 
 	}

@@ -18,7 +18,6 @@
 package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
-
 import com.axelor.apps.account.service.invoice.workflow.cancel.CancelState;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;

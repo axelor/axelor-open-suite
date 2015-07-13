@@ -11,7 +11,7 @@
 	<date name="shipmentDate" title="Date of shipment" />
 	<integer name="invoicingMomentSelect" title="Invoicing trigger" selection="supplychain.invoicing.moment.select"/>
 	<decimal name="amountInvoiced" title="Amount invoiced" readonly="true"/>
-	
+	<boolean name="subscription" title="Subscription"/>
 	<!-- 	Onglet échéancier -->
 	<one-to-many name="saleOrderScheduleLineList" ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder" title="Schedule line list"/>
 	

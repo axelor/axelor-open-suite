@@ -31,6 +31,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class CurrencyService extends CurrencyRepository{
@@ -43,7 +44,7 @@ public class CurrencyService extends CurrencyRepository{
 	@Inject
 	public CurrencyService() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 	}
 
 

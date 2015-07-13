@@ -1,5 +1,8 @@
 package com.axelor.apps.supplychain.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -67,8 +70,11 @@ public class SubscriptionController {
 
 			SaleOrder saleOrder  = Beans.get(SaleOrderRepository.class).find(saleOrderLine.getSaleOrder().getId());
 
+			List<SaleOrderLine> saleOrderLineList = new ArrayList<SaleOrderLine>();
+
+			saleOrderLineList.add(saleOrderLine);
 			try {
-				Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateSubscriptionInvoice(subscription,saleOrderLine,saleOrder);
+				Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateSubscriptionInvoice(subscription,saleOrderLineList,saleOrder);
 
 				if(invoice != null)  {
 					response.setReload(true);

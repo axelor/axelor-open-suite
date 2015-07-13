@@ -41,7 +41,7 @@ public class RejectImportService{
 
 	private DateTime todayTime;
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	@Inject
@@ -51,9 +51,9 @@ public class RejectImportService{
 	private InterbankCodeLineRepository interbankCodeLineRepo;
 
 	@Inject
-	public RejectImportService() {
-
-		this.todayTime = generalService.getTodayDateTime();
+	public RejectImportService(GeneralService generalService) {
+		this.generalService = generalService;
+		this.todayTime = this.generalService.getTodayDateTime();
 
 	}
 

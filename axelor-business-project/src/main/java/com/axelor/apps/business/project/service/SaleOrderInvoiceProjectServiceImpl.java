@@ -6,11 +6,19 @@ import java.util.List;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 
 public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl{
+
+	@Inject
+	public SaleOrderInvoiceProjectServiceImpl(GeneralService generalService) {
+		super(generalService);
+	}
+
 	@Override
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList) throws AxelorException  {
 

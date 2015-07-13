@@ -59,15 +59,15 @@ public class PaymentVoucherCreateService extends PaymentVoucherRepository {
 	@Inject
 	private PaymentVoucherSequenceService paymentVoucherSequenceService;
 
-	@Inject
 	protected GeneralService generalService;
 
 	private DateTime todayTime;
 
 	@Inject
-	public PaymentVoucherCreateService() {
+	public PaymentVoucherCreateService(GeneralService generalService) {
 
-		this.todayTime = generalService.getTodayDateTime();
+		this.generalService = generalService;
+		this.todayTime = this.generalService.getTodayDateTime();
 
 	}
 

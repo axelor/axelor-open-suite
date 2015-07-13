@@ -66,14 +66,14 @@ public class MoveLineService extends MoveLineRepository{
 
 	private LocalDate toDay;
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	@Inject
 	public MoveLineService(AccountManagementServiceAccountImpl accountManagementService, TaxAccountService taxAccountService,
-			FiscalPositionServiceAccountImpl fiscalPositionService) {
-
-		toDay = generalService.getTodayDate();
+			FiscalPositionServiceAccountImpl fiscalPositionService, GeneralService generalService) {
+		this.generalService = generalService;
+		toDay = this.generalService.getTodayDate();
 		this.accountManagementService = accountManagementService;
 		this.taxAccountService = taxAccountService;
 		this.fiscalPositionService = fiscalPositionService;

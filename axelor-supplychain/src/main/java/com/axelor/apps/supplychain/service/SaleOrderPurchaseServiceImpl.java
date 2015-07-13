@@ -65,7 +65,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 	@Inject
 	public SaleOrderPurchaseServiceImpl() {
 
-		this.today = generalService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.user = AuthUtils.getUser();
 	}
 

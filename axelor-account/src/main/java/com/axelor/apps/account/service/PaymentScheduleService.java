@@ -57,15 +57,15 @@ public class PaymentScheduleService extends PaymentScheduleRepository {
 	@Inject
 	private SequenceService sequenceService;
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	private LocalDate date;
 
 	@Inject
-	public PaymentScheduleService() {
-
-		date = generalService.getTodayDate();
+	public PaymentScheduleService(GeneralService generalService) {
+		this.generalService = generalService;
+		date = this.generalService.getTodayDate();
 
 	}
 

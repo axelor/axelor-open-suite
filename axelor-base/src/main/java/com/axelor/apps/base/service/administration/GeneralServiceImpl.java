@@ -37,7 +37,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.inject.Beans;
 
 @Singleton
 public class GeneralServiceImpl extends GeneralRepository implements GeneralService {
@@ -49,7 +48,7 @@ public class GeneralServiceImpl extends GeneralRepository implements GeneralServ
 	private Long administrationId;
 
 	@Inject
-	protected GeneralServiceImpl() {
+	public GeneralServiceImpl() {
 
 		Query q = JPA.em().createQuery("FROM General");
 		General general = (General)q.setMaxResults(1).getSingleResult();
@@ -78,7 +77,7 @@ public class GeneralServiceImpl extends GeneralRepository implements GeneralServ
 	 */
 	@Override
 	public General getGeneral() {
-		return Beans.get(GeneralRepository.class).find(administrationId);
+		return find(administrationId);
 	}
 
 // Date du jour

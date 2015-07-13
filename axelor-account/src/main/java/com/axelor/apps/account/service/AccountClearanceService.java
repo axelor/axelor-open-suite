@@ -75,16 +75,17 @@ public class AccountClearanceService extends AccountClearanceRepository {
 	@Inject
 	private TaxAccountService taxAccountService;
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	private DateTime todayTime;
 	private User user;
 
 	@Inject
-	public AccountClearanceService(UserService userService) {
+	public AccountClearanceService(UserService userService, GeneralService generalService) {
 
-		this.todayTime = generalService.getTodayDateTime();
+		this.generalService = generalService;
+		this.todayTime = this.generalService.getTodayDateTime();
 		this.user = userService.getUser();
 	}
 

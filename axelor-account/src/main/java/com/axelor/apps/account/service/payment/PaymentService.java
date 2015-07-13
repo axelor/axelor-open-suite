@@ -65,15 +65,15 @@ public class PaymentService {
 	@Inject
 	private MoveService ms;
 
-	@Inject
 	protected GeneralService generalService;
 
 	private LocalDate date;
 
 	@Inject
-	public PaymentService(){
+	public PaymentService(GeneralService generalService){
 
-		date = generalService.getTodayDate();
+		this.generalService = generalService;
+		date = this.generalService.getTodayDate();
 
 	}
 

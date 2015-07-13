@@ -49,7 +49,7 @@ import com.google.inject.persist.Transactional;
  */
 public class SchedulerService extends SchedulerRepository{
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(SchedulerService.class);
@@ -60,8 +60,9 @@ public class SchedulerService extends SchedulerRepository{
 	private SchedulerInstanceRepository schedulerInstanceRepo;
 
 	@Inject
-	public SchedulerService(){
-		today = generalService.getTodayDate();
+	public SchedulerService(GeneralService generalService){
+		this.generalService = generalService;
+		today = this.generalService.getTodayDate();
 	}
 
 	/**

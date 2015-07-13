@@ -39,15 +39,15 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 	@Inject
 	private OperationOrderStockMoveService operationOrderStockMoveService;
 
-	@Inject
+
 	protected GeneralService generalService;
 
 	private LocalDateTime today;
 
 	@Inject
-	public OperationOrderWorkflowService() {
-
-		today = generalService.getTodayDateTime().toLocalDateTime();
+	public OperationOrderWorkflowService(GeneralService generalService) {
+		this.generalService = generalService;
+		today = this.generalService.getTodayDateTime().toLocalDateTime();
 
 	}
 
