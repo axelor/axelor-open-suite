@@ -107,9 +107,6 @@ public class ReimbursementExportService {
 	@Inject
 	private PartnerService partnerService;
 
-	@Inject
-	protected GeneralService generalService;
-
 	private LocalDate today;
 
 	@Inject

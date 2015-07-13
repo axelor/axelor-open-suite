@@ -41,9 +41,6 @@ public class MinStockRulesServiceImpl extends MinStockRulesRepository implements
 	protected User user;
 
 	@Inject
-	protected GeneralService generalService;
-
-	@Inject
 	public MinStockRulesServiceImpl() {
 
 		this.today = Beans.get(GeneralService.class).getTodayDate();

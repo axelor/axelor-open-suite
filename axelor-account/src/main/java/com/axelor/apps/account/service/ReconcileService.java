@@ -63,9 +63,6 @@ public class ReconcileService extends ReconcileRepository {
 	@Inject
 	private AccountConfigService accountConfigService;
 
-	@Inject
-	protected GeneralService generalService;
-
 	private LocalDate today;
 
 	@Inject

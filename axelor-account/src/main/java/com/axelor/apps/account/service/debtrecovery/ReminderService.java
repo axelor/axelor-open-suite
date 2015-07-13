@@ -77,9 +77,6 @@ public class ReminderService extends ReminderRepository{
 	@Inject
 	private AccountingSituationService accountingSituationService;
 
-	@Inject
-	protected GeneralService generalService;
-
 	private LocalDate today;
 
 	@Inject

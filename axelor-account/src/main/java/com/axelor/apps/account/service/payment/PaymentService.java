@@ -71,10 +71,8 @@ public class PaymentService {
 
 	@Inject
 	public PaymentService(GeneralService generalService){
-
 		this.generalService = generalService;
 		date = this.generalService.getTodayDate();
-
 	}
 
 

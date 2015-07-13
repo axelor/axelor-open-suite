@@ -102,9 +102,6 @@ public class PaymentScheduleExportService{
 	@Inject
 	private InvoiceService invoiceService;
 
-	@Inject
-	protected GeneralService generalService;
-
 	private LocalDate today;
 
 	private boolean sepa;

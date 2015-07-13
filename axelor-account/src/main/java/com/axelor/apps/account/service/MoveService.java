@@ -88,7 +88,6 @@ public class MoveService extends MoveRepository {
 	public MoveService(GeneralService generalService) {
 
 		this.generalService = generalService;
-
 		toDay = this.generalService.getTodayDate();
 
 	}

@@ -42,7 +42,6 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
 	protected PurchaseOrder purchaseOrder;
 
-
 	protected InvoiceGeneratorSupplyChain(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
 			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference, SaleOrder saleOrder) throws AxelorException {
 

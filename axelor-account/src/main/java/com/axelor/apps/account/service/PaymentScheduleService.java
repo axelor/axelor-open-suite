@@ -66,7 +66,6 @@ public class PaymentScheduleService extends PaymentScheduleRepository {
 	public PaymentScheduleService(GeneralService generalService) {
 		this.generalService = generalService;
 		date = this.generalService.getTodayDate();
-
 	}
 
 	/**

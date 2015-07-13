@@ -62,9 +62,6 @@ public class DoubtfulCustomerService {
 	@Inject
 	private AccountConfigService accountConfigService;
 
-	@Inject
-	protected GeneralService generalService;
-
 	private LocalDate today;
 
 	@Inject

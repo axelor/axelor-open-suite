@@ -33,9 +33,6 @@ public class BlockingService extends BlockingRepository{
 	private LocalDate today;
 
 	@Inject
-	protected GeneralService generalService;
-
-	@Inject
 	public BlockingService() {
 
 		this.today = Beans.get(GeneralService.class).getTodayDate();

@@ -47,7 +47,6 @@ public class SequenceService extends SequenceRepository {
 
 	private LocalDate today, refDate;
 
-
 	@Inject
 	public SequenceService( SequenceVersionRepository sequenceVersionRepository ) {
 

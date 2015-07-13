@@ -54,9 +54,6 @@ public class ReminderSessionService {
 	private ReminderService reminderService;
 
 	@Inject
-	protected GeneralService generalService;
-
-	@Inject
 	public ReminderSessionService() {
 
 		this.today = Beans.get(GeneralService.class).getTodayDate();

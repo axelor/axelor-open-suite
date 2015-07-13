@@ -63,6 +63,7 @@ public class SchedulerService extends SchedulerRepository{
 	public SchedulerService(GeneralService generalService){
 		this.generalService = generalService;
 		today = this.generalService.getTodayDate();
+
 	}
 
 	/**
