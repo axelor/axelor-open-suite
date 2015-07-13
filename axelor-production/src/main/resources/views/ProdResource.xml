@@ -6,7 +6,7 @@
     <grid name="prod-resource-grid" title="Resources" model="com.axelor.apps.production.db.ProdResource">
         <field name="name"/>
         <field name="code"/>
-        <field name="machine"/>
+        <field name="machine" form-view="machine-form" grid-view="machine-grid"/>
         <field name="resourceTypeSelect"/>
     </grid>
     
@@ -15,7 +15,7 @@
 	    <field name="name"/>
 	    <field name="code" colSpan="3"/>
 	    <field name="resourceTypeSelect" required="true"/>
-		<field name="machine" requiredIf="resourceTypeSelect == 2 || resourceTypeSelect == 3" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3"/>
+		<field name="machine" requiredIf="resourceTypeSelect == 2 || resourceTypeSelect == 3" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3" form-view="machine-form" grid-view="machine-grid"/>
 	  </panel>  
 	  <panel-tabs>
 	    <panel title="Default Machine settings" readonlyIf="!machine" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3">
@@ -29,12 +29,12 @@
 				<field name="endingDuration" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel title="Costing settings" colSpan="12">
-	          <field name="product"/>
+	          <field name="product" form-view="product-form" grid-view="product-grid"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
 	        </panel>
 	    </panel>
-	    <panel-related field="prodHumanResourceList" title="Human resources" showIf="resourceTypeSelect == 1 || resourceTypeSelect == 3"/>
+	    <panel-related field="prodHumanResourceList" title="Human resources" showIf="resourceTypeSelect == 1 || resourceTypeSelect == 3" form-view="prod-human-resource-form" grid-view="prod-human-resource-grid"/>
 	    <panel-related field="prodResourceList" title="Replacement machines" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3" form-view="prod-resource-machine-form" grid-view="prod-resource-machine-grid"/>
 	  </panel-tabs>
 	</form>

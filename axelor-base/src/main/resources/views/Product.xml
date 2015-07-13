@@ -117,7 +117,7 @@
 	            	<field name="perishableNbrOfMonths" showIf="isPerishable"/>
         	 	</panel>
         	 	<panel colSpan="12" if-module="axelor-stock">
-		            <field name="trackingNumberConfiguration" canNew="true"/>
+		            <field name="trackingNumberConfiguration" canNew="true" grid-view="tracking-number-configuration-grid" form-view="tracking-number-configuration-form"/>
 	            </panel>
 	        </panel>
 	        <panel title="Variants" showTitle="false">

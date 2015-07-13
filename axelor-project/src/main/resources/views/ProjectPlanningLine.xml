@@ -5,7 +5,7 @@
 
 	<grid name="project-my-planning-line-grid" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="true">
 		<field name="user" />
-		<field name="projectTask" />
+		<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" />
 		<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 		<field name="tuesday" aggregate="sum"/>
 		<field name="wednesday" aggregate="sum"/>
@@ -18,7 +18,7 @@
 	
 	<grid name="project-my-team-planning-line-grid" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="true" groupBy="user">
 		<field name="user" />
-		<field name="projectTask" />
+		<field name="projectTask"  form-view="project-task-form" grid-view="project-task-grid" />
 		<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 		<field name="tuesday" aggregate="sum"/>
 		<field name="wednesday" aggregate="sum"/>

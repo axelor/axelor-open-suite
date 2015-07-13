@@ -5,10 +5,10 @@
     
     <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="name"/>
-        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"/>
-        <field name="unit"/>
-        <field name="prodProcess"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
     </grid>
 
 	<form name="bill-of-material-form" title="Bill of material"
@@ -16,16 +16,16 @@
 		onNew="action-bill-of-material-default-record">
 		<panel>
 			<field name="name"/>
-			<field name="company" widget="SuggestBox" form-view="company-form"/>
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" colSpan="3"/>
-			<field name="unit" colSpan="3"/>
-			<field name="prodProcess"/>
+			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
 		</panel>
 	  
 		<panel-tabs>
 			<panel-related field="billOfMaterialList" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
-			<panel-related field="prodRemainsList" title="Remains" colSpan="12"/>	    
+			<panel-related field="prodRemainsList" title="Remains" colSpan="12" grid-view="prod-remains-grid" form-view="prod-remains-form"/>	    
 			<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
 			<panel title="Cost">
 				<button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
@@ -39,12 +39,12 @@
     
     <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
         <field name="priority" readonlyIf="isRawMaterial"/>
-        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"/>
-        <field name="unit"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="isRawMaterial"/>
         <field name="hasNoManageStock"/>
-        <field name="prodProcess" readonlyIf="isRawMaterial"/>
+        <field name="prodProcess" readonlyIf="isRawMaterial" grid-view="prod-process-grid" form-view="prod-process-form"/>
     </grid>
 
 
@@ -52,19 +52,19 @@
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
 		onNew="action-bill-of-material-line-default-record">
 		<panel>
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"/>
+			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="isRawMaterial" colSpan="3"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
-			<field name="unit" colSpan="3"/>
+			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
 			<panel title="Sub-process configuration" hideIf="isRawMaterial" colSpan="12">
-				<field name="prodProcess"/>
+				<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
 				<field name="priority"/>
 			</panel>
 		</panel>
 		<panel-tabs hideIf="isRawMaterial">
 			<panel-related title="Bill of material" field="billOfMaterialList" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
-			<panel-related title="Remains" field="prodRemainsList"/>
+			<panel-related title="Remains" field="prodRemainsList" grid-view="prod-remains-grid" form-view="prod-remains-form"/>
 		</panel-tabs>
 	</form>
     

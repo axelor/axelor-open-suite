@@ -6,18 +6,18 @@
     
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<hilite background="danger" if="salePrice &gt; saleMinPrice"/>
-    	<field name="purchaseOrder"/>
-    	<field name="supplierPartner"/>
+    	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
+    	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="productName"/>
     	<field name="desiredDelivDate"/>
     	<field name="estimatedDelivDate"/>
         <field name="qty"/>
-        <field name="unit"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="price"/>
         <field name="exTaxTotal"/>
 	    <field name="inTaxTotal"/>
         <field name="saleMinPrice"/>
-        <field name="createdBy"/>
+        <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
         <field name="createdOn"/>
         <field name="salePrice" hidden="true"/>
     </grid>
@@ -28,7 +28,7 @@
     	<field name="desiredDelivDate"/>
     	<field name="estimatedDelivDate"/>
         <field name="qty"/>
-        <field name="unit"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="price"/>
         <field name="exTaxTotal"/>
 	    <field name="inTaxTotal"/>
@@ -43,10 +43,10 @@
 	  <panel>
 		<field name="product"
 			onChange="action-group-purchase-purchase-orderline-product-onchange"
-			domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true" />
+			domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
-	    <field name="unit"/>
+	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 	    <field name="price" onChange="action-purchase-order-line-method-compute">
 	      <hilite color="danger" if="price &lt; saleMinPrice"/>
@@ -66,7 +66,7 @@
 	  </panel>
 	  <panel-tabs>
 	    <panel title="Details">
-	      <field name="createdBy"/>
+	      <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 	      <field name="createdOn"/>
 	    </panel>
 	    <panel title="Delivery">
@@ -81,7 +81,7 @@
 	    </panel>
 	    <panel title="Suppliers requests" if-module="axelor-supplier-management">
 	      <button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
-	      <field name="supplierPartner" domain="self.isSupplier = true"/>
+	      <field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid" />
 	      <panel-related field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
 	    </panel>
 	    <panel title="Account" if-module="axelor-account" if="_config__.general.getManageInvoicedAmountByLine()">
@@ -89,8 +89,8 @@
 	    </panel>
 	    <panel-related field="invoiceSet">
 	      <field name="invoiceId"/>
-	      <field name="partner"/>
-	      <field name="paymentMode"/>
+	      <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+	      <field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 	      <field name="invoiceDate"/>
 	      <field name="dueDate"/>
 	      <field name="status"/>

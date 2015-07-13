@@ -5,7 +5,7 @@
 	
     <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sentDateT">
         <field name="sentDateT"/>
-        <field name="senderUser"/>
+        <field name="senderUser" form-view="user-form" grid-view="user-grid"/>
         <field name="subject"/>
     </grid>
     
@@ -19,7 +19,7 @@
     	<panel title="Informations" readonlyIf="statusSelect == 2 || statusSelect == 3">
             <field name="mediaTypeSelect" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
 			<field name="statusSelect"/>
-			<field name="senderUser"/>
+			<field name="senderUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="sentDateT" colSpan="4"/>
 			<panel colSpan="12" showIf="mediaTypeSelect == 2">
 			    <field name="fromEmailAddress" widget="SuggestBox" grid-view="email-address-grid" form-view="email-address-form"/>

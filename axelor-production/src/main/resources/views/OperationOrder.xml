@@ -20,10 +20,10 @@
     	<toolbar>
     		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     	</toolbar>
-    	<field name="manufOrder"/>
+    	<field name="manufOrder" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
         <field name="priority"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
-        <field name="machineProdResource"/>
+        <field name="machineProdResource" grid-view="prod-process-grid" form-view="prod-process-form"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
@@ -41,7 +41,7 @@
     <grid name="operation-order-grid" title="Operations" model="com.axelor.apps.production.db.OperationOrder" orderBy="priority">
         <field name="priority"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
-        <field name="machineProdResource"/>
+        <field name="machineProdResource" grid-view="prod-process-grid" form-view="prod-process-form"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
@@ -65,8 +65,8 @@
 		<panel>
 			<field name="operationName" required="true" readonlyIf="statusSelect == 6"/>
 			<field name="priority" colSpan="3" readonlyIf="statusSelect == 6"/>
-			<field name="manufOrder" colSpan="3" required="true" readonlyIf="statusSelect == 6" onChange="action-operation-order-name"/>
-			<field name="prodProcessLine" required="true" readonlyIf="statusSelect == 6"/>
+			<field name="manufOrder" colSpan="3" required="true" readonlyIf="statusSelect == 6" onChange="action-operation-order-name" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
+			<field name="prodProcessLine" required="true" readonlyIf="statusSelect == 6" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 			<field name="isToInvoice" colSpan="3"/>
 			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
 		</panel>
@@ -81,17 +81,17 @@
 	      </panel>
 	    </panel>
 		<panel title="Resources" colSpan="12" readonlyIf="statusSelect == 6">
-			<field name="prodResource" readonlyIf="statusSelect == 6"/>
-			<field name="machineProdResource" readonlyIf="statusSelect == 6"/>
-			<panel-related field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12"/>
+			<field name="prodResource" readonlyIf="statusSelect == 6" grid-view="prod-process-grid" form-view="prod-process-form"/>
+			<field name="machineProdResource" readonlyIf="statusSelect == 6" grid-view="prod-process-grid" form-view="prod-process-form"/>
+			<panel-related field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid" form-view="prod-human-resource-form"/>
 		</panel>
 
 		<panel name="stockMoves" title="Stock moves" colSpan="12" readonlyIf="statusSelect == 6">
 			<field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 			<panel name="consumedProductPage" title="Consumed products" colSpan="12" readonlyIf="statusSelect == 6">
-				<panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
+				<panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
 				<panel-related field="consumedStockMoveLineList" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid" colSpan="12"/>
-				<panel-related field="diffConsumeProdProductList" colSpan="12"/>
+				<panel-related field="diffConsumeProdProductList" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
 			</panel>
 		</panel>
 		<panel name="Actions" title="Actions" sidebar="true" colSpan="12" showIf="id" readonlyIf="statusSelect == 6">

@@ -3,14 +3,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
 	<grid name="leave-line-grid" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine">
-		<field name="reason" />
+		<field name="reason" grid-view="leave-reason-grid" form-view="leave-reason-form"/>
 	    <field name="quantity"/>
 	    <field name="daysToValidate"/>
 	</grid>
 
 	<form name="leave-line-form" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine">
 		<panel>
-			<field name="reason" />
+			<field name="reason" grid-view="leave-reason-grid" form-view="leave-reason-form"/>
 		    <field name="quantity" readonly="true"/>
 		    <field name="daysToValidate" readonly="true"/>
 	    </panel>

@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="leave-grid" title="Leaves" model="com.axelor.apps.hr.db.Leave">
-		 <field name="company"/>
-		 <field name="user" />
+		 <field name="company" form-view="company-form" grid-view="company-grid"/>
+		 <field name="user" form-view="user-form" grid-view="user-grid"/>
 		 <field name="requestDate" />
 		 <field name="dateFrom" />
 		 <field name="startOnSelect" />
@@ -17,8 +17,8 @@
 		 <toolbar>
 			<button name="showSubordinateLeaveToValidate" title="Show leaves to be validated by my subordinates" onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
 		 </toolbar>
-		 <field name="company"/>
-		 <field name="user" />
+		 <field name="company" form-view="company-form" grid-view="company-grid"/>
+		 <field name="user" form-view="user-form" grid-view="user-grid"/>
 		 <field name="requestDate" />
 		 <field name="dateFrom" onChange="action-leave-validate-dates"/>
 		 <field name="startOnSelect" />
@@ -40,21 +40,21 @@
 	    </panel>
 		<panel>
 			<field name="statusSelect" colSpan="12" widget="NavSelect" />
-			<field name="company"/>
-			<field name="user" />
+			<field name="company" form-view="company-form" grid-view="company-grid"/>
+			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="requestDate" />
 			<field name="dateFrom" onChange="action-leave-validate-dates,action-leave-methode-compute-duration"/>
 			<field name="startOnSelect" onChange="action-leave-validate-dates,action-leave-methode-compute-duration"/>
 			<field name="dateTo" onChange="action-leave-validate-dates,action-leave-methode-compute-duration"/>
 			<field name="endOnSelect" onChange="action-leave-validate-dates,action-leave-methode-compute-duration"/>
 			<field name="duration" onChange="action-leave-methode-duration"/>
-			<field name="reason" canNew="true" required="true" onChange="action-leave-attrs-select"/>
+			<field name="reason" canNew="true" required="true" onChange="action-leave-attrs-select" form-view="leave-reason-form" grid-view="leave-reason-grid"/>
 			<field name="injectConsumeSelect" hidden="true"/>
 			<field name="comments" colSpan="12" />
 		</panel>
 		<panel>
-			<field name="validatedBy"/>
-			<field name="refusedBy"/>
+			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>
+			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate"/>
 			<field name="refusalDate"/>
 		</panel>

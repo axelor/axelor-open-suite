@@ -9,10 +9,10 @@
 	    </toolbar>
 	    <field name="code"/>
 	    <field name="name" width="400"/>
-	    <field name="productFamily"/>
+	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
 	    <field name="productTypeSelect" width="100"/>
 	    <field name="saleSupplySelect"/>
-	    <field name="unit" width="70"/>
+	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
 	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
 
@@ -31,7 +31,7 @@
 					<field name="expense" hidden="true"/>
 				</panel>
 				<panel title="Categorization" colSpan="6" colWidths="30%,70%">
-					<field name="productFamily" colSpan="12"/>
+					<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
 				</panel>
 			</panel>
 	    </panel>
@@ -41,7 +41,7 @@
 				    <field name="sellable" colSpan="12"/>
 					<field name="salePrice" colSpan="12" hideIf="!sellable"/>
 					<field name="saleCurrency" colSpan="12" hideIf="!sellable"/>
-					<field name="unit" colSpan="12" hideIf="!sellable"/>
+					<field name="unit" colSpan="12" hideIf="!sellable" form-view="unit-form" grid-view="unit-grid"/>
 				</panel>
 				<panel colSpan="6" title="Description">
 					<field name="description" showTitle="false" colSpan="12" widget="html" hideIf="!sellable"/>
@@ -59,7 +59,7 @@
 	            	<field name="perishableNbrOfMonths" showIf="isPerishable"/>
         	 	</panel>
         	 	<panel colSpan="12" if-module="axelor-stock">
-		            <field name="trackingNumberConfiguration" canNew="true"/>
+		            <field name="trackingNumberConfiguration" canNew="true" grid-view="tracking-number-configuration-grid" form-view="tracking-number-configuration-form"/>
 	            </panel>
 	        </panel>
 	  	</panel-tabs>

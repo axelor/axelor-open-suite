@@ -44,8 +44,8 @@
 
 	<action-view name="admin.root.batch.purchase" title="Purchase batches"
 		model="com.axelor.apps.purchase.db.PurchaseBatch" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="purchase-batch-grid"/>
+		<view type="form" name="purchase-batch-form"/>
 	</action-view>
 	
 	
@@ -54,8 +54,8 @@
 		
 	<action-view name="admin.root.conf.purchase.config" title="Purchase configurations"
 		model="com.axelor.apps.purchase.db.PurchaseConfig" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="purchase-config-grid" />
+		<view type="form" name="purchase-config-form" />
 	</action-view>
 
 
@@ -90,8 +90,7 @@
 	<menuitem name="menu-purchase-buyer-dashboard-sample" parent="menu-dashboards-sample" order="-190"
 		title="Purchase Buyer Db"  action="purchase.buyer.dashboard.view.sample" />	
 
-	<action-view name="purchase.buyer.dashboard.view.sample" title="Purchase Buyer Dashboard"
-		>
+	<action-view name="purchase.buyer.dashboard.view.sample" title="Purchase Buyer Dashboard">
 		<view type="dashboard" name="purchase.buyer.dashboard.sample" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
@@ -100,16 +99,14 @@
 	<menuitem name="menu-purchase-manager-dashboard-sample" parent="menu-dashboards-sample" order="-180"
 		title="Purchase Manager Db"  action="purchase.manager.dashboard.view.sample" />	
 
-	<action-view name="purchase.manager.dashboard.view.sample" title="Purchase Manager Dashboard"
-		>
+	<action-view name="purchase.manager.dashboard.view.sample" title="Purchase Manager Dashboard">
 		<view type="dashboard" name="purchase.manager.dashboard.sample" />
 	</action-view>
 	
 	<menuitem name="menu-purchase-order-dashboard-sample" parent="menu-dashboards-sample"  order="-170"
 		title="Purchase Order Db"  action="purchase.order.dashboard.view.sample" />	
 		
-	<action-view name="purchase.order.dashboard.view.sample" title="Purchase Order Dashboard"
-		>
+	<action-view name="purchase.order.dashboard.view.sample" title="Purchase Order Dashboard">
 		<view type="dashboard" name="purchase.order.dashboard.sample" />	    
 	</action-view>
 	
@@ -119,8 +116,7 @@
 	<menuitem name="menu-purchase-dashboard-1" parent="menu-purchase-dashboard"  
 		title="Purchases Db 1"  action="purchase.dashboard.1" />	
 		
-	<action-view name="purchase.dashboard.1" title="Purchases Db 1"
-		>
+	<action-view name="purchase.dashboard.1" title="Purchases Db 1">
 		<view type="dashboard" name="purchase.dashboard.1" />	 
 		<context name="_user_id" expr="eval:__user__.id"/>   
 	</action-view>
@@ -128,16 +124,14 @@
 	<menuitem name="menu-purchase-dashboard-2" parent="menu-purchase-dashboard"  
 		title="Purchases Db 2"  action="purchase.dashboard.2" />	
 		
-	<action-view name="purchase.dashboard.2" title="Purchases Db 2"
-		>
+	<action-view name="purchase.dashboard.2" title="Purchases Db 2">
 		<view type="dashboard" name="purchase.dashboard.2" />	    
 	</action-view>
 	
 	<menuitem name="menu-purchase-dashboard-3" parent="menu-purchase-dashboard"  
 		title="Purchases Db 3"  action="purchase.purchase.dashboard.3" />	
 		
-	<action-view name="purchase.purchase.dashboard.3" title="Purchases Db 3"
-		>
+	<action-view name="purchase.purchase.dashboard.3" title="Purchases Db 3">
 		<view type="dashboard" name="purchase.dashboard.3" />	    
 	</action-view>
 	

@@ -72,8 +72,8 @@
   <panel title="Information">
     <field name="name"/>
     <field name="code"/>
-    <field name="user" showIf="team == null"/>
-    <field name="team" showIf="user == null"/>
+    <field name="user" showIf="team == null" form-view="user-form" grid-view="user-grid"/>
+    <field name="team" showIf="user == null" form-view="team-form" grid-view="team-grid"/>
   </panel>
   <panel title="Period">
     <field name="periodTypeSelect"/>

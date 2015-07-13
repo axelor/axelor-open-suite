@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="purchase-config-grid" title="Purchase configurations" model="com.axelor.apps.purchase.db.PurchaseConfig">
-        <field name="company"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
 
     <form name="purchase-config-form" title="Purchase configuration" model="com.axelor.apps.purchase.db.PurchaseConfig" onNew="action-purchase-config-record-default">
 		<panel >
-		  <field name="company" form-view="company-form" colSpan="4"/>
+		  <field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 		  <field name="purchaseOrderInAti"/>
 		</panel>
 		<panel title="Invoicing Information">

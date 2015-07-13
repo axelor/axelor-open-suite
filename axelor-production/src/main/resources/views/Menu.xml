@@ -115,8 +115,8 @@
 		
 	<action-view name="admin.root.conf.production.config" title="Production configurations"
 		model="com.axelor.apps.production.db.ProductionConfig" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="production-config-grid"/>
+		<view type="form" name="production-config-form"/>
 	</action-view>
 	
 	<menuitem name="menu-manufacturing-dashboard-sample" parent="menu-dashboards-sample" order="-155"

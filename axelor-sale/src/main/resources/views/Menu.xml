@@ -112,8 +112,8 @@
 
 	<action-view name="admin.root.batch.sale" title="Sale batches"
 		model="com.axelor.apps.sale.db.SaleBatch" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="sale-batch-grid" />
+		<view type="form" name="sale-batch-form"/>
 	</action-view>
 	
 	
@@ -122,8 +122,8 @@
 		
 	<action-view name="admin.root.conf.sale.config" title="Sale configurations"
 		model="com.axelor.apps.sale.db.SaleConfig" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="sale-config-grid" />
+		<view type="form" name="sale-config-form"/>
 	</action-view>
 
 

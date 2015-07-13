@@ -6,8 +6,8 @@
     <grid name="target-configuration-grid" title="Target configurations" model="com.axelor.apps.crm.db.TargetConfiguration">
         <field name="name"/>
         <field name="code"/>
-        <field name="user" />
-       	<field name="team"/>
+        <field name="user" form-view="user-form" grid-view="user-grid" />
+       	<field name="team" form-view="team-form" grid-view="team-grid"/>
     </grid>
     
 <!--     <form name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration"  > -->
@@ -58,8 +58,8 @@
     <field name="code"/>
   </panel>
   <panel title="Concerns">
-    <field name="user" showIf="team == null"/>
-    <field name="team" showIf="user == null"/>
+    <field name="user" showIf="team == null" form-view="user-form" grid-view="user-grid" />
+    <field name="team" showIf="user == null" form-view="team-form" grid-view="team-grid"/>
   </panel>
   <panel title="Period">
     <field name="periodTypeSelect"/>

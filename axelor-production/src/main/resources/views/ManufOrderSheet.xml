@@ -23,8 +23,8 @@
     
     <form name="manuf-order-sheet-line-form" model="com.axelor.apps.production.db.ManufOrderSheetLine" title="ManufOrderSheetLine">
 		<panel>
-			<field name="operationOrder"/>
-			<field name="product"/>
+			<field name="operationOrder" form-view="operation-order-form" grid-view="operation-order-grid"/>
+			<field name="product" form-view="product-form"  grid-view="product-grid"/>
 			<field name="diameter"/>
 			<field name="accordingSelect"/>
 			<field name="archived"/>
@@ -32,8 +32,8 @@
     </form>
     
 	<grid name="manuf-order-sheet-line-grid" title="ManufOrderSheetLine" model="com.axelor.apps.production.db.ManufOrderSheetLine" >
-	  <field name="operationOrder"/>
-	  <field name="product"/>
+	  <field name="operationOrder" form-view="operation-order-form" grid-view="operation-order-grid"/>
+	  <field name="product" form-view="product-form"  grid-view="product-grid"/>
 	  <field name="diameter"/>
 	  <field name="accordingSelect"/>
 	  <field name="archived"/>

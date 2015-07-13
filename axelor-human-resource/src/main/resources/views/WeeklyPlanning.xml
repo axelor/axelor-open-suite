@@ -12,7 +12,7 @@
 		<panel>
 			<field name="name"/>
 		</panel>
-	    <panel-related field="weekDays" editable="true"/>
+	    <panel-related field="weekDays" editable="true" grid-view="day-planning-grid" form-view="day-planning-form"/>
 	</form>
 	
 	<grid name="day-planning-grid" title="Day" model="com.axelor.apps.hr.db.DayPlanning" editable="true" orderBy="id">

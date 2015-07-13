@@ -6,7 +6,7 @@
     <grid name="machine-grid" title="Machines" model="com.axelor.apps.production.db.Machine">
         <field name="name"/>
 		<field name="serialNumber"/>
-        <field name="location"/>
+        <field name="location" grid-view="location-grid" form-view="location-form"/>
     </grid>
     
 	<form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine">
@@ -14,7 +14,7 @@
 	    <field name="name"/>
 	    <field name="serialNumber"/>
 		<field name="brand"/>
-	    <field name="location" required="true"/>
+	    <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
 	    <field name="planning"/>
 	    <field name="startingDuration" colSpan="3"/>
 	    <field name="setupDuration" colSpan="3"/>
