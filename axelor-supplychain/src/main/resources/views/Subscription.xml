@@ -10,8 +10,7 @@
 	    <field name="quantity"/>
 	    <field name="unitPrice"/>
 	    <field name="invoiced"/>
-	    <button name="invoiceSubscription" onClick="save,com.axelor.apps.supplychain.web.SubscriptionController:generateInvoice" icon="fa-credit-card" title="Invoice" readonlyIf="invoiced == true"/>
-	</grid>
+	 </grid>
 	
 	<form model="com.axelor.apps.supplychain.db.Subscription" title="Subscription" name="subscription-form">
 		<field name="invoicingDate"/>
@@ -20,7 +19,6 @@
 	    <field name="quantity"/>
 	    <field name="unitPrice"/>
 	    <field name="invoiced" readonly="true"/>
-	    <button name="invoiceSubscription" onClick="save,com.axelor.apps.supplychain.web.SubscriptionController:generateInvoice" icon="fa-credit-card" title="Invoice" readonlyIf="invoiced == true"/>
-	</form>
+	 </form>
 	
 </object-views>

@@ -238,6 +238,7 @@ public class SaleOrderController{
 			if(listInvoiceId.isEmpty()){
 				throw new AxelorException(I18n.get("No sale order selected or no subscription to invoice"), IException.CONFIGURATION_ERROR);
 			}
+			response.setReload(true);
 			if(listInvoiceId.size() == 1){
 				response.setView(ActionView
 			            .define(I18n.get("Invoice Generated"))
@@ -264,6 +265,7 @@ public class SaleOrderController{
 		if(invoice == null){
 			throw new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
 		}
+		response.setReload(true);
 		response.setView(ActionView
 	            .define(I18n.get("Invoice Generated"))
 	            .model(Invoice.class.getName())

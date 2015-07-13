@@ -11,7 +11,7 @@
 			<field name="toSubDate" readonly="true" colSpan="3"/>
 			<field name="invoicingTypeSelect"/>
 			<button colSpan="3" name="generateSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-group-button-generate-subscriptions"/>
-			<button colSpan="3" name="generateAllSubscriptions" title="Generate Subscriptions for each Subscriptable product of this order with these parameters" onClick="action-supplychain-validate-generate-all-subscriptions,save,com.axelor.apps.supplychain.web.SubscriptionController:generateAllSubscriptions"/>
+			<button name="invoiceSubscription" title="Generate invoice for subscriptions" onClick="save,com.axelor.apps.supplychain.web.SubscriptionController:generateInvoice" readonlyIf="id == null" colSpan="3"/>
 			<field name="subscriptionList" colSpan="12"/>
 		</panel>
 	</form>
@@ -26,7 +26,7 @@
 	</action-record>
 	
 	<action-validate name="action-supplychain-validate-generate-all-subscriptions">
-		<alert message="Some order lines contain some subscriptions, subscriptions not invoiced will be deleted, do you want to continue?" if="!__repo__.of(Subscription).all().filter('self.saleOrderLine != null').fetch().isEmpty()"/>
+		<alert message="Some order lines already contain subscriptions, subscriptions not invoiced will be deleted, do you want to continue?" if="!__repo__.of(Subscription).all().filter('self.saleOrderLine != null AND self.saleOrderLine.saleOrder.id = ?1',id).fetch().isEmpty()"/>
 	</action-validate>
 	
 </object-views>	

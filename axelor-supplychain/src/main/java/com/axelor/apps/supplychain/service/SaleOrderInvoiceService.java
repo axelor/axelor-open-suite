@@ -60,6 +60,9 @@ public interface SaleOrderInvoiceService  extends Repository<SaleOrder>  {
 	public Invoice generateSubscriptionInvoice(Subscription subscription,List<SaleOrderLine> saleOrderLineList,SaleOrder saleOrder) throws AxelorException;
 
 	public void fillInLines(Invoice invoice);
+
+	@Transactional
+	public Invoice generateSubcriptionsForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
 }
 
 

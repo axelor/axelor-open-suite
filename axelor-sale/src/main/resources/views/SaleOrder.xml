@@ -135,6 +135,15 @@
 	          <button name="generateProject" title="Generate Project" if=" !__config__.general.getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
 	          <button name="generateTasks" title="Generate Tasks" if="__config__.general.getProjectTaskSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-tasks,action-sale-order-attrs-hide-generate-tasks"/>
        	</panel>
+       	<panel name="generateSubscriptions" title="Generate Subscriptions" if-module="axelor-supplychain" showIf="subscription">
+			<field name="periodicity" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
+			<field name="fromSubDate" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
+			<field name="periodNumber" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
+			<field name="toSubDate" readonly="true" colSpan="3"/>
+			<field name="invoicingTypeSelect"/>
+			<button colSpan="3" name="generateAllSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-validate-generate-all-subscriptions,save,com.axelor.apps.supplychain.web.SubscriptionController:generateAllSubscriptions"/>
+			<button name="generateInvoiceSubscriptions" title="Generate invoice for subscriptions" colSpan="3" hideIf="subcription" onClick="save,action-sale-order-method-invoice-subscriptions-sale-order" if-module="axelor-supplychain"/>
+		</panel>
 
 	  </panel-tabs>
 	  
@@ -146,8 +155,7 @@
 	    <button name="generateInvoice" title="Generate invoice" if="__config__.general.getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.general.getPurchaseOrderManagement() &amp;&amp; !__config__.general.getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" hidden="true"/>
 	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.general.getProductionOrderManagement() &amp;&amp; !__config__.general.getProductionOrderGenerationAuto()" showIf="statusSelect == 3" onClick="action-supplychain-sale-order-create-production-order" hidden="true"/>
-		<button name="generateInvoiceSubscriptions" title="Generate invoice for subscriptions" colSpan="12" hideIf="subcription" onClick="save,action-sale-order-method-invoice-subscriptions-sale-order" if-module="axelor-supplychain"/>
-	    <spacer/>
+		<spacer/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
 	  </panel>
 	  
