@@ -13,7 +13,7 @@
     <form name="purchase-order-supplier-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder"   >
     	<panel colSpan="12">
 			<field name="isPurchaseParent"/>
-			<field name="parentPurchaseOrder" hideIf="isPurchaseParent"/>
+			<field name="parentPurchaseOrder" hideIf="isPurchaseParent" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
 			<button name="generateSuppliersPurchaseOrder" title="Generate suppliers purchase orders" onClick="save,action-purchase-order-method-generate-suppliers-purchase-order,save"/>
 			<button name="showSuppliersPurchaseOrder" title="Show suppliers purchase orders" onClick="action-purchase-order-view-show-suppliers-purchase-order"/>
 			<button name="generatePurchaseOrderSupplierLine" title="Generate all suppliers requests" onClick="save,action-purchase-order-method-generate-purchase-order-supplier-line,save"/>

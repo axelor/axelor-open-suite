@@ -12,9 +12,9 @@
 	        </menu>
 	    </menubar>
         <field name="saleOrderSeq"/>
-        <field name="company"/>
-        <field name="currency"/>
-        <field name="clientPartner"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+        <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
         <field name="inTaxTotal"/>
@@ -28,9 +28,9 @@
 	    	<button name="invoiceSelectedSaleOrders" title="Invoice selected sale orders" onClick="action-sale-order-method-invoice-subscriptions"/>
 	    </toolbar>
         <field name="saleOrderSeq"/>
-        <field name="company"/>
-        <field name="currency"/>
-        <field name="clientPartner"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+        <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
         <field name="inTaxTotal"/>
@@ -81,8 +81,8 @@
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
-	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form"/>
-	    <field name="currency"/>
+	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid"/>
+	    <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 	    <field name="versionNumber" if="__config__.general.getManageSaleOrderVersion()"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
 	    <field name="subscription" hidden="true" if-module="axelor-supplychain"/>
@@ -91,34 +91,34 @@
 	  <panel title="Customer information">
 	      <field name="clientPartner" onChange="action-sale-order-record-partner,action-partner-attrs-hide-contact-partner,action-sale-order-validate-information" domain="self.isContact = false and self.isCustomer = true" form-view="partner-form" grid-view="partner-grid"/>
    	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	      <field name="mainInvoicingAddress" canNew="true"/>
-	      <field name="deliveryAddress" canNew="true"/>
-	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount"/>
+	      <field name="mainInvoicingAddress" canNew="true" form-view="address-form" grid-view="address-grid"/>
+	      <field name="deliveryAddress" canNew="true" form-view="address-form" grid-view="address-grid"/>
+	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount" form-view="price-list-form"  grid-view="price-list-grid"/>
 	      <field name="hideDiscount"/>
       	  <field name="externalReference"/>
       </panel>
 	  <panel-tabs>
 	    <panel title="Content">
-	    	<panel-related field="saleOrderLineList" form-view="sale-order-line-form" colSpan="12" onChange="action-sale-order-method-compute"/>
-	    	<panel-related field="saleOrderLineTaxList" colSpan="12"/>
+	    	<panel-related field="saleOrderLineList" form-view="sale-order-line-form" colSpan="12" onChange="action-sale-order-method-compute" grid-view="sale-order-line-grid"/>
+	    	<panel-related field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    </panel>
 	    <panel title="Other informations" showTitle="false">
 	      <panel title="Sales follow-up" colSpan="12">
-	        <field name="salemanUser"/>
-	        <field name="team" onSelect="action-sale-order-domain-on-team"/>
+	        <field name="salemanUser" grid-view="user-grid" form-view="user-form"/>
+	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
 	      </panel>
 	      <panel title="Financial terms" colSpan="12">
-	        <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-supplychain"/>
-	        <field name="paymentCondition" if-module="axelor-supplychain"/>
+	        <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-supplychain" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+	        <field name="paymentCondition" if-module="axelor-supplychain" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	      </panel>
 	      <panel title="Marketing" colSpan="12">
-	        <field name="source"/>
+	        <field name="source" form-view="source-form" grid-view="source-grid"/>
 	      </panel>
 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
 	        <field name="invoicingMomentSelect" showIf="invoicingTypeSelect == 2"/>
 	      </panel>
 	      <panel title="Stock location" if-module="axelor-supplychain">
-   		      <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
+   		      <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid"/>
 	      </panel>
        	  <panel title="Specific settings" colSpan="12">
        	  	  <field name="isToPrintLineSubTotal"/>
@@ -128,7 +128,7 @@
 	      </panel>
 	    </panel>
 	    
-	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain"/> 
+	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" grid-view="sale-order-schedule-line-grid" form-view="sale-order-schedule-line-form"/> 
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing"/>
 	    <panel name="projectPanel" if="__config__.general.getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.typeSelect = 'project' AND self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
@@ -161,7 +161,7 @@
 	  
 	  <panel sidebar="true" title="Info.">
 	    <field name="creationDate" readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
-	    <field name="confirmedByUser" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
+	    <field name="confirmedByUser" readonly="true" colSpan="6" showIf="statusSelect == 3" form-view="user-form" grid-view="user-grid"/>
 	    <field name="confirmationDate" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
@@ -197,9 +197,9 @@
 	
 	<grid name="sale-order-template-grid" title="Templates" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <field name="saleOrderSeq"/>
-        <field name="company"/>
-        <field name="currency"/>
-        <field name="clientPartner"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+        <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
         <field name="inTaxTotal"/>
@@ -220,43 +220,43 @@
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
-	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form"/>
-	    <field name="currency"/>
-	    <field name="templateUser"/>
+	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid"/>
+	    <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+	    <field name="templateUser" form-view="user-form" grid-view="user-grid"/>
 	  </panel>
 	  
 	  <panel title="Customer information">
 	      <field name="clientPartner" onChange="action-sale-order-record-partner,action-partner-attrs-hide-contact-partner,action-sale-order-validate-information" domain="self.isContact = false and self.isCustomer = true" form-view="partner-form" grid-view="partner-grid"/>
    	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	      <field name="mainInvoicingAddress" canNew="true"/>
-	      <field name="deliveryAddress" canNew="true"/>
-	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount"/>
+	      <field name="mainInvoicingAddress" canNew="true" form-view="address-form" grid-view="address-grid"/>
+	      <field name="deliveryAddress" canNew="true" form-view="address-form" grid-view="address-grid"/>
+	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid"/>
 	      <field name="hideDiscount"/>
       	  <field name="externalReference"/>
       </panel>
 	  <panel-tabs>
 	    <panel title="Content">
-	    	<panel-related field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute"/>
-	    	<panel-related field="saleOrderLineTaxList" colSpan="12"/>
+	    	<panel-related field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
+	    	<panel-related field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    </panel>
 	    <panel title="Other informations" showTitle="false">
 	      <panel title="Sales follow-up" colSpan="12">
-	        <field name="salemanUser"/>
-	        <field name="team" onSelect="action-sale-order-domain-on-team"/>
+	        <field name="salemanUser" form-view="user-form" grid-view="user-grid"/>
+	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
 	      </panel>
 	      <panel title="Financial terms" colSpan="12">
-	        <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-supplychain"/>
-	        <field name="paymentCondition" if-module="axelor-supplychain"/>
+	        <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-supplychain" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+	        <field name="paymentCondition" if-module="axelor-supplychain" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	      </panel>
 	      <panel title="Marketing" colSpan="12">
-	        <field name="source"/>
+	        <field name="source" form-view="source-form" grid-view="source-grid"/>
 	      </panel>
 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
 	      	<field name="invoicingTypeSelect"/>
 	        <field name="invoicingMomentSelect" showIf="invoicingTypeSelect == 2"/>
 	      </panel>
 	      <panel title="Stock location" if-module="axelor-supplychain">
-   		      <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
+   		      <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid"/>
 	      </panel>
        	  <panel title="Specific settings" colSpan="12">
        	  	  <field name="isToPrintLineSubTotal"/>
@@ -266,7 +266,7 @@
 	      </panel>        
 	    </panel>
 	    
-	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain"/>          
+	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" form-view="sale-order-schedule-line-form" grid-view="sale-order-schedule-line-grid"/>          
 	    
 	    <panel title="Subscription" showIf="invoicingTypeSelect == 6" showTitle="false" if-module="axelor-supplychain">
 	      <panel title="Subscription dates" colSpan="12">
@@ -292,7 +292,7 @@
 	  
 	  <panel sidebar="true" title="Info.">
 	    <field name="creationDate"  readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
-	    <field name="confirmedByUser" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
+	    <field name="confirmedByUser" readonly="true" colSpan="6" showIf="statusSelect == 3" form-view="user-form" grid-view="user-grid"/>
 	    <field name="confirmationDate" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
@@ -324,9 +324,9 @@
 	
 	<grid name="sale-order-grid-client" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <field name="saleOrderSeq"/>
-        <field name="company"/>
-        <field name="currency"/>
-        <field name="clientPartner"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+        <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
         <field name="inTaxTotal"/>
@@ -344,16 +344,16 @@
 	  </toolbar>
 	  <panel>
 	    <field name="saleOrderSeq" css="highlight"/>
-	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form"/>
+	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid"/>
 	    <field name="externalReference"/>
-	    <field name="currency"/>
+	    <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 	  </panel>
 	  <panel-tabs>
 	    <panel title="Customer information" showTitle="false">
 	      <field name="clientPartner" onChange="action-sale-order-record-partner,action-partner-attrs-hide-contact-partner" domain="self.isContact = 'false' and self.isCustomer = true" form-view="partner-form" grid-view="partner-grid"/>
-	      <field name="mainInvoicingAddress"/>
+	      <field name="mainInvoicingAddress" form-view="address-form" grid-view="address-grid"/>
 	      <field name="contactPartner" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	      <field name="deliveryAddress"/>      
+	      <field name="deliveryAddress" form-view="address-form" grid-view="address-grid"/>      
 	      <panel colSpan="8">
 	        <field name="confirmationDate" readonly="true"/>
 	        <field name="creationDate" readonly="true"/>
@@ -363,7 +363,7 @@
 	        <field name="endOfValidityDate" readonly="true">
 	    		<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    	</field>
-	        <field name="salemanUser" colSpan="10"/>
+	        <field name="salemanUser" colSpan="10" form-view="user-form" grid-view="user-grid"/>
 	        <field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	      </panel>      
 	      <panel readonly="true"  css="order-subtotal" colSpan="4">     
@@ -383,8 +383,8 @@
 	        </field>
 	      </panel>
 	    </panel>    
-	    <panel-related field="saleOrderLineList" showTitle="false"/>
-	    <panel-related field="saleOrderLineTaxList" showTitle="false"/>
+	    <panel-related field="saleOrderLineList" showTitle="false" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
+	    <panel-related field="saleOrderLineTaxList" showTitle="false" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing"/>      
 	  </panel-tabs>
 	</form>

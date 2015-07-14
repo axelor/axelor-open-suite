@@ -88,7 +88,7 @@
 				</panel>
 				<panel title="Invoicing" readonlyIf="statusSelect == 4" colSpan="6">
 					<field name="invoicingTypeSelect" if-module="axelor-account"/>
-					<field name="invoice" if-module="axelor-account" form-view="invoice-grid" grid-view="invoice-grid"/>
+					<field name="invoice" if-module="axelor-account" form-view="invoice-form" grid-view="invoice-grid"/>
 				</panel>
 			</panel>
 			<panel title="Notes">

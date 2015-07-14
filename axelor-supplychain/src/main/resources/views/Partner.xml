@@ -12,7 +12,7 @@
 	</form>
 	
 	<form name="incl-customer-credit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >	
-	     <panel-related  field="customerCreditLineList" colSpan="12" />
+	     <panel-related  field="customerCreditLineList" colSpan="12" form-view="customer-credit-line-form" grid-view="customer-credit-line-grid" />
 	</form>
 	
     <action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">

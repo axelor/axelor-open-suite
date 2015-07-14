@@ -3,15 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-    <grid name="customer-credit-line" title="Customer Credits" model="com.axelor.apps.supplychain.db.CustomerCreditLine">
-        <field name="company"/>
+    <grid name="customer-credit-line-grid" title="Customer Credits" model="com.axelor.apps.supplychain.db.CustomerCreditLine">
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="acceptedCredit"/>
         <field name="usedCredit"/>
     </grid>
     
-    <form name="customer-credit-form" title="Customer Credits" model="com.axelor.apps.supplychain.db.CustomerCreditLine">
+    <form name="customer-credit-line-form" title="Customer Credits" model="com.axelor.apps.supplychain.db.CustomerCreditLine">
         <panel>
-	        <field name="company" onChange="action-account-method-compute-used-credit"/>
+	        <field name="company" onChange="action-account-method-compute-used-credit" form-view="company-form" grid-view="company-grid"/>
 	        <field name="acceptedCredit"/>
 	        <field name="usedCredit"/>
         </panel>
