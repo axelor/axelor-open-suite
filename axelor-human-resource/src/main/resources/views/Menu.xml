@@ -58,28 +58,28 @@
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="historicExpense"/>
 	</action-method>
 	
-	<menuitem name="leave-root" parent="hr-root"
-    	title="Leaves"/>
+	<menuitem name="leave-request-root" parent="hr-root"
+    	title="Leave Requests"/>
 	
-	<menuitem name="edit-leave" parent="leave-root" title="Complete my leave" action="edit.leave"/>
+	<menuitem name="edit-leave-request" parent="leave-request-root" title="Complete my leave request" action="edit.leave.request"/>
 	
-	<action-method name="edit.leave">
+	<action-method name="edit.leave.request">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="editLeave"/>
 	</action-method>
 	
-	<menuitem name="all-leave" parent="leave-root" title="All my Leaves" action="leave.all"/>
+	<menuitem name="all-leave-request" parent="leave-request-root" title="All my Leave Requests" action="leave.all"/>
 	
 	<action-method name="leave.all">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="allLeave"/>
 	</action-method>
 	
-	<menuitem name="validate-leave" groups="MNGT,admins" parent="leave-root" title="Leaves to Validate" action="leave.validate"/>
+	<menuitem name="validate-leave-request" groups="MNGT,admins" parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate"/>
 	
 	<action-method name="leave.validate">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="validateLeave"/>
 	</action-method>
 	
-	<menuitem name="historic-leave" groups="MNGT,admins" parent="leave-root" title="Historic colleague Leaves" action="leave.historic"/>
+	<menuitem name="historic-leave-request" groups="MNGT,admins" parent="leave-request-root" title="Historic colleague Leave Requests" action="leave.historic"/>
 	
 	<action-method name="leave.historic">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
