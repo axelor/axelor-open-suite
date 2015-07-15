@@ -56,7 +56,7 @@
 		   	</panel>
 		   	<panel title="Invoicing follow-up" if-module="axelor-supplychain">
 		   		<field name="invoicingDate"/>
-		  		<field name="amountInvoiced" if="eval: __config__.general.getManageInvoicedAmountByLine()"/>
+		  		<field name="amountInvoiced" if="__config__.general.getManageInvoicedAmountByLine()"/>
 		   	</panel>
 			<panel-related field="invoiceSet" form-view="invoice-form" grid-view="invoice-grid"/>
 			<panel name="projectTaskPanel" if="__config__.general.getProjectTaskSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
