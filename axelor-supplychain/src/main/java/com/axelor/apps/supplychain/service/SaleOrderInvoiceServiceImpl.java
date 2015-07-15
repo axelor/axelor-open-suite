@@ -247,9 +247,8 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		String query;
 		query = "SELECT SUM(self.companyExTaxTotal)"
 				+ " FROM InvoiceLine as self"
-				+ " WHERE ( (self.saleOrderLine.id IN (SELECT id FROM SaleOrderLine WHERE saleOrder.id = :saleOrderId)"
-							+ " AND self.invoice.saleOrder IS NULL)"
-						+ " OR self.invoice.saleOrder.id = :saleOrderId )"
+				+ " WHERE ( self.saleOrderLine.id IN (SELECT id FROM SaleOrderLine WHERE saleOrder.id = :saleOrderId)"
+						+ " OR self.saleOrder.id = :saleOrderId )"
 					+ " AND self.invoice.statusSelect = :statusVentilated";
 		if (currentInvoiceId != null){
 			if (includeInvoice){
