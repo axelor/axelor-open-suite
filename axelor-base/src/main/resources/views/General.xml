@@ -80,7 +80,7 @@
 	</form>
 	
 	<form name="general-settings-form" title="General Settings" model="com.axelor.apps.base.db.General"  >
-		<panel-tabs>
+		<panel-tabs colSpan="12">
 	    	<panel title="Invoice configuration">
 				<field name="manageInvoicedAmountByLine" if-module="axelor-supplychain"/>
 			</panel>
@@ -88,6 +88,7 @@
 			<panel title="Sale order configuration">
 				<field name="manageSaleOrderVersion" if-module="axelor-sale"/>
 				<field name="generateInvoiceFromSaleOrder" if-module="axelor-sale"/>
+				<field name="allowSusbcriptionSaleOrder" if-module="axelor-supplychain"/>
 			</panel>
 			
 			<panel title="Purchase order configuration">
