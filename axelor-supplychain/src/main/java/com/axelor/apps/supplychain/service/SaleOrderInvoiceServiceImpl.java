@@ -186,7 +186,7 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
 			//Lines of subscription type are invoiced directly from sale order line or from the subscription batch
-			if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())){
+			if (!ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())){
 				invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
 
 				saleOrderLine.setInvoiced(true);

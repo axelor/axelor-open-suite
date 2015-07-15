@@ -45,7 +45,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
 			//Lines of subscription type are invoiced directly from purchase order line or from the subscription batch
-			if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(purchaseOrderLine.getProduct().getProductTypeSelect())){
+			if (!ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(purchaseOrderLine.getProduct().getProductTypeSelect())){
 				invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
 				invoiceLineList.get(invoiceLineList.size()-1).setProject(purchaseOrderLine.getProjectTask());
 				purchaseOrderLine.setInvoiced(true);
