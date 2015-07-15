@@ -36,20 +36,21 @@ import com.google.inject.Inject;
 
 public class CurrencyService extends CurrencyRepository{
 
-	@Inject
 	protected GeneralService generalService;
 
 	private LocalDate today;
 
 	@Inject
-	public CurrencyService() {
+	public CurrencyService(GeneralService generalService) {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.generalService = generalService;
+		this.today = generalService.getTodayDate();
 	}
 
 
 	public CurrencyService(LocalDate today) {
 
+		this.generalService = Beans.get(GeneralService.class);
 		this.today = today;
 	}
 
