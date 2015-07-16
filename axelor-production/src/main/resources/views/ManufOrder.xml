@@ -8,10 +8,10 @@
     		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     	</toolbar>
         <field name="manufOrderSeq"/>
-        <field name="company"/>
-        <field name="product"/>
-        <field name="billOfMaterial"/>
-        <field name="prodProcess"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
+        <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
@@ -31,10 +31,10 @@
     	</toolbar>
     	<field name="productionOrder"/>
         <field name="manufOrderSeq"/>
-        <field name="company"/>
-        <field name="product"/>
-        <field name="billOfMaterial"/>
-        <field name="prodProcess"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
+        <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
@@ -59,11 +59,11 @@
 		<panel>
 			<field name="manufOrderSeq" readonly="true" css="bold"/>
 			<field name="priority" readonlyIf="statusSelect == 6" colSpan="3"/>
-			<field name="company" readonlyIf="statusSelect &gt; 1" colSpan="3"/>
+			<field name="company" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.isRawMaterial = false" onChange="action-manuf-order-on-change-bill-of-material"/>
-			<field name="prodProcess" readonlyIf="statusSelect &gt; 1"/>
-			<field name="product" required="true" readonlyIf="statusSelect &gt; 1"/>
+			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.isRawMaterial = false" onChange="action-manuf-order-on-change-bill-of-material" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
+			<field name="prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form"/>
+			<field name="product" required="true" readonlyIf="statusSelect &gt; 1" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
 			<field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production"/>
@@ -90,13 +90,13 @@
 				</panel>
 				<panel title="Production waste" colSpan="12">
 					<button name="generateWasteStockMove" title="Generate waste stock move" onClick="Non implemented yet"/>
-					<field name="wasteStockMove"/>
+					<field name="wasteStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 				</panel>
 			</panel>
 			<panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-consumed">
-				<panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
+				<panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
-				<panel-related field="diffConsumeProdProductList" colSpan="12"/>
+				<panel-related field="diffConsumeProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 			</panel>
    			<panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
 	 	      <panel-dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
@@ -104,9 +104,9 @@
 	 	      <panel-dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/> 
 			</panel>
 			<panel title="Finished products">
-				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12"/>
+				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
-				<panel-related field="wasteProdProductList" colSpan="12"/>
+				<panel-related field="wasteProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel title="Description" colSpan="12">
 					<field name="wasteProdDescription" showTitle="false" colSpan="12"/>
 				</panel>
@@ -134,7 +134,7 @@
     
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="statusSelect" expr="eval: 1"/>
-    	<field name="plannedStartDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="startDate == null"/>
+    	<field name="plannedStartDateT" expr="eval:__config__.generalService.getTodayDateTime()" if="startDate == null"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>

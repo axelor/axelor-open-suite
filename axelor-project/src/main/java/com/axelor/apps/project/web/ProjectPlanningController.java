@@ -27,8 +27,11 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 	@Inject
 	protected ProjectPlanningLineRepository projectPlanningLineRepository;
 
+	@Inject
+	protected GeneralService generalService;
+
 	public void myPlanning(ActionRequest request, ActionResponse response) throws AxelorException{
-		LocalDate todayDate = GeneralService.getTodayDate();
+		LocalDate todayDate = generalService.getTodayDate();
 		ProjectPlanning planning = this.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
 		if(planning == null){
 			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.getWeekOfWeekyear());
@@ -43,7 +46,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 	}
 
 	public void myTeamPlanning(ActionRequest request, ActionResponse response) throws AxelorException{
-		LocalDate todayDate = GeneralService.getTodayDate();
+		LocalDate todayDate = generalService.getTodayDate();
 		ProjectPlanning planning = this.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
 		if(planning == null){
 			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.getWeekOfWeekyear());
@@ -136,7 +139,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 
 	public void planningCurrentWeek(ActionRequest request, ActionResponse response) throws AxelorException{
 		request.getContext().asType(ProjectPlanning.class);
-		LocalDate currentDate = GeneralService.getTodayDate();
+		LocalDate currentDate = generalService.getTodayDate();
 		int year = currentDate.getYear();
 		int week = currentDate.getWeekOfWeekyear();
 		ProjectPlanning planningCurrentWeek = null;
@@ -171,7 +174,6 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 
 	public void populate(ActionRequest request, ActionResponse response) throws AxelorException{
 		User user = AuthUtils.getUser();
-		GeneralService.getTodayDate();
 		ProjectPlanning planning = request.getContext().asType(ProjectPlanning.class);
 		String type = request.getContext().get("_type").toString();
 		List<ProjectPlanningLine> projectPlanningLineList = null;

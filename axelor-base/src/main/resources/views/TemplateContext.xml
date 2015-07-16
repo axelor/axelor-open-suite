@@ -5,13 +5,13 @@
     
     <grid name="template-context-grid" title="Template Context" model="com.axelor.apps.base.db.TemplateContext">
         <field name="name"/>
-        <field name="templateContextLineList"/>
+        <field name="templateContextLineList" form-view="template-context-line-form" grid-view="template-context-line-grid"/>
     </grid>
     
     <form name="template-context-form" title="Template Context" model="com.axelor.apps.base.db.TemplateContext">
     	<panel>
         	<field name="name"/>
-        	<panel-related field="templateContextLineList" colSpan="12"/>
+        	<panel-related field="templateContextLineList" colSpan="12" form-view="template-context-line-form" grid-view="template-context-line-grid"/>
         </panel>
     </form>
     

@@ -4,14 +4,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	<grid name="routing-rule-grid" title="Routing rules" model="com.axelor.apps.base.db.RoutingRule">
-		<field name="metaField" />
+		<field name="metaField" form-view="meta-field-form" grid-view="meta-field-grid"/>
 		<field name="ruleTypeSelect"/>
 		<field name="value"/>
 	</grid>
 	
 	<form name="routing-rule-form" title="Routing rule" model="com.axelor.apps.base.db.RoutingRule">
 		<panel>
-			<field name="metaField" domain="self.metaModel.name = 'Message'" widget="SuggestBox" />
+			<field name="metaField" domain="self.metaModel.name = 'Message'" widget="SuggestBox" form-view="meta-field-form" grid-view="meta-field-grid"/>
 			<field name="ruleTypeSelect"/>
 			<field name="value"/>
 		</panel>

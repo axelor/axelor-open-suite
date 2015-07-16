@@ -29,12 +29,17 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 /**
  * Classe de création de ligne de facture abstraite.
  *
  */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
+
+	@Inject
+	protected GeneralService generalService;
 
 	protected SaleOrderLine saleOrderLine;
 	protected PurchaseOrderLine purchaseOrderLine;
@@ -78,7 +83,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
 		InvoiceLine invoiceLine = super.createInvoiceLine();
 
-		if (GeneralService.getGeneral().getManageInvoicedAmountByLine()){
+		if (Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine()){
 			if (saleOrderLine != null){
 				invoiceLine.setSaleOrderLine(saleOrderLine);
 				invoiceLine.setOutgoingStockMove(stockMove);

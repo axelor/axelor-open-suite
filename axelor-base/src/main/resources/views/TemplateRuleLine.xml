@@ -5,8 +5,8 @@
     
     <grid name="template-rule-line-grid" title="Template rule lines" model="com.axelor.apps.base.db.TemplateRuleLine">
         <field name="sequence"/>
-        <field name="template"/>
-        <field name="metaAction"/>
+        <field name="template" form-view="template-form" grid-view="template-grid"/>
+        <field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid"/>
     </grid>
     
     <form name="template-rule-line-form" title="Template rule line" model="com.axelor.apps.base.db.TemplateRuleLine"  
@@ -14,8 +14,8 @@
     	<panel>
 	        <field name="sequence"/>
 	        <spacer/>
-	        <field name="template"/>
-	        <field name="metaAction" domain="self.type = 'action-condition'"/>
+	        <field name="template" form-view="template-form" grid-view="template-grid"/>
+	        <field name="metaAction" domain="self.type = 'action-condition'" form-view="meta-action-form" grid-view="meta-action-grid"/>
         </panel>
     </form>
     

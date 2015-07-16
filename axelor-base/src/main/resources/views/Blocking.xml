@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="blocking-grid" title="Blockings" model="com.axelor.apps.base.db.Blocking">
-   		<field name="company"/>
+   		<field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="invoicingBlockingOk"/>
         <field name="debitBlockingOk"/>
         <field name="reimbursementBlockingOk"/>
@@ -28,20 +28,20 @@
 		
 		<panel title="Direct debit blocking" showIf="debitBlockingOk" colSpan="12">
 		  <field name="debitBlockingToDate" colSpan="4"/>
-		  <field name="debitBlockingReason" colSpan="4"/>
-		  <field name="debitBlockingByUser" colSpan="4"/>
+		  <field name="debitBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
+		  <field name="debitBlockingByUser" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		
 		<panel title="Reimbursement blocking" showIf="reimbursementBlockingOk" colSpan="12">
 		  <field name="reimbursementBlockingToDate" colSpan="4"/>
-		  <field name="reimbursementBlockingReason" colSpan="4"/>
-		  <field name="reimbursementBlockingByUser" colSpan="4"/>
+		  <field name="reimbursementBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
+		  <field name="reimbursementBlockingByUser" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		
 		<panel title="Reminder blocking" showIf="reminderBlockingOk" colSpan="12">
 		  <field name="reminderBlockingToDate" colSpan="4"/>
-		  <field name="reminderBlockingReason" colSpan="4"/>
-		  <field name="reminderBlockingByUser" colSpan="4"/>
+		  <field name="reminderBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
+		  <field name="reminderBlockingByUser" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		
     </form>

@@ -4,14 +4,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
     <grid name="tax-equiv-grid" title="Taxes equivalences" model="com.axelor.apps.account.db.TaxEquiv">
-        <field name="fromTax"/>
-        <field name="toTax"/>
+        <field name="fromTax" form-view="tax-form" grid-view="tax-grid"/>
+        <field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
     </grid>
 
     <form name="tax-equiv-form" title="Tax equivalence" model="com.axelor.apps.account.db.TaxEquiv"  >
         <panel>
-        	<field name="fromTax"/>
-        	<field name="toTax"/>
+        	<field name="fromTax" form-view="tax-form" grid-view="tax-grid"/>
+        	<field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
         </panel>
     </form>
 

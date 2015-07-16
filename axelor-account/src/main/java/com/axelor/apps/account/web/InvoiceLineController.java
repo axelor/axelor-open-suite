@@ -56,6 +56,9 @@ public class InvoiceLineController {
 	@Inject
 	private ProductService productService;
 
+	@Inject
+	protected GeneralService generalService;
+
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
@@ -99,7 +102,7 @@ public class InvoiceLineController {
 
 				inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 				exTaxTotal = inTaxTotal.divide(invoiceLine.getTaxLine().getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine,invoice).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+				priceDiscounted = invoiceLineService.computeDiscount(invoiceLine,invoice).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 			}
 
 			if(inTaxTotal != null) {
@@ -148,7 +151,7 @@ public class InvoiceLineController {
 					if(priceListLine!=null){
 						discountTypeSelect = priceListLine.getTypeSelect();
 					}
-					if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+					if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 					{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 						discountAmount = (BigDecimal) discounts.get("discountAmount");
@@ -172,7 +175,7 @@ public class InvoiceLineController {
 					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
 						SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",invoiceLine.getProduct(),invoiceLine.getQty(),invoice.getPartner()).fetchOne();
 						if(supplierCatalog!=null){
-							if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.DISCOUNT_SEPARATE){
+							if(generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.DISCOUNT_SEPARATE){
 								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
 								response.setValue("discountAmount", discounts.get("discountAmount"));
 								response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
@@ -236,7 +239,7 @@ public class InvoiceLineController {
 						discountTypeSelect = priceListLine.getTypeSelect();
 					}
 
-					if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+					if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 					{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 						discountAmount = (BigDecimal) discounts.get("discountAmount");
@@ -260,7 +263,7 @@ public class InvoiceLineController {
 					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
 						SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",invoiceLine.getProduct(),invoiceLine.getQty(),invoice.getPartner()).fetchOne();
 						if(supplierCatalog!=null){
-							if(GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.DISCOUNT_SEPARATE){
+							if(generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.DISCOUNT_SEPARATE){
 								Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
 								response.setValue("discountAmount", discounts.get("discountAmount"));
 								response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));

@@ -4,17 +4,17 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="prod-product-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
-    	<field name="product"/>
+    	<field name="product" form-view="product-form" grid-view="product-grid"/>
     	<field name="qty"/>
-        <field name="unit"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     </grid>
     
     <form name="prod-product-form" title="Product" model="com.axelor.apps.production.db.ProdProduct"
     onNew="action-product-record-default">
     	<panel>
-	    	<field name="product" onChange="action-product-record-product-information"/>
+	    	<field name="product" onChange="action-product-record-product-information" form-view="product-form" grid-view="product-grid"/>
 	    	<field name="qty"/>
-	        <field name="unit"/>
+	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         </panel>
     </form>
     

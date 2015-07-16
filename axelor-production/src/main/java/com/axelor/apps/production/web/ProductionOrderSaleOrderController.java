@@ -38,12 +38,15 @@ public class ProductionOrderSaleOrderController {
 	@Inject
 	ProductionOrderSaleOrderService productionOrderSaleOrderService;
 
+	@Inject
+	protected GeneralService generalService;
+
 	public void createProductionOrders(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType( SaleOrder.class );
 
 		List<Long> productionOrderIdList = productionOrderSaleOrderService.generateProductionOrder(saleOrder);
-		if (!GeneralService.getGeneral().getProductionOrderGenerationAuto()
+		if (!generalService.getGeneral().getProductionOrderGenerationAuto()
 				&& !productionOrderIdList.isEmpty()){
 			response.setView(ActionView
 							.define(I18n.get("Production order"))

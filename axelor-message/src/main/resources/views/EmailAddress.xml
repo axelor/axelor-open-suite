@@ -13,7 +13,7 @@
     <form name="email-address-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress">
     	<panel>
 			<field name="address" widget="Email" onChange="action-check-string-email-address" placeholder="user@mydomain.com" />
-			<field name="partner" if-module="axelor-base"/>
+			<field name="partner" if-module="axelor-base" form-view="partner-form" grid-view="partner-grid"/>
 		</panel>
     </form>
     

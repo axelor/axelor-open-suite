@@ -44,7 +44,7 @@
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
 		<view-param name="search-filters" value="manuf-order-filters"/>
-		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
@@ -55,7 +55,7 @@
 		<view type="grid" name="operation-order-group-grid" />
 		<view type="form" name="operation-order-form" />
 		<view-param name="search-filters" value="operation-order-filters"/>
-		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order-planned-calendar" parent="manufacturing-root"
@@ -84,7 +84,7 @@
 	<action-view name="manufacturing.root.charge.by.machine.dashboardr" title="Charge by machine"
 		>
 		<view type="dashboard" name="charge.by.machine.dashboard" />
-		<context name="today" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		<context name="today" expr="eval:__config__.generalService.getTodayDate()"/>
 	</action-view>
 
 	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"/>
@@ -115,8 +115,8 @@
 		
 	<action-view name="admin.root.conf.production.config" title="Production configurations"
 		model="com.axelor.apps.production.db.ProductionConfig" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="production-config-grid"/>
+		<view type="form" name="production-config-form"/>
 	</action-view>
 	
 	<menuitem name="menu-manufacturing-dashboard-sample" parent="menu-dashboards-sample" order="-155"

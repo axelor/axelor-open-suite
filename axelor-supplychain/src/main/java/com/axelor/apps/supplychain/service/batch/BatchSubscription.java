@@ -1,5 +1,6 @@
 package com.axelor.apps.supplychain.service.batch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -31,9 +32,10 @@ public class BatchSubscription extends AbstractBatch{
 			SaleOrderLine saleOrderLine = subscription.getSaleOrderLine();
 
 			SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-
+			List<SaleOrderLine> saleOrderLineList = new ArrayList<SaleOrderLine>();
+			saleOrderLineList.add(saleOrderLine);
 			try {
-				saleOrderInvoiceService.generateSubscriptionInvoice(subscription,saleOrderLine,saleOrder);
+				saleOrderInvoiceService.generateSubscriptionInvoice(subscription,saleOrderLineList,saleOrder);
 				i++;
 				incrementDone();
 

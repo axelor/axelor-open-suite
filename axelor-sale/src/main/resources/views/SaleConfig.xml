@@ -4,14 +4,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="sale-config-grid" title="Sale configurations" model="com.axelor.apps.sale.db.SaleConfig">
-        <field name="company"/>
+        <field name="company" form-view="sale-config-form" grid-view="sale-config-grid"/>
     </grid>
 
 	<form name="sale-config-form" title="Sale configuration" model="com.axelor.apps.sale.db.SaleConfig" onNew="action-sale-config-record-default">
 	  	<panel>
-	    	<field name="company" form-view="company-form" colSpan="4"/>
+	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	    	<field name="saleOrderInAti"/>
-	    	<field name="defaultValidityDuration"/>
+	    	<field name="defaultValidityDuration" form-view="duration-form" grid-view="duration-grid"/>
 	  	</panel>
 	  	<panel title="Customer Credit" if-module="axelor-supplychain">
 	  		<field name="acceptedCredit"/>

@@ -19,9 +19,9 @@
 			<field name="addressL3"  placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
 			<field name="addressL4" />
 			<field name="addressL5"  placeholder="e.g. POB 254"/>
-			<field name="commune" onChange="action-address-change-commune"/>
+			<field name="commune" onChange="action-address-change-commune" form-view="commune-form" grid-view="commune-grid"/>
 			<field name="addressL6"  required="true"/>
-			<field name="addressL7Country" required="true"/>
+			<field name="addressL7Country" required="true" form-view="country-form" grid-view="country-grid"/>
 			<button-group colSpan="6">
 				<button name="map" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map" hideIf="$popup()"/>
 				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction" hideIf="$popup()"/>
@@ -34,7 +34,7 @@
 				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
 				<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
 			</panel>
-			<panel-related field="pickList" title="Pick list" colSpan="12" />
+			<panel-related field="pickList" title="Pick list" colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
 			<field name="hasQasValidation" type="BOOLEAN" hidden="true"/>
 		</panel>
 	</form>
@@ -54,7 +54,7 @@
 	</action-record>
 	
 	<action-record name="action-address-get-general-qas" model="com.axelor.apps.base.db.Address">
-		<field name="hasQasValidation" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getHasQasValidation()" />
+		<field name="hasQasValidation" expr="eval:__config__.general.getHasQasValidation()" />
 	</action-record>
 
 	<action-record name="default-address-country-record"

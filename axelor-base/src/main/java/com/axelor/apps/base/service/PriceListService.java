@@ -46,6 +46,9 @@ public class PriceListService extends PriceListRepository {
 	@Inject
 	private PriceListLineRepository priceListLineRepo;
 
+	@Inject
+	protected GeneralService generalService;
+
 	public PriceListLine getPriceListLine(Product product, BigDecimal qty, PriceList priceList)  {
 
 		PriceListLine priceListLine = null;
@@ -138,12 +141,12 @@ public class PriceListService extends PriceListRepository {
 	public BigDecimal computeDiscount(BigDecimal unitPrice, int discountTypeSelect,BigDecimal discountAmount)  {
 
 		if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_FIXED)  {
-			return  unitPrice.subtract(discountAmount).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			return  unitPrice.subtract(discountAmount).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		}
 		else if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
 			return unitPrice.multiply(
 					BigDecimal.ONE.subtract(
-							discountAmount.divide(new BigDecimal(100)))).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+							discountAmount.divide(new BigDecimal(100)))).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		}
 
 		return unitPrice;
@@ -155,7 +158,7 @@ public class PriceListService extends PriceListRepository {
 		Map<String, Object> discounts = new HashMap<String, Object>();
 
 		if(priceListLine != null)  {
-			discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
+			discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
 			discounts.put("discountTypeSelect", this.getDiscountTypeSelect(priceListLine));
 
 		}

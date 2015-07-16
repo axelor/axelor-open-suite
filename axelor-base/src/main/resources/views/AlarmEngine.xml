@@ -13,7 +13,7 @@
 
     <grid name="alarm-engine-grid" title="Alarm engines" model="com.axelor.apps.base.db.AlarmEngine">
         <field name="code"/>
-        <field name="metaModel"/>
+        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
         <field name="managerTypeSelect"/>
         <field name="activeOk"/>
         <field name="lockingOk"/>
@@ -26,8 +26,8 @@
     	name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine">
 	    <panel>
 		    <field name="code" x-bind="{{code|uppercase}}"/>
-		    <field name="metaModel"/>
-		    <field name="alarmMessage"/>
+		    <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+		    <field name="alarmMessage" grid-view="alarm-message-grid" form-view="alarm-message-form"/>
 		    <field name="managerTypeSelect"/>
 	  	</panel>
 	  	<panel>

@@ -6,14 +6,14 @@
     <grid name="querie-grid" title="Queries" model="com.axelor.apps.base.db.Querie">
     	<field name="name"/>
         <field name="type"/>
-        <field name="metaModel"/>
+        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
     </grid>
     
     <form name="querie-form" title="Querie" model="com.axelor.apps.base.db.Querie" 
     	onNew="action-querie-record-new">
     	<panel>
 	        <field name="name"/>
-	        <field name="metaModel"/>
+	        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 	        <field name="type"/>
 	        <field name="query" widget="CodeEditor" x-syntax="sql" hideIf="type == 3" colSpan="12"/>
 	        <button name="checkQuery" title="Check query" onClick="action-querie-check-query"/>

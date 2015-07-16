@@ -90,7 +90,7 @@
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
-		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
+		<field name="date" expr="eval:__config__.generalService.getTodayDate()" if="date == null"/>
     </action-record>
     
     <action-record name="action-move-record-draft-sequence" model="com.axelor.apps.account.db.Move">

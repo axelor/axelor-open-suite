@@ -38,71 +38,29 @@
 		    	<field name="computeMethodDiscountSelect"/>
 		    	<field name="timeLoggingPreferenceSelect"/>
 		    	<field name="dailyWorkHours"/>
-		    	<field name="unitDays"/>
-		    	<field name="unitHours"/>
-		    	<field name="unitMinutes"/>
+		    	<field name="unitDays" form-view="unit-form" grid-view="unit-grid"/>
+		    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
+		    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
 		    </panel>
 		    <panel title="Accounting">
-				<field name="defaultExemptionTax"/>
+				<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
 				<field name="isInvoiceMoveConsolidated"/>
 				<field name="manageCustomerCredit" if-module="axelor-account"/>
 				<panel title="Rejects reasons and codes list" colSpan="12">
-					<field name="transferAndDirectDebitInterbankCode"/>
-					<field name="chequeInterbankCode"/>
+					<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
+					<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 				</panel>
 				<panel title="Payer quality" colSpan="12">
 					<button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
-					<panel-related field="payerQualityConfigLineList" colSpan="12"/>
+					<panel-related field="payerQualityConfigLineList" colSpan="12" grid-view="payer-quality-config-line-grid" form-view="payer-quality-config-line-form"/>
 				</panel>
 				<panel title="Currency conversion" colSpan="12">
 					<button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate"  onClick="save,action-general-method-update-currency-conversion"/>
-					<panel-related field="currencyConversionLineList" colSpan="12"/>
+					<panel-related field="currencyConversionLineList" colSpan="12" grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
 				</panel>
 		    </panel>
 		    <panel title="General Settings">
-		    	<panel title="Invoice configuration">
-					<field name="manageInvoicedAmountByLine" if-module="axelor-supplychain"/>
-				</panel>
-				
-				<panel title="Sale order configuration">
-					<field name="manageSaleOrderVersion" if-module="axelor-sale"/>
-					<field name="generateInvoiceFromSaleOrder" if-module="axelor-sale"/>
-				</panel>
-				
-				<panel title="Purchase order configuration">
-					<field name="purchaseOrderManagement" if-module="axelor-purchase" readonlyIf="managePurchaseOrderVersion || purchaseOrderGenerationAuto"/>
-					<field name="managePurchaseOrderVersion" showIf="purchaseOrderManagement" if-module="axelor-purchase"/>
-					<field name="purchaseOrderGenerationAuto" showIf="purchaseOrderManagement" if-module="axelor-purchase"/>
-				</panel>
-				
-				<panel title="Stock Move configuration">
-					<field name="customerStockMoveManagement" if-module="axelor-supplychain" readonlyIf="customerStockMoveGenerationAuto"/>
-					<field name="customerStockMoveGenerationAuto" showIf="customerStockMoveManagement" if-module="axelor-supplychain"/>
-					
-					<field name="supplierStockMoveManagement" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto"/>
-					<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" if-module="axelor-supplychain"/>
-				</panel>
-				
-				<panel title="Production order configuration">
-					<field name="productionOrderManagement" if-module="axelor-production" readonlyIf="productionOrderGenerationAuto"/>
-					<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" if-module="axelor-production"/>
-				</panel>
-				
-				<panel title="Human Resource configuration" if-module="axelor-human-resource">
-					<field name="allowNegativeLeaveEmployees" />
-					<field name="invoicingTypeLogTimesSelect"/>
-				</panel>
-				
-				<panel title="Project/Task configuration" if-module="axelor-project">
-					<field name="generateProjectOrder" />
-					<field name="automaticProject" />
-					<field name="projectTaskSaleOrderLines" />
-					<field name="projectTaskPurchaseOrderLines" />
-					<field name="projectTaskInvoiceLines" />
-					<field name="projectTaskLabel"/>
-					<field name="productInvoicingProjectTask" canNew="true"/>
-				</panel>
-				
+		    	<panel-include view="general-settings-form"/>				
 		    </panel>
 		    <panel title="Interfaces">
 				<panel name="map" title="Mapping"  colSpan="12">
@@ -119,6 +77,53 @@
 				</panel>
 		    </panel>
 		</panel-tabs>
+	</form>
+	
+	<form name="general-settings-form" title="General Settings" model="com.axelor.apps.base.db.General"  >
+		<panel-tabs>
+	    	<panel title="Invoice configuration">
+				<field name="manageInvoicedAmountByLine" if-module="axelor-supplychain"/>
+			</panel>
+			
+			<panel title="Sale order configuration">
+				<field name="manageSaleOrderVersion" if-module="axelor-sale"/>
+				<field name="generateInvoiceFromSaleOrder" if-module="axelor-sale"/>
+			</panel>
+			
+			<panel title="Purchase order configuration">
+				<field name="purchaseOrderManagement" if-module="axelor-purchase" readonlyIf="managePurchaseOrderVersion || purchaseOrderGenerationAuto"/>
+				<field name="managePurchaseOrderVersion" showIf="purchaseOrderManagement" if-module="axelor-purchase"/>
+				<field name="purchaseOrderGenerationAuto" showIf="purchaseOrderManagement" if-module="axelor-purchase"/>
+			</panel>
+			
+			<panel title="Stock Move configuration">
+				<field name="customerStockMoveManagement" if-module="axelor-supplychain" readonlyIf="customerStockMoveGenerationAuto"/>
+				<field name="customerStockMoveGenerationAuto" showIf="customerStockMoveManagement" if-module="axelor-supplychain"/>
+				
+				<field name="supplierStockMoveManagement" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto"/>
+				<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" if-module="axelor-supplychain"/>
+			</panel>
+			
+			<panel title="Production order configuration">
+				<field name="productionOrderManagement" if-module="axelor-production" readonlyIf="productionOrderGenerationAuto"/>
+				<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" if-module="axelor-production"/>
+			</panel>
+			
+			<panel title="Human Resource configuration" if-module="axelor-human-resource">
+				<field name="allowNegativeLeaveEmployees" />
+				<field name="invoicingTypeLogTimesSelect"/>  <!-- TODO jamais utilisé  -->
+			</panel>
+			
+			<panel title="Project/Task configuration" if-module="axelor-project">
+				<field name="generateProjectOrder" />
+				<field name="automaticProject" />
+				<field name="projectTaskSaleOrderLines" />
+				<field name="projectTaskPurchaseOrderLines" />
+				<field name="projectTaskInvoiceLines" />
+				<field name="projectTaskLabel"/>
+				<field name="productInvoicingProjectTask" canNew="true"/>
+			</panel>
+		</panel-tabs>				
 	</form>
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-general-check-duplicate-set-fields-set">

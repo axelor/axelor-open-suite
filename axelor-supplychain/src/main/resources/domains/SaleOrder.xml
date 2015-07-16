@@ -11,9 +11,14 @@
 	<date name="shipmentDate" title="Date of shipment" />
 	<integer name="invoicingMomentSelect" title="Invoicing trigger" selection="supplychain.invoicing.moment.select"/>
 	<decimal name="amountInvoiced" title="Amount invoiced" readonly="true"/>
-	
+	<boolean name="subscription" title="Subscription"/>
 	<!-- 	Onglet échéancier -->
 	<one-to-many name="saleOrderScheduleLineList" ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder" title="Schedule line list"/>
+	<integer name="periodicity" selection="product.periodicity.subscription.select"/>
+  	<date name="fromSubDate" title="Date From"/>
+  	<integer name="periodNumber" title="Number of Periods"/>
+  	<date name="toSubDate" title="Date To"/>
+  	<integer name="invoicingTypeSelect" title="Invoicing Type" selection="supplychain.invoicing.type.select"/>
 	
   </entity>
 

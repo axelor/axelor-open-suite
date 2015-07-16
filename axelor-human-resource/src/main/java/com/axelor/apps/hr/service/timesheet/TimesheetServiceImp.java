@@ -21,12 +21,12 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.DayPlanning;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.Leave;
+import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.LeaveRepository;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -48,6 +48,9 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 	@Inject
 	private PriceListService priceListService;
+
+	@Inject
+	protected GeneralService generalService;
 
 	@Override
 	@Transactional(rollbackOn={Exception.class})
@@ -104,7 +107,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		correspMap.put(5, "friday");
 		correspMap.put(6, "saturday");
 		correspMap.put(7, "sunday");
-		List<Leave> leaveList = LeaveRepository.of(Leave.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
+		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
 			for (DayPlanning dayPlanning : dayPlanningList) {
@@ -117,7 +120,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 			{
 				boolean noLeave = true;
 				if(leaveList != null){
-					for (Leave leave : leaveList) {
+					for (LeaveRequest leave : leaveList) {
 						if((leave.getDateFrom().isBefore(fromDate) && leave.getDateTo().isAfter(fromDate))
 							|| leave.getDateFrom().isEqual(fromDate) || leave.getDateTo().isEqual(fromDate))
 						{
@@ -185,15 +188,15 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 
 		BigDecimal qtyConverted = timesheetLine.getVisibleDuration();
-		qtyConverted = Beans.get(UnitConversionService.class).convert(GeneralService.getGeneral().getUnitHours(), product.getUnit(), timesheetLine.getVisibleDuration());
+		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), timesheetLine.getVisibleDuration());
 
 		if(employee != null){
 			if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_DAYS)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(GeneralService.getGeneral().getUnitDays(), product.getUnit(), timesheetLine.getVisibleDuration());
+				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitDays(), product.getUnit(), timesheetLine.getVisibleDuration());
 
 			}
 			else if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_MINUTES)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(GeneralService.getGeneral().getUnitMinutes(), product.getUnit(), timesheetLine.getVisibleDuration());
+				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitMinutes(), product.getUnit(), timesheetLine.getVisibleDuration());
 
 			}
 
@@ -205,7 +208,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 			if(priceListLine!=null){
 				discountTypeSelect = priceListLine.getTypeSelect();
 			}
-			if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+			if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 			{
 				Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 				discountAmount = (BigDecimal) discounts.get("discountAmount");

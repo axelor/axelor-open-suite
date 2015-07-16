@@ -31,7 +31,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
@@ -55,6 +54,9 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 
 	@Inject
 	private PriceListService priceListService;
+
+	@Inject
+	protected GeneralService generalService;
 
 	private int sequence = 0;
 
@@ -86,7 +88,7 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 
 		return currencyService.getAmountCurrencyConverted(
 			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), product.getPurchasePrice(), purchaseOrder.getOrderDate())
-			.setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 
 	@Override
@@ -96,7 +98,7 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 
 		return currencyService.getAmountCurrencyConverted(
 			product.getSaleCurrency(), purchaseOrder.getCurrency(), product.getSalePrice(), purchaseOrder.getOrderDate())
-			.setScale(GeneralService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 
 	@Override

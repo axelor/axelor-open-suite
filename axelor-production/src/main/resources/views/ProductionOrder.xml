@@ -14,20 +14,20 @@
 		onLoad="action-production-order-attrs-title-project-task">
 	  <panel>
 	    <field name="productionOrderSeq"/>
-	    <field name="projectTask" if-module="axelor-business-production"/>
+	    <field name="projectTask" if-module="axelor-business-production" form-view="project-task-form" grid-view="project-task-grid"/>
 	    <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice" if-module="axelor-business-production"/>
 	    <button name="showManufOrderWizard" title="Add Manuf. Order"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  
 	  <panel name="addManufOrderWizard" title="Add Manuf. Order" hidden="true">
-	    <field name="product" title="Product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'"/>
-	    <field name="billOfMaterial" title="BOM" widget="ManyToOne" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" target="com.axelor.apps.production.db.BillOfMaterial"/>
+	    <field name="product" title="Product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid"/>
+	    <field name="billOfMaterial" title="BOM" widget="ManyToOne" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid" />
 	    <field name="qty" title="Quantity" widget="decimal"/>
 	    <button name="AddManufOrder" title="Add Manuf. Order"   onClick="action-production-order-method-add-manuf-order"/>
 	  </panel>
 	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
 	  <panel-related field="manufOrderList" colSpan="12">
         <field name="manufOrderSeq"/>      
-        <field name="product"/>
+        <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"/>
         <field name="plannedStartDate"/>    
         <field name="plannedEndDate"/>    
@@ -38,7 +38,7 @@
 	</form>
     
     <action-attrs name="action-production-order-attrs-title-project-task">
-		<attribute name="title" for="projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel())"/>
+		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	</action-attrs>
     
    	<action-method name="action-production-order-method-add-manuf-order">

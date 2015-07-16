@@ -27,29 +27,32 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
 	protected UserService userService;
 
-	@Inject	
+	@Inject
+	protected GeneralService generalService;
+
+	@Inject
 	public MailAccountServiceBaseImpl(UserService userService){
 		this.userService = userService;
 	}
 
 	@Override
 	public boolean checkDefaultMailAccount(MailAccount mailAccount) {
-		if ( GeneralService.getGeneral().getMailAccountByUser() ) {
+		if ( generalService.getGeneral().getMailAccountByUser() ) {
 			return all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).count() == 0 && mailAccount.getIsDefault();
 		}
 
 		return super.checkDefaultMailAccount( mailAccount);
-		
+
 	}
 
 	@Override
 	public MailAccount getDefaultMailAccount()  {
-		
-		if ( GeneralService.getGeneral().getMailAccountByUser() ) {
-			return all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).fetchOne();	
+
+		if ( generalService.getGeneral().getMailAccountByUser() ) {
+			return all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).fetchOne();
 		}
-		
+
 		return super.getDefaultMailAccount();
 	}
-	
+
 }

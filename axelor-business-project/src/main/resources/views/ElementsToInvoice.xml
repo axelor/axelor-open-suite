@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
 	<grid name="elements-to-invoice-grid" title="Elements To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice">
-		<field name="user"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="date"/>
-       	<field name="product"/>
+       	<field name="product" form-view="product-form" grid-view="product-grid"/>
   		<field name="qty"/>
-  		<field name="unit"/>
+  		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
   		<field name="costPrice"/>
   		<field name="salePrice"/>
 	</grid>
@@ -16,11 +16,11 @@
 	onNew="action-element-to-invoice-record-default,action-elements-to-invoice-attrs-scale-and-precision"
 	onLoad="action-elements-to-invoice-attrs-scale-and-precision">
 		<panel>
-			<field name="user"/>
+			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="date"/>
-	       	<field name="product" onChange="action-elements-to-invoice-method-get-product-information"/>
+	       	<field name="product" onChange="action-elements-to-invoice-method-get-product-information" form-view="product-form" grid-view="product-grid"/>
 	  		<field name="qty"/>
-	  		<field name="unit"/>
+	  		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 	  		<field name="costPrice"/>
 	  		<field name="salePrice"/>
 	  		<field name="toInvoice"/>
@@ -38,8 +38,8 @@
     </action-record>	
     
     <action-attrs name="action-elements-to-invoice-attrs-scale-and-precision">
-		<attribute name="scale" for="costPrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
-		<attribute name="scale" for="salePrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="costPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="salePrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
 </object-views>

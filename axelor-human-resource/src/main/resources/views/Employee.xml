@@ -3,17 +3,17 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
-		 <field name="contactPartner"/>
+		 <field name="contactPartner" grid-view="partner-contact-grid" form-view="partner-contact-form"/>
 		 <field name="hourlyRate" />
 		 <field name="timeLoggingPreferenceSelect" />
-		 <field name="manager" />
-		 <field name="department" />
+		 <field name="manager" form-view="user-form" grid-view="user-grid" />
+		 <field name="department" form-view="department-form" grid-view="department-grid"/>
 	</grid>
 
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
 		onNew="action-employee-record-default">
 	    <panel title="Contact">
-            <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-grid" form-view="partner-form" colSpan="12" />
+            <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" />
             <field name="contactPartner.emailAddress" colSpan="6" />
 			<field name="contactPartner.fax" colSpan="6" />
 			<field name="contactPartner.fixedPhone" colSpan="6" />
@@ -25,28 +25,28 @@
        	    <field name="timeLoggingPreferenceSelect" />
        	    <field name="weeklyWorkHours" />
        	    <field name="dailyWorkHours" />
-       	    <field name="product" domain="self.isActivity = true"/>
-       	    <field name="manager" />
-       	    <field name="department" />
+       	    <field name="product" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+       	    <field name="manager" form-view="user-form" grid-view="user-grid" />
+       	    <field name="department" form-view="department-form" grid-view="department-grid"/>
        	    <field name="timesheetReminder" />
        	    <field name="external" />
-       	    <field name="planning" canNew="true"/>
+       	    <field name="planning" canNew="true" grid-view="weekly-planning-grid" form-view="weekly-planning-form"/>
        	    <field name="negativeValueLeave"/>
        	</panel>
-       	<panel-related field="leaveLineList"/>
+       	<panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form"/>
 	</form>
 	
 	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
-		<field name="timeLoggingPreferenceSelect" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getTimeLoggingPreferenceSelect()"/>
-		<field name="dailyWorkHours" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getDailyWorkHours()"/>
-		<field name="negativeValueLeave" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getAllowNegativeLeaveEmployees()"/>
+		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
+		<field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
+		<field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()"/>
 	</action-record>
 	
 	<action-record name="action-hr-create-user-employee" model="com.axelor.apps.hr.db.Employee">
 	    <field name="contactPartner" expr="eval:partner" />
-	    <field name="timeLoggingPreferenceSelect" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getTimeLoggingPreferenceSelect()"/>
-	    <field name="dailyWorkHours" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getDailyWorkHours()"/>
-	    <field name="negativeValueLeave" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getAllowNegativeLeaveEmployees()"/>
+	    <field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
+	    <field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
+	    <field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()"/>
 	</action-record>
 	
 	<action-view name="action-hr-user-show-employee" title="Employee" model="com.axelor.apps.hr.db.Employee">

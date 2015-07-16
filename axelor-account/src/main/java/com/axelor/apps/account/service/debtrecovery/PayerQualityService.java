@@ -34,35 +34,39 @@ import com.axelor.apps.account.db.ReminderLevel;
 import com.axelor.apps.account.db.ReminderMethodLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveLineService;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class PayerQualityService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PayerQualityService.class); 
+
+	private static final Logger LOG = LoggerFactory.getLogger(PayerQualityService.class);
 
 	private LocalDate today;
-	
+
 	@Inject
 	private MoveLineService moveLineService;
-	
+
 	@Inject
 	private PartnerService partnerService;
 
 	@Inject
+	protected GeneralService generalService;
+
+	@Inject
 	public PayerQualityService() {
-		
-		this.today = GeneralService.getTodayDate();
-		
+
+		this.today = Beans.get(GeneralService.class).getTodayDate();
+
 	}
-	
+
 	//TODO : à remplacer par une requête afin de rendre le traitement scalable
 	public List<ReminderHistory> getReminderHistoryList(Partner partner)  {
 		List<ReminderHistory> reminderHistoryList = new ArrayList<ReminderHistory>();
@@ -80,47 +84,47 @@ public class PayerQualityService {
 		}
 		return reminderHistoryList;
 	}
-	
-	
+
+
 	public List<MoveLine> getMoveLineRejectList(Partner partner)  {
-		return (List<MoveLine>) moveLineService.all().filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, today.minusYears(1)).fetch();
+		return moveLineService.all().filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, today.minusYears(1)).fetch();
 	}
-	
-	
+
+
 	public BigDecimal getPayerQualityNote(Partner partner, List<PayerQualityConfigLine> payerQualityConfigLineList)  {
 		BigDecimal burden = BigDecimal.ZERO;
-		
-		List<ReminderHistory> reminderHistoryList = this.getReminderHistoryList(partner); 
+
+		List<ReminderHistory> reminderHistoryList = this.getReminderHistoryList(partner);
 		List<MoveLine> moveLineList = this.getMoveLineRejectList(partner);
-		
+
 		LOG.debug("Tiers {} : Nombre de relance concernée : {}",partner.getName(), reminderHistoryList.size());
 		LOG.debug("Tiers {} : Nombre de rejets concernée : {}", partner.getName(), moveLineList.size());
-		
+
 		for(ReminderHistory reminderHistory : reminderHistoryList)  {
 			burden = burden.add(this.getPayerQualityNote(reminderHistory, payerQualityConfigLineList));
 		}
 		for(MoveLine moveLine : moveLineList)  {
 			burden = burden.add(this.getPayerQualityNote(moveLine, payerQualityConfigLineList));
-		}	
+		}
 		LOG.debug("Tiers {} : Qualité payeur : {}", partner.getName(), burden);
 		return burden;
 	}
-	
-	
+
+
 	public BigDecimal getPayerQualityNote(ReminderHistory reminderHistory, List<PayerQualityConfigLine> payerQualityConfigLineList)  {
 		ReminderLevel reminderLevel = this.getReminderLevel(reminderHistory);
 		if(reminderLevel != null)  {
 			for(PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList)  {
-				if(payerQualityConfigLine.getIncidentTypeSelect() == 0 
+				if(payerQualityConfigLine.getIncidentTypeSelect() == 0
 						&& payerQualityConfigLine.getReminderLevel().equals(reminderLevel))  {
 					return payerQualityConfigLine.getBurden();
 				}
 			}
-		}		
+		}
 		return BigDecimal.ZERO;
 	}
-	
-	
+
+
 	public BigDecimal getPayerQualityNote(MoveLine moveLine, List<PayerQualityConfigLine> payerQualityConfigLineList)  {
 		for(PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList)  {
 			if(payerQualityConfigLine.getIncidentTypeSelect() == 1
@@ -130,17 +134,17 @@ public class PayerQualityService {
 		}
 		return BigDecimal.ZERO;
 	}
-	
-	
+
+
 	public ReminderLevel getReminderLevel(ReminderHistory reminderHistory)  {
 		ReminderMethodLine reminderMethodLine = null;
-	
+
 		if(reminderHistory.getReminderDate() != null)  {
-			
+
 			reminderMethodLine = reminderHistory.getReminderMethodLine();
-				
+
 		}
-		
+
 		if(reminderMethodLine != null)  {
 			return reminderMethodLine.getReminderLevel();
 		}
@@ -148,26 +152,26 @@ public class PayerQualityService {
 			return null;
 		}
 	}
-	
-	
+
+
 	public List<Partner> getPartnerList()  {
-		return  (List<Partner>) partnerService.all().filter("self.isCustomer = true and self.hasOrdered = true").fetch();
+		return  partnerService.all().filter("self.isCustomer = true and self.hasOrdered = true").fetch();
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void payerQualityProcess() throws AxelorException  {
-		List<PayerQualityConfigLine> payerQualityConfigLineList = GeneralService.getGeneral().getPayerQualityConfigLineList();
+		List<PayerQualityConfigLine> payerQualityConfigLineList = generalService.getGeneral().getPayerQualityConfigLineList();
 		if(payerQualityConfigLineList == null || payerQualityConfigLineList.size() == 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYER_QUALITY_1),
-					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
-		}	
-		
+					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+		}
+
 		List<Partner> partnerList = this.getPartnerList();
 		if(partnerList != null && partnerList.size() != 0)  {
 			for(Partner partner : partnerList)  {
 				BigDecimal burden = this.getPayerQualityNote(partner, payerQualityConfigLineList);
-				
+
 				if(burden.compareTo(BigDecimal.ZERO) == 1)  {
 					partner.setPayerQuality(burden);
 					partnerService.save(partner);
@@ -176,5 +180,5 @@ public class PayerQualityService {
 			}
 		}
 	}
-	
+
 }

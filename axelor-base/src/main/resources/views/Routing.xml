@@ -18,8 +18,8 @@
 			<field name="isActive"/>
 		</panel>
 		<panel-tabs >
-			<panel-related title="Filters" field="routingRuleList" />
-			<panel-related title="Actions" field="routingActionList" />
+			<panel-related title="Filters" field="routingRuleList" grid-view="routing-rule-grid" form-view="routing-rule-form" />
+			<panel-related title="Actions" field="routingActionList" grid-view="routing-action-grid" form-view="routing-action-form" />
 		</panel-tabs>
 	</form>
 

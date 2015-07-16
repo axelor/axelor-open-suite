@@ -9,11 +9,11 @@
 	    </toolbar>
 	    <field name="code"/>
 	    <field name="name" width="400"/>
-	    <field name="productCategory"/>
-	    <field name="productFamily"/>
+	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
+	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
 	    <field name="productTypeSelect" width="100"/>
 	    <field name="saleSupplySelect"/>
-	    <field name="unit" width="70"/>
+	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
 	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
@@ -50,8 +50,8 @@
 					<field name="expense" hidden="true"/>
 				</panel>
 				<panel title="Categorization" colSpan="6" colWidths="30%,70%">
-					<field name="productFamily" colSpan="12"/>
-					<field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12"/>
+					<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
+					<field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
 				</panel>
 			</panel>
 	    </panel>
@@ -60,8 +60,8 @@
 				<panel colSpan="6" title="Sales">
 				    <field name="sellable" colSpan="12"/>
 					<field name="salePrice" colSpan="12" hideIf="!sellable"/>
-					<field name="saleCurrency" colSpan="12" hideIf="!sellable"/>
-					<field name="unit" colSpan="12" hideIf="!sellable"/>
+					<field name="saleCurrency" colSpan="12" hideIf="!sellable" form-view="currency-form" grid-view="currency-grid"/>
+					<field name="unit" colSpan="12" hideIf="!sellable" form-view="unit-form" grid-view="unit-grid"/>
 				</panel>
 				<panel colSpan="6" title="Product dates">
 					<field name="startDate" colSpan="12"/>
@@ -78,14 +78,14 @@
 				<panel title="Purchases" colSpan="6">
 				    <field name="purchasable" colSpan="12"/>
 					<field name="purchasePrice" colSpan="12" showIf="purchasable"/>
-					<field name="purchaseCurrency" colSpan="12" showIf="purchasable"/>
-					<field name="defaultSupplierPartner" domain="self.isContact = false AND self.isSupplier = true" colSpan="12" showIf="purchasable"/>
+					<field name="purchaseCurrency" colSpan="12" showIf="purchasable" form-view="currency-form" grid-view="currency-grid"/>
+					<field name="defaultSupplierPartner" domain="self.isContact = false AND self.isSupplier = true" colSpan="12" showIf="purchasable" form-view="partner-form" grid-view="partner-grid"/>
 				</panel>
 				<panel title="Costs" colSpan="6">
 					<field name="costPrice" onChange="action-product-record-compute-sale-price" colSpan="12"/>
 					<field name="managPriceCoef" onChange="action-product-record-compute-sale-price" colSpan="12"/>
 				</panel>
-				<panel-related title="Suppliers catalog" field="supplierCatalogList" colSpan="12" showIf="purchasable"/>        
+				<panel-related title="Suppliers catalog" field="supplierCatalogList" colSpan="12" showIf="purchasable" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid"/>        
 			</panel>
 	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
 	        <panel title="Stock" showIf="productTypeSelect == 'storable'" showTitle="false" if-module="axelor-stock">
@@ -102,7 +102,7 @@
 				</panel>
 			</panel>
 			<panel title="Production informations" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-production">
-				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>
+				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
 				<field name="lastProductionPrice" readonly="true"/>
 				<panel if-module="axelor-production" colSpan="12">
 					<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
@@ -117,21 +117,21 @@
 	            	<field name="perishableNbrOfMonths" showIf="isPerishable"/>
         	 	</panel>
         	 	<panel colSpan="12" if-module="axelor-stock">
-		            <field name="trackingNumberConfiguration" canNew="true"/>
+		            <field name="trackingNumberConfiguration" canNew="true" grid-view="tracking-number-configuration-grid" form-view="tracking-number-configuration-form"/>
 	            </panel>
 	        </panel>
 	        <panel title="Variants" showTitle="false">
 	        	<panel name="parentVariant" showIf="!parentProduct" colSpan="12">
 	        		<field name="productVariantConfig" canSelect="false" canNew="true" colSpan="12">
 	        			<editor x-show-titles="false">
-				        	<field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain"/>
-				        	<field name="productVariantValue1Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr1" colSpan="6"/>
-					        <field name="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr1"/>
-				    	    <field name="productVariantValue2Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr2" colSpan="6"/>
-					        <field name="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr2"/>
-				    	    <field name="productVariantValue3Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr3" colSpan="6"/>
-					        <field name="productVariantAttr4" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr3"/>
-				    	    <field name="productVariantValue4Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr4" colSpan="6"/>
+				        	<field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+				        	<field name="productVariantValue1Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr1" colSpan="6" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					        <field name="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr1" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+				    	    <field name="productVariantValue2Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr2" colSpan="6" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					        <field name="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr2" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+				    	    <field name="productVariantValue3Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr3" colSpan="6" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					        <field name="productVariantAttr4" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+				    	    <field name="productVariantValue4Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr4" colSpan="6" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 				        </editor>
 	        		</field>
 	            	<button name="generateProductVariant" title="Generate product variants" onClick="save,action-product-method-generate-product-variant"/>
@@ -140,17 +140,17 @@
 	            <panel name="childVariant" showIf="parentProduct" colSpan="12">
 	            <field name="productVariant" showTitle="false" canSelect="false" >
             		<editor x-show-titles="false">
-	            		<field name="productVariantAttr1" showTitle="false" readonly="true"/>
-			        	<field name="productVariantValue1" showTitle="false" widget="SuggestBox" showIf="productVariantAttr1"/>
-				        <field name="productVariantAttr2" showTitle="false" readonly="true" showIf="productVariantAttr1"/>
-			        	<field name="productVariantValue2" showTitle="false" widget="SuggestBox" showIf="productVariantAttr2"/>
-				        <field name="productVariantAttr3" showTitle="false" readonly="true" showIf="productVariantAttr2"/>
-			    	    <field name="productVariantValue3" showTitle="false" widget="SuggestBox" showIf="productVariantAttr3"/>
-				        <field name="productVariantAttr4" showTitle="false" readonly="true" showIf="productVariantAttr3"/>
-			    	    <field name="productVariantValue4" showTitle="false" widget="SuggestBox" showIf="productVariantAttr4"/>
+	            		<field name="productVariantAttr1" showTitle="false" readonly="true" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+			        	<field name="productVariantValue1" showTitle="false" widget="SuggestBox" showIf="productVariantAttr1" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+				        <field name="productVariantAttr2" showTitle="false" readonly="true" showIf="productVariantAttr1" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+			        	<field name="productVariantValue2" showTitle="false" widget="SuggestBox" showIf="productVariantAttr2" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+				        <field name="productVariantAttr3" showTitle="false" readonly="true" showIf="productVariantAttr2" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+			    	    <field name="productVariantValue3" showTitle="false" widget="SuggestBox" showIf="productVariantAttr3" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+				        <field name="productVariantAttr4" showTitle="false" readonly="true" showIf="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+			    	    <field name="productVariantValue4" showTitle="false" widget="SuggestBox" showIf="productVariantAttr4" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 		    	    </editor>
 	            </field>
-	        		<field name="parentProduct"/>
+	        		<field name="parentProduct" form-view="product-form" grid-view="product-grid"/>
 	        		<panel-dashlet action="action-product-view-other-product-variant" />
 	            </panel>
             	<button name="updateProductsPrices" title="Update products prices"  onClick="save,action-product-method-update-products-prices" help="Update current product prices and variants"/>
@@ -192,20 +192,20 @@
     </action-group>
     
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
-    	<field name="inAti" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProductInAti()"/>
+    	<field name="inAti" expr="eval:__config__.general.getProductInAti()"/>
     </action-record>
 
     <action-attrs name="action-product-attrs-scale-and-precision">
-		<attribute name="scale" for="salePrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
-		<attribute name="scale" for="purchasePrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
-		<attribute name="scale" for="costPrice" expr="eval: GeneralService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="salePrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="purchasePrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="costPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
     
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="expense" expr="false"/>
     	<field name="productTypeSelect" expr="storable"/>
     	<field name="procurementMethodSelect" expr="buy"/>
-    	<field name="startDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
+    	<field name="startDate" expr="eval:__config__.generalService.getTodayDate()" if="startDate == null"/>
     	<field name="salePrice" expr="1"/>
     	<field name="purchasePrice" expr="1"/>
     	<field name="saleCurrency" expr="eval: _activeCompany.currency"/>
@@ -255,7 +255,7 @@
     </action-validate>
     
     <action-record name="action-product-method-reset-end-date" model="com.axelor.apps.base.db.Product">
-    	<field name="endDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="endDate &lt; startDate"/>
+    	<field name="endDate" expr="eval:__config__.generalService.getTodayDate()" if="endDate &lt; startDate"/>
     </action-record>
     
     <action-view name="action-product-view-product-variant" title="Products variants"

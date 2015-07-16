@@ -6,15 +6,13 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderLineService;
-import com.axelor.apps.supplychain.db.Subscription;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SubscriptionService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -23,6 +21,9 @@ public class SubscriptionController {
 
 	@Inject
 	protected SubscriptionService subscriptionService;
+
+	@Inject
+	protected SaleOrderLineRepository saleOrderLineRepo;
 
 	public void generateSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
@@ -36,46 +37,40 @@ public class SubscriptionController {
 	}
 
 	public void generateAllSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
-		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-
-		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-
-		if(saleOrder == null){
-			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
-		}
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		saleOrder  = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
 		for (SaleOrderLine saleOrderLineIt : saleOrder.getSaleOrderLineList()) {
 			if(saleOrderLineIt.getProduct().getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE)){
-				subscriptionService.generateSubscriptions(saleOrderLineIt,saleOrderLine);
+				subscriptionService.generateSubscriptions(saleOrderLineIt,saleOrder);
 			}
 		}
 
 		response.setReload(true);
 	}
 
-	public void generateInvoice(ActionRequest request, ActionResponse response)  {
+	public void generateInvoice(ActionRequest request, ActionResponse response)  throws AxelorException{
 
-		Subscription subscription = request.getContext().asType(Subscription.class);
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
-		subscription = subscriptionService.find(subscription.getId());
+		saleOrderLine = saleOrderLineRepo.find(saleOrderLine.getId());
 
-		if (subscription != null){
+		if (saleOrderLine != null){
 
-			SaleOrderLine saleOrderLine  = Beans.get(SaleOrderLineService.class).find(subscription.getSaleOrderLine().getId());
+			Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateSubcriptionsForSaleOrderLine(saleOrderLine);
 
-			SaleOrder saleOrder  = Beans.get(SaleOrderRepository.class).find(saleOrderLine.getSaleOrder().getId());
-
-			try {
-				Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateSubscriptionInvoice(subscription,saleOrderLine,saleOrder);
-
-				if(invoice != null)  {
-					response.setReload(true);
-					response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
-				}
+			if(invoice == null){
+				throw new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
 			}
-			catch(Exception e)  { TraceBackService.trace(response, e); }
+			response.setCanClose(true);
+			response.setView(ActionView
+		            .define(I18n.get("Invoice Generated"))
+		            .model(Invoice.class.getName())
+		            .add("form", "invoice-form")
+		            .add("grid", "invoice-grid")
+		            .context("_showRecord",String.valueOf(invoice.getId()))
+		            .map());
 		}
 	}
 }

@@ -45,6 +45,9 @@ public class SaleOrderLineController {
 	@Inject
 	private PriceListService priceListService;
 
+	@Inject
+	protected GeneralService generalService;
+
 
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -152,7 +155,7 @@ public class SaleOrderLineController {
 					if(priceListLine!=null){
 						discountTypeSelect = priceListLine.getTypeSelect();
 					}
-					if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+					if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 					{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
@@ -219,7 +222,7 @@ public class SaleOrderLineController {
 						discountTypeSelect = priceListLine.getTypeSelect();
 					}
 
-					if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+					if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 					{
 						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));

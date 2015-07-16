@@ -4,9 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	<grid name="purchase-order-supplier-line-grid" title="suppliers requests" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
-		<field name="supplierPartner"/>
+		<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="availableQty"/>
-		<field name="purchaseOrderLine.unit"/>
+		<field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price"/>
 		<field name="estimatedDelivDate"/>
 		<field name="stateSelect"/>
@@ -16,9 +16,9 @@
 		onNew="action-purchase-order-supplier-line-record-request,action-purchase-order-supplier-line-attrs-new">
 	  <panel>
 	    <field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-	    <field name="supplierPartner" domain="self.isSupplier = true"/>
+	    <field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 	    <field name="availableQty"/>
-	    <field name="purchaseOrderLine.unit"/>
+	    <field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="price"/>
 	    <field name="estimatedDelivDate"/>
 	  </panel>
@@ -35,11 +35,11 @@
 	</form>
 	
 	<grid name="purchase-order-supplier-line-supplier-grid" title="Suppliers requests" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
-		<field name="purchaseOrderLine.product"/>
+		<field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid"/>
 		<field name="purchaseOrderLine.qty"/>
 		<field name="purchaseOrderLine.desiredDelivDate"/>
 		<field name="availableQty"/>
-		<field name="purchaseOrderLine.unit"/>
+		<field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price"/>
 		<field name="estimatedDelivDate"/>
 		<field name="comment"/>
@@ -50,9 +50,9 @@
 	  <panel>
 	    <field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 	    <field name="purchaseOrderLine.purchaseOrder.purchaseOrderSeq"/>
-	    <field name="purchaseOrderLine.product"/>
+	    <field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid"/>
 	    <field name="purchaseOrderLine.qty"/>
-	    <field name="purchaseOrderLine.unit"/>
+	    <field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="availableQty" readonlyIf="stateSelect != 1"/>
 	    <field name="purchaseOrderLine.desiredDelivDate"/>
 	    <field name="price" readonlyIf="stateSelect != 1"/>

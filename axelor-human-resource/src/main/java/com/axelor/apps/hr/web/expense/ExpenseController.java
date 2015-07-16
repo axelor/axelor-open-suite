@@ -25,10 +25,13 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class ExpenseController {
-	
+
 	@Inject
-	 private ExpenseService expenseService;
-	
+	private ExpenseService expenseService;
+
+	@Inject
+	protected GeneralService generalService;
+
 	public void editExpense(ActionRequest request, ActionResponse response){
 		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(expenseList.isEmpty()){
@@ -59,7 +62,7 @@ public class ExpenseController {
 					.map());
 		}
 	}
-	
+
 	public void editExpenseSelected(ActionRequest request, ActionResponse response){
 		Map expenseMap = (Map)request.getContext().get("expenseSelect");
 		Expense expense = Beans.get(ExpenseRepository.class).find(new Long((Integer)expenseMap.get("id")));
@@ -71,19 +74,19 @@ public class ExpenseController {
 				.domain("self.id = "+expenseMap.get("id"))
 				.context("_showRecord", String.valueOf(expense.getId())).map());
 	}
-	
+
 	public void allExpense(ActionRequest request, ActionResponse response){
 		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> expenseListId = new ArrayList<Long>();
 		for (Expense expense : expenseList) {
 			expenseListId.add(expense.getId());
 		}
-		
+
 		String expenseListIdStr = "-2";
 		if(!expenseListId.isEmpty()){
 			expenseListIdStr = Joiner.on(",").join(expenseListId);
 		}
-		
+
 		response.setView(ActionView.define("My Expenses")
 				   .model(Expense.class.getName())
 				   .add("grid","expense-grid")
@@ -91,7 +94,7 @@ public class ExpenseController {
 				   .domain("self.id in ("+expenseListIdStr+")")
 				   .map());
 	}
-	
+
 	public void validateExpense(ActionRequest request, ActionResponse response){
 		List<Expense> expenseList = Query.of(Expense.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> expenseListId = new ArrayList<Long>();
@@ -108,7 +111,7 @@ public class ExpenseController {
 		if(!expenseListId.isEmpty()){
 			expenseListIdStr = Joiner.on(",").join(expenseListId);
 		}
-		
+
 		response.setView(ActionView.define("Expenses to Validate")
 			   .model(Expense.class.getName())
 			   .add("grid","expense-validate-grid")
@@ -116,19 +119,19 @@ public class ExpenseController {
 			   .domain("self.id in ("+expenseListIdStr+")")
 			   .map());
 	}
-	
+
 	public void historicExpense(ActionRequest request, ActionResponse response){
 		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> expenseListId = new ArrayList<Long>();
 		for (Expense expense : expenseList) {
 			expenseListId.add(expense.getId());
 		}
-		
+
 		String expenseListIdStr = "-2";
 		if(!expenseListId.isEmpty()){
 			expenseListIdStr = Joiner.on(",").join(expenseListId);
 		}
-		
+
 		response.setView(ActionView.define("Colleague Expenses")
 				.model(Expense.class.getName())
 				   .add("grid","expense-grid")
@@ -136,8 +139,8 @@ public class ExpenseController {
 				   .domain("self.id in ("+expenseListIdStr+")")
 				   .map());
 	}
-	
-	
+
+
 	public void showSubordinateExpenses(ActionRequest request, ActionResponse response){
 		List<User> userList = Query.of(User.class).filter("self.employee.manager = ?1",AuthUtils.getUser()).fetch();
 		List<Long> expenseListId = new ArrayList<Long>();
@@ -155,7 +158,7 @@ public class ExpenseController {
 			if(!expenseListId.isEmpty()){
 				expenseListIdStr = Joiner.on(",").join(expenseListId);
 			}
-			
+
 			response.setView(ActionView.define("Expenses to be Validated by your subordinates")
 				   .model(Expense.class.getName())
 				   .add("grid","expense-grid")
@@ -164,13 +167,13 @@ public class ExpenseController {
 				   .map());
 		}
 	}
-	
+
 	public void compute(ActionRequest request, ActionResponse response){
 		Expense expense = request.getContext().asType(Expense.class);
 		expense = expenseService.compute(expense);
 		response.setValues(expense);
 	}
-		
+
 	public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException{
 		Expense expense = request.getContext().asType(Expense.class);
 		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
@@ -183,23 +186,23 @@ public class ExpenseController {
 				   .context("_showRecord", String.valueOf(move.getId()))
 				   .map());
 	}
-	
+
 	public void cancelExpense(ActionRequest request, ActionResponse response) throws AxelorException{
 		Expense expense = request.getContext().asType(Expense.class);
 		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
 		expenseService.cancel(expense);
 		response.setReload(true);
 	}
-	
+
 	public void validateDates(ActionRequest request, ActionResponse response) throws AxelorException{
 		Expense expense = request.getContext().asType(Expense.class);
 		if(expense.getExpenseLineList()!= null){
 			List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
-			List<Integer> expenseLineId = new ArrayList<Integer>(); 
+			List<Integer> expenseLineId = new ArrayList<Integer>();
 			int compt = 0;
 			for (ExpenseLine expenseLine : expenseLineList) {
 				compt++;
-				if(expenseLine.getExpenseDate().isAfter(GeneralService.getTodayDate())){
+				if(expenseLine.getExpenseDate().isAfter(generalService.getTodayDate())){
 					expenseLineId.add(compt);
 				}
 			}
@@ -209,5 +212,5 @@ public class ExpenseController {
 			}
 		}
 	}
-	
+
 }

@@ -6,8 +6,8 @@
     <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
     	<field name="name"/>
     	<field name="code"/>
-        <field name="location"/>
-        <field name="prodProcessLineList"/>
+        <field name="location" grid-view="location-grid" form-view="location-form"/>
+        <field name="prodProcessLineList" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
     </grid>
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
@@ -15,9 +15,9 @@
 		<panel>
 	    	<field name="name"/>
 	    	<field name="code"/>
-	        <field name="location" required="true"/>
+	        <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
         </panel>
-        <panel-related field="prodProcessLineList" colSpan="12"/>        
+        <panel-related field="prodProcessLineList" colSpan="12" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>        
     </form>
     
 </object-views>

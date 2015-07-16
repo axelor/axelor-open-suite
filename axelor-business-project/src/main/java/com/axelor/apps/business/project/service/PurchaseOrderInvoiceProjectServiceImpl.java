@@ -13,6 +13,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -32,6 +33,9 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 	@Inject
 	private PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl;
 
+	@Inject
+	protected GeneralService generalService;
+
 
 	@Override
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException  {
@@ -40,9 +44,12 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
-			invoiceLineList.get(invoiceLineList.size()-1).setProject(purchaseOrderLine.getProjectTask());
-			purchaseOrderLine.setInvoiced(true);
+			//Lines of subscription type are invoiced directly from purchase order line or from the subscription batch
+			if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(purchaseOrderLine.getProduct().getProductTypeSelect())){
+				invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
+				invoiceLineList.get(invoiceLineList.size()-1).setProject(purchaseOrderLine.getProjectTask());
+				purchaseOrderLine.setInvoiced(true);
+			}
 		}
 		return invoiceLineList;
 	}
@@ -61,7 +68,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 				if(priceListLine!=null){
 					discountTypeSelect = priceListLine.getTypeSelect();
 				}
-				if((GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || GeneralService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+				if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 				{
 					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 					discountAmount = (BigDecimal) discounts.get("discountAmount");

@@ -13,12 +13,15 @@ public class OpportunitySaleOrderServiceSupplychainImpl extends OpportunitySaleO
 	@Inject
 	private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychainImpl;
 
+	@Inject
+	protected GeneralService generalService;
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException{
-		
-		SaleOrder saleOrder = saleOrderServiceSupplychainImpl.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, opportunity.getCurrency(), null, opportunity.getName(), null, 
-				null, GeneralService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
+
+		SaleOrder saleOrder = saleOrderServiceSupplychainImpl.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, opportunity.getCurrency(), null, opportunity.getName(), null,
+				null, generalService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
 
 		save(saleOrder);
 

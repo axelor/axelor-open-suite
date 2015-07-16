@@ -1,22 +1,23 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class MoveManagementRepository extends MoveRepository {
+
+	@Inject
+	protected GeneralService generalService;
+
 	@Override
 	public Move copy(Move entity, boolean deep) {
-		
+
 		Move copy = super.copy(entity, deep);
-		
+
 		Period period=null;
 		try {
 			period = Beans.get(PeriodService.class).rightPeriod(entity.getDate(),entity.getCompany());
@@ -25,7 +26,7 @@ public class MoveManagementRepository extends MoveRepository {
 		}
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setReference(null);
-		copy.setDate(GeneralService.getTodayDate());
+		copy.setDate(generalService.getTodayDate());
 		copy.setExportNumber(null);
 		copy.setExportDate(null);
 		copy.setMoveLineReport(null);
@@ -35,19 +36,19 @@ public class MoveManagementRepository extends MoveRepository {
 		copy.setIgnoreInReminderOk(false);
 		copy.setPaymentVoucher(null);
 		copy.setRejectOk(false);
-		
+
 		return copy;
 	}
-	
+
 	@Override
 	public void remove(Move entity){
 
 		//try{
-			//Beans.get(PeriodService.class).testOpenPeriod(entity.getPeriod());	
+			//Beans.get(PeriodService.class).testOpenPeriod(entity.getPeriod());
 			super.remove(entity);
 		//} catch (AxelorException e) {
 		//	e.printStackTrace();
 		//}
-		
-	} 
+
+	}
 }

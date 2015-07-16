@@ -39,36 +39,37 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class GeneralController {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
 
 	@Inject
 	private Injector injector;
-	
+
 	@Inject
 	private GeneralService gs;
-	
-	@Inject 
+
+	@Inject
 	private CurrencyConversionService ccs;
-	
+
 	@Inject
 	private CurrencyConversionLineRepository cclRepo;
-	
-	
-	
+
+	@Inject
+	protected GeneralService generalService;
+
 	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
-		
+
 		try  {
 			PayerQualityService pqs = injector.getInstance(PayerQualityService.class);
 			pqs.payerQualityProcess();
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
 	}
-	
+
 	public void updateCurrencyConversion(ActionRequest request, ActionResponse response){
 		 General general = request.getContext().asType(General.class);
-		 LocalDate today = GeneralService.getTodayDate();
-		 
+		 LocalDate today = generalService.getTodayDate();
+
 		 for(CurrencyConversionLine ccl : general.getCurrencyConversionLineList()){
 			CurrencyConversionLine cclCoverd = cclRepo.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",ccl.getStartCurrency(),ccl.getEndCurrency(),today).fetchOne();
 			LOG.info("Currency Conversion Line for {} already covered : {}",today,ccl);

@@ -28,6 +28,9 @@ public class ProjectPlanningService extends ProjectPlanningRepository{
 	@Inject
 	protected ProjectPlanningLineRepository projectPlanningLineRepository;
 
+	@Inject
+	protected GeneralService generalService;
+
 	@Transactional
 	public ProjectPlanning createPlanning(int year, int week) throws AxelorException{
 		ProjectPlanning planning = new ProjectPlanning();
@@ -44,14 +47,14 @@ public class ProjectPlanningService extends ProjectPlanningRepository{
 		return " " + Integer.toString(newDate.getDayOfMonth())+"/"+Integer.toString(newDate.getMonthOfYear());
 	}
 
-	public static LocalDate getFromDate(){
-		LocalDate today = GeneralService.getTodayDate();
+	public LocalDate getFromDate(){
+		LocalDate today = generalService.getTodayDate();
 		LocalDate newDate = new LocalDate().withYear(today.getYear()).withWeekOfWeekyear(today.getWeekOfWeekyear()).withDayOfMonth(1);
 		return newDate;
 	}
 
-	public static LocalDate getToDate(){
-		LocalDate today = GeneralService.getTodayDate();
+	public LocalDate getToDate(){
+		LocalDate today = generalService.getTodayDate();
 		LocalDate newDate = new LocalDate().withYear(today.getYear()).withWeekOfWeekyear(today.getWeekOfWeekyear()).withDayOfMonth(today.dayOfMonth().withMaximumValue().getDayOfMonth());
 		return newDate;
 	}

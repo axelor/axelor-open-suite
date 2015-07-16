@@ -8,10 +8,10 @@
             <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
 		</toolbar>
 		<field name="purchaseOrderSeq"/>
-        <field name="supplierPartner"/>
+        <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="orderDate"/>
-        <field name="buyerUser"/>
+        <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
         <field name="inTaxTotal"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
@@ -20,7 +20,7 @@
     
     <grid orderBy="-orderDate,-purchaseOrderSeq" edit-icon="true" name="my-purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		  <field name="purchaseOrderSeq"/>
-		  <field name="supplierPartner"/>
+		  <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
 		  <field name="externalReference"/>
 		  <field name="orderDate"/>
 		  <field name="inTaxTotal"/>
@@ -30,7 +30,7 @@
 	</grid>
 	
 	<form name="purchase-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge purchase orders" >
-		<panel-related field="$purchaseOrderToMerge" form-view="purchase-order-form" title="Purchase orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.purchase.db.PurchaseOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false"/>
+		<panel-related field="$purchaseOrderToMerge" form-view="purchase-order-form" title="Purchase orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.purchase.db.PurchaseOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="purchase-order-grid"/>
 		<panel sidebar="true" title="Actions">
 			<button name="generateMergedPurchaseOrder" title="Merge into single purchase order" onClick="action-validate-purchase-order-check-selection,action-purchase-order-method-merge"/>			
 	  	</panel>
@@ -38,8 +38,8 @@
     
     <form name="purchase-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-purchaseorder">
 		<panel>
-			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="12" width="200px" showIf="priceListToCheck" canSelect="true"/>
-			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"/>
+			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="12" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
+			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<button name="confirm" title="Confirmer" onClick="action-purchase-order-confirm-merge-check,action-purchase-order-method-merge" colSpan="12" width="200px"/>
 		</panel>
     </form>
@@ -56,39 +56,39 @@
 			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="3"/>
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="9"/>
 			<field name="receiptState" css="label-bold bold" showIf="statusSelect >= 2" /> 
-			<field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form"/>
-			<field name="currency"/>
-			<field name="buyerUser"/>
-			<field name="versionNumber"/>
+			<field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form" grid-view="company-gri"/>
+			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
+			<field name="versionNumber" if="__config__.general.getManagePurchaseOrderVersion()"/>
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
 		</panel>
 		
 		<panel title="Supplier information">
-			<field name="supplierPartner" onChange="action-purchase-order-record-partner,action-purchase-order-attrs-hide-contact-partner,action-purchase-order-validate-information" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form"/>
+			<field name="supplierPartner" onChange="action-purchase-order-record-partner,action-purchase-order-attrs-hide-contact-partner,action-purchase-order-validate-information" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" 
 				domain="self.isContact = true AND self.mainPartner = :supplierPartner"
 				form-view="partner-contact-form" grid-view="partner-contact-grid" />
 			<field name="externalReference"/>
-	      	<field name="priceList" domain="self.typeSelect = 2 and self.isActive = true" /> 
+	      	<field name="priceList" domain="self.typeSelect = 2 and self.isActive = true" form-view="price-list-form" grid-view="price-list-grid" /> 
 		</panel>
 		<panel title="Delivery" colSpan="12">
 			<field name="deliveryDate" colSpan="3"/>
-	        <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain" colSpan="3"/>
-	        <field name="location.address" if-module="axelor-supplychain"/>
+	        <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain" colSpan="3" form-view="location-form" grid-view="location-grid"/>
+	        <field name="location.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid"/>
 	    </panel>	  
 		<panel-tabs>
 			<panel title="Content" colSpan="12">
-				<panel-related field="purchaseOrderLineList" grid-view="purchase-order-line-purchase-order-grid" title="PO Lines" colSpan="12" onChange="action-purchase-order-method-compute"/>    
-				<panel-related field="purchaseOrderLineTaxList" title="Tax Lines" colSpan="12"/>
+				<panel-related field="purchaseOrderLineList" grid-view="purchase-order-line-purchase-order-grid" title="PO Lines" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form"/>    
+				<panel-related field="purchaseOrderLineTaxList" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
 			</panel>
 			<panel title="Other information">
 				<panel title="Financial terms">
-					<field name="paymentMode" domain="self.inOutSelect = 2" if-module="axelor-account"/>
-					<field name="paymentCondition" if-module="axelor-account"/>
+					<field name="paymentMode" domain="self.inOutSelect = 2" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+					<field name="paymentCondition" if-module="axelor-account" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 				</panel>
 				<panel title="Invoicing" readonlyIf="statusSelect == 4" colSpan="6">
 					<field name="invoicingTypeSelect" if-module="axelor-account"/>
-					<field name="invoice" if-module="axelor-account"/>
+					<field name="invoice" if-module="axelor-account" form-view="invoice-form" grid-view="invoice-grid"/>
 				</panel>
 			</panel>
 			<panel title="Notes">
@@ -104,11 +104,11 @@
 			<button name="requested" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
 			<button name="validate" title="Validate" showIf="statusSelect == 2"   onClick="action-group-purchase-order-on-validate-actions"/>
 			<button name="completed" title="Completed" showIf="statusSelect == 3"   onClick="action-purchase-order-record-completed,save"/>
-			<button name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-purchase-record-newVersion,save"/>
+			<button name="newVersion" title="New version" if="__config__.general.getManagePurchaseOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-purchase-record-newVersion,save"/>
 			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice"/>
 			<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 3"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
 			<button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect &gt;= 3"   onClick="save,action-purchase-order-method-clear-purchase-order"/>
-			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="eval: GeneralService.getGeneral().getSupplierStockMoveManagement() &amp;&amp; !GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
+			<button name="generateSupplierStockMove" title="Generate supplier arrival" if="__config__.general.getSupplierStockMoveManagement() &amp;&amp; !__config__.general.getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
 			<spacer/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 		</panel>
@@ -119,7 +119,7 @@
 				<field name="internalReference"/> 
 		</panel>
 		<panel readonly="true">
-			<field name="validatedByUser"/>
+			<field name="validatedByUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate"/>
 	    </panel>
 		</panel>
@@ -167,7 +167,7 @@
     	<action name="save"/>
     	<action name="action-purchase-order-method-compute"/>
     	<action name="save"/>
-    	<action name="action-purchase-order-create-stock-move" if="eval: GeneralService.getGeneral().getSupplierStockMoveGenerationAuto()"/>
+    	<action name="action-purchase-order-create-stock-move" if="eval: __config__.general.getSupplierStockMoveGenerationAuto()"/>
     	<action name="action-purchase-order-record-validate"/>
     	<action name="action-sale-order-method-validate-supplier"/>
     	<action name="save"/>
@@ -178,7 +178,6 @@
     <action-attrs name="action-purchase-order-attrs-in-ati">
     	<attribute name="hidden" for="purchaseOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
-    	<attribute name="hidden" for="versionNumber" expr="eval: !com.axelor.apps.base.service.administration.GeneralService.getGeneral().getManagePurchaseOrderVersion()"/>
     </action-attrs>
     
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">

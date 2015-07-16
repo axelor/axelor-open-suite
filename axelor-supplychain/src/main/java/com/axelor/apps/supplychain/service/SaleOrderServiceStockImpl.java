@@ -150,7 +150,7 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 	public void checkStockMoveProduct(SaleOrder saleOrder) throws AxelorException  {
 
 		if(saleOrder.getSaleOrderLineList() != null
-				&& GeneralService.getGeneral().getCustomerStockMoveManagement())  {
+				&& generalService.getGeneral().getCustomerStockMoveManagement())  {
 			for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList())  {
 
 				this.checkStockMoveProduct(saleOrderLine);

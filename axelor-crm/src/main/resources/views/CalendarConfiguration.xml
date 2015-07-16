@@ -5,23 +5,23 @@
 
 	<grid name="calendar-configuration-grid" title="Calendar configurations" model="com.axelor.apps.crm.db.CalendarConfiguration">
 		<field name="name" />
-		<field name="metaAction" />
-		<field name="calendarUser" />
-		<field name="calendarGroup" />
+		<field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid" />
+		<field name="calendarUser" form-view="user-form" grid-view="user-grids"/>
+		<field name="calendarGroup" form-view="group-form" grid-view="group-grid"/>
 	</grid>
 
 	<form name="calendar-configuration-form" title="Calendar configuration" model="com.axelor.apps.crm.db.CalendarConfiguration">
 		<panel>
 			<field name="name" />
-			<field name="metaAction" />
-			<field name="calendarUser" />
-			<field name="calendarGroup" />
+			<field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid" />
+			<field name="calendarUser" form-view="user-form" grid-view="user-grids"/>
+			<field name="calendarGroup" form-view="group-form" grid-view="group-grid"/>
 		</panel>
 		<panel sidebar="true" name="action" title="Actions">
 			<button name="createAction" title="Create menu entrie" onClick="save,action-calendar-configuration-method-create-Action" />
 			<button name="deleteAction" title="Delete menu entrie" onClick="save,action-calendar-configuration-method-delete-Action" />
 		</panel>
-		<panel-related field="calendarSet" />
+		<panel-related field="calendarSet" form-view="calendar-form" grid-view="calendar-grid"/>
 	</form>
 
 	<action-method name="action-calendar-configuration-method-create-Action">

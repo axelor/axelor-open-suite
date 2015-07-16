@@ -2,6 +2,7 @@ package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
 
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.supplychain.db.Subscription;
@@ -52,10 +53,10 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 
 	@Override
 	@Transactional
-	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLineIt,SaleOrderLine saleOrderLine) throws AxelorException{
+	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLineIt,SaleOrder saleOrder) throws AxelorException{
 		int iterator = 0;
 
-		if(saleOrderLine.getToSubDate() == null){
+		if(saleOrder.getToSubDate() == null){
 			throw new AxelorException(I18n.get("Field Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
 		}
 
@@ -65,22 +66,22 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 			}
 		}
 
-		while(iterator != saleOrderLine.getPeriodNumber()){
+		while(iterator != saleOrder.getPeriodNumber()){
 			Subscription subscription = new Subscription();
-			if(saleOrderLine.getInvoicingTypeSelect() == 1){
-				subscription.setInvoicingDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*iterator));
+			if(saleOrder.getInvoicingTypeSelect() == 1){
+				subscription.setInvoicingDate(saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity()*iterator));
 			}
 			else{
-				subscription.setInvoicingDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*(iterator+1)).minusDays(1));
+				subscription.setInvoicingDate(saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity()*(iterator+1)).minusDays(1));
 			}
-			subscription.setFromPeriodDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*iterator));
-			subscription.setToPeriodDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*(iterator+1)).minusDays(1));
-			subscription.setQuantity(saleOrderLine.getQty());
-			if(saleOrderLine.getPeriodicity() == saleOrderLine.getProduct().getPeriodicitySelect()){
-				subscription.setUnitPrice(saleOrderLine.getPrice().multiply(new BigDecimal(saleOrderLine.getPeriodicity())));
+			subscription.setFromPeriodDate(saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity()*iterator));
+			subscription.setToPeriodDate(saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity()*(iterator+1)).minusDays(1));
+			subscription.setQuantity(saleOrderLineIt.getQty());
+			if(saleOrder.getPeriodicity() == saleOrderLineIt.getProduct().getPeriodicitySelect()){
+				subscription.setUnitPrice(saleOrderLineIt.getPrice().multiply(new BigDecimal(saleOrder.getPeriodicity())));
 			}
 			else{
-				subscription.setUnitPrice(saleOrderLine.getPrice().multiply(new BigDecimal(saleOrderLine.getPeriodicity()).divide(new BigDecimal(saleOrderLine.getProduct().getPeriodicitySelect()))));
+				subscription.setUnitPrice(saleOrderLineIt.getPrice().multiply(new BigDecimal(saleOrder.getPeriodicity()).divide(new BigDecimal(saleOrderLineIt.getProduct().getPeriodicitySelect()))));
 			}
 			subscription.setInvoiced(false);
 			saleOrderLineIt.addSubscriptionListItem(subscription);
@@ -89,6 +90,6 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 
 		Beans.get(SaleOrderLineRepository.class).save(saleOrderLineIt);
 
-		return saleOrderLine;
+		return saleOrderLineIt;
 	}
 }

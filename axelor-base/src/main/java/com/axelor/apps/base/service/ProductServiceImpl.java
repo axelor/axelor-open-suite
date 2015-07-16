@@ -46,6 +46,8 @@ public class ProductServiceImpl extends ProductRepository implements ProductServ
 	@Inject
 	private ProductVariantService productVariantService;
 
+	@Inject
+	protected GeneralService generalService;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -91,7 +93,7 @@ public class ProductServiceImpl extends ProductRepository implements ProductServ
 
 		if(product.getCostPrice() != null && managePriceCoef != null)  {
 
-			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(GeneralService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
+			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
 
 			if(product.getProductVariant() != null)  {
 

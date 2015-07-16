@@ -6,7 +6,7 @@
 		onNew="action-leave-management-record-default">
 		<field name="value" onChange="action-leave-management-record-counted"/>
 	    <field name="date"/>
-	    <field name="user"/>
+	    <field name="user" form-view="user-form" grid-view="user-grid"/>
 	    <field name="dateFrom"/>
 	    <field name="dateTo"/>
 	    <field name="comments"/>
@@ -19,7 +19,7 @@
 		<panel>
 			<field name="value" onChange="action-leave-management-record-counted"/>
 		    <field name="date"/>
-		    <field name="user"/>
+		    <field name="user" form-view="user-form" grid-view="user-grid"/>
 		    <field name="dateFrom"/>
 		    <field name="dateTo"/>
 		    <field name="comments"/>

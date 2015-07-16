@@ -266,7 +266,7 @@
 	</action-record>
 	
 	<action-method name="action-payment-voucher-getDateTime">
-    	<call class="com.axelor.apps.base.service.administration.GeneralService" method="getTodayDateTime()"/>
+    	<call class="__config__.generalService" method="getTodayDateTime()"/>
    	</action-method>
    	
    	<action-view name="account.root.periodic.processing.account.voucher.paybox.email" title="Email used by Paybox"

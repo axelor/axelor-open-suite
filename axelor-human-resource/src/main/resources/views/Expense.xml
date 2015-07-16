@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense">
-		<field name="company"/>
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
-		<field name="period"/>
-		<field name="user"/>
+		<field name="period" form-view="period-form" grid-view="period-grid"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="statusSelect"/>
 	</grid>
 	
@@ -14,10 +14,10 @@
 		<toolbar>
 			<button name="showSubordinateExpenseToValidate" title="Show expenses to be validated by my subordinates" onClick="com.axelor.apps.hr.web.expense.ExpenseController:showSubordinateExpenses"/>
 		</toolbar>
-		<field name="company"/>
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
-		<field name="period"/>
-		<field name="user"/>
+		<field name="period" form-view="period-form" grid-view="period-grid"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="statusSelect"/>
 	</grid>
 
@@ -37,15 +37,15 @@
 		    <field name="ventilated" title="Expense Ventilated" colSpan="4" readonly="true"/>
 			<field name="sentDate" colSpan="3"/>
 			<field name="moveDate" colSpan="3"/>
-			<field name="company" colSpan="3"/>
-			<field name="period" colSpan="3" onSelect="action-expense-attrs-domain-period"/>
-			<field name="user" colSpan="4"/>
-			<field name="move" showIf="ventilated"/>
+			<field name="company" colSpan="3" form-view="company-form" grid-view="company-grid"/>
+			<field name="period" colSpan="3" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid"/>
+			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+			<field name="move" showIf="ventilated" form-view="move-form" grid-view="move-grid"/>
 		</panel>
-		<panel-related field="expenseLineList" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true"/>
+		<panel-related field="expenseLineList" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid"/>
 		<panel>
-			<field name="validatedBy"/>
-			<field name="refusedBy"/>
+			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>
+			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate"/>
 			<field name="refusalDate"/>
 		</panel>

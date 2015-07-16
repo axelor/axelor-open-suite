@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.stock.db.InventoryLine" editable="true">
-        <field name="product" onChange="action-inventory-line-attrs-tracking-number"/>
+        <field name="product" onChange="action-inventory-line-attrs-tracking-number" form-view="product-form" grid-view="product-grid"/>
         <field name="currentQty" readonly="true"/>
         <field name="realQty"/>
         <field name="description"/>
@@ -15,7 +15,7 @@
     	onLoad="action-inventory-line-attrs-tracking-number">
     	<panel>
 	        <field name="product" onChange="action-inventory-line-attrs-tracking-number,action-inventory-line-on-change-product"
-	        	domain="self.expense = false and self.productTypeSelect = 'storable'" />
+	        	domain="self.expense = false and self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty" readonly="true"/>
 	        <field name="realQty"/>
 	        <field name="description"/>

@@ -37,10 +37,10 @@ import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -49,59 +49,59 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class PaymentVoucherLoadService extends PaymentVoucherRepository {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherLoadService.class); 
-	
+
+	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherLoadService.class);
+
 	@Inject
 	private CurrencyService currencyService;
-	
+
 	@Inject
 	private PaymentVoucherSequenceService paymentVoucherSequenceService;
-	
+
 	@Inject
 	private PaymentVoucherToolService paymentVoucherToolService;
-	
+
 	@Inject
 	private MoveLineService moveLineService;
-	
+
 	@Inject
 	private PaymentInvoiceRepository paymentInvoiceRepo;
-	
+
 	@Inject
 	private PaymentInvoiceToPayService paymentInvoiceToPayService;
-	
+
 	/**
 	 * Searching move lines to pay
 	 * @param pv paymentVoucher
 	 * @param mlToIgnore moveLine list to ignore
 	 * @return moveLines a list of moveLines
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public List<MoveLine> getMoveLines(PaymentVoucher paymentVoucher, MoveLine excludeMoveLine) throws AxelorException {
 		List<? extends MoveLine> moveLines = null;
-		
+
 		String query = "self.partner = ?1 " +
 				"and self.account.reconcileOk = 't' " +
 				"and self.amountRemaining > 0 " +
 				"and self.move.statusSelect = ?3 " +
 				"and self.move.ignoreInReminderOk = 'f' " +
 				"and self.move.company = ?2 ";
-		
+
 		if(paymentVoucherToolService.isDebitToPay(paymentVoucher))  {
 			query += " and self.debit > 0 ";
 		}
 		else  {
 			query += " and self.credit > 0 ";
 		}
-		
+
 		moveLines = moveLineService.all().filter(query, paymentVoucher.getPartner(), paymentVoucher.getCompany(), MoveService.STATUS_VALIDATED).fetch();
-		
+
 		moveLines.remove(excludeMoveLine);
-		
+
 		return (List<MoveLine>) moveLines;
 	}
-	
-	
+
+
 	/**
 	 * According to the passed invoice, get the debit line to pay
 	 * @param invoice
@@ -113,13 +113,13 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			for (MoveLine moveLine : invoice.getMove().getMoveLineList())  {
 				if ((moveLine.getAccount().equals(invoice.getPartnerAccount())) && moveLine.getAccount().getReconcileOk() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)  {
 					return moveLine;
-				}	
+				}
 			}
 		}
 		LOG.debug("End getInvoiceDebitMoveline.");
 		return null;
 	}
-	
+
 	/**
 	 * According to the passed invoice, get the debit line to pay
 	 * @param invoice
@@ -131,14 +131,14 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			for (MoveLine moveLine : invoice.getMove().getMoveLineList())  {
 				if ((moveLine.getAccount().equals(invoice.getPartnerAccount())) && moveLine.getAccount().getReconcileOk() && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
 					return moveLine;
-				}	
+				}
 			}
 		}
 		LOG.debug("End getInvoiceDebitMoveline.");
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Allows to load the moveLine selected in header (invoice, schedule or rejected moveLine) directly in the 2nd O2M
 	 * @param paymentVoucher
@@ -146,31 +146,31 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 	 * @param lineSeq
 	 * @param paymentVoucherContext
 	 * @return
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public List<PaymentInvoiceToPay> loadOneLine(PaymentVoucher paymentVoucher,MoveLine moveLine,int lineSeq) throws AxelorException{
 		LOG.debug("In loadOneLine ....");
 
 		List<PaymentInvoiceToPay> paymentInvoiceToPayList = new ArrayList<PaymentInvoiceToPay>();
-		
+
 		PaymentInvoiceToPay paymentInvoiceToPay = new PaymentInvoiceToPay();
 		if (paymentVoucher.getPaidAmount() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1), GeneralServiceAccount.getExceptionAccountingMsg()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
 		}
-		
+
 		if(moveLine == null)  {  return paymentInvoiceToPayList;  }
-			
+
 		Move move = moveLine.getMove();
-		
+
 		BigDecimal paidAmount = null;
-		
+
 		// Si la facture a une devise différente du tiers (de l'écriture)
 		if(move.getInvoice() != null && !move.getInvoice().getCurrency().equals(move.getCurrency()))  {
 			LOG.debug("La facture a une devise différente du tiers (de l'écriture)");
 			paymentInvoiceToPay.setCurrency(move.getInvoice().getCurrency());
 			paymentInvoiceToPay.setTotalAmount(move.getInvoice().getInTaxTotal());
 			paymentInvoiceToPay.setRemainingAmount(move.getInvoice().getInTaxTotal().subtract(move.getInvoice().getAmountPaid()));
-			
+
 			// on convertit le montant imputé de la devise de la saisie paiement vers la devise de la facture
 			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getInvoice().getCurrency(), paymentInvoiceToPay.getRemainingAmount(), paymentVoucher.getPaymentDateTime().toLocalDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
@@ -186,31 +186,31 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 				paymentInvoiceToPay.setTotalAmount(moveLine.getCredit());
 			}
 			paymentInvoiceToPay.setRemainingAmount(moveLine.getAmountRemaining());
-			
+
 			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getCurrency(), moveLine.getAmountRemaining(), paymentVoucher.getPaymentDateTime().toLocalDate());
 		}
-		
+
 		LOG.debug("Montant de la créance {}",paidAmount);
 		LOG.debug("Montant réglée de la saisie paiement {}",paymentVoucher.getPaidAmount());
 		BigDecimal amountToPay = paidAmount.min(paymentVoucher.getPaidAmount());
 
 		paymentInvoiceToPay.setSequence(lineSeq);
 		paymentInvoiceToPay.setMoveLine(moveLine);
-		
+
 		paymentInvoiceToPay.setAmountToPay(amountToPay);
 		paymentInvoiceToPay.setPaymentVoucher(paymentVoucher);
 		paymentInvoiceToPayList.add(paymentInvoiceToPay);
-		
+
 		LOG.debug("END loadOneLine.");
 		return paymentInvoiceToPayList;
-		
+
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void loadMoveLines(PaymentVoucher paymentVoucher) throws AxelorException  {
 		MoveLine moveLineToPay = this.getMoveLineToPay (paymentVoucher);
-		
+
 		if (paymentVoucher.getPaymentInvoiceToPayList() == null)  {
 			paymentVoucher.setPaymentInvoiceToPayList(new ArrayList<PaymentInvoiceToPay>());
 			paymentVoucher.getPaymentInvoiceToPayList().addAll(this.loadOneLine(paymentVoucher,moveLineToPay,1));
@@ -219,7 +219,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			paymentVoucher.getPaymentInvoiceToPayList().clear();
 			paymentVoucher.getPaymentInvoiceToPayList().addAll(this.loadOneLine(paymentVoucher,moveLineToPay,1));
 		}
-		
+
 		if (paymentVoucher.getPaymentInvoiceList() == null)  {
 			paymentVoucher.setPaymentInvoiceList(new ArrayList<PaymentInvoice>());
 			paymentVoucher.getPaymentInvoiceList().addAll(this.setPaymentInvoiceList(paymentVoucher, moveLineToPay));
@@ -228,23 +228,23 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			paymentVoucher.getPaymentInvoiceList().clear();
 			paymentVoucher.getPaymentInvoiceList().addAll(this.setPaymentInvoiceList(paymentVoucher, moveLineToPay));
 		}
-		
+
 		paymentVoucherSequenceService.setReference(paymentVoucher);
 		save(paymentVoucher);
-		
-		
+
+
 	}
-	
+
 
 	/**
 	 * Allows to load selected lines (from 1st 02M) to the 2nd O2M
-	 * and dispatching amounts according to amountRemainnig for the loaded move and the paid amount remaining of the paymentVoucher 
+	 * and dispatching amounts according to amountRemainnig for the loaded move and the paid amount remaining of the paymentVoucher
 	 * @param paymentVoucher
 	 * @param paymentVoucherContext
-	 * @return 
-	 * @return 
+	 * @return
+	 * @return
 	 * @return values Map of data
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public PaymentVoucher loadSelectedLines(PaymentVoucher paymentVoucher, PaymentVoucher paymentVoucherContext) throws AxelorException {
@@ -258,12 +258,12 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			BigDecimal paidAmount = BigDecimal.ZERO;
 			if (paymentVoucherContext.getPaidAmount() == null){
 				throw new AxelorException(
-					String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1), GeneralServiceAccount.getExceptionAccountingMsg()), IException.MISSING_FIELD);			
+					String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
 			}
 			else{
 				paidAmount = paymentVoucherContext.getPaidAmount();
 				paymentVoucher.setPaidAmount(paidAmount);
-				
+
 				int lineSeq = 1;
 				List<PaymentInvoice> paymentInvoiceSelectedList = new ArrayList<PaymentInvoice>();
 				for (PaymentInvoice pilContext : paymentVoucherContext.getPaymentInvoiceList())  {
@@ -284,10 +284,10 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 						newPiList.add(paymentInvoice);
 					}
 				}
-		
+
 				paymentVoucher.getPaymentInvoiceList().clear();
 				paymentVoucher.getPaymentInvoiceToPayList().clear();
-				
+
 				if (paymentInvoiceSelectedList != null && !paymentInvoiceSelectedList.isEmpty())  {
 					//récupérer les lignes déjà remplies
 					// + initialiser le restant à payer
@@ -318,49 +318,49 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 					//Incrementation de la liste avec les lignes récupérées au dessus piToPayLine
 					for (PaymentInvoice paymentInvoice : paymentInvoiceSelectedList)  {
 						PaymentInvoiceToPay paymentInvoiceToPay = new PaymentInvoiceToPay();
-						
+
 						MoveLine moveLine = paymentInvoice.getMoveLine();
 						Move move = moveLine.getMove();
-						
+
 //						BigDecimal paidAmount = null;
-						
+
 						BigDecimal amountRemainingConverted = null;
-						
+
 						paymentInvoiceToPay.setSequence(lineSeq);
 						paymentInvoiceToPay.setMoveLine(moveLine);
 						paymentInvoiceToPay.setTotalAmount(paymentInvoice.getInvoiceAmount());
 						paymentInvoiceToPay.setRemainingAmount(paymentInvoice.getInvoiceAmount().subtract(paymentInvoice.getPaidAmount()));
-						
+
 						paymentInvoiceToPay.setPaymentVoucher(paymentVoucher);
-						
+
 						if(move.getInvoice() != null)  {
 							paymentInvoiceToPay.setCurrency(move.getInvoice().getCurrency());
 						}
 						else  {
 							paymentInvoiceToPay.setCurrency(move.getCurrency());
 						}
-						 
+
 						BigDecimal paidAmountConverted = currencyService.getAmountCurrencyConverted(
 								paymentVoucher.getCurrency(),
-								paymentInvoiceToPay.getCurrency(), 
-								paidAmount, 
+								paymentInvoiceToPay.getCurrency(),
+								paidAmount,
 								paymentVoucher.getPaymentDateTime().toLocalDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-						
+
 						//On convertit dans la devise de la saisie paiement, pour comparer le restant à payer de la facture avec le restant à utilsier de la saisie paiement
-						
+
 //						if(move.getInvoice() != null)  {
 //							amountRemainingConverted = currencyService.getAmountCurrencyConverted(
-//									move.getInvoice().getCurrency(), 
+//									move.getInvoice().getCurrency(),
 //									paymentVoucher.getCurrency(),
-//									paymentInvoice.getInvoiceAmount().subtract(paymentInvoice.getPaidAmount()), 
+//									paymentInvoice.getInvoiceAmount().subtract(paymentInvoice.getPaidAmount()),
 //									paymentVoucher.getPaymentDateTime().toLocalDate());
 //							piToPay.setCurrency(move.getInvoice().getCurrency());
 //						}
 //						else  {
 //							amountRemainingConverted = currencyService.getAmountCurrencyConverted(
-//									move.getCurrency(), 
-//									paymentVoucher.getCurrency(), 
-//									paymentInvoice.getInvoiceAmount().subtract(paymentInvoice.getPaidAmount()), 
+//									move.getCurrency(),
+//									paymentVoucher.getCurrency(),
+//									paymentInvoice.getInvoiceAmount().subtract(paymentInvoice.getPaidAmount()),
 //									paymentVoucher.getPaymentDateTime().toLocalDate());
 //							piToPay.setCurrency(move.getCurrency());
 //						}
@@ -368,26 +368,26 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 //						amountToPay = paidAmount.min(pil.getInvoiceAmount().subtract(pil.getPaidAmount()));
 						BigDecimal amountToPay = paidAmountConverted.min(paymentInvoiceToPay.getRemainingAmount());
 						paymentInvoiceToPay.setAmountToPay(amountToPay);
-						
+
 						piToPayLine.add(paymentInvoiceToPay);
 						paidAmount = paidAmount.subtract(amountToPay);
 						lineSeq += 1;
 					}
 				}
-				
+
 				if (piToPayLine != null && !piToPayLine.isEmpty())  {
 					paymentVoucher.getPaymentInvoiceToPayList().addAll(piToPayLine);
 				}
 				paymentVoucher.getPaymentInvoiceList().addAll(newPiList);
 			}
 		}
-		
+
 		save(paymentVoucher);
 		LOG.debug("End loadSelectedLinesService.");
 		return paymentVoucher;
 	}
-	
-	
+
+
 	/**
 	 * Fonction qui crée une liste des factures ou échéances non payées susceptible de l'être
 	 * @param paymentVoucher
@@ -396,35 +396,35 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 	 * 			Une écriture à payer
 	 * @return
 	 * 			Une liste des factures ou échéances non payées
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public List<PaymentInvoice> setPaymentInvoiceList(PaymentVoucher paymentVoucher, MoveLine moveLineToPay) throws AxelorException  {
 		List<PaymentInvoice> paymentInvoiceList = new ArrayList<PaymentInvoice>();
-		
+
 		for (MoveLine moveLine : this.getMoveLines(paymentVoucher,moveLineToPay))  {
 			PaymentInvoice paymentInvoice = new PaymentInvoice();
-			
+
 			paymentInvoice.setMoveLine(moveLine);
-			
+
 			if(moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)  {
 				paymentInvoice.setInvoiceAmount(moveLine.getDebit());
 			}
 			else  {
 				paymentInvoice.setInvoiceAmount(moveLine.getCredit());
-			}	
+			}
 			paymentInvoice.setPaidAmount(moveLine.getAmountPaid());
 			paymentInvoice.setPaymentVoucher(paymentVoucher);
 			Move move = moveLine.getMove();
 			if(move.getInvoice() != null)  {  paymentInvoice.setCurrency(move.getInvoice().getCurrency());  }
 			else  {  paymentInvoice.setCurrency(move.getCurrency());  }
-			
+
 			paymentInvoiceList.add(paymentInvoice);
 		}
-		
+
 		return paymentInvoiceList;
 	}
 
-	
+
 	/**
 	 * Fonction permettant de récupérer la ligne d'écriture à payer
 	 * @param paymentVoucher
@@ -441,19 +441,19 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 		// Paiement d'une facture | EN : Paying an invoice
 		else if (paymentVoucher.getInvoiceToPay() != null){
 			if(paymentVoucherToolService.isDebitToPay(paymentVoucher))  {
-				return this.getInvoiceDebitMoveline(paymentVoucher.getInvoiceToPay());   
+				return this.getInvoiceDebitMoveline(paymentVoucher.getInvoiceToPay());
 			}
 			else  {
-				return this.getInvoiceCreditMoveline(paymentVoucher.getInvoiceToPay());   
+				return this.getInvoiceCreditMoveline(paymentVoucher.getInvoiceToPay());
 			}
 		}
 		return null;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Fonction vérifiant si l'ensemble des lignes à payer ont le même compte et que ce compte est le même que celui du trop-perçu
 	 * @param paymentInvoiceToPayList
@@ -474,31 +474,31 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 		}
 		return false;
 	}
-	
-	
+
+
 	public boolean mustBeBalanced(MoveLine moveLineToPay, PaymentVoucher paymentVoucher, BigDecimal amountToPay)  {
-		
+
 		Invoice invoice = moveLineToPay.getMove().getInvoice();
-		
+
 		Currency invoiceCurrency = invoice.getCurrency();
-				
+
 		Currency paymentVoucherCurrency = paymentVoucher.getCurrency();
-		
-		// Si la devise de paiement est la même que le devise de la facture, 
+
+		// Si la devise de paiement est la même que le devise de la facture,
 		// Et que le montant déjà payé en devise sur la facture, plus le montant réglé par la nouvelle saisie paiement en devise, est égale au montant total en devise de la facture
 		// Alors on solde la facture
 		if(paymentVoucherCurrency.equals(invoiceCurrency) && invoice.getAmountPaid().add(amountToPay).compareTo(invoice.getInTaxTotal()) == 0)  {
 			//SOLDER
 			return true;
 		}
-		
+
 		return false;
-		
+
 	}
-	
-	
+
+
 	/**
-	 *  
+	 *
 	 * @param moveLineInvoiceToPay
 	 * 				Les lignes de factures récupérées depuis l'échéance
 	 * @param paymentInvoiceToPay
@@ -521,6 +521,6 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 		}
 		return debitMoveLines;
 	}
-	
-	
+
+
 }

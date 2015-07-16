@@ -32,10 +32,14 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdResource;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class BillOfMaterialServiceBusinessImpl extends BillOfMaterialServiceImpl {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+
+	@Inject
+	protected GeneralService generalService;
 
 
 	@Override
@@ -94,7 +98,7 @@ public class BillOfMaterialServiceBusinessImpl extends BillOfMaterialServiceImpl
 
 					Product product = prodHumanResource.getProduct();
 
-					BigDecimal costPerMin = unitConversionService.convert(GeneralService.getGeneral().getUnitMinutes(), product.getUnit(), product.getCostPrice());
+					BigDecimal costPerMin = unitConversionService.convert(generalService.getGeneral().getUnitMinutes(), product.getUnit(), product.getCostPrice());
 
 					costPrice = costPrice.add((costPerMin).multiply(new BigDecimal(prodHumanResource.getDuration()/60)));
 

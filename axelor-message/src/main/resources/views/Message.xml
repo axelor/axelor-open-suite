@@ -5,7 +5,7 @@
 	
     <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sentDateT">
         <field name="sentDateT"/>
-        <field name="senderUser"/>
+        <field name="senderUser" form-view="user-form" grid-view="user-grid"/>
         <field name="subject"/>
     </grid>
     
@@ -19,24 +19,24 @@
     	<panel title="Informations" readonlyIf="statusSelect == 2 || statusSelect == 3">
             <field name="mediaTypeSelect" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
 			<field name="statusSelect"/>
-			<field name="senderUser"/>
+			<field name="senderUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="sentDateT" colSpan="4"/>
 			<panel colSpan="12" showIf="mediaTypeSelect == 2">
-			    <field name="fromEmailAddress" widget="SuggestBox"/>
-				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature" requiredIf="mediaTypeSelect == 2"/>
-        		<field name="replyToEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
+			    <field name="fromEmailAddress" widget="SuggestBox" grid-view="email-address-grid" form-view="email-address-form"/>
+				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature" requiredIf="mediaTypeSelect == 2" grid-view="mail-account-grid" form-view="mail-account-form"/>
+        		<field name="replyToEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" grid-view="email-address-grid" />
 			</panel>
         </panel>
 		<panel title="Recipient address" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 1">
 			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false" showIf="mediaTypeSelect == 1" requiredIf="mediaTypeSelect == 1"/>
 		</panel>
         <panel title="Recipients" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 2">
-        	<field name="toEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" requiredIf="mediaTypeSelect == 2"/>
-        	<field name="ccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
-        	<field name="bccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12"/>
+        	<field name="toEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" requiredIf="mediaTypeSelect == 2" grid-view="email-address-grid" />
+        	<field name="ccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" grid-view="email-address-grid" />
+        	<field name="bccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" grid-view="email-address-grid" />
         </panel>
 		<panel title="Message destinated to" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 3">
-			<field name="recipientUser" colSpan="6" showTitle="false" showIf="mediaTypeSelect == 3" requiredIf="mediaTypeSelect == 3"/>
+			<field name="recipientUser" colSpan="6" showTitle="false" showIf="mediaTypeSelect == 3" requiredIf="mediaTypeSelect == 3" form-view="user-form" grid-view="user-grid"/>
 		</panel>
         <panel title="Content" readonlyIf="statusSelect == 2 || statusSelect == 3">
         	<field name="subject" title="Subject" colSpan="12" required="true"/>

@@ -39,8 +39,8 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -80,6 +80,9 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 	@Inject
 	protected SaleOrderRepository saleOrderRepo;
+
+	@Inject
+	protected GeneralService generalService;
 
 
 	@Override
@@ -221,7 +224,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	@Override
 	public SaleOrder createSaleOrder(Company company) throws AxelorException{
 		SaleOrder saleOrder = new SaleOrder();
-		saleOrder.setCreationDate(GeneralService.getTodayDate());
+		saleOrder.setCreationDate(generalService.getTodayDate());
 		if(company != null){
 			saleOrder.setCompany(company);
 			saleOrder.setSaleOrderSeq(this.getSequence(company));
@@ -244,7 +247,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 		SaleOrder saleOrder = new SaleOrder();
 		saleOrder.setClientPartner(clientPartner);
-		saleOrder.setCreationDate(GeneralService.getTodayDate());
+		saleOrder.setCreationDate(generalService.getTodayDate());
 		saleOrder.setContactPartner(contactPartner);
 		saleOrder.setCurrency(currency);
 		saleOrder.setExternalReference(externalReference);
@@ -305,7 +308,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
 		}
 		this.save(saleOrder);
-		if (GeneralService.getGeneral().getManageSaleOrderVersion()){
+		if (generalService.getGeneral().getManageSaleOrderVersion()){
 			this.saveSaleOrderPDFAsAttachment(saleOrder);
 		}
 	}

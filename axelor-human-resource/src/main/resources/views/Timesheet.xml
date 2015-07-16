@@ -3,20 +3,20 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false">
-		<field name="company"/>
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="statusSelect"/>
-		<field name="user"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
 	</grid>
 	
 	<grid name="timesheet-validate-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false">
 		<toolbar>
 			<button name="showSubordinateTimesheetToValidate" title="Show timesheets to be validated by my subordinates" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets"/>
 		</toolbar>
-		<field name="company"/>
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="statusSelect"/>
-		<field name="user"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
 	</grid>
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
@@ -36,8 +36,8 @@
 		<panel name="head">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
 			<field name="sentDate" colSpan="4"/>
-			<field name="company" colSpan="3"/>
-			<field name="user" colSpan="4"/>
+			<field name="company" colSpan="3" form-view="company-form" grid-view="company-grid"/>
+			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			<field name="fromDate" readonlyIf="fromDate!=null"/>
 			<field name="toDate" onChange="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date"/>
 		</panel>
@@ -45,14 +45,14 @@
 		    <field name="fromGenerationDate"/>
 			<field name="toGenerationDate"/>
 			<field name="projectTask" domain="self.imputable=true" form-view="project-task-form" grid-view="project-task-grid"/>
-			<field name="product" domain="self.isActivity = true"/>
+			<field name="product" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
 			<field name="logTime"/>
 			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true"/>
 		</panel>
 		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form"/>
 		<panel>
-			<field name="validatedBy"/>
-			<field name="refusedBy"/>
+			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>
+			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate"/>
 			<field name="refusalDate"/>
 		</panel>
@@ -65,8 +65,8 @@
 	
 	
 	<action-attrs name="action-timesheet-attrs-title-project-task">
-		<attribute name="title" for="projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel())"/>
-		<attribute name="title" for="timesheetLineList.projectTask" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(com.axelor.apps.base.service.administration.GeneralService.getGeneral().getProjectTaskLabel())"/>
+		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="timesheetLineList.projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	
 	</action-attrs>
 	

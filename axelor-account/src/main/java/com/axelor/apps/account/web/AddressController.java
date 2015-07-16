@@ -46,12 +46,14 @@ import com.google.inject.persist.Transactional;
 
 public class AddressController {
 
+	@Inject
+	protected GeneralService generalService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
-	
+
 	@Inject
 	private AddressRepository addressRepo;
-	
+
 	@Inject
 	private InvoiceService invoiceService;
 
@@ -60,13 +62,13 @@ public class AddressController {
 	@Transactional
 	public void viewSalesMap(ActionRequest request, ActionResponse response)  {
 		// Only allowed for google maps to prevent overloading OSM
-		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
+		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
 			PartnerList partnerList = request.getContext().asType(PartnerList.class);
 
 			File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");
 			//file.write("latitude,longitude,fullName,turnover\n");
 
-			Iterator<Partner> it = (Iterator<Partner>) partnerList.getPartnerSet().iterator();
+			Iterator<Partner> it = partnerList.getPartnerSet().iterator();
 
 			while(it.hasNext()) {
 
@@ -86,7 +88,7 @@ public class AddressController {
 					}
 					if (address.getLatit() != null && address.getLongit() != null) {
 						//def turnover = Invoice.all().filter("self.partner.id = ? AND self.statusSelect = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
-						List<Invoice> listInvoice = (List<Invoice>) invoiceService.all().filter("self.partner.id = ?", partner.getId()).fetch();
+						List<Invoice> listInvoice = invoiceService.all().filter("self.partner.id = ?", partner.getId()).fetch();
 						BigDecimal turnover = BigDecimal.ZERO;
 						for(Invoice invoice: listInvoice) {
 							turnover.add(invoice.getInTaxTotal());

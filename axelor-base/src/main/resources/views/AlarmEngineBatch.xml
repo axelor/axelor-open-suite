@@ -5,8 +5,8 @@
 
 	<grid name="alarm-engine-batch-grid" title="Alarm engine batches" model="com.axelor.apps.base.db.AlarmEngineBatch">
 		<field name="code" />
-		<field name="metaModelSet" />
-		<field name="alarmEngineSet" />
+		<field name="metaModelSet" form-view="meta-model-form" grid-view="meta-model-grid"/>
+		<field name="alarmEngineSet" grid-view="alarm-engine-grid" form-view="alarm-engine-form" />
 	</grid>
 
 	<form name="alarm-engine-batch-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngineBatch">
@@ -18,8 +18,8 @@
 		</panel>
 		<panel-tabs>
 			<panel title="Configuration">
-				<panel-related field="metaModelSet" colSpan="12" />
-				<panel-related field="alarmEngineSet" onSelect="alarm-engine-batch-attrs-alarm-engine-domain" colSpan="12" />
+				<panel-related field="metaModelSet" colSpan="12" form-view="meta-model-form" grid-view="meta-model-grid"/>
+				<panel-related field="alarmEngineSet" onSelect="alarm-engine-batch-attrs-alarm-engine-domain" colSpan="12" grid-view="alarm-engine-grid" form-view="alarm-engine-form" />
 			</panel>
 			<panel title="Batches">
 				<field name="description" showTitle="false" colSpan="12" />

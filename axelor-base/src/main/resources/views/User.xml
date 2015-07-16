@@ -6,19 +6,19 @@
     <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
         <field name="name"/>
         <field name="fullName"/>
-        <field name="partner"/>
-        <field name="activeCompany"/>
-        <field name="group" />
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="activeCompany" form-view="company-form" grid-view="company-grid"/>
+        <field name="group" form-view="group-form" grid-view="group-grid"/>
     </grid>
     
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
     onNew="action-user-default-record,action-user-check-company" onLoad="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
     	<panel sidebar="true">
-	        <field name="activeCompany" widget="SuggestBox"/>
-	        <field name="activeCashRegister"/>
+	        <field name="activeCompany" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
-	        <field name="employee" if-module="axelor-human-resource" />
+	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid"/>
 	        <button name="createEmployee" onClick="action-user-create-employee,save,action-hr-user-show-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null"/>
         </panel>
 		<panel title="Testing" sidebar="true">
@@ -36,12 +36,12 @@
 	         </panel>
         	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
         	 <panel title="Teams">
-        		<field name="activeTeam"/>
-        		<panel-related field="teamSet" canNew="false" colSpan="12"/>
+        		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
+        		<panel-related field="teamSet" canNew="false" colSpan="12" form-view="team-form" grid-view="team-grid"/>
         	 </panel>
         	<panel title="Calendars">
-        		<panel-related field="followersCalUserSet" colSpan="12"/>
-        		<panel-related field="authorizeCalUserSet" colSpan="12"/>
+        		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid"/>
+        		<panel-related field="authorizeCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid"/>
         	</panel>
         </panel-tabs>
     </form>

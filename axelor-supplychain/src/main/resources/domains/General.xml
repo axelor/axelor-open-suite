@@ -10,6 +10,7 @@
 		<boolean name="customerStockMoveGenerationAuto" title="Generate customer deliveries automatically" default="false"/>
 		<boolean name="supplierStockMoveManagement" title="Supplier arrivals management" default="false"/>
 		<boolean name="supplierStockMoveGenerationAuto" title="Generate supplier arrivals automatically" default="false"/>
+		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale Orders" default="false"/>
 	</entity>
 
 </domain-models>

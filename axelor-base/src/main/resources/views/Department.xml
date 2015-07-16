@@ -5,7 +5,7 @@
     
     <grid name="department-grid" title="Departments" model="com.axelor.apps.base.db.Department" orderBy="code">
         <field name="code"/>
-        <field name="region"/>
+        <field name="region" grid-view="region-grid" form-view="region-form"/>
         <field name="name"/>
     </grid>
     
@@ -13,10 +13,10 @@
     	<panel>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="name"/>
-	        <field name="region"/>
+	        <field name="region" grid-view="region-grid" form-view="region-form"/>
         </panel>
-        <panel-related field="communeList" colSpan="12" />
-        <panel-related field="cantonList" colSpan="12" />
+        <panel-related field="communeList" colSpan="12" form-view="commune-form" grid-view="commune-grid"/>
+        <panel-related field="cantonList" colSpan="12" form-view="canton-form" grid-view="canton-grid"/>
     </form>
     
 </object-views>
