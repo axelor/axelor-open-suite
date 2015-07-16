@@ -5,7 +5,7 @@
 	<grid name="expense-line-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine"
 		onNew="action-expense-line-default">
 		<field name="projectTask" requiredIf="toInvoice" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
-		<field name="expenseType" domain="self.expense = true" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
+		<field name="expenseType" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 		<field name="untaxedAmount" onChange="action-expense-on-change-tax-untaxt-amount"/>
 		<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount"/>
