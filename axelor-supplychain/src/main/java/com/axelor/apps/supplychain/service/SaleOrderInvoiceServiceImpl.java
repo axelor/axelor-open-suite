@@ -88,6 +88,18 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		return invoice;
 	}
 
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice generateInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLinesSelected) throws AxelorException  {
+
+		Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected);
+
+		Beans.get(InvoiceRepository.class).save(invoice);
+
+		save(fillSaleOrder(saleOrder, invoice));
+
+		return invoice;
+	}
+
 	public BigDecimal computeInTaxTotalInvoiced(Invoice invoice)  {
 
 		BigDecimal total = BigDecimal.ZERO;

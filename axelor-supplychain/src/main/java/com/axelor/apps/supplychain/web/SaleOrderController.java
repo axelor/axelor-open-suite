@@ -33,7 +33,6 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
@@ -185,7 +184,22 @@ public class SaleOrderController{
 		try {
 
 			saleOrder = saleOrderRepo.find(saleOrder.getId());
-			Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateInvoice(saleOrder);
+			//Check if at least one row is selected. If yes, then invoiced only the selected rows, else invoiced all rows
+			List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+				if (saleOrderLine.isSelected()){
+					saleOrderLineIdSelected.add(saleOrderLine.getId());
+				}
+			}
+
+			Invoice invoice = null;
+
+			if (!saleOrderLineIdSelected.isEmpty()){
+				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
+				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder, saleOrderLinesSelected);
+			}else{
+				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder);
+			}
 
 			if(invoice != null)  {
 				response.setReload(true);
