@@ -297,14 +297,13 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 					.all().filter("self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false", projectTask).fetch());
 			
 			expenseLineList.addAll(Beans.get(ExpenseLineRepository.class)
-					.all().filter("self.task = ?1 AND self.toInvoice = true AND self.invoiced = false", projectTask).fetch());
+					.all().filter("self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false", projectTask).fetch());
 			
 			elementsToInvoiceList.addAll(Beans.get(ElementsToInvoiceRepository.class)
 					.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", projectTask).fetch());
 			
-			if(projectTask.getInvoicingTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE)  {
-				projectTaskList.addAll(Beans.get(ProjectTaskRepository.class)
-						.all().filter("self.id = ?1 AND self.invoicingTypeSelect = ?2 AND self.invoiced = false", projectTask.getId()).fetch());
+			if(projectTask.getInvoicingTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE && !projectTask.getInvoiced())  {
+				projectTaskList.add(projectTask);
 			}
 		}
 		

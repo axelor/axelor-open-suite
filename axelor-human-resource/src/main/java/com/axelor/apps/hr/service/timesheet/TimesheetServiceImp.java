@@ -21,12 +21,12 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.DayPlanning;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.Leave;
+import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.LeaveRepository;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -107,7 +107,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		correspMap.put(5, "friday");
 		correspMap.put(6, "saturday");
 		correspMap.put(7, "sunday");
-		List<Leave> leaveList = LeaveRepository.of(Leave.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
+		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
 			for (DayPlanning dayPlanning : dayPlanningList) {
@@ -120,7 +120,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 			{
 				boolean noLeave = true;
 				if(leaveList != null){
-					for (Leave leave : leaveList) {
+					for (LeaveRequest leave : leaveList) {
 						if((leave.getDateFrom().isBefore(fromDate) && leave.getDateTo().isAfter(fromDate))
 							|| leave.getDateFrom().isEqual(fromDate) || leave.getDateTo().isEqual(fromDate))
 						{

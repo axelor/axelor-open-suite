@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.Leave;
 import com.axelor.apps.hr.db.LeaveLine;
+import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
-import com.axelor.apps.hr.db.repo.LeaveRepository;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.message.db.Message;
@@ -21,7 +21,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class LeaveService extends LeaveRepository{
+public class LeaveService extends LeaveRequestRepository{
 	@Inject
 	protected DurationServiceImpl durationService;
 
@@ -37,7 +37,7 @@ public class LeaveService extends LeaveRepository{
 	@Inject
 	protected HRConfigService hRConfigService;
 
-	public BigDecimal computeDuration(Leave leave){
+	public BigDecimal computeDuration(LeaveRequest leave){
 		if(leave.getDateFrom()!=null && leave.getDateTo()!=null){
 			BigDecimal duration = durationService.computeDurationInDays(leave.getDateFrom().toDateTimeAtCurrentTime().toDateTime(),leave.getDateTo().toDateTimeAtCurrentTime().toDateTime());
 			if(leave.getStartOnSelect() == leave.getEndOnSelect()){
@@ -51,7 +51,7 @@ public class LeaveService extends LeaveRepository{
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void manageSentLeaves(Leave leave) throws AxelorException{
+	public void manageSentLeaves(LeaveRequest leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
 		if(employee == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
@@ -71,7 +71,7 @@ public class LeaveService extends LeaveRepository{
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void manageValidLeaves(Leave leave) throws AxelorException{
+	public void manageValidLeaves(LeaveRequest leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
 		if(employee == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
@@ -99,7 +99,7 @@ public class LeaveService extends LeaveRepository{
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void manageRefuseLeaves(Leave leave) throws AxelorException{
+	public void manageRefuseLeaves(LeaveRequest leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
 		if(employee == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
@@ -119,7 +119,7 @@ public class LeaveService extends LeaveRepository{
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void manageCancelLeaves(Leave leave) throws AxelorException{
+	public void manageCancelLeaves(LeaveRequest leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
 		if(employee == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
@@ -148,28 +148,28 @@ public class LeaveService extends LeaveRepository{
 
 	}
 
-	public void sendEmailToManager(Leave leave) throws AxelorException{
+	public void sendEmailToManager(LeaveRequest leave) throws AxelorException{
 		Template template = hRConfigService.getHRConfig(leave.getUser().getActiveCompany()).getSentLeaveTemplate();
 		if(template!=null){
 			sendEmailTemplate(leave,template);
 		}
 	}
 
-	public void sendEmailValidationToApplicant(Leave leave) throws AxelorException{
+	public void sendEmailValidationToApplicant(LeaveRequest leave) throws AxelorException{
 		Template template =  hRConfigService.getHRConfig(leave.getUser().getActiveCompany()).getValidatedLeaveTemplate();
 		if(template!=null){
 			sendEmailTemplate(leave,template);
 		}
 	}
 
-	public void sendEmailRefusalToApplicant(Leave leave) throws AxelorException{
+	public void sendEmailRefusalToApplicant(LeaveRequest leave) throws AxelorException{
 		Template template =  hRConfigService.getHRConfig(leave.getUser().getActiveCompany()).getRefusedLeaveTemplate();
 		if(template!=null){
 			sendEmailTemplate(leave,template);
 		}
 	}
 
-	public void sendEmailTemplate(Leave leave, Template template){
+	public void sendEmailTemplate(LeaveRequest leave, Template template){
 		String model = template.getMetaModel().getFullName();
 		String tag = template.getMetaModel().getName();
 		Message message = new Message();

@@ -9,7 +9,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.exception.AxelorException;
 
-public class ExpenseProjectService extends ExpenseService{
+public class ExpenseProjectService extends ExpenseService  {
 
 	@Override
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException  {
@@ -21,7 +21,7 @@ public class ExpenseProjectService extends ExpenseService{
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine,priority*100+count));
 			count++;
 			expenseLine.setInvoiced(true);
-			invoiceLineList.get(invoiceLineList.size()-1).setProject(expenseLine.getTask());
+			invoiceLineList.get(invoiceLineList.size()-1).setProject(expenseLine.getProjectTask());
 
 		}
 
