@@ -21,7 +21,7 @@
 		</toolbar>
 		<panel title="Overview">
 			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
-			<field name="project" colSpan="12" title="Parent Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+			<field name="project" onChange="action-project-task-record-inv-type-select" colSpan="12" title="Parent Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="name"/>
 			<field name="code"/>
 			<field name="company" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
@@ -138,7 +138,7 @@
 		</toolbar>
 	    <panel>
 	    	<field name="statusSelect" widget="NavSelect" colSpan="12"/>
-	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 		    <field name="name" colSpan="12" />
 			<field name="assignedTo" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain" form-view="user-form" grid-view="user-grid"/>
 			<field name="fromDate" />
@@ -199,7 +199,7 @@
 		<panel title="Overview">
 			<field name="typeSelect"/>
 			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
-			<field name="project" requiredIf="typeSelect == 'task'" onChange="action-project-task-attrs-hide-invoicing-panel" title="Parent Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+			<field name="project" requiredIf="typeSelect == 'task'" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" title="Parent Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="name"/>
 			<field name="code"/>
 			<field name="company" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
@@ -251,6 +251,10 @@
 			<field name="membersUserSet" widget="TagSelect" hideIf="typeSelect == 'task'" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 	</form>
+	
+	<action-record name="action-project-task-record-inv-type-select" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="projTaskInvTypeSelect" expr="eval: project?.projTaskInvTypeSelect"/>
+	</action-record>
 	
 	<action-attrs name="action-project-task-attrs-hide-invoicing-panel">
 		<attribute name="hidden" for="invoicingPanel" expr="eval: projTaskInvTypeSelect != 3"/>
