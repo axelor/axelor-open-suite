@@ -6,7 +6,7 @@
 	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-to-invoice-parent">
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="date" />
-		<field name="product" domain="self.isActivity = true" canNew="true" form-view="product-form" grid-view="product-grid"/>
+		<field name="product" domain="self.isActivity = true" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true"/>
 		<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
@@ -16,9 +16,9 @@
 	
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet">
-		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
+		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 		<field name="date" onChange="action-timesheet-line-validate-date"/>
-		<field name="product" domain="self.isActivity = true" canNew="true" form-view="product-form" grid-view="product-grid"/>
+		<field name="product" domain="self.isActivity = true" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" if-module="axelor-business-project"/>
@@ -31,7 +31,7 @@
 		<panel title="Overview">
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="date" />
-			<field name="product" domain="self.isActivity = true" canNew="true" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" domain="self.isActivity = true" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 			<field name="visibleDuration" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
@@ -45,9 +45,9 @@
 	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project-task"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-title-project-task">
 		<panel title="Overview">
-			<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
+			<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="date" />
-			<field name="product" domain="self.isActivity = true" canNew="true" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" domain="self.isActivity = true" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 			<field name="visibleDuration" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
@@ -55,6 +55,10 @@
 			<field name="comments" />
 		</panel>
 	</form>
+	
+	<action-attrs name="action-timesheet-line-attrs-domain-project-task">
+		<attribute name="domain" for="projectTask" expr="eval: &quot; self.imputable = true AND (${__user__} MEMBER OF self.membersUserSet OR self.assignedTo = ${__user__}) &quot;"/>
+	</action-attrs>
 	
 	<action-validate name="action-timesheet-validate-date">
 		<error message="Invalid Date" if="_parent.fromDate &gt; date || (_parent.toDate &lt; date &amp;&amp; _parent.toDate != null)"/>
