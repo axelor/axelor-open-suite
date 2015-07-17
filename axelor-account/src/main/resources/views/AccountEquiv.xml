@@ -10,8 +10,8 @@
 
     <form name="account-equiv-form" title="Account equivalence" model="com.axelor.apps.account.db.AccountEquiv"  >
         <panel>
-        	<field name="fromAccount" onChange="action-account-equiv-attrs-domain-to-account" form-view="account-form" grid-view="account-grid"/>
-       		<field name="toAccount" form-view="account-form" grid-view="account-grid"/>
+        	<field name="fromAccount" form-view="account-form" grid-view="account-grid"/>
+       		<field name="toAccount" onSelect="action-account-equiv-attrs-domain-to-account" form-view="account-form" grid-view="account-grid"/>
         </panel>
     </form>
     
