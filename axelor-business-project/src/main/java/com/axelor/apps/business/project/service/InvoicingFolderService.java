@@ -326,4 +326,13 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 			return getRootCompany(projectTask.getProject());
 		}
 	}
+
+	public Partner findRootClientPartner(ProjectTask projectTask, int counter){
+		if(counter > MAX_LEVEL_OF_PROJECT)  {  return projectTask.getClientPartner();  }
+		counter++;
+		if(projectTask.getProject() == null){
+			return projectTask.getClientPartner();
+		}
+		return this.findRootClientPartner(projectTask.getProject(), counter);
+	}
 }

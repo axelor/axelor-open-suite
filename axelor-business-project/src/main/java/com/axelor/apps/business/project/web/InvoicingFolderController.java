@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.business.project.exception.IExceptionMessage;
 import com.axelor.apps.business.project.service.InvoicingFolderService;
 import com.axelor.apps.businessproject.db.ElementsToInvoice;
@@ -39,7 +40,11 @@ public class InvoicingFolderController extends InvoicingFolderRepository{
 		if(folder.getProjectTask() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_PROJECT_TASK)), IException.CONFIGURATION_ERROR);
 		}
-		if(folder.getProjectTask().getClientPartner() == null){
+		Partner clientPartner = folder.getProjectTask().getClientPartner();
+		if (clientPartner == null){
+			clientPartner = invoicingFolderService.findRootClientPartner(folder.getProjectTask(), 0);
+		}
+		if(clientPartner == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_CUSTOMER)), IException.CONFIGURATION_ERROR);
 		}
 
