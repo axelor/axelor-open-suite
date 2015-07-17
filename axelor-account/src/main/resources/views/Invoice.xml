@@ -44,6 +44,7 @@
 			<field name="currency" onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
+			<field name="hideDiscount"/>
 		</panel>
 	  
 		<panel title="Invoicing informations">
@@ -54,7 +55,7 @@
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain"/>
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 			<field name="bankDetails" hideIf="operationTypeSelect &gt;= 3" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" domain="self.partner = :partner" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="priceList" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
+			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
 			<field name="saleOrder" if="!_config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="message" />
 			<field name="discount" />
@@ -247,6 +248,11 @@
     </action-attrs>
 	
 	<!-- ACTION RECORD -->
+	
+	<action-record name="action-invoice-record-hide-discount" model="com.axelor.apps.account.db.Invoice">
+		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
+	</action-record>
+	
 	<action-record name="action-invoice-record-in-ati" model="com.axelor.apps.account.db.Invoice">
 		<field name="inAti" expr="eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAti"/>
 	</action-record>
