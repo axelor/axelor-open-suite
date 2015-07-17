@@ -19,7 +19,7 @@ package com.axelor.apps.sale.db;
 
 public interface ISaleOrder {
 
-	
+
 	/**
 	 * Static saleOrder status select
 	 */
@@ -29,16 +29,5 @@ public interface ISaleOrder {
 	static final int STATUS_ORDER_CONFIRMED = 3;
 	static final int STATUS_CANCELED = 4;
 
-	
-	/**
-	 * Static saleOrder invoicingTypeSelect
-	 */
-	static final int INVOICING_TYPE_PER_ORDER = 1;
-	static final int INVOICING_TYPE_WITH_PAYMENT_SCHEDULE = 2;
-	static final int INVOICING_TYPE_PER_TASK = 3;
-	static final int INVOICING_TYPE_PER_SHIPMENT = 4;
-	static final int INVOICING_TYPE_FREE = 5;
-	static final int INVOICING_TYPE_SUBSCRIPTION = 6;
-	
-	
+
 }

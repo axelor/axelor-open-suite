@@ -36,8 +36,8 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -176,7 +176,7 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 
 	@Override
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, LocalDate orderDate,
+			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
 
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
@@ -315,7 +315,6 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 				null,
 				numSeq,
 				externalRef,
-				IPurchaseOrder.INVOICING_FREE,
 				LocalDate.now(),
 				priceList,
 				supplierPartner);

@@ -54,8 +54,8 @@ public class BatchInvoicing extends BatchStrategy {
 	protected void process() {
 
 		int i = 0;
-		List<SaleOrder> saleOrderList = saleOrderRepo.all().filter("self.invoicingTypeSelect != ?1 AND self.statusSelect = ?2 AND self.company = ?3",
-				ISaleOrder.INVOICING_TYPE_SUBSCRIPTION, ISaleOrder.STATUS_ORDER_CONFIRMED, batch.getSaleBatch().getCompany()).fetch();
+		List<SaleOrder> saleOrderList = saleOrderRepo.all().filter("self.statusSelect = ?2 AND self.company = ?3",
+				ISaleOrder.STATUS_ORDER_CONFIRMED, batch.getSaleBatch().getCompany()).fetch();
 
 		for (SaleOrder saleOrder : saleOrderList) {
 

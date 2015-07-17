@@ -162,7 +162,6 @@ public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 				null,
 				parentPurchaseOrder.getPurchaseOrderSeq(),
 				parentPurchaseOrder.getExternalReference(),
-				parentPurchaseOrder.getInvoicingTypeSelect(),
 				purchaseOrderServiceSupplychainImpl.getLocation(parentPurchaseOrder.getCompany()),
 				today,
 				supplierPartner.getPurchasePriceList(),

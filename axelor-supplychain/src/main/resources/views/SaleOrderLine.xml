@@ -9,7 +9,7 @@
 			<field name="fromSubDate" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
 			<field name="periodNumber" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
 			<field name="toSubDate" readonly="true" colSpan="3"/>
-			<field name="invoicingTypeSelect"/>
+			<field name="subscripInvTypeSelect"/>
 			<button colSpan="3" name="generateSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-group-button-generate-subscriptions"/>
 			<button name="invoiceSubscription" title="Generate invoice for subscriptions" onClick="save,com.axelor.apps.supplychain.web.SubscriptionController:generateInvoice" readonlyIf="id == null" colSpan="3"/>
 			<field name="subscriptionList" colSpan="12" form-view="subscription-form" grid-view="subscription-grid"/>

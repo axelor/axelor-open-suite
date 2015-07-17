@@ -101,7 +101,6 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 							this.today.plusDays(supplierPartner.getDeliveryDelay()),
 							minStockRules.getName(),
 							null,
-							purchaseConfigService.getPurchaseConfig(company).getPurchaseOrderInvoicingTypeSelect(),
 							location,
 							this.today,
 							Beans.get(PriceListRepository.class).all().filter("self.partner = ?1", supplierPartner).fetchOne(),

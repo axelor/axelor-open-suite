@@ -11,7 +11,7 @@
 		<option value="2">Draft invoice N days after order validation</option>
 	</selection>
 	
-	<selection name="supplychain.invoicing.type.select">
+	<selection name="supplychain.subscription.invoicing.type.select">
 		<option value="1">Period Beginning</option>
 		<option value="2">Period Ending</option>
 	</selection>

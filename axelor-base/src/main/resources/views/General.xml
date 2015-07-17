@@ -103,6 +103,8 @@
 				
 				<field name="supplierStockMoveManagement" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto"/>
 				<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" if-module="axelor-supplychain"/>
+				
+				<field name="generateInvoiceFromStockMove"/>
 			</panel>
 			
 			<panel title="Production order configuration">
@@ -111,8 +113,8 @@
 			</panel>
 			
 			<panel title="Human Resource configuration" if-module="axelor-human-resource">
-				<field name="allowNegativeLeaveEmployees" />
-				<field name="invoicingTypeLogTimesSelect"/>  <!-- TODO jamais utilisé  -->
+				<field name="allowNegativeLeaveEmployees" if-module="axelor-human-resources"/>
+				<field name="invoicingTypeLogTimesSelect" if-module="axelor-human-resources"/>  <!-- TODO jamais utilisé  -->
 			</panel>
 			
 			<panel title="Project/Task configuration" if-module="axelor-project">

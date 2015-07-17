@@ -26,8 +26,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.auth.db.User;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.auth.db.User;
 import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -77,7 +77,7 @@ public interface PurchaseOrderService extends Repository<PurchaseOrder> {
 
 
 	PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, LocalDate orderDate,
+			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
 			PriceList priceList, Partner supplierPartner) throws AxelorException ;
 
 

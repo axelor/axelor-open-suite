@@ -87,7 +87,6 @@
 					<field name="paymentCondition" if-module="axelor-account" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 				</panel>
 				<panel title="Invoicing" readonlyIf="statusSelect == 4" colSpan="6">
-					<field name="invoicingTypeSelect" if-module="axelor-account"/>
 					<field name="invoice" if-module="axelor-account" form-view="invoice-form" grid-view="invoice-grid"/>
 				</panel>
 			</panel>
@@ -164,13 +163,10 @@
     
     <action-group name="action-group-purchase-order-on-validate-actions">    	
     	<action name="action-purchase-order-validate-location"/>
-    	<action name="save"/>
     	<action name="action-purchase-order-method-compute"/>
-    	<action name="save"/>
     	<action name="action-purchase-order-create-stock-move" if="eval: __config__.general.getSupplierStockMoveGenerationAuto()"/>
     	<action name="action-purchase-order-record-validate"/>
     	<action name="action-sale-order-method-validate-supplier"/>
-    	<action name="save"/>
     	<action name="action-purchase-order-set-sequence"/>
     	<action name="save"/>
     </action-group>
@@ -190,7 +186,6 @@
     	<field name="inTaxTotal" expr="eval: 0"/>
     	<field name="amountRemainingToBeInvoiced" expr="eval: 0"/>
     	<field name="statusSelect" expr="1"/>
-    	<field name="invoicingTypeSelect" expr="1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     	<field name="buyerUser" expr="eval:__user__"/>
@@ -199,7 +194,6 @@
     
     <action-record name="action-purchase-order-record-company-configuration" model="com.axelor.apps.purchase.db.PurchaseOrder">
 	    <field name="currency" expr="eval: company?.currency"/>
-	    <field name="invoicingTypeSelect" expr="eval: company?.supplychainConfig?.purchaseOrderInvoicingTypeSelect" if="eval: company?.supplychainConfig?.purchaseOrderInvoicingTypeSelect != 0"/>
 	</action-record>
 	
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.purchase.db.PurchaseOrder">

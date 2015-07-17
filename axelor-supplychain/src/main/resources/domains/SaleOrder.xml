@@ -18,7 +18,14 @@
   	<date name="fromSubDate" title="Date From"/>
   	<integer name="periodNumber" title="Number of Periods"/>
   	<date name="toSubDate" title="Date To"/>
-  	<integer name="invoicingTypeSelect" title="Invoicing Type" selection="supplychain.invoicing.type.select"/>
+  	<integer name="subscripInvTypeSelect" title="Invoicing Type" selection="supplychain.subscription.invoicing.type.select"/>
+	
+	<extra-code>
+   		<![CDATA[
+   			public static final Integer SUBSCRIPTION_PERIOD_BEGINNING = 1;
+   			public static final Integer SUBSCRIPTION_PERIOD_ENDING = 2;
+   		]]>
+   	</extra-code>
 	
   </entity>
 

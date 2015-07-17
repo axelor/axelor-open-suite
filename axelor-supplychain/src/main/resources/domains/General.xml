@@ -11,6 +11,7 @@
 		<boolean name="supplierStockMoveManagement" title="Supplier arrivals management" default="false"/>
 		<boolean name="supplierStockMoveGenerationAuto" title="Generate supplier arrivals automatically" default="false"/>
 		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale Orders" default="false"/>
+		<boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move" default="false"/>
 	</entity>
 
 </domain-models>

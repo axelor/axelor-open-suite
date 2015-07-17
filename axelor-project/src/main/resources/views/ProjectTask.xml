@@ -39,16 +39,16 @@
 			<field name="$visibleLeadDelay" colSpan="5" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
-			<field name="invoicingTypeSelect" if-module="axelor-business-project"/>
-			<field name="invoiced" showIf="invoicingTypeSelect == 2 || invoicingTypeSelect == 3" if-module="axelor-business-project"/>
+			<field name="projTaskInvTypeSelect" if-module="axelor-business-project"/>
+			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
 			<button name="seeReportingFolder" title="See Reporting Folder" onClick="action-show-reporting-folder"/>
 		</panel>
 		<panel-tabs>
-			<panel title="Invoicing" if-module="axelor-business-project" showIf="invoicingTypeSelect == 3">
-				<field name="product" onChange="action-project-task-record-unit" requiredIf="invoicingTypeSelect == 3"/>
-  				<field name="price" onChange="action-project-task-record-compute-exTaxTotal" requiredIf="invoicingTypeSelect == 3"/>
-  				<field name="qty" onChange="action-project-task-record-compute-exTaxTotal" requiredIf="invoicingTypeSelect == 3"/>
-  				<field name="unit" requiredIf="invoicingTypeSelect == 3"/>
+			<panel title="Invoicing" if-module="axelor-business-project" showIf="projTaskInvTypeSelect == 3">
+				<field name="product" onChange="action-project-task-record-unit" requiredIf="projTaskInvTypeSelect == 3"/>
+  				<field name="price" onChange="action-project-task-record-compute-exTaxTotal" requiredIf="projTaskInvTypeSelect == 3"/>
+  				<field name="qty" onChange="action-project-task-record-compute-exTaxTotal" requiredIf="projTaskInvTypeSelect == 3"/>
+  				<field name="unit" requiredIf="projTaskInvTypeSelect == 3"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
 			<panel title="Related Projects/Tasks">
@@ -152,8 +152,8 @@
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
-			<field name="invoicingTypeSelect" if-module="axelor-business-project"/>
-			<field name="invoiced" showIf="invoicingTypeSelect == 2 || invoicingTypeSelect == 3" if-module="axelor-business-project"/>
+			<field name="projTaskInvTypeSelect" if-module="axelor-business-project"/>
+			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
 			<field name="startDate" />
 			<field name="duration" />
 			<field name="sequence" />
@@ -217,8 +217,8 @@
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
-			<field name="invoicingTypeSelect" if-module="axelor-business-project"/>
-			<field name="invoiced" showIf="invoicingTypeSelect == 2 || invoicingTypeSelect == 3" if-module="axelor-business-project"/>
+			<field name="projTaskInvTypeSelect" if-module="axelor-business-project"/>
+			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
 		</panel>
 		<panel-tabs>
 			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-business-project" hidden="true">
@@ -253,7 +253,7 @@
 	</form>
 	
 	<action-attrs name="action-project-task-attrs-hide-invoicing-panel">
-		<attribute name="hidden" for="invoicingPanel" expr="eval: invoicingTypeSelect != 3"/>
+		<attribute name="hidden" for="invoicingPanel" expr="eval: projTaskInvTypeSelect != 3"/>
 	</action-attrs>
 	
 	<action-attrs name="action-task-attrs-assigned-to-domain">
@@ -276,7 +276,7 @@
 	<action-record name="action-project-task-default" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="typeSelect" expr="eval:'task'" />
 		<field name="company" expr="eval:__user__.activeCompany"/>
-		<field name="product" expr="eval: __config__.general.getProductInvoicingProjectTask()" if="invoicingTypeSelect != 3 &amp;&amp; project?.invoicingTypeSelect != 3"/>
+		<field name="product" expr="eval: __config__.general.getProductInvoicingProjectTask()" if="projTaskInvTypeSelect != 3 &amp;&amp; project?.projTaskInvTypeSelect != 3"/>
 		<field name="fromDate" expr="eval: __date__"/>
 		<field name="assignedTo" expr="eval: __user__"/>
 	</action-record>

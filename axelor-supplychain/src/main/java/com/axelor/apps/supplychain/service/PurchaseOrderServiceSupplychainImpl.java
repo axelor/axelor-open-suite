@@ -54,17 +54,16 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate,
+			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
 
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
 				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
 
 		PurchaseOrder purchaseOrder = super.createPurchaseOrder(buyerUser, company, contactPartner, currency, deliveryDate,
-				internalReference, externalReference, invoicingTypeSelect, orderDate, priceList, supplierPartner);
+				internalReference, externalReference, orderDate, priceList, supplierPartner);
 
 		purchaseOrder.setLocation(location);
-		purchaseOrder.setInvoicingTypeSelect(invoicingTypeSelect);
 
 		return purchaseOrder;
 	}

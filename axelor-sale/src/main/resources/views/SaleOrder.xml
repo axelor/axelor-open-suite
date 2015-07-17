@@ -115,7 +115,7 @@
 	        <field name="source" form-view="source-form" grid-view="source-grid"/>
 	      </panel>
 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
-	        <field name="invoicingMomentSelect" showIf="invoicingTypeSelect == 2"/>
+	        <field name="invoicingMomentSelect"/>
 	      </panel>
 	      <panel title="Stock location" if-module="axelor-supplychain">
    		      <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid"/>
@@ -128,7 +128,7 @@
 	      </panel>
 	    </panel>
 	    
-	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" grid-view="sale-order-schedule-line-grid" form-view="sale-order-schedule-line-form"/> 
+<!-- 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" grid-view="sale-order-schedule-line-grid" form-view="sale-order-schedule-line-form"/>  -->
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing"/>
 	    <panel name="projectPanel" if="__config__.general.getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.typeSelect = 'project' AND self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
@@ -140,7 +140,7 @@
 			<field name="fromSubDate" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
 			<field name="periodNumber" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
 			<field name="toSubDate" readonly="true" colSpan="3"/>
-			<field name="invoicingTypeSelect"/>
+			<field name="subscripInvTypeSelect"/>
 			<button colSpan="3" name="generateAllSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-validate-generate-all-subscriptions,save,com.axelor.apps.supplychain.web.SubscriptionController:generateAllSubscriptions"/>
 			<button name="generateInvoiceSubscriptions" title="Generate invoice for subscriptions" colSpan="3" hideIf="subcription" onClick="save,action-sale-order-method-invoice-subscriptions-sale-order" if-module="axelor-supplychain"/>
 		</panel>
@@ -152,7 +152,7 @@
 	    <button name="newVersion" title="New version" if="__config__.general.getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
 	    <button name="generateCustomerStockMove" if="__config__.general.getCustomerStockMoveManagement() &amp;&amp; !__config__.general.getCustomerStockMoveGenerationAuto()" showIf="statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed,save"/>
-	    <button name="generateInvoice" title="Generate invoice" if="__config__.general.getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="generateInvoice" title="Generate invoice" if="__config__.general.getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.general.getPurchaseOrderManagement() &amp;&amp; !__config__.general.getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" hidden="true"/>
 	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.general.getProductionOrderManagement() &amp;&amp; !__config__.general.getProductionOrderGenerationAuto()" showIf="statusSelect == 3" onClick="action-supplychain-sale-order-create-production-order" hidden="true"/>
 		<spacer/>
@@ -251,10 +251,9 @@
 	      <panel title="Marketing" colSpan="12">
 	        <field name="source" form-view="source-form" grid-view="source-grid"/>
 	      </panel>
-	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
-	      	<field name="invoicingTypeSelect"/>
-	        <field name="invoicingMomentSelect" showIf="invoicingTypeSelect == 2"/>
-	      </panel>
+<!-- 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12" showIf="invoicingTypeSelect == 2"> -->
+<!-- 	        <field name="invoicingMomentSelect"/> -->
+<!-- 	      </panel> -->
 	      <panel title="Stock location" if-module="axelor-supplychain">
    		      <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid"/>
 	      </panel>
@@ -266,21 +265,8 @@
 	      </panel>        
 	    </panel>
 	    
-	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" form-view="sale-order-schedule-line-form" grid-view="sale-order-schedule-line-grid"/>          
+<!-- 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" form-view="sale-order-schedule-line-form" grid-view="sale-order-schedule-line-grid"/>           -->
 	    
-	    <panel title="Subscription" showIf="invoicingTypeSelect == 6" showTitle="false" if-module="axelor-supplychain">
-	      <panel title="Subscription dates" colSpan="12">
-	        <field name="subscriptionStartDate" onChange="action-sale-order-record-subscription-start-date"/>
-	        <field name="subscriptionEndDate"/>
-	      </panel>
-	      <panel title="Invoices dates" colSpan="12">
-	        <field name="invoicedFirstDate" onChange="action-scheduler-instance-record-first-execution-date"/>
-	        <field name="nextInvPeriodStartDate"/>
-<!-- 	        	<field name="scheduler"/> -->
-	        <field name="schedulerInstance"/>
-	        <field name="schedulerInstance.lastTheoreticalExecutionDate"/>
-	      </panel>
-	    </panel>
 	    <panel name="projectPanel" if="__config__.general.getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" colSpan="12"/>
        	</panel>
@@ -420,7 +406,6 @@
     	<attribute name="readonly" for="location" expr="statusSelect == 3" />
     	<attribute name="readonly" for="company" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="clientPartner" expr="statusSelect == 3"/>
-    	<attribute name="readonly" for="invoicingTypeSelect" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="hasToCreateProposal" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="project" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="priceList" expr="statusSelect == 3"/>
@@ -540,7 +525,6 @@
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
-    	<field name="invoicingTypeSelect" expr="eval: 5"/>
     	<field name="hasGlobalTask" expr="eval: true"/>
     	<field name="salemanUser" expr="eval:__user__"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>

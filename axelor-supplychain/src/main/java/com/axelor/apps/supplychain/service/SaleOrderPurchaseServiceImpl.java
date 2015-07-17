@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -128,7 +127,6 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				null,
 				saleOrder.getSaleOrderSeq(),
 				saleOrder.getExternalReference(),
-				IPurchaseOrder.INVOICING_FREE,
 				purchaseOrderServiceSupplychainImpl.getLocation(saleOrder.getCompany()),
 				today,
 				supplierPartner.getPurchasePriceList(),

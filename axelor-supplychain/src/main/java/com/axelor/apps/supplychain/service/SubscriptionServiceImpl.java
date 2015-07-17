@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.exception.AxelorException;
@@ -29,7 +30,7 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 
 		while(iterator != saleOrderLine.getPeriodNumber()){
 			Subscription subscription = new Subscription();
-			if(saleOrderLine.getInvoicingTypeSelect() == 1){
+			if(saleOrderLine.getSubscripInvTypeSelect() == SaleOrderRepository.SUBSCRIPTION_PERIOD_BEGINNING){
 				subscription.setInvoicingDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*iterator));
 			}
 			else{
@@ -68,7 +69,7 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 
 		while(iterator != saleOrder.getPeriodNumber()){
 			Subscription subscription = new Subscription();
-			if(saleOrder.getInvoicingTypeSelect() == 1){
+			if(saleOrder.getSubscripInvTypeSelect() == SaleOrderRepository.SUBSCRIPTION_PERIOD_BEGINNING){
 				subscription.setInvoicingDate(saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity()*iterator));
 			}
 			else{

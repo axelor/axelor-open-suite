@@ -44,7 +44,7 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		project.setProgress(0);
 		project.addMembersUserSetItem(assignedTo);
 		project.setImputable(true);
-		project.setInvoicingTypeSelect(ProjectTaskRepository.INVOICING_TYPE_NONE);
+		project.setProjTaskInvTypeSelect(ProjectTaskRepository.INVOICING_TYPE_NONE);
 		Product product = generalService.getGeneral().getProductInvoicingProjectTask();
 		project.setProduct(product);
 		project.setQty(BigDecimal.ONE);

@@ -87,11 +87,11 @@
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-to-invoice" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="toInvoice" expr="eval: projectTask?.invoicingTypeSelect == 2 || projectTask?.project?.invoicingTypeSelect == 2"/>
+		<field name="toInvoice" expr="eval: projectTask?.projTaskInvTypeSelect == 2 || projectTask?.project?.projTaskInvTypeSelect == 2"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-to-invoice-parent" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="toInvoice" expr="eval: _parent?.projectTask?.invoicingTypeSelect == 2 || _parent?.projectTask?.project?.invoicingTypeSelect == 2"/>
+		<field name="toInvoice" expr="eval: _parent?.projectTask?.projTaskInvTypeSelect == 2 || _parent?.projectTask?.project?.projTaskInvTypeSelect == 2"/>
 	</action-record>
 	
 	<action-validate name="action-timesheet-line-validate-date">
