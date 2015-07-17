@@ -60,7 +60,7 @@ public class SaleOrderController{
 	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
 
 
-	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 

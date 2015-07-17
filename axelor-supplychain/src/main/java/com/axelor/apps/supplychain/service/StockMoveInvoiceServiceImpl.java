@@ -126,6 +126,7 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 		Address invoiceMainInvoicingAddress = null;
 		Partner invoiceContactPartner = null;
 		PriceList invoicePriceList = null;
+		Boolean invoiceInAti = null;
 
 		Map<String,Object> mapResult = new HashMap<String, Object>();
 
@@ -154,6 +155,7 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 				invoiceMainInvoicingAddress = saleOrder.getMainInvoicingAddress();
 				invoiceContactPartner = saleOrder.getContactPartner();
 				invoicePriceList = saleOrder.getPriceList();
+				invoiceInAti = saleOrder.getInAti();
 			}else{
 
 				if (invoiceCurrency != null
@@ -196,6 +198,11 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 						&& !invoicePriceList.equals(saleOrder.getPriceList())){
 					invoicePriceList = null;
 				}
+
+				if (invoiceInAti != null
+						&& !invoiceInAti.equals(saleOrder.getInAti())){
+					invoiceInAti = null;
+				}
 			}
 			stockMoveToInvoiceList.add(stockMove);
 			count++;
@@ -225,6 +232,12 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 				fieldErrors.append("<br/>");
 			}
 			fieldErrors.append(I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_COMPANY_SO));
+		}
+		if (invoiceInAti == null){
+			if (fieldErrors.length() > 0){
+				fieldErrors.append("<br/>");
+			}
+			fieldErrors.append(I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
 		}
 
 		if (fieldErrors.length() > 0){
