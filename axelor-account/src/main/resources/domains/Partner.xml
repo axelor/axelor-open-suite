@@ -17,8 +17,8 @@
     <integer name="rejectCounter" title="Reject counter"/>
    
 	 <!-- PAGE SEPA -->
-	<one-to-many name="rumList" ref="com.axelor.apps.account.db.Rum" mappedBy="partner" title="UMR List"/>
-	<many-to-one name="activeRum" ref="com.axelor.apps.account.db.Rum" title="Active UMR"/>
+	<one-to-many name="umrList" ref="com.axelor.apps.account.db.Umr" mappedBy="partner" title="UMR List"/>
+	<many-to-one name="activeUmr" ref="com.axelor.apps.account.db.Umr" title="Active UMR"/>
 	
   </entity>
   

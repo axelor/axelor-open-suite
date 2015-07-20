@@ -13,8 +13,8 @@
         <panel name="configPanel" title="Configurations" readonlyIf="isValid">
         	<field name="serverTypeSelect"/>
         	<field name="host"/>
+        	<field name="securitySelect" onChange="action-mail-account-onchange-security-select"/>
         	<field name="port"/>
-        	<field name="securitySelect"/>
         </panel>
         <panel name="loginPanel" title="Login" readonlyIf="isValid" >
        	 	<field name="login"/>

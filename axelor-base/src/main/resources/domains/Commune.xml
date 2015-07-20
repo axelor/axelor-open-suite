@@ -16,6 +16,7 @@
     <integer name="nbInhCommune" title="Nb. of Inhabitants"/>
     <string name="zip" title="Zip code"/>
     <boolean name="hasZipOnRight" title="Zip On Right ?" />
+    <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country" />
     
   </entity>
 

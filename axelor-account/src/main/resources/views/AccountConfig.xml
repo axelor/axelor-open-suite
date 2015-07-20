@@ -7,7 +7,7 @@
         <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
 	    
-	<form  name="account-config-form" title="Account configuration" model="com.axelor.apps.account.db.AccountConfig" onNew="action-account-config-record-default">
+	<form  name="account-config-form" title="Account configuration" model="com.axelor.apps.account.db.AccountConfig" onNew="action-account-config-record-default" width="large">
 		<toolbar>
 		  <button name="showInvoice" title="Invoices" onClick="save,action-company-view-invoice"/>
 		</toolbar>

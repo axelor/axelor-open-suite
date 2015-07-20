@@ -79,6 +79,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 		}
 
 		String type = request.getContext().get("_type").toString();
+		response.setCanClose(true);
 		if(type.contentEquals("user")){
 			response.setView(ActionView
 					.define("Week"+planningPreviousWeek.getWeek())
@@ -117,6 +118,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 			planningNextWeek = projectPlanningService.createPlanning(year,nextWeek);
 		}
 		String type = request.getContext().get("_type").toString();
+		response.setCanClose(true);
 		if(type.contentEquals("user")){
 			response.setView(ActionView
 					.define("Week"+planningNextWeek.getWeek())
@@ -152,6 +154,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 		}
 
 		String type = request.getContext().get("_type").toString();
+		response.setCanClose(true);
 		if(type.contentEquals("user")){
 			response.setView(ActionView
 					.define("Week"+planningCurrentWeek.getWeek())
