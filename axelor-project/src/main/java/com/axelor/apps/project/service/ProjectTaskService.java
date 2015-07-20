@@ -22,7 +22,7 @@ public class ProjectTaskService extends ProjectTaskRepository{
 		project.setCompany(company);
 		project.setClientPartner(clientPartner);
 		project.setAssignedTo(assignedTo);
-		project.setProgress(0);
+		project.setProgressSelect(0);
 		project.addMembersUserSetItem(assignedTo);
 		return project;
 	}
@@ -39,7 +39,7 @@ public class ProjectTaskService extends ProjectTaskRepository{
 		}
 		task.setFullName(task.getName());
 		task.setAssignedTo(assignedTo);
-		task.setProgress(0);
+		task.setProgressSelect(0);
 
 		return task;
 	}

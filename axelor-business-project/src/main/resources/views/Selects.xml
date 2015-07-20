@@ -14,7 +14,7 @@
 		<option value="3">Flat Rate</option>
 	</selection>
 	
-	<selection name="invoicing.folder.priority.select">
+	<selection name="invoicing.project.priority.select">
 		<option value="1">1</option>
 		<option value="2">2</option>
 		<option value="3">3</option>
