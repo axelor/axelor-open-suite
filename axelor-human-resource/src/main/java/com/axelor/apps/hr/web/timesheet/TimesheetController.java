@@ -214,4 +214,12 @@ public class TimesheetController {
 			}
 		}
 	}
+
+	public void computeTimeSpent(ActionRequest request, ActionResponse response){
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
+		if(timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()){
+			timesheetService.computeTimeSpent(timesheet);
+		}
+	}
 }

@@ -12,4 +12,6 @@ public interface TimesheetService {
 	public Timesheet generateLines(Timesheet timesheet) throws AxelorException;
 	@Transactional
 	public LocalDate getFromPeriodDate();
+	@Transactional
+	public void computeTimeSpent(Timesheet timesheet);
 }
