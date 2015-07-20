@@ -7,6 +7,10 @@ public class MessageManagementRepository extends MessageRepository {
 	public Message copy(Message entity, boolean deep) {
 		entity.setStatusSelect(1);
 		entity.setSentDateT(null);
+		entity.setToEmailAddressSet(null);
+		entity.setCcEmailAddressSet(null);
+		entity.setBccEmailAddressSet(null);
+		entity.setRecipientUser(null);
 		return super.copy(entity, deep);
 	}
 }

@@ -55,13 +55,6 @@ public interface GeneralService extends Repository<General> {
 	 */
 	public LocalDate getTodayDate();
 
-	/**
-	 * Savoir si le logger est activé
-	 *
-	 * @return
-	 */
-	public boolean isLogEnabled();
-
 	public Unit getUnit();
 
 

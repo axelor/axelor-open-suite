@@ -41,10 +41,13 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		project.setCompany(company);
 		project.setClientPartner(clientPartner);
 		project.setAssignedTo(assignedTo);
-		project.setProgress(0);
+		project.setProgressSelect(0);
 		project.addMembersUserSetItem(assignedTo);
 		project.setImputable(true);
 		project.setProjTaskInvTypeSelect(ProjectTaskRepository.INVOICING_TYPE_NONE);
+		if(parentProject != null){
+			project.setProjTaskInvTypeSelect(parentProject.getProjTaskInvTypeSelect());
+		}
 		Product product = generalService.getGeneral().getProductInvoicingProjectTask();
 		project.setProduct(product);
 		project.setQty(BigDecimal.ONE);
@@ -77,14 +80,15 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		}
 		task.setFullName(task.getName());
 		task.setAssignedTo(assignedTo);
-		task.setProgress(0);
+		task.setProgressSelect(0);
 		task.setImputable(true);
 		Product product = generalService.getGeneral().getProductInvoicingProjectTask();
-		project.setProduct(product);
-		project.setQty(BigDecimal.ONE);
-		project.setPrice(product.getPurchasePrice());
-		project.setUnit(product.getUnit());
-		project.setExTaxTotal(product.getPurchasePrice());
+		task.setProduct(product);
+		task.setQty(BigDecimal.ONE);
+		task.setPrice(product.getPurchasePrice());
+		task.setUnit(product.getUnit());
+		task.setExTaxTotal(product.getPurchasePrice());
+		task.setProjTaskInvTypeSelect(project.getProjTaskInvTypeSelect());
 		return task;
 	}
 

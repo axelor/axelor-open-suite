@@ -18,9 +18,9 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.business.project.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.db.ElementsToInvoice;
-import com.axelor.apps.businessproject.db.InvoicingFolder;
+import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.ElementsToInvoiceRepository;
-import com.axelor.apps.businessproject.db.repo.InvoicingFolderRepository;
+import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
@@ -45,7 +45,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class InvoicingFolderService extends InvoicingFolderRepository{
+public class InvoicingProjectService extends InvoicingProjectRepository{
 
 
 	@Inject
@@ -66,17 +66,15 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 	@Inject
 	protected GeneralService generalService;
 
-	protected int MAX_LEVEL_OF_PROJECT = 10;
-
 	protected int sequence = 10;
 
 	@Transactional
-	public Invoice generateInvoice(InvoicingFolder folder) throws AxelorException{
-		ProjectTask projectTask = folder.getProjectTask();
-		Partner customer = Beans.get(ProjectTaskService.class).getClientPartnerFromProjectTask(projectTask);
+	public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException{
+		ProjectTask projectTask = invoicingProject.getProjectTask();
+		Partner customer = projectTask.getClientPartner();
 		Company company = this.getRootCompany(projectTask);
 		if(company == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_PROJECT_TASK_COMPANY)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_TASK_COMPANY)), IException.CONFIGURATION_ERROR);
 		}
 		User user = projectTask.getAssignedTo();
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, company, customer.getPaymentCondition(),
@@ -91,16 +89,16 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		};
 		Invoice invoice = invoiceGenerator.generate();
 		invoice.setInAti(user.getActiveCompany().getAccountConfig().getInvoiceInAti());
-		invoiceGenerator.populate(invoice,this.populate(invoice,folder));
+		invoiceGenerator.populate(invoice,this.populate(invoice,invoicingProject));
 		Beans.get(InvoiceRepository.class).save(invoice);
 
-		this.setInvoiced(folder);
-		folder.setInvoice(invoice);
-		save(folder);
+		this.setInvoiced(invoicingProject);
+		invoicingProject.setInvoice(invoice);
+		save(invoicingProject);
 		return invoice;
 	}
 
-	public List<InvoiceLine> populate(Invoice invoice,InvoicingFolder folder) throws AxelorException{
+	public List<InvoiceLine> populate(Invoice invoice,InvoicingProject folder) throws AxelorException{
 		List<SaleOrderLine> saleOrderLineList = new ArrayList<SaleOrderLine>(folder.getSaleOrderLineSet());
 		List<PurchaseOrderLine> purchaseOrderLineList = new ArrayList<PurchaseOrderLine>(folder.getPurchaseOrderLineSet());
 		List<TimesheetLine> timesheetLineList = new ArrayList<TimesheetLine>(folder.getLogTimesSet());
@@ -224,7 +222,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		Product product = projectTask.getProduct();
 
 		if(product == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_PROJECT_TASK_PRODUCT),projectTask.getFullName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_TASK_PRODUCT),projectTask.getFullName()), IException.CONFIGURATION_ERROR);
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, projectTask.getName(), projectTask.getPrice(),
@@ -246,30 +244,30 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 		return invoiceLineGenerator.creates();
 	}
 
-	public void setInvoiced(InvoicingFolder folder){
-		for (SaleOrderLine saleOrderLine : folder.getSaleOrderLineSet()) {
+	public void setInvoiced(InvoicingProject invoicingProject){
+		for (SaleOrderLine saleOrderLine : invoicingProject.getSaleOrderLineSet()) {
 			saleOrderLine.setInvoiced(true);
 		}
-		for (PurchaseOrderLine purchaseOrderLine : folder.getPurchaseOrderLineSet()) {
+		for (PurchaseOrderLine purchaseOrderLine : invoicingProject.getPurchaseOrderLineSet()) {
 			purchaseOrderLine.setInvoiced(true);
 		}
-		for (TimesheetLine timesheetLine : folder.getLogTimesSet()) {
+		for (TimesheetLine timesheetLine : invoicingProject.getLogTimesSet()) {
 			timesheetLine.setInvoiced(true);
 		}
-		for (ExpenseLine expenseLine : folder.getExpenseLineSet()) {
+		for (ExpenseLine expenseLine : invoicingProject.getExpenseLineSet()) {
 			expenseLine.setInvoiced(true);
 		}
-		for (ElementsToInvoice elementsToInvoice : folder.getElementsToInvoiceSet()) {
+		for (ElementsToInvoice elementsToInvoice : invoicingProject.getElementsToInvoiceSet()) {
 			elementsToInvoice.setInvoiced(true);
 		}
-		for (ProjectTask projectTask : folder.getProjectTaskSet()) {
+		for (ProjectTask projectTask : invoicingProject.getProjectTaskSet()) {
 			projectTask.setInvoiced(true);
 		}
 	}
 
 
-	public List<InvoiceLine> customerChargeBackPurchases(List<InvoiceLine> invoiceLineList,InvoicingFolder folder) throws AxelorException{
-		Partner customer = Beans.get(ProjectTaskService.class).getClientPartnerFromProjectTask(folder.getProjectTask());
+	public List<InvoiceLine> customerChargeBackPurchases(List<InvoiceLine> invoiceLineList,InvoicingProject invoicingProject) throws AxelorException{
+		Partner customer = Beans.get(ProjectTaskService.class).getClientPartnerFromProjectTask(invoicingProject.getProjectTask());
 		if(!customer.getFlatFeePurchase()){
 			for (InvoiceLine invoiceLine : invoiceLineList) {
 				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackPurchase().divide(new BigDecimal(100), generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
@@ -283,7 +281,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 	public void getLines(ProjectTask projectTask, List<SaleOrderLine> saleOrderLineList, List<PurchaseOrderLine> purchaseOrderLineList,
 							List<TimesheetLine> timesheetLineList,  List<ExpenseLine> expenseLineList, List<ElementsToInvoice> elementsToInvoiceList, List<ProjectTask> projectTaskList, int counter){
 
-		if(counter > MAX_LEVEL_OF_PROJECT)  {  return;  }
+		if(counter > ProjectTaskService.MAX_LEVEL_OF_PROJECT)  {  return;  }
 		counter++;
 
 		if(projectTask.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE || projectTask.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED)  {

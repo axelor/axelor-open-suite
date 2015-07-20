@@ -28,5 +28,6 @@ public interface IExceptionMessage {
 	static final String PROJECT_PLANNING_NO_TASK = /*$$(*/ "Vous n'êtes sur aucun projet ou aucune tâche, votre planning ne sera pas généré."/*)*/ ;
 	static final String PROJECT_PLANNING_NO_TASK_TEAM = /*$$(*/ "Votre équipe n'est sur aucun projet ou aucune tâche, votre planning ne sera pas généré."/*)*/ ;
 	static final String PROJECT_CUSTOMER_PARTNER = /*$$(*/ "Le projet/tâche sélectionné(e) ne contient pas de client"/*)*/ ;
+	static final String PROJECT_DEEP_LIMIT_REACH = /*$$(*/ "The deep limit of the project is too high "/*)*/ ;
 
 }

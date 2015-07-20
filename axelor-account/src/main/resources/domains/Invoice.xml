@@ -27,6 +27,7 @@
     <string name="internalReference" title="Internal Ref." help="true"/>
     <string name="externalReference" title="External Ref." help="true"/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
+    <boolean name="hideDiscount" title="Hide Discount"/>
     
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date" />

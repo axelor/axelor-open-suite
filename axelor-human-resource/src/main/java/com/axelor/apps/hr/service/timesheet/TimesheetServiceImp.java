@@ -33,6 +33,8 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -298,4 +300,50 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 		return invoiceLineGenerator.creates();
 	}
+
+	@Override
+	@Transactional
+	public void computeTimeSpent(Timesheet timesheet){
+		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+		for (TimesheetLine timesheetLine : timesheetLineList) {
+			ProjectTask projectTask = timesheetLine.getProjectTask();
+			if(projectTask != null){
+				projectTask.setTimeSpent(timesheetLine.getDurationStored().add(this.computeSubTimeSpent(projectTask)));
+				this.computeParentTimeSpent(projectTask);
+				Beans.get(ProjectTaskRepository.class).save(projectTask);
+			}
+		}
+	}
+
+	public BigDecimal computeSubTimeSpent(ProjectTask projectTask){
+		BigDecimal sum = BigDecimal.ZERO;
+		List<ProjectTask> subProjectTaskList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1", projectTask).fetch();
+		if(subProjectTaskList == null || subProjectTaskList.isEmpty()){
+			return projectTask.getTimeSpent();
+		}
+		for (ProjectTask projectTaskIt : subProjectTaskList) {
+			sum = sum.add(this.computeSubTimeSpent(projectTaskIt));
+		}
+		return sum;
+	}
+
+	public void computeParentTimeSpent(ProjectTask projectTask){
+		ProjectTask parentProject = projectTask.getProject();
+		if(parentProject == null){
+			return;
+		}
+		parentProject.setTimeSpent(projectTask.getTimeSpent().add(this.computeTimeSpent(parentProject)));
+		this.computeParentTimeSpent(parentProject);
+	}
+
+	public BigDecimal computeTimeSpent(ProjectTask projectTask){
+		BigDecimal sum = BigDecimal.ZERO;
+		List<TimesheetLine> timesheetLineList = Beans.get(TimesheetLineRepository.class).all().filter("self.projectTask = ?1 AND self.affectedToTimeSheet.statusSelect = ?2", projectTask, TimesheetRepository.STATUS_VALIDATED).fetch();
+		for (TimesheetLine timesheetLine : timesheetLineList) {
+			sum = sum.add(timesheetLine.getDurationStored());
+		}
+		return sum;
+	}
 }
+
+

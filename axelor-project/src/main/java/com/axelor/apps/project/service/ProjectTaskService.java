@@ -13,6 +13,8 @@ import com.google.common.base.Strings;
 
 public class ProjectTaskService extends ProjectTaskRepository{
 
+	public static int MAX_LEVEL_OF_PROJECT = 10;
+
 	public ProjectTask generateProject(ProjectTask parentProject,String fullName, User assignedTo, Company company, Partner clientPartner){
 		ProjectTask project = new ProjectTask();
 		project.setTypeSelect(ProjectTaskRepository.TYPE_PROJECT);
@@ -26,7 +28,7 @@ public class ProjectTaskService extends ProjectTaskRepository{
 		project.setCompany(company);
 		project.setClientPartner(clientPartner);
 		project.setAssignedTo(assignedTo);
-		project.setProgress(0);
+		project.setProgressSelect(0);
 		project.addMembersUserSetItem(assignedTo);
 		return project;
 	}
@@ -43,12 +45,16 @@ public class ProjectTaskService extends ProjectTaskRepository{
 		}
 		task.setFullName(task.getName());
 		task.setAssignedTo(assignedTo);
-		task.setProgress(0);
+		task.setProgressSelect(0);
 
 		return task;
 	}
 
 	public Partner getClientPartnerFromProjectTask(ProjectTask projectTask) throws AxelorException{
+		return this.getClientPartnerFromProjectTask(projectTask, 0);
+	}
+
+	private Partner getClientPartnerFromProjectTask(ProjectTask projectTask, int counter) throws AxelorException{
 		if (projectTask.getProject() == null){
 			//it is a root project, can get the client partner
 			if(projectTask.getClientPartner() == null){
@@ -57,7 +63,11 @@ public class ProjectTaskService extends ProjectTaskRepository{
 				return projectTask.getClientPartner();
 			}
 		}else{
-			return this.getClientPartnerFromProjectTask(projectTask.getProject());
+			if (counter > MAX_LEVEL_OF_PROJECT){
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROJECT_DEEP_LIMIT_REACH)), IException.CONFIGURATION_ERROR);
+			}else{
+				return this.getClientPartnerFromProjectTask(projectTask.getProject(), counter++);
+			}
 		}
 	}
 }

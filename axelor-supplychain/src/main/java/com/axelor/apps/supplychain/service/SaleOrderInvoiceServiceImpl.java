@@ -209,6 +209,22 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 
 	}
 
+	//Need to create this new method because createInvoiceLines doesn't take into account lines with subscriptable products anymore
+	public List<InvoiceLine> createInvoiceLinesSubscription(Invoice invoice, List<SaleOrderLine> saleOrderLineList) throws AxelorException  {
+
+		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+
+		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
+
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
+
+			saleOrderLine.setInvoiced(true);
+		}
+
+		return invoiceLineList;
+
+	}
+
 	@Override
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException  {
 
@@ -297,7 +313,19 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 			return null;
 		}
 
-		Invoice invoice = this.createInvoice(saleOrder, saleOrderLineList);
+
+		InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
+
+		Invoice invoice = invoiceGenerator.generate();
+
+		invoice.setInAti(Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getInvoiceInAti());
+
+
+		invoiceGenerator.populate(invoice, this.createInvoiceLinesSubscription(invoice, saleOrderLineList));
+
+
+		this.fillInLines(invoice);
+
 
 		invoice.setIsSubscription(true);
 

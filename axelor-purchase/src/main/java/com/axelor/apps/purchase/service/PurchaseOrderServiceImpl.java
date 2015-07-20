@@ -55,6 +55,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -339,6 +340,14 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 		}
 
 		return purchaseOrderMerged;
+	}
+
+	@Override
+	public void setDraftSequence(PurchaseOrder purchaseOrder) {
+		
+		if(purchaseOrder.getId() != null && Strings.isNullOrEmpty(purchaseOrder.getPurchaseOrderSeq())){
+			purchaseOrder.setPurchaseOrderSeq(this.getDraftSequence(purchaseOrder.getId()));
+		}
 	}
 
 }

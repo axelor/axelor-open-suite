@@ -60,7 +60,7 @@
 				</panel>
 		    </panel>
 		    <panel title="General Settings">
-		    	<panel-include view="general-settings-form"/>				
+		    	<panel-include view="general-settings-form"/>
 		    </panel>
 		    <panel title="Interfaces">
 				<panel name="map" title="Mapping"  colSpan="12">
@@ -79,7 +79,7 @@
 		</panel-tabs>
 	</form>
 	
-	<form name="general-settings-form" title="General Settings" model="com.axelor.apps.base.db.General"  >
+	<form name="general-settings-form" title="General Settings" model="com.axelor.apps.base.db.General" >
 		<panel-tabs colSpan="12">
 	    	<panel title="Invoice configuration">
 				<field name="manageInvoicedAmountByLine" if-module="axelor-supplychain"/>
