@@ -137,10 +137,10 @@
 				<label title="OR" colSpan="4"/>
 				<field name="flatFeePurchase" colSpan="4"/>
 			</panel>
-			<panel title="Sale Order" if-module="axelor-sale">
+			<panel title="Sale Order" if-module="axelor-sale" showIf="isCustomer == true">
 				<field name="saleOrderInformation" colSpan="12"/>
 			</panel>
-			<panel title="Purchase Order" if-module="axelor-purchase">
+			<panel title="Purchase Order" if-module="axelor-purchase" showIf="isSupplier == true">
 				<field name="purchaseOrderInformation" colSpan="12"/>
 			</panel>
 		</panel-tabs>
@@ -162,9 +162,9 @@
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
         <field name="fullName"/>
         <field name="mainInvoicingAddress" form-view="address-form" grid-view="address-grid"/>
-        <field name="fixedPhone"/>
-		<field name="mobilePhone"/>
-        <field name="email"/>
+        <field name="fixedPhone" placeholder="+33102030405" pattern="^\+?\d{8,11}$"/>
+		<field name="mobilePhone" placeholder="+33602030405" pattern="^\+?\d{8,11}$"/>
+        <field name="email" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)$"/>
     </grid>
     
     <form name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
