@@ -2,18 +2,18 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
 
-	<grid name="invoicing-folder-grid" title="Invoicing Folders" model="com.axelor.apps.businessproject.db.InvoicingFolder">
+	<grid name="invoicing-project-grid" title="Invoicing Project" model="com.axelor.apps.businessproject.db.InvoicingProject">
 		<field name="projectTask" form-view="project-form" grid-view="project-grid" />
 	</grid>
 
-	<form name="invoicing-folder-form" title="Invoicing Folder" model="com.axelor.apps.businessproject.db.InvoicingFolder" 
-		onNew="action-invoicing-folder-attrs-title-project-task" onLoad="action-invoicing-folder-attrs-title-project-task">
+	<form name="invoicing-project-form" title="Invoicing Project" model="com.axelor.apps.businessproject.db.InvoicingProject" 
+		onNew="action-invoicing-project-attrs-title-project-task" onLoad="action-invoicing-project-attrs-title-project-task">
 		<panel>
-			<field name="projectTask" form-view="project-form" grid-view="project-grid" onChange="action-invoicing-folder-method-fill-in" colSpan="12" readonlyIf="invoice != null"/>
-			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-folder-method-fill-in" readonlyIf="invoice != null"/>
-			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-folder-method-generate-invoice" readonlyIf="invoice != null"/>
+			<field name="projectTask" form-view="project-form" grid-view="project-grid" onChange="action-invoicing-project-method-fill-in" colSpan="12" readonlyIf="invoice != null"/>
+			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
+			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" readonlyIf="invoice != null"/>
 			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid"/>
-			<button name="seeInvoice" title="See Invoice Generated" onClick="action-invoicing-folder-view-see-invoice" showIf="invoice != null"/>
+			<button name="seeInvoice" title="See Invoice Generated" onClick="action-invoicing-project-view-see-invoice" showIf="invoice != null"/>
 		</panel>
 		<panel-related field="saleOrderLineSet" canNew="false" canEdit="false" canSelect="false" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
 		<panel-related field="purchaseOrderLineSet"  canNew="false" canEdit="false" canSelect="false" grid-view="purchase-order-line-grid" form-view="purchase-order-line-form"/>
@@ -34,20 +34,20 @@
 		</panel>
 	</form>
 	
-	<action-method name="action-invoicing-folder-method-generate-invoice">
-		<call class="com.axelor.apps.business.project.web.InvoicingFolderController" method="generateInvoice"/>
+	<action-method name="action-invoicing-project-method-generate-invoice">
+		<call class="com.axelor.apps.business.project.web.InvoicingProjectController" method="generateInvoice"/>
 	</action-method>
 	
-	<action-method name="action-invoicing-folder-method-fill-in">
-		<call class="com.axelor.apps.business.project.web.InvoicingFolderController" method="fillIn"/>
+	<action-method name="action-invoicing-project-method-fill-in">
+		<call class="com.axelor.apps.business.project.web.InvoicingProjectController" method="fillIn"/>
 	</action-method>
 	
-	<action-attrs name="action-invoicing-folder-attrs-title-project-task">
+	<action-attrs name="action-invoicing-project-attrs-title-project-task">
 		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 		<attribute name="title" for="projectTaskSet" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	</action-attrs>
 	
-	<action-view name="action-invoicing-folder-view-see-invoice" title="Invoice" model="com.axelor.apps.account.db.Invoice">
+	<action-view name="action-invoicing-project-view-see-invoice" title="Invoice" model="com.axelor.apps.account.db.Invoice">
 		<view type="form"/>
 		<view type="grid"/>
 		<context name="_showRecord" expr="eval: invoice?.id"/>

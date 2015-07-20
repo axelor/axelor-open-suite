@@ -155,13 +155,6 @@ public class PurchaseOrderController {
 			response.setFlash(urlNotExist);
 		}
 	}
-	public void setDraftSequence(ActionRequest request,ActionResponse response){
-		PurchaseOrder purchaseOrder=request.getContext().asType(PurchaseOrder.class);
-		if(purchaseOrder.getPurchaseOrderSeq()!=null){
-			return;
-		}
-		response.setValue("purchaseOrderSeq", purchaseOrderService.getDraftSequence(purchaseOrder.getId()));
-	}
 
 	public void requestPurchaseOrder(ActionRequest request, ActionResponse response) throws Exception {
 

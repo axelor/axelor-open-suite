@@ -29,7 +29,7 @@
 	  <decimal name="timeSpent" title="Time Spent"/>
 	  <decimal name="leadDelay" title="Lead/Delay"/>
 	  
-	  <integer name="progress" title="Progress (%)" selection="grade.0.up.to.100.select"/>
+	  <integer name="progressSelect" title="Progress (%)" selection="grade.0.up.to.100.select"/>
 	  <datetime name="startDate" title="Start date" />
 	  <decimal name="ganttProgress" title="Progress"/>
 	  <decimal name="sequence" title="Sequence" />

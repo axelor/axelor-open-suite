@@ -45,7 +45,7 @@
     </form>
 	
 	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-purchase-order-attrs-hide-contact-partner,action-purchase-order-attrs-in-ati"
-	 onSave="save,action-method-set-purchase-order-draft-sequence,save" onNew="action-group-purchase-order-on-new-actions" >
+	  onNew="action-group-purchase-order-on-new-actions" >
 		<toolbar>
 			<button name="print" title="Print" icon="fa-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
 			<button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
@@ -145,9 +145,6 @@
 		
 	</form>
 	
-	<action-method name="action-method-set-purchase-order-draft-sequence">
-		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="setDraftSequence"/>
-	</action-method>
     <action-group name="action-group-purchase-order-on-new-actions">
     	<action name="action-purchase-order-record-new"/>
     	<action name="action-purchase-order-record-company-configuration"/>

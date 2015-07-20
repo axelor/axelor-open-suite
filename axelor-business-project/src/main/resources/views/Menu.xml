@@ -2,13 +2,13 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<menuitem name="invoicing-folder-all" parent="menu-project-root"
-    	title="Invoicing Folders"
-    	action="invoicing.folder.all"/>
+	<menuitem name="invoicing-project-all" parent="menu-project-root"
+    	title="Invoicing Projects"
+    	action="invoicing.project.all"/>
 
-	<action-view name="invoicing.folder.all" title="Invoicing Folders" model="com.axelor.apps.businessproject.db.InvoicingFolder">
-    	<view type="grid" name="invoicing-folder-grid"/>
-	    <view type="form" name="invoicing-folder-form"/>
+	<action-view name="invoicing.project.all" title="Invoicing Projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
+    	<view type="grid" name="invoicing-project-grid"/>
+	    <view type="form" name="invoicing-project-form"/>
 	</action-view>
 
 </object-views>

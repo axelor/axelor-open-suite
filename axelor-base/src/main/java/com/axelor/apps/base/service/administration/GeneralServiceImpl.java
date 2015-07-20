@@ -126,21 +126,6 @@ public class GeneralServiceImpl extends GeneralRepository implements GeneralServ
 
 // Log
 
-	/**
-	 * Savoir si le logger est activé
-	 *
-	 * @return
-	 */
-	@Override
-	public boolean isLogEnabled(){
-
-		if (getGeneral() != null){
-			return getGeneral().getLogOk();
-		}
-
-		return false;
-	}
-
 	@Override
 	public Unit getUnit(){
 

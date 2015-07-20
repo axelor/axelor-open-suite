@@ -23,7 +23,7 @@
 			<field name="sentDateT" colSpan="4"/>
 			<panel colSpan="12" showIf="mediaTypeSelect == 2">
 			    <field name="fromEmailAddress" widget="SuggestBox" grid-view="email-address-grid" form-view="email-address-form"/>
-				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature" requiredIf="mediaTypeSelect == 2" grid-view="mail-account-grid" form-view="mail-account-form"/>
+				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature" requiredIf="mediaTypeSelect == 2" grid-view="mail-account-grid" form-view="mail-account-form" domain="self.isValid = true"/>
         		<field name="replyToEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" grid-view="email-address-grid" />
 			</panel>
         </panel>

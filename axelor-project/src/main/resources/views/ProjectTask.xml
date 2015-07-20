@@ -11,7 +11,7 @@
 		<field name="toDate" />
 		<field name="dueDate" />
 		<field name="statusSelect"/>
-		<field name="progress" widget="SelectProgress"/>
+		<field name="progressSelect" widget="SelectProgress"/>
 	</grid>
 
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
@@ -35,7 +35,7 @@
 			<field name="$visibleTimeSpent" colSpan="5" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<label name="timeSpentLabel" title="Hours" colSpan="1"/>
 			<field name="dueDate" />
-			<field name="progress" widget="SelectProgress"/>
+			<field name="progressSelect" widget="SelectProgress"/>
 			<field name="$visibleLeadDelay" colSpan="5" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
@@ -120,11 +120,11 @@
 		<field name="toDate" />
 		<field name="dueDate" />
 		<field name="statusSelect"/>
-		<field name="progress" />
+		<field name="progressSelect" />
 	</grid>
 	
 	<gantt name="project-gantt" title="Project gantt" model="com.axelor.apps.project.db.ProjectTask" taskStart="startDate" taskDuration="duration" taskParent="project" 
-		   taskProgress="progress" taskSequence="sequence" x-finish-to-start="finishToStartTaskSet" x-start-to-start="startToStartTaskSet"
+		   taskProgress="ganttProgress" taskSequence="sequence" x-finish-to-start="finishToStartTaskSet" x-start-to-start="startToStartTaskSet"
 		   x-finish-to-finish="finishToFinishTaskSet" x-start-to-finish="startToFinishTaskSet">
 		   <field name="name" />		   
 		   <field name="assignedTo" />
@@ -148,7 +148,7 @@
 			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<label name="timeSpentLabel" title="Hours" colSpan="1"/>
 			<field name="dueDate" />
-			<field name="progress"/>
+			<field name="progressSelect"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
@@ -189,7 +189,7 @@
 		<field name="toDate" />
 		<field name="dueDate" />
 		<field name="statusSelect"/>
-		<field name="progress" widget="SelectProgress"/>
+		<field name="progressSelect" widget="SelectProgress"/>
 		<field name="typeSelect"/>
 	</grid>
 
@@ -213,7 +213,7 @@
 			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<label name="timeSpentLabel" title="Hours" colSpan="1"/>
 			<field name="dueDate" />
-			<field name="progress" widget="SelectProgress"/>
+			<field name="progressSelect" widget="SelectProgress"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
@@ -296,20 +296,20 @@
     	
     	<column name="name" type="string"/>
     	<column name="assignedTo" type="reference"/>
-    	<column name="progress" type="integer"/>
+    	<column name="progressSelect" type="integer"/>
     	<column name="typeSelect" type="string"/>
 		
 		<node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :id" onClick="action-task-view">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
-			<field name="progress" as="progress"/>
+			<field name="progressSelect" as="progressSelect"/>
 			<field name="typeSelect" as="typeSelect"/>
 		</node>    	
 		
 		<node model="com.axelor.apps.project.db.ProjectTask" parent="project" draggable="true" onClick="action-project-view">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
-			<field name="progress" as="progress"/>
+			<field name="progressSelect" as="progressSelect"/>
 			<field name="typeSelect" as="typeSelect"/>
 		</node>
     
